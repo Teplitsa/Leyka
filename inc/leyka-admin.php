@@ -13,10 +13,10 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 	protected function __construct() {
 
-        require_once(ABSPATH.'wp-admin/includes/meta-boxes.php');
+        require_once ABSPATH.'wp-admin/includes/meta-boxes.php';
 	    require_once LEYKA_PLUGIN_DIR.'inc/leyka-admin-functions.php';
-        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-admin-template-tags.php');
-        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php');
+        require_once LEYKA_PLUGIN_DIR.'inc/settings/leyka-admin-template-tags.php';
+        require_once LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php';
 
 		add_action('admin_menu', array($this, 'admin_menu_setup'), 9);
 
@@ -103,7 +103,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 // $screen_full_id[0] - view type (e.g. 'wizard' or 'control_panel')
                 // $screen_full_id[1] - settings area given (e.g. 'init').
 
-                require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php');
+                require_once LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php';
 
                 $admin_title = get_bloginfo('name')
                     .' &#8212; '
@@ -312,7 +312,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 <?php echo apply_filters('leyka_admin_portlet_title', esc_attr__($portlet_data['title'], 'leyka'), $portlet_id);?>
             </div>
 
-            <div class="portlet-content"><?php require_once($portlet_file);?></div>
+            <div class="portlet-content"><?php require_once $portlet_file;?></div>
 
         </div>
 
@@ -411,7 +411,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             'option' => 'donors_per_page',
         ));
 
-        require_once(LEYKA_PLUGIN_DIR.'inc/admin-lists/leyka-class-donors-list-table.php');
+        require_once LEYKA_PLUGIN_DIR.'inc/admin-lists/leyka-class-donors-list-table.php';
 
         $this->_donors_list_table = new Leyka_Admin_Donors_List_Table();
 
@@ -440,8 +440,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         $current_stage = $this->get_current_settings_tab();
 
-		require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php'); // Basic Controllers Factory class
-        require_once(LEYKA_PLUGIN_DIR.'inc/settings-pages/leyka-settings-common.php');
+		require_once LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php'; // Basic Controllers Factory class
+        require_once LEYKA_PLUGIN_DIR.'inc/settings-pages/leyka-settings-common.php';
 
 		do_action('leyka_pre_settings_actions', $current_stage);
 
