@@ -278,25 +278,21 @@ abstract class Leyka_Extension extends Leyka_Singleton {
     abstract protected function _set_attributes(); // Attributes are constant, like id, title, etc.
     protected function _set_options_defaults() {} // Options are admin configurable parameters
 
-    protected function _initialize_options() {
+    protected function _initialize_options(array $options = array()) {
 
-        foreach($this->_options as $entry => $params) {
+        $options = $options ? $options : $this->_options;
 
-            if( !is_array($entry) ) {
-                continue;
-            }
+        foreach($options as $entry => $params) {
 
-            if($entry === 'section' && !empty($params['options'])) { // An options section (-> Controller Step)
-                foreach($params as $option_id => $option_params) {
-                    leyka_options()->add_option($option_id, $option_params['type'], $option_params);
-                }
-            } else if( !empty($entry['section']['options']) ) { // An option
+            if( !empty($params['section']) && !empty($params['section']['options']) ) {
+                $this->_initialize_options($params['section']['options']); // An options section (-> Controller Section)
+            } else if( !empty($params['type']) && $params['type'] === 'container' && !empty($params['entries']) ) {
+                $this->_initialize_options($params['entries']); // An options container
+            } else if( !empty($params['type']) && !leyka_options()->option_exists($entry) ) { // An option
                 leyka_options()->add_option($entry, $params['type'], $params);
             }
 
         }
-
-//        add_filter('leyka_extension_options_allocation', array($this, 'allocate_options'), 1, 1);
 
     }
 

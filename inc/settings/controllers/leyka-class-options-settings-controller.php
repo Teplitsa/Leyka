@@ -56,32 +56,41 @@ class Leyka_Options_Settings_Controller extends Leyka_Settings_Controller {
 
         $stage = new Leyka_Settings_Stage($this->_id, ''); // There is only one stage by default
 
+        $section = reset($this->_options);
+        if(empty($section['section'])) { // No section set in options - add the default "main options" one
+            $section = new Leyka_Settings_Section('main_options', $stage->id, __('Main options', 'leyka'));
+        }
+
         foreach($this->_options as $entry) {
-            if( !empty($entry['stage']) ) {
 
-                $stage = new Leyka_Settings_Stage($entry['stage']['name'], $entry['stage']['title']);
+            if( !empty($entry['section']) ) { // Handle the section blocks
 
-                if( !empty($entry['stage']['options']) && is_array($entry['stage']['options'])) {
-                    foreach($entry['stage']['options'] as $option_id => $params) {
+                $section = new Leyka_Settings_Section($entry['section']['name'], $stage->id, $entry['section']['title']);
 
-                        $section = new Leyka_Settings_Section($option_id, $entry['stage']['name'], $params['title']);
+                if( !empty($entry['section']['options']) && is_array($entry['section']['options'])) {
+
+                    foreach($entry['section']['options'] as $option_id => $params) {
+
+                        $section->add_block(new Leyka_Option_Block(array(
+                            'id' => $option_id,
+//                            'option_id' => $option_id,
+//                            'show_description' => false,
+                        )));
+
 //                        $stage->add_section($section)
                     }
+
+                    $section->add_to($stage);
+
                 }
 
+            } else { // Handle the option or container,
+
             }
+
         }
-//        $stage = new Leyka_Settings_Stage('rd', esc_html__('Your data', 'leyka'));
-//
-//        // 0-section:
-//        $section = new Leyka_Settings_Section('init',  $stage->id, esc_html__('Hello!', 'leyka'), array('header_classes' => 'greater',));
-//        $section->add_block(new Leyka_Text_Block(array(
-//            'id' => 'section-intro-text',
-//            'text' => esc_html__("You installed the Leyka plugin, all that's left is to set it up. We will guide you through all the steps and help with tips.", 'leyka'),
-//        )))->add_block(new Leyka_Option_Block(array(
-//            'id' => 'receiver_country',
-//            'option_id' => 'receiver_country',
-//        )))->add_to($stage);
+
+        $section->add_to($stage);
 
         $this->_stages[$stage->id] = $stage;
 

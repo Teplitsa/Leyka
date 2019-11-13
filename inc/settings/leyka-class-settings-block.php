@@ -254,7 +254,7 @@ class Leyka_Container_Block extends Leyka_Settings_Block {
 
     }
 
-    public function addBlock(Leyka_Settings_Block $block) {
+    public function add_block(Leyka_Settings_Block $block) {
         $this->_blocks[] = $block;
     }
 
