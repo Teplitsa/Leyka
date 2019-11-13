@@ -16,14 +16,16 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
         $this->_id = 'support_packages'; // Must be a unique string, like "support-packages"
         $this->_title = __('Support packages', 'leyka'); // A human-readable title, like "Support packages"
 
-        // A human-readable description (for backoffice extensions list page):
+        // A human-readable short description (for backoffice extensions list page):
         $this->_description = 'Это небольшое описание расширения, символов на 100-130. Оказалось, придумать осмысленный текст сама по себе задачка не из лёгких.';
 
+        // A human-readable full description (for backoffice extensions list page):
         $this->_full_description = 'Это более подробное описание расширения, символов на 150-300. Например, вот такое длинное, как эта строка, которую нужно придумывать.<br><br>Это наш первый модуль - Пакеты поддержки. Бумажные или полиэтиленовые, отдельный вопрос - его ещё не прорабатывали на проектировании. Надо поднять на ближайшем созвоне.';
 
         // A human-readable description (for backoffice extension settings page):
         $this->_settings_description = 'Если пользователь вдруг решает поменять сколько он(а) месячно жертвует, например увеличивает размер месячной поддержки с 999 рублей до 1050 рублей (попадая, таким образом из Базовых доноров в Серебряные), то переключение между Пакетами происходит автоматически.';
 
+        // A human-readable description of how to enable the main feature (for backoffice extension settings page):
         $this->_connection_description = '<p><strong>Подключение функции «Ограничение доступа к контенту»</strong></p>
 <p>Доступ можно ограничить ко всему посту или к частям текста с помощью шорткода</p>
 <code>[leyka_limited_content support_plan="Программное название вознаграждения"]</code>

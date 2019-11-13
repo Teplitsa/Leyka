@@ -56,53 +56,63 @@ class Leyka_Options_Settings_Controller extends Leyka_Settings_Controller {
 
         $stage = new Leyka_Settings_Stage($this->_id, ''); // There is only one stage by default
 
-        $section = reset($this->_options);
-        if(empty($section['section'])) { // No section set in options - add the default "main options" one
-            $section = new Leyka_Settings_Section('main_options', $stage->id, __('Main options', 'leyka'));
+        $section_check = reset($this->_options);
+        if(empty($section_check['section'])) { // No section set in options - add the default "main options" one
+            $default_section = new Leyka_Settings_Section('main_options', $stage->id, __('Main options', 'leyka'));
         }
 
-        foreach($this->_options as $entry) {
+        foreach($this->_options as $option_id => $params) {
 
-            if( !empty($entry['section']) ) { // Handle the section blocks
+            if( !empty($params['section']) ) { // Handle the section blocks
 
-                $section = new Leyka_Settings_Section($entry['section']['name'], $stage->id, $entry['section']['title']);
+                $section = new Leyka_Settings_Section($params['section']['name'], $stage->id, $params['section']['title']);
 
-                if( !empty($entry['section']['options']) && is_array($entry['section']['options'])) {
+                if( !empty($params['section']['options']) && is_array($params['section']['options'])) {
 
-                    foreach($entry['section']['options'] as $option_id => $params) {
+                    foreach($params['section']['options'] as $inner_option_id => $inner_params) {
 
-                        $section->add_block(new Leyka_Option_Block(array(
-                            'id' => $option_id,
-//                            'option_id' => $option_id,
-//                            'show_description' => false,
-                        )));
+                        if(empty($inner_params['type'])) {
+                            continue;
+                        }
 
-//                        $stage->add_section($section)
+                        try {
+                            $section->add_block($this->_create_settings_block_from_option($inner_option_id, $inner_params));
+                        } catch(Exception $ex) {
+                            // ...
+                        }
+
                     }
 
                     $section->add_to($stage);
 
                 }
 
-            } else { // Handle the option or container,
-
+            } else if( !empty($default_section) ) { // Handle the option or container
+                try {
+                    $default_section->add_block($this->_create_settings_block_from_option($option_id, $params));
+                } catch(Exception $ex) {
+                    // ...
+                }
             }
 
         }
 
-        $section->add_to($stage);
+        if( !empty($default_section) ) { // No section set in options - add the default "main options" one
+            $default_section->add_to($stage);
+        }
 
         $this->_stages[$stage->id] = $stage;
 
     }
 
-    public function __get($name) {
-        switch($name) {
-            case 'id': return $this->_id;
-            case 'title': return $this->_title;
-            default: return null;
-        }
-    }
+    // Mb, we won't need the getter
+//    public function __get($name) {
+//        switch($name) {
+//            case 'id': return $this->_id;
+//            case 'title': return $this->_title;
+//            default: return null;
+//        }
+//    }
 
     /** @return boolean */
     public function has_common_errors() {
@@ -186,9 +196,41 @@ class Leyka_Options_Settings_Controller extends Leyka_Settings_Controller {
 
     }
 
-    // Use this method to put given options Blocks in a row (i.e., make a Settings_Container of them).
-    public function make_components_container(array $ids) {
-        /** @todo Implement it */
+    /**
+     * A recursive method to create Leyka_Settings_Block object from given option data.
+     *
+     * @param $option_id string An ID of an option/container to add to the section as a block.
+     * @param $option_params array
+     * @return Leyka_Settings_Block
+     * @throws
+     */
+    protected function _create_settings_block_from_option($option_id, $option_params) {
+
+        if( !$option_id || empty($option_params['type']) ) {
+            throw new Exception(__('', 'leyka'), 0);
+        }
+
+        if($option_params['type'] === 'container' && !empty($option_params['entries'])) {
+
+            $settings_block = new Leyka_Container_Block(); /** @todo Finish the block params */
+            foreach($option_params['entries'] as $option_id => $params) {
+
+                try {
+                    $settings_block->add_block($this->_create_settings_block_from_option($option_id, $params));
+                } catch(Exception $ex) {
+                    // ...
+                }
+
+            }
+
+        } /*else if(stristr($option_params['type'], 'custom_')) {
+            $settings_block = new Leyka_Custom_Setting_Block();
+        }*/ {
+            $settings_block = new Leyka_Option_Block(); /** @todo Finish the block params */
+        }
+
+        return $settings_block;
+
     }
 
 }
