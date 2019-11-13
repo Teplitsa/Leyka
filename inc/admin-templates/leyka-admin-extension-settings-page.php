@@ -89,7 +89,6 @@ try {
                             Leyka_Settings_Factory::get_instance()
                                 ->get_controller('options')
                                 ->set_options_data($extension->get_options_data())
-                                ->initialize_components()
                         )
                         ->render_content();
 

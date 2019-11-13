@@ -41,7 +41,7 @@ class Leyka_Options_Render extends Leyka_Settings_Render {
 
         $this->render_js_data();
 
-        $current_step = $this->_controller->get_current_step();?>
+        $current_step = $this->_controller->get_current_section();?>
 
         <div class="step-title">
             <h1 id="step-title-<?php echo $current_step->full_id?>" class="<?php echo $current_step->header_classes ? esc_attr($current_step->header_classes) : '';?>">
@@ -50,7 +50,7 @@ class Leyka_Options_Render extends Leyka_Settings_Render {
         </div>
 
         <input type="hidden" class="current-wizard-title" value="<?php echo $this->_controller->title;?>">
-        <input type="hidden" class="current-section-title" value="<?php echo $this->_controller->get_current_section()->title;?>">
+        <input type="hidden" class="current-section-title" value="<?php echo $this->_controller->get_current_stage()->title;?>">
         <input type="hidden" class="current-step-title" value="<?php echo $current_step->title;?>">
 
         <div class="step-common-errors <?php echo $this->_controller->has_common_errors() ? 'has-errors' : '';?>">

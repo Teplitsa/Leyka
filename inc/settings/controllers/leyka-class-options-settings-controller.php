@@ -11,8 +11,8 @@ class Leyka_Options_Settings_Controller extends Leyka_Settings_Controller {
 //    protected $_common_errors = array();
 //    protected $_component_errors = array();
 
-    /** @var $_sections array of Leyka_Settings_Section objects */
-    protected $_sections;
+    /** @var $_stages array of Leyka_Settings_Section objects */
+    protected $_stages;
 
     protected $_options;
 
@@ -31,7 +31,7 @@ class Leyka_Options_Settings_Controller extends Leyka_Settings_Controller {
 
         $this->_load_frontend_scripts();
         $this->_set_attributes();
-        $this->_set_sections();
+        $this->_set_stages();
 
         add_action('leyka_settings_submit_'.$this->_id, array($this, 'handle_submit'));
 
@@ -48,7 +48,43 @@ class Leyka_Options_Settings_Controller extends Leyka_Settings_Controller {
      * The default behavior. Components are produced out of $this->_options:
      * Stages -> Sections, Portlets -> Steps, Options & layout -> Blocks.
      */
-    protected function _set_sections() {
+    protected function _set_stages() {
+
+        if( !$this->_options || !is_array($this->_options) ) {
+            return;
+        }
+
+        $stage = new Leyka_Settings_Stage($this->_id, ''); // There is only one stage by default
+
+        foreach($this->_options as $entry) {
+            if( !empty($entry['stage']) ) {
+
+                $stage = new Leyka_Settings_Stage($entry['stage']['name'], $entry['stage']['title']);
+
+                if( !empty($entry['stage']['options']) && is_array($entry['stage']['options'])) {
+                    foreach($entry['stage']['options'] as $option_id => $params) {
+
+                        $section = new Leyka_Settings_Section($option_id, $entry['stage']['name'], $params['title']);
+//                        $stage->add_section($section)
+                    }
+                }
+
+            }
+        }
+//        $stage = new Leyka_Settings_Stage('rd', esc_html__('Your data', 'leyka'));
+//
+//        // 0-section:
+//        $section = new Leyka_Settings_Section('init',  $stage->id, esc_html__('Hello!', 'leyka'), array('header_classes' => 'greater',));
+//        $section->add_block(new Leyka_Text_Block(array(
+//            'id' => 'section-intro-text',
+//            'text' => esc_html__("You installed the Leyka plugin, all that's left is to set it up. We will guide you through all the steps and help with tips.", 'leyka'),
+//        )))->add_block(new Leyka_Option_Block(array(
+//            'id' => 'receiver_country',
+//            'option_id' => 'receiver_country',
+//        )))->add_to($stage);
+
+        $this->_stages[$stage->id] = $stage;
+
     }
 
     public function __get($name) {
@@ -111,13 +147,13 @@ class Leyka_Options_Settings_Controller extends Leyka_Settings_Controller {
         }
     }
 
-    /** @return Leyka_Settings_Step */
-    public function get_current_step() {
+    /** @return Leyka_Settings_Section */
+    public function get_current_section() {
         return; /** @todo Implement it */
     }
 
-    /** @return Leyka_Settings_Section */
-    public function get_current_section() {
+    /** @return Leyka_Settings_Stage */
+    public function get_current_stage() {
         return; /** @todo Implement it */
     }
 
@@ -135,15 +171,8 @@ class Leyka_Options_Settings_Controller extends Leyka_Settings_Controller {
     public function set_options_data(array $options = array()) {
 
         $this->_options = $options;
+        $this->_set_stages();
 
-        return $this;
-
-    }
-
-    /** Redefine Components after object instancing. */
-    public function initialize_components() {
-
-        echo '<pre>'.print_r($this->_options, 1).'</pre>';
         return $this;
 
     }

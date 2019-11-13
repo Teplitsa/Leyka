@@ -13,7 +13,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
     public function render_content() {?>
 
-        <div class="leyka-admin leyka-wizard wizard-<?php echo $this->_controller->id?> step-<?php echo $this->_controller->get_current_step()->id?>">
+        <div class="leyka-admin leyka-wizard wizard-<?php echo $this->_controller->id?> step-<?php echo $this->_controller->get_current_section()->id?>">
             <div class="nav-area">
                 <?php $this->render_navigation_area();?>
             </div>
@@ -30,33 +30,33 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
         <?php }
     }
     
-    public function renderJSData() {
+    public function render_js_data() {
         leyka_localize_rich_html_text_tags();
     }
 
     public function render_main_area() {
-        
-        $this->renderJSData();
 
-        $current_step = $this->_controller->get_current_step();?>
+        $this->render_js_data();
+
+        $current_section = $this->_controller->get_current_section();?>
 
         <div class="step-title">
-            <h1 id="step-title-<?php echo $current_step->full_id?>" class="<?php echo $current_step->header_classes ? esc_attr($current_step->header_classes) : '';?>">
-                <?php echo $current_step->title;?>
+            <h1 id="step-title-<?php echo $current_section->full_id;?>" class="<?php echo $current_section->header_classes ? esc_attr($current_section->header_classes) : '';?>">
+                <?php echo $current_section->title;?>
             </h1>
         </div>
 
         <input type="hidden" class="current-wizard-title" value="<?php echo $this->_controller->title;?>">
-        <input type="hidden" class="current-section-title" value="<?php echo $this->_controller->get_current_section()->title;?>">
-        <input type="hidden" class="current-step-title" value="<?php echo $current_step->title;?>">
+        <input type="hidden" class="current-section-title" value="<?php echo $this->_controller->get_current_stage()->title;?>">
+        <input type="hidden" class="current-step-title" value="<?php echo $current_section->title;?>">
 
         <div class="step-common-errors <?php echo $this->_controller->has_common_errors() ? 'has-errors' : '';?>">
             <?php $this->render_common_errors_area();?>
         </div>
 
-        <form id="leyka-settings-form-<?php echo $current_step->full_id;?>" <?php if($current_step->form_enctype):?>enctype="<?php echo $current_step->form_enctype?>"<?php endif?> class="leyka-settings-form leyka-wizard-step" method="post" action="<?php echo admin_url('admin.php?page=leyka_settings_new&screen='.$this->full_id);?>">
+        <form id="leyka-settings-form-<?php echo $current_section->full_id;?>" <?php if($current_section->form_enctype):?>enctype="<?php echo $current_section->form_enctype?>"<?php endif?> class="leyka-settings-form leyka-wizard-step" method="post" action="<?php echo admin_url('admin.php?page=leyka_settings_new&screen='.$this->full_id);?>">
             <div class="step-content">
-            <?php foreach($current_step->get_blocks() as $block) { /** @var $block Leyka_Settings_Block */
+            <?php foreach($current_section->get_blocks() as $block) { /** @var $block Leyka_Settings_Block */
 
             /** @todo If-else here sucks. Make it a Factory Method */
 
@@ -82,18 +82,17 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
             </div>
         </form>
         
-        <?php echo $this->renderFooter();?>
+        <?php echo $this->render_footer();
+        echo $this->render_help_chat();
 
-        <?php echo $this->renderHelpChat();?>
+    }
 
-    <?php }
-
-    public function renderFooter() {
+    public function render_footer() {
         leyka_show_admin_footer();
     }
     
-    public function renderHelpChat() {
-        include(LEYKA_PLUGIN_DIR.'inc/settings-fields-templates/leyka-helpchat.php');
+    public function render_help_chat() {
+        include LEYKA_PLUGIN_DIR.'inc/settings-fields-templates/leyka-helpchat.php';
     }
     
     public function render_hidden_fields() {
@@ -138,50 +137,50 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
         <div class="nav-chain">
             <div class="nav-line">
 
-            <?php foreach($navigation_data as $section_index => $section) {?>
+            <?php foreach($navigation_data as $stage_index => $stage) {?>
 
-                <div class="nav-section <?php echo !empty($section['is_current']) ? 'active' : (empty($section['is_completed']) ? '' : 'done');?>" data-section-title="<?php echo esc_attr($section['title']);?>">
+                <div class="nav-section <?php echo !empty($stage['is_current']) ? 'active' : (empty($stage['is_completed']) ? '' : 'done');?>" data-section-title="<?php echo esc_attr($stage['title']);?>">
 
                     <div class="nav-section-title">
 
-                        <?php if( !empty($section['is_completed']) ) {?>
+                        <?php if( !empty($stage['is_completed']) ) {?>
                         <div class="nav-section-marker">
-                            <a href="<?php echo $section['url'];?>">
+                            <a href="<?php echo $stage['url'];?>">
                                 <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-ok.svg" alt="">
                             </a>
                         </div>
 
-                        <a href="<?php echo $section['url'];?>"><?php echo esc_html($section['title']);?></a>
+                        <a href="<?php echo $stage['url'];?>"><?php echo esc_html($stage['title']);?></a>
 
                         <?php } else {?>
 
                         <div class="nav-section-marker">
-                            <?php echo $section_index + 1;?>
+                            <?php echo $stage_index + 1;?>
                         </div>
-                            <?php echo esc_html($section['title']);
+                            <?php echo esc_html($stage['title']);
 
                         }?>
 
                     </div>
 
-                    <?php if(empty($section['is_completed']) && !empty($section['steps'])) {?>
+                    <?php if(empty($stage['is_completed']) && !empty($stage['sections'])) {?>
+
                         <div class="nav-steps">
+                        <?php foreach($stage['sections'] as $section) {?>
 
-                        <?php foreach($section['steps'] as $step) {?>
+                            <div class="nav-step <?php if( !empty($section['is_current']) ) {?>active<?php } else if( !empty($section['is_completed']) ) {?>done<?php }?>">
 
-                            <div class="nav-step <?php if( !empty($step['is_current']) ) {?>active<?php } else if( !empty($step['is_completed']) ) {?>done<?php }?>">
-
-                            <?php if( !empty($step['is_completed']) ) {?>
-                                <a href="<?php echo $step['url'];?>"><?php echo esc_html($step['title']);?></a>
+                            <?php if( !empty($section['is_completed']) ) {?>
+                                <a href="<?php echo $section['url'];?>"><?php echo esc_html($section['title']);?></a>
                             <?php } else {
-                                echo esc_html($step['title']);
+                                echo esc_html($section['title']);
                             }?>
 
                             </div>
-
                         <?php }?>
 
                         </div>
+
                     <?php }?>
 
                 </div>
@@ -192,7 +191,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
         </div>
 
-        <a href="<?php echo $this->getExitURL();?>" class="nav-section nav-exit">
+        <a href="<?php echo $this->_get_exit_url();?>" class="nav-section nav-exit">
             <div class="nav-section-title">
                 <div class="nav-section-marker"></div>
                 <?php _e('Exit installation', 'leyka');?>
@@ -283,17 +282,13 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
         </div>
 
     <?php }
-    
-    private function getExitURL() {
-        
-        if($this->_controller->id && $this->_controller->id != 'init') {
-            $exit_url = admin_url('/admin.php?page=leyka_settings&stage=payment&gateway=' . $this->_controller->id);
-        }
-        else {
-            $exit_url = admin_url('/admin.php?page=leyka_settings');
-        }
-        
-        return $exit_url;
+
+    protected function _get_exit_url() {
+
+        return $this->_controller->id && $this->_controller->id !== 'init' ?
+            admin_url('/admin.php?page=leyka_settings&stage=payment&gateway=' . $this->_controller->id) :
+            admin_url('/admin.php?page=leyka_settings');
+
     }
 
 }

@@ -15,8 +15,8 @@ class Leyka_Settings_Factory extends Leyka_Singleton {
         // Controller components classes:
         require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-admin-template-tags.php');
         require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-block.php');
-        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-step.php');
         require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-section.php');
+        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-stage.php');
 
         // Basic Render class:
         require_once(LEYKA_PLUGIN_DIR.'inc/settings/renders/leyka-class-settings-render.php');
