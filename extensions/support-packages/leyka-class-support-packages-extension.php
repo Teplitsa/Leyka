@@ -28,13 +28,14 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
 <br>Ваш текст<br>
 <code>[/leyka_limited_content]</code>';
 
-        $this->_user_docs_link = '//leyka.te-st.ru'; // Extension user manual page URL
+        $this->_user_docs_link = '//leyka.te-st.ru'; // Extension user manual page URL /** @todo Change it when possible. */
         $this->_has_wizard = false;
 
     }
 
     protected function _set_options_defaults() {
-        $this->_options = array(
+
+        $this->_options = apply_filters('leyka_'.$this->_id.'_extension_options', array(
             array('section' => array(
                 'name' => $this->_id.'-main-options',
                 'title' => __('Main options', 'leyka'),
@@ -73,7 +74,8 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
                     ),
                 )
             )),
-        );
+        ));
+
     }
 
 }

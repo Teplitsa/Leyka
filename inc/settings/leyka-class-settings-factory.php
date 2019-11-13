@@ -1,9 +1,9 @@
 <?php if( !defined('WPINC') ) die;
 /**
- * Leyka settings controller - the root class.
- **/
+ * Leyka main Controllers & renders creation class.
+ */
 
-class Leyka_Settings_Factory extends Leyka_Singleton { // Each descendant is a concrete wizard
+class Leyka_Settings_Factory extends Leyka_Singleton {
 
     protected static $_instance = null;
 
@@ -32,7 +32,7 @@ class Leyka_Settings_Factory extends Leyka_Singleton { // Each descendant is a c
 
         $controller_id = trim(esc_attr($controller_id));
 
-        // Concrete Controller class:
+        // Specific Controller class:
         $file_path = LEYKA_PLUGIN_DIR.'inc/settings/controllers/leyka-class-'.mb_strtolower($controller_id)
             .'-settings-controller.php';
 
@@ -41,7 +41,7 @@ class Leyka_Settings_Factory extends Leyka_Singleton { // Each descendant is a c
         } else {
             throw new Exception(
                 sprintf(
-                    __("Settings Factory error: Can't find Settings Render script by given render ID (%s, %s)"),
+                    __("Settings Factory error: Can't find Settings Controller script by given render ID (%s, %s)"),
                     $controller_id, $file_path
                 ), 500
             );
@@ -52,6 +52,7 @@ class Leyka_Settings_Factory extends Leyka_Singleton { // Each descendant is a c
             case 'init': return Leyka_Init_Wizard_Settings_Controller::get_instance();
             case 'cp': return Leyka_Cp_Wizard_Settings_Controller::get_instance();
             case 'yandex': return Leyka_Yandex_Wizard_Settings_Controller::get_instance();
+            case 'options': return Leyka_Options_Settings_Controller::get_instance();
             default: throw new Exception(
                 sprintf(__('Settings Factory error: wrong Settings Controller ID given (%s)'), $controller_id), 501
             );
@@ -68,7 +69,7 @@ class Leyka_Settings_Factory extends Leyka_Singleton { // Each descendant is a c
 
         $render_id = trim(esc_attr($render_id));
 
-        // Concrete Render class:
+        // Specific Render class:
         $file_path = LEYKA_PLUGIN_DIR.'inc/settings/renders/leyka-class-'.mb_strtolower($render_id).'-settings-render.php';
 
         if(file_exists($file_path)) {
@@ -84,6 +85,7 @@ class Leyka_Settings_Factory extends Leyka_Singleton { // Each descendant is a c
 
         switch($render_id) {
             case 'wizard': return Leyka_Wizard_Render::get_instance();
+            case 'options': return Leyka_Options_Render::get_instance();
             default: throw new Exception(
                 sprintf(__('Settings Factory error: wrong Settings Render ID given (%s)'), $render_id), 511
             );

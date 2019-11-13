@@ -14,10 +14,8 @@ $is_separate_sections_forms = $this->is_separate_forms_stage($current_stage);?>
 
     <div id="tab-container">
 
-        <?php $admin_page_args = array(
-            'stage' => $current_stage,
-            'gateway' => empty($_GET['gateway']) ? '' : $_GET['gateway']
-        );
+        <?php $admin_page_args = array('stage' => $current_stage, 'gateway' => empty($_GET['gateway']) ? '' : $_GET['gateway']);
+
         $admin_page = 'admin.php?page=leyka_settings';
         foreach($admin_page_args as $arg_name => $value) {
             if($value) {
@@ -28,61 +26,63 @@ $is_separate_sections_forms = $this->is_separate_forms_stage($current_stage);?>
         if( !$is_separate_sections_forms ) {?>
 
         <form method="post" action="<?php echo admin_url($admin_page);?>" id="leyka-settings-form">
+
             <?php wp_nonce_field("leyka_settings_{$current_stage}", '_leyka_nonce');
 
-            }
+        }
 
-            if(file_exists(LEYKA_PLUGIN_DIR."inc/settings-pages/leyka-settings-{$current_stage}.php")) {
-                require_once(LEYKA_PLUGIN_DIR."inc/settings-pages/leyka-settings-{$current_stage}.php");
-            } else {
+        if(file_exists(LEYKA_PLUGIN_DIR."inc/settings-pages/leyka-settings-{$current_stage}.php")) {
+            require_once(LEYKA_PLUGIN_DIR."inc/settings-pages/leyka-settings-{$current_stage}.php");
+        } else {
 
-                do_action("leyka_settings_pre_{$current_stage}_fields");
+            do_action("leyka_settings_pre_{$current_stage}_fields");
 
-                foreach(leyka_opt_alloc()->get_tab_options($current_stage) as $option) { // Render each option/section
+            foreach(leyka_opt_alloc()->get_tab_options($current_stage) as $option) { // Render each option/section
 
-                    if($is_separate_sections_forms) {?>
+                if($is_separate_sections_forms) {?>
 
-                        <form method="post" action="<?php echo admin_url($admin_page);?>" id="leyka-settings-form">
+                    <form method="post" action="<?php echo admin_url($admin_page);?>" id="leyka-settings-form">
 
-                        <?php if(isset($option['section']['name'])) {?>
-                            <input type="hidden" name="leyka_options_section" value="<?php echo $option['section']['name'];?>">
-                        <?php }?>
+                    <?php if(isset($option['section']['name'])) {?>
+                        <input type="hidden" name="leyka_options_section" value="<?php echo $option['section']['name'];?>">
+                    <?php }?>
 
-                        <?php wp_nonce_field("leyka_settings_{$current_stage}", '_leyka_nonce');
-                        do_action("leyka_settings_pre_{$current_stage}_fields");
-
-                    }
-
-                    if(is_array($option) && !empty($option['section'])) {
-
-                        $option['section']['is_separate_sections_forms'] = $is_separate_sections_forms;
-                        $option['section']['current_stage'] = $current_stage;
-                        do_action('leyka_render_section', $option['section']);
-
-                    } else { // is this case even possible?
-
-                        $option_info = leyka_options()->get_info_of($option);
-                        do_action("leyka_render_{$option_info['type']}", $option, $option_info);
-
-                    }
-
-                    if($is_separate_sections_forms) {?>
-                        </form>
-                    <?php }
+                    <?php wp_nonce_field("leyka_settings_{$current_stage}", '_leyka_nonce');
+                    do_action("leyka_settings_pre_{$current_stage}_fields");
 
                 }
 
-                do_action("leyka_settings_post_{$current_stage}_fields");?>
+                if(is_array($option) && !empty($option['section'])) {
 
-                <?php if(!$is_separate_sections_forms) {?>
-                    <p class="submit">
-                        <input type="submit" name="<?php echo "leyka_settings_{$current_stage}";?>_submit" value="<?php esc_html_e('Save settings', 'leyka');?>" class="button-primary">
-                    </p>
+                    $option['section']['is_separate_sections_forms'] = $is_separate_sections_forms;
+                    $option['section']['current_stage'] = $current_stage;
+
+                    do_action('leyka_render_section', $option['section']);
+
+                } else { // is this case even possible?
+
+                    $option_info = leyka_options()->get_info_of($option);
+                    do_action("leyka_render_{$option_info['type']}", $option, $option_info);
+
+                }
+
+                if($is_separate_sections_forms) {?>
+                    </form>
                 <?php }
 
-            }?>
+            }
 
-            <?php if( !$is_separate_sections_forms ) {?>
+            do_action("leyka_settings_post_{$current_stage}_fields");?>
+
+            <?php if(!$is_separate_sections_forms) {?>
+                <p class="submit">
+                    <input type="submit" name="<?php echo "leyka_settings_{$current_stage}";?>_submit" value="<?php esc_html_e('Save settings', 'leyka');?>" class="button-primary">
+                </p>
+            <?php }
+
+        }
+
+        if( !$is_separate_sections_forms ) {?>
         </form>
     <?php }?>
 

@@ -1,26 +1,29 @@
 <?php if( !defined('WPINC') ) die;
 /**
- * Leyka Wizard Settings Render class.
- **/
+ * Leyka Options Render class.
+ */
 
-class Leyka_Wizard_Render extends Leyka_Settings_Render {
+class Leyka_Options_Render extends Leyka_Settings_Render {
 
     protected static $_instance = null;
-    
+
+//    protected $_params = array();
+
     protected function _set_attributes() {
-        $this->_id = 'wizard';
+        $this->_id = 'options';
     }
 
+    /** The main content layout wrapper method. */
     public function render_content() {?>
 
-        <div class="leyka-admin leyka-wizard wizard-<?php echo $this->_controller->id?> step-<?php echo $this->_controller->get_current_step()->id?>">
-            <div class="nav-area">
-                <?php $this->render_navigation_area();?>
-            </div>
-            <div class="main-area">
-                <?php $this->render_main_area();?>
-            </div>
-        </div>
+<!--        <div class="leyka-admin leyka-wizard wizard---><?php //echo $this->_controller->id?><!-- step---><?php //echo $this->_controller->get_current_step()->id?><!--">-->
+<!--            <div class="nav-area">-->
+<!--                --><?php //$this->render_navigation_area();?>
+<!--            </div>-->
+<!--            <div class="main-area">-->
+<!--                --><?php //$this->render_main_area();?>
+<!--            </div>-->
+<!--        </div>-->
 
     <?php }
 
@@ -30,13 +33,13 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
         <?php }
     }
     
-    public function renderJSData() {
+    public function render_js_data() {
         leyka_localize_rich_html_text_tags();
     }
 
     public function render_main_area() {
-        
-        $this->renderJSData();
+
+        $this->render_js_data();
 
         $current_step = $this->_controller->get_current_step();?>
 
@@ -82,18 +85,18 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
             </div>
         </form>
         
-        <?php echo $this->renderFooter();?>
+        <?php echo $this->render_footer();?>
 
-        <?php echo $this->renderHelpChat();?>
+        <?php echo $this->render_help_chat();?>
 
     <?php }
 
-    public function renderFooter() {
-        leyka_show_admin_footer();
+    public function render_footer() {
+//        leyka_show_admin_footer();
     }
     
-    public function renderHelpChat() {
-        include(LEYKA_PLUGIN_DIR.'inc/settings-fields-templates/leyka-helpchat.php');
+    public function render_help_chat() {
+//        include(LEYKA_PLUGIN_DIR.'inc/settings-fields-templates/leyka-helpchat.php');
     }
     
     public function render_hidden_fields() {
@@ -192,7 +195,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
         </div>
 
-        <a href="<?php echo $this->getExitURL();?>" class="nav-section nav-exit">
+        <a href="<?php echo $this->get_exit_url();?>" class="nav-section nav-exit">
             <div class="nav-section-title">
                 <div class="nav-section-marker"></div>
                 <?php _e('Exit installation', 'leyka');?>
@@ -283,17 +286,5 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
         </div>
 
     <?php }
-    
-    private function getExitURL() {
-        
-        if($this->_controller->id && $this->_controller->id != 'init') {
-            $exit_url = admin_url('/admin.php?page=leyka_settings&stage=payment&gateway=' . $this->_controller->id);
-        }
-        else {
-            $exit_url = admin_url('/admin.php?page=leyka_settings');
-        }
-        
-        return $exit_url;
-    }
 
 }

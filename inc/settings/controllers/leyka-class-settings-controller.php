@@ -1,16 +1,16 @@
 <?php if( !defined('WPINC') ) die;
 /**
  * Leyka settings controller - the root class.
- **/
+ */
 
-abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each descendant is a concrete wizard
+abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each descendant class is a specific wizard
 
     protected $_id;
     protected $_title;
     protected $_common_errors = array();
     protected $_component_errors = array();
 
-    /** @var $_sections array of Leyka_Wizard_Section objects */
+    /** @var $_sections array of Leyka_Settings_Section objects */
     protected $_sections;
 
     protected static $_instance = null;

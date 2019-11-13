@@ -14,8 +14,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	protected function __construct() {
 
         require_once(ABSPATH.'wp-admin/includes/meta-boxes.php');
-	    require_once LEYKA_PLUGIN_DIR.'/inc/leyka-admin-functions.php';
+	    require_once LEYKA_PLUGIN_DIR.'inc/leyka-admin-functions.php';
         require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-admin-template-tags.php');
+        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php');
 
 		add_action('admin_menu', array($this, 'admin_menu_setup'), 9);
 
@@ -439,7 +440,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         $current_stage = $this->get_current_settings_tab();
 
-		require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php'); // Basic Controller class
+		require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php'); // Basic Controllers Factory class
         require_once(LEYKA_PLUGIN_DIR.'inc/settings-pages/leyka-settings-common.php');
 
 		do_action('leyka_pre_settings_actions', $current_stage);
@@ -458,14 +459,14 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 		}
 
-	    $this->_show_admin_template('settings-page');?>
+	    $this->_show_admin_template('settings-page');
 
-	<?php do_action('leyka_post_settings_actions');
+	    do_action('leyka_post_settings_actions');
         do_action('leyka_post_admin_actions');
 
 	}
 
-	/** Settings factory-controlled display (ATM, Wizards only) */
+	/** Settings factory-controlled display. */
 	public function settings_new_screen() {
 
 	    if(empty($_GET['screen']) || count(explode('-', $_GET['screen'])) < 2) {
@@ -478,19 +479,18 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	    $screen_full_id = explode('-', $_GET['screen']);
 
 	    // Normally, we'd constuct settings view based on
-	    // - view type ([0], e.g. 'wizard' or 'control_panel')
+	    // - view type ([0], e.g. 'wizard' or 'options')
 	    // - settings area given ([1], e.g. 'init').
-
-        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php');
 
         try {
 
-            Leyka_Settings_Factory::get_instance()->get_render($screen_full_id[0])
+            Leyka_Settings_Factory::get_instance()
+                ->get_render($screen_full_id[0])
                 ->set_controller(Leyka_Settings_Factory::get_instance()->get_controller($screen_full_id[1]))
-                ->render_page();
+                ->render_content();
 
         } catch(Exception $ex) {
-            echo '<pre>'.print_r('Settings page error (code '.$ex->getCode().'): '.$ex->getMessage(), 1).'</pre>';
+            echo '<pre>'.sprintf(__('Settings display error (code %s): %s', 'leyka'), $ex->getCode(), $ex->getMessage()).'</pre>';
         }
 
         do_action('leyka_post_admin_actions');

@@ -123,6 +123,7 @@ abstract class Leyka_Extension extends Leyka_Singleton {
     }
 
     public function __get($param) {
+
         switch($param) {
             case 'id':
             case 'ID':
@@ -204,63 +205,66 @@ abstract class Leyka_Extension extends Leyka_Singleton {
             default:
                 return false;
         }
+
     }
 
     public function get_settings_url() {
 
         $wizard_id = leyka_extension_setup_wizard($this);
 
-        if($this->get_activation_status() !== 'active' && $wizard_id) {
-            $url = admin_url('/admin.php?page=leyka_settings_new&screen=wizard-'.$wizard_id);
-        } else {
-            $url = admin_url('/admin.php?page=leyka_extension_settings&extension='.$this->id);
-        }
+        return $wizard_id && $this->get_activation_status() !== 'active' ?
+            admin_url('/admin.php?page=leyka_settings_new&screen=wizard-'.$wizard_id) :
+            admin_url('/admin.php?page=leyka_extension_settings&extension='.$this->id);
 
-        return $url;
+    }
 
+    public function get_options_data() {
+        return $this->_options;
     }
 
     /** @todo Use this method + allocate_options() if we can use the options allocation system */
-    public function get_options_names() {
-
-        $option_names = array();
-        foreach($this->_options as $option_name => $params) {
-            $option_names[] = $option_name;
-        }
-
-        return $option_names;
-
-    }
+    // ATM, this method isn't used. Mb, it isn't needed at all - Options controller class should do Module options allocation.
+//    public function get_options_names() {
+//
+//        $option_names = array();
+//        foreach($this->_options as $option_name => $params) {
+//            $option_names[] = $option_name;
+//        }
+//
+//        return $option_names;
+//
+//    }
 
     /** @todo Try to merge it with Gateway class allocate_options() method. */
-    public function allocate_options($options) {
-
-        $section_index = -1;
-        foreach($options as $index => $option) {
-            if( !empty($option['section']) && $option['section']['name'] == $this->_id ) {
-                $section_index = $index;
-                break;
-            }
-        }
-
-        $options_names = $this->get_options_names();
-        if($section_index < 0) {
-            $options[] = array('section' => array(
-                'name' => $this->_id,
-                'title' => $this->_title,
-                'is_default_collapsed' => false,
-                'options' => $options_names
-            ));
-        } else {
-            $options[$section_index]['section']['options'] = array_unique(array_merge(
-                $options_names,
-                $options[$section_index]['section']['options']
-            ));
-        }
-
-        return $options;
-
-    }
+    // ATM, this method isn't used. Mb, it isn't needed at all - Options controller class should do Module options allocation.
+//    public function allocate_options($options) {
+//
+//        $section_index = -1;
+//        foreach($options as $index => $option) {
+//            if( !empty($option['section']) && $option['section']['name'] == $this->_id ) {
+//                $section_index = $index;
+//                break;
+//            }
+//        }
+//
+//        $options_names = $this->get_options_names();
+//        if($section_index < 0) {
+//            $options[] = array('section' => array(
+//                'name' => $this->_id,
+//                'title' => $this->_title,
+//                'is_default_collapsed' => false,
+//                'options' => $options_names
+//            ));
+//        } else {
+//            $options[$section_index]['section']['options'] = array_unique(array_merge(
+//                $options_names,
+//                $options[$section_index]['section']['options']
+//            ));
+//        }
+//
+//        return $options;
+//
+//    }
 
     /** Register an extension in the plugin manually */
     public function add_extension() {
@@ -276,13 +280,23 @@ abstract class Leyka_Extension extends Leyka_Singleton {
 
     protected function _initialize_options() {
 
-        foreach($this->_options as $option_name => $params) {
-            if( !leyka_options()->option_exists($option_name) ) {
-                leyka_options()->add_option($option_name, $params['type'], $params);
+        foreach($this->_options as $entry => $params) {
+
+            if( !is_array($entry) ) {
+                continue;
             }
+
+            if($entry === 'section' && !empty($params['options'])) { // An options section (-> Controller Step)
+                foreach($params as $option_id => $option_params) {
+                    leyka_options()->add_option($option_id, $option_params['type'], $option_params);
+                }
+            } else if( !empty($entry['section']['options']) ) { // An option
+                leyka_options()->add_option($entry, $params['type'], $params);
+            }
+
         }
 
-        add_filter('leyka_extension_options_allocation', array($this, 'allocate_options'), 1, 1);
+//        add_filter('leyka_extension_options_allocation', array($this, 'allocate_options'), 1, 1);
 
     }
 

@@ -79,11 +79,25 @@ try {
 
             <div class="postbox-container column-main">
 
-                <input type="hidden" value="<?php echo $extension->id?>" id="leyka_extension_id">
+                <input type="hidden" value="<?php echo $extension->id;?>" id="leyka_extension_id">
 
-                <?php /** @todo Initialize the options controller & render here & use them to display the options sections as a common form. */?>
+                <?php try {
 
-                <?php do_meta_boxes('extension_settings_page_main_column', 'normal', null);?>
+                    Leyka_Settings_Factory::get_instance()
+                        ->get_render('options')
+                        ->set_controller(
+                            Leyka_Settings_Factory::get_instance()
+                                ->get_controller('options')
+                                ->set_options_data($extension->get_options_data())
+                                ->initialize_components()
+                        )
+                        ->render_content();
+
+                } catch(Exception $ex) {
+                    echo '<pre>'.sprintf(__('Settings display error (code %s): %s', 'leyka'), $ex->getCode(), $ex->getMessage()).'</pre>';
+                }
+
+//                do_meta_boxes('extension_settings_page_main_column', 'normal', null);?>
 
             </div>
 
