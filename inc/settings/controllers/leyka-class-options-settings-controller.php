@@ -56,12 +56,12 @@ class Leyka_Options_Settings_Controller extends Leyka_Settings_Controller {
 
         $stage = new Leyka_Settings_Stage($this->_id, ''); // There is only one stage by default
 
-        $section_check = reset($this->_options);
-        if(empty($section_check['section'])) { // No section set in options - add the default "main options" one
+        $section_check = reset($this->_options); // If there are no section set in options, add the default "main options" one
+        if(empty($section_check['section'])) {
             $default_section = new Leyka_Settings_Section('main_options', $stage->id, __('Main options', 'leyka'));
         }
 
-        foreach($this->_options as $option_id => $params) {
+        foreach($this->_options as $option_id => $params) { // Create Settings Sections & Blocks from the options
 
             if( !empty($params['section']) ) { // Handle the section blocks
 
@@ -95,7 +95,7 @@ class Leyka_Options_Settings_Controller extends Leyka_Settings_Controller {
                 }
             }
 
-        }
+        } // Settings Blocks added
 
         if( !empty($default_section) ) { // No section set in options - add the default "main options" one
             $default_section->add_to($stage);
@@ -200,23 +200,23 @@ class Leyka_Options_Settings_Controller extends Leyka_Settings_Controller {
      * A recursive method to create Leyka_Settings_Block object from given option data.
      *
      * @param $option_id string An ID of an option/container to add to the section as a block.
-     * @param $option_params array
+     * @param $params array
      * @return Leyka_Settings_Block
      * @throws
      */
-    protected function _create_settings_block_from_option($option_id, $option_params) {
+    protected function _create_settings_block_from_option($option_id, $params) {
 
-        if( !$option_id || empty($option_params['type']) ) {
-            throw new Exception(__('', 'leyka'), 0);
+        if( !$option_id || empty($params['type']) ) {
+            throw new Exception(__("Can't create Settings Block - no option ID given", 'leyka'), 530);
         }
 
-        if($option_params['type'] === 'container' && !empty($option_params['entries'])) {
+        if($params['type'] === 'container' && !empty($params['entries'])) {
 
-            $settings_block = new Leyka_Container_Block(); /** @todo Finish the block params */
-            foreach($option_params['entries'] as $option_id => $params) {
+            $settings_block = new Leyka_Container_Block(array('id' => $this->_id.'_container-'.random_int(0, 1000)));
+            foreach($params['entries'] as $inner_option_id => $inner_params) {
 
                 try {
-                    $settings_block->add_block($this->_create_settings_block_from_option($option_id, $params));
+                    $settings_block->add_block($this->_create_settings_block_from_option($inner_option_id, $inner_params));
                 } catch(Exception $ex) {
                     // ...
                 }
@@ -225,8 +225,8 @@ class Leyka_Options_Settings_Controller extends Leyka_Settings_Controller {
 
         } /*else if(stristr($option_params['type'], 'custom_')) {
             $settings_block = new Leyka_Custom_Setting_Block();
-        }*/ {
-            $settings_block = new Leyka_Option_Block(); /** @todo Finish the block params */
+        }*/ else {
+            $settings_block = new Leyka_Option_Block(array('id' => $this->_id.'_'.$option_id, 'option_id' => $option_id));
         }
 
         return $settings_block;

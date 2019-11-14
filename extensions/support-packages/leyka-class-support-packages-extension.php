@@ -139,7 +139,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
                 'title' => __('For developers', 'leyka'),
                 'is_default_collapsed' => true,
                 'options' => array(
-                    $this->_id.'_for_devs' => array(
+                    $this->_id.'_css' => array(
                         'type' => 'textarea',
                         'is_code' => true,
                         'title' => __('Styles settings', 'leyka'),
