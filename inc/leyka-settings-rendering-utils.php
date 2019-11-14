@@ -31,6 +31,7 @@ function leyka_render_section_area($section){?>
 
         </div>
     </div>
+
 <?php }
 
 // Text fields:
@@ -65,8 +66,8 @@ function leyka_render_text_field($option_id, $data){
 
         </label>
     </div>
-<?php }
 
+<?php }
 
 // Email text fields:
 add_action('leyka_render_email', 'leyka_render_email_field', 10, 2);
@@ -100,6 +101,7 @@ function leyka_render_email_field($option_id, $data){
 
         </label>
     </div>
+
 <?php }
 
 // File fields:
@@ -121,6 +123,9 @@ function leyka_render_file_field($option_id, $data){
             <?php }?>
         </label>
     </div>
+
+
+
 <?php }
 
 // Legend fields:
@@ -150,6 +155,7 @@ function leyka_render_legend_field($option_id, $data){
             <?php }?>
         </label>
     </div>
+
 <?php }
 
 // Number fields:
@@ -179,6 +185,7 @@ function leyka_render_number_field($option_id, $data){
             <?php }?>
         </label>
     </div>
+
 <?php }
 
 // Checkbox fields:
@@ -263,6 +270,7 @@ function leyka_render_multi_checkboxes_fields($option_id, $data){
         </span>
 
     </div>
+
 <?php }
 
 // Radio fields:
@@ -529,14 +537,47 @@ function leyka_render_rich_html_field($option_id, $data){
 
 <?php }
 
+add_action('leyka_render_colorpicker', 'leyka_render_colorpicker_field', 10, 2);
+function leyka_render_colorpicker_field($option_id, $data) {?>
+
+    <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-colorpicker-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">
+        <label for="<?php echo $option_id.'-field';?>">
+
+            <span class="field-component title">
+
+                <span class="text"><?php echo $data['title'];?></span>
+                <?php echo empty($data['required'] ? '' : '<span class="required">*</span>');
+
+                if( !empty($data['comment']) ) {?>
+                <span class="field-q">
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
+                    <span class="field-q-tooltip"><?php echo $data['comment'];?></span>
+                </span>
+                <?php }?>
+
+            </span>
+
+            <?php if( !empty($data['description']) ) {?>
+                <span class="field-component help"><?php echo $data['description'];?></span>
+            <?php }?>
+
+            <span class="field-component field">
+                <input name="<?php echo $option_id;?>" type="text" id="<?php echo $option_id.'-field';?>" class="leyka-setting-field colorpicker" value="<?php echo esc_attr($data['value']);?>" data-default-color="<?php echo empty($data['default']) ? '' : esc_attr($data['default']);?>">
+            </span>
+
+        </label>
+    </div>
+
+<?php }
+
 // [Special field] Gateways commission options:
 add_action('leyka_render_custom_gateways_commission', 'leyka_render_gateways_commission_field', 10, 2);
-function leyka_render_gateways_commission_field($option_name, $data){
+function leyka_render_gateways_commission_field($option_id, $data){
 
-    $option_name = stristr($option_name, 'leyka_') ? $option_name : 'leyka_'.$option_name;
+    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
     $option_value = leyka_options()->opt('commission');?>
 
-    <div id="<?php echo $option_name.'-wrapper';?>" class="leyka-gateways-commission-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">
+    <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-gateways-commission-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">
 
     <?php foreach(leyka_get_gateways() as $gateway) { /** @var Leyka_Gateway $gateway */?>
 

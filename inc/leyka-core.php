@@ -245,7 +245,7 @@ class Leyka extends Leyka_Singleton {
         if(is_admin()) { // Admin area only
 
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-allocator.php');
-            require_once(LEYKA_PLUGIN_DIR.'inc/leyka-render-settings-old.php');
+            require_once(LEYKA_PLUGIN_DIR.'inc/leyka-settings-rendering-utils.php');
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-admin.php');
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-donations-export.php');
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-usage-stats-functions.php');

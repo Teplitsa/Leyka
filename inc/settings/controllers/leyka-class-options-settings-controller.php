@@ -166,14 +166,22 @@ class Leyka_Options_Settings_Controller extends Leyka_Settings_Controller {
         }
     }
 
-    /** @return Leyka_Settings_Section */
+    /**
+     * All Options Sections are disaplayed on one page, so the method isn't needed.
+     *
+     * @return Leyka_Settings_Section
+     */
     public function get_current_section() {
-        return; /** @todo Implement it */
+        return reset($this->get_current_stage()->get_sections());
     }
 
-    /** @return Leyka_Settings_Stage */
+    /**
+     * There are only one Stage for Options disaplyed, so just return it.
+     *
+     * @return Leyka_Settings_Stage
+     */
     public function get_current_stage() {
-        return; /** @todo Implement it */
+        return reset($this->_stages);
     }
 
     public function get_submit_data($component = null) {

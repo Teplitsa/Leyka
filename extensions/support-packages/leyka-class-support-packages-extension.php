@@ -56,12 +56,14 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
                         'type' => 'textarea',
                         'title' => '2. Текстовое обращение', // __('', 'leyka'),
 //                        'comment' => __('Please, enter ...', 'leyka'),
+//                        'placeholder' => 'Разрушить стереотипы, объединить ребят, увлеченных технологиями, вдохновить на поиски своего призвания – такие цели ставили перед собой участники Европейской недели программирования.',
                         'required' => false,
                     ),
                     $this->_id.'_subscription_text' => array(
                         'type' => 'textarea',
                         'title' => '3. Текст о подписке', // __('', 'leyka'),
 //                        'comment' => __('Please, enter ...', 'leyka'),
+                        'placeholder' => 'Подписка продлевается автоматически. Вы можете отписаться в любой момент в личном кабинете',
                         'required' => false,
                     ),
                     $this->_id.'_cta_labels' => array(

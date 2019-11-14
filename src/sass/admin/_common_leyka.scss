@@ -1,26 +1,136 @@
 .leyka-admin {
     
     @include body-text();
-    
-    // typo
-    .step-title {
-        h1 {
-            @include wizard-h2();
-            margin-top: 41px;
-            margin-bottom: 8px;
-            
-            &.greater {
-                @include wizard-h1();
-                margin-top: 49px;
-                margin-bottom: 18px;
-            }
+
+    .postbox, #poststuff .postbox { // Metaboxes restyling
+
+        border: 1px solid $color-border-semilight;
+        border-radius: 6px;
+        background-color: $color-background-light1;
+        box-shadow: 0 2px 2px $color-border-semilight;
+
+        color: $leyka-admin-color-text;
+
+        .handlediv { // Hide the default metabox open/close handle
+            display: none;
         }
+
+        h2 {
+
+            display: flex;
+
+            border: 0;
+            padding: 12px 16px;
+
+            font-size: 14px;
+            line-height: 24px;
+
+            &:before {
+
+                content: ' ';
+                display: inline-block;
+                background-image: url(../../img/icon-accord-expanded.svg);
+                cursor: pointer;
+                pointer-events: all;
+                width: 22px;
+                height: 22px;
+                margin-right: 8px;
+
+            }
+
+        }
+
+        &.closed h2:before {
+            background-image: url(../../img/icon-accord-collapsed.svg);
+        }
+
+        .inside {
+            margin-top: 0;
+            padding: 16px;
+        }
+
+    } // Metabox restyling - END
+
+    // Settings fields:
+    .settings-block {
+
+        max-width: 750px;
+
+        &.option-block {
+
+            &.type-rich_html {
+                @include leyka-rich-html();
+            }
+
+            &.type-colorpicker {
+
+                .help {
+                    margin: 6px 0;
+                    font-size: 10px;
+                }
+
+                .wp-picker-open + .wp-picker-input-wrap {
+                    display: flex;
+                }
+                .wp-picker-input-wrap {
+
+                    .wp-color-picker {
+                        max-width: 75px;
+                    }
+                    .wp-picker-default {
+                        height: 28px;
+                        margin-left: 0;
+                    }
+
+                }
+
+                .wp-color-result {
+
+                    border-radius: 2px;
+                    border: 1px solid $color-border-semilight;
+
+                    .wp-color-result-text {
+                        background-color: $color-white;
+                    }
+
+                }
+
+            }
+
+            &.type-file {
+                /** @todo Implement it. Take the markup & styles from .upload-photo-field & fix them for any file upload */
+            }
+
+        }
+
+        &.container-block {
+            display: flex;
+            justify-content: space-between;
+        }
+
     }
-            
+
+    .fields .field {
+        margin-bottom: 16px;
+    }
+
+    .field-errors span {
+
+        @include wizard-field-message();
+
+        margin-bottom: 0;
+        color: $color-wizard-error-message;
+
+    } // Settings fields - END
+    
+    // Typo:
     p {
+
         @include wizard-text();
+
         margin-top: 0;
         margin-bottom: 1rem;
+
     }
     
     p:empty {

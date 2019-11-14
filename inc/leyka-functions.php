@@ -1952,12 +1952,13 @@ if( !function_exists('leyka_get_l18n_datetime') ) {
     }
 }
 
-// localize tags to replace in js
+// Localize tags to replace in JS:
 if( !function_exists('leyka_localize_rich_html_text_tags') ) {
     function leyka_localize_rich_html_text_tags() {
+
         $is_legal = leyka_options()->opt('receiver_legal_type') === 'legal';
-        
-        wp_localize_script( 'leyka-settings', 'leykaRichHTMLTags', array(
+
+        wp_localize_script('leyka-settings', 'leykaRichHTMLTags', array(
             'termsKeys' => array(
                 array(
                     '#LEGAL_NAME#',
@@ -2007,6 +2008,7 @@ if( !function_exists('leyka_localize_rich_html_text_tags') ) {
                 ),
             ),
         ));
+
     }
 }
 

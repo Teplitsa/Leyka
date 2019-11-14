@@ -7,6 +7,10 @@ try {
     $extension = Leyka_Extension::get_by_id($_GET['extension']);
 } catch(Exception $e) {
     wp_die($e->getMessage());
+}
+
+if( !$extension) {
+    wp_die(sprintf(__('The extension is not found: %s', 'leyka'), $_GET['extension']));
 }?>
 
 <div class="leyka-admin wrap single-settings extension-settings" data-leyka-admin-page-type="extension-settings-page">
@@ -94,9 +98,7 @@ try {
 
                 } catch(Exception $ex) {
                     echo '<pre>'.sprintf(__('Settings display error (code %s): %s', 'leyka'), $ex->getCode(), $ex->getMessage()).'</pre>';
-                }
-
-//                do_meta_boxes('extension_settings_page_main_column', 'normal', null);?>
+                }?>
 
             </div>
 

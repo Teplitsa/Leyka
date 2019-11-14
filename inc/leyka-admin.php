@@ -44,6 +44,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         // Metaboxes support where it is needed:
         add_action('leyka_pre_donor_info_actions', array($this, 'full_metaboxes_support'));
+        add_action('leyka_pre_extension_settings_actions', array($this, 'full_metaboxes_support'));
 
 		add_action('leyka_post_admin_actions', array($this, 'show_footer'));
 
@@ -699,7 +700,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	public function load_frontend_scripts() {
 
 		wp_enqueue_style('leyka-icon', LEYKA_PLUGIN_BASE_URL.'css/admin-icon.css', array(), LEYKA_VERSION);
-		
+
 		wp_enqueue_style('leyka-admin-common', LEYKA_PLUGIN_BASE_URL.'assets/css/admin-common.css', array(), LEYKA_VERSION);
 
 		$screen = get_current_screen();
@@ -721,24 +722,27 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         $dependencies = array('jquery',);
 
         if($leyka_admin_new) {
+
             wp_enqueue_style('leyka-settings', LEYKA_PLUGIN_BASE_URL.'assets/css/admin.css', array(), LEYKA_VERSION);
-        } else { // Old admin pages (before v3.0)
-            /** @todo ATM, the old admin.css is used only for New & Edit Donation pages (/css/admin.css, lines 502-730). Move their code to the /src/ , then remove the /css/admin.css */
-	        wp_enqueue_style('leyka-admin', LEYKA_PLUGIN_BASE_URL.'css/admin.css', array(), LEYKA_VERSION);
-	    }
 
-        // WP admin metaboxes support:
-        if($current_screen->id === 'dashboard_page_leyka_donor_info') {
+            // Colorpicker fields support:
+            wp_enqueue_script('wp-color-picker');
+            wp_enqueue_style('wp-color-picker');
 
+            // WP admin metaboxes support:
             $dependencies[] = 'postbox';
             $dependencies[] = 'jquery-ui-accordion';
             $dependencies[] = 'jquery-ui-sortable';
             $dependencies[] = 'tags-box';
 
-            $dependencies[] = $this->_load_data_tables();
+        } else { // Old admin pages (before v3.0)
+            /** @todo ATM, the old admin.css is used only for New & Edit Donation pages (/css/admin.css, lines 502-730). Move their code to the /src/ , then remove the /css/admin.css */
+	        wp_enqueue_style('leyka-admin', LEYKA_PLUGIN_BASE_URL.'css/admin.css', array(), LEYKA_VERSION);
+	    }
 
+        if($current_screen->id === 'dashboard_page_leyka_donor_info') {
+            $dependencies[] = $this->_load_data_tables();
         }
-        // Metaboxes support - END
 
         // Settings pages:
         if(stristr($current_screen->id, '_page_leyka_settings') !== false) {

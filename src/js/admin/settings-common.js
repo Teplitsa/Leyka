@@ -2,6 +2,9 @@
 
 jQuery(document).ready(function($){
 
+    $('.leyka-setting-field.colorpicker').wpColorPicker(); // Colorpicker fields
+    leyka_support_metaboxes('options-options_main_area'); // Support metaboxes
+
     // Expandable options sections:
     $('.leyka-options-section .header h3').click(function(e){
         e.preventDefault();
