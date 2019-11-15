@@ -190,7 +190,7 @@
         $swiper.find('.swiper-list .swiper-item:not(.disabled)').last().css('margin-right', '0px');
         
         var $list = $swiper.find('.swiper-list');
-        $list.css('width', '');
+        $list.css('width', '100%');
         
         toggleSwiperArrows($swiper);
         swipeList($swiper, $activeItem);

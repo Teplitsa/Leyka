@@ -198,7 +198,6 @@
     .swiper-list, .full-list {
         display: flex;
         position: absolute;
-        //width: calc(100% - 100px);
         width: calc(100% - 76px);
         left: 50px;
         overflow: hidden;
@@ -207,7 +206,6 @@
         @include for(medium-screens) {
             justify-content: space-between;
             left: 0px;
-            // width: max-content;
             width: auto;
             overflow: auto;
         }
