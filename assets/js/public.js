@@ -1871,14 +1871,17 @@ window.LeykaPageMain.prototype = {
         
         if(parts.length > 0) {
             var form_id = parts[0];
-            var $_form = $('#' + form_id);
             
-            if($_form.length > 0) {
-                $_form.leykaForm('open');
+            if(form_id) {
+                var $_form = $('.leyka-pf#' + form_id);
                 
-                for(var i in parts) {
-                    var part = parts[i];
-                    self.handleFinalScreenParams($_form, part);
+                if($_form.length > 0) {
+                    $_form.leykaForm('open');
+                    
+                    for(var i in parts) {
+                        var part = parts[i];
+                        self.handleFinalScreenParams($_form, part);
+                    }
                 }
             }
         }
@@ -2151,7 +2154,7 @@ jQuery(document).ready(function($){
         $swiper.find('.swiper-list .swiper-item:not(.disabled)').last().css('margin-right', '0px');
         
         var $list = $swiper.find('.swiper-list');
-        $list.css('width', '');
+        $list.css('width', '100%');
         
         toggleSwiperArrows($swiper);
         swipeList($swiper, $activeItem);
