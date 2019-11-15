@@ -89,6 +89,19 @@ PHP version required: 5.6+
 10. Google Analytics events
 
 == Changelog ==
+= 3.6.1 =
+* New: now Gateways cards have an explicit settings link button.
+* New: Donors info column added to the admin Users list.
+* New: Donors management & Donors' accounts fields logical link added.
+* New: API password setting field added to the CP Wizard.
+* New: new fields added to the settings.
+* Fix: Donors logging in & account activation fixes.
+* Fix: CP Wizard - small wording & CSS fixes.
+* Fix: now Donors are auto-redirected to the respective Account pages on WP login.
+* Fix: small fixes.
+* Tweak: "Reset filters" for the Donors admin list are auto-submitting filters form now.
+* Tweak: now CP Wizard Copy & Paste steps are merged into one.
+
 = 3.6 =
 * New: a new group of Star-oriented (more design-flexible) shortcodes added.
 * New: amount_formatted property added for Leyka_Donation.
