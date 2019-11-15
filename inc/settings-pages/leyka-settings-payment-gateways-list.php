@@ -76,7 +76,7 @@ $gateways_categories = leyka_get_gateways_filter_categories_list();?>
                         </div>
                     </div>
                 </div>
-                
+
                 <img class="scroll-arrow left" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-scroll-arrow-left.svg" alt="">
                 <img class="scroll-arrow right" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-scroll-arrow-right.svg" alt="">
 

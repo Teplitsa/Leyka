@@ -681,16 +681,16 @@ function leyka_get_gateway_activation_status_label($activation_status) {
 }
 
 /**
- * @param string $wizard_name
+ * @param string $wizard_id
  * @return bool
  */
-function leyka_wizard_started($wizard_name) {
+function leyka_wizard_started($wizard_id) {
 
-//    try {
-        $wizard_controller = Leyka_Settings_Factory::get_instance()->get_controller($wizard_name);
-//    } catch(Exception $e) {
-//        return false;
-//    }
+    try {
+        $wizard_controller = Leyka_Settings_Factory::get_instance()->get_controller($wizard_id);
+    } catch(Exception $e) {
+        return false;
+    }
 
     return count($wizard_controller->history) > 0;
 

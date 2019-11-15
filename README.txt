@@ -4,7 +4,7 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: e-donate, donates, donations, recurring donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, visa, mastercard, yandexmoney, yandex.money, chronopay, sms, яндекс.касса, яндекс.деньги, миксплат, mixplat, paypal, paymaster, qiwi, киви, yandex.kassa, cloudpayments, paypal, mixplat
 Requires at least: 3.6.1
-Tested up to: 5.2.4
+Tested up to: 5.3
 Stable tag: 3.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -89,6 +89,19 @@ PHP version required: 5.6+
 10. Google Analytics events
 
 == Changelog ==
+= 3.6.1 =
+* New: now Gateways cards have an explicit settings link button.
+* New: Donors info column added to the admin Users list.
+* New: Donors management & Donors' accounts fields logical link added.
+* New: API password setting field added to the CP Wizard.
+* New: new fields added to the settings.
+* Fix: Donors logging in & account activation fixes.
+* Fix: CP Wizard - small wording & CSS fixes.
+* Fix: now Donors are auto-redirected to the respective Account pages on WP login.
+* Fix: small fixes.
+* Tweak: "Reset filters" for the Donors admin list are auto-submitting filters form now.
+* Tweak: now CP Wizard Copy & Paste steps are merged into one.
+
 = 3.6 =
 * New: a new group of Star-oriented (more design-flexible) shortcodes added.
 * New: amount_formatted property added for Leyka_Donation.

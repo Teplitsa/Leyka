@@ -1,56 +1,50 @@
 /** Donors list page */
 jQuery(document).ready(function($){
 
+	function leykaFillDatepickerInputPeriod(inst, extensionRange) {
+		var inputText = extensionRange.startDateText;
+		if(extensionRange.endDateText && extensionRange.endDateText != extensionRange.startDateText) {
+			inputText += "," + extensionRange.endDateText;
+		}
+		$(inst.input).val(inputText);
+	}
+
 	function leykaInitFilterDatepicker($input, options) {
 
-		let selectedDatesStr = $input.val(),
-			selectedDatesStrList = selectedDatesStr.split(","),
-			selectedDates = [];
-		for(let i in selectedDatesStrList) {
-			if(selectedDatesStrList[i]) {
-				var parts = selectedDatesStrList[i].split(".");
-				selectedDates.push(new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10)));
-			}
-		}
-
-		let $dp = $input.datepicker({
-			range: true,
-			onSelect: function(formattedDate, date, dp) {
-				if(dp.selectedDates.length == 2) {
-					$('#leyka-filter-warning').text('');
-				}
+		$input.datepicker({
+			range:'period',
+			onSelect:function(dateText, inst, extensionRange){
+				leykaFillDatepickerInputPeriod(inst, extensionRange);
 			},
-			onHide: function(dp, animationCompleted) {
-				if(dp.selectedDates.length == 1) {
-					$('#leyka-filter-warning').text(options.warningMessage);
-				}
-				else {
-					$('#leyka-filter-warning').text('');
-				}
-			},
-			onShow: function(dp, animationCompleted) {
-				if(animationCompleted && dp.selectedDates.length == 2) {
-					let $fristSelectedCell = $('.datepicker.active .datepicker--body .datepicker--cell.-selected-').first();
-					$fristSelectedCell.addClass('-range-from-');
 
-					let $beetweenDates = $fristSelectedCell.next();
+			beforeShow: function(input, inst) {
+				let selectedDatesStr = $(input).val(),
+					selectedDatesStrList = selectedDatesStr.split(","),
+					selectedDates = [];
 
-					while($beetweenDates.length > 0) {
+				for(let i in selectedDatesStrList) {
+					if(selectedDatesStrList[i]) {
 
-						if($beetweenDates.hasClass('-selected-')) {
-							$beetweenDates.addClass('-range-to-')
-							break;
+						let singleDate;
+						try {
+							singleDate = $.datepicker.parseDate($(input).datepicker('option', 'dateFormat'), selectedDatesStrList[i]);
+						} catch {
+							// console.log("parse date error: " + selectedDatesStrList[i])
+							singleDate = new Date();
 						}
-
-						$beetweenDates.addClass('-in-range-');
-						$beetweenDates = $beetweenDates.next('.datepicker--cell');
+						
+						selectedDates.push(singleDate);
 					}
 				}
-			}
-		}).data('datepicker');
 
-		$dp.selectedDates = selectedDates;
-		$dp.update();
+				$(inst.input).val(selectedDates[0]);
+				$(inst.input).datepicker('setDate', selectedDates);
+				setTimeout(function(){
+					leykaFillDatepickerInputPeriod(inst, $(inst.dpDiv).data('datepickerExtensionRange'));
+				});
+				
+			}
+		});		
 
 	}
 
@@ -176,7 +170,6 @@ jQuery(document).ready(function($){
     });
 
 	$('.reset-filters').click(function(e){
-
 		e.preventDefault();
 
 		$('input.leyka-payment-status-selector').autocomplete('reset');
@@ -187,14 +180,8 @@ jQuery(document).ready(function($){
 		$('input[name="donor-name-email"]').val('');
 		$('select[name="donor-type"]').prop('selectedIndex', 0).selectmenu('refresh');
 
-		let $dp = $('input[name="first-donation-date"]').datepicker().data('datepicker');
-		$dp.selectedDates = [];
-		$dp.update();
-
-		$dp = $('input[name="last-donation-date"]').datepicker().data('datepicker');
-		$dp.selectedDates = [];
-		$dp.update();
-
+		$('input[name=first-donation-date]').val('');
+		$('input[name=last-donation-date]').val('');
         $(this).closest('form.donors-list-controls').submit();
 
 	});

@@ -315,6 +315,7 @@
                         
                         img.pm-icon {
                             max-height: 40px;
+                            display: inline-block;
                             
                             &[src$="pic-main-text-text_box.svg"] {
                                 max-height: 20px;
@@ -364,9 +365,25 @@
                         margin-right: 0px;
                         margin-left: $leyka-star-base;
 
+                        &:not(.disabled):last-of-type {
+                            .swiper-item-inner {
+                                width: 100%;
+                                margin-left: 0px;
+                            }
+                        }
+
                         .swiper-item-inner {
                             width: 100%;
                             margin-left: 0px;
+
+                            .payment-opt__icon {
+                                display: inline-block;
+                            }
+
+                            .payment-opt__label {
+                                display: inline-block;
+                            }
+
                         }
                     }
                 }

@@ -138,14 +138,17 @@ window.LeykaPageMain.prototype = {
         
         if(parts.length > 0) {
             var form_id = parts[0];
-            var $_form = $('#' + form_id);
             
-            if($_form.length > 0) {
-                $_form.leykaForm('open');
+            if(form_id) {
+                var $_form = $('.leyka-pf#' + form_id);
                 
-                for(var i in parts) {
-                    var part = parts[i];
-                    self.handleFinalScreenParams($_form, part);
+                if($_form.length > 0) {
+                    $_form.leykaForm('open');
+                    
+                    for(var i in parts) {
+                        var part = parts[i];
+                        self.handleFinalScreenParams($_form, part);
+                    }
                 }
             }
         }
