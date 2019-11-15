@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Leyka - Development (trunk) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2019-11-15 13:27:50+0000\n"
+"PO-Revision-Date: 2019-11-15 13:39:06+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -397,35 +397,35 @@ msgstr "Доноров не найдено."
 
 #: inc/leyka-core.php:1581
 msgid "New donors tag name"
-msgstr "Новый тэг донора"
+msgstr "Новая метка донора"
 
 #: inc/leyka-core.php:1580
 msgid "Add new donors tag"
-msgstr "Добавить новый тэг"
+msgstr "Добавить новую метку"
 
 #: inc/leyka-core.php:1579
 msgid "Update donors tag"
-msgstr "Обновить тег донора"
+msgstr "Обновить метку донора"
 
 #: inc/leyka-core.php:1578
 msgid "Edit donors tag"
-msgstr "Редактировать тэг"
+msgstr "Редактировать метку"
 
 #: inc/leyka-core.php:1577
 msgid "All donors tags"
-msgstr "Все тэги доноров"
+msgstr "Все метки доноров"
 
 #: inc/leyka-core.php:1576
 msgid "Popular donors tags"
-msgstr "Популярные теги доноров"
+msgstr "Популярные метки доноров"
 
 #: inc/leyka-core.php:1575
 msgid "Search donors tag"
-msgstr "Искать тэги доноров"
+msgstr "Искать метки доноров"
 
 #: inc/leyka-core.php:1573
 msgid "Donors tag"
-msgstr "Тэг донора"
+msgstr "Метка донора"
 
 #: inc/leyka-ajax.php:890
 msgid "Error: empty text"
@@ -486,7 +486,7 @@ msgstr "Связаться с нами"
 
 #: inc/leyka-admin.php:157
 msgid "Tags"
-msgstr "Тэги"
+msgstr "Метки"
 
 #: inc/leyka-shortcodes-new.php:323 inc/leyka-admin.php:156
 msgid "Comments"
@@ -593,7 +593,7 @@ msgstr "Платёжный оператор"
 #: inc/admin-templates/leyka-admin-donors-list-page.php:72
 #: inc/leyka-core.php:1572 inc/leyka-core.php:1574
 msgid "Donors tags"
-msgstr "Тэги доноров"
+msgstr "Метки доноров"
 
 #: inc/admin-templates/leyka-admin-donors-list-page.php:57
 msgid "Payment status"
@@ -2227,7 +2227,7 @@ msgstr "Показывать список имён доноров на форм�
 
 #: inc/leyka-options-meta.php:466
 msgid "An email text that your donor will see. You may use the special tags in the text."
-msgstr "Текст, который увидит донор. Вы можете воспользоваться специальными тэгами для его настройки."
+msgstr "Текст, который увидит донор. Вы можете воспользоваться специальными метками для его настройки."
 
 #: inc/leyka-options-meta.php:450
 msgid "What your donors will see in the \"from email\" field. For the most of the cases, your organization contact email will do fine."
