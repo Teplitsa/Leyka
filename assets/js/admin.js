@@ -1048,7 +1048,7 @@ jQuery(document).ready(function($){
 						try {
 							singleDate = $.datepicker.parseDate($(input).datepicker('option', 'dateFormat'), selectedDatesStrList[i]);
 						} catch {
-							console.log("parse date error: " + selectedDatesStrList[i])
+							// console.log("parse date error: " + selectedDatesStrList[i])
 							singleDate = new Date();
 						}
 						
