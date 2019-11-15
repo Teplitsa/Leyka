@@ -191,6 +191,19 @@
         
         var $list = $swiper.find('.swiper-list');
         $list.css('width', '100%');
+
+        // fix max width
+        var maxWidth = $swiper.closest('.leyka-payment-form').width();
+        if($swiper.find('.full-list').length) {
+            maxWidth -= 50;
+            $swiper.find('.payment-opt__label').css('max-width', maxWidth);
+            $swiper.find('.payment-opt__icon').css('max-width', maxWidth);
+        }
+        else {
+            maxWidth -= 100;
+            $swiper.find('.payment-opt__label').css('max-width', maxWidth);
+            $swiper.find('.payment-opt__icon').css('max-width', maxWidth);
+        }
         
         toggleSwiperArrows($swiper);
         swipeList($swiper, $activeItem);
