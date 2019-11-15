@@ -2159,7 +2159,7 @@ jQuery(document).ready(function($){
         // fix max width
         var maxWidth = $swiper.closest('.leyka-payment-form').width();
         if($swiper.find('.full-list').length) {
-            maxWidth -= 50;
+            maxWidth -= 60;
             $swiper.find('.payment-opt__label').css('max-width', maxWidth);
             $swiper.find('.payment-opt__icon').css('max-width', maxWidth);
         }
