@@ -1201,17 +1201,6 @@ jQuery(document).ready(function($){
 
 		$('input[name=first-donation-date]').val('');
 		$('input[name=last-donation-date]').val('');
-
-		// let $dp = $('input[name=first-donation-date]').datepicker().data('datepicker');
-		// $dp.selectedDates = [];
-		// $dp.update();
-
-		// $dp = $('input[name=last-donation-date]').datepicker().data('datepicker');
-		// $dp.selectedDates = [];
-		// $dp.update();
-
-		//var $form = $(this).closest('form');
-		//$form[0].reset();
 	});
 });
 
