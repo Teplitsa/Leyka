@@ -189,6 +189,8 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
         if( !$this->current_step && $this->current_section ) {
 
+//            echo '<pre>'.print_r($this->current_section, 1).'</pre>';
+
             $init_step = $this->current_section->init_step;
             if($init_step) { /** @var $init_step Leyka_Settings_Step */
                 $this->_set_current_step($init_step);

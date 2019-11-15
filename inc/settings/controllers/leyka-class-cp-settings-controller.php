@@ -22,8 +22,8 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
 
         wp_enqueue_script('leyka-easy-modal', LEYKA_PLUGIN_BASE_URL . 'js/jquery.easyModal.min.js', array(), false, true);
 
-        wp_enqueue_script( 'jquery-ui-dialog' );
-        wp_enqueue_style( 'wp-jquery-ui-dialog' );
+        wp_enqueue_script('jquery-ui-dialog');
+        wp_enqueue_style('wp-jquery-ui-dialog');
 
         add_action('admin_enqueue_scripts', function(){
 
@@ -33,9 +33,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
                 'test_donor_email' => get_option('admin_email'),
                 'ajax_wrong_server_response' => __('Error in server response. Please report to the website tech support.', 'leyka'),
                 'cp_not_set_up' => __('Error in CloudPayments settings. Please report to the website tech support.', 'leyka'),
-                'cp_donation_failure_reasons' => array(
-                    'User has cancelled' => __('You cancelled the payment', 'leyka'),
-                ),
+                'cp_donation_failure_reasons' => array('User has cancelled' => __('You cancelled the payment', 'leyka'),),
             ));
 
         });
@@ -49,7 +47,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
         // The main CP settings section:
         $section = new Leyka_Settings_Section('cp', 'CloudPayments');
 
-        $step = new Leyka_Settings_Step('init',  $section->id, __('CloudPayments', 'leyka'));
+        $step = new Leyka_Settings_Step('init', $section->id, __('CloudPayments', 'leyka'));
         $step->add_block(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => __('CloudPayments system is a multi-profile processing center for handling payments via Visa, MasterCard and MIR payment systems.', 'leyka'),
@@ -58,7 +56,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
             'template' => 'cp_payment_cards_icons',
         )))->add_to($section);
 
-        $step = new Leyka_Settings_Step('prepare_documents',  $section->id, __('Preparing the documents', 'leyka'));
+        $step = new Leyka_Settings_Step('prepare_documents', $section->id, __('Preparing the documents', 'leyka'));
         $step->add_block(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => __('CloudPayments setup starts with documents preparation.<br>Download and fill the needed documents.', 'leyka'),
@@ -67,7 +65,12 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
             'template' => 'cp_prepare_documents',
         )))->add_to($section);
 
-        $step = new Leyka_Settings_Step('send_documents',  $section->id, __('Sending the documents', 'leyka'), array('next_label' => __('Send the email', 'leyka'), 'form_enctype' => 'multipart/form-data'));
+        $step = new Leyka_Settings_Step(
+            'send_documents',
+            $section->id,
+            __('Sending the documents', 'leyka'),
+            array('next_label' => __('Send the email', 'leyka'), 'form_enctype' => 'multipart/form-data')
+        );
         $step->add_block(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => __('<p>When the documents are prepared, they have to be sent to CloudPayments. The form below allows you to send the documents right from the website.</p>
@@ -129,7 +132,12 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
             'template' => 'cp_account_setup_instructions',
         )))->add_to($section);
 
-        $step = new Leyka_Settings_Step('copy_key',  $section->id, __('Set up your Public ID and API password', 'leyka'), array('next_label' => __('Save & continue', 'leyka')));
+        $step = new Leyka_Settings_Step(
+            'copy_key',
+            $section->id,
+            __('Set up your Public ID and API password', 'leyka'),
+            array('next_label' => __('Save & continue', 'leyka'))
+        );
         $step->add_block(new Leyka_Text_Block(array(
             'id' => 'cp-settings-copy-text',
             'text' => __('Copy the public ID and the API password from your CloudPayments account, as in the screenshot below.', 'leyka'),
@@ -169,7 +177,11 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
             'template' => 'cp_check_payment_request',
         )))->add_to($section);
 
-        $step = new Leyka_Settings_Step('accepted_payment_notification',  $section->id, __('Add a request to complete donations', 'leyka'));
+        $step = new Leyka_Settings_Step(
+            'accepted_payment_notification',
+            $section->id,
+            __('Add a request to complete donations', 'leyka')
+        );
         $step->add_block(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => __('Copy the address:', 'leyka'),
@@ -178,7 +190,11 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
             'template' => 'cp_accepted_payment_notification',
         )))->add_to($section);
 
-        $step = new Leyka_Settings_Step('rejected_payment_notification',  $section->id, __('Add a request to reject donations', 'leyka'));
+        $step = new Leyka_Settings_Step(
+            'rejected_payment_notification',
+            $section->id,
+            __('Add a request to reject donations', 'leyka')
+        );
         $step->add_block(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => __('Copy the address:', 'leyka'),
@@ -187,7 +203,11 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
             'template' => 'cp_rejected_payment_notification',
         )))->add_to($section);
 
-        $step = new Leyka_Settings_Step('notification_email',  $section->id, __('E-mail for successful donations notifications', 'leyka'));
+        $step = new Leyka_Settings_Step(
+            'notification_email',
+            $section->id,
+            __('E-mail for successful donations notifications', 'leyka')
+        );
         $step->add_block(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => __('Copy the email:', 'leyka'),
@@ -209,7 +229,12 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
             'data' => array('required' => __('You must make all of the test donations to proceed', 'leyka')),
         )))->add_to($section);
 
-        $step = new Leyka_Settings_Step('cp_going_live',  $section->id, __('Going live', 'leyka'), array('next_label' => __('Send & continue', 'leyka')));
+        $step = new Leyka_Settings_Step(
+            'cp_going_live',
+            $section->id,
+            __('Going live', 'leyka'),
+            array('next_label' => __('Send & continue', 'leyka'))
+        );
         $step->add_block(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => __('You made test donations successfully. To switch your payments to the "live" mode, you must send an email to CloudPayments support. The answer usually comes in during the following day.', 'leyka'),
@@ -270,7 +295,12 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
         // Final Section:
         $section = new Leyka_Settings_Section('final', __('Finish', 'leyka'));
 
-        $step = new Leyka_Settings_Step('cp_final', $section->id, __('Congratulations!', 'leyka'), array('header_classes' => 'greater',));
+        $step = new Leyka_Settings_Step(
+            'cp_final',
+            $section->id,
+            __('Congratulations!', 'leyka'),
+            array('header_classes' => 'greater',)
+        );
         $step->add_block(new Leyka_Text_Block(array(
             'id' => 'step-intro-text',
             'text' => __('You have completed CloudPayments setup. Donations via Visa, MasterCard and MIR bank cards are available now.', 'leyka'),
