@@ -120,7 +120,7 @@ if( !function_exists('leyka_get_admin_footer') ) {
 }
 
 if( !function_exists('leyka_show_admin_footer') ) {
-    function leyka_show_admin_footer($old_footer_html='') {
+    function leyka_show_admin_footer($old_footer_html = '') {
         $footer_class = '';
         if(!empty($_GET['screen']) && strpos($_GET['screen'], 'wizard-') === 0) {
             $footer_class .= 'leyka-wizard-footer';
