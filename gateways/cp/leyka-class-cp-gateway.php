@@ -198,7 +198,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                     die(json_encode(array(
                         'code' => '11',
                         'reason' => sprintf(
-                            'Amount or Currency in POST are empty. Amount: %s, Currency: %s',
+                            __('Amount or Currency in POST are empty. Amount: %s, Currency: %s', 'leyka'),
                             $_POST['Amount'], $_POST['Currency']
                         )
                     )));
@@ -206,11 +206,12 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                 if(empty($_POST['InvoiceId'])) { // Non-init recurring donation
 
-                    if( !$this->get_init_recurrent_donation($_POST['SubscriptionId']) ) {
+                    $init_recurring_donation = $this->get_init_recurrent_donation($_POST['SubscriptionId']);
+                    if( !$init_recurring_donation || !$init_recurring_donation->id || is_wp_error($init_recurring_donation) ) {
                         die(json_encode(array(
                             'code' => '11',
                             'reason' => sprintf(
-                                'Init recurring payment is not found. POST SubscriptionId: %s',
+                                __('Init recurring payment is not found. POST SubscriptionId: %s', 'leyka'),
                                 $_POST['SubscriptionId']
                             )
                         )));
@@ -232,7 +233,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                         die(json_encode(array(
                             'code' => '11',
                             'reason' => sprintf(
-                                'Amount of original data and POST are mismatching. Original: %.2f %s, POST: %.2f %s',
+                                __('Amount of original data and POST are mismatching. Orig.: %.2f %s, POST: %.2f %s', 'leyka'),
                                 $donation->sum, $donation->currency, $_POST['Amount'], $_POST['Currency']
                             )
                         )));
@@ -253,16 +254,22 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                     $donation = $this->get_donation_by_transaction_id($_POST['TransactionId']);
 
-                    if( !$donation || is_wp_error($donation) ) {
+                    if( !$donation || !$donation->id || is_wp_error($donation) ) {
                         /** @todo Send some email to the admin */
-                        die(json_encode(array('code' => '13')));
+                        die(json_encode(array('code' => '0')));
                     }
 
                     $init_recurring_donation = $this->get_init_recurrent_donation($_POST['SubscriptionId']);
 
-                    if( !$init_recurring_donation || is_wp_error($init_recurring_donation) ) {
+                    if( !$init_recurring_donation || !$init_recurring_donation->id || is_wp_error($init_recurring_donation) ) {
+
                         /** @todo Send some email to the admin */
-                        die(json_encode(array('code' => '13')));
+                        $donation->payment_type = 'rebill';
+                        $donation->status = 'failed';
+                        $donation->add_gateway_response($_POST);
+
+                        die(json_encode(array('code' => '0')));
+
                     }
 
                     $donation->init_recurring_donation_id = $init_recurring_donation->id;
@@ -424,7 +431,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
         if(is_a($recurring, 'Leyka_Donation')) {
             $recurring = $recurring->recurring_id;
-        } elseif(empty($recurring)) {
+        } else if(empty($recurring)) {
             return false;
         }
 
@@ -448,7 +455,8 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             ),
         ));
 
-        return count($init_donation_post) ? new Leyka_Donation($init_donation_post[0]->ID) : false;
+        return count($init_donation_post) && is_a($init_donation_post[0], 'WP_Post') ?
+            new Leyka_Donation($init_donation_post[0]->ID) : false;
 
     }
 

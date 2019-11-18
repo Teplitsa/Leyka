@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Leyka - Development (trunk) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2019-11-15 13:39:06+0000\n"
+"PO-Revision-Date: 2019-11-18 17:52:03+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -57,7 +57,7 @@ msgstr "Ошибка при работе Фабрики настроек: не �
 
 #: inc/settings/controllers/leyka-class-cp-settings-controller.php:342
 msgid "Copy and save the connection settings"
-msgstr "Скопировать и сохранить настройки подключения"
+msgstr "Сохранить настройки подключения"
 
 #: inc/settings/controllers/leyka-class-cp-settings-controller.php:160
 msgid "Paste the copied API password to the field below"
