@@ -281,10 +281,20 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
     /**
      * Delete a donor record.
      *
-     * @param int $donor_id Donor ID
+     * @param int $donor_user_id Donor ID
      */
-    public static function delete_donor($donor_id) {
-        wp_delete_user(absint($donor_id));
+    public static function delete_donor($donor_user_id) {
+
+        if(leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, true, $donor_user_id)) {
+            wp_delete_user(absint($donor_user_id));
+        } else {
+
+            $donor = get_user_by('id', $donor_user_id);
+            $donor->remove_role(Leyka_Donor::DONOR_USER_ROLE);
+            $donor->remove_cap(Leyka_Donor::DONOR_ACCOUNT_ACCESS_CAP);
+
+        }
+
     }
 
     /**
