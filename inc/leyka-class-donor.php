@@ -92,7 +92,7 @@ class Leyka_Donor {
 
         $donation = leyka_get_validated_donation($donation);
 
-        if( !$donation || !leyka()->opt('donor_management_available') ) {
+        if( !$donation || !leyka_options()->opt('donor_management_available') ) {
             $donor_user_id = new WP_Error(
                 'donor_account_not_created',
                 __("Can't create donor user from donation", 'leyka'),
@@ -118,11 +118,15 @@ class Leyka_Donor {
 
             $donation->donor_account = $donor_user_id; // Donor ID or WP_Error
 
+            do_action(
+                is_wp_error($donor_user_id) ? 'leyka_donor_account_not_created' : 'leyka_donor_account_created',
+                $donor_user_id,
+                $donation
+            );
+
         } else if(is_int($donor_user_id)) { // Add/remove Donor's account access capability, if needed
             Leyka_Donor::update_account_access($donor_user_id, $donor_has_account);
         }
-
-        do_action('leyka_donor_account'.(is_wp_error($donor_user_id) ? '_not_' : '_').'created', $donor_user_id, $donation);
 
         return $donor_user_id;
 

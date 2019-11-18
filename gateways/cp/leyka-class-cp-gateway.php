@@ -279,6 +279,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                     $donation->gateway_id = $init_recurring_donation->gateway_id;
                     $donation->donor_name = $init_recurring_donation->donor_name;
                     $donation->donor_email = $init_recurring_donation->donor_email;
+                    $donation->donor_user_id = $init_recurring_donation->donor_user_id;
                     $donation->amount = $init_recurring_donation->amount;
                     $donation->currency = $init_recurring_donation->currency;
 

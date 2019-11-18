@@ -1851,7 +1851,7 @@ class Leyka extends Leyka_Singleton {
             $email_placeholder_values,
             apply_filters(
                 'leyka_email_non_init_recurring_donor_registration_text',
-                leyka()->opt('non_init_recurring_donor_registration_emails_text'),
+                leyka_options()->opt('non_init_recurring_donor_registration_emails_text'),
                 $donation,
                 $campaign
             )
@@ -1863,12 +1863,14 @@ class Leyka extends Leyka_Singleton {
             $email_to,
             $title,
             $text,
-            array('From: '.apply_filters(
+            array('From: '
+                .apply_filters(
                     'leyka_email_from_name',
                     leyka_options()->opt_safe('email_from_name'),
                     $donation,
                     $campaign
-                ).' <'.leyka_options()->opt_safe('email_from').'>',)
+                ).' <'.leyka_options()->opt_safe('email_from').'>',
+            )
         );
 
         remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
