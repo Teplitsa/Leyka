@@ -95,6 +95,7 @@ PHP version required: 5.6+
 * New: Donors management & Donors' accounts fields logical link added.
 * New: API password setting field added to the CP Wizard.
 * New: new fields added to the settings.
+* Fix: now Donor deletion won't remove a user account if it has more than "Donor" role.
 * Fix: Donors logging in & account activation fixes.
 * Fix: CP Wizard - small wording & CSS fixes.
 * Fix: now Donors are auto-redirected to the respective Account pages on WP login.
