@@ -28,6 +28,8 @@ if($procedure_options['pre_clear_sep_storage']) {
     $wpdb->query("TRUNCATE TABLE {$wpdb->prefix}leyka_donations");
     $wpdb->query('SET FOREIGN_KEY_CHECKS=1;');
 
+    update_option('leyka_donations_storage_last_post2sep_id', 0);
+
 }
 
 $query = $wpdb->prepare(
