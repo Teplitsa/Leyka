@@ -162,18 +162,14 @@ function leyka_get_gateway_icons_list($gateway) {
  * @param Leyka_Gateway $gateway
  * @return string
  */
-function leyka_get_gateway_settings_url($gateway) {
-    
+function leyka_get_gateway_settings_url($gateway, $type = 'adaptive') {
+
     $gateway_activation_status = $gateway ? $gateway->get_activation_status() : null;
     $wizard_id = leyka_gateway_setup_wizard($gateway);
 
-    if($gateway_activation_status !== 'active' && $wizard_id) {
-        $url = admin_url('/admin.php?page=leyka_settings_new&screen=wizard-' . $wizard_id);
-    } else {
-        $url = admin_url('/admin.php?page=leyka_settings&stage=payment&gateway=' . $gateway->id);
-    }
-
-    return $url;
+    return $type === 'wizard' || ($gateway_activation_status !== 'active' && $wizard_id && $type === 'adaptive') ?
+        admin_url('/admin.php?page=leyka_settings_new&screen=wizard-'.$wizard_id) :
+        admin_url('/admin.php?page=leyka_settings&stage=payment&gateway='.$gateway->id);
 
 }
 
