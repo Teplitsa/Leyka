@@ -111,20 +111,56 @@ function leyka_render_file_field($option_id, $data){
     $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
     $data['value'] = isset($data['value']) ? $data['value'] : '';?>
 
+<!--    <div id="--><?php //echo $option_id.'-wrapper';?><!--" class="leyka-file-field-wrapper --><?php //echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?><!--">-->
+<!--        <label for="--><?php //echo $option_id.'-field';?><!--">-->
+<!--            <span class="field-component field">-->
+<!--                <input type="file" id="--><?php //echo $option_id.'-field';?><!--" name="--><?php //echo $option_id;?><!--" value="">-->
+<!--                <span class="chosen-file"> </span>-->
+<!--                <input type="button" href="#" class="button" value="--><?php //echo $data['title'];?><!--">-->
+<!--            </span>-->
+<!--            --><?php //if( !empty($data['description']) ) {?>
+<!--            <span class="field-component help">--><?php //echo $data['description'];?><!--</span>-->
+<!--            --><?php //}?>
+<!--        </label>-->
+<!--    </div>-->
+
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-file-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">
+
         <label for="<?php echo $option_id.'-field';?>">
-            <span class="field-component field">
-                <input type="file" id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="">
-                <span class="chosen-file"> </span>
-                <input type="button" href="#" class="button" value="<?php echo $data['title'];?>">
-            </span>
-            <?php if( !empty($data['description']) ) {?>
-            <span class="field-component help"><?php echo $data['description'];?></span>
+
+        <?php if( !empty($data['title']) ) {?>
+            <span class="field-component title">
+
+            <?php echo $data['title'];
+
+            if( !empty($data['comment']) ) {?>
+                <span class="field-q">
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
+                    <span class="field-q-tooltip">
+                        <?php echo $data['comment'];?>
+                    </span>
+                </span>
             <?php }?>
+
+            </span>
+        <?php }?>
+
+            <span class="field-component field">
+                <input type="file" value="">
+                <input type="button" class="button upload-photo" id="campaign_photo-upload-button" value="<?php _e('Select a picture', 'leyka');?>">
+            </span>
+
+        <?php if( !empty($data['description']) ) {?>
+            <span class="field-component help"><?php echo $data['description'];?></span>
+        <?php }?>
+
         </label>
+
+        <?php wp_nonce_field('set-campaign-photo', 'set-campaign-photo-nonce');?>
+        <input type="hidden" id="leyka-campaign_thumbnail" name="campaign_thumbnail" value="<?php echo 0; //get_post_thumbnail_id($campaign_id);?>">
+
     </div>
-
-
+    <div class="field-errors"></div>
 
 <?php }
 

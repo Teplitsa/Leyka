@@ -18,21 +18,21 @@ wp_enqueue_media();?>
 <input type="hidden" value="<?php echo $campaign_id;?>" id="leyka-decor-campaign-id">
 
 <div id="<?php echo $this->id;?>" class="settings-block custom-block <?php echo $this->field_type;?>">
-    
+
     <div class="campaign-decor-wrap">
-        
+
         <div class="decor-form">
-            
+
             <div id="campaign_photo" class="settings-block option-block upload-photo-field">
-                
+
                 <div id="leyka_campaign_photo-wrapper">
                     <label for="leyka_campaign_photo-field">
                         <span class="field-component title">
-                            <?php esc_html_e('The campaign thumbnail picture', 'leyka');?>
+                            <?php _e('The campaign thumbnail picture', 'leyka');?>
                             <span class="field-q">
                                 <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
                                 <span class="field-q-tooltip">
-                                    <?php esc_html_e('Set the main picture for your campaign', 'leyka');?>
+                                    <?php _e('Set the main picture for your campaign', 'leyka');?>
                                 </span>
                             </span>
                         </span>
