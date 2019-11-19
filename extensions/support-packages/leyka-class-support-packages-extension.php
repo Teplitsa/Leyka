@@ -118,11 +118,16 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
                     ),
                     $this->_id.'_closed_content_icon' => array(
                         'type' => 'file',
+                        'upload_format' => 'pics',
+                        'show_preview' => false,
                         'title' => '',
+//                        'upload_title' => 'Выберите картинку',
                         'upload_label' => 'Загрузить иконку закрытого материала', // __('', 'leyka')
-                        'description' => 'Файл в формате .png или .svg. Объём файла не больше 2 МБ', // __('', 'leyka'),
+                        'description' => __('Файл в формате .png или .svg. Объём файла не больше 2 Мб', 'leyka'),
+//                        'comment' => 'Тестовый коммент к полю загрузки картинки.',
 //                        'required' => false,
                         'default' => '', /** @todo Add the default icon URL */
+//                        'field_classes' => '', /** @todo Add the default icon URL */
                     ),
                 )
             )),

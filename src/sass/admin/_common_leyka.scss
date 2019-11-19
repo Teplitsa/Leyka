@@ -98,7 +98,59 @@
             }
 
             &.type-file {
-                /** @todo Implement it. Take the markup & styles from .upload-photo-field & fix them for any file upload */
+
+                .upload-field {
+
+                    display: flex;
+
+                    .field {
+
+                        display: block;
+                        position: relative;
+
+                        input[type="file"] {
+                            display: block;
+                            height: 40px;
+                            width: 1px;
+                            outline: none;
+                        }
+
+                        .upload-picture {
+
+                            @include wizard-button-caption();
+
+                            height: 40px;
+                            width: auto;
+                            padding: 0 24px;
+
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            outline: none;
+
+                            border: 1px dashed $color-wizard-link-sec;
+                            background-color: $color-border-light-001;
+
+                            color: $color-wizard-text;
+                            font-size: 13px;
+                            font-weight: normal;
+
+                        }
+
+                    }
+
+                    .upload-field-description {
+
+                        margin-left: 22px;
+
+                        color: $color-wizard-link-sec;
+                        font-size: 10px;
+                        font-weight: 500;
+
+                    }
+
+                }
+
             }
 
         }

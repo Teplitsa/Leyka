@@ -109,7 +109,8 @@ add_action('leyka_render_file', 'leyka_render_file_field', 10, 2);
 function leyka_render_file_field($option_id, $data){
 
     $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
-    $data['value'] = isset($data['value']) ? $data['value'] : '';?>
+    $data['value'] = isset($data['value']) ? $data['value'] : '';
+    $data['upload_format'] = empty($data['upload_format']) ? 'file' : 'pic';?>
 
 <!--    <div id="--><?php //echo $option_id.'-wrapper';?><!--" class="leyka-file-field-wrapper --><?php //echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?><!--">-->
 <!--        <label for="--><?php //echo $option_id.'-field';?><!--">-->
@@ -124,43 +125,64 @@ function leyka_render_file_field($option_id, $data){
 <!--        </label>-->
 <!--    </div>-->
 
-    <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-file-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">
+    <div class="leyka-file-field-wrapper <?php echo $option_id;?>-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>" id="<?php echo $option_id;?>-upload">
 
-        <label for="<?php echo $option_id.'-field';?>">
-
-        <?php if( !empty($data['title']) ) {?>
-            <span class="field-component title">
+    <?php if( !empty($data['title']) ) {?>
+        <span class="field-component title">
 
             <?php echo $data['title'];
 
             if( !empty($data['comment']) ) {?>
                 <span class="field-q">
                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
-                    <span class="field-q-tooltip">
-                        <?php echo $data['comment'];?>
-                    </span>
+                    <span class="field-q-tooltip"><?php echo $data['comment'];?></span>
                 </span>
             <?php }?>
 
-            </span>
-        <?php }?>
+        </span>
+    <?php }
+
+    if($data['upload_format'] === 'pic' && !empty($data['show_preview'])) {?>
+        <div class="uploaded-file-preview">
+
+            <?php $img_url = $data['value'] ? wp_get_attachment_image_url($data['value'], 'thumbnail') : null;
+            _e('Uploaded file:', 'leyka');?>
+
+            <span class="img-value"><?php echo $img_url ? '<img src="'.$img_url.'" alt="">' : __('Default', 'leyka');?></span>
+
+            <a href="#" class="reset-to-default" <?php echo $img_url ? '' : 'style="display: none;"';?> title="<?php _e('Reset to default');?>"></a>
+
+            <?php wp_nonce_field('reset-upload', 'reset-upload-nonce');?>
+            <div class="loading-indicator-wrap" style="display: none;">
+                <div class="loader-wrap"><span class="leyka-loader xs"></span></div>
+            </div>
+
+        </div>
+    <?php }?>
+
+        <div class="upload-field <?php echo $data['upload_format'] === 'pic' ? 'upload-attachment-field' : '';?> field-wrapper flex" data-upload-title="<?php echo empty($data['upload_title']) ? __('Select a file', 'leyka') : $data['upload_title'];?>" data-field-name="<?php echo $option_id;?>" data-ajax-action="leyka_handle_upload_file">
 
             <span class="field-component field">
                 <input type="file" value="">
-                <input type="button" class="button upload-photo" id="campaign_photo-upload-button" value="<?php _e('Select a picture', 'leyka');?>">
+                <input type="button" class="button <?php echo $data['upload_format'] === 'pic' ? 'upload-picture' : '';?>" id="<?php echo $option_id;?>-upload-button" value="<?php echo empty($data['upload_label']) ? __('Upload', 'leyka') : $data['upload_label'];?>">
             </span>
 
         <?php if( !empty($data['description']) ) {?>
             <span class="field-component help"><?php echo $data['description'];?></span>
         <?php }?>
 
-        </label>
+            <?php wp_nonce_field('upload-'.$option_id, 'upload-nonce');?>
+            <input type="hidden" id="leyka-upload-<?php echo $option_id;?>" name="upload-<?php echo $option_id;?>-field" value="<?php echo $data['value'];?>">
 
-        <?php wp_nonce_field('set-campaign-photo', 'set-campaign-photo-nonce');?>
-        <input type="hidden" id="leyka-campaign_thumbnail" name="campaign_thumbnail" value="<?php echo 0; //get_post_thumbnail_id($campaign_id);?>">
+            <div class="loading-indicator-wrap" style="display: none;">
+                <div class="loader-wrap"><span class="leyka-loader xs"></span></div>
+            </div>
+
+        </div>
+
+        <div class="field-errors"></div>
 
     </div>
-    <div class="field-errors"></div>
 
 <?php }
 
