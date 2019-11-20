@@ -262,6 +262,10 @@
     
     // payment methods
     &.payments-grid {
+        display: block;
+        width: 100%;
+        overflow-y: unset;
+
         .star-swiper {
             .swiper-item {
 
@@ -332,7 +336,7 @@
                     // color: $leyka-star-color-gray;
                     color: $leyka-start-color-gray-notsolight;
                     display: block;
-                    margin-top: 5px;
+                    margin-top: 4px;
                     z-index: 20;
                 }
                 
@@ -364,6 +368,7 @@
                         margin-bottom: $leyka-star-base;
                         margin-right: 0px;
                         margin-left: $leyka-star-base;
+                        width: 100%;
 
                         &:not(.disabled):last-of-type {
                             .swiper-item-inner {
