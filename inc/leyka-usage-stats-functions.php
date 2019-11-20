@@ -62,7 +62,10 @@ function leyka_sync_plugin_stats_option() {
         'httpversion' => '1.1',
         'blocking' => true, // True for sync request, false otherwise
         'body' => $params,
-        'headers' => array('Authorization' => 'Basic '.base64_encode('leyka:kopeyka'), 'Expect' => '',),
+        'headers' => array(
+            'Authorization' => 'Basic '.base64_encode(LEYKA_DEBUG ? 'test:testhouse' : 'leyka:kopeyka'),
+            'Expect' => '',
+        ),
     ));
 
     if(is_wp_error($response)) {
