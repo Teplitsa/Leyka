@@ -5,7 +5,87 @@ jQuery(document).ready(function($){
     $('.leyka-setting-field.colorpicker').wpColorPicker(); // Colorpicker fields
     leyka_support_metaboxes('options-options_main_area'); // Support metaboxes
 
-    // Expandable options sections:
+    // Ajax file upload fields support:
+    $('.upload-field input[type="file"]')
+        .on('click.leyka', function(e){ // Just to be sure that the input will be called
+            e.stopPropagation();
+        }).on('change.leyka', function(e){
+
+            // console.log('Here:', e.target.files);
+            if( !e.target.files ) {
+                return;
+            }
+
+            // var parent = $("#" + e.target.id).parent();
+            let $file_input = $(this),
+                $field_wrapper = $file_input.parents('.leyka-file-field-wrapper'),
+                option_id = $field_wrapper.find('.upload-field').data('option-id'),
+                // $upload_button = $field_wrapper.find('.upload-picture'),
+                $file_preview = $field_wrapper.find('.uploaded-file-preview'),
+                $ajax_loading = $field_wrapper.find('.loading-indicator-wrap'),
+                data = new FormData();
+
+            data.append('action', 'leyka_files_upload');
+            data.append('option_id', option_id);
+            data.append('nonce', $file_input.data('nonce'));
+            data.append('files', []);
+
+            $.each(e.target.files, function(key, value){
+                data.append('files', value);
+            });
+
+            // console.log(data)
+
+            // $upload_button.find('.upload-button-text').hide();
+            $ajax_loading.show();
+
+            $.ajax({
+                url: leyka.ajaxurl,
+                type: 'POST',
+                data: data,
+                cache: false,
+                dataType: 'json',
+                processData: false, // Don't process the files
+                contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+                success: function(response /*, textStatus, jqXHR*/) {
+
+                    // $upload_button.find('.upload-button-text').show();
+                    $ajax_loading.hide();
+
+                    if(typeof response === 'undefined' || typeof response.status === 'undefined' || response.status !== 0) {
+                        return; /** @todo Show some error msg */
+                    }
+
+                    let preview_html = response.type.includes('image/') ?
+                        '<img class="leyka-upload-image-preview" src="'+response.url+'" alt="">' : response.filename;
+
+                    console.log(response);
+                    console.log(preview_html);
+
+                    $file_preview.show().find('.file-preview').html(preview_html);
+
+                    // PASS THE NEW ATTACHMENT ID to the hidden upload-{$option_id}-field
+                }
+            });
+
+            // $.post(leyka.ajaxurl, data, null, 'json').done(function(response){ /** @todo Try to use $.post() instead of $.ajax */
+            //
+            //     $ajax_loading.hide();
+            //
+            //     if(typeof response === 'undefined' || typeof response.status === 'undefined' || response.status !== 0) {
+            //         return; /** @todo Show some error msg */
+            //     }
+            //
+            //     let preview_html = response.type.includes('image/') ?
+            //         '<img class="leyka-upload-image-preview" src="'+response.url+'" alt="">' : response.filename;
+            //
+            //     $file_preview.find('.preview').html(preview_html).show();
+            //
+            // });
+
+        });
+
+    // Expandable options sections (portlets only):
     $('.leyka-options-section .header h3').click(function(e){
         e.preventDefault();
         var $section = $(this).closest('.leyka-options-section');

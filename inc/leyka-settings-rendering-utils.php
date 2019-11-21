@@ -110,20 +110,7 @@ function leyka_render_file_field($option_id, $data){
 
     $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
     $data['value'] = isset($data['value']) ? $data['value'] : '';
-    $data['upload_format'] = empty($data['upload_format']) ? 'file' : 'pic';?>
-
-<!--    <div id="--><?php //echo $option_id.'-wrapper';?><!--" class="leyka-file-field-wrapper --><?php //echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?><!--">-->
-<!--        <label for="--><?php //echo $option_id.'-field';?><!--">-->
-<!--            <span class="field-component field">-->
-<!--                <input type="file" id="--><?php //echo $option_id.'-field';?><!--" name="--><?php //echo $option_id;?><!--" value="">-->
-<!--                <span class="chosen-file"> </span>-->
-<!--                <input type="button" href="#" class="button" value="--><?php //echo $data['title'];?><!--">-->
-<!--            </span>-->
-<!--            --><?php //if( !empty($data['description']) ) {?>
-<!--            <span class="field-component help">--><?php //echo $data['description'];?><!--</span>-->
-<!--            --><?php //}?>
-<!--        </label>-->
-<!--    </div>-->
+    $file_data = $data['value'] ? wp_get_attachment_metadata($data['value']) : array();?>
 
     <div class="leyka-file-field-wrapper <?php echo $option_id;?>-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>" id="<?php echo $option_id;?>-upload">
 
@@ -140,47 +127,54 @@ function leyka_render_file_field($option_id, $data){
             <?php }?>
 
         </span>
-    <?php }
-
-    if($data['upload_format'] === 'pic' && !empty($data['show_preview'])) {?>
-        <div class="uploaded-file-preview">
-
-            <?php $img_url = $data['value'] ? wp_get_attachment_image_url($data['value'], 'thumbnail') : null;
-            _e('Uploaded file:', 'leyka');?>
-
-            <span class="img-value"><?php echo $img_url ? '<img src="'.$img_url.'" alt="">' : __('Default', 'leyka');?></span>
-
-            <a href="#" class="reset-to-default" <?php echo $img_url ? '' : 'style="display: none;"';?> title="<?php _e('Reset to default');?>"></a>
-
-            <?php wp_nonce_field('reset-upload', 'reset-upload-nonce');?>
-            <div class="loading-indicator-wrap" style="display: none;">
-                <div class="loader-wrap"><span class="leyka-loader xs"></span></div>
-            </div>
-
-        </div>
     <?php }?>
 
-        <div class="upload-field <?php echo $data['upload_format'] === 'pic' ? 'upload-attachment-field' : '';?> field-wrapper flex" data-upload-title="<?php echo empty($data['upload_title']) ? __('Select a file', 'leyka') : $data['upload_title'];?>" data-field-name="<?php echo $option_id;?>" data-ajax-action="leyka_handle_upload_file">
+        <div class="preview-wrapper">
 
-            <span class="field-component field">
-                <input type="file" value="">
-                <input type="button" class="button <?php echo $data['upload_format'] === 'pic' ? 'upload-picture' : '';?>" id="<?php echo $option_id;?>-upload-button" value="<?php echo empty($data['upload_label']) ? __('Upload', 'leyka') : $data['upload_label'];?>">
+            <div class="uploaded-file-preview" <?php echo $data['value'] ? '' : 'style="display: none;"';?>>
+
+                <?php _e('Uploaded:', 'leyka');?>
+
+                <span class="file-preview">
+            <?php if($data['value'] && leyka_attachment_is('image', $data['value'])) {
+
+                $img_url = $data['value'] ? wp_get_attachment_image_url($data['value'], 'thumbnail') : null;?>
+                <?php echo $img_url ? '<img src="'.$img_url.'" class="leyka-upload-image-preview" alt="">' : '';
+
+            } else if($file_data && !empty($file_data['file'])) {
+                echo wp_basename($file_data['file']);
+            }?>
             </span>
 
-        <?php if( !empty($data['description']) ) {?>
-            <span class="field-component help"><?php echo $data['description'];?></span>
-        <?php }?>
+                <a href="#" class="reset-to-default" title="<?php _e('Reset to default');?>" data-attachment-id="<?php echo $data['value'];?>" data-nonce="<?php echo wp_create_nonce('reset-upload');?>"></a>
 
-            <?php wp_nonce_field('upload-'.$option_id, 'upload-nonce');?>
-            <input type="hidden" id="leyka-upload-<?php echo $option_id;?>" name="upload-<?php echo $option_id;?>-field" value="<?php echo $data['value'];?>">
-
+            </div>
             <div class="loading-indicator-wrap" style="display: none;">
                 <div class="loader-wrap"><span class="leyka-loader xs"></span></div>
             </div>
 
         </div>
 
-        <div class="field-errors"></div>
+        <div class="upload-field field-wrapper flex" data-upload-title="<?php echo empty($data['upload_title']) ? __('Select a file', 'leyka') : $data['upload_title'];?>" data-option-id="<?php echo $option_id;?>">
+
+            <span class="field-component field">
+                <?php $field_id = $option_id.'-upload-button-'.wp_rand();?>
+                <input type="file" value="" id="<?php echo $field_id;?>" <?php // echo empty($data['is_multiple']) ? '' : 'multiple';?> data-nonce="<?php echo wp_create_nonce('leyka-upload-'.$option_id);?>">
+            </span>
+
+            <label for="<?php echo $field_id;?>" class="field-component label upload-picture" id="<?php echo $option_id;?>-upload-button">
+                <?php echo empty($data['upload_label']) ? __('Upload', 'leyka') : $data['upload_label'];?>
+            </label>
+
+        <?php if( !empty($data['description']) ) {?>
+            <span class="field-component help">
+                <label for="<?php echo $field_id;?>"><?php echo $data['description'];?></label>
+            </span>
+        <?php }?>
+
+            <input type="hidden" id="leyka-upload-<?php echo $option_id;?>" name="upload-<?php echo $option_id;?>-field" value="<?php echo $data['value'];?>">
+
+        </div>
 
     </div>
 

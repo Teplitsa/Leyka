@@ -103,52 +103,100 @@
 
                     display: flex;
 
-                    .field {
+                    .field input[type="file"] { // Hide the input
 
                         display: block;
-                        position: relative;
+                        height: 0.1px;
+                        width: 0.1px;
 
-                        input[type="file"] {
-                            display: block;
-                            height: 40px;
-                            width: 1px;
-                            outline: none;
-                        }
+                        position: absolute;
+                        opacity: 0;
+                        overflow: hidden;
+                        z-index: -1000;
 
-                        .upload-picture {
+                    }
 
-                            @include wizard-button-caption();
+                    .upload-picture { // File upload button/label
 
-                            height: 40px;
-                            width: auto;
-                            padding: 0 24px;
+                        @include wizard-button-caption();
 
-                            position: absolute;
-                            top: 0;
-                            left: 0;
-                            outline: none;
+                        display: flex;
+                        align-items: center;
 
-                            border: 1px dashed $color-wizard-link-sec;
-                            background-color: $color-border-light-001;
+                        height: 40px;
+                        width: auto;
 
-                            color: $color-wizard-text;
-                            font-size: 13px;
-                            font-weight: normal;
+                        padding: 0 24px;
+                        margin-right: 24px;
+
+                        border: 1px dashed $color-wizard-link-sec;
+                        background-color: $color-border-light-001;
+
+                        color: $color-wizard-text;
+                        font-size: 13px;
+                        font-weight: normal;
+
+                    }
+
+                    .help { // File upload description
+
+                        margin: 0;
+
+                        label {
+
+                            display: flex;
+                            align-items: center;
+                            height: 100%;
 
                         }
 
                     }
 
-                    .upload-field-description {
+                }
 
-                        margin-left: 22px;
+                .preview-wrapper {
 
-                        color: $color-wizard-link-sec;
-                        font-size: 10px;
-                        font-weight: 500;
+                    display: flex;
+
+                    .uploaded-file-preview {
+
+                        display: flex;
+                        align-items: center;
+
+                        margin-bottom: 4px;
+
+                        .file-preview {
+
+                            display: flex;
+                            margin-left: 16px;
+
+                            img {
+                                height: 100px;
+                            }
+
+                        }
+
+                        .reset-to-default {
+                            content: '';
+                            margin-left: 16px;
+                            background-image: url(../../img/icon-delete-circled.svg);
+                            background-size: cover;
+                            width: 24px;
+                            height: 24px;
+                            display: inline-block;
+                            border-bottom: 0;
+                        }
 
                     }
 
+                }
+
+                .loading-indicator-wrap {
+                    margin-left: 16px;
+
+                    .loader-wrap {
+                        padding-top: 0;
+                    }
                 }
 
             }
@@ -166,11 +214,11 @@
         margin-bottom: 16px;
     }
 
-    .field-errors span {
+    .field-errors /*span*/ {
 
         @include wizard-field-message();
 
-        margin-bottom: 0;
+        margin: 4px 0;
         color: $color-wizard-error-message;
 
     } // Settings fields - END

@@ -118,8 +118,8 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
                     ),
                     $this->_id.'_closed_content_icon' => array(
                         'type' => 'file',
-                        'upload_format' => 'pics',
-                        'show_preview' => false,
+//                        'upload_format' => 'pics',
+//                        'show_preview' => false,
                         'title' => '',
 //                        'upload_title' => 'Выберите картинку',
                         'upload_label' => 'Загрузить иконку закрытого материала', // __('', 'leyka')

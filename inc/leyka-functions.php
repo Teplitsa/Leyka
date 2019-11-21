@@ -2245,3 +2245,28 @@ function leyka_prepare_data_line_for_export(array $line_data, $object_to_export)
     return $line_data;
 
 }
+
+// By default, wp_attachment_is() doesn't treat SVGs as images. It's a f*ckin oppression, we think.
+if( !function_exists('leyka_attachment_is') ) {
+    function leyka_attachment_is($type, $attachment = null) {
+
+        if($type !== 'image') {
+            return wp_attachment_is($type, $attachment);
+        }
+
+        $attachment = get_post($attachment);
+        if( !$attachment ) {
+            return false;
+        }
+
+        $file = get_attached_file($attachment->ID);
+        if( !$file ) {
+            return false;
+        }
+
+        $check = wp_check_filetype($file);
+
+        return empty($check['ext']) ? false : in_array($check['ext'], array('jpg', 'jpeg', 'jpe', 'gif', 'png', 'svg',));
+
+    }
+}
