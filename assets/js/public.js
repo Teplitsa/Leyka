@@ -2099,12 +2099,70 @@ jQuery(document).ready(function($){
 			$(this).closest('.section__fields').find('a').removeClass('active');
 			$(this).addClass('active');
             
-            setupPeriodicity($(this).closest('form.leyka-pm-form'));
+            var $_form = $(this).closest('form.leyka-pm-form');
+            setupPeriodicity($_form);
+            setupSwiperWidth($_form);
         });
         
         $('.leyka-tpl-star-form form.leyka-pm-form').each(function(){
             setupPeriodicity($(this));
+            setupSwiperWidth($(this));
         });
+    }
+
+    function setupSwiperWidth($_form) {
+        // amount swiper setup
+        $('.amount__figure.star-swiper .swiper-list .swiper-item').last().css('margin-right', '0px');
+        
+        // pm swiper setup
+        var $swiper = $_form.find('.payments-grid .star-swiper');
+        // $list is empty in full-list width mode
+        var $list = $swiper.find('.swiper-list');
+
+        var $activeItem = $swiper.find('.swiper-item.selected:not(.disabled)').first();
+        if($activeItem.length == 0) {
+            $swiper.find('.swiper-item:not(.disabled)').first().addClass('selected');
+            $activeItem = $swiper.find('.swiper-item.selected:not(.disabled)').first();
+            $activeItem.find('input[type=radio]').prop('checked', true).change();
+        }
+
+        $list.find('.swiper-item:not(.disabled)').css('margin-right', '16px');
+        $list.find('.swiper-item:not(.disabled)').last().css('margin-right', '0px');        
+        $list.css('width', '100%');
+
+        // fix max width must work in swiper and full width mode, so use $swiper insted $list
+        var maxWidth = $swiper.closest('.leyka-payment-form').width();
+        console.log("maxWidth: " + maxWidth);
+
+        if($swiper.find('.full-list').length) {
+            maxWidth -= 60;
+            $swiper.find('.payment-opt__label').css('max-width', maxWidth);
+            $swiper.find('.payment-opt__icon').css('max-width', maxWidth);
+            //$list.find('.swiper-item').css('min-width', maxWidth);
+        }
+        else {
+            maxWidth -= 184;
+            $swiper.find('.payment-opt__label').css('max-width', maxWidth);
+            $swiper.find('.payment-opt__icon').css('max-width', maxWidth);
+
+            $swiper.find('.swiper-item').each(function(i, item){
+                var w1 = $(item).find('.payment-opt__label').width();
+                var w2 = $(item).find('.pm-icon').length * 40; // max width of pm icon
+                $(item).css('min-width', Math.min(maxWidth, Math.max(w1, w2)) + 64);
+            });
+
+            // fix for FF and Safari
+            var $activePMItem = $swiper.find('.swiper-item:not(.disabled)');
+            if($activePMItem.length <= 1) {
+                $activePMItem.css('width', '100%');
+            }
+            else {
+                $activePMItem.css('width', 'auto');
+            }
+        }
+        
+        toggleSwiperArrows($swiper);
+        swipeList($swiper, $activeItem);
     }
     
     function setupPeriodicity($_form) {
@@ -2139,39 +2197,7 @@ jQuery(document).ready(function($){
             });
         }
         
-        // amount swiper setup
-        $('.amount__figure.star-swiper .swiper-list .swiper-item').last().css('margin-right', '0px');
-        
-        // pm swiper setup
-        var $swiper = $_form.find('.payments-grid .star-swiper');
-        var $activeItem = $swiper.find('.swiper-item.selected:not(.disabled)').first();
-        if($activeItem.length == 0) {
-            $swiper.find('.swiper-item:not(.disabled)').first().addClass('selected');
-            $activeItem = $swiper.find('.swiper-item.selected:not(.disabled)').first();
-            $activeItem.find('input[type=radio]').prop('checked', true).change();
-        }
-        $swiper.find('.swiper-list .swiper-item:not(.disabled)').css('margin-right', '16px');
-        $swiper.find('.swiper-list .swiper-item:not(.disabled)').last().css('margin-right', '0px');
-        
-        var $list = $swiper.find('.swiper-list');
-        $list.css('width', '100%');
-
-        // fix max width
-        var maxWidth = $swiper.closest('.leyka-payment-form').width();
-        if($swiper.find('.full-list').length) {
-            maxWidth -= 60;
-            $swiper.find('.payment-opt__label').css('max-width', maxWidth);
-            $swiper.find('.payment-opt__icon').css('max-width', maxWidth);
-        }
-        else {
-            maxWidth -= 100;
-            $swiper.find('.payment-opt__label').css('max-width', maxWidth);
-            $swiper.find('.payment-opt__icon').css('max-width', maxWidth);
-        }
-        
-        toggleSwiperArrows($swiper);
-        swipeList($swiper, $activeItem);
-        checkFormFillCompletion($swiper.closest('form.leyka-pm-form'));
+        checkFormFillCompletion($_form);
     }
 
     function bindSwiperEvents() {
@@ -2284,6 +2310,7 @@ jQuery(document).ready(function($){
         }
         else {
             left = $swiper.width() / 2 - ($activeItem.offset().left - $list.offset().left) - $activeItem.width() / 2;
+            left -= 24; // minus margin * 1.5
         }
         
         $list.animate({
