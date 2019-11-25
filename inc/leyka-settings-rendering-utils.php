@@ -136,17 +136,16 @@ function leyka_render_file_field($option_id, $data){
                 <?php _e('Uploaded:', 'leyka');?>
 
                 <span class="file-preview">
-            <?php if($data['value'] && leyka_attachment_is('image', $data['value'])) {
+                <?php $upload_dir = wp_upload_dir();
 
-                $img_url = $data['value'] ? wp_get_attachment_image_url($data['value'], 'thumbnail') : null;?>
-                <?php echo $img_url ? '<img src="'.$img_url.'" class="leyka-upload-image-preview" alt="">' : '';
+                if( $data['value'] && file_exists($upload_dir['basedir'].'/'.ltrim($data['value'], '/')) ) {?>
+                    <img src="<?php echo $upload_dir['url'].'/'.ltrim($data['value'], '/');?>" alt="" class="leyka-upload-image-preview">
+                <?php } else if($file_data && !empty($file_data['file'])) {
+                    echo wp_basename($file_data['file']);
+                }?>
+                </span>
 
-            } else if($file_data && !empty($file_data['file'])) {
-                echo wp_basename($file_data['file']);
-            }?>
-            </span>
-
-                <a href="#" class="reset-to-default" title="<?php _e('Reset to default');?>" data-attachment-id="<?php echo $data['value'];?>" data-nonce="<?php echo wp_create_nonce('reset-upload');?>"></a>
+                <a href="#" class="delete-uploaded-file" title="<?php _e('Delete the uploaded file');?>"></a>
 
             </div>
             <div class="loading-indicator-wrap" style="display: none;">

@@ -983,37 +983,30 @@ add_action('wp_ajax_leyka_close_dashboard_banner', 'leyka_close_dashboard_banner
 // Ajax files uploading handler (admin only):
 function leyka_files_upload(){
 
-    $file_errors = array(
-        0 => __('Upload succeeded', 'leyka'),
-        1 => __('The uploaded file exceeds the upload_max_files in the server settings', 'leyka'),
-        2 => __('The uploaded file exceeds the MAX_FILE_SIZE from form', 'leyka'),
-        3 => __('The uploaded file uploaded only partially', 'leyka'),
-        4 => __('No file was uploaded', 'leyka'),
-        6 => __('Missing a temporary folder', 'leyka'),
-        7 => __('Failed to write file to disk', 'leyka'),
-        8 => __('A PHP extension stopped the upload', 'leyka'),
-    );
-
-    /** @todo MAKE A CUSTOM UPLOAD instead of media. Or use a WP media upload field type (instead of file upload) */
-
     $data = array_merge(isset($_POST) ? $_POST : array(), isset($_FILES) ? $_FILES : array());
-    $attachment_id = media_handle_upload('files', 0);
 
-    if(is_wp_error($attachment_id)) {
-        $response = array('status' => -1, 'error' => $file_errors[ $data['leyka_files']['error'] ]);
-    } else {
+    if( !wp_verify_nonce($data['nonce'], 'leyka-upload-'.$data['option_id']) ) {
+        die(json_encode(array('status' => -1, 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
+    }
 
-        $fullsize_path = get_attached_file($attachment_id);
-        $file = pathinfo($fullsize_path);
+    $uploaded_file = wp_handle_upload($data['files'], array('test_form' => false,));
+
+    if($uploaded_file && !isset($uploaded_file['error'])) {
+
+        $upload_dir_base_path = wp_upload_dir();
+        $upload_dir_base_path = $upload_dir_base_path['basedir'];
+        $filename = basename($uploaded_file['url']);
 
         $response = array(
             'status' => 0,
-            'filename' => $file['filename'].'.'.$file['extension'],
-            'url' => wp_get_attachment_url($attachment_id),
-            'type' => (in_array($file['extension'], array('jpg', 'jpeg', 'jpe', 'png', 'gif', 'svg')) ? 'image/' : '')
-                .$file['extension'],
+            'filename' => $filename,
+            'url' => $uploaded_file['url'],
+            'path' => str_replace($upload_dir_base_path, '', $uploaded_file['file']),
+            'type' => $uploaded_file['type'],
         );
 
+    } else {
+        $response = array('status' => -1, 'error' => $uploaded_file['error'],);
     }
 
     die(json_encode($response));
