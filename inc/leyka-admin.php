@@ -729,6 +729,10 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             wp_enqueue_script('wp-color-picker');
             wp_enqueue_style('wp-color-picker');
 
+            if(function_exists('wp_enqueue_code_editor')) { // The function is available in WP v4.9.0+
+                wp_enqueue_code_editor(array('type' => 'text/css')); // Add the code editor lib
+            }
+
             // WP admin metaboxes support:
             $dependencies[] = 'postbox';
             $dependencies[] = 'jquery-ui-accordion';

@@ -658,7 +658,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             $section = $this->get_component_by_id($this->_get_next_section_id());
             if( !$section ) {
 
-                $this->_add_common_error(new WP_Error('next_section_not_found', __('The Wizard next step is not found', 'leyka')));
+                $this->_add_common_error(new WP_Error('no_next_section', __('The next Wizard section is not found', 'leyka')));
                 return;
 
             }

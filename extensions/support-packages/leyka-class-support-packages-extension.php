@@ -148,7 +148,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
                 'options' => array(
                     $this->_id.'_css' => array(
                         'type' => 'textarea',
-                        'is_code' => true,
+                        'is_code_editor' => 'css',
                         'title' => __('Styles settings', 'leyka'),
                         'default' => '/* .some-selector-1 { color: black; } */ '.__('/* The main font color */', 'leyka')
                             .'/* .some-selector-2 { color: orange; } */ '.__('/* The secondary font color */', 'leyka'),

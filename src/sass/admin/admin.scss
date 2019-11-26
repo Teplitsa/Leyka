@@ -1106,7 +1106,7 @@
 
         }
 
-        .single-settings-footer {
+        .options-form-submits {
 
             display: flex;
             flex-flow: row nowrap;
@@ -1115,6 +1115,7 @@
 
             border-top: 1px solid $color-section-tabs-line;
             padding-top: 32px;
+            margin-top: 33px;
 
             .delete-extension-link {
                 color: $leyka-adb-color-error;

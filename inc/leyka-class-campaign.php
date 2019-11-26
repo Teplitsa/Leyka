@@ -222,10 +222,10 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <div class="field-wrapper">
                 <label class="field-label">
-                    <input type="radio" name="donations_type_default" value="recurring" <?php echo 'recurring' == $campaign->donations_type_default ? 'checked="checked"' : '';?>><?php echo _x('Recurring', 'In single, like "recurring donation"', 'leyka');?>
+                    <input type="radio" name="donations_type_default" value="recurring" <?php echo $campaign->donations_type_default === 'recurring' ? 'checked="checked"' : '';?>><?php echo _x('Recurring', 'In single, like "recurring donation"', 'leyka');?>
                 </label>
                 <label class="field-label">
-                    <input type="radio" name="donations_type_default" value="single" <?php echo 'single' == $campaign->donations_type_default ? 'checked="checked"' : '';?>><?php echo _x('Single', 'In single, like "single donation"', 'leyka');?>
+                    <input type="radio" name="donations_type_default" value="single" <?php echo $campaign->donations_type_default === 'single' ? 'checked="checked"' : '';?>><?php echo _x('Single', 'In single, like "single donation"', 'leyka');?>
                 </label>
             </div>
 
@@ -245,7 +245,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                     $cur_template !== 'default'
                     && leyka()->template_is_deprecated($cur_template)
                     && !leyka_options()->opt('allow_deprecated_form_templates')
-                ) { // "toggles"
+                ) {
                     $templates[] = leyka()->get_template($cur_template);
                 }
 

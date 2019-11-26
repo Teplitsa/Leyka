@@ -182,29 +182,7 @@
         }
 
         .css-editor {
-
-            .cm-s-default.CodeMirror-wrap { // Code editor field
-                border: 1px solid #dddddd;
-            }
-
-            textarea {
-                width: 100%;
-                height: 200px;
-                border: 1px solid $color-border-secondary-button;
-                overflow: hidden;
-            }
-
-            .css-editor-reset-value {
-                display: inline-block;
-                cursor: pointer;
-
-                font-size: 14px;
-                //line-height: 24px;
-                color: $color-wizard-link;
-
-                border-bottom: 1px dashed $color-wizard-link;
-            }
-
+            @include leyka-code-editor();
         }
 
         .field-q {

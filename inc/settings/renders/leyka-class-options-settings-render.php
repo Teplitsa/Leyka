@@ -27,7 +27,7 @@ class Leyka_Options_Render extends Leyka_Settings_Render {
             <span><?php echo $error->get_error_message();?></span>
         <?php }
     }
-    
+
     public function render_js_data() {
 //        wp_localize_script('leyka-settings', 'metabox_areas', array())
     }
@@ -37,87 +37,47 @@ class Leyka_Options_Render extends Leyka_Settings_Render {
         $this->render_js_data();
         $this->_add_sections_metaboxes();?>
 
-<!--        <input type="hidden" class="current-wizard-title" value="--><?php //echo $this->_controller->title;?><!--">-->
-<!--        <input type="hidden" class="current-section-title" value="--><?php //echo $this->_controller->get_current_stage()->title;?><!--">-->
-<!--        <input type="hidden" class="current-step-title" value="--><?php //echo $current_section->title;?><!--">-->
-
         <div class="common-errors <?php echo $this->_controller->has_common_errors() ? 'has-errors' : '';?>">
             <?php $this->render_common_errors_area();?>
         </div>
 
-        <?php // $stage = $this->_controller->get_current_stage();
+        <form id="leyka-options-form-<?php echo $this->_controller->id;?>" class="leyka-options-form <?php echo $this->_controller->id;?>" method="post" action="">
 
-        do_meta_boxes($this->_controller->id.'-options_main_area', 'normal', null);
+            <div class="options-form-content">
+                <?php do_meta_boxes($this->_controller->id.'-options_main_area', 'normal', null);?>
+            </div>
 
-//        foreach($stage->get_sections() as $section) {
-//
-//        }?>
+            <?php echo $this->render_submit_area();?>
 
-<!--        <form id="leyka-options-form" --><?php //echo $current_section->form_enctype ? 'echtype="'.$current_section->form_enctype.'"' : '';?><!-- class="leyka-options-form" method="post" action="--><?php //echo leyka_get_current_url();?><!--">-->
-<!--            <div class="options-form-content">-->
-<!--            --><?php //foreach($current_section->get_blocks() as $block) { /** @var $block Leyka_Settings_Block */
-//
-//                if(is_a($block, 'Leyka_Container_Block')) { /** @var $block Leyka_Container_Block */
-//                    $this->render_container_block($block);
-//                } else if(is_a($block, 'Leyka_Text_Block')) { /** @var $block Leyka_Text_Block */
-//                    $this->render_text_block($block);
-//                } else if(is_a($block, 'Leyka_Subtitle_Block')) { /** @var $block Leyka_Subtitle_Block */
-//                    $this->render_subtitle_block($block);
-//                } else if(is_a($block, 'Leyka_Custom_Setting_Block')) { /** @var $block Leyka_Custom_Setting_Block */
-//                    $this->render_custom_setting_block($block);
-//                } else if(is_a($block, 'Leyka_Option_Block')) { /** @var $block Leyka_Option_Block */
-//                    $this->render_option_block($block);
-//                }
-//
-//            }?>
-<!--            </div>-->
-<!---->
-<!--            --><?php //$this->render_hidden_fields();?>
-<!---->
-<!--            <div class="options-submit">--><?php //$this->render_submit_area();?><!--</div>-->
-<!---->
-<!--        </form>-->
-        
-        <?php echo $this->render_footer();?>
+        </form>
 
-    <?php }
+        <?php //$this->render_hidden_fields();
+        $this->render_footer();
+
+    }
 
     public function render_footer() {
-//        leyka_show_admin_footer();
     }
-    
+
     public function render_hidden_fields() {
     }
 
     public function render_submit_area() {
 
-        $submits = $this->_controller->get_submit_data();?>
+        $submit_data = $this->_controller->get_submit_data();?>
 
-        <?php if($submits['next_url'] === true) {?>
+        <div class="options-form-submits">
 
-        <input type="submit" class="step-next button button-primary" name="leyka_settings_submit_<?php echo $this->_controller->id;?>" value="<?php echo esc_attr($submits['next_label']);?>">
+            <a href="#" class="delete-extension-link"><?php _e('Delete the extension', 'leyka');?></a>
 
-        <?php } else if(is_string($submits['next_url'])) {?>
+            <span class="buttons">
+                <input type="submit" class="button button-primary button-small save-settings" name="leyka_settings_submit_<?php echo $this->_controller->id;?>" value="<?php _e('Save', 'leyka');?>">
+                <a class="button <?php echo $submit_data['activation_status'] === 'active' ? 'button-secondary' : 'button-primary';?> activation-button <?php echo $submit_data['activation_status'];?>" href="#">
+                    <?php echo $submit_data['activation_button_label'];?>
+                </a>
+            </span>
 
-        <a href="<?php echo esc_url($submits['next_url']);?>" class="wizard-custom-link">
-            <?php echo esc_html($submits['next_label']);?>
-        </a>
-
-        <?php }
-
-        if( !empty($submits['additional_label']) && !empty($submits['additional_url']) ) {?>
-            <a href="<?php echo esc_url($submits['additional_url']);?>">
-                <?php echo esc_html($submits['additional_label']);?>
-            </a>
-        <?php }?>
-
-        <br>
-
-        <?php if( !empty($submits['prev']) ) {?>
-        <div class="sec-action">
-            <input type="submit" class="step-prev link-sec" name="leyka_settings_prev_<?php echo $this->_controller->id;?>" value="<?php echo esc_attr($submits['prev']);?>">
         </div>
-        <?php }?>
 
     <?php }
 
@@ -174,8 +134,6 @@ class Leyka_Options_Render extends Leyka_Settings_Render {
     <?php }
 
     public function render_option_block(Leyka_Option_Block $block) {
-
-        // leyka_support_metaboxes('dashboard_page_leyka_donor_info'); // JS
 
         $option_info = leyka_options()->get_info_of($block->get_content());?>
 

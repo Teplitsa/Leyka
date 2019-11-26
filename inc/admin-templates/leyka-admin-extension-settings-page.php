@@ -71,7 +71,9 @@ if( !$extension) {
             </div>
 
             <div class="extension-main-cta">
-                <a class="button <?php echo $extension->activation_status === 'active' ? 'button-secondary' : 'button-primary';?> activation-button <?php echo $extension->activation_status;?> <?php echo $extension->has_wizard ? 'wizard-available' : '';?>" href="#"><?php echo leyka_get_extension_activation_button_label($extension);?></a>
+                <a class="button <?php echo $extension->activation_status === 'active' ? 'button-secondary' : 'button-primary';?> activation-button <?php echo $extension->activation_status;?> <?php echo $extension->has_wizard ? 'wizard-available' : '';?>" href="#">
+                    <?php echo leyka_get_extension_activation_button_label($extension);?>
+                </a>
             </div>
 
         </div>
@@ -93,6 +95,10 @@ if( !$extension) {
                             Leyka_Settings_Factory::get_instance()
                                 ->get_controller('options')
                                 ->set_options_data($extension->get_options_data())
+                                ->set_submit_data(array(
+                                    'activation_status' => $extension->activation_status,
+                                    'activation_button_label' => leyka_get_extension_activation_button_label($extension),
+                                ))
                         )
                         ->render_content();
 
@@ -119,17 +125,6 @@ if( !$extension) {
             </div>
 
         </div>
-    </div>
-
-    <div class="single-settings-footer">
-
-        <a href="#" class="delete-extension-link"><?php _e('Delete the extension', 'leyka');?></a>
-
-        <span class="buttons">
-            <a class="button button-primary button-small save-settings" href="#"><?php _e('Save', 'leyka');?></a>
-            <a class="button <?php echo $extension->activation_status === 'active' ? 'button-secondary' : 'button-primary';?> activation-button <?php echo $extension->activation_status;?>" href="#"><?php echo leyka_get_extension_activation_button_label($extension);?></a>
-        </span>
-
     </div>
 
 </div>

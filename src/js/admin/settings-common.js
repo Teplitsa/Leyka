@@ -2,8 +2,45 @@
 
 jQuery(document).ready(function($){
 
-    $('.leyka-setting-field.colorpicker').wpColorPicker(); // Colorpicker fields
+    $('.leyka-setting-field.colorpicker').wpColorPicker({ // Colorpicker fields
+        change: function(e, ui) {
+            $(e.target).parents('.field').find('.leyka-colorpicker-value').val(ui.color.toString());
+        }
+    });
+
     leyka_support_metaboxes('options-options_main_area'); // Support metaboxes
+
+    // Custom CSS editor fields:
+    let $css_editor = $('.css-editor-field'),
+        editor = {};
+
+    if(wp.codeEditor && $css_editor.length) {
+
+        let editor_settings = wp.codeEditor.defaultSettings ? _.clone( wp.codeEditor.defaultSettings ) : {};
+        editor_settings.codemirror = _.extend(
+            {},
+            editor_settings.codemirror, {
+                indentUnit: 2,
+                tabSize: 2,
+                mode: 'css',
+            });
+        editor = wp.codeEditor.initialize($css_editor, editor_settings);
+
+        $('.css-editor-reset-value').on('click.leyka', function(e){ // Additional CSS value reset
+
+            e.preventDefault();
+
+            let $this = $(this),
+                $css_editor_field = $this.siblings('.css-editor-field'),
+                original_value = $this.siblings('.css-editor-original-value').val();
+
+            $css_editor_field.val(original_value);
+            editor.codemirror.getDoc().setValue(original_value);
+
+        });
+
+    }
+    // Custom CSS editor fields - END
 
     // Ajax file upload fields support:
     $('.upload-field input[type="file"]')

@@ -15,14 +15,12 @@ class Leyka_Options_Settings_Controller extends Leyka_Settings_Controller {
     protected $_stages;
 
     protected $_options;
+    protected $_submit_data;
 
     protected static $_instance = null;
 
     public static function get_controller($controller_id) {
-
-//        $controller_id = trim(esc_attr($controller_id));
         return self::get_instance();
-
     }
 
     protected function __construct() {
@@ -151,7 +149,29 @@ class Leyka_Options_Settings_Controller extends Leyka_Settings_Controller {
     }
 
     protected function _process_settings_values(array $blocks = null) {
-        /** @todo Implement it */
+
+        if( !$blocks ) {
+
+            $blocks = array();
+
+            foreach($this->get_current_stage()->get_sections() as $section) { /** @var $section Leyka_Settings_Section */
+                $blocks = array_merge($blocks, $section->get_blocks());
+            }
+
+        }
+
+        foreach($blocks as $block) { /** @var $block Leyka_Settings_Block */
+
+            if(is_a($block, 'Leyka_Option_Block') && $block->is_valid()) {
+                leyka_save_option($block->option_id);
+            } else if(is_a($block, 'Leyka_Custom_Setting_Block')) {
+                do_action("leyka_save_custom_option-{$block->setting_id}");
+            } else if(is_a($block, 'Leyka_Container_Block')) {
+                $this->_process_settings_values($block->get_content());
+            }
+
+        }
+
     }
 
     protected function _add_common_error(WP_Error $error) {
@@ -172,7 +192,10 @@ class Leyka_Options_Settings_Controller extends Leyka_Settings_Controller {
      * @return Leyka_Settings_Section
      */
     public function get_current_section() {
-        return reset($this->get_current_stage()->get_sections());
+
+        $sections = $this->get_current_stage()->get_sections();
+        return reset($sections);
+
     }
 
     /**
@@ -185,20 +208,48 @@ class Leyka_Options_Settings_Controller extends Leyka_Settings_Controller {
     }
 
     public function get_submit_data($component = null) {
-        /** @todo Implement it */
+        return $this->_submit_data;
     }
 
     public function get_navigation_data() {
     }
 
     public function handle_submit() {
-        /** @todo Implement it */
+
+        $this->_process_settings_values(); // Save all valid options on all current stage
+
+        if( !$this->get_current_section()->is_valid() ) {
+
+            foreach($this->get_current_section()->get_errors() as $component_id => $errors) {
+                foreach($errors as $error) {
+                    $this->_add_component_error($component_id, $error);
+                }
+            }
+
+            return;
+
+        }
+
+        // Here we'd check validity of stage settings as a whole
+
     }
 
     public function set_options_data(array $options = array()) {
 
         $this->_options = $options;
+
         $this->_set_stages();
+        $this->_handle_settings_submit(); // It'd be here instead of the constructor, or there won't be any options to handle
+
+        return $this;
+
+    }
+
+    public function set_submit_data($data) {
+
+        if($data) {
+            $this->_submit_data = $data;
+        }
 
         return $this;
 
