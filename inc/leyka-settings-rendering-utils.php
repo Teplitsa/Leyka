@@ -50,7 +50,7 @@ function leyka_render_text_field($option_id, $data){
 
                 if( !empty($data['comment']) ) {?>
                 <span class="field-q">
-                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-q.svg" alt="">
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
                     <span class="field-q-tooltip"><?php echo $data['comment'];?></span>
                 </span>
                 <?php }?>
@@ -114,7 +114,7 @@ function leyka_render_file_field($option_id, $data){
 
     <div class="leyka-file-field-wrapper <?php echo $option_id;?>-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>" id="<?php echo $option_id;?>-upload">
 
-    <?php if( !empty($data['title']) ) {?>
+        <?php if( !empty($data['title']) ) {?>
         <span class="field-component title">
 
             <?php echo $data['title'];
@@ -127,7 +127,7 @@ function leyka_render_file_field($option_id, $data){
             <?php }?>
 
         </span>
-    <?php }?>
+        <?php }?>
 
         <div class="preview-wrapper">
 
@@ -218,22 +218,26 @@ function leyka_render_number_field($option_id, $data){
 
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-number-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">
         <label for="<?php echo $option_id.'-field';?>">
+
             <span class="field-component title">
                 <span class="text"><?php echo $data['title'];?></span>
                 <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
                 <?php if( !empty($data['comment'])) {?>
-                    <span class="field-q">
-                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-q.svg" alt="">
+                <span class="field-q">
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
                     <span class="field-q-tooltip"><?php echo $data['comment']?></span>
                 </span>
                 <?php }?>
             </span>
+
             <span class="field-component field">
                 <input type="number" id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo empty($data['placeholder']) ? '' : esc_attr($data['placeholder']);?>" <?php echo empty($data['length']) ? '' : 'maxlength="'.(int)$data['length'].'"';?> <?php echo isset($data['max']) ? 'max="'.(int)$data['max'].'"' : '';?> <?php echo isset($data['min']) ? 'min="'.(int)$data['min'].'"' : '';?> <?php echo empty($data['step']) ? '' : 'step="'.(int)$data['step'].'"';?>>
             </span>
+
             <?php if( !empty($data['description']) ) {?>
             <span class="field-component help"><?php echo $data['description'];?></span>
             <?php }?>
+
         </label>
     </div>
 
@@ -685,7 +689,6 @@ function leyka_render_tabbed_section_options_area($section) {
                 </div>
 
                 <?php if( !empty($tab['screenshots']) ) {?>
-
                 <div class="tab-screenshots">
                     
                     <div class="tab-screenshot-nav left <?php echo !empty($tab['screenshots']) && count($tab['screenshots']) > 1 ? 'active' : '';?>">
@@ -710,11 +713,12 @@ function leyka_render_tabbed_section_options_area($section) {
 
                     <?php $counter += 1;
 
-                    } ?>
+                    }?>
 
                     <div class="tab-screenshot-nav right <?php echo !empty($tab['screenshots']) && count($tab['screenshots']) > 1 ? 'active' : '';?>">
                         <img src="<?php echo LEYKA_PLUGIN_BASE_URL.'img/icon-gallery-nav-arrow-right.svg';?>" alt="">
                     </div>
+
                 </div>
                 <?php }?>
 
@@ -730,41 +734,113 @@ function leyka_render_tabbed_section_options_area($section) {
 }
 
 // [Special field] Support packages extension - packages list field:
-add_action('leyka_render_custom_support_packages_custom_packages_settings', 'leyka_render_support_packages_settings', 10, 2);
-function leyka_render_support_packages_settings($option_id, $data){
+add_action('leyka_render_custom_support_packages_settings', 'leyka_render_support_packages_settings', 10, 2);
+function leyka_render_support_packages_settings($option_id, $data){ // support_packages_custom_packages_settings
 
     $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
-    $option_value = 'TODO';
-    echo '<pre>'.$option_id.' - '.print_r($data, 1).'</pre>';?>
+    $option_value = 'TODO';?>
 
-<!--    <div id="--><?php //echo $option_id.'-wrapper';?><!--" class="leyka-gateways-commission-field-wrapper --><?php //echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?><!--">-->
-<!---->
-<!--        --><?php //foreach(leyka_get_gateways() as $gateway) { /** @var Leyka_Gateway $gateway */?>
-<!---->
-<!--            <div class="leyka-commission-container">-->
-<!---->
-<!--                <h4>--><?php //echo $gateway->name;?><!--</h4>-->
-<!---->
-<!--                <div class="leyka-commission-pm-list-container">-->
-<!--                    --><?php //foreach($gateway->get_payment_methods() as $pm) {?>
-<!---->
-<!--                        <span class="leyka-commission-pm">-->
-<!--                    <label>-->
-<!--                        <input type="number" class="leyka-commission-field" name="leyka_commission[--><?php //echo $pm->full_id;?><!--]" value="--><?php //echo isset($option_value[$pm->full_id]) ? (float)$option_value[$pm->full_id] : '0.0';?><!--" step="0.01" min="0.0" max="100.0" id="leyka_commission_--><?php //echo $pm->full_id;?><!--" pattern="[0-9]+(,[0-9]+)?">-->
-<!--                    %</label>-->
-<!--                    <label class="leyka-pm-label" for="leyka_commission_--><?php //echo $pm->full_id;?><!--">-->
-<!--                        --><?php //echo $pm->name;?>
-<!--                    </label>-->
-<!--                </span>-->
-<!---->
-<!--                    --><?php //}?>
-<!--                </div>-->
-<!---->
-<!--            </div>-->
-<!---->
-<!--        --><?php //}?>
-<!---->
-<!--    </div>-->
+    <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-<?php echo $option_id;?>-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) ? '' : implode(' ', $data['field_classes']);?>">
+
+        <div class="reward-box template"> <!-- style="display: none;" -->
+
+            <h2 class="hndle ui-sortable-handle"><span><?php echo sprintf(__('Reward #%d', 'leyka'), 1);?></span></h2>
+
+            <div class="box-content">
+
+                <div class="option-block type-text">
+                    <div class="leyka-text-field-wrapper">
+                        <?php leyka_render_text_field('package_title', array(
+                            'title' => __('Reward title', 'leyka'),
+                            'placeholder' => __('E.g., "Golden support level"', 'leyka'),
+                            'required' => true,
+                        ));?>
+                    </div>
+                    <div class="field-errors"></div>
+                </div>
+
+                <div class="option-block type-text">
+                    <div class="leyka-text-field-wrapper">
+                        <?php leyka_render_text_field('package_slug', array(
+                            'title' => __('Software title', 'leyka'),
+                            'placeholder' => __('E.g., "golden"', 'leyka'),
+                            'description' => __('Only latin & numeric characters allowed', 'leyka'),
+                            'required' => true,
+                        ));?>
+                    </div>
+                    <div class="field-errors"></div>
+                </div>
+
+                <div class="settings-block container-block">
+                    <div class="container-entry" style="flex-basis: 47%;">
+                        <div class="option-block type-number">
+                            <div class="leyka-number-field-wrapper">
+                                <?php leyka_render_number_field('package_min_amount', array(
+                                    'title' => sprintf(__('Min donations amount, %s', 'leyka'), leyka_get_currency_label()),
+                                    'placeholder' => '400',
+                                    'required' => true,
+                                ));?>
+                            </div>
+                            <div class="field-errors"></div>
+                        </div>
+                    </div>
+                    <div class="container-entry" style="flex-basis: 47%;">
+                        <div class="option-block type-number">
+                            <div class="leyka-number-field-wrapper">
+                                <?php leyka_render_number_field('package_max_amount', array(
+                                    'title' => sprintf(__('Max donations amount, %s', 'leyka'), leyka_get_currency_label()),
+                                    'placeholder' => '500',
+                                    'required' => true,
+                                ));?>
+                            </div>
+                            <div class="field-errors"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-block option-block type-file">
+                    <?php leyka_render_file_field('package_icon', array(
+                        'upload_label' => __('Load icon', 'leyka'),
+                        'description' => __('A *.png or *.svg file. The size is no more than 2 Mb', 'leyka'),
+                        'required' => true,
+                    ));?>
+                    <div class="field-errors"></div>
+                </div>
+
+            </div>
+
+            <div class="box-footer">
+                <div class="delete-reward"><?php _e('Delete the reward', 'leyka');?></div>
+            </div>
+
+        </div>
+        <div class="add-reward bottom"><?php _e('Add reward', 'leyka');?></div>
+
+    </div>
 
 <?php }
 // [Special field] Support packages extension - packages list field - END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -234,6 +234,7 @@ class Leyka_Options_Settings_Controller extends Leyka_Settings_Controller {
 
     }
 
+    /** @return Leyka_Options_Settings_Controller */
     public function set_options_data(array $options = array()) {
 
         $this->_options = $options;
@@ -245,6 +246,7 @@ class Leyka_Options_Settings_Controller extends Leyka_Settings_Controller {
 
     }
 
+    /** @return Leyka_Options_Settings_Controller */
     public function set_submit_data($data) {
 
         if($data) {
@@ -272,6 +274,10 @@ class Leyka_Options_Settings_Controller extends Leyka_Settings_Controller {
         if($params['type'] === 'container' && !empty($params['entries'])) {
 
             $settings_block = new Leyka_Container_Block(array('id' => $this->_id.'_container-'.random_int(0, 1000)));
+            if( !empty($params['classes']) ) {
+                $settings_block->classes = $params['classes'];
+            }
+
             foreach($params['entries'] as $inner_option_id => $inner_params) {
 
                 try {
@@ -282,9 +288,14 @@ class Leyka_Options_Settings_Controller extends Leyka_Settings_Controller {
 
             }
 
-        } /*else if(stristr($option_params['type'], 'custom_')) {
-            $settings_block = new Leyka_Custom_Setting_Block();
-        }*/ else {
+        } else if(stristr($params['type'], 'custom_') !== false) {
+            $settings_block = new Leyka_Custom_Setting_Block(array(
+                'id' => $this->_id.'_'.$option_id,
+                'custom_setting_id' => $option_id,
+                'field_type' => 'custom_support_packages_settings',
+                'rendering_type' => apply_filters('leyka_custom_setting_rendering_type', 'callback', $option_id),
+            ));
+        } else {
             $settings_block = new Leyka_Option_Block(array('id' => $this->_id.'_'.$option_id, 'option_id' => $option_id));
         }
 

@@ -1,0 +1,17 @@
+.leyka-admin {
+
+    &.extension-settings {
+        width: 1050px;
+    }
+
+    // Support packages admin page:
+    .support-packages-decoration-options {
+        padding-top: 24px;
+        border-top: 1px solid $color-section-tabs-line;
+        margin-top: 8px;
+    }
+
+    /** @todo Packages settings custom field styles here */
+    // Support packages admin page - END
+
+}

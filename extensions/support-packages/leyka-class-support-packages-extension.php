@@ -89,6 +89,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
                     ),
                     $this->_id.'_decoration_options' => array(
                         'type' => 'container',
+                        'classes' => 'support-packages-decoration-options',
                         'entries' => array(
                             $this->_id.'_active_elements_color' => array(
                                 'type' => 'colorpicker',
@@ -122,8 +123,8 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
 //                        'show_preview' => false,
                         'title' => '',
 //                        'upload_title' => 'Выберите картинку',
-                        'upload_label' => 'Загрузить иконку закрытого материала', // __('', 'leyka')
-                        'description' => __('Файл в формате .png или .svg. Объём файла не больше 2 Мб', 'leyka'),
+                        'upload_label' => __('Load closed content icon', 'leyka'),
+                        'description' => __('A *.png or *.svg file. The size is no more than 2 Mb', 'leyka'),
 //                        'comment' => 'Тестовый коммент к полю загрузки картинки.',
 //                        'required' => false,
                         'default' => '', /** @todo Add the default icon URL */

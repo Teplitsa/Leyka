@@ -86,7 +86,7 @@ class Leyka_Options_Render extends Leyka_Settings_Render {
 
     public function render_container_block(Leyka_Container_Block $block) {?>
 
-        <div id="<?php echo $block->id;?>" class="settings-block container-block">
+        <div id="<?php echo $block->id;?>" class="settings-block container-block <?php echo $block->classes ? (is_array($block->classes) ? implode(' ', $block->classes) : esc_attr($block->classes)) : '';?>">
 
             <?php $entry_width = $block->entry_width ? (100.0*($block->entry_width - 0.06 * $block->entry_width)).'%' : false;
 
@@ -123,12 +123,7 @@ class Leyka_Options_Render extends Leyka_Settings_Render {
         $content = $block->get_content();?>
 
         <div id="<?php echo $block->id;?>" class="settings-block text-block">
-            
-            <?php if($block->has_custom_templated() || preg_match("/<p>/", $content)):?>
-                <?php echo $content?>
-            <?php else: ?>
-                <p><?php echo $content?></p>
-            <?php endif?>
+            <?php echo $block->has_custom_templated() || preg_match('/<p>/', $content) ? $content : '<p>'.$content.'</p>';?>
         </div>
 
     <?php }

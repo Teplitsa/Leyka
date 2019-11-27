@@ -18,7 +18,7 @@ if( !$extension) {
     <a href="<?php echo admin_url('/admin.php?page=leyka_extensions');?>" class="back-to-list-link">
         <?php _e('Back to the list', 'leyka');?>
     </a>
-<!--    <hr class="wp-header-end">-->
+
     <div class="single-settings-header">
 
         <div class="header-left">

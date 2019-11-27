@@ -584,7 +584,7 @@ function leyka_get_currency_data($currency_code) {
 
 function leyka_get_currency_label($currency_code = false) {
 
-    $currency_code = empty($currency_code) ? 'rur' : mb_strtolower($currency_code);
+    $currency_code = empty($currency_code) ? leyka_options()->opt('main_currency') : mb_strtolower($currency_code);
     $currencies = leyka_get_currencies_data();
 
     return isset($currencies[$currency_code]['label']) ? $currencies[$currency_code]['label'] : false;

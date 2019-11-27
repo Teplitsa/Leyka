@@ -120,7 +120,10 @@
 
                         @include wizard-button-caption();
 
+                        flex: 250px 0 0;
+
                         display: flex;
+                        justify-content: center;
                         align-items: center;
 
                         height: 40px;
@@ -140,6 +143,7 @@
 
                     .help { // File upload description
 
+                        flex: 100% 1 1;
                         margin: 0;
 
                         label {
@@ -147,6 +151,8 @@
                             display: flex;
                             align-items: center;
                             height: 100%;
+
+                            font-size: 10px;
 
                         }
 

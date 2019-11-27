@@ -215,6 +215,7 @@ class Leyka_Container_Block extends Leyka_Settings_Block {
 
     protected $_blocks;
     protected $_entry_width = false;
+    protected $_params = array();
 
     public function __construct(array $params = array()) {
 
@@ -241,6 +242,10 @@ class Leyka_Container_Block extends Leyka_Settings_Block {
 
         }
 
+        if( !empty($params['classes']) ) {
+            $this->_params['classes'] = $params['classes'];
+        }
+
     }
 
     public function __get($name) {
@@ -249,9 +254,20 @@ class Leyka_Container_Block extends Leyka_Settings_Block {
             case 'entry_width': return $this->_entry_width ?
                 $this->_entry_width :
                 (count($this->_blocks) ? round(1.0/count($this->_blocks), 1) : false);
+            case 'class':
+            case 'classes':
+                return empty($this->_params['classes']) ? '' : $this->_params['classes'];
             default: return parent::__get($name);
         }
 
+    }
+
+    public function __set($name, $value) {
+        switch($name) {
+            case 'class':
+            case 'classes':
+                $this->_params['classes'] = $value;
+        }
     }
 
     public function add_block(Leyka_Settings_Block $block) {
