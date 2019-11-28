@@ -33,8 +33,8 @@ class Leyka_Options_Controller extends Leyka_Singleton {
     }
 
     /**
-     * A service method to retrieve the plugin option value when it's just being initialized, and can't do
-     * proper options metadata loading yet.
+     * A service method to retrieve a plugin option value when the plugin is just being initialized and it can't properly load
+     * options metadata yet.
      */
     public static function get_option_value($option_id) {
 
@@ -79,9 +79,9 @@ class Leyka_Options_Controller extends Leyka_Singleton {
     }
 
     /**
-     * A service method to load the option value from the DB to the controller's cache array.
-     * 
-*@param $option_id string
+     * A service method to load option value from DB to the controller cache array.
+     *
+     * @param $option_id string
      */
     protected function _initialize_value($option_id) {
 
@@ -99,8 +99,8 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         }
 
         if(
-            $this->_options[$option_id]['value'] && ($this->_options[$option_id]['type'] === 'html' ||
-            $this->_options[$option_id]['type'] === 'rich_html')
+            $this->_options[$option_id]['value']
+            && ($this->_options[$option_id]['type'] === 'html' || $this->_options[$option_id]['type'] === 'rich_html')
         ) {
 
             $this->_options[$option_id]['value'] =
@@ -108,7 +108,9 @@ class Leyka_Options_Controller extends Leyka_Singleton {
                 isset($this->_options[$option_id]['value']['value']) ?
                     html_entity_decode(stripslashes($this->_options[$option_id]['value']['value'])) :
                     html_entity_decode(stripslashes((string)$this->_options[$option_id]['value']));
+
         }
+
     }
 
     public function get_options_names() {
@@ -526,6 +528,25 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         }
 
         return $value;
+
+    }
+
+    /**
+     * Test if given multi-checkbox option has given value checked.
+     *
+     * @param $option_id string An ID of option to check. Must have "multi_checkbox" type.
+     * @param $value_to_check string Option value to check.
+     * @return boolean|null Returns true if given value is checked, false if not, or NULL if wrong option ID given.
+     */
+    public function is_multi_value_checked($option_id, $value_to_check) {
+
+        $option_id = str_replace('leyka_', '', $option_id);
+
+        if( !$this->option_exists($option_id) || $this->get_type_of($option_id) !== 'multi_checkbox' ) {
+            return NULL; /** @todo Throw new Exception, mb */
+        }
+
+        return in_array($value_to_check, $this->opt($option_id));
 
     }
 

@@ -222,29 +222,31 @@ function leyka_get_pages_list() {
 
 }
 
-/**
- * A callback for the default gateway select field.
- *
- * @param $gateway_id string|false
- * @return array
- */
-function leyka_get_gateways_pm_list($gateway_id = false) {
-
-    $options = array();
-    foreach(leyka_get_pm_list(null, false, false) as $pm) {
-
-        if($gateway_id && $pm->gateway_id !== $gateway_id) {
-            continue;
-        }
-
-        $gateway_title = leyka_get_gateway_by_id($pm->gateway_id)->title;
-        $options[$pm->full_id] = $pm->label_backend.($gateway_title == $pm->label_backend ? '' : ' ('.$gateway_title.')');
-
-    }
-
-    return $options;
-
-}
+///**
+// * A callback for the default gateway select field.
+// * It's not in use explicitly - the PM list is always set up programmatically.
+// * @todo Check if we could remove it completely.
+// *
+// * @param $gateway_id string|false
+// * @return array
+// */
+//function leyka_get_gateways_pm_list($gateway_id = false) {
+//
+//    $options = array();
+//    foreach(leyka_get_pm_list(null, false, false) as $pm) {
+//
+//        if($gateway_id && $pm->gateway_id !== $gateway_id) {
+//            continue;
+//        }
+//
+//        $gateway_title = leyka_get_gateway_by_id($pm->gateway_id)->title;
+//        $options[$pm->full_id] = $pm->label_backend.($gateway_title == $pm->label_backend ? '' : ' ('.$gateway_title.')');
+//
+//    }
+//
+//    return $options;
+//
+//}
 
 function leyka_get_pd_usage_info_links() {
     return __('<a href="//te-st.ru/reports/personal-data-perm/" target="_blank" rel="noopener noreferrer">the Teplitsa article</a>.', 'leyka');
@@ -254,12 +256,13 @@ function leyka_get_default_email_from() {
 
     $domain = explode('/', trim(str_replace('http://', '', home_url('', 'http')), '/'));
     return 'no_reply@'.$domain[0];
+
 }
 
 /** DM is for "donation manager" */
-function leyka_get_default_dm_list() {
-    return get_bloginfo('admin_email').',';
-}
+//function leyka_get_default_dm_list() {
+//    return get_bloginfo('admin_email').',';
+//}
 
 function leyka_get_default_pd_terms_page() {
 

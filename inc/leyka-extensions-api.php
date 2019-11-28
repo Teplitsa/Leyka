@@ -33,11 +33,18 @@ abstract class Leyka_Extension extends Leyka_Singleton {
      * @return Leyka_Extension|false
      */
     public static function get_by_id($extension_id) {
+        return leyka()->get_extension_by_id($extension_id);
+    }
 
-        $extensions = leyka()->get_extensions();
-
-        return empty($extensions[$extension_id]) ? false : $extensions[$extension_id];
-
+    /**
+     * @param $extension_id string
+     * @param $activation_status boolean True to check if given Extension is active, false to check if it's inactive.
+     *
+     * @throws Exception
+     * @return boolean True if given Extension has given activation status, false otherwise.
+     */
+    public static function is_active($extension_id) {
+        return leyka()->extension_is_active(trim($extension_id));
     }
 
     /**
@@ -174,6 +181,14 @@ abstract class Leyka_Extension extends Leyka_Singleton {
             case 'wizard_link':
                 return admin_url('admin.php?page=leyka_settings_new&screen=wizard-'.$this->_id);
 
+            case 'active':
+            case 'is_active':
+                try {
+                    return leyka()->extension_is_active($this->_id);
+                } catch(Exception $ex) {
+                    return false;
+                }
+
             case 'activation_status':
                 return $this->get_activation_status();
             case 'activation_status_label':
@@ -304,17 +319,9 @@ abstract class Leyka_Extension extends Leyka_Singleton {
      * @return string: active inactive activating
      */
     public function get_activation_status() {
-
-        $status = 'inactive';
-
-        if(false /** @todo Get the "active" option value for the extension */) {
-            $status = 'active';
-        } else if($this->wizard_id && leyka_wizard_started($this->wizard_id)) {
-            $status = 'activating';
-        }
-
-        return $status;
-
+        return $this->is_active ?
+            'active' :
+            ($this->wizard_id && leyka_wizard_started($this->wizard_id) ? 'activating' : 'inactive');
     }
 
     /** @return array A list of relevant values from the list of Leyka_Extension::_get_filter_categories_ids(). */

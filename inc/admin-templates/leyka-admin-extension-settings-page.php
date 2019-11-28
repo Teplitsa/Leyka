@@ -3,14 +3,16 @@
 
 /** @var $this Leyka_Admin_Setup */
 
+//leyka_options()->opt('extensions_active', array('support_packages')); // 4 TEST
+
 try {
     $extension = Leyka_Extension::get_by_id($_GET['extension']);
-} catch(Exception $e) {
-    wp_die($e->getMessage());
+} catch(Exception $ex) {
+    wp_die($ex->getMessage());
 }
 
-if( !$extension) {
-    wp_die(sprintf(__('The extension is not found: %s', 'leyka'), $_GET['extension']));
+if( !$extension ) {
+    wp_die(sprintf(__('Error: the extension "%s" is not found', 'leyka'), $_GET['extension']));
 }?>
 
 <div class="leyka-admin wrap single-settings extension-settings" data-leyka-admin-page-type="extension-settings-page">
