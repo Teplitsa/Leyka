@@ -115,14 +115,14 @@ class Leyka_Extension_Settings_Controller extends Leyka_Settings_Controller {
 
     }
 
-    // Mb, we won't need the getter
-//    public function __get($name) {
-//        switch($name) {
-//            case 'id': return $this->_id;
-//            case 'title': return $this->_title;
-//            default: return null;
-//        }
-//    }
+    public function __get($name) {
+        switch($name) {
+            case 'extension':
+                return $this->_extension;
+            default:
+                return parent::__get($name);
+        }
+    }
 
     /** @return boolean */
     public function has_common_errors() {

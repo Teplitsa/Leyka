@@ -23,6 +23,7 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
             case 'init': return Leyka_Init_Wizard_Settings_Controller::get_instance();
             case 'cp': return Leyka_Cp_Wizard_Settings_Controller::get_instance();
             case 'yandex': return Leyka_Yandex_Wizard_Settings_Controller::get_instance();
+            case 'extension': return Leyka_Extension_Settings_Controller::get_instance();
             default: /** @throw some Exception */ return false;
         }
 
