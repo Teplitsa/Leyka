@@ -3,7 +3,7 @@
  * Leyka Options Render class.
  */
 
-class Leyka_Options_Render extends Leyka_Settings_Render {
+class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
 
     protected static $_instance = null;
 
@@ -72,9 +72,7 @@ class Leyka_Options_Render extends Leyka_Settings_Render {
 
             <span class="buttons">
                 <input type="submit" class="button button-primary button-small save-settings" name="leyka_settings_submit_<?php echo $this->_controller->id;?>" value="<?php _e('Save', 'leyka');?>">
-                <a class="button <?php echo $submit_data['activation_status'] === 'active' ? 'button-secondary' : 'button-primary';?> activation-button <?php echo $submit_data['activation_status'];?>" href="#">
-                    <?php echo $submit_data['activation_button_label'];?>
-                </a>
+                <input type="submit" class="button <?php echo $submit_data['activation_status'] === 'active' ? 'button-secondary' : 'button-primary';?> activation-button <?php echo $submit_data['activation_status'];?>" name="<?php echo $submit_data['activation_status'] === 'active' ? 'leyka_deactivate_'.$this->_controller->id : 'leyka_activate_'.$this->_controller->id;?>" value="<?php echo $submit_data['activation_button_label'];?>">
             </span>
 
         </div>

@@ -1878,12 +1878,13 @@ abstract class Leyka_Singleton {
     protected static $_instance = null;
 
     /**
+     * @param $params array Assoc. array of Singleton object params. Not required.
      * @return static
      */
-    public static function get_instance() {
+    public static function get_instance(array $params = array()) {
 
         if(null === static::$_instance) {
-            static::$_instance = new static();
+            static::$_instance = new static($params);
         }
 
         return static::$_instance;
@@ -1892,7 +1893,7 @@ abstract class Leyka_Singleton {
 
     final protected function __clone() {}
 
-    protected function __construct() {
+    protected function __construct(array $params = array()) {
     }
 
 }

@@ -3,7 +3,9 @@
  * Leyka options controller - the base class.
  **/
 
-class Leyka_Options_Settings_Controller extends Leyka_Settings_Controller {
+class Leyka_Extension_Settings_Controller extends Leyka_Settings_Controller {
+
+    protected static $_instance = null;
 
     // ATM for ref (delete later):
 //    protected $_id;
@@ -14,24 +16,34 @@ class Leyka_Options_Settings_Controller extends Leyka_Settings_Controller {
     /** @var $_stages array of Leyka_Settings_Section objects */
     protected $_stages;
 
+    /** @var Leyka_Extension */
+    protected $_extension;
     protected $_options;
-    protected $_submit_data;
-
-    protected static $_instance = null;
 
     public static function get_controller($controller_id) {
         return self::get_instance();
     }
 
-    protected function __construct() {
+    protected function __construct(array $params = array()) {
 
-        $this->_id = 'options';
+        if( !empty($params['extension']) && is_a($params['extension'], 'Leyka_Extension') ) {
+
+            $this->_extension = $params['extension'];
+            $this->_options = $this->_extension->get_options_data();
+
+        }
+
+        $this->_id = 'extension';
 
         $this->_load_frontend_scripts();
         $this->_set_attributes();
         $this->_set_stages();
 
         add_action('leyka_settings_submit_'.$this->_id, array($this, 'handle_submit'));
+        add_action('leyka_activate_extension_'.$this->_extension->id, array($this, 'handle_activation'));
+        add_action('leyka_deactivate_extension_'.$this->_extension->id, array($this, 'handle_deactivation'));
+
+        $this->_handle_settings_submit();
 
     }
 
@@ -143,9 +155,15 @@ class Leyka_Options_Settings_Controller extends Leyka_Settings_Controller {
     }
 
     protected function _handle_settings_submit() {
+
         if( !empty($_POST['leyka_settings_submit_'.$this->_id]) ) {
             do_action('leyka_settings_submit_'.$this->_id);
+        } else if( !empty($_POST['leyka_activate_extension'])  && $this->_extension ) {
+            do_action('leyka_activate_extension_'.$this->_extension->id);
+        } else if( !empty($_POST['leyka_deactivate_extension']) && $this->_extension ) {
+            do_action('leyka_deactivate_extension_'.$this->_extension->id);
         }
+
     }
 
     protected function _process_settings_values(array $blocks = null) {
@@ -208,7 +226,10 @@ class Leyka_Options_Settings_Controller extends Leyka_Settings_Controller {
     }
 
     public function get_submit_data($component = null) {
-        return $this->_submit_data;
+        return array(
+            'activation_status' => $this->_extension->activation_status,
+            'activation_button_label' => leyka_get_extension_activation_button_label($this->_extension),
+        );
     }
 
     public function get_navigation_data() {
@@ -234,26 +255,38 @@ class Leyka_Options_Settings_Controller extends Leyka_Settings_Controller {
 
     }
 
-    /** @return Leyka_Options_Settings_Controller */
-    public function set_options_data(array $options = array()) {
+    public function handle_activation() {
 
-        $this->_options = $options;
+        $this->handle_submit(); // Mb, we shouldn't auto-save Extension settings before activation
 
-        $this->_set_stages();
-        $this->_handle_settings_submit(); // It'd be here instead of the constructor, or there won't be any options to handle
+        if($this->has_common_errors() || $this->has_component_errors()) {
+            return $this->_add_common_error(new WP_Error(__('Cannot activate the extension - settings errors found', 'leyka')));
+        }
 
-        return $this;
+        $extensions_active = leyka_options()->opt('extensions_active');
+        if( !in_array($this->_extension->id, $extensions_active) ) {
+
+            $extensions_active[] = $this->_extension->id;
+            leyka_options()->opt('extensions_active', $extensions_active);
+
+        }
+
+        return NULL;
 
     }
 
-    /** @return Leyka_Options_Settings_Controller */
-    public function set_submit_data($data) {
+    public function handle_deactivation() {
 
-        if($data) {
-            $this->_submit_data = $data;
+        $extensions_active = leyka_options()->opt('extensions_active');
+        $index_to_remove = array_search($this->_extension->id, $extensions_active);
+
+        if($index_to_remove !== false) {
+            unset($extensions_active[$index_to_remove]);
+        } else {
+            /** @todo Trying to deactivate an Extension that's not found in 'extensions_active' option value - throw some Ex? */
         }
 
-        return $this;
+        leyka_options()->opt('extensions_active', $extensions_active);
 
     }
 

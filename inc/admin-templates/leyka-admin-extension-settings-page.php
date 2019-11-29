@@ -92,15 +92,9 @@ if( !$extension ) {
                 <?php try {
 
                     Leyka_Settings_Factory::get_instance()
-                        ->get_render('options')
+                        ->get_render('extension')
                         ->set_controller(
-                            Leyka_Settings_Factory::get_instance()
-                                ->get_controller('options')
-                                ->set_options_data($extension->get_options_data())
-                                ->set_submit_data(array(
-                                    'activation_status' => $extension->activation_status,
-                                    'activation_button_label' => leyka_get_extension_activation_button_label($extension),
-                                ))
+                            Leyka_Settings_Factory::get_instance()->get_controller('extension', array('extension' => $extension,))
                         )
                         ->render_content();
 
