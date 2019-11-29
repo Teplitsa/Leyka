@@ -322,14 +322,25 @@ class Leyka_Extension_Settings_Controller extends Leyka_Settings_Controller {
             }
 
         } else if(stristr($params['type'], 'custom_') !== false) {
+
+            /** @todo WARNING! Remove this field ID hardcode, make it universial. */
+
             $settings_block = new Leyka_Custom_Setting_Block(array(
                 'id' => $this->_id.'_'.$option_id,
                 'custom_setting_id' => $option_id,
                 'field_type' => 'custom_support_packages_settings',
                 'rendering_type' => apply_filters('leyka_custom_setting_rendering_type', 'callback', $option_id),
             ));
+
         } else {
-            $settings_block = new Leyka_Option_Block(array('id' => $this->_id.'_'.$option_id, 'option_id' => $option_id));
+
+            $block_params = array('id' => $this->_id.'_'.$option_id, 'option_id' => $option_id);
+            if( !empty($params['width']) && $params['width'] > 0 && $params['width'] < 1.0 ) {
+                $block_params['width'] = $params['width'];
+            }
+
+            $settings_block = new Leyka_Option_Block($block_params);
+
         }
 
         return $settings_block;

@@ -51,6 +51,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
 //                        'comment' => __('Please, enter ...', 'leyka'),
                         'required' => true,
                         'placeholder' => 'Подпишитесь, чтобы прочитать целиком', // __('E.g., ', 'leyka'),
+                        'width' => 0.5,
                     ),
                     $this->_id.'_main_text' => array(
                         'type' => 'textarea',
@@ -66,26 +67,23 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
                         'placeholder' => 'Подписка продлевается автоматически. Вы можете отписаться в любой момент в личном кабинете',
                         'required' => false,
                     ),
-                    $this->_id.'_cta_labels' => array(
-                        'type' => 'container',
-                        'entries' => array(
-                            $this->_id.'_activation_button_label' => array(
-                                'type' => 'text',
-                                'title' => '4. Надпись на кнопке активации', // __('', 'leyka'),
+                    $this->_id.'_activation_button_label' => array(
+                        'type' => 'text',
+                        'title' => '4. Надпись на кнопке активации', // __('', 'leyka'),
 //                                'comment' => __('Please, enter ...', 'leyka'),
-                                'required' => true,
-                                'placeholder' => 'Подписаться', // __('E.g., ', 'leyka'),
-                                'default' => 'Подписаться', // __('E.g., ', 'leyka'),
-                            ),
-                            $this->_id.'_account_link_label' => array(
-                                'type' => 'text',
-                                'title' => '5. Надпись для ссылки перехода в ЛК', // __('', 'leyka'),
+                        'required' => true,
+                        'placeholder' => 'Подписаться', // __('E.g., ', 'leyka'),
+                        'default' => 'Подписаться', // __('E.g., ', 'leyka'),
+                        'width' => 0.5,
+                    ),
+                    $this->_id.'_account_link_label' => array(
+                        'type' => 'text',
+                        'title' => '5. Надпись для ссылки перехода в ЛК', // __('', 'leyka'),
 //                                'comment' => __('Please, enter ...', 'leyka'),
-                                'required' => true,
-                                'placeholder' => 'У меня уже есть подписка', // __('E.g., ', 'leyka'),
-                                'default' => 'У меня уже есть подписка', // __('', 'leyka'),
-                            ),
-                        )
+                        'required' => true,
+                        'placeholder' => 'У меня уже есть подписка', // __('E.g., ', 'leyka'),
+                        'default' => 'У меня уже есть подписка', // __('', 'leyka'),
+                        'width' => 0.5,
                     ),
                     $this->_id.'_decoration_options' => array(
                         'type' => 'container',

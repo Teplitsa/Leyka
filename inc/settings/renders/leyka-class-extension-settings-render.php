@@ -18,98 +18,108 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
 
         $extension = $this->_controller->extension;?>
 
-        <div class="single-settings-header">
+        <form id="leyka-options-form-<?php echo $this->_controller->id;?>" class="leyka-options-form <?php echo $this->_controller->id;?>" method="post" action="">
 
-            <div class="header-left">
+            <div class="single-settings-header">
 
-                <h1 class="wp-heading-inline"><?php echo $extension->title;?></h1>
+                <div class="header-left">
 
-                <div class="meta-data">
+                    <h1 class="wp-heading-inline"><?php echo $extension->title;?></h1>
 
-                    <div class="item activation-status">
-                        <span class="item-name"><?php _e('Status:', 'leyka');?></span>
-                        <span class="item-value status-label <?php echo $extension->activation_status;?>">
-                        <?php echo mb_strtolower($extension->activation_status_label);?>
-                    </span>
-                    </div>
-                    <div class="item extension-version">
-                        <span class="item-name"><?php _e('Extension version:', 'leyka');?></span>
-                        <span class="item-value"><?php echo $extension->version;?></span>
-                    </div>
-                    <div class="item leyka-version">
-                        <span class="item-name"><?php _e('Leyka version:', 'leyka');?></span>
-                        <span class="item-value"><?php echo LEYKA_VERSION;?></span>
-                    </div>
-                    <div class="item author">
+                    <div class="meta-data">
 
-                        <span class="item-name"><?php _e('Author:', 'leyka');?></span>
-                        <span class="item-value">
-                        <?php if($extension->author_url) {?>
-                            <a href="<?php echo $extension->author_url;?>" target="_blank" class="outer-link">
-                            <?php echo $extension->author_name;?>
-                        </a>
-                        <?php } else {
-                            echo __('Author:', 'leyka').' '.$extension->author_name;
-                        }?>
-                    </span>
-
-                    </div>
-
-                </div>
-
-                <div class="extension-description"><?php echo $extension->settings_description;?></div>
-
-            </div>
-
-            <div class="header-right">
-
-                <div class="module-logo-wrapper">
-                    <div class="module-logo extension-logo">
-                        <img src="<?php echo $extension->logo_url;?>" class="module-logo-pic extension-logo-pic" alt="">
-                    </div>
-                </div>
-
-                <div class="extension-main-cta">
-                    <a class="button <?php echo $extension->activation_status === 'active' ? 'button-secondary' : 'button-primary';?> activation-button <?php echo $extension->activation_status;?> <?php echo $extension->has_wizard ? 'wizard-available' : '';?>" href="#">
-                        <?php echo leyka_get_extension_activation_button_label($extension);?>
-                    </a>
-                </div>
-
-            </div>
-
-        </div>
-
-        <div id="poststuff">
-            <div class="metabox-holder columns-2">
-
-                <div class="postbox-container column-main">
-
-                    <input type="hidden" value="<?php echo $extension->id;?>" id="leyka_extension_id">
-
-                    <div class="leyka-options main-area">
-                        <?php $this->render_main_area();?>
-                    </div>
-
-                </div>
-
-                <div class="postbox-container column-sidebar">
-
-                    <?php if($extension->setup_description) {?>
-                        <div class="setup-description"><?php echo $extension->setup_description;?></div>
-                    <?php }
-
-                    if($extension->docs_url) {?>
-                        <div class="setup-user-manual-link">
-                            <a class="outer-link" href="<?php echo $extension->docs_url;?>" target="_blank">
-                                <?php _e('Detailed manual', 'leyka');?>
-                            </a>
+                        <div class="item activation-status">
+                            <span class="item-name"><?php _e('Status:', 'leyka');?></span>
+                            <span class="item-value status-label <?php echo $extension->activation_status;?>">
+                            <?php echo mb_strtolower($extension->activation_status_label);?>
+                        </span>
                         </div>
-                    <?php }?>
+                        <div class="item extension-version">
+                            <span class="item-name"><?php _e('Extension version:', 'leyka');?></span>
+                            <span class="item-value"><?php echo $extension->version;?></span>
+                        </div>
+                        <div class="item leyka-version">
+                            <span class="item-name"><?php _e('Leyka version:', 'leyka');?></span>
+                            <span class="item-value"><?php echo LEYKA_VERSION;?></span>
+                        </div>
+                        <div class="item author">
+
+                            <span class="item-name"><?php _e('Author:', 'leyka');?></span>
+                            <span class="item-value">
+                            <?php if($extension->author_url) {?>
+                                <a href="<?php echo $extension->author_url;?>" target="_blank" class="outer-link">
+                                <?php echo $extension->author_name;?>
+                            </a>
+                            <?php } else {
+                                echo __('Author:', 'leyka').' '.$extension->author_name;
+                            }?>
+                        </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="extension-description"><?php echo $extension->settings_description;?></div>
+
+                    <div class="common-errors <?php echo $this->_controller->has_common_errors() ? 'has-errors' : '';?>">
+                        <?php $this->render_common_errors_area();?>
+                    </div>
+
+                </div>
+
+                <div class="header-right">
+
+                    <div class="module-logo-wrapper">
+                        <div class="module-logo extension-logo">
+                            <img src="<?php echo $extension->logo_url;?>" class="module-logo-pic extension-logo-pic" alt="">
+                        </div>
+                    </div>
+
+                    <div class="extension-main-cta">
+
+                        <?php $submit_data = $this->_controller->get_submit_data();?>
+
+                        <input type="submit" class="button <?php echo $submit_data['activation_status'] === 'active' ? 'button-secondary' : 'button-primary';?> activation-button <?php echo $submit_data['activation_status'];?>" name="<?php echo $submit_data['activation_status'] === 'active' ? 'leyka_deactivate_'.$this->_controller->id : 'leyka_activate_'.$this->_controller->id;?>" value="<?php echo $submit_data['activation_button_label'];?>">
+
+                    </div>
 
                 </div>
 
             </div>
-        </div>
+
+            <div id="poststuff">
+                <div class="metabox-holder columns-2">
+
+                    <div class="postbox-container column-main">
+
+                        <div class="leyka-options main-area">
+                            <?php $this->render_main_area();?>
+                        </div>
+
+                    </div>
+
+                    <div class="postbox-container column-sidebar">
+
+                        <?php if($extension->setup_description) {?>
+                            <div class="setup-description"><?php echo $extension->setup_description;?></div>
+                        <?php }
+
+                        if($extension->docs_url) {?>
+                            <div class="setup-user-manual-link">
+                                <a class="outer-link" href="<?php echo $extension->docs_url;?>" target="_blank">
+                                    <?php _e('Detailed manual', 'leyka');?>
+                                </a>
+                            </div>
+                        <?php }?>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <?php $this->render_footer();?>
+
+        </form>
 
     <?php }
 
@@ -128,30 +138,21 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
         $this->render_js_data();
         $this->_add_sections_metaboxes();?>
 
-        <div class="common-errors <?php echo $this->_controller->has_common_errors() ? 'has-errors' : '';?>">
-            <?php $this->render_common_errors_area();?>
+        <div class="options-form-content">
+            <?php do_meta_boxes($this->_controller->id.'-options_main_area', 'normal', null);?>
         </div>
 
-        <form id="leyka-options-form-<?php echo $this->_controller->id;?>" class="leyka-options-form <?php echo $this->_controller->id;?>" method="post" action="">
-
-            <div class="options-form-content">
-                <?php do_meta_boxes($this->_controller->id.'-options_main_area', 'normal', null);?>
-            </div>
-
-            <?php echo $this->render_submit_area();?>
-
-        </form>
-
-        <?php //$this->render_hidden_fields();
-        $this->render_footer();
+        <?php $this->render_hidden_fields();
 
     }
 
     public function render_footer() {
+        $this->render_submit_area();
     }
 
-    public function render_hidden_fields() {
-    }
+    public function render_hidden_fields() {?>
+        <input type="hidden" value="<?php echo $this->_controller->extension->id;?>" id="leyka_extension_id">
+    <?php }
 
     public function render_submit_area() {
 
@@ -221,7 +222,7 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
 
         $option_info = leyka_options()->get_info_of($block->get_content());?>
 
-        <div id="<?php echo $block->id;?>" class="settings-block option-block type-<?php echo $option_info['type']?> <?php echo $block->show_title ? '' : 'option-title-hidden';?> <?php echo $block->show_description ? '' : 'option-description-hidden';?> <?php echo $this->_controller->has_component_errors($block->id) ? 'has-errors' : '';?>">
+        <div id="<?php echo $block->id;?>" class="settings-block option-block type-<?php echo $option_info['type']?> <?php echo $block->show_title ? '' : 'option-title-hidden';?> <?php echo $block->show_description ? '' : 'option-description-hidden';?> <?php echo $this->_controller->has_component_errors($block->id) ? 'has-errors' : '';?>" style="<?php echo $block->width < 1.0 ? 'width:'.(100.0*$block->width).'%;' : '';?>">
 
             <?php do_action("leyka_render_{$option_info['type']}", $block->get_content(), $option_info);?>
 

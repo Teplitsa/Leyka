@@ -145,6 +145,7 @@ class Leyka_Option_Block extends Leyka_Settings_Block {
             'description' => null,
             'show_description' => true,
             'required' => null,
+            'width' => 1.0,
         ));
 
         $this->_option_id = $params['option_id'];
@@ -171,6 +172,8 @@ class Leyka_Option_Block extends Leyka_Settings_Block {
             case 'description': return empty($this->_params['description']) ? false : trim($this->_params['description']);
             case 'show_description': return !!$this->_params['show_description'];
             case 'required': return is_null($this->_params['required']) ? null : !!$this->_params['required'];
+            case 'width': return $this->_params['width'] && abs($this->_params['width']) <= 1.0 ?
+                round(abs($this->_params['width']), 2) : 1.0;
             default: return parent::__get($name);
         }
 
