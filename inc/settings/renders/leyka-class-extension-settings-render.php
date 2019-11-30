@@ -124,7 +124,7 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
     <?php }
 
     public function render_common_errors_area() {
-        foreach($this->_controller->get_common_errors() as $error) { /** @var WP_Error $error */ ?>
+        foreach($this->_controller->get_common_errors() as $error) { /** @var WP_Error $error */?>
             <span><?php echo $error->get_error_message();?></span>
         <?php }
     }

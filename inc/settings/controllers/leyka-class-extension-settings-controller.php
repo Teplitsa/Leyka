@@ -260,7 +260,7 @@ class Leyka_Extension_Settings_Controller extends Leyka_Settings_Controller {
         $this->handle_submit(); // Mb, we shouldn't auto-save Extension settings before activation
 
         if($this->has_common_errors() || $this->has_component_errors()) {
-            return $this->_add_common_error(new WP_Error(__('Cannot activate the extension - settings errors found', 'leyka')));
+            return $this->_add_common_error(new WP_Error('activation_failed', __('Cannot activate the extension - settings errors found.', 'leyka')));
         }
 
         $extensions_active = leyka_options()->opt('extensions_active');
