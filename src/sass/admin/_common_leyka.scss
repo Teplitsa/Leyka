@@ -1,6 +1,7 @@
 .leyka-admin {
     
     @include body-text();
+    @include leyka-loading-indicator();
 
     .postbox, #poststuff .postbox { // Metaboxes restyling
 
@@ -197,13 +198,13 @@
 
                 }
 
-                .loading-indicator-wrap {
-                    margin-left: 16px;
-
-                    .loader-wrap {
-                        padding-top: 0;
-                    }
-                }
+                //.loading-indicator-wrap {
+                //    margin-left: 16px;
+                //
+                //    .loader-wrap {
+                //        padding-top: 0;
+                //    }
+                //}
 
             }
 

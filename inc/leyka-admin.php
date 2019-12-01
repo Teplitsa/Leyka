@@ -782,13 +782,15 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             'ajax_loader_url' => LEYKA_PLUGIN_BASE_URL.'img/ajax-loader.gif',
             'field_required' => __('This field is required to be filled', 'leyka'),
             'email_invalid_msg' => __('You have entered an invalid email', 'leyka'),
-            'common_error_message' => esc_html__('Error while saving the data', 'leyka'),
-			'error_message' => esc_html__('Error!', 'leyka'),
-            'default_image_message' => esc_html__('Default', 'leyka'),
-			'disconnect_stats' => esc_html__('Disconnect statistics', 'leyka'),
-            'confirm_delete_comment' => esc_html__('Delete comment?', 'leyka'),
-            'first_donation_date_incomplete_message' => esc_html__('To correctly search for "First Payment Date", select the range of their two dates.', 'leyka'),
-            'last_donation_date_incomplete_message' => esc_html__('To correctly search for "Last Payment Date", select the range of their two dates.', 'leyka'),
+            'common_error_message' => __('Error while saving the data', 'leyka'),
+			'error_message' => __('Error!', 'leyka'),
+            'default_image_message' => __('Default', 'leyka'),
+			'disconnect_stats' => __('Disconnect statistics', 'leyka'),
+            'confirm_delete_comment' => __('Delete comment?', 'leyka'),
+            'first_donation_date_incomplete_message' => __('To correctly search for "First Payment Date", select the range of their two dates.', 'leyka'),
+            'last_donation_date_incomplete_message' => __('To correctly search for "Last Payment Date", select the range of their two dates.', 'leyka'),
+            'extension_deletion_confirm_text' => __('Are you sure you want to remove the extension completely?', 'leyka'),
+            'extensions_list_page_url' => admin_url('admin.php?page=leyka_extensions'),
         ));
 
         if(isset($_GET['page']) && $_GET['page'] === 'leyka') {

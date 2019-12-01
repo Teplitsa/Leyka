@@ -170,6 +170,29 @@
 
 }
 
+@mixin leyka-loading-indicator() {
+
+    .loading-indicator-wrap {
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-left: 16px;
+
+        .loader-wrap {
+
+            padding-top: 0;
+
+            .leyka-loader {
+                display: inline-block;
+            }
+
+        }
+
+    }
+
+}
+
 @mixin leyka-code-editor($code: 'css') {
 
     .cm-s-default.CodeMirror-wrap { // Code editor field

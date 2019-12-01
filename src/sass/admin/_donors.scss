@@ -29,23 +29,16 @@
 	}
 
 	.loading-indicator-wrap {
-	    display: inline-block;
-	    width: 24px;
-	    height: 24px;
 
 	    .ok-icon {
-	        display: none;
+	        //display: none;
 	        padding-top: 6px;
 	    }
 
 	    .loader-wrap {
-	        display: none;
 			padding-top: 8px;
-
-	        .leyka-loader {
-	            display: none;
-	        }
 	    }
+
 	}
 
 }
@@ -618,15 +611,15 @@
 
 					.loading-indicator-wrap {
 						margin-left: $leyka-base;
-						display: none;
+						//display: none;
 
-						.loader-wrap {
-							padding-top: 0px;
-							margin-right: 0px;
-						}
+						//.loader-wrap {
+						//	padding-top: 0px;
+						//	margin-right: 0px;
+						//}
 
 						.ok-icon {
-							padding-top: 0px;
+							padding-top: 0;
 						}
 					}
 				}
@@ -661,9 +654,9 @@
 							margin-top: $leyka-base;
 						}
 
-						.loading-indicator-wrap {
-							display: inline-block;
-						}
+						//.loading-indicator-wrap {
+						//	display: inline-block;
+						//}
 					}
 				}
 
@@ -1076,16 +1069,18 @@ table.donor-info-table {
 		align-items: center;
 
 		.loading-indicator-wrap {
-			display: none;
+
+			//display: none;
 
 			.loader-wrap {
-				padding-top: 0px;
+				padding-top: 0;
 				margin-right: 8px;
 			}
 
 			.ok-icon {
-				padding-top: 0px;
+				padding-top: 0;
 			}
+
 		}
 	}
 

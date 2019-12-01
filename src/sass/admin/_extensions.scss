@@ -164,9 +164,15 @@
             margin-top: -18px;
 
             .delete-extension-link {
+
+                display: flex;
+                align-items: center;
+
+                border: 0;
+
                 color: $leyka-adb-color-error;
                 text-decoration: none;
-                border: 0;
+
             }
 
             .button {

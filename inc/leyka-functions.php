@@ -2274,3 +2274,26 @@ if( !function_exists('leyka_attachment_is') ) {
 
     }
 }
+
+if( !function_exists('leyka_delete_dir') ) {
+    /**
+     * Recursively delete given directory & all it's files.
+     *
+     * @param $path string Absolute path to dir.
+     * @return boolean True if deletion succeeded, false otherwise.
+     */
+    function leyka_delete_dir($path) {
+
+        if(LEYKA_DEBUG) {
+            return file_exists($path) && is_dir($path);
+        }
+
+        if( !$path || $path === '/' ) {
+            return false;
+        }
+
+        return is_file($path) ? @unlink($path) : (array_map(__FUNCTION__, glob($path.'/*')) == @rmdir($path));
+
+    }
+
+}
