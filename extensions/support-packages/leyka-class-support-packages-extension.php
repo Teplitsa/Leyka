@@ -97,7 +97,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
 //                                'required' => true,
                                 'default' => '#F38D04',
                             ),
-                            $this->_id.'_background_color' => array(
+                            $this->_id.'_overlay_color' => array(
                                 'type' => 'colorpicker',
                                 'title' => '7. Цвет подложки', // __('', 'leyka'),
                                 'description' => 'Рекомендуем светлый оттенок', // __('', 'leyka'),
@@ -107,11 +107,41 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
                             ),
                             $this->_id.'_inactive_elements_color' => array(
                                 'type' => 'colorpicker',
-                                'title' => '7. Цвет неактивных элементов', // __('', 'leyka'),
+                                'title' => '8. Цвет неактивных элементов', // __('', 'leyka'),
                                 'description' => 'Рекомендуем светлый оттенок', // __('', 'leyka'),
 //                                'comment' => __('Please, enter ...', 'leyka'),
 //                                'required' => true,
                                 'default' => '#FAFAFA',
+                            ),
+                        )
+                    ),
+                    $this->_id.'_color_options' => array(
+                        'type' => 'container',
+                        'classes' => 'support-packages-color-options',
+                        'entries' => array(
+                            $this->_id.'_main_color' => array(
+                                'type' => 'colorpicker',
+                                'title' => '9. Главный цвет', // __('', 'leyka'),
+                                'description' => 'Рекомендуем яркий цвет', // __('', 'leyka'),
+                                'default' => '#F38D04',
+                            ),
+                            $this->_id.'_background_color' => array(
+                                'type' => 'colorpicker',
+                                'title' => '10. Цвет фона', // __('', 'leyka'),
+                                'description' => 'Контрастный основному цвету', // __('', 'leyka'),
+                                'default' => '#FDD39B',
+                            ),
+                            $this->_id.'_caption_color' => array(
+                                'type' => 'colorpicker',
+                                'title' => '11. Цвет надписей', // __('', 'leyka'),
+                                'description' => 'Контрастный основному цвету', // __('', 'leyka'),
+                                'default' => '#FDD39B',
+                            ),
+                            $this->_id.'_text_color' => array(
+                                'type' => 'colorpicker',
+                                'title' => '12. Цвет текста', // __('', 'leyka'),
+                                'description' => 'Рекомендуем контрастный фону', // __('', 'leyka'),
+                                'default' => '#1B1A18',
                             ),
                         )
                     ),

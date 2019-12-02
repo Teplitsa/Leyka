@@ -216,11 +216,21 @@ abstract class Leyka_Extension extends Leyka_Singleton {
             case 'home_folder':
             case 'home_folder_path':
                 return $this->_folder;
-
+                
+            case 'main_color':
+            case 'background_color':
+            case 'caption_color':
+            case 'text_color':
+                return $this->get_color($param);
+                
             default:
                 return false;
         }
 
+    }
+    
+    public function get_color($color_name) {
+        return leyka()->opt($this->id . '_' . $color_name);
     }
 
     public function get_settings_url() {

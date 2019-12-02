@@ -209,6 +209,7 @@ function leyka_empty(mixed_var) {
     return false;
 
 }
+
 /** Donor's account frontend */
 
 var leyka; // L10n lines

@@ -4,7 +4,7 @@ jQuery(document).ready(function($){
 
     $('.leyka-setting-field.colorpicker').wpColorPicker({ // Colorpicker fields
         change: function(e, ui) {
-            $(e.target).parents('.field').find('.leyka-colorpicker-value').val(ui.color.toString());
+            $(e.target).parents('.field').find('.leyka-colorpicker-value').val(ui.color.toString()).change();
         }
     });
 
