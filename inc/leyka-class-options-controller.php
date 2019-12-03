@@ -546,7 +546,8 @@ class Leyka_Options_Controller extends Leyka_Singleton {
             return NULL; /** @todo Throw new Exception, mb */
         }
 
-        return in_array($value_to_check, $this->opt($option_id));
+        $check_list = $this->opt($option_id);
+        return is_array($check_list) ? in_array($value_to_check, $check_list) : false;
 
     }
 
