@@ -9,6 +9,7 @@ $email_placeholders =
 <span class='item'><code>#DONATION_TYPE#</code><span class='description'>Тип пожертвования</span></span>
 <span class='item'><code>#DONOR_NAME#</code><span class='description'>Имя донора</span></span>
 <span class='item'><code>#DONOR_EMAIL#</code><span class='description'>Email донора</span></span>
+<span class='item'><code>#DONOR_COMMENT#</code><span class='description'>Комментарий донора к пожертвованию</span></span>
 <span class='item'><code>#SUM#</code><span class='description'>Полная сумма пожертвования (без учёта комиссий)</span></span>
 <span class='item'><code>#PAYMENT_METHOD_NAME#</code><span class='description'>Название способа оплаты</span></span>
 <span class='item'><code>#CAMPAIGN_NAME#</code><span class='description'>Кампания, на которую было сделано пожертвование</span></span>
