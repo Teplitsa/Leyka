@@ -201,3 +201,11 @@
     // Support packages admin page - END
 
 }
+
+// color picker
+.field-component {
+    .wp-picker-holder {
+        position: absolute;
+        z-index: 10;
+    }
+}

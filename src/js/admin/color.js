@@ -101,21 +101,21 @@ function leykaHex2Hsl(hexColor) {
 
 function leykaMainHslColor2Background(h, s, l) {
     if(l < 50) {
-        l = 80;
+        l = 95;
     }
     else {
-        l = 20;
+        l = 5;
     }
     return [h, s, l];
 }
 
 function leykaMainHslColor2Text(h, s, l) {
     if(l < 50) {
-        l = 90;
+        l = 21;
     }
     else {
-        l = 10;
+        l = 79;
     }
-    s = 5;
+    s = 20;
     return [h, s, l];
 }

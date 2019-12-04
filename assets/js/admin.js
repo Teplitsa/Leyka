@@ -509,22 +509,22 @@ function leykaHex2Hsl(hexColor) {
 
 function leykaMainHslColor2Background(h, s, l) {
     if(l < 50) {
-        l = 80;
+        l = 95;
     }
     else {
-        l = 20;
+        l = 5;
     }
     return [h, s, l];
 }
 
 function leykaMainHslColor2Text(h, s, l) {
     if(l < 50) {
-        l = 90;
+        l = 21;
     }
     else {
-        l = 10;
+        l = 79;
     }
-    s = 5;
+    s = 20;
     return [h, s, l];
 }
 // init "how to setup crom" modal
@@ -1358,7 +1358,7 @@ jQuery(document).ready(function($){
         $backgroundColorInput.wpColorPicker('color', backgroundColorHex);
         $captionColorInput.wpColorPicker('color', backgroundColorHex);
 
-        var textColorHsl = leykaMainHslColor2Text(backgroundColorHsl[0], backgroundColorHsl[1], backgroundColorHsl[2]);
+        var textColorHsl = leykaMainHslColor2Text(mainColorHsl[0], mainColorHsl[1], mainColorHsl[2]);
         console.log("textColorHsl:");
         console.log(textColorHsl);
 

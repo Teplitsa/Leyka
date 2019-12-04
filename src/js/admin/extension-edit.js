@@ -64,7 +64,7 @@ jQuery(document).ready(function($){
         $backgroundColorInput.wpColorPicker('color', backgroundColorHex);
         $captionColorInput.wpColorPicker('color', backgroundColorHex);
 
-        var textColorHsl = leykaMainHslColor2Text(backgroundColorHsl[0], backgroundColorHsl[1], backgroundColorHsl[2]);
+        var textColorHsl = leykaMainHslColor2Text(mainColorHsl[0], mainColorHsl[1], mainColorHsl[2]);
         console.log("textColorHsl:");
         console.log(textColorHsl);
 
