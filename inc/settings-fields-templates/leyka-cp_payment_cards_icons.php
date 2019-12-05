@@ -26,7 +26,7 @@
 
         </div>
 
-        <h2><?php _e("I already have the ShopID and secret key parameters", 'leyka');?></h2>
+        <h2><?php _e("I already have the Public ID and API key parameters", 'leyka');?></h2>
         <div class="single-gateway-settings gateway-yandex">
 
             <?php foreach(leyka_get_gateway_by_id('cp')->get_options_names() as $option_id) {
