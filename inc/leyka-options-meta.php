@@ -269,7 +269,7 @@ self::$_options_meta = array(
     ),
     'extensions_active' => array(
         'type' => 'multi_checkbox',
-//        'default' => array(),
+        'default' => array(),
         'title' => __('Extensions', 'leyka'),
 //        'required' => true,
 //        'list_entries' => 'leyka_get_extensions_list', // The option never showed in UI via standard means
@@ -280,18 +280,16 @@ self::$_options_meta = array(
         'title' => __('Automatically refresh currency rates', 'leyka'),
         'description' => __('Check to enable auto-refresh of currency rates. It will be performed every 24 hours and will require connection with http://cbr.ru website.', 'leyka'),
     ),
-    /* // disabled, waithing for multicurrency system 
-    'auto_refresh_currency_rate_usd' => array(
-        'type' => 'radio',
-        'default' => 'y',
-        'title' => __('Automatically refresh currency rates', 'leyka'),
-        'description' => __('Check to enable auto-refresh of currency rates. It will be performed every 24 hours and will require connection with http://cbr.ru website.', 'leyka'),
-        'list_entries' => array(
-            'y' => __('Automatically refresh currency rates using central bank rate', 'leyka'),
-            'n' => __("Manual currency rate input", 'leyka'),
-        ),
-    ),
-    */
+//    'auto_refresh_currency_rate_usd' => array( // disabled, waithing for multicurrency system
+//        'type' => 'radio',
+//        'default' => 'y',
+//        'title' => __('Automatically refresh currency rates', 'leyka'),
+//        'description' => __('Check to enable auto-refresh of currency rates. It will be performed every 24 hours and will require connection with http://cbr.ru website.', 'leyka'),
+//        'list_entries' => array(
+//            'y' => __('Automatically refresh currency rates using central bank rate', 'leyka'),
+//            'n' => __("Manual currency rate input", 'leyka'),
+//        ),
+//    ),
     'currency_rur2usd' => array(
         'type' => 'number',
         'title' => __('Exchange rate', 'leyka'),

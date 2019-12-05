@@ -132,6 +132,8 @@ class Leyka_Options_Controller extends Leyka_Singleton {
             $this->_options[$option_id]['value'] = is_array($this->_options[$option_id]['value']) ?
                 $this->_options[$option_id]['value'] :
                 trim($this->_options[$option_id]['value']);
+        } else if(stristr($this->_options[$option_id]['type'], 'multi_') !== false && !$this->_options[$option_id]['value']) {
+            $this->_options[$option_id]['value'] = array();
         }
 
         $this->_options[$option_id]['value'] = apply_filters(

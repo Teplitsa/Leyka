@@ -325,7 +325,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
         $gateway_options_names = $this->get_options_names();
         if($gateway_section_index < 0) {
-            $options[] = array('subsection' => array(
+            $options[] = array('section' => array(
                 'name' => $this->_id,
                 'title' => $this->_title,
                 'is_default_collapsed' => false,
@@ -831,10 +831,11 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
         $gateway_section_index = -1;
 
         foreach($options as $index => $option) {
-
             if( !empty($option['section']) && $option['section']['name'] == $gateway->id ) {
+
                 $gateway_section_index = $index;
                 break;
+
             }
         }
 
@@ -842,7 +843,7 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
         $pm_options_names[] = $this->full_id.'_label';
 
         if($gateway_section_index < 0) {
-            $options[] = array('subsection' => array(
+            $options[] = array('section' => array(
                 'name' => $gateway->id,
                 'title' => $gateway->title,
                 'is_default_collapsed' => false,
