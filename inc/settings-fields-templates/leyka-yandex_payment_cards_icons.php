@@ -17,7 +17,7 @@
         <h2><?php _e("I'm ready to follow the connection instructions", 'leyka');?></h2>
         <div>
 
-            <h3 class="intro-mini-header"><?php _e('Before you begin Yandex.Kassa registration, please, prepare scaned copies of the following documents (jpg/png):', 'leyka');?></h3>
+            <h3 class="intro-mini-header"><?php _e('Before you begin the registration, please, prepare scaned copies of the following documents (jpg/png):', 'leyka');?></h3>
 
             <ul>
                 <li><?php _e("Organization head's passport - the full main page and the registration page.", 'leyka');?></li>
@@ -38,8 +38,7 @@
                 <div class="field-errors"></div>
             </div>
 
-            <?php } //leyka_render_text_field('yandex_shop_id', leyka_options()->get_info_of('yandex_shop_id'));
-//            leyka_render_text_field('yandex_secret_key', leyka_options()->get_info_of('yandex_secret_key'));?>
+            <?php }?>
 
         </div>
 

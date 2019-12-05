@@ -60,6 +60,10 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
     }
 
+    public function is_setup_complete($pm_id = false) {
+        return leyka_options()->opt('cp_public_id') && leyka_options()->opt('cp_api_secret');
+    }
+
     protected function _initialize_pm_list() {
         if(empty($this->_payment_methods['card'])) {
             $this->_payment_methods['card'] = Leyka_CP_Card::get_instance();

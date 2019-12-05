@@ -36,7 +36,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
         )))->add_block(new Leyka_Text_Block(array(
             'id' => 'yandex-payment-cards-icons',
             'template' => 'yandex_payment_cards_icons',
-        )))->add_to($stage);
+        )))->add_handler(array($this, 'handle_first_step'))->add_to($stage);
 
         $section = new Leyka_Settings_Section('start_connection',  $stage->id, __('Start of the connection', 'leyka'));
         $section->add_block(new Leyka_Text_Block(array(
@@ -719,10 +719,29 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
         $errors = array();
 
         foreach($section_settings as $option_id => $value) {
-            leyka_save_option(preg_replace("/^leyka_/", "", $option_id));
+            leyka_save_option(preg_replace('/^leyka_/', '', $option_id));
         }
 
         return !empty($errors) ? $errors : true;
+
+    }
+
+    public function handle_first_step(array $section_settings) {
+
+        $gateway = leyka_get_gateway_by_id('yandex');
+
+        foreach($gateway->get_options_names() as $option_id) {
+            leyka_save_option($option_id);
+        }
+
+        if($gateway->is_setup_complete()) {
+
+            wp_redirect(admin_url('admin.php?page=leyka_settings&stage=payment&gateway=yandex'));
+            die();
+
+        }
+
+        return true;
 
     }
 
@@ -730,19 +749,21 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
 
         if($this->handle_save_options($section_settings) === true) {
 
-            $available_pms = leyka_options()->opt('pm_available');
-            $available_pms[] = 'yandex-yandex_card';
-            $available_pms[] = 'yandex-yandex_money';
-            $available_pms[] = 'yandex-yandex_all';
-            $available_pms = array_unique($available_pms);
-            leyka_options()->opt('pm_available', $available_pms);
+            $available_pm_list = leyka_options()->opt('pm_available');
+            $available_pm_list[] = 'yandex-yandex_card';
+            $available_pm_list[] = 'yandex-yandex_money';
+            $available_pm_list[] = 'yandex-yandex_all';
+            $available_pm_list = array_unique($available_pm_list);
+
+            leyka_options()->opt('pm_available', $available_pm_list);
 
             $pm_order = array();
-            foreach($available_pms as $pm_full_id) {
+            foreach($available_pm_list as $pm_full_id) {
                 if($pm_full_id) {
                     $pm_order[] = "pm_order[]={$pm_full_id}";
                 }
             }
+
             leyka_options()->opt('pm_order', implode('&', $pm_order));
 
         }

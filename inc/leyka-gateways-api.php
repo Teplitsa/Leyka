@@ -413,6 +413,10 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
     }
 
+    public function is_setup_complete($pm_id = false) {
+        return false;
+    }
+
     /**
      * A service method to get a a gateway inner system payment method ID by according Leyka pm_id, and vice versa.
      *

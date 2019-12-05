@@ -102,6 +102,14 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
     }
 
+    public function is_setup_complete($pm_id = false) {
+        if(leyka_options()->opt('yandex_new_api')) {
+            return leyka_options()->opt('yandex_shop_id') && leyka_options()->opt('yandex_secret_key');
+        } else {
+            return leyka_options()->opt('yandex_shop_id') && leyka_options()->opt('yandex_scid');
+        }
+    }
+
     protected function _initialize_pm_list() {
 
         if(empty($this->_payment_methods['yandex_all'])) {

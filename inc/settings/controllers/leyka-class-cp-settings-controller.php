@@ -56,7 +56,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
         )))->add_block(new Leyka_Text_Block(array(
             'id' => 'cp-payment-cards-icons',
             'template' => 'cp_payment_cards_icons',
-        )))->add_to($stage);
+        )))->add_handler(array($this, 'handle_first_step'))->add_to($stage);
 
         $section = new Leyka_Settings_Section('prepare_documents',  $stage->id, __('Preparing the documents', 'leyka'));
         $section->add_block(new Leyka_Text_Block(array(
@@ -389,6 +389,25 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
         }
 
         return $submit_settings;
+
+    }
+
+    public function handle_first_step(array $section_settings) {
+
+        $gateway = leyka_get_gateway_by_id('cp');
+
+        foreach($gateway->get_options_names() as $option_id) {
+            leyka_save_option($option_id);
+        }
+
+        if($gateway->is_setup_complete()) {
+
+            wp_redirect(admin_url('admin.php?page=leyka_settings&stage=payment&gateway=cp'));
+            die();
+
+        }
+
+        return true;
 
     }
 
