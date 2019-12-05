@@ -129,6 +129,62 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
 
     }
 
+    protected function _is_subscription_enough_for_package($package, $init_donation) {
+        return $init_donation->amount >= $package->min_amount;
+    }
+    
+    public function get_available_packages($user_id) {
+    }
+    
+    public function get_user_active_package($user) {
+        $donor = new Leyka_Donor($user);
+        $recurring_subscriptions = $donor->get_init_recurring_donations(true);
+        
+        $max_active_package = null;
+        foreach($this->get_available_packages($user_id) as $package) {
+            foreach($recurring_subscriptions as $init_donation) {
+                if($init_donation->cancel_recurring_requested) {
+                    break;
+                }
+                
+                if($this->_is_subscription_enough_for_package($package, $init_donation)) {
+                    $max_active_package = $package;
+                    break;
+                }
+            }
+        }
+        
+        return $max_active_package;
+    }
+    
+    public function is_feature_accessible($feature, $user_id) {        
+    }
+}
+
+class Leyka_Support_Packages_Feature {
+    public static $FEATURES = array(
+        'read_post' => array(),
+    );
+    
+    public function __construct($feature_name, $params=array()) {
+    }
+    
+    public function __get($field) {
+    }
+    
+    public function __set($field, $value) {
+    }
+}
+
+class Leyka_Support_Packages_Package {
+    public function __construct($package_id=null, $package_config=null) {
+    }
+    
+    public function __get($field) {
+    }
+    
+    public function __set($field, $value) {
+    }
 }
 
 function leyka_add_extension_support_packages() { // Use named function to leave a possibility to remove/replace it on the hook
