@@ -107,8 +107,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 require_once LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php';
 
                 $admin_title = get_bloginfo('name')
-                    .' &#8212; '
-                    .Leyka_Settings_Factory::get_instance()->get_controller($screen_full_id[1])->title;
+                    .' &#8212; '.Leyka_Settings_Factory::get_instance()->get_controller($screen_full_id[1])->title;
 
             } else if(isset($_GET['page']) && $_GET['page'] === 'leyka_donor_info' && !empty($_GET['donor'])) {
 

@@ -2,6 +2,11 @@
 
 jQuery(document).ready(function($){
 
+    $('.ui-accordion').accordion({
+        heightStyle: 'content',
+        // collapsible: true, active: false
+    });
+
     $('.leyka-setting-field.colorpicker').wpColorPicker({ // Colorpicker fields
         change: function(e, ui) {
             $(e.target).parents('.field').find('.leyka-colorpicker-value').val(ui.color.toString()).change();

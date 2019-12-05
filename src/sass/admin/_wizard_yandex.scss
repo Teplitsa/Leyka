@@ -7,7 +7,51 @@
             margin-top: 0;
         }
     }
-    
+
+    .ui-accordion { // Accordion UI widget on the first step
+
+        border-bottom: 1px dashed $color-border-semilight;
+
+        .ui-accordion-header {
+
+            margin: 16px 0;
+            border-top: 1px dashed $color-border-semilight;
+            padding-top: 16px;
+
+            line-height: inherit;
+            font-size: 18px;
+            cursor: pointer;
+
+            &.ui-accordion-header-active {
+                color: $color-wizard-link-active;
+            }
+
+        }
+
+        .intro-mini-header {
+            margin-top: 18px !important;
+        }
+
+        .ui-accordion-content {
+
+            margin-bottom: 16px;
+
+            ul {
+                margin-bottom: 16px;
+            }
+
+            .field-q {
+                @include field-q();
+            }
+
+        }
+
+    }
+
+    .gateway-supported-cards {
+        margin-bottom: 32px;
+    }
+
     &.step-test_payment {
         .main-area {
             
@@ -22,7 +66,7 @@
                         width: auto;
                     }
                 }
-                
+
                 .field-errors {
     
                     @include common-error-message();
