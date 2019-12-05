@@ -218,3 +218,27 @@
     }
 
 }
+
+@mixin leyka-triangle-right($size, $color: inherit) {
+
+    width: 0;
+    height: 0;
+    border-top: $size solid transparent;
+    border-bottom: $size solid transparent;
+
+    border-left: $size solid $color;
+
+}
+
+@mixin leyka-triangle-down($size, $color: inherit) {
+
+    width: 0;
+    height: 0;
+
+    border-left: $size solid transparent;
+    border-right: $size solid transparent;
+    border-top: $size solid $color;
+
+    margin-bottom: $size;
+
+}

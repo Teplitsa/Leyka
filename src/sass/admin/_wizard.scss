@@ -1,4 +1,3 @@
-
 .leyka-wizard {
 
     display: flex;
@@ -330,6 +329,29 @@
                 line-height: inherit;
                 font-size: 18px;
                 cursor: pointer;
+
+                .ui-accordion-header-icon {
+
+                    &.ui-icon-triangle-1-e { // Arrow right
+
+                        display: inline-block;
+                        margin-right: 10px;
+
+                        @include leyka-triangle-right(5px, $color-wizard-link-active);
+
+                    }
+
+                    &.ui-icon-triangle-1-s { // Arrow down
+
+                        display: inline-block;
+                        margin-right: 10px;
+
+                        @include leyka-triangle-down(5px, $color-wizard-link-active);
+
+                    }
+
+                }
+
 
                 &.ui-accordion-header-active {
                     color: $color-wizard-link-active;
