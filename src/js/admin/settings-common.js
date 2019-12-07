@@ -2,16 +2,20 @@
 
 jQuery(document).ready(function($){
 
-    $('.ui-accordion').accordion({
-        heightStyle: 'content',
-        // collapsible: true, active: false
-    });
+    if(typeof $.ui === 'object' && typeof $.ui.accordion !== 'undefined') {
+        $('.ui-accordion').accordion({
+            heightStyle: 'content',
+            // collapsible: true, active: false
+        });
+    }
 
-    $('.leyka-setting-field.colorpicker').wpColorPicker({ // Colorpicker fields
-        change: function(e, ui) {
-            $(e.target).parents('.field').find('.leyka-colorpicker-value').val(ui.color.toString()).change();
-        }
-    });
+    if(typeof $.wp === 'object' && typeof $.wp.wpColorPicker !== 'undefined') {
+        $('.leyka-setting-field.colorpicker').wpColorPicker({ // Colorpicker fields
+            change: function (e, ui) {
+                $(e.target).parents('.field').find('.leyka-colorpicker-value').val(ui.color.toString()).change();
+            }
+        });
+    }
 
     leyka_support_metaboxes('options-options_main_area'); // Support metaboxes
 
@@ -301,6 +305,7 @@ jQuery(document).ready(function($){
             nonce: $wrap.find('#_leyka_donor_email_nonce').val(),
             donation_id: donation_id
         });
+
     });
 
     // Exchange places of donations Export and Filter buttons:
@@ -311,6 +316,74 @@ jQuery(document).ready(function($){
     if($tooltips.length && typeof $().tooltip !== 'undefined' ) {
         $tooltips.tooltip();
     }
+
+    // var $campaign_select = $('#campaign-select');
+    // if($campaign_select.length && typeof $().autocomplete !== 'undefined') {
+    //
+    //     $campaign_select.keyup(function(){
+    //         if( !$(this).val() ) {
+    //             $('#campaign-id').val('');
+    //             $('#new-donation-purpose').html('');
+    //         }
+    //     });
+    //
+    //     $campaign_select.autocomplete({
+    //         minLength: 1,
+    //         focus: function(event, ui){
+    //             $campaign_select.val(ui.item.label);
+    //             $('#new-donation-purpose').html(ui.item.payment_title);
+    //
+    //             return false;
+    //         },
+    //         change: function(event, ui){
+    //             if( !$campaign_select.val() ) {
+    //                 $('#campaign-id').val('');
+    //                 $('#new-donation-purpose').html('');
+    //             }
+    //         },
+    //         close: function(event, ui){
+    //             if( !$campaign_select.val() ) {
+    //                 $('#campaign-id').val('');
+    //                 $('#new-donation-purpose').html('');
+    //             }
+    //         },
+    //         select: function(event, ui){
+    //             $campaign_select.val(ui.item.label);
+    //             $('#campaign-id').val(ui.item.value);
+    //             $('#new-donation-purpose').html(ui.item.payment_title);
+    //             return false;
+    //         },
+    //         source: function(request, response) {
+    //             var term = request.term,
+    //                 cache = $campaign_select.data('cache') ? $campaign_select.data('cache') : [];
+    //
+    //             if(term in cache) {
+    //                 response(cache[term]);
+    //                 return;
+    //             }
+    //
+    //             request.action = 'leyka_get_campaigns_list';
+    //             request.nonce = $campaign_select.data('nonce');
+    //
+    //             $.getJSON(leyka.ajaxurl, request, function(data, status, xhr){
+    //
+    //                 var cache = $campaign_select.data('cache') ? $campaign_select.data('cache') : [];
+    //
+    //                 cache[term] = data;
+    //                 response(data);
+    //             });
+    //         }
+    //     });
+    //
+    //     $campaign_select.data('ui-autocomplete')._renderItem = function(ul, item){
+    //         return $('<li>')
+    //             .append(
+    //                 '<a>'+item.label+(item.label == item.payment_title ? '' : '<div>'+item.payment_title+'</div></a>')
+    //             )
+    //             .appendTo(ul);
+    //     };
+    //
+    // }
 
     // Campaign selection fields:
     /** @todo Change this old campaigns select field code (pure jq-ui-autocomplete-based) to the new code (select + autocomplete, like on the Donors list page filters). */

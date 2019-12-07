@@ -74,6 +74,11 @@ function leyka_validate_donor_name(name_string) {
 // Plugin metaboxes rendering:
 function leyka_support_metaboxes(metabox_area) {
 
+    if(typeof postboxes === 'undefined') {
+        console.log('Leyka error: trying to support metaboxes for "'+metabox_area+'" area, but there are no "postboxes" var.');
+        return false;
+    }
+
     jQuery('.if-js-closed').removeClass('if-js-closed').addClass('closed'); // Close postboxes that should be closed
     postboxes.add_postbox_toggles(metabox_area);
 

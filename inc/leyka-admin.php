@@ -802,7 +802,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 		leyka_localize_rich_html_text_tags();
 
-        // Campaign editing page:
+        // Campaign edit page:
 		if(
 		    $screen->post_type === Leyka_Campaign_Management::$post_type
             && $screen->base === 'post'
@@ -829,24 +829,18 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         // Donation edit page:
         if($screen->post_type === Leyka_Donation_Management::$post_type && $screen->base === 'post') {
 
-            wp_enqueue_script(
-                'leyka-admin-add-edit-donation',
-                LEYKA_PLUGIN_BASE_URL.'js/admin-add-edit-donation.js',
-                array('jquery-ui-datepicker-locale', 'jquery-ui-autocomplete'), LEYKA_VERSION, true
-            );
-            wp_localize_script('leyka-admin-add-edit-donation', 'leyka', $js_data + array(
+            $dependencies[] = 'jquery-ui-datepicker-locale';
+
+            $js_data = $js_data + array(
                 'add_donation_button_text' => __('Add the donation', 'leyka'),
                 'field_required' => __('This field is required to be filled', 'leyka'),
                 'campaign_required' => __('Selecting a campaign is required', 'leyka'),
                 'email_invalid_msg' => __('You have entered an invalid email', 'leyka'),
                 'amount_incorrect_msg' => __('The amount must be filled with non-zero, non-negative number', 'leyka'),
                 'donation_source_required' => __('Please, set one of a payment methods or just type a few words to describe a source for this donation', 'leyka'),
-            ));
-
-            return; /** @todo Only for now. Need to transfer the code from /js/admin-add-edit-donation.js to the separate /src/js/admin/ script. */
+            );
 
         }
-
 
         $dependencies[] = 'jquery-ui-autocomplete';
 
