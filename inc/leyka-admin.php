@@ -160,7 +160,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         }
 
         // Add donor account column to the admin Users list if needed:
-        if(get_option('leyka_donor_accounts_available')) {
+        if(get_option('leyka_donor_management_available')) {
 
             add_filter('manage_users_columns', function($column){
 

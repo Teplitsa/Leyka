@@ -190,9 +190,8 @@ if( !function_exists('leyka_admin_get_donor_comment_table_row') ) {
                 		str-btn="editable-comment-str-btn<?php echo $comment_id;?>" 
                 		str-result="editable-comment-str-result<?php echo $comment_id;?>"
                 		save-action="leyka_save_editable_comment"
-                		text-item-id="<?php echo $comment_id;?>" 
-            		/>
-                    <div class="loading-indicator-wrap">
+                		text-item-id="<?php echo $comment_id;?>">
+                    <div class="loading-indicator-wrap" style="display: none;">
                         <div class="loader-wrap"><span class="leyka-loader xxs"></span></div>
                         <img class="ok-icon" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/icon-check.svg" alt="">
                     </div>
