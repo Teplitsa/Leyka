@@ -16,7 +16,7 @@
             display: none;
         }
 
-        h2 {
+        h2.hndle {
 
             display: flex;
 
@@ -41,7 +41,7 @@
 
         }
 
-        &.closed h2:before {
+        &.closed h2.hndle:before {
             background-image: url(../../img/icon-accord-collapsed.svg);
         }
 

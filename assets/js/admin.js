@@ -827,8 +827,6 @@ jQuery(document).ready(function($){
         return;
     }
 
-    leyka_support_metaboxes('dashboard_page_leyka_donor_info');
-
     // Donations list data table:
     if(typeof $().DataTable !== 'undefined' && typeof leyka_dt !== 'undefined') {
         $('.leyka-data-table').DataTable({
