@@ -2547,7 +2547,10 @@ jQuery(document).ready(function($){
         });
     }
 
-    leyka_support_metaboxes('options-options_main_area'); // Support metaboxes
+    // Support metaboxes ONLY where needed (else there are metabox handling errors on the wrong pages):
+    $('input.leyka-support-metabox-area').each(function(){
+        leyka_support_metaboxes($(this).val());
+    });
 
     // Custom CSS editor fields:
     let $css_editor = $('.css-editor-field'),
@@ -4001,6 +4004,8 @@ function leyka_support_metaboxes(metabox_area) {
         console.log('Leyka error: trying to support metaboxes for "'+metabox_area+'" area, but there are no "postboxes" var.');
         return false;
     }
+
+    console.log('Metaboxes supported for: ', metabox_area);
 
     jQuery('.if-js-closed').removeClass('if-js-closed').addClass('closed'); // Close postboxes that should be closed
     postboxes.add_postbox_toggles(metabox_area);

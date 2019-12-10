@@ -17,7 +17,10 @@ jQuery(document).ready(function($){
         });
     }
 
-    leyka_support_metaboxes('options-options_main_area'); // Support metaboxes
+    // Support metaboxes ONLY where needed (else there are metabox handling errors on the wrong pages):
+    $('input.leyka-support-metabox-area').each(function(){
+        leyka_support_metaboxes($(this).val());
+    });
 
     // Custom CSS editor fields:
     let $css_editor = $('.css-editor-field'),

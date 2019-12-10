@@ -139,7 +139,12 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
         $this->_add_sections_metaboxes();?>
 
         <div class="options-form-content">
-            <?php do_meta_boxes($this->_controller->id.'-options_main_area', 'normal', null);?>
+
+            <?php $metaboxes_area_id = $this->_controller->id.'-options_main_area';?>
+            <input type="hidden" class="leyka-support-metabox-area" value="<?php echo $metaboxes_area_id;?>">
+
+            <?php do_meta_boxes($metaboxes_area_id, 'normal', null);?>
+
         </div>
 
         <?php $this->render_hidden_fields();
