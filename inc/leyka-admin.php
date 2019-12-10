@@ -517,7 +517,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         do_action('leyka_pre_donor_info_actions'); // Add collapsible to metaboxes
 
-//        // Add all metaboxes:
+        // Add all metaboxes:
         add_meta_box('leyka_donor_info', __("Donor's data", 'leyka'), array($this, 'donor_data_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
         add_meta_box('leyka_donor_admin_comments', __('Comments', 'leyka'), array($this, 'donor_comments_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
         add_meta_box('leyka_donor_tags', __('Tags'), array($this, 'donor_tags_metabox'), 'dashboard_page_leyka_donor_info', 'normal');

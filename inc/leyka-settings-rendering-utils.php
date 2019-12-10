@@ -738,82 +738,89 @@ add_action('leyka_render_custom_support_packages_settings', 'leyka_render_suppor
 function leyka_render_support_packages_settings($option_id, $data){ // support_packages_custom_packages_settings
 
     $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
-    $option_value = 'TODO';?>
+    $option_value = array(); // TODO ?>
 
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-<?php echo $option_id;?>-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) ? '' : implode(' ', $data['field_classes']);?>">
 
-        <div class="reward-box template"> <!-- style="display: none;" -->
+        <?php for($i=0; $i < 5; $i++) { // We have 1-5 support packages
 
-            <h2 class="hndle ui-sortable-handle"><span><?php echo sprintf(__('Reward #%d', 'leyka'), 1);?></span></h2>
+            $package_options = array_shift($option_value);?>
 
-            <div class="box-content">
+            <div class="package-box" <?php // echo $package_options ? '' : 'style="display: none;"';?>>
 
-                <div class="option-block type-text">
-                    <div class="leyka-text-field-wrapper">
-                        <?php leyka_render_text_field('package_title', array(
-                            'title' => __('Reward title', 'leyka'),
-                            'placeholder' => __('E.g., "Golden support level"', 'leyka'),
-                            'required' => true,
-                        ));?>
+                <h2 class="hndle ui-sortable-handle"><span><?php echo sprintf(__('Reward #%d', 'leyka'), 1);?></span></h2>
+
+                <div class="box-content">
+
+                    <div class="option-block type-text">
+                        <div class="leyka-text-field-wrapper">
+                            <?php leyka_render_text_field('package_title', array(
+                                'title' => __('Reward title', 'leyka'),
+                                'placeholder' => __('E.g., "Golden support level"', 'leyka'),
+                                'required' => true,
+                            ));?>
+                        </div>
+                        <div class="field-errors"></div>
                     </div>
-                    <div class="field-errors"></div>
-                </div>
 
-                <div class="option-block type-text">
-                    <div class="leyka-text-field-wrapper">
-                        <?php leyka_render_text_field('package_slug', array(
-                            'title' => __('Software title', 'leyka'),
-                            'placeholder' => __('E.g., "golden"', 'leyka'),
-                            'description' => __('Only latin & numeric characters allowed', 'leyka'),
-                            'required' => true,
-                        ));?>
+                    <div class="option-block type-text">
+                        <div class="leyka-text-field-wrapper">
+                            <?php leyka_render_text_field('package_slug', array(
+                                'title' => __('Software title', 'leyka'),
+                                'placeholder' => __('E.g., "golden"', 'leyka'),
+                                'description' => __('Only latin & numeric characters allowed', 'leyka'),
+                                'required' => true,
+                            ));?>
+                        </div>
+                        <div class="field-errors"></div>
                     </div>
-                    <div class="field-errors"></div>
-                </div>
 
-                <div class="settings-block container-block">
-                    <div class="container-entry" style="flex-basis: 47%;">
-                        <div class="option-block type-number">
-                            <div class="leyka-number-field-wrapper">
-                                <?php leyka_render_number_field('package_min_amount', array(
-                                    'title' => sprintf(__('Min donations amount, %s', 'leyka'), leyka_get_currency_label()),
-                                    'placeholder' => '400',
-                                    'required' => true,
-                                ));?>
+                    <div class="settings-block container-block">
+                        <div class="container-entry" style="flex-basis: 47%;">
+                            <div class="option-block type-number">
+                                <div class="leyka-number-field-wrapper">
+                                    <?php leyka_render_number_field('package_min_amount', array(
+                                        'title' => sprintf(__('Min donations amount, %s', 'leyka'), leyka_get_currency_label()),
+                                        'placeholder' => '400',
+                                        'required' => true,
+                                    ));?>
+                                </div>
+                                <div class="field-errors"></div>
                             </div>
-                            <div class="field-errors"></div>
+                        </div>
+                        <div class="container-entry" style="flex-basis: 47%;">
+                            <div class="option-block type-number">
+                                <div class="leyka-number-field-wrapper">
+                                    <?php leyka_render_number_field('package_max_amount', array(
+                                        'title' => sprintf(__('Max donations amount, %s', 'leyka'), leyka_get_currency_label()),
+                                        'placeholder' => '500',
+                                        'required' => true,
+                                    ));?>
+                                </div>
+                                <div class="field-errors"></div>
+                            </div>
                         </div>
                     </div>
-                    <div class="container-entry" style="flex-basis: 47%;">
-                        <div class="option-block type-number">
-                            <div class="leyka-number-field-wrapper">
-                                <?php leyka_render_number_field('package_max_amount', array(
-                                    'title' => sprintf(__('Max donations amount, %s', 'leyka'), leyka_get_currency_label()),
-                                    'placeholder' => '500',
-                                    'required' => true,
-                                ));?>
-                            </div>
-                            <div class="field-errors"></div>
-                        </div>
+
+                    <div class="settings-block option-block type-file">
+                        <?php leyka_render_file_field('package_icon', array(
+                            'upload_label' => __('Load icon', 'leyka'),
+                            'description' => __('A *.png or *.svg file. The size is no more than 2 Mb', 'leyka'),
+                            'required' => true,
+                        ));?>
+                        <div class="field-errors"></div>
                     </div>
+
                 </div>
 
-                <div class="settings-block option-block type-file">
-                    <?php leyka_render_file_field('package_icon', array(
-                        'upload_label' => __('Load icon', 'leyka'),
-                        'description' => __('A *.png or *.svg file. The size is no more than 2 Mb', 'leyka'),
-                        'required' => true,
-                    ));?>
-                    <div class="field-errors"></div>
+                <div class="box-footer">
+                    <div class="delete-reward"><?php _e('Delete the reward', 'leyka');?></div>
                 </div>
 
             </div>
 
-            <div class="box-footer">
-                <div class="delete-reward"><?php _e('Delete the reward', 'leyka');?></div>
-            </div>
+        <?php }?>
 
-        </div>
         <div class="add-reward bottom"><?php _e('Add reward', 'leyka');?></div>
 
     </div>
