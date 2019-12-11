@@ -67,6 +67,10 @@ function leyka_make_password(pass_length) {
 
 }
 
+function leyka_get_random_string(length = 6) {
+    return Array(length + 1).join((Math.random().toString(36)+'00000000000000000').slice(2, 18)).slice(0, length);
+}
+
 function leyka_validate_donor_name(name_string) {
     return !name_string.match(/[ !@#$%^&*()+=\[\]{};:"\\|,<>\/?]/);
 }

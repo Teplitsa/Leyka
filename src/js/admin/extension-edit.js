@@ -42,6 +42,7 @@ jQuery(document).ready(function($){
 
 });
 
+/** @todo After debugging, move all the following code to the Extension own JS: */
 jQuery(document).ready(function($){
 
     var $mainColorInput = $('input[name="leyka_support_packages_main_color"]');
@@ -82,32 +83,83 @@ jQuery(document).ready(function($){
 
 });
 
-// Support packages extension - custom field: /** @todo After debugging, move this code to the Extension own JS */
+// Support packages extension - custom field:
 jQuery(document).ready(function($){
 
     let $packages_wrapper = $('.leyka-main-support-packages'),
         $package_template = $packages_wrapper.siblings('.package-template'),
+        $add_package_button = $packages_wrapper.siblings('.add-package'),
         $order_field = $packages_wrapper.siblings('input[name="leyka_support_packages_order"]');
 
     $packages_wrapper.sortable({
         placeholder: 'ui-state-highlight', // A class for dropping item placeholder
-        change: function(event, ui){
+        update: function(event, ui){
             console.log($packages_wrapper.sortable('toArray'));
+            // TODO Update the order field & the super-option here
             // $order_field.val()
         }
     });
 
-    $packages_wrapper.on('click.leyka', '.add-reward', function(e){
+    $packages_wrapper.on('click.leyka', '.delete-package', function(e){
 
         e.preventDefault();
 
-        console.log($package_template)
+        if($packages_wrapper.find('.package-box').length > 1) {
 
-    }).on('click.leyka', '.delete-reward', function(e){
+            $(this).parents('.package-box').remove();
+            $packages_wrapper.sortable('option', 'update')();
+
+        }
+
+        let packages_current_count = $packages_wrapper.find('.package-box').length;
+        if(packages_current_count <= 1) {
+            $packages_wrapper.find('.delete-package').addClass('inactive');
+        }
+        if(packages_current_count < 5) { /** @todo Get this hardcoded "5" value from the Extension var */
+            $add_package_button.removeClass('inactive');
+        }
+
+    });
+    $add_package_button.on('click.leyka', function(e){
 
         e.preventDefault();
-        console.log('delete the reward');
+
+        if($add_package_button.hasClass('inactive')) {
+            return;
+        }
+
+        // Generate & set the new package ID:
+        let new_package_id = '';
+        do {
+            new_package_id = leyka_get_random_string(4);
+        } while($packages_wrapper.find('#package-'+new_package_id).length);
+
+        $package_template
+            .clone()
+            .appendTo($packages_wrapper)
+            .removeClass('package-template')
+            .prop('id', 'package-'+new_package_id)
+            .show();
+
+        $packages_wrapper.sortable('option', 'update')();
+
+        let packages_current_count = $packages_wrapper.find('.package-box').length;
+
+        if(packages_current_count >= 5) { /** @todo Get this hardcoded "5" value from the Extension var */
+            $add_package_button.addClass('inactive');
+        }
+
+        if(packages_current_count <= 1) { // When adding initial package box
+            $packages_wrapper.find('.delete-package').addClass('inactive');
+        } else if(packages_current_count > 1) {
+            $packages_wrapper.find('.delete-package').removeClass('inactive');
+        }
 
     });
 
+    if( !$packages_wrapper.find('.package-box').length ) { // No packages added yet - add the first (empty) one
+        $add_package_button.trigger('click.leyka');
+    }
+
 });
+/** @todo Move to the Extension JS - END */

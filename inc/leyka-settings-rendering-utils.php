@@ -748,7 +748,7 @@ function leyka_render_support_packages_settings($option_id, $data){ // support_p
             'icon_value' => '',
         ));?>
 
-        <div id="<?php echo rand(0, 100);?>" class="package-box <?php echo $is_template ? 'package-template' : '';?>" <?php echo $is_template ? 'style="display: none;"' : '';?>>
+        <div id="<?php echo $is_template ? '' : 'package-'.leyka_get_random_string(4);?>" class="package-box <?php echo $is_template ? 'package-template' : '';?>" <?php echo $is_template ? 'style="display: none;"' : '';?>>
 
             <h2 class="ui-sortable-handle"><span><?php echo esc_html($placeholders['box_title']);?></span></h2>
 
@@ -821,7 +821,7 @@ function leyka_render_support_packages_settings($option_id, $data){ // support_p
             </div>
 
             <div class="box-footer">
-                <div class="delete-reward"><?php _e('Delete the reward', 'leyka');?></div>
+                <div class="delete-package"><?php _e('Delete the reward', 'leyka');?></div>
             </div>
 
         </div>
@@ -846,34 +846,25 @@ function leyka_render_support_packages_settings($option_id, $data){ // support_p
                     'icon_value' => '', // $package_options['icon_value']
                 ));
             }
-        } else { // No packages yet - show just one empty box
-            leyka_support_package_html(false, array(
-//                'box_title' => sprintf(__('New reward'), 1),
-//                'title_value' => '',
-//                'slug_value' => '',
-//                'min_amount_value' => 0,
-//                'max_amount_value' => 0,
-//                'icon_value' => '',
-            ));
         }
 
         // For sortable debugging:
-        leyka_support_package_html(false, array(
-            'box_title' => 'The test reward 1', // $package_options['title']
-            'title_value' => 'The test reward 1', // $package_options['title']
-            'slug_value' => 'test-reward-1', // $package_options['slug']
-            'min_amount_value' => 0, // $package_options['min_amount']
-            'max_amount_value' => 500, // $package_options['max_amount']
-            'icon_value' => '/2019/12/test-icon.jpg', // $package_options['icon_value']
-        ));
-        leyka_support_package_html(false, array(
-            'box_title' => 'The test reward 2', // $package_options['title']
-            'title_value' => 'The test reward 2', // $package_options['title']
-            'slug_value' => 'test-reward-2', // $package_options['slug']
-            'min_amount_value' => 501, // $package_options['min_amount']
-            'max_amount_value' => 1500, // $package_options['max_amount']
-            'icon_value' => '/2019/12/test-icon.jpg', // $package_options['icon_value']
-        ));
+//        leyka_support_package_html(false, array(
+//            'box_title' => 'The test reward 1', // $package_options['title']
+//            'title_value' => 'The test reward 1', // $package_options['title']
+//            'slug_value' => 'test-reward-1', // $package_options['slug']
+//            'min_amount_value' => 0, // $package_options['min_amount']
+//            'max_amount_value' => 500, // $package_options['max_amount']
+//            'icon_value' => '/2019/12/test-icon.jpg', // $package_options['icon_value']
+//        ));
+//        leyka_support_package_html(false, array(
+//            'box_title' => 'The test reward 2', // $package_options['title']
+//            'title_value' => 'The test reward 2', // $package_options['title']
+//            'slug_value' => 'test-reward-2', // $package_options['slug']
+//            'min_amount_value' => 501, // $package_options['min_amount']
+//            'max_amount_value' => 1500, // $package_options['max_amount']
+//            'icon_value' => '/2019/12/test-icon.jpg', // $package_options['icon_value']
+//        ));
         // Debugging - END?>
         </div>
 
@@ -881,7 +872,7 @@ function leyka_render_support_packages_settings($option_id, $data){ // support_p
 
         <input type="hidden" name="leyka_support_packages_order" value="">
 
-        <div class="add-reward bottom"><?php _e('Add reward', 'leyka');?></div>
+        <div class="add-package bottom"><?php _e('Add reward', 'leyka');?></div>
 
     </div>
 
