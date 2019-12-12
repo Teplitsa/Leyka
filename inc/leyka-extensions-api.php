@@ -174,6 +174,8 @@ abstract class Leyka_Extension extends Leyka_Singleton {
             case 'id':
             case 'ID':
                 return $this->_id;
+            case 'id_dash':
+                return str_replace('_', '-', $this->_id);
             case 'title':
             case 'name':
             case 'label':
@@ -337,6 +339,24 @@ abstract class Leyka_Extension extends Leyka_Singleton {
 
     /** Register an extension frontend scripts in the plugin */
     public function enqueue_scripts() {
+        if($this->_has_color_options) {
+            $this->add_inline_style_colors();
+        }
+    }
+    
+    public function add_inline_style_colors() {
+        ob_start();
+        ?>
+:root {
+	--leyka-ext-<?php echo $this->id_dash;?>-color-main: <?php echo $this->main_color?>;
+	--leyka-ext-<?php echo $this->id_dash;?>-color-background: <?php echo $this->background_color?>;
+	--leyka-ext-<?php echo $this->id_dash;?>-color-caption: <?php echo $this->caption_color?>;
+	--leyka-ext-<?php echo $this->id_dash;?>-color-text: <?php echo $this->text_color?>;
+}
+        <?php        
+        $custom_css = ob_get_clean();
+        
+        wp_add_inline_style(leyka()->plugin_slug . '-revo-plugin-styles', $custom_css);
     }
 
     abstract protected function _set_attributes(); // Attributes are constant, like id, title, etc.
