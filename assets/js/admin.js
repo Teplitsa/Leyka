@@ -1558,15 +1558,27 @@ jQuery(document).ready(function($){
 
     let $packages_wrapper = $('.leyka-main-support-packages'),
         $package_template = $packages_wrapper.siblings('.package-template'),
-        $add_package_button = $packages_wrapper.siblings('.add-package'),
-        $order_field = $packages_wrapper.siblings('input[name="leyka_support_packages_order"]');
+        $add_package_button = $packages_wrapper.siblings('.add-package');
 
     $packages_wrapper.sortable({
         placeholder: 'ui-state-highlight', // A class for dropping item placeholder
         update: function(event, ui){
-            console.log($packages_wrapper.sortable('toArray'));
-            // TODO Update the order field & the super-option here
-            // $order_field.val()
+
+            let packages_options = [];
+            $.each($packages_wrapper.sortable('toArray'), function(key, package_id){ // Value is a package ID
+
+                let package_options = {'package_id': package_id}; // Assoc array key should be initialized explicitly
+
+                $.each($packages_wrapper.find('#'+package_id).find(':input').serializeArray(), function(key, package_field){
+                    package_options[ package_field.name.replace('leyka_', '') ] = package_field.value;
+                });
+
+                packages_options.push(package_options);
+
+            });
+
+            $packages_wrapper.siblings('input[name="leyka_support_packages"]').val(JSON.stringify(packages_options));
+
         }
     });
 
@@ -1585,7 +1597,7 @@ jQuery(document).ready(function($){
         if(packages_current_count <= 1) {
             $packages_wrapper.find('.delete-package').addClass('inactive');
         }
-        if(packages_current_count < 5) { /** @todo Get this hardcoded "5" value from the Extension var */
+        if(packages_current_count < $packages_wrapper.data('max-packages')) {
             $add_package_button.removeClass('inactive');
         }
 
@@ -1615,7 +1627,7 @@ jQuery(document).ready(function($){
 
         let packages_current_count = $packages_wrapper.find('.package-box').length;
 
-        if(packages_current_count >= 5) { /** @todo Get this hardcoded "5" value from the Extension var */
+        if(packages_current_count >= $packages_wrapper.data('max-packages')) {
             $add_package_button.addClass('inactive');
         }
 

@@ -740,6 +740,7 @@ function leyka_render_support_packages_settings($option_id, $data){ // support_p
     function leyka_support_package_html($is_template = false, $placeholders = array()) {
 
         $placeholders = wp_parse_args($placeholders, array(
+            'id' => '',
             'box_title' => __('New reward', 'leyka'),
             'title_value' => '',
             'slug_value' => '',
@@ -748,7 +749,7 @@ function leyka_render_support_packages_settings($option_id, $data){ // support_p
             'icon_value' => '',
         ));?>
 
-        <div id="<?php echo $is_template ? '' : 'package-'.leyka_get_random_string(4);?>" class="package-box <?php echo $is_template ? 'package-template' : '';?>" <?php echo $is_template ? 'style="display: none;"' : '';?>>
+        <div id="<?php echo $is_template || !$placeholders['id'] ? '' : 'package-'.leyka_get_random_string(4);?>" class="package-box <?php echo $is_template ? 'package-template' : '';?>" <?php echo $is_template ? 'style="display: none;"' : '';?>>
 
             <h2 class="ui-sortable-handle"><span><?php echo esc_html($placeholders['box_title']);?></span></h2>
 
@@ -761,19 +762,6 @@ function leyka_render_support_packages_settings($option_id, $data){ // support_p
                             'placeholder' => __('E.g., "Golden support level"', 'leyka'),
                             'required' => true,
                             'value' => $placeholders['title_value'],
-                        ));?>
-                    </div>
-                    <div class="field-errors"></div>
-                </div>
-
-                <div class="option-block type-text">
-                    <div class="leyka-text-field-wrapper">
-                        <?php leyka_render_text_field('package_slug', array(
-                            'title' => __('Software title', 'leyka'),
-                            'placeholder' => __('E.g., "golden"', 'leyka'),
-                            'description' => __('Only latin & numeric characters allowed', 'leyka'),
-                            'required' => true,
-                            'value' => $placeholders['slug_value'],
                         ));?>
                     </div>
                     <div class="field-errors"></div>
@@ -828,60 +816,38 @@ function leyka_render_support_packages_settings($option_id, $data){ // support_p
 
     <?php }
 
-    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
-    $option_value = array(); // TODO ?>
+    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;?>
 
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-<?php echo $option_id;?>-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) ? '' : implode(' ', $data['field_classes']);?>">
 
-        <div class="leyka-main-support-packages">
+        <div class="leyka-main-support-packages" data-max-packages="<?php echo 5; /** @todo Max. packages number should be const */?>">
 
-        <?php if(is_array($option_value) && $option_value) { // Some packages set up already - display them
-            foreach($option_value as $package_options) {
+        <?php $data['value'] = empty($data['value']) || !is_array($data['value']) ? array() : $data['value'];
+
+        if($data['value']) { // Some packages set up already - display them (the assoc. array keys order is important)
+            foreach($data['value'] as $package_id => $options) {
                 leyka_support_package_html(false, array(
-                    'box_title' => 'TMP', // $package_options['title']
-                    'title_value' => '', // $package_options['title']
-                    'slug_value' => '', // $package_options['slug']
-                    'min_amount_value' => 0, // $package_options['min_amount']
-                    'max_amount_value' => 0, // $package_options['max_amount']
-                    'icon_value' => '', // $package_options['icon_value']
+                    'id' => $package_id,
+                    'box_title' => $options['package_title'],
+                    'title_value' => $options['package_title'],
+                    'min_amount_value' => $options['package_min_amount'],
+                    'max_amount_value' => $options['package_max_amount'],
+                    'icon_value' => $options['package_icon'],
                 ));
             }
-        }
-
-        // For sortable debugging:
-//        leyka_support_package_html(false, array(
-//            'box_title' => 'The test reward 1', // $package_options['title']
-//            'title_value' => 'The test reward 1', // $package_options['title']
-//            'slug_value' => 'test-reward-1', // $package_options['slug']
-//            'min_amount_value' => 0, // $package_options['min_amount']
-//            'max_amount_value' => 500, // $package_options['max_amount']
-//            'icon_value' => '/2019/12/test-icon.jpg', // $package_options['icon_value']
-//        ));
-//        leyka_support_package_html(false, array(
-//            'box_title' => 'The test reward 2', // $package_options['title']
-//            'title_value' => 'The test reward 2', // $package_options['title']
-//            'slug_value' => 'test-reward-2', // $package_options['slug']
-//            'min_amount_value' => 501, // $package_options['min_amount']
-//            'max_amount_value' => 1500, // $package_options['max_amount']
-//            'icon_value' => '/2019/12/test-icon.jpg', // $package_options['icon_value']
-//        ));
-        // Debugging - END?>
+        }?>
         </div>
 
         <?php leyka_support_package_html(true); // Package box template ?>
 
-        <input type="hidden" name="leyka_support_packages_order" value="">
-
         <div class="add-package bottom"><?php _e('Add reward', 'leyka');?></div>
+
+        <input type="hidden" name="leyka_support_packages" value="">
 
     </div>
 
 <?php }
 // [Special field] Support packages extension - packages list field - END
-
-
-
-
 
 
 
