@@ -18,10 +18,14 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         add_action('restrict_manage_posts', array($this, 'manage_filters'));
         add_action('pre_get_posts', array($this, 'do_filtering'));
 
-        add_action('add_meta_boxes', array($this, 'add_metaboxes')); // Add Donation PT metaboxes
-        add_action('add_meta_boxes', array($this, 'remove_metaboxes'), 100); // Remove unneeded metaboxes
+        if(leyka_get_donations_storage_type() === 'post') {
 
-        add_action('save_post_'.self::$post_type, array($this, 'save_donation_data'));
+            add_action('add_meta_boxes', array($this, 'add_metaboxes')); // Add Donation PT metaboxes
+            add_action('add_meta_boxes', array($this, 'remove_metaboxes'), 100); // Remove unneeded metaboxes
+
+            add_action('save_post_'.self::$post_type, array($this, 'save_donation_data'));
+
+        }
 
 		add_filter('manage_'.self::$post_type.'_posts_columns', array($this, 'manage_columns_names'));
 		add_action('manage_'.self::$post_type.'_posts_custom_column', array($this, 'manage_columns_content'), 2, 2);
@@ -676,21 +680,21 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         if($curr_page->action === 'add') { // New donation page
 
-            add_meta_box(self::$post_type.'_new_data', __('New donation data', 'leyka'), array($this, 'new_donation_data_metabox'), self::$post_type, 'normal', 'high');
-            add_meta_box(self::$post_type.'_status', __('Donation status', 'leyka'), array($this, 'donation_status_metabox'), self::$post_type, 'side', 'high');
+            add_meta_box(self::$post_type.'_new_data', __('New donation data', 'leyka'), array(__CLASS__, 'new_donation_data_metabox'), self::$post_type, 'normal', 'high');
+            add_meta_box(self::$post_type.'_status', __('Donation status', 'leyka'), array(__CLASS__, 'donation_status_metabox'), self::$post_type, 'side', 'high');
 
         } else { // View/edit donation page
 
-            add_meta_box(self::$post_type.'_data', __('Donation data', 'leyka'), array($this, 'donation_data_metabox'), self::$post_type, 'normal', 'high');
-            add_meta_box(self::$post_type.'_status', __('Donation status', 'leyka'), array($this, 'donation_status_metabox'), self::$post_type, 'side', 'high');
-            add_meta_box(self::$post_type.'_emails_status', __('Emails status', 'leyka'), array($this, 'emails_status_metabox'), self::$post_type, 'normal', 'high');
-            add_meta_box(self::$post_type.'_gateway_response', __('Gateway responses text', 'leyka'), array($this, 'gateway_response_metabox'), self::$post_type, 'normal', 'low');
+            add_meta_box(self::$post_type.'_data', __('Donation data', 'leyka'), array(__CLASS__, 'donation_data_metabox'), self::$post_type, 'normal', 'high');
+            add_meta_box(self::$post_type.'_status', __('Donation status', 'leyka'), array(__CLASS__, 'donation_status_metabox'), self::$post_type, 'side', 'high');
+            add_meta_box(self::$post_type.'_emails_status', __('Emails status', 'leyka'), array(__CLASS__, 'emails_status_metabox'), self::$post_type, 'normal', 'high');
+            add_meta_box(self::$post_type.'_gateway_response', __('Gateway responses text', 'leyka'), array(__CLASS__, 'gateway_response_metabox'), self::$post_type, 'normal', 'low');
 
         }
 
 	}
 
-    public function new_donation_data_metabox() {
+    public static function new_donation_data_metabox() {
 
         $campaign_id = empty($_GET['campaign_id']) ? '' : (int)$_GET['campaign_id'];
         $campaign = new Leyka_Campaign($campaign_id);?>
@@ -830,7 +834,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 	</fieldset>
     <?php }
 
-    public function donation_data_metabox() {
+    public static function donation_data_metabox() {
 
         $donation_id = leyka_get_donations_storage_type() === 'post' ?
             (empty($_GET['post']) ? false : absint($_GET['post'])) :
@@ -1083,7 +1087,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
 	<?php }
 
-    public function donation_status_metabox() {
+    public static function donation_status_metabox() {
 
         $donation_id = leyka_get_donations_storage_type() === 'post' ?
             (empty($_GET['post']) ? false : absint($_GET['post'])) :
@@ -1162,7 +1166,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
 	<?php }
 
-    public function emails_status_metabox() {
+    public static function emails_status_metabox() {
 
         $donation_id = leyka_get_donations_storage_type() === 'post' ?
             (empty($_GET['post']) ? false : absint($_GET['post'])) :
@@ -1205,7 +1209,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
     /**
      * @param $donation WP_Post
      */
-    public function gateway_response_metabox() {
+    public static function gateway_response_metabox() {
 
         $donation_id = leyka_get_donations_storage_type() === 'post' ?
             (empty($_GET['post']) ? false : absint($_GET['post'])) :
@@ -1250,7 +1254,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
      * @param array $columns An array of id => name pairs.
      * @return array
      */
-	function manage_columns_names($columns) {
+	public function manage_columns_names($columns) {
 
 		$unsort = $columns;
 		$columns = array();
@@ -1298,7 +1302,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
 	}
 
-	function manage_columns_content($column_name, $donation_id) {
+	public function manage_columns_content($column_name, $donation_id) {
 
 		$donation = new Leyka_Donation($donation_id);
 
