@@ -323,8 +323,6 @@ class Leyka_Extension_Settings_Controller extends Leyka_Settings_Controller {
 
         } else if(stristr($params['type'], 'custom_') !== false) {
 
-            echo '<pre>'.print_r($option_id.' - '.$params['type'], 1).'</pre>';
-
             $settings_block = new Leyka_Custom_Setting_Block(array(
                 'id' => $this->_id.'_'.$option_id,
                 'custom_setting_id' => $option_id,
@@ -333,7 +331,6 @@ class Leyka_Extension_Settings_Controller extends Leyka_Settings_Controller {
             ));
 
             if( !leyka_options()->option_exists($option_id) ) {
-                echo '<pre>'.print_r('Adding the option...', 1).'</pre>';
                 leyka_options()->add_option($option_id, $params['type'], $params);
             }
 

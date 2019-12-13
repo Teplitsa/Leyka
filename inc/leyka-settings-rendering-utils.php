@@ -734,7 +734,7 @@ function leyka_render_tabbed_section_options_area($section) {
 
 // [Special field] Support packages extension - packages list field:
 add_action('leyka_render_custom_support_packages_settings', 'leyka_render_support_packages_settings', 10, 2);
-function leyka_render_support_packages_settings($option_id, $data){ // ID: custom_support_packages_settings
+function leyka_render_support_packages_settings($option_id, $data){
 
     function leyka_support_package_html($is_template = false, $placeholders = array()) {
 
@@ -806,9 +806,11 @@ function leyka_render_support_packages_settings($option_id, $data){ // ID: custo
 
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-<?php echo $option_id;?>-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) ? '' : implode(' ', $data['field_classes']);?>">
 
-        <div class="leyka-main-support-packages" data-max-packages="<?php echo 5; /** @todo Max. packages number should be const */?>">
+        <div class="leyka-main-support-packages" data-max-packages="<?php echo Leyka_Support_Packages_Extension::$max_packages_number;?>">
 
-        <?php $data['value'] = empty($data['value']) || !is_array($data['value']) ? array() : $data['value'];
+        <?php $data['value'] = empty($data['value']) || !is_array($data['value']) ?
+            leyka_options()->opt('custom_support_packages_settings') :
+            $data['value'];
 
         if($data['value'] && is_array($data['value'])) { // Display existing packages (the assoc. array keys order is important)
             foreach($data['value'] as $package_id => $options) {
@@ -840,13 +842,11 @@ function leyka_save_support_packages_settings() {
     $_POST['leyka_support_packages'] = json_decode(urldecode($_POST['leyka_support_packages']));
     $result = array();
 
-//    echo '<pre>Before: '.print_r($_POST['leyka_support_packages'], 1).'</pre>';
-
     foreach($_POST['leyka_support_packages'] as $package) {
 
-        $package->id = stristr($package->id, 'package') === false || empty($package->title) ?
+        $package->id = stristr($package->id, 'package-') === false || empty($package->title) ?
             $package->id :
-            trim(preg_replace('~[^-a-z0-9_]+~u', '-', mb_strtolower(leyka_cyr2lat($package->id))), '-');
+            trim(preg_replace('~[^-a-z0-9_]+~u', '-', mb_strtolower(leyka_cyr2lat($package->title))), '-');
 
         $result[$package->id] = array(
             'title' => $package->title,
@@ -856,29 +856,7 @@ function leyka_save_support_packages_settings() {
 
     }
 
-    echo '<pre>After: '.print_r($result, 1).'</pre>';
-
     leyka_options()->opt('custom_support_packages_settings', $result);
 
 }
 // [Special field] Support packages extension - packages list field - END
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

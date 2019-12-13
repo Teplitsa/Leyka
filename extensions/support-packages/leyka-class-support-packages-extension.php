@@ -8,6 +8,8 @@
  **/
 
 class Leyka_Support_Packages_Extension extends Leyka_Extension {
+
+    public static $max_packages_number = 5;
     public static $FEATURES = array(
         'leyka_limited_content' => array('class' => 'Leyka_Support_Packages_Limit_Content_Feature', 'is_shortcode' => true, 'shortcode_atts' => array('support_plan' => '')),
     );
