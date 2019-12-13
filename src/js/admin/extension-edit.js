@@ -2,6 +2,11 @@
 
 jQuery(document).ready(function($){
 
+    let $admin_page_wrapper = $('.leyka-admin');
+    if( !$admin_page_wrapper.length || !$admin_page_wrapper.hasClass('extension-settings') ) {
+        return;
+    }
+
     $('.delete-extension-link').click(function(e){
 
         e.preventDefault();
@@ -45,39 +50,55 @@ jQuery(document).ready(function($){
 /** @todo After debugging, move all the following code to the Extension own JS: */
 jQuery(document).ready(function($){
 
-    var $mainColorInput = $('input[name="leyka_support_packages_main_color"]');
-    var $backgroundColorInput = $('input[name="leyka_support_packages_background_color"]').closest('.field-component.field').find('.leyka-setting-field.colorpicker');
-    var $captionColorInput = $('input[name="leyka_support_packages_caption_color"]').closest('.field-component.field').find('.leyka-setting-field.colorpicker');
-    var $textColorInput = $('input[name="leyka_support_packages_text_color"]').closest('.field-component.field').find('.leyka-setting-field.colorpicker');
+    let $admin_page_wrapper = $('.leyka-admin');
+    if(
+        !$admin_page_wrapper.length
+        || !$admin_page_wrapper.hasClass('extension-settings')
+        || $admin_page_wrapper.data('leyka-extension-id') !== 'support_packages'
+        || !leyka_ui_widget_available('sortable')
+    ) {
+        return;
+    }
+
+    let $mainColorInput = $('input[name="leyka_support_packages_main_color"]'),
+        $backgroundColorInput = $('input[name="leyka_support_packages_background_color"]')
+            .closest('.field-component.field')
+            .find('.leyka-setting-field.colorpicker'),
+        $captionColorInput = $('input[name="leyka_support_packages_caption_color"]')
+            .closest('.field-component.field')
+            .find('.leyka-setting-field.colorpicker'),
+        $textColorInput = $('input[name="leyka_support_packages_text_color"]')
+            .closest('.field-component.field')
+            .find('.leyka-setting-field.colorpicker');
 
     function leykaSetupGeneralColors(mainColorHex) {
 
         // console.log("mainColorHex:", mainColorHex);
-        var mainColorHsl = leykaHex2Hsl(mainColorHex);
+        let mainColorHsl = leykaHex2Hsl(mainColorHex);
         // console.log("mainColorHsl:", mainColorHsl);
 
-        var backgroundColorHsl = leykaMainHslColor2Background(mainColorHsl[0], mainColorHsl[1], mainColorHsl[2]);
+        let backgroundColorHsl = leykaMainHslColor2Background(mainColorHsl[0], mainColorHsl[1], mainColorHsl[2]);
         // console.log("backgroundColorHsl:");
         // console.log(backgroundColorHsl);
 
-        var backgroundColorHex = leykaHsl2Hex(backgroundColorHsl[0], backgroundColorHsl[1], backgroundColorHsl[2]);
+        let backgroundColorHex = leykaHsl2Hex(backgroundColorHsl[0], backgroundColorHsl[1], backgroundColorHsl[2]);
         // console.log("backgroundColorHex:");
         // console.log(backgroundColorHex);
         $backgroundColorInput.wpColorPicker('color', backgroundColorHex);
         $captionColorInput.wpColorPicker('color', backgroundColorHex);
 
-        var textColorHsl = leykaMainHslColor2Text(mainColorHsl[0], mainColorHsl[1], mainColorHsl[2]);
+        let textColorHsl = leykaMainHslColor2Text(mainColorHsl[0], mainColorHsl[1], mainColorHsl[2]);
         // console.log("textColorHsl:");
         // console.log(textColorHsl);
 
-        var textColorHex = leykaHsl2Hex(textColorHsl[0], textColorHsl[1], textColorHsl[2]);
+        let textColorHex = leykaHsl2Hex(textColorHsl[0], textColorHsl[1], textColorHsl[2]);
         // console.log("textColorHex:");
         // console.log(textColorHex);
         $textColorInput.wpColorPicker('color', textColorHex);
 
     }
 
-    $mainColorInput.on('change', function(){
+    $mainColorInput.on('change.leyka', function(){
         leykaSetupGeneralColors($(this).val());
     });
 
@@ -85,6 +106,16 @@ jQuery(document).ready(function($){
 
 // Support packages extension - custom field:
 jQuery(document).ready(function($){
+
+    let $admin_page_wrapper = $('.leyka-admin');
+    if(
+        !$admin_page_wrapper.length
+        || !$admin_page_wrapper.hasClass('extension-settings')
+        || $admin_page_wrapper.data('leyka-extension-id') !== 'support_packages'
+        || !leyka_ui_widget_available('sortable')
+    ) {
+        return;
+    }
 
     let $packages_wrapper = $('.leyka-main-support-packages'),
         $package_template = $packages_wrapper.siblings('.package-template'),
@@ -97,17 +128,20 @@ jQuery(document).ready(function($){
             let packages_options = [];
             $.each($packages_wrapper.sortable('toArray'), function(key, package_id){ // Value is a package ID
 
-                let package_options = {'package_id': package_id}; // Assoc array key should be initialized explicitly
+                let package_options = {'id': package_id}; // Assoc. array key should be initialized explicitly
 
                 $.each($packages_wrapper.find('#'+package_id).find(':input').serializeArray(), function(key, package_field){
-                    package_options[ package_field.name.replace('leyka_', '') ] = package_field.value;
+                    // console.log(package_id, package_field.name, package_field.name.replace('leyka_', ''), package_field.value)
+                    package_options[ package_field.name.replace('leyka_package_', '') ] = package_field.value;
                 });
 
                 packages_options.push(package_options);
 
             });
 
-            $packages_wrapper.siblings('input[name="leyka_support_packages"]').val(JSON.stringify(packages_options));
+            $packages_wrapper.siblings('input#leyka-support-packages-options').val(
+                encodeURIComponent(JSON.stringify(packages_options))
+            );
 
         }
     });
@@ -172,6 +206,11 @@ jQuery(document).ready(function($){
     if( !$packages_wrapper.find('.package-box').length ) { // No packages added yet - add the first (empty) one
         $add_package_button.trigger('click.leyka');
     }
+
+    // Refresh the main packages option value before submit:
+    $packages_wrapper.parents('.leyka-options-form').on('submit.leyka', function(){
+        $packages_wrapper.sortable('option', 'update')();
+    });
 
 });
 /** @todo Move to the Extension JS - END */

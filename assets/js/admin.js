@@ -1472,6 +1472,11 @@ jQuery(document).ready(function($){
 
 jQuery(document).ready(function($){
 
+    let $admin_page_wrapper = $('.leyka-admin');
+    if( !$admin_page_wrapper.length || !$admin_page_wrapper.hasClass('extension-settings') ) {
+        return;
+    }
+
     $('.delete-extension-link').click(function(e){
 
         e.preventDefault();
@@ -1515,39 +1520,55 @@ jQuery(document).ready(function($){
 /** @todo After debugging, move all the following code to the Extension own JS: */
 jQuery(document).ready(function($){
 
-    var $mainColorInput = $('input[name="leyka_support_packages_main_color"]');
-    var $backgroundColorInput = $('input[name="leyka_support_packages_background_color"]').closest('.field-component.field').find('.leyka-setting-field.colorpicker');
-    var $captionColorInput = $('input[name="leyka_support_packages_caption_color"]').closest('.field-component.field').find('.leyka-setting-field.colorpicker');
-    var $textColorInput = $('input[name="leyka_support_packages_text_color"]').closest('.field-component.field').find('.leyka-setting-field.colorpicker');
+    let $admin_page_wrapper = $('.leyka-admin');
+    if(
+        !$admin_page_wrapper.length
+        || !$admin_page_wrapper.hasClass('extension-settings')
+        || $admin_page_wrapper.data('leyka-extension-id') !== 'support_packages'
+        || !leyka_ui_widget_available('sortable')
+    ) {
+        return;
+    }
+
+    let $mainColorInput = $('input[name="leyka_support_packages_main_color"]'),
+        $backgroundColorInput = $('input[name="leyka_support_packages_background_color"]')
+            .closest('.field-component.field')
+            .find('.leyka-setting-field.colorpicker'),
+        $captionColorInput = $('input[name="leyka_support_packages_caption_color"]')
+            .closest('.field-component.field')
+            .find('.leyka-setting-field.colorpicker'),
+        $textColorInput = $('input[name="leyka_support_packages_text_color"]')
+            .closest('.field-component.field')
+            .find('.leyka-setting-field.colorpicker');
 
     function leykaSetupGeneralColors(mainColorHex) {
 
         // console.log("mainColorHex:", mainColorHex);
-        var mainColorHsl = leykaHex2Hsl(mainColorHex);
+        let mainColorHsl = leykaHex2Hsl(mainColorHex);
         // console.log("mainColorHsl:", mainColorHsl);
 
-        var backgroundColorHsl = leykaMainHslColor2Background(mainColorHsl[0], mainColorHsl[1], mainColorHsl[2]);
+        let backgroundColorHsl = leykaMainHslColor2Background(mainColorHsl[0], mainColorHsl[1], mainColorHsl[2]);
         // console.log("backgroundColorHsl:");
         // console.log(backgroundColorHsl);
 
-        var backgroundColorHex = leykaHsl2Hex(backgroundColorHsl[0], backgroundColorHsl[1], backgroundColorHsl[2]);
+        let backgroundColorHex = leykaHsl2Hex(backgroundColorHsl[0], backgroundColorHsl[1], backgroundColorHsl[2]);
         // console.log("backgroundColorHex:");
         // console.log(backgroundColorHex);
         $backgroundColorInput.wpColorPicker('color', backgroundColorHex);
         $captionColorInput.wpColorPicker('color', backgroundColorHex);
 
-        var textColorHsl = leykaMainHslColor2Text(mainColorHsl[0], mainColorHsl[1], mainColorHsl[2]);
+        let textColorHsl = leykaMainHslColor2Text(mainColorHsl[0], mainColorHsl[1], mainColorHsl[2]);
         // console.log("textColorHsl:");
         // console.log(textColorHsl);
 
-        var textColorHex = leykaHsl2Hex(textColorHsl[0], textColorHsl[1], textColorHsl[2]);
+        let textColorHex = leykaHsl2Hex(textColorHsl[0], textColorHsl[1], textColorHsl[2]);
         // console.log("textColorHex:");
         // console.log(textColorHex);
         $textColorInput.wpColorPicker('color', textColorHex);
 
     }
 
-    $mainColorInput.on('change', function(){
+    $mainColorInput.on('change.leyka', function(){
         leykaSetupGeneralColors($(this).val());
     });
 
@@ -1555,6 +1576,16 @@ jQuery(document).ready(function($){
 
 // Support packages extension - custom field:
 jQuery(document).ready(function($){
+
+    let $admin_page_wrapper = $('.leyka-admin');
+    if(
+        !$admin_page_wrapper.length
+        || !$admin_page_wrapper.hasClass('extension-settings')
+        || $admin_page_wrapper.data('leyka-extension-id') !== 'support_packages'
+        || !leyka_ui_widget_available('sortable')
+    ) {
+        return;
+    }
 
     let $packages_wrapper = $('.leyka-main-support-packages'),
         $package_template = $packages_wrapper.siblings('.package-template'),
@@ -1567,17 +1598,20 @@ jQuery(document).ready(function($){
             let packages_options = [];
             $.each($packages_wrapper.sortable('toArray'), function(key, package_id){ // Value is a package ID
 
-                let package_options = {'package_id': package_id}; // Assoc array key should be initialized explicitly
+                let package_options = {'id': package_id}; // Assoc. array key should be initialized explicitly
 
                 $.each($packages_wrapper.find('#'+package_id).find(':input').serializeArray(), function(key, package_field){
-                    package_options[ package_field.name.replace('leyka_', '') ] = package_field.value;
+                    // console.log(package_id, package_field.name, package_field.name.replace('leyka_', ''), package_field.value)
+                    package_options[ package_field.name.replace('leyka_package_', '') ] = package_field.value;
                 });
 
                 packages_options.push(package_options);
 
             });
 
-            $packages_wrapper.siblings('input[name="leyka_support_packages"]').val(JSON.stringify(packages_options));
+            $packages_wrapper.siblings('input#leyka-support-packages-options').val(
+                encodeURIComponent(JSON.stringify(packages_options))
+            );
 
         }
     });
@@ -1642,6 +1676,11 @@ jQuery(document).ready(function($){
     if( !$packages_wrapper.find('.package-box').length ) { // No packages added yet - add the first (empty) one
         $add_package_button.trigger('click.leyka');
     }
+
+    // Refresh the main packages option value before submit:
+    $packages_wrapper.parents('.leyka-options-form').on('submit.leyka', function(){
+        $packages_wrapper.sortable('option', 'update')();
+    });
 
 });
 /** @todo Move to the Extension JS - END */
@@ -2626,14 +2665,15 @@ jQuery(document).ready(function($){
 
 jQuery(document).ready(function($){
 
-    if(typeof $.ui === 'object' && typeof $.ui.accordion !== 'undefined') {
+    if(leyka_ui_widget_available('accordion')) {
         $('.ui-accordion').accordion({
             heightStyle: 'content',
             // collapsible: true, active: false
         });
     }
 
-    if(typeof $.wp === 'object' && typeof $.wp.wpColorPicker !== 'undefined') {
+    // if(typeof $.wp === 'object' && typeof $.wp.wpColorPicker !== 'undefined') {
+    if(leyka_ui_widget_available('wpColorPicker', $.wp)) {
         $('.leyka-setting-field.colorpicker').wpColorPicker({ // Colorpicker fields
             change: function (e, ui) {
                 $(e.target).parents('.field').find('.leyka-colorpicker-value').val(ui.color.toString()).change();
@@ -2650,7 +2690,7 @@ jQuery(document).ready(function($){
     let $css_editor = $('.css-editor-field'),
         editor = {};
 
-    if(wp.codeEditor && $css_editor.length) {
+    if(leyka_ui_widget_available('codeEditor', wp) && $css_editor.length) {
 
         let editor_settings = wp.codeEditor.defaultSettings ? _.clone( wp.codeEditor.defaultSettings ) : {};
         editor_settings.codemirror = _.extend(
@@ -2679,10 +2719,10 @@ jQuery(document).ready(function($){
     // Custom CSS editor fields - END
 
     // Ajax file upload fields support:
-    $('.upload-field input[type="file"]')
-        .on('click.leyka', function(e){ // Just to be sure that the input will be called
+    $('body').on('click.leyka', '.upload-field input[type="file"]', function(e){ // Just to be sure that the input will be called
+        // .on('click.leyka', function(e){ // Just to be sure that the input will be called
             e.stopPropagation();
-        }).on('change.leyka', function(e){
+        }).on('change.leyka', '.upload-field input[type="file"]', function(e){
 
             if( !e.target.files ) {
                 return;
@@ -2694,8 +2734,10 @@ jQuery(document).ready(function($){
                 $file_preview = $field_wrapper.find('.uploaded-file-preview'),
                 $ajax_loading = $field_wrapper.find('.loading-indicator-wrap'),
                 $error = $field_wrapper.siblings('.field-errors'),
-                $main_field = $field_wrapper.find('input#leyka-upload-'+option_id),
+                $main_field = $field_wrapper.find('input.leyka-upload-result'),
                 data = new FormData(); // Need to use a FormData object here instead of a generic object
+
+        console.log('File:', $file_input, 'Wrapper:', $field_wrapper);
 
             data.append('action', 'leyka_files_upload');
             data.append('option_id', option_id);
@@ -2812,7 +2854,7 @@ jQuery(document).ready(function($){
     // Upload l10n:
     $('#upload-l10n-button').click(function(){
 
-        var $btn = $(this),
+        let $btn = $(this),
             $loading = $('<span class="leyka-loader xs"></span>'),
             actionData = {action: 'leyka_upload_l10n'};
 
@@ -2846,8 +2888,13 @@ jQuery(document).ready(function($){
 
     // Connect to stats:
     if($('#leyka_send_plugin_stats-y-field').prop('checked')) {
-        var $sectionWrapper = $('.leyka-options-section#stats_connections');
-        $sectionWrapper.find('.submit input').removeClass('button-primary').addClass('disconnect-stats').val(leyka.disconnect_stats);
+
+        $('.leyka-options-section#stats_connections')
+            .find('.submit input')
+            .removeClass('button-primary')
+            .addClass('disconnect-stats')
+            .val(leyka.disconnect_stats);
+
     }
 
     $('#connect-stats-button').click(function(){
@@ -2862,7 +2909,8 @@ jQuery(document).ready(function($){
     $('.section-tab-nav-item').click(function(e){
 
         e.preventDefault();
-        var $tabs = $(this).closest('.section-tabs-wrapper');
+
+        let $tabs = $(this).closest('.section-tabs-wrapper');
 
         $tabs.find('.section-tab-nav-item').removeClass('active');
         $tabs.find('.section-tab-content').removeClass('active');
@@ -2877,7 +2925,7 @@ jQuery(document).ready(function($){
 
         e.preventDefault();
 
-        var $currentScreenshots = $(this).closest('.tab-screenshots'),
+        let $currentScreenshots = $(this).closest('.tab-screenshots'),
             $currentVisibleScreenshot = $currentScreenshots.find('.tab-screenshot-item.active'),
             $nextScreenshot = null;
 
@@ -4065,21 +4113,21 @@ function leyka_is_digit_key(e, numpad_allowed) {
 /** @var e JS keyup/keydown event */
 function leyka_is_special_key(e) {
 
-    // Allowed special keys
-    return (
+    return ( // Allowed special keys
         e.keyCode === 9 || // Tab
         (e.keyCode === 65 && e.ctrlKey) || // Ctrl+A
         (e.keyCode === 67 && e.ctrlKey) || // Ctrl+C
         (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
     );
+
 }
 
 function leyka_make_password(pass_length) {
 
-    var text = '',
+    let text = '',
         possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-    for(var i = 0; i < parseInt(pass_length); i++) {
+    for(let i = 0; i < parseInt(pass_length); i++) {
         text += possible.charAt(Math.floor(Math.random() * possible.length));
     }
 
@@ -4087,6 +4135,7 @@ function leyka_make_password(pass_length) {
 
 }
 
+/** Get random latin-numeric string with given length. */
 function leyka_get_random_string(length = 6) {
     return Array(length + 1).join((Math.random().toString(36)+'00000000000000000').slice(2, 18)).slice(0, length);
 }
@@ -4107,5 +4156,18 @@ function leyka_support_metaboxes(metabox_area) {
 
     jQuery('.if-js-closed').removeClass('if-js-closed').addClass('closed'); // Close postboxes that should be closed
     postboxes.add_postbox_toggles(metabox_area);
+
+}
+
+/** Check if UI widget is available. Widget is looked in $.ui by default. */
+function leyka_ui_widget_available(widget = '', object = null) {
+
+    if(object === null && typeof jQuery.ui !== 'undefined') {
+        object = jQuery.ui;
+    } else if(object === null || typeof object !== 'object') {
+        return false;
+    }
+
+    return widget.length ? typeof typeof object[widget] !== 'undefined' : typeof object !== 'undefined';
 
 }

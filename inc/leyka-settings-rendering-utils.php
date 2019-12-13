@@ -154,26 +154,25 @@ function leyka_render_file_field($option_id, $data){
 
         </div>
 
-        <div class="upload-field field-wrapper flex" data-upload-title="<?php echo empty($data['upload_title']) ? __('Select a file', 'leyka') : $data['upload_title'];?>" data-option-id="<?php echo $option_id;?>">
+        <label class="upload-field field-wrapper flex" data-upload-title="<?php echo empty($data['upload_title']) ? __('Select a file', 'leyka') : $data['upload_title'];?>" data-option-id="<?php echo $option_id;?>">
 
             <span class="field-component field">
-                <?php $field_id = $option_id.'-upload-button-'.wp_rand();?>
-                <input type="file" value="" id="<?php echo $field_id;?>" <?php // echo empty($data['is_multiple']) ? '' : 'multiple';?> data-nonce="<?php echo wp_create_nonce('leyka-upload-'.$option_id);?>">
+                <input type="file" value="" <?php // echo empty($data['is_multiple']) ? '' : 'multiple';?> data-nonce="<?php echo wp_create_nonce('leyka-upload-'.$option_id);?>">
             </span>
 
-            <label for="<?php echo $field_id;?>" class="field-component label upload-picture" id="<?php echo $option_id;?>-upload-button">
+            <span class="field-component label upload-picture" id="<?php echo $option_id;?>-upload-button">
                 <?php echo empty($data['upload_label']) ? __('Upload', 'leyka') : $data['upload_label'];?>
-            </label>
+            </span>
 
         <?php if( !empty($data['description']) ) {?>
             <span class="field-component help">
-                <label for="<?php echo $field_id;?>"><?php echo $data['description'];?></label>
+                <?php echo $data['description'];?>
             </span>
         <?php }?>
 
-            <input type="hidden" id="leyka-upload-<?php echo $option_id;?>" name="<?php echo $option_id;?>" value="<?php echo $data['value'];?>">
+            <input type="hidden" class="leyka-upload-result" name="<?php echo $option_id;?>" value="<?php echo $data['value'];?>">
 
-        </div>
+        </label>
 
     </div>
 
@@ -735,21 +734,19 @@ function leyka_render_tabbed_section_options_area($section) {
 
 // [Special field] Support packages extension - packages list field:
 add_action('leyka_render_custom_support_packages_settings', 'leyka_render_support_packages_settings', 10, 2);
-function leyka_render_support_packages_settings($option_id, $data){ // support_packages_custom_packages_settings
+function leyka_render_support_packages_settings($option_id, $data){ // ID: custom_support_packages_settings
 
     function leyka_support_package_html($is_template = false, $placeholders = array()) {
 
         $placeholders = wp_parse_args($placeholders, array(
             'id' => '',
             'box_title' => __('New reward', 'leyka'),
-            'title_value' => '',
-            'slug_value' => '',
-            'min_amount_value' => 0,
-            'max_amount_value' => 0,
-            'icon_value' => '',
+            'package_title' => '',
+            'amount_needed' => 0,
+            'package_icon' => '',
         ));?>
 
-        <div id="<?php echo $is_template || !$placeholders['id'] ? '' : 'package-'.leyka_get_random_string(4);?>" class="package-box <?php echo $is_template ? 'package-template' : '';?>" <?php echo $is_template ? 'style="display: none;"' : '';?>>
+        <div id="<?php echo $placeholders['id'] ? 'package-'.$placeholders['id'] : 'package-'.leyka_get_random_string(4);?>" class="package-box <?php echo $is_template ? 'package-template' : '';?>" <?php echo $is_template ? 'style="display: none;"' : '';?>>
 
             <h2 class="ui-sortable-handle"><span><?php echo esc_html($placeholders['box_title']);?></span></h2>
 
@@ -761,39 +758,28 @@ function leyka_render_support_packages_settings($option_id, $data){ // support_p
                             'title' => __('Reward title', 'leyka'),
                             'placeholder' => __('E.g., "Golden support level"', 'leyka'),
                             'required' => true,
-                            'value' => $placeholders['title_value'],
+                            'value' => $placeholders['package_title'],
                         ));?>
                     </div>
                     <div class="field-errors"></div>
                 </div>
 
-                <div class="settings-block container-block">
-                    <div class="container-entry" style="flex-basis: 47%;">
-                        <div class="option-block type-number">
-                            <div class="leyka-number-field-wrapper">
-                                <?php leyka_render_number_field('package_min_amount', array(
-                                    'title' => sprintf(__('Min donations amount, %s', 'leyka'), leyka_get_currency_label()),
-                                    'placeholder' => '400',
-                                    'required' => true,
-                                    'value' => $placeholders['min_amount_value'],
-                                ));?>
-                            </div>
-                            <div class="field-errors"></div>
-                        </div>
+                <?php if($placeholders['id']) {?>
+                <div class="option-block type-text-readonly">
+                    <?php echo __('Package ID', 'leyka').': '.$placeholders['id'];?>
+                </div>
+                <?php }?>
+
+                <div class="option-block type-number">
+                    <div class="leyka-number-field-wrapper">
+                        <?php leyka_render_number_field('package_amount_needed', array(
+                            'title' => sprintf(__('Donations amount needed, %s', 'leyka'), leyka_get_currency_label()),
+                            'placeholder' => '500',
+                            'required' => true,
+                            'value' => $placeholders['amount_needed'],
+                        ));?>
                     </div>
-                    <div class="container-entry" style="flex-basis: 47%;">
-                        <div class="option-block type-number">
-                            <div class="leyka-number-field-wrapper">
-                                <?php leyka_render_number_field('package_max_amount', array(
-                                    'title' => sprintf(__('Max donations amount, %s', 'leyka'), leyka_get_currency_label()),
-                                    'placeholder' => '500',
-                                    'required' => true,
-                                    'value' => $placeholders['max_amount_value'],
-                                ));?>
-                            </div>
-                            <div class="field-errors"></div>
-                        </div>
-                    </div>
+                    <div class="field-errors"></div>
                 </div>
 
                 <div class="settings-block option-block type-file">
@@ -801,7 +787,7 @@ function leyka_render_support_packages_settings($option_id, $data){ // support_p
                         'upload_label' => __('Load icon', 'leyka'),
                         'description' => __('A *.png or *.svg file. The size is no more than 2 Mb', 'leyka'),
                         'required' => true,
-                        'value' => $placeholders['icon_value'],
+                        'value' => $placeholders['package_icon'],
                     ));?>
                     <div class="field-errors"></div>
                 </div>
@@ -824,29 +810,57 @@ function leyka_render_support_packages_settings($option_id, $data){ // support_p
 
         <?php $data['value'] = empty($data['value']) || !is_array($data['value']) ? array() : $data['value'];
 
-        if($data['value']) { // Some packages set up already - display them (the assoc. array keys order is important)
+        if($data['value'] && is_array($data['value'])) { // Display existing packages (the assoc. array keys order is important)
             foreach($data['value'] as $package_id => $options) {
                 leyka_support_package_html(false, array(
                     'id' => $package_id,
-                    'box_title' => $options['package_title'],
-                    'title_value' => $options['package_title'],
-                    'min_amount_value' => $options['package_min_amount'],
-                    'max_amount_value' => $options['package_max_amount'],
-                    'icon_value' => $options['package_icon'],
+                    'box_title' => $options['title'],
+                    'package_title' => $options['title'],
+                    'amount_needed' => $options['amount_needed'],
+                    'package_icon' => $options['icon'],
                 ));
             }
         }?>
+
         </div>
 
         <?php leyka_support_package_html(true); // Package box template ?>
 
         <div class="add-package bottom"><?php _e('Add reward', 'leyka');?></div>
 
-        <input type="hidden" name="leyka_support_packages" value="">
+        <input type="hidden" id="leyka-support-packages-options" name="leyka_support_packages" value="">
 
     </div>
 
 <?php }
+
+add_action('leyka_save_custom_option-custom_support_packages_settings', 'leyka_save_support_packages_settings');
+function leyka_save_support_packages_settings() {
+
+    $_POST['leyka_support_packages'] = json_decode(urldecode($_POST['leyka_support_packages']));
+    $result = array();
+
+//    echo '<pre>Before: '.print_r($_POST['leyka_support_packages'], 1).'</pre>';
+
+    foreach($_POST['leyka_support_packages'] as $package) {
+
+        $package->id = stristr($package->id, 'package') === false || empty($package->title) ?
+            $package->id :
+            trim(preg_replace('~[^-a-z0-9_]+~u', '-', mb_strtolower(leyka_cyr2lat($package->id))), '-');
+
+        $result[$package->id] = array(
+            'title' => $package->title,
+            'amount_needed' => $package->amount_needed,
+            'icon' => $package->icon,
+        );
+
+    }
+
+    echo '<pre>After: '.print_r($result, 1).'</pre>';
+
+    leyka_options()->opt('custom_support_packages_settings', $result);
+
+}
 // [Special field] Support packages extension - packages list field - END
 
 

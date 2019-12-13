@@ -323,14 +323,19 @@ class Leyka_Extension_Settings_Controller extends Leyka_Settings_Controller {
 
         } else if(stristr($params['type'], 'custom_') !== false) {
 
-            /** @todo WARNING! Remove this field ID hardcode, make it universial. */
+            echo '<pre>'.print_r($option_id.' - '.$params['type'], 1).'</pre>';
 
             $settings_block = new Leyka_Custom_Setting_Block(array(
                 'id' => $this->_id.'_'.$option_id,
                 'custom_setting_id' => $option_id,
-                'field_type' => 'custom_support_packages_settings',
+                'field_type' => $params['type'],
                 'rendering_type' => apply_filters('leyka_custom_setting_rendering_type', 'callback', $option_id),
             ));
+
+            if( !leyka_options()->option_exists($option_id) ) {
+                echo '<pre>'.print_r('Adding the option...', 1).'</pre>';
+                leyka_options()->add_option($option_id, $params['type'], $params);
+            }
 
         } else {
 
@@ -340,6 +345,10 @@ class Leyka_Extension_Settings_Controller extends Leyka_Settings_Controller {
             }
 
             $settings_block = new Leyka_Option_Block($block_params);
+
+            if( !leyka_options()->option_exists($option_id) ) {
+                leyka_options()->add_option($option_id, $params['type'], $params);
+            }
 
         }
 

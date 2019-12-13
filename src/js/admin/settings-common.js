@@ -2,14 +2,15 @@
 
 jQuery(document).ready(function($){
 
-    if(typeof $.ui === 'object' && typeof $.ui.accordion !== 'undefined') {
+    if(leyka_ui_widget_available('accordion')) {
         $('.ui-accordion').accordion({
             heightStyle: 'content',
             // collapsible: true, active: false
         });
     }
 
-    if(typeof $.wp === 'object' && typeof $.wp.wpColorPicker !== 'undefined') {
+    // if(typeof $.wp === 'object' && typeof $.wp.wpColorPicker !== 'undefined') {
+    if(leyka_ui_widget_available('wpColorPicker', $.wp)) {
         $('.leyka-setting-field.colorpicker').wpColorPicker({ // Colorpicker fields
             change: function (e, ui) {
                 $(e.target).parents('.field').find('.leyka-colorpicker-value').val(ui.color.toString()).change();
@@ -26,7 +27,7 @@ jQuery(document).ready(function($){
     let $css_editor = $('.css-editor-field'),
         editor = {};
 
-    if(wp.codeEditor && $css_editor.length) {
+    if(leyka_ui_widget_available('codeEditor', wp) && $css_editor.length) {
 
         let editor_settings = wp.codeEditor.defaultSettings ? _.clone( wp.codeEditor.defaultSettings ) : {};
         editor_settings.codemirror = _.extend(
@@ -55,10 +56,10 @@ jQuery(document).ready(function($){
     // Custom CSS editor fields - END
 
     // Ajax file upload fields support:
-    $('.upload-field input[type="file"]')
-        .on('click.leyka', function(e){ // Just to be sure that the input will be called
+    $('body').on('click.leyka', '.upload-field input[type="file"]', function(e){ // Just to be sure that the input will be called
+        // .on('click.leyka', function(e){ // Just to be sure that the input will be called
             e.stopPropagation();
-        }).on('change.leyka', function(e){
+        }).on('change.leyka', '.upload-field input[type="file"]', function(e){
 
             if( !e.target.files ) {
                 return;
@@ -70,8 +71,10 @@ jQuery(document).ready(function($){
                 $file_preview = $field_wrapper.find('.uploaded-file-preview'),
                 $ajax_loading = $field_wrapper.find('.loading-indicator-wrap'),
                 $error = $field_wrapper.siblings('.field-errors'),
-                $main_field = $field_wrapper.find('input#leyka-upload-'+option_id),
+                $main_field = $field_wrapper.find('input.leyka-upload-result'),
                 data = new FormData(); // Need to use a FormData object here instead of a generic object
+
+        console.log('File:', $file_input, 'Wrapper:', $field_wrapper);
 
             data.append('action', 'leyka_files_upload');
             data.append('option_id', option_id);
@@ -188,7 +191,7 @@ jQuery(document).ready(function($){
     // Upload l10n:
     $('#upload-l10n-button').click(function(){
 
-        var $btn = $(this),
+        let $btn = $(this),
             $loading = $('<span class="leyka-loader xs"></span>'),
             actionData = {action: 'leyka_upload_l10n'};
 
@@ -222,8 +225,13 @@ jQuery(document).ready(function($){
 
     // Connect to stats:
     if($('#leyka_send_plugin_stats-y-field').prop('checked')) {
-        var $sectionWrapper = $('.leyka-options-section#stats_connections');
-        $sectionWrapper.find('.submit input').removeClass('button-primary').addClass('disconnect-stats').val(leyka.disconnect_stats);
+
+        $('.leyka-options-section#stats_connections')
+            .find('.submit input')
+            .removeClass('button-primary')
+            .addClass('disconnect-stats')
+            .val(leyka.disconnect_stats);
+
     }
 
     $('#connect-stats-button').click(function(){
@@ -238,7 +246,8 @@ jQuery(document).ready(function($){
     $('.section-tab-nav-item').click(function(e){
 
         e.preventDefault();
-        var $tabs = $(this).closest('.section-tabs-wrapper');
+
+        let $tabs = $(this).closest('.section-tabs-wrapper');
 
         $tabs.find('.section-tab-nav-item').removeClass('active');
         $tabs.find('.section-tab-content').removeClass('active');
@@ -253,7 +262,7 @@ jQuery(document).ready(function($){
 
         e.preventDefault();
 
-        var $currentScreenshots = $(this).closest('.tab-screenshots'),
+        let $currentScreenshots = $(this).closest('.tab-screenshots'),
             $currentVisibleScreenshot = $currentScreenshots.find('.tab-screenshot-item.active'),
             $nextScreenshot = null;
 

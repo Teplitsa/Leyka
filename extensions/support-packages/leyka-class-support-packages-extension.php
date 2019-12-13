@@ -112,7 +112,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
                 'title' => __('Packages options', 'leyka'),
                 'is_default_collapsed' => false,
                 'options' => array(
-                    $this->_id.'_custom_packages_settings' => array(
+                    'custom_support_packages_settings' => array(
                         'type' => 'custom_support_packages_settings', // Special option type
                     ),
                 )

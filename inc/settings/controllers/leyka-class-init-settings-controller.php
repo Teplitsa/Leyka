@@ -313,7 +313,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'id' => 'send_plugin_stats',
             'option_id' => 'send_plugin_stats',
             'show_title' => false,
-        )))->add_handler(array($this, 'handle_plugin_stats_step'))
+        )))->add_handler(array($this, 'handle_plugin_stats_section'))
             ->add_to($stage);
 
         // The plugin usage stats collection - accepted:
@@ -381,7 +381,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
                     ),
                 )),
             )
-        )))->add_handler(array($this, 'handle_campaign_description_step'))
+        )))->add_handler(array($this, 'handle_campaign_description_section'))
             ->add_to($stage);
 
         $section = new Leyka_Settings_Section('campaign_decoration', $stage->id, __('Campaign decoration', 'leyka'));
@@ -394,7 +394,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'field_type' => 'custom_campaign_view',
             'keys' => array('campaign_thumbnail', 'campaign_template',),
             'rendering_type' => 'template',
-        )))->add_handler(array($this, 'handle_campaign_decoration_step'))
+        )))->add_handler(array($this, 'handle_campaign_decoration_section'))
             ->add_to($stage);
 
         $section = new Leyka_Settings_Section('donors_communication', $stage->id, __('Thanks to donor', 'leyka'));
@@ -427,7 +427,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             'custom_setting_id' => 'campaign_completed',
             'field_type' => 'custom_campaign_completed',
             'rendering_type' => 'template',
-        )))->add_handler(array($this, 'handle_campaign_completed_step'))
+        )))->add_handler(array($this, 'handle_campaign_completed_section'))
             ->add_to($stage);
 //
         $this->_stages[$stage->id] = $stage;

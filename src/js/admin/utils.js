@@ -45,21 +45,21 @@ function leyka_is_digit_key(e, numpad_allowed) {
 /** @var e JS keyup/keydown event */
 function leyka_is_special_key(e) {
 
-    // Allowed special keys
-    return (
+    return ( // Allowed special keys
         e.keyCode === 9 || // Tab
         (e.keyCode === 65 && e.ctrlKey) || // Ctrl+A
         (e.keyCode === 67 && e.ctrlKey) || // Ctrl+C
         (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
     );
+
 }
 
 function leyka_make_password(pass_length) {
 
-    var text = '',
+    let text = '',
         possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-    for(var i = 0; i < parseInt(pass_length); i++) {
+    for(let i = 0; i < parseInt(pass_length); i++) {
         text += possible.charAt(Math.floor(Math.random() * possible.length));
     }
 
@@ -67,6 +67,7 @@ function leyka_make_password(pass_length) {
 
 }
 
+/** Get random latin-numeric string with given length. */
 function leyka_get_random_string(length = 6) {
     return Array(length + 1).join((Math.random().toString(36)+'00000000000000000').slice(2, 18)).slice(0, length);
 }
@@ -87,5 +88,18 @@ function leyka_support_metaboxes(metabox_area) {
 
     jQuery('.if-js-closed').removeClass('if-js-closed').addClass('closed'); // Close postboxes that should be closed
     postboxes.add_postbox_toggles(metabox_area);
+
+}
+
+/** Check if UI widget is available. Widget is looked in $.ui by default. */
+function leyka_ui_widget_available(widget = '', object = null) {
+
+    if(object === null && typeof jQuery.ui !== 'undefined') {
+        object = jQuery.ui;
+    } else if(object === null || typeof object !== 'object') {
+        return false;
+    }
+
+    return widget.length ? typeof typeof object[widget] !== 'undefined' : typeof object !== 'undefined';
 
 }
