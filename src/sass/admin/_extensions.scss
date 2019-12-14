@@ -199,9 +199,65 @@
 
     /** @todo Packages settings custom field styles here */
     .package-box {
-        border: 1px solid lightgrey;
+
+        @include leyka-metabox-styling();
+
+        margin-bottom: 16px;
+
+        h2.hndle {
+
+            .title {
+                flex: 1 1 100%;
+            }
+
+            &:after {
+
+                content: ' ';
+                background-image: url(../../src/svg/icon-metabox-draggable.svg) !important;
+
+                pointer-events: all;
+                width: 8px;
+                height: 14px;
+
+            }
+
+        }
+
+        .box-footer {
+
+            margin: -16px;
+            margin-top: 16px;
+
+            border-top: 1px solid $color-border-semilight;
+            padding: 12px 16px;
+
+            text-align: right;
+
+            color: $color-wizard-error-message;
+
+            .delete-package {
+                cursor: pointer;
+            }
+
+        }
+
     }
 
+    .add-package {
+
+        margin-left: 8px;
+        padding-bottom: 16px;
+
+        cursor: pointer;
+        color: $color-wizard-link-active;
+
+        &:before {
+            display: inline-block;
+            content: '+';
+            margin-right: 3px;
+        }
+
+    }
     // Support packages admin page - END
 
 }

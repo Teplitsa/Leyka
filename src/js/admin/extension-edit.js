@@ -119,7 +119,36 @@ jQuery(document).ready(function($){
 
     let $packages_wrapper = $('.leyka-main-support-packages'),
         $package_template = $packages_wrapper.siblings('.package-template'),
-        $add_package_button = $packages_wrapper.siblings('.add-package');
+        $add_package_button = $packages_wrapper.siblings('.add-package'),
+        closed_boxes = typeof $.cookie('leyka-support-packages-boxes-closed') === 'string' ?
+            JSON.parse($.cookie('leyka-support-packages-boxes-closed')) : [];
+
+    if($.isArray(closed_boxes)) { // Close the package boxes needed
+        $.each(closed_boxes, function(key, value){
+            $packages_wrapper.find('#'+value).addClass('closed');
+        });
+    }
+
+    $packages_wrapper.on('click.leyka', 'h2.hndle', function(e){
+
+        let $this = $(this),
+            $current_box = $this.parents('.package-box');
+
+        $current_box.toggleClass('closed');
+
+        // Save the open/closed state for all packages boxes:
+        let current_box_id = $current_box.prop('id'),
+            current_box_index = $.inArray(current_box_id, closed_boxes);
+
+        if(current_box_index === -1 && $current_box.hasClass('closed')) {
+            closed_boxes.push(current_box_id);
+        } else if(current_box_index !== -1 && !$current_box.hasClass('closed')) {
+            closed_boxes.splice(current_box_index, 1);
+        }
+
+        $.cookie('leyka-support-packages-boxes-closed', JSON.stringify(closed_boxes));
+
+    });
 
     $packages_wrapper.sortable({
         placeholder: 'ui-state-highlight', // A class for dropping item placeholder
@@ -131,7 +160,6 @@ jQuery(document).ready(function($){
                 let package_options = {'id': package_id}; // Assoc. array key should be initialized explicitly
 
                 $.each($packages_wrapper.find('#'+package_id).find(':input').serializeArray(), function(key, package_field){
-                    // console.log(package_id, package_field.name, package_field.name.replace('leyka_', ''), package_field.value)
                     package_options[ package_field.name.replace('leyka_package_', '') ] = package_field.value;
                 });
 

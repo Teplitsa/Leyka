@@ -5,50 +5,11 @@
 
     .postbox, #poststuff .postbox { // Metaboxes restyling
 
-        border: 1px solid $color-border-semilight;
-        border-radius: 6px;
-        background-color: $color-background-light1;
-        box-shadow: 0 2px 2px $color-border-semilight;
-
-        color: $leyka-admin-color-text;
-
         .handlediv { // Hide the default metabox open/close handle
             display: none;
         }
 
-        h2.hndle {
-
-            display: flex;
-
-            border: 0;
-            padding: 12px 16px;
-
-            font-size: 14px;
-            line-height: 24px;
-
-            &:before {
-
-                content: ' ';
-                display: inline-block;
-                background-image: url(../../img/icon-accord-expanded.svg);
-                cursor: pointer;
-                pointer-events: all;
-                width: 22px;
-                height: 22px;
-                margin-right: 8px;
-
-            }
-
-        }
-
-        &.closed h2.hndle:before {
-            background-image: url(../../img/icon-accord-collapsed.svg);
-        }
-
-        .inside {
-            margin-top: 0;
-            padding: 16px;
-        }
+        @include leyka-metabox-styling();
 
     } // Metabox restyling - END
 

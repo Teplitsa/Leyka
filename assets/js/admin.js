@@ -1589,7 +1589,36 @@ jQuery(document).ready(function($){
 
     let $packages_wrapper = $('.leyka-main-support-packages'),
         $package_template = $packages_wrapper.siblings('.package-template'),
-        $add_package_button = $packages_wrapper.siblings('.add-package');
+        $add_package_button = $packages_wrapper.siblings('.add-package'),
+        closed_boxes = typeof $.cookie('leyka-support-packages-boxes-closed') === 'string' ?
+            JSON.parse($.cookie('leyka-support-packages-boxes-closed')) : [];
+
+    if($.isArray(closed_boxes)) { // Close the package boxes needed
+        $.each(closed_boxes, function(key, value){
+            $packages_wrapper.find('#'+value).addClass('closed');
+        });
+    }
+
+    $packages_wrapper.on('click.leyka', 'h2.hndle', function(e){
+
+        let $this = $(this),
+            $current_box = $this.parents('.package-box');
+
+        $current_box.toggleClass('closed');
+
+        // Save the open/closed state for all packages boxes:
+        let current_box_id = $current_box.prop('id'),
+            current_box_index = $.inArray(current_box_id, closed_boxes);
+
+        if(current_box_index === -1 && $current_box.hasClass('closed')) {
+            closed_boxes.push(current_box_id);
+        } else if(current_box_index !== -1 && !$current_box.hasClass('closed')) {
+            closed_boxes.splice(current_box_index, 1);
+        }
+
+        $.cookie('leyka-support-packages-boxes-closed', JSON.stringify(closed_boxes));
+
+    });
 
     $packages_wrapper.sortable({
         placeholder: 'ui-state-highlight', // A class for dropping item placeholder
@@ -1601,7 +1630,6 @@ jQuery(document).ready(function($){
                 let package_options = {'id': package_id}; // Assoc. array key should be initialized explicitly
 
                 $.each($packages_wrapper.find('#'+package_id).find(':input').serializeArray(), function(key, package_field){
-                    // console.log(package_id, package_field.name, package_field.name.replace('leyka_', ''), package_field.value)
                     package_options[ package_field.name.replace('leyka_package_', '') ] = package_field.value;
                 });
 
@@ -2665,6 +2693,8 @@ jQuery(document).ready(function($){
 
 jQuery(document).ready(function($){
 
+    const $body = $('body');
+
     if(leyka_ui_widget_available('accordion')) {
         $('.ui-accordion').accordion({
             heightStyle: 'content',
@@ -2719,79 +2749,78 @@ jQuery(document).ready(function($){
     // Custom CSS editor fields - END
 
     // Ajax file upload fields support:
-    $('body').on('click.leyka', '.upload-field input[type="file"]', function(e){ // Just to be sure that the input will be called
-        // .on('click.leyka', function(e){ // Just to be sure that the input will be called
-            e.stopPropagation();
-        }).on('change.leyka', '.upload-field input[type="file"]', function(e){
+    $body.on('click.leyka', '.upload-field input[type="file"]', function(e){ // Just to be sure that the input will be called
+        e.stopPropagation();
+    }).on('change.leyka', '.upload-field input[type="file"]', function(e){
 
-            if( !e.target.files ) {
-                return;
-            }
+        if( !e.target.files ) {
+            return;
+        }
 
-            let $file_input = $(this),
-                $field_wrapper = $file_input.parents('.leyka-file-field-wrapper'),
-                option_id = $field_wrapper.find('.upload-field').data('option-id'),
-                $file_preview = $field_wrapper.find('.uploaded-file-preview'),
-                $ajax_loading = $field_wrapper.find('.loading-indicator-wrap'),
-                $error = $field_wrapper.siblings('.field-errors'),
-                $main_field = $field_wrapper.find('input.leyka-upload-result'),
-                data = new FormData(); // Need to use a FormData object here instead of a generic object
+        let $file_input = $(this),
+            $field_wrapper = $file_input.parents('.leyka-file-field-wrapper'),
+            option_id = $field_wrapper.find('.upload-field').data('option-id'),
+            $file_preview = $field_wrapper.find('.uploaded-file-preview'),
+            $ajax_loading = $field_wrapper.find('.loading-indicator-wrap'),
+            $error = $field_wrapper.siblings('.field-errors'),
+            $main_field = $field_wrapper.find('input.leyka-upload-result'),
+            data = new FormData(); // Need to use a FormData object here instead of a generic object
 
-        console.log('File:', $file_input, 'Wrapper:', $field_wrapper);
+    // console.log('File:', $file_input, 'Wrapper:', $field_wrapper);
 
-            data.append('action', 'leyka_files_upload');
-            data.append('option_id', option_id);
-            data.append('nonce', $file_input.data('nonce'));
-            data.append('files', []);
+        data.append('action', 'leyka_files_upload');
+        data.append('option_id', option_id);
+        data.append('nonce', $file_input.data('nonce'));
+        data.append('files', []);
 
-            $.each(e.target.files, function(key, value){
-                data.append('files', value);
-            });
-
-            $ajax_loading.show();
-            $error.html('').hide();
-
-            $.ajax({
-                url: leyka.ajaxurl,
-                type: 'POST',
-                data: data,
-                cache: false,
-                dataType: 'json',
-                processData: false, // Don't process the files
-                contentType: false, // Set content type to false as jQuery will tell the server its a query string request
-                success: function(response){
-
-                    $ajax_loading.hide();
-
-                    if(
-                        typeof response === 'undefined'
-                        || typeof response.status === 'undefined'
-                        || (response.status !== 0 && typeof response.message === 'undefined')
-                    ) {
-                        return $error.html(leyka.common_error_message).show();
-                    } else if(response.status !== 0 && typeof response.message !== 'undefined') {
-                        return $error.html(response.message).show();
-                    }
-
-                    let preview_html = response.type.includes('image/') ?
-                        '<img class="leyka-upload-image-preview" src="'+response.url+'" alt="">' : response.filename;
-
-                    $file_preview.show().find('.file-preview').html(preview_html);
-
-                    $main_field.val(response.path); // Option value will keep the file relative path in WP uploads dir
-
-                },
-                error: function(){
-
-                    $ajax_loading.hide();
-                    $error.html(leyka.common_error_message).show();
-
-                }
-            });
-
+        $.each(e.target.files, function(key, value){
+            data.append('files', value);
         });
 
-    $('.leyka-file-field-wrapper .delete-uploaded-file').on('click.leyka', function(e){ // Mark uploaded file to be removed
+        $ajax_loading.show();
+        $error.html('').hide();
+
+        $.ajax({
+            url: leyka.ajaxurl,
+            type: 'POST',
+            data: data,
+            cache: false,
+            dataType: 'json',
+            processData: false, // Don't process the files
+            contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+            success: function(response){
+
+                $ajax_loading.hide();
+
+                if(
+                    typeof response === 'undefined'
+                    || typeof response.status === 'undefined'
+                    || (response.status !== 0 && typeof response.message === 'undefined')
+                ) {
+                    return $error.html(leyka.common_error_message).show();
+                } else if(response.status !== 0 && typeof response.message !== 'undefined') {
+                    return $error.html(response.message).show();
+                }
+
+                let preview_html = response.type.includes('image/') ?
+                    '<img class="leyka-upload-image-preview" src="'+response.url+'" alt="">' : response.filename;
+
+                $file_preview.show().find('.file-preview').html(preview_html);
+
+                $main_field.val(response.path); // Option value will keep the file relative path in WP uploads dir
+
+            },
+            error: function(){
+
+                $ajax_loading.hide();
+                $error.html(leyka.common_error_message).show();
+
+            }
+        });
+
+    });
+
+    $body.on('click.leyka', '.leyka-file-field-wrapper .delete-uploaded-file', function(e){ // Mark uploaded file to be removed
 
         e.preventDefault();
 
@@ -2799,7 +2828,7 @@ jQuery(document).ready(function($){
             $field_wrapper = $delete_link.parents('.leyka-file-field-wrapper'),
             option_id = $field_wrapper.find('.upload-field').data('option-id'),
             $file_preview = $field_wrapper.find('.uploaded-file-preview'),
-            $main_field = $field_wrapper.find('input#leyka-upload-'+option_id);
+            $main_field = $field_wrapper.find('input.leyka-upload-result');
 
         $file_preview.hide().find('.file-preview').html('');
         $main_field.val('');
@@ -2807,10 +2836,13 @@ jQuery(document).ready(function($){
     });
 
     // Expandable options sections (portlets only):
+    /** @todo Remove this completely when all portlets are converted to metaboxes */
     $('.leyka-options-section .header h3').click(function(e){
+
         e.preventDefault();
-        var $section = $(this).closest('.leyka-options-section');
-        $section.toggleClass('collapsed');
+
+        $(this).closest('.leyka-options-section').toggleClass('collapsed');
+
     });
 
     // Delete fields comments:
@@ -2831,6 +2863,7 @@ jQuery(document).ready(function($){
 
         function leyka_toggle_sections_dependent_on_legal_type($val) {
             if($val === 'legal') {
+
                 $('#person_terms_of_service').hide();
                 $('#beneficiary_person_name').hide();
                 $('#person_bank_essentials').hide();
@@ -2838,7 +2871,9 @@ jQuery(document).ready(function($){
                 $('#terms_of_service').show();
                 $('#beneficiary_org_name').show();
                 $('#org_bank_essentials').show();
+
             } else {
+
                 $('#person_terms_of_service').show();
                 $('#beneficiary_person_name').show();
                 $('#person_bank_essentials').show();
@@ -2846,6 +2881,7 @@ jQuery(document).ready(function($){
                 $('#terms_of_service').hide();
                 $('#beneficiary_org_name').hide();
                 $('#org_bank_essentials').hide();
+
             }
         }
 

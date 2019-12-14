@@ -57,7 +57,9 @@ function leyka_render_text_field($option_id, $data){
 
             </span>
             <span class="field-component field">
-                <input type="<?php echo empty($data['is_password']) ? 'text' : 'password';?>" <?php echo !empty($data['mask']) ?  'data-inputmask="'.$data['mask'].'"' : '';?> id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo empty($data['placeholder']) ? '' : esc_attr($data['placeholder']);?>" maxlength="<?php echo empty($data['length']) ? '' : (int)$data['length'];?>"  class="<?php echo !empty($data['mask']) ?  'leyka-wizard-mask' : '';?>">
+
+                <input type="<?php echo empty($data['is_password']) ? 'text' : 'password';?>" <?php echo !empty($data['mask']) ?  'data-inputmask="'.$data['mask'].'"' : '';?> id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo empty($data['placeholder']) ? '' : esc_attr($data['placeholder']);?>" maxlength="<?php echo empty($data['length']) ? '' : (int)$data['length'];?>" class="<?php echo !empty($data['mask']) ?  'leyka-wizard-mask' : '';?>" <?php echo empty($data['is_read_only']) ? '' : 'readonly="readonly"';?>>
+
             </span>
 
             <?php if( !empty($data['description']) ) {?>
@@ -733,6 +735,7 @@ function leyka_render_tabbed_section_options_area($section) {
 }
 
 // [Special field] Support packages extension - packages list field:
+/** @todo Move to somewhere in the Support_Packages Extension */
 add_action('leyka_render_custom_support_packages_settings', 'leyka_render_support_packages_settings', 10, 2);
 function leyka_render_support_packages_settings($option_id, $data){
 
@@ -746,11 +749,14 @@ function leyka_render_support_packages_settings($option_id, $data){
             'package_icon' => '',
         ));?>
 
-        <div id="<?php echo $placeholders['id'] ? 'package-'.$placeholders['id'] : 'package-'.leyka_get_random_string(4);?>" class="package-box <?php echo $is_template ? 'package-template' : '';?>" <?php echo $is_template ? 'style="display: none;"' : '';?>>
+        <div id="<?php echo $placeholders['id'] ? 'package-'.$placeholders['id'] : 'package-'.leyka_get_random_string(4);?>" class="package-box <?php echo $is_template ? 'package-template' : '';?> <?php echo !$is_template && !empty($_COOKIE['leyka-support-packages-boxes-closed']) && !empty($placeholders['id']) && in_array($placeholders['id'], $_COOKIE['leyka-support-packages-boxes-closed']) ? 'closed' : '';?>" <?php echo $is_template ? 'style="display: none;"' : '';?>>
 
-            <h2 class="ui-sortable-handle"><span><?php echo esc_html($placeholders['box_title']);?></span></h2>
+            <h2 class="ui-sortable-handle hndle">
+                <span class="title"><?php echo esc_html($placeholders['box_title']);?></span>
+                <span class="draggable"></span>
+            </h2>
 
-            <div class="box-content">
+            <div class="box-content inside">
 
                 <div class="option-block type-text">
                     <div class="leyka-text-field-wrapper">
@@ -766,7 +772,13 @@ function leyka_render_support_packages_settings($option_id, $data){
 
                 <?php if($placeholders['id']) {?>
                 <div class="option-block type-text-readonly">
-                    <?php echo __('Package ID', 'leyka').': '.$placeholders['id'];?>
+                    <div class="leyka-text-field-wrapper">
+                        <?php leyka_render_text_field('package_id', array(
+                            'title' => __('Package ID', 'leyka'),
+                            'value' => $placeholders['id'],
+                            'is_read_only' => true,
+                        ));?>
+                    </div>
                 </div>
                 <?php }?>
 
@@ -792,10 +804,10 @@ function leyka_render_support_packages_settings($option_id, $data){
                     <div class="field-errors"></div>
                 </div>
 
-            </div>
+                <div class="box-footer">
+                    <div class="delete-package"><?php _e('Delete the reward', 'leyka');?></div>
+                </div>
 
-            <div class="box-footer">
-                <div class="delete-package"><?php _e('Delete the reward', 'leyka');?></div>
             </div>
 
         </div>
