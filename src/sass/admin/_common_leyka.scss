@@ -1,5 +1,5 @@
 .leyka-admin {
-    
+
     @include body-text();
     @include leyka-loading-indicator();
 
@@ -34,6 +34,7 @@
                 .wp-picker-open + .wp-picker-input-wrap {
                     display: flex;
                 }
+
                 .wp-picker-input-wrap {
 
                     .wp-color-picker {
@@ -162,9 +163,103 @@
                 //    }
                 //}
 
-            }
+            } // File fields - END
 
-        }
+            // Campaign select comboboxes:
+            &.type-campaign_select { /** @todo All the following taken from _donors.scss, Donors list filters styles. Refactor both places to use a single styles sttings (from here). */
+
+                select {
+                    display: none;
+                }
+
+                .leyka-selector {
+                    &.working {
+                        border: 2px solid red;
+                    }
+                }
+
+                .ui-autocomplete-multiselect {
+
+                    @include leyka-donors-filter-selector();
+
+                    display: inline-block;
+                    width: 176px !important;
+                    height: auto;
+                    min-height: 32px;
+
+                    .placeholder {
+                        margin-top: 6px;
+                        margin-left: 5px;
+                    }
+
+                    &.ui-state-default {
+                        background: $color-white;
+                        padding: 3px 3px;
+                        padding-bottom: 0;
+                        overflow: hidden;
+                        cursor: text;
+
+                        input.ui-autocomplete-input {
+                            display: none;
+                        }
+                    }
+
+                    &.ui-state-active {
+                        outline: none;
+
+                        input.ui-autocomplete-input {
+                            display: block !important;
+                        }
+
+                        .placeholder {
+                            display: none;
+                        }
+                    }
+
+                    .ui-autocomplete-multiselect-item {
+                        display: inline-block;
+                        border: 1px solid #ccc;
+                        border-radius: 4px;
+                        padding: 1px 24px 1px 3px;
+                        margin-right: 2px;
+                        margin-bottom: 3px;
+                        color: #333;
+                        background-color: #f6f6f6;
+
+                        overflow: hidden;
+                        max-width: 136px;
+                        width: auto;
+                        text-overflow: ellipsis;
+                        max-height: 36px;
+                        line-height: 18px;
+                        position: relative;
+
+                        .ui-icon {
+                            position: absolute;
+                            right: 3px;
+                            top: 2px;
+                            cursor: pointer;
+                        }
+                    }
+
+                    input.ui-autocomplete-input {
+                        display: block;
+                        border: none;
+                        outline: none;
+                        height: auto;
+                        margin: 2px;
+                        overflow: visible;
+                        margin-bottom: 5px;
+                        text-align: left;
+                        box-shadow: none;
+                        width: 100%;
+                    }
+
+                }
+
+            } // Campaign select comboboxes - END
+
+        } // Option blocks - END
 
         &.container-block {
             display: flex;

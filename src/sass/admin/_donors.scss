@@ -131,11 +131,11 @@
 // filter controls
 .donors-list-filters {
 
-    select {
-    	display: none;
-    }
+    //input:not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"])  {
+    //}
 
-    input:not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"])  {
+    select {
+        display: none;
     }
 
     input[type="text"], input[type="date"]  {

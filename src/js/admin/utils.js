@@ -100,6 +100,6 @@ function leyka_ui_widget_available(widget = '', object = null) {
         return false;
     }
 
-    return widget.length ? typeof typeof object[widget] !== 'undefined' : typeof object !== 'undefined';
+    return widget.length ? typeof object[widget] !== 'undefined' : typeof object !== 'undefined';
 
 }

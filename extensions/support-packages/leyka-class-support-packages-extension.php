@@ -11,7 +11,11 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
 
     public static $max_packages_number = 5;
     public static $FEATURES = array(
-        'leyka_limited_content' => array('class' => 'Leyka_Support_Packages_Limit_Content_Feature', 'is_shortcode' => true, 'shortcode_atts' => array('support_plan' => '')),
+        'leyka_limited_content' => array(
+            'class' => 'Leyka_Support_Packages_Limit_Content_Feature',
+            'is_shortcode' => true,
+            'shortcode_atts' => array('support_plan' => '')
+        ),
     );
     
     protected static $_instance;
@@ -57,7 +61,6 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
                     $this->_id.'_title' => array(
                         'type' => 'text',
                         'title' => '1. Заголовок обращения', // __('', 'leyka'),
-//                        'comment' => __('Please, enter ...', 'leyka'),
                         'required' => true,
                         'placeholder' => 'Подпишитесь, чтобы прочитать целиком', // __('E.g., ', 'leyka'),
                         'width' => 0.5,
@@ -65,21 +68,17 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
                     $this->_id.'_main_text' => array(
                         'type' => 'textarea',
                         'title' => '2. Текстовое обращение', // __('', 'leyka'),
-//                        'comment' => __('Please, enter ...', 'leyka'),
-//                        'placeholder' => 'Разрушить стереотипы, объединить ребят, увлеченных технологиями, вдохновить на поиски своего призвания – такие цели ставили перед собой участники Европейской недели программирования.',
                         'required' => false,
                     ),
                     $this->_id.'_subscription_text' => array(
                         'type' => 'textarea',
                         'title' => '3. Текст о подписке', // __('', 'leyka'),
-//                        'comment' => __('Please, enter ...', 'leyka'),
                         'placeholder' => 'Подписка продлевается автоматически. Вы можете отписаться в любой момент в личном кабинете',
                         'required' => false,
                     ),
                     $this->_id.'_activation_button_label' => array(
                         'type' => 'text',
                         'title' => '4. Надпись на кнопке активации', // __('', 'leyka'),
-//                                'comment' => __('Please, enter ...', 'leyka'),
                         'required' => true,
                         'placeholder' => 'Подписаться', // __('E.g., ', 'leyka'),
                         'default' => 'Подписаться', // __('E.g., ', 'leyka'),
@@ -88,7 +87,6 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
                     $this->_id.'_account_link_label' => array(
                         'type' => 'text',
                         'title' => '5. Надпись для ссылки перехода в ЛК', // __('', 'leyka'),
-//                                'comment' => __('Please, enter ...', 'leyka'),
                         'required' => true,
                         'placeholder' => 'У меня уже есть подписка', // __('E.g., ', 'leyka'),
                         'default' => 'У меня уже есть подписка', // __('', 'leyka'),
@@ -106,6 +104,12 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
 //                        'required' => false,
                         'default' => '', /** @todo Add the default icon URL */
 //                        'field_classes' => '', /** @todo Add the default icon URL */
+                    ),
+                    $this->_id.'_campaign' => array(
+                        'type' => 'campaign_select',
+                        'title' => 'Кампания для рекуррентных подписок', // __('', 'leyka'),
+//                        'placeholder' => __('', 'leyka'),
+                        'required' => true,
                     ),
                 )
             )),

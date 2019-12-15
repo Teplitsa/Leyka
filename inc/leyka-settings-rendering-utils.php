@@ -592,7 +592,6 @@ function leyka_render_rich_html_field($option_id, $data){
                 'textarea_name' => $option_id,
                 'tinymce' => true,
                 'teeny' => true, // For rich HTML editor
-//                'dfw' => true,
             ));
 
             if( !empty($data['description']) ) {?>
@@ -616,7 +615,7 @@ function leyka_render_colorpicker_field($option_id, $data) {
             <span class="field-component title">
 
                 <span class="text"><?php echo $data['title'];?></span>
-                <?php echo empty($data['required'] ? '' : '<span class="required">*</span>');
+                <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';
 
                 if( !empty($data['comment']) ) {?>
                 <span class="field-q">
@@ -637,6 +636,65 @@ function leyka_render_colorpicker_field($option_id, $data) {
             </span>
 
         </label>
+    </div>
+
+<?php }
+
+add_action('leyka_render_campaign_select', 'leyka_render_campaign_select_field', 10, 2);
+function leyka_render_campaign_select_field($option_id, $data) {
+
+    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
+
+    $data = wp_parse_args($data, array(
+        'placeholder' => __('Select a campaign', 'leyka'),
+        'default' => '',
+//        'multiple' => false, /** Multi-selects are not supported yet */
+        'required' => false,
+    ));
+
+    $data['value'] = empty($data['value']) ?
+        (empty($data['default']) ? false : absint($data['default'])) :
+        absint($data['value']);
+//    $data['value'] = empty($data['value']) ? ($data['multiple'] ? array() : false) : $data['value'];
+
+    $campaign_title = '';
+    if($data['value'] && absint($data['value'])) {
+
+        $campaign = get_post(absint($data['value']));
+        if($campaign) {
+            $campaign_title = $campaign->post_title;
+        }
+
+    }?>
+
+    <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-campaign-select-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) ? '' : implode(' ', $data['field_classes']);?>" data-multiple="<?php echo (int)!!$data['multiple'];?>" data-required-min="<?php echo absint($data['required']);?>">
+
+        <label for="<?php echo $option_id.'-field';?>">
+
+            <span class="field-component title">
+
+                <span class="text"><?php echo $data['title'];?></span>
+
+                <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';
+
+                if( !empty($data['comment']) ) {?>
+                <span class="field-q">
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
+                    <span class="field-q-tooltip"><?php echo $data['comment'];?></span>
+                </span>
+                <?php }?>
+
+            </span>
+
+            <?php if( !empty($data['description']) ) {?>
+                <span class="field-component help"><?php echo $data['description'];?></span>
+            <?php }?>
+
+            <input type="text" id="<?php echo $option_id.'-field';?>" class="leyka-campaign-selector" data-nonce="<?php echo wp_create_nonce('leyka_get_campaigns_list_nonce');?>" placeholder="<?php echo $data['placeholder'];?>" value="<?php echo $campaign_title;?>">
+            <input class="campaign-id" type="hidden" name="campaign" value="<?php echo $data['value'];?>">
+
+        </label>
+
     </div>
 
 <?php }
