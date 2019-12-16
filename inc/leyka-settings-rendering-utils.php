@@ -691,7 +691,7 @@ function leyka_render_campaign_select_field($option_id, $data) {
             <?php }?>
 
             <input type="text" id="<?php echo $option_id.'-field';?>" class="leyka-campaign-selector" data-nonce="<?php echo wp_create_nonce('leyka_get_campaigns_list_nonce');?>" placeholder="<?php echo $data['placeholder'];?>" value="<?php echo $campaign_title;?>">
-            <input class="campaign-id" type="hidden" name="campaign" value="<?php echo $data['value'];?>">
+            <input class="campaign-id" type="hidden" name="<?php echo $option_id;?>" value="<?php echo $data['value'];?>">
 
         </label>
 
