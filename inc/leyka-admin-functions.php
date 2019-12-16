@@ -94,27 +94,37 @@ if( !function_exists('leyka_sync_plugin_stats_option_action') ) {
 add_action('leyka_after_save_option-send_plugin_stats', 'leyka_sync_plugin_stats_option_action', 10, 2);
 
 if( !function_exists('leyka_get_admin_footer') ) {
-    function leyka_get_admin_footer($footer_class='', $old_footer_html='') {
-        ob_start();
-        ?>
+    function leyka_get_admin_footer($footer_class = '', $old_footer_html = '') {
+
+        ob_start();?>
+
         <div class="leyka-dashboard-footer leyka-admin-footer <?php echo $footer_class;?>">
+
             <a href="https://te-st.ru/" class="te-st-logo">
-                <img  src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/logo-te-st-with-caption.svg" alt="<?php _e('te-st.ru', 'leyka');?>" />
+                <img  src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/logo-te-st-with-caption.svg" alt="<?php _e('te-st.ru', 'leyka');?>">
             </a>
+
             <div class="links">
+
                 <div class="te-st-link">
                     <span><?php _e('Created by', 'leyka');?></span>
                     <a href="https://te-st.ru/"><?php _e('Teplitsa. Technologies for Social Good', 'leyka');?></a>
                 </div>
+
                 <div class="info-links">
                     <a href="https://leyka.te-st.ru/sla/" target="_blank"><?php _e('SLA', 'leyka');?></a>
                     <a href="https://github.com/Teplitsa/leyka/wiki" target="_blank"><?php _e('Documentation', 'leyka');?></a>
                     <a href="https://t.me/joinchat/BshvgVUqHJLyCNIXd6pZXQ" target="_blank"><?php _e('Developer chat', 'leyka');?></a>
                 </div>
+
+                <div class="support-widget"></div>
+
             </div>
+
         </div>
-        <?php
-        return ob_get_clean() . $old_footer_html;
+
+        <?php return ob_get_clean().$old_footer_html;
+
     }
 
 }
