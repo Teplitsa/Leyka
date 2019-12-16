@@ -88,6 +88,6 @@ $is_separate_sections_forms = $this->is_separate_forms_stage($current_stage);?>
 
     </div>
 
-    <?php  include(LEYKA_PLUGIN_DIR.'inc/settings-fields-templates/leyka-helpchat.php');?>
+    <?php // include(LEYKA_PLUGIN_DIR.'inc/settings-fields-templates/leyka-helpchat.php');?>
 
 </div>

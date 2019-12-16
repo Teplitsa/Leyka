@@ -83,7 +83,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
         </form>
         
         <?php echo $this->render_footer();
-        echo $this->render_help_chat();
+//        echo $this->render_help_chat();
 
     }
 
@@ -91,10 +91,10 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
         leyka_show_admin_footer();
     }
     
-    public function render_help_chat() {
-        include LEYKA_PLUGIN_DIR.'inc/settings-fields-templates/leyka-helpchat.php';
-    }
-    
+//    public function render_help_chat() {
+//        include LEYKA_PLUGIN_DIR.'inc/settings-fields-templates/leyka-helpchat.php';
+//    }
+
     public function render_hidden_fields() {
     }
 

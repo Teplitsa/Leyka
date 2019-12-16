@@ -730,6 +730,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         } else { // Old admin pages (before v3.0)
             /** @todo ATM, the old admin.css is used only for New & Edit Donation pages (/css/admin.css, lines 502-730). Move their code to the /src/ , then remove the /css/admin.css */
 	        wp_enqueue_style('leyka-admin', LEYKA_PLUGIN_BASE_URL.'css/admin.css', array(), LEYKA_VERSION);
+            wp_enqueue_style('leyka-settings', LEYKA_PLUGIN_BASE_URL.'assets/css/admin.css', array(), LEYKA_VERSION);
 	    }
 
         if($current_screen->id === 'dashboard_page_leyka_donor_info') {

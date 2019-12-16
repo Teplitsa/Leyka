@@ -94,19 +94,18 @@
 
                             <?php $filter_value = isset($_GET['gateways']) ? (array)$_GET['gateways'] : array();?>
                             <select id="leyka-gateways-select" name="gateways[]" multiple="multiple">
+
                                 <?php $gateways = leyka_get_gateways();
                                 usort($gateways, function($gateway_first, $gateway_second){
                                     return strcmp($gateway_first->name, $gateway_second->name);
                                 });
 
                                 foreach($gateways as $gateway) {?>
-                                    <option value="<?php echo $gateway->id;?>"
-                                        <?php echo is_array($filter_value) && in_array($gateway->id, $filter_value) ? 'selected="selected"' : '';?>
-                                        data-active-class="<?php echo $gateway->is_active ? "active-gateway" : "";?>"
-                                    >
+                                    <option value="<?php echo $gateway->id;?>" <?php echo is_array($filter_value) && in_array($gateway->id, $filter_value) ? 'selected="selected"' : '';?> data-active-class="<?php echo $gateway->is_active ? "active-gateway" : "";?>">
                                         <?php echo $gateway->name;?>
                                     </option>
                                 <?php }?>
+
                             </select>
 
                         </div>
@@ -142,3 +141,4 @@
 
     </div>
 </div>
+<div class="clear"></div>
