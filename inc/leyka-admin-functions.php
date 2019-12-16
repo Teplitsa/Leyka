@@ -72,7 +72,7 @@ if( !function_exists('leyka_admin_get_shortcode_field') ) {
         <span class="leyka-current-value"><?php echo esc_attr($shortcode);?></span>
         <span class="leyka-campaign-shortcode-field" style="display: none;">
             <input type="text" class="embed-code read-only campaign-shortcode inline-input" id="campaign-shortcode" value="<?php echo esc_attr($shortcode);?>">
-            <button class="inline-reset"><?php esc_html_e('Cancel');?></button>
+            <button class="inline-reset"><?php _e('Cancel');?></button>
         </span>
 
         <?php return ob_get_clean();
@@ -117,13 +117,13 @@ if( !function_exists('leyka_get_admin_footer') ) {
                     <a href="https://t.me/joinchat/BshvgVUqHJLyCNIXd6pZXQ" target="_blank"><?php _e('Developer chat', 'leyka');?></a>
                 </div>
 
-                <div class="support-widget"></div>
-
             </div>
 
         </div>
 
-        <?php return ob_get_clean().$old_footer_html;
+        <?php // include(LEYKA_PLUGIN_DIR.'inc/settings-fields-templates/leyka-helpchat.php');
+
+        return ob_get_clean().$old_footer_html;
 
     }
 

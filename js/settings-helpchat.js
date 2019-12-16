@@ -1,78 +1,77 @@
 
 // Help chat:
 jQuery(document).ready(function($){
-    
-    var $chat = $('.help-chat'),
-        $chatButton = $('.help-chat-button');
+
+    let $chat = $('.help-chat'),
+        $chat_button = $('.help-chat-button'),
+        $loading = $chat.find('.leyka-loader');
 
     if( !$chat.length ) {
         return;
     }
 
-    var $loading = $chat.find('.leyka-loader');
-
-    function disableForm() {
-        $chat.find('input[type=text]').prop('disabled', true);
-        $chat.find('textarea').prop('disabled', true);
-        $chat.find('.button').hide();
-    }
+    // function disable_form() {
+    //     $chat.find('input[type=text]').prop('disabled', true);
+    //     $chat.find('textarea').prop('disabled', true);
+    //     $chat.find('.button').hide();
+    // }
+    //
+    // function enable_form() {
+    //     $chat.find('input[type=text]').prop('disabled', false);
+    //     $chat.find('textarea').prop('disabled', false);
+    //     $chat.find('.button').show();
+    // }
     
-    function enableForm() {
-        $chat.find('input[type=text]').prop('disabled', false);
-        $chat.find('textarea').prop('disabled', false);
-        $chat.find('.button').show();
-    }
-    
-    function showLoading() {
+    function show_loading() {
         $loading.show();
     }
-    
-    function hideLoading() {
+
+    function hide_loading() {
         $loading.hide();
     }
     
-    function showOKMessage() {
+    function show_ok_message() {
         $chat.find('.ok-message').show();
         $chat.removeClass('fix-height');
     }
 
-    function hideOKMessage() {
+    function hide_ok_message() {
         $chat.find('.ok-message').hide();
         $chat.addClass('fix-height');
     }
     
-    function showForm() {
+    function show_form() {
         $chat.find('.form').show();
     }
 
-    function hideForm() {
+    function hide_form() {
         $chat.find('.form').hide();
     }
 
-    function validateForm() {
+    function validate_form() {
         return true;
     }
     
-    function showHelpChat() {
-        $chatButton.hide();
+    function show_help_chat() {
+        $chat_button.hide();
         $chat.show();
     }
     
-    function hideHelpChat() {
+    function hide_help_chat() {
         $chat.hide();
-        $chatButton.show();
+        $chat_button.show();
     }
 
-    $chat.find('.form').submit(function(e) {
+    $chat.find('.form').submit(function(e){
+
         e.preventDefault();
         
-        if(!validateForm()) {
+        if(!validate_form()) {
             return;
         }
 
-        //hideErrors();
-        hideForm();
-        showLoading();
+        hide_form();
+        show_loading();
 
         $.post(leyka.ajaxurl, {
             action: 'leyka_send_feedback',
@@ -84,34 +83,39 @@ jQuery(document).ready(function($){
         }, null).done(function(response) {
     
             if(response === '0') {
-                showOKMessage();
-                hideForm();
+                show_ok_message();
+                hide_form();
             } else {
                 alert('Ошибка!');
-                showForm();
+                show_form();
             }
 
         }).fail(function() {
-            showForm();
+            show_form();
         }).always(function() {
-            hideLoading();
+            hide_loading();
         });
             
     });
     
-    $chatButton.click(function(e){
+    $chat_button.click(function(e){
+
         e.preventDefault();
-        showHelpChat();
-        hideOKMessage();
-        showForm();
+
+        show_help_chat();
+        hide_ok_message();
+        show_form();
+
     });
 
     $chat.find('.close').click(function(e){
+
         e.preventDefault();
-        hideHelpChat();
-        hideForm();
-        showOKMessage();
+
+        hide_help_chat();
+        hide_form();
+        show_ok_message();
+
     });
     
 });
-

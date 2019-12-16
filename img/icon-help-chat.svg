@@ -1,12 +1,7 @@
-<svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M17 1C8.168 1 1 8.168 1 17C1 25.832 8.168 33 17 33C25.832 33 33 25.832 33 17C33 8.168 25.832 1 17 1Z" stroke="white" stroke-width="2"/>
-<circle cx="17" cy="17" r="7" stroke="white" stroke-width="2"/>
-<line x1="15.4461" y1="10.7713" x2="12.0721" y2="2.37276" stroke="white" stroke-width="2"/>
-<line x1="18.9279" y1="10.7713" x2="22.3019" y2="2.37276" stroke="white" stroke-width="2"/>
-<line x1="18.9279" y1="23.6272" x2="22.3019" y2="32.0258" stroke="white" stroke-width="2"/>
-<line x1="15.4461" y1="23.6272" x2="12.0721" y2="32.0258" stroke="white" stroke-width="2"/>
-<line x1="23.615" y1="15.4584" x2="32.0136" y2="12.0844" stroke="white" stroke-width="2"/>
-<line x1="23.615" y1="18.9402" x2="32.0136" y2="22.3142" stroke="white" stroke-width="2"/>
-<line x1="10.759" y1="18.9402" x2="2.36043" y2="22.3142" stroke="white" stroke-width="2"/>
-<line x1="10.759" y1="15.4584" x2="2.36043" y2="12.0844" stroke="white" stroke-width="2"/>
+<svg viewBox="0 0 46 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M41.6673 0.387695H23.6316C21.5008 0.387695 19.7668 2.12171 19.7668 4.2525L18 17.1352C18 19.266 19.734 21 21.8648 21H39.9006C42.0314 21 43.7654 19.266 43.7654 17.1352L45.5322 4.2525C45.5322 2.12171 43.7981 0.387695 41.6673 0.387695Z" fill="white"/>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M39.9009 18.4246H21.8651C21.1553 18.4246 20.5768 17.8474 20.5768 17.1363L22.3436 4.57568L31.8768 11.7256C32.1061 11.8982 32.3779 11.9832 32.6498 11.9832C32.9216 11.9832 33.1934 11.8982 33.4227 11.7256L42.9559 4.57568L41.1891 17.1363C41.1891 17.8474 40.6107 18.4246 39.9009 18.4246Z" fill="#0895CD"/>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M40.8082 2.96436L32.6496 9.08363L24.491 2.96436H40.8082Z" fill="#0895CD"/>
+    <line x1="7" y1="8" x2="15" y2="8" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    <line x1="1" y1="13" x2="9" y2="13" stroke="white" stroke-width="2" stroke-linecap="round"/>
 </svg>

@@ -46,8 +46,8 @@
 .leyka-admin-footer {
 
 	display: flex;
-    justify-content: flex-end;
-	align-items: flex-end;
+    justify-content: flex-start;
+	align-items: center;
 	
 	.te-st-logo {
 
@@ -141,21 +141,6 @@
                 }
 
             }
-
-        }
-
-        .support-widget {
-
-            width: 52px;
-            height: 52px;
-
-            cursor: pointer;
-            background-image: url(../../src/svg/icon-email2support.svg);
-            background-repeat: no-repeat;
-            background-size: 50px;
-
-            margin-left: 24px;
-            margin-right: 40px;
 
         }
 
