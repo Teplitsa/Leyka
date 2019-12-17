@@ -1,6 +1,4 @@
-<?php /**
- * The default procedure of doing all active recurring donations of the currenct date.
- */
+<?php /** The default procedure of doing all active recurring donations of the currenct date. */
 
 require_once 'procedures-common.php';
 
@@ -20,7 +18,8 @@ ini_set('memory_limit', 268435456); // 256 Mb, just in case
 // Get all active initial donations for the recurring subscriptions:
 $current_day = (int)date('j');
 $max_days_in_month = (int)date('t');
-$current_day_param = $max_days_in_month < 31 && $max_days_in_month === $current_day ? // Last day of short month
+$current_day_param = array('relation' => 'AND', array('before' => '-1 day')); // Rebill only subscriptions older than 1 full day
+$current_day_param[] = $max_days_in_month < 31 && $max_days_in_month === $current_day ? // Last day of short month
     array(array('day' => $current_day, 'compare' => '>='), array('day' => 31, 'compare' => '<=')) :
     array(array('day' => (int)date('j')));
 
