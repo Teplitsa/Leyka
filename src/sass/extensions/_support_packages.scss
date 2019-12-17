@@ -86,6 +86,7 @@ $leyka-ext-sp-color-bg-light-gray: #FAFAFA;
         border-radius: 4px;
         padding: $base * 2;
         overflow: hidden;
+        box-sizing: border-box;
 
         &.active {
             color: $leyka-ext-sp-color-white;
