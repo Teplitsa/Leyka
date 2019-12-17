@@ -31,11 +31,12 @@
 	.loading-indicator-wrap {
 
 	    .ok-icon {
-	        //display: none;
+	        display: none;
 	        padding-top: 6px;
 	    }
 
 	    .loader-wrap {
+	    	display: none;
 			padding-top: 8px;
 	    }
 
@@ -539,6 +540,12 @@
 			align-items: flex-start;
 		}
 
+		&.closed {
+			.inside {
+				display: none;
+			}
+		}
+
 		.donor-col-1 {
 			margin-right: $leyka-base;
 		}
@@ -738,6 +745,12 @@
 				@include leyka-admin-btn(secondary);
 				margin-left: 0px;
 			}
+
+			.loading-indicator-wrap {
+				display: inline-block;
+				vertical-align: middle;
+				padding-bottom: 2px;
+			}
 		}
 
 		table.donor-info-table {
@@ -801,6 +814,19 @@ table.donor-info-table {
 				background-image: url(../../img/dashboard/icon-bad.svg);
 				@include leyka-admin-icon(19px);
 				@include leyka-admin-clean-a;
+			}
+
+			&.donor-comment-delete {
+				.loading-indicator-wrap {
+
+					.loader-wrap {
+						display: none; // fix donor info indicators bug
+					}
+
+					.ok-icon {
+						display: none; // fix donor info indicators bug
+					}
+				}
 			}
 		}
 	}
@@ -1075,11 +1101,13 @@ table.donor-info-table {
 			//display: none;
 
 			.loader-wrap {
+				display: none; // fix donor info indicators bug
 				padding-top: 0;
 				margin-right: 8px;
 			}
 
 			.ok-icon {
+				display: none; // fix donor info indicators bug
 				padding-top: 0;
 			}
 

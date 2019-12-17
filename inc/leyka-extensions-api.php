@@ -349,6 +349,7 @@ abstract class Leyka_Extension extends Leyka_Singleton {
         ?>
 :root {
 	--leyka-ext-<?php echo $this->id_dash;?>-color-main: <?php echo $this->main_color?>;
+	--leyka-ext-<?php echo $this->id_dash;?>-color-main-op10: <?php echo $this->main_color?>1A;
 	--leyka-ext-<?php echo $this->id_dash;?>-color-background: <?php echo $this->background_color?>;
 	--leyka-ext-<?php echo $this->id_dash;?>-color-caption: <?php echo $this->caption_color?>;
 	--leyka-ext-<?php echo $this->id_dash;?>-color-text: <?php echo $this->text_color?>;

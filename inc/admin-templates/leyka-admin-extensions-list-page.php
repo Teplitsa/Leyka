@@ -69,8 +69,8 @@ $extensions_categories = Leyka_Extension::get_filter_categories_list();?>
                     <div class="module-card-params extension-description"><?php echo $extension->description;?></div>
 
                     <div class="module-card-action">
-                        <a class="button extension-settings <?php echo $activation_status === 'active' ? 'button-secondary' : 'button-primary';?> <?php echo $activation_status;?>" href="<?php echo $extension->get_settings_url();?>">
-                            <img src="<?php echo $activation_status === 'active' ? LEYKA_PLUGIN_BASE_URL.'src/svg/icon-gear-blue.svg' : LEYKA_PLUGIN_BASE_URL.'src/svg/icon-gear.svg';?>" alt="">
+                        <a class="button extension-settings <?php echo 'button-primary';?> <?php echo 'leyka-card-'.$activation_status;?>" href="<?php echo $extension->get_settings_url();?>">
+                            <img src="<?php echo LEYKA_PLUGIN_BASE_URL.'src/svg/icon-gear.svg';?>" alt="">
                             <?php _e('Extension settings', 'leyka');?>
                         </a>
                     </div>
