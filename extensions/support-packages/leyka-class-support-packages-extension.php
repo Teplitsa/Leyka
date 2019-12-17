@@ -154,12 +154,12 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
     
     public function is_package_active($package, $user) {
         $active_package = $this->get_user_active_package($user);
-        return $active_package->id === $package->id;
+        return $active_package && $active_package->id === $package->id;
     }
     
     public function is_activation_available($package, $user) {
         $active_package = $this->get_user_active_package($user);
-        return !$active_package || $active_package->amount_needed < $package->amount_needed;
+        return !$active_package || ($active_package->amount_needed < $package->amount_needed);
     }
 
     public function is_package_activated($package, $user) {

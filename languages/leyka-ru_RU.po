@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Plugins - Leyka - Development (trunk)\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/leyka\n"
 "POT-Creation-Date: 2019-12-17T15:25:06+02:00\n"
-"PO-Revision-Date: 2019-12-17 15:30+0200\n"
+"PO-Revision-Date: 2019-12-17 15:45+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -9339,10 +9339,8 @@ msgstr ""
 "Подписка продлевается автоматически. Вы можете отписаться в любой момент в"
 
 #: extensions/support-packages/leyka-class-support-packages-extension.php:502
-#, fuzzy
-#| msgid "Donor account"
 msgid "your account"
-msgstr "Личный кабинет донора"
+msgstr "личном кабинете"
 
 #: extensions/support-packages/leyka-class-support-packages-extension.php:504
 msgid "Subscribe"
