@@ -1530,7 +1530,8 @@ jQuery(document).ready(function($){
         return;
     }
 
-    let $mainColorInput = $('input[name="leyka_support_packages_main_color"]'),
+    var LEYKA_EXT_AUTO_CALC_COLORS = false;
+    var $mainColorInput = $('input[name="leyka_support_packages_main_color"]'),
         $backgroundColorInput = $('input[name="leyka_support_packages_background_color"]')
             .closest('.field-component.field')
             .find('.leyka-setting-field.colorpicker'),
@@ -1541,35 +1542,86 @@ jQuery(document).ready(function($){
             .closest('.field-component.field')
             .find('.leyka-setting-field.colorpicker');
 
-    function leykaSetupGeneralColors(mainColorHex) {
+    $mainColorInput.closest('.field-component').find('.leyka-setting-field.colorpicker').data('stored-color', $mainColorInput.val());
+    $backgroundColorInput.data('stored-color', $backgroundColorInput.closest('.field-component').find('.leyka-colorpicker-value').val());
+    $captionColorInput.data('stored-color', $captionColorInput.closest('.field-component').find('.leyka-colorpicker-value').val());
+    $textColorInput.data('stored-color', $textColorInput.closest('.field-component').find('.leyka-colorpicker-value').val());
 
-        // console.log("mainColorHex:", mainColorHex);
+    function leykaSetupGeneralColors(mainColorHex) {
         let mainColorHsl = leykaHex2Hsl(mainColorHex);
-        // console.log("mainColorHsl:", mainColorHsl);
 
         let backgroundColorHsl = leykaMainHslColor2Background(mainColorHsl[0], mainColorHsl[1], mainColorHsl[2]);
-        // console.log("backgroundColorHsl:");
-        // console.log(backgroundColorHsl);
-
         let backgroundColorHex = leykaHsl2Hex(backgroundColorHsl[0], backgroundColorHsl[1], backgroundColorHsl[2]);
-        // console.log("backgroundColorHex:");
-        // console.log(backgroundColorHex);
-        $backgroundColorInput.wpColorPicker('color', backgroundColorHex);
-        $captionColorInput.wpColorPicker('color', backgroundColorHex);
+
+        LEYKA_EXT_AUTO_CALC_COLORS = true;
+        if(!$backgroundColorInput.data('changed')) {
+            $backgroundColorInput.wpColorPicker('color', backgroundColorHex);
+        }
+
+        if(!$captionColorInput.data('changed')) {
+            $captionColorInput.wpColorPicker('color', backgroundColorHex);
+        }
 
         let textColorHsl = leykaMainHslColor2Text(mainColorHsl[0], mainColorHsl[1], mainColorHsl[2]);
-        // console.log("textColorHsl:");
-        // console.log(textColorHsl);
-
         let textColorHex = leykaHsl2Hex(textColorHsl[0], textColorHsl[1], textColorHsl[2]);
-        // console.log("textColorHex:");
-        // console.log(textColorHex);
-        $textColorInput.wpColorPicker('color', textColorHex);
-
+        
+        if(!$textColorInput.data('changed')) {
+            $textColorInput.wpColorPicker('color', textColorHex);
+        }
+        LEYKA_EXT_AUTO_CALC_COLORS = false;
     }
 
     $mainColorInput.on('change.leyka', function(){
         leykaSetupGeneralColors($(this).val());
+    });
+
+    console.log($backgroundColorInput);
+
+    $backgroundColorInput.closest('.field-component').find('.leyka-colorpicker-value').on('change.leyka', function(){
+        if(!LEYKA_EXT_AUTO_CALC_COLORS) {
+            $(this).closest('.field-component').find('.leyka-setting-field.colorpicker').data('changed', '1');
+        }
+    });
+
+    $captionColorInput.closest('.field-component').find('.leyka-colorpicker-value').on('change.leyka', function(){
+        if(!LEYKA_EXT_AUTO_CALC_COLORS) {
+            $(this).closest('.field-component').find('.leyka-setting-field.colorpicker').data('changed', '1');
+        }
+    });
+
+    $textColorInput.closest('.field-component').find('.leyka-colorpicker-value').on('change.leyka', function(){
+        if(!LEYKA_EXT_AUTO_CALC_COLORS) {
+            $(this).closest('.field-component').find('.leyka-setting-field.colorpicker').data('changed', '1');
+        }
+    });
+
+    var $colorOptionsBlock = $('.settings-block.support-packages-color-options');
+    var $colorActions = $('<div class="color-actions"><a href="#" class="reset-colors"><span>'+leyka.extension_colors_reset+'</span></a><a href="#" class="unlock-changes"><span>'+leyka.extension_colors_make_change+'</span></a></div>');
+    $colorOptionsBlock.append($colorActions);
+
+    $colorOptionsBlock.find('.leyka-colorpicker-field-wrapper').each(function(){
+        $(this).append('<div class="leyka-colorpicker-field-overlay"/>');
+    });
+
+    $colorOptionsBlock.on('click', '.unlock-changes', function(e){
+        e.preventDefault();
+        $colorOptionsBlock.toggleClass('changes-unlocked');
+    });
+
+    $colorOptionsBlock.on('click', '.reset-colors', function(e){
+        e.preventDefault();
+
+        $backgroundColorInput.data('changed', '');
+        $captionColorInput.data('changed', '');
+        $textColorInput.data('changed', '');
+
+        $mainColorInput.change();
+        // $mainColorInputPicker = $mainColorInput.closest('.field-component').find('.leyka-setting-field.colorpicker');
+        // $mainColorInputPicker.wpColorPicker('color', $mainColorInputPicker.data('stored-color'));
+    });
+
+    $colorOptionsBlock.on('click', 'leyka-colorpicker-field-overlay', function(e){
+        e.stopPropagation();
     });
 
 });

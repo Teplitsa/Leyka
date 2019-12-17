@@ -780,6 +780,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             'last_donation_date_incomplete_message' => __('To correctly search for "Last Payment Date", select the range of their two dates.', 'leyka'),
             'extension_deletion_confirm_text' => __('Are you sure you want to remove the extension completely?', 'leyka'),
             'extensions_list_page_url' => admin_url('admin.php?page=leyka_extensions'),
+            'extension_colors_reset' => __('Reset settings', 'leyka'),
+            'extension_colors_make_change' => __('Make changes', 'leyka'),
         ));
 
         if(isset($_GET['page']) && $_GET['page'] === 'leyka') {

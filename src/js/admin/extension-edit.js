@@ -126,7 +126,7 @@ jQuery(document).ready(function($){
     });
 
     var $colorOptionsBlock = $('.settings-block.support-packages-color-options');
-    var $colorActions = $('<div class="color-actions"><a href="#" class="reset-colors"><span>Сбросить настройки</span></a><a href="#" class="unlock-changes"><span>Внести изменения</span></a></div>');
+    var $colorActions = $('<div class="color-actions"><a href="#" class="reset-colors"><span>'+leyka.extension_colors_reset+'</span></a><a href="#" class="unlock-changes"><span>'+leyka.extension_colors_make_change+'</span></a></div>');
     $colorOptionsBlock.append($colorActions);
 
     $colorOptionsBlock.find('.leyka-colorpicker-field-wrapper').each(function(){
