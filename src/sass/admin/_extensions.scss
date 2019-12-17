@@ -1,0 +1,394 @@
+.leyka-admin {
+
+    &.extension-settings {
+
+        width: 1050px;
+
+        h1.wp-heading-inline {
+
+            @include leyka-adb-h1();
+
+            padding-top: 0;
+            padding-bottom: 0;
+
+            margin-bottom: 10px;
+
+        }
+
+        .single-settings-header {
+
+            display: flex;
+            flex-flow: row nowrap;
+
+            justify-content: flex-start;
+
+            padding-bottom: 32px;
+            border-bottom: 1px solid $color-section-tabs-line;
+
+            .header-left {
+
+                flex: calc(100% - 280px) 0 1;
+
+                .meta-data {
+
+                    display: flex;
+                    flex-flow: row wrap;
+                    justify-content: flex-start;
+
+                    margin-bottom: 10px;
+
+                    font-size: 12px;
+                    color: $color-wizard-link-sec-hover;
+
+                    .item {
+
+                        margin-right: 10px;
+
+                        &:last-child {
+                            margin-right: 0;
+                        }
+
+                        .item-value {
+                            color: $leyka-adb-color-text-light1;
+                            font-weight: bold;
+                        }
+
+                        .status-label {
+
+                            font-weight: normal;
+
+                            &.active {
+                                color: $leyka-admin-color-link;
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            .header-right {
+
+                flex: 280px 0 1;
+
+                margin-left: 32px;
+
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+
+                .module-logo-wrapper {
+
+                    display: flex;
+                    flex-flow: row nowrap;
+                    justify-content: center;
+
+                    .module-logo {
+
+                        width: 104px;
+                        height: 104px;
+
+                        border: 1px solid $color-border-semidark;
+                        border-radius: 50%;
+
+                        background-color: $color-white;
+
+                        margin-bottom: 32px;
+
+                        .module-logo-pic {
+                            width: 55%;
+                            height: 55%;
+                        }
+
+                    }
+
+                }
+
+                .extension-main-cta {
+                    display: flex;
+                    flex-flow: row nowrap;
+                    justify-content: center;
+                }
+
+            }
+
+        }
+
+        .metabox-holder.columns-2 {
+
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: flex-start;
+
+            padding-top: 22px !important;
+            padding-bottom: 32px !important;
+
+            .column-main {
+
+                flex: calc(100% - 280px - 32px) 0 1;
+
+                padding-right: 32px;
+
+            }
+
+            .column-sidebar {
+
+                flex: 280px 0 1;
+
+                .setup-description {
+
+                    padding: 16px 12px;
+                    margin-bottom: 16px;
+
+                    border-radius: 6px;
+
+                    background-color: $color-inline-instructions-background;
+
+                }
+
+            }
+
+        }
+
+        .options-form-submits {
+
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: space-between;
+            align-items: center;
+
+            border-top: 1px solid $color-section-tabs-line;
+            padding-top: 32px;
+            margin-top: -18px;
+
+            .delete-extension-link {
+
+                display: flex;
+                align-items: center;
+
+                border: 0;
+
+                color: $leyka-adb-color-error;
+                text-decoration: none;
+
+            }
+
+            .button {
+
+                margin-left: 24px;
+
+                &.save-settings {
+                    width: 152px;
+                    margin-right: 4px;
+                }
+
+            }
+
+        }
+
+    }
+
+    // Support packages admin page:
+    .support-packages-decoration-options {
+        padding-top: 24px;
+        border-top: 1px solid $color-section-tabs-line;
+        margin-top: 8px;
+    }
+
+    /** @todo Packages settings custom field styles here */
+    .package-box {
+
+        @include leyka-metabox-styling();
+
+        margin-bottom: 16px;
+
+        h2.hndle {
+
+            .title {
+                flex: 1 1 100%;
+            }
+
+            &:after {
+
+                content: ' ';
+                background-image: url(../../src/svg/icon-metabox-draggable.svg) !important;
+
+                pointer-events: all;
+                width: 8px;
+                height: 14px;
+
+            }
+
+        }
+
+        .box-footer {
+
+            margin: -16px;
+            margin-top: 16px;
+
+            border-top: 1px solid $color-border-semilight;
+            padding: 12px 16px;
+
+            text-align: right;
+
+            color: $color-wizard-error-message;
+
+            .delete-package {
+                cursor: pointer;
+            }
+
+        }
+
+    }
+
+    .add-package {
+
+        margin-left: 8px;
+        padding-bottom: 16px;
+
+        cursor: pointer;
+        color: $color-wizard-link-active;
+
+        &:before {
+            display: inline-block;
+            content: '+';
+            margin-right: 3px;
+        }
+
+    }
+    // Support packages admin page - END
+
+}
+
+// color picker
+.support-packages-color-options {
+    padding-bottom: $base * 3;
+    position: relative;
+
+    .leyka-colorpicker-field-wrapper {
+        position: relative;
+
+        .leyka-colorpicker-field-overlay {
+            display: block;
+            background-color: transparent;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            width: 100%;
+            height: 100%
+        }
+    }
+
+    .container-entry:first-child {
+        .leyka-colorpicker-field-wrapper {
+            position: relative;
+
+            .leyka-colorpicker-field-overlay {
+                display: none;
+            }
+        }
+    }
+
+    .color-actions {
+        text-align: right;
+        position: absolute;
+        right: 0px;
+        bottom: $base;
+
+        a {
+            display: inline-block;
+            text-decoration: none;
+            padding-bottom: 0px;
+            border-bottom: none;
+
+            &:not(:last-child) {
+                margin-right: 12px;
+            }
+
+            &:before {
+                background-image: url('../../img/icon-color-reset.svg');
+                background-size: 16px 16px;
+                content: " ";
+                display: inline-block;
+                width: 16px;
+                height: 16px;
+                margin-right: 4px;
+                vertical-align: middle;
+            }
+
+            &:hover {
+                text-decoration: none;
+                span {
+                    border-color: transparent;
+                }
+            }
+
+            span {
+                border-bottom: 1px dashed $color-wizard-link-sec-hover;
+            }
+        }
+
+        .reset-colors {
+            display: none;
+
+            &:before {
+                background-image: url('../../img/icon-color-reset.svg');
+            }
+
+            &:hover {
+            }
+
+            span {
+                border-color: $color-wizard-link-active;
+            }
+        }
+
+        .unlock-changes {
+            color: $color-wizard-link-sec-hover;
+
+            &:before {
+                background-image: url('../../img/icon-color-locked.svg');
+            }
+        }
+    }
+
+    &:not(.changes-unlocked) {
+        .container-entry:not(:first-child) {
+            .wp-color-result-text {
+                color: $color-wizard-link-sec-hover;
+            }
+        }
+    }
+
+    &.changes-unlocked {
+
+        .leyka-colorpicker-field-wrapper {
+            .leyka-colorpicker-field-overlay {
+                display: none;
+            }
+        }
+
+        .color-actions {
+            .reset-colors {
+                display: inline-block;
+            }
+        }
+
+        .unlock-changes {
+            &:before {
+                background-image: url('../../img/icon-color-unlocked.svg');
+            }
+        }
+    }
+}
+
+.field-component {
+    .wp-picker-holder {
+        position: absolute;
+        z-index: 10;
+    }
+
+
+}

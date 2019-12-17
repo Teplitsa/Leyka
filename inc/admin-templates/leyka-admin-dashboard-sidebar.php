@@ -24,8 +24,8 @@ require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php');?
 </div>
 
 <?php $init_wizard_controller = Leyka_Settings_Factory::get_instance()->get_controller('init');
-$main_settings_steps = $init_wizard_controller->navigation_data[0]['section_id'] === 'rd' ?
-    $init_wizard_controller->navigation_data[0]['steps'] : array();
+$main_settings_steps = $init_wizard_controller->navigation_data[0]['stage_id'] === 'rd' ?
+    $init_wizard_controller->navigation_data[0]['sections'] : array();
 
 if($main_settings_steps) {?>
     <div class="leyka-dashboard-sidebar-part">
@@ -35,7 +35,7 @@ if($main_settings_steps) {?>
         <div class="sidebar-part-content settings-state">
             <?php foreach($main_settings_steps as $step) {
 
-                $step_invalid_options = leyka_is_settings_step_valid($step['step_id']);?>
+                $step_invalid_options = leyka_is_settings_step_valid($step['section_id']);?>
 
                 <div class="settings-step-set">
                     <div class="step-setup-status <?php echo !is_array($step_invalid_options) ? 'step-valid' : 'step-invalid';?>"></div>

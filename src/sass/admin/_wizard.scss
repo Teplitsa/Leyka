@@ -1,4 +1,3 @@
-
 .leyka-wizard {
 
     display: flex;
@@ -199,119 +198,103 @@
 }
 
 
-// main area
+// Wizards main area:
 .leyka-wizard {
-    
+
     .main-area {
 
         @include body-text();
+
         width: 100%;
         padding: 0 32px 49px 72px;
         color: $color-wizard-text;
-        
+
+        .settings-block {
+
+            max-width: 524px;
+
+            &#email-from-name,
+            &#email-from {
+                max-width: 248px;
+            }
+
+            &#campaign-completed {
+                max-width: 680px;
+            }
+
+            &.container-block {
+                .option-block {
+                    .field-component.field input[type="text"] {
+                        width: 248px;
+                    }
+                }
+            }
+
+        }
+
         a {
             border-bottom: none;
             padding-bottom: 2px;
             border-bottom: 1px solid $color-wizard-link;
             text-decoration: none;
         }
-    
-        // wizard markup styles
-        .step-content {
-        }
-        
-        .settings-block {
-            
-            max-width: 524px;
-            
-            &#email-from-name,
-            &#email-from {
-                max-width: 248px;
-            }
-            
-            &#campaign-completed {
-                max-width: 680px;
-            }
-            
-            &.option-block {
-                
-                &.type-rich_html {
-                    
-                    @include leyka-rich-html();
-                    
-                }
-        
-            }
-            
-            &.container-block {
-
-                display: flex;
-                justify-content: space-between;
-
-                .option-block {
-                    .field-component {
-                        &.field {
-                            input[type=text] {
-                                width: 248px;
-                            }
-                         }
-                    }
-                }
-
-            }
-
-        }
-
-        .field-errors {
-            span {
-                @include wizard-field-message();
-                margin-bottom: 0;
-                color: $color-wizard-error-message;
-            }
-        }
 
         .restore-original-doc {
             display: inline-block;
             margin-top: 0.5rem;
         }
-        
-        .fields {
-            
-            .field {
-                
-                margin-bottom: 16px;
-                
+
+        .step-title h1 {
+
+            @include wizard-h2();
+
+            margin-top: 41px;
+            margin-bottom: 8px;
+
+            &.greater {
+
+                @include wizard-h1();
+
+                margin-top: 49px;
+                margin-bottom: 18px;
+
             }
+
         }
-        
+
         .step-submit {
+
             margin-top: 32px;
-            
+
             .button-primary {
                 margin-right: 22px;
             }
-            
+
             .button-secondary {
                 margin-right: 22px;
             }
-                
+
             a {
                 line-height: 35px;
             }
 
             .sec-action {
+
                 margin-top: 32px;
+
                 a, input[type=submit].link-sec {
                     @include wizard-action-link();
                 }
 
-                input[type=submit].link-sec {
+                input[type="submit"].link-sec {
+
                     background: none;
                     box-shadow: none;
                     text-shadow: none;
                     border: none;
 
                     @include leyka-link-sec();
+
                     cursor: pointer;
                     border-bottom: 1px solid $color-wizard-link-sec;
                     box-sizing: border-box;
@@ -328,10 +311,74 @@
                     }
 
                 }
+
             }
+
         }
-        // end general elements
-        
+
+        .ui-accordion { // Accordion UI widget (used on Gateways Wizards first steps)
+
+            border-bottom: 1px dashed $color-border-semilight;
+
+            .ui-accordion-header {
+
+                margin: 16px 0;
+                border-top: 1px dashed $color-border-semilight;
+                padding-top: 16px;
+
+                line-height: inherit;
+                font-size: 18px;
+                cursor: pointer;
+
+                .ui-accordion-header-icon {
+
+                    &.ui-icon-triangle-1-e { // Arrow right
+
+                        display: inline-block;
+                        margin-right: 10px;
+
+                        @include leyka-triangle-right(5px, $color-wizard-link-active);
+
+                    }
+
+                    &.ui-icon-triangle-1-s { // Arrow down
+
+                        display: inline-block;
+                        margin-right: 10px;
+
+                        @include leyka-triangle-down(5px, $color-wizard-link-active);
+
+                    }
+
+                }
+
+
+                &.ui-accordion-header-active {
+                    color: $color-wizard-link-active;
+                }
+
+            }
+
+            .intro-mini-header {
+                margin-top: 18px !important;
+            }
+
+            .ui-accordion-content {
+
+                margin-bottom: 16px;
+
+                ul {
+                    margin-bottom: 16px;
+                }
+
+                .field-q {
+                    @include field-q();
+                }
+
+            }
+
+        }
+
     }
 
 }

@@ -245,7 +245,7 @@ class Leyka extends Leyka_Singleton {
         if(is_admin()) { // Admin area only
 
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-allocator.php');
-            require_once(LEYKA_PLUGIN_DIR.'inc/leyka-render-settings-old.php');
+            require_once(LEYKA_PLUGIN_DIR.'inc/leyka-settings-rendering-utils.php');
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-admin.php');
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-donations-export.php');
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-usage-stats-functions.php');
@@ -510,21 +510,16 @@ class Leyka extends Leyka_Singleton {
         return leyka_options()->opt($option_id, $new_value);
     }
 
-//    protected function _initialize_extensions_list() {
-//
-//    }
+    public function get_extension_by_id($extension_id) {
 
-//    protected function _run_active_extensions() {
+        $extension_id = trim($extension_id);
 
-        // 1. Search for files of "active" extensions (check the special Leyka option for that)
+        return empty($this->_extensions[$extension_id]) ? false : $this->_extensions[$extension_id];
 
-        // 2. If some extension file is not found, auto-deactivate the extension
-
-//    }
+    }
 
     /**
-     * @param mixed $activation_status If given, get only extensions with it.
-     * NULL for both types altogether.
+     * @param boolean|NULL $activation_status If given, get only Extensions with it. NULL to get all Extensions.
      * @return array Of Leyka_Extension objects.
      */
     public function get_extensions($activation_status = null) {
@@ -545,6 +540,24 @@ class Leyka extends Leyka_Singleton {
             return $extensions;
 
         }
+
+    }
+
+    /**
+     * @param $extension_id string
+     *
+     * @throws Exception
+     * @return boolean True if given Extension has given activation status, false otherwise.
+     */
+    public function extension_is_active($extension_id) {
+
+        $extension_id = trim($extension_id);
+
+        if(empty($this->_extensions[$extension_id])) {
+            throw new Exception(sprintf(__('Error: the extension "%s" is not found', 'leyka'), $extension_id), 700);
+        }
+
+        return leyka_options()->is_multi_value_checked('extensions_active', $extension_id);
 
     }
 

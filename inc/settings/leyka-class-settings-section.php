@@ -1,19 +1,28 @@
 <?php if( !defined('WPINC') ) die;
 /**
- * Leyka Setup Wizard Section class.
+ * Leyka Settings Section class.
  **/
 
 class Leyka_Settings_Section {
 
     protected $_id;
-    protected $_title;
+    protected $_stage_id;
+    protected $_title = '';
+    protected $_params = array();
+    protected $_handler = false;
 
-    protected $_steps;
+    protected $_blocks;
 
-    public function __construct($id, $title) {
+    public function __construct($id, $stage_id, $title = '', array $params = array()) {
 
         $this->_id = trim($id);
+        $this->_stage_id = trim($stage_id);
         $this->_title = trim($title);
+
+        $this->_params = wp_parse_args($params, array(
+            'header_classes' => '',
+            'form_enctype' => '',
+        ));
 
     }
 
@@ -21,43 +30,71 @@ class Leyka_Settings_Section {
         switch($name) {
             case 'id':
                 return $this->_id;
+            case 'stage_id':
+                return $this->_stage_id;
+            case 'full_id':
+                return $this->_stage_id.'-'.$this->_id;
             case 'title':
                 return $this->_title;
-            case 'init_step':
-                return reset($this->_steps);
-            case 'steps':
-                return $this->_steps;
+            case 'blocks':
+                return $this->_blocks;
+            case 'handler':
+                return $this->_handler;
             default:
-                return null;
+                return isset($this->_params[$name]) ? $this->_params[$name] : null; // Throw some Exception?
         }
     }
 
-    public function add_step(Leyka_Settings_Step $step) {
+    public function add_to(Leyka_Settings_Stage $section) {
 
-        $this->_steps[$step->id] = $step;
+        $section->add_section($this);
 
         return $this;
 
     }
 
-    /** @return array An array of Section Steps. */
-    public function getSteps() {
-        return $this->_steps;
+    /**
+     * @param $handler mixed Either function name (string) of the function itself (callback)
+     * @return $this
+     */
+    public function add_handler($handler) {
+
+        if(is_callable($handler)) {
+            $this->_handler = $handler;
+        } else {
+            /** @todo Throw an Exception here */
+        }
+
+        return $this;
+
     }
 
-    /** @return Leyka_Settings_Step  */
-    public function get_step_by_id($id) {
+    /** @return mixed */
+    public function get_handler() {
+        return $this->_handler === false ? null : $this->_handler;
+    }
 
-        $id = trim($id);
+    public function has_handler() {
+        return !!$this->_handler;
+    }
 
-        return empty($this->_steps[$id]) ? null : $this->_steps[$id];
+    public function add_block(Leyka_Settings_Block $block) {
+
+        $this->_blocks[$block->id] = $block;
+
+        return $this;
 
     }
 
-    public function isValid() {
+    /** @return array */
+    public function get_blocks() {
+        return $this->_blocks;
+    }
 
-        foreach($this->_steps as $step) { /** @var $step Leyka_Settings_Block */
-            if( !$step->is_valid() ) {
+    public function is_valid() {
+
+        foreach($this->_blocks as $block) { /** @var $block Leyka_Settings_Block */
+            if( !$block->is_valid() ) {
                 return false;
             }
         }
@@ -66,15 +103,33 @@ class Leyka_Settings_Section {
 
     }
 
-    public function getErrors() {
+    /**
+     * @return array An array of (block_id => an array of WP_Error objects, with one field error in each)
+     */
+    public function get_errors() {
 
         $errors = array();
 
-        foreach($this->_steps as $step) { /** @var $step Leyka_Settings_Step */
-            $errors = array_merge($errors, $step->get_errors());
+        foreach($this->_blocks as $block) { /** @var $block Leyka_Settings_Block */
+            $errors = array_merge($errors, $block->get_errors());
         }
 
         return $errors;
+
+    }
+
+    /** Get all options & values set on the step
+     * @return array
+     */
+    public function get_fields_values() {
+
+        $fields = array();
+
+        foreach($this->_blocks as $block) { /** @var $block Leyka_Settings_Block */
+            $fields = array_merge($fields, $block->get_fields_values());
+        }
+
+        return $fields;
 
     }
 

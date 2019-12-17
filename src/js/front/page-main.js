@@ -134,22 +134,56 @@ window.LeykaPageMain.prototype = {
         var self = this; var $ = self.$;
         
         var hash = window.location.hash.substr(1);
-        var parts = hash.split('|');
-        
-        if(parts.length > 0) {
-            var form_id = parts[0];
-            
-            if(form_id) {
-                var $_form = $('.leyka-pf#' + form_id);
+
+        if(hash.indexOf('leyka-activate-package|') > -1) {
+            self.handleHashActivatePackageChange(hash);
+        }
+        else if(hash) {
+            var parts = hash.split('|');
+            if(parts.length > 0) {
+                var form_id = parts[0];
                 
-                if($_form.length > 0) {
-                    $_form.leykaForm('open');
+                if(form_id) {
+                    var $_form = $('.leyka-pf#' + form_id);
                     
-                    for(var i in parts) {
-                        var part = parts[i];
-                        self.handleFinalScreenParams($_form, part);
+                    if($_form.length > 0) {
+                        $_form.leykaForm('open');
+                        
+                        for(var i in parts) {
+                            var part = parts[i];
+                            self.handleFinalScreenParams($_form, part);
+                        }
                     }
                 }
+            }
+        }
+    },
+
+    handleHashActivatePackageChange: function(hash) {
+        var self = this; var $ = self.$;
+
+        var $leykaForm = $('.leyka-pm-form').first();
+        $leykaForm.find('.section__fields.periodicity a[data-periodicity="monthly"]').trigger('click');
+
+        var parts = hash.split('|');
+        if(parts.length > 1) {
+            var amount_needed = parseInt(parts[1]);
+            var $selectedSum = null;
+
+            $leykaForm.find('.amount__figure .swiper-item').each(function(i, el){
+                if(parseInt($(el).data('value')) >= amount_needed) {
+                    $selectedSum = $(el);
+                    return false;
+                }
+            });
+
+            if(!$selectedSum) {
+                $selectedSum = $leykaForm.find('.swiper-item.flex-amount-item');
+                $selectedSum.find('input[name="donate_amount_flex"]').val(amount_needed);
+            }
+
+            if($selectedSum) {
+                $selectedSum.trigger('click');
             }
         }
     },

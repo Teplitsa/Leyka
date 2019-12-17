@@ -1867,22 +1867,56 @@ window.LeykaPageMain.prototype = {
         var self = this; var $ = self.$;
         
         var hash = window.location.hash.substr(1);
-        var parts = hash.split('|');
-        
-        if(parts.length > 0) {
-            var form_id = parts[0];
-            
-            if(form_id) {
-                var $_form = $('.leyka-pf#' + form_id);
+
+        if(hash.indexOf('leyka-activate-package|') > -1) {
+            self.handleHashActivatePackageChange(hash);
+        }
+        else if(hash) {
+            var parts = hash.split('|');
+            if(parts.length > 0) {
+                var form_id = parts[0];
                 
-                if($_form.length > 0) {
-                    $_form.leykaForm('open');
+                if(form_id) {
+                    var $_form = $('.leyka-pf#' + form_id);
                     
-                    for(var i in parts) {
-                        var part = parts[i];
-                        self.handleFinalScreenParams($_form, part);
+                    if($_form.length > 0) {
+                        $_form.leykaForm('open');
+                        
+                        for(var i in parts) {
+                            var part = parts[i];
+                            self.handleFinalScreenParams($_form, part);
+                        }
                     }
                 }
+            }
+        }
+    },
+
+    handleHashActivatePackageChange: function(hash) {
+        var self = this; var $ = self.$;
+
+        var $leykaForm = $('.leyka-pm-form').first();
+        $leykaForm.find('.section__fields.periodicity a[data-periodicity="monthly"]').trigger('click');
+
+        var parts = hash.split('|');
+        if(parts.length > 1) {
+            var amount_needed = parseInt(parts[1]);
+            var $selectedSum = null;
+
+            $leykaForm.find('.amount__figure .swiper-item').each(function(i, el){
+                if(parseInt($(el).data('value')) >= amount_needed) {
+                    $selectedSum = $(el);
+                    return false;
+                }
+            });
+
+            if(!$selectedSum) {
+                $selectedSum = $leykaForm.find('.swiper-item.flex-amount-item');
+                $selectedSum.find('input[name="donate_amount_flex"]').val(amount_needed);
+            }
+
+            if($selectedSum) {
+                $selectedSum.trigger('click');
             }
         }
     },
@@ -1961,6 +1995,87 @@ jQuery(document).ready(function($){
 
     });
 
+});
+/** Donor's account frontend */
+
+jQuery(document).ready(function($){
+    var $siteContent = $('#site_content');
+    if(!$siteContent.length) {
+		$siteContent = $('#content');
+    }
+
+    if(!$siteContent.length) {
+		$siteContent = $('#site-content');
+    }
+
+    var $overlay = $('.leyka-ext-sp-activate-feature-overlay');
+    var $sp = $('.leyka-ext-support-packages');
+
+    if(!$sp.length) {
+    	return;
+    }
+
+    if($overlay.length && $siteContent.length) {
+        $siteContent.addClass('leyka-ext-sp-site-content');
+        let $overlayFirst = $overlay.first();
+        $overlayFirst.appendTo($siteContent);
+        overlayMaxPart = 0.7;
+
+        var paddingBottom = $overlayFirst.height();
+        if($overlayFirst.height() > $siteContent.height() * overlayMaxPart) {
+        	paddingBottom *= overlayMaxPart;
+        }
+        $siteContent.css('padding-bottom', paddingBottom + 'px');
+    }
+
+    function renderActivateButton($parentSp, $activePackage) {
+    	var hasSelectedPackages = $parentSp.find('.leyka-ext-sp-card.active').length > 0;
+    	var $btn = $parentSp.closest('.leyka-ext-sp-activate-feature').find('.leyka-ext-sp-subscribe-action');
+
+    	if(hasSelectedPackages) {
+    		$btn.addClass('active');
+    	}
+    	else {
+    		$btn.removeClass('active');
+    	}
+
+    	var href = $btn.attr('href');
+    	href = href.split('#')[0];
+    	href += "#leyka-activate-package|";
+
+    	if($activePackage) {
+    		href += $activePackage.data('amount_needed');
+    	}
+    	console.log(href);
+    	$btn.attr('href', href);
+    }
+
+    $('.leyka-ext-sp-subscribe-action').on('click', function(e){
+		return $(this).hasClass('active');
+    });
+
+    $sp.on('click', '.leyka-activate-package-link', function(e) {
+    	e.stopPropagation();
+    	return true;
+    });
+
+    $sp.on('click', '.leyka-ext-sp-card', function(e) {
+    	e.preventDefault();
+    	var $parentSp = $(this).closest('.leyka-ext-support-packages');
+
+    	if(!$parentSp.closest('.leyka-ext-sp-activate-feature').length) {
+    		return;
+    	}
+
+    	$parentSp.find('.leyka-ext-sp-card').removeClass('active');
+    	$(this).addClass('active');
+
+    	renderActivateButton($parentSp, $(this));
+    });
+
+    if($sp.closest('.leyka-ext-sp-activate-feature').length) {
+    	renderActivateButton($sp, null);
+    }
 });
 /*
  * Star form template functionality and handlers

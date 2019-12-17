@@ -4,7 +4,7 @@
 /** @var $this Leyka_Admin_Setup */
 
 if(empty($_GET['donor']) || !current_user_can('leyka_manage_options')) {
-    wp_die(__("Error: cannot display a page for a given donor.", 'leyka'));
+    wp_die(__('Error: cannot display a page for a given donor.', 'leyka'));
 }
 
 try {
@@ -25,8 +25,14 @@ try {
     <div id="poststuff">
         <div id="post-body" class="metabox-holder columns-2">
             <div id="postbox-container-2" class="postbox-container">
-            	<input type="hidden" value="<?php echo $donor->id?>" id="leyka_donor_id" />
-                <?php do_meta_boxes('dashboard_page_leyka_donor_info', 'normal', null);?>
+
+            	<input type="hidden" value="<?php echo $donor->id;?>" id="leyka_donor_id">
+
+                <?php $metaboxes_area_id = 'dashboard_page_leyka_donor_info';?>
+                <input type="hidden" class="leyka-support-metabox-area" value="<?php echo $metaboxes_area_id;?>">
+
+                <?php do_meta_boxes($metaboxes_area_id, 'normal', null);?>
+
             </div>
         </div>
     </div>

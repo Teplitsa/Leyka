@@ -1,26 +1,26 @@
 .leyka-admin {
-    
+
     @include body-text();
-    
-    // typo
-    .step-title {
-        h1 {
-            @include wizard-h2();
-            margin-top: 41px;
-            margin-bottom: 8px;
-            
-            &.greater {
-                @include wizard-h1();
-                margin-top: 49px;
-                margin-bottom: 18px;
-            }
+    @include leyka-loading-indicator();
+
+    .postbox, #poststuff .postbox { // Metaboxes restyling
+
+        .handlediv { // Hide the default metabox open/close handle
+            display: none;
         }
-    }
-            
+
+        @include leyka-metabox-styling();
+
+    } // Metabox restyling - END
+    
+    // Typo:
     p {
+
         @include wizard-text();
+
         margin-top: 0;
         margin-bottom: 1rem;
+
     }
     
     p:empty {

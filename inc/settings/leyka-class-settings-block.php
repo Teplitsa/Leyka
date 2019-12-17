@@ -145,6 +145,7 @@ class Leyka_Option_Block extends Leyka_Settings_Block {
             'description' => null,
             'show_description' => true,
             'required' => null,
+            'width' => 1.0,
         ));
 
         $this->_option_id = $params['option_id'];
@@ -171,6 +172,8 @@ class Leyka_Option_Block extends Leyka_Settings_Block {
             case 'description': return empty($this->_params['description']) ? false : trim($this->_params['description']);
             case 'show_description': return !!$this->_params['show_description'];
             case 'required': return is_null($this->_params['required']) ? null : !!$this->_params['required'];
+            case 'width': return $this->_params['width'] && abs($this->_params['width']) <= 1.0 ?
+                round(abs($this->_params['width']), 2) : 1.0;
             default: return parent::__get($name);
         }
 
@@ -215,6 +218,7 @@ class Leyka_Container_Block extends Leyka_Settings_Block {
 
     protected $_blocks;
     protected $_entry_width = false;
+    protected $_params = array();
 
     public function __construct(array $params = array()) {
 
@@ -241,6 +245,10 @@ class Leyka_Container_Block extends Leyka_Settings_Block {
 
         }
 
+        if( !empty($params['classes']) ) {
+            $this->_params['classes'] = $params['classes'];
+        }
+
     }
 
     public function __get($name) {
@@ -249,12 +257,23 @@ class Leyka_Container_Block extends Leyka_Settings_Block {
             case 'entry_width': return $this->_entry_width ?
                 $this->_entry_width :
                 (count($this->_blocks) ? round(1.0/count($this->_blocks), 1) : false);
+            case 'class':
+            case 'classes':
+                return empty($this->_params['classes']) ? '' : $this->_params['classes'];
             default: return parent::__get($name);
         }
 
     }
 
-    public function addBlock(Leyka_Settings_Block $block) {
+    public function __set($name, $value) {
+        switch($name) {
+            case 'class':
+            case 'classes':
+                $this->_params['classes'] = $value;
+        }
+    }
+
+    public function add_block(Leyka_Settings_Block $block) {
         $this->_blocks[] = $block;
     }
 

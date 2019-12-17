@@ -89,6 +89,30 @@ if( !function_exists('leyka_string_has_rus_chars')) {
     }
 }
 
+if( !function_exists('leyka_cyr2lat') ) {
+    function leyka_cyr2lat($string) {
+
+        $converter = array(
+            'а' => 'a',   'б' => 'b',   'в' => 'v', 'г' => 'g',   'д' => 'd',   'е' => 'e',
+            'ё' => 'e',   'ж' => 'zh',  'з' => 'z', 'и' => 'i',   'й' => 'y',   'к' => 'k',
+            'л' => 'l',   'м' => 'm',   'н' => 'n', 'о' => 'o',   'п' => 'p',   'р' => 'r',
+            'с' => 's',   'т' => 't',   'у' => 'u', 'ф' => 'f',   'х' => 'h',   'ц' => 'c',
+            'ч' => 'ch',  'ш' => 'sh',  'щ' => 'sch', 'ь' => '',    'ы' => 'y',   'ъ' => '',
+            'э' => 'e',   'ю' => 'yu',  'я' => 'ya',
+
+            'А' => 'A',   'Б' => 'B',   'В' => 'V', 'Г' => 'G',   'Д' => 'D',   'Е' => 'E',
+            'Ё' => 'E',   'Ж' => 'Zh',  'З' => 'Z', 'И' => 'I',   'Й' => 'Y',   'К' => 'K',
+            'Л' => 'L',   'М' => 'M',   'Н' => 'N', 'О' => 'O',   'П' => 'P',   'Р' => 'R',
+            'С' => 'S',   'Т' => 'T',   'У' => 'U', 'Ф' => 'F',   'Х' => 'H',   'Ц' => 'C',
+            'Ч' => 'CH',  'Ш' => 'SH',  'Щ' => 'SCH', 'Ь' => '',  'Ы' => 'Y',   'Ъ' => '',
+            'Э' => 'E',   'Ю' => 'Yu',  'Я' => 'Ya',
+        );
+
+        return strtr($string, $converter);
+
+    }
+}
+
 if( !function_exists('leyka_maybe_encode_hostname_to_punycode') ) {
     /**
      * @param $url string
@@ -222,29 +246,31 @@ function leyka_get_pages_list() {
 
 }
 
-/**
- * A callback for the default gateway select field.
- *
- * @param $gateway_id string|false
- * @return array
- */
-function leyka_get_gateways_pm_list($gateway_id = false) {
-
-    $options = array();
-    foreach(leyka_get_pm_list(null, false, false) as $pm) {
-
-        if($gateway_id && $pm->gateway_id !== $gateway_id) {
-            continue;
-        }
-
-        $gateway_title = leyka_get_gateway_by_id($pm->gateway_id)->title;
-        $options[$pm->full_id] = $pm->label_backend.($gateway_title == $pm->label_backend ? '' : ' ('.$gateway_title.')');
-
-    }
-
-    return $options;
-
-}
+///**
+// * A callback for the default gateway select field.
+// * It's not in use explicitly - the PM list is always set up programmatically.
+// * @todo Check if we could remove it completely.
+// *
+// * @param $gateway_id string|false
+// * @return array
+// */
+//function leyka_get_gateways_pm_list($gateway_id = false) {
+//
+//    $options = array();
+//    foreach(leyka_get_pm_list(null, false, false) as $pm) {
+//
+//        if($gateway_id && $pm->gateway_id !== $gateway_id) {
+//            continue;
+//        }
+//
+//        $gateway_title = leyka_get_gateway_by_id($pm->gateway_id)->title;
+//        $options[$pm->full_id] = $pm->label_backend.($gateway_title == $pm->label_backend ? '' : ' ('.$gateway_title.')');
+//
+//    }
+//
+//    return $options;
+//
+//}
 
 function leyka_get_pd_usage_info_links() {
     return __('<a href="//te-st.ru/reports/personal-data-perm/" target="_blank" rel="noopener noreferrer">the Teplitsa article</a>.', 'leyka');
@@ -254,12 +280,13 @@ function leyka_get_default_email_from() {
 
     $domain = explode('/', trim(str_replace('http://', '', home_url('', 'http')), '/'));
     return 'no_reply@'.$domain[0];
+
 }
 
 /** DM is for "donation manager" */
-function leyka_get_default_dm_list() {
-    return get_bloginfo('admin_email').',';
-}
+//function leyka_get_default_dm_list() {
+//    return get_bloginfo('admin_email').',';
+//}
 
 function leyka_get_default_pd_terms_page() {
 
@@ -584,7 +611,7 @@ function leyka_get_currency_data($currency_code) {
 
 function leyka_get_currency_label($currency_code = false) {
 
-    $currency_code = empty($currency_code) ? 'rur' : mb_strtolower($currency_code);
+    $currency_code = empty($currency_code) ? leyka_options()->opt('main_currency') : mb_strtolower($currency_code);
     $currencies = leyka_get_currencies_data();
 
     return isset($currencies[$currency_code]['label']) ? $currencies[$currency_code]['label'] : false;
@@ -1875,12 +1902,13 @@ abstract class Leyka_Singleton {
     protected static $_instance = null;
 
     /**
+     * @param $params array Assoc. array of Singleton object params. Not required.
      * @return static
      */
-    public static function get_instance() {
+    public static function get_instance(array $params = array()) {
 
         if(null === static::$_instance) {
-            static::$_instance = new static();
+            static::$_instance = new static($params);
         }
 
         return static::$_instance;
@@ -1889,7 +1917,7 @@ abstract class Leyka_Singleton {
 
     final protected function __clone() {}
 
-    protected function __construct() {
+    protected function __construct(array $params = array()) {
     }
 
 }
@@ -1952,12 +1980,13 @@ if( !function_exists('leyka_get_l18n_datetime') ) {
     }
 }
 
-// localize tags to replace in js
+// Localize tags to replace in JS:
 if( !function_exists('leyka_localize_rich_html_text_tags') ) {
     function leyka_localize_rich_html_text_tags() {
+
         $is_legal = leyka_options()->opt('receiver_legal_type') === 'legal';
-        
-        wp_localize_script( 'leyka-settings', 'leykaRichHTMLTags', array(
+
+        wp_localize_script('leyka-settings', 'leykaRichHTMLTags', array(
             'termsKeys' => array(
                 array(
                     '#LEGAL_NAME#',
@@ -2007,6 +2036,7 @@ if( !function_exists('leyka_localize_rich_html_text_tags') ) {
                 ),
             ),
         ));
+
     }
 }
 
@@ -2241,5 +2271,53 @@ function leyka_prepare_data_line_for_export(array $line_data, $object_to_export)
     }
 
     return $line_data;
+
+}
+
+// By default, wp_attachment_is() doesn't treat SVGs as images. It's a f*ckin oppression, we think.
+if( !function_exists('leyka_attachment_is') ) {
+    function leyka_attachment_is($type, $attachment = null) {
+
+        if($type !== 'image') {
+            return wp_attachment_is($type, $attachment);
+        }
+
+        $attachment = get_post($attachment);
+        if( !$attachment ) {
+            return false;
+        }
+
+        $file = get_attached_file($attachment->ID);
+        if( !$file ) {
+            return false;
+        }
+
+        $check = wp_check_filetype($file);
+
+        return empty($check['ext']) ? false : in_array($check['ext'], array('jpg', 'jpeg', 'jpe', 'gif', 'png', 'svg',));
+
+    }
+}
+
+if( !function_exists('leyka_delete_dir') ) {
+    /**
+     * Recursively delete given directory & all it's files.
+     *
+     * @param $path string Absolute path to dir.
+     * @return boolean True if deletion succeeded, false otherwise.
+     */
+    function leyka_delete_dir($path) {
+
+        if(LEYKA_DEBUG) {
+            return file_exists($path) && is_dir($path);
+        }
+
+        if( !$path || $path === '/' ) {
+            return false;
+        }
+
+        return is_file($path) ? @unlink($path) : (array_map(__FUNCTION__, glob($path.'/*')) == @rmdir($path));
+
+    }
 
 }
