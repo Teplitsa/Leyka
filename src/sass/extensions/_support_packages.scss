@@ -38,6 +38,16 @@ $leyka-ext-sp-color-bg-light-gray: #FAFAFA;
     text-transform: uppercase;
 }
 
+@mixin leyka-ext-sp-package-subscribe {
+    font-family: $body;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 16px;
+    line-height: 20px;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+}
+
 @mixin leyka-ext-sp-package-title {
     font-family: $body;
     font-weight: 700;
@@ -86,6 +96,7 @@ $leyka-ext-sp-color-bg-light-gray: #FAFAFA;
         border-radius: 4px;
         padding: $base * 2;
         overflow: hidden;
+        box-sizing: border-box;
 
         &.active {
             color: $leyka-ext-sp-color-white;
@@ -483,6 +494,7 @@ body.page, body.single {
         }
 
         a.leyka-ext-sp-subscribe-action {
+            @include leyka-ext-sp-package-subscribe;
             color: $leyka-ext-sp-color-white;
             background-color: $leyka-ext-sp-color-main;
             text-decoration: none;
