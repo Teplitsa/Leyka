@@ -1,6 +1,6 @@
-// dashboard footer
+// Dashboard footer
 .leyka-dashboard-footer {
-	margin-top: 2 * $leyka-base;
+	margin-top: 2*$leyka-base;
 	margin-left: 12px;
 	
 	&.leyka-wizard-footer {
@@ -42,7 +42,7 @@
     }
 }
 
-// admin footer
+// Admin footer
 .leyka-admin-footer {
 
 	display: flex;
@@ -66,10 +66,13 @@
 
         font-size: 12px;
         line-height: 14px;
-        padding-top: 9px;
+        //padding-top: 9px;
+
+        width: 100%;
 
         display: flex;
         align-items: center;
+        justify-content: space-between;
 
         a {
 
@@ -86,7 +89,7 @@
         .te-st-link {
 
             line-height: 14px;
-            margin-right: 64px;
+            margin-right: 24px;
 
             span {
 
@@ -107,7 +110,8 @@
 
         .info-links {
 
-            margin-top: 0.5*$leyka-base;
+            //margin-top: 0.5*$leyka-base;
+            margin-right: 150px;
 
             a {
 

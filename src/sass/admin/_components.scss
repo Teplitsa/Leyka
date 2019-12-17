@@ -20,7 +20,7 @@
         border-radius: 32px;
         position: fixed;
         right: 40px;
-        bottom: 40px;
+        bottom: 60px;
 
         img {
             width: 34px;
@@ -30,6 +30,7 @@
     }
 
     .help-chat {
+
         position: fixed;
         right: 40px;
         bottom: 40px;
@@ -65,12 +66,15 @@
         }
 
         .chat-body {
+
             padding-left: 1.5rem;
             padding-right: 1.5rem;
             padding-top: 1.5rem;
 
             .ok-message {
+
                 display: none;
+                padding-bottom: 2rem;
 
                 p {
                     color: $color-white;
@@ -78,7 +82,7 @@
                     font-size: 14px;
                     margin-bottom: 0;
                 }
-                padding-bottom: 2rem;
+
             }
 
             .leyka-loader {
@@ -93,11 +97,25 @@
             }
 
             .settings-block.option-block {
-                margin-bottom: 0rem;
 
-                .title {
-                    font-weight: 400;
+                margin-bottom: 0;
+
+                label {
+
+                    display: flex;
+                    flex-flow: column nowrap;
+
+                    .title {
+                        font-weight: 400;
+                    }
+
+                    input,textarea {
+                        width: 100%;
+                    }
+
                 }
+
+
 
                 .field-errors {
                     color: $color-wizard-error-message;
@@ -107,15 +125,21 @@
                 input, textarea {
                     margin-left: 0;
                 }
+
             }
 
             .button-primary {
+
                 @include wizard-button-caption();
+
                 margin-top: 0.5rem;
                 height: 40px;
                 width: 100%;
+
             }
+
         }
+
     }
 
 }

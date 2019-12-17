@@ -20,8 +20,8 @@ $current_user = wp_get_current_user();?>
             <div class="leyka-loader md"></div>
 
             <div class="ok-message">
-                <p><?php esc_html_e('Your message sent. We will try to answer in one day.', 'leyka');?></p>
-                <p><?php esc_html_e('Thank you!', 'leyka');?></p>
+                <p><?php _e('Your message sent. We will try to answer in one day.', 'leyka');?></p>
+                <p><?php _e('Thank you!', 'leyka');?></p>
             </div>
 
             <form action="#" class="form">
