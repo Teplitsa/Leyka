@@ -394,7 +394,6 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             if(is_a($block, 'Leyka_Option_Block') && $block->is_valid()) {
                 leyka_save_option($block->option_id);
             } else if(is_a($block, 'Leyka_Custom_Setting_Block')) {
-                echo '<pre>'.print_r('HERE', 1).'</pre>';
                 do_action("leyka_save_custom_option-{$block->setting_id}");
             } else if(is_a($block, 'Leyka_Container_Block')) {
                 $this->_process_settings_values($block->get_content());

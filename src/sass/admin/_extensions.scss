@@ -1,5 +1,14 @@
 .leyka-admin {
 
+    .common-errors.has-errors {
+
+        @include common-error-message();
+
+        margin-top: 10px;
+        margin-bottom: 0;
+
+    }
+
     &.extension-settings {
 
         width: 1050px;
@@ -136,6 +145,16 @@
             .column-sidebar {
 
                 flex: 280px 0 1;
+
+                .lightbox {
+
+                    margin-bottom: 20px;
+
+                    img {
+                        border-radius: 6px;
+                    }
+
+                }
 
                 .setup-description {
 

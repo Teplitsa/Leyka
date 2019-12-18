@@ -12,6 +12,7 @@ abstract class Leyka_Extension extends Leyka_Singleton {
 	protected $_full_description = '';
 	protected $_settings_description = '';
 	protected $_connection_description = '';
+	protected $_screenshots = array();
 
     protected $_icon = ''; // An icon URL
     protected $_user_docs_link = ''; // Extension user manual page URL
@@ -191,6 +192,9 @@ abstract class Leyka_Extension extends Leyka_Singleton {
             case 'setup_description':
             case 'connection_description':
                 return $this->_connection_description;
+            case 'screens':
+            case 'screenshots':
+                return $this->_screenshots;
 
             case 'icon':
             case 'icon_url':
@@ -268,6 +272,15 @@ abstract class Leyka_Extension extends Leyka_Singleton {
                 return false;
         }
 
+    }
+
+    /**
+     * The method allows to check if Extension setup is complete enough for it to activate.
+     *
+     * @return bool|WP_Error|array Either true (if no errors found), or a WP_Error object, or an array of WP_Error objects.
+     */
+    public function activation_valid() {
+        return true;
     }
     
     public function get_color($color_name) {

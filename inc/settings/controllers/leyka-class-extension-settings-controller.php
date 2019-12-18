@@ -43,6 +43,8 @@ class Leyka_Extension_Settings_Controller extends Leyka_Settings_Controller {
         add_action('leyka_activate_extension_'.$this->_extension->id, array($this, 'handle_activation'));
         add_action('leyka_deactivate_extension_'.$this->_extension->id, array($this, 'handle_deactivation'));
 
+        add_filter('leyka_extension_validate_activation', array($this->_extension, 'validate_activation'));
+
         $this->_handle_settings_submit();
 
     }
@@ -259,8 +261,21 @@ class Leyka_Extension_Settings_Controller extends Leyka_Settings_Controller {
 
         $this->handle_submit(); // Mb, we shouldn't auto-save Extension settings before activation
 
+        $extension_activation_valid = $this->_extension->activation_valid(); // Let Extension check it's all green for activation
+        if($extension_activation_valid !== true) {
+
+            if(is_wp_error($extension_activation_valid)) { /** @var $extension_activation_valid WP_Error */
+                $this->_add_common_error($extension_activation_valid);
+            } else if(is_array($extension_activation_valid)) {
+                foreach($extension_activation_valid as $error) {
+                    $this->_add_common_error($error);
+                }
+            }
+
+        }
+
         if($this->has_common_errors() || $this->has_component_errors()) {
-            return $this->_add_common_error(new WP_Error('activation_failed', __('Cannot activate the extension - settings errors found.', 'leyka')));
+            return false; //$this->_add_common_error(new WP_Error('activation_failed', __('Cannot activate the extension - settings errors found.', 'leyka')));
         }
 
         $extensions_active = leyka_options()->opt('extensions_active');

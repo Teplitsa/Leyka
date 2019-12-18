@@ -23,7 +23,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
 
     protected function _set_attributes() {
 
-        $this->_id = 'support_packages'; // Must be a unique string, like "support-packages"
+        $this->_id = 'support_packages'; // Must be a unique string, like "support_packages"
         $this->_title = __('Support packages', 'leyka'); // A human-readable title, like "Support packages"
 
         // A human-readable short description (for backoffice extensions list page):
@@ -41,6 +41,10 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
 <code>[leyka_limited_content support_plan="Программное название вознаграждения"]</code>
 <br>Ваш текст<br>
 <code>[/leyka_limited_content]</code>';
+
+        $this->_screenshots = array(
+            LEYKA_PLUGIN_BASE_URL.'extensions/support-packages/img/widget-scheme.png' => LEYKA_PLUGIN_BASE_URL.'extensions/support-packages/img/widget-scheme-full.png',
+        );
 
         $this->_user_docs_link = '//leyka.te-st.ru'; // Extension user manual page URL /** @todo Change it when possible. */
         $this->_has_wizard = false;
@@ -140,6 +144,19 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
 
     }
 
+    public function activation_valid() {
+
+        if( !leyka_options()->opt('donor_accounts_available') ) {
+            return new WP_Error(
+                $this->_id.'-accounts-disabled',
+                sprintf(__('Donors accounts are mandatory for the Extension to work! Please, <a href="%s">enable Donors accounts</a> in the plugin settings.', 'leyka'), admin_url('admin.php?page=leyka_settings&stage=additional#donor_accounts'))
+            );
+        }
+
+        return true;
+
+    }
+
     protected function _is_package_active($package, $recurring_subscriptions) {
 
         $total_subscriptions_amount = 0;
@@ -196,7 +213,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
                 $this->_packages[] = new Leyka_Support_Packages_Package($package_params);
             }
         }
-        
+
         if($min_package) {
 
             $result_packages = array();
@@ -286,7 +303,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
         return false;
 
     }
-    
+
     public function setup_shortcodes() {
 
         foreach(Leyka_Support_Packages_Extension::$FEATURES as $feature_name => $feature_config) {
@@ -395,10 +412,10 @@ class Leyka_Support_Packages_Limit_Content_Feature extends Leyka_Support_Package
                 return !empty($this->_config['shortcode_atts']['support_plan']) ? $this->_config['shortcode_atts']['support_plan'] : '';
                 
             case 'activate_title':
-                return esc_html__('Subscribe to read the whole', 'leyka');
+                return __('Subscribe to read the whole', 'leyka');
                 
             case 'activate_subtitle':
-                return esc_html__('To break stereotypes, to unite guys who are passionate about technology, to inspire in search of their calling - these are the goals set by the participants of the European Programming Week.', 'leyka');
+                return __('To break stereotypes, to unite guys who are passionate about technology, to inspire in search of their calling - these are the goals set by the participants of the European Programming Week.', 'leyka');
                 
             default:
                 return '';

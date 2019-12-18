@@ -92,13 +92,21 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
 
                     <div class="postbox-container column-main">
 
-                        <div class="leyka-options main-area">
-                            <?php $this->render_main_area();?>
-                        </div>
+                        <div class="leyka-options main-area"><?php $this->render_main_area();?></div>
 
                     </div>
 
                     <div class="postbox-container column-sidebar">
+
+                        <?php if($extension->screenshots) {?>
+                        <div class="lightbox">
+                            <?php foreach($extension->screenshots as $thumbnail_url => $full_url) {?>
+                            <a href="<?php echo esc_url($full_url);?>" target="_blank">
+                                <img src="<?php echo esc_url($thumbnail_url);?>" alt="">
+                            </a>
+                            <?php }?>
+                        </div>
+                        <?php }?>
 
                         <?php if($extension->setup_description) {?>
                             <div class="setup-description"><?php echo $extension->setup_description;?></div>

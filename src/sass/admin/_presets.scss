@@ -284,6 +284,7 @@ $leyka-admin-color-btn-stroke:    #006799;
 }
 
 @mixin common-error-message($max-width: default) {
+
     padding: 8px 16px;
 
     @if $max-width == default {
@@ -297,4 +298,5 @@ $leyka-admin-color-btn-stroke:    #006799;
     color: $color-text-semi;
     border: 1px solid transparentize($color-wizard-error-message, 0.6);
     background-color: transparentize($color-wizard-error-message, 0.8);
+
 }
