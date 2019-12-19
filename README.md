@@ -1,6 +1,6 @@
 # [Лейка](http://leyka.te-st.ru) #
 
-![](https://leyka.te-st.ru/wp-content/uploads/assets/first-year.png?stamp=123)
+![](https://leyka.te-st.ru/wp-content/uploads/2019/12/cover-600.png)
 
 **Scroll down for english description, please**
 
