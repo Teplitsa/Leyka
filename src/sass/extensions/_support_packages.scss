@@ -371,6 +371,7 @@ body.page, body.single {
         @include leyka-ext-sp-activate-feature-title;
         margin-bottom: $base * 2; 
         text-align: center;
+        margin-top: 0px;
         color: $leyka-ext-sp-color-text;
     }
 
