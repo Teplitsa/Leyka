@@ -1,6 +1,6 @@
 /** Donor's account frontend */
 
-function leyka_ext_sp_init_blocker($) {
+jQuery(document).ready(function($){
     var $siteContent = $('#site_content');
     if(!$siteContent.length) {
 		$siteContent = $('#content');
@@ -17,7 +17,7 @@ function leyka_ext_sp_init_blocker($) {
     	return;
     }
 
-    if(!$sp.closest('body.page') && !$sp.closest('body.single')) {
+    if(!$sp.closest('body.page').length && !$sp.closest('body.single').length) {
         return;
     }
 
@@ -83,7 +83,7 @@ function leyka_ext_sp_init_blocker($) {
     if($sp.closest('.leyka-ext-sp-activate-feature').length) {
     	renderActivateButton($sp, null);
     }
-}
+});
 
 function leyka_ext_sp_init_locked_content_icons($){
     $('.leyka-ext-sp-locked-content .entry-title').each(function(i, el){
@@ -96,6 +96,5 @@ function leyka_ext_sp_init_locked_content_icons($){
 }
 
 jQuery(window).load(function() {
-    leyka_ext_sp_init_blocker(jQuery);
     leyka_ext_sp_init_locked_content_icons(jQuery);
 });
