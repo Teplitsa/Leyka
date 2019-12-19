@@ -5,7 +5,8 @@ $leyka-ext-sp-color-main-op10: var(--leyka-ext-support-packages-color-main-op10)
 $leyka-ext-sp-color-background: var(--leyka-ext-support-packages-color-background);
 $leyka-ext-sp-color-caption: var(--leyka-ext-support-packages-color-caption);
 $leyka-ext-sp-color-text: var(--leyka-ext-support-packages-color-text);
-$leyka-ext-sp-color-white: $color-white;
+//$leyka-ext-sp-color-white: $color-white;
+$leyka-ext-sp-color-white: $leyka-ext-sp-color-background;
 
 $leyka-ext-sp-color-border: #F1F1F1;
 $leyka-ext-sp-color-text-gray: #AAAAAA;
@@ -370,12 +371,14 @@ body.page, body.single {
         @include leyka-ext-sp-activate-feature-title;
         margin-bottom: $base * 2; 
         text-align: center;
+        color: $leyka-ext-sp-color-text;
     }
 
     .leyka-ext-sp-feature-subtitle {
         @include leyka-ext-sp-activate-feature-subtitle;
         margin-bottom: $base * 3;
         text-align: center;
+        color: $leyka-ext-sp-color-text;
     }
 
     .leyka-ext-support-packages {
@@ -403,6 +406,7 @@ body.page, body.single {
             width: 100%;
             margin-bottom: $base;
             cursor: pointer;
+            background-color: $leyka-ext-sp-color-white;
 
             @include for(medium-screens) {
                 width: 170px;
@@ -476,6 +480,7 @@ body.page, body.single {
             width: 100%;
             text-align: center;
             margin-bottom: $base * 2;
+            color: $leyka-ext-sp-color-text;
 
             @include for(medium-screens) {
                 min-width: 344px;
@@ -495,7 +500,7 @@ body.page, body.single {
 
         a.leyka-ext-sp-subscribe-action {
             @include leyka-ext-sp-package-subscribe;
-            color: $leyka-ext-sp-color-white;
+            color: $leyka-ext-sp-color-caption;
             background-color: $leyka-ext-sp-color-main;
             text-decoration: none;
             
@@ -520,5 +525,14 @@ body.page, body.single {
                 line-height: $base * 5;
             }
         }
+    }
+}
+
+// entry-title locked icon
+.entry-title {
+
+    & > img.leyka-ext-sp-post-locked {
+        height: 1.2em;
+        vertical-align: bottom;
     }
 }

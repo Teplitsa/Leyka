@@ -209,6 +209,7 @@ function leyka_empty(mixed_var) {
     return false;
 
 }
+
 /** Donor's account frontend */
 
 var leyka; // L10n lines
@@ -1998,7 +1999,7 @@ jQuery(document).ready(function($){
 });
 /** Donor's account frontend */
 
-jQuery(document).ready(function($){
+function leyka_ext_sp_init_blocker($) {
     var $siteContent = $('#site_content');
     if(!$siteContent.length) {
 		$siteContent = $('#content');
@@ -2076,6 +2077,21 @@ jQuery(document).ready(function($){
     if($sp.closest('.leyka-ext-sp-activate-feature').length) {
     	renderActivateButton($sp, null);
     }
+}
+
+function leyka_ext_sp_init_locked_content_icons($){
+    $('.leyka-ext-sp-locked-content .entry-title').each(function(i, el){
+        var $lockedIcon = $('<img />')
+            .attr('src', leyka.ext_sp_article_locked_icon)
+            .addClass('leyka-ext-sp-post-locked');
+
+        $(this).append($lockedIcon);
+    });
+}
+
+jQuery(window).load(function() {
+    leyka_ext_sp_init_blocker(jQuery);
+    leyka_ext_sp_init_locked_content_icons(jQuery);
 });
 /*
  * Star form template functionality and handlers

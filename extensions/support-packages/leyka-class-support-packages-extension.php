@@ -143,6 +143,39 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
         ));
 
     }
+    
+    protected function get_color_options() {
+        return array(
+            'type' => 'container',
+            'classes' => 'support-packages-color-options',
+            'entries' => array(
+                $this->_id.'_main_color' => array(
+                    'type' => 'colorpicker',
+                    'title' => 'Главный цвет', // __('', 'leyka'),
+                    'description' => 'Рекомендуем яркий цвет', // __('', 'leyka'),
+                    'default' => '#F38D04',
+                ),
+                $this->_id.'_background_color' => array(
+                    'type' => 'colorpicker',
+                    'title' => 'Цвет фона', // __('', 'leyka'),
+                    'description' => 'Контрастный основному цвету', // __('', 'leyka'),
+                    'default' => '#ffffff',
+                ),
+                $this->_id.'_caption_color' => array(
+                    'type' => 'colorpicker',
+                    'title' => 'Цвет надписей', // __('', 'leyka'),
+                    'description' => 'Контрастный основному цвету', // __('', 'leyka'),
+                    'default' => '#ffffff',
+                ),
+                $this->_id.'_text_color' => array(
+                    'type' => 'colorpicker',
+                    'title' => 'Цвет текста', // __('', 'leyka'),
+                    'description' => 'Рекомендуем контрастный фону', // __('', 'leyka'),
+                    'default' => '#000000',
+                ),
+            )
+        );
+    }
 
     public function activation_valid() {
 
@@ -312,6 +345,64 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
             }
         }
 
+    }
+    
+    public function setup_filters() {
+
+        if( !Leyka_Support_Packages_Extension::get_instance()->is_active ) {
+            return;
+        }
+        
+        add_filter('post_class', array($this, 'add_post_class'), 10, 3);
+        add_filter('leyka_js_localized_strings', array($this, 'add_js_localized_strings') );
+        
+    }
+    
+    public function add_js_localized_strings($strings) {
+        $custom_locked_icon_path = leyka()->opt('support_packages_closed_content_icon');
+        if($custom_locked_icon_path) {
+            $upload_dir = wp_get_upload_dir();
+            $strings['ext_sp_article_locked_icon'] = $upload_dir['baseurl'].$custom_locked_icon_path;
+        }
+        else {
+            $strings['ext_sp_article_locked_icon'] = LEYKA_PLUGIN_BASE_URL.'extensions/'.Leyka_Support_Packages_Extension::get_instance()->id_dash.'/img/icon-post-locked.png';
+        }
+        
+        return $strings;
+    }
+    
+    public function add_post_class($classes, $class, $post_id) {
+        global $post;
+        $user = wp_get_current_user();
+
+        $feature_name = 'leyka_limited_content';
+        $feature_config = Leyka_Support_Packages_Extension::$FEATURES[$feature_name];
+        $post = get_post($post_id);
+        
+        $pattern = get_shortcode_regex();
+        if(preg_match_all('/'.$pattern.'/s', $post->post_content, $matches)) {
+            foreach( $matches[0] as $key => $value) {
+                
+                if($matches[2][$key] !== $feature_name) {
+                    continue;
+                }
+                
+                $get = str_replace(" ", "&" , $matches[3][$key] );
+                parse_str($get, $atts);
+                
+                if( !empty($feature_config['shortcode_atts']) ) {
+                    $feature_config['shortcode_atts'] = shortcode_atts( $feature_config['shortcode_atts'], $atts );
+                }
+                
+                $feature = new $feature_config['class']($feature_name, $feature_config);
+                
+                if(!$this->is_feature_open($feature, $user)) {
+                    $classes[] = 'leyka-ext-sp-locked-content';
+                }
+            }
+        }
+                
+        return $classes;                
     }
     
     public function handle_shortcode($atts, $content = null, $tag = null) {
@@ -590,5 +681,6 @@ class Leyka_Support_Packages_Template_Tags {
 function leyka_add_extension_support_packages() { // Use named function to leave a possibility to remove/replace it on the hook
     leyka()->add_extension(Leyka_Support_Packages_Extension::get_instance());
     Leyka_Support_Packages_Extension::get_instance()->setup_shortcodes();
+    Leyka_Support_Packages_Extension::get_instance()->setup_filters();
 }
 add_action('leyka_init_actions', 'leyka_add_extension_support_packages');

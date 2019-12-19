@@ -1358,6 +1358,7 @@ class Leyka extends Leyka_Singleton {
         $js_data = apply_filters('leyka_js_localized_strings', array(
             'ajaxurl' => admin_url('admin-ajax.php'),
             'homeurl' => home_url('/'),
+            'plugin_url' => LEYKA_PLUGIN_BASE_URL,
             'gtm_ga_eec_available' => (int)(leyka()->opt('use_gtm_ua_integration') === 'enchanced'),
 
             'correct_donation_amount_required_msg' => __('Donation amount must be specified to submit the form', 'leyka'),
