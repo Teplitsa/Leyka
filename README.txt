@@ -4,7 +4,7 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: crowdfunding, fundraising, donations, recurring donations, charity, leyka, recurring, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, yandexmoney, yandex.money, яндекс.деньги, chronopay, sms, яндекс.касса, yandex.kassa, миксплат, mixplat, paypal, paymaster, qiwi, киви
 Requires at least: 3.6.1
-Tested up to: 5.3.1
+Tested up to: 5.3.2
 Stable tag: 3.6.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -89,6 +89,16 @@ PHP version required: 5.6+
 10. Google Analytics events
 
 == Changelog ==
+= 3.7 =
+* New: Extensions engine added.
+* New: Support packages Extension added.
+* New: now Gateways & Extensions lists have one markup group - "Modules".
+* New: now Gateways Wizards first step allow to enter Gateway parameters at once, without the need to pass the rest of the Wizard.
+* New: Donor's comment placeholder added to the emails content.
+* Fix: Admin footer & helpchat CSS bugfixes & improvements.
+* Fix: compatibility with non-standard WP core paths improved.
+* Fix: admin small fixes.
+
 = 3.6.1 =
 * New: now Gateways cards have an explicit settings link button.
 * New: Donors info column added to the admin Users list.
