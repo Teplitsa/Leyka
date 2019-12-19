@@ -12,6 +12,7 @@ function leyka_save_settings($tab_name) {
         if(is_array($entry)) {
             
             foreach($entry as $key => $option) {
+
                 if($key === 'section') {
 
                     if(isset($option['tabs'])) { // Section with tabs
@@ -46,6 +47,7 @@ function leyka_save_settings($tab_name) {
                 } else {
                     $options_names[] = $option;
                 }
+
             }
 
         } else {

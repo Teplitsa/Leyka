@@ -1,10 +1,12 @@
-/**
- * Admin JS - Donation adding/editing editing pages
- *
- * @todo Remove the script when moved to Post/Sep-donations. The script content is in the /src/js/admin/donation-add-edit.js
- **/
-
+// Donation add/edit page:
 jQuery(document).ready(function($){
+
+    var $page_type = $('#originalaction'),
+        $post_type = $('#post_type');
+
+    if( !$page_type.length || $page_type.val() !== 'editpost' || !$post_type.length || $post_type.val() !== 'leyka_donation' ) {
+        return;
+    }
 
     var $donation_date = $('#donation-date-view').datepicker({
         changeMonth: true,
@@ -15,76 +17,6 @@ jQuery(document).ready(function($){
         altField: '#donation-date',
         altFormat: 'yy-mm-dd'
     });
-
-    /** @todo Move to the /src/js/admin/common-settings.js */
-    var $campaign_select = $('#campaign-select');
-    if($campaign_select.length && typeof $().autocomplete !== 'undefined') {
-
-        $campaign_select.keyup(function(){
-            if( !$(this).val() ) {
-                $('#campaign-id').val('');
-                $('#new-donation-purpose').html('');
-            }
-        });
-
-        $campaign_select.autocomplete({
-            minLength: 1,
-            focus: function(event, ui){
-                $campaign_select.val(ui.item.label);
-                $('#new-donation-purpose').html(ui.item.payment_title);
-
-                return false;
-            },
-            change: function(event, ui){
-                if( !$campaign_select.val() ) {
-                    $('#campaign-id').val('');
-                    $('#new-donation-purpose').html('');
-                }
-            },
-            close: function(event, ui){
-                if( !$campaign_select.val() ) {
-                    $('#campaign-id').val('');
-                    $('#new-donation-purpose').html('');
-                }
-            },
-            select: function(event, ui){
-                $campaign_select.val(ui.item.label);
-                $('#campaign-id').val(ui.item.value);
-                $('#new-donation-purpose').html(ui.item.payment_title);
-                return false;
-            },
-            source: function(request, response) {
-                var term = request.term,
-                    cache = $campaign_select.data('cache') ? $campaign_select.data('cache') : [];
-
-                if(term in cache) {
-                    response(cache[term]);
-                    return;
-                }
-
-                request.action = 'leyka_get_campaigns_list';
-                request.nonce = $campaign_select.data('nonce');
-
-                $.getJSON(leyka.ajaxurl, request, function(data, status, xhr){
-
-                    var cache = $campaign_select.data('cache') ? $campaign_select.data('cache') : [];
-
-                    cache[term] = data;
-                    response(data);
-                });
-            }
-        });
-
-        $campaign_select.data('ui-autocomplete')._renderItem = function(ul, item){
-            return $('<li>')
-                .append(
-                    '<a>'+item.label+(item.label == item.payment_title ? '' : '<div>'+item.payment_title+'</div></a>')
-                )
-                .appendTo(ul);
-        };
-
-    }
-    /** Move to - END */
 
     // Validate add/edit donation form:
     $('form#post').submit(function(e){
@@ -116,7 +48,7 @@ jQuery(document).ready(function($){
         var amount_clear = parseFloat($field.val().replace(',', '.'));
         if( !$field.val() || amount_clear == 0 || isNaN(amount_clear) ) {
 
-            console.log( !$field.val(), parseFloat($field.val().replace(',', '.')), isNaN($field.val()))
+            // console.log( !$field.val(), parseFloat($field.val().replace(',', '.')), isNaN($field.val()))
 
             is_valid = false;
             $form.find('#donation_amount-error').html(leyka.amount_incorrect_msg).show();
@@ -242,4 +174,5 @@ jQuery(document).ready(function($){
 
         $('.recurrent-cancel').click();
     });
+
 });

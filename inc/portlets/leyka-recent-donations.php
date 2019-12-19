@@ -43,7 +43,7 @@ $data = Leyka_Recent_Donations_Portlet_Controller::get_instance()->get_template_
         <?php }
     } else {?>
         <tr>
-            <td colspan="4" class="no-rows"><?php _e('No donations found.', 'leyka');?></td>
+            <td colspan="4" class="no-rows"><?php _e('No donations yet', 'leyka');?></td>
         </tr>
     <?php }?>
     </tbody>

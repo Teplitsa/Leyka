@@ -69,6 +69,9 @@ $color-wizard-preview-border: #dddddd;
 
 $color-wizard-tooltip-bg: #006799;
 
+// Single settings spresifics:
+$color-inline-instructions-background: #E0F3FA;
+
 // editor special colors
 $color-editor-leyka-key: #80c2dc;
 
@@ -90,16 +93,28 @@ $color-text-light:		#999999;
 $color-text-light2:		#b2b2b2;
 $color-secondary-button: #44444a;
 
+$color-background-light1: #fafafa;
+
 $color-border-normal:	#cccccc;
+$color-border-semilight: #dddddd;
 $color-border-light:	#eeeeee;
 $color-border-tiny:		#f6f6f6;
+$color-border-semidark: #aaaaaa;
 $color-border-dark:		#353d3f;
-$color-border-secondary-button: #dddddd;
-
 $color-border-light-001: #f1f1f1;
+$color-border-secondary-button: #dddddd;
 
 $color-form-invalid:	#D0011B;
 $color-form-active:		var(--color-main-light);
+
+$leyka-admin-color-text:          #44444A;
+
+$leyka-admin-color-link:          #0085BA;
+$leyka-admin-color-link-active:   #565656;
+
+$leyka-admin-color-btn-text:      $color-white;
+$leyka-admin-color-btn-bg:        #0085BA;
+$leyka-admin-color-btn-stroke:    #006799;
 
 
 
@@ -269,6 +284,7 @@ $color-form-active:		var(--color-main-light);
 }
 
 @mixin common-error-message($max-width: default) {
+
     padding: 8px 16px;
 
     @if $max-width == default {
@@ -282,4 +298,5 @@ $color-form-active:		var(--color-main-light);
     color: $color-text-semi;
     border: 1px solid transparentize($color-wizard-error-message, 0.6);
     background-color: transparentize($color-wizard-error-message, 0.8);
+
 }

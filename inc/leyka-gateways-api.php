@@ -177,18 +177,14 @@ function leyka_get_gateway_icons_list($gateway) {
  * @param Leyka_Gateway $gateway
  * @return string
  */
-function leyka_get_gateway_settings_url($gateway) {
-    
+function leyka_get_gateway_settings_url($gateway, $type = 'adaptive') {
+
     $gateway_activation_status = $gateway ? $gateway->get_activation_status() : null;
     $wizard_id = leyka_gateway_setup_wizard($gateway);
 
-    if($gateway_activation_status !== 'active' && $wizard_id) {
-        $url = admin_url('/admin.php?page=leyka_settings_new&screen=wizard-' . $wizard_id);
-    } else {
-        $url = admin_url('/admin.php?page=leyka_settings&stage=payment&gateway=' . $gateway->id);
-    }
-
-    return $url;
+    return $type === 'wizard' || ($gateway_activation_status !== 'active' && $wizard_id && $type === 'adaptive') ?
+        admin_url('/admin.php?page=leyka_settings_new&screen=wizard-'.$wizard_id) :
+        admin_url('/admin.php?page=leyka_settings&stage=payment&gateway='.$gateway->id);
 
 }
 
@@ -197,31 +193,14 @@ function leyka_get_gateway_settings_url($gateway) {
  * @return string|false Gateway ID, or false if there is no Wizard for a fiven gateway.
  */
 function leyka_gateway_setup_wizard($gateway) {
-
-    if(in_array($gateway->id, Leyka_Gateway::$gateways_with_wizard)) {
-        return $gateway->id;
-    }
-
-    return false;
-
-}
-
-/**
- * @param string $gateway_wizard_name
- * @return bool
- */
-function leyka_wizard_started($gateway_wizard_name) {
-    
-    $wizard_controller = Leyka_Settings_Factory::get_instance()->get_controller($gateway_wizard_name);
-    return count($wizard_controller->history) > 0;
-    
+    return $gateway->has_wizard ? $gateway->id : false;
 }
 
 abstract class Leyka_Gateway extends Leyka_Singleton {
 
     protected static $_instance;
 
-	protected $_id = ''; // Must be a unique string, as "quittance", "yandex" or "chronopay"
+	protected $_id = ''; // Must be a unique string, like "quittance", "yandex" or "chronopay"
 	protected $_title = ''; // A human-readable title of a gateway, like "Bank quittances" or "Yandex.Kassa"
 	protected $_description = ''; // A human-readable description of a gateway (for backoffice)
     protected $_icon = ''; // A gateway icon URL
@@ -233,13 +212,8 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     protected $_receiver_types = array('legal'); // 'legal', 'physical'
     protected $_may_support_recurring = false; // Whether recurring payments are possible via gateway at all
 
-    protected $_admin_ui_column = 2; // 1 or 2. A number of the metaboxes columns, to which gateway belogns by default
-    protected $_admin_ui_order = 100; // Default sorting index for gateway metabox in its column. Lower number = higher
-
     protected $_payment_methods = array(); // Supported PMs array
     protected $_options = array(); // Gateway configs
-    
-    public static $gateways_with_wizard = array('yandex', 'cp');
 
     protected function __construct() {
 
@@ -330,12 +304,6 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
             case 'wizard_href':
             case 'wizard_link': return admin_url('admin.php?page=leyka_settings_new&screen=wizard-'.$this->_id);
 
-            case 'admin_column':
-            case 'admin_ui_column': return in_array($this->_admin_ui_column, array(1, 2)) ? $this->_admin_ui_column : 2;
-            case 'admin_order':
-            case 'admin_priority':
-            case 'admin_ui_order':
-            case 'admin_ui_priority': return (int)$this->_admin_ui_order;
             default:
                 return false;
         }
@@ -449,6 +417,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     protected function _set_gateway_pm_list() {
 
         $this->_initialize_pm_list();
+
         do_action('leyka_init_pm_list', $this);
 
     }
@@ -456,7 +425,6 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     protected function _initialize_options() {
 
         foreach($this->_options as $option_name => $params) {
-
             if( !leyka_options()->option_exists($option_name) ) {
                 leyka_options()->add_option($option_name, $params['type'], $params);
             }
@@ -464,6 +432,10 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
         add_filter('leyka_payment_options_allocation', array($this, 'allocate_gateway_options'), 1, 1);
 
+    }
+
+    public function is_setup_complete($pm_id = false) {
+        return false;
     }
 
     /**
@@ -880,10 +852,11 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
         $gateway_section_index = -1;
 
         foreach($options as $index => $option) {
-
             if( !empty($option['section']) && $option['section']['name'] == $gateway->id ) {
+
                 $gateway_section_index = $index;
                 break;
+
             }
         }
 

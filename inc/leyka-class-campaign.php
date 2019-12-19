@@ -222,10 +222,10 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <div class="field-wrapper">
                 <label class="field-label">
-                    <input type="radio" name="donations_type_default" value="recurring" <?php echo 'recurring' == $campaign->donations_type_default ? 'checked="checked"' : '';?>><?php echo _x('Recurring', 'In single, like "recurring donation"', 'leyka');?>
+                    <input type="radio" name="donations_type_default" value="recurring" <?php echo $campaign->donations_type_default === 'recurring' ? 'checked="checked"' : '';?>><?php echo _x('Recurring', 'In single, like "recurring donation"', 'leyka');?>
                 </label>
                 <label class="field-label">
-                    <input type="radio" name="donations_type_default" value="single" <?php echo 'single' == $campaign->donations_type_default ? 'checked="checked"' : '';?>><?php echo _x('Single', 'In single, like "single donation"', 'leyka');?>
+                    <input type="radio" name="donations_type_default" value="single" <?php echo $campaign->donations_type_default === 'single' ? 'checked="checked"' : '';?>><?php echo _x('Single', 'In single, like "single donation"', 'leyka');?>
                 </label>
             </div>
 
@@ -245,7 +245,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                     $cur_template !== 'default'
                     && leyka()->template_is_deprecated($cur_template)
                     && !leyka_options()->opt('allow_deprecated_form_templates')
-                ) { // "toggles"
+                ) {
                     $templates[] = leyka()->get_template($cur_template);
                 }
 
@@ -1123,6 +1123,37 @@ class Leyka_Campaign {
     /** @deprecated Use $campaign->total_funded instead. */
     public function get_collected_amount() {
         return $this->total_funded > 0.0 ? $this->total_funded : 0.0;
+    }
+
+    /** @todo Make the result a campaign meta instead of a method & refresh the meta like "total_amount" */
+    public function get_recurring_subscriptions_amount() {
+
+        if( !$this->_id ) {
+            return false;
+        }
+
+        $recurring_subscriptions = get_posts(array(
+            'post_type' => Leyka_Donation_Management::$post_type,
+            'post_status' => 'funded',
+            'meta_query' => array(
+                array('key' => 'leyka_campaign_id', 'value' => $this->_id,),
+                array('key' => 'leyka_payment_type', 'value' => 'rebill',),
+                array('key' => '_rebilling_is_active', 'value' => 0, 'compare' => '!='),
+            ),
+            'post_parent' => 0,
+            'nopaging' => true,
+        ));
+
+        $monthly_incoming_amount = 0.0;
+        foreach($recurring_subscriptions as $subscription) {
+
+            $subscription = new Leyka_Donation($subscription);
+            $monthly_incoming_amount += $subscription->amount;
+
+        }
+
+        return $monthly_incoming_amount;
+
     }
 
     public function refresh_target_state() {

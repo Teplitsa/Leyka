@@ -123,9 +123,6 @@ if(defined('POLYLANG_VERSION')) {
             }
             add_action('admin_notices', 'leyka_pll_admin_notices_error');
 
-//            $locale = get_locale();
-//            $locale = $locale ? $locale : 'ru_RU';
-
             load_plugin_textdomain('leyka', false, apply_filters('leyka_l10n_mo_folder', WP_LANG_DIR.'/plugins'));
 
             do_action('leyka_init_actions');

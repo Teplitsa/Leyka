@@ -83,43 +83,70 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         }
 
-        if( !empty($_REQUEST['first-donation-date']) && stripos($_REQUEST['first-donation-date'], ',') !== false ) {
+        if( !empty($_REQUEST['first-donation-date']) ) {
 
-            $_REQUEST['first-donation-date'] = array_slice(explode(',', $_REQUEST['first-donation-date']), 0, 2);
+            if(stripos($_REQUEST['first-donation-date'], ',') !== false) { // Dates period chosen
 
-            if(count($_REQUEST['first-donation-date']) === 2) { // The date is set as an interval
+                $_REQUEST['first-donation-date'] = array_slice(explode(',', $_REQUEST['first-donation-date']), 0, 2);
 
+                if(count($_REQUEST['first-donation-date']) === 2) { // The date is set as an interval
 
-                $_REQUEST['first-donation-date'][0] = strtotime($_REQUEST['first-donation-date'][0].' 00:00:00');
-                $_REQUEST['first-donation-date'][1] = strtotime($_REQUEST['first-donation-date'][1].' 23:59:59');
+                    $_REQUEST['first-donation-date'][0] = strtotime($_REQUEST['first-donation-date'][0].' 00:00:00');
+                    $_REQUEST['first-donation-date'][1] = strtotime($_REQUEST['first-donation-date'][1].' 23:59:59');
 
+                    $donors_params['meta_query'][] = array(
+                        'key' => 'leyka_donor_first_donation_date',
+                        'value' => $_REQUEST['first-donation-date'],
+                        'compare' => 'BETWEEN',
+                        'type' => 'NUMERIC',
+                    );
+
+                }
+
+            } else { // Single date chosen
                 $donors_params['meta_query'][] = array(
                     'key' => 'leyka_donor_first_donation_date',
-                    'value' => $_REQUEST['first-donation-date'],
+                    'value' => array(
+                        strtotime($_REQUEST['first-donation-date'].' 00:00:00'),
+                        strtotime($_REQUEST['first-donation-date'].' 23:59:59'),
+                    ),
                     'compare' => 'BETWEEN',
                     'type' => 'NUMERIC',
                 );
-
             }
 
         }
 
-        if( !empty($_REQUEST['last-donation-date']) && stripos($_REQUEST['last-donation-date'], ',') !== false ) {
+        if( !empty($_REQUEST['last-donation-date']) ) {
 
-            $_REQUEST['last-donation-date'] = array_slice(explode(',', $_REQUEST['last-donation-date']), 0, 2);
+            if(stripos($_REQUEST['last-donation-date'], ',') !== false) { // Dates period chosen
 
-            if(count($_REQUEST['last-donation-date']) === 2) { // The date is set as an interval
+                $_REQUEST['last-donation-date'] = array_slice(explode(',', $_REQUEST['last-donation-date']), 0, 2);
 
-                $_REQUEST['last-donation-date'][0] = strtotime($_REQUEST['last-donation-date'][0].' 00:00:00');
-                $_REQUEST['last-donation-date'][1] = strtotime($_REQUEST['last-donation-date'][1].' 23:59:59');
+                if(count($_REQUEST['last-donation-date']) === 2) { // The date is set as an interval
 
+                    $_REQUEST['last-donation-date'][0] = strtotime($_REQUEST['last-donation-date'][0].' 00:00:00');
+                    $_REQUEST['last-donation-date'][1] = strtotime($_REQUEST['last-donation-date'][1].' 23:59:59');
+
+                    $donors_params['meta_query'][] = array(
+                        'key' => 'leyka_donor_last_donation_date',
+                        'value' => $_REQUEST['last-donation-date'],
+                        'compare' => 'BETWEEN',
+                        'type' => 'NUMERIC',
+                    );
+
+                }
+
+            } else { // Single date chosen
                 $donors_params['meta_query'][] = array(
                     'key' => 'leyka_donor_last_donation_date',
-                    'value' => $_REQUEST['last-donation-date'],
+                    'value' => array(
+                        strtotime($_REQUEST['last-donation-date'].' 00:00:00'),
+                        strtotime($_REQUEST['last-donation-date'].' 23:59:59'),
+                    ),
                     'compare' => 'BETWEEN',
                     'type' => 'NUMERIC',
                 );
-
             }
 
         }
@@ -254,10 +281,20 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
     /**
      * Delete a donor record.
      *
-     * @param int $donor_id Donor ID
+     * @param int $donor_user_id Donor ID
      */
-    public static function delete_donor($donor_id) {
-        wp_delete_user(absint($donor_id));
+    public static function delete_donor($donor_user_id) {
+
+        if(leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, true, $donor_user_id)) {
+            wp_delete_user(absint($donor_user_id));
+        } else {
+
+            $donor = get_user_by('id', $donor_user_id);
+            $donor->remove_role(Leyka_Donor::DONOR_USER_ROLE);
+            $donor->remove_cap(Leyka_Donor::DONOR_ACCOUNT_ACCESS_CAP);
+
+        }
+
     }
 
     /**
@@ -406,8 +443,8 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         }
 
         $tags_list = array();
-        foreach($item['donors_tags'] as $term) {
-            $tags_list[] = '#<a href="#">'.esc_html($term->name).'</a>';
+        foreach($item['donors_tags'] as $term) { /** @var $term WP_Term */
+            $tags_list[] = '#<a href="?page='.esc_attr($_REQUEST['page']).'&donors-tags[0]='.$term->term_id.'">'.esc_html($term->name).'</a>';
         }
 
         return '<div class="leyka-donors-tags-list">'.implode(', ', $tags_list).'</div>';
@@ -459,13 +496,13 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             'cb' => '<input type="checkbox">',
             #'donor_id' => __('ID'),
             'donor_type' => _x('Type', "Donor's type", 'leyka'),
-            'donor_name' => __("Donor's<br>name", 'leyka'),
-            'first_donation' => __('First<br>donation', 'leyka'),
-            'campaigns' => __('Campaigns<br>list', 'leyka'),
-            'donors_tags' => __("Donors'<br>tags", 'leyka'),
+            'donor_name' => __("Donor's name", 'leyka'),
+            'first_donation' => __('First donation', 'leyka'),
+            'campaigns' => __('Campaigns list', 'leyka'),
+            'donors_tags' => __("Donors' tags", 'leyka'),
             'gateways' => __('Gateway', 'leyka'),
-            'last_donation' => __('Last<br>donation', 'leyka'),
-            'amount_donated' => __('Amount<br>donated', 'leyka'),
+            'last_donation' => __('Last donation', 'leyka'),
+            'amount_donated' => __('Amount donated', 'leyka'),
         );
     }
 

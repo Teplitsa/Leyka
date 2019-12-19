@@ -72,7 +72,7 @@ if( !function_exists('leyka_admin_get_shortcode_field') ) {
         <span class="leyka-current-value"><?php echo esc_attr($shortcode);?></span>
         <span class="leyka-campaign-shortcode-field" style="display: none;">
             <input type="text" class="embed-code read-only campaign-shortcode inline-input" id="campaign-shortcode" value="<?php echo esc_attr($shortcode);?>">
-            <button class="inline-reset"><?php esc_html_e('Cancel');?></button>
+            <button class="inline-reset"><?php _e('Cancel');?></button>
         </span>
 
         <?php return ob_get_clean();
@@ -94,34 +94,43 @@ if( !function_exists('leyka_sync_plugin_stats_option_action') ) {
 add_action('leyka_after_save_option-send_plugin_stats', 'leyka_sync_plugin_stats_option_action', 10, 2);
 
 if( !function_exists('leyka_get_admin_footer') ) {
-    function leyka_get_admin_footer($footer_class='', $old_footer_html='') {
-        ob_start();
-        ?>
+    function leyka_get_admin_footer($footer_class = '', $old_footer_html = '') {
+
+        ob_start();?>
+
         <div class="leyka-dashboard-footer leyka-admin-footer <?php echo $footer_class;?>">
+
             <a href="https://te-st.ru/" class="te-st-logo">
-                <img  src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/logo-te-st-with-caption.svg" alt="<?php _e('te-st.ru', 'leyka');?>" />
+                <img  src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/logo-te-st-with-caption.svg" alt="<?php _e('te-st.ru', 'leyka');?>">
             </a>
+
             <div class="links">
+
                 <div class="te-st-link">
                     <span><?php _e('Created by', 'leyka');?></span>
                     <a href="https://te-st.ru/"><?php _e('Teplitsa. Technologies for Social Good', 'leyka');?></a>
                 </div>
+
                 <div class="info-links">
                     <a href="https://leyka.te-st.ru/sla/" target="_blank"><?php _e('SLA', 'leyka');?></a>
                     <a href="https://github.com/Teplitsa/leyka/wiki" target="_blank"><?php _e('Documentation', 'leyka');?></a>
                     <a href="https://t.me/joinchat/BshvgVUqHJLyCNIXd6pZXQ" target="_blank"><?php _e('Developer chat', 'leyka');?></a>
                 </div>
+
             </div>
+
+            <?php include(LEYKA_PLUGIN_DIR.'inc/settings-fields-templates/leyka-helpchat.php');?>
+
         </div>
-        <?php
-        return ob_get_clean() . $old_footer_html;
+
+        <?php return ob_get_clean().$old_footer_html;
+
     }
 
 }
 
 if( !function_exists('leyka_show_admin_footer') ) {
     function leyka_show_admin_footer($old_footer_html = '') {
-
         $footer_class = '';
         if( !empty($_GET['screen']) && strpos($_GET['screen'], 'wizard-') === 0 ) {
             $footer_class .= 'leyka-wizard-footer';
@@ -138,18 +147,16 @@ if( !function_exists('leyka_show_admin_footer_on_default_pages') ) {
     function leyka_show_admin_footer_on_default_pages($old_footer_html = '') {
 
         $screen = get_current_screen();
+
         if(false === stripos($screen->base, 'leyka') && false === stripos($screen->id, 'leyka')) {
             return $old_footer_html;
         } else if( !empty($_GET['post_type']) && in_array($_GET['post_type'], array('leyka_donation', 'leyka_campaign')) ) {
             return leyka_get_admin_footer('', $old_footer_html);
-        } else if(isset($_GET['page']) && $_GET['page'] === 'leyka_donations') {
-            return leyka_get_admin_footer('', $old_footer_html);
         }
-
-        return '';
 
     }
     add_filter('admin_footer_text', 'leyka_show_admin_footer_on_default_pages', 20);
+
 }
 
 if( !function_exists('leyka_admin_body_class') ) {
@@ -173,7 +180,7 @@ if( !function_exists('leyka_admin_body_class') ) {
             $leyka_page_class .= 'leyka-admin-default';
         }
 
-        return $classes . ' ' . $leyka_page_class . ' ';
+        return $classes.' '.$leyka_page_class.' ';
 
     }
     add_filter('admin_body_class', 'leyka_admin_body_class', 20);
@@ -197,9 +204,8 @@ if( !function_exists('leyka_admin_get_donor_comment_table_row') ) {
                 		str-btn="editable-comment-str-btn<?php echo $comment_id;?>" 
                 		str-result="editable-comment-str-result<?php echo $comment_id;?>"
                 		save-action="leyka_save_editable_comment"
-                		text-item-id="<?php echo $comment_id;?>" 
-            		/>
-                    <div class="loading-indicator-wrap">
+                		text-item-id="<?php echo $comment_id;?>">
+                    <div class="loading-indicator-wrap" style="display: none;">
                         <div class="loader-wrap"><span class="leyka-loader xxs"></span></div>
                         <img class="ok-icon" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/icon-check.svg" alt="">
                     </div>
@@ -278,4 +284,19 @@ function leyka_is_tab_valid($tab_id) {
 
     return true;
 
+}
+
+if( !function_exists('leyka_get_random_string') ) {
+    function leyka_get_random_string($length = 6) {
+
+        $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';
+        $result = '';
+
+        for($i = 0; $i < $length; $i++) {
+            $result .= $permitted_chars[ mt_rand(0, strlen($permitted_chars) - 1) ];
+        }
+
+        return $result;
+
+    }
 }

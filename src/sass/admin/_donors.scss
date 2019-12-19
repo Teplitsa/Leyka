@@ -1,20 +1,8 @@
-.leyka-admin-donors-list,
-.dashboard_page_leyka_donor_info {
+.leyka-admin-donors-list, .dashboard_page_leyka_donor_info {
+
 	.update-nag {
 		margin-left: 28px;
 		margin-bottom: -$leyka-base;
-	}
-
-	.wrap {
-		padding-left: 24px;
-		margin-top: 32px;
-		overflow: auto;
-	}
-
-	h1.wp-heading-inline {
-		@include leyka-adb-h1();
-		padding-top: 0px;
-		padding-bottom: 0px;
 	}
 
     .donors-list-export {
@@ -41,9 +29,6 @@
 	}
 
 	.loading-indicator-wrap {
-	    display: inline-block;
-	    width: 24px;
-	    height: 24px;
 
 	    .ok-icon {
 	        display: none;
@@ -51,14 +36,12 @@
 	    }
 
 	    .loader-wrap {
-	        display: none;
+	    	display: none;
 			padding-top: 8px;
-
-	        .leyka-loader {
-	            display: none;
-	        }
 	    }
+
 	}
+
 }
 
 .leyka-admin-donors-list {
@@ -73,17 +56,21 @@
 
 // filters list
 .donors-list-filters {
+
     box-sizing: border-box;
     margin-top: 4px;
     display: flex;
     border-bottom: 1px solid $leyka-donors-color-filters-border;
 
     .filters-row {
+
     	display: flex;
     	align-items: flex-start;
 
     	.filter-warning {
+
     		@include leyka-donors-text-filter-warning();
+
 			background-image: url(../../img/donors/icon-warning.svg);
 			background-repeat: no-repeat;
 			background-size: 24px 24px;
@@ -97,7 +84,9 @@
     		&:empty {
     			display: none;
     		}
+
     	}
+
     }
 
     .col-1 {
@@ -105,48 +94,60 @@
     }
 
     .col-2 {
+
 		width: 25%;
 		position: relative;
 
 		.button {
+
 			@include leyka-admin-btn();
 			@include leyka-donors-text-caption-big();
+
 			min-width: 192px;
 			height: 40px;
 			text-align: center;
 			display: block;
+
 		}
 
 		.reset-filters {
+
 			@include leyka-admin-a();
 			@include leyka-donors-text-link-big();
-			display: block;
+
+			display: inline-block;
 			border-bottom-style: solid;
 			margin-top: 0.75 * $leyka-base;
 
 			&:hover {
 				border-bottom-style: none;
 			}
+
 		}
+
     }
+
 }
 
 // filter controls
 .donors-list-filters {
+
+    //input:not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"])  {
+    //}
+
     select {
-    	display: none;
+        display: none;
     }
-    
-    input:not([type=hidden]):not([type=button]):not([type=submit]):not([type=reset])  {
-    }
-    
-    input[type=text], input[type=date]  {
+
+    input[type="text"], input[type="date"]  {
         @include leyka-donors-filter-selector();
     }
-    
+
     // selectmenu
     .ui-selectmenu-button {
+
     	@include leyka-donors-filter-selector;
+
     	background-image: none;
     	border-radius: 0;
 		box-sizing: border-box !important;
@@ -171,6 +172,7 @@
     		overflow: unset;
     		padding-left: 0px;
     	}
+
     }
     
     .leyka-selector {
@@ -181,7 +183,9 @@
 
     // autocomplete
 	.ui-autocomplete-multiselect {
+
 		@include leyka-donors-filter-selector();
+
 		display: inline-block;
 		width: 176px !important;
 		height: auto;
@@ -281,6 +285,7 @@
 
 	// autocomplete
 	ul.ui-autocomplete {
+
 	    border-top: 0;
 	    border-top-left-radius: 0;
 	    border-top-right-radius: 0;
@@ -309,7 +314,7 @@
 
 	// datepicker
 	.ui-datepicker.ui-widget.ui-widget-content {
-		padding: 0px;
+		padding: 0;
 		@include leyka-donors-text();
 		font-weight: normal;
 
@@ -382,7 +387,7 @@
 			border-color: transparent;
 
 			&.ui-state-highlight {
-				background-color: $leyka-donors-color-selected-item-stroke;
+				border-color: $leyka-donors-color-selected-item-stroke;
 			}
 
 			&.ui-state-hover {
@@ -390,10 +395,7 @@
 			}
 
 			&.ui-state-active {
-				background-color: $leyka-admin-color-link;
-				color: $color-white;
-
-				&.ui-state-hover {
+				&:not(.ui-state-hover) {
 					background-color: $leyka-admin-color-link;
 					color: $color-white;
 				}
@@ -524,17 +526,7 @@
 	}
 }
 
-// donor info page
-.dashboard_page_leyka_donor_info {
-	color: $leyka-admin-color-text;
-
-	.back-to-list-link {
-		@include leyka-admin-a;
-		margin-bottom: $leyka-base;
-		display: block;
-		width: max-content;
-	}
-}
+// Donor's info page:
 
 // info metabox
 .dashboard_page_leyka_donor_info {
@@ -546,6 +538,12 @@
 			padding: 0 $leyka-base;
 			display: flex;
 			align-items: flex-start;
+		}
+
+		&.closed {
+			.inside {
+				display: none;
+			}
 		}
 
 		.donor-col-1 {
@@ -569,6 +567,7 @@
 			}
 
 			.donor-name {
+
 				display: flex;
 				justify-content: flex-start;
 				align-items: flex-start;
@@ -591,6 +590,7 @@
 				.leyka-editable-str-btn {
 					margin-top: 1px;
 				}
+
 			}
 
 			.donor-description {
@@ -620,15 +620,15 @@
 
 					.loading-indicator-wrap {
 						margin-left: $leyka-base;
-						display: none;
+						//display: none;
 
-						.loader-wrap {
-							padding-top: 0px;
-							margin-right: 0px;
-						}
+						//.loader-wrap {
+						//	padding-top: 0px;
+						//	margin-right: 0px;
+						//}
 
 						.ok-icon {
-							padding-top: 0px;
+							padding-top: 0;
 						}
 					}
 				}
@@ -663,9 +663,9 @@
 							margin-top: $leyka-base;
 						}
 
-						.loading-indicator-wrap {
-							display: inline-block;
-						}
+						//.loading-indicator-wrap {
+						//	display: inline-block;
+						//}
 					}
 				}
 
@@ -745,6 +745,12 @@
 				@include leyka-admin-btn(secondary);
 				margin-left: 0px;
 			}
+
+			.loading-indicator-wrap {
+				display: inline-block;
+				vertical-align: middle;
+				padding-bottom: 2px;
+			}
 		}
 
 		table.donor-info-table {
@@ -808,6 +814,19 @@ table.donor-info-table {
 				background-image: url(../../img/dashboard/icon-bad.svg);
 				@include leyka-admin-icon(19px);
 				@include leyka-admin-clean-a;
+			}
+
+			&.donor-comment-delete {
+				.loading-indicator-wrap {
+
+					.loader-wrap {
+						display: none; // fix donor info indicators bug
+					}
+
+					.ok-icon {
+						display: none; // fix donor info indicators bug
+					}
+				}
 			}
 		}
 	}
@@ -1078,16 +1097,20 @@ table.donor-info-table {
 		align-items: center;
 
 		.loading-indicator-wrap {
-			display: none;
+
+			//display: none;
 
 			.loader-wrap {
-				padding-top: 0px;
+				display: none; // fix donor info indicators bug
+				padding-top: 0;
 				margin-right: 8px;
 			}
 
 			.ok-icon {
-				padding-top: 0px;
+				display: none; // fix donor info indicators bug
+				padding-top: 0;
 			}
+
 		}
 	}
 

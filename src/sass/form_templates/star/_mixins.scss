@@ -49,14 +49,23 @@
 }
 
 @mixin star-swiper {
-    @include star-control-frame();
+    height: 56px;
+    width: 100%;
+    border-bottom: none;
+
     position: relative;
     display: block;
     overflow: hidden;
+
+    &.no-swipe {
+        height: auto;
+        border: none;
+    }
     
     @include for(medium-screens) {
+        @include star-control-frame();
         border: none;
-        
+
         &.show-right-arrow {
             .arrow-gradient.right {
                 display: block;
@@ -114,19 +123,30 @@
             background: linear-gradient(270deg, $leyka-star-color-gradient 30%, rgba(255, 255, 255, 0) 100%);
     
             &.right {
-                right: 46px;
+                // right: 46px;
+                right: 34px;
             }
             
             &.left {
                 transform: matrix(-1, 0, 0, 1, 0, 0);
-                left: 46px;
+                // left: 46px;
+                left: 34px;
             }
         }
     }
     
     .swiper-arrow {
         @include star-clean-a();
-        width: 46px;
+        // width: 46px;
+        border: 2px solid $leyka-star-color-swiper-arrow-border;
+        width: 34px;
+        border-radius: 4px;
+
+        &:active, &:focus, &:hover {
+            border: 2px solid $leyka-star-color-swiper-arrow-border;
+        }
+
+        // height: calc(100% + 4px);
         height: 100%;
         display: flex;
         align-items: center;
@@ -135,37 +155,50 @@
         background-color: $leyka-star-color-white;
         position: absolute;
         top: 0px;
+        // top: -2px;
         z-index: 10;
-        
+
         @include for(medium-screens) {
             display: none;
+            height: 100%;
+            top: 0px;
         }
 
-        &:after {
-            content: " ";
-            display: block;
-            border-left: 1px solid $leyka-star-color-gray-superlight;
-            width: 1px;
-            height: 32px;
-        }
+        // &:after {
+        //     content: " ";
+        //     display: block;
+        //     border-left: 1px solid $leyka-star-color-gray-superlight;
+        //     width: 1px;
+        //     height: 32px;
+        // }
         
         &.swipe-left {
-            background-image: url(../../img/icon-gallery-nav-arrow-left-001.svg);
+            background-image: url(../../img/icon-gallery-nav-arrow-left-002.svg);
             justify-content: flex-end;                
+            // left: -2px;
             left: 0px;
+
+            @include for(medium-screens) {
+                left: 0px;
+            }
         }
         
         &.swipe-right {
-            background-image: url(../../img/icon-gallery-nav-arrow-right-001.svg);
+            background-image: url(../../img/icon-gallery-nav-arrow-right-002.svg);
             justify-content: flex-start;
+            // right: -2px;
             right: 0px;
+
+            @include for(medium-screens) {
+                right: 0px;
+            }
         }
     }
     
-    .swiper-list {
+    .swiper-list, .full-list {
         display: flex;
         position: absolute;
-        width: calc(100% - 100px);
+        width: calc(100% - 76px);
         left: 50px;
         overflow: hidden;
         z-index: 8;
@@ -173,42 +206,62 @@
         @include for(medium-screens) {
             justify-content: space-between;
             left: 0px;
-            width: max-content;
+            width: auto;
             overflow: auto;
         }
     }
-    
+
     .swiper-item {
         background-color: transparent;
         box-sizing: border-box;
         display: none;
+        min-width: 1px;
         width: 100%;
         height: 56px;
         align-items: center;
         justify-content: center;
         overflow: hidden;
         white-space: nowrap;
+
+        .swiper-item-inner {
+            @include star-control-frame();
+            background-color: transparent;
+            box-sizing: border-box;
+            width: calc(100% - 84px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            white-space: nowrap;
+        }
         
         @include for(medium-screens) {
-            display: flex;
+            display: table;
             border: 2px solid $leyka-star-color-gray-superlight;
             border-radius: 4px;
-            width: 100%;
-            min-width: max-content;
+            width: auto;
+            min-width: 1px;
             padding-left: 1.5 * $leyka-star-base;
             padding-right: 1.5 * $leyka-star-base;
             cursor: pointer;
             margin-right: $leyka-star-base;
             flex-grow: 2;
+
+            .swiper-item-inner {
+                height: 52px;
+                width: auto;
+                border: none;
+            }
         }
         
         span, input {
             @include star-text-amount();
+            @include star-text-form-amount;
             color: $leyka-star-color-main;
             background-color: transparent;
 
             @include for(medium-screens) {
-                @include star-text-ui-caption();
+                //@include star-text-ui-caption();
                 color: $leyka-star-color-gray;
                 
                 &.amount {
@@ -292,6 +345,53 @@
         
         &.selected {
             display: flex;
+            
+            @include for(medium-screens) {
+                display: table;
+            }
+        }
+    }
+
+    // full list
+    .full-list {
+        width: calc(100% + 16px);
+        position: relative;
+        flex-wrap: wrap;
+        margin-bottom: -$leyka-star-base;
+        margin-left: -$leyka-star-base;
+        left: 0px;
+
+        .swiper-item {
+            display: flex;
+            border: 2px solid $leyka-star-color-gray-superlight;
+            border-radius: 4px;
+            width: auto;
+            min-width: max-content;
+            padding-left: 1.5 * $leyka-star-base;
+            padding-right: 1.5 * $leyka-star-base;
+            cursor: pointer;
+            margin-left: $leyka-star-base;
+            margin-right: 0px;
+            flex-grow: 2;
+            margin-bottom: $leyka-star-base;
+
+            .swiper-item-inner {
+                width: 100%;
+                border: none;
+            }
+
+            @include for(medium-screens) {
+                width: auto;
+            }
+
+            span, input {
+                @include star-text-form-amount;
+                color: $leyka-star-color-gray;
+                
+                &.amount {
+                    width: auto;
+                }
+            }
         }
     }
 }

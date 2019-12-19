@@ -11,15 +11,15 @@ abstract class Leyka_Settings_Render extends Leyka_Singleton {
 
     protected function __construct() {
 
-        $this->_loadScripts();
-        $this->_setAttributes();
+        $this->_load_scripts();
+        $this->_set_attributes();
 
     }
 
     /** @var Leyka_Settings_Controller */
     protected $_controller;
 
-    abstract protected function _setAttributes();
+    abstract protected function _set_attributes();
 
     /**
      * @param Leyka_Settings_Controller $controller
@@ -33,23 +33,23 @@ abstract class Leyka_Settings_Render extends Leyka_Singleton {
 
     }
 
-    abstract public function render_page();
+    abstract public function render_content();
 
-    abstract public function renderNavigationArea();
-    abstract public function renderMainArea();
+    abstract public function render_navigation_area();
+    abstract public function render_main_area();
 
-    abstract public function renderCommonErrorsArea();
+    abstract public function render_common_errors_area();
 
-    abstract public function renderSubtitleBlock(Leyka_Subtitle_Block $block);
-    abstract public function renderTextBlock(Leyka_Text_Block $block);
-    abstract public function renderOptionBlock(Leyka_Option_Block $block);
-    abstract public function renderCustomSettingBlock(Leyka_Custom_Setting_Block $block);
-    abstract public function renderContainerBlock(Leyka_Container_Block $block);
+    abstract public function render_subtitle_block(Leyka_Subtitle_Block $block);
+    abstract public function render_text_block(Leyka_Text_Block $block);
+    abstract public function render_option_block(Leyka_Option_Block $block);
+    abstract public function render_custom_setting_block(Leyka_Custom_Setting_Block $block);
+    abstract public function render_container_block(Leyka_Container_Block $block);
 
-    abstract public function renderHiddenFields();
-    abstract public function renderSubmitArea();
+    abstract public function render_hidden_fields();
+    abstract public function render_submit_area();
 
-    protected function _loadScripts() {
+    protected function _load_scripts() {
 //        wp_enqueue_script('leyka-settings-XXX', 'some/URL', array('jquery',), LEYKA_VERSION, true);
 //        wp_localize_script('leyka-settings-XXX', 'leyka-settings-XXX', array());
         /** WARNING: CSS files loaded here will appear only in page footer. */

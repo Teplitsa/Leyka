@@ -2,10 +2,10 @@
 Contributors: Ahaenor, foralien, denis.cherniatev
 Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
-Tags: e-donate, donates, donations, charity, wp-donates, crowdfunding, leyka, fundraising, recurring, payment, charity, cloudpayments, webmoney, robokassa, rbk, rbkmoney, visa, mastercard, yandexmoney, chronopay, rbkmoney, sms, яндекс.касса, яндекс.деньги, миксплат, mixplat, paypal, paymaster, qiwi, киви
+Tags: crowdfunding, fundraising, donations, recurring donations, charity, leyka, recurring, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, yandexmoney, yandex.money, яндекс.деньги, chronopay, sms, яндекс.касса, yandex.kassa, миксплат, mixplat, paypal, paymaster, qiwi, киви
 Requires at least: 3.6.1
-Tested up to: 5.2.3
-Stable tag: 3.4.0.1
+Tested up to: 5.3.2
+Stable tag: 3.6.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,38 @@ PHP version required: 5.6+
 10. Google Analytics events
 
 == Changelog ==
+= 3.7 =
+* New: Extensions engine added.
+* New: Support packages Extension added.
+* New: now Gateways & Extensions lists have one markup group - "Modules".
+* New: now Gateways Wizards first step allow to enter Gateway parameters at once, without the need to pass the rest of the Wizard.
+* New: Donor's comment placeholder added to the emails content.
+* Fix: Admin footer & helpchat CSS bugfixes & improvements.
+* Fix: compatibility with non-standard WP core paths improved.
+* Fix: admin small fixes.
+
+= 3.6.1 =
+* New: now Gateways cards have an explicit settings link button.
+* New: Donors info column added to the admin Users list.
+* New: Donors management & Donors' accounts fields logical link added.
+* New: API password setting field added to the CP Wizard.
+* New: new fields added to the settings.
+* Fix: now Donor deletion won't remove a user account if it has more than "Donor" role.
+* Fix: Donors logging in & account activation fixes.
+* Fix: CP Wizard - small wording & CSS fixes.
+* Fix: now Donors are auto-redirected to the respective Account pages on WP login.
+* Fix: small fixes.
+* Tweak: "Reset filters" for the Donors admin list are auto-submitting filters form now.
+* Tweak: now CP Wizard Copy & Paste steps are merged into one.
+
+= 3.6 =
+* New: a new group of Star-oriented (more design-flexible) shortcodes added.
+* New: amount_formatted property added for Leyka_Donation.
+* New: filters for Revo & Star fields labels added.
+* New: now plugin ver. is added to the forms templates wrappers as data attribute.
+* Fix: on-demand frontend scripts loading fixed.
+* Tweak: now Star templates more correctly display PM list in cases of many active payment methods.
+
 = 3.5 =
 * New: now RBK Money gateway supports recurring donations.
 * New: now old form templates (Revo & earlier) are considered deprecated. They are hidden by default.

@@ -1,4 +1,3 @@
-//.leyka-metabox {
 .postbox {
 
     h2 span {
@@ -43,13 +42,13 @@
                     margin-bottom: 8px;
                 }
                 
-                .loading-indicator-wrap {
-                    margin-left: 16px;
-                    
-                    .loader-wrap {
-                        padding-top: 0px;
-                    }
-                }
+                //.loading-indicator-wrap {
+                //    margin-left: 16px;
+                //
+                //    .loader-wrap {
+                //        padding-top: 0;
+                //    }
+                //}
 
             }
             
@@ -63,13 +62,13 @@
                     align-items: center;
                     margin-bottom: 8px;
                     
-                    .loading-indicator-wrap {
-                        margin-left: 16px;
-                        
-                        .loader-wrap {
-                            padding-top: 0px;
-                        }
-                    }
+                    //.loading-indicator-wrap {
+                    //    margin-left: 16px;
+                    //
+                    //    .loader-wrap {
+                    //        padding-top: 0;
+                    //    }
+                    //}
                     
                     .reset-to-default {
                         content: "";
@@ -129,7 +128,7 @@
                 display: block;
                 position: relative;
 
-                input[type=file] {
+                input[type="file"] {
                     display: block;
                     height: 40px;
                     width: 248px;
@@ -137,7 +136,9 @@
                 }
 
                 .upload-photo {
+
                     @include wizard-button-caption();
+
                     height: 40px;
                     width: 248px;
 
@@ -181,29 +182,7 @@
         }
 
         .css-editor {
-
-            .cm-s-default.CodeMirror-wrap { // Code editor field
-                border: 1px solid #dddddd;
-            }
-
-            textarea {
-                width: 100%;
-                height: 200px;
-                border: 1px solid $color-border-secondary-button;
-                overflow: hidden;
-            }
-
-            .css-editor-reset-value {
-                display: inline-block;
-                cursor: pointer;
-
-                font-size: 14px;
-                //line-height: 24px;
-                color: $color-wizard-link;
-
-                border-bottom: 1px dashed $color-wizard-link;
-            }
-
+            @include leyka-code-editor();
         }
 
         .field-q {
@@ -215,19 +194,13 @@
             }
         }
 
-        /** @todo Made it a mixin, mb? */
-        .loader-wrap {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding-top: 2rem;
-        }
+        @include leyka-loading-indicator();
 
         .leyka-field-wide {
             width: 100%;
         }
-        
-        label[for=hide-cover-type-image] {
+
+        label[for="hide-cover-type-image"] {
             margin-right: 32px;
         }
 

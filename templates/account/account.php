@@ -9,6 +9,13 @@
  */
 
 $leyka_account_page_title = __('Personal account', 'leyka');
+$current_user = wp_get_current_user();
+
+# support packages
+$leyka_ext_sp = Leyka_Support_Packages_Extension::get_instance();
+$leyka_ext_sp_template_tags = new Leyka_Support_Packages_Template_Tags();
+$campaign_post = $leyka_ext_sp->get_persistent_campaign();
+$campaign_post_permalink = $campaign_post ? get_post_permalink($campaign_post) : '';
 
 include(LEYKA_PLUGIN_DIR . 'templates/account/header.php');
 
@@ -32,6 +39,21 @@ try {
 							<h2><?php _e('Personal account', 'leyka');?></h2>
 							
 							<p><?php _e('We are grateful for your support!', 'leyka');?></p>
+							
+							<?php if($leyka_ext_sp->is_active && $leyka_ext_sp->has_packages()) {?>
+							<div class="list support-packages account-support-packages">
+								<h3 class="list-title"><?php _e('Support packages', 'leyka');?></h3>
+								<div class="leyka-ext-support-packages">
+								<?php foreach($leyka_ext_sp->get_packages() as $package) {?>
+									<?php $leyka_ext_sp_template_tags->show_manage_card($package, array(
+									    'is_active' => $leyka_ext_sp->is_package_active($package, $current_user),
+									    'is_activation_available' => $leyka_ext_sp->is_activation_available($package, $current_user),
+									    'campaign_post_permalink' => $campaign_post_permalink,
+									))?>
+								<?php }?>
+								</div>
+							</div>
+							<?php }?>
 
 							<div class="list subscribed-campaigns-list">
 								<h3 class="list-title"><?php _e('Recurring donations campaigns', 'leyka');?></h3>

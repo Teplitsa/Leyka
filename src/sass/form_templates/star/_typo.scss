@@ -1,5 +1,22 @@
 /** == Typography (_typo.scss) == **/
 
+@mixin star-h1 {
+	@include star-text();
+	font-size: 24px;
+}
+
+@mixin star-h2 {
+	@include star-text();
+	font-size: 20px;
+}
+
+@mixin star-text-form-amount() {
+	@include star-text;
+	font-size: 18px;
+	line-height: 21px;
+	text-transform: uppercase;
+}
+
 @mixin star-text($mod: default) {
 	font-family: $leyka-font-main;
 	font-weight: normal;
@@ -19,34 +36,9 @@
 	@include star-text($mod);
 }
 
-@mixin star-text-ui-second($mod: default) {
-	@include star-text($mod);
-	font-size: 12px;
-}
-
-@mixin star-h1 {
-	@include star-text();
-	font-size: 24px;
-}
-
-@mixin star-h2 {
-	@include star-text();
-	font-size: 20px;
-}
-
-@mixin star-h3 {
-	@include star-text();
-	font-size: 16px;
-}
-
 @mixin star-text-rare {
 	@include star-text();
 	line-height: 26px;
-}
-
-@mixin star-text-logout {
-	@include star-text();
-	font-size: 12px;
 }
 
 @mixin star-text-ui-caption($mod: default) {
@@ -62,10 +54,28 @@
 	@include star-text();
 }
 
-@mixin star-text-field-title() {
+@mixin star-text-check-label() {
 	@include star-text();
-	font-size: 12px;
-	line-height: normal;
+	line-height: 21px;
+}
+
+@mixin star-h3 {
+	@include star-text();
+	font-size: 16px;
+}
+
+@mixin star-text-form-campaign-description() {
+	@include star-text();
+	font-size: 16px;
+	line-height: 20px;
+	font-weight: 500;
+}
+
+@mixin star-text-form-oferta() {
+	@include star-text();
+	font-size: 16px;
+	line-height: 20px;
+	font-weight: 500;
 }
 
 @mixin star-text-description() {
@@ -74,10 +84,30 @@
 	line-height: 22px;
 }
 
-@mixin star-text-check-label() {
-	@include star-text();
-	line-height: 21px;
+@mixin star-text-form-section-title {
+	font-weight: 500;
+	font-size: 14px;
+	line-height: 16px;
+	letter-spacing: 0.03em;	
+	text-transform: uppercase;
 }
+
+@mixin star-text-logout {
+	@include star-text();
+	font-size: 12px;
+}
+
+@mixin star-text-ui-second($mod: default) {
+	@include star-text($mod);
+	font-size: 12px;
+}
+
+@mixin star-text-field-title() {
+	@include star-text();
+	font-size: 12px;
+	line-height: normal;
+}
+
 
 // special typo
 @mixin star-text-periodicity() {
@@ -92,6 +122,7 @@
 @mixin star-text-amount {
 	@include star-text();
 	font-size: 24px;
+	font-weight: 500;
 	
 	@media screen and (max-width: 319px) {
 		font-size: 16px;

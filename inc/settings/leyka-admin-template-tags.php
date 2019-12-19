@@ -38,14 +38,49 @@ if( !function_exists('leyka_show_gateway_logo')) {
             }
         }?>
 
-        <div class="<?php echo is_array($wrapper_classes) ? implode(' ', $wrapper_classes) : $wrapper_classes; ?> gateway-logo">
+        <div class="<?php echo is_array($wrapper_classes) ? implode(' ', $wrapper_classes) : $wrapper_classes; ?> module-logo gateway-logo">
 
-            <img class="gateway-logo-pic" src="<?php echo $use_paceholders ? '#GATEWAY_LOGO_URL#' : $gateway->icon_url;?>" alt="">
+            <img class="module-logo-pic gateway-logo-pic" src="<?php echo $use_paceholders ? '#GATEWAY_LOGO_URL#' : $gateway->icon_url;?>" alt="">
 
             <?php if( !!$show_gateway_info && ($use_paceholders || $gateway->description) ) {?>
             <span class="field-q">
                 <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-info.svg" alt="">
                 <span class="field-q-tooltip"><?php echo $use_paceholders ? '#GATEWAY_DESCRIPTION#' : $gateway->description;?></span>
+            </span>
+            <?php }?>
+        </div>
+
+    <?php }
+}
+
+if( !function_exists('leyka_show_extension_logo')) {
+    function leyka_show_extension_logo($extension, $show_info = true, $wrapper_classes = array(), $use_paceholders = false) {
+
+        $use_paceholders = !!$use_paceholders;
+
+        if( !$use_paceholders ) {
+            if(is_string($extension)) {
+
+                $extension = Leyka_Extension::get_by_id($extension);
+                if( !$extension) {
+                    return;
+                    /** @todo throw new Exception(esc_attr__(sprintf('Unknown gateway ID: %s', $gateway), 'leyka')); */
+                }
+
+            } else if( !is_a($extension, 'Leyka_Extension') ) {
+                return;
+                /** @todo throw new Exception(esc_attr__(sprintf('Unknown gateway', $gateway), 'leyka')); */
+            }
+        }?>
+
+        <div class="<?php echo is_array($wrapper_classes) ? implode(' ', $wrapper_classes) : $wrapper_classes; ?> module-logo extension-logo">
+
+            <img class="module-logo-pic extension-logo-pic" src="<?php echo $use_paceholders ? '#EXTENSION_LOGO_URL#' : $extension->icon_url;?>" alt="">
+
+            <?php if( !!$show_info && ($use_paceholders || $extension->description || $extension->full_description) ) {?>
+            <span class="field-q">
+                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-info.svg" alt="">
+                <span class="field-q-tooltip"><?php echo $use_paceholders ? '#EXTENSION_DESCRIPTION#' : $extension->full_description ? $extension->full_description : $extension->description;?></span>
             </span>
             <?php }?>
         </div>
@@ -63,7 +98,7 @@ if( !function_exists('leyka_pm_sortable_option_html_new') ) {
 
         <li class="pm-order" data-pm-id="<?php echo $pm_full_id;?>" <?php echo $is_hidden ? 'style="display:none;"' : '';?>>
 
-            <div class="gateway-logo-wrapper"><?php leyka_show_gateway_logo($gateway, false);?></div>
+            <div class="module-logo-wrapper"><?php leyka_show_gateway_logo($gateway, false);?></div>
 
             <div class="pm-info">
 
@@ -158,6 +193,62 @@ if( !function_exists('leyka_gateway_details_html') ) {
         </div>
     
     <?php }
+}
+
+/**
+ * Get current activation button label from the given gateway.
+ *
+ * @param $gateway Leyka_Gateway
+ * @return string|false
+ * @todo If we will manage to add a common Leyka_Module class for both Leyka_Gateway & Leyka_Extension, merge this function with leyka_get_extension_activation_button_label().
+ */
+function leyka_get_gateway_activation_button_label(Leyka_Gateway $gateway) {
+
+    $activation_status = $gateway->get_activation_status();
+
+    $activation_status_labels = array(
+        'active' => esc_attr_x('Settings', '[of the extension]', 'leyka'),
+        'inactive' => esc_attr_x('Step-by-step setup', '[of the extension]', 'leyka'),
+        'activating' => esc_attr_x('Continue', '[the extension step-by-step setup]', 'leyka'),
+    );
+
+    if($activation_status !== 'active' && !leyka_gateway_setup_wizard($gateway)) {
+        $label = esc_attr_x('Setup', '[the extension]', 'leyka');
+    } else {
+        $label = $activation_status && !empty($activation_status_labels[$activation_status]) ?
+            $activation_status_labels[$activation_status] : false;
+    }
+
+    return $label;
+
+}
+
+/**
+ * Get current activation button label from the given extension.
+ *
+ * @param $extension Leyka_Extension
+ * @return string|false
+ * @todo If we will manage to add a common Leyka_Module class for both Leyka_Gateway & Leyka_Extension, merge this function with leyka_get_gateway_activation_button_label().
+ */
+function leyka_get_extension_activation_button_label(Leyka_Extension $extension) {
+
+    $activation_status = $extension->get_activation_status();
+
+    $activation_status_labels = array(
+        'active' => esc_attr__('Deactivate'),
+        'inactive' => esc_attr__('Activate'),
+        'activating' => esc_attr_x('Continue the setup', '[the extension step-by-step setup]', 'leyka'),
+    );
+
+    if($activation_status !== 'active' && !$extension->wizard_id) {
+        $label = esc_attr__('Activate');
+    } else {
+        $label = $activation_status && !empty($activation_status_labels[$activation_status]) ?
+            $activation_status_labels[$activation_status] : false;
+    }
+
+    return $label;
+
 }
 
 if( !function_exists('leyka_is_settings_step_valid') ) {

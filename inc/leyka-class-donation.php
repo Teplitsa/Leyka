@@ -335,6 +335,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             '#DONATION_TYPE#',
             '#DONOR_NAME#',
             '#DONOR_EMAIL#',
+            '#DONOR_COMMENT#',
             '#PAYMENT_METHOD_NAME#',
             '#CAMPAIGN_NAME#',
             '#PURPOSE#',
@@ -352,6 +353,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             leyka_get_payment_types_data($donation->type),
             $donation->donor_name ? $donation->donor_name : __('dear donor', 'leyka'),
             $donation->donor_email ? $donation->donor_email : __('unknown email', 'leyka'),
+            $donation->donor_comment,
             $donation->payment_method_label,
             $campaign->title,
             $campaign->payment_title,
@@ -457,6 +459,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             '#DONATION_TYPE#',
             '#DONOR_NAME#',
             '#DONOR_EMAIL#',
+            '#DONOR_COMMENT#',
             '#PAYMENT_METHOD_NAME#',
             '#CAMPAIGN_NAME#',
             '#PURPOSE#',
@@ -475,6 +478,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             leyka_get_payment_types_data($donation->type),
             $donation->donor_name ? $donation->donor_name : __('dear donor', 'leyka'),
             $donation->donor_email ? $donation->donor_email : __('unknown email', 'leyka'),
+            $donation->donor_comment,
             $donation->payment_method_label,
             $campaign->title,
             $campaign->payment_title,
@@ -601,6 +605,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                         '#DONATION_TYPE#',
                         '#DONOR_NAME#',
                         '#DONOR_EMAIL#',
+                        '#DONOR_COMMENT#',
                         '#PAYMENT_METHOD_NAME#',
                         '#CAMPAIGN_NAME#',
                         '#PURPOSE#',
@@ -615,6 +620,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                         leyka_get_payment_types_data($donation->type),
                         $donation->donor_name ? $donation->donor_name : __('anonymous', 'leyka'),
                         $donation->donor_email ? $donation->donor_email : __('unknown email', 'leyka'),
+                        $donation->donor_comment,
                         $donation->payment_method_label,
                         $campaign->title,
                         $campaign->payment_title,
@@ -1394,6 +1400,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 //        $sortable_columns['status'] = 'donation_status'; // Apparently, WP can't sort posts by status
 
         return $sortable_columns;
+
     }
 
     public function do_column_sorting($vars) {
@@ -1404,13 +1411,14 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         if($vars['orderby'] == 'donation_date') {
             $vars = array_merge($vars, array('orderby' => 'date',));
-        } elseif($vars['orderby'] == 'donor_name') {
+        } else if($vars['orderby'] == 'donor_name') {
             $vars = array_merge($vars, array('meta_key' => 'leyka_donor_name', 'orderby' => 'meta_value',));
-        } elseif($vars['orderby'] == 'payment_type') {
+        } else if($vars['orderby'] == 'payment_type') {
             $vars = array_merge($vars, array('meta_key' => 'leyka_payment_type', 'orderby' => 'meta_value',));
         }
 
         return $vars;
+
     }
 
     /** Donation data editing.
@@ -1886,7 +1894,7 @@ class Leyka_Donation {
 
 	public function __construct($donation) {
 
-        if((is_int($donation) || is_string($donation)) && absint($donation > 0)) {
+        if((is_int($donation) || is_string($donation)) && absint($donation)) {
 
             $donation = (int)$donation;
             $this->_post_object = get_post($donation);
@@ -2090,12 +2098,20 @@ class Leyka_Donation {
             case 'sum':
             case 'amount':
                 return empty($this->_donation_meta['amount']) ? 0.0 : $this->_donation_meta['amount'];
+            case 'sum_formatted':
+            case 'amount_formatted':
+                return leyka_amount_format($this->amount);
 
             case 'sum_total':
             case 'total_sum':
             case 'total_amount':
             case 'amount_total':
                 return empty($this->_donation_meta['amount_total']) ? $this->amount : $this->_donation_meta['amount_total'];
+            case 'total_sum_formatted':
+            case 'total_amount_formatted':
+            case 'sum_total_formatted':
+            case 'amount_total_formatted':
+                return leyka_amount_format($this->amount_total);
 
             case 'main_curr_amount':
             case 'amount_equiv':
@@ -2318,9 +2334,17 @@ class Leyka_Donation {
 
             case 'type':
             case 'payment_type':
+
                 $value = in_array($value, array_keys(leyka_get_payment_types_data())) ? $value : 'single';
+                if($value === $this->_donation_meta['payment_type']) {
+                    break;
+                }
+
                 update_post_meta($this->_id, 'leyka_payment_type', $value);
                 $this->_donation_meta['payment_type'] = $value;
+
+                $this->recurring_is_active = true;
+
                 break;
 
             case 'campaign':

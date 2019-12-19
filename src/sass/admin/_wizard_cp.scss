@@ -89,10 +89,10 @@
 
         }
         // CP payment tryout custom field - END        
-        
+
         .custom-block-payment-cards-icons {
             
-            .cp-supported-cards {
+            .gateway-supported-cards {
                 
                 img {
                     vertical-align: middle;
@@ -172,15 +172,21 @@
         }
         
         .settings-block.option-block.type-text {
-            #leyka_cp_public_id-field {
+            #leyka_cp_public_id-field,#leyka_cp_api_secret-field {
                 width: 248px;
             }
         }
         
         .settings-block.text-block {
+
+            &#cp-copy-key {
+                margin-bottom: 18px;
+            }
+
             .info2copy {
                 @include info2copy();
             }
+
         }
         
     }

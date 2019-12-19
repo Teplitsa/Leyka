@@ -16,7 +16,6 @@
     "url": "https://github.com/Teplitsa/testpack.git"
   },
   "devDependencies": {
-    "air-datepicker": "^2.2.3",
     "chromedriver": "^2.46.0",
     "del": "^3.0.0",
     "event-stream": "^4.0.1",

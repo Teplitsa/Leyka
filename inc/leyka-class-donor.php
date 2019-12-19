@@ -47,10 +47,6 @@ class Leyka_Donor {
                 'role' => Leyka_Donor::DONOR_USER_ROLE,
             ));
 
-            if($params['donor_has_account_access']) {
-                update_user_meta($donor_user_id, 'leyka_account_activation_code', wp_generate_password(60, false, false));
-            }
-
             $donor_user = get_user_by('id', $donor_user_id);
 
         }
@@ -71,7 +67,12 @@ class Leyka_Donor {
         }
 
         if($donor_has_account) {
+
             $donor_user->add_cap(self::DONOR_ACCOUNT_ACCESS_CAP);
+
+            // If Donor user just acquired account access, make him set up a password:
+            update_user_meta($donor_user->id, 'leyka_account_activation_code', wp_generate_password(60, false, false));
+
         } else {
             $donor_user->remove_cap(self::DONOR_ACCOUNT_ACCESS_CAP);
         }
@@ -91,7 +92,7 @@ class Leyka_Donor {
 
         $donation = leyka_get_validated_donation($donation);
 
-        if( !$donation || !leyka()->opt('donor_management_available') ) {
+        if( !$donation || !leyka_options()->opt('donor_management_available') ) {
             $donor_user_id = new WP_Error(
                 'donor_account_not_created',
                 __("Can't create donor user from donation", 'leyka'),
@@ -117,11 +118,15 @@ class Leyka_Donor {
 
             $donation->donor_account = $donor_user_id; // Donor ID or WP_Error
 
+            do_action(
+                is_wp_error($donor_user_id) ? 'leyka_donor_account_not_created' : 'leyka_donor_account_created',
+                $donor_user_id,
+                $donation
+            );
+
         } else if(is_int($donor_user_id)) { // Add/remove Donor's account access capability, if needed
             Leyka_Donor::update_account_access($donor_user_id, $donor_has_account);
         }
-
-        do_action('leyka_donor_account'.(is_wp_error($donor_user_id) ? '_not_' : '_').'created', $donor_user_id, $donation);
 
         return $donor_user_id;
 
@@ -338,6 +343,13 @@ class Leyka_Donor {
             case 'email':
             case 'donor_email':
                 return $this->_meta['email'];
+
+            case 'status':
+                if( !metadata_exists('user', $this->_id, 'leyka_account_activation_code') ) {
+                    return 'inactive';
+                } else {
+                    return $this->account_activation_code ? 'account_inactive' : 'account_active';
+                }
 
             case 'has_account_access':
                 return $this->_user->has_cap(self::DONOR_ACCOUNT_ACCESS_CAP);
@@ -782,11 +794,9 @@ class Leyka_Donor {
             return false;
         }
 
-        $password = trim($password);
-
         $res = wp_signon(array(
             'user_login' => $this->_user->user_login,
-            'user_password' => $password,
+            'user_password' => trim($password),
             'remember' => !!$remember,
         ));
 

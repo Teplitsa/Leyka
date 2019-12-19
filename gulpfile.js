@@ -48,7 +48,7 @@ gulp.task('build-front-js', async function(){
 
 gulp.task('build-admin-js', function(){
 
-    var vendorFiles = [basePaths.npm+'jquery.cookie/jquery.cookie.js', basePaths.npm+'air-datepicker/dist/js/datepicker.min.js'],
+    var vendorFiles = [basePaths.npm+'jquery.cookie/jquery.cookie.js'],
         appFiles = [basePaths.src+'js/admin/*.js'];
 
     return gulp.src(vendorFiles.concat(appFiles))
@@ -106,7 +106,7 @@ gulp.task('build-front-css', function(){
 gulp.task('build-admin-css', function() {
 
     var paths = require('node-bourbon').includePaths,
-		vendorFiles = gulp.src([basePaths.npm + 'air-datepicker/dist/css/datepicker.min.css']),
+		// vendorFiles = gulp.src([]),
         appFiles = gulp.src(basePaths.src+'sass/admin/admin.scss')
         .pipe(!isProduction ? plugins.sourcemaps.init() : gutil.noop())  //process the original sources for sourcemap
         .pipe(plugins.sass({
@@ -120,7 +120,7 @@ gulp.task('build-admin-css', function() {
         .pipe(!isProduction ? plugins.sourcemaps.write() : gutil.noop()) //add the map to modified source
         .on('error', console.log); //log
 
-	return es.concat(appFiles , vendorFiles) //combine vendor CSS files and our files after-SASS
+	return es.concat(appFiles /*, vendorFiles*/) //combine vendor CSS files and our files after-SASS
         .pipe(plugins.concat('admin.css')) //combine into file
         .pipe(isProduction ? plugins.cssmin() : gutil.noop()) //minification on production
         .pipe(plugins.size()) //display size

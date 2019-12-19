@@ -8,6 +8,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
     protected $_options = array();
     protected static $_field_types = array(
         'text', 'textarea', 'number', 'html', 'rich_html', 'select', 'radio', 'checkbox', 'multi_checkbox', 'legend', 'file',
+        'colorpicker', 'campaign_select',
     );
 
     protected $_templates_common_options = array(
@@ -32,8 +33,11 @@ class Leyka_Options_Controller extends Leyka_Singleton {
     }
 
     /**
-     * A service method to retrieve the plugin option value when it's just being initialized, and can't do
-     * proper options metadata loading yet.
+     * A service method to retrieve a plugin option value when the plugin is just being initialized and it can't properly load
+     * options metadata yet.
+     *
+     * @param $option_id string
+     * @return mixed
      */
     public static function get_option_value($option_id) {
 
@@ -45,9 +49,8 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
     /**
      * A service method to load the plugin option metadata to the controller's cache array.
-     
      * 
-*@param $option_id string
+     * @param $option_id string
      * @param $load_value bool Whether to load the option value from the DB. Sometimes it's not needed.
      * @return bool True/false of the initailization.
      */
@@ -57,7 +60,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
         if(empty(self::$_options_meta[$option_id]) && empty($this->_options[$option_id])) {
 
-            do_action('leyka_add_custom_option', $option_id);
+            do_action('leyka_add_custom_option', $option_id, $this);
 
             if(empty($this->_options[$option_id])) {
                 return false;
@@ -78,9 +81,9 @@ class Leyka_Options_Controller extends Leyka_Singleton {
     }
 
     /**
-     * A service method to load the option value from the DB to the controller's cache array.
-     * 
-*@param $option_id string
+     * A service method to load option value from DB to the controller cache array.
+     *
+     * @param $option_id string
      */
     protected function _initialize_value($option_id) {
 
@@ -98,8 +101,8 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         }
 
         if(
-            $this->_options[$option_id]['value'] && ($this->_options[$option_id]['type'] === 'html' ||
-            $this->_options[$option_id]['type'] === 'rich_html')
+            $this->_options[$option_id]['value']
+            && ($this->_options[$option_id]['type'] === 'html' || $this->_options[$option_id]['type'] === 'rich_html')
         ) {
 
             $this->_options[$option_id]['value'] =
@@ -107,7 +110,9 @@ class Leyka_Options_Controller extends Leyka_Singleton {
                 isset($this->_options[$option_id]['value']['value']) ?
                     html_entity_decode(stripslashes($this->_options[$option_id]['value']['value'])) :
                     html_entity_decode(stripslashes((string)$this->_options[$option_id]['value']));
+
         }
+
     }
 
     public function get_options_names() {
@@ -126,9 +131,13 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         }
 
         if(in_array($this->_options[$option_id]['type'], array('text', 'html', 'rich_html'))) {
+
             $this->_options[$option_id]['value'] = is_array($this->_options[$option_id]['value']) ?
                 $this->_options[$option_id]['value'] :
                 trim($this->_options[$option_id]['value']);
+
+        } else if(stristr($this->_options[$option_id]['type'], 'multi_') !== false && !$this->_options[$option_id]['value']) {
+            $this->_options[$option_id]['value'] = array();
         }
 
         $this->_options[$option_id]['value'] = apply_filters(
@@ -144,7 +153,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
         $option_id = stristr($option_id, 'leyka_') !== false ? $option_id : 'leyka_'.$option_id;
 
-        if( !in_array($type, self::$_field_types) ) {
+        if( !in_array($type, self::$_field_types) && stristr($type, 'custom_') === false ) {
             return false;
         }
         if( !empty($params['type']) ) { // Just in case
@@ -223,6 +232,8 @@ class Leyka_Options_Controller extends Leyka_Singleton {
             $this->_options[$option_id]['value'] = trim($this->_options[$option_id]['value']);
         }
 
+        $option_value = apply_filters('leyka_new_option_value', $option_value, $option_id);
+
         if(
             $this->option_exists($option_id) &&
             $this->_options[$option_id]['value'] !== $option_value &&
@@ -236,6 +247,9 @@ class Leyka_Options_Controller extends Leyka_Singleton {
             if( !$updated ) {
                 $this->_options[$option_id]['value'] = $old_value;
             }
+
+            do_action('leyka_set_option_value', $option_id, $option_value);
+            do_action("leyka_set_{$option_id}_option_value", $option_value);
 
             return $updated;
 
@@ -523,6 +537,26 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
     }
 
+    /**
+     * Test if given multi-checkbox option has given value checked.
+     *
+     * @param $option_id string An ID of option to check. Must have "multi_checkbox" type.
+     * @param $value_to_check string Option value to check.
+     * @return boolean|null Returns true if given value is checked, false if not, or NULL if wrong option ID given.
+     */
+    public function is_multi_value_checked($option_id, $value_to_check) {
+
+        $option_id = str_replace('leyka_', '', $option_id);
+
+        if( !$this->option_exists($option_id) || $this->get_type_of($option_id) !== 'multi_checkbox' ) {
+            return NULL; /** @todo Throw new Exception, mb */
+        }
+
+        $check_list = $this->opt($option_id);
+        return is_array($check_list) ? in_array($value_to_check, $check_list) : false;
+
+    }
+
 }
 
 /**
@@ -531,31 +565,3 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 function leyka_options() {
     return Leyka_Options_Controller::get_instance();
 }
-
-/** Special field: gateway commission options */
-add_filter('leyka_option_value-commission', 'leyka_get_commission_values');
-function leyka_get_commission_values($value) {
-    return maybe_unserialize($value);
-}
-
-add_action('leyka_save_custom_option-commission', 'leyka_save_custom_option_commission');
-function leyka_save_custom_option_commission($option_value) {
-
-    $all_pm_commissions = leyka_options()->opt('commission');
-    $all_pm_commissions = $all_pm_commissions ? $all_pm_commissions : array();
-
-    foreach($option_value as $pm_full_id => $commission) {
-
-        $commission = trim($commission);
-        $commission = $commission ? (float)str_replace(array(',', ' ', '-'), array('.', '', ''), $commission) : 0.0;
-
-        $all_pm_commissions[$pm_full_id] = $commission;
-
-    }
-
-    if($all_pm_commissions != leyka_options()->opt('commission')) {
-        leyka_options()->opt('commission', $all_pm_commissions);
-    }
-
-}
-/** Special field: gateway commission options - END */

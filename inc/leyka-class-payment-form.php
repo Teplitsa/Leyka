@@ -10,6 +10,10 @@ class Leyka_Payment_Form {
 	protected static $_form_action;
 	protected $_current_currency; // Current currency in the view
 
+    public static function get_plugin_ver_for_atts() {
+        return str_replace('.', '-', LEYKA_VERSION);
+    }
+
 	public function __construct(Leyka_Payment_Method $payment_method = null, $current_currency = null) {
 
         if( !leyka()->form_is_screening ) {

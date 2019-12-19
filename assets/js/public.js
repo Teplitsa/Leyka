@@ -1867,19 +1867,56 @@ window.LeykaPageMain.prototype = {
         var self = this; var $ = self.$;
         
         var hash = window.location.hash.substr(1);
-        var parts = hash.split('|');
-        
-        if(parts.length > 0) {
-            var form_id = parts[0];
-            var $_form = $('#' + form_id);
-            
-            if($_form.length > 0) {
-                $_form.leykaForm('open');
+
+        if(hash.indexOf('leyka-activate-package|') > -1) {
+            self.handleHashActivatePackageChange(hash);
+        }
+        else if(hash) {
+            var parts = hash.split('|');
+            if(parts.length > 0) {
+                var form_id = parts[0];
                 
-                for(var i in parts) {
-                    var part = parts[i];
-                    self.handleFinalScreenParams($_form, part);
+                if(form_id) {
+                    var $_form = $('.leyka-pf#' + form_id);
+                    
+                    if($_form.length > 0) {
+                        $_form.leykaForm('open');
+                        
+                        for(var i in parts) {
+                            var part = parts[i];
+                            self.handleFinalScreenParams($_form, part);
+                        }
+                    }
                 }
+            }
+        }
+    },
+
+    handleHashActivatePackageChange: function(hash) {
+        var self = this; var $ = self.$;
+
+        var $leykaForm = $('.leyka-pm-form').first();
+        $leykaForm.find('.section__fields.periodicity a[data-periodicity="monthly"]').trigger('click');
+
+        var parts = hash.split('|');
+        if(parts.length > 1) {
+            var amount_needed = parseInt(parts[1]);
+            var $selectedSum = null;
+
+            $leykaForm.find('.amount__figure .swiper-item').each(function(i, el){
+                if(parseInt($(el).data('value')) >= amount_needed) {
+                    $selectedSum = $(el);
+                    return false;
+                }
+            });
+
+            if(!$selectedSum) {
+                $selectedSum = $leykaForm.find('.swiper-item.flex-amount-item');
+                $selectedSum.find('input[name="donate_amount_flex"]').val(amount_needed);
+            }
+
+            if($selectedSum) {
+                $selectedSum.trigger('click');
             }
         }
     },
@@ -1907,6 +1944,158 @@ jQuery(document).ready(function($){
     
 }); //jQuery
 
+/** Shortcodes frontend */
+
+var leyka; // L10n lines
+
+jQuery(document).ready(function($){
+
+    // Supporters list shortcode:
+    $('.leyka-js-supporters-list-more').on('click.leyka', function(e){
+
+        e.preventDefault();
+
+        var $more_names_link = $(this),
+            $names_list_wrapper = $more_names_link.parents('.list-content').find('.supporters-names-wrapper'),
+            $more_names_wrapper = $more_names_link.parents('.list-content').find('.supporters-list-more-wrapper'),
+            names_remain_list = $more_names_link.data('names-remain').length ?
+                $more_names_link.data('names-remain').split(';') : [],
+            names_loads_remain_number = parseInt($more_names_link.data('loads-remain')),
+            $names_remain_number_wrapper = $more_names_link.find('.leyka-names-remain-number'),
+            names_remain_number = parseInt($names_remain_number_wrapper.text()),
+            names_per_load = $more_names_link.data('names-per-load'),
+            names_to_append = [];
+
+        if( !names_loads_remain_number || !names_remain_list.length ) {
+            return;
+        }
+
+        for(var i=0; i < names_per_load && names_remain_list.length > 0; i++) {
+            names_to_append.push(names_remain_list.shift());
+        }
+
+        if(names_to_append.length) {
+            $names_list_wrapper.append(', ').append(names_to_append.join(', '));
+        }
+        names_loads_remain_number -= 1;
+        names_remain_number -= names_per_load; //(names_remain_number >= names_per_load ? names_per_load : 1);
+
+        $more_names_link.data('names-remain', names_remain_list.join(';'));
+        $more_names_link.data('loads-remain', names_loads_remain_number);
+
+        if(names_remain_number <= 0) {
+            $more_names_wrapper.hide();
+        } else {
+            $names_remain_number_wrapper.html(names_remain_number); // Update the remain names number
+        }
+
+        if( !names_loads_remain_number || !names_remain_list.length ) { // If no more names or loads, remove the link
+            $more_names_link.replaceWith($more_names_link.text());
+        }
+
+    });
+
+});
+/** Donor's account frontend */
+
+jQuery(document).ready(function($){
+    var $siteContent = $('#site_content');
+    if(!$siteContent.length) {
+		$siteContent = $('#content');
+    }
+
+    if(!$siteContent.length) {
+		$siteContent = $('#site-content');
+    }
+
+    var $overlay = $('.leyka-ext-sp-activate-feature-overlay');
+    var $sp = $('.leyka-ext-support-packages');
+
+    if(!$sp.length) {
+    	return;
+    }
+
+    if(!$sp.closest('body.page').length && !$sp.closest('body.single').length) {
+        return;
+    }
+
+    if($overlay.length && $siteContent.length) {
+        $siteContent.addClass('leyka-ext-sp-site-content');
+        let $overlayFirst = $overlay.first();
+        $overlayFirst.appendTo($siteContent);
+        $overlayFirst.css('display', 'block');
+        overlayMaxPart = 0.7;
+
+        var paddingBottom = $overlayFirst.height();
+        if($overlayFirst.height() > $siteContent.height() * overlayMaxPart) {
+        	paddingBottom *= overlayMaxPart;
+        }
+        $siteContent.css('padding-bottom', paddingBottom + 'px');
+    }
+
+    function renderActivateButton($parentSp, $activePackage) {
+    	var hasSelectedPackages = $parentSp.find('.leyka-ext-sp-card.active').length > 0;
+    	var $btn = $parentSp.closest('.leyka-ext-sp-activate-feature').find('.leyka-ext-sp-subscribe-action');
+
+    	if(hasSelectedPackages) {
+    		$btn.addClass('active');
+    	}
+    	else {
+    		$btn.removeClass('active');
+    	}
+
+    	var href = $btn.attr('href');
+    	href = href.split('#')[0];
+    	href += "#leyka-activate-package|";
+
+    	if($activePackage) {
+    		href += $activePackage.data('amount_needed');
+    	}
+    	console.log(href);
+    	$btn.attr('href', href);
+    }
+
+    $('.leyka-ext-sp-subscribe-action').on('click', function(e){
+		return $(this).hasClass('active');
+    });
+
+    $sp.on('click', '.leyka-activate-package-link', function(e) {
+    	e.stopPropagation();
+    	return true;
+    });
+
+    $sp.on('click', '.leyka-ext-sp-card', function(e) {
+    	e.preventDefault();
+    	var $parentSp = $(this).closest('.leyka-ext-support-packages');
+
+    	if(!$parentSp.closest('.leyka-ext-sp-activate-feature').length) {
+    		return;
+    	}
+
+    	$parentSp.find('.leyka-ext-sp-card').removeClass('active');
+    	$(this).addClass('active');
+
+    	renderActivateButton($parentSp, $(this));
+    });
+
+    if($sp.closest('.leyka-ext-sp-activate-feature').length) {
+    	renderActivateButton($sp, null);
+    }
+});
+
+function leyka_ext_sp_init_locked_content_icons($){
+    $('.leyka-ext-sp-locked-content .entry-title').each(function(i, el){
+        var $lockedIcon = $('<img />')
+            .attr('src', leyka.ext_sp_article_locked_icon)
+            .addClass('leyka-ext-sp-post-locked');
+
+        $(this).append($lockedIcon);
+    });
+}
+
+jQuery(window).load(function() {
+    leyka_ext_sp_init_locked_content_icons(jQuery);
+});
 /*
  * Star form template functionality and handlers
  */
@@ -1988,9 +2177,9 @@ jQuery(document).ready(function($){
         });
         
         $('.leyka-tpl-star-form .flex-amount-item').on('blur', 'input', function(){
-            $(this).parent().removeClass('focus');
+            $(this).closest('.swiper-item').removeClass('focus');
             if(!$.trim($(this).val())) {
-                $(this).parent().addClass('empty');
+                $(this).closest('.swiper-item').addClass('empty');
             }
         });
         
@@ -2044,12 +2233,70 @@ jQuery(document).ready(function($){
 			$(this).closest('.section__fields').find('a').removeClass('active');
 			$(this).addClass('active');
             
-            setupPeriodicity($(this).closest('form.leyka-pm-form'));
+            var $_form = $(this).closest('form.leyka-pm-form');
+            setupPeriodicity($_form);
+            setupSwiperWidth($_form);
         });
         
         $('.leyka-tpl-star-form form.leyka-pm-form').each(function(){
             setupPeriodicity($(this));
+            setupSwiperWidth($(this));
         });
+    }
+
+    function setupSwiperWidth($_form) {
+        // amount swiper setup
+        $('.amount__figure.star-swiper .swiper-list .swiper-item').last().css('margin-right', '0px');
+        
+        // pm swiper setup
+        var $swiper = $_form.find('.payments-grid .star-swiper');
+        // $list is empty in full-list width mode
+        var $list = $swiper.find('.swiper-list');
+
+        var $activeItem = $swiper.find('.swiper-item.selected:not(.disabled)').first();
+        if($activeItem.length == 0) {
+            $swiper.find('.swiper-item:not(.disabled)').first().addClass('selected');
+            $activeItem = $swiper.find('.swiper-item.selected:not(.disabled)').first();
+            $activeItem.find('input[type=radio]').prop('checked', true).change();
+        }
+
+        $list.find('.swiper-item:not(.disabled)').css('margin-right', '16px');
+        $list.find('.swiper-item:not(.disabled)').last().css('margin-right', '0px');        
+        $list.css('width', '100%');
+
+        // fix max width must work in swiper and full width mode, so use $swiper insted $list
+        var maxWidth = $swiper.closest('.leyka-payment-form').width();
+        console.log("maxWidth: " + maxWidth);
+
+        if($swiper.find('.full-list').length) {
+            maxWidth -= 60;
+            $swiper.find('.payment-opt__label').css('max-width', maxWidth);
+            $swiper.find('.payment-opt__icon').css('max-width', maxWidth);
+            //$list.find('.swiper-item').css('min-width', maxWidth);
+        }
+        else {
+            maxWidth -= 184;
+            $swiper.find('.payment-opt__label').css('max-width', maxWidth);
+            $swiper.find('.payment-opt__icon').css('max-width', maxWidth);
+
+            $swiper.find('.swiper-item').each(function(i, item){
+                var w1 = $(item).find('.payment-opt__label').width();
+                var w2 = $(item).find('.pm-icon').length * 40; // max width of pm icon
+                $(item).css('min-width', Math.min(maxWidth, Math.max(w1, w2)) + 64);
+            });
+
+            // fix for FF and Safari
+            var $activePMItem = $swiper.find('.swiper-item:not(.disabled)');
+            if($activePMItem.length <= 1) {
+                $activePMItem.css('width', '100%');
+            }
+            else {
+                $activePMItem.css('width', 'auto');
+            }
+        }
+        
+        toggleSwiperArrows($swiper);
+        swipeList($swiper, $activeItem);
     }
     
     function setupPeriodicity($_form) {
@@ -2084,26 +2331,7 @@ jQuery(document).ready(function($){
             });
         }
         
-        // amount swiper setup
-        $('.amount__figure.star-swiper .swiper-item').last().css('margin-right', '0px');
-        
-        // pm swiper setup
-        var $swiper = $_form.find('.payments-grid .star-swiper');
-        var $activeItem = $swiper.find('.swiper-item.selected:not(.disabled)').first();
-        if($activeItem.length == 0) {
-            $swiper.find('.swiper-item:not(.disabled)').first().addClass('selected');
-            $activeItem = $swiper.find('.swiper-item.selected:not(.disabled)').first();
-            $activeItem.find('input[type=radio]').prop('checked', true).change();
-        }
-        $swiper.find('.swiper-item:not(.disabled)').css('margin-right', '16px');
-        $swiper.find('.swiper-item:not(.disabled)').last().css('margin-right', '0px');
-        
-        var $list = $swiper.find('.swiper-list');
-        $list.css('width', '');
-        
-        toggleSwiperArrows($swiper);
-        swipeList($swiper, $activeItem);
-        checkFormFillCompletion($swiper.closest('form.leyka-pm-form'));
+        checkFormFillCompletion($_form);
     }
 
     function bindSwiperEvents() {
@@ -2197,6 +2425,9 @@ jQuery(document).ready(function($){
         var $list = $swiper.find('.swiper-list');
         $list.stop( true, true )
         
+        console.log("list width: " + $list.width() );
+        console.log("swiper width: " + $swiper.width() );
+        
         var dif = $list.width() - $swiper.width();
         if(dif <= 0) {
             $list.width($swiper.width());
@@ -2213,6 +2444,7 @@ jQuery(document).ready(function($){
         }
         else {
             left = $swiper.width() / 2 - ($activeItem.offset().left - $list.offset().left) - $activeItem.width() / 2;
+            left -= 24; // minus margin * 1.5
         }
         
         $list.animate({

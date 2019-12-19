@@ -7,7 +7,11 @@
             margin-top: 0;
         }
     }
-    
+
+    .gateway-supported-cards {
+        margin-bottom: 32px;
+    }
+
     &.step-test_payment {
         .main-area {
             
@@ -22,7 +26,7 @@
                         width: auto;
                     }
                 }
-                
+
                 .field-errors {
     
                     @include common-error-message();
@@ -206,7 +210,7 @@
                             border-bottom-width: 1px;
                         }
                         
-                        &[target=_blank] {
+                        &[target="_blank"] {
                             &:after {
                                 content: " ";
                                 background-image: url('../../img/icon-link-out.svg');

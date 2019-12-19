@@ -1,9 +1,9 @@
 @import 'presets';
 @import 'typo';
 @import 'mixins';
-@import 'common_leyka_presets';
 @import 'common_leyka_mixins';
 @import 'common_leyka';
+@import 'common_settings';
 @import 'components';
 @import 'wizard';
 @import 'wizard_init';
@@ -22,6 +22,10 @@
 @import 'donors_typo';
 @import 'donors_mixins';
 @import 'donors';
+
+@import 'extensions';
+
+@import 'feedback';
 
 .leyka-settings-page {
 
@@ -64,7 +68,7 @@
                 background-color: #e5e5e5;
                 border-color: #dddddd;
                 color: #8f8f8f;
-                border-radius: 4px 4px 0px 0px;
+                border-radius: 4px 4px 0 0;
                 padding: 10px 12px 7px 12px;
                 
                 margin-left: 0.5em;
@@ -383,7 +387,7 @@
                     cursor: move;
                 }
 
-                .gateway-logo-wrapper {
+                .module-logo-wrapper {
 
                     flex: 0 0 56px;
 
@@ -552,309 +556,417 @@
     display: flex;
 }
 
-// gateways cards
-.leyka-admin .gateways-cards-list {
-    
-    display: flex;
-    justify-content: flex-start;
-    flex-direction: row;
-    flex-wrap: wrap;
-    
-    .gateway-card {
-    }
-}
+.leyka-admin {
 
-.leyka-admin .leyka-admin-gateway-card {
-    &.gateway-card {
-        
-        background-color: $color-white;
-        border-radius: 6px;
-        width: 304px;
-        height: 268px;
-        display: block;
-        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
+    // Modules (Gateways & Extensions) cards:
 
-        margin-right: 1.5rem;
-        margin-bottom: 1.5rem;
-        
-        &.inactive {
-            background-color: #effbff;
-            border-color: #d5e8ee;
-        }
-        
-        .gateway-card-header {
-            padding: 1rem;
-            display: flex;
-            justify-content: flex-start;
-        }
-        
-        .gateway-card-icon {
-            margin-right: 12px;
-            position: relative;
-            width: auto;
-            display: inline-block;
-            
-            .gateway-logo {
-            }
-            
-        }
-        
-        .gateway-card-title {
-            @include gateway-card-title();
-            padding-top: 3px;
+    .filter-area { // Cards filter
 
-            .gateway-settings-link {
-                text-decoration: none;
-                color: inherit;
-            }
-        }
-        
-        .gateway-card-status {
-            @include gateway-card-status();
-            color: $color-wizard-text;
-            padding-top: 2px;
-            
-            &.active {
-                
-            }
-            
-            &.activating {
-                color: $color-wizard-link;
-            }
-        }
-        
-        .gateway-card-params {
-            border-top: 1px solid $color-border-light-001;
-            padding: 14px 1rem 1rem 1rem;
-            
-            &:empty {
-                display: none;
-            }
-            
-            .gateway-details {
-                @include leyka-gateway-details();
-                
-                .details-label {
-                    line-height: 15px;
-                }
-                
-                .field-q {
-                    
-                    @include field-q();
-                    
-                    .field-q-tooltip {
-                        top: 110%;
-                        left: 40%;
-                    }
-                    
-                }
-                
-                .details-element:first-child {
-                   margin-left: 2px;
-                }
-           }
-            
-        }
-        
-        .gateway-card-supported-pm-list {
-            border-top: 1px solid $color-border-light-001;
-            padding: 12px 32px 12px 32px;
-            position: relative;
-            
-            &:empty {
-                display: none;
-            }
-            
-            .pm-icons-scroll {
-                overflow: hidden;
-                position: relative;
-                width: 100%;
-                height: 40px;
-                
-                .pm-icons-wrapper {
-                    left: 0px;
-                    top: 0px;
-                    position: absolute;
-                    width: max-content;
-                    min-width: 100%;
-                }
-            }
-            
-            .scroll-arrow {
-                width: 6px;
-                height: 11px;
-                display: none;
-                position: absolute;
-                cursor: pointer;
-                top: 50%;
-                transform: translateY(-50%);
-                
-                &.left {
-                    left: 20px;
-                }
-                
-                &.right {
-                    right: 20px;
-                }
-            }
-            
-            &.scroll {
-                .scroll-arrow {
-                    display: block;
-                }
-            }
-                
-            .pm-icons {
-                @include leyka-pm-icons();
-                padding: 0px;
-                justify-content: center;
-                align-items: center;
-                flex-basis: calc(100% - 12px);
-                height: 40px;
-            }
-            
-        }
-        
-        .gateway-card-action {
-            display: flex;
-            justify-content: center;
-            
-            .button-primary {
-                width: 272px;
-                margin-right: 0;
-                
-                &.activation-button {
-                    background-repeat: no-repeat;
-                    background-position: left center;
-                
-                    &.inactive.wizard-available {
-                        background-image: url(../../img/icon-wizard-stick-only.svg);
-                        background-position: 4px center;
-                    }
-                }
-            
-            }
-            
-            .button-secondary {
-                width: 272px;
-                margin-right: 0;
-            }
-        }
-        
-    }
-}
-
-// gateways filter
-.leyka-admin .filter-area {
-    
-    display: flex;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-    
-    .filter-toggle {
-        height: 40px;
-        margin-right: 1rem;
-        margin-bottom: 1rem;
-        
-        img {
-            cursor: pointer;
-            
-            &.show-filter {
-                
-            }
-            
-            &.hide-filter {
-                display: none;
-            }
-        }
-    }
-    
-    .filter-categories {
-        display: none;
+        display: flex;
         justify-content: flex-start;
-        height: 40px;
-        margin-bottom: 1rem;
-        margin-right: 12px;
-        
-        a.filter-category-item {
-            @include gateway-filter-item();
-            color: $color-wizard-link-sec;
-            background-color: $color-white;
-            border-color: $color-wizard-preview-border;
-            height: 40px;
-            line-height: 40px;
-            border-radius: 20px;
-            vertical-align: middle;
-            padding-left: 24px;
-            padding-right: 24px;
-            margin-right: 1rem;
-            text-decoration: none;
-            border-bottom-style: solid;
-            outline: none;
-            overflow:hidden;
-            
-            &.active {
-                color: $color-white;
-                background-color: $color-wizard-link;
-                border-color: $color-wizard-link;
-            }
-        }
-        
-        @media only screen and (max-width: 1270px) {
-            a.filter-category-item {
-                padding-left: 8px;
-                padding-right: 8px;
-            }
-        }
-    }
-    
-    a.filter-action {
-        @include gateway-filter-item();
-        color: $color-wizard-link-sec;
-        height: 40px;
-        line-height: 40px;
-        vertical-align: middle;
-        text-decoration: none;
-        border-bottom: none;
-        white-space: nowrap;
-        padding-left: 0;
-        padding-right: 0;
-        margin-right: 1rem;
-        margin-bottom: 1rem;
-        
-        &.filter-category-reset-filter {
-            display: none;
-        }
-    }
-    
-    &.show {
+        flex-wrap: wrap;
+
         .filter-toggle {
+
+            height: 40px;
+            margin-right: 1rem;
+            margin-bottom: 1rem;
+
             img {
-                &.hide-filter {
-                    display: unset;
-                }
-                
+
+                cursor: pointer;
+
                 &.show-filter {
+                }
+
+                &.hide-filter {
                     display: none;
                 }
+
             }
+
         }
-        
+
         .filter-categories {
-            display: flex;
+
+            display: none;
+
+            justify-content: flex-start;
+
+            height: 40px;
+            margin-bottom: 1rem;
+            margin-right: 12px;
+
+            a.filter-category-item {
+
+                @include module-filter-item();
+
+                color: $color-wizard-link-sec;
+                background-color: $color-white;
+                border-color: $color-wizard-preview-border;
+                height: 40px;
+                line-height: 40px;
+                border-radius: 20px;
+                vertical-align: middle;
+                padding-left: 24px;
+                padding-right: 24px;
+                margin-right: 1rem;
+                text-decoration: none;
+                border-bottom-style: solid;
+                outline: none;
+                overflow:hidden;
+
+                &.active {
+                    color: $color-white;
+                    background-color: $color-wizard-link;
+                    border-color: $color-wizard-link;
+                }
+            }
+
+            @media only screen and (max-width: 1270px) {
+                a.filter-category-item {
+                    padding-left: 8px;
+                    padding-right: 8px;
+                }
+            }
+
         }
-        
+
         a.filter-action {
-            &.filter-category-show-filter {
+
+            @include module-filter-item();
+
+            color: $color-wizard-link-sec;
+            height: 40px;
+            line-height: 40px;
+            vertical-align: middle;
+            text-decoration: none;
+            border-bottom: none;
+            white-space: nowrap;
+            padding-left: 0;
+            padding-right: 0;
+            margin-right: 1rem;
+            margin-bottom: 1rem;
+
+            &.filter-category-reset-filter {
                 display: none;
             }
-            
-            &.filter-category-reset-filter {
-                display: unset;
-            }
         }
+
+        &.show {
+
+            .filter-toggle {
+                img {
+                    &.hide-filter {
+                        display: unset;
+                    }
+
+                    &.show-filter {
+                        display: none;
+                    }
+                }
+            }
+
+            .filter-categories {
+                display: flex;
+            }
+
+            a.filter-action {
+                &.filter-category-show-filter {
+                    display: none;
+                }
+
+                &.filter-category-reset-filter {
+                    display: unset;
+                }
+            }
+
+        }
+
+    } // Cards filter END
+
+    .modules-cards-list {
+
+        display: flex;
+        justify-content: flex-start;
+        flex-direction: row;
+        flex-wrap: wrap;
+
+        .module-card {
+
+            
+            background-color: #E6F4FA;
+            border-radius: 6px;
+            width: 304px;
+            height: 268px;
+            display: block;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+
+            margin-right: 1.5rem;
+            margin-bottom: 1.5rem;
+
+            &.inactive,
+            &.activating {
+                background-color: $color-white;
+                border-color: #d5e8ee;
+            }
+
+            .module-card-header {
+
+                padding: 1rem;
+                border-bottom: 1px solid #C7DDE6;
+
+                display: flex;
+                justify-content: flex-start;
+
+            }
+
+            .module-card-icon {
+
+                margin-right: 12px;
+                position: relative;
+                width: auto;
+                display: inline-block;
+
+                .module-logo {
+
+                    border: 1px solid $color-border-normal;
+                    border-radius: 20px;
+                    background-color: $color-white;
+
+                    .module-logo-pic {
+                        width: 40px;
+                        height: 40px;
+                    }
+
+                    .extension-logo-pic { // For now, extensions logo pics are larger, 'cause they don't include background
+                        width: 30px; // ... so we're gonna make them a little smaller.
+                        height: 30px; /** @todo To make all Modules logo styles uniform, refactor the Gateways logo pics. */
+                    }
+
+                }
+
+            }
+
+            .module-card-title {
+
+                @include module-card-title();
+
+                padding-top: 3px;
+
+                .module-settings-link {
+                    text-decoration: none;
+                    color: inherit;
+                }
+
+            }
+
+            .module-card-status {
+
+                @include module-card-status();
+
+                color: $color-wizard-text;
+                padding-top: 2px;
+
+                &.active {
+                    color: $color-wizard-link;
+                }
+
+                &.activating {
+                    color: $color-wizard-link;
+                }
+
+            }
+
+            .module-card-params {
+
+                padding: 14px 1rem 1rem 1rem;
+
+                &:empty {
+                    display: none;
+                }
+
+                .gateway-details {
+
+                    @include leyka-gateway-details();
+
+                    .details-label {
+                        line-height: 15px;
+                    }
+
+                    .field-q {
+
+                        @include field-q();
+
+                        .field-q-tooltip {
+                            top: 110%;
+                            left: 40%;
+                        }
+
+                    }
+
+                    .details-element:first-child {
+                        margin-left: 2px;
+                    }
+
+                }
+
+                &.extension-description {
+                    height: 106px;
+                }
+
+            }
+
+            .gateway-card-supported-pm-list {
+
+                border-top: 1px solid $color-border-light-001;
+                padding: 12px 32px 12px 32px;
+                position: relative;
+
+                &:empty {
+                    display: none;
+                }
+
+                .pm-icons-scroll {
+                    overflow: hidden;
+                    position: relative;
+                    width: 100%;
+                    height: 40px;
+
+                    .pm-icons-wrapper {
+                        left: 0;
+                        top: 0;
+                        position: absolute;
+                        width: max-content;
+                        min-width: 100%;
+                    }
+                }
+
+                .scroll-arrow {
+                    width: 6px;
+                    height: 11px;
+                    display: none;
+                    position: absolute;
+                    cursor: pointer;
+                    top: 50%;
+                    transform: translateY(-50%);
+
+                    &.left {
+                        left: 20px;
+                    }
+
+                    &.right {
+                        right: 20px;
+                    }
+                }
+
+                &.scroll {
+                    .scroll-arrow {
+                        display: block;
+                    }
+                }
+
+                .pm-icons {
+
+                    @include leyka-pm-icons();
+
+                    padding: 0;
+                    justify-content: center;
+                    align-items: center;
+                    flex-basis: calc(100% - 12px);
+                    height: 40px;
+
+                }
+
+            }
+
+            .module-card-action {
+
+                display: flex;
+                justify-content: center;
+
+                padding: 0 16px;
+
+                .button-primary {
+
+                    width: 100%;
+                    margin-right: 0;
+                    
+                }
+
+                .extension-settings, 
+                .activation-button {
+                    display: flex;
+                    justify-content: center;
+                    padding-right: 18px;
+                    position: relative;
+
+                    img {
+                        position: absolute;
+                        width: 32px;
+                        height: 32px;
+                        left: 2px;
+                        top: 3px;
+                    }
+                }
+
+            }
+
+        }
+
+    } // Cards list END
+
+    // Settings page:
+    &.single-settings {
+
+        padding-left: 24px;
+        margin-top: 32px;
+        margin-right: 91px;
+
+        overflow: hidden;
+
+        color: $leyka-admin-color-text;
+
+        .back-to-list-link {
+
+            @include leyka-admin-a;
+
+            margin-bottom: $leyka-base;
+            display: block;
+            width: max-content;
+
+        }
+
+        // Small redefinitions for main CTA buttons:
+        .button-primary {
+            @include leyka-button-primary(280px);
+        }
+        .button-secondary {
+
+            @include leyka-button-primary(280px);
+
+            background-color: $color-white;
+            border: 1px solid $color-border-secondary-button;
+            color: $color-secondary-button;
+
+            &:hover {
+                border: 1px solid $color-border-secondary-button;
+                color: $color-secondary-button;
+                background-color: $color-white;
+            }
+
+        }
+
     }
-    
+
+    .outer-link {
+
+        text-decoration: none;
+
+        @include leyka-admin-outer-link(0.1rem);
+
+    }
+
 }
 
 @media only screen and (max-width: 1980px) {
