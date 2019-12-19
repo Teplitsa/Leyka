@@ -424,15 +424,6 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
             $errors[] = new WP_Error('application_file_not_selected', 'Файл не выбран!');
         }
         
-//         if( !isset($_FILES['leyka_send_documents_file']) ) {
-//             $errors[] = new WP_Error('application_file_not_selected', 'Файл не выбран!');
-//         }
-        
-//         $moved_file = wp_handle_upload( $_FILES['leyka_send_documents_file'], array( 'test_form' => false ) );
-//         if(isset($moved_file['error'])) {
-//             $errors[] = new WP_Error('application_file_upload_error', $moved_file['error']);
-//         }
-
         if( !$errors ) {
 
             $headers = array();
@@ -442,7 +433,6 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
             
             $upload_dir = wp_get_upload_dir();
             $attachments[] = $upload_dir['path'] . $_POST['leyka_send_documents_file'];
-//             $attachments[] = $moved_file['file'];
             
             $res = wp_mail(
                 $this->_cp_email,
