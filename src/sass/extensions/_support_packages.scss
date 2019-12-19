@@ -533,6 +533,8 @@ body.page, body.single {
    & > img.leyka-ext-sp-post-locked {
         height: 1.2em;
         vertical-align: bottom;
+        display: inline-block;
+        margin-left: 4px;
     }
 }
 
