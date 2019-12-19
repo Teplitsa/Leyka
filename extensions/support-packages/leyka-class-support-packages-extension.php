@@ -64,14 +64,14 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
                         'type' => 'text',
                         'title' => __('1. Appeal title', 'leyka'),
                         'required' => true,
-                        'placeholder' => __('Subscribe to read the full text', 'leyka'),
+                        'placeholder' => __('Subscribe to read the whole', 'leyka'),
+                        'default' => __('Subscribe to read the whole', 'leyka'),
                         'width' => 0.5,
                     ),
                     $this->_id.'_main_text' => array(
                         'type' => 'textarea',
                         'title' => __('2. Appeal text', 'leyka'),
                         'required' => false,
-                        'placeholder' => __('To break stereotypes, to unite guys who are passionate about technology, to inspire in search of their calling - these are the goals set by the participants of the European Programming Week.', 'leyka'),
                     ),
                     $this->_id.'_subscription_text' => array(
                         'type' => 'textarea',
@@ -91,8 +91,8 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
                         'type' => 'text',
                         'title' => __('5. Account link label', 'leyka'),
                         'required' => true,
-                        'placeholder' => __('I already subscribed', 'leyka'),
-                        'default' => __('I already subscribed', 'leyka'),
+                        'placeholder' => esc_html__('I am already subscribed', 'leyka'), //__('I already subscribed', 'leyka'),
+                        'default' => esc_html__('I am already subscribed', 'leyka'), //__('I already subscribed', 'leyka'),
                         'width' => 0.5,
                     ),
                     $this->_id.'_closed_content_icon' => array(
@@ -503,10 +503,10 @@ class Leyka_Support_Packages_Limit_Content_Feature extends Leyka_Support_Package
                 return !empty($this->_config['shortcode_atts']['support_plan']) ? $this->_config['shortcode_atts']['support_plan'] : '';
                 
             case 'activate_title':
-                return __('Subscribe to read the whole', 'leyka');
+                return leyka()->opt('support_packages_title');
                 
             case 'activate_subtitle':
-                return __('To break stereotypes, to unite guys who are passionate about technology, to inspire in search of their calling - these are the goals set by the participants of the European Programming Week.', 'leyka');
+                return leyka()->opt('support_packages_main_text');
                 
             default:
                 return '';
@@ -660,15 +660,20 @@ class Leyka_Support_Packages_Template_Tags {
             			
             			<div class="leyka-ext-sp-terms-action">
                 			<div class="leyka-ext-sp-subsription-terms">
+                				<?php $support_packages_subscription_text = leyka()->opt('support_packages_subscription_text');?>
+                				<?php if($support_packages_subscription_text){?>
+                					<?php echo $support_packages_subscription_text;?>
+                				<?php } else {?>
                 				<?php esc_html_e('Subscription renews automatically. You can unsubscribe at any time in', 'leyka');?> <a href="<?php echo site_url('/donor-account/cancel-subscription/');?>"><?php esc_html_e('your account', 'leyka');?></a>
+                				<?php }?>
                 			</div>
-                			<a href="<?php echo $campaign_post_permalink;?>" class="leyka-ext-sp-subscribe-action"><?php esc_html_e('Subscribe', 'leyka');?></a>
+                			<a href="<?php echo $campaign_post_permalink;?>" class="leyka-ext-sp-subscribe-action"><?php echo leyka()->opt('support_packages_activation_button_label');?></a>
             			</div>
                 	</div>
                     <div class="leyka-ext-sp-already-subsribed">
                     	<a href="<?php echo site_url('/donor-account/');?>" class="leyka-ext-sp-already-subscribed-link">
                     		<span class="leyka-ext-sp-already-subscribed-icon"><?php readfile(LEYKA_PLUGIN_DIR . 'extensions/' . Leyka_Support_Packages_Extension::get_instance()->id_dash . '/img/person.svg');?></span>
-                    		<span class="leyka-ext-sp-already-subscribed-caption"><?php esc_html_e('I am already subscribed', 'leyka');?></span>
+                    		<span class="leyka-ext-sp-already-subscribed-caption"><?php echo leyka()->opt('support_packages_account_link_label');?></span>
                 		</a>
                     </div>
                 </div>
