@@ -17,10 +17,15 @@ function leyka_ext_sp_init_blocker($) {
     	return;
     }
 
+    if(!$sp.closest('body.page') && !$sp.closest('body.single')) {
+        return;
+    }
+
     if($overlay.length && $siteContent.length) {
         $siteContent.addClass('leyka-ext-sp-site-content');
         let $overlayFirst = $overlay.first();
         $overlayFirst.appendTo($siteContent);
+        $overlayFirst.css('display', 'block');
         overlayMaxPart = 0.7;
 
         var paddingBottom = $overlayFirst.height();

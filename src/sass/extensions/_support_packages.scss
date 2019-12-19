@@ -331,7 +331,7 @@ body.page, body.single {
     }
 
     .leyka-ext-sp-activate-feature-overlay {
-        display: block;
+        display: none;
 
         a, a:link {
             border-bottom: none;
@@ -530,9 +530,16 @@ body.page, body.single {
 
 // entry-title locked icon
 .entry-title {
-
-    & > img.leyka-ext-sp-post-locked {
+   & > img.leyka-ext-sp-post-locked {
         height: 1.2em;
         vertical-align: bottom;
     }
+}
+
+body.page, body.single {
+    .entry-title {
+        & > img.leyka-ext-sp-post-locked {
+            display: none;
+        }
+    }    
 }
