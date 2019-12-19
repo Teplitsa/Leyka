@@ -270,7 +270,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
     public function render_custom_setting_block(Leyka_Custom_Setting_Block $block) {?>
 
-        <div id="<?php echo $block->id;?>" class="settings-block custom-block <?php echo $block->is_standard_field_type ? 'option-block' : '';?> <?php echo $this->_controller->has_component_errors($block->id) ? 'has-errors' : '';?> <?php echo $block->field_type;?>">
+        <div id="<?php echo $block->id;?>" class="settings-block custom-block <?php echo $block->is_standard_field_type ? 'option-block' : '';?> <?php echo $this->_controller->has_component_errors($block->id) ? 'has-errors' : '';?> type-<?php echo $block->field_type;?> <?php echo $block->field_type;?>">
 
             <?php echo $block->get_content();?>
             <div class="field-errors <?php echo $this->_controller->has_component_errors($block->id) ? 'has-errors' : '';?>">
