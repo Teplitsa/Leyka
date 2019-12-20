@@ -27,13 +27,13 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
         $this->_title = __('Support packages', 'leyka'); // A human-readable title, like "Support packages"
 
         // A human-readable short description (for backoffice extensions list page):
-        $this->_description = __('The extension allows to create donors groups by amount of their recurring payments, and allow these groups access to closed website content.', 'leyka'); // 'Расширение позволяет создавать группы доноров по объёму рекуррентных пожертвований и давать им доступ к закрытому контенту сайта.';
+        $this->_description = __('The extension allows to create donors groups by amount of their recurring payments, and allow these groups access to closed website content.', 'leyka');
 
         // A human-readable full description (for backoffice extensions list page):
-        $this->_full_description = __('Create exclusive content for your active recurring donors and attract new ones. By subscribing to recurring donations, donors will be allowed to read website pages and posts that you will mark as open only for them. The content access is easy to control via shortcodes.', 'leyka'); // 'Создавайте эксклюзивный контент для ваших рекуррентных доноров и привлекайте новых. Подписавшись на рекуррентные платежи, доноры получат доступ к тем записям и страницам сайта, которые вы откроете только для них. Доступом легко управлять с помощью шорткодов.';
+        $this->_full_description = __('Create exclusive content for your active recurring donors and attract new ones. By subscribing to recurring donations, donors will be allowed to read website pages and posts that you will mark as open only for them. The content access is easy to control via shortcodes.', 'leyka');
 
         // A human-readable description (for backoffice extension settings page):
-        $this->_settings_description = __('If donor suddenly decides to change his/her monthly recurring donation amount, e.g., increases the amount from 999 RUB to 1050 RUB (and thus moves from "Base donors" group to the "Silver donors"), the switch between the support packages for this donor will proceed automatically.', 'leyka'); //'Если пользователь вдруг решает поменять сколько он(а) месячно жертвует, например увеличивает размер месячной поддержки с 999 рублей до 1050 рублей (попадая, таким образом из «Базовых» доноров в «Серебряные»), то переключение между Пакетами происходит автоматически.';
+        $this->_settings_description = __('If donor suddenly decides to change his/her monthly recurring donation amount, e.g., increases the amount from 999 RUB to 1050 RUB (and thus moves from "Base donors" group to the "Silver donors"), the switch between the support packages for this donor will proceed automatically.', 'leyka');
 
         // A human-readable description of how to enable the main feature (for backoffice extension settings page):
         $this->_connection_description = '<p><strong>Подключение функции «Ограничение доступа к контенту»</strong></p>
