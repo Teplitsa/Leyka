@@ -1132,23 +1132,18 @@ class Leyka_Campaign {
             return false;
         }
 
-        $recurring_subscriptions = get_posts(array(
-            'post_type' => Leyka_Donation_Management::$post_type,
-            'post_status' => 'funded',
-            'meta_query' => array(
-                array('key' => 'leyka_campaign_id', 'value' => $this->_id,),
-                array('key' => 'leyka_payment_type', 'value' => 'rebill',),
-                array('key' => '_rebilling_is_active', 'value' => 0, 'compare' => '!='),
-            ),
-            'post_parent' => 0,
-            'nopaging' => true,
+        $recurring_subscriptions = Leyka_Donations::get_instance()->get(array(
+            'campaign_id' => $this->_id,
+            'status' => 'funded',
+            'recurring_only_init' => true,
+            'recurring_active' => true,
         ));
 
         $monthly_incoming_amount = 0.0;
-        foreach($recurring_subscriptions as $subscription) {
+        foreach($recurring_subscriptions as $init_donation) {
 
-            $subscription = new Leyka_Donation($subscription);
-            $monthly_incoming_amount += $subscription->amount;
+            $init_donation = Leyka_Donations::get_instance()->get_donation($init_donation);
+            $monthly_incoming_amount += $init_donation->amount;
 
         }
 

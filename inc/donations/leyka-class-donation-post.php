@@ -423,12 +423,20 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'sum':
             case 'amount':
                 return empty($this->_donation_meta['amount']) ? 0.0 : $this->_donation_meta['amount'];
+            case 'sum_formatted':
+            case 'amount_formatted':
+                return leyka_amount_format($this->amount);
 
             case 'sum_total':
             case 'total_sum':
             case 'total_amount':
             case 'amount_total':
                 return empty($this->_donation_meta['amount_total']) ? $this->amount : $this->_donation_meta['amount_total'];
+            case 'total_sum_formatted':
+            case 'total_amount_formatted':
+            case 'sum_total_formatted':
+            case 'amount_total_formatted':
+                return leyka_amount_format($this->amount_total);
 
             case 'main_curr_amount':
             case 'main_currency_amount':

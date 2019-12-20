@@ -754,6 +754,7 @@ function leyka_get_extension_settings_url(Leyka_Extension $extension) {
  */
 function leyka_extension_setup_wizard(Leyka_Extension $extension) {
     return $extension->wizard_id;
+}
 
 /**
  * Gateway receiver description.
@@ -1661,54 +1662,6 @@ function leyka_get_all_options() {
 
 }
 
-function leyka_is_tab_valid($tab_id) {
-
-    $tab_options = Leyka_Options_Allocator::get_instance()->get_tab_options($tab_id);
-
-    if( !$tab_options ) {
-        return false;
-    }
-
-    foreach($tab_options as $key => $option_params) {
-
-        if($key === 'section') {
-
-            if( !empty($option_params['options']) ) { // Noramal section - validate all options
-                foreach($option_params['options'] as $option_id) {
-                    if( !leyka_options()->is_valid($option_id) ) {
-                        return false;
-                    }
-                }
-            } else if( !empty($option_params['tabs']) ) {
-
-                foreach($option_params['tabs'] as $sub_tab_id => $sub_tab_content) {
-
-                    if( !empty($sub_tab_content['sections']) ) {
-                        foreach($sub_tab_content['sections'] as $sub_section) {
-                            if( !empty($sub_section['options']) ) {
-                                foreach($sub_section['options'] as $sub_section_option_id) {
-                                    if( !leyka_options()->is_valid($sub_section_option_id) ) {
-                                        return false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                }
-
-            }
-
-        } else if( !leyka_options()->is_valid($key) ) { // Validate single option
-            return false;
-        }
-
-    }
-
-    return true;
-
-}
-
 if( !function_exists('array_key_last') ) {
     function array_key_last($array) {
 
@@ -2156,49 +2109,49 @@ class Leyka_Donations_Meta_Query extends WP_Meta_Query {
 }
 
 // By default, wp_attachment_is() doesn't treat SVGs as images. It's a f*ckin oppression, we think.
-    if( !function_exists('leyka_attachment_is') ) {
-        function leyka_attachment_is($type, $attachment = null) {
+if( !function_exists('leyka_attachment_is') ) {
+    function leyka_attachment_is($type, $attachment = null) {
 
-            if($type !== 'image') {
-                return wp_attachment_is($type, $attachment);
-            }
-
-            $attachment = get_post($attachment);
-            if( !$attachment ) {
-                return false;
-            }
-
-            $file = get_attached_file($attachment->ID);
-            if( !$file ) {
-                return false;
-            }
-
-            $check = wp_check_filetype($file);
-
-            return empty($check['ext']) ? false : in_array($check['ext'], array('jpg', 'jpeg', 'jpe', 'gif', 'png', 'svg',));
-
-        }
-    }
-
-    if( !function_exists('leyka_delete_dir') ) {
-        /**
-         * Recursively delete given directory & all it's files.
-         *
-         * @param $path string Absolute path to dir.
-         * @return boolean True if deletion succeeded, false otherwise.
-         */
-        function leyka_delete_dir($path) {
-
-            if(LEYKA_DEBUG) {
-                return file_exists($path) && is_dir($path);
-            }
-
-            if( !$path || $path === '/' ) {
-                return false;
-            }
-
-            return is_file($path) ? @unlink($path) : (array_map(__FUNCTION__, glob($path.'/*')) == @rmdir($path));
-
+        if($type !== 'image') {
+            return wp_attachment_is($type, $attachment);
         }
 
+        $attachment = get_post($attachment);
+        if( !$attachment ) {
+            return false;
+        }
+
+        $file = get_attached_file($attachment->ID);
+        if( !$file ) {
+            return false;
+        }
+
+        $check = wp_check_filetype($file);
+
+        return empty($check['ext']) ? false : in_array($check['ext'], array('jpg', 'jpeg', 'jpe', 'gif', 'png', 'svg',));
+
     }
+}
+
+if( !function_exists('leyka_delete_dir') ) {
+    /**
+     * Recursively delete given directory & all it's files.
+     *
+     * @param $path string Absolute path to dir.
+     * @return boolean True if deletion succeeded, false otherwise.
+     */
+    function leyka_delete_dir($path) {
+
+        if(LEYKA_DEBUG) {
+            return file_exists($path) && is_dir($path);
+        }
+
+        if( !$path || $path === '/' ) {
+            return false;
+        }
+
+        return is_file($path) ? @unlink($path) : (array_map(__FUNCTION__, glob($path.'/*')) == @rmdir($path));
+
+    }
+
+}

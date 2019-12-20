@@ -342,9 +342,9 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
             case 'pm_label':
             case 'payment_method_label':
-                $pm = leyka_get_pm_by_id($this->_main_data->pm_id);
 
-                return ($pm ? $pm->label : __('Unknown payment method', 'leyka'));
+                $pm = leyka_get_pm_by_id($this->_main_data->pm_id);
+                return $pm ? $pm->label : __('Unknown payment method', 'leyka');
 
             case 'currency':
             case 'currency_id':
@@ -357,12 +357,20 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'sum':
             case 'amount':
                 return $this->_main_data->amount ? $this->_main_data->amount : 0.0;
+            case 'sum_formatted':
+            case 'amount_formatted':
+                return leyka_amount_format($this->amount);
 
             case 'sum_total':
             case 'total_sum':
             case 'total_amount':
             case 'amount_total':
                 return $this->_main_data->amount_total ? $this->_main_data->amount_total : $this->amount;
+            case 'total_sum_formatted':
+            case 'total_amount_formatted':
+            case 'sum_total_formatted':
+            case 'amount_total_formatted':
+                return leyka_amount_format($this->amount_total);
 
             case 'main_curr_amount':
             case 'main_currency_amount':

@@ -8,9 +8,10 @@ abstract class Leyka_Donations extends Leyka_Singleton {
     protected static $_objects = array();
 
     /**
+     * @param $params array Isn't in use.
      * @return static
      */
-    public static function get_instance() {
+    public static function get_instance(array $params = array()) {
 
         if(null === static::$_instance) {
 
@@ -453,7 +454,6 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         $joins = array();
         $where = array();
-        $limit = '';
 
         $params['meta'] = empty($params['meta']) || !is_array($params['meta']) ? array() : $params['meta'];
 
@@ -529,13 +529,17 @@ class Leyka_Donations_Separated extends Leyka_Donations {
                 date('Y-m-d', strtotime($params['date']))
             );
         }
-        if( !empty($params['date_from']) && strtotime($params['date_from']) ) {
+        if( !empty($params['date_from']) && !empty($params['date_to']) ) {
+            $where['date_created'] = $wpdb->prepare(
+                "{$wpdb->prefix}leyka_donations.date_created >= %s AND {$wpdb->prefix}leyka_donations.date_created <= %s",
+                date('Y-m-d 00:00:00', strtotime($params['date_from'])), date('Y-m-d 23:59:59', strtotime($params['date_to']))
+            );
+        } else if( !empty($params['date_from']) && strtotime($params['date_from']) ) {
             $where['date_created'] = $wpdb->prepare(
                 "{$wpdb->prefix}leyka_donations.date_created >= %s",
                 date('Y-m-d 00:00:00', strtotime($params['date_from']))
             );
-        }
-        if( !empty($params['date_to']) && strtotime($params['date_to']) ) {
+        } else if( !empty($params['date_to']) && strtotime($params['date_to']) ) {
             $where['date_created'] = $wpdb->prepare(
                 "{$wpdb->prefix}leyka_donations.date_created <= %s",
                 date('Y-m-d 23:59:59', strtotime($params['date_to']))

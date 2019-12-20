@@ -199,6 +199,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         if(leyka_get_donations_storage_type() === 'post') { // Post-based donations storage
 
+            /** @todo This IF() should be here only until we made a single Donaitons list & info page for both storage types */
+
             add_submenu_page('leyka', __('Donations', 'leyka'), __('Donations', 'leyka'), 'leyka_manage_donations', 'edit.php?post_type='.Leyka_Donation_Management::$post_type);
             add_submenu_page('leyka', __('New correctional donation', 'leyka'), _x('Add new', 'donation', 'leyka'), 'leyka_manage_donations', 'post-new.php?post_type='.Leyka_Donation_Management::$post_type);
 
@@ -214,7 +216,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         add_submenu_page('leyka', __('New campaign', 'leyka'), _x('Add new', 'campaign', 'leyka'), 'leyka_manage_donations', 'post-new.php?post_type='.Leyka_Campaign_Management::$post_type);
 
         // Donors' tags taxonomy:
-        if(leyka()->opt('donor_management_available')) {
+        if(leyka()->opt('donor_management_available') && leyka_get_donations_storage_type() === 'post') {
 
             // Donors list page:
             $hook = add_submenu_page('leyka', __('Donors', 'leyka'), __('Donors', 'leyka'), 'leyka_manage_donations', 'leyka_donors', array($this, 'donors_list_screen'));
@@ -239,18 +241,25 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         add_submenu_page('leyka', __('Leyka Settings', 'leyka'), __('Settings', 'leyka'), 'leyka_manage_options', 'leyka_settings', array($this, 'settings_screen'));
 
-        add_submenu_page('leyka', __('Extensions', 'leyka'), __('Extensions', 'leyka'), 'leyka_manage_options', 'leyka_extensions', array($this, 'extensions_screen'));
+        if(leyka_get_donations_storage_type() === 'post') {
+            add_submenu_page('leyka', __('Extensions', 'leyka'), __('Extensions', 'leyka'), 'leyka_manage_options', 'leyka_extensions', array($this, 'extensions_screen'));
+        }
 
         add_submenu_page('leyka', __('Contact us', 'leyka'), __('Feedback', 'leyka'), 'leyka_manage_donations', 'leyka_feedback', array($this, 'feedback_screen'));
 
         // Fake pages:
-        add_submenu_page(NULL, 'Leyka Wizard', 'Leyka Wizard', 'leyka_manage_options', 'leyka_settings_new', array($this, 'settings_new_screen'));
-
         add_submenu_page(NULL, 'Donation info', 'Donation info', 'leyka_manage_donations', 'leyka_donation_info', array($this, 'donation_info_screen'));
 
-        add_submenu_page(NULL, "Donor's info", "Donor's info", 'leyka_manage_options', 'leyka_donor_info', array($this, 'donor_info_screen'));
+        // ATM, Wizards, Donors & Extensions are untested with "sep" storage type:
+        if(leyka_get_donations_storage_type() === 'post') {
 
-        add_submenu_page(NULL, "Extension settings", "Extension settings", 'leyka_manage_options', 'leyka_extension_settings', array($this, 'leyka_extension_settings_screen'));
+            add_submenu_page(NULL, 'Leyka Wizard', 'Leyka Wizard', 'leyka_manage_options', 'leyka_settings_new', array($this, 'settings_new_screen'));
+
+            add_submenu_page(NULL, "Donor's info", "Donor's info", 'leyka_manage_options', 'leyka_donor_info', array($this, 'donor_info_screen'));
+
+            add_submenu_page(NULL, "Extension settings", "Extension settings", 'leyka_manage_options', 'leyka_extension_settings', array($this, 'leyka_extension_settings_screen'));
+
+        }
         // Fake pages - END
 
         do_action('leyka_admin_menu_setup');

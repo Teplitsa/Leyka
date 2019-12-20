@@ -347,7 +347,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
     }
 
-    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation $donation) {
+    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation_Base $donation) {
 
         $init_recurrent_donation = Leyka_Donation::get_init_recurring_donation($donation);
         $cancelling_url = (get_option('permalink_structure') ?
