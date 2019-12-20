@@ -5,8 +5,6 @@ $leyka-ext-sp-color-main-op10: var(--leyka-ext-support-packages-color-main-op10)
 $leyka-ext-sp-color-background: var(--leyka-ext-support-packages-color-background);
 $leyka-ext-sp-color-caption: var(--leyka-ext-support-packages-color-caption);
 $leyka-ext-sp-color-text: var(--leyka-ext-support-packages-color-text);
-//$leyka-ext-sp-color-white: $color-white;
-$leyka-ext-sp-color-white: $leyka-ext-sp-color-background;
 
 $leyka-ext-sp-color-border: #F1F1F1;
 $leyka-ext-sp-color-text-gray: #AAAAAA;
@@ -100,19 +98,19 @@ $leyka-ext-sp-color-bg-light-gray: #FAFAFA;
         box-sizing: border-box;
 
         &.active {
-            color: $leyka-ext-sp-color-white;
+            color: $leyka-ext-sp-color-background;
             background-color: $leyka-ext-sp-color-main;
             border: 2px solid $leyka-ext-sp-color-main;
 
             .leyka-ext-sp-icon {
                 svg {
-                    stroke: $leyka-ext-sp-color-white;
+                    stroke: $leyka-ext-sp-color-background;
                     fill: none;
                 }
             }
 
             .leyka-ext-sp-period {
-                color: $leyka-ext-sp-color-white;;
+                color: $leyka-ext-sp-color-background;;
             }
         }
 
@@ -159,7 +157,7 @@ $leyka-ext-sp-color-bg-light-gray: #FAFAFA;
         .leyka-ext-sp-status {
             @include leyka-ext-sp-package-info;
             margin-bottom: -4px;
-            color: $leyka-ext-sp-color-white;
+            color: $leyka-ext-sp-color-background;
 
             span {                
             }
@@ -340,7 +338,7 @@ body.page, body.single {
 }
 
 .leyka-ext-sp-activate-feature {
-    background-color: $leyka-ext-sp-color-white;
+    background-color: $leyka-ext-sp-color-background;
     width: auto;
 
     &.packages-count-1, &.packages-count-2, &.packages-count-3 {
@@ -407,11 +405,15 @@ body.page, body.single {
             width: 100%;
             margin-bottom: $base;
             cursor: pointer;
-            background-color: $leyka-ext-sp-color-white;
+            background-color: $leyka-ext-sp-color-background;
 
             @include for(medium-screens) {
                 width: 170px;
                 margin-bottom: 0;
+            }
+
+            &.active {
+                background-color: $leyka-ext-sp-color-main;
             }
 
             .leyka-ext-sp-icon {
