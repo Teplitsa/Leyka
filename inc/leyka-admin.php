@@ -50,6 +50,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         add_action('leyka_pre_donation_info_actions', array($this, 'full_metaboxes_support'));
         add_action('leyka_pre_extension_settings_actions', array($this, 'full_metaboxes_support'));
 
+        add_action('leyka_pre_donation_info_actions', array($this, 'handle_donation_info_submit'));
+
 		add_action('leyka_post_admin_actions', array($this, 'show_footer'));
 
 		// Donors' tags on the user profile page:
@@ -199,7 +201,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         if(leyka_get_donations_storage_type() === 'post') { // Post-based donations storage
 
-            /** @todo This IF() should be here only until we made a single Donaitons list & info page for both storage types */
+            /** @todo This IF() should be here only until we made a single Donations list & info page for both storage types */
 
             add_submenu_page('leyka', __('Donations', 'leyka'), __('Donations', 'leyka'), 'leyka_manage_donations', 'edit.php?post_type='.Leyka_Donation_Management::$post_type);
             add_submenu_page('leyka', __('New correctional donation', 'leyka'), _x('Add new', 'donation', 'leyka'), 'leyka_manage_donations', 'post-new.php?post_type='.Leyka_Donation_Management::$post_type);
@@ -208,6 +210,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
             $hook = add_submenu_page('leyka', __('Donations', 'leyka'), __('Donations', 'leyka'), 'leyka_manage_donations', 'leyka_donations', array($this, 'donations_list_screen'));
             add_action("load-$hook", array($this, 'donations_list_screen_options'));
+
+            add_submenu_page('leyka', __('New correctional donation', 'leyka'), _x('Add new', 'donation', 'leyka'), 'leyka_manage_donations', '?page=leyka_donation_info');
 
         }
 
@@ -404,6 +408,67 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         do_action('leyka_post_donation_info_actions');
         do_action('leyka_post_admin_actions');
+
+    }
+
+    /**
+     * A TMP method to handle Donation settings update.
+     *
+     * @todo WARNING! After Donation_Settings_Controller/Render creation, this handling should be there.
+     */
+    public function handle_donation_info_submit() {
+
+	    if(empty($_GET['page']) || $_GET['page'] !== 'leyka_donation_info' || empty($_POST['_wpnonce'])) {
+	        return;
+        } else if(empty($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'edit-donation')) {
+	        return; // Add some error msg, mb...
+        } else if( !current_user_can('leyka_manage_donations') ) {
+            return; // Add some error msg, mb...
+        }
+
+	    if( !empty($_GET['donation']) && absint($_GET['donation']) ) {
+
+            $donation = Leyka_Donations::get_instance()->get_donation(absint($_GET['donation']));
+            $this->_handle_donation_edit($donation);
+
+        } else {
+            $this->_handle_donation_add();
+        }
+
+    }
+    protected function _handle_donation_edit(Leyka_Donation_Base $donation) {
+
+        $campaign = new Leyka_Campaign($donation->campaign_id);
+
+//        echo '<pre>Editing: '.print_r($donation->id, 1).'</pre>';
+//        echo '<pre>'.print_r($_POST, 1).'</pre>';
+
+        if($donation->status !== $_POST['donation_status']) {
+            $donation->status = $_POST['donation_status'];
+        }
+
+        if( !$donation->currency ) {
+            $donation->currency = leyka_options()->opt('main_currency');
+        }
+
+        if(
+            isset($_POST['donor-name'])
+            && $donation->donor_name !== $_POST['donor-name']
+            && leyka_validate_donor_name($_POST['donor-name'])
+        ) {
+            $donation->donor_name = sanitize_text_field($_POST['donor-name']);
+        }
+
+        if(isset($_POST['donor-email']) && $donation->donor_email !== $_POST['donor-email'] && is_email($_POST['donor-email'])) {
+            $donation->donor_email = sanitize_email($_POST['donor-email']);
+        }
+
+        if(isset($_POST['donor-comment']) && $donation->donor_comment !== $_POST['donor-comment']) {
+            $donation->donor_comment = sanitize_textarea_field($_POST['donor-comment']);
+        }
+
+    }
+    protected function _handle_donation_add() {
 
     }
     // Donations related methods - END

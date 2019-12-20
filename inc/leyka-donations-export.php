@@ -1,16 +1,18 @@
 <?php if( !defined('WPINC') ) die;
 function leyka_render_export_button() {
 
-    if(get_current_screen()->id == 'edit-'.Leyka_Donation_Management::$post_type) {?>
+    if(
+        get_current_screen()->id === 'edit-'.Leyka_Donation_Management::$post_type // TMP, until both storage-typed Donations are rendered via list page
+        || (isset($_GET['page']) && $_GET['page'] === 'leyka_donations')
+    ) {?>
 
     <span class="donations-export-form">
         <form action="<?php echo admin_url('/');?>" method="get">
-            <input type="hidden" name="post_status" value="<?php echo empty($_GET['post_status']) ? 0 : $_GET['post_status'];?>">
+            <input type="hidden" name="status" value="<?php echo empty($_GET['post_status']) ? 0 : $_GET['post_status'];?>">
             <input type="hidden" name="month-year" value="<?php echo empty($_GET['m']) ? 0 : $_GET['m'];?>">
             <input type="hidden" name="payment_type" value="<?php echo empty($_GET['payment_type']) ? '' : $_GET['payment_type'];?>">
             <input type="hidden" name="gateway_pm" value="<?php echo empty($_GET['gateway_pm']) ? '' : $_GET['gateway_pm'];?>">
             <input type="hidden" name="campaign" value="<?php echo empty($_GET['campaign']) ? '' : $_GET['campaign'];?>">
-            <input type="hidden" name="search_string" value="<?php echo empty($_GET['s']) ? '' : $_GET['s'];?>">
 
             <?php foreach(apply_filters('leyka_donations_export_form_fields', array()) as $name => $value) {?>
                 <input type="hidden" name="<?php echo $name;?>" value="<?php echo $value;?>">
@@ -36,6 +38,8 @@ function leyka_do_donations_export() {
     set_time_limit(99999);
 
     ob_start();
+
+    /** @todo Convert to the Leyka_Donations::get() usage. */
 
     $meta_query = array('relation' => 'AND');
 

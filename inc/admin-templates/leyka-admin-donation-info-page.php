@@ -3,8 +3,8 @@
 
 /** @var $this Leyka_Admin_Setup */
 
-if(empty($_GET['donation']) || !current_user_can('leyka_manage_options')) {
-    wp_die(__("Error: cannot display a page for a given donor.", 'leyka'));
+if(empty($_GET['donation']) || !current_user_can('leyka_manage_donations')) {
+    wp_die(__('Error: cannot display the page for the given donation.', 'leyka'));
 }
 
 try {
@@ -13,9 +13,12 @@ try {
     wp_die($e->getMessage());
 }?>
 
-<div class="wrap" data-leyka-admin-page-type="donation-info-page">
+<div class="wrap" data-leyka-admin-page-type="donation-info-page"> <!-- leyka-admin wrap single-settings donation-info -->
 
-    <a href="<?php echo admin_url('/admin.php?page=leyka_donations');?>" class="back-to-list-link"><?php _e('Back to the list', 'leyka');?></a>
+    <a href="<?php echo admin_url('/admin.php?page=leyka_donations');?>" class="back-to-list-link">
+        <?php _e('Back to the list', 'leyka');?>
+    </a>
+    <br class="clear">
 
     <h1 class="wp-heading-inline"><?php _e('Donation profile', 'leyka');?></h1>
     <hr class="wp-header-end">
@@ -30,7 +33,6 @@ try {
                     <?php do_meta_boxes('dashboard_page_leyka_donation_info', 'side', null);?>
                 </div>
                 <div id="postbox-container-2" class="postbox-container">
-                    <input type="hidden" value="<?php echo $donation->id?>" id="leyka_donation_id">
                     <?php do_meta_boxes('dashboard_page_leyka_donation_info', 'normal', null);?>
                 </div>
             </div>

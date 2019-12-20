@@ -1103,8 +1103,9 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             <label for="donation-status"><?php _e('Status', 'leyka');?></label>
             <select id="donation-status" name="donation_status">
                 <?php foreach(leyka_get_donation_status_list() as $status => $label) {
-                    if($status == 'trash')
-                        continue;?>
+                    if($status == 'trash') {
+                        continue;
+                    }?>
                 <option value="<?php echo $status;?>" <?php echo $donation->status === $status || ($is_adding_page && $status === 'funded') ? 'selected' : '';?>><?php echo $label;?></option>
                 <?php }?>
             </select>
@@ -1149,13 +1150,19 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 <div id="donation-status-log-toggle"><?php _e('Show/hide full status history', 'leyka');?></div>
                 <ul id="donation-status-log" style="display: none;">
                     <?php for($i = 0; $i < count($status_log); $i++) {?>
+
                     <li>
                         <?php echo str_replace(
-                        array('%status', '%date'),
-                        array('<i>'.self::get_status_labels($status_log[$i]['status']).'</i>','<time>'.date(get_option('date_format').', '.get_option('time_format'), $status_log[$i]['date']).'</time>'),
-                        __('%date - %status', 'leyka')
-                    );}?>
+                            array('%status', '%date'),
+                            array(
+                                '<i>'.self::get_status_labels($status_log[$i]['status']).'</i>','<time>'.date(get_option('date_format').', '.get_option('time_format'),
+                                    $status_log[$i]['date']).'</time>'
+                            ),
+                            __('%date - %status', 'leyka')
+                        );?>
                     </li>
+
+                    <?php }?>
                 </ul>
 
             <?php } else {?>
