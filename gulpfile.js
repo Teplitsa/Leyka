@@ -34,8 +34,6 @@ if(gutil.env.prod === true) {
 // JS:
 gulp.task('build-front-js', async function(){
 
-    console.log('HERE FRONT')
-
     var vendorFiles = [basePaths.npm + 'jquery.cookie/jquery.cookie.js'],
         appFiles = [basePaths.src + 'js/*.js', basePaths.src + 'js/front/*.js'];
 

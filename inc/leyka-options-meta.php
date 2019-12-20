@@ -9,6 +9,7 @@ $email_placeholders =
 <span class='item'><code>#DONATION_TYPE#</code><span class='description'>Тип пожертвования</span></span>
 <span class='item'><code>#DONOR_NAME#</code><span class='description'>Имя донора</span></span>
 <span class='item'><code>#DONOR_EMAIL#</code><span class='description'>Email донора</span></span>
+<span class='item'><code>#DONOR_COMMENT#</code><span class='description'>Комментарий донора к пожертвованию</span></span>
 <span class='item'><code>#SUM#</code><span class='description'>Полная сумма пожертвования (без учёта комиссий)</span></span>
 <span class='item'><code>#PAYMENT_METHOD_NAME#</code><span class='description'>Название способа оплаты</span></span>
 <span class='item'><code>#CAMPAIGN_NAME#</code><span class='description'>Кампания, на которую было сделано пожертвование</span></span>
@@ -259,12 +260,19 @@ self::$_options_meta = array(
         'title' => __('Payment methods available on donation forms', 'leyka'),
         'description' => __("Check out payment methods through that you'd want to receive a donation payments.", 'leyka'),
         'required' => true,
-        'list_entries' => 'leyka_get_gateways_pm_list',
+//        'list_entries' => 'leyka_get_gateways_pm_list', // The option never showed in UI via standard means
     ),
     'pm_order' => array(
         'type' => 'text', // It's intentionally of text type - the option contains a serialized array
         'default' => '', // PM will be ordered just as their gateways were added
         'title' => __('Payment methods order on donation forms', 'leyka'),
+    ),
+    'extensions_active' => array(
+        'type' => 'multi_checkbox',
+        'default' => array(),
+        'title' => __('Extensions', 'leyka'),
+//        'required' => true,
+//        'list_entries' => 'leyka_get_extensions_list', // The option never showed in UI via standard means
     ),
     'auto_refresh_currency_rates' => array(
         'type' => 'checkbox',
@@ -272,18 +280,16 @@ self::$_options_meta = array(
         'title' => __('Automatically refresh currency rates', 'leyka'),
         'description' => __('Check to enable auto-refresh of currency rates. It will be performed every 24 hours and will require connection with http://cbr.ru website.', 'leyka'),
     ),
-    /* // disabled, waithing for multicurrency system 
-    'auto_refresh_currency_rate_usd' => array(
-        'type' => 'radio',
-        'default' => 'y',
-        'title' => __('Automatically refresh currency rates', 'leyka'),
-        'description' => __('Check to enable auto-refresh of currency rates. It will be performed every 24 hours and will require connection with http://cbr.ru website.', 'leyka'),
-        'list_entries' => array(
-            'y' => __('Automatically refresh currency rates using central bank rate', 'leyka'),
-            'n' => __("Manual currency rate input", 'leyka'),
-        ),
-    ),
-    */
+//    'auto_refresh_currency_rate_usd' => array( // disabled, waithing for multicurrency system
+//        'type' => 'radio',
+//        'default' => 'y',
+//        'title' => __('Automatically refresh currency rates', 'leyka'),
+//        'description' => __('Check to enable auto-refresh of currency rates. It will be performed every 24 hours and will require connection with http://cbr.ru website.', 'leyka'),
+//        'list_entries' => array(
+//            'y' => __('Automatically refresh currency rates using central bank rate', 'leyka'),
+//            'n' => __("Manual currency rate input", 'leyka'),
+//        ),
+//    ),
     'currency_rur2usd' => array(
         'type' => 'number',
         'title' => __('Exchange rate', 'leyka'),
@@ -573,7 +579,7 @@ self::$_options_meta = array(
     ),
     'donations_managers_emails' => array(
         'type' => 'text',
-        'default' => leyka_get_default_dm_list(),
+        'default' => get_bloginfo('admin_email').',',
         'title' => __('A comma-separated emails to notify of incoming donation', 'leyka'),
         'placeholder' => __('E.g., admin@daisyfoundation.org,yourmail@domain.com', 'leyka'),
     ),

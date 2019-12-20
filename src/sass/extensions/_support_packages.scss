@@ -1,0 +1,551 @@
+/** == Support packages styles (extensions/_support_packages.scss) == **/
+
+$leyka-ext-sp-color-main: var(--leyka-ext-support-packages-color-main);
+$leyka-ext-sp-color-main-op10: var(--leyka-ext-support-packages-color-main-op10);
+$leyka-ext-sp-color-background: var(--leyka-ext-support-packages-color-background);
+$leyka-ext-sp-color-caption: var(--leyka-ext-support-packages-color-caption);
+$leyka-ext-sp-color-text: var(--leyka-ext-support-packages-color-text);
+
+$leyka-ext-sp-color-border: #F1F1F1;
+$leyka-ext-sp-color-text-gray: #AAAAAA;
+$leyka-ext-sp-color-bg-light-gray: #FAFAFA;
+
+@mixin leyka-ext-sp-package-price {
+    font-family: $body;
+    font-weight: 500;
+    font-style: normal;
+    font-size: 56px;
+    line-height: 66px;
+}
+
+@mixin leyka-ext-sp-activate-feature-title {
+    font-family: $body;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 32px;
+    line-height: 32px;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+}
+
+@mixin leyka-ext-sp-package-currency {
+    font-family: $body;
+    font-weight: 500;
+    font-style: normal;
+    font-size: 20px;
+    line-height: 24px;
+    text-transform: uppercase;
+}
+
+@mixin leyka-ext-sp-package-subscribe {
+    font-family: $body;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 16px;
+    line-height: 20px;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+}
+
+@mixin leyka-ext-sp-package-title {
+    font-family: $body;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 14px;
+    line-height: 17px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+@mixin leyka-ext-sp-activate-feature-subtitle {
+    @include leyka-ext-sp-package-title;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    text-transform: none;
+}
+
+@mixin leyka-ext-sp-activate-feature-already-subscribed {
+    @include leyka-ext-sp-activate-feature-subtitle;
+    letter-spacing: normal;
+    text-transform: uppercase;
+}
+
+@mixin leyka-ext-sp-package-info {
+    font-family: $body;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 10px;
+    line-height: 13px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+// cards
+.leyka-ext-support-packages {
+
+    a {
+        border-bottom: none;
+    }
+
+    // common card styles
+    .leyka-ext-sp-card {
+        border: 2px solid $leyka-ext-sp-color-border;
+        color: $leyka-ext-sp-color-main;
+        background-color: $leyka-ext-sp-color-bg-light-gray;
+        border-radius: 4px;
+        padding: $base * 2;
+        overflow: hidden;
+        box-sizing: border-box;
+
+        &.active {
+            color: $leyka-ext-sp-color-background;
+            background-color: $leyka-ext-sp-color-main;
+            border: 2px solid $leyka-ext-sp-color-main;
+
+            .leyka-ext-sp-icon {
+                svg {
+                    stroke: $leyka-ext-sp-color-background;
+                    fill: none;
+                }
+            }
+
+            .leyka-ext-sp-period {
+                color: $leyka-ext-sp-color-background;;
+            }
+        }
+
+        .leyka-ext-sp-icon {
+            margin-right: $base;
+
+            svg, img {
+                width: 24px;
+                //height: 24px;
+                vertical-align: text-top;
+            }
+
+            svg {
+                stroke: $leyka-ext-sp-color-main;
+                fill: none;
+            }
+
+            img {
+            }
+        }
+
+        .leyka-ext-sp-title {
+            @include leyka-ext-sp-package-title;
+        }
+
+        .leyka-ext-sp-price {
+            @include leyka-ext-sp-package-price;
+            white-space: nowrap;
+        }
+
+        .leyka-ext-sp-currency {
+            @include leyka-ext-sp-package-currency;
+            margin-top: 8px;
+            margin-left: 0px;
+            white-space: nowrap;
+        }
+
+        .leyka-ext-sp-period {
+            @include leyka-ext-sp-package-info;
+            margin-left: $base;
+            color: $leyka-ext-sp-color-text-gray;
+        }
+
+        .leyka-ext-sp-status {
+            @include leyka-ext-sp-package-info;
+            margin-bottom: -4px;
+            color: $leyka-ext-sp-color-background;
+
+            span {                
+            }
+
+            a {
+                @include leyka-ext-sp-package-info;
+                color: $leyka-ext-sp-color-main;
+                text-decoration: none;
+                border-bottom: none;
+            }
+        }
+    }
+
+    // 3-rows card rows
+    .leyka-ext-sp-card {
+        .leyka-ext-sp-card-row1 {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            flex-flow: row;
+        }
+
+        .leyka-ext-sp-card-row2 {
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+        }
+
+        .leyka-ext-sp-card-row3 {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+    }
+
+    // special cards
+    .leyka-ext-sp-card {
+        &.leyka-ext-sp-manage-card {
+
+        }
+
+        &.leyka-ext-sp-banner-card {
+
+        }
+    }
+    
+
+}
+
+// account support packages
+.leyka-account-form .list.support-packages {
+    .leyka-ext-support-packages {
+        margin-top: $base * 3;
+        display: flex;
+        justify-content: space-between;
+        flex-flow: column;
+
+        @include for(medium-screens) {
+            flex-flow: row;
+            flex-wrap: wrap;
+            align-items: stretch;
+        }
+
+        .leyka-ext-sp-card {
+            flex-basis: calc(50% - 12px);
+            margin-bottom: $base * 3;
+        }
+    }
+}
+
+// activate support package
+.leyka-ext-sp-activate-feature-overlay {
+    width: 100%;
+    display: none;
+    min-height: 200px;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    z-index: 10;
+
+    .leyka-ext-sp-activate-feature-overlay-gradient {
+        background: linear-gradient(360deg, $color-white 20%, rgba(255, 255, 255, 0.3) 100%);
+        width: 100%;
+        height: 150px;
+    }
+
+    .leyka-ext-sp-activate-feature-overlay-bg-wrapper {
+        background-color: $color-white;
+    }
+
+    .leyka-ext-sp-activate-feature-overlay-bg {
+        background-color: $leyka-ext-sp-color-main-op10;
+        display: flex;
+        flex-flow: column;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .leyka-ext-sp-activate-feature {
+        padding-top: $base * 5;
+        padding-bottom: $base * 3;
+        box-sizing: content-box;
+        margin-top: $base * 6;
+        margin-bottom: $base * 4;
+        border-radius: 4px;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
+        margin-left: $base;
+        margin-right: $base;
+        width: calc(100% - $base * 2);
+
+        & > * {
+            margin-left: 24px;
+            margin-right: 24px;
+        }
+
+        @include for(medium-screens) {
+            width: 100%;
+            padding-left: $base * 5;
+            padding-right: $base * 5;
+
+            & > * {
+                margin-left: 0;
+                margin-right: 0;
+            }
+        }
+
+    }
+
+    .leyka-ext-sp-already-subsribed {
+        margin-bottom: $base * 4;
+
+        .leyka-ext-sp-already-subscribed-icon {
+            margin-right: $base;
+            vertical-align: baseline;
+
+            svg {
+                fill: $leyka-ext-sp-color-main;
+                vertical-align: middle;
+                display: inline-block;
+            }
+        }
+
+        a.leyka-ext-sp-already-subscribed-link {
+            @include leyka-ext-sp-activate-feature-already-subscribed;
+            color: $leyka-ext-sp-color-main;
+            vertical-align: baseline;
+            text-decoration: none;
+            line-height: 20px;
+
+            .leyka-ext-sp-already-subscribed-caption {
+                line-height: 20px;
+            }
+
+            &:hover {
+                .leyka-ext-sp-already-subscribed-caption {
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+}
+
+body.page, body.single {
+
+    #site_content.leyka-ext-sp-site-content,
+    #site-content.leyka-ext-sp-site-content,
+    #content.leyka-ext-sp-site-content {
+        position: relative;
+    }
+
+    .leyka-ext-sp-activate-feature-overlay {
+        display: none;
+
+        a, a:link {
+            border-bottom: none;
+        }
+    }
+}
+
+.leyka-ext-sp-activate-feature {
+    background-color: $leyka-ext-sp-color-background;
+    width: auto;
+
+    &.packages-count-1, &.packages-count-2, &.packages-count-3 {
+        h3 {
+            text-align: left;
+        }
+
+        .leyka-ext-sp-feature-subtitle {
+            text-align: left;
+        }
+    } 
+
+    &.packages-count-1, &.packages-count-2 {
+        .leyka-ext-support-packages {
+            justify-content: center;
+
+            @include for(medium-screens) {
+                .leyka-ext-sp-card {
+                    &:not(:last-child) {
+                        margin-right: $base * 2;
+                    }
+                }
+            }
+        }        
+    }
+
+    h3 {
+        @include leyka-ext-sp-activate-feature-title;
+        margin-bottom: $base * 2; 
+        text-align: center;
+        margin-top: 0px;
+        color: $leyka-ext-sp-color-text;
+    }
+
+    .leyka-ext-sp-feature-subtitle {
+        @include leyka-ext-sp-activate-feature-subtitle;
+        margin-bottom: $base * 3;
+        text-align: center;
+        color: $leyka-ext-sp-color-text;
+    }
+
+    .leyka-ext-support-packages {
+        display: flex;
+        flex-flow: column;
+        flex-basis: 170px;
+        justify-content: space-between;
+        align-items: center;
+
+        border-top: 1px solid $leyka-ext-sp-color-border;
+        border-bottom: 1px solid $leyka-ext-sp-color-border;
+        padding-top: $base * 2;
+        padding-bottom: $base * 2;
+        margin-bottom: $base * 2;
+
+        @include for(medium-screens) {
+            flex-flow: row;
+            flex-wrap: nowrap;
+            align-items: stretch;
+            margin-bottom: $base * 3;
+        }
+
+        .leyka-ext-sp-card {
+            text-align: center;
+            width: 100%;
+            margin-bottom: $base;
+            cursor: pointer;
+            background-color: $leyka-ext-sp-color-background;
+
+            @include for(medium-screens) {
+                width: 170px;
+                margin-bottom: 0;
+            }
+
+            &.active {
+                background-color: $leyka-ext-sp-color-main;
+            }
+
+            .leyka-ext-sp-icon {
+                margin-right: 8px;
+                margin-bottom: 4px;                
+
+                @include for(medium-screens) {
+                    margin-right: 0px;
+                    margin-bottom: 8px;
+                }
+            }
+
+            .leyka-ext-sp-status {
+                display: none;
+            }
+
+            .leyka-ext-sp-period {
+                margin-left: 0px;
+            }
+
+            .leyka-ext-sp-card-row1 {
+                flex-flow: row;
+                justify-content: center;
+                align-items: center;
+                margin-bottom: 4px;
+
+                @include for(medium-screens) {
+                    flex-flow: column;
+                    margin-left: -$base * 2;
+                    margin-right: -$base * 2;
+                }
+            }
+
+            .leyka-ext-sp-card-row2 {
+                justify-content: center;
+
+                @include for(medium-screens) {
+                    margin-left: -$base * 2;
+                    margin-right: -$base * 2;
+                }
+
+                .leyka-ext-sp-price {
+                    margin-left: 12px;
+                }
+            }
+
+            .leyka-ext-sp-card-row3 {
+                justify-content: center;
+                margin-bottom: 4px;
+            }
+        }        
+    }
+
+    .leyka-ext-sp-terms-action {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        flex-flow: column;
+
+        @include for(medium-screens) {
+            flex-flow: row;
+            justify-content: space-between;
+        }
+
+        .leyka-ext-sp-subsription-terms {
+            @include leyka-ext-sp-activate-feature-subtitle;
+            width: 100%;
+            text-align: center;
+            margin-bottom: $base * 2;
+            color: $leyka-ext-sp-color-text;
+
+            @include for(medium-screens) {
+                min-width: 344px;
+                width: 70%;
+                text-align: left;
+                margin-bottom: 0;
+                padding-right: 8px;
+            }
+
+            a {
+                color: $leyka-ext-sp-color-main;
+
+                &:hover {
+                    text-decoration: underline;                    
+                }
+            }
+        }
+
+        a.leyka-ext-sp-subscribe-action {
+            @include leyka-ext-sp-package-subscribe;
+            color: $leyka-ext-sp-color-caption;
+            background-color: $leyka-ext-sp-color-main;
+            text-decoration: none;
+            
+            display: block;
+            border-radius: 4px;
+            line-height: $base * 6;
+            vertical-align: middle;
+            text-align: center;
+            width: 100%;
+            opacity: 0.5;
+
+            &.active {
+                opacity: 1;
+
+                &:hover {
+                    opacity: 0.8;
+                }
+            }
+
+            @include for(small-screens) {
+                width: 180px;
+                line-height: $base * 5;
+            }
+        }
+    }
+}
+
+// entry-title locked icon
+.entry-title {
+   & > img.leyka-ext-sp-post-locked {
+        height: 1.2em;
+        vertical-align: bottom;
+        display: inline-block;
+        margin-left: 4px;
+    }
+}
+
+body.page, body.single {
+    .entry-title {
+        & > img.leyka-ext-sp-post-locked {
+            display: none;
+        }
+    }    
+}

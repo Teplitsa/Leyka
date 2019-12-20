@@ -1,9 +1,9 @@
 @import 'presets';
 @import 'typo';
 @import 'mixins';
-@import 'common_leyka_presets';
 @import 'common_leyka_mixins';
 @import 'common_leyka';
+@import 'common_settings';
 @import 'components';
 @import 'wizard';
 @import 'wizard_init';
@@ -22,6 +22,8 @@
 @import 'donors_typo';
 @import 'donors_mixins';
 @import 'donors';
+
+@import 'extensions';
 
 @import 'feedback';
 
@@ -692,7 +694,8 @@
 
         .module-card {
 
-            background-color: $color-white;
+            
+            background-color: #E6F4FA;
             border-radius: 6px;
             width: 304px;
             height: 268px;
@@ -702,15 +705,16 @@
             margin-right: 1.5rem;
             margin-bottom: 1.5rem;
 
-            &.inactive {
-                background-color: #effbff;
+            &.inactive,
+            &.activating {
+                background-color: $color-white;
                 border-color: #d5e8ee;
             }
 
             .module-card-header {
 
                 padding: 1rem;
-                border-bottom: 1px solid $color-border-light-001;
+                border-bottom: 1px solid #C7DDE6;
 
                 display: flex;
                 justify-content: flex-start;
@@ -765,6 +769,7 @@
                 padding-top: 2px;
 
                 &.active {
+                    color: $color-wizard-link;
                 }
 
                 &.activating {
@@ -886,30 +891,23 @@
 
                     width: 100%;
                     margin-right: 0;
-
-                    &.activation-button {
-                        display: flex;
-                        justify-content: center;
-                    }
-
-                    .wizard-available {
-                        margin-left: -8px;
-                    }
-
+                    
                 }
 
-                .button-secondary {
-                    width: 100%;
-                    margin-right: 0;
-                }
+                .extension-settings, 
+                .activation-button {
+                    display: flex;
+                    justify-content: center;
+                    padding-right: 18px;
+                    position: relative;
 
-                .gateway-settings {
-                    width: 48px;
-                    margin-right: 4px;
-                    background-image: url(../../src/svg/icon-gear.svg);
-                    background-size: 38px;
-                    background-position: center;
-                    background-repeat: no-repeat;
+                    img {
+                        position: absolute;
+                        width: 32px;
+                        height: 32px;
+                        left: 2px;
+                        top: 3px;
+                    }
                 }
 
             }
@@ -955,182 +953,6 @@
                 border: 1px solid $color-border-secondary-button;
                 color: $color-secondary-button;
                 background-color: $color-white;
-            }
-
-        }
-
-        h1.wp-heading-inline {
-
-            @include leyka-adb-h1();
-
-            padding-top: 0;
-            padding-bottom: 0;
-
-            margin-bottom: 10px;
-
-        }
-
-        .single-settings-header {
-
-            display: flex;
-            flex-flow: row nowrap;
-
-            justify-content: flex-start;
-
-            padding-bottom: 32px;
-            border-bottom: 1px solid $color-section-tabs-line;
-
-            .header-left {
-
-                flex: calc(100% - 280px) 0 1;
-
-                .meta-data {
-
-                    display: flex;
-                    flex-flow: row wrap;
-                    justify-content: flex-start;
-
-                    margin-bottom: 10px;
-
-                    font-size: 12px;
-                    color: $color-wizard-link-sec-hover;
-
-                    .item {
-
-                        margin-right: 10px;
-
-                        &:last-child {
-                            margin-right: 0;
-                        }
-
-                        .item-value {
-                            color: $leyka-adb-color-text-light1;
-                            font-weight: bold;
-                        }
-
-                        .status-label {
-
-                            font-weight: normal;
-
-                            &.active {
-                                color: $leyka-admin-color-link;
-                            }
-
-                        }
-
-                    }
-
-                }
-
-            }
-
-            .header-right {
-
-                flex: 280px 0 1;
-
-                margin-left: 32px;
-
-                display: flex;
-                flex-direction: column;
-                justify-content: flex-start;
-
-                .module-logo-wrapper {
-
-                    display: flex;
-                    flex-flow: row nowrap;
-                    justify-content: center;
-
-                    .module-logo {
-
-                        width: 104px;
-                        height: 104px;
-
-                        border: 1px solid $color-border-semidark;
-                        border-radius: 50%;
-
-                        background-color: $color-white;
-
-                        margin-bottom: 32px;
-
-                        .module-logo-pic {
-                            width: 55%;
-                            height: 55%;
-                        }
-
-                    }
-
-                }
-
-                .extension-main-cta {
-                    display: flex;
-                    flex-flow: row nowrap;
-                    justify-content: center;
-                }
-
-            }
-
-        }
-
-        .metabox-holder.columns-2 {
-
-            display: flex;
-            flex-flow: row wrap;
-            justify-content: flex-start;
-
-            padding-top: 22px !important;
-            padding-bottom: 32px !important;
-
-            .column-main {
-
-                flex: calc(100% - 280px - 32px) 0 1;
-
-                padding-right: 32px;
-
-            }
-
-            .column-sidebar {
-
-                flex: 280px 0 1;
-
-                .setup-description {
-
-                    padding: 16px 12px;
-                    margin-bottom: 16px;
-
-                    border-radius: 6px;
-
-                    background-color: $color-inline-instructions-background;
-
-                }
-
-            }
-
-        }
-
-        .single-settings-footer {
-
-            display: flex;
-            flex-flow: row nowrap;
-            justify-content: space-between;
-            align-items: center;
-
-            border-top: 1px solid $color-section-tabs-line;
-            padding-top: 32px;
-
-            .delete-extension-link {
-                color: $leyka-adb-color-error;
-                text-decoration: none;
-                border: 0;
-            }
-
-            .button {
-
-                margin-left: 24px;
-
-                &.save-settings {
-                    width: 152px;
-                }
-
             }
 
         }

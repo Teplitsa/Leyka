@@ -4,10 +4,8 @@
 /** @var $this Leyka_Admin_Setup */
 
 $extensions = leyka()->get_extensions();
-$extensions_categories = Leyka_Extension::get_filter_categories_list();
+$extensions_categories = Leyka_Extension::get_filter_categories_list();?>
 
-//echo '<pre>'.print_r($extensions, 1).'</pre>';
-//echo '<pre>'.print_r($extensions_categories, 1).'</pre>';?>
 
 <div class="wrap leyka-admin leyka-settings-page" data-leyka-admin-page-type="extensions-list-page">
 
@@ -71,8 +69,9 @@ $extensions_categories = Leyka_Extension::get_filter_categories_list();
                     <div class="module-card-params extension-description"><?php echo $extension->description;?></div>
 
                     <div class="module-card-action">
-                        <a class="button <?php echo $activation_status === 'active' ? 'button-secondary' : 'button-primary';?> activation-button <?php echo $activation_status;?>" href="<?php echo $extension->get_settings_url();?>">
-                            <?php echo leyka_get_extension_activation_button_label($extension);?>
+                        <a class="button extension-settings <?php echo 'button-primary';?> <?php echo 'leyka-card-'.$activation_status;?>" href="<?php echo $extension->get_settings_url();?>">
+                            <img src="<?php echo LEYKA_PLUGIN_BASE_URL.'src/svg/icon-gear.svg';?>" alt="">
+                            <?php _e('Extension settings', 'leyka');?>
                         </a>
                     </div>
 

@@ -409,6 +409,10 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
     }
 
+    public function is_setup_complete($pm_id = false) {
+        return false;
+    }
+
     /**
      * A service method to get a a gateway inner system payment method ID by according Leyka pm_id, and vice versa.
      *
@@ -823,10 +827,11 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
         $gateway_section_index = -1;
 
         foreach($options as $index => $option) {
-
             if( !empty($option['section']) && $option['section']['name'] == $gateway->id ) {
+
                 $gateway_section_index = $index;
                 break;
+
             }
         }
 

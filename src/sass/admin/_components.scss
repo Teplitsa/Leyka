@@ -1,19 +1,16 @@
 // help chat
-.leyka-wizard, .leyka-admin {
+#admin-support-widget {
 
-    .step-common-errors.has-errors {
-        @include common-error-message(settings-block);
-    }
-    
     .help-chat-button {
+
         &[href='#'] {
             border-bottom: none;
             padding-bottom: 0;
         }
-        
+
         border-bottom: none;
         padding-bottom: 0;
-        
+
         width: 64px;
         height: 64px;
         display: flex;
@@ -23,15 +20,17 @@
         border-radius: 32px;
         position: fixed;
         right: 40px;
-        bottom: 40px;
-        
+        bottom: 60px;
+
         img {
             width: 34px;
             height: 34px;
         }
+
     }
-    
+
     .help-chat {
+
         position: fixed;
         right: 40px;
         bottom: 40px;
@@ -39,11 +38,11 @@
         background-color: #006799;
         border-radius: 6px;
         display: none;
-        
+
         &.fix-height {
             height: 403px;
         }
-        
+
         .chat-header {
             display:flex;
             align-items: center;
@@ -51,7 +50,7 @@
             padding-left: 1.5rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.24);
             height: 51px;
-            
+
             .title {
                 font-family: $body;
                 font-size: 16px;
@@ -59,65 +58,96 @@
                 font-weight: 500;
                 color: #f1f1f1;
             }
-            
+
             .close {
                 margin-right: 1rem;
                 cursor: pointer;
             }
         }
-        
+
         .chat-body {
+
             padding-left: 1.5rem;
             padding-right: 1.5rem;
             padding-top: 1.5rem;
-            
+
             .ok-message {
+
                 display: none;
-                
+                padding-bottom: 2rem;
+
                 p {
                     color: $color-white;
                     text-align: center;
                     font-size: 14px;
                     margin-bottom: 0;
                 }
-                padding-bottom: 2rem;
+
             }
-            
+
             .leyka-loader {
                 display: none;
             }
-            
+
             .form {
             }
-            
+
             .title {
                 color: $color-white;
             }
-            
+
             .settings-block.option-block {
-                margin-bottom: 0rem;
-                
-                .title {
-                    font-weight: 400;
+
+                margin-bottom: 0;
+
+                label {
+
+                    display: flex;
+                    flex-flow: column nowrap;
+
+                    .title {
+                        font-weight: 400;
+                    }
+
+                    input,textarea {
+                        width: 100%;
+                    }
+
                 }
-                
+
+
+
                 .field-errors {
                     color: $color-wizard-error-message;
                     visibility: hidden;
                 }
-                
+
                 input, textarea {
                     margin-left: 0;
                 }
+
             }
-            
+
             .button-primary {
+
                 @include wizard-button-caption();
+
                 margin-top: 0.5rem;
                 height: 40px;
                 width: 100%;
+
             }
+
         }
+
+    }
+
+}
+
+.leyka-wizard, .leyka-admin {
+
+    .step-common-errors.has-errors {
+        @include common-error-message(settings-block);
     }
         
 }

@@ -10,8 +10,8 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
     protected $_common_errors = array();
     protected $_component_errors = array();
 
-    /** @var $_sections array of Leyka_Settings_Section objects */
-    protected $_sections;
+    /** @var $_stages array of Leyka_Settings_Section objects */
+    protected $_stages;
 
     protected static $_instance = null;
 
@@ -23,6 +23,7 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
             case 'init': return Leyka_Init_Wizard_Settings_Controller::get_instance();
             case 'cp': return Leyka_Cp_Wizard_Settings_Controller::get_instance();
             case 'yandex': return Leyka_Yandex_Wizard_Settings_Controller::get_instance();
+            case 'extension': return Leyka_Extension_Settings_Controller::get_instance();
             default: /** @throw some Exception */ return false;
         }
 
@@ -32,7 +33,7 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
 
         $this->_load_frontend_scripts();
         $this->_set_attributes();
-        $this->_set_sections();
+        $this->_set_stages();
 
         add_action('leyka_settings_submit_'.$this->_id, array($this, 'handle_submit'));
 
@@ -54,7 +55,7 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
     }
 
     abstract protected function _set_attributes();
-    abstract protected function _set_sections();
+    abstract protected function _set_stages();
 
     public function __get($name) {
         switch($name) {
@@ -114,11 +115,11 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
         }
     }
 
-    /** @return Leyka_Settings_Step */
-    abstract public function get_current_step();
-
     /** @return Leyka_Settings_Section */
     abstract public function get_current_section();
+
+    /** @return Leyka_Settings_Stage */
+    abstract public function get_current_stage();
 
     abstract public function get_submit_data($component = null);
 
@@ -132,7 +133,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     protected static $_instance = null;
 
-    protected $_activity = array('history' => array(), 'current_step' => false, 'current_section' => false,);
+    protected $_activity = array('history' => array(), 'current_section' => false, 'current_stage' => false,);
     protected $_navigation_data = array();
 
     protected function __construct() {
@@ -144,9 +145,9 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             $this->_activity = $wizards_activities[$this->_id];
         }
 
-        add_action('leyka_settings_wizard-'.$this->_id.'-_step_init', array($this, 'step_init'));
+        add_action('leyka_settings_wizard-'.$this->_id.'-_section_init', array($this, 'section_init'));
 
-        if( !$this->_sections ) {
+        if( !$this->_stages ) {
             return;
         }
 
@@ -155,26 +156,26 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             $_GET['return_to'] = esc_attr($_GET['return_to']);
             $history = empty($this->_activity['history']) ? array() : $this->_activity['history'];
 
-            foreach($history as $step_full_id => $step_history_entry) {
+            foreach($history as $section_full_id => $section_history_entry) {
 
                 $target_nav_position_parts = explode('-', $_GET['return_to']);
 
-                if(count($target_nav_position_parts) > 1) { // Step nav. position given
+                if(count($target_nav_position_parts) > 1) { // Section nav. position given
                     $target_navigation_position = $_GET['return_to'];
-                } else { // Section nav. position given - find the first of it's Steps
+                } else { // Section nav. position given - find the first of it's Sections
 
-                    $history_entry_nav_position_parts = explode('-', $step_history_entry['navigation_position']);
+                    $history_entry_nav_position_parts = explode('-', $section_history_entry['navigation_position']);
                     if($history_entry_nav_position_parts[0] === $target_nav_position_parts[0]) {
-                        $target_navigation_position = $step_history_entry['navigation_position'];
+                        $target_navigation_position = $section_history_entry['navigation_position'];
                     } else {
                         continue;
                     }
 
                 }
 
-                if($step_history_entry['navigation_position'] === $target_navigation_position) {
+                if($section_history_entry['navigation_position'] === $target_navigation_position) {
 
-                    $this->_handleSettingsGoBack($step_full_id);
+                    $this->_handle_settings_go_back($section_full_id);
                     break;
 
                 }
@@ -183,17 +184,15 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
         }
 
-        if( !$this->current_section ) {
-            $this->_setCurrentSection(reset($this->_sections));
+        if( !$this->current_stage ) {
+            $this->_set_current_stage(reset($this->_stages));
         }
 
-        if( !$this->current_step && $this->current_section ) {
+        if( !$this->current_section && $this->current_stage ) {
 
-//            echo '<pre>'.print_r($this->current_section, 1).'</pre>';
-
-            $init_step = $this->current_section->init_step;
-            if($init_step) { /** @var $init_step Leyka_Settings_Step */
-                $this->_set_current_step($init_step);
+            $init_section = $this->current_stage->init_section;
+            if($init_section) { /** @var $init_section Leyka_Settings_Section */
+                $this->_set_current_section($init_section);
             }
 
         }
@@ -204,17 +203,17 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
         // Debug {
         if(isset($_GET['reset'])) {
-            $this->_resetActivity();
+            $this->_reset_activity();
         }
         // } Debug
 
-        do_action('leyka_settings_wizard-'.$this->_id.'-_step_init');
+        do_action('leyka_settings_wizard-'.$this->_id.'-_section_init');
 
-        if( !empty($_POST['leyka_settings_prev_'.$this->_id]) ) { // Step page loading after returning from further Step
-            $this->_handleSettingsGoBack();
-        } else if( !empty($_POST['leyka_settings_submit_'.$this->_id]) ) { // Step page loading after previous Step submit
+        if( !empty($_POST['leyka_settings_prev_'.$this->_id]) ) { // Section page loading after returning from further Section
+            $this->_handle_settings_go_back();
+        } else if( !empty($_POST['leyka_settings_submit_'.$this->_id]) ) { // Section page loading after previous Section submit
             $this->_handle_settings_submit();
-        } //else { // Normal Step page loading
+        } //else { // Normal Section page loading
         //}
 
         if(isset($_GET['debug'])) {
@@ -225,20 +224,20 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     public function __get($name) {
         switch($name) {
-            case 'current_step':
-                return empty($this->_activity['current_step']) ? null : $this->_activity['current_step'];
-
-            case 'current_step_id':
-                return empty($this->_activity['current_step']) ? null : $this->_activity['current_step']->id;
-
             case 'current_section':
                 return empty($this->_activity['current_section']) ? null : $this->_activity['current_section'];
 
             case 'current_section_id':
                 return empty($this->_activity['current_section']) ? null : $this->_activity['current_section']->id;
 
-            case 'next_step_full_id':
-                return $this->_get_next_step_id();
+            case 'current_stage':
+                return empty($this->_activity['current_stage']) ? null : $this->_activity['current_stage'];
+
+            case 'current_stage_id':
+                return empty($this->_activity['current_stage']) ? null : $this->_activity['current_stage']->id;
+
+            case 'next_section_full_id':
+                return $this->_get_next_section_id();
             
             case 'history':
                 return empty($this->_activity['history']) ? array() : $this->_activity['history'];
@@ -253,26 +252,26 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     public function __set($name, $value) {
         switch($name) {
-            case 'current_step':
-                $this->_set_current_step($value);
-                break;
             case 'current_section':
-                $this->_setCurrentSection($value);
+                $this->_set_current_section($value);
+                break;
+            case 'current_stage':
+                $this->_set_current_stage($value);
                 break;
             default:
         }
     }
 
-    protected function _resetActivity() {
+    protected function _reset_activity() {
 
-        $this->_activity = array('history' => array(), 'current_step' => false, 'current_section' => false,);
-        $this->current_step = reset($this->_sections)->init_step;
+        $this->_activity = array('history' => array(), 'current_stage' => false, 'current_section' => false,);
+        $this->current_section = reset($this->_stages)->init_section;
 
-        return $this->_saveActivity();
+        return $this->_save_activity();
 
     }
 
-    protected function _saveActivity() {
+    protected function _save_activity() {
 
         $wizards_activities = get_transient('leyka_wizards_activities');
         $wizards_activities[$this->_id] = $this->_activity;
@@ -283,57 +282,56 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     }
 
+    /** @return Leyka_Settings_Stage */
+    public function get_current_stage() {
+        return $this->current_stage;
+    }
+
     /** @return Leyka_Settings_Section */
     public function get_current_section() {
         return $this->current_section;
     }
 
-    /** @return Leyka_Settings_Step */
-    public function get_current_step() {
-        return $this->current_step;
-    }
-
-    protected function _set_current_step(Leyka_Settings_Step $step) {
-
-        $this->_activity['current_step'] = $step;
-
-        return $this->_setCurrentSection($this->_sections[$step->section_id]); // Activity saved
-
-    }
-
-    protected function _setCurrentSection(Leyka_Settings_Section $section) {
+    protected function _set_current_section(Leyka_Settings_Section $section) {
 
         $this->_activity['current_section'] = $section;
 
-        return $this->_saveActivity();
+        return $this->_set_current_stage($this->_stages[$section->stage_id]); // Activity saved
 
     }
 
-    protected function _setCurrentStepById($step_full_id) {
+    protected function _set_current_stage(Leyka_Settings_Stage $stage) {
 
-        if( !$step_full_id ) {
+        $this->_activity['current_stage'] = $stage;
+
+        return $this->_save_activity();
+
+    }
+
+    protected function _set_current_section_by_id($section_full_id) {
+
+        if( !$section_full_id ) {
             return $this;
         }
 
-        $step = $this->get_component_by_id($step_full_id);
-        if( !$step ) {
+        $section = $this->get_component_by_id($section_full_id);
+        if( !$section ) {
             return $this;
         }
 
-        return $this->_set_current_step($step)
-            ->_setCurrentSection($this->get_component_by_id($step->section_id));
+        return $this->_set_current_section($section)->_set_current_stage($this->get_component_by_id($section->stage_id));
 
     }
 
     /**
-     * @param $step_full_id string
+     * @param $section_full_id string
      * @return boolean
      */
-    protected function _isStepCompleted($step_full_id) {
+    protected function _is_section_completed($section_full_id) {
 
-        /** @todo Throw some Exception if the given Step doesn't exists. */
-        $step_full_id = trim($step_full_id);
-        return !empty($this->_activity['history'][$step_full_id]);
+        /** @todo Throw some Exception if the given Section doesn't exists. */
+        $section_full_id = trim($section_full_id);
+        return !empty($this->_activity['history'][$section_full_id]);
 
     }
 
@@ -345,9 +343,9 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
                 return null;
             }
 
-            foreach($this->_activity['history'] as $step_full_id => $step_history_entry) {
-                if(isset($step_history_entry['data'][$setting_name])) {
-                    return $step_history_entry['data'][$setting_name];
+            foreach($this->_activity['history'] as $section_full_id => $section_history_entry) {
+                if(isset($section_history_entry['data'][$setting_name])) {
+                    return $section_history_entry['data'][$setting_name];
                 }
             }
 
@@ -356,8 +354,8 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
         } else {
 
             $res = array();
-            foreach($this->_activity['history'] as $step_full_id => $step_history_entry) {
-                $res = array_merge($res, $step_history_entry['data']);
+            foreach($this->_activity['history'] as $section_full_id => $section_history_entry) {
+                $res = array_merge($res, $section_history_entry['data']);
             }
 
             return $res;
@@ -366,32 +364,33 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     }
 
-    protected function _add_history_entry(array $data = array(), $step_full_id = false) {
+    protected function _add_history_entry(array $data = array(), $section_full_id = false) {
 
-        $data = empty($data) ? $this->get_current_step()->get_fields_values() : $data;
-        $step_full_id = !$step_full_id ? $this->get_current_step()->full_id : trim($step_full_id);
+        $data = empty($data) ? $this->get_current_section()->get_fields_values() : $data;
+        $section_full_id = !$section_full_id ? $this->get_current_section()->full_id : trim($section_full_id);
 
-        if(empty($this->_activity['history'][$step_full_id])) {
-            $this->_activity['history'][$step_full_id] = array(
-                'navigation_position' => $this->_get_step_navigation_position($step_full_id),
+        if(empty($this->_activity['history'][$section_full_id])) {
+            $this->_activity['history'][$section_full_id] = array(
+                'navigation_position' => $this->_get_section_navigation_position($section_full_id),
                 'data' => $data
             );
         } else {
-            $this->_activity['history'][$step_full_id] = $this->_activity['history'][$step_full_id] + array(
-                'navigation_position' => $this->_get_step_navigation_position($step_full_id),
+            $this->_activity['history'][$section_full_id] = $this->_activity['history'][$section_full_id] + array(
+                'navigation_position' => $this->_get_section_navigation_position($section_full_id),
                 'data' => $data
             );
         }
 
-        return $this->_saveActivity();
+        return $this->_save_activity();
 
     }
 
     protected function _process_settings_values(array $blocks = null) {
 
-        $blocks = $blocks ? $blocks : $this->get_current_step()->get_blocks();
+        $blocks = $blocks ? $blocks : $this->get_current_section()->get_blocks();
 
         foreach($blocks as $block) { /** @var $block Leyka_Settings_Block */
+
             if(is_a($block, 'Leyka_Option_Block') && $block->is_valid()) {
                 leyka_save_option($block->option_id);
             } else if(is_a($block, 'Leyka_Custom_Setting_Block')) {
@@ -399,105 +398,106 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             } else if(is_a($block, 'Leyka_Container_Block')) {
                 $this->_process_settings_values($block->get_content());
             }
+
         }
 
     }
 
-    protected function _handleSettingsGoBack($step_full_id = false, $delete_history = true) {
+    protected function _handle_settings_go_back($section_full_id = false, $delete_history = true) {
 
-        if( !$step_full_id ) {
-            $step_full_id = array_key_last($this->_activity['history']);
+        if( !$section_full_id ) {
+            $section_full_id = array_key_last($this->_activity['history']);
         } else {
 
-            $step_found = false;
-            foreach($this->_activity['history'] as $passed_step_full_id => $data) {
-                if($step_full_id === $passed_step_full_id) {
+            $section_found = false;
+            foreach($this->_activity['history'] as $passed_section_full_id => $data) {
+                if($section_full_id === $passed_section_full_id) {
 
-                    $step_found = true;
+                    $section_found = true;
                     break;
 
                 }
             }
 
-            $step_full_id = $step_found ? $step_full_id : false;
+            $section_full_id = $section_found ? $section_full_id : false;
 
         }
 
-        if($step_full_id) {
-            $this->_setCurrentStepById($step_full_id);
+        if($section_full_id) {
+            $this->_set_current_section_by_id($section_full_id);
         } else {
-            $this->_setCurrentSection(reset($this->_sections))
-                ->_set_current_step($this->get_current_section()->init_step);
+            $this->_set_current_stage(reset($this->_stages))
+                ->_set_current_section($this->get_current_stage()->init_section);
         }
 
         if( !!$delete_history ) { // Remove already passed keys from the Activity
-            foreach(array_reverse($this->_activity['history'], true) as $passed_step_full_id => $data) {
+            foreach(array_reverse($this->_activity['history'], true) as $passed_section_full_id => $data) {
 
-                unset($this->_activity['history'][$passed_step_full_id]);
+                unset($this->_activity['history'][$passed_section_full_id]);
 
-                if($passed_step_full_id === $step_full_id) {
+                if($passed_section_full_id === $section_full_id) {
                     break;
                 }
 
             }
         }
 
-        return $this->_saveActivity();
+        return $this->_save_activity();
 
     }
 
-    /** The default implementation: the Wizard navigation roadmap created from existing Sections & Steps */
+    /** The default implementation: the Wizard navigation roadmap created from existing Stages & Sections */
     protected function _init_navigation_data() {
 
-        if( !$this->_sections ) {
+        if( !$this->_stages ) {
             return;
         }
 
         $this->_navigation_data = array();
 
-        foreach($this->_sections as $section) { /** @var Leyka_Settings_Section $section */
+        foreach($this->_stages as $stage) { /** @var Leyka_Settings_Stage $stage */
 
-            $steps = $section->getSteps();
-            if( !$steps ) {
+            $sections = $stage->get_sections();
+            if( !$sections ) {
                 continue;
             }
 
-            $steps_data = array();
-            $all_steps_completed = true;
-            foreach($steps as $step) { /** @var Leyka_Settings_Step $step */
+            $sections_data = array();
+            $all_sections_completed = true;
+            foreach($sections as $section) { /** @var Leyka_Settings_Section $section */
 
-                $step_completed = $this->_isStepCompleted($step->full_id);
+                $section_completed = $this->_is_section_completed($section->full_id);
 
-                if($all_steps_completed && !$step_completed) {
-                    $all_steps_completed = false;
+                if($all_sections_completed && !$section_completed) {
+                    $all_sections_completed = false;
                 }
 
-                $steps_data[] = array(
-                    'step_id' => $step->full_id,
-                    'title' => $step->title,
+                $sections_data[] = array(
+                    'section_id' => $section->full_id,
+                    'title' => $section->title,
                     'url' => false,
-                    'is_current' => $this->current_step->full_id === $step->full_id,
-                    'is_completed' => $step_completed,
+                    'is_current' => $this->current_section->full_id === $section->full_id,
+                    'is_completed' => $section_completed,
                 );
 
             }
 
             $this->_navigation_data[] = array(
-                'section_id' => $section->id,
-                'title' => $section->title,
+                'stage_id' => $stage->id,
+                'title' => $stage->title,
                 'url' => false,
-                'is_current' => $this->current_section_id === $section->id, // True if the current Step belongs to the Section
-                'is_completed' => $all_steps_completed,
-                'steps' => $steps_data,
+                'is_current' => $this->current_stage_id === $stage->id, // True if the current Section belongs to the Stage
+                'is_completed' => $all_sections_completed,
+                'sections' => $sections_data,
             );
 
         }
 
     }
 
-    /** By default, each Step navigation position equals to it's full ID. */
-    protected function _get_step_navigation_position($step_full_id = false) {
-        return $step_full_id ? trim($step_full_id) : $this->get_current_step()->full_id;
+    /** By default, each Section navigation position equals to it's full ID. */
+    protected function _get_section_navigation_position($section_full_id = false) {
+        return $section_full_id ? trim($section_full_id) : $this->get_current_section()->full_id;
     }
 
     /**
@@ -505,54 +505,54 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
      * @param $navigation_position string
      * @return array
      */
-    protected function _processNavigationData($navigation_position = null, array $navigation_data = null) {
+    protected function _process_navigation_data($navigation_position = null, array $navigation_data = null) {
 
         $navigation_data = empty($navigation_data) ? $this->_navigation_data : $navigation_data;
-        $navigation_position = empty($navigation_position) ? $this->current_step_full_id : trim($navigation_position);
+        $navigation_position = empty($navigation_position) ? $this->current_section_full_id : trim($navigation_position);
 
-        foreach($navigation_data as $section_index => &$section) {
+        foreach($navigation_data as $stage_index => &$stage) {
 
             $navigation_position_parts = explode('-', $navigation_position);
 
-            if($section['section_id'] === $navigation_position_parts[0]) {
+            if($stage['stage_id'] === $navigation_position_parts[0]) {
 
                 if(count($navigation_position_parts) === 1) {
 
-                    $navigation_data[$section_index]['is_current'] = true;
+                    $navigation_data[$stage_index]['is_current'] = true;
                     break;
 
                 }
 
             }
 
-            foreach(empty($section['steps']) ? array() : $section['steps'] as $step_index => $step) {
+            foreach(empty($stage['sections']) ? array() : $stage['sections'] as $section_index => $section) {
 
-                $step_navigation_position = $section['section_id'].'-'.$step['step_id'];
+                $section_navigation_position = $stage['stage_id'].'-'.$section['section_id'];
 
-                if($navigation_position === $step_navigation_position) {
+                if($navigation_position === $section_navigation_position) {
 
-                    $navigation_data[$section_index]['steps'][$step_index]['is_current'] = true;
-                    $navigation_data[$section_index]['is_current'] = true;
+                    $navigation_data[$stage_index]['sections'][$section_index]['is_current'] = true;
+                    $navigation_data[$stage_index]['is_current'] = true;
 
                     break 2;
 
                 } else {
 
-                    $navigation_data[$section_index]['steps'][$step_index]['is_completed'] = true;
-                    $navigation_data[$section_index]['steps'][$step_index]['url'] = add_query_arg(
-                        'return_to', $step_navigation_position, remove_query_arg('return_to')
+                    $navigation_data[$stage_index]['sections'][$section_index]['is_completed'] = true;
+                    $navigation_data[$stage_index]['sections'][$section_index]['url'] = add_query_arg(
+                        'return_to', $section_navigation_position, remove_query_arg('return_to')
                     );
 
                 }
 
             }
 
-            $navigation_data[$section_index]['is_completed'] = true;
-            $navigation_data[$section_index]['url'] = add_query_arg(
-                'return_to', $section['section_id'], remove_query_arg('return_to')
+            $navigation_data[$stage_index]['is_completed'] = true;
+            $navigation_data[$stage_index]['url'] = add_query_arg(
+                'return_to', $stage['stage_id'], remove_query_arg('return_to')
             );
 
-            if($navigation_position === $section['section_id'].'--') {
+            if($navigation_position === $stage['stage_id'].'--') {
                 break;
             }
 
@@ -568,10 +568,10 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
      */
     public function get_navigation_data() {
 
-        $navigation_position = $this->_get_step_navigation_position();
+        $navigation_position = $this->_get_section_navigation_position();
 
         return $navigation_position ?
-            $this->_processNavigationData($navigation_position) :
+            $this->_process_navigation_data($navigation_position) :
             $this->_navigation_data;
 
     }
@@ -579,45 +579,43 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
     /**
      * @param $component_id string
      * @param  $is_full_id boolean
-     * @return mixed Leyka_Settings_Step, Leyka_Settings_Section or null, if given component ID wasn't found
+     * @return mixed Leyka_Settings_Section, Leyka_Settings_Stage or null, if given component ID wasn't found
      */
     public function get_component_by_id($component_id, $is_full_id = true) {
 
         if( !$is_full_id ) {
 
-            $section = $this->get_current_section();
-            $step_id = $component_id;
+            $stage = $this->get_current_stage();
+            $stage_id = $component_id;
 
         } else {
 
-            $component_id = explode('-', $component_id); // [0] is a Section ID, [1] is a Step ID
+            $component_id = explode('-', $component_id); // [0] is a Section ID, [1] is a Section ID
 
             if(count($component_id) < 2 && $component_id[0]) {
-                return empty($this->_sections[ $component_id[0] ]) ? null : $this->_sections[ $component_id[0] ];
+                return empty($this->_stages[ $component_id[0] ]) ? null : $this->_stages[ $component_id[0] ];
             }
 
-            if(empty($this->_sections[$component_id[0]])) {
+            if(empty($this->_stages[$component_id[0]])) {
                 return null;
             }
 
-            $section = $this->_sections[$component_id[0]];
-            $step_id = $component_id[1];
+            $stage = $this->_stages[$component_id[0]];
+            $stage_id = $component_id[1];
 
         }
 
-        $step = $section->get_step_by_id($step_id);
-
-        return $step;
+        return $stage->get_section_by_id($stage_id);
 
     }
 
     public function handle_submit() {
 
-        $this->_process_settings_values(); // Save all valid options on current step
+        $this->_process_settings_values(); // Save all valid options on current section
 
-        if( !$this->get_current_step()->is_valid() ) {
+        if( !$this->get_current_section()->is_valid() ) {
 
-            foreach($this->get_current_step()->get_errors() as $component_id => $errors) {
+            foreach($this->get_current_section()->get_errors() as $component_id => $errors) {
                 foreach($errors as $error) {
                     $this->_add_component_error($component_id, $error);
                 }
@@ -627,12 +625,12 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
         }
 
-        // Whole step settings handling:
-        $settings_entered = $this->get_current_step()->get_fields_values();
+        // Whole section settings handling:
+        $settings_entered = $this->get_current_section()->get_fields_values();
 
-        if($this->get_current_step()->has_handler()) {
+        if($this->get_current_section()->has_handler()) {
 
-            $result = call_user_func($this->get_current_step()->get_handler(), $settings_entered);
+            $result = call_user_func($this->get_current_section()->get_handler(), $settings_entered);
 
             if(is_array($result)) {
                 foreach($result as $error) { /** @var $error WP_Error */
@@ -646,100 +644,100 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
         }
 
-        do_action("leyka_process_step_settings-{$this->get_current_step()->full_id}", $settings_entered);
+        do_action("leyka_process_section_settings-{$this->get_current_section()->full_id}", $settings_entered);
 
-        if($this->has_common_errors()) { // Stay on current step
+        if($this->has_common_errors()) { // Stay on current section
             return;
         }
 
-        $this->_add_history_entry(); // Save the step data in the storage
+        $this->_add_history_entry(); // Save the section data in the storage
 
-        // Proceed to the next step:
-        $next_step_full_id = $this->_get_next_step_id();
-        if($next_step_full_id && $next_step_full_id !== true) {
+        // Proceed to the next section:
+        $next_section_full_id = $this->_get_next_section_id();
+        if($next_section_full_id && $next_section_full_id !== true) {
 
-            $step = $this->get_component_by_id($this->_get_next_step_id());
-            if( !$step ) {
+            $section = $this->get_component_by_id($this->_get_next_section_id());
+            if( !$section ) {
 
-                $this->_add_common_error(new WP_Error('next_step_not_found', esc_html__('The Wizard next step is not found', 'leyka')));
+                $this->_add_common_error(new WP_Error('no_next_section', __('The next Wizard section is not found', 'leyka')));
                 return;
 
             }
 
-            $this->_set_current_step($step);
+            $this->_set_current_section($section);
 
-            do_action('leyka_settings_wizard-'.$this->_id.'-_step_init');
+            do_action('leyka_settings_wizard-'.$this->_id.'-_section_init');
 
         }
 
     }
 
-    public function step_init() {
+    public function section_init() {
     }
 
     /**
-     * Steps branching incapsulation method. By default, it's next step in _steps array.
+     * Sections branching incapsulation method. By default, it's next section in _sections array.
      *
-     * @param $step_from Leyka_Settings_Step
+     * @param $section_from Leyka_Settings_Section
      * @param $return_full_id boolean
-     * @return mixed Either next step ID, or false (if non-existent step given), or true (if last step given).
+     * @return mixed Either next section ID, or false (if non-existent section given), or true (if last section given).
      */
-    protected function _get_next_step_id(Leyka_Settings_Step $step_from = null, $return_full_id = true) {
+    protected function _get_next_section_id(Leyka_Settings_Section $section_from = null, $return_full_id = true) {
 
-        $step_from = $step_from && is_a($step_from, 'Leyka_Settings_Step') ? $step_from : $this->current_step;
-        $section_from = $this->_sections[$step_from->section_id];
+        $section_from = $section_from && is_a($section_from, 'Leyka_Settings_Section') ? $section_from : $this->current_section;
+        $stage_from = $this->_stages[$section_from->stage_id];
 
-        $is_next_step_target = false;
-        $next_step = null;
+        $is_next_section_target = false;
+        $next_section = null;
 
-        foreach($section_from->steps as $step_id => $step) {
+        foreach($stage_from->sections as $section_id => $section) {
 
-            if($is_next_step_target) {
+            if($is_next_section_target) {
 
-                $next_step = $step;
+                $next_section = $section;
                 break;
 
             }
 
-            if($step_from->section_id == $section_from->id && $step_id == $step_from->id) {
-                $is_next_step_target = true;
+            if($section_from->stage_id == $stage_from->id && $section_id == $section_from->id) {
+                $is_next_section_target = true;
             }
 
         }
 
-        $next_section = null;
+        $next_stage = null;
 
-        if( !$next_step ) {
+        if( !$next_section ) {
 
-            $is_next_section_target = false;
+            $is_next_stage_target = false;
 
-            foreach($this->_sections as $section_id => $section) {
+            foreach($this->_stages as $stage_id => $stage) {
 
-                if($is_next_section_target) {
+                if($is_next_stage_target) {
 
-                    $next_section = $section;
-                    $next_step = $section->steps ? $section->steps[ array_key_first($section->steps) ] : false;
+                    $next_stage = $stage;
+                    $next_section = $stage->sections ? $stage->sections[ array_key_first($stage->sections) ] : false;
                     break;
 
                 }
 
-                if($section->id == $section_from->id) {
-                    $is_next_section_target = true;
+                if($stage->id == $stage_from->id) {
+                    $is_next_stage_target = true;
                 }
 
             }
 
-        }
-
-        if( !$next_step ) {
-            $next_step = $step_from;
         }
 
         if( !$next_section ) {
             $next_section = $section_from;
         }
 
-        return $next_section->id.'-'.$next_step->id;
+        if( !$next_stage ) {
+            $next_stage = $stage_from;
+        }
+
+        return $next_stage->id.'-'.$next_section->id;
 
     }
 

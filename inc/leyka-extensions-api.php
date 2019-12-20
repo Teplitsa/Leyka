@@ -12,10 +12,13 @@ abstract class Leyka_Extension extends Leyka_Singleton {
 	protected $_full_description = '';
 	protected $_settings_description = '';
 	protected $_connection_description = '';
+	protected $_screenshots = array();
 
     protected $_icon = ''; // An icon URL
     protected $_user_docs_link = ''; // Extension user manual page URL
     protected $_has_wizard = false;
+    
+    protected $_has_color_options = true;
 
     protected $_is_premium = false;
 
@@ -33,11 +36,18 @@ abstract class Leyka_Extension extends Leyka_Singleton {
      * @return Leyka_Extension|false
      */
     public static function get_by_id($extension_id) {
+        return leyka()->get_extension_by_id($extension_id);
+    }
 
-        $extensions = leyka()->get_extensions();
-
-        return empty($extensions[$extension_id]) ? false : $extensions[$extension_id];
-
+    /**
+     * @param $extension_id string
+     * @param $activation_status boolean True to check if given Extension is active, false to check if it's inactive.
+     *
+     * @throws Exception
+     * @return boolean True if given Extension has given activation status, false otherwise.
+     */
+    public static function is_active($extension_id) {
+        return leyka()->extension_is_active(trim($extension_id));
     }
 
     /**
@@ -111,6 +121,10 @@ abstract class Leyka_Extension extends Leyka_Singleton {
         $this->_set_attributes(); // Initialize main extension attributes
 
         $this->_set_options_defaults(); // Set configurable options in admin area
+        
+        if($this->_has_color_options) {
+            $this->_options[0]['section']['options'][$this->_id.'_color_options'] = $this->get_color_options();
+        }
 
         do_action('leyka_initialize_extension', $this, $this->_id);
 
@@ -121,6 +135,39 @@ abstract class Leyka_Extension extends Leyka_Singleton {
         add_action('leyka_enqueue_scripts', array($this, 'enqueue_scripts'));
 
     }
+    
+    protected function get_color_options() {
+        return array(
+            'type' => 'container',
+            'classes' => 'support-packages-color-options',
+            'entries' => array(
+                $this->_id.'_main_color' => array(
+                    'type' => 'colorpicker',
+                    'title' => 'Главный цвет', // __('', 'leyka'),
+                    'description' => 'Рекомендуем яркий цвет', // __('', 'leyka'),
+                    'default' => '#F38D04',
+                ),
+                $this->_id.'_background_color' => array(
+                    'type' => 'colorpicker',
+                    'title' => 'Цвет фона', // __('', 'leyka'),
+                    'description' => 'Контрастный основному цвету', // __('', 'leyka'),
+                    'default' => '#FDD39B',
+                ),
+                $this->_id.'_caption_color' => array(
+                    'type' => 'colorpicker',
+                    'title' => 'Цвет надписей', // __('', 'leyka'),
+                    'description' => 'Контрастный основному цвету', // __('', 'leyka'),
+                    'default' => '#FDD39B',
+                ),
+                $this->_id.'_text_color' => array(
+                    'type' => 'colorpicker',
+                    'title' => 'Цвет текста', // __('', 'leyka'),
+                    'description' => 'Рекомендуем контрастный фону', // __('', 'leyka'),
+                    'default' => '#1B1A18',
+                ),
+            )
+        );
+    }
 
     public function __get($param) {
 
@@ -128,6 +175,8 @@ abstract class Leyka_Extension extends Leyka_Singleton {
             case 'id':
             case 'ID':
                 return $this->_id;
+            case 'id_dash':
+                return str_replace('_', '-', $this->_id);
             case 'title':
             case 'name':
             case 'label':
@@ -143,6 +192,9 @@ abstract class Leyka_Extension extends Leyka_Singleton {
             case 'setup_description':
             case 'connection_description':
                 return $this->_connection_description;
+            case 'screens':
+            case 'screenshots':
+                return $this->_screenshots;
 
             case 'icon':
             case 'icon_url':
@@ -174,6 +226,14 @@ abstract class Leyka_Extension extends Leyka_Singleton {
             case 'wizard_link':
                 return admin_url('admin.php?page=leyka_settings_new&screen=wizard-'.$this->_id);
 
+            case 'active':
+            case 'is_active':
+                try {
+                    return leyka()->extension_is_active($this->_id);
+                } catch(Exception $ex) {
+                    return false;
+                }
+
             case 'activation_status':
                 return $this->get_activation_status();
             case 'activation_status_label':
@@ -201,13 +261,32 @@ abstract class Leyka_Extension extends Leyka_Singleton {
             case 'home_folder':
             case 'home_folder_path':
                 return $this->_folder;
-
+                
+            case 'main_color':
+            case 'background_color':
+            case 'caption_color':
+            case 'text_color':
+                return $this->get_color($param);
+                
             default:
                 return false;
         }
 
     }
 
+    /**
+     * The method allows to check if Extension setup is complete enough for it to activate.
+     *
+     * @return bool|WP_Error|array Either true (if no errors found), or a WP_Error object, or an array of WP_Error objects.
+     */
+    public function activation_valid() {
+        return true;
+    }
+    
+    public function get_color($color_name) {
+        return leyka()->opt($this->id . '_' . $color_name);
+    }
+    
     public function get_settings_url() {
 
         $wizard_id = leyka_extension_setup_wizard($this);
@@ -273,30 +352,45 @@ abstract class Leyka_Extension extends Leyka_Singleton {
 
     /** Register an extension frontend scripts in the plugin */
     public function enqueue_scripts() {
+        if($this->_has_color_options) {
+            $this->add_inline_style_colors();
+        }
+    }
+    
+    public function add_inline_style_colors() {
+        ob_start();
+        ?>
+:root {
+	--leyka-ext-<?php echo $this->id_dash;?>-color-main: <?php echo $this->main_color?>;
+	--leyka-ext-<?php echo $this->id_dash;?>-color-main-op10: <?php echo $this->main_color?>1A;
+	--leyka-ext-<?php echo $this->id_dash;?>-color-background: <?php echo $this->background_color?>;
+	--leyka-ext-<?php echo $this->id_dash;?>-color-caption: <?php echo $this->caption_color?>;
+	--leyka-ext-<?php echo $this->id_dash;?>-color-text: <?php echo $this->text_color?>;
+}
+        <?php        
+        $custom_css = ob_get_clean();
+        
+        wp_add_inline_style(leyka()->plugin_slug . '-revo-plugin-styles', $custom_css);
     }
 
     abstract protected function _set_attributes(); // Attributes are constant, like id, title, etc.
     protected function _set_options_defaults() {} // Options are admin configurable parameters
 
-    protected function _initialize_options() {
+    protected function _initialize_options(array $options = array()) {
 
-        foreach($this->_options as $entry => $params) {
+        $options = $options ? $options : $this->_options;
 
-            if( !is_array($entry) ) {
-                continue;
-            }
+        foreach($options as $entry => $params) {
 
-            if($entry === 'section' && !empty($params['options'])) { // An options section (-> Controller Step)
-                foreach($params as $option_id => $option_params) {
-                    leyka_options()->add_option($option_id, $option_params['type'], $option_params);
-                }
-            } else if( !empty($entry['section']['options']) ) { // An option
+            if( !empty($params['section']) && !empty($params['section']['options']) ) {
+                $this->_initialize_options($params['section']['options']); // An options section (-> Controller Section)
+            } else if( !empty($params['type']) && $params['type'] === 'container' && !empty($params['entries']) ) {
+                $this->_initialize_options($params['entries']); // An options container
+            } else if( !empty($params['type']) && !leyka_options()->option_exists($entry) ) { // An option
                 leyka_options()->add_option($entry, $params['type'], $params);
             }
 
         }
-
-//        add_filter('leyka_extension_options_allocation', array($this, 'allocate_options'), 1, 1);
 
     }
 
@@ -308,17 +402,9 @@ abstract class Leyka_Extension extends Leyka_Singleton {
      * @return string: active inactive activating
      */
     public function get_activation_status() {
-
-        $status = 'inactive';
-
-        if(false /** @todo Get the "active" option value for the extension */) {
-            $status = 'active';
-        } else if($this->wizard_id && leyka_wizard_started($this->wizard_id)) {
-            $status = 'activating';
-        }
-
-        return $status;
-
+        return $this->is_active ?
+            'active' :
+            ($this->wizard_id && leyka_wizard_started($this->wizard_id) ? 'activating' : 'inactive');
     }
 
     /** @return array A list of relevant values from the list of Leyka_Extension::_get_filter_categories_ids(). */

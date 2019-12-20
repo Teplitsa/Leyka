@@ -15,8 +15,8 @@ class Leyka_Settings_Factory extends Leyka_Singleton {
         // Controller components classes:
         require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-admin-template-tags.php');
         require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-block.php');
-        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-step.php');
         require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-section.php');
+        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-stage.php');
 
         // Basic Render class:
         require_once(LEYKA_PLUGIN_DIR.'inc/settings/renders/leyka-class-settings-render.php');
@@ -28,7 +28,7 @@ class Leyka_Settings_Factory extends Leyka_Singleton {
      * @return Leyka_Settings_Controller
      * @throws Exception With codes 500-509
      */
-    public function get_controller($controller_id) {
+    public function get_controller($controller_id, array $params = array()) {
 
         $controller_id = trim(esc_attr($controller_id));
 
@@ -52,7 +52,7 @@ class Leyka_Settings_Factory extends Leyka_Singleton {
             case 'init': return Leyka_Init_Wizard_Settings_Controller::get_instance();
             case 'cp': return Leyka_Cp_Wizard_Settings_Controller::get_instance();
             case 'yandex': return Leyka_Yandex_Wizard_Settings_Controller::get_instance();
-            case 'options': return Leyka_Options_Settings_Controller::get_instance();
+            case 'extension': return Leyka_Extension_Settings_Controller::get_instance($params);
             default: throw new Exception(
                 sprintf(__('Settings Factory error: wrong Settings Controller ID given (%s)'), $controller_id), 501
             );
@@ -85,7 +85,7 @@ class Leyka_Settings_Factory extends Leyka_Singleton {
 
         switch($render_id) {
             case 'wizard': return Leyka_Wizard_Render::get_instance();
-            case 'options': return Leyka_Options_Render::get_instance();
+            case 'extension': return Leyka_Extension_Settings_Render::get_instance();
             default: throw new Exception(
                 sprintf(__('Settings Factory error: wrong Settings Render ID given (%s)'), $render_id), 511
             );

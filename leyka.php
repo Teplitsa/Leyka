@@ -4,7 +4,7 @@
  * Plugin Name: Leyka
  * Plugin URI:  https://leyka.te-st.ru/
  * Description: The donations management system for your WP site
- * Version:     3.6.1
+ * Version:     3.7b
  * Author:      Teplitsa of social technologies
  * Author URI:  https://te-st.ru
  * Text Domain: leyka
@@ -38,7 +38,7 @@
 
 // Leyka plugin version:
 if( !defined('LEYKA_VERSION') ) {
-    define('LEYKA_VERSION', '3.6.1');
+    define('LEYKA_VERSION', '3.7b');
 }
 
 // Plugin base file:
@@ -94,7 +94,7 @@ require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-controller.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-polylang.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-core.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-gateways-api.php');
-//require_once(LEYKA_PLUGIN_DIR.'inc/leyka-extensions-api.php'); /** @todo Rename to class-modules-api, when Modules root class is ready? */
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-extensions-api.php'); /** @todo Rename to class-modules-api, when Modules root class is ready? */
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-campaign.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-donation.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-donor.php');
@@ -125,22 +125,22 @@ if($gateways_dir) {
 }
 
 // Automatically include all sub-dirs of /leyka/extensions/ :
-//$extensions_dir = dir(LEYKA_PLUGIN_DIR.'extensions/');
-//if($extensions_dir) {
-//
-//    while(false !== ($extension_id = $extensions_dir->read())) {
-//
-//        $file_addr = LEYKA_PLUGIN_DIR."extensions/$extension_id/leyka-class-{$extension_id}-extension.php";
-//
-//        if($extension_id !== '.' && $extension_id !== '..' && file_exists($file_addr)) {
-//            require_once($file_addr);
-//        }
-//
-//    }
-//
-//    $extensions_dir->close();
-//
-//}
+$extensions_dir = dir(LEYKA_PLUGIN_DIR.'extensions/');
+if($extensions_dir) {
+
+    while(false !== ($extension_id = $extensions_dir->read())) {
+
+        $file_addr = LEYKA_PLUGIN_DIR."extensions/$extension_id/leyka-class-{$extension_id}-extension.php";
+
+        if($extension_id !== '.' && $extension_id !== '..' && file_exists($file_addr)) {
+            require_once($file_addr);
+        }
+
+    }
+
+    $extensions_dir->close();
+
+}
 
 if(leyka_options()->opt('donor_accounts_available')) {
     require_once(LEYKA_PLUGIN_DIR.'templates/account/template-tags.php');

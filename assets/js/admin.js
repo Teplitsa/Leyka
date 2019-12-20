@@ -208,20 +208,6 @@ jQuery(document).ready(function($){
     });
     // Form templates screens demo - end
 
-    // Additional CSS value reset:
-    $('.css-editor-reset-value').on('click.leyka', function(e){
-
-        e.preventDefault();
-
-        let $this = $(this),
-            $css_editor_field = $this.siblings('.css-editor-field'),
-            original_value = $this.siblings('.css-editor-original-value').val();
-
-        $css_editor_field.val(original_value);
-        editor.codemirror.getDoc().setValue(original_value);
-
-    });
-
     // Campaign cover upload field:
     $('.upload-photo', '.upload-attachment-field').on('click.leyka', function(e){
 
@@ -282,27 +268,6 @@ jQuery(document).ready(function($){
         frame.open();
 
     });
-
-    // Custom CSS editor:
-    let $css_editor = $('.css-editor-field');
-    let editor = {};
-
-    if(!wp.codeEditor) {
-        console.log("no code editor");
-    }
-
-    if($css_editor.length && wp.codeEditor) {
-
-        let editor_settings = wp.codeEditor.defaultSettings ? _.clone( wp.codeEditor.defaultSettings ) : {};
-        editor_settings.codemirror = _.extend({
-            },
-            editor_settings.codemirror, {
-            indentUnit: 2,
-            tabSize: 2,
-            mode: 'css',
-        });
-        editor = wp.codeEditor.initialize($css_editor, editor_settings);
-    }
 
     // Campaign cover type:
     $('#campaign-cover-type input[type="radio"]').change(function(){
@@ -441,6 +406,127 @@ jQuery(document).ready(function($){
     }).change();
 
 });
+// color calc
+function leykaRgb2Hsl(r, g, b) {
+    var d, h, l, max, min, s;
+
+    r /= 255;
+    g /= 255;
+    b /= 255;
+
+    max = Math.max(r, g, b);
+    min = Math.min(r, g, b);
+
+    h = 0;
+    s = 0;
+    l = (max + min) / 2;
+
+    if (max === min) {
+        h = s = 0;
+
+    } else {
+        d = max - min;
+
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+        if(max == r) {
+            h = (g - b) / d + (g < b ? 6 : 0);
+        }
+        else if(max == g) {
+            h = (b - r) / d + 2;
+        }
+        else if(max == b) {
+            h = (r - g) / d + 4;
+        }
+
+        h /= 6;
+    }
+
+    h = Math.floor(h * 360);
+    s = Math.floor(s * 100);
+    l = Math.floor(l * 100);
+
+    return [h, s, l];
+}
+
+function leykaHex2Rgb (hex) {
+    hex = hex.replace("#", "");
+
+    var intColor = parseInt(hex, 16);
+    var r = (intColor >> 16) & 255;
+    var g = (intColor >> 8) & 255;
+    var b = intColor & 255;
+
+    return [r, g, b];
+}
+
+function leykaHsl2Rgb(h, s, l) {
+    h /= 360
+    s /= 100
+    l /= 100
+
+    var r, g, b;
+
+    if(s == 0){
+        r = g = b = l; // achromatic
+    }else{
+        var hue2rgb = function hue2rgb(p, q, t){
+            if(t < 0) t += 1;
+            if(t > 1) t -= 1;
+            if(t < 1/6) return p + (q - p) * 6 * t;
+            if(t < 1/2) return q;
+            if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+            return p;
+        }
+
+        var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        var p = 2 * l - q;
+        r = hue2rgb(p, q, h + 1/3);
+        g = hue2rgb(p, q, h);
+        b = hue2rgb(p, q, h - 1/3);
+    }
+
+    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+}
+
+function leykaHsl2Hex(hue, saturation, luminosity) {
+  while (hue < 0) { hue += 360 }
+  while (hue > 359) { hue -= 360 }
+
+  var rgb = leykaHsl2Rgb(hue, saturation, luminosity);
+
+  return '#' + rgb
+    .map(function (n) {
+      return (256 + n).toString(16).substr(-2)
+    })
+    .join('')
+}
+
+function leykaHex2Hsl(hexColor) {
+    var rgb = leykaHex2Rgb(hexColor);
+    return leykaRgb2Hsl(rgb[0], rgb[1], rgb[2]);
+}
+
+function leykaMainHslColor2Background(h, s, l) {
+    if(l < 50) {
+        l = 95;
+    }
+    else {
+        l = 5;
+    }
+    return [h, s, l];
+}
+
+function leykaMainHslColor2Text(h, s, l) {
+    if(l < 50) {
+        l = 21;
+    }
+    else {
+        l = 79;
+    }
+    s = 20;
+    return [h, s, l];
+}
 // init "how to setup crom" modal
 jQuery(document).ready(function($){
 
@@ -555,6 +641,184 @@ jQuery(document).ready(function($){
     });
 });
 
+// Donation add/edit page:
+jQuery(document).ready(function($){
+
+    var $page_type = $('#originalaction'),
+        $post_type = $('#post_type');
+
+    if( !$page_type.length || $page_type.val() !== 'editpost' || !$post_type.length || $post_type.val() !== 'leyka_donation' ) {
+        return;
+    }
+
+    var $donation_date = $('#donation-date-view').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        minDate: '-5Y',
+        maxDate: '+1Y',
+        dateFormat: 'dd.mm.yy',
+        altField: '#donation-date',
+        altFormat: 'yy-mm-dd'
+    });
+
+    // Validate add/edit donation form:
+    $('form#post').submit(function(e){
+
+        var $form = $(this),
+            is_valid = true,
+            $field = $('#campaign-id');
+
+        if( !$field.val() ) {
+
+            is_valid = false;
+            $form.find('#campaign_id-error').html(leyka.campaign_required).show();
+
+        } else {
+            $form.find('#campaign_id-error').html('').hide();
+        }
+
+        $field = $('#donor-email');
+        if($field.val() && !is_email($field.val())) {
+
+            is_valid = false;
+            $form.find('#donor_email-error').html(leyka.email_invalid_msg).show();
+
+        } else {
+            $form.find('#donor_email-error').html('').hide();
+        }
+
+        $field = $('#donation-amount');
+        var amount_clear = parseFloat($field.val().replace(',', '.'));
+        if( !$field.val() || amount_clear == 0 || isNaN(amount_clear) ) {
+
+            // console.log( !$field.val(), parseFloat($field.val().replace(',', '.')), isNaN($field.val()))
+
+            is_valid = false;
+            $form.find('#donation_amount-error').html(leyka.amount_incorrect_msg).show();
+
+        } else {
+            $form.find('#donation_amount-error').html('').hide();
+        }
+
+        $field = $('#donation-pm');
+        if($field.val() === 'custom')
+            $field = $('#custom-payment-info');
+        if( !$field.val() ) {
+
+            is_valid = false;
+            $form.find('#donation_pm-error').html(leyka.donation_source_required).show();
+        } else
+            $form.find('#donation_pm-error').html('').hide();
+
+        $('#donation-date-field').val($.datepicker.formatDate('yy-mm-dd', $donation_date.datepicker('getDate')));
+
+        if( !is_valid )
+            e.preventDefault();
+    });
+
+    /** New donation page: */
+
+    $('#donation-pm').change(function(){
+
+        var $this = $(this);
+
+        if($this.val() === 'custom') {
+            $('#custom-payment-info').show();
+        } else {
+
+            $('#custom-payment-info').hide();
+
+            var gateway_id = $this.val().split('-')[0];
+
+            $('.gateway-fields').hide();
+            $('#'+gateway_id+'-fields').show();
+        }
+    }).keyup(function(e){
+        $(this).trigger('change');
+    });
+
+    /** Edit donation page: */
+
+    $('#donation-status-log-toggle').click(function(e){
+        e.preventDefault();
+
+        $('#donation-status-log').slideToggle(100);
+    });
+
+    $('input[name*=leyka_pm_available]').change(function(){
+
+        var $this = $(this),
+            pm = $this.val();
+
+        pm = pm.split('-')[1];
+        if($this.attr('checked')) {
+            $('[id*=leyka_'+pm+']').slideDown(50);
+        } else {
+            $('[id*=leyka_'+pm+']').slideUp(50);
+        }
+
+    }).each(function(){
+        $(this).change();
+    });
+
+    $('#campaign-select-trigger').click(function(e){
+
+        e.preventDefault();
+
+        $(this).slideUp(100);
+        $('#campaign-select-fields').slideDown(100);
+        $('#campaign-field').removeAttr('disabled');
+
+    });
+
+    $('#cancel-campaign-select').click(function(e){
+
+        e.preventDefault();
+
+        $('#campaign-select-fields').slideUp(100);
+        $('#campaign-field').attr('disabled', 'disabled');
+        $('#campaign-select-trigger').slideDown(100);
+
+    });
+
+    $('.recurrent-cancel').click(function(e){
+        e.preventDefault();
+
+        var $this = $(this);
+
+        $('#ajax-processing').fadeIn(100);
+        $this.fadeOut(100);
+
+        // Do a recurrent donations cancelling procedure:
+        $.post(leyka.ajaxurl, {
+            action: 'leyka_cancel_recurrents',
+            nonce: $this.data('nonce'),
+            donation_id: $this.data('donation-id')
+        }, function(response){
+            $('#ajax-processing').fadeOut(100);
+            response = $.parseJSON(response);
+
+            if(response.status == 0) {
+
+                $('#ajax-response').html('<div class="error-message">'+response.message+'</div>').fadeIn(100);
+                $('#recurrent-cancel-retry').fadeIn(100);
+
+            } else if(response.status == 1) {
+
+                $('#ajax-response').html('<div class="success-message">'+response.message+'</div>').fadeIn(100);
+                $('#recurrent-cancel-retry').fadeOut(100);
+
+            }
+        });
+    });
+
+    $('#recurrent-cancel-retry').click(function(e){
+        e.preventDefault();
+
+        $('.recurrent-cancel').click();
+    });
+
+});
 /** Donor's info page */
 jQuery(document).ready(function($){
 
@@ -562,8 +826,6 @@ jQuery(document).ready(function($){
     if( !$page_wrapper.length || $page_wrapper.data('leyka-admin-page-type') !== 'donor-info-page' ) {
         return;
     }
-
-    leyka_support_metaboxes('dashboard_page_leyka_donor_info');
 
     // Donations list data table:
     if(typeof $().DataTable !== 'undefined' && typeof leyka_dt !== 'undefined') {
@@ -1206,6 +1468,302 @@ jQuery(document).ready(function($){
 	});
 });
 
+/** Extension settings (edit page) JS. */
+
+jQuery(document).ready(function($){
+
+    let $admin_page_wrapper = $('.leyka-admin');
+    if( !$admin_page_wrapper.length || !$admin_page_wrapper.hasClass('extension-settings') ) {
+        return;
+    }
+
+    $('.delete-extension-link').click(function(e){
+
+        e.preventDefault();
+
+        let $delete_link = $(this),
+            $ajax_loading = $delete_link.find('.loading-indicator-wrap'),
+            $error = $delete_link.siblings('.delete-extension-error');
+
+        if(confirm(leyka.extension_deletion_confirm_text)) {
+
+            $ajax_loading.show();
+            $error.html('').hide();
+
+            $.post(leyka.ajaxurl, {
+                action: 'leyka_delete_extension',
+                extension_id: $delete_link.data('extension-id'),
+                nonce: $delete_link.data('nonce'),
+            }, function(response){
+
+                $ajax_loading.hide();
+                if(
+                    typeof response === 'undefined'
+                    || typeof response.status === 'undefined'
+                    || (response.status !== 0 && typeof response.message === 'undefined')
+                ) {
+                    return $error.html(leyka.common_error_message).show();
+                } else if(response.status !== 0 && typeof response.message !== 'undefined') {
+                    return $error.html(response.message).show();
+                }
+
+                window.location.href = leyka.extensions_list_page_url+'&extension-deleted=1';
+
+            }, 'json');
+
+        }
+
+    });
+
+});
+
+/** @todo After debugging, move all the following code to the Extension own JS: */
+jQuery(document).ready(function($){
+
+    let $admin_page_wrapper = $('.leyka-admin');
+    if(
+        !$admin_page_wrapper.length
+        || !$admin_page_wrapper.hasClass('extension-settings')
+        || $admin_page_wrapper.data('leyka-extension-id') !== 'support_packages'
+        || !leyka_ui_widget_available('sortable')
+    ) {
+        return;
+    }
+
+    var LEYKA_EXT_AUTO_CALC_COLORS = false;
+    var $mainColorInput = $('input[name="leyka_support_packages_main_color"]'),
+        $backgroundColorInput = $('input[name="leyka_support_packages_background_color"]')
+            .closest('.field-component.field')
+            .find('.leyka-setting-field.colorpicker'),
+        $captionColorInput = $('input[name="leyka_support_packages_caption_color"]')
+            .closest('.field-component.field')
+            .find('.leyka-setting-field.colorpicker'),
+        $textColorInput = $('input[name="leyka_support_packages_text_color"]')
+            .closest('.field-component.field')
+            .find('.leyka-setting-field.colorpicker');
+
+    $mainColorInput.closest('.field-component').find('.leyka-setting-field.colorpicker').data('stored-color', $mainColorInput.val());
+    $backgroundColorInput.data('stored-color', $backgroundColorInput.closest('.field-component').find('.leyka-colorpicker-value').val());
+    $captionColorInput.data('stored-color', $captionColorInput.closest('.field-component').find('.leyka-colorpicker-value').val());
+    $textColorInput.data('stored-color', $textColorInput.closest('.field-component').find('.leyka-colorpicker-value').val());
+
+    function leykaSetupGeneralColors(mainColorHex) {
+        let mainColorHsl = leykaHex2Hsl(mainColorHex);
+
+        let backgroundColorHsl = leykaMainHslColor2Background(mainColorHsl[0], mainColorHsl[1], mainColorHsl[2]);
+        let backgroundColorHex = leykaHsl2Hex(backgroundColorHsl[0], backgroundColorHsl[1], backgroundColorHsl[2]);
+
+        LEYKA_EXT_AUTO_CALC_COLORS = true;
+        if(!$backgroundColorInput.data('changed')) {
+            $backgroundColorInput.wpColorPicker('color', backgroundColorHex);
+        }
+
+        if(!$captionColorInput.data('changed')) {
+            $captionColorInput.wpColorPicker('color', backgroundColorHex);
+        }
+
+        let textColorHsl = leykaMainHslColor2Text(mainColorHsl[0], mainColorHsl[1], mainColorHsl[2]);
+        let textColorHex = leykaHsl2Hex(textColorHsl[0], textColorHsl[1], textColorHsl[2]);
+        
+        if(!$textColorInput.data('changed')) {
+            $textColorInput.wpColorPicker('color', textColorHex);
+        }
+        LEYKA_EXT_AUTO_CALC_COLORS = false;
+    }
+
+    $mainColorInput.on('change.leyka', function(){
+        leykaSetupGeneralColors($(this).val());
+    });
+
+    console.log($backgroundColorInput);
+
+    $backgroundColorInput.closest('.field-component').find('.leyka-colorpicker-value').on('change.leyka', function(){
+        if(!LEYKA_EXT_AUTO_CALC_COLORS) {
+            $(this).closest('.field-component').find('.leyka-setting-field.colorpicker').data('changed', '1');
+        }
+    });
+
+    $captionColorInput.closest('.field-component').find('.leyka-colorpicker-value').on('change.leyka', function(){
+        if(!LEYKA_EXT_AUTO_CALC_COLORS) {
+            $(this).closest('.field-component').find('.leyka-setting-field.colorpicker').data('changed', '1');
+        }
+    });
+
+    $textColorInput.closest('.field-component').find('.leyka-colorpicker-value').on('change.leyka', function(){
+        if(!LEYKA_EXT_AUTO_CALC_COLORS) {
+            $(this).closest('.field-component').find('.leyka-setting-field.colorpicker').data('changed', '1');
+        }
+    });
+
+    var $colorOptionsBlock = $('.settings-block.support-packages-color-options');
+    var $colorActions = $('<div class="color-actions"><a href="#" class="reset-colors"><span>'+leyka.extension_colors_reset+'</span></a><a href="#" class="unlock-changes"><span>'+leyka.extension_colors_make_change+'</span></a></div>');
+    $colorOptionsBlock.append($colorActions);
+
+    $colorOptionsBlock.find('.leyka-colorpicker-field-wrapper').each(function(){
+        $(this).append('<div class="leyka-colorpicker-field-overlay"/>');
+    });
+
+    $colorOptionsBlock.on('click', '.unlock-changes', function(e){
+        e.preventDefault();
+        $colorOptionsBlock.toggleClass('changes-unlocked');
+    });
+
+    $colorOptionsBlock.on('click', '.reset-colors', function(e){
+        e.preventDefault();
+
+        $backgroundColorInput.data('changed', '');
+        $captionColorInput.data('changed', '');
+        $textColorInput.data('changed', '');
+
+        $mainColorInput.change();
+        // $mainColorInputPicker = $mainColorInput.closest('.field-component').find('.leyka-setting-field.colorpicker');
+        // $mainColorInputPicker.wpColorPicker('color', $mainColorInputPicker.data('stored-color'));
+    });
+
+    $colorOptionsBlock.on('click', 'leyka-colorpicker-field-overlay', function(e){
+        e.stopPropagation();
+    });
+
+});
+
+// Support packages extension - custom field:
+jQuery(document).ready(function($){
+
+    let $admin_page_wrapper = $('.leyka-admin');
+    if(
+        !$admin_page_wrapper.length
+        || !$admin_page_wrapper.hasClass('extension-settings')
+        || $admin_page_wrapper.data('leyka-extension-id') !== 'support_packages'
+        || !leyka_ui_widget_available('sortable')
+    ) {
+        return;
+    }
+
+    let $packages_wrapper = $('.leyka-main-support-packages'),
+        $package_template = $packages_wrapper.siblings('.package-template'),
+        $add_package_button = $packages_wrapper.siblings('.add-package'),
+        closed_boxes = typeof $.cookie('leyka-support-packages-boxes-closed') === 'string' ?
+            JSON.parse($.cookie('leyka-support-packages-boxes-closed')) : [];
+
+    if($.isArray(closed_boxes)) { // Close the package boxes needed
+        $.each(closed_boxes, function(key, value){
+            $packages_wrapper.find('#'+value).addClass('closed');
+        });
+    }
+
+    $packages_wrapper.on('click.leyka', 'h2.hndle', function(e){
+
+        let $this = $(this),
+            $current_box = $this.parents('.package-box');
+
+        $current_box.toggleClass('closed');
+
+        // Save the open/closed state for all packages boxes:
+        let current_box_id = $current_box.prop('id'),
+            current_box_index = $.inArray(current_box_id, closed_boxes);
+
+        if(current_box_index === -1 && $current_box.hasClass('closed')) {
+            closed_boxes.push(current_box_id);
+        } else if(current_box_index !== -1 && !$current_box.hasClass('closed')) {
+            closed_boxes.splice(current_box_index, 1);
+        }
+
+        $.cookie('leyka-support-packages-boxes-closed', JSON.stringify(closed_boxes));
+
+    });
+
+    $packages_wrapper.sortable({
+        placeholder: 'ui-state-highlight', // A class for dropping item placeholder
+        update: function(event, ui){
+
+            let packages_options = [];
+            $.each($packages_wrapper.sortable('toArray'), function(key, package_id){ // Value is a package ID
+
+                let package_options = {'id': package_id}; // Assoc. array key should be initialized explicitly
+
+                $.each($packages_wrapper.find('#'+package_id).find(':input').serializeArray(), function(key, package_field){
+                    package_options[ package_field.name.replace('leyka_package_', '') ] = package_field.value;
+                });
+
+                packages_options.push(package_options);
+
+            });
+
+            $packages_wrapper.siblings('input#leyka-support-packages-options').val(
+                encodeURIComponent(JSON.stringify(packages_options))
+            );
+
+        }
+    });
+
+    $packages_wrapper.on('click.leyka', '.delete-package', function(e){
+
+        e.preventDefault();
+
+        if($packages_wrapper.find('.package-box').length > 1) {
+
+            $(this).parents('.package-box').remove();
+            $packages_wrapper.sortable('option', 'update')();
+
+        }
+
+        let packages_current_count = $packages_wrapper.find('.package-box').length;
+        if(packages_current_count <= 1) {
+            $packages_wrapper.find('.delete-package').addClass('inactive');
+        }
+        if(packages_current_count < $packages_wrapper.data('max-packages')) {
+            $add_package_button.removeClass('inactive');
+        }
+
+    });
+    $add_package_button.on('click.leyka', function(e){
+
+        e.preventDefault();
+
+        if($add_package_button.hasClass('inactive')) {
+            return;
+        }
+
+        // Generate & set the new package ID:
+        let new_package_id = '';
+        do {
+            new_package_id = leyka_get_random_string(4);
+        } while($packages_wrapper.find('#package-'+new_package_id).length);
+
+        $package_template
+            .clone()
+            .appendTo($packages_wrapper)
+            .removeClass('package-template')
+            .prop('id', 'package-'+new_package_id)
+            .show();
+
+        $packages_wrapper.sortable('option', 'update')();
+
+        let packages_current_count = $packages_wrapper.find('.package-box').length;
+
+        if(packages_current_count >= $packages_wrapper.data('max-packages')) {
+            $add_package_button.addClass('inactive');
+        }
+
+        if(packages_current_count <= 1) { // When adding initial package box
+            $packages_wrapper.find('.delete-package').addClass('inactive');
+        } else if(packages_current_count > 1) {
+            $packages_wrapper.find('.delete-package').removeClass('inactive');
+        }
+
+    });
+
+    if( !$packages_wrapper.find('.package-box').length ) { // No packages added yet - add the first (empty) one
+        $add_package_button.trigger('click.leyka');
+    }
+
+    // Refresh the main packages option value before submit:
+    $packages_wrapper.parents('.leyka-options-form').on('submit.leyka', function(){
+        $packages_wrapper.sortable('option', 'update')();
+    });
+
+});
+/** @todo Move to the Extension JS - END */
 /** Feedback page */
 jQuery(document).ready(function($){
 
@@ -2187,11 +2745,232 @@ jQuery(document).ready(function($){
 
 jQuery(document).ready(function($){
 
-    // Expandable options sections:
-    $('.leyka-options-section .header h3').click(function(e){
+    const $body = $('body');
+
+    if(leyka_ui_widget_available('accordion')) {
+        $('.ui-accordion').accordion({
+            heightStyle: 'content',
+            // collapsible: true, active: false
+        });
+    }
+
+    // if(typeof $.wp === 'object' && typeof $.wp.wpColorPicker !== 'undefined') {
+    if(leyka_ui_widget_available('wpColorPicker', $.wp)) {
+        $('.leyka-setting-field.colorpicker').wpColorPicker({ // Colorpicker fields
+            change: function (e, ui) {
+                $(e.target).parents('.field').find('.leyka-colorpicker-value').val(ui.color.toString()).change();
+            }
+        });
+    }
+
+    // Support metaboxes ONLY where needed (else there are metabox handling errors on the wrong pages):
+    $('input.leyka-support-metabox-area').each(function(){
+        leyka_support_metaboxes($(this).val());
+    });
+
+    // Custom CSS editor fields:
+    let $css_editor = $('.css-editor-field'),
+        editor = {};
+
+    if(leyka_ui_widget_available('codeEditor', wp) && $css_editor.length) {
+
+        let editor_settings = wp.codeEditor.defaultSettings ? _.clone( wp.codeEditor.defaultSettings ) : {};
+        editor_settings.codemirror = _.extend(
+            {},
+            editor_settings.codemirror, {
+                indentUnit: 2,
+                tabSize: 2,
+                mode: 'css',
+            });
+        editor = wp.codeEditor.initialize($css_editor, editor_settings);
+
+        $('.css-editor-reset-value').on('click.leyka', function(e){ // Additional CSS value reset
+
+            e.preventDefault();
+
+            let $this = $(this),
+                $css_editor_field = $this.siblings('.css-editor-field'),
+                original_value = $this.siblings('.css-editor-original-value').val();
+
+            $css_editor_field.val(original_value);
+            editor.codemirror.getDoc().setValue(original_value);
+
+        });
+
+    }
+    // Custom CSS editor fields - END
+
+    // Ajax file upload fields support:
+    $body.on('click.leyka', '.upload-field input[type="file"]', function(e){ // Just to be sure that the input will be called
+        e.stopPropagation();
+    }).on('change.leyka', '.upload-field input[type="file"]', function(e){
+
+        if( !e.target.files ) {
+            return;
+        }
+
+        let $file_input = $(this),
+            $field_wrapper = $file_input.parents('.leyka-file-field-wrapper'),
+            option_id = $field_wrapper.find('.upload-field').data('option-id'),
+            $file_preview = $field_wrapper.find('.uploaded-file-preview'),
+            $ajax_loading = $field_wrapper.find('.loading-indicator-wrap'),
+            $error = $field_wrapper.siblings('.field-errors'),
+            $main_field = $field_wrapper.find('input.leyka-upload-result'),
+            data = new FormData(); // Need to use a FormData object here instead of a generic object
+
+    // console.log('File:', $file_input, 'Wrapper:', $field_wrapper);
+
+        data.append('action', 'leyka_files_upload');
+        data.append('option_id', option_id);
+        data.append('nonce', $file_input.data('nonce'));
+        data.append('files', []);
+
+        $.each(e.target.files, function(key, value){
+            data.append('files', value);
+        });
+
+        $ajax_loading.show();
+        $error.html('').hide();
+
+        $.ajax({
+            url: leyka.ajaxurl,
+            type: 'POST',
+            data: data,
+            cache: false,
+            dataType: 'json',
+            processData: false, // Don't process the files
+            contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+            success: function(response){
+
+                $ajax_loading.hide();
+
+                if(
+                    typeof response === 'undefined'
+                    || typeof response.status === 'undefined'
+                    || (response.status !== 0 && typeof response.message === 'undefined')
+                ) {
+                    return $error.html(leyka.common_error_message).show();
+                } else if(response.status !== 0 && typeof response.message !== 'undefined') {
+                    return $error.html(response.message).show();
+                }
+
+                let preview_html = response.type.includes('image/') ?
+                    '<img class="leyka-upload-image-preview" src="'+response.url+'" alt="">' : response.filename;
+
+                $file_preview.show().find('.file-preview').html(preview_html);
+
+                $main_field.val(response.path); // Option value will keep the file relative path in WP uploads dir
+
+            },
+            error: function(){
+
+                $ajax_loading.hide();
+                $error.html(leyka.common_error_message).show();
+
+            }
+        });
+
+    });
+
+    $body.on('click.leyka', '.leyka-file-field-wrapper .delete-uploaded-file', function(e){ // Mark uploaded file to be removed
+
         e.preventDefault();
-        var $section = $(this).closest('.leyka-options-section');
-        $section.toggleClass('collapsed');
+
+        let $delete_link = $(this),
+            $field_wrapper = $delete_link.parents('.leyka-file-field-wrapper'),
+            // option_id = $field_wrapper.find('.upload-field').data('option-id'),
+            $file_preview = $field_wrapper.find('.uploaded-file-preview'),
+            $main_field = $field_wrapper.find('input.leyka-upload-result');
+
+        $file_preview.hide().find('.file-preview').html('');
+        $main_field.val('');
+
+    });
+    // Ajax file upload fields - END
+
+    // Campaigns select comboboxes fields:
+    $body.find('.leyka-campaign-select-field-wrapper').each(function(){
+
+        let $field_wrapper = $(this),
+            $text_search_sub_field = $field_wrapper.find('input.leyka-campaign-selector'),
+            $value_sub_vield = $field_wrapper.find('input.campaign-id');
+
+        $text_search_sub_field.autocomplete({
+            minLength: 0,
+            focus: function(event, ui){
+
+                $text_search_sub_field.val(ui.item.label);
+                return false;
+
+            },
+            change: function(event, ui){
+                if( !$text_search_sub_field.val() ) {
+                    $value_sub_vield.val('');
+                }
+            },
+            close: function(event, ui){
+                if( !$text_search_sub_field.val() ) {
+                    $value_sub_vield.val('');
+                }
+            },
+            select: function(event, ui){
+
+                $text_search_sub_field.val(ui.item.label);
+                $value_sub_vield.val(ui.item.value);
+
+                return false;
+
+            },
+            source: function(request, response) {
+
+                let term = request.term,
+                    cache = $text_search_sub_field.data('cache') ? $text_search_sub_field.data('cache') : [];
+
+                if(term in cache) {
+
+                    response(cache[term]);
+                    return;
+
+                }
+
+                request.action = 'leyka_get_campaigns_list';
+                request.nonce = $text_search_sub_field.data('nonce');
+
+                $.getJSON(leyka.ajaxurl, request, function(data){
+
+                    var cache = $text_search_sub_field.data('cache') ? $text_search_sub_field.data('cache') : [];
+
+                    cache[term] = data;
+                    response(data);
+
+                });
+
+            }
+        }).on('focus.leyka', function(e){
+            if($value_sub_vield.val() == 0) {
+                $(this).autocomplete('search', '');
+            }
+        });
+
+        $text_search_sub_field.data('ui-autocomplete')._renderItem = function(ul, item){
+            return $('<li>')
+                .append(
+                    '<a>'+item.label+(item.label === item.payment_title ? '' : '<div>'+item.payment_title+'</div></a>')
+                )
+                .appendTo(ul);
+        };
+
+    });
+    // Campaigns select comboboxes fields - END
+
+    // Expandable options sections (portlets only):
+    /** @todo Remove this completely when all portlets are converted to metaboxes */
+    $('.leyka-options-section .header h3').click(function(e){
+
+        e.preventDefault();
+
+        $(this).closest('.leyka-options-section').toggleClass('collapsed');
+
     });
 
     // Delete fields comments:
@@ -2212,6 +2991,7 @@ jQuery(document).ready(function($){
 
         function leyka_toggle_sections_dependent_on_legal_type($val) {
             if($val === 'legal') {
+
                 $('#person_terms_of_service').hide();
                 $('#beneficiary_person_name').hide();
                 $('#person_bank_essentials').hide();
@@ -2219,7 +2999,9 @@ jQuery(document).ready(function($){
                 $('#terms_of_service').show();
                 $('#beneficiary_org_name').show();
                 $('#org_bank_essentials').show();
+
             } else {
+
                 $('#person_terms_of_service').show();
                 $('#beneficiary_person_name').show();
                 $('#person_bank_essentials').show();
@@ -2227,6 +3009,7 @@ jQuery(document).ready(function($){
                 $('#terms_of_service').hide();
                 $('#beneficiary_org_name').hide();
                 $('#org_bank_essentials').hide();
+
             }
         }
 
@@ -2235,7 +3018,7 @@ jQuery(document).ready(function($){
     // Upload l10n:
     $('#upload-l10n-button').click(function(){
 
-        var $btn = $(this),
+        let $btn = $(this),
             $loading = $('<span class="leyka-loader xs"></span>'),
             actionData = {action: 'leyka_upload_l10n'};
 
@@ -2269,8 +3052,13 @@ jQuery(document).ready(function($){
 
     // Connect to stats:
     if($('#leyka_send_plugin_stats-y-field').prop('checked')) {
-        var $sectionWrapper = $('.leyka-options-section#stats_connections');
-        $sectionWrapper.find('.submit input').removeClass('button-primary').addClass('disconnect-stats').val(leyka.disconnect_stats);
+
+        $('.leyka-options-section#stats_connections')
+            .find('.submit input')
+            .removeClass('button-primary')
+            .addClass('disconnect-stats')
+            .val(leyka.disconnect_stats);
+
     }
 
     $('#connect-stats-button').click(function(){
@@ -2285,7 +3073,8 @@ jQuery(document).ready(function($){
     $('.section-tab-nav-item').click(function(e){
 
         e.preventDefault();
-        var $tabs = $(this).closest('.section-tabs-wrapper');
+
+        let $tabs = $(this).closest('.section-tabs-wrapper');
 
         $tabs.find('.section-tab-nav-item').removeClass('active');
         $tabs.find('.section-tab-content').removeClass('active');
@@ -2300,7 +3089,7 @@ jQuery(document).ready(function($){
 
         e.preventDefault();
 
-        var $currentScreenshots = $(this).closest('.tab-screenshots'),
+        let $currentScreenshots = $(this).closest('.tab-screenshots'),
             $currentVisibleScreenshot = $currentScreenshots.find('.tab-screenshot-item.active'),
             $nextScreenshot = null;
 
@@ -2355,6 +3144,7 @@ jQuery(document).ready(function($){
             nonce: $wrap.find('#_leyka_donor_email_nonce').val(),
             donation_id: donation_id
         });
+
     });
 
     // Exchange places of donations Export and Filter buttons:
@@ -2365,6 +3155,74 @@ jQuery(document).ready(function($){
     if($tooltips.length && typeof $().tooltip !== 'undefined' ) {
         $tooltips.tooltip();
     }
+
+    // var $campaign_select = $('#campaign-select');
+    // if($campaign_select.length && typeof $().autocomplete !== 'undefined') {
+    //
+    //     $campaign_select.keyup(function(){
+    //         if( !$(this).val() ) {
+    //             $('#campaign-id').val('');
+    //             $('#new-donation-purpose').html('');
+    //         }
+    //     });
+    //
+    //     $campaign_select.autocomplete({
+    //         minLength: 1,
+    //         focus: function(event, ui){
+    //             $campaign_select.val(ui.item.label);
+    //             $('#new-donation-purpose').html(ui.item.payment_title);
+    //
+    //             return false;
+    //         },
+    //         change: function(event, ui){
+    //             if( !$campaign_select.val() ) {
+    //                 $('#campaign-id').val('');
+    //                 $('#new-donation-purpose').html('');
+    //             }
+    //         },
+    //         close: function(event, ui){
+    //             if( !$campaign_select.val() ) {
+    //                 $('#campaign-id').val('');
+    //                 $('#new-donation-purpose').html('');
+    //             }
+    //         },
+    //         select: function(event, ui){
+    //             $campaign_select.val(ui.item.label);
+    //             $('#campaign-id').val(ui.item.value);
+    //             $('#new-donation-purpose').html(ui.item.payment_title);
+    //             return false;
+    //         },
+    //         source: function(request, response) {
+    //             var term = request.term,
+    //                 cache = $campaign_select.data('cache') ? $campaign_select.data('cache') : [];
+    //
+    //             if(term in cache) {
+    //                 response(cache[term]);
+    //                 return;
+    //             }
+    //
+    //             request.action = 'leyka_get_campaigns_list';
+    //             request.nonce = $campaign_select.data('nonce');
+    //
+    //             $.getJSON(leyka.ajaxurl, request, function(data, status, xhr){
+    //
+    //                 var cache = $campaign_select.data('cache') ? $campaign_select.data('cache') : [];
+    //
+    //                 cache[term] = data;
+    //                 response(data);
+    //             });
+    //         }
+    //     });
+    //
+    //     $campaign_select.data('ui-autocomplete')._renderItem = function(ul, item){
+    //         return $('<li>')
+    //             .append(
+    //                 '<a>'+item.label+(item.label == item.payment_title ? '' : '<div>'+item.payment_title+'</div></a>')
+    //             )
+    //             .appendTo(ul);
+    //     };
+    //
+    // }
 
     // Campaign selection fields:
     /** @todo Change this old campaigns select field code (pure jq-ui-autocomplete-based) to the new code (select + autocomplete, like on the Donors list page filters). */
@@ -3419,26 +4277,31 @@ function leyka_is_digit_key(e, numpad_allowed) {
 /** @var e JS keyup/keydown event */
 function leyka_is_special_key(e) {
 
-    // Allowed special keys
-    return (
+    return ( // Allowed special keys
         e.keyCode === 9 || // Tab
         (e.keyCode === 65 && e.ctrlKey) || // Ctrl+A
         (e.keyCode === 67 && e.ctrlKey) || // Ctrl+C
         (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
     );
+
 }
 
 function leyka_make_password(pass_length) {
 
-    var text = '',
+    let text = '',
         possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-    for(var i = 0; i < parseInt(pass_length); i++) {
+    for(let i = 0; i < parseInt(pass_length); i++) {
         text += possible.charAt(Math.floor(Math.random() * possible.length));
     }
 
     return text;
 
+}
+
+/** Get random latin-numeric string with given length. */
+function leyka_get_random_string(length = 6) {
+    return Array(length + 1).join((Math.random().toString(36)+'00000000000000000').slice(2, 18)).slice(0, length);
 }
 
 function leyka_validate_donor_name(name_string) {
@@ -3448,7 +4311,27 @@ function leyka_validate_donor_name(name_string) {
 // Plugin metaboxes rendering:
 function leyka_support_metaboxes(metabox_area) {
 
+    if(typeof postboxes === 'undefined') {
+        console.log('Leyka error: trying to support metaboxes for "'+metabox_area+'" area, but there are no "postboxes" var.');
+        return false;
+    }
+
+    // console.log('Metaboxes supported for: ', metabox_area);
+
     jQuery('.if-js-closed').removeClass('if-js-closed').addClass('closed'); // Close postboxes that should be closed
     postboxes.add_postbox_toggles(metabox_area);
+
+}
+
+/** Check if UI widget is available. Widget is looked in $.ui by default. */
+function leyka_ui_widget_available(widget = '', object = null) {
+
+    if(object === null && typeof jQuery.ui !== 'undefined') {
+        object = jQuery.ui;
+    } else if(object === null || typeof object !== 'object') {
+        return false;
+    }
+
+    return widget.length ? typeof object[widget] !== 'undefined' : typeof object !== 'undefined';
 
 }

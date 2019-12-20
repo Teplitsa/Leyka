@@ -13,10 +13,10 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 	protected function __construct() {
 
-        require_once(ABSPATH.'wp-admin/includes/meta-boxes.php');
+        require_once ABSPATH.'wp-admin/includes/meta-boxes.php';
 	    require_once LEYKA_PLUGIN_DIR.'inc/leyka-admin-functions.php';
-        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-admin-template-tags.php');
-        require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php');
+        require_once LEYKA_PLUGIN_DIR.'inc/settings/leyka-admin-template-tags.php';
+        require_once LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php';
 
 		add_action('admin_menu', array($this, 'admin_menu_setup'), 9);
 
@@ -44,6 +44,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         // Metaboxes support where it is needed:
         add_action('leyka_pre_donor_info_actions', array($this, 'full_metaboxes_support'));
+        add_action('leyka_pre_extension_settings_actions', array($this, 'full_metaboxes_support'));
 
 		add_action('leyka_post_admin_actions', array($this, 'show_footer'));
 
@@ -103,11 +104,10 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 // $screen_full_id[0] - view type (e.g. 'wizard' or 'control_panel')
                 // $screen_full_id[1] - settings area given (e.g. 'init').
 
-                require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php');
+                require_once LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php';
 
                 $admin_title = get_bloginfo('name')
-                    .' &#8212; '
-                    .Leyka_Settings_Factory::get_instance()->get_controller($screen_full_id[1])->title;
+                    .' &#8212; '.Leyka_Settings_Factory::get_instance()->get_controller($screen_full_id[1])->title;
 
             } else if(isset($_GET['page']) && $_GET['page'] === 'leyka_donor_info' && !empty($_GET['donor'])) {
 
@@ -149,18 +149,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             return $portlet_id === 'donations-dynamics' ? $portlet_title.',&nbsp;'.leyka_get_currency_label() : $portlet_title;
         }, 10, 2);
 
-        // Add Donor info metaboxes:
-        if(isset($_GET['page']) && $_GET['page'] === 'leyka_donor_info' && !empty($_GET['donor'])) {
-
-            add_meta_box('leyka_donor_info', __("Donor's data", 'leyka'), array($this, 'donor_data_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
-            add_meta_box('leyka_donor_admin_comments', __('Comments', 'leyka'), array($this, 'donor_comments_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
-            add_meta_box('leyka_donor_tags', __('Tags'), array($this, 'donor_tags_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
-            add_meta_box('leyka_donor_donations', __('Donations', 'leyka'), array($this, 'donor_donations_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
-
-        }
-
         // Add donor account column to the admin Users list if needed:
-        if(get_option('leyka_donor_accounts_available')) {
+        if(get_option('leyka_donor_management_available')) {
 
             add_filter('manage_users_columns', function($column){
 
@@ -236,7 +226,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         add_submenu_page('leyka', __('Leyka Settings', 'leyka'), __('Settings', 'leyka'), 'leyka_manage_options', 'leyka_settings', array($this, 'settings_screen'));
 
-//        add_submenu_page('leyka', __('Extensions', 'leyka'), __('Extensions', 'leyka'), 'leyka_manage_options', 'leyka_extensions', array($this, 'extensions_screen'));
+        add_submenu_page('leyka', __('Extensions', 'leyka'), __('Extensions', 'leyka'), 'leyka_manage_options', 'leyka_extensions', array($this, 'extensions_screen'));
 
         add_submenu_page('leyka', __('Contact us', 'leyka'), __('Feedback', 'leyka'), 'leyka_manage_donations', 'leyka_feedback', array($this, 'feedback_screen'));
 
@@ -245,7 +235,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         add_submenu_page(NULL, "Donor's info", "Donor's info", 'leyka_manage_options', 'leyka_donor_info', array($this, 'donor_info_screen'));
 
-//        add_submenu_page(NULL, "Extension settings", "Extension settings", 'leyka_manage_options', 'leyka_extension_settings', array($this, 'leyka_extension_settings_screen'));
+        add_submenu_page(NULL, "Extension settings", "Extension settings", 'leyka_manage_options', 'leyka_extension_settings', array($this, 'leyka_extension_settings_screen'));
         // Fake pages - END
 
         do_action('leyka_admin_menu_setup');
@@ -312,7 +302,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 <?php echo apply_filters('leyka_admin_portlet_title', esc_attr__($portlet_data['title'], 'leyka'), $portlet_id);?>
             </div>
 
-            <div class="portlet-content"><?php require_once($portlet_file);?></div>
+            <div class="portlet-content"><?php require_once $portlet_file;?></div>
 
         </div>
 
@@ -411,7 +401,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             'option' => 'donors_per_page',
         ));
 
-        require_once(LEYKA_PLUGIN_DIR.'inc/admin-lists/leyka-class-donors-list-table.php');
+        require_once LEYKA_PLUGIN_DIR.'inc/admin-lists/leyka-class-donors-list-table.php';
 
         $this->_donors_list_table = new Leyka_Admin_Donors_List_Table();
 
@@ -440,8 +430,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         $current_stage = $this->get_current_settings_tab();
 
-		require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php'); // Basic Controllers Factory class
-        require_once(LEYKA_PLUGIN_DIR.'inc/settings-pages/leyka-settings-common.php');
+		require_once LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php'; // Basic Controllers Factory class
+        require_once LEYKA_PLUGIN_DIR.'inc/settings-pages/leyka-settings-common.php';
 
 		do_action('leyka_pre_settings_actions', $current_stage);
 
@@ -527,12 +517,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         do_action('leyka_pre_donor_info_actions'); // Add collapsible to metaboxes
 
-//        // Add all metaboxes:
-        /** @todo Check if it will work if metaboxes are added here */
-//        add_meta_box('leyka_donor_info', __("Donor's data", 'leyka'), array($this, 'donor_data_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
-//        add_meta_box('leyka_donor_admin_comments', __('Comments', 'leyka'), array($this, 'donor_comments_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
-//        add_meta_box('leyka_donor_tags', __('Tags'), array($this, 'donor_tags_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
-//        add_meta_box('leyka_donor_donations', __('Donations', 'leyka'), array($this, 'donor_donations_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
+        // Add all metaboxes:
+        add_meta_box('leyka_donor_info', __("Donor's data", 'leyka'), array($this, 'donor_data_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
+        add_meta_box('leyka_donor_admin_comments', __('Comments', 'leyka'), array($this, 'donor_comments_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
+        add_meta_box('leyka_donor_tags', __('Tags'), array($this, 'donor_tags_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
+        add_meta_box('leyka_donor_donations', __('Donations', 'leyka'), array($this, 'donor_donations_metabox'), 'dashboard_page_leyka_donor_info', 'normal');
 
 	    $this->_show_admin_template('donor-info-page');
 
@@ -699,7 +688,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	public function load_frontend_scripts() {
 
 		wp_enqueue_style('leyka-icon', LEYKA_PLUGIN_BASE_URL.'css/admin-icon.css', array(), LEYKA_VERSION);
-		
+
 		wp_enqueue_style('leyka-admin-common', LEYKA_PLUGIN_BASE_URL.'assets/css/admin-common.css', array(), LEYKA_VERSION);
 
 		$screen = get_current_screen();
@@ -721,24 +710,32 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         $dependencies = array('jquery',);
 
         if($leyka_admin_new) {
+
             wp_enqueue_style('leyka-settings', LEYKA_PLUGIN_BASE_URL.'assets/css/admin.css', array(), LEYKA_VERSION);
-        } else { // Old admin pages (before v3.0)
-            /** @todo ATM, the old admin.css is used only for New & Edit Donation pages (/css/admin.css, lines 502-730). Move their code to the /src/ , then remove the /css/admin.css */
-	        wp_enqueue_style('leyka-admin', LEYKA_PLUGIN_BASE_URL.'css/admin.css', array(), LEYKA_VERSION);
-	    }
 
-        // WP admin metaboxes support:
-        if($current_screen->id === 'dashboard_page_leyka_donor_info') {
+            // Colorpicker fields support:
+            wp_enqueue_script('wp-color-picker');
+            wp_enqueue_style('wp-color-picker');
 
+            if(function_exists('wp_enqueue_code_editor')) { // The function is available in WP v4.9.0+
+                wp_enqueue_code_editor(array('type' => 'text/css')); // Add the code editor lib
+            }
+
+            // WP admin metaboxes support:
             $dependencies[] = 'postbox';
             $dependencies[] = 'jquery-ui-accordion';
             $dependencies[] = 'jquery-ui-sortable';
             $dependencies[] = 'tags-box';
 
-            $dependencies[] = $this->_load_data_tables();
+        } else { // Old admin pages (before v3.0)
+            /** @todo ATM, the old admin.css is used only for New & Edit Donation pages (/css/admin.css, lines 502-730). Move their code to the /src/ , then remove the /css/admin.css */
+	        wp_enqueue_style('leyka-admin', LEYKA_PLUGIN_BASE_URL.'css/admin.css', array(), LEYKA_VERSION);
+            wp_enqueue_style('leyka-settings', LEYKA_PLUGIN_BASE_URL.'assets/css/admin.css', array(), LEYKA_VERSION);
+	    }
 
+        if($current_screen->id === 'dashboard_page_leyka_donor_info') {
+            $dependencies[] = $this->_load_data_tables();
         }
-        // Metaboxes support - END
 
         // Settings pages:
         if(stristr($current_screen->id, '_page_leyka_settings') !== false) {
@@ -774,13 +771,17 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             'ajax_loader_url' => LEYKA_PLUGIN_BASE_URL.'img/ajax-loader.gif',
             'field_required' => __('This field is required to be filled', 'leyka'),
             'email_invalid_msg' => __('You have entered an invalid email', 'leyka'),
-            'common_error_message' => esc_html__('Error while saving the data', 'leyka'),
-			'error_message' => esc_html__('Error!', 'leyka'),
-            'default_image_message' => esc_html__('Default', 'leyka'),
-			'disconnect_stats' => esc_html__('Disconnect statistics', 'leyka'),
-            'confirm_delete_comment' => esc_html__('Delete comment?', 'leyka'),
-            'first_donation_date_incomplete_message' => esc_html__('To correctly search for "First Payment Date", select the range of their two dates.', 'leyka'),
-            'last_donation_date_incomplete_message' => esc_html__('To correctly search for "Last Payment Date", select the range of their two dates.', 'leyka'),
+            'common_error_message' => __('Error while saving the data', 'leyka'),
+			'error_message' => __('Error!', 'leyka'),
+            'default_image_message' => __('Default', 'leyka'),
+			'disconnect_stats' => __('Disconnect statistics', 'leyka'),
+            'confirm_delete_comment' => __('Delete comment?', 'leyka'),
+            'first_donation_date_incomplete_message' => __('To correctly search for "First Payment Date", select the range of their two dates.', 'leyka'),
+            'last_donation_date_incomplete_message' => __('To correctly search for "Last Payment Date", select the range of their two dates.', 'leyka'),
+            'extension_deletion_confirm_text' => __('Are you sure you want to remove the extension completely?', 'leyka'),
+            'extensions_list_page_url' => admin_url('admin.php?page=leyka_extensions'),
+            'extension_colors_reset' => __('Reset settings', 'leyka'),
+            'extension_colors_make_change' => __('Make changes', 'leyka'),
         ));
 
         if(isset($_GET['page']) && $_GET['page'] === 'leyka') {
@@ -793,7 +794,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 		leyka_localize_rich_html_text_tags();
 
-        // Campaign editing page:
+        // Campaign edit page:
 		if(
 		    $screen->post_type === Leyka_Campaign_Management::$post_type
             && $screen->base === 'post'
@@ -820,24 +821,18 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         // Donation edit page:
         if($screen->post_type === Leyka_Donation_Management::$post_type && $screen->base === 'post') {
 
-            wp_enqueue_script(
-                'leyka-admin-add-edit-donation',
-                LEYKA_PLUGIN_BASE_URL.'js/admin-add-edit-donation.js',
-                array('jquery-ui-datepicker-locale', 'jquery-ui-autocomplete'), LEYKA_VERSION, true
-            );
-            wp_localize_script('leyka-admin-add-edit-donation', 'leyka', $js_data + array(
+            $dependencies[] = 'jquery-ui-datepicker-locale';
+
+            $js_data = $js_data + array(
                 'add_donation_button_text' => __('Add the donation', 'leyka'),
                 'field_required' => __('This field is required to be filled', 'leyka'),
                 'campaign_required' => __('Selecting a campaign is required', 'leyka'),
                 'email_invalid_msg' => __('You have entered an invalid email', 'leyka'),
                 'amount_incorrect_msg' => __('The amount must be filled with non-zero, non-negative number', 'leyka'),
                 'donation_source_required' => __('Please, set one of a payment methods or just type a few words to describe a source for this donation', 'leyka'),
-            ));
-
-            return; /** @todo Only for now. Need to transfer the code from /js/admin-add-edit-donation.js to the separate /src/js/admin/ script. */
+            );
 
         }
-
 
         $dependencies[] = 'jquery-ui-autocomplete';
 

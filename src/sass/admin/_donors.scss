@@ -29,9 +29,6 @@
 	}
 
 	.loading-indicator-wrap {
-	    display: inline-block;
-	    width: 24px;
-	    height: 24px;
 
 	    .ok-icon {
 	        display: none;
@@ -39,13 +36,10 @@
 	    }
 
 	    .loader-wrap {
-	        display: none;
+	    	display: none;
 			padding-top: 8px;
-
-	        .leyka-loader {
-	            display: none;
-	        }
 	    }
+
 	}
 
 }
@@ -138,11 +132,11 @@
 // filter controls
 .donors-list-filters {
 
-    select {
-    	display: none;
-    }
+    //input:not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"])  {
+    //}
 
-    input:not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"])  {
+    select {
+        display: none;
     }
 
     input[type="text"], input[type="date"]  {
@@ -546,6 +540,12 @@
 			align-items: flex-start;
 		}
 
+		&.closed {
+			.inside {
+				display: none;
+			}
+		}
+
 		.donor-col-1 {
 			margin-right: $leyka-base;
 		}
@@ -567,6 +567,7 @@
 			}
 
 			.donor-name {
+
 				display: flex;
 				justify-content: flex-start;
 				align-items: flex-start;
@@ -589,6 +590,7 @@
 				.leyka-editable-str-btn {
 					margin-top: 1px;
 				}
+
 			}
 
 			.donor-description {
@@ -618,15 +620,15 @@
 
 					.loading-indicator-wrap {
 						margin-left: $leyka-base;
-						display: none;
+						//display: none;
 
-						.loader-wrap {
-							padding-top: 0px;
-							margin-right: 0px;
-						}
+						//.loader-wrap {
+						//	padding-top: 0px;
+						//	margin-right: 0px;
+						//}
 
 						.ok-icon {
-							padding-top: 0px;
+							padding-top: 0;
 						}
 					}
 				}
@@ -661,9 +663,9 @@
 							margin-top: $leyka-base;
 						}
 
-						.loading-indicator-wrap {
-							display: inline-block;
-						}
+						//.loading-indicator-wrap {
+						//	display: inline-block;
+						//}
 					}
 				}
 
@@ -743,6 +745,12 @@
 				@include leyka-admin-btn(secondary);
 				margin-left: 0px;
 			}
+
+			.loading-indicator-wrap {
+				display: inline-block;
+				vertical-align: middle;
+				padding-bottom: 2px;
+			}
 		}
 
 		table.donor-info-table {
@@ -806,6 +814,19 @@ table.donor-info-table {
 				background-image: url(../../img/dashboard/icon-bad.svg);
 				@include leyka-admin-icon(19px);
 				@include leyka-admin-clean-a;
+			}
+
+			&.donor-comment-delete {
+				.loading-indicator-wrap {
+
+					.loader-wrap {
+						display: none; // fix donor info indicators bug
+					}
+
+					.ok-icon {
+						display: none; // fix donor info indicators bug
+					}
+				}
 			}
 		}
 	}
@@ -1076,16 +1097,20 @@ table.donor-info-table {
 		align-items: center;
 
 		.loading-indicator-wrap {
-			display: none;
+
+			//display: none;
 
 			.loader-wrap {
-				padding-top: 0px;
+				display: none; // fix donor info indicators bug
+				padding-top: 0;
 				margin-right: 8px;
 			}
 
 			.ok-icon {
-				padding-top: 0px;
+				display: none; // fix donor info indicators bug
+				padding-top: 0;
 			}
+
 		}
 	}
 

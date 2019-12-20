@@ -966,7 +966,6 @@ function leyka_save_donor_tags(){
 }
 add_action('wp_ajax_leyka_save_donor_tags', 'leyka_save_donor_tags');
 
-
 function leyka_close_dashboard_banner(){
 
     try {
@@ -979,3 +978,63 @@ function leyka_close_dashboard_banner(){
 
 }
 add_action('wp_ajax_leyka_close_dashboard_banner', 'leyka_close_dashboard_banner');
+
+// Ajax files uploading handler (admin only):
+function leyka_files_upload(){
+
+    $data = array_merge(isset($_POST) ? $_POST : array(), isset($_FILES) ? $_FILES : array());
+
+    if( !wp_verify_nonce($data['nonce'], 'leyka-upload-'.$data['option_id']) ) {
+        die(json_encode(array('status' => -1, 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
+    }
+
+    $uploaded_file = wp_handle_upload($data['files'], array('test_form' => false,));
+
+    if($uploaded_file && !isset($uploaded_file['error'])) {
+
+        $upload_dir_base_path = wp_upload_dir();
+        $upload_dir_base_path = $upload_dir_base_path['basedir'];
+        $filename = basename($uploaded_file['url']);
+
+        $response = array(
+            'status' => 0,
+            'filename' => $filename,
+            'url' => $uploaded_file['url'],
+            'path' => str_replace($upload_dir_base_path, '', $uploaded_file['file']),
+            'type' => $uploaded_file['type'],
+        );
+
+    } else {
+        $response = array('status' => -1, 'error' => $uploaded_file['error'],);
+    }
+
+    die(json_encode($response));
+
+}
+add_action('wp_ajax_leyka_files_upload', 'leyka_files_upload');
+
+function leyka_delete_extension(){
+
+    if(empty($_POST['extension_id']) || !Leyka_Extension::get_by_id($_POST['extension_id'])) {
+        die(json_encode(array('status' => -1, 'message' => __('Cannot found given extension', 'leyka'),)));
+    } else if( !wp_verify_nonce($_POST['nonce'], 'leyka_delete_extension_'.$_POST['extension_id']) ) {
+        die(json_encode(array('status' => -1, 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
+    }
+
+    $extension = Leyka_Extension::get_by_id($_POST['extension_id']);
+
+    if( !$extension->folder || !file_exists($extension->folder) || !is_dir($extension->folder) ) {
+        die(json_encode(array('status' => -1, 'message' => __('Cannot found the extension folder', 'leyka'),)));
+    }
+
+    if( !leyka_delete_dir($extension->folder) ) {
+        die(json_encode(array(
+            'status' => -1,
+            'message' => sprintf(__('Cannot delete the extension. Please report this problem to the <a href="mailto:%s" target="_blank">Leyka technical support</a>.', 'leyka'), reset(explode(',', LEYKA_SUPPORT_EMAIL)))
+        )));
+    }
+
+    die(json_encode(array('status' => 0,)));
+
+}
+add_action('wp_ajax_leyka_delete_extension', 'leyka_delete_extension');

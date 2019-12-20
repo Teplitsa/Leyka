@@ -90,20 +90,6 @@ jQuery(document).ready(function($){
     });
     // Form templates screens demo - end
 
-    // Additional CSS value reset:
-    $('.css-editor-reset-value').on('click.leyka', function(e){
-
-        e.preventDefault();
-
-        let $this = $(this),
-            $css_editor_field = $this.siblings('.css-editor-field'),
-            original_value = $this.siblings('.css-editor-original-value').val();
-
-        $css_editor_field.val(original_value);
-        editor.codemirror.getDoc().setValue(original_value);
-
-    });
-
     // Campaign cover upload field:
     $('.upload-photo', '.upload-attachment-field').on('click.leyka', function(e){
 
@@ -164,27 +150,6 @@ jQuery(document).ready(function($){
         frame.open();
 
     });
-
-    // Custom CSS editor:
-    let $css_editor = $('.css-editor-field');
-    let editor = {};
-
-    if(!wp.codeEditor) {
-        console.log("no code editor");
-    }
-
-    if($css_editor.length && wp.codeEditor) {
-
-        let editor_settings = wp.codeEditor.defaultSettings ? _.clone( wp.codeEditor.defaultSettings ) : {};
-        editor_settings.codemirror = _.extend({
-            },
-            editor_settings.codemirror, {
-            indentUnit: 2,
-            tabSize: 2,
-            mode: 'css',
-        });
-        editor = wp.codeEditor.initialize($css_editor, editor_settings);
-    }
 
     // Campaign cover type:
     $('#campaign-cover-type input[type="radio"]').change(function(){
