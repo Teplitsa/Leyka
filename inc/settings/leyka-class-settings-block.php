@@ -410,10 +410,12 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
 
         if( !empty($this->_field_data['required']) ) {
             foreach($this->_fields_keys as $key) {
-                
-                if($this->_field_type === 'file') {
-                    $is_valid = $this->is_file_field_valid();
-                } else if(empty($_POST[ $this->is_standard_field_type ? 'leyka_'.$key : $key ])) {
+
+                // in new style upload file already uploaded and its path passed in $_POST
+//                 if($this->_field_type === 'file') {
+//                     $is_valid = $this->is_file_field_valid();
+//                 } else 
+                if(empty($_POST[ $this->is_standard_field_type ? 'leyka_'.$key : $key ])) {
                     $is_valid = false;
                 }
 

@@ -42,7 +42,7 @@ function leyka_render_text_field($option_id, $data){
     $data['value'] = isset($data['value']) ? $data['value'] : '';?>
 
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-text-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">
-        <label for="<?php echo $option_id.'-field';?>">
+        <label>
             <span class="field-component title">
 
                 <span class="text"><?php echo $data['title'];?></span>
@@ -79,7 +79,7 @@ function leyka_render_email_field($option_id, $data){
     $data['value'] = isset($data['value']) ? $data['value'] : '';?>
 
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-text-field-wrapper leyka-email-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">
-        <label for="<?php echo $option_id.'-field';?>">
+        <label>
             <span class="field-component title">
 
                 <span class="text"><?php echo $data['title'];?></span>
@@ -218,7 +218,7 @@ function leyka_render_number_field($option_id, $data){
     $data['value'] = isset($data['value']) ? $data['value'] : '';?>
 
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-number-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">
-        <label for="<?php echo $option_id.'-field';?>">
+        <label>
 
             <span class="field-component title">
                 <span class="text"><?php echo $data['title'];?></span>

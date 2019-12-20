@@ -7,12 +7,6 @@ class Leyka_Extension_Settings_Controller extends Leyka_Settings_Controller {
 
     protected static $_instance = null;
 
-    // ATM for ref (delete later):
-//    protected $_id;
-//    protected $_title;
-//    protected $_common_errors = array();
-//    protected $_component_errors = array();
-
     /** @var $_stages array of Leyka_Settings_Section objects */
     protected $_stages;
 
