@@ -412,7 +412,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
     protected function _get_donation_by_transaction_id($cp_transaction_id) {
 
         $donation = Leyka_Donations::get_instance()->get(array(
-            'meta' => array(array('key' => '_cp_transaction_id', 'value' => $cp_transaction_id,),),
+            'meta' => array(array('key' => 'cp_transaction_id', 'value' => $cp_transaction_id,),),
             'get_single' => true,
         ));
 
@@ -439,7 +439,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         return Leyka_Donations::get_instance()->get(array(
             'recurring_only_init' => true,
             'get_single' => true,
-            'meta' => array(array('key' => '_cp_recurring_id', 'value' => $recurring,))
+            'meta' => array(array('key' => 'cp_recurring_id', 'value' => $recurring,))
         ));
 
     }
@@ -536,12 +536,12 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             case 'recurrent_id':
             case 'cp_recurring_id':
             case 'cp_recurrent_id':
-                return $donation->get_meta('_cp_recurring_id');
+                return $donation->get_meta('cp_recurring_id');
             case 'transaction_id':
             case 'invoice_id':
             case 'cp_transaction_id':
             case 'cp_invoice_id':
-                return $donation->get_meta('_cp_transaction_id');
+                return $donation->get_meta('cp_transaction_id');
             default:
                 return $value;
         }
@@ -555,12 +555,12 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             case 'recurrent_id':
             case 'cp_recurring_id':
             case 'cp_recurrent_id':
-                return $donation->set_meta('_cp_recurring_id', $value);
+                return $donation->set_meta('cp_recurring_id', $value);
             case 'transaction_id':
             case 'invoice_id':
             case 'cp_transaction_id':
             case 'cp_invoice_id':
-                return $donation->set_meta('_cp_transaction_id', $value);
+                return $donation->set_meta('cp_transaction_id', $value);
             default:
                 return false;
         }
@@ -578,11 +578,11 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
 
         if( !empty($donation_params['recurring_id']) ) {
-            $donation->set_meta('_cp_recurring_id', $donation_params['recurring_id']);
+            $donation->set_meta('cp_recurring_id', $donation_params['recurring_id']);
         }
 
         if( !empty($donation_params['transaction_id']) ) {
-            $donation->set_meta('_cp_transaction_id', $donation_params['transaction_id']);
+            $donation->set_meta('cp_transaction_id', $donation_params['transaction_id']);
         }
 
     }

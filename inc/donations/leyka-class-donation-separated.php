@@ -657,7 +657,26 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
             global $wpdb;
             $query = $wpdb->prepare("SELECT `meta_value` FROM `{$wpdb->prefix}leyka_donations_meta` WHERE `donation_id`=%d AND `meta_key`=%s LIMIT 0,1", $this->_id, $meta_name);
-            $this->_donation_meta[$meta_name] = maybe_unserialize($wpdb->get_var($query));
+            $result = $wpdb->get_var($query);
+
+            // If there are no results for meta named with "_", try to find meta version without underscore
+            if( !$result && stripos($meta_name, '_') === 0 ) {
+
+                $meta_name = mb_substr($meta_name, 1);
+
+                $query = $wpdb->prepare("SELECT `meta_value` FROM `{$wpdb->prefix}leyka_donations_meta` WHERE `donation_id`=%d AND `meta_key`=%s LIMIT 0,1", $this->_id, $meta_name);
+                $result = $wpdb->get_var($query);
+
+                if($result) { // Remove the old meta version (started with "_")
+                    $wpdb->delete($wpdb->prefix.'leyka_donations_meta', array(
+                        'donation_id' => $this->_id,
+                        'meta_key' => '_'.$meta_name,
+                    ));
+                }
+
+            }
+
+            $this->_donation_meta[$meta_name] = maybe_unserialize($result);
 
         }
 
@@ -672,7 +691,15 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             return false;
         }
 
-        $value = is_array($value) || is_object($value) ? serialize($value) : trim($value);
+        $value_serialized = false;
+        if(is_array($value) || is_object($value)) {
+
+            $value_serialized = true;
+            $value = serialize($value);
+
+        } else {
+            $value = trim($value);
+        }
 
         global $wpdb;
 
@@ -700,7 +727,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
         }
 
         if($res) {
-            $this->_donation_meta[$meta_name] = $value;
+            $this->_donation_meta[$meta_name] = $value_serialized ? maybe_unserialize($value) : $value;
         } else {
             return false;
         }

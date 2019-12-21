@@ -423,9 +423,7 @@ techMessage="'.$tech_message.'"/>');
             return array();
         }
 
-        if(is_object($donation->gateway_response)) {
-            $response = serialize($donation->gateway_response);
-        }
+        $response = serialize($donation->gateway_response);
 
         if(stristr($response, 'YandexCheckout')) { // New API
 
@@ -675,7 +673,7 @@ techMessage="'.$tech_message.'"/>');
             case 'yandex_recurring_id':
             case 'yandex_invoice_id':
             case 'yandex_payment_id':
-                return $donation->get_meta('_yandex_invoice_id');
+                return $donation->get_meta('yandex_invoice_id');
             default:
                 return $value;
         }
@@ -691,7 +689,7 @@ techMessage="'.$tech_message.'"/>');
             case 'yandex_recurring_id':
             case 'yandex_invoice_id':
             case 'yandex_payment_id':
-                return $donation->set_meta('_yandex_invoice_id', $value);
+                return $donation->set_meta('yandex_invoice_id', $value);
             default:
                 return false;
         }
@@ -711,7 +709,7 @@ techMessage="'.$tech_message.'"/>');
         if( !empty($donation_params['recurring_id']) ) {
             Leyka_Donations::get_instance()
                 ->get_donation($donation_id)
-                ->set_meta('_yandex_invoice_id', $donation_params['recurring_id']);
+                ->set_meta('yandex_invoice_id', $donation_params['recurring_id']);
         }
     }
 

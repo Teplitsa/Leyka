@@ -1,14 +1,12 @@
 /** Admin JS - Donation adding/editing pages **/
 jQuery(document).ready(function($){
 
-    var $page_wrapper = $('.wrap');
+    let $page_wrapper = $('.wrap');
     if( !$page_wrapper.length || $page_wrapper.data('leyka-admin-page-type') !== 'donation-info-page' ) {
         return;
     }
 
-    leyka_support_metaboxes('dashboard_page_leyka_donation_info');
-
-    var $donation_date = $('#donation-date-view').datepicker({
+    let $donation_date = $('#donation-date-view').datepicker({
         changeMonth: true,
         changeYear: true,
         minDate: '-5Y',
@@ -19,7 +17,7 @@ jQuery(document).ready(function($){
     });
 
     /** @todo Move to the /src/js/admin/common-settings.js */
-    var $campaign_select = $('#campaign-select');
+    let $campaign_select = $('#campaign-select');
     if($campaign_select.length && typeof $().autocomplete !== 'undefined') {
 
         $campaign_select.keyup(function(){
@@ -56,7 +54,7 @@ jQuery(document).ready(function($){
                 return false;
             },
             source: function(request, response) {
-                var term = request.term,
+                let term = request.term,
                     cache = $campaign_select.data('cache') ? $campaign_select.data('cache') : [];
 
                 if(term in cache) {
@@ -91,7 +89,7 @@ jQuery(document).ready(function($){
     // Validate add/edit donation form:
     $('form#post').submit(function(e){
 
-        var $form = $(this),
+        let $form = $(this),
             is_valid = true,
             $field = $('#campaign-id');
 

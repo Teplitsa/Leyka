@@ -881,7 +881,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
                 <div id="cancel-campaign-select" class="button"><?php _e('Cancel', 'leyka');?></div>
             </div>
-		</div> <!-- .set-action -->
+		</div>
 
 	</fieldset>
 

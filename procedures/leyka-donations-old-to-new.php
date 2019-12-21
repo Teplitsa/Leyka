@@ -262,7 +262,7 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
 
     foreach($donation_post_meta as $key => $value) {
 
-        if(stripos($key, '_') === 0) {
+        if(stripos($key, '_') === 0) { // If meta key starts with "_", remove the symbol
             $key = mb_substr($key, 1);
         }
 

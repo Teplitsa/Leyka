@@ -847,41 +847,25 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         }
 
         // Base admin area js/css:
-        $leyka_admin_new = (isset($_GET['screen']) && count(explode('-', $_GET['screen'])) >= 2) // New settings pages (from v3.0)
-            || (isset($_GET['page']) && $_GET['page'] === 'leyka_settings')
-            || ($screen->post_type === Leyka_Campaign_Management::$post_type && $screen->base === 'post')
-            || (isset($_GET['page']) && ($_GET['page'] === 'leyka' || $_GET['page'] === 'leyka_donors'))
-            || (isset($_GET['page']) && $_GET['page'] === 'leyka_donor_info' && !empty($_GET['donor']))
-            || (isset($_GET['page']) && $_GET['page'] === 'leyka_extensions')
-            || (isset($_GET['page']) && $_GET['page'] === 'leyka_extension_settings' && !empty($_GET['extension']))
-            || (isset($_GET['page']) && $_GET['page'] === 'leyka_feedback');
 
         $current_screen = get_current_screen();
         $dependencies = array('jquery',);
 
-        if($leyka_admin_new) {
+        wp_enqueue_style('leyka-settings', LEYKA_PLUGIN_BASE_URL.'assets/css/admin.css', array(), LEYKA_VERSION);
 
-            wp_enqueue_style('leyka-settings', LEYKA_PLUGIN_BASE_URL.'assets/css/admin.css', array(), LEYKA_VERSION);
+        // Colorpicker fields support:
+        wp_enqueue_script('wp-color-picker');
+        wp_enqueue_style('wp-color-picker');
 
-            // Colorpicker fields support:
-            wp_enqueue_script('wp-color-picker');
-            wp_enqueue_style('wp-color-picker');
+        if(function_exists('wp_enqueue_code_editor')) { // The function is available in WP v4.9.0+
+            wp_enqueue_code_editor(array('type' => 'text/css')); // Add the code editor lib
+        }
 
-            if(function_exists('wp_enqueue_code_editor')) { // The function is available in WP v4.9.0+
-                wp_enqueue_code_editor(array('type' => 'text/css')); // Add the code editor lib
-            }
-
-            // WP admin metaboxes support:
-            $dependencies[] = 'postbox';
-            $dependencies[] = 'jquery-ui-accordion';
-            $dependencies[] = 'jquery-ui-sortable';
-            $dependencies[] = 'tags-box';
-
-        } else { // Old admin pages (before v3.0)
-            /** @todo ATM, the old admin.css is used only for New & Edit Donation pages (/css/admin.css, lines 502-730). Move their code to the /src/ , then remove the /css/admin.css */
-	        wp_enqueue_style('leyka-admin', LEYKA_PLUGIN_BASE_URL.'css/admin.css', array(), LEYKA_VERSION);
-            wp_enqueue_style('leyka-settings', LEYKA_PLUGIN_BASE_URL.'assets/css/admin.css', array(), LEYKA_VERSION);
-	    }
+        // WP admin metaboxes support:
+        $dependencies[] = 'postbox';
+        $dependencies[] = 'jquery-ui-accordion';
+        $dependencies[] = 'jquery-ui-sortable';
+        $dependencies[] = 'tags-box';
 
         if(in_array($current_screen->id, array('dashboard_page_leyka_donation_info', 'dashboard_page_leyka_donor_info'))) {
             $dependencies[] = $this->_load_data_tables();

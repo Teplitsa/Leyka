@@ -29,12 +29,18 @@ try {
 
         <div id="poststuff">
             <div id="post-body" class="metabox-holder columns-2">
+
+                <?php $metaboxes_area_id = 'dashboard_page_leyka_donation_info';?>
+                <input type="hidden" class="leyka-support-metabox-area" value="<?php echo $metaboxes_area_id;?>">
+
                 <div id="postbox-container-1" class="postbox-container">
-                    <?php do_meta_boxes('dashboard_page_leyka_donation_info', 'side', null);?>
+                    <?php do_meta_boxes($metaboxes_area_id, 'side', null);?>
                 </div>
+
                 <div id="postbox-container-2" class="postbox-container">
-                    <?php do_meta_boxes('dashboard_page_leyka_donation_info', 'normal', null);?>
+                    <?php do_meta_boxes($metaboxes_area_id, 'normal', null);?>
                 </div>
+
             </div>
         </div>
 
