@@ -37,6 +37,19 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 		add_action('admin_enqueue_scripts', array($this, 'load_frontend_scripts'));
 
+		add_action('init', function(){
+
+            // Remove all actions related to emojis (they break wp_redirect()):
+            remove_action( 'admin_print_styles', 'print_emoji_styles' );
+            remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+            remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
+            remove_action( 'wp_print_styles', 'print_emoji_styles' );
+            remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );
+            remove_filter( 'the_content_feed', 'wp_staticize_emoji' );
+            remove_filter( 'comment_text_rss', 'wp_staticize_emoji' );
+
+        });
+
         add_action('admin_init', array($this, 'pre_admin_actions'));
 
         add_action('wp_ajax_leyka_send_feedback', array($this, 'ajax_send_feedback'));
@@ -399,10 +412,19 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         do_action('leyka_pre_donation_info_actions'); // Add collapsible to metaboxes
 
         // Add all metaboxes:
-        add_meta_box('leyka_donation_data', __('Donation data', 'leyka'), array('Leyka_Donation_Management', 'donation_data_metabox'), 'dashboard_page_leyka_donation_info', 'normal', 'high');
-        add_meta_box('leyka_donation_status', __('Donation status', 'leyka'), array('Leyka_Donation_Management', 'donation_status_metabox'), 'dashboard_page_leyka_donation_info', 'side', 'high');
-        add_meta_box('leyka_donation_emails_status', __('Emails status', 'leyka'), array('Leyka_Donation_Management', 'emails_status_metabox'), 'dashboard_page_leyka_donation_info', 'normal', 'high');
-        add_meta_box('leyka_donation_gateway_response', __('Gateway responses text', 'leyka'), array('Leyka_Donation_Management', 'gateway_response_metabox'), 'dashboard_page_leyka_donation_info', 'normal', 'low');
+        if(empty($_GET['donation']) || !absint($_GET['donation'])) { // New Donation page
+
+            add_meta_box('leyka_donation_data', __('Donation data', 'leyka'), array('Leyka_Donation_Management', 'new_donation_data_metabox'), 'dashboard_page_leyka_donation_info', 'normal', 'high');
+            add_meta_box('leyka_donation_status', __('Donation status', 'leyka'), array('Leyka_Donation_Management', 'donation_status_metabox'), 'dashboard_page_leyka_donation_info', 'side', 'high');
+
+        } else { // Edit Donation page
+
+            add_meta_box('leyka_donation_data', __('Donation data', 'leyka'), array('Leyka_Donation_Management', 'donation_data_metabox'), 'dashboard_page_leyka_donation_info', 'normal', 'high');
+            add_meta_box('leyka_donation_status', __('Donation status', 'leyka'), array('Leyka_Donation_Management', 'donation_status_metabox'), 'dashboard_page_leyka_donation_info', 'side', 'high');
+            add_meta_box('leyka_donation_emails_status', __('Emails status', 'leyka'), array('Leyka_Donation_Management', 'emails_status_metabox'), 'dashboard_page_leyka_donation_info', 'normal', 'high');
+            add_meta_box('leyka_donation_gateway_response', __('Gateway responses text', 'leyka'), array('Leyka_Donation_Management', 'gateway_response_metabox'), 'dashboard_page_leyka_donation_info', 'normal', 'low');
+
+        }
 
         $this->_show_admin_template('donation-info-page');
 
@@ -440,15 +462,96 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
-//        echo '<pre>Editing: '.print_r($donation->id, 1).'</pre>';
-//        echo '<pre>'.print_r($_POST, 1).'</pre>';
-
         if($donation->status !== $_POST['donation_status']) {
             $donation->status = $_POST['donation_status'];
         }
 
+        if(isset($_POST['donation-amount'])) {
+
+            $_POST['donation-amount'] = round((float)str_replace(',', '.', $_POST['donation-amount']), 2);
+            if((float)$donation->amount != $_POST['donation-amount']) {
+                $donation->amount = $_POST['donation-amount'];
+            }
+
+        }
+
+        if(isset($_POST['donation-amount-total'])) {
+
+            $_POST['donation-amount-total'] = round((float)str_replace(
+                array(',', ' '), array('.', ''),
+                $_POST['donation-amount-total']
+            ), 2);
+
+            if((float)$donation->amount_total != $_POST['donation-amount-total']) {
+
+                if($_POST['donation-amount-total'] <= 0.0 && $donation->amount > 0.0) {
+                    $_POST['donation-amount-total'] = $donation->amount;
+                }
+
+                $old_amount = $donation->amount_total ? $donation->amount_total : $donation->amount;
+                $donation->amount_total = $_POST['donation-amount-total'];
+
+                // If we're adding a correctional donation, then $donation->campaign_id == 0:
+                if($donation->campaign_id && $donation->status == 'funded') {
+                    $campaign->update_total_funded_amount($donation, 'update_sum', $old_amount);
+                }
+
+            }
+
+        }
+
         if( !$donation->currency ) {
             $donation->currency = leyka_options()->opt('main_currency');
+        }
+
+        if(isset($_POST['campaign-id']) && $donation->campaign_id != (int)$_POST['campaign-id']) {
+
+            // If we're adding a correctional donation, $donation->campaign_id == 0:
+            if($donation->campaign_id && $donation->status == 'funded') {
+                $campaign->update_total_funded_amount($donation, 'remove'); // Old campaign
+            }
+
+            $donation->campaign_id = (int)$_POST['campaign-id'];
+            $campaign = new Leyka_Campaign($donation->campaign_id); // New campaign
+
+            if($donation->status == 'funded') {
+                $campaign->update_total_funded_amount($donation);
+            }
+
+        }
+
+        $donation_title = $campaign->payment_title ?
+            $campaign->payment_title :
+            ($campaign->title ? $campaign->title : sprintf(__('Donation #%s', 'leyka'), $donation->id));
+        if($donation->title !== $donation_title) {
+            $donation->title = $donation_title;
+        }
+
+        if(isset($_POST['donation-pm']) && ($donation->pm != $_POST['donation-pm'] || $_POST['donation-pm'] === 'custom')) {
+
+            if($_POST['donation-pm'] === 'custom') {
+
+                $donation->gateway_id = '';
+                if($donation->pm_id !== $_POST['custom-payment-info']) {
+                    $donation->pm_id = $_POST['custom-payment-info'];
+                }
+
+            } else {
+
+                $parts = explode('-', $_POST['donation-pm']);
+                $donation->gateway_id = $parts[0];
+                $donation->pm = $parts[1];
+
+            }
+
+        }
+
+        if(isset($_POST['donation_date']) && $donation->date_timestamp != strtotime($_POST['donation_date'])) {
+            $donation->date = $_POST['donation_date'];
+        }
+
+        if(isset($_POST['payment-type']) && $donation->payment_type != $_POST['payment-type']) {
+            $donation->payment_type = $_POST['payment-type'];
         }
 
         if(
@@ -467,8 +570,74 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             $donation->donor_comment = sanitize_textarea_field($_POST['donor-comment']);
         }
 
+        // Add donor ID for correction-typed donation:
+//        if(
+//            leyka_options()->opt('donor_management_available')
+//            && $donation->status === 'funded'
+//            && !$donation->donor_user_id
+//            && $donation->donor_email
+//        ) {
+//
+//            try {
+//
+//                $donor = new Leyka_Donor($donation->donor_email);
+//
+//                $donation->donor_user_id = $donor->id;
+//                Leyka_Donor::calculate_donor_metadata($donor);
+//
+//            } catch(Exception $e) {
+//                // ...
+//            }
+//
+//        }
+
+        do_action("leyka_{$donation->gateway_id}_edit_donation_data", $donation);
+        do_action("leyka_{$donation->gateway_id}_save_donation_data", $donation);
+
     }
     protected function _handle_donation_add() {
+
+//        echo '<pre>'.print_r($_POST, 1).'</pre>';
+//        echo '<pre>Errors: '.print_r(empty($_SESSION['leyka_new_donation_error']) ? '' : $_SESSION['leyka_new_donation_error'], 1).'</pre>';
+
+        $gateway_pm = empty($_POST['donation-pm']) || $_POST['donation-pm'] === 'custom' ?
+            'custom' : leyka_get_pm_by_id($_POST['donation-pm'], true);
+        $gateway_id = $gateway_pm === 'custom' ? '' : $gateway_pm->gateway_id;
+        $pm_id = $gateway_pm === 'custom' ? esc_html($_POST['custom-payment-info']) : $gateway_pm->id;
+
+        $new_donation_params = array(
+            'payment_type' => empty($_POST['payment-type']) ? 'correction' : $_POST['payment-type'],
+            'campaign_id' => absint($_POST['campaign-id']),
+            'status' => $_POST['donation_status'],
+            'amount' => round($_POST['donation-amount'], 2),
+            'gateway_id' => $gateway_id,
+            'pm_id' => $pm_id,
+            'donor_name' => $_POST['donor-name'],
+            'donor_email' => $_POST['donor-email'],
+            'donor_comment' => empty($_POST['donor-comment']) ? '' : $_POST['donor-comment'],
+            'date_created' => $_POST['donation_date'], /** @todo Make it use time also? */
+        );
+        if( !empty($_POST['donation-amount-total']) && $_POST['donation-amount-total'] !== $_POST['donation-amount'] ) {
+            $new_donation_params['amount_total'] = round($_POST['donation-amount-total'], 2);
+        }
+
+        $donation_id = Leyka_Donations::get_instance()->add(array_merge($new_donation_params, $_POST));
+        if(is_wp_error($donation_id)) {
+
+            $_SESSION['leyka_new_donation_error'] = $donation_id; /** @todo Change it when using Donation Add/Edit Controller */
+            do_action('leyka_add_donation_failed', $donation_id);
+
+        } else {
+
+            $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
+
+            do_action("leyka_{$donation->gateway_id}_add_donation_data", $donation);
+            do_action("leyka_{$donation->gateway_id}_save_donation_data", $donation);
+
+            wp_redirect(admin_url('?page=leyka_donation_info&donation='.$donation_id));
+            exit;
+
+        }
 
     }
     // Donations related methods - END

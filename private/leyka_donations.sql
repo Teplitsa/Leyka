@@ -79,6 +79,12 @@ ALTER TABLE `mlsd_leyka_donations_meta`
 --
 
 --
+-- AUTO_INCREMENT для таблицы `mlsd_leyka_donations`
+--
+ALTER TABLE `mlsd_leyka_donations`
+  MODIFY `ID` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT для таблицы `mlsd_leyka_donations_meta`
 --
 ALTER TABLE `mlsd_leyka_donations_meta`

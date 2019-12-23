@@ -1242,12 +1242,12 @@ class Leyka_Campaign {
 
         } else { // Add/subtract a sum of a donation from it's campaign metadata
 
-            $donation = leyka_get_validated_donation($donation);
+            $donation = Leyka_Donations::get_instance()->get_donation($donation);
             if( !$donation ) {
                 return false;
             }
 
-            if($action == 'remove') { // Subtract given donation's sum from campaign's total_funded
+            if($action === 'remove') { // Subtract given donation's sum from campaign's total_funded
                 $sum = -$donation->sum_total;
             } else { // Add given donation's sum to campaign's total_funded
 
@@ -1276,7 +1276,7 @@ class Leyka_Campaign {
 
     }
 
-    public function delete($force = False) {
+    public function delete($force = false) {
         wp_delete_post( $this->_id, $force );
     }
     

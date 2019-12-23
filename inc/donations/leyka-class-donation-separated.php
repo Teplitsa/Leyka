@@ -46,7 +46,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
         } else { // Get Gateway & PM data from $params
 
             $params['gateway_id'] = empty($params['gateway_id']) ? '' : $params['gateway_id'];
-            if($params['gateway_id'] && !leyka_get_gateway_by_id($params['gateway_id'])) {
+            if( !$params['gateway_id'] || !leyka_get_gateway_by_id($params['gateway_id']) ) {
                 $params['gateway_id'] = 'correction';
             }
 
@@ -58,7 +58,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
         $pm_full_id = leyka_get_pm_by_id("{$params['gateway_id']}-{$params['pm_id']}", true);
 
-        if( !$params['force_insert'] && (empty($params['gateway_id']) || empty($params['pm_id'])) ) {
+        if( !$params['force_insert'] && empty($params['pm_id']) ) { // Gateway ID may be empty (for custom payment info cases)
             return new WP_Error('donation_addition_error', __('Gateway or PM ID is missing while adding a donation', 'leyka'));
         }
 

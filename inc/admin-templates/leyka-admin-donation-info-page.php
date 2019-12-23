@@ -3,14 +3,21 @@
 
 /** @var $this Leyka_Admin_Setup */
 
-if(empty($_GET['donation']) || !current_user_can('leyka_manage_donations')) {
+if( !current_user_can('leyka_manage_donations') ) {
     wp_die(__('Error: cannot display the page for the given donation.', 'leyka'));
 }
 
-try {
-    $donation = Leyka_Donations::get_instance()->get_donation($_GET['donation']);
-} catch(Exception $e) {
-    wp_die($e->getMessage());
+if(empty($_GET['donation']) || !absint($_GET['donation'])) {
+    $donation_id = 'new';
+} else {
+    try {
+
+        $donation = Leyka_Donations::get_instance()->get_donation($_GET['donation']);
+        $donation_id = $donation->id;
+
+    } catch(Exception $e) {
+        wp_die($e->getMessage());
+    }
 }?>
 
 <div class="wrap" data-leyka-admin-page-type="donation-info-page"> <!-- leyka-admin wrap single-settings donation-info -->
@@ -23,7 +30,17 @@ try {
     <h1 class="wp-heading-inline"><?php _e('Donation profile', 'leyka');?></h1>
     <hr class="wp-header-end">
 
-    <form name="post" action="<?php echo admin_url('?page=leyka_donation_info&donation='.$donation->id.'&action=edit');?>" method="post" id="post">
+    <?php if( !empty($_SESSION['leyka_new_donation_error']) && is_wp_error($_SESSION['leyka_new_donation_error']) ) {
+
+        /** @var $error WP_Error */
+        $error = $_SESSION['leyka_new_donation_error'];
+        unset($_SESSION['leyka_new_donation_error']);?>
+
+    <div class="error"><?php echo $error->get_error_message();?></div>
+
+    <?php }?>
+
+    <form name="post" action="<?php echo admin_url('?page=leyka_donation_info&donation='.$donation_id.'&action=edit');?>" method="post" id="post">
 
         <?php wp_nonce_field('edit-donation');?>
 

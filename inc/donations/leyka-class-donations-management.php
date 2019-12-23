@@ -678,6 +678,8 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         $curr_page = get_current_screen();
 
+        echo '<pre>'.print_r($curr_page, 1).'</pre>';
+
         if($curr_page->action === 'add') { // New donation page
 
             add_meta_box(self::$post_type.'_new_data', __('New donation data', 'leyka'), array(__CLASS__, 'new_donation_data_metabox'), self::$post_type, 'normal', 'high');
@@ -1093,27 +1095,29 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             (empty($_GET['post']) ? false : absint($_GET['post'])) :
             (empty($_GET['donation']) ? false : absint($_GET['donation']));
 
-        $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
+        $donation = $donation_id ? Leyka_Donations::get_instance()->get_donation($donation_id) : false;
 
         wp_nonce_field('donation_status_metabox', '_donation_edit_nonce');
 
-        $is_adding_page = get_current_screen()->action === 'add';?>
+        $is_adding_page = empty($_GET['donation']) || !absint($_GET['donation']);?>
 
         <div class="leyka-status-section select">
             <label for="donation-status"><?php _e('Status', 'leyka');?></label>
             <select id="donation-status" name="donation_status">
                 <?php foreach(leyka_get_donation_status_list() as $status => $label) {
-                    if($status == 'trash') {
+                    if($status === 'trash') {
                         continue;
                     }?>
-                <option value="<?php echo $status;?>" <?php echo $donation->status === $status || ($is_adding_page && $status === 'funded') ? 'selected' : '';?>><?php echo $label;?></option>
+                <option value="<?php echo $status;?>" <?php echo ($donation && $donation->status === $status) || ($is_adding_page && $status === 'funded') ? 'selected' : '';?>>
+                    <?php echo $label;?>
+                </option>
                 <?php }?>
             </select>
 		</div>
 
         <div class="leyka-status-section actions">
 
-            <?php if(current_user_can('leyka_manage_donations') && !$is_adding_page) {?>
+            <?php if( !$is_adding_page ) {?>
 
 				<div class="delete-action">
                     <a class="submitdelete deletion" href="<?php echo self::get_donation_delete_link($donation);?>"><?php echo !EMPTY_TRASH_DAYS ? __('Delete Permanently') : __('Move to Trash');?></a>
@@ -1124,7 +1128,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             <?php if(current_user_can('leyka_manage_donations')) {?>
 
 				<div class="save-action">
-			        <input name="original_funded" type="hidden" id="original_funded" value="<?php _e(__('Update', 'leyka'));?>">
+			        <input name="original_funded" type="hidden" id="original_funded" value="<?php _e('Update', 'leyka');?>">
                     <?php submit_button(
                         $is_adding_page ? __('Add the donation', 'leyka') : __('Update', 'leyka'),
                         'primary button-large', 'funded', false,
@@ -1137,7 +1141,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         </div>
 
         <div class="leyka-status-section log">
-            <?php $status_log = $donation->status_log;
+            <?php $status_log = $donation ? $donation->status_log : array();
             if($status_log) {?>
 
                 <?php $last_status = end($status_log);
@@ -1430,6 +1434,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
     /** Donation data editing.
      * @param $donation_id int
      * @return int|false Edited donation ID or false (if editing is failed or impossible).
+     * @deprecated Now all Donation data handling is on the Leyka_Admin
      */
     public function save_donation_data($donation_id) {
 
@@ -1455,7 +1460,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         remove_action('save_post_'.self::$post_type, array($this, 'save_donation_data'));
 
-        $donation = new Leyka_Donation($donation_id);
+        $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
         $donation->donor_user_id = 0; // Or current user (admin) will become donation post_author

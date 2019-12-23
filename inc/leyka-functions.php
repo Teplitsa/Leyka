@@ -163,14 +163,16 @@ function leyka_user_has_role($role, $is_only_role = false, $user = false) {
 /**
  * @param $donation mixed
  * @return Leyka_Donation|false A donation object, if parameter is valid in one way or another; false otherwise.
+ *
+ * @deprecated Just use Leyka_Donations::get_instance()->get_donation($donation);
  */
 function leyka_get_validated_donation($donation) {
 
-    if(is_numeric($donation) && (int)$donation > 0) {
-        $donation = new Leyka_Donation((int)$donation);
+    if(is_numeric($donation) && absint($donation)) {
+        $donation = Leyka_Donations::get_instance()->get_donation(absint($donation));
     } else if(is_a($donation, 'WP_Post')) {
-        $donation = new Leyka_Donation($donation);
-    } elseif( !is_a($donation, 'Leyka_Donation') ) {
+        $donation = Leyka_Donations::get_instance()->get_donation($donation);
+    } elseif( !is_a($donation, 'Leyka_Donation_Base') ) {
         return false;
     }
 
