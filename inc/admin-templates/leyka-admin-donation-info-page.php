@@ -38,9 +38,11 @@ if(empty($_GET['donation']) || !absint($_GET['donation'])) {
 
     <div class="error"><?php echo $error->get_error_message();?></div>
 
+    <?php } else if(isset($_GET['msg']) && $_GET['msg'] === 'ok') {?>
+        <div id="message" class="updated notice notice-success"><p><?php _e('Donation added.', 'leyka');?></p></div>
     <?php }?>
 
-    <form name="post" action="<?php echo admin_url('?page=leyka_donation_info&donation='.$donation_id.'&action=edit');?>" method="post" id="post">
+    <form name="post" action="<?php echo admin_url('?page=leyka_donation_info&donation='.$donation_id);?>" method="post" id="post">
 
         <?php wp_nonce_field('edit-donation');?>
 

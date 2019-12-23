@@ -1643,7 +1643,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
     public static function get_donation_delete_link(Leyka_Donation_Base $donation) {
         return leyka_get_donations_storage_type() === 'post' ?
             get_delete_post_link($donation->id) :
-            admin_url('?page=leyka_donations&action=delete&donation='.$donation->id.'&_wpnonce='.wp_create_nonce('leyka_delete_donation'));
+            admin_url('admin.php?page=leyka_donations&action=delete&donation='.$donation->id.'&_wpnonce='.wp_create_nonce('leyka_delete_donation'));
     }
 
     public static function get_donation_edit_link(Leyka_Donation_Base $donation) {

@@ -411,7 +411,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'gateway_response':
                 return $this->get_meta('gateway_response');
             case 'gateway_response_formatted':
-                return $this->gateway_id ?
+                return $this->gateway_id && $this->gateway_id !== 'correction' ?
                     leyka_get_gateway_by_id($this->gateway_id)->get_gateway_response_formatted($this) : array();
 
             case 'type':

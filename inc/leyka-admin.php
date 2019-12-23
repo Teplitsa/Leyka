@@ -37,19 +37,6 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 		add_action('admin_enqueue_scripts', array($this, 'load_frontend_scripts'));
 
-		add_action('init', function(){
-
-            // Remove all actions related to emojis (they break wp_redirect()):
-            remove_action( 'admin_print_styles', 'print_emoji_styles' );
-            remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
-            remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
-            remove_action( 'wp_print_styles', 'print_emoji_styles' );
-            remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );
-            remove_filter( 'the_content_feed', 'wp_staticize_emoji' );
-            remove_filter( 'comment_text_rss', 'wp_staticize_emoji' );
-
-        });
-
         add_action('admin_init', array($this, 'pre_admin_actions'));
 
         add_action('wp_ajax_leyka_send_feedback', array($this, 'ajax_send_feedback'));
@@ -212,9 +199,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         add_submenu_page('leyka', __('Leyka Dashboard', 'leyka'), __('Dashboard', 'leyka'), 'leyka_manage_donations', 'leyka', array($this, 'dashboard_screen'));
 
+        /** @todo This IF() should be here only until we made a single Donations list & info page for both storage types: */
         if(leyka_get_donations_storage_type() === 'post') { // Post-based donations storage
-
-            /** @todo This IF() should be here only until we made a single Donations list & info page for both storage types */
 
             add_submenu_page('leyka', __('Donations', 'leyka'), __('Donations', 'leyka'), 'leyka_manage_donations', 'edit.php?post_type='.Leyka_Donation_Management::$post_type);
             add_submenu_page('leyka', __('New correctional donation', 'leyka'), _x('Add new', 'donation', 'leyka'), 'leyka_manage_donations', 'post-new.php?post_type='.Leyka_Donation_Management::$post_type);
@@ -634,10 +620,16 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             do_action("leyka_{$donation->gateway_id}_add_donation_data", $donation);
             do_action("leyka_{$donation->gateway_id}_save_donation_data", $donation);
 
-            wp_redirect(admin_url('?page=leyka_donation_info&donation='.$donation_id));
-            exit;
+            // WARNING: we can't use wp_redirect here due to admin headers already sent:
+            $new_donation_edit_url = admin_url('?page=leyka_donation_info&donation='.$donation_id.'&msg=ok');?>
 
-        }
+            <div id="message" class="updated notice notice-success">
+                <p><?php echo sprintf(__("Donation added. If you are not redirected to it's edit page, <a href='%s'>click here</a>.", 'leyka'), $new_donation_edit_url);?></p>
+            </div>
+
+            <script type="text/javascript">window.location.href="<?php echo $new_donation_edit_url;?>";</script>
+
+        <?php }
 
     }
     // Donations related methods - END

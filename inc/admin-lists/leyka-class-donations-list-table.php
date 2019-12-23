@@ -10,8 +10,8 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
     public function __construct() {
 
         parent::__construct(array(
-            'singular' => __('Donation', 'leyka'),
-            'plural' => __('Donations', 'leyka'),
+            'singular' => 'donation',
+            'plural' => 'donations',
             'ajax' => true,
         ));
 
@@ -194,7 +194,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
         $column_content = '<div class="donation-campaign"><a href="'.Leyka_Donation_Management::get_donation_edit_link($donation).'">'.$campaign->title.'</a></div>'
             .'<div class="donation-email">'.$donation->donor_email.'</div>'
             .$this->row_actions(array(
-                'donor_page' => '<a href="'.Leyka_Donation_Management::get_donation_edit_link($donation).'">'.__('Edit').'</a>',
+                'donation_page' => '<a href="'.Leyka_Donation_Management::get_donation_edit_link($donation).'">'.__('Edit').'</a>',
                 'delete' => '<a href="'.Leyka_Donation_Management::get_donation_delete_link($donation).'">'.__('Delete').'</a>',
             ));
 
@@ -419,7 +419,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
     protected function display_tablenav($which) {
 
-        if('top' === $which ) {
+        if($which === 'top') {
             wp_nonce_field('bulk-'.$this->_args['plural'], '_wpnonce', false);
         }?>
 
@@ -448,7 +448,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
     public function process_bulk_action() {
 
-        if('delete' === $this->current_action()) { // Single donation deletion
+        if($this->current_action() === 'delete') { // Single donation deletion
 
             if( !wp_verify_nonce(esc_attr($_REQUEST['_wpnonce']), 'leyka_delete_donation') ) {
                 die(__("You don't have permissions for this operation.", 'leyka'));
@@ -459,12 +459,18 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
         }
 
         if( // Bulk donations deletion
-            (isset($_POST['action']) && $_POST['action'] === 'bulk-delete')
-            || (isset($_POST['action2']) && $_POST['action2'] === 'bulk-delete')
+            (isset($_REQUEST['action']) && $_REQUEST['action'] === 'bulk-delete')
+            || (isset($_REQUEST['action2']) && $_REQUEST['action2'] === 'bulk-delete')
         ) {
-            foreach(esc_sql($_POST['bulk-delete']) as $donation_id) {
+
+            if( !wp_verify_nonce(esc_attr($_REQUEST['_wpnonce']), 'bulk-'.$this->_args['plural']) ) {
+                die(__("You don't have permissions for this operation.", 'leyka'));
+            }
+
+            foreach(esc_sql($_REQUEST['bulk-delete']) as $donation_id) {
                 self::delete_donation($donation_id);
             }
+
         }
 
     }
