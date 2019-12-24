@@ -1082,7 +1082,13 @@ class Leyka extends Leyka_Singleton {
             $status_info['description'] = $status_descriptions[$status_id];
         }
 
-        return count($status_info) > 1 ? $status_info : false;
+        if( !count($status_info) ) {
+            return false;
+        } else if($info_field && !empty($status_info[$info_field]) ) {
+            return $status_info[$info_field];
+        } else {
+            return $status_info;
+        }
 
     }
 
