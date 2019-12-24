@@ -675,8 +675,11 @@ class Leyka_Donations_Separated extends Leyka_Donations {
         }
         if($this->_is_orderable_by($params['orderby'])) {
 
-            $params['orderby'] = $params['orderby'] === 'date' ?
-                "{$wpdb->prefix}leyka_donations.date_created" : "{$wpdb->prefix}leyka_donations.".$params['orderby'];
+            switch($params['orderby']) {
+                case 'donation_id': $params['orderby'] = "{$wpdb->prefix}leyka_donations.ID"; break;
+                case 'date': $params['orderby'] = "{$wpdb->prefix}leyka_donations.date_created"; break;
+                default: $params['orderby'] = "{$wpdb->prefix}leyka_donations.".$params['orderby']; break;
+            }
 
             $query['orderby'] = " ORDER BY {$params['orderby']} {$params['order']}";
 
@@ -746,7 +749,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
     }
 
     protected function _is_orderable_by($param_name) {
-        return in_array(mb_strtolower($param_name), array('id', 'campaign_id', 'status', 'date', 'date_created', 'gateway_id', 'pm_id', 'amount', 'donor_name', 'donor_email', 'payment_type',));
+        return in_array(mb_strtolower($param_name), array('id', 'donation_id', 'campaign_id', 'status', 'date', 'date_created', 'gateway_id', 'pm_id', 'amount', 'donor_name', 'donor_email', 'payment_type',));
     }
 
     public function add(array $params = array(), $return_object = false) {
