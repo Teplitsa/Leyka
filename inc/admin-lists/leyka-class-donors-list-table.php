@@ -393,6 +393,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         $admin_donor_page = admin_url('?page=leyka_donor_info&donor='.$item['donor_id']);
 
         $actions = array(
+            'donor_page' => '<a href="'.$admin_donor_page.'">'.__('Edit').'</a>',
             'delete' => sprintf(
                 '<a href="?page=%s&action=%s&donor=%s&_wpnonce=%s">'.__('Delete', 'leyka').'</a>',
                 esc_attr($_REQUEST['page']),
@@ -400,7 +401,6 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
                 $item['donor_id'],
                 wp_create_nonce('leyka_delete_donor')
             ),
-            'donor_page' => '<a href="'.$admin_donor_page.'">'.__('Edit').'</a>',
         );
 
         return '<div class="donor-name"><a href="'.$admin_donor_page.'">'.$item['donor_name'].'</a></div>'
