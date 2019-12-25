@@ -232,18 +232,6 @@
 
         }
 
-        a {
-            border-bottom: none;
-            padding-bottom: 2px;
-            border-bottom: 1px solid $color-wizard-link;
-            text-decoration: none;
-        }
-
-        .restore-original-doc {
-            display: inline-block;
-            margin-top: 0.5rem;
-        }
-
         .step-title h1 {
 
             @include wizard-h2();

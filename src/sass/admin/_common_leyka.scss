@@ -354,27 +354,29 @@
             }
 
             .field-component.help {
+
                 margin-top: 0;
                 
                 .placeholders-help {
                     code {
                         padding-top: 0;
                     }
-                    
+
                     &:before {
-                        content: " ";
+                        content: ' ';
                         display: block;
                         margin-top: 0;
                     }
                 }
-                
+
                 .placeholders-help-actions {
                     margin-top: 0;
-                    
+
                     a, a:active, a:hover, a:focus {
                         text-decoration: none;
                     }
                 }
+
             }
 
             .field-component {

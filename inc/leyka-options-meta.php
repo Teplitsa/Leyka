@@ -2,45 +2,79 @@
 
 $email_placeholders =
 "<span class='placeholders-help'>
-<span class='item'><code>#SITE_NAME#</code><span class='description'>Название сайта</span></span>
-<span class='item'><code>#SITE_EMAIL#</code><span class='description'>Email сайта</span></span>
-<span class='item'><code>#ORG_NAME#</code><span class='description'>Официальное название организации</span></span>
-<span class='item'><code>#DONATION_ID#</code><span class='description'>Идентификатор текущего пожертвования</span></span>
-<span class='item'><code>#DONATION_TYPE#</code><span class='description'>Тип пожертвования</span></span>
-<span class='item'><code>#DONOR_NAME#</code><span class='description'>Имя донора</span></span>
-<span class='item'><code>#DONOR_EMAIL#</code><span class='description'>Email донора</span></span>
-<span class='item'><code>#DONOR_COMMENT#</code><span class='description'>Комментарий донора к пожертвованию</span></span>
-<span class='item'><code>#SUM#</code><span class='description'>Полная сумма пожертвования (без учёта комиссий)</span></span>
-<span class='item'><code>#PAYMENT_METHOD_NAME#</code><span class='description'>Название способа оплаты</span></span>
-<span class='item'><code>#CAMPAIGN_NAME#</code><span class='description'>Кампания, на которую было сделано пожертвование</span></span>
-<span class='item'><code>#CAMPAIGN_TARGET#</code><span class='description'>Официальная цель пожертвования (см. настройки кампании, опция «заголовок для платёжной системы»)</span></span>
-<span class='item'><code>#PURPOSE#</code><span class='description'>Название кампании для платежных систем</span></span>
-<span class='item'><code>#DATE#</code><span class='description'>Дата пожертвования</span></span>
-</span><span class='item'><code>#DONOR_ACCOUNT_LOGIN_LINK#</code><span class='description'>Приглашение войти в Личный кабинет донора</span></span>
-</span><span class='item'><code>#RECURRING_SUBSCRIPTION_CANCELLING_LINK#</code><span class='description'>Отменить рекуррентную подписку донора</span></span>
-</span><span class='item'><code>#DONOR_ACCOUNT_LOGIN_LINK#</code><span class='description'>Ссылка на активацию/вход в Личный кабинет донора</span></span>
+    <span class='item'>
+        <code>#SITE_NAME#</code><span class='description'>Название сайта</span>
+    </span>
+    <span class='item'>
+        <code>#SITE_EMAIL#</code><span class='description'>Email сайта</span>
+    </span>
+    <span class='item'>
+        <code>#ORG_NAME#</code><span class='description'>Официальное название организации</span>
+    </span>
+    <span class='item'>
+        <code>#DONATION_ID#</code><span class='description'>Идентификатор текущего пожертвования</span>
+    </span>
+    <span class='item'>
+        <code>#DONATION_TYPE#</code><span class='description'>Тип пожертвования</span>
+    </span>
+    <span class='item'>
+        <code>#DONOR_NAME#</code><span class='description'>Имя донора</span>
+    </span>
+    <span class='item'>
+        <code>#DONOR_EMAIL#</code><span class='description'>Email донора</span>
+    </span>
+    <span class='item'>
+        <code>#DONOR_COMMENT#</code><span class='description'>Комментарий донора к пожертвованию</span>
+    </span>
+    <span class='item'>
+        <code>#SUM#</code><span class='description'>Полная сумма пожертвования (без учёта комиссий)</span>
+    </span>
+    <span class='item'>
+        <code>#PAYMENT_METHOD_NAME#</code><span class='description'>Название способа оплаты</span>
+    </span>
+    <span class='item'>
+        <code>#CAMPAIGN_NAME#</code><span class='description'>Кампания, на которую было сделано пожертвование</span>
+    </span>
+    <span class='item'>
+        <code>#CAMPAIGN_TARGET#</code><span class='description'>Официальная цель пожертвования (см. настройки кампании, опция «заголовок для платёжной системы»)</span>
+    </span>
+    <span class='item'>
+        <code>#PURPOSE#</code><span class='description'>Название кампании для платежных систем</span>
+    </span>
+    <span class='item'>
+        <code>#DATE#</code><span class='description'>Дата пожертвования</span>
+    </span>
+    <span class='item'>
+        <code>#DONOR_ACCOUNT_LOGIN_LINK#</code><span class='description'>Приглашение войти в Личный кабинет донора</span>
+    </span>
+    <span class='item'>
+        <code>#RECURRING_SUBSCRIPTION_CANCELLING_LINK#</code><span class='description'>Отменить рекуррентную подписку донора</span>
+    </span>
+    <span class='item'>
+        <code>#DONOR_ACCOUNT_LOGIN_LINK#</code><span class='description'>Ссылка на активацию/вход в Личный кабинет донора</span>
+    </span>
 </span>
 <div class='placeholders-help-actions'>
-<a href=\"#\" class=\"inner hide-available-tags\">Свернуть доступные теги</a>
-<a href=\"#\" class=\"inner show-available-tags\">Посмотреть доступные теги</a>
-<a href=\"#\" class=\"inner restore-original-doc\">Вернуть первоначальный текст</a>
+    <a href='#' class='inner hide-available-tags'>Свернуть доступные теги</a>
+    <a href='#' class='inner show-available-tags'>Посмотреть доступные теги</a>
+    <a href='#' class='inner restore-original-doc'>Вернуть первоначальный текст</a>
 </div>";
 
 $campaign_target_reaching_email_placeholders =
 "<span class='placeholders-help'>
-<code>#SITE_NAME#</code> — ".__('a website title', 'leyka')."<br>
-<code>#ORG_NAME#</code> — ".__('an organization official title', 'leyka')."<br>
-<code>#DONOR_NAME#</code> — ".__('a donor name', 'leyka')."<br>
-<code>#DONOR_EMAIL#</code> — ".__('a donor email', 'leyka')."<br>
-<code>#SUM#</code> — ".__('a full donations amount (without payment commission)', 'leyka')."<br>
-<code>#CAMPAIGN_NAME#</code> — ".__('a campaign to which donation was made', 'leyka')."<br>
-<code>#CAMPAIGN_TARGET#</code> — ".__('a campaign target amount', 'leyka')."<br>
-<code>#PURPOSE#</code> — ".__('a campaign title for payment systems (see campaign settings)', 'leyka')."<br>
+    <code>#SITE_NAME#</code> — ".__('a website title', 'leyka')."<br>
+    <code>#ORG_NAME#</code> — ".__('an organization official title', 'leyka')."<br>
+    <code>#DONOR_NAME#</code> — ".__('a donor name', 'leyka')."<br>
+    <code>#DONOR_EMAIL#</code> — ".__('a donor email', 'leyka')."<br>
+    <code>#SUM#</code> — ".__('a full donations amount (without payment commission)', 'leyka')."<br>
+    <code>#CAMPAIGN_NAME#</code> — ".__('a campaign to which donation was made', 'leyka')."<br>
+    <code>#CAMPAIGN_TARGET#</code> — ".__('a campaign target amount', 'leyka')."<br>
+    <code>#PURPOSE#</code> — ".__('a campaign title for payment systems (see campaign settings)', 'leyka')."<br>
 </span>
 <div class='placeholders-help-actions'>
-<a href=\"#\" class=\"inner hide-available-tags\">Свернуть доступные теги</a>
-<a href=\"#\" class=\"inner show-available-tags\">Посмотреть доступные теги</a>
-<a href=\"#\" class=\"inner restore-original-doc\">Вернуть первоначальный текст</a>
+    <a href='#' class='inner hide-available-tags'>Свернуть доступные теги</a>
+    <a href='#' class='inner show-available-tags'>Посмотреть доступные теги</a>
+    <a href='#' class='inner restore-original-doc'>Вернуть первоначальный текст</a>
 </div>";
 
 /** Possible field types are: text, textarea, number, html, rich_html, select, radio, checkbox, multi_checkbox, custom_XXX */

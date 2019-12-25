@@ -19,7 +19,7 @@
     "chromedriver": "^2.46.0",
     "del": "^3.0.0",
     "event-stream": "^4.0.1",
-    "geckodriver": "^1.16.2",
+    "geckodriver": "^1.19.1",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^6.1.0",
     "gulp-cheerio": "^0.6.3",
@@ -40,7 +40,7 @@
     "main-bower-files": "^2.13.3",
     "node-bourbon": "^4.2.8",
     "relative-path": "^1.1.0",
-    "selenium-webdriver": "^4.0.0-alpha.4"
+    "selenium-webdriver": "^4.0.0-alpha.5"
   },
   "dependencies": {}
 }
