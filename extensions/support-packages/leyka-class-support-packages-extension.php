@@ -147,7 +147,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
     protected function get_color_options() {
         return array(
             'type' => 'container',
-            'classes' => 'support-packages-color-options',
+            'classes' => 'extension-color-options support-packages-color-options',
             'entries' => array(
                 $this->_id.'_main_color' => array(
                     'type' => 'colorpicker',

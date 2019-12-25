@@ -123,7 +123,12 @@ abstract class Leyka_Extension extends Leyka_Singleton {
         $this->_set_options_defaults(); // Set configurable options in admin area
         
         if($this->_has_color_options) {
-            $this->_options[0]['section']['options'][$this->_id.'_color_options'] = $this->get_color_options();
+            if(isset($this->_options[0])) {
+                $this->_options[0]['section']['options'][$this->_id.'_color_options'] = $this->get_color_options();
+            }
+            else {
+                $this->_options[$this->_id.'_color_options'] = $this->get_color_options();
+            }
         }
 
         do_action('leyka_initialize_extension', $this, $this->_id);
@@ -139,7 +144,7 @@ abstract class Leyka_Extension extends Leyka_Singleton {
     protected function get_color_options() {
         return array(
             'type' => 'container',
-            'classes' => 'support-packages-color-options',
+            'classes' => 'extension-color-options',
             'entries' => array(
                 $this->_id.'_main_color' => array(
                     'type' => 'colorpicker',
