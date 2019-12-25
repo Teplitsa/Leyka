@@ -1524,21 +1524,19 @@ jQuery(document).ready(function($){
     if(
         !$admin_page_wrapper.length
         || !$admin_page_wrapper.hasClass('extension-settings')
-        || $admin_page_wrapper.data('leyka-extension-id') !== 'support_packages'
-        || !leyka_ui_widget_available('sortable')
     ) {
         return;
     }
 
     var LEYKA_EXT_AUTO_CALC_COLORS = false;
-    var $mainColorInput = $('input[name="leyka_support_packages_main_color"]'),
-        $backgroundColorInput = $('input[name="leyka_support_packages_background_color"]')
+    var $mainColorInput = $admin_page_wrapper.find('.extension-color-options input[name$="_main_color"]'),
+        $backgroundColorInput = $admin_page_wrapper.find('.extension-color-options input[name$="_background_color"]')
             .closest('.field-component.field')
             .find('.leyka-setting-field.colorpicker'),
-        $captionColorInput = $('input[name="leyka_support_packages_caption_color"]')
+        $captionColorInput = $admin_page_wrapper.find('.extension-color-options input[name$="_caption_color"]')
             .closest('.field-component.field')
             .find('.leyka-setting-field.colorpicker'),
-        $textColorInput = $('input[name="leyka_support_packages_text_color"]')
+        $textColorInput = $admin_page_wrapper.find('.extension-color-options input[name$="_text_color"]')
             .closest('.field-component.field')
             .find('.leyka-setting-field.colorpicker');
 
@@ -1595,7 +1593,7 @@ jQuery(document).ready(function($){
         }
     });
 
-    var $colorOptionsBlock = $('.settings-block.support-packages-color-options');
+    var $colorOptionsBlock = $('.settings-block.extension-color-options');
     var $colorActions = $('<div class="color-actions"><a href="#" class="reset-colors"><span>'+leyka.extension_colors_reset+'</span></a><a href="#" class="unlock-changes"><span>'+leyka.extension_colors_make_change+'</span></a></div>');
     $colorOptionsBlock.append($colorActions);
 

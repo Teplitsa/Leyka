@@ -33,6 +33,7 @@ class Leyka_Test1_Extension extends Leyka_Extension {
 
         $this->_user_docs_link = '//your-site.org/extension-manual'; // Extension user manual page URL
         $this->_has_wizard = false;
+        $this->_has_color_options = true;
 
     }
 
@@ -76,35 +77,6 @@ class Leyka_Test1_Extension extends Leyka_Extension {
                         'required' => true,
                         'placeholder' => 'У меня уже есть подписка', // __('E.g., ', 'leyka'),
                         'default' => 'У меня уже есть подписка', // __('', 'leyka'),
-                    ),
-                )
-            ),
-            $this->_id.'_test_contained_options_2' => array(
-                'type' => 'container',
-                'entries' => array(
-                    $this->_id.'_active_elements_color' => array(
-                        'type' => 'colorpicker',
-                        'title' => '6. Цвет активных элементов', // __('', 'leyka'),
-                        'description' => 'Рекомендуем яркий цвет', // __('', 'leyka'),
-//                        'comment' => __('Please, enter ...', 'leyka'),
-//                        'required' => true,
-                        'default' => '#F38D04',
-                    ),
-                    $this->_id.'_background_color' => array(
-                        'type' => 'colorpicker',
-                        'title' => '7. Цвет подложки', // __('', 'leyka'),
-                        'description' => 'Рекомендуем светлый оттенок', // __('', 'leyka'),
-//                        'comment' => __('Please, enter ...', 'leyka'),
-//                        'required' => true,
-                        'default' => '#F4F5F9',
-                    ),
-                    $this->_id.'_inactive_elements_color' => array(
-                        'type' => 'colorpicker',
-                        'title' => '7. Цвет неактивных элементов', // __('', 'leyka'),
-                        'description' => 'Рекомендуем светлый оттенок', // __('', 'leyka'),
-//                        'comment' => __('Please, enter ...', 'leyka'),
-//                        'required' => true,
-                        'default' => '#FAFAFA',
                     ),
                 )
             ),
