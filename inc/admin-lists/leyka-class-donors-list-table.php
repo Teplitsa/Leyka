@@ -74,7 +74,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             foreach($_REQUEST['campaigns'] as $campaign_id) {
                 $campaigns_meta_query[] = array(
                     'key' => 'leyka_donor_campaigns',
-                    'value' => 'i:'.absint($campaign_id).';', // A little freaky, I know, but it's the best we could think of
+                    'value' => 'i:'.absint($campaign_id).';', // A little freaky, we know, but it's the best we could think of
                     'compare' => 'LIKE',
                 );
             }
@@ -348,7 +348,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      * @return string
      */
     public function column_cb($item) {
-        return sprintf('<input type="checkbox" name="bulk-delete[]" value="%s">', $item['donor_id']);
+        return sprintf('<input type="checkbox" name="bulk[]" value="%s">', $item['donor_id']);
     }
 
     public function column_donor_type($item) {
@@ -524,7 +524,10 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      * @return array
      */
     public function get_bulk_actions() {
-        return array('bulk-delete' => __('Delete'));
+        return array(
+            'bulk-edit' => __('Edit'),
+            'bulk-delete' => __('Delete'),
+        );
     }
 
     /**
@@ -546,7 +549,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
     public function process_bulk_action() {
 
         // Single donor deletion:
-        if('delete' === $this->current_action()) {
+        if($this->current_action() === 'delete') {
 
             if( !wp_verify_nonce(esc_attr($_REQUEST['_wpnonce']), 'leyka_delete_donor') ) {
                 die(__("You don't have permissions for this operation.", 'leyka'));
@@ -562,13 +565,28 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             || (isset($_POST['action2']) && $_POST['action2'] === 'bulk-delete')
         ) {
 
-            foreach(esc_sql($_POST['bulk-delete']) as $donor_id) {
+            foreach(esc_sql($_POST['bulk']) as $donor_id) {
                 self::delete_donor($donor_id);
             }
 
         }
 
     }
+
+    public function inline_edit() {?>
+
+        <div id="leyka-donors-inline-edit-fields" style="display: none;" data-colspan="<?php echo count($this->get_columns());?>">
+
+            HERE BE BULK EDIT FIELDS
+
+            <div class="bulk-edit-submits">
+                <button type="button" class="button cancel alignleft"><?php _e('Cancel');?></button>
+                <input type="submit" name="bulk_edit" id="bulk_edit" class="button button-primary alignright" value="<?php _e('Update');?>">
+            </div>
+
+        </div>
+
+    <?php }
 
     protected function _export_donors() {
 

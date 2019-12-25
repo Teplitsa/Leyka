@@ -131,8 +131,14 @@
             <div id="post-body-content" class="<?php if($this->_donors_list_table->record_count() === 0) {?>empty-donors-list<?php }?>">
                 <div class="meta-box-sortables ui-sortable">
                     <form method="post">
+
                         <?php $this->_donors_list_table->prepare_items();
-                        $this->_donors_list_table->display();?>
+                        $this->_donors_list_table->display();
+
+                        if($this->_donors_list_table->has_items()) {
+                            $this->_donors_list_table->inline_edit();
+                        }?>
+
                     </form>
                 </div>
             </div>
