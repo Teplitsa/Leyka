@@ -573,15 +573,20 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
     }
 
-    public function inline_edit() {?>
+    public function bulk_edit_fields() {?>
 
         <div id="leyka-donors-inline-edit-fields" style="display: none;" data-colspan="<?php echo count($this->get_columns());?>">
 
-            HERE BE BULK EDIT FIELDS
+            <input type="text" name="donors-tags-input" class="leyka-donors-tags-selector leyka-selector" value="" placeholder="<?php _e('Donors tags', 'leyka');?>">
+
+            <select class="leyka-donors-tags-select" name="donors-bulk-tags[]" multiple="multiple">
+            </select>
 
             <div class="bulk-edit-submits">
                 <button type="button" class="button cancel alignleft"><?php _e('Cancel');?></button>
-                <input type="submit" name="bulk_edit" id="bulk_edit" class="button button-primary alignright" value="<?php _e('Update');?>">
+                <button type="button" name="bulk_edit" id="bulk_edit" class="button button-primary alignright">
+                    <?php _e('Update');?>
+                </button>
             </div>
 
         </div>

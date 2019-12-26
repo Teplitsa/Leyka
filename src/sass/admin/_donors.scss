@@ -126,7 +126,7 @@
 }
 
 // filter controls
-.donors-list-filters {
+.donors-list-filters, #leyka-donors-inline-edit-fields { /** @todo Make the autocomplete fields usable in any place */
 
     //input:not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"])  {
     //}

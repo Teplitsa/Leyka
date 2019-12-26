@@ -72,7 +72,7 @@
                             <input type="text" name="donors-tags-input" class="leyka-donors-tags-selector leyka-selector" value="" placeholder="<?php _e('Donors tags', 'leyka');?>">
 
                             <?php $filter_value = isset($_GET['donors-tags']) ? (array)$_GET['donors-tags'] : array();?>
-                            <select id="leyka-donors-tags-select" name="donors-tags[]" multiple="multiple">
+                            <select class="leyka-donors-tags-select" name="donors-tags[]" multiple="multiple">
                                 <?php $donors_tags = $filter_value ? get_terms(
                                     Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME,
                                     array(
@@ -136,7 +136,7 @@
                         $this->_donors_list_table->display();
 
                         if($this->_donors_list_table->has_items()) {
-                            $this->_donors_list_table->inline_edit();
+                            $this->_donors_list_table->bulk_edit_fields();
                         }?>
 
                     </form>
