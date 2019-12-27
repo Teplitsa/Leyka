@@ -1524,31 +1524,39 @@ jQuery(document).ready(function($){
 
     }).on('click.leyka', '#bulk_edit', function(e){
 
-        e.preventDefault(); /** @tod Implement the submit */
+        e.preventDefault();
 
-        // let params = $inline_edit_row.serializeArray();
-        // console.log(params)
+        let params = $inline_edit_row.find(':input').serializeArray();
+        params.push(
+            {name: 'action', value: 'leyka_bulk_edit_donors'},
+            {name: 'nonce', value: $inline_edit_fields.data('bulk-edit-nonce'),}
+        );
+        $donors_table_body.find('input[name="bulk[]"]:checked').each(function(){
+            params.push({name: 'donors[]', value: $(this).val()});
+        });
 
-        // $.post(leyka.ajaxurl, params, null, 'json')
-        //     .done(function(json) {
-        //
-        //         if(json.status === 'ok') {
-        //             $btn.closest('.content').find('.field-success').show();
-        //             setTimeout(function(){
-        //                 location.reload();
-        //             }, 500);
-        //         } else if(json.status === 'error' && json.message) {
-        //             $btn.closest('.content').find('.field-errors').addClass('has-errors').find('span').html(json.message);
-        //         } else {
-        //             $btn.closest('.content').find('.field-errors').addClass('has-errors').find('span').html(leyka.error_message);
-        //         }
-        //
-        //     }).fail(function(){
-        //     $btn.closest('.content').find('.field-errors').addClass('has-errors').find('span').html(leyka.error_message);
-        // }).always(function(){
-        //     $loading.remove();
-        //     $btn.prop('disabled', false);
-        // });
+        $.post(leyka.ajaxurl, params, null, 'json')
+            .done(function(json) {
+
+                if(json.status === 'ok') {
+
+                    // $btn.closest('.content').find('.field-success').show(); // Show success message
+                    setTimeout(function(){
+                        window.location.reload();
+                    }, 1000);
+
+                } else if(json.status === 'error' && json.message) { // Show error message returned
+                    // $btn.closest('.content').find('.field-errors').addClass('has-errors').find('span').html(json.message);
+                } else { // Show the generic error message
+                    // $btn.closest('.content').find('.field-errors').addClass('has-errors').find('span').html(leyka.error_message);
+                }
+
+            }).fail(function(){ // Show the generic error message
+            // $btn.closest('.content').find('.field-errors').addClass('has-errors').find('span').html(leyka.error_message);
+        }).always(function(){
+            // $loading.remove();
+            // $btn.prop('disabled', false);
+        });
 
     })
 

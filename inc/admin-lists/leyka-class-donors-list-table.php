@@ -575,7 +575,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
     public function bulk_edit_fields() {?>
 
-        <div id="leyka-donors-inline-edit-fields" style="display: none;" data-colspan="<?php echo count($this->get_columns());?>">
+        <div id="leyka-donors-inline-edit-fields" style="display: none;" data-colspan="<?php echo count($this->get_columns());?>" data-bulk-edit-nonce="<?php echo wp_create_nonce('leyka-bulk-edit-donors');?>">
 
             <input type="text" name="donors-tags-input" class="leyka-donors-tags-selector leyka-selector" value="" placeholder="<?php _e('Donors tags', 'leyka');?>">
 

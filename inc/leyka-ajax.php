@@ -1013,6 +1013,39 @@ function leyka_files_upload(){
 }
 add_action('wp_ajax_leyka_files_upload', 'leyka_files_upload');
 
+// Ajax handler for Donors bulk edit (admin only):
+function leyka_bulk_edit_donors(){
+
+    if( !wp_verify_nonce($_POST['nonce'], 'leyka-bulk-edit-donors') ) {
+        die(json_encode(array('status' => -1, 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
+    }
+
+    $response = array('status' => 'ok',);
+
+    if( !empty($_POST['donors']) && !empty($_POST['donors-bulk-tags']) ) {
+        foreach((array)$_POST['donors'] as $donor_user_id) {
+
+            array_walk($_POST['donors-bulk-tags'], function( &$value ){
+                $value = absint($value);
+            });
+
+            $result = wp_set_object_terms($donor_user_id, $_POST['donors-bulk-tags'], Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME, 1);
+
+            if(is_wp_error($result)) {
+
+                $response = array('status' => -1, 'error' => $result->get_error_message(),);
+                break;
+
+            }
+
+        }
+    }
+
+    die(json_encode($response));
+
+}
+add_action('wp_ajax_leyka_bulk_edit_donors', 'leyka_bulk_edit_donors');
+
 function leyka_delete_extension(){
 
     if(empty($_POST['extension_id']) || !Leyka_Extension::get_by_id($_POST['extension_id'])) {

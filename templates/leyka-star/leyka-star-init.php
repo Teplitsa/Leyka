@@ -8,7 +8,7 @@ if( !is_admin() && is_main_query() && is_singular(Leyka_Campaign_Management::$po
 
     remove_filter('the_content', 'leyka_print_donation_elements');
     if( !leyka_options()->opt_template('do_not_display_donation_form') ) {
-        add_filter('the_content', 'leyka_star_template_campaign_page');
+        add_filter('the_content', 'leyka_star_2_template_campaign_page');
     }
 
 }
