@@ -3,7 +3,7 @@
 
 /** @var $this Leyka_Admin_Setup */?>
 
-<div class="wrap" data-leyka-admin-page-type="donors-list-page">
+<div class="leyka-admin wrap donors-list" data-leyka-admin-page-type="donors-list-page">
     <h1 class="wp-heading-inline"><?php _e('Donors', 'leyka');?></h1>
 
     <div id="poststuff">
@@ -108,6 +108,17 @@
 
                             </select>
 
+                        </div>
+
+                        <div class="filters-row">
+                            <div class="option-block">
+                            <?php leyka_render_checkbox_field('donors-cancelled', array(
+                                'title' => __('Only unsubscribed donors', 'leyka'),
+                                'comment' => __('Check to select only donors with cancelled recurring subscriptions', 'leyka'),
+                                'short_format' => true,
+                                'value' => !empty($_GET['leyka_donors-cancelled']),
+                            ));?>
+                            </div>
                         </div>
 
                         <div class="filters-row">

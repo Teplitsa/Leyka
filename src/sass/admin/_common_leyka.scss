@@ -109,6 +109,7 @@
     
     // forms
     .option-block, .leyka-options-section  {
+
         margin-bottom: 16px;
         
         &.option-title-hidden .field-component.title {
@@ -139,7 +140,7 @@
             }
             
         }
-        
+
         &.has-errors {
             
             .field-component {
@@ -149,32 +150,45 @@
             }
             
         }
-            
+
         .field-radio {
             .field-component.help {
                 padding-left: 25px;
             }
         }
 
-        &.checkbox {
-            .single-control {
-                .field-component {
-                    @include leyka-field-checkbox();
-                }
-            }
+        &.field-radio {
+            @include leyka-field-radio();
         }
-        
+
+        &.checkbox .single-control, &.checkbox {
+
+            @include leyka-field-control();
+
+            .field-component {
+                @include leyka-field-checkbox();
+            }
+
+        }
+
         &.file {
+
             @include leyka-field-file();
+
             .field-errors {
                 margin-top: 2px;
             }
+
         }
-        
-        &.field-radio {
-            
-            @include leyka-field-radio();
-    
+
+        .field-q {
+
+            @include field-q();
+
+            order: 2;
+            display: inline-block;
+            height: 15px;
+
         }
 
     }

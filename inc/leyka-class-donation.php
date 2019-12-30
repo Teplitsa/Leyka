@@ -2209,7 +2209,7 @@ class Leyka_Donation {
                 !empty($this->_donation_meta['rebilling_is_active']) : NULL;
                 return $tmp;
             case 'recurrents_cancel_date':
-            case 'recurring_cancel_date': $tmp = $this->payment_type == 'rebill' ?
+            case 'recurring_cancel_date': $tmp = $this->payment_type === 'rebill' ?
                 !empty($this->_donation_meta['recurrents_cancel_date']) : NULL;
                 return $tmp;
             default:

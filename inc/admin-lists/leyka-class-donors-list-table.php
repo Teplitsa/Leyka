@@ -191,9 +191,9 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
     }
 
-    /** Donors tags filter */
-    public function filter_donors_pre_user_query(WP_User_Query $donor_users_query){
+    public function filter_donors_pre_user_query(WP_User_Query $donors_query){
 
+        // Donors tags filter:
         if( !empty($_REQUEST['donors-tags']) ) {
 
             $_REQUEST['donors-tags'] = (array)$_REQUEST['donors-tags'];
@@ -214,7 +214,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
             global $wpdb;
 
-            $donor_users_query->query_where .= $wpdb->prepare(
+            $donors_query->query_where .= $wpdb->prepare(
                 " AND {$wpdb->users}.ID IN (
                         SELECT {$wpdb->term_relationships}.object_id
                         FROM {$wpdb->term_relationships} INNER JOIN {$wpdb->term_taxonomy} ON {$wpdb->term_relationships}.term_taxonomy_id = {$wpdb->term_taxonomy}.term_taxonomy_id
@@ -222,6 +222,36 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
                     )",
                 Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME
             );
+
+        }
+
+        // "Only Donors with cancelled recurring subscriptions" filter:
+        if( !empty($_REQUEST['leyka_donors-cancelled']) ) {
+
+            global $wpdb;
+
+            $cancelled_recurring_subscriptions = get_posts(array(
+                'post_type' => Leyka_Donation_Management::$post_type,
+                'posts_per_page' => -1,
+                'post_parent' => 0,
+                'meta_query' => array(
+                    'relation' => 'AND',
+                    array('key' => 'leyka_payment_type', 'value' => 'rebill',),
+                    array('key' => 'leyka_recurrents_cancelled', 'value' => 1,),
+                ),
+            ));
+
+            $cancelled_donors_ids = array();
+            foreach($cancelled_recurring_subscriptions as $donation) {
+
+                $donation = new Leyka_Donation($donation);
+                $cancelled_donors_ids[] = $donation->donor_user_id;
+
+            }
+
+            if($cancelled_donors_ids) {
+                $donors_query->query_where .= " AND {$wpdb->users}.ID IN (".implode(',', array_unique($cancelled_donors_ids)).")";
+            }
 
         }
 

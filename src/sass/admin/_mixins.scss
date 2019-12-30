@@ -121,19 +121,25 @@
     }
     
     .required {
+
         @include wizard-field-label-required-sign();
+
         color: $color-wizard-required-sign;
         order: 0;
         margin-right: 3px;
         display: block;
         height: 14px;
+
     }
     
     .field-q {
-      @include field-q();
-      order: 2;
-      display: block;
-      height: 15px;
+
+        @include field-q();
+
+        order: 2;
+        display: block;
+        height: 15px;
+
     }
     
 }
