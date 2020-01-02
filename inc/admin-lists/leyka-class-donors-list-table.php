@@ -228,16 +228,15 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         // "Only Donors with cancelled recurring subscriptions" filter:
         if( !empty($_REQUEST['leyka_donors-cancelled']) ) {
 
-            global $wpdb;
-
             $cancelled_recurring_subscriptions = get_posts(array(
                 'post_type' => Leyka_Donation_Management::$post_type,
+                'post_status' => 'funded',
                 'posts_per_page' => -1,
                 'post_parent' => 0,
                 'meta_query' => array(
                     'relation' => 'AND',
                     array('key' => 'leyka_payment_type', 'value' => 'rebill',),
-                    array('key' => 'leyka_recurrents_cancelled', 'value' => 1,),
+                    array('key' => '_rebilling_is_active', 'value' => 1, 'compare' => '!='),
                 ),
             ));
 
@@ -249,9 +248,12 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
             }
 
-            if($cancelled_donors_ids) {
-                $donors_query->query_where .= " AND {$wpdb->users}.ID IN (".implode(',', array_unique($cancelled_donors_ids)).")";
+            if( !$cancelled_donors_ids ) {
+                $cancelled_donors_ids[] = 0;
             }
+
+            global $wpdb;
+            $donors_query->query_where .= " AND {$wpdb->users}.ID IN (".implode(',', array_unique($cancelled_donors_ids)).")";
 
         }
 
