@@ -297,6 +297,18 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                     }
                 }
 
+                $main_form_template_select_options = leyka_options()->opt('allow_deprecated_form_templates') ? array(
+                    'main_template' => array(
+                        'title' => __('Main template', 'leyka'),
+                        'sections' => array(
+                            array(
+                                'title' => __('Which campaign template is default?', 'leyka'),
+                                'options' => array('donation_form_template'),
+                            ),
+                        ),
+                    ),
+                ) : array();
+                
                 $options_allocated = array(
                     array('section' => array(
                         'name' => 'campaign_templates_options',
@@ -304,17 +316,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'title' => __('Campaign templates', 'leyka'),
                         'description' => __('Here you can change donation forms view', 'leyka'),
                         'is_default_collapsed' => false,
-                        'tabs' => array_merge(array(
-                            'main_template' => array(
-                                'title' => __('Main template', 'leyka'),
-                                'sections' => array(
-                                    array(
-                                        'title' => __('Which campaign template is default?', 'leyka'),
-                                        'options' => array('donation_form_template'),
-                                    ),
-                                ),
-                            ),
-                        ), $templates_options),
+                        'tabs' => array_merge($main_form_template_select_options, $templates_options),
                     ),),
 
                     // Currency settings:

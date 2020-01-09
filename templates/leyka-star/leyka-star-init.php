@@ -25,3 +25,7 @@ function leyka_star_template_campaign_page($content) {
     return $before.$content;
 
 }
+
+function leyka_star_2_template_campaign_page($content) {
+    return leyka_star_template_campaign_page($content);
+}

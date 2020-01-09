@@ -7,6 +7,12 @@ div[id*="leyka-pf-"].leyka-pf-star {
 	box-sizing: border-box;
     margin-right: auto;
     margin-left: auto;
+
+    // 2020 width fix
+    &:not(.alignwide):not(.alignfull):not(.alignleft):not(.alignright):not(.is-style-wide) {
+        max-width: 600px;
+        width: auto;
+    }
     
     .leyka-tpl-star-form,
     .leyka-account-form {

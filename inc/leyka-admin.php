@@ -227,6 +227,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         add_submenu_page('leyka', __('Leyka Settings', 'leyka'), __('Settings', 'leyka'), 'leyka_manage_options', 'leyka_settings', array($this, 'settings_screen'));
 
         add_submenu_page('leyka', __('Extensions', 'leyka'), __('Extensions', 'leyka'), 'leyka_manage_options', 'leyka_extensions', array($this, 'extensions_screen'));
+        
+        add_submenu_page('leyka', __('Setup helper', 'leyka'), _x('Setup helper', 'campaign', 'leyka'), 'leyka_manage_donations', 'https://leyka.te-st.ru/step/step-setup-your-leyka-data/');
 
         add_submenu_page('leyka', __('Contact us', 'leyka'), __('Feedback', 'leyka'), 'leyka_manage_donations', 'leyka_feedback', array($this, 'feedback_screen'));
 

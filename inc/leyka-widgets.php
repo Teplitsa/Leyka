@@ -55,11 +55,20 @@ class Leyka_Campaign_Card_Widget extends WP_Widget {
 		);
 
 		$css_id = 'leyka_campaign_card_widget-'.uniqid();
-		$html = leyka_get_campaign_card($campaign_id, $args);
+		
+		$campaign = new Leyka_Campaign($campaign_id);
+		
+		if($campaign->campaign_template === 'star' || !leyka_options()->opt('allow_deprecated_form_templates')) {
+		    $html = leyka_shortcode_campaign_card(array_merge(array('campaign_id' => $campaign_id), $args));
+		}
+		else {
+		    $html = leyka_get_campaign_card($campaign_id, $args);
+		}
+		
 		if( !$html ) {
 			return;
 		}
-		$campaign = new Leyka_Campaign($campaign_id);
+		
 		if( !leyka_form_is_screening(false) ) { // Don't increase campaign views counter if we're on a page with this campaign's donation form
 			$campaign->increase_views_counter();
 		}

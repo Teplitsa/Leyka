@@ -113,7 +113,7 @@ if( !function_exists('leyka_get_admin_footer') ) {
 
                 <div class="info-links">
                     <a href="https://leyka.te-st.ru/sla/" target="_blank"><?php _e('SLA', 'leyka');?></a>
-                    <a href="https://github.com/Teplitsa/leyka/wiki" target="_blank"><?php _e('Documentation', 'leyka');?></a>
+                    <a href="https://leyka.te-st.ru/docs/what-is-leyka/" target="_blank"><?php _e('Documentation', 'leyka');?></a>
                     <a href="https://t.me/joinchat/BshvgVUqHJLyCNIXd6pZXQ" target="_blank"><?php _e('Developer chat', 'leyka');?></a>
                 </div>
 
@@ -146,15 +146,18 @@ if( !function_exists('leyka_show_admin_footer') ) {
 if( !function_exists('leyka_show_admin_footer_on_default_pages') ) {
 
     function leyka_show_admin_footer_on_default_pages($old_footer_html = '') {
-
+        global $typenow;
+        
         $screen = get_current_screen();
 
         if(false === stripos($screen->base, 'leyka') && false === stripos($screen->id, 'leyka')) {
             return $old_footer_html;
         } else if( !empty($_GET['post_type']) && in_array($_GET['post_type'], array('leyka_donation', 'leyka_campaign')) ) {
             return leyka_get_admin_footer('', $old_footer_html);
+        } else if( !empty($_GET['action']) && in_array($_GET['action'], array('edit')) && in_array($screen->post_type, array('leyka_donation', 'leyka_campaign')) ) {
+            return leyka_get_admin_footer('', $old_footer_html);
         }
-
+    
     }
     add_filter('admin_footer_text', 'leyka_show_admin_footer_on_default_pages', 20);
 

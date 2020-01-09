@@ -1271,7 +1271,7 @@ class Leyka extends Leyka_Singleton {
         }
 
         // Revo template or success/failure widgets styles:
-        if(leyka_modern_template_displayed() || leyka_success_widget_displayed() || leyka_failure_widget_displayed() || leyka_persistent_campaign_donated()) {
+        if(leyka_modern_template_displayed() || leyka_success_widget_displayed() || leyka_failure_widget_displayed() || leyka_persistent_campaign_donated() || leyka_is_widget_active()) {
             wp_enqueue_style(
                 $this->_plugin_slug.'-revo-plugin-styles',
                 LEYKA_PLUGIN_BASE_URL.'assets/css/public.css',
