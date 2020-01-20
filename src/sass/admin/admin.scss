@@ -926,7 +926,7 @@
         margin-top: 32px;
         margin-right: 91px;
 
-        overflow: hidden;
+        overflow: visible; // not to cut color picker pop-up
 
         color: $leyka-admin-color-text;
 

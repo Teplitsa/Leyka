@@ -68,6 +68,13 @@
 
         .swiper-item {
             &.selected {
+                @include upto(medium-screens) {
+                    .swiper-item-inner {
+                        background-color: $leyka-star-color-main-third;
+                        border-color: $leyka-star-color-main;
+                    }
+                }
+                
                 span {
                     color: $leyka-star-color-main;
                 }
@@ -349,6 +356,13 @@
                 }
                 
                 &.selected {
+                    @include upto(medium-screens) {
+                        .swiper-item-inner {
+                            background-color: $leyka-star-color-main-third;
+                            border-color: $leyka-star-color-main;
+                        }
+                    }
+
                     @include for(medium-screens) {
                         background-color: $leyka-star-color-main-third;
                         // border-color: $leyka-star-color-main-second;
