@@ -812,13 +812,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         }
 
         $locale = get_locale();
-        if($locale !== 'en_US') {
-            wp_enqueue_script(
-                'jquery-ui-datepicker-locale',
-                LEYKA_PLUGIN_BASE_URL."js/jq-datepicker-locales/$locale.js",
-                array('jquery-ui-datepicker'), LEYKA_VERSION, true
-            );
-        }
+        wp_enqueue_script(
+            'jquery-ui-datepicker-locale',
+            LEYKA_PLUGIN_BASE_URL."js/jq-datepicker-locales/$locale.js",
+            array('jquery-ui-datepicker'), LEYKA_VERSION, true
+        );
 
         // Donation edit page:
         if($screen->post_type === Leyka_Donation_Management::$post_type && $screen->base === 'post') {
@@ -838,7 +836,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         $dependencies[] = 'jquery-ui-autocomplete';
 
-        wp_enqueue_script('leyka-easy-modal', LEYKA_PLUGIN_BASE_URL . 'js/jquery.easyModal.min.js', array(), false, true);
+        wp_enqueue_script('leyka-easy-modal', LEYKA_PLUGIN_BASE_URL.'js/jquery.easyModal.min.js', array(), false, true);
         wp_enqueue_script(
             'leyka-settings',
             LEYKA_PLUGIN_BASE_URL.'assets/js/admin.js',
