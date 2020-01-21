@@ -140,6 +140,7 @@ abstract class Leyka_Extension extends Leyka_Singleton {
 
         add_action('leyka_enqueue_scripts', array($this, 'enqueue_scripts'));
 
+        $this->_initialize_always();
         leyka()->extension_is_active($this->_id) ? $this->_initialize_active() : $this->_initialize_inactive();
 
     }
@@ -282,9 +283,10 @@ abstract class Leyka_Extension extends Leyka_Singleton {
 
     }
 
+    protected function _initialize_always() {
+    }
     protected function _initialize_active() {
     }
-
     protected function _initialize_inactive() {
     }
 
