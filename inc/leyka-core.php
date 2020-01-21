@@ -545,20 +545,10 @@ class Leyka extends Leyka_Singleton {
 
     /**
      * @param $extension_id string
-     *
-     * @throws Exception
      * @return boolean True if given Extension has given activation status, false otherwise.
      */
     public function extension_is_active($extension_id) {
-
-        $extension_id = trim($extension_id);
-
-        if(empty($this->_extensions[$extension_id])) {
-            throw new Exception(sprintf(__('Error: the extension "%s" is not found', 'leyka'), $extension_id), 700);
-        }
-
-        return leyka_options()->is_multi_value_checked('extensions_active', $extension_id);
-
+        return leyka_options()->is_multi_value_checked('extensions_active', trim($extension_id));
     }
 
     public function refresh_donors_data() {

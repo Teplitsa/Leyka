@@ -132,12 +132,15 @@ abstract class Leyka_Extension extends Leyka_Singleton {
         }
 
         do_action('leyka_initialize_extension', $this, $this->_id);
+        do_action('leyka_initialize_extension-'.$this->_id, $this);
 
         add_action("leyka_extension_{$this->_id}_save_settings", array($this, 'save_settings'));
 
         $this->_initialize_options();
 
         add_action('leyka_enqueue_scripts', array($this, 'enqueue_scripts'));
+
+        leyka()->extension_is_active($this->_id) ? $this->_initialize_active() : $this->_initialize_inactive();
 
     }
     
@@ -277,6 +280,12 @@ abstract class Leyka_Extension extends Leyka_Singleton {
                 return false;
         }
 
+    }
+
+    protected function _initialize_active() {
+    }
+
+    protected function _initialize_inactive() {
     }
 
     /**
