@@ -1345,8 +1345,7 @@ function leyka_modern_template_displayed() {
         if($content_has_shortcodes) {
             $modern_template_displayed = true;
         } else if(
-            has_shortcode($post->post_content, 'leyka_campaign_form')
-            || has_shortcode($post->post_content, 'leyka_payment_form')
+            has_shortcode($post->post_content, 'leyka_campaign_form') || has_shortcode($post->post_content, 'leyka_payment_form')
         ) {
 
             if(preg_match_all( '/'.get_shortcode_regex().'/s', $post->post_content, $matches)) {
@@ -1382,8 +1381,9 @@ function leyka_modern_template_displayed() {
             }
             
         }
+
     }
-    
+
     return apply_filters('leyka_modern_template_displayed', $modern_template_displayed);
 
 }
