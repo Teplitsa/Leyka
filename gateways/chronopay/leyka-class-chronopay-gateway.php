@@ -44,11 +44,11 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             ),
             'chronopay_ip' => array(
                 'type' => 'text',
-                'default' => '185.30.16.166',
+                'default' => '93.174.51.230',
                 'title' => __('Chronopay IP', 'leyka'),
                 'comment' => __('IP address to check for requests.', 'leyka'),
                 'required' => true,
-                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '185.30.16.166'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '93.174.51.230'),
             ),
             'chronopay_use_payment_uniqueness_control' => array(
                 'type' => 'checkbox',
