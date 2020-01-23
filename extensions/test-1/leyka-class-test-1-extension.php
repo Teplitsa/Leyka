@@ -4,6 +4,7 @@
  * Version: 0.1a
  * Author: Author name goes here
  * Author URI: https://some-author.org
+ * Debug only: 1
  **/
 
 class Leyka_Test1_Extension extends Leyka_Extension {
