@@ -80,25 +80,26 @@ function leyka_render_email_field($option_id, $data){
 
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-text-field-wrapper leyka-email-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">
         <label>
+
             <span class="field-component title">
 
                 <span class="text"><?php echo $data['title'];?></span>
                 <?php echo (empty($data['required']) ? '' : '<span class="required">*</span>');
 
                 if( !empty($data['comment']) ) {?>
-                    <span class="field-q">
-                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-q.svg" alt="">
+                <span class="field-q">
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
                     <span class="field-q-tooltip"><?php echo $data['comment'];?></span>
                 </span>
                 <?php }?>
 
             </span>
             <span class="field-component field">
-                <input type="<?php echo empty($data['is_password']) ? 'text' : 'password';?>" <?php echo !empty($data['mask']) ?  'data-inputmask="'.$data['mask'].'"' : '';?> id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo empty($data['placeholder']) ? '' : esc_attr($data['placeholder']);?>" maxlength="<?php echo empty($data['length']) ? '' : (int)$data['length'];?>"  class="<?php echo !empty($data['mask']) ?  'leyka-wizard-mask' : '';?>">
+                <input type="<?php echo empty($data['is_password']) ? 'text' : 'password';?>" <?php echo !empty($data['mask']) ?  'data-inputmask="'.$data['mask'].'"' : '';?> id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo empty($data['placeholder']) ? '' : esc_attr($data['placeholder']);?>" maxlength="<?php echo empty($data['length']) ? '' : (int)$data['length'];?>"  class="<?php echo !empty($data['mask']) ? 'leyka-wizard-mask' : '';?>">
             </span>
 
             <?php if( !empty($data['description']) ) {?>
-                <span class="field-component help"><?php echo $data['description'];?></span>
+            <span class="field-component help"><?php echo $data['description'];?></span>
             <?php }?>
 
         </label>
@@ -232,7 +233,7 @@ function leyka_render_number_field($option_id, $data){
             </span>
 
             <span class="field-component field">
-                <input type="number" id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo empty($data['placeholder']) ? '' : esc_attr($data['placeholder']);?>" <?php echo empty($data['length']) ? '' : 'maxlength="'.(int)$data['length'].'"';?> <?php echo isset($data['max']) ? 'max="'.(int)$data['max'].'"' : '';?> <?php echo isset($data['min']) ? 'min="'.(int)$data['min'].'"' : '';?> <?php echo empty($data['step']) ? '' : 'step="'.(int)$data['step'].'"';?>>
+                <input type="number" id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo empty($data['placeholder']) ? '' : esc_attr($data['placeholder']);?>" <?php echo empty($data['length']) ? '' : 'maxlength="'.(int)$data['length'].'"';?> <?php echo isset($data['max']) ? 'max="'.(float)$data['max'].'"' : '';?> <?php echo isset($data['min']) ? 'min="'.(float)$data['min'].'"' : '';?> <?php echo empty($data['step']) ? '' : 'step="'.(float)$data['step'].'"';?>>
             </span>
 
             <?php if( !empty($data['description']) ) {?>
@@ -667,7 +668,7 @@ function leyka_render_campaign_select_field($option_id, $data) {
 
     }?>
 
-    <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-campaign-select-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) ? '' : implode(' ', $data['field_classes']);?>" data-multiple="<?php echo (int)!!$data['multiple'];?>" data-required-min="<?php echo absint($data['required']);?>">
+    <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-campaign-select-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) ? '' : implode(' ', $data['field_classes']);?>" data-multiple="<?php echo (int)!empty($data['multiple']);?>" data-required-min="<?php echo absint($data['required']);?>">
 
         <label for="<?php echo $option_id.'-field';?>">
 
