@@ -2157,3 +2157,9 @@ if( !function_exists('leyka_delete_dir') ) {
     }
 
 }
+
+if( !function_exists('leyka_get_donations_storage_type') ) {
+    function leyka_get_donations_storage_type() {
+        return in_array(get_option('leyka_donations_storage_type'), array('sep', 'sep-incompleted')) ? 'sep' : 'post';
+    }
+}

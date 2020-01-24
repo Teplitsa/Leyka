@@ -232,12 +232,6 @@ if( !function_exists('leyka_admin_get_donor_comment_table_row') ) {
     }
 }
 
-if( !function_exists('leyka_get_donations_storage_type') ) {
-    function leyka_get_donations_storage_type() {
-        return in_array(get_option('leyka_donations_storage_type'), array('sep', 'sep-incompleted')) ? 'sep' : 'post';
-    }
-}
-
 function leyka_is_tab_valid($tab_id) {
 
     $tab_options = Leyka_Options_Allocator::get_instance()->get_tab_options($tab_id);

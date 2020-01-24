@@ -1491,42 +1491,45 @@ class Leyka extends Leyka_Singleton {
      */
     public function register_post_types(){
 
-        // Donations:
-        $args = array(
-            'label' => __('Donations', 'leyka'),
-            'labels' => array(
-                'name'          => __('Donations', 'leyka'),
-                'singular_name' => __('Donation', 'leyka'),
-                'menu_name'     => __('Donations', 'leyka'),
-                'all_items'     => __('Donations', 'leyka'),
-                'add_new'       => __('Add correctional donation', 'leyka'),
-                'add_new_item'  => __('Add correctional donation', 'leyka'),
-                'edit_item'     => __('Donation profile', 'leyka'),
-                'new_item'      => __('New donation', 'leyka'),
-                'view_item'     => __('View donation', 'leyka'),
-                'search_items'  => __('Search donation', 'leyka'),
-                'not_found'     => __('Donations not found', 'leyka'),
-                'not_found_in_trash' => __('Donations not found in Trash', 'leyka')
-            ),
-            'exclude_from_search' => true,
-            'public' => true,
-            'show_ui' => true,
-            'show_in_nav_menus' => false,
-            'show_in_menu' => false,
-            'show_in_admin_bar' => false,
-            'supports' => false,
-            'taxonomies' => array(),
-            'has_archive' => 'donations',
-            'capability_type' => array('donation', 'donations'),
-            'map_meta_cap' => true,
-            'rewrite' => array('slug' => 'donation', 'with_front' => false),
-            'show_in_rest' => false, // True to use Gutenberg editor, false otherwise
-        );
+        if(leyka_get_donations_storage_type() === 'post') { // Donations PT (only if needed)
 
-        register_post_type(Leyka_Donation_Management::$post_type, $args);
+            $args = array(
+                'label' => __('Donations', 'leyka'),
+                'labels' => array(
+                    'name'          => __('Donations', 'leyka'),
+                    'singular_name' => __('Donation', 'leyka'),
+                    'menu_name'     => __('Donations', 'leyka'),
+                    'all_items'     => __('Donations', 'leyka'),
+                    'add_new'       => __('Add correctional donation', 'leyka'),
+                    'add_new_item'  => __('Add correctional donation', 'leyka'),
+                    'edit_item'     => __('Donation profile', 'leyka'),
+                    'new_item'      => __('New donation', 'leyka'),
+                    'view_item'     => __('View donation', 'leyka'),
+                    'search_items'  => __('Search donation', 'leyka'),
+                    'not_found'     => __('Donations not found', 'leyka'),
+                    'not_found_in_trash' => __('Donations not found in Trash', 'leyka')
+                ),
+                'exclude_from_search' => true,
+                'public' => true,
+                'show_ui' => true,
+                'show_in_nav_menus' => false,
+                'show_in_menu' => false,
+                'show_in_admin_bar' => false,
+                'supports' => false,
+                'taxonomies' => array(),
+                'has_archive' => 'donations',
+                'capability_type' => array('donation', 'donations'),
+                'map_meta_cap' => true,
+                'rewrite' => array('slug' => 'donation', 'with_front' => false),
+                'show_in_rest' => false, // True to use Gutenberg editor, false otherwise
+            );
 
-        // Donation editing messages:
-        add_filter('post_updated_messages', array(Leyka_Donation_Management::get_instance(), 'set_admin_messages'));
+            register_post_type(Leyka_Donation_Management::$post_type, $args);
+
+            // Donation editing messages:
+            add_filter('post_updated_messages', array(Leyka_Donation_Management::get_instance(), 'set_admin_messages'));
+
+        }
 
         // Campaigns:
         $args = array(
