@@ -556,10 +556,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      * @return array
      */
     public function get_bulk_actions() {
-        return array(
-            'bulk-edit' => __('Edit'),
-            'bulk-delete' => __('Delete'),
-        );
+        return array('bulk-edit' => __('Edit'), 'bulk-delete' => __('Delete'),);
     }
 
     /**
@@ -607,19 +604,24 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
     public function bulk_edit_fields() {?>
 
-        <div id="leyka-donors-inline-edit-fields" style="display: none;" data-colspan="<?php echo count($this->get_columns());?>" data-bulk-edit-nonce="<?php echo wp_create_nonce('leyka-bulk-edit-donors');?>">
+        <div id="leyka-donors-inline-edit-fields" class="leyka-donors-inline-edit-fields" style="display: none;" data-colspan="<?php echo count($this->get_columns());?>" data-bulk-edit-nonce="<?php echo wp_create_nonce('leyka-bulk-edit-donors');?>">
 
             <input type="text" name="donors-tags-input" class="leyka-donors-tags-selector leyka-selector" value="" placeholder="<?php _e('Donors tags', 'leyka');?>">
 
-            <select class="leyka-donors-tags-select" name="donors-bulk-tags[]" multiple="multiple">
+            <select class="leyka-donors-tags-select autocomplete-select" name="donors-bulk-tags[]" multiple="multiple"></select>
+
+            <select name="bulk-edit-action">
+                <option value="add"><?php _e('Add tags', 'leyka');?></option>
+                <option value="remove"><?php _e('Remove tags', 'leyka');?></option>
             </select>
 
-            <div class="bulk-edit-submits">
-                <button type="button" class="button cancel alignleft"><?php _e('Cancel');?></button>
-                <button type="button" name="bulk_edit" id="bulk_edit" class="button button-primary alignright">
-                    <?php _e('Update');?>
-                </button>
-            </div>
+<!--            <div class="bulk-edit-submits">-->
+            <button type="button" name="bulk_edit" id="bulk_edit" class="button button-primary alignright">
+                <?php _e('Update');?>
+            </button>
+            <button type="button" class="button cancel"><?php _e('Cancel');?></button>
+
+<!--            </div>-->
 
         </div>
 

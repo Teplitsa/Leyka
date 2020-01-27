@@ -131,7 +131,7 @@
     //input:not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"])  {
     //}
 
-    select {
+    select.autocomplete-select {
         display: none;
     }
 
@@ -256,6 +256,15 @@
 		}
 
 	}
+
+}
+
+// Donors inline edit fields layout:
+.leyka-donors-inline-edit-fields {
+
+    //select.bulk-edit-action {
+    //    display: inline-block;
+    //}
 
 }
 
