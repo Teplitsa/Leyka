@@ -63,7 +63,7 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php');?>
 
                                 </div>
                             </div>
-                            
+
                             <?php } else {?>
                             <h2><?php _e('You have no active recurring subscriptions.', 'leyka');?></h2>
                             <?php } ?>
@@ -108,14 +108,14 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php');?>
                                         </div>
                                     </div>
                                 </div>
-                        
+
                                 <div class="leyka-hidden-controls">
                                 	<input type="hidden" name="leyka_campaign_id" value="">
                                 	<input type="hidden" name="leyka_donation_id" value="">
                                 	<input type="hidden" name="leyka_campaign_permalink" value="">
                                 	<?php wp_nonce_field('leyka_cancel_subscription');?>
                                 </div>
-                                
+
                                 <div class="leyka-star-field-error-frame">
                                     <span class="donor__textfield-error choose-reason">
                                         <?php _e('Choose unsubscription reason, please', 'leyka');?>
