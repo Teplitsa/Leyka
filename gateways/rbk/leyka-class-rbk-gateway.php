@@ -350,7 +350,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
     }
 
-    public function cancel_recurring_subscription(Leyka_Donation $donation) {
+    public function cancel_recurring_subscription_by_link(Leyka_Donation $donation) {
 
         if($donation->type !== 'rebill') {
             die();

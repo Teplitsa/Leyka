@@ -1,8 +1,8 @@
 <?php if( !defined('WPINC') ) die;
 /**
- * The template for displaying Leyka persistent campaign.
+ * The template for displaying Leyka Donor's account.
  *
- * @link https://leyka.te-st.ru/campaign/demo-kampaniya/
+ * @link https://leyka.te-st.ru/donor-account
  *
  * @package Leyka
  * @since 1.0.0
@@ -39,20 +39,26 @@ try {
 							<h2><?php _e('Personal account', 'leyka');?></h2>
 							
 							<p><?php _e('We are grateful for your support!', 'leyka');?></p>
-							
+
 							<?php if($leyka_ext_sp->is_active && $leyka_ext_sp->has_packages()) {?>
+
 							<div class="list support-packages account-support-packages">
+
 								<h3 class="list-title"><?php _e('Support packages', 'leyka');?></h3>
 								<div class="leyka-ext-support-packages">
-								<?php foreach($leyka_ext_sp->get_packages() as $package) {?>
-									<?php $leyka_ext_sp_template_tags->show_manage_card($package, array(
+
+								<?php foreach($leyka_ext_sp->get_packages() as $package) {
+								    $leyka_ext_sp_template_tags->show_manage_card($package, array(
 									    'is_active' => $leyka_ext_sp->is_package_active($package, $current_user),
 									    'is_activation_available' => $leyka_ext_sp->is_activation_available($package, $current_user),
 									    'campaign_post_permalink' => $campaign_post_permalink,
-									));?>
-								<?php }?>
+									));
+								}?>
+
 								</div>
+
 							</div>
+
 							<?php }?>
 
 							<div class="list subscribed-campaigns-list">
@@ -84,10 +90,10 @@ try {
                                         </div>
                                         <div class="subscription-status">
                                             <span class="status">
-                                                <?php echo $init_donation->recurring_on ?
-                                                    __('Active', 'leyka') :
-                                                    ($init_donation->cancel_recurring_requested ?
-                                                        __('Canceling', 'leyka') : __('Cancelled', 'leyka'));?>
+                                                <?php echo $init_donation->cancel_recurring_requested ?
+                                                    __('Canceling', 'leyka') :
+                                                    ($init_donation->recurring_on ?
+                                                        __('Active', 'leyka') : __('Cancelled', 'leyka'));?>
                                             </span>
                                         </div>
 

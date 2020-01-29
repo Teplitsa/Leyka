@@ -25,6 +25,9 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         $this->_receiver_types = array('legal');
         $this->_may_support_recurring = true;
 
+        // ATM, Chronopay is the ONLY Gateway that doesn't allow to cancel recurring via API. The guys are reeeally slothful:
+        $this->_recurring_auto_cancelling_supported = false;
+
     }
 
     protected function _set_options_defaults() {
@@ -380,7 +383,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
     }
 
-    public function cancel_recurring_subscription(Leyka_Donation $donation) {
+    public function cancel_recurring_subscription_by_link(Leyka_Donation $donation) {
 
         $ch = curl_init();
 

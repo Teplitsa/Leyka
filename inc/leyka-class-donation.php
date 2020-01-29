@@ -12,12 +12,12 @@ class Leyka_Donation_Management {
 
     public static function get_instance() {
 
-        // If the single instance hasn't been set, set it now.
-        if( !self::$_instance ) {
+        if( !self::$_instance ) { // If the single instance hasn't been set, set it now
             self::$_instance = new self;
         }
 
         return self::$_instance;
+
     }
 
 	private function __construct() {

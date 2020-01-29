@@ -28,16 +28,18 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php');?>
                     <div class="leyka-account-form leyka-unsubscribe-campains-forms">
         
                         <form class="leyka-screen-form leyka-unsubscribe-campains-form">
-                            
+
                             <?php if($recurring_subscriptions) {?>
                             
                             <h2><?php _e('Which campaign you want to unsubscibe from?', 'leyka');?></h2>
                             
                             <div class="list">
                                 <div class="items">
+
                                 	<?php foreach($recurring_subscriptions as $init_donation) {
-                                	    $donation_campaign = new Leyka_Campaign($init_donation->campaign_id);
-                                	?>
+
+                                	    $donation_campaign = new Leyka_Campaign($init_donation->campaign_id);?>
+
                                     <div class="item">
 										<div class="subscription-details">
     										<div class="campaign-title">
@@ -56,14 +58,16 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php');?>
 										</div>
                                         <a data-campaign-id="<?php echo $init_donation->campaign_id;?>" data-donation-id="<?php echo $init_donation->id;?>" href="<?php echo $donation_campaign->permalink;?>" class="action-disconnect"><?php _e('Disable', 'leyka');?></a>
                                     </div>
-                                	<?php } ?>
+
+                                	<?php }?>
+
                                 </div>
                             </div>
                             
                             <?php } else {?>
                             <h2><?php _e('You have no active recurring subscriptions.', 'leyka');?></h2>
                             <?php } ?>
-        
+
                             <div class="leyka-star-submit">
                                 <a href="<?php echo site_url('/donor-account/');?>" class="leyka-star-single-link">
                                     <?php _e('To main' , 'leyka');?>
