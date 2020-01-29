@@ -1999,6 +1999,7 @@ class Leyka_Donation {
                 'rebilling_is_active' => !empty($meta['_rebilling_is_active'][0]),
                 'cancel_recurring_requested' => isset($meta['leyka_cancel_recurring_requested']) ?
                     $meta['leyka_cancel_recurring_requested'][0] : false,
+
             );
         }
 

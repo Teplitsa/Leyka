@@ -1,6 +1,6 @@
-<?php
+<?php if( !defined('WPINC') ) die;
 /**
- * The template for displaying leyka persistent campaign
+ * The template for displaying a recurring subscription cancelling.
  *
  * @link https://leyka.te-st.ru/campaign/demo-kampaniya/
  *
@@ -16,7 +16,7 @@ try {
 
 $recurring_subscriptions = $donor->get_init_recurring_donations(true, false);
 
-include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
+include(LEYKA_PLUGIN_DIR . 'templates/account/header.php');?>
 
 <div id="content" class="site-content leyka-campaign-content">
     
@@ -31,7 +31,7 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
                             
                             <?php if($recurring_subscriptions) {?>
                             
-                            <h2><?php esc_html_e('Which campaign you want to unsubscibe from?', 'leyka');?></h2>
+                            <h2><?php _e('Which campaign you want to unsubscibe from?', 'leyka');?></h2>
                             
                             <div class="list">
                                 <div class="items">
@@ -72,10 +72,9 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
         
                         </form>
                         
-                        
                         <form class="leyka-screen-form leyka-cancel-subscription-form">
                             
-                            <h2><?php esc_html_e('We will be grateful if you share why you decided to cancel the subscription?', 'leyka');?></h2>
+                            <h2><?php _e('We will be grateful if you share why you decided to cancel the subscription?', 'leyka');?></h2>
                             
                             <div class="limit-width">
                                 <div class="leyka-cancel-subscription-reason">
@@ -110,7 +109,7 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
                                 	<input type="hidden" name="leyka_campaign_id" value="">
                                 	<input type="hidden" name="leyka_donation_id" value="">
                                 	<input type="hidden" name="leyka_campaign_permalink" value="">
-                                	<?php wp_nonce_field( 'leyka_cancel_subscription' );?>
+                                	<?php wp_nonce_field('leyka_cancel_subscription');?>
                                 </div>
                                 
                                 <div class="leyka-star-field-error-frame">
@@ -121,58 +120,53 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
                                         <?php _e('Give some details about your reason', 'leyka');?>
                                     </span>
                                 </div>
-                                
-                        
+
                                 <div class="leyka-star-submit double">
                                     <a href="<?php echo site_url('/donor-account/');?>" class="leyka-star-btn leyka-do-not-unsubscribe">
-                                        <?php esc_html_e('Do not unsubscribe', 'leyka');?>
+                                        <?php _e('Do not unsubscribe', 'leyka');?>
                                     </a>
-                                    <input type="submit" name="unsubscribe" class="leyka-star-btn secondary last" value="<?php esc_html_e('Continue', 'leyka');?>">
+                                    <input type="submit" name="unsubscribe" class="leyka-star-btn secondary last" value="<?php _e('Continue', 'leyka');?>">
                                 </div>
 
                             </div>
 
                         </form>
-                        
-                        
+
                         <form class="leyka-screen-form leyka-confirm-unsubscribe-request-form">
-                        
-                            <h2><?php esc_html_e('Disable subscription?', 'leyka');?></h2>
-                            
+
+                            <h2><?php _e('Disable subscription?', 'leyka');?></h2>
+
                             <div class="form-controls">
-                                <p><?php esc_html_e('We were able to do a lot with the help of your donations. Without your support, it will be harder for us to achieve results. It is a pity that you unsubscribe!', 'leyka');?></p>
+                                <p><?php _e('We were able to do a lot with the help of your donations. Without your support, it will be harder for us to achieve results. It is a pity that you unsubscribe!', 'leyka');?></p>
                                 
                                 <div class="form-message"></div>
                                 
                                 <div class="leyka-star-submit double confirm-unsubscribe-submit">
                                     <a href="#" class="leyka-star-btn leyka-do-not-unsubscribe">
-                                        <?php esc_html_e('Do not cancel', 'leyka');?>
+                                        <?php _e('Do not cancel', 'leyka');?>
                                     </a>
-                                    <input type="submit" name="unsubscribe" class="leyka-star-btn secondary last" value="<?php esc_html_e('Cancel subscription', 'leyka');?>">
+                                    <input type="submit" name="unsubscribe" class="leyka-star-btn secondary last" value="<?php _e('Cancel subscription', 'leyka');?>">
                                 </div>
                             </div>
                         
-                            <div class="leyka-form-spinner">
-                            	<?php echo leyka_get_ajax_indicator();?>
-                            </div>
-                        
+                            <div class="leyka-form-spinner"><?php echo leyka_get_ajax_indicator();?></div>
+
                         </form>
-                        
-                        
+
                         <form class="leyka-screen-form leyka-confirm-go-resubscribe-form">
-                        
-                            <h2><?php esc_html_e('Canceling subscription', 'leyka');?></h2>
+
+                            <h2><?php _e('Canceling subscription', 'leyka');?></h2>
                             
                             <div class="form-controls">
-                                <p><?php esc_html_e('Now we will cancel the current subscription and then you can, if you wish, subscribe again to a more convenient amount or method of donation.', 'leyka');?></p>
+                                <p><?php _e('Now we will cancel the current subscription and then you can, if you wish, subscribe again to a more convenient amount or method of donation.', 'leyka');?></p>
                                 
                                 <div class="form-message"></div>
-                                
+
                                 <div class="leyka-star-submit double confirm-unsubscribe-submit">
                                     <a href="#" class="leyka-star-btn leyka-do-not-unsubscribe">
-                                        <?php esc_html_e('Do not cancel', 'leyka');?>
+                                        <?php _e('Do not cancel', 'leyka');?>
                                     </a>
-                                    <input type="submit" name="unsubscribe" class="leyka-star-btn secondary last" value="<?php esc_html_e('Cancel subscription', 'leyka');?>">
+                                    <input type="submit" name="unsubscribe" class="leyka-star-btn secondary last" value="<?php _e('Cancel subscription', 'leyka');?>">
                                 </div>
                             </div>
 
@@ -184,16 +178,15 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php'); ?>
 
                         <form class="leyka-screen-form leyka-unsubscribe-request-accepted-form">
 
-                            <h2><?php esc_html_e('Your request to unsubscribe accepted', 'leyka');?></h2>
-                            <p><?php esc_html_e('The subscription will be disabled within 3 days', 'leyka');?></p>
+                            <h2><?php _e('Your request to unsubscribe accepted', 'leyka');?></h2>
+                            <p><?php _e('The subscription will be disabled within 3 days', 'leyka');?></p>
                             <div class="leyka-star-submit">
                             	<a href="<?php echo site_url('/donor-account/');?>" class="leyka-star-single-link">
-                                    <?php esc_html_e('To main' , 'leyka');?>
+                                    <?php _e('Back to the Account' , 'leyka');?>
                                 </a>
                             </div>
-                                
+
                         </form>
-                        
 
                     </div>
                 </div>

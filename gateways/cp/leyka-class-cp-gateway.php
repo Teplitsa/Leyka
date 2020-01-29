@@ -372,9 +372,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             'timeout' => 10,
             'redirection' => 5,
             'headers' => array(
-                'Authorization' => 'Basic '.base64_encode(
-                        leyka_options()->opt('cp_public_id').':'.leyka_options()->opt('cp_api_secret')
-                    ),
+                'Authorization' => 'Basic '.base64_encode(leyka_options()->opt('cp_public_id').':'.leyka_options()->opt('cp_api_secret')),
                 'Content-type' => 'application/json',
             ),
             'body' => json_encode(array('Id' => $donation->cp_recurring_id)),

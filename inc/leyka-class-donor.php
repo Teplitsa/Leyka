@@ -629,9 +629,10 @@ class Leyka_Donor {
 
         if($only_active) {
             $meta_params[] = array(
-                'relation' => 'OR',
-                array('key' => 'leyka_recurrents_cancelled', 'value' => false),
-                array('key' => 'leyka_recurrents_cancelled', 'compare' => 'NOT EXISTS'),
+                array('key' => '_rebilling_is_active', 'value' => 1),
+//                'relation' => 'OR',
+//                array('key' => 'leyka_recurrents_cancelled', 'value' => false),
+//                array('key' => 'leyka_recurrents_cancelled', 'compare' => 'NOT EXISTS'),
             );
         }
 
