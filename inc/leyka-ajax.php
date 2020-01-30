@@ -552,7 +552,7 @@ add_action('wp_ajax_nopriv_leyka_get_donations_history_page', 'leyka_get_donatio
 
 function leyka_cancel_recurring_subscription(){
 
-    $res = array('status' => 'ok', 'message' => __('Your request to unsubscribe accepted', 'leyka'));
+    $res = array('status' => 'ok', 'message' => __('Your request to unsubscribe accepted.', 'leyka'));
 
     if(empty($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'leyka_cancel_subscription')) {
         $res = array(
@@ -632,6 +632,8 @@ function leyka_cancel_recurring_subscription(){
                         'message' => sprintf(__('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email())
                     );
                 }
+
+                $res['message'] = __('Your recurring subscription cancelled.', 'leyka');
 
             } else { // We can only "request to cancel a recurring subscription", so the website admin could cancel it manually
 

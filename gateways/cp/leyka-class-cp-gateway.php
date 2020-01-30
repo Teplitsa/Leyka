@@ -355,7 +355,10 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
     public function cancel_recurring_subscription(Leyka_Donation $donation) {
 
         if($donation->type !== 'rebill') {
-            return new WP_Error('cp_wrong_donation', __('Wrong donation given to cancel a recurring subscription.', 'leyka'));
+            return new WP_Error(
+                'wrong_recurring_donation_to_cancel',
+                __('Wrong donation given to cancel a recurring subscription.', 'leyka')
+            );
         }
 
         $recurring_manual_cancel_link = 'https://my.cloudpayments.ru/ru/unsubscribe';
@@ -400,12 +403,14 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         header('Content-type: text/html; charset=utf-8');
 
         $recurring_cancelling_result = $this->cancel_recurring_subscription($donation);
+        $recurring_manual_cancel_link = 'https://my.cloudpayments.ru/ru/unsubscribe';
+
         if($recurring_cancelling_result === true) {
             die(__('Recurring subscription cancelled successfully.', 'leyka'));
         } else if(is_wp_error($recurring_cancelling_result)) {
             die($recurring_cancelling_result->get_error_message());
         } else {
-            die( sprintf(__('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email()) );
+            die( sprintf(__('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email(), $recurring_manual_cancel_link) );
         }
 
     }
