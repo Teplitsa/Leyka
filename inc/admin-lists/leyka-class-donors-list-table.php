@@ -604,24 +604,26 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
     public function bulk_edit_fields() {?>
 
-        <div id="leyka-donors-inline-edit-fields" class="leyka-donors-inline-edit-fields" style="display: none;" data-colspan="<?php echo count($this->get_columns());?>" data-bulk-edit-nonce="<?php echo wp_create_nonce('leyka-bulk-edit-donors');?>">
+        <div id="leyka-donors-inline-edit-fields" class="leyka-inline-edit-fields leyka-donors-inline-edit-fields" style="display: none;" data-colspan="<?php echo count($this->get_columns());?>" data-bulk-edit-nonce="<?php echo wp_create_nonce('leyka-bulk-edit-donors');?>">
 
-            <input type="text" name="donors-tags-input" class="leyka-donors-tags-selector leyka-selector" value="" placeholder="<?php _e('Donors tags', 'leyka');?>">
+            <div class="inline-edit-field">
+                <input type="text" name="donors-tags-input" class="leyka-donors-tags-selector leyka-selector" value="" placeholder="<?php _e('Donors tags', 'leyka');?>">
+                <select class="leyka-donors-tags-select autocomplete-select" name="donors-bulk-tags[]" multiple="multiple"></select>
+            </div>
 
-            <select class="leyka-donors-tags-select autocomplete-select" name="donors-bulk-tags[]" multiple="multiple"></select>
+            <div class="inline-edit-field">
+                <select name="bulk-edit-action">
+                    <option value="add"><?php _e('Add tags', 'leyka');?></option>
+                    <option value="remove"><?php _e('Remove tags', 'leyka');?></option>
+                </select>
+            </div>
 
-            <select name="bulk-edit-action">
-                <option value="add"><?php _e('Add tags', 'leyka');?></option>
-                <option value="remove"><?php _e('Remove tags', 'leyka');?></option>
-            </select>
-
-<!--            <div class="bulk-edit-submits">-->
-            <button type="button" name="bulk_edit" id="bulk_edit" class="button button-primary alignright">
-                <?php _e('Update');?>
-            </button>
-            <button type="button" class="button cancel"><?php _e('Cancel');?></button>
-
-<!--            </div>-->
+            <div class="inline-edit-submits">
+                <button type="button" name="bulk_edit" id="bulk_edit" class="button button-primary alignright">
+                    <?php _e('Update');?>
+                </button>
+                <button type="button" class="button cancel"><?php _e('Cancel');?></button>
+            </div>
 
         </div>
 

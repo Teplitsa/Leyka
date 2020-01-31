@@ -42,10 +42,10 @@
 
                         <div class="filters-row">
 
-                            <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector" value="" placeholder="<?php _e('Campaigns list', 'leyka');?>">
+                            <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector autocomplete-input" value="" placeholder="<?php _e('Campaigns list', 'leyka');?>">
                             <?php $filter_value = isset($_GET['campaigns']) ? (array)$_GET['campaigns'] : array();?>
 
-                            <select id="leyka-campaigns-select" name="campaigns[]" multiple="multiple">
+                            <select id="leyka-campaigns-select" class="autocomplete-select" name="campaigns[]" multiple="multiple">
                                 <?php $campaigns = $filter_value ? leyka_get_campaigns_list(array('include' => $filter_value)) : array();
                                 foreach($campaigns as $campaign_id => $campaign_title) {?>
                                     <option value="<?php echo $campaign_id;?>" <?php echo is_array($filter_value) && in_array($campaign_id, $filter_value) ? 'selected="selected"' : '';?>>
@@ -54,10 +54,10 @@
                                 <?php }?>
                             </select>
 
-                            <input type="text" name="leyka-payment-status" class="leyka-payment-status-selector leyka-selector" value="" placeholder="<?php _e('Payment status', 'leyka');?>">
+                            <input type="text" name="leyka-payment-status" class="leyka-payment-status-selector leyka-selector autocomplete-input" value="" placeholder="<?php _e('Payment status', 'leyka');?>">
 
                             <?php $filter_value = isset($_GET['payment-status']) ? (array)$_GET['payment-status'] : array();?>
-                            <select id="leyka-payment-status-select" name="payment-status[]" multiple="multiple">
+                            <select id="leyka-payment-status-select" class="autocomplete-select" name="payment-status[]" multiple="multiple">
 
                                 <?php $payment_status_list = leyka()->get_donation_statuses();
 
@@ -69,10 +69,10 @@
 
                             </select>
 
-                            <input type="text" name="donors-tags-input" class="leyka-donors-tags-selector leyka-selector" value="" placeholder="<?php _e('Donors tags', 'leyka');?>">
+                            <input type="text" name="donors-tags-input" class="leyka-donors-tags-selector leyka-selector autocomplete-input" value="" placeholder="<?php _e('Donors tags', 'leyka');?>">
 
                             <?php $filter_value = isset($_GET['donors-tags']) ? (array)$_GET['donors-tags'] : array();?>
-                            <select class="leyka-donors-tags-select" name="donors-tags[]" multiple="multiple">
+                            <select class="leyka-donors-tags-select autocomplete-select" name="donors-tags[]" multiple="multiple">
                                 <?php $donors_tags = $filter_value ? get_terms(
                                     Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME,
                                     array(
@@ -90,10 +90,10 @@
                                 <?php }?>
                             </select>
 
-                            <input type="text" name="leyka-gateways" class="leyka-gateways-selector leyka-selector" value="" placeholder="<?php _e('Payment gateway', 'leyka');?>">
+                            <input type="text" name="leyka-gateways" class="leyka-gateways-selector leyka-selector autocomplete-input" value="" placeholder="<?php _e('Payment gateway', 'leyka');?>">
 
                             <?php $filter_value = isset($_GET['gateways']) ? (array)$_GET['gateways'] : array();?>
-                            <select id="leyka-gateways-select" name="gateways[]" multiple="multiple">
+                            <select id="leyka-gateways-select" class="autocomplete-select" name="gateways[]" multiple="multiple">
 
                                 <?php $gateways = leyka_get_gateways();
                                 usort($gateways, function($gateway_first, $gateway_second){
