@@ -401,14 +401,13 @@ jQuery(function($){
     
     function leykaCancelSubscription($form) {
     	
-        var $valueForm = $form.siblings('form.leyka-cancel-subscription-form'),
+        let $valueForm = $form.siblings('form.leyka-cancel-subscription-form'),
 	        params = $valueForm.serializeArray(),
 	        $message = $form.find('.form-message'),
 	        $ajax_indicator = $form.find('.form-ajax-indicator'),
 	        $submit = $form.find('.confirm-unsubscribe-submit');
 	
-	    params.push({name: 'action', value: 'leyka_unsubscribe_persistent_campaign'});
-	    console.log(params);
+	    params.push({name: 'action', value: 'leyka_cancel_recurring'});
 	
 	    $ajax_indicator.show();
 	    $message.hide();
@@ -420,21 +419,22 @@ jQuery(function($){
 	        response.message = response.message.length ? response.message : leyka.default_error_msg;
 	        
 	        if(response.status === 'ok') {
-	        	
+
 	        	$(':input', $valueForm)
-	        	  .not(':button, :submit, :reset, :hidden')
-	        	  .val('')
-	        	  .removeAttr('checked')
-	        	  .removeAttr('selected');
+                    .not(':button, :submit, :reset, :hidden')
+                    .val('')
+                    .removeAttr('checked')
+                    .removeAttr('selected');
 	
-	        	var campaignPermalink = $forms.find('form.leyka-cancel-subscription-form input[name=leyka_campaign_permalink]').val();
+	        	let campaignPermalink = $forms.find('form.leyka-cancel-subscription-form input[name=leyka_campaign_permalink]').val();
 	        	
 	        	if($form.hasClass('leyka-confirm-go-resubscribe-form') && campaignPermalink) {
 	        		window.location.href = campaignPermalink;
-	        	}
-	        	else {
+	        	} else {
+
 		        	$forms.find('form.leyka-screen-form').css('display', 'none');
 		        	$forms.find('form.leyka-unsubscribe-request-accepted-form').css('display', 'block');
+
 	        	}
 	        	
 	            $message.removeClass('error-message').addClass('success-message');

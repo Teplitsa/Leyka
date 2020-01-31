@@ -1430,21 +1430,27 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
     public function cancel_recurring_subscription(Leyka_Donation $donation) {
 
         if($donation->type !== 'rebill') {
-            die();
+            return new WP_Error(
+                'wrong_recurring_donation_to_cancel',
+                __('Wrong donation given to cancel a recurring subscription.', 'leyka')
+            );
         }
 
         try {
             $api_context = $this->_get_api_context();
         } catch(Exception $ex) { // Gateway connection refused
-            /** @todo Log the error somehow... */ exit(1);
-        }
+            return new WP_Error('paypal_wrong_api', __("Can't initialize the PayPal API context.", 'leyka'));
+        } // return new WP_Error('paypal_', __('', 'leyka'));
 
         $init_recurring_donation = Leyka_Donation::get_init_recurring_donation($donation);
 
         $recurring_manual_cancel_link = 'https://www.paypal.com/myaccount/autopay/';
 
         if( !$init_recurring_donation || !$init_recurring_donation->paypal_billing_agreement_id ) {
-            die(sprintf(__('<strong>Error:</strong> cannot find recurring subscription data for donation #%d. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
+            return new WP_Error(
+                'paypal_no_init_recurring_found',
+                sprintf(__('<strong>Error:</strong> cannot find recurring subscription data for donation #%d. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email(), $recurring_manual_cancel_link)
+            );
         }
 
         $agreement = new \PayPal\Api\Agreement();
@@ -1459,13 +1465,32 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             $init_recurring_donation->recurring_is_active = false;
 
         } catch(Exception $ex) {
-//            echo '<pre>'.print_r($ex, 1).'</pre>';
-            die(sprintf(__('<strong>Error:</strong> we cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
+            return new WP_Error(
+                'paypal_recurring_cancelling_error',
+                sprintf(__('<strong>Error:</strong> we cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email(), $recurring_manual_cancel_link)
+            );
         }
 
-        header('Content-type: text/html; charset=utf-8');
+        return true;
 
-        die(__('Recurring subscription cancelled.', 'leyka'));
+    }
+
+    public function cancel_recurring_subscription_by_link(Leyka_Donation $donation) {
+
+        if($donation->type !== 'rebill') {
+            die();
+        }
+
+        $recurring_cancelling_result = $this->cancel_recurring_subscription($donation);
+        $recurring_manual_cancel_link = 'https://www.paypal.com/myaccount/autopay/';
+
+        if($recurring_cancelling_result === true) {
+            die(__('Recurring subscription cancelled successfully.', 'leyka'));
+        } else if(is_wp_error($recurring_cancelling_result)) {
+            die($recurring_cancelling_result->get_error_message());
+        } else {
+            die( sprintf(__('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email(), $recurring_manual_cancel_link) );
+        }
 
     }
 

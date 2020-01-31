@@ -355,15 +355,16 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
     public function cancel_recurring_subscription(Leyka_Donation $donation) {
 
         if($donation->type !== 'rebill') {
-            die();
+            return new WP_Error(
+                'wrong_recurring_donation_to_cancel',
+                __('Wrong donation given to cancel a recurring subscription.', 'leyka')
+            );
         }
-
-        header('Content-type: text/html; charset=utf-8');
 
         $recurring_manual_cancel_link = 'https://my.cloudpayments.ru/ru/unsubscribe';
 
         if( !$donation->recurring_id ) {
-            die(sprintf(__('<strong>Error:</strong> unknown Subscription ID for donation #%d. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
+            return new WP_Error('cp_no_subscription_id', sprintf(__('<strong>Error:</strong> unknown Subscription ID for donation #%d. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
         }
 
         $response = wp_remote_post('https://api.cloudpayments.ru/subscriptions/cancel', array(
@@ -372,26 +373,45 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             'timeout' => 10,
             'redirection' => 5,
             'headers' => array(
-                'Authorization' => 'Basic '.base64_encode(
-                        leyka_options()->opt('cp_public_id').':'.leyka_options()->opt('cp_api_secret')
-                    ),
+                'Authorization' => 'Basic '.base64_encode(leyka_options()->opt('cp_public_id').':'.leyka_options()->opt('cp_api_secret')),
                 'Content-type' => 'application/json',
             ),
             'body' => json_encode(array('Id' => $donation->cp_recurring_id)),
         ));
 
         if(empty($response['body'])) {
-            die(sprintf(__('<strong>Error:</strong> the recurring subsciption cancelling request returned unexpected result. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="mailto:%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
+            return new WP_Error('cp_wrong_request_answer', sprintf(__('<strong>Error:</strong> the recurring subsciption cancelling request returned unexpected result. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="mailto:%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
         }
 
         $response['body'] = json_decode($response['body']);
         if(empty($response['body']->Success) || $response['body']->Success != 'true') {
-            die(sprintf(__('<strong>Error:</strong> we cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="mailto:%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
+            return new WP_Error('cp_cannot_cancel_recurring', sprintf(__('<strong>Error:</strong> we cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="mailto:%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
         }
 
         $donation->recurring_is_active = false;
 
-        die(__('Recurring subscription cancelled.', 'leyka'));
+        return true;
+
+    }
+
+    public function cancel_recurring_subscription_by_link(Leyka_Donation $donation) {
+
+        if($donation->type !== 'rebill') {
+            die();
+        }
+
+        header('Content-type: text/html; charset=utf-8');
+
+        $recurring_cancelling_result = $this->cancel_recurring_subscription($donation);
+        $recurring_manual_cancel_link = 'https://my.cloudpayments.ru/ru/unsubscribe';
+
+        if($recurring_cancelling_result === true) {
+            die(__('Recurring subscription cancelled successfully.', 'leyka'));
+        } else if(is_wp_error($recurring_cancelling_result)) {
+            die($recurring_cancelling_result->get_error_message());
+        } else {
+            die( sprintf(__('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email(), $recurring_manual_cancel_link) );
+        }
 
     }
 

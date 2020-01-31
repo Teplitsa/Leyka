@@ -194,8 +194,10 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     protected $_has_wizard = false;
 
     protected $_min_commission = 0.0;
-    protected $_receiver_types = array('legal'); // 'legal', 'physical'
-    protected $_may_support_recurring = false; // Whether recurring payments are possible via gateway at all
+    protected $_receiver_types = array('legal'); // legal|physical
+
+    protected $_may_support_recurring = false; // Are recurring payments possible via gateway at all
+    protected $_recurring_auto_cancelling_supported = true; // Is it possible to cancel recurring payments via Gateway API
 
     protected $_payment_methods = array(); // Supported PMs array
     protected $_options = array(); // Gateway configs
@@ -235,7 +237,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
         );
         add_action(
             "leyka_{$this->_id}_cancel_recurring_subscription",
-            array($this, 'cancel_recurring_subscription')
+            array($this, 'cancel_recurring_subscription_by_link')
         );
 
         $this->_initialize_options();
@@ -276,6 +278,9 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
             case 'has_recurring':
             case 'has_recurring_support':
                 return !!$this->_may_support_recurring;
+            case 'has_recurring_auto_cancelling':
+            case 'has_recurring_auto_cancelling_support':
+                return $this->_may_support_recurring && !!$this->_recurring_auto_cancelling_supported;
 
             case 'min_commission': return $this->_min_commission ? round((float)$this->_min_commission, 2) : 0.0;
             case 'receiver_types': return $this->_receiver_types ? (array)$this->_receiver_types : array('legal');
@@ -371,7 +376,17 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
     }
 
+    /**
+     * The main recurring subsciption auto-cancelling method.
+     *
+     * @param $donation Leyka_Donation
+     * @return bool|WP_Error True if cancelling request succeeded, false otherwise, WP_Error if request error can be verbal.
+     */
     public function cancel_recurring_subscription(Leyka_Donation $donation) {
+    }
+
+    /** A wrapper to fire when recurring subscription is cancelled via link. Should use the cancel_recurring_subscription(). */
+    public function cancel_recurring_subscription_by_link(Leyka_Donation $donation) {
     }
 
     public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation $donation) {

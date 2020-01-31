@@ -12,12 +12,12 @@ class Leyka_Donation_Management {
 
     public static function get_instance() {
 
-        // If the single instance hasn't been set, set it now.
-        if( !self::$_instance ) {
+        if( !self::$_instance ) { // If the single instance hasn't been set, set it now
             self::$_instance = new self;
         }
 
         return self::$_instance;
+
     }
 
 	private function __construct() {
@@ -1999,6 +1999,7 @@ class Leyka_Donation {
                 'rebilling_is_active' => !empty($meta['_rebilling_is_active'][0]),
                 'cancel_recurring_requested' => isset($meta['leyka_cancel_recurring_requested']) ?
                     $meta['leyka_cancel_recurring_requested'][0] : false,
+
             );
         }
 

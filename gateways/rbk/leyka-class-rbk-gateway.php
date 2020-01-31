@@ -353,15 +353,42 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
     public function cancel_recurring_subscription(Leyka_Donation $donation) {
 
         if($donation->type !== 'rebill') {
-            die();
+            return new WP_Error(
+                'wrong_recurring_donation_to_cancel',
+                __('Wrong donation given to cancel a recurring subscription.', 'leyka')
+            );
         }
 
         $init_recurring_donation = Leyka_Donation::get_init_recurring_donation($donation);
-        $init_recurring_donation->recurring_is_active = false;
+        if($init_recurring_donation) {
+
+            $init_recurring_donation->recurring_is_active = false;
+
+            return true;
+
+        } else {
+            return false;
+        }
+
+    }
+
+    public function cancel_recurring_subscription_by_link(Leyka_Donation $donation) {
+
+        if($donation->type !== 'rebill') {
+            die();
+        }
 
         header('Content-type: text/html; charset=utf-8');
 
-        die(__('Recurring subscription cancelled.', 'leyka'));
+        $recurring_cancelling_result = $this->cancel_recurring_subscription($donation);
+
+        if($recurring_cancelling_result === true) {
+            die(__('Recurring subscription cancelled successfully.', 'leyka'));
+        } else if(is_wp_error($recurring_cancelling_result)) {
+            die($recurring_cancelling_result->get_error_message());
+        } else {
+            die( sprintf(__('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email()) );
+        }
 
     }
 
