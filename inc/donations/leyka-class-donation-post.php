@@ -337,7 +337,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 return $this->_donation_meta['payment_title'];
 
             case 'status':
-                return $this->_post_object->post_status;
+                return $this->_main_data->post_status;
             case 'status_label':
                 $status_list = leyka_get_donation_status_list();
                 return $status_list[$this->_main_data->post_status];
