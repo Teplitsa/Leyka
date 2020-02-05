@@ -96,8 +96,8 @@ ALTER TABLE `mlsd_leyka_donations_meta`
 --
 -- Ограничения внешнего ключа таблицы `mlsd_leyka_donations`
 --
-ALTER TABLE `mlsd_leyka_donations`
-  ADD CONSTRAINT `mlsd_leyka_donations_ibfk_1` FOREIGN KEY (`campaign_id`) REFERENCES `mlsd_posts` (`ID`);
+# ALTER TABLE `mlsd_leyka_donations`
+#   ADD CONSTRAINT `mlsd_leyka_donations_ibfk_1` FOREIGN KEY (`campaign_id`) REFERENCES `mlsd_posts` (`ID`);
 
 --
 -- Ограничения внешнего ключа таблицы `mlsd_leyka_donations_meta`
