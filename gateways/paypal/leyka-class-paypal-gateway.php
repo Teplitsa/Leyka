@@ -428,7 +428,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                 } catch(Exception $ex) {
 
-                    echo '<pre>'.print_r($ex, 1).'</pre>';
                     $donation->add_gateway_response($ex);
 
                     leyka()->add_payment_form_error(new WP_Error(
