@@ -96,6 +96,7 @@ PHP version required: 5.6+
 * New: now Gateways & Extensions lists have one markup group - "Modules".
 * New: now Gateways Wizards first step allow to enter Gateway parameters at once, without the need to pass the rest of the Wizard.
 * New: Donor's comment placeholder added to the emails content.
+* Fix: RBK gateway bugfix.
 * Fix: Admin footer & helpchat CSS bugfixes & improvements.
 * Fix: compatibility with non-standard WP core paths improved.
 * Fix: admin small fixes.
