@@ -1,17 +1,21 @@
 /** == Form elements (_form_elements.scss) == **/
 
+.leyka-tmp-star-form .leyka-rbk-pre-submit-step button {
+    @include leyka-star-btn();
+}
+
 .leyka-tpl-star-form .section .section__fields,
 .leyka-screen-form .section .section__fields {
-    
+
     // periodicity
     &.periodicity {
         display: flex;
         font-family: $leyka-font-main;
-        
+
         a {
             @include star-control-frame();
             @include star-text-periodicity();
-            
+
             display: flex;
             box-shadow: none;
             background-color: $leyka-star-color-white;
@@ -770,19 +774,19 @@
             display: none;
         }
     }
-    
+
     .section--person {
         text-align: left;
         br {
             display: none;
         }
     }
-    
+
     .thankyou-email-me-button {
         margin-top: -$leyka-star-base;
-        padding-top: 0px;
-        
-        input[type=submit].leyka-success-submit {
+        padding-top: 0;
+
+        input[type="submit"].leyka-success-submit {
             @include leyka-star-btn();
 
             @include upto(medium-screens) {

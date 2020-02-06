@@ -177,8 +177,8 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
         $donation = new Leyka_Donation($donation_id);
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
-        $invoice_id = $this->_rbk_response->invoice->id;
-        $invoice_access_token = $this->_rbk_response->invoiceAccessToken->payload;
+        $invoice_id = $this->_rbk_response['invoice']['id'];
+        $invoice_access_token = $this->_rbk_response['invoiceAccessToken']['payload'];
         $donation->rbk_invoice_id = $invoice_id;
 
         if(leyka_options()->opt('rbk_keep_payment_logs')) {
@@ -325,15 +325,14 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
         }
 
         $vars = $vars[array_key_last($vars)];
-        $vars = empty($vars['invoice']) ? array() : $vars;
 
         return array(
-            __('Invoice ID:', 'leyka') => $vars['invoice']['id'],
-            __('Operation date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($vars['invoice']['createdAt'])),
-            __('Operation status:', 'leyka') => $vars['invoice']['status'],
-            __('Full donation amount:', 'leyka') => $vars['invoice']['amount'] / 100,
-            __('Donation currency:', 'leyka') => $vars['invoice']['currency'],
-            __('Shop Account:', 'leyka') => $vars['invoice']['shopID'],
+            __('Invoice ID:', 'leyka') => $vars['id'],
+            __('Operation date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($vars['createdAt'])),
+            __('Operation status:', 'leyka') => $vars['status'],
+            __('Full donation amount:', 'leyka') => $vars['amount'] / 100,
+            __('Donation currency:', 'leyka') => $vars['currency'],
+            __('Shop Account:', 'leyka') => $vars['shopID'],
         );
 
     }
