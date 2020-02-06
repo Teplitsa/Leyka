@@ -401,7 +401,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 // BA also manages initial donation for subscription and activates it:
 
                 $agreement = new \PayPal\Api\Agreement(array(
-                    'name' => sprintf(__('%s - recurring donations', 'leyka'), $donation->payment_title),
+                    'name' => sprintf(__('Campaign #%d - recurring donations', 'leyka'), $donation->campaign_id),
                     'description' => __('Recurring donations', 'leyka'),
                     'startDate' => date(DATE_ISO8601, strtotime('+1 month')), // The initial payment is the BP setup fee
                     'plan' => new \PayPal\Api\Plan(array('id' => $plan->getId())),
@@ -428,6 +428,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                 } catch(Exception $ex) {
 
+                    echo '<pre>'.print_r($ex, 1).'</pre>';
                     $donation->add_gateway_response($ex);
 
                     leyka()->add_payment_form_error(new WP_Error(
@@ -507,7 +508,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     'leyka_paypal_recurring_process_payment_callback_url',
                     home_url('?p=leyka/service/'.$this->_id.'/process_payment/')
                 ),
-                'CANCELURL' => leyka_get_failure_page_url($donation->campaign_id),
+                'CANCELURL' => leyka_get_failure_page_url(),
                 'PAYMENTREQUEST_0_NOTIFYURL' => apply_filters(
                     'leyka_paypal_recurring_ipn_callback_url',
                     home_url('?p=leyka/service/'.$this->_id.'/ipn/')
