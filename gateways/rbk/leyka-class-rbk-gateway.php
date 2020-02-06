@@ -46,19 +46,19 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
             'rbk_shop_id' => array(
                 'type' => 'text',
                 'title' => __('RBK Money shopID', 'leyka'),
-                'description' => __('Please, enter your shopID value here. It can be found in your contract with RBK Money or in your control panel there.', 'leyka'),
+                'comment' => __('Please, enter your shopID value here. It can be found in your contract with RBK Money or in your control panel there.', 'leyka'),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1234'),
             ),
             'rbk_api_key' => array(
-                'type' => 'text',
+                'type' => 'textarea',
                 'title' => __('RBK Money apiKey', 'leyka'),
                 'comment' => __('Please, enter your apiKey value here. It can be found in your RBK Money control panel.', 'leyka'),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'RU123456789'),
             ),
             'rbk_api_web_hook_key' => array(
-                'type' => 'text',
+                'type' => 'textarea',
                 'title' => __('RBK Money webhook public key', 'leyka'),
                 'comment' => __('Please, enter your webhook public key value here.', 'leyka'),
                 'required' => true,
