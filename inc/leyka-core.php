@@ -1120,7 +1120,7 @@ class Leyka extends Leyka_Singleton {
      */
     public function add_extension(Leyka_Extension $extension) {
 
-        if(empty($this->_extensions[$extension->id])) {
+        if(empty($this->_extensions[$extension->id]) && (leyka_options()->opt('plugin_demo_mode') || !$extension->debug_only) ) {
 
             $this->_extensions[$extension->id] = $extension;
             return true;

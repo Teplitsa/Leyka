@@ -17,7 +17,9 @@ abstract class Leyka_Extension extends Leyka_Singleton {
     protected $_icon = ''; // An icon URL
     protected $_user_docs_link = ''; // Extension user manual page URL
     protected $_has_wizard = false;
-    
+
+    protected $_debug_mode_only = false;
+
     protected $_has_color_options = true;
 
     protected $_is_premium = false;
@@ -117,6 +119,8 @@ abstract class Leyka_Extension extends Leyka_Singleton {
         $this->_author_url = empty($data['author_url']) ? '' : $data['author_url'];
 //        $this->_author_email = empty($data['author_email']) ? '' : $data['author_email'];
         $this->_version = empty($data['version']) ? '' : $data['version'];
+
+        $this->_debug_mode_only = !empty($data['debug_only']);
 
         $this->_set_attributes(); // Initialize main extension attributes
 
@@ -250,6 +254,12 @@ abstract class Leyka_Extension extends Leyka_Singleton {
 
             case 'is_premium':
                 return !!$this->_is_premium;
+
+            case 'debug_only':
+            case 'is_debug_only':
+            case 'debug_mode_only':
+            case 'is_debug_mode_only':
+                return !!$this->_debug_mode_only;
 
             case 'author':
             case 'author_name':
