@@ -226,7 +226,7 @@ function leyka_shortcode_donations_list($atts) {
     if($atts['show_amount']) {
         $table_columns['donation_amount'] = __('Amount', 'leyka');
     }
-    $atts['show_total_amount_as'] = $atts['show_total_amount_as'] === 'none' ? false : $atts['show_total_amount_as'];
+//    $atts['show_total_amount_as'] = $atts['show_total_amount_as'] === 'none' ? false : $atts['show_total_amount_as'];
 
     $table_lines = array();
     foreach(get_posts($donations_params) as $donation) {
