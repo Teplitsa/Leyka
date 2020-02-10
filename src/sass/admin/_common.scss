@@ -246,6 +246,14 @@
         @include leyka-button-primary();
     }
 
+    .button-primary-small {
+
+        @include leyka-admin-btn();
+        //
+        //font-size: 13px;
+
+    }
+
     .button-secondary {
         @include leyka-button-primary();
         background-color: $color-white;

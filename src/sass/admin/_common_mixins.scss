@@ -528,7 +528,9 @@
 }
 
 @mixin leyka-admin-btn($mod: default) {
+
 	@include leyka-adb-btn-caption();
+
     background-color: $leyka-adb-color-btn-bg;
     color: $leyka-adb-color-btn-text;
     text-shadow: 0 0 3px rgba(0, 0, 0, 0.25);
@@ -539,9 +541,10 @@
 	width: auto;
 	display: inline-block;
 	cursor: pointer;
-	padding: 5px 10px 3px 10px;
+	padding: 5px 10px;
 
     @if $mod == secondary {
+
         background-color: $color-white;
         border: 1px solid $color-border-secondary-button;
         color: $color-secondary-button;
@@ -552,7 +555,9 @@
             color: $color-secondary-button;
             background-color: $color-white;
         }
+
     }
+
 }
 
 @mixin leyka-donation-status-marker() {

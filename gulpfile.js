@@ -133,8 +133,8 @@ gulp.task('build-admin-common-css', function() {
 
     var paths = require('node-bourbon').includePaths,
 		// vendorFiles = gulp.src([]),
-        appFiles = gulp.src(basePaths.src+'sass/admin/admin-common.scss')
-        .pipe(!isProduction ? plugins.sourcemaps.init() : gutil.noop())  //process the original sources for sourcemap
+        appFiles = gulp.src(basePaths.src+'sass/admin/admin.scss')
+        .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.init())  //process the original sources for sourcemap
         .pipe(plugins.sass({
                 outputStyle: sassStyle, //SASS syntas
                 includePaths: paths //add bourbon + mdl

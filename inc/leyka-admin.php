@@ -691,7 +691,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 		wp_enqueue_style('leyka-icon', LEYKA_PLUGIN_BASE_URL.'css/admin-icon.css', array(), LEYKA_VERSION);
 
-		wp_enqueue_style('leyka-admin-common', LEYKA_PLUGIN_BASE_URL.'assets/css/admin-common.css', array(), LEYKA_VERSION);
+//		wp_enqueue_style('leyka-admin-common', LEYKA_PLUGIN_BASE_URL.'assets/css/admin-common.css', array(), LEYKA_VERSION);
 
 		$screen = get_current_screen();
 		if(false === stripos($screen->base, 'leyka') && false === stripos($screen->id, 'leyka')) {

@@ -619,7 +619,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             </div>
 
             <div class="inline-edit-submits">
-                <button type="button" name="bulk_edit" id="bulk_edit" class="button button-primary alignright">
+                <button type="button" name="bulk_edit" id="bulk_edit" class="button button-primary-small">
                     <?php _e('Update');?>
                 </button>
                 <button type="button" class="button cancel"><?php _e('Cancel');?></button>

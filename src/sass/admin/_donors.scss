@@ -148,7 +148,7 @@
     	border-radius: 0;
 		box-sizing: border-box !important;
 		border: none !important;
-	    box-shadow: inset 0px 0px 3px rgba(0, 0, 0, 0.4) !important;
+	    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.4) !important;
 	    width: 176px !important;
 	    height: 32px !important;
 	    margin-right: $leyka-base !important;
@@ -166,7 +166,7 @@
     		display: block;
     		@include leyka-donors-text();
     		overflow: unset;
-    		padding-left: 0px;
+    		padding-left: 0;
     	}
 
     }
@@ -195,7 +195,7 @@
 		&.ui-state-default {
 		    background: $color-white;
 		    padding: 3px 3px;
-		    padding-bottom: 0px;
+		    padding-bottom: 0;
 		    overflow: hidden;
 		    cursor: text;
 
@@ -266,6 +266,10 @@
     //    display: inline-block;
     //}
 
+    .inline-edit-submits button {
+        //@include leyka-admin-btn();
+    }
+
 }
 
 // jquery ui custom styles
@@ -299,7 +303,7 @@
 			li.ui-menu-item {
 				@include leyka-donors-text();
 
-				max-width: 320px;
+				max-width: 320;
 				max-height: 56px;
 				padding-bottom: 8px;
 				overflow: hidden;
@@ -435,7 +439,7 @@
 
 	.sorting-indicator {
 		&:before {
-			top: 0px;
+			top: 0;
 		}
 	}
 
@@ -443,7 +447,7 @@
 		padding: 12px 8px 12px 8px;
 
 		a {
-			padding: 0px;
+			padding: 0;
 		}
 	}
 
@@ -582,8 +586,8 @@
 					@include leyka-donors-text-h2;
 					padding-left: 0;
 					padding-right: 0;
-					padding-top: 0px;
-					padding-bottom: 0px;
+					padding-top: 0;
+					padding-bottom: 0;
 					width: auto;
 				}
 
@@ -613,12 +617,12 @@
 
 					.description-text.leyka-editable-str-result {
 						flex-basis: calc(100% - 40px);
-						margin-right: 0px;
+						margin-right: 0;
 						margin-top: 4px;
 					}
 
 					textarea.leyka-editable-str-field {
-						margin-right: 0px;
+						margin-right: 0;
 						flex-basis: calc(100% - 40px);
 						margin-top: 1px;
 					}
@@ -628,8 +632,8 @@
 						//display: none;
 
 						//.loader-wrap {
-						//	padding-top: 0px;
-						//	margin-right: 0px;
+						//	padding-top: 0;
+						//	margin-right: 0;
 						//}
 
 						.ok-icon {
@@ -657,7 +661,7 @@
 							background: #FFFFFF;
 							border: 1px solid #0085BA;
 							box-sizing: border-box;
-							box-shadow: inset 0px 0px 3px rgba(0, 0, 0, 0.4);		
+							box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.4);
 							width: 100%;
 							height: 3 * $leyka-base;
 							display: block;
@@ -686,7 +690,7 @@
 
 			dl {
 				margin-top: 0.5 * $leyka-base;
-				margin-bottom: 0px;
+				margin-bottom: 0;
 
 				display: flex;
 				flex-flow: row wrap;				
@@ -706,7 +710,7 @@
 					margin-bottom: 12px;
 
 					&:last {
-						margin-bottom: 0px;
+						margin-bottom: 0;
 					}
 				}
 			}
@@ -742,13 +746,13 @@
 				background: #FFFFFF;
 				border: 1px solid #0085BA;
 				box-sizing: border-box;
-				box-shadow: inset 0px 0px 3px rgba(0, 0, 0, 0.4);			
+				box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.4);
 				margin-right: 0.5 * $leyka-base;
 			}
 
 			input[type="submit"] {
 				@include leyka-admin-btn(secondary);
-				margin-left: 0px;
+				margin-left: 0;
 			}
 
 			.loading-indicator-wrap {
@@ -769,7 +773,7 @@
 // donor table
 table.donor-info-table {
 	width: 100%;
-    border-spacing: 0px;
+    border-spacing: 0;
     margin-top: 20px;
 
 	thead {
@@ -795,10 +799,10 @@ table.donor-info-table {
 		}
 
 		td {
-			margin: 0px;
+			margin: 0;
 			border: none;
 			border-top: 1px solid $leyka-donors-stroke;
-			padding: 12px 0px 12px 0px;
+			padding: 12px 0 12px 0;
 
 			&:first-of-type {
 				padding-left: 0.5 * $leyka-base;
@@ -845,13 +849,13 @@ table.donor-info-table {
 			margin-top: 0;
 
 			& > p {
-				margin-top: 0px;
+				margin-top: 0;
 			}
 		}
 
 		.tagsdiv {
 			.ajaxtag {
-				margin-top: 0px;
+				margin-top: 0;
 			}
 
 			.tagchecklist {
@@ -862,14 +866,14 @@ table.donor-info-table {
 				background: #FFFFFF;
 				border: 1px solid #0085BA;
 				box-sizing: border-box;
-				box-shadow: inset 0px 0px 3px rgba(0, 0, 0, 0.4);			
+				box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.4);
 				margin-right: 0.5 * $leyka-base;
 				height: 24px;
 			}
 
 			input[type="button"] {
 				@include leyka-admin-btn(secondary);
-				margin-left: 0px;
+				margin-left: 0;
 			}
 
 			.howto {
@@ -894,7 +898,7 @@ table.donor-info-table {
 
 	.donations-info {
 		width: 300px;
-		padding: 6px 8px 0px 8px;
+		padding: 6px 8px 0 8px;
 		margin-bottom: $leyka-base;
 		background-color: $leyka-donor-color-donation-info-bg;
 
@@ -1001,7 +1005,7 @@ table.donor-info-table {
 
 		tbody {
 			td {
-				padding-top: 0px;
+				padding-top: 0;
 			}
 
 			tr:last-of-type {
@@ -1050,7 +1054,7 @@ table.donor-info-table {
 	    box-sizing: border-box;
 
 		display: inline-block;
-	    vertical-align: baseline;
+	    //vertical-align: baseline;
 	    min-width: 28px;
 	    min-height: 28px;
 	    margin: 0;
