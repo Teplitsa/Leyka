@@ -693,7 +693,7 @@
 }
 
 @mixin leyka-subscription-list-item {
-    &.subscription-canceling {
+    &.subscription-canceling,&.subscription-canceled {
         opacity: 0.5;
     }
 

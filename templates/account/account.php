@@ -71,7 +71,7 @@ try {
                                 <div class="items">
 
                                     <?php foreach($recurring_subscriptions as $init_donation) {?>
-									<div class="item <?php echo $init_donation->recurring_on ? 'active' : 'inactive';?> <?php echo $init_donation->cancel_recurring_requested ? 'subscription-canceling' : '';?>">
+									<div class="item <?php echo $init_donation->recurring_on ? 'active' : 'inactive subscription-canceled';?> <?php echo $init_donation->cancel_recurring_requested ? 'subscription-canceling' : '';?>">
                                         <div class="subscription-details">
 
                                             <div class="campaign-title"><?php echo $init_donation->campaign_title;?></div>
