@@ -577,14 +577,15 @@ function leyka_cancel_recurring_subscription(){
     $campaign = new Leyka_Campaign($campaign_id);
     $init_recurring_donation = new Leyka_Donation($donation_id);
 
-    if( !empty($_POST['leyka_cancel_subscription_reason']) ) {
+    $cancel_reasons = is_array($_POST['leyka_cancel_subscription_reason']) ?
+        $_POST['leyka_cancel_subscription_reason'] : array($_POST['leyka_cancel_subscription_reason']);
 
-        $reasons = is_array($_POST['leyka_cancel_subscription_reason']) ? $_POST['leyka_cancel_subscription_reason'] : array($_POST['leyka_cancel_subscription_reason']);
+    if($cancel_reasons) {
 
         $leyka_possible_reasons = leyka_get_cancel_subscription_reasons();
         $reason_text_lines = array();
 
-        foreach($reasons as $reason) {
+        foreach($cancel_reasons as $reason) {
 
             if($reason === 'other') {
                 $line = sprintf(__('Other reason: %s', 'leyka'), isset($_POST['leyka_donor_custom_reason']) ? $_POST['leyka_donor_custom_reason'] : '');
@@ -677,8 +678,12 @@ function leyka_cancel_recurring_subscription(){
 
     }
 
+    if(in_array('uncomfortable_pm', $cancel_reasons) || in_array('too_much', $cancel_reasons)) {
+        $res['redirect_to'] = $campaign->url;
+    }
+
     die(json_encode($res));
-    
+
 }
 add_action('wp_ajax_leyka_cancel_recurring', 'leyka_cancel_recurring_subscription'); // leyka_unsubscribe_persistent_campaign
 add_action('wp_ajax_nopriv_leyka_cancel_recurring', 'leyka_cancel_recurring_subscription');

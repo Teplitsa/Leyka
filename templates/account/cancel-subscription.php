@@ -180,10 +180,10 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php');?>
                         
                         </form>
 
-                        <form class="leyka-screen-form leyka-unsubscribe-request-accepted-form">
+                        <form class="leyka-screen-form leyka-back-to-account">
 
-                            <h2><?php _e('Your request to unsubscribe accepted', 'leyka');?></h2>
-                            <p><?php _e('The subscription will be disabled within 3 days', 'leyka');?></p>
+                            <div class="form-message"></div>
+
                             <div class="leyka-star-submit">
                             	<a href="<?php echo site_url('/donor-account/');?>" class="leyka-star-single-link">
                                     <?php _e('Back to the Account' , 'leyka');?>

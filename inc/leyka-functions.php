@@ -2123,11 +2123,11 @@ function leyka_get_website_tech_support_email() {
 
 function leyka_get_cancel_subscription_reasons() {
     return array(
-        'uncomfortable_pm' => esc_html__('Unconfortable payment method', 'leyka'),
-        'too_much' => esc_html__('Too much donation', 'leyka'),
-        'not_match' => esc_html__('Does not meet my interests', 'leyka'),
-        'better_use' => esc_html__('I have found better use of money', 'leyka'),
-        'other' => esc_html__('Other reason', 'leyka'),
+        'uncomfortable_pm' => __('Unconfortable payment method', 'leyka'),
+        'too_much' => __('Too much donation', 'leyka'),
+        'not_match' => __('Does not meet my interests', 'leyka'),
+        'better_use' => __('I have found better use of money', 'leyka'),
+        'other' => __('Other reason', 'leyka'),
     );
 }
 
