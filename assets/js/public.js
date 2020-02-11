@@ -660,8 +660,6 @@ jQuery(function($){
 	
 	        }
 
-	        console.log($message, response.message)
-	
 	        $message.html(response.message).show();
 	
 	    }).error(function(){
@@ -2056,8 +2054,9 @@ jQuery(document).ready(function($){
     	if($activePackage) {
     		href += $activePackage.data('amount_needed');
     	}
-    	console.log(href);
+
     	$btn.attr('href', href);
+
     }
 
     $('.leyka-ext-sp-subscribe-action').on('click', function(e){
@@ -2271,7 +2270,6 @@ jQuery(window).load(function() {
 
         // fix max width must work in swiper and full width mode, so use $swiper insted $list
         var maxWidth = $swiper.closest('.leyka-payment-form').width();
-        console.log("maxWidth: " + maxWidth);
 
         if($swiper.find('.full-list').length) {
             maxWidth -= 60;
@@ -2429,9 +2427,6 @@ jQuery(window).load(function() {
     function swipeList($swiper, $activeItem) {
         var $list = $swiper.find('.swiper-list');
         $list.stop( true, true )
-        
-        console.log("list width: " + $list.width() );
-        console.log("swiper width: " + $swiper.width() );
         
         var dif = $list.width() - $swiper.width();
         if(dif <= 0) {

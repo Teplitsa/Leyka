@@ -414,14 +414,12 @@ jQuery(document).ready(function($){
     var saveDonorTagsTimeoutId = null;
 
     $("body").on('DOMSubtreeModified', ".tagchecklist", function() {
-        console.log('tags list changed');
 
         if(saveDonorTagsTimeoutId) {
             clearTimeout(saveDonorTagsTimeoutId);
         }
 
         saveDonorTagsTimeoutId = setTimeout(function() {
-            console.log('save tags list');
 
             let ajax_params = {
                 action: 'leyka_save_donor_tags',

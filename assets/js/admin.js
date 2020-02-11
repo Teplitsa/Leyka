@@ -304,7 +304,6 @@ jQuery(document).ready(function($){
         $field_wrapper.find('.reset-to-default').hide();
         $loading.show();
 
-        console.log(ajax_params);
         $.post(leyka.ajaxurl, ajax_params, null, 'json')
             .done(function(json){
                 if(typeof json.status !== 'undefined' && json.status === 'error') {
@@ -1235,14 +1234,12 @@ jQuery(document).ready(function($){
     var saveDonorTagsTimeoutId = null;
 
     $("body").on('DOMSubtreeModified', ".tagchecklist", function() {
-        console.log('tags list changed');
 
         if(saveDonorTagsTimeoutId) {
             clearTimeout(saveDonorTagsTimeoutId);
         }
 
         saveDonorTagsTimeoutId = setTimeout(function() {
-            console.log('save tags list');
 
             let ajax_params = {
                 action: 'leyka_save_donor_tags',
@@ -1665,8 +1662,6 @@ jQuery(document).ready(function($){
     $mainColorInput.on('change.leyka', function(){
         leykaSetupGeneralColors($(this).val());
     });
-
-    console.log($backgroundColorInput);
 
     $backgroundColorInput.closest('.field-component').find('.leyka-colorpicker-value').on('change.leyka', function(){
         if(!LEYKA_EXT_AUTO_CALC_COLORS) {
@@ -4145,11 +4140,9 @@ function initRichHTMLTagsReplace($, $controlContainer) {
     
     function initEditDocs($iframe) {
         if(isInitEditDocsDone) {
-            console.log('initEditDocs already done');
             return;
         }
         isInitEditDocsDone = true;
-        console.log('initEditDocs...');
         
         var $frameDocument = $iframe.contents();
         
@@ -4299,8 +4292,6 @@ jQuery(document).ready(function($){
 
         $.post(leyka.ajaxurl, leykaYandexPaymentData, null, 'json')
             .done(function(json) {
-                
-                console.log(json);
 
                 if(typeof json.status === 'undefined') {
                     alert('Ошибка!');

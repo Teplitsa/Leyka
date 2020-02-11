@@ -168,7 +168,6 @@
 
         // fix max width must work in swiper and full width mode, so use $swiper insted $list
         var maxWidth = $swiper.closest('.leyka-payment-form').width();
-        console.log("maxWidth: " + maxWidth);
 
         if($swiper.find('.full-list').length) {
             maxWidth -= 60;
@@ -326,9 +325,6 @@
     function swipeList($swiper, $activeItem) {
         var $list = $swiper.find('.swiper-list');
         $list.stop( true, true )
-        
-        console.log("list width: " + $list.width() );
-        console.log("swiper width: " + $swiper.width() );
         
         var dif = $list.width() - $swiper.width();
         if(dif <= 0) {

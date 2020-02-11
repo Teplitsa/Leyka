@@ -186,7 +186,6 @@ jQuery(document).ready(function($){
         $field_wrapper.find('.reset-to-default').hide();
         $loading.show();
 
-        console.log(ajax_params);
         $.post(leyka.ajaxurl, ajax_params, null, 'json')
             .done(function(json){
                 if(typeof json.status !== 'undefined' && json.status === 'error') {

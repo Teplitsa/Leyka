@@ -47,8 +47,6 @@ jQuery(document).ready(function($){
 
         $.post(leyka.ajaxurl, leykaYandexPaymentData, null, 'json')
             .done(function(json) {
-                
-                console.log(json);
 
                 if(typeof json.status === 'undefined') {
                     alert('Ошибка!');

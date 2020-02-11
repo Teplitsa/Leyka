@@ -53,8 +53,9 @@ jQuery(document).ready(function($){
     	if($activePackage) {
     		href += $activePackage.data('amount_needed');
     	}
-    	console.log(href);
+
     	$btn.attr('href', href);
+
     }
 
     $('.leyka-ext-sp-subscribe-action').on('click', function(e){

@@ -366,11 +366,9 @@ function initRichHTMLTagsReplace($, $controlContainer) {
     
     function initEditDocs($iframe) {
         if(isInitEditDocsDone) {
-            console.log('initEditDocs already done');
             return;
         }
         isInitEditDocsDone = true;
-        console.log('initEditDocs...');
         
         var $frameDocument = $iframe.contents();
         

@@ -449,8 +449,6 @@ jQuery(function($){
 	
 	        }
 
-	        console.log($message, response.message)
-	
 	        $message.html(response.message).show();
 	
 	    }).error(function(){
