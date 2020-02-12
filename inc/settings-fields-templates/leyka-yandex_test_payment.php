@@ -32,15 +32,15 @@ $is_payment_completed = $is_came_back_from_yandex && $test_payment && $test_paym
 
 <?php if( !$is_came_back_from_yandex ) {?>
 <div class="payment-tryout-comment live-payment">
-    <span class="attention-needed"><?php esc_html_e('Warning!', 'leyka');?></span> <?php esc_html_e('You will have to enter the real and working bank card, and the real money will be taken from it.', 'leyka');?>
+    <span class="attention-needed"><?php _e('Warning!', 'leyka');?></span> <?php _e('You will have to enter the real and working bank card, and the real money will be taken from it.', 'leyka');?>
 </div>
 <?php } else if($is_payment_completed) {?>
     <div class="payment-result">
-        <div class="result ok"><?php esc_html_e('Congratulations! Your donation is successful', 'leyka');?></div>
+        <div class="result ok"><?php _e('Congratulations! Your donation is successful', 'leyka');?></div>
     </div>
 <?php } else {?>
     <div class="payment-result">
-        <div class="result fail"><?php esc_html_e('An error occured', 'leyka');?></div>
+        <div class="result fail"><?php _e('An error occured', 'leyka');?></div>
     </div>
 <?php }?>
 

@@ -1285,7 +1285,7 @@ jQuery(document).ready(function($){
 	function leyka_fill_datepicker_input_period(inst, extension_range) {
 
 		let input_text = extension_range.startDateText;
-		if(extension_range.endDateText && extension_range.endDateText != extension_range.startDateText) {
+		if(extension_range.endDateText && extension_range.endDateText !== extension_range.startDateText) {
 			input_text += ','+extension_range.endDateText;
 		}
 		$(inst.input).val(input_text);
@@ -1295,7 +1295,7 @@ jQuery(document).ready(function($){
 	function leyka_init_filter_datepicker($input, options) {
 
 		$input.datepicker({
-			range:'period',
+			range: 'period',
 			onSelect:function(dateText, inst, extensionRange){
 				leyka_fill_datepicker_input_period(inst, extensionRange);
 			},
@@ -1522,40 +1522,42 @@ jQuery(document).ready(function($){
 
         $inline_edit_row.hide();
 
-    }).on('click.leyka', '#bulk_edit', function(e){
+    }).on('click.leyka', '#bulk-edit', function(e){
 
         e.preventDefault();
 
-        let params = $inline_edit_row.find(':input').serializeArray();
+        let $submit_button = $(this).prop('disabled', 'disabled'),
+            params = $inline_edit_row.find(':input').serializeArray(),
+            $message = $inline_edit_fields.find('.result').html('').hide(); // .error-message
+
         params.push(
             {name: 'action', value: 'leyka_bulk_edit_donors'},
             {name: 'nonce', value: $inline_edit_fields.data('bulk-edit-nonce'),}
         );
+
         $donors_table_body.find('input[name="bulk[]"]:checked').each(function(){
             params.push({name: 'donors[]', value: $(this).val()});
         });
+
+        // console.log(params)
+        // return;
 
         $.post(leyka.ajaxurl, params, null, 'json')
             .done(function(json) {
 
                 if(json.status === 'ok') {
-
-                    // $btn.closest('.content').find('.field-success').show(); // Show success message
-                    setTimeout(function(){
-                        window.location.reload();
-                    }, 1000);
-
+                    setTimeout(function(){ window.location.reload(); }, 1000);
                 } else if(json.status === 'error' && json.message) { // Show error message returned
-                    // $btn.closest('.content').find('.field-errors').addClass('has-errors').find('span').html(json.message);
+                    $message.html(json.message).show();
                 } else { // Show the generic error message
-                    // $btn.closest('.content').find('.field-errors').addClass('has-errors').find('span').html(leyka.error_message);
+                    $message.html($message.data('default-error-text')).show();
                 }
 
             }).fail(function(){ // Show the generic error message
-            // $btn.closest('.content').find('.field-errors').addClass('has-errors').find('span').html(leyka.error_message);
+            $message.html($message.data('default-error-text')).show();
         }).always(function(){
             // $loading.remove();
-            // $btn.prop('disabled', false);
+            $submit_button.prop('disabled', false);
         });
 
     })

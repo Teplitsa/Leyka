@@ -33,8 +33,8 @@ if( !function_exists('leyka_admin_get_slug_edit_field') ) {
                 <span class="inline-edit-slug-form" data-slug-original="<?php echo $campaign_permalink_parts[1];?>" data-campaign-id="<?php echo $campaign->id;?>" data-nonce="<?php echo wp_create_nonce('leyka-edit-campaign-slug');?>" style="display: none;">
                 <input type="text" class="leyka-slug-field inline-input" value="<?php echo $campaign_permalink_parts[1];?>">
                 <span class="slug-submit-buttons">
-                    <button class="inline-submit"><?php esc_html_e('OK');?></button>
-                    <button class="inline-reset"><?php esc_html_e('Cancel');?></button>
+                    <button class="inline-submit"><?php _e('OK');?></button>
+                    <button class="inline-reset"><?php _e('Cancel');?></button>
                 </span>
             </span>
 

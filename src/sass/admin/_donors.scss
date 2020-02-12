@@ -191,10 +191,6 @@
 
     display: flex;
 
-    //select.bulk-edit-action {
-    //    display: inline-block;
-    //}
-
     .inline-edit-field {
 
         margin-right: 8px;
@@ -206,9 +202,16 @@
     }
 
     .inline-edit-submits {
-        input#bulk-edit {
+
+        button {
             margin-right: 8px;
         }
+
+        .result {
+            display: flex;
+            align-items: center;
+        }
+
     }
 
 }

@@ -619,9 +619,11 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             </div>
 
             <div class="inline-edit-submits">
-                <input type="submit" name="bulk-edit" value="<?php _e('Update');?>" id="bulk-edit" class="button-primary-small">
+                <button type="submit" name="bulk-edit" id="bulk-edit" class="button-primary-small"><?php _e('Update');?></button>
                 <button class="cancel button-secondary-small"><?php _e('Cancel');?></button>
             </div>
+
+            <div class="result error-message" style="display:none;" data-default-error-text="<?php _e('Error while editing donors', 'leyka');?>"></div>
 
         </div>
 
