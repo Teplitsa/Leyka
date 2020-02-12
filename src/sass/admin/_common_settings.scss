@@ -179,7 +179,13 @@
 }
 
 .ui-autocomplete-multiselect {
+
     @include leyka-field-multiselect();
+
+    &~ select.autocomplete-select { // Hide select fields
+        display: none;
+    }
+
 }
 
 .fields .field {

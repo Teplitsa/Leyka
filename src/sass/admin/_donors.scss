@@ -126,14 +126,10 @@
 }
 
 // filter controls
-.donors-list-filters, #leyka-donors-inline-edit-fields { /** @todo Make the autocomplete fields usable in any place! */
+.donors-list-filters {
 
     //input:not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"])  {
     //}
-
-    select.autocomplete-select {
-        display: none;
-    }
 
     input[type="text"], input[type="date"]  {
         @include leyka-donors-filter-selector();
@@ -200,11 +196,19 @@
     //}
 
     .inline-edit-field {
-        margin-right: 16px;
+
+        margin-right: 8px;
+
+        & select {
+            height: 33px;
+        }
+
     }
 
     .inline-edit-submits {
-        //@include leyka-admin-btn();
+        input#bulk-edit {
+            margin-right: 8px;
+        }
     }
 
 }

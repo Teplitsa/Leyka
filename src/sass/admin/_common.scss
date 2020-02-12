@@ -251,7 +251,7 @@
         @include leyka-admin-btn();
 
         font-size: 13px;
-        height: 30px;
+        height: 32px;
 
     }
 
@@ -276,7 +276,8 @@
         @include leyka-admin-btn(secondary);
 
         font-size: 13px;
-        height: 30px;
+        text-shadow: none;
+        height: 32px;
 
     }
 

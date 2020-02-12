@@ -654,7 +654,7 @@
         background-color: $color-white;
         border: 1px solid $color-border-secondary-button;
         color: $color-secondary-button;
-        box-shadow: 0 1px 0 $color-border-secondary-button;
+        box-shadow: none; // 0 1px 0 $color-border-secondary-button;
 
         &:hover {
             border: 1px solid $color-border-secondary-button;
