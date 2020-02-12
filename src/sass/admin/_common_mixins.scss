@@ -253,6 +253,112 @@
 
 }
 
+@mixin leyka-field-multiselect() {
+
+    @include multiselect-input-typo();
+
+    display: inline-block;
+    width: 176px !important;
+    height: auto;
+    min-height: 32px;
+
+    margin: 0;
+
+    line-height: normal;
+    color: $leyka-admin-color-text;
+    box-sizing: border-box;
+    border: none;
+    background-color: $color-white;
+    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.4);
+
+    &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+        color: $leyka-admin-color-text;
+        opacity: 1; /* Firefox */
+    }
+
+    &:-ms-input-placeholder { /* Internet Explorer 10-11 */
+        color: $leyka-admin-color-text;
+    }
+
+    &::-ms-input-placeholder { /* Microsoft Edge */
+        color: $leyka-admin-color-text;
+    }
+
+    .placeholder {
+        margin-top: 6px;
+        margin-left: 5px;
+    }
+
+    &.ui-state-default {
+
+        background: $color-white;
+        padding: 3px 3px 0 3px;
+        overflow: hidden;
+        cursor: text;
+
+        input.ui-autocomplete-input {
+            display: none;
+        }
+
+    }
+
+    &.ui-state-active {
+
+        outline: none;
+
+        input.ui-autocomplete-input {
+            display: block !important;
+        }
+
+        .placeholder {
+            display: none;
+        }
+
+    }
+
+    .ui-autocomplete-multiselect-item {
+
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 1px 24px 1px 3px;
+        margin-right: 2px;
+        margin-bottom: 3px;
+        color: #333;
+        background-color: #f6f6f6;
+
+        overflow: hidden;
+        max-width: 136px;
+        width: auto;
+        text-overflow: ellipsis;
+        max-height: 36px;
+        line-height: 18px;
+        position: relative;
+
+        .ui-icon {
+            position: absolute;
+            right: 3px;
+            top: 2px;
+            cursor: pointer;
+        }
+
+    }
+
+    input.ui-autocomplete-input {
+        display: block;
+        border: none;
+        outline: none;
+        height: auto;
+        margin: 2px;
+        overflow: visible;
+        margin-bottom: 5px;
+        text-align: left;
+        box-shadow: none !important;
+        width: 100%;
+    }
+
+}
+
 @mixin leyka-field-file {
 
     label {
@@ -529,13 +635,13 @@
 
 @mixin leyka-admin-btn($mod: default) {
 
-	@include leyka-adb-btn-caption();
+	//@include leyka-adb-btn-caption();
 
-    background-color: $leyka-adb-color-btn-bg;
-    color: $leyka-adb-color-btn-text;
+    background-color: $leyka-admin-color-btn-bg;
+    color: $leyka-admin-color-btn-text;
     text-shadow: 0 0 3px rgba(0, 0, 0, 0.25);
-    border: 1px solid $leyka-adb-color-btn-stroke;
-    box-shadow: 0 1px 0 $leyka-adb-color-btn-stroke;
+    border: 1px solid $leyka-admin-color-btn-stroke;
+    box-shadow: 0 1px 0 $leyka-admin-color-btn-stroke;
     border-radius: 4px;
 	height: 26px;
 	width: auto;

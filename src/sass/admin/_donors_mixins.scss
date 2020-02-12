@@ -1,30 +1,29 @@
 /** == Mixins (_donors_mixins.scss) == **/
 
 @mixin leyka-donors-filter-selector() {
+
     @include leyka-donors-text();
+
     line-height: normal;
     color: $leyka-admin-color-text;
     box-sizing: border-box;
     border: none;
     background-color: $color-white;
-    box-shadow: inset 0px 0px 3px rgba(0, 0, 0, 0.4);
+    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.4);
     width: 176px;
     height: 32px;
-    margin-right: $leyka-base;
-    margin-bottom: $leyka-base;
-    padding-left: 8px;
 
     &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-      color: $leyka-admin-color-text;
-      opacity: 1; /* Firefox */
+        color: $leyka-admin-color-text;
+        opacity: 1; /* Firefox */
     }
 
     &:-ms-input-placeholder { /* Internet Explorer 10-11 */
-      color: $leyka-admin-color-text;
+        color: $leyka-admin-color-text;
     }
 
     &::-ms-input-placeholder { /* Microsoft Edge */
-      color: $leyka-admin-color-text;
+        color: $leyka-admin-color-text;
     }
 
 }

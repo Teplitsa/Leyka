@@ -117,7 +117,6 @@ $leyka-admin-color-btn-bg:        #0085BA;
 $leyka-admin-color-btn-stroke:    #006799;
 
 
-
 @function color($color-name) {
   @return var(--color-#{$color-name});
 }

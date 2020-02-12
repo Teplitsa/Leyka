@@ -711,6 +711,18 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         $current_screen = get_current_screen();
         $dependencies = array('jquery',);
 
+        if(isset($_GET['page']) && ($_GET['page'] === 'leyka' || $_GET['page'] === 'leyka_donors')) {
+
+            wp_enqueue_style(
+                'jqueryui',
+                'https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css',
+                false,
+                null
+            );
+            $dependencies[] = 'jquery-ui-selectmenu';
+
+        }
+
         if($leyka_admin_new) {
 
             wp_enqueue_style('leyka-settings', LEYKA_PLUGIN_BASE_URL.'assets/css/admin.css', array(), LEYKA_VERSION);
@@ -746,18 +758,6 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
             wp_enqueue_script('leyka-sticky', LEYKA_PLUGIN_BASE_URL.'js/jquery.sticky.js', $dependencies, LEYKA_VERSION, true);
             $dependencies[] = 'leyka-sticky';
-
-        }
-
-        if(isset($_GET['page']) && ($_GET['page'] === 'leyka' || $_GET['page'] === 'leyka_donors')) {
-
-            wp_enqueue_style(
-                'jqueryui',
-                'https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css',
-                false,
-                null
-            );
-            $dependencies[] = 'jquery-ui-selectmenu';
 
         }
 
