@@ -615,6 +615,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
                 <select name="bulk-edit-action">
                     <option value="add"><?php _e('Add tags', 'leyka');?></option>
                     <option value="remove"><?php _e('Remove tags', 'leyka');?></option>
+                    <option value="replace"><?php _e('Replace tags', 'leyka');?></option>
                 </select>
             </div>
 

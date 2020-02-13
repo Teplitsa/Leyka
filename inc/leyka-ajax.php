@@ -1042,7 +1042,9 @@ function leyka_bulk_edit_donors(){
         die(json_encode(array('status' => -1, 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
     }
 
-    $response = array('status' => 'ok',);
+    $_POST['bulk-edit-action'] = empty($_POST['bulk-edit-action'])
+        || !in_array($_POST['bulk-edit-action'], array('add', 'remove', 'replace')) ?
+        'add' : trim($_POST['bulk-edit-action']);
 
     if( !empty($_POST['donors']) && !empty($_POST['donors-bulk-tags']) ) {
         foreach((array)$_POST['donors'] as $donor_user_id) {
@@ -1051,9 +1053,13 @@ function leyka_bulk_edit_donors(){
                 $value = absint($value);
             });
 
-            $result = wp_set_object_terms($donor_user_id, $_POST['donors-bulk-tags'], Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME, 1);
+            if($_POST['bulk-edit-action'] === 'add' || $_POST['bulk-edit-action'] === 'replace') {
+                $result = wp_set_object_terms($donor_user_id, $_POST['donors-bulk-tags'], Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME, $_POST['bulk-edit-action'] === 'add');
+            } else if($_POST['bulk-edit-action'] === 'remove') {
+                $result = wp_remove_object_terms($donor_user_id, $_POST['donors-bulk-tags'], Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME);
+            }
 
-            if(is_wp_error($result)) {
+            if( !empty($result) && is_wp_error($result)) {
 
                 $response = array('status' => -1, 'error' => $result->get_error_message(),);
                 break;
@@ -1063,7 +1069,7 @@ function leyka_bulk_edit_donors(){
         }
     }
 
-    die(json_encode($response));
+    die(json_encode(array('status' => 'ok',)));
 
 }
 add_action('wp_ajax_leyka_bulk_edit_donors', 'leyka_bulk_edit_donors');
