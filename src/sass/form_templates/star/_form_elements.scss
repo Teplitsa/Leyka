@@ -2,16 +2,16 @@
 
 .leyka-tpl-star-form .section .section__fields,
 .leyka-screen-form .section .section__fields {
-    
+
     // periodicity
     &.periodicity {
         display: flex;
         font-family: $leyka-font-main;
-        
+
         a {
             @include star-control-frame();
             @include star-text-periodicity();
-            
+
             display: flex;
             box-shadow: none;
             background-color: $leyka-star-color-white;
@@ -30,7 +30,7 @@
             }
             
             &:first-of-type {
-                margin-left: 0px;
+                margin-left: 0;
             }
             
             &.active {
@@ -127,7 +127,7 @@
                     width: unset;
 
                     .swiper-item-inner {
-                        padding: 0px;
+                        padding: 0;
                         height: 44px;
                     }
                 }
@@ -142,7 +142,7 @@
                     span.textfield-label {
                         @include star-text-field-title();
                         display: block;
-                        margin-top: 0px;
+                        margin-top: 0;
                         color: $leyka-star-color-gray;
                         text-transform: none;
                         
@@ -220,7 +220,7 @@
                         span.textfield-label {
                             @include star-text-field-title();
                             color: $leyka-star-color-gray;
-                            margin-top: 0px;
+                            margin-top: 0;
                         }
                     }
                 }
@@ -233,7 +233,7 @@
                     width: 100%;
                     text-align: left;
                     height: 20px;
-                    padding: 0px;
+                    padding: 0;
                 }
             }
         }
@@ -246,7 +246,7 @@
                     display: block;
 
                     .swiper-item-inner {
-                        padding: 0px;
+                        padding: 0;
                     }
 
                    &.selected {
@@ -770,19 +770,19 @@
             display: none;
         }
     }
-    
+
     .section--person {
         text-align: left;
         br {
             display: none;
         }
     }
-    
+
     .thankyou-email-me-button {
         margin-top: -$leyka-star-base;
-        padding-top: 0px;
-        
-        input[type=submit].leyka-success-submit {
+        padding-top: 0;
+
+        input[type="submit"].leyka-success-submit {
             @include leyka-star-btn();
 
             @include upto(medium-screens) {
@@ -904,8 +904,8 @@ div[id*="leyka-pf-"].leyka-pf-star {
 
             @include for(medium-screens) {
                 text-align: left;
-                padding-left: 0px;
-                padding-right: 0px;
+                padding-left: 0;
+                padding-right: 0;
             }
 
             &:empty {
@@ -925,7 +925,7 @@ div[id*="leyka-pf-"].leyka-pf-star {
                 height: 1px;
                 position: absolute;
                 top: 50%;
-                left: 0px;
+                left: 0;
                 z-index: 1;
                 border-bottom: 1px solid $leyka-star-color-tooltip-bg;
             }
@@ -934,10 +934,14 @@ div[id*="leyka-pf-"].leyka-pf-star {
                 @include star-text-form-section-title;
                 color: $leyka-start-color-gray-notsolight;
                 background-color: $leyka-star-color-white;
-                padding: 0px $leyka-star-base 0px $leyka-star-base;
+                padding: 0 $leyka-star-base 0 $leyka-star-base;
                 z-index: 5;
             }
             
         }
     }
 }
+
+//.leyka-tmp-star-form .leyka-rbk-pre-submit-step button {
+//    @include leyka-star-btn();
+//}

@@ -611,44 +611,47 @@ jQuery(function($){
     });    
     
     function leykaCancelSubscription($form) {
-    	
-        let $valueForm = $form.siblings('form.leyka-cancel-subscription-form'),
-	        params = $valueForm.serializeArray(),
+
+        let $cancelling_form = $form.siblings('form.leyka-cancel-subscription-form'),
+	        params = $cancelling_form.serializeArray(),
 	        $message = $form.find('.form-message'),
 	        $ajax_indicator = $form.find('.form-ajax-indicator'),
 	        $submit = $form.find('.confirm-unsubscribe-submit');
-	
+
 	    params.push({name: 'action', value: 'leyka_cancel_recurring'});
-	
+
 	    $ajax_indicator.show();
 	    $message.hide();
 	    $submit.hide();
 	
 	    $.post(leyka_get_ajax_url(), params, null, 'json').done(function(response){
-	
+
 	        $ajax_indicator.hide();
 	        response.message = response.message.length ? response.message : leyka.default_error_msg;
-	        
+
 	        if(response.status === 'ok') {
 
-	        	$(':input', $valueForm)
+	        	$(':input', $cancelling_form)
                     .not(':button, :submit, :reset, :hidden')
                     .val('')
                     .removeAttr('checked')
                     .removeAttr('selected');
-	
-	        	let campaignPermalink = $forms.find('form.leyka-cancel-subscription-form input[name=leyka_campaign_permalink]').val();
-	        	
-	        	if($form.hasClass('leyka-confirm-go-resubscribe-form') && campaignPermalink) {
-	        		window.location.href = campaignPermalink;
-	        	} else {
 
-		        	$forms.find('form.leyka-screen-form').css('display', 'none');
-		        	$forms.find('form.leyka-unsubscribe-request-accepted-form').css('display', 'block');
+                $forms.find('form.leyka-screen-form').css('display', 'none');
 
-	        	}
-	        	
+                let $back_to_account_block = $forms.find('.leyka-back-to-account');
+
+                $back_to_account_block.css('display', 'block');
+
+                $message = $back_to_account_block.find('.form-message');
+
 	            $message.removeClass('error-message').addClass('success-message');
+
+	            if(typeof response.redirect_to !== 'undefined' && response.redirect_to.length) {
+                    setTimeout(function(){
+                        window.location.href = response.redirect_to;
+                    }, 5000);
+                }
 	
 	        } else if(response.message) {
 	
@@ -656,7 +659,7 @@ jQuery(function($){
 	            $submit.show();
 	
 	        }
-	
+
 	        $message.html(response.message).show();
 	
 	    }).error(function(){
@@ -2051,8 +2054,9 @@ jQuery(document).ready(function($){
     	if($activePackage) {
     		href += $activePackage.data('amount_needed');
     	}
-    	console.log(href);
+
     	$btn.attr('href', href);
+
     }
 
     $('.leyka-ext-sp-subscribe-action').on('click', function(e){
@@ -2266,7 +2270,6 @@ jQuery(window).load(function() {
 
         // fix max width must work in swiper and full width mode, so use $swiper insted $list
         var maxWidth = $swiper.closest('.leyka-payment-form').width();
-        console.log("maxWidth: " + maxWidth);
 
         if($swiper.find('.full-list').length) {
             maxWidth -= 60;
@@ -2424,9 +2427,6 @@ jQuery(window).load(function() {
     function swipeList($swiper, $activeItem) {
         var $list = $swiper.find('.swiper-list');
         $list.stop( true, true )
-        
-        console.log("list width: " + $list.width() );
-        console.log("swiper width: " + $swiper.width() );
         
         var dif = $list.width() - $swiper.width();
         if(dif <= 0) {

@@ -29,10 +29,10 @@ $extensions_categories = Leyka_Extension::get_filter_categories_list();?>
             </div>
 
             <a class="filter-action filter-category-show-filter" href="#">
-                <?php esc_html_x('Filter', 'An imperative verb (like "filter [something]")', 'leyka');?>
+                <?php _x('Filter', 'An imperative verb (like "filter [something]")', 'leyka');?>
             </a>
             <a class="filter-action filter-category-reset-filter" href="#">
-                <?php esc_html_e('Clear the filter', 'leyka');?>
+                <?php _e('Clear the filter', 'leyka');?>
             </a>
 
         </div>

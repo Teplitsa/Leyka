@@ -103,8 +103,6 @@ jQuery(document).ready(function($){
         leykaSetupGeneralColors($(this).val());
     });
 
-    console.log($backgroundColorInput);
-
     $backgroundColorInput.closest('.field-component').find('.leyka-colorpicker-value').on('change.leyka', function(){
         if(!LEYKA_EXT_AUTO_CALC_COLORS) {
             $(this).closest('.field-component').find('.leyka-setting-field.colorpicker').data('changed', '1');

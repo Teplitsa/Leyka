@@ -111,7 +111,8 @@ function leyka_get_gateway_redirect_data(){
 
         } else if(leyka()->payment_form_has_errors()) {
 
-            $error = reset(leyka()->get_payment_form_errors());
+            $error = leyka()->get_payment_form_errors();
+            $error = reset($error);
 
             $payment_vars['errors'] = $error;
             $payment_vars['message'] = $error->get_error_message();
@@ -552,135 +553,137 @@ add_action('wp_ajax_nopriv_leyka_get_donations_history_page', 'leyka_get_donatio
 
 function leyka_cancel_recurring_subscription(){
 
-    $res = array('status' => 'ok', 'message' => __('Your request to unsubscribe accepted.', 'leyka'));
-
     if(empty($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'leyka_cancel_subscription')) {
-        $res = array(
+        die(json_encode(array(
             'status' => 'error',
             'message' => sprintf(__('Wrong request. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_options()->opt('tech_support_email'))
-        );
+        )));
     } else if(empty($_POST['leyka_campaign_id']) || empty($_POST['leyka_donation_id'])) {
-        $res = array(
+        die(json_encode(array(
             'status' => 'error',
             'message' => sprintf(__('Wrong request data. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_options()->opt('tech_support_email'))
-        );
-    } else {
-
-        $campaign_id = absint($_POST['leyka_campaign_id']);
-        $donation_id = absint($_POST['leyka_donation_id']);
-
-        try {
-            $donor = new Leyka_Donor(get_current_user_id());
-        } catch(Exception $e) {
-        	$donor = false;
-        }
-
-        $campaign = new Leyka_Campaign($campaign_id);
-        $init_recurring_donation = new Leyka_Donation($donation_id);
-
-        if( !empty($_POST['leyka_cancel_subscription_reason']) ) {
-
-            $reasons = is_array($_POST['leyka_cancel_subscription_reason']) ? $_POST['leyka_cancel_subscription_reason'] : array($_POST['leyka_cancel_subscription_reason']);
-
-            $leyka_possible_reasons = leyka_get_cancel_subscription_reasons();
-            $reason_text_lines = array();
-
-            foreach($reasons as $reason) {
-
-                if($reason === 'other') {
-                    $line = sprintf(esc_html__('Other reason: %s', 'leyka'), isset($_POST['leyka_donor_custom_reason']) ? $_POST['leyka_donor_custom_reason'] : '');
-                } else {
-                    $line = $leyka_possible_reasons[$reason];
-                }
-
-                $reason_text_lines[] = $line;
-
-            }
-            
-            $reason_text = implode("\n", $reason_text_lines);
-
-        } else {
-            $reason_text = '';
-        }
-
-//        error_log($reason_text);
-
-        if( !$donor || !$donor->has_account_access ) {
-            $res = array('status' => 'error', 'message' => __('This operation is allowed only for registered donors.', 'leyka'),);
-        } else if( !$campaign ) {
-            $res = array(
-                'status' => 'error',
-                'message' => sprintf(__('The campaign #%s is not found. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), $campaign_id, leyka()->opt('tech_support_email'))
-            );
-        } else if( !$init_recurring_donation ) {
-            $res = array(
-                'status' => 'error',
-                'message' => sprintf(__('Donation #%s is not found. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), $donation_id, leyka()->opt('tech_support_email'))
-            );
-        } else {
-
-            $donation_gateway = leyka_get_gateway_by_id($init_recurring_donation->gateway_id);
-            if($donation_gateway->has_recurring_auto_cancelling_support) { // Recurring auto-cancelling supported - do it
-
-                $cancelling_result = $donation_gateway->cancel_recurring_subscription($init_recurring_donation);
-
-                if(is_wp_error($cancelling_result)) { /** @var $cancelling_result WP_Error */
-                    $res = array('status' => 'error', 'message' => $cancelling_result->get_error_message());
-                } else if( !$cancelling_result ) {
-                    $res = array(
-                        'status' => 'error',
-                        'message' => sprintf(__('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email())
-                    );
-                }
-
-                $res['message'] = __('Your recurring subscription cancelled.', 'leyka');
-
-            } else { // We can only "request to cancel a recurring subscription", so the website admin could cancel it manually
-
-                $init_recurring_donation->cancel_recurring_requested = true; // Save unsubscribe request flag
-
-                $email_text = sprintf(
-                    __("Hello!\n\nDonor %s with email %s and ID %s would like to unsubscribe from campaign <a href='%s'>%s</a> with ID %s on the <a href='%s'>%s</a> website.\n\nLink to subscription: %s\n\nThe reasons are:\n%s", 'leyka'),
-                    $donor->name,
-                    $donor->email,
-                    $donor->id,
-                    $campaign->permalink,
-                    $campaign->title,
-                    $campaign->ID,
-                    home_url(),
-                    get_bloginfo('name'),
-                    admin_url('/post.php?post='.$init_recurring_donation->id.'&action=edit'),
-                    $reason_text
-                );
-                add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
-
-                $email_sent = wp_mail(
-                    leyka_get_dm_list_or_alternatives(),
-                    apply_filters('leyka_email_manager_cancel_subscription_title', __('New cancel campaign subscription request', 'leyka'), $donor, $campaign),
-                    wpautop(apply_filters('leyka_email_manager_cancel_subscription_text', $email_text, $donor, $campaign)),
-                    array(
-                        'From: '.apply_filters('leyka_email_from_name', leyka_options()->opt_safe('email_from_name'), $donor)
-                        .' <'.leyka_options()->opt_safe('email_from').'>',
-                    )
-                );
-
-                if( !$email_sent ) {
-                    $res = array(
-                        'status' => 'error',
-                        'message' => sprintf(__('Sorry, we could not send unsubscription request. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka()->opt('tech_support_email'))
-                    );
-                }
-
-                remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
-
-            }
-
-        }
-        
+        )));
     }
-    
+
+    $campaign_id = absint($_POST['leyka_campaign_id']);
+    $donation_id = absint($_POST['leyka_donation_id']);
+
+    try {
+        $donor = new Leyka_Donor(get_current_user_id());
+    } catch(Exception $e) {
+        $donor = false;
+    }
+
+    $campaign = new Leyka_Campaign($campaign_id);
+    $init_recurring_donation = new Leyka_Donation($donation_id);
+
+    $cancel_reasons = is_array($_POST['leyka_cancel_subscription_reason']) ?
+        $_POST['leyka_cancel_subscription_reason'] : array($_POST['leyka_cancel_subscription_reason']);
+
+    if($cancel_reasons) {
+
+        $leyka_possible_reasons = leyka_get_cancel_subscription_reasons();
+        $reason_text_lines = array();
+
+        foreach($cancel_reasons as $reason) {
+
+            if($reason === 'other') {
+                $line = sprintf(__('Other reason: %s', 'leyka'), isset($_POST['leyka_donor_custom_reason']) ? $_POST['leyka_donor_custom_reason'] : '');
+            } else {
+                $line = $leyka_possible_reasons[$reason];
+            }
+
+            $reason_text_lines[] = $line;
+
+        }
+
+        $reason_text = implode("\n", $reason_text_lines);
+
+    } else {
+        $reason_text = '';
+    }
+
+    if( !$donor || !$donor->has_account_access ) {
+        die(json_encode(array(
+            'status' => 'error',
+            'message' => __('This operation is allowed only for registered donors.', 'leyka'),
+        )));
+    } else if( !$campaign ) {
+        die(json_encode(array(
+            'status' => 'error',
+            'message' => sprintf(__('The campaign #%s is not found. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), $campaign_id, leyka()->opt('tech_support_email'))
+        )));
+    } else if( !$init_recurring_donation ) {
+        die(json_encode(array(
+            'status' => 'error',
+            'message' => sprintf(__('Donation #%s is not found. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), $donation_id, leyka()->opt('tech_support_email'))
+        )));
+    }
+
+    $res = array('status' => 'ok', 'message' => __('Your request to unsubscribe accepted.', 'leyka'));
+
+    $donation_gateway = leyka_get_gateway_by_id($init_recurring_donation->gateway_id);
+    if($donation_gateway->has_recurring_auto_cancelling_support) { // Recurring auto-cancelling supported - do it
+
+        $cancelling_result = $donation_gateway->cancel_recurring_subscription($init_recurring_donation);
+
+        if(is_wp_error($cancelling_result)) { /** @var $cancelling_result WP_Error */
+            $res = array('status' => 'error', 'message' => $cancelling_result->get_error_message());
+        } else if( !$cancelling_result ) {
+            $res = array(
+                'status' => 'error',
+                'message' => sprintf(__('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email())
+            );
+        }
+
+        $res['message'] = __('Your recurring subscription cancelled.', 'leyka');
+
+    } else { // We can only "request to cancel a recurring subscription", so the website admin could cancel it manually
+
+        $init_recurring_donation->cancel_recurring_requested = true; // Save unsubscribe request flag
+
+        $email_text = sprintf(
+            __("Hello!\n\nDonor %s with email %s and ID %s would like to unsubscribe from campaign <a href='%s'>%s</a> with ID %s on the <a href='%s'>%s</a> website.\n\nLink to subscription: %s\n\nThe reasons are:\n%s", 'leyka'),
+            $donor->name,
+            $donor->email,
+            $donor->id,
+            $campaign->permalink,
+            $campaign->title,
+            $campaign->ID,
+            home_url(),
+            get_bloginfo('name'),
+            admin_url('/post.php?post='.$init_recurring_donation->id.'&action=edit'),
+            $reason_text
+        );
+        add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
+
+        $email_sent = wp_mail(
+            leyka_get_dm_list_or_alternatives(),
+            apply_filters('leyka_email_manager_cancel_subscription_title', __('New cancel campaign subscription request', 'leyka'), $donor, $campaign),
+            wpautop(apply_filters('leyka_email_manager_cancel_subscription_text', $email_text, $donor, $campaign)),
+            array(
+                'From: '.apply_filters('leyka_email_from_name', leyka_options()->opt_safe('email_from_name'), $donor)
+                .' <'.leyka_options()->opt_safe('email_from').'>',
+            )
+        );
+
+        if( !$email_sent ) {
+            $res = array(
+                'status' => 'error',
+                'message' => sprintf(__('Sorry, we could not send unsubscription request. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka()->opt('tech_support_email'))
+            );
+        }
+
+        remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
+
+    }
+
+    if(in_array('uncomfortable_pm', $cancel_reasons) || in_array('too_much', $cancel_reasons)) {
+        $res['redirect_to'] = $campaign->url;
+    }
+
     die(json_encode($res));
-    
+
 }
 add_action('wp_ajax_leyka_cancel_recurring', 'leyka_cancel_recurring_subscription'); // leyka_unsubscribe_persistent_campaign
 add_action('wp_ajax_nopriv_leyka_cancel_recurring', 'leyka_cancel_recurring_subscription');
