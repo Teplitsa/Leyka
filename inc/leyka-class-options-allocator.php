@@ -163,6 +163,18 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                             'non_init_recurring_donor_registration_emails_text',
                         )
                     ),),
+                    array('section' => array(
+                        'name' => 'email_recurring_canceled_donor',
+                        'title' => __('Recurring canceling emails options', 'leyka'),
+                        'description' => __('You may send a special email to your recurring donors when they cancel their recurring subscription. This email will be sent to a donor in 7 days after their recurring stopped.', 'leyka'),
+                        'is_default_collapsed' => false,
+                        'options' => array(
+                            'recurring_canceling_donor_notification_emails_title',
+                            'recurring_canceling_donor_notification_emails_text',
+                            'recurring_canceling_donor_notification_emails_defer_by',
+                            'send_recurring_canceling_donor_notification_email',
+                        )
+                    ),),
                 );
                 break;
 

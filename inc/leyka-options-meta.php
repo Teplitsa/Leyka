@@ -36,6 +36,9 @@ $email_placeholders =
         <code>#CAMPAIGN_NAME#</code><span class='description'>Кампания, на которую было сделано пожертвование</span>
     </span>
     <span class='item'>
+        <code>#CAMPAIGN_URL#</code><span class='description'>Адрес страницы кампании, на которую было сделано пожертвование</span>
+    </span>
+    <span class='item'>
         <code>#CAMPAIGN_TARGET#</code><span class='description'>Официальная цель пожертвования (см. настройки кампании, опция «заголовок для платёжной системы»)</span>
     </span>
     <span class='item'>
@@ -558,6 +561,13 @@ self::$_options_meta = array(
         'comment' => __('Check to send a thankful email to a donor on each non-initial recurring donation', 'leyka'),
         'short_format' => true,
     ),
+    'send_recurring_canceling_donor_notification_email' => array(
+        'type' => 'checkbox',
+        'default' => false,
+        'title' => __('Send the emails', 'leyka'),
+        'comment' => __('Check to send an email to a donor if he canceled a recurring subscription', 'leyka'),
+        'short_format' => true,
+    ),
     'send_donor_emails_on_campaign_target_reaching' => array(
         'type' => 'checkbox',
         'default' => true,
@@ -565,10 +575,36 @@ self::$_options_meta = array(
         'comment' => __('Check to send a special thankful email to each donor when campaign target reached', 'leyka'),
         'short_format' => true,
     ),
+    'recurring_canceling_donor_notification_emails_title' => array(
+        'type' => 'text',
+        'default' => __('You stopped your recurring donations! Waaat the fuuu?!', 'leyka'),
+        'title' => __('A title of a notification email', 'leyka'),
+        'description' => __('Enter the email title.', 'leyka'),
+        'required' => true,
+        'placeholder' => __('E.g., You stopped your recurring donations', 'leyka'),
+    ),
+    'recurring_canceling_donor_notification_emails_text' => array(
+        'type' => 'rich_html',
+        'default' => __('Hello, #DONOR_NAME#!<br><br>It certainly seems like you canceled your recurring subscription on the "#CAMPAIGN_NAME#" campaign.<br><br>We are totally, utterly and vastly dreaded by this fact.<br><br>Maybe, you would like to reconsider it? Pretty pleeease? Oh, you already agree? Cool! Then please subscribe to recurring donations on the <a href="#CAMPAIGN_URL#">campaign page</a>.<br><br>If you do not wish to make new recurring donations, just ignore this email.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
+        'title' => __('Notification email text', 'leyka'),
+        'description' => __('Enter the text of notification email. It may include the following special entries:', 'leyka').$email_placeholders,
+        'required' => true,
+        'field_classes' => array('type-rich_html'),
+    ),
+    'recurring_canceling_donor_notification_emails_defer_by' => array(
+        'type' => 'number',
+        'default' => 7,
+        'title' => __('Number of days to defer emails sending', 'leyka'),
+        'comment' => __('Set a time (in days) after which the notification email will be sent to donor.', 'leyka'),
+        'required' => false,
+        'min' => 0,
+        'step' => 1,
+        'placeholder' => __('E.g., 7', 'leyka'),
+    ),
     'non_init_recurring_donor_registration_emails_title' => array(
         'type' => 'text',
         'default' => __('Your personal account was created', 'leyka'),
-        'title' => __("A title of a notification email", 'leyka'),
+        'title' => __('A title of a notification email', 'leyka'),
         'description' => __('Enter the email title.', 'leyka'),
         'required' => true,
         'placeholder' => __('E.g., Your personal account was created', 'leyka'),
