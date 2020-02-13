@@ -258,9 +258,6 @@ jQuery(document).ready(function($){
             params.push({name: 'donors[]', value: $(this).val()});
         });
 
-        // console.log(params)
-        // return;
-
         $.post(leyka.ajaxurl, params, null, 'json')
             .done(function(json) {
 
