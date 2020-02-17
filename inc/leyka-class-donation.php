@@ -1027,7 +1027,7 @@ class Leyka_Donation_Management {
             <?php } else {?>
 
                 <span class="fake-input">
-                <?php $pm = leyka_get_pm_by_id($donation->payment_method);
+                <?php $pm = leyka_get_pm_by_id($donation->gateway_id.'-'.$donation->payment_method, true);
                 $gateway = leyka_get_gateway_by_id($donation->gateway_id);
 
                 echo ($pm ? $pm->label : __('Unknown payment method', 'leyka'))
@@ -1047,7 +1047,7 @@ class Leyka_Donation_Management {
         <div class="leyka-ddata-string">
             <label><?php _e('Payment type', 'leyka');?>:</label>
 			<div class="leyka-ddata-field">
-                <span class="fake-input"><?php echo leyka_get_payment_type_label($donation->payment_type); // "single", "rebill", "correction" ?></span>
+                <span class="fake-input"><?php echo leyka_get_payment_type_label($donation->payment_type);?></span>
             </div>
         </div>
 
@@ -2216,9 +2216,9 @@ class Leyka_Donation {
                 !empty($this->_donation_meta['rebilling_is_active']) : NULL;
                 return $tmp;
             case 'recurrents_cancel_date':
-            case 'recurring_cancel_date': $tmp = $this->payment_type === 'rebill' ?
-                !empty($this->_donation_meta['recurrents_cancel_date']) : NULL;
-                return $tmp;
+            case 'recurring_cancel_date':
+                return $this->payment_type === 'rebill' && !empty($this->_donation_meta['recurrents_cancel_date']) ?
+                    $this->_donation_meta['recurrents_cancel_date'] : NULL;
             default:
                 return apply_filters('leyka_'.$this->gateway_id.'_get_unknown_donation_field', null, $field, $this);
         }

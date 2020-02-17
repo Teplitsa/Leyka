@@ -553,10 +553,16 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             <?php $init_recurring_donation = $donation->init_recurring_donation;?>
 
             <div class="recurring-is-active-field">
+
                 <label><?php _e('Recurring subscription is active', 'leyka');?>:</label>
                 <div class="leyka-ddata-field">
-                    <?php echo $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka'); ?>
+                    <?php echo $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka');
+
+                    if( !$init_recurring_donation->recurring_is_active && $init_recurring_donation->recurring_cancel_date ) {
+                    echo ' ('.sprintf(__('canceled on %s', 'leyka'), date(get_option('date_format').', '.get_option('time_format'), $init_recurring_donation->recurring_cancel_date)).')';
+                    }?>
                 </div>
+
             </div>
 
         <?php } else { // New donation page displayed ?>
