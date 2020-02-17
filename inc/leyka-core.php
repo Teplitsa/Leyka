@@ -1646,7 +1646,8 @@ class Leyka extends Leyka_Singleton {
      * @return array
      */
     public function insert_rewrite_rules(array $rules) {
-        return array(
+
+        $leyka_rewrite_rules = array(
             'donor-account/?$' => 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka-screen=account',
             'donor-account/login/?$' => 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka-screen=login',
             'donor-account/reset-password/?$' => 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka-screen=reset-password',
@@ -1654,7 +1655,22 @@ class Leyka extends Leyka_Singleton {
             'campaign/([^/]+)/donations/?$' => 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter=$matches[1]',
             'campaign/([^/]+)/donations/page/([1-9]{1,})/?$' =>
                 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter=$matches[1]&paged=$matches[2]',
-        ) + $rules; // The rules order is important
+        );
+
+        if(leyka_get_donations_storage_type() === 'sep') {
+            $leyka_rewrite_rules = $leyka_rewrite_rules + array(
+                'donations/?$' => 'index.php?leyka_page=donations',
+                'donations/page/([1-9]{1,})/?$' => 'index.php?leyka_page=donations&paged=$matches[1]',
+            );
+        } else { // Donations as posts - just use the archive pages
+            $leyka_rewrite_rules = $leyka_rewrite_rules + array(
+                'donations/?$' => 'index.php?post_type='.Leyka_Donation_Management::$post_type,
+                'donations/page/([1-9]{1,})/?$' => 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&paged=$matches[1]',
+            );
+        }
+
+        return $leyka_rewrite_rules + $rules; // The rules order is important
+
     }
 
     /**
