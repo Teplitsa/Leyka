@@ -1659,8 +1659,8 @@ class Leyka extends Leyka_Singleton {
 
         if(leyka_get_donations_storage_type() === 'sep') {
             $leyka_rewrite_rules = $leyka_rewrite_rules + array(
-                'donations/?$' => 'index.php?leyka_page=donations',
-                'donations/page/([1-9]{1,})/?$' => 'index.php?leyka_page=donations&paged=$matches[1]',
+                'donations/?$' => 'index.php?pagename=donations',
+                'donations/page/([1-9]{1,})/?$' => 'index.php?pagename=donations&paged=$matches[1]',
             );
         } else { // Donations as posts - just use the archive pages
             $leyka_rewrite_rules = $leyka_rewrite_rules + array(
