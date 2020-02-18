@@ -298,11 +298,12 @@ function leyka_render_checkbox_field($option_id, $data){
 add_action('leyka_render_multi_checkbox', 'leyka_render_multi_checkboxes_fields', 10, 2);
 function leyka_render_multi_checkboxes_fields($option_id, $data){
 
-    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id; ?>
+    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;?>
 
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-multi-checkboxes-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">
 
         <span class="field-component title">
+
             <span class="text"><?php echo $data['title'];?></span>
             <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
             <?php if( !empty($data['comment'])) {?>
@@ -311,9 +312,11 @@ function leyka_render_multi_checkboxes_fields($option_id, $data){
                     <span class="field-q-tooltip"><?php echo $data['comment']?></span>
                 </span>
             <?php }?>
+
         </span>
 
         <span class="field-component field">
+
             <?php if(is_string($data['list_entries'])) {
                 $data['list_entries'] = $data['list_entries'](); // Call the callback to create an options
             }
@@ -321,7 +324,7 @@ function leyka_render_multi_checkboxes_fields($option_id, $data){
             foreach((array)$data['list_entries'] as $value => $label) {?>
                 <label for="<?php echo $option_id.'-'.$value.'-field';?>">
                     <input type="checkbox" id="<?php echo $option_id.'-'.$value.'-field';?>" name="<?php echo $option_id;?>[]" value="<?php echo $value;?>" <?php echo in_array($value, $data['value']) ? 'checked' : '';?>>&nbsp;
-                    <?php echo esc_attr($label);?>
+                    <?php echo esc_html($label);?>
                 </label>                
             <?php }?>
         </span>
@@ -342,7 +345,7 @@ function leyka_render_radio_fields($option_id, $data){
             <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
             <?php if( !empty($data['comment'])) {?>
                 <span class="field-q">
-                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-q.svg" alt="">
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
                     <span class="field-q-tooltip"><?php echo $data['comment']?></span>
                 </span>
             <?php }?>

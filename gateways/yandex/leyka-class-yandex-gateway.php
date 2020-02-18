@@ -91,13 +91,6 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'short_format' => true,
                 'field_classes' => array('old-api'),
             ),
-            $this->_id.'_outer_ip_to_inner' => array(
-                'type' => 'checkbox',
-                'default' => true,
-                'title' => __('Set outer requests IP to inner one', 'leyka'),
-                'comment' => __('Check if there are systematic errors on payments using the gateway.', 'leyka'),
-                'short_format' => true,
-            ),
         );
 
     }

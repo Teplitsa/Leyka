@@ -757,6 +757,13 @@ self::$_options_meta = array(
         ),
         'default' => '-',
     ),
+    'gtm_ua_enchanced_events' => array(
+        'type' => 'multi_checkbox',
+        'default' => array('eec.purchase',),
+        'title' => __('Google UA enchanced mode events support', 'leyka'),
+        'comment' => __('Check the events types that should be triggered in donation process. The "eec.checkout" event will always trigger.<br><br>Be advised: this option is relevant only for GTM & UA enchanced e-commerce integration.', 'leyka'),
+        'list_entries' => array('eec.detail' => __('EEC.detail', 'leyka'), 'eec.purchase' => __('EEC.purchase', 'leyka'),),
+    ),
     'revo_template_slider_max_sum' => array(
         'type' => 'text',
         'default' => 3000,
