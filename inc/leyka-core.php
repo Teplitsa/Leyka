@@ -74,7 +74,7 @@ class Leyka extends Leyka_Singleton {
         $this->_payment_url = wp_get_referer();
 
         // Add GTM & UA e-commerce dataLayer if needed:
-        if(leyka_options()->opt('use_gtm_ua_integration') !== '-') {
+        if( in_array(leyka_options()->opt('use_gtm_ua_integration'), array('simple', 'enchanced',)) ) {
             add_action('wp_head', array($this, 'add_gtm_data_layer_ua_'.leyka_options()->opt('use_gtm_ua_integration')), -1000);
         }
 

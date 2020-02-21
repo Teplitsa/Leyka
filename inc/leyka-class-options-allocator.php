@@ -451,7 +451,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'name' => 'web_analytics_integrations',
                         'title' => __('Web analysis services integration options', 'leyka'),
                         'is_default_collapsed' => true,
-                        'options' => array('use_gtm_ua_integration', 'gtm_ua_enchanced_events',)
+                        'options' => array('use_gtm_ua_integration', 'gtm_ua_enchanced_events', 'gtm_ua_tracking_id',)
                     ),),
                     array('section' => array(
                         'name' => 'donor_accounts',

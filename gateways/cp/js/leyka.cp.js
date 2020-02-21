@@ -93,8 +93,6 @@ jQuery(document).ready(function($){
                                 'name': response.payment_title,
                                 'id': response.donation_id,
                                 'price': response.amount,
-                                // 'brand': // bloginfo('name') here,
-                                // 'category': '<?php echo $donation->type_label;?>' // $donation->type_label here,
                                 'quantity': 1
                             }]
                         }

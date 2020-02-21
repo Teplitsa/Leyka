@@ -747,13 +747,14 @@ self::$_options_meta = array(
         'title' => __('Show a failure notification widget on the donation failure page', 'leyka'),
         'description' => __('Display a failure notification widget on the donation failure page', 'leyka'),
     ),
-    'use_gtm_ua_integration' => array(
+    'use_gtm_ua_integration' => array( // 'use_gtm_ua_integration' ('-'|'simple'|'enchanced')
         'type' => 'radio',
-        'title' => __('Show the GTM dataLayer on the successful donation page', 'leyka'),
+        'title' => __('Google Tag Manager & Universal Analytics integration', 'leyka'),
         'list_entries' => array(
-            '-' => __("Don't use GTM & UA e-commerce integration", 'leyka'),
+            '-' => __("Don't use UA e-commerce integration", 'leyka'),
             'simple' => __('Use the GTM & simple UA e-commerce integration', 'leyka'),
-            'enchanced' => __('Use the GTM & UA enchanced e-commerce integration', 'leyka'),
+            'enchanced' => __('Use the UA enchanced e-commerce integration', 'leyka'),
+            'enchanced_ua_only' => __('Connect directly to the GUA enchanced e-commerce tracking', 'leyka'),
         ),
         'default' => '-',
     ),
@@ -763,6 +764,12 @@ self::$_options_meta = array(
         'title' => __('Google UA enchanced mode events support', 'leyka'),
         'comment' => __('Check the events types that should be triggered in donation process. The "eec.checkout" event will always trigger.<br><br>Be advised: this option is relevant only for GTM & UA enchanced e-commerce integration.', 'leyka'),
         'list_entries' => array('eec.detail' => __('EEC.detail', 'leyka'), 'eec.purchase' => __('EEC.purchase', 'leyka'),),
+    ),
+    'gtm_ua_tracking_id' => array(
+        'type' => 'text',
+        'title' => __('Google UA Tracking ID ', 'leyka'),
+        'required' => true,
+        'placeholder' => __('E.g., UA-12345678-90', 'leyka'),
     ),
     'revo_template_slider_max_sum' => array(
         'type' => 'text',

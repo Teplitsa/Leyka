@@ -2321,3 +2321,36 @@ if( !function_exists('leyka_delete_dir') ) {
     }
 
 }
+
+/** @todo Move the function to the special GA integration class */
+if( !function_exists('leyka_gua_generate_uuid') ) {
+    function leyka_gua_generate_uuid() {
+        return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0x0fff) | 0x4000,
+            mt_rand(0, 0x3fff) | 0x8000,
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+        );
+    }
+}
+
+/** @todo Move the function to the special GA integration class */
+if( !function_exists('leyka_gua_get_client_id') ) {
+    function leyka_gua_get_client_id() {
+
+        if( !empty($_COOKIE['_ga']) ) {
+
+            list($version, $domainDepth, $cid1, $cid2) = explode('.', $_COOKIE['_ga'], 4);
+
+            $contents = array('version' => $version, 'domainDepth' => $domainDepth, 'cid' => $cid1.'.'.$cid2);
+            $cid = $contents['cid'];
+
+        } else {
+            $cid = leyka_gua_generate_uuid();
+        }
+
+        return $cid;
+
+    }
+}

@@ -118,8 +118,42 @@ function leyka_get_gateway_redirect_data(){
             $payment_vars['message'] = $error->get_error_message();
             $payment_vars['status'] = 1;
 
-        } else { // Donation created
+        } else { // Donation created successfully
+
             $payment_vars['donation_id'] = $donation_id;
+            $donation = new Leyka_Donation($donation_id);
+
+            if(
+                leyka_options()->opt('use_gtm_ua_integration') === 'enchanced_ua_only'
+                && leyka_options()->opt('gtm_ua_tracking_id')
+            ) {
+
+                require_once LEYKA_PLUGIN_DIR.'vendor/autoload.php';
+
+                $analytics = new TheIconic\Tracking\GoogleAnalytics\Analytics(true);
+                $analytics // Main params:
+                    ->setProtocolVersion('1')
+                    ->setTrackingId(leyka_options()->opt('gtm_ua_tracking_id'))
+                    ->setClientId(leyka_gua_get_client_id())
+                    // Transaction params:
+                    ->setTransactionId($donation_id)
+                    ->setAffiliation(get_bloginfo('name'))
+                    ->setRevenue($donation->amount)
+                    ->addProduct(array( // Donation params
+                        'id' => $donation_id,
+                        'name' => $donation->payment_title,
+                        'price' => $donation->amount,
+                        'brand' => get_bloginfo('name'), // Mb, it won't work with it
+                        'category' => $donation->type_label, // Mb, it won't work with it
+                        'quantity' => 1,
+                    ))
+                    ->setProductActionToPurchase()
+                    ->setEventCategory('Checkout')
+                    ->setEventAction('Purchase')
+                    ->sendEvent();
+
+            }
+
         }
 
         $payment_vars = array_merge(
