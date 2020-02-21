@@ -315,6 +315,39 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                     $donation->status = 'funded';
                     Leyka_Donation_Management::send_all_emails($donation->id);
 
+                    if( // GUA direct integration - "purchase" event:
+                        leyka_options()->opt('use_gtm_ua_integration') === 'enchanced_ua_only'
+                        && leyka_options()->opt('gtm_ua_tracking_id')
+                        && in_array('purchase', leyka_options()->opt('gtm_ua_enchanced_events'))
+                    ) {
+
+                        require_once LEYKA_PLUGIN_DIR.'vendor/autoload.php';
+
+                        $analytics = new TheIconic\Tracking\GoogleAnalytics\Analytics(true);
+                        $analytics // Main params:
+                            ->setProtocolVersion('1')
+                            ->setTrackingId(leyka_options()->opt('gtm_ua_tracking_id'))
+                            ->setClientId(leyka_gua_get_client_id())
+                            // Transaction params:
+                            ->setTransactionId($donation->id)
+                            ->setAffiliation(get_bloginfo('name'))
+                            ->setRevenue($donation->amount)
+                            ->addProduct(array( // Donation params
+                                'id' => $donation->id,
+                                'name' => $donation->payment_title,
+                                'price' => $donation->amount,
+                                'brand' => get_bloginfo('name'), // Mb, it won't work with it
+                                'category' => $donation->type_label, // Mb, it won't work with it
+                                'quantity' => 1,
+                            ))
+                            ->setProductActionToPurchase()
+                            ->setEventCategory('Checkout')
+                            ->setEventAction('Purchase')
+                            ->sendEvent();
+
+                    }
+                    // GUA direct integration - "purchase" event END
+
                 } else {
                     $donation->status = 'failed';
                 }

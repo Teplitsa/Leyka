@@ -74,7 +74,7 @@ class Leyka extends Leyka_Singleton {
         $this->_payment_url = wp_get_referer();
 
         // Add GTM & UA e-commerce dataLayer if needed:
-        if( in_array(leyka_options()->opt('use_gtm_ua_integration'), array('simple', 'enchanced',)) ) {
+        if( in_array(leyka_options()->opt('use_gtm_ua_integration'), array('simple', 'enchanced', 'enchanced_ua_only')) ) {
             add_action('wp_head', array($this, 'add_gtm_data_layer_ua_'.leyka_options()->opt('use_gtm_ua_integration')), -1000);
         }
 
@@ -728,6 +728,47 @@ class Leyka extends Leyka_Singleton {
         // Donation form submit click - "add" e-commerce measurement used in JS 'submit.leyka' handlers ?>
 
     <?php }
+
+    public function add_gtm_data_layer_ua_enchanced_ua_only() {
+
+        if( !is_main_query()) {
+            return;
+        }
+
+        if(is_singular(Leyka_Campaign_Management::$post_type)) {
+
+            if( // GUA direct integration - "detail" event:
+                leyka_options()->opt('use_gtm_ua_integration') === 'enchanced_ua_only'
+                && leyka_options()->opt('gtm_ua_tracking_id')
+                && in_array('detail', leyka_options()->opt('gtm_ua_enchanced_events'))
+            ) {
+
+                require_once LEYKA_PLUGIN_DIR.'vendor/autoload.php';
+
+                $campaign = new Leyka_Campaign(get_the_ID());
+
+                $analytics = new TheIconic\Tracking\GoogleAnalytics\Analytics(true);
+                $analytics // Main params:
+                    ->setProtocolVersion('1')
+                    ->setTrackingId(leyka_options()->opt('gtm_ua_tracking_id'))
+                    ->setClientId(leyka_gua_get_client_id())
+                    // Transaction params:
+                    ->addProduct(array( // Campaign params
+                        'id' => $campaign->id, // Campaign ID
+                        'name' => $campaign->payment_title,
+                        'brand' => get_bloginfo('name'), // Mb, it won't work with it
+                    ))
+                    ->setProductActionToDetail()
+                    ->setEventCategory('Checkout')
+                    ->setEventAction('Detail')
+                    ->sendEvent();
+
+            }
+            // GUA direct integration - "detail" event END
+
+        }
+
+    }
 
     /** @todo Create a procedure to get actual currencies rates and save them in the plugin options values */
     public function do_currencies_rates_refresh() {

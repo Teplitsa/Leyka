@@ -123,7 +123,7 @@ function leyka_get_gateway_redirect_data(){
             $payment_vars['donation_id'] = $donation_id;
             $donation = new Leyka_Donation($donation_id);
 
-            if(
+            if( // Direct integration with GUA - checkout event:
                 leyka_options()->opt('use_gtm_ua_integration') === 'enchanced_ua_only'
                 && leyka_options()->opt('gtm_ua_tracking_id')
             ) {
@@ -147,14 +147,18 @@ function leyka_get_gateway_redirect_data(){
                         'category' => $donation->type_label, // Mb, it won't work with it
                         'quantity' => 1,
                     ))
-                    ->setProductActionToPurchase()
+//                    ->setProductActionToPurchase()
+                    ->setProductActionToCheckout()
+                    ->setCheckoutStep(1)
+                    ->setCheckoutStepOption($donation->pm_label)
                     ->setEventCategory('Checkout')
-                    ->setEventAction('Purchase')
+                    ->setEventAction('Checkout') // 'Purchase'
                     ->sendEvent();
 
             }
 
         }
+        // Direct integration with GUA - checkout event END
 
         $payment_vars = array_merge(
             apply_filters('leyka_submission_form_data-'.$pm['gateway_id'], $_POST, $pm['payment_method_id'], $donation_id),

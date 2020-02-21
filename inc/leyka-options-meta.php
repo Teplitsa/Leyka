@@ -760,10 +760,10 @@ self::$_options_meta = array(
     ),
     'gtm_ua_enchanced_events' => array(
         'type' => 'multi_checkbox',
-        'default' => array('eec.purchase',),
+        'default' => array('purchase',),
         'title' => __('Google UA enchanced mode events support', 'leyka'),
         'comment' => __('Check the events types that should be triggered in donation process. The "eec.checkout" event will always trigger.<br><br>Be advised: this option is relevant only for GTM & UA enchanced e-commerce integration.', 'leyka'),
-        'list_entries' => array('eec.detail' => __('EEC.detail', 'leyka'), 'eec.purchase' => __('EEC.purchase', 'leyka'),),
+        'list_entries' => array('detail' => __('EEC.detail', 'leyka'), 'purchase' => __('EEC.purchase', 'leyka'),),
     ),
     'gtm_ua_tracking_id' => array(
         'type' => 'text',
@@ -772,13 +772,15 @@ self::$_options_meta = array(
         'placeholder' => __('E.g., UA-12345678-90', 'leyka'),
     ),
     'revo_template_slider_max_sum' => array(
-        'type' => 'text',
+        'type' => 'num',
         'default' => 3000,
         'title' => __('Maximum sum available for slider', 'leyka'),
         'description' => __('Please set the maximum sum available for slider control.', 'leyka'),
         'required' => true,
-        'placeholder' => '3000',
-        'length' => 6,
+        'placeholder' => 3000,
+        'min' => 1,
+        'max' => 100000,
+        'step' => 1,
     ),
     'revo_template_show_donors_list' => array(
         'type' => 'checkbox',
