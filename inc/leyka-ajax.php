@@ -136,11 +136,10 @@ function leyka_get_gateway_redirect_data(){
                     ->setTrackingId(leyka_options()->opt('gtm_ua_tracking_id'))
                     ->setClientId(leyka_gua_get_client_id())
                     // Transaction params:
-                    ->setTransactionId($donation_id)
+//                    ->setTransactionId($donation_id)
                     ->setAffiliation(get_bloginfo('name'))
                     ->setRevenue($donation->amount)
                     ->addProduct(array( // Donation params
-                        'id' => $donation_id,
                         'name' => $donation->payment_title,
                         'price' => $donation->amount,
                         'brand' => get_bloginfo('name'), // Mb, it won't work with it

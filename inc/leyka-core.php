@@ -754,7 +754,6 @@ class Leyka extends Leyka_Singleton {
                     ->setClientId(leyka_gua_get_client_id())
                     // Transaction params:
                     ->addProduct(array( // Campaign params
-                        'id' => $campaign->id, // Campaign ID
                         'name' => $campaign->payment_title,
                         'brand' => get_bloginfo('name'), // Mb, it won't work with it
                     ))

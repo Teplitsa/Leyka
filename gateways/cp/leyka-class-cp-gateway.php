@@ -333,7 +333,6 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                             ->setAffiliation(get_bloginfo('name'))
                             ->setRevenue($donation->amount)
                             ->addProduct(array( // Donation params
-                                'id' => $donation->id,
                                 'name' => $donation->payment_title,
                                 'price' => $donation->amount,
                                 'brand' => get_bloginfo('name'), // Mb, it won't work with it
