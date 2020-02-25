@@ -135,8 +135,9 @@ function leyka_get_gateway_redirect_data(){
                     ->setProtocolVersion('1')
                     ->setTrackingId(leyka_options()->opt('gtm_ua_tracking_id'))
                     ->setClientId(leyka_gua_get_client_id())
+                    ->setDocumentLocationUrl(get_permalink($donation->campaign_id))
                     // Transaction params:
-//                    ->setTransactionId($donation_id)
+                    ->setTransactionId($donation_id)
                     ->setAffiliation(get_bloginfo('name'))
                     ->setRevenue($donation->amount)
                     ->addProduct(array( // Donation params
@@ -146,7 +147,6 @@ function leyka_get_gateway_redirect_data(){
                         'category' => $donation->type_label, // Mb, it won't work with it
                         'quantity' => 1,
                     ))
-//                    ->setProductActionToPurchase()
                     ->setProductActionToCheckout()
                     ->setCheckoutStep(1)
                     ->setCheckoutStepOption($donation->pm_label)

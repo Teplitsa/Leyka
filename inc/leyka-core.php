@@ -694,7 +694,9 @@ class Leyka extends Leyka_Singleton {
                 return;
             }
 
-            $donation_amount_total = round((float)$donation->amount_total, 2);?>
+            $donation_amount_total = round((float)$donation->amount_total, 2);
+
+            echo '<pre>'.print_r('HERE!', 1).'</pre>';?>
 
         <script>
             window.dataLayer = window.dataLayer || [];
@@ -752,6 +754,7 @@ class Leyka extends Leyka_Singleton {
                     ->setProtocolVersion('1')
                     ->setTrackingId(leyka_options()->opt('gtm_ua_tracking_id'))
                     ->setClientId(leyka_gua_get_client_id())
+                    ->setDocumentLocationUrl(get_permalink($campaign->id))
                     // Transaction params:
                     ->addProduct(array( // Campaign params
                         'name' => $campaign->payment_title,
