@@ -154,10 +154,11 @@ function leyka_get_gateway_redirect_data(){
                     ->setEventAction('Checkout') // 'Purchase'
                     ->sendEvent();
 
-            }
+            } // Direct integration with GUA - checkout event END
+
+//            $_COOKIE['leyka']['last_donation_id'][Leyka_Donor::user_is_donor(wp_get_current_user()) ? get_current_user_id() : 0] = $donation_id;
 
         }
-        // Direct integration with GUA - checkout event END
 
         $payment_vars = array_merge(
             apply_filters('leyka_submission_form_data-'.$pm['gateway_id'], $_POST, $pm['payment_method_id'], $donation_id),
