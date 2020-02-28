@@ -10,6 +10,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 	/** @var WP_List_Table */
 	protected $_donors_list_table = null;
+	protected $_recurring_subscriptions_list_table = null;
 
 	protected function __construct() {
 
@@ -55,8 +56,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         add_action('personal_options_update', array($this, 'save_user_profile_donor_fields'));
         add_action('edit_user_profile_update', array($this, 'save_user_profile_donor_fields'));
 
-        // Portlet controller API:
-		require_once LEYKA_PLUGIN_DIR.'/inc/leyka-class-portlet-controller.php';
+		require_once LEYKA_PLUGIN_DIR.'/inc/leyka-class-portlet-controller.php'; // Portlet controller API
 
     }
 
@@ -196,11 +196,14 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         add_submenu_page('leyka', __('New correctional donation', 'leyka'), _x('Add new', 'donation', 'leyka'), 'leyka_manage_donations', 'post-new.php?post_type='.Leyka_Donation_Management::$post_type);
 
+        // Recurring subscriptions list page:
+        $hook = add_submenu_page('leyka', __('Recurring subscriptions', 'leyka'), __('Recurring subscriptions', 'leyka'), 'leyka_manage_donations', 'leyka_recurring_subscriptions', array($this, 'recurring_subscriptions_list_screen'));
+        add_action("load-$hook", array($this, 'recurring_subscriptions_list_screen_options'));
+
         add_submenu_page('leyka', __('Campaigns', 'leyka'), __('Campaigns', 'leyka'), 'leyka_manage_donations', 'edit.php?post_type='.Leyka_Campaign_Management::$post_type);
 
         add_submenu_page('leyka', __('New campaign', 'leyka'), _x('Add new', 'campaign', 'leyka'), 'leyka_manage_donations', 'post-new.php?post_type='.Leyka_Campaign_Management::$post_type);
 
-        // Donors' tags taxonomy:
         if(leyka()->opt('donor_management_available')) {
 
             // Donors list page:
@@ -394,6 +397,35 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	public function is_separate_forms_stage($stage) {
 		return in_array($stage, array('email', 'beneficiary', 'technical', 'view', 'additional'));
 	}
+
+    public function recurring_subscriptions_list_screen_options() {
+
+        add_screen_option('per_page', array(
+            'label' => __('Subscriptions per page', 'leyka'),
+            'default' => 20,
+            'option' => 'recurring_subscriptions_per_page',
+        ));
+
+        require_once LEYKA_PLUGIN_DIR.'inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php';
+
+        $this->_recurring_subscriptions_list_table = new Leyka_Admin_Recurring_Subscriptions_List_Table();
+
+    }
+
+    public function recurring_subscriptions_list_screen() {
+
+        if( !current_user_can('leyka_manage_options') ) {
+            wp_die(__('You do not have permissions to access this page.', 'leyka'));
+        }
+
+        do_action('leyka_pre_recurring_subscriptions_list_actions');
+
+        $this->_show_admin_template('recurring-subscriptions-list-page');
+
+        do_action('leyka_post_recurring_subscriptions_list_actions');
+        do_action('leyka_post_admin_actions');
+
+    }
 
     public function donors_list_screen_options() {
 

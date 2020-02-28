@@ -129,8 +129,7 @@ abstract class Leyka_Extension extends Leyka_Singleton {
         if($this->_has_color_options) {
             if(isset($this->_options[0])) {
                 $this->_options[0]['section']['options'][$this->_id.'_color_options'] = $this->get_color_options();
-            }
-            else {
+            } else {
                 $this->_options[$this->_id.'_color_options'] = $this->get_color_options();
             }
         }

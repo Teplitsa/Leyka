@@ -2162,6 +2162,7 @@ class Leyka_Donation {
                     $this->_donation_meta['donor_subscription_email'] :
                     ($this->_donation_meta['donor_email'] ? $this->_donation_meta['donor_email'] : '');
 
+            case 'donor_id':
             case 'donor_user_id':
             case 'donor_account_id':
                 return isset($this->_post_object->post_author) ? (int)$this->_post_object->post_author : false;
@@ -2282,6 +2283,7 @@ class Leyka_Donation {
                 $this->_donation_meta['donor_comment'] = $value;
                 break;
 
+            case 'donor_id':
             case 'donor_user_id':
             case 'donor_account_id':
 
