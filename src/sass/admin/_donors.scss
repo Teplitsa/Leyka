@@ -5,16 +5,6 @@
 		margin-bottom: -$leyka-base;
 	}
 
-    .donors-list-export {
-    	margin-top: $leyka-base;
-
-    	input.submit {
-    		@include leyka-admin-btn();
-    		min-width: 228px;
-    		height: 32px;
-    	}
-    }
-
     .tablenav.bottom {
     	margin-top: $leyka-base;
     }
@@ -50,132 +40,8 @@
 	}
 }
 
-// filters list
-.donors-list-filters {
-
-    box-sizing: border-box;
-    margin-top: 4px;
-    display: flex;
-    border-bottom: 1px solid $leyka-donors-color-filters-border;
-
-    .filters-row {
-
-    	display: flex;
-    	align-items: flex-start;
-
-    	.filter-warning {
-
-    		@include leyka-donors-text-filter-warning();
-
-			background-image: url(../../img/donors/icon-warning.svg);
-			background-repeat: no-repeat;
-			background-size: 24px 24px;
-			background-position: 8px 8px;
-			background-color: rgba(242, 201, 76, 0.2);
-			padding: 8px 8px 8px 40px;
-			width: 100%;
-			max-width: 704px;
-			margin-bottom: $leyka-base;
-
-    		&:empty {
-    			display: none;
-    		}
-
-    	}
-
-    }
-
-    .col-1 {
-    	width: 790px;
-    }
-
-    .col-2 {
-
-		width: 25%;
-		position: relative;
-
-		.button {
-
-			@include leyka-admin-btn();
-			@include leyka-donors-text-caption-big();
-
-			min-width: 192px;
-			height: 40px;
-			text-align: center;
-			display: block;
-
-		}
-
-		.reset-filters {
-
-			@include leyka-admin-a();
-			@include leyka-donors-text-link-big();
-
-			display: inline-block;
-			border-bottom-style: solid;
-			margin-top: 0.75 * $leyka-base;
-
-			&:hover {
-				border-bottom-style: none;
-			}
-
-		}
-
-    }
-
-}
-
 // filter controls
 .donors-list-filters {
-
-    //input:not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"])  {
-    //}
-
-    input[type="text"], input[type="date"]  {
-        @include leyka-donors-filter-selector();
-    }
-
-    // selectmenu
-    .ui-selectmenu-button { /** @todo Move to _common_settings & _common_mixins to apply to generic selects */
-
-    	@include leyka-donors-filter-selector;
-
-    	background-image: none;
-    	border-radius: 0;
-		box-sizing: border-box !important;
-		border: none !important;
-	    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.4) !important;
-	    width: 176px !important;
-	    height: 32px !important;
-	    margin-right: $leyka-base !important;
-	    margin-bottom: $leyka-base !important;
-    	display: inline-block;
-    	color: $leyka-admin-color-text !important;
-    	overflow: unset;
-    	padding: 3px 5px 3px 8px;
-
-    	.ui-icon.ui-icon-triangle-1-s {
-    		display: none;
-    	}
-
-    	.ui-selectmenu-text {
-    		display: block;
-    		@include leyka-donors-text();
-    		overflow: unset;
-    		padding-left: 0;
-    	}
-
-    }
-    
-    .leyka-selector {
-
-        margin: 0 16px 0 0;
-
-        &.working {
-            border: 2px solid red;
-        }
-
-    }
 
     // Autocomplete - Donors filter specifics:
     .ui-autocomplete-multiselect {
@@ -218,23 +84,6 @@
 
 // jquery ui custom styles
 .leyka-admin-donors-list {
-	// selectmenu
-	.ui-selectmenu-menu {
-		ul.ui-menu.ui-widget-content  {
-			border-radius: 0;
-
-			li.ui-menu-item {
-				@include leyka-donors-text();
-
-				&.ui-state-focus {
-					background-image: none;
-					background-color: $leyka-admin-color-link;
-					color: $color-white;
-					border: 1px solid $leyka-admin-color-link;
-				}
-			}
-		}
-	}
 
 	// autocomplete
 	ul.ui-autocomplete {
@@ -245,7 +94,7 @@
 
 		&.ui-menu {
 			li.ui-menu-item {
-				@include leyka-donors-text();
+				@include leyka-admin-list-text();
 
 				max-width: 320px;
 				max-height: 56px;
@@ -268,7 +117,7 @@
 	// datepicker
 	.ui-datepicker.ui-widget.ui-widget-content {
 		padding: 0;
-		@include leyka-donors-text();
+		@include leyka-admin-list-text();
 		font-weight: normal;
 
 		th {
@@ -277,7 +126,7 @@
 
 		.ui-datepicker-calendar {
 			thead {
-				color: $leyka-donors-color-filters-border;
+				color: $color-border-semidark;
 			}
 		}
 
@@ -308,7 +157,7 @@
 				}
 
 				.ui-icon.ui-icon-circle-triangle-w {
-					background-image: url(../../img/donors/icon-datepicker-arrow-left.svg);
+					background-image: url(../../img/icon-datepicker-arrow-left.svg);
 					background-repeat: no-repeat;
 					background-size: 32px 32px;
 					background-position: -8px -9px;
@@ -325,7 +174,7 @@
 				}
 
 				.ui-icon.ui-icon-circle-triangle-e {
-					background-image: url(../../img/donors/icon-datepicker-arrow-right.svg);;
+					background-image: url(../../img/icon-datepicker-arrow-right.svg);
 					background-repeat: no-repeat;
 					background-size: 32px 32px;
 					background-position: -8px -9px;
@@ -360,11 +209,11 @@
 // list
 .leyka-admin-donors-list {
 	.widefat th {
-		@include leyka-donors-text-table-head;
+		@include leyka-admin-list-text-table-head;
 	}
 
 	.widefat td, .widefat td ol, .widefat td p, .widefat td ul {
-		@include leyka-donors-text;
+		@include leyka-admin-list-text;
 	}
 
 	.widefat td, .widefat th {
@@ -513,7 +362,7 @@
 			}
 
 			.donor-data-edit {
-				background-image: url(../../img/donors/icon-edit.svg);
+				background-image: url(../../img/icon-edit.svg);
 				@include leyka-admin-icon(24px);
 				@include leyka-admin-clean-a;
 				margin-left: $leyka-base;
@@ -527,7 +376,7 @@
 				min-height: 32px;
 
 				h2 {
-					@include leyka-donors-text-h2;
+					@include leyka-admin-list-text-h2;
 					padding-left: 0;
 					padding-right: 0;
 					padding-top: 0;
@@ -536,7 +385,7 @@
 				}
 
 				.leyka-editable-str-field {
-					@include leyka-donors-text-h2;
+					@include leyka-admin-list-text-h2;
 					margin-top: -4px;
 				}
 
@@ -726,7 +575,7 @@ table.donor-info-table {
 		}
 
 		th {
-			@include leyka-donor-text-table-head;
+			@include leyka-admin-list-text-table-head;
 			text-align: left;
 			padding-bottom: 12px;
 
@@ -758,7 +607,7 @@ table.donor-info-table {
 			}
 
 			.comment-icon-edit {
-				background-image: url(../../img/donors/icon-edit.svg);
+				background-image: url(../../img/icon-edit.svg);
 				@include leyka-admin-icon(19px);
 				@include leyka-admin-clean-a;
 			}
@@ -821,7 +670,7 @@ table.donor-info-table {
 			}
 
 			.howto {
-				@include leyka-donor-text-tags-explanation;
+				@include leyka-admin-list-text-tags-explanation;
 				margin-top: 0.5 * $leyka-base;
 				color: $leyka-donor-color-explanation;
 			}
@@ -891,7 +740,7 @@ table.donor-info-table {
 
 		thead {
 			td {
-				@include leyka-donor-text-table-head;
+				@include leyka-admin-list-text-table-head;
 				padding-left: 12px;
 				border-bottom: none;
 
@@ -941,7 +790,7 @@ table.donor-info-table {
 			display: none;
 
 			td {
-				@include leyka-donor-text-table-head;
+				@include leyka-admin-list-text-table-head;
 				padding-left: 12px;
 				border-top: 1px solid $leyka-donors-stroke;
 			}
@@ -981,7 +830,7 @@ table.donor-info-table {
 			    }
 
 			    .second-sub-row {
-				    @include leyka-donors-text-small;
+				    @include leyka-admin-list-text-small;
 				    margin-top: 3px;
 				    margin-left: 16px;
 			    }
@@ -1072,14 +921,14 @@ table.donor-info-table {
 	}
 
 	.leyka-editable-str-result {
-		@include leyka-donors-text();
+		@include leyka-admin-list-text();
 		width: calc(100% - 46px);
 		overflow-x: hidden;
 		margin-right: 8px;
 	}
 
 	input.leyka-editable-str-field {
-		@include leyka-donors-text();
+		@include leyka-admin-list-text();
 		display: block;
 		width: calc(100% - 40px);
 		margin-right: 8px;
@@ -1088,7 +937,7 @@ table.donor-info-table {
 	}
 
 	textarea.leyka-editable-str-field {
-		@include leyka-donors-text();
+		@include leyka-admin-list-text();
 		display: block;
 		width: calc(100% - 40px);
 		margin-right: 8px;

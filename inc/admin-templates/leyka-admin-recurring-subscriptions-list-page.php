@@ -9,9 +9,9 @@
     <div id="poststuff">
         <div>
 
-            <form class="recurring-subscriptions-list-controls" action="#" method="get">
+            <form class="recurring-subscriptions-list-controls admin-list-controls" action="#" method="get">
 
-                <div class="recurring-subscriptions-list-filters">
+                <div class="recurring-subscriptions-list-filters admin-list-filters">
 
                     <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']);?>">
 
@@ -19,23 +19,22 @@
 
                         <div class="filters-row">
 
-                            <input type="text" name="leyka-recurring-subscription-status" class="leyka-recurring-subscription-status-selector leyka-selector autocomplete-input" value="" placeholder="<?php _e('Subscription status', 'leyka');?>">
-
-                            <?php $filter_value = isset($_GET['subscription-status']) ? (array)$_GET['subscription-status'] : array();?>
-                            <select id="leyka-recurring-subscription-status-select" class="autocomplete-select" name="subscription-status[]" multiple="multiple">
-
-                                <?php $status_list = array('active' => __('Active', 'leyka'), 'non-active' => __('Non-active', 'leyka'),);
-                                foreach($status_list as $status => $status_label) {?>
-                                    <option value="<?php echo $status;?>" <?php echo is_array($filter_value) && in_array($status, $filter_value) ? 'selected="selected"' : '';?>>
-                                        <?php echo $status_label;?>
-                                    </option>
-                                <?php }?>
-
+                            <?php $filter_value = isset($_GET['subscription-status']) ? esc_attr($_GET['subscription-status']) : false;?>
+                            <select name="subscription-status" class="leyka-selector leyka-select-menu">
+                                <option value="" <?php echo !$filter_value ? 'selected="selected"' : '';?>>
+                                    <?php _e('All subscriptions', 'leyka');?>
+                                </option>
+                                <option value="active" <?php echo $filter_value == 'active' ? 'selected="selected"' : '';?>>
+                                    <?php _e('Only active', 'leyka');?>
+                                </option>
+                                <option value="non-active" <?php echo $filter_value == 'non-active' ? 'selected="selected"' : '';?>>
+                                    <?php _e('Only not active', 'leyka');?>
+                                </option>
                             </select>
 
                             <input type="text" name="donor-name-email" class="leyka-donor-name-email-selector leyka-selector" value="<?php echo isset($_GET['donor-name-email']) ? esc_attr($_GET['donor-name-email']) : '';?>" placeholder="<?php _e("Donor's name or email", 'leyka');?>">
 
-                            <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector autocomplete-input" value="" placeholder="<?php _e('Campaigns list', 'leyka');?>">
+                            <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector leyka-autocomplete" value="" placeholder="<?php _e('Campaigns list', 'leyka');?>">
                             <?php $filter_value = isset($_GET['campaigns']) ? (array)$_GET['campaigns'] : array();?>
 
                             <select id="leyka-campaigns-select" class="autocomplete-select" name="campaigns[]" multiple="multiple">
@@ -86,7 +85,7 @@
 
                 </div>
 
-                <div class="donors-list-export">
+                <div class="recurring-subscriptions-list-export admin-list-export">
                     <input type="submit" class="submit" name="subscription-list-export" value="<?php _e('Export the list in CSV', 'leyka');?>">
                 </div>
 

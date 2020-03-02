@@ -341,16 +341,6 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
         }
     }
 
-    /**
-     * Render the bulk edit checkbox.
-     *
-     * @param array $item
-     * @return string
-     */
-//    public function column_cb($item) {
-//        return sprintf('<input type="checkbox" name="bulk[]" value="%s">', $item['donor_id']);
-//    }
-
     public function column_status($item) {
         return empty($item['status']) ?
             _x('Not active', 'For recurring subscription', 'leyka') :
@@ -460,7 +450,6 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
      */
     function get_columns() {
         return array(
-//            'cb' => '<input type="checkbox">',
             'id' => __('ID'),
             'status' => __('Status', 'leyka'),
             'donor' => __('Donor', 'leyka'),
@@ -469,7 +458,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
             'next_donation' => __('Next donation', 'leyka'),
             'donations_number' => __('Donations total', 'leyka'),
             'gateway' => __('Gateway', 'leyka'),
-            'amount' => __('Amount donated', 'leyka'),
+            'amount' => __('Amount', 'leyka'),
         );
     }
 

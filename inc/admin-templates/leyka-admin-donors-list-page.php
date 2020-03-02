@@ -11,7 +11,7 @@
 
             <form class="donors-list-controls" action="#" method="get">
 
-                <div class="donors-list-filters">
+                <div class="donors-list-filters admin-list-filters">
 
                     <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']);?>">
 
@@ -20,7 +20,7 @@
                         <div class="filters-row">
 
                             <?php $filter_value = isset($_GET['donor-type']) ? esc_attr($_GET['donor-type']) : false;?>
-                            <select name="donor-type">
+                            <select name="donor-type" class="leyka-select-menu">
                                 <option value="" <?php echo !$filter_value ? 'selected="selected"' : '';?>>
                                     <?php _e('All donor types', 'leyka');?>
                                 </option>
@@ -133,7 +133,7 @@
                     </div>
                 </div>
 
-                <div class="donors-list-export">
+                <div class="donors-list-export admin-list-export">
                     <input type="submit" class="submit" name="donors-list-export" value="<?php _e('Export the list in CSV', 'leyka');?>">
                 </div>
 

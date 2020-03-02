@@ -497,11 +497,13 @@
                     flex-shrink: 0;
                 }
             }
+
         }
 
         .content {
 
             .section-description {
+
                 font-style: normal;
                 font-weight: normal;
                 line-height: 21px;
@@ -522,6 +524,7 @@
                     color: $color-wizard-error-message;
                     font-weight: normal;
                 }
+
             }
 
             & > div {
@@ -726,9 +729,130 @@
 }
 
 .leyka-admin {
+
     #message {
         margin-left: 0;
     }
+
+    // ---- Admin lists common styles: ---- //
+
+    // Filters board:
+    .admin-list-filters {
+
+        box-sizing: border-box;
+        margin-top: 4px;
+        display: flex;
+        border-bottom: 1px solid $color-border-semidark;
+
+        .filters-row {
+
+            display: flex;
+            align-items: flex-start;
+
+            .filter-warning {
+
+                @include leyka-admin-list-text-filter-warning();
+
+                background-image: url(../../img/icon-warning.svg);
+                background-repeat: no-repeat;
+                background-size: 24px 24px;
+                background-position: 8px 8px;
+                background-color: rgba(242, 201, 76, 0.2);
+                padding: 8px 8px 8px 40px;
+                width: 100%;
+                max-width: 704px;
+                margin-bottom: $leyka-base;
+
+                &:empty {
+                    display: none;
+                }
+
+            }
+
+        }
+
+        .col-1 {
+            width: 790px;
+        }
+
+        .col-2 {
+
+            width: 25%;
+            position: relative;
+
+            .button {
+
+                @include leyka-admin-btn();
+                @include leyka-admin-list-text-caption-big();
+
+                min-width: 192px;
+                height: 40px;
+                text-align: center;
+                display: block;
+
+            }
+
+            .reset-filters {
+
+                @include leyka-admin-a();
+                @include leyka-admin-list-text-link-big();
+
+                display: inline-block;
+                border-bottom-style: solid;
+                margin-top: 0.75 * $leyka-base;
+
+                &:hover {
+                    border-bottom-style: none;
+                }
+
+            }
+
+        }
+
+        // Filter fields:
+        //input:not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"])  {
+        //}
+
+        // Text & datepicker fields:
+        input[type="text"], input[type="date"]  {
+            @include leyka-admin-list-filter-selector();
+        }
+
+        .ui-selectmenu-button {
+            margin-right: $leyka-base;
+            margin-bottom: $leyka-base;
+        }
+
+        .leyka-selector {
+
+            margin: 0 16px 0 0;
+
+            &.working {
+                border: 2px solid red;
+            }
+
+        }
+        // Filter fields - END
+
+    }
+    // Filters board - END
+
+    .admin-list-export {
+
+        margin-top: $leyka-base;
+
+        input.submit {
+
+            @include leyka-admin-btn();
+
+            min-width: 228px;
+            height: 32px;
+
+        }
+
+    }
+    // ---- Admin lists common styles - END ---- //
+
 }
 
 // connect stats option

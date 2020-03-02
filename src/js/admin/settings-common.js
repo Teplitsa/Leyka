@@ -11,13 +11,84 @@ jQuery(document).ready(function($){
         });
     }
 
-    // if(typeof $.wp === 'object' && typeof $.wp.wpColorPicker !== 'undefined') {
     if(leyka_ui_widget_available('wpColorPicker', $.wp)) {
         $('.leyka-setting-field.colorpicker').wpColorPicker({ // Colorpicker fields
-            change: function (e, ui) {
+            change: function(e, ui) {
                 $(e.target).parents('.field').find('.leyka-colorpicker-value').val(ui.color.toString()).change();
             }
         });
+    }
+
+    if(leyka_ui_widget_available('selectmenu')) {
+        $('.leyka-select-menu').selectmenu();
+    }
+
+    if(leyka_ui_widget_available('autocomplete')) {
+
+        // $body.find('.leyka-autocomplete').each(function(){
+
+        //     let $field = $(this),
+        //         source_type = $field.data('leyka-autocomplete-source-type'),
+        //         pre_selected_values = $field.data('leyka-autocomplete-pre-selected-values'),
+        //         params = {source: false};
+        //
+        //     if(source_type === 'url') { // data-leyka-autocomplete-source is an URL for values ajax requests
+        //
+        //         params.source = $field.data('leyka-autocomplete-source');
+        //
+        //         if( !params.source || !params.source.length ) {
+        //             return;
+        //         }
+        //
+        //     } else if(source_type === 'select-field') { // data-leyka-autocomplete-source is an ID for select field with values
+        //
+        //         let $source_select = $($field.data('leyka-autocomplete-source')).hide(); // Hide the select field just in case
+        //
+        //         if( !$source_select.length ) {
+        //             return;
+        //         }
+        //
+        //         params.source = [];
+        //
+        //         $source_select.find('option').each(function(){
+        //
+        //             let $option = $(this);
+        //
+        //             params.source.push({label: $.trim($option.text()), value: $option.val()});
+        //
+        //         });
+        //
+        //         if( !params.source.length ) {
+        //             return;
+        //         }
+        //
+        //     }
+        //
+        //     if(pre_selected_values && pre_selected_values === 'from-source-field' && source_type === 'select-field') {
+        //
+        //     } else if(pre_selected_values) {
+        //
+        //         let $values_select = $(pre_selected_values);
+        //     }
+        //
+        //
+        //
+        //     if( !!$field.data('leyka-autocomplete-multiselect') ) {
+        //         params.multiselect = true;
+        //     }
+        //     if( !!$field.data('leyka-autocomplete-min-length') ) {
+        //         params.minLength = $field.data('leyka-autocomplete-min-length');
+        //     }
+        //     if( !!$field.data('leyka-autocomplete-search-on-focus') ) {
+        //         params.search_on_focus = true;
+        //     }
+        //
+            /** @todo Finish the universalization for autocomplete fields. We need an API for params: source, pre_selected_values, leyka_select_callback */
+        //
+        //     $field.autocomplete(params);
+        //
+        // });
+
     }
 
     // Support metaboxes ONLY where needed (else there are metabox handling errors on the wrong pages):
@@ -412,74 +483,6 @@ jQuery(document).ready(function($){
     if($tooltips.length && typeof $().tooltip !== 'undefined' ) {
         $tooltips.tooltip();
     }
-
-    // var $campaign_select = $('#campaign-select');
-    // if($campaign_select.length && typeof $().autocomplete !== 'undefined') {
-    //
-    //     $campaign_select.keyup(function(){
-    //         if( !$(this).val() ) {
-    //             $('#campaign-id').val('');
-    //             $('#new-donation-purpose').html('');
-    //         }
-    //     });
-    //
-    //     $campaign_select.autocomplete({
-    //         minLength: 1,
-    //         focus: function(event, ui){
-    //             $campaign_select.val(ui.item.label);
-    //             $('#new-donation-purpose').html(ui.item.payment_title);
-    //
-    //             return false;
-    //         },
-    //         change: function(event, ui){
-    //             if( !$campaign_select.val() ) {
-    //                 $('#campaign-id').val('');
-    //                 $('#new-donation-purpose').html('');
-    //             }
-    //         },
-    //         close: function(event, ui){
-    //             if( !$campaign_select.val() ) {
-    //                 $('#campaign-id').val('');
-    //                 $('#new-donation-purpose').html('');
-    //             }
-    //         },
-    //         select: function(event, ui){
-    //             $campaign_select.val(ui.item.label);
-    //             $('#campaign-id').val(ui.item.value);
-    //             $('#new-donation-purpose').html(ui.item.payment_title);
-    //             return false;
-    //         },
-    //         source: function(request, response) {
-    //             var term = request.term,
-    //                 cache = $campaign_select.data('cache') ? $campaign_select.data('cache') : [];
-    //
-    //             if(term in cache) {
-    //                 response(cache[term]);
-    //                 return;
-    //             }
-    //
-    //             request.action = 'leyka_get_campaigns_list';
-    //             request.nonce = $campaign_select.data('nonce');
-    //
-    //             $.getJSON(leyka.ajaxurl, request, function(data, status, xhr){
-    //
-    //                 var cache = $campaign_select.data('cache') ? $campaign_select.data('cache') : [];
-    //
-    //                 cache[term] = data;
-    //                 response(data);
-    //             });
-    //         }
-    //     });
-    //
-    //     $campaign_select.data('ui-autocomplete')._renderItem = function(ul, item){
-    //         return $('<li>')
-    //             .append(
-    //                 '<a>'+item.label+(item.label == item.payment_title ? '' : '<div>'+item.payment_title+'</div></a>')
-    //             )
-    //             .appendTo(ul);
-    //     };
-    //
-    // }
 
     // Campaign selection fields:
     /** @todo Change this old campaigns select field code (pure jq-ui-autocomplete-based) to the new code (select + autocomplete, like on the Donors list page filters). */

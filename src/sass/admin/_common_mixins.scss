@@ -593,34 +593,36 @@
 }
 
 @mixin leyka-admin-a($mod: default) {
+
     @include leyka-admin-clean-a();
 
-    color: $leyka-adb-color-link;
-    //border-color: $leyka-adb-color-link;
+    color: $leyka-admin-color-link;
+    //border-color: $leyka-admin-color-link;
     border-bottom-width: 1px;
 
     border-bottom-style: solid;
     border-color: transparent;
 
     &:active, &:focus {
-        //border-color: $leyka-adb-color-link;
+        //border-color: $leyka-admin-color-link;
         border-bottom-style: solid;
         border-color: transparent;
     }
 
     &:hover {
-        border-color: $leyka-adb-color-link;
+        border-color: $leyka-admin-color-link;
         border-bottom-style: solid;
         border-bottom-width: 1px;
     }
 
     @if $mod == dashed {
+
         border-bottom-style: dashed;
-        border-color: $leyka-adb-color-link;
+        border-color: $leyka-admin-color-link;
 
         &:active, &:focus {
             border-bottom-style: dashed;
-            border-color: $leyka-adb-color-link;
+            border-color: $leyka-admin-color-link;
             border-bottom-width: 1px;
         }
 
@@ -629,6 +631,7 @@
             border-bottom-style: solid;
             border-bottom-width: 1px;
         }
+
     }
 
 }
@@ -703,7 +706,7 @@
     margin-top: -6px;
     margin-left: 12px;
     list-style: none;
-    @include leyka-donors-text-small;
+    @include leyka-admin-list-text-small;
 
     &:before {
         content: "";
@@ -865,3 +868,33 @@
     }
 
 }
+
+// ---- Admin lists mixins: ---- //
+@mixin leyka-admin-list-filter-selector() {
+
+    @include leyka-admin-list-text();
+
+    line-height: normal;
+    color: $leyka-admin-color-text;
+    box-sizing: border-box;
+    border: none;
+    background-color: $color-white;
+    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.4);
+    width: 176px;
+    height: 32px;
+
+    &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+        color: $leyka-admin-color-text;
+        opacity: 1; /* Firefox */
+    }
+
+    &:-ms-input-placeholder { /* Internet Explorer 10-11 */
+        color: $leyka-admin-color-text;
+    }
+
+    &::-ms-input-placeholder { /* Microsoft Edge */
+        color: $leyka-admin-color-text;
+    }
+
+}
+// ---- Admin lists mixins - END ---- //

@@ -3,8 +3,8 @@
 $leyka-adb-color-text:          #44444A;
 $leyka-adb-color-text-light1:   #565656;
 
-$leyka-adb-color-link:          #0085BA;
-$leyka-adb-color-link-active:   $leyka-adb-color-text-light1;
+$leyka-adb-color-link:          $leyka-admin-color-link;
+$leyka-adb-color-link-active:   $leyka-admin-color-link-active;
 
 $leyka-adb-color-error:         #D43C57;
 $leyka-adb-color-error-light1:  #FC90A4;
@@ -19,10 +19,6 @@ $leyka-adb-color-bg:        	rgba(241,241,241, 0.5);
 $leyka-adb-color-notif-text:    #006799;
 $leyka-adb-color-notif-bg:      #C5E6F3;
 
-//$leyka-adb-color-btn-text:      $color-white;
-//$leyka-adb-color-btn-bg:        #0085BA;
-//$leyka-adb-color-btn-stroke:    #006799;
-
 $leyka-adb-color-recurring-chart-recurring:	#006799;
 $leyka-adb-color-recurring-chart-other:	#25A0D1;
 
@@ -30,4 +26,3 @@ $leyka-color-donation-status-funded: $leyka-adb-color-ok;
 $leyka-color-donation-status-refunded: #0085BA;
 $leyka-color-donation-status-submitted: #F2C94C;
 $leyka-color-donation-status-failed: $leyka-adb-color-error;
-

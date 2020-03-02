@@ -775,23 +775,55 @@ function leyka_usage_stats_y(){
 add_action('wp_ajax_leyka_usage_stats_y', 'leyka_usage_stats_y');
 
 function leyka_donors_autocomplete(){
-    $filter = isset($_GET['term']) ? sanitize_text_field($_GET['term']) : '';
-    
+
+    $search_query = isset($_GET['term']) ? sanitize_text_field($_GET['term']) : '';
     $res = array();
-    
-    if($filter) {
+
+    if( !$search_query ) {
+        die(json_encode($res));
+    }
+
+    if(isset($_GET['type']) && $_GET['type'] === 'users') { // Search for donors in user accounts
+
         $donors = get_users(array(
             'role__in' => array(Leyka_Donor::DONOR_USER_ROLE,),
-            'number' => -1,
-            'search' => '*' . str_replace('*', '', $filter) . '*',
+            'number' => 10,
+            'search' => '*'.str_replace('*', '', $search_query).'*',
             'search_columns' => array('login', 'nicename', 'email'),
         ));
-        
+
         foreach($donors as $donor) {
-            $res[] = array('label' => sprintf("%s(%s)", $donor->display_name, $donor->user_email), 'value' => $donor->user_email);
+            $res[] = array('label' => sprintf('%s (%s)', $donor->display_name, $donor->user_email), 'value' => $donor->user_email);
         }
+
+    } else { // Search for donors in Donations fields values
+
+        $donations = get_posts(array(
+            'post_type' => Leyka_Donation_Management::$post_type,
+            'post_status' => 'funded',
+            'posts_per_page' => 10,
+            'meta_query' => array(
+                'relation' => 'OR',
+                array('key' => 'leyka_donor_name', 'value' => $search_query, 'compare' => 'LIKE',),
+                array('key' => 'leyka_donor_email', 'value' => $search_query, 'compare' => 'LIKE',),
+            )
+        ));
+
+        $tmp_res = array();
+        foreach($donations as $donation) {
+
+            $donation = new Leyka_Donation($donation);
+            if( !array_key_exists($donation->donor_email, $tmp_res) ) {
+                $tmp_res[$donation->donor_email] = $donation->donor_name;
+            }
+
+        }
+        foreach($tmp_res as $email => $name) {
+            $res[] = array('label' => sprintf('%s (%s)', $name, $email), 'value' => $email);
+        }
+
     }
-    
+
     die(json_encode($res));
 
 }

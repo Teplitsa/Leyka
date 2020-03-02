@@ -178,6 +178,58 @@
 
 }
 
+// Selectmenu fields:
+.ui-selectmenu-button {
+
+    @include leyka-admin-list-filter-selector();
+
+    background-image: none;
+    border-radius: 0;
+    box-sizing: border-box;
+    border: none;
+    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.4);
+    width: 176px !important;
+    height: 32px;
+    display: inline-block;
+    color: $leyka-admin-color-text;
+    overflow: unset;
+    padding: 3px 5px 3px 8px;
+
+    .ui-icon.ui-icon-triangle-1-s {
+        display: none;
+    }
+
+    .ui-selectmenu-text {
+
+        @include leyka-admin-list-text();
+
+        display: block;
+        overflow: unset;
+        padding-left: 0;
+
+    }
+
+}
+
+.ui-selectmenu-menu {
+    ul.ui-menu.ui-widget-content  {
+        border-radius: 0;
+
+        li.ui-menu-item {
+
+            @include leyka-admin-list-text();
+
+            &.ui-state-focus {
+                background-image: none;
+                background-color: $leyka-admin-color-link;
+                color: $color-white;
+                border: 1px solid $leyka-admin-color-link;
+            }
+        }
+    }
+}
+// Selectmenu fields - END
+
 .ui-autocomplete-multiselect {
 
     @include leyka-field-multiselect();

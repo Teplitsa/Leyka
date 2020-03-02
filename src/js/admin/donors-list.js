@@ -1,11 +1,16 @@
 /** Donors list page */
 jQuery(document).ready(function($){
 
+    let $page_wrapper = $('.wrap');
+    if( !$page_wrapper.length || $page_wrapper.data('leyka-admin-page-type') !== 'donors-list-page' ) {
+        return;
+    }
+
 	function leyka_fill_datepicker_input_period(inst, extension_range) {
 
 		let input_text = extension_range.startDateText;
 		if(extension_range.endDateText && extension_range.endDateText !== extension_range.startDateText) {
-			input_text += ','+extension_range.endDateText;
+			input_text += ' - '+extension_range.endDateText;
 		}
 		$(inst.input).val(input_text);
 
@@ -31,7 +36,6 @@ jQuery(document).ready(function($){
 						try {
 							singleDate = $.datepicker.parseDate($(input).datepicker('option', 'dateFormat'), selectedDatesStrList[i]);
 						} catch {
-							// console.log("parse date error: " + selectedDatesStrList[i])
 							singleDate = new Date();
 						}
 						
@@ -41,33 +45,22 @@ jQuery(document).ready(function($){
 
 				$(inst.input).val(selectedDates[0]);
 				$(inst.input).datepicker('setDate', selectedDates);
+
 				setTimeout(function(){
 					leyka_fill_datepicker_input_period(inst, $(inst.dpDiv).data('datepickerExtensionRange'));
 				});
-				
+
 			}
-		});		
+		});
 
 	}
 
 	let selector_values = [],
-		selected_values = [],
-        $page_wrapper = $('.wrap');
-
-    if( !$page_wrapper.length || $page_wrapper.data('leyka-admin-page-type') !== 'donors-list-page' ) {
-        return;
-    }
-
-    if(typeof $().selectmenu !== 'undefined') {
-        $('select[name="donor-type"]').selectmenu();
-    }
+		selected_values = [];
 
 	$('input[name="donor-name-email"]').autocomplete({
-		source: leyka.ajaxurl + '?action=leyka_donors_autocomplete',
-		minLength: 2,
-		select: function( event, ui ) {
-			// console.log( "Selected: " + ui.item.label + " ID: " + ui.item.value );
-		}		
+		source: leyka.ajaxurl+'?action=leyka_donors_autocomplete&type=users',
+		minLength: 2
 	});
 
 	leyka_init_filter_datepicker($('input[name="first-donation-date"]'), {
@@ -84,10 +77,10 @@ jQuery(document).ready(function($){
 	});
 
     $('input.leyka-campaigns-selector').autocomplete({
-        source: leyka.ajaxurl + '?action=leyka_campaigns_autocomplete',
+        source: leyka.ajaxurl+'?action=leyka_campaigns_autocomplete',
         multiselect: true,
-        search_on_focus: true,
         minLength: 0,
+        search_on_focus: true,
         pre_selected_values: selected_values,
 		leyka_select_callback: function( selectedItems ) {
 			var $select = $('#leyka-campaigns-select');
@@ -166,7 +159,7 @@ jQuery(document).ready(function($){
 		}
 	});
 
-	var $leyka_payment_status_autocomplete = $('input.leyka-payment-status-selector').autocomplete({
+	let $leyka_payment_status_autocomplete = $('input.leyka-payment-status-selector').autocomplete({
         source: selector_values,
         multiselect: true,
         search_on_focus: true,
@@ -189,7 +182,10 @@ jQuery(document).ready(function($){
 		$('input.leyka-campaigns-selector').autocomplete('reset');
 
 		$('input[name="donor-name-email"]').val('');
-		$('select[name="donor-type"]').prop('selectedIndex', 0).selectmenu('refresh');
+
+        if(typeof $().selectmenu !== 'undefined') {
+            $('select[name="donor-type"]').prop('selectedIndex', 0).selectmenu('refresh');
+        }
 
 		$('input[name="first-donation-date"]').val('');
 		$('input[name="last-donation-date"]').val('');
