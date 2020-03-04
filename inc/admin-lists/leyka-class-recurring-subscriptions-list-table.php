@@ -28,163 +28,71 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
      */
     public function filter_recurring_subscriptions(array $params, $filter_type = '') {
 
-//        if($filter_type !== 'get_donors') {
-//            return false;
-//        }
+        if($filter_type !== 'get_recurring_subscriptions') {
+            return $params;
+        }
 
-//        $params['meta_query'] = array();
-//        if( !empty($_REQUEST['donor-type']) ) {
-//            $params['meta_query'][] = array('key' => 'leyka_donor_type', 'value' => esc_sql($_REQUEST['donor-type']),);
-//        }
-//
-//        if( !empty($_REQUEST['donor-name-email']) ) {
-//
-//            $_REQUEST['donor-name-email'] = trim($_REQUEST['donor-name-email']);
-//
-//            if($_REQUEST['donor-name-email']) {
-//
-//                $params['search'] = '*'.esc_sql($_REQUEST['donor-name-email']).'*';
-//                $params['search_columns'] = array('ID', 'display_name', 'user_email',);
-//
-//            }
-//
-//        }
-//
-//        if( !empty($_REQUEST['gateways']) ) {
-//
-//            $gateways_meta_query = array('relation' => 'OR',);
-//
-//            foreach($_REQUEST['gateways'] as $pm_full_id) {
-//                $gateways_meta_query[] = array(
-//                    'key' => 'leyka_donor_gateways',
-//                    'value' => esc_sql($pm_full_id),
-//                    'compare' => 'LIKE',
-//                );
-//            }
-//
-//            $params['meta_query'][] = $gateways_meta_query;
-//
-//        }
-//
-//        if( !empty($_REQUEST['campaigns']) && !empty($_REQUEST['campaigns'][0]) ) {
-//
-//            $campaigns_meta_query = array('relation' => 'OR',);
-//
-//            foreach($_REQUEST['campaigns'] as $campaign_id) {
-//                $campaigns_meta_query[] = array(
-//                    'key' => 'leyka_donor_campaigns',
-//                    'value' => 'i:'.absint($campaign_id).';', // A little freaky, we know, but it's the best we could think of
-//                    'compare' => 'LIKE',
-//                );
-//            }
-//
-//            $params['meta_query'][] = $campaigns_meta_query;
-//
-//        }
-//
-//        if( !empty($_REQUEST['first-donation-date']) ) {
-//
-//            if(stripos($_REQUEST['first-donation-date'], ',') !== false) { // Dates period chosen
-//
-//                $_REQUEST['first-donation-date'] = array_slice(explode(',', $_REQUEST['first-donation-date']), 0, 2);
-//
-//                if(count($_REQUEST['first-donation-date']) === 2) { // The date is set as an interval
-//
-//                    $_REQUEST['first-donation-date'][0] = strtotime($_REQUEST['first-donation-date'][0].' 00:00:00');
-//                    $_REQUEST['first-donation-date'][1] = strtotime($_REQUEST['first-donation-date'][1].' 23:59:59');
-//
-//                    $params['meta_query'][] = array(
-//                        'key' => 'leyka_donor_first_donation_date',
-//                        'value' => $_REQUEST['first-donation-date'],
-//                        'compare' => 'BETWEEN',
-//                        'type' => 'NUMERIC',
-//                    );
-//
-//                }
-//
-//            } else { // Single date chosen
-//                $params['meta_query'][] = array(
-//                    'key' => 'leyka_donor_first_donation_date',
-//                    'value' => array(
-//                        strtotime($_REQUEST['first-donation-date'].' 00:00:00'),
-//                        strtotime($_REQUEST['first-donation-date'].' 23:59:59'),
-//                    ),
-//                    'compare' => 'BETWEEN',
-//                    'type' => 'NUMERIC',
-//                );
-//            }
-//
-//        }
-//
-//        if( !empty($_REQUEST['last-donation-date']) ) {
-//
-//            if(stripos($_REQUEST['last-donation-date'], ',') !== false) { // Dates period chosen
-//
-//                $_REQUEST['last-donation-date'] = array_slice(explode(',', $_REQUEST['last-donation-date']), 0, 2);
-//
-//                if(count($_REQUEST['last-donation-date']) === 2) { // The date is set as an interval
-//
-//                    $_REQUEST['last-donation-date'][0] = strtotime($_REQUEST['last-donation-date'][0].' 00:00:00');
-//                    $_REQUEST['last-donation-date'][1] = strtotime($_REQUEST['last-donation-date'][1].' 23:59:59');
-//
-//                    $params['meta_query'][] = array(
-//                        'key' => 'leyka_donor_last_donation_date',
-//                        'value' => $_REQUEST['last-donation-date'],
-//                        'compare' => 'BETWEEN',
-//                        'type' => 'NUMERIC',
-//                    );
-//
-//                }
-//
-//            } else { // Single date chosen
-//                $params['meta_query'][] = array(
-//                    'key' => 'leyka_donor_last_donation_date',
-//                    'value' => array(
-//                        strtotime($_REQUEST['last-donation-date'].' 00:00:00'),
-//                        strtotime($_REQUEST['last-donation-date'].' 23:59:59'),
-//                    ),
-//                    'compare' => 'BETWEEN',
-//                    'type' => 'NUMERIC',
-//                );
-//            }
-//
-//        }
-//
-//        if(count($params['meta_query']) > 1) {
-//            $params['meta_query']['relation'] = 'AND';
-//        }
-//
-//        // Ordering:
-//        if(isset($_REQUEST['orderby']) && array_key_exists($_REQUEST['orderby'], $this->get_sortable_columns())) {
-//
-//            switch($_REQUEST['orderby']) {
-//                case 'donor_id': $params['orderby'] = 'ID'; break;
-//                case 'donor_type':
-//                    $params['meta_key'] = 'leyka_donor_type';
-//                    $params['orderby'] = 'meta_value';
-//                    break;
-//                case 'donor_name':
-//                    $params['orderby'] = 'display_name'; break;
-//                case 'first_donation':
-//                    $params['meta_key'] = 'leyka_donor_first_donation_date';
-//                    $params['orderby'] = 'meta_value_num';
-//                    break;
-//                case 'last_donation':
-//                    $params['meta_key'] = 'leyka_donor_last_donation_date';
-//                    $params['orderby'] = 'meta_value_num';
-//                    break;
-//                case 'amount_donated':
-//                    $params['meta_key'] = 'leyka_amount_donated';
-//                    $params['orderby'] = 'meta_value_num';
-//                break;
-//                default:
-//            }
-//
-//            if($params['orderby']) {
-//                $params['order'] = isset($_REQUEST['order']) && $_REQUEST['order'] == 'asc' ? 'ASC' : 'DESC';
-//            }
-//
-//        }
+        $params['meta_query'] = empty($params['meta_query']) ? array() : $params['meta_query'];
+        $params['date_query'] = empty($params['date_query']) ? array() : $params['date_query'];
+
+        if( !empty($_REQUEST['subscription-status']) && $_REQUEST['subscription-status'] === 'active' ) {
+            $params['meta_query'][] = array('key' => '_rebilling_is_active', 'value' => true,);
+        } else if( !empty($_REQUEST['subscription-status']) && $_REQUEST['subscription-status'] === 'non-active' ) {
+            $params['meta_query'][] = array('key' => '_rebilling_is_active', 'value' => false,);
+        }
+
+        if( !empty($_REQUEST['donor-name-email']) ) {
+
+            $_REQUEST['donor-name-email'] = trim($_REQUEST['donor-name-email']);
+
+            $params['meta_query'][] = array(
+                'relation' => 'OR',
+                array('key' => 'leyka_donor_name', 'value' => $_REQUEST['donor-name-email'], 'compare' => 'LIKE'),
+                array('key' => 'leyka_donor_email', 'value' => $_REQUEST['donor-name-email'], 'compare' => 'LIKE'),
+            );
+
+        }
+
+        if( !empty($_REQUEST['campaigns']) && !empty($_REQUEST['campaigns'][0]) ) {
+            $params['meta_query'][] = array('key' => 'leyka_campaign_id', 'value' => $_REQUEST['campaigns'], 'compare' => 'IN',);
+        }
+
+        if( !empty($_REQUEST['first-donation-date']) ) {
+
+            if(stripos($_REQUEST['first-donation-date'], '-') !== false) { // Dates period chosen
+
+                $_REQUEST['first-donation-date'] = array_slice(explode('-', $_REQUEST['first-donation-date']), 0, 2);
+
+                if(count($_REQUEST['first-donation-date']) === 2) { // The date is set as an interval
+
+                    $_REQUEST['first-donation-date'][0] = trim($_REQUEST['first-donation-date'][0]).' 00:00:00';
+                    $_REQUEST['first-donation-date'][1] = trim($_REQUEST['first-donation-date'][1]).' 23:59:59';
+
+                    $params['date_query'][] = array(array(
+                        'after' => $_REQUEST['first-donation-date'][0],
+                        'before' => $_REQUEST['first-donation-date'][1],
+                        'inclusive' => true,
+                    ));
+
+                }
+
+            } else { // Single date chosen
+                $params['date_query'][] = array(array(
+                    'after' => trim($_REQUEST['first-donation-date']).' 00:00:00',
+                    'before' => trim($_REQUEST['first-donation-date']).' 23:59:59',
+                    'inclusive' => true,
+                ));
+            }
+
+        }
+
+        if( !empty($_REQUEST['gateways']) ) {
+            $params['meta_query'][] = array('key' => 'leyka_gateway', 'value' => $_REQUEST['gateways'], 'compare' => 'IN',);
+        }
+
+        if(count($params['meta_query']) > 1) {
+            $params['meta_query']['relation'] = 'AND';
+        }
 
         return $params;
 
@@ -230,16 +138,14 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
         }
 
         $params = apply_filters(
-            'leyka_admin_donors_list_filter', array_merge(array(
+            'leyka_admin_recurring_subscriptions_list_filter', array_merge(array(
                 'post_type' => Leyka_Donation_Management::$post_type,
                 'post_status' => 'funded',
                 'post_parent' => 0,
                 'posts_per_page' => $per_page ? absint($per_page) : -1,
                 'paged' => $page_number && $page_number > 1 ? absint($page_number) : 1,
                 'meta_query' => array(
-                    'meta_query' => array(
-                        array('key' => 'leyka_payment_type', 'value' => 'rebill', 'compare' => '=',),
-                    ),
+                    array('key' => 'leyka_payment_type', 'value' => 'rebill', 'compare' => '=',),
                 ),
             ), $order_params),
             'get_recurring_subscriptions'
@@ -302,9 +208,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
             'post_parent' => 0,
             'posts_per_page' => -1,
             'meta_query' => array(
-                'meta_query' => array(
-                    array('key' => 'leyka_payment_type', 'value' => 'rebill', 'compare' => '=',),
-                ),
+                array('key' => 'leyka_payment_type', 'value' => 'rebill', 'compare' => '=',),
             ),
         ), 'get_recurring_subscriptions_total_count'));
 
@@ -440,7 +344,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
      */
     public function column_amount($item) {
         return empty($item['amount']) || $item['amount'] == 0 ?
-            '' : round($item['amount'], 2).' '.leyka_get_currency_label('rur');
+            '' : leyka_amount_format(round($item['amount'], 2)).' '.leyka_get_currency_label('rur');
     }
 
     /**

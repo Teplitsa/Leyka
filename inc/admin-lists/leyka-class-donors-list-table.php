@@ -515,7 +515,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      */
     public function column_amount_donated($item) {
         return empty($item['amount_donated']) || $item['amount_donated'] == 0 ?
-            '' : round($item['amount_donated'], 2).' '.leyka_get_currency_label('rur');
+            '' : leyka_amount_format(round($item['amount_donated'], 2)).' '.leyka_get_currency_label('rur');
     }
 
     /**

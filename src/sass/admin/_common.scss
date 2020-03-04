@@ -1018,7 +1018,11 @@
         }
 
         &.widefat td, &.widefat td ol, &.widefat td p, &.widefat td ul {
+
             @include leyka-admin-list-text();
+
+            vertical-align: middle;
+
         }
 
         &.widefat td, &.widefat th {
