@@ -4,6 +4,57 @@ jQuery(document).ready(function($){
 
     const $body = $('body');
 
+    // Datepicker fields for admin lists filters:
+    jQuery.leyka_fill_datepicker_input_period = function leyka_fill_datepicker_input_period(inst, extension_range) {
+
+        let input_text = extension_range.startDateText;
+        if(extension_range.endDateText && extension_range.endDateText !== extension_range.startDateText) {
+            input_text += ' - '+extension_range.endDateText;
+        }
+        $(inst.input).val(input_text);
+
+    };
+
+    jQuery.leyka_init_filter_datepicker = function leyka_init_filter_datepicker($input, options) {
+
+        $input.datepicker({
+            range: 'period',
+            onSelect:function(dateText, inst, extensionRange){
+                $.leyka_fill_datepicker_input_period(inst, extensionRange);
+            },
+
+            beforeShow: function(input, inst) {
+                let selectedDatesStr = $(input).val(),
+                    selectedDatesStrList = selectedDatesStr.split(' - '),
+                    selectedDates = [];
+
+                for(let i in selectedDatesStrList) {
+                    if(selectedDatesStrList[i]) {
+
+                        let singleDate;
+                        try {
+                            singleDate = $.datepicker.parseDate($(input).datepicker('option', 'dateFormat'), selectedDatesStrList[i]);
+                        } catch {
+                            singleDate = new Date();
+                        }
+
+                        selectedDates.push(singleDate);
+                    }
+                }
+
+                $(inst.input).val(selectedDates[0]);
+                $(inst.input).datepicker('setDate', selectedDates);
+
+                setTimeout(function(){
+                    $.leyka_fill_datepicker_input_period(inst, $(inst.dpDiv).data('datepickerExtensionRange'));
+                });
+
+            }
+        });
+
+    };
+    // Datepicker fields for admin lists filters - END
+
     if(leyka_ui_widget_available('accordion')) {
         $('.ui-accordion').accordion({
             heightStyle: 'content',

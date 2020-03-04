@@ -728,7 +728,7 @@
     margin-left: 72px;
 }
 
-.leyka-admin {
+.leyka-admin-list-page {
 
     #message {
         margin-left: 0;
@@ -741,6 +741,7 @@
 
         box-sizing: border-box;
         margin-top: 4px;
+        padding-bottom: 16px;
         display: flex;
         border-bottom: 1px solid $color-border-semidark;
 
@@ -851,6 +852,181 @@
         }
 
     }
+
+    // Datepicker fields:
+    .ui-datepicker.ui-widget.ui-widget-content {
+
+        padding: 0;
+
+        @include leyka-admin-list-text();
+        font-weight: normal;
+
+        th {
+            font-weight: normal;
+        }
+
+        .ui-datepicker-calendar {
+            thead {
+                color: $color-border-semidark;
+            }
+        }
+
+        .ui-datepicker-header {
+
+            background-image: none;
+            background-color: transparent;
+            border: none;
+
+            .ui-datepicker-title {
+
+                font-weight: normal;
+
+                &:hover {
+                    background-color: $color-border-semilight;
+                    border-radius: 3px;
+                }
+
+            }
+
+            .ui-datepicker-prev {
+
+                &.ui-datepicker-prev-hover {
+                    background-image: none;
+                    background-color: $color-border-semilight;
+                    border: none;
+                    top: 2px;
+                    left: 2px;
+                }
+
+                .ui-icon {
+                }
+
+                .ui-icon.ui-icon-circle-triangle-w {
+                    background-image: url(../../img/icon-datepicker-arrow-left.svg);
+                    background-repeat: no-repeat;
+                    background-size: 32px 32px;
+                    background-position: -8px -9px;
+                }
+
+            }
+
+            .ui-datepicker-next {
+
+                &.ui-datepicker-next-hover {
+                    background-image: none;
+                    background-color: $color-border-semilight;
+                    border: none;
+                    top: 2px;
+                    right: 2px;
+                }
+
+                .ui-icon.ui-icon-circle-triangle-e {
+                    background-image: url(../../img/icon-datepicker-arrow-right.svg);
+                    background-repeat: no-repeat;
+                    background-size: 32px 32px;
+                    background-position: -8px -9px;
+                }
+
+            }
+
+        }
+
+        .ui-state-default {
+
+            background-image: none;
+            background-color: transparent;
+            text-align: center;
+            border-color: transparent;
+
+            &.ui-state-highlight {
+                border-color: $color-border-semilight;
+            }
+
+            &.ui-state-hover {
+                background-color: $color-border-semilight;
+            }
+
+            &.ui-state-active {
+                &:not(.ui-state-hover) {
+                    background-color: $leyka-admin-color-link;
+                    color: $color-white;
+                }
+            }
+
+        }
+
+    } // Datepicker fields - END
+
+    // Autocomplete fields:
+    ul.ui-autocomplete {
+
+        border-top: 0;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+
+        &.ui-menu {
+            li.ui-menu-item {
+
+                @include leyka-admin-list-text();
+
+                max-width: 320px;
+                max-height: 56px;
+                padding-bottom: 8px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: normal;
+
+                &:hover {
+                    background-image: none;
+                    background-color: $leyka-admin-color-link;
+                    color: $color-white;
+                    border: 1px solid $leyka-admin-color-link;
+                }
+
+            }
+        }
+
+    }
+    // Autocomplete fields - END
+
+    .wp-list-table {
+        a {
+            color: $leyka-admin-color-link;
+            &:hover, &:active {
+                color: $leyka-admin-color-link-active;
+            }
+        }
+
+        .sorting-indicator {
+            &:before {
+                top: 0;
+            }
+        }
+
+        th {
+
+            padding: 12px 8px 12px 8px;
+
+            a {
+                padding: 0;
+            }
+
+        }
+
+        &.widefat th {
+            @include leyka-admin-list-text-table-head();
+        }
+
+        &.widefat td, &.widefat td ol, &.widefat td p, &.widefat td ul {
+            @include leyka-admin-list-text();
+        }
+
+        &.widefat td, &.widefat th {
+            color: $leyka-admin-color-text;
+        }
+
+    }
+
     // ---- Admin lists common styles - END ---- //
 
 }

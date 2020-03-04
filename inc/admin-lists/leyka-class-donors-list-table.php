@@ -85,14 +85,14 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         if( !empty($_REQUEST['first-donation-date']) ) {
 
-            if(stripos($_REQUEST['first-donation-date'], ',') !== false) { // Dates period chosen
+            if(stripos($_REQUEST['first-donation-date'], '-') !== false) { // Dates period chosen
 
-                $_REQUEST['first-donation-date'] = array_slice(explode(',', $_REQUEST['first-donation-date']), 0, 2);
+                $_REQUEST['first-donation-date'] = array_slice(explode('-', $_REQUEST['first-donation-date']), 0, 2);
 
                 if(count($_REQUEST['first-donation-date']) === 2) { // The date is set as an interval
 
-                    $_REQUEST['first-donation-date'][0] = strtotime($_REQUEST['first-donation-date'][0].' 00:00:00');
-                    $_REQUEST['first-donation-date'][1] = strtotime($_REQUEST['first-donation-date'][1].' 23:59:59');
+                    $_REQUEST['first-donation-date'][0] = strtotime(trim($_REQUEST['first-donation-date'][0]).' 00:00:00');
+                    $_REQUEST['first-donation-date'][1] = strtotime(trim($_REQUEST['first-donation-date'][1]).' 23:59:59');
 
                     $donors_params['meta_query'][] = array(
                         'key' => 'leyka_donor_first_donation_date',
@@ -119,14 +119,14 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         if( !empty($_REQUEST['last-donation-date']) ) {
 
-            if(stripos($_REQUEST['last-donation-date'], ',') !== false) { // Dates period chosen
+            if(stripos($_REQUEST['last-donation-date'], ' - ') !== false) { // Dates period chosen
 
-                $_REQUEST['last-donation-date'] = array_slice(explode(',', $_REQUEST['last-donation-date']), 0, 2);
+                $_REQUEST['last-donation-date'] = array_slice(explode('-', $_REQUEST['last-donation-date']), 0, 2);
 
                 if(count($_REQUEST['last-donation-date']) === 2) { // The date is set as an interval
 
-                    $_REQUEST['last-donation-date'][0] = strtotime($_REQUEST['last-donation-date'][0].' 00:00:00');
-                    $_REQUEST['last-donation-date'][1] = strtotime($_REQUEST['last-donation-date'][1].' 23:59:59');
+                    $_REQUEST['last-donation-date'][0] = strtotime(trim($_REQUEST['last-donation-date'][0]).' 00:00:00');
+                    $_REQUEST['last-donation-date'][1] = strtotime(trim($_REQUEST['last-donation-date'][1]).' 23:59:59');
 
                     $donors_params['meta_query'][] = array(
                         'key' => 'leyka_donor_last_donation_date',

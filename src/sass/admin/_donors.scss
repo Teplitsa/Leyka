@@ -46,7 +46,6 @@
     // Autocomplete - Donors filter specifics:
     .ui-autocomplete-multiselect {
         margin-right: $leyka-base;
-        margin-bottom: $leyka-base;
         padding-left: 8px;
     }
 
@@ -82,167 +81,7 @@
 
 }
 
-// jquery ui custom styles
-.leyka-admin-donors-list {
-
-	// autocomplete
-	ul.ui-autocomplete {
-
-	    border-top: 0;
-	    border-top-left-radius: 0;
-	    border-top-right-radius: 0;
-
-		&.ui-menu {
-			li.ui-menu-item {
-				@include leyka-admin-list-text();
-
-				max-width: 320px;
-				max-height: 56px;
-				padding-bottom: 8px;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				white-space: normal;
-
-				&:hover {
-					background-image: none;
-					background-color: $leyka-admin-color-link;
-					color: $color-white;
-					border: 1px solid $leyka-admin-color-link;
-				}
-			}
-		}
-
-	}
-
-	// datepicker
-	.ui-datepicker.ui-widget.ui-widget-content {
-		padding: 0;
-		@include leyka-admin-list-text();
-		font-weight: normal;
-
-		th {
-			font-weight: normal;
-		}
-
-		.ui-datepicker-calendar {
-			thead {
-				color: $color-border-semidark;
-			}
-		}
-
-		.ui-datepicker-header {
-			background-image: none;
-			background-color: transparent;
-			border: none;
-
-			.ui-datepicker-title {
-				font-weight: normal;
-
-				&:hover {
-					background-color: $leyka-donors-color-selected-item-stroke;
-					border-radius: 3px;
-				}
-			}
-
-			.ui-datepicker-prev {
-				&.ui-datepicker-prev-hover {
-					background-image: none;
-					background-color: $leyka-donors-color-selected-item-stroke;
-					border: none;
-					top: 2px;
-					left: 2px;
-				}
-
-				.ui-icon {
-				}
-
-				.ui-icon.ui-icon-circle-triangle-w {
-					background-image: url(../../img/icon-datepicker-arrow-left.svg);
-					background-repeat: no-repeat;
-					background-size: 32px 32px;
-					background-position: -8px -9px;
-				}
-			}
-
-			.ui-datepicker-next {
-				&.ui-datepicker-next-hover {
-					background-image: none;
-					background-color: $leyka-donors-color-selected-item-stroke;
-					border: none;
-					top: 2px;
-					right: 2px;
-				}
-
-				.ui-icon.ui-icon-circle-triangle-e {
-					background-image: url(../../img/icon-datepicker-arrow-right.svg);
-					background-repeat: no-repeat;
-					background-size: 32px 32px;
-					background-position: -8px -9px;
-				}
-			}
-		}
-
-		.ui-state-default {
-			background-image: none;
-			background-color: transparent;
-			text-align: center;
-			border-color: transparent;
-
-			&.ui-state-highlight {
-				border-color: $leyka-donors-color-selected-item-stroke;
-			}
-
-			&.ui-state-hover {
-				background-color: $leyka-donors-color-selected-item-stroke;
-			}
-
-			&.ui-state-active {
-				&:not(.ui-state-hover) {
-					background-color: $leyka-admin-color-link;
-					color: $color-white;
-				}
-			}
-		}
-	}
-}
-
-// list
-.leyka-admin-donors-list {
-	.widefat th {
-		@include leyka-admin-list-text-table-head;
-	}
-
-	.widefat td, .widefat td ol, .widefat td p, .widefat td ul {
-		@include leyka-admin-list-text;
-	}
-
-	.widefat td, .widefat th {
-		color: $leyka-admin-color-text;
-	}
-}
-
 .leyka-admin-donors-list .wp-list-table {
-
-	a {
-		color: $leyka-admin-color-link;
-		&:hover, &:active {
-			color: $leyka-admin-color-link-active;
-		}
-	}
-
-	.sorting-indicator {
-		&:before {
-			top: 0;
-		}
-	}
-
-	th {
-		padding: 12px 8px 12px 8px;
-
-		a {
-			padding: 0;
-		}
-	}
 
 	.column-first_donation {
 		width: 121px;
@@ -283,10 +122,7 @@
 
 	#the-list {
 		td {
-			padding-left: 8px;
-			padding-right: 8px;
-			padding-top: 12px;
-			padding-bottom: 12px;
+            padding: 12px 8px;
 		}
 
 		th.check-column {

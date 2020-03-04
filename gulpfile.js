@@ -49,7 +49,7 @@ gulp.task('build-front-js', async function(){
 gulp.task('build-admin-js', function(){
 
     var vendorFiles = [basePaths.npm+'jquery.cookie/jquery.cookie.js'],
-        appFiles = [basePaths.src+'js/admin/*.js'];
+        appFiles = [basePaths.src+'js/admin/common/*.js', basePaths.src+'js/admin/*.js'];
 
     return gulp.src(vendorFiles.concat(appFiles))
         .pipe(plugins.concat('admin.js'))
@@ -61,7 +61,7 @@ gulp.task('build-admin-js', function(){
 });
 
 gulp.task('build-editor-js', function(){
-    var vendorFiles = [/*basePaths.npm+'jquery.cookie/jquery.cookie.js'*/],
+    let vendorFiles = [/*basePaths.npm+'jquery.cookie/jquery.cookie.js'*/],
         appFiles = [basePaths.src+'js/editor/editor.js']; //our own JS files
 
     return gulp.src(vendorFiles.concat(appFiles)) //join them
