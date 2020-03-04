@@ -28,10 +28,6 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
      */
     public function filter_recurring_subscriptions(array $params, $filter_type = '') {
 
-        if($filter_type !== 'get_recurring_subscriptions') {
-            return $params;
-        }
-
         $params['meta_query'] = empty($params['meta_query']) ? array() : $params['meta_query'];
         $params['date_query'] = empty($params['date_query']) ? array() : $params['date_query'];
 
