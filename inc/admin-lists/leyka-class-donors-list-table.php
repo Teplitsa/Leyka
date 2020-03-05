@@ -408,7 +408,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         $donation = new Leyka_Donation($item['last_donation']);
 
         return '<div class="leyka-donation-info-wrapper">'
-            .'<span class="donation-status '.$donation->status.' field-q"><span class="field-q-tooltip">'.esc_html__('Donation ' . $donation->status, 'leyka').'</span></span>'
+            .'<span class="donation-status '.$donation->status.' field-q"><span class="field-q-tooltip">'.__('Donation '.$donation->status, 'leyka').'</span></span>'
             .'<div class="first-sub-row">'.$donation->date.'</div>'
             .'<div class="second-sub-row">'.$donation->amount.'&nbsp;'.$donation->currency_label.',&nbsp;«'.$donation->campaign_title.'»</div>'
             .'</div>';
@@ -435,7 +435,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             ),
         );
 
-        return '<div class="donor-name"><a href="'.$admin_donor_page.'">'.$item['donor_name'].'</a></div>'
+        return '<div class="donor-name text-larger"><a href="'.$admin_donor_page.'">'.$item['donor_name'].'</a></div>'
             .'<div class="donor-email">'.$item['donor_email'].'</div>'
             .$this->row_actions($actions);
 

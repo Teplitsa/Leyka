@@ -25,6 +25,27 @@
             width: 150px;
         }
 
+        td.column-status {
+
+            .recurring-status {
+
+                display: flex;
+                flex-flow: row nowrap;
+                align-items: center;
+
+                &.active {
+                    @include leyka-colored-indicator(green);
+                }
+
+                &.not-active {
+                    @include leyka-colored-indicator(red);
+                }
+
+            }
+
+        }
+
+
     }
 
 }

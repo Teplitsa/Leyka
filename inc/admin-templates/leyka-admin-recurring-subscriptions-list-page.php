@@ -78,7 +78,7 @@
 
                     <div class="col-2">
                         <input type="submit" class="button" value="<?php _e('Filter the data', 'leyka');?>">
-                        <a href="<?php echo admin_url('/admin.php?page=leyka_donors');?>" class="reset-filters"><?php _e('Reset the filter', 'leyka');?></a>
+                        <a href="<?php echo admin_url('/admin.php?page=leyka_recurring_subscriptions');?>" class="reset-filters"><?php _e('Reset the filter', 'leyka');?></a>
                     </div>
 
                 </div>

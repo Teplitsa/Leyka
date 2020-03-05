@@ -22,6 +22,19 @@
     }
 }
 
+// Small rounded colored indicators (for donation statuses mostly):
+@mixin leyka-colored-indicator($color) {
+    &:before {
+        content: '';
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 6px;
+        background-color: $color;
+        margin-right: 4px;
+    }
+}
+
 // form fields
 @mixin leyka-rich-html {
 

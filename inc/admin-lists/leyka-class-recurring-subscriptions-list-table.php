@@ -243,11 +243,11 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
 
     public function column_status($item) {
         return empty($item['status']) ?
-            _x('Not active', 'For recurring subscription', 'leyka') :
-            _x('Active', 'For recurring subscription', 'leyka');
+            '<span class="recurring-status not-active">'._x('Not active', '[recurring subscription]', 'leyka').'</span>' :
+            '<span class="recurring-status active">'._x('Active', '[recurring subscription]', 'leyka').'</span>';
     }
 
-    public function column_donor($item) { // https://leyka.ngo2.ru/wp-admin/18
+    public function column_donor($item) {
 
         if(empty($item['donor']['id'])) {
             $donor_name = $item['donor']['name'];
@@ -266,7 +266,8 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
 
         }
 
-        return '<div class="">'.$donor_name.'</div><div class="">'.$item['donor']['email'].'</div>';
+        return '<div class="donor-name text-larger">'.$donor_name.'</div>'
+            .'<div class="donor-email">'.$item['donor']['email'].'</div>';
 
     }
 

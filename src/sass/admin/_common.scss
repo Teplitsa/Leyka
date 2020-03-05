@@ -990,11 +990,15 @@
     // Autocomplete fields - END
 
     .wp-list-table {
+
         a {
+
             color: $leyka-admin-color-link;
+
             &:hover, &:active {
                 color: $leyka-admin-color-link-active;
             }
+
         }
 
         .sorting-indicator {
@@ -1011,15 +1015,26 @@
                 padding: 0;
             }
 
+            &.check-column {
+
+                padding-top: 0;
+                vertical-align: middle;
+
+                input[type="checkbox"] {
+                    margin-top: 0 !important;
+                }
+
+            }
+
         }
 
         &.widefat th {
             @include leyka-admin-list-text-table-head();
         }
 
-        &.widefat td, &.widefat td ol, &.widefat td p, &.widefat td ul {
+        &.widefat td {
 
-            @include leyka-admin-list-text();
+            @include leyka-admin-list-text-small();
 
             vertical-align: middle;
 
@@ -1027,6 +1042,10 @@
 
         &.widefat td, &.widefat th {
             color: $leyka-admin-color-text;
+        }
+
+        .text-larger { // For slightli bigger text elements
+            font-size: 13px;
         }
 
     }
