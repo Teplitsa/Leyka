@@ -84,7 +84,7 @@
                 </div>
 
                 <div class="recurring-subscriptions-list-export admin-list-export">
-                    <input type="submit" class="submit" name="subscription-list-export" value="<?php _e('Export the list in CSV', 'leyka');?>">
+                    <input type="submit" class="submit" name="subscriptions-list-export" value="<?php _e('Export the list in CSV', 'leyka');?>">
                 </div>
 
             </form>

@@ -13,7 +13,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
 
         add_filter('leyka_admin_recurring_subscriptions_list_filter', array($this, 'filter_recurring_subscriptions'), 10, 2);
 
-        if( !empty($_REQUEST['recurring-subscriptions-list-export']) ) {
+        if( !empty($_REQUEST['subscriptions-list-export']) ) {
             $this->_export_recurring_subscriptions();
         }
 
@@ -461,91 +461,60 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
         ini_set('max_execution_time', 99999);
         set_time_limit(99999);
 
-//        ob_start();
-//
-//        $this->items = self::get_donors(false);
-//
-//        add_filter('leyka_donors_export_line', 'leyka_prepare_data_line_for_export', 10, 2);
-//
-//        ob_clean();
-//
-//        header('Content-type: application/vnd.ms-excel');
-//        header('Content-Transfer-Encoding: binary');
-//        header('Expires: 0');
-//        header('Pragma: no-cache');
-//
-//        header('Content-Disposition: attachment; filename="donors-'.date('d.m.Y-H.i.s').'.csv"');
-//
-//        echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
-//            'UTF-8',
-//            apply_filters('leyka_donors_export_content_charset', 'windows-1251'),
-//            "sep=;\n".implode(';', apply_filters('leyka_donors_export_headers', array(
-//                'ID', 'Тип донора', 'Имя', 'Email', 'Дата первого пожертвования', 'Сумма первого пожертвования', 'Кампания первого пожертвования', 'Метки донора', 'Кампании', 'Платёжные операторы', 'Дата последнего пожертвования', 'Сумма последнего пожертвования', 'Кампания последнего пожертвования', 'Общая сумма пожертвований', 'Валюта',
-//            )))
-//        );
-//
-//        foreach($this->items as $donor_data) {
-//
-//            $first_donation = $donor_data['first_donation'] ? new Leyka_Donation($donor_data['first_donation']) : false;
-//            $last_donation = $donor_data['last_donation'] ? new Leyka_Donation($donor_data['last_donation']) : false;
-//
-//            $donor_tags_list = array();
-//            if( !empty($donor_data['donors_tags']) ) {
-//                foreach($donor_data['donors_tags'] as $term) { /** @var $term WP_Term */
-//                    $donor_tags_list[] = esc_attr($term->name);
-//                }
-//            }
-//            $donor_tags_list = implode(', ', $donor_tags_list);
-//
-//            $donor_campaigns_list = array();
-//            if( !empty($donor_data['campaigns']) ) {
-//                foreach($donor_data['campaigns'] as $campaign_id => $campaign_title) {
-//                    if($campaign_title) {
-//                        $donor_campaigns_list[] = $campaign_title;
-//                    }
-//                }
-//            }
-//            sort($donor_campaigns_list);
-//            $donor_campaigns_list = implode(', ', $donor_campaigns_list);
-//
-//            $donor_gateways_list = array();
-//            if( !empty($donor_data['gateways']) ) {
-//                foreach($donor_data['gateways'] as $gateway_id) {
-//
-//                    $gateway = leyka_get_gateway_by_id($gateway_id);
-//                    if($gateway) {
-//                        $donor_gateways_list[] = esc_attr($gateway->label);
-//                    }
-//
-//                }
-//            }
-//            sort($donor_gateways_list);
-//            $donor_gateways_list = implode(', ', $donor_gateways_list);
-//
-//            echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
-//                'UTF-8',
-//                apply_filters('leyka_donations_export_content_charset', 'windows-1251'),
-//                "\r\n".implode(';', apply_filters('leyka_donations_export_line', array(
-//                        $donor_data['donor_id'],
-//                        _x(mb_ucfirst($donor_data['donor_type']), "Donor's type", 'leyka'),
-//                        $donor_data['donor_name'],
-//                        $donor_data['donor_email'],
-//                        ($first_donation ? $first_donation->date : ''),
-//                        ($first_donation ? $first_donation->amount : ''),
-//                        ($first_donation ? $first_donation->campaign_title : ''),
-//                        $donor_tags_list,
-//                        $donor_campaigns_list,
-//                        $donor_gateways_list,
-//                        ($last_donation ? $last_donation->date : ''),
-//                        ($last_donation ? $last_donation->amount : ''),
-//                        ($last_donation ? $last_donation->campaign_title : ''),
-//                        $donor_data['amount_donated'],
-//                        leyka_get_currency_label(),
-//                    ), $donor_data)
-//                )
-//            );
-//
-//        }
+        ob_start();
+
+        $this->items = $this->get_recurring_subscriptions(false);
+
+        add_filter('leyka_recurring_subscriptions_export_line', 'leyka_prepare_data_line_for_export', 10, 2);
+
+        ob_clean();
+
+        header('Content-type: application/vnd.ms-excel');
+        header('Content-Transfer-Encoding: binary');
+        header('Expires: 0');
+        header('Pragma: no-cache');
+
+        header('Content-Disposition: attachment; filename="recurring_subscriptions-'.date('d.m.Y-H.i.s').'.csv"');
+
+        echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
+            'UTF-8',
+            apply_filters('leyka_recurring_subscriptions_export_content_charset', 'windows-1251'),
+            "sep=;\n".implode(';', apply_filters('leyka_recurring_subscriptions_export_headers', array(
+                'ID', 'Статус подписки', 'Имя донора', 'Email', 'Кампания', 'Дата первого пожертвования', 'Дата следующего пожертвования', 'Всего пожертвований', 'Платёжный оператор', 'Сумма подписки', 'Валюта',
+            )))
+        );
+
+        $date_format = get_option('date_format');
+
+        foreach($this->items as $item) {
+
+            $pm = leyka_get_pm_by_id($item['gateway'], true);
+            $gateway = leyka_get_gateway_by_id($pm->gateway_id);
+
+            echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
+                'UTF-8',
+                apply_filters('leyka_recurring_subscriptions_export_content_charset', 'windows-1251'),
+                "\r\n".implode(';', apply_filters('leyka_recurring_subscriptions_export_line', array(
+                        $item['id'],
+                        empty($item['status']) ? 'неактивна' : 'активна',
+                        empty($item['donor']['name']) ? '' : $item['donor']['name'],
+                        empty($item['donor']['email']) ? '' : $item['donor']['email'],
+                        empty($item['campaign']['title']) ? 'Кампания #'.$item['campaign']['id'] : $item['campaign']['title'],
+                        $item['first_donation']->date_label,
+                        apply_filters(
+                            'leyka_admin_donation_date',
+                            date($date_format, $item['next_donation']),
+                            $item['next_donation'], $date_format
+                        ),
+                        $item['donations_number'],
+                        $gateway->label.', '.$pm->label,
+                        empty($item['amount']) || $item['amount'] == 0 ? '' : leyka_amount_format(round($item['amount'], 2)),
+                        leyka_get_currency_label('rur'),
+                    ), $item)
+                )
+            );
+
+        }
 
         die();
 
