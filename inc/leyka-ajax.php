@@ -156,8 +156,6 @@ function leyka_get_gateway_redirect_data(){
 
             } // Direct integration with GUA - checkout event END
 
-//            $_COOKIE['leyka']['last_donation_id'][Leyka_Donor::user_is_donor(wp_get_current_user()) ? get_current_user_id() : 0] = $donation_id;
-
         }
 
         $payment_vars = array_merge(
