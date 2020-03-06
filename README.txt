@@ -89,6 +89,17 @@ PHP version required: 5.6+
 10. Google Analytics events
 
 == Changelog ==
+= 3.8 =
+* New: recurring subscriptions admin page added.
+* New: now Google UA supported directly, without dataLayer & GTA.
+* New: the procedure for Donors' notifications on recurring canceling added.
+* New: Donors admin list - bulk edit feature added.
+* Fix: Donations recurring canceling date bugfix.
+* Fix: Donations admin list - footer CSS bug fixed.
+~ Tweak: admin donation details page - details output improved.
+~ Tweak: the active recurring procedure improved.
+~ Tweak: admin styles improved.
+
 = 3.7 =
 * New: Extensions engine added.
 * New: Support packages Extension added.
