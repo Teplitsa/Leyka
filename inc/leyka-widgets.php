@@ -58,7 +58,7 @@ class Leyka_Campaign_Card_Widget extends WP_Widget {
 		
 		$campaign = new Leyka_Campaign($campaign_id);
 		
-		if($campaign->campaign_template === 'star' || !leyka_options()->opt('allow_deprecated_form_templates')) {
+		if($campaign->campaign_template === 'star') {
 		    $html = leyka_shortcode_campaign_card(array_merge(array('campaign_id' => $campaign_id), $args));
 		}
 		else {
