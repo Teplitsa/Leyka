@@ -1,0 +1,2968 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Leyka Extension - Engagement Banner\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-02-26 20:06+0300\n"
+"PO-Revision-Date: 2020-02-26 20:06+0300\n"
+"Last-Translator: Anna Ladoshkina <webdev@foralien.com>\n"
+"Language-Team: \n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10 >= 2 && n"
+"%10<=4 &&(n%100<10||n%100 >= 20)? 1 : 2);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Generator: Poedit 1.8.11\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-KeywordsList: _:1;gettext:1;dgettext:2;ngettext:1,2;dngettext:2,3;"
+"__:1;_e:1;_c:1;_n:1,2;_n_noop:1,2;_nc:1,2;__ngettext:1,2;__ngettext_noop:1,2;"
+"_x:1,2c;_ex:1,2c;_nx:1,2,4c;_nx_noop:1,2,3c;_n_js:1,2;_nx_js:1,2,3c;"
+"esc_attr__:1;esc_html__:1;esc_attr_e:1;esc_html_e:1;esc_attr_x:1,2c;"
+"esc_html_x:1,2c;comments_number_link:2,3;t:1;st:1;trans:1;transChoice:1,2\n"
+"X-Loco-Target-Locale: ru_RU\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: node_modules\n"
+"X-Poedit-SearchPathExcluded-1: bower_components\n"
+"X-Poedit-SearchPathExcluded-2: assets\n"
+
+#: inc/config-options.php:9
+msgid "Content"
+msgstr "Содержание"
+
+#: inc/config-options.php:15
+msgid "Heading"
+msgstr "Заголовок"
+
+#: inc/config-options.php:17
+msgid "Heading text (up to 100 characters) or shortcode"
+msgstr "Текст заголовка или шорткод"
+
+#: inc/config-options.php:22
+msgid "Main text"
+msgstr "Основной текст"
+
+#: inc/config-options.php:28
+msgid "Selected phrase"
+msgstr "Выделенная фраза"
+
+#: inc/config-options.php:29
+msgid "Phrase to be emphasized at the end of text"
+msgstr "Выделенная фраза в конце для усиления призыва"
+
+#: inc/config-options.php:34
+msgid "Button label"
+msgstr "Надпись на кнопке"
+
+#: inc/config-options.php:39
+msgid "Button link"
+msgstr "Ссылка кнопки"
+
+#: inc/config-options.php:47
+msgid "Placement"
+msgstr "Расположение"
+
+#: inc/config-options.php:53
+msgid "Position on desktop screen"
+msgstr "Позиция на экране - десктоп"
+
+#: inc/config-options.php:58
+msgid "On bottom"
+msgstr "Внизу"
+
+#: inc/config-options.php:62
+msgid "On top"
+msgstr "Вверху"
+
+#: inc/config-options.php:69
+msgid "What pages to appear"
+msgstr "Появление на страницах"
+
+#: inc/config-options.php:74
+msgid "All pages"
+msgstr "Все страницы"
+
+#: inc/config-options.php:77
+msgid "Single pages"
+msgstr "Страницы публикаций"
+
+#: inc/config-options.php:80
+msgid "Only homepage"
+msgstr "Только на главной"
+
+#: inc/config-options.php:86
+msgid "Display on homepage"
+msgstr "Показывать на главной"
+
+#: inc/config-options.php:91
+msgid "Yes"
+msgstr "Да"
+
+#: inc/config-options.php:94
+msgid "No"
+msgstr "Нет"
+
+#: inc/config-options.php:100
+msgid "Hide banner on particular pages or content types"
+msgstr "Скрывать баннер на определенных страницах или типах контента"
+
+#: inc/config-options.php:102
+msgid "Rules in this field hide banner on particular pages"
+msgstr ""
+"Правила, запрещающие показ баннера на страницах, выбранных по ID, или для "
+"указанных типов контента"
+
+#: inc/config-options.php:103
+msgid ""
+"Enter post IDs in format id:123 or post type in format pt:my_post, term IDs "
+"in format tid:123 or taxonomy - tax:my_tax. One rule per row."
+msgstr ""
+"Укажите ID записи в формате id: 123 или тип записи в формате pt: my_type, "
+"идентификаторы термина в формате tid: 123 или таксономии - tax: my_tax. Одно "
+"правило на строку."
+
+#: inc/config-options.php:107
+msgid "Hide after donation"
+msgstr "Скрывать после оплаты пожертвования"
+
+#: inc/config-options.php:112
+msgid "Don't hide"
+msgstr "Нет"
+
+#: inc/config-options.php:115
+msgid "Hide for 1 day"
+msgstr "На 1 день"
+
+#: inc/config-options.php:118
+msgid "Hide for 1 week"
+msgstr "На 1 неделю"
+
+#: inc/config-options.php:121
+msgid "Hide forever"
+msgstr "Навсегда"
+
+#: inc/config-options.php:127
+msgid "Hide for user with roles"
+msgstr "Скрывать для пользователей с определенной ролью"
+
+#: inc/config-options.php:138
+msgid "Interactions"
+msgstr "Поведение"
+
+#: inc/config-options.php:144
+msgid "Delay type"
+msgstr "Тип задержки перед появлением баннера"
+
+#: inc/config-options.php:149
+msgid "By time"
+msgstr "Время на странице"
+
+#: inc/config-options.php:152
+msgid "By scroll"
+msgstr "Прокрутка страницы"
+
+#: inc/config-options.php:158
+msgid "Delay - sec."
+msgstr "Задержка - секунд"
+
+#: inc/config-options.php:164
+msgid "Scrolled - percentage of page height"
+msgstr "Прокрутка - % высоты страницы"
+
+#: inc/config-options.php:172
+msgid "Remember close"
+msgstr "Запоминать закрытие"
+
+#: inc/config-options.php:177
+msgid "Don't remember"
+msgstr "Не запоминать"
+
+#: inc/config-options.php:180
+msgid "Remember during session"
+msgstr "В течении сессии"
+
+#: inc/config-options.php:183
+msgid "Remember for 1 day"
+msgstr "На 1 день"
+
+#: inc/config-options.php:186
+msgid "Remember for 1 week"
+msgstr "На 1 неделю"
+
+#: inc/config-options.php:189
+msgid "Remember forever"
+msgstr "Навсегда"
+
+#: inc/config-options.php:203
+msgid "Logged in user"
+msgstr "Залогиненный пользователь"
+
+#: inc/template-scale.php:11
+#, php-format
+msgid "Out of %s %s"
+msgstr "Из %s %s"
+
+#: leyka-class-engagement-banner-extension.php:24
+msgid "Engagement Banner"
+msgstr "Баннер пожертвований"
+
+#: leyka-class-engagement-banner-extension.php:26
+msgid "Display fundrising banner on website pages, control appearance logic."
+msgstr ""
+"Баннер с призывом сделать пожертвование на страницах сайта - настраивайте "
+"внешний вид и логику отображения."
+
+#: leyka-class-engagement-banner-extension.php:28
+msgid ""
+"Display fundrising banner on website pages. Customise its appearance and "
+"behaviour through set of simple options."
+msgstr ""
+"Баннер с призывом сделать пожертвование на страницах сайта - настраивайте "
+"внешний вид и логику отображения."
+
+#: leyka-class-engagement-banner-extension.php:30
+msgid ""
+"Setup content of a banner and  color scheme, tune appeacne logic to you need "
+"and attract more donations."
+msgstr ""
+"Настройте содержание и цветовую схему баннера, отрегулируйте правила показа "
+"в зависимости от структуры вашего сайта и привлекайте больше пожертвований."
+
+#: leyka-class-engagement-banner-extension.php:317
+msgid "Select user role"
+msgstr "Выбрать роли пользователя"
+
+#~ msgid "Hide for current visit"
+#~ msgstr "В текущей сессии"
+
+#~ msgid "Hide for 1 month"
+#~ msgstr "На 1 месяц"
+
+#~ msgid "Select role"
+#~ msgstr "Выберите роль"
+
+#~ msgid ""
+#~ "Enter post IDs in format id:123 or post type in format pt:my_post. One "
+#~ "rule per row"
+#~ msgstr ""
+#~ "Укажите ID страниц в формате id:123 или типа контента в формате pt:"
+#~ "my_type. Одно правило на строку"
+
+#~ msgid "Delay in sec."
+#~ msgstr "Задержка сек."
+
+#~ msgid "Scroll screens."
+#~ msgstr "Прокрутка - экранов"
+
+#~ msgid "Enter rules to hide banner on pages, selected by IDs or post-type"
+#~ msgstr ""
+#~ "Укажите ID страниц в формате id:123 или название типа контента в формате "
+#~ "pt:my_type. Одно правило на строку"
+
+#~ msgid "One rule per row"
+#~ msgstr "Каждой правило - в новой строке"
+
+#~ msgid "Exclude rules"
+#~ msgstr "Правила исключений"
+
+#~ msgid "Error 404. Page not found"
+#~ msgstr "Ошибка 404. Страница не найдена"
+
+#~ msgid "Manual"
+#~ msgstr "Инструкция"
+
+#~ msgid "More details"
+#~ msgstr "Подробнее"
+
+#~ msgid "New issue"
+#~ msgstr "Новый номер"
+
+#~ msgid "In the issue"
+#~ msgstr "В номере"
+
+#~ msgid "News"
+#~ msgstr "Новости"
+
+#~ msgid "Text Toggle"
+#~ msgstr "Скрытый текст"
+
+#~ msgid "Open hidden text block by click"
+#~ msgstr "Раскрывающийся по клику блок текста"
+
+#~ msgid "CTA"
+#~ msgstr "CTA"
+
+#~ msgid "Horizontal CTA sections with dividers"
+#~ msgstr "Горизонтальный CTA-блок с разделителями"
+
+#~ msgid "Section title"
+#~ msgstr "Заголовок секции"
+
+#~ msgid "Projects as slider with title"
+#~ msgstr "Слайдер спецпроектов "
+
+#~ msgid "Partners"
+#~ msgstr "Партнеры"
+
+#~ msgid "Partners logo grid"
+#~ msgstr "Сетка логотипов партнеров"
+
+#~ msgid "Banner zone"
+#~ msgstr "Баннерное место"
+
+#~ msgid "Banner place in the grid"
+#~ msgstr ""
+#~ "Зона баннеров в сетке - заполняется активными баннерами по очереди в "
+#~ "ротации"
+
+#~ msgid "Menu"
+#~ msgstr "Меню"
+
+#~ msgid "Menu with optional title"
+#~ msgstr "Меню с заголовком"
+
+#~ msgid "Newsletter form"
+#~ msgstr "Форма подписки"
+
+#~ msgid "Print newsletter form in page"
+#~ msgstr "Вывод формы подписки на странице"
+
+#~ msgid "Pullquote"
+#~ msgstr "Выдержка"
+
+#~ msgid "Highlighted text or block"
+#~ msgstr "Выделеный блок текста"
+
+#~ msgid "Featured posts"
+#~ msgstr "Избранные статьи"
+
+#~ msgid "Fancy grid of featured posts - for feed of columns"
+#~ msgstr " Сетка избранных статей - записи или колонки"
+
+#~ msgid "Column - list"
+#~ msgstr "Колонка - список"
+
+#~ msgid "List of articles from columns"
+#~ msgstr "Список статей из колонки"
+
+#~ msgid "Sub-column slider"
+#~ msgstr "Выпуски в колонке"
+
+#~ msgid "Slider of subcategories in selected column"
+#~ msgstr "Слайдер подкатегорий (выпусков) колонки"
+
+#~ msgid "Featured post"
+#~ msgstr "Избранный пост"
+
+#~ msgid "Single post from selected column"
+#~ msgstr "Избранный пост из колонки или записей"
+
+#~ msgid "Post list"
+#~ msgstr "Статьи - список"
+
+#~ msgid "Projects - slider"
+#~ msgstr "Проекты - слайдер"
+
+#~ msgid "News lists"
+#~ msgstr "Новости"
+
+#~ msgid "List of resent news"
+#~ msgstr "Список последних новостей"
+
+#~ msgid "News archive"
+#~ msgstr "Новости - архив"
+
+#~ msgid "List of news in archive format with load more option"
+#~ msgstr "Список новостей в формате архива с возможностью подгрузки"
+
+#~ msgid "Editors list"
+#~ msgstr "Состав редакции"
+
+#~ msgid "Editors list by category"
+#~ msgstr "Список членов редакции по категории"
+
+#~ msgid "New issue promo with articles selections"
+#~ msgstr "Промо нового номера со списком статей"
+
+#~ msgid "Article list"
+#~ msgstr "Список статей из архива"
+
+#~ msgid "List of articles from archive with various selection options"
+#~ msgstr "Список статей из архива с вариантами выборки"
+
+#~ msgid "Archive"
+#~ msgstr "Архив"
+
+#~ msgid "Archive promo with side selection of article"
+#~ msgstr "Про архива - выборка номеров и статей"
+
+#~ msgid "Product"
+#~ msgstr "Товар"
+
+#~ msgid "Product to display as selling options"
+#~ msgstr "Карточка товара на промо страницах"
+
+#~ msgid "Cards row"
+#~ msgstr "Карточки"
+
+#~ msgid "Row of aligned cards with buttons"
+#~ msgstr "Ряд карточек с кнопкой, выровненных по высоте"
+
+#~ msgid "Main"
+#~ msgstr "Основной"
+
+#~ msgid "Light"
+#~ msgstr "Светлый"
+
+#~ msgid "Main to light"
+#~ msgstr "Светлый от основного"
+
+#~ msgid "Gray"
+#~ msgstr "Серый"
+
+#~ msgid "Semi-gray"
+#~ msgstr "Серо-зеленый"
+
+#~ msgid "Light-gray"
+#~ msgstr "Светло-сервый"
+
+#~ msgid "White"
+#~ msgstr "Белый"
+
+#~ msgid "Black"
+#~ msgstr "Черный"
+
+#~ msgid "Small"
+#~ msgstr "Маленький"
+
+#~ msgid "Normal"
+#~ msgstr "Обычный"
+
+#~ msgid "Medium"
+#~ msgstr "Средний"
+
+#~ msgid "Large"
+#~ msgstr "Большой"
+
+#~ msgid "Homepage"
+#~ msgstr "Главная"
+
+#~ msgid "Newsletter"
+#~ msgstr "Рассылка"
+
+#~ msgid "All rights reserved"
+#~ msgstr "Все права защищены."
+
+#~ msgid "Journal"
+#~ msgstr "Журнал"
+
+#~ msgid "Official"
+#~ msgstr "Официально"
+
+#~ msgid "Social media"
+#~ msgstr "Мы в соц.сетях"
+
+#~ msgid "Skip to content"
+#~ msgstr "Перейти к содержанию"
+
+#~ msgid "Sign-In"
+#~ msgstr "Войти"
+
+#~ msgid "Subscription"
+#~ msgstr "Подписка"
+
+#~ msgid "Subscribe"
+#~ msgstr "Подписаться"
+
+#~ msgid "No materials for this section"
+#~ msgstr "В этом разделе пока нет материалов"
+
+#~ msgid "Take a look"
+#~ msgstr "Обратите внимание"
+
+#~ msgid "P. %s"
+#~ msgstr "C. %s"
+
+#~ msgid "Copy"
+#~ msgstr "Копировать"
+
+#~ msgid "Copy to clipboard"
+#~ msgstr "Копировать в буфер обмена"
+
+#~ msgid "Copy citation"
+#~ msgstr "Цитировать"
+
+#~ msgid "Text"
+#~ msgstr "Текст"
+
+#~ msgid "PDF"
+#~ msgstr "PDF"
+
+#~ msgid "View as file"
+#~ msgstr "Статья в PDF"
+
+#~ msgid "References"
+#~ msgstr "Литература"
+
+#~ msgid "Cite"
+#~ msgstr "Цитировать"
+
+#~ msgid "We are sorry, but text of the article unvaliable"
+#~ msgstr ""
+#~ "К сожалению, текст статьи пока не доступен на сайте. Приносим свои "
+#~ "извинения."
+
+#~ msgid "Go to view"
+#~ msgstr "Перейти к просмотру"
+
+#~ msgid "Make a request for article: %s"
+#~ msgstr "Оставить заявку: %s"
+
+#~ msgid "All articles"
+#~ msgstr "Все статьи"
+
+#~ msgid "Details"
+#~ msgstr "Подробнее"
+
+#~ msgid "Authors"
+#~ msgstr "Авторы"
+
+#~ msgid "Read"
+#~ msgstr "Читать"
+
+#~ msgid "Read more"
+#~ msgstr "Читать далее"
+
+#~ msgid "Columns"
+#~ msgstr "Колонки"
+
+#~ msgid "Hide full text"
+#~ msgstr "Свернуть тексты"
+
+#~ msgid "Show full texts"
+#~ msgstr "Тексты полностью"
+
+#~ msgid "On the web"
+#~ msgstr "В Интернете"
+
+#~ msgid "In the new"
+#~ msgstr "В номере"
+
+#~ msgid "View Issue"
+#~ msgstr "Номер полностью"
+
+#~ msgid "Current issue"
+#~ msgstr "Текущий выпуск"
+
+#~ msgid "All issues"
+#~ msgstr "Все выпуски"
+
+#~ msgid "Archive sections"
+#~ msgstr "Рубрики"
+
+#~ msgid ""
+#~ "Preview is not avaliable,  please visit issue page to view full table of "
+#~ "content"
+#~ msgstr ""
+#~ "Краткое содержание не доступно, перейдите на страницу номера для "
+#~ "просмотра полного списка публикаций"
+
+#~ msgid "Issue %s"
+#~ msgstr "Выпуск %s"
+
+#~ msgid "Make a request for issue: %s"
+#~ msgstr "Оставить заявку на выпуск: %s"
+
+#~ msgid "Load More"
+#~ msgstr "Показать еще"
+
+#~ msgid "Articles"
+#~ msgstr "Статьи"
+
+#~ msgid "My account"
+#~ msgstr "Мой аккаунт"
+
+#~ msgid "Issue is temporary unavailable"
+#~ msgstr "Выпуск отсутствует"
+
+#~ msgid "Full text is temporary unavailable"
+#~ msgstr "Полный текст еще не опубликован"
+
+#~ msgid "Publication: %s"
+#~ msgstr "Публикация: %s"
+
+#~ msgid "Want to keep reading? Subscribe to get full access to whole archive."
+#~ msgstr "Хотите продолжить чтение? Подпишитесь на полный доступ к архиву."
+
+#~ msgid "Sign in"
+#~ msgstr "Авторизуйтесь"
+
+#~ msgid "Already a subscriber? %s to view full text."
+#~ msgstr "Уже подписаны? %s для доступа к полному тексту."
+
+#~ msgid "Get access"
+#~ msgstr "Получить доступ"
+
+#~ msgid "active"
+#~ msgstr "активен"
+
+#~ msgid "Archive access: %s"
+#~ msgstr "Доступ к архиву: %s"
+
+#~ msgid "Full content of issue in PDF"
+#~ msgstr "Доступ к выпуску в PDF "
+
+#~ msgid "Profile: %s"
+#~ msgstr "Профиль: %s"
+
+#~ msgid "Your purchases"
+#~ msgstr "Ваши покупки"
+
+#~ msgid "Your subscriptions"
+#~ msgstr "Ваши подписки"
+
+#~ msgid "Submit an article"
+#~ msgstr "Предложить статью"
+
+#~ msgid "For authors"
+#~ msgstr "Авторам"
+
+#~ msgid "Magazine subscribtion"
+#~ msgstr "Подписка на журнал"
+
+#~ msgid "Full archive access"
+#~ msgstr "Полный доступ к архиву"
+
+#~ msgid "Buy issue"
+#~ msgstr "Купить номер"
+
+#~ msgid "Full text access"
+#~ msgstr "Доступ к полному тексту"
+
+#~ msgid "More by author"
+#~ msgstr "Другие статьи автора"
+
+#~ msgid "More from the issue"
+#~ msgstr "Также в номере"
+
+#~ msgid "More from the category"
+#~ msgstr "Читать еще"
+
+#~ msgid "More news"
+#~ msgstr "Больше новостей"
+
+#~ msgid "Videos"
+#~ msgstr "Видео"
+
+#~ msgid "View archive by year"
+#~ msgstr "Просмотр по годам"
+
+#~ msgid "All archive"
+#~ msgstr "Весь архив"
+
+#~ msgid "Spec."
+#~ msgstr "Спец."
+
+#~ msgid "About magazine"
+#~ msgstr "О журнале"
+
+#~ msgid "Unfortunately, there is no authors for you request."
+#~ msgstr " К сожалению, авторы не найдены по вашему запросу"
+
+#~ msgid "%d - Specials issues"
+#~ msgstr "%d - Спец.выпуски"
+
+#~ msgid "Topics"
+#~ msgstr "Темы"
+
+#~ msgid "All authors"
+#~ msgstr "Все авторы"
+
+#~ msgid "In archive"
+#~ msgstr "В архиве"
+
+#~ msgid "Search results"
+#~ msgstr "Результаты поиска"
+
+#~ msgid "Found %s page"
+#~ msgid_plural "Found %s pages"
+#~ msgstr[0] "Найдена %s страница"
+#~ msgstr[1] "Найдено %s страницы"
+#~ msgstr[2] "Найдено %s страниц"
+
+#~ msgid "Unfortunately, we cann't find anything under your request."
+#~ msgstr "К сожалению, по вашему запросу ничего не найдено."
+
+#~ msgid "Search"
+#~ msgstr "Поиск"
+
+#~ msgid "Annotation"
+#~ msgstr "Аннотация"
+
+#~ msgid "Keywords"
+#~ msgstr "Ключевые слова"
+
+#~ msgid "Article submitted: %s"
+#~ msgstr "Статья поступила: %s"
+
+#~ msgid "Similar authors"
+#~ msgstr "Похожие авторы"
+
+#~ msgid "Related articles"
+#~ msgstr "Статьи по теме"
+
+#~ msgid "Journals archive"
+#~ msgstr " Архив журнала"
+
+#~ msgid "More in column"
+#~ msgstr "Также в колонке"
+
+#~ msgid "Recommended"
+#~ msgstr "Рекомендуем"
+
+#~ msgid "All editors"
+#~ msgstr "О журнале"
+
+#~ msgid "Current Issue"
+#~ msgstr "Текущий номер"
+
+#~ msgid "Voplit newsletter"
+#~ msgstr "Рассылка «Вопросов литературы»"
+
+#~ msgid "Subscribe to updates"
+#~ msgstr "Подпишитесь на обновления"
+
+#~ msgid "You may be interested"
+#~ msgstr "Вам может быть интересно"
+
+#~ msgid "Editors"
+#~ msgstr "Редакция"
+
+#~ msgid "Total publications: %s"
+#~ msgstr "Всего публикаций: %s"
+
+#~ msgid "Opinions"
+#~ msgstr "Колумнистика"
+
+#~ msgid "On the website"
+#~ msgstr "На сайте"
+
+#~ msgid "Publications in magazine"
+#~ msgstr "Публикации в журнале"
+
+#~ msgid "Green"
+#~ msgstr "Зеленый"
+
+#~ msgid "Dark-green"
+#~ msgstr "Темно-зеленый"
+
+#~ msgid "Light-green"
+#~ msgstr "Светло-зеленый"
+
+#~ msgid "Semi-green"
+#~ msgstr "Пром.зеленый"
+
+#~ msgid "View issue"
+#~ msgstr "Перейти к просмотру"
+
+#~ msgid "View issue PDF"
+#~ msgstr "Просмотр выпуска в PDF"
+
+#~ msgid "Buy issie"
+#~ msgstr "Купить номер"
+
+#~ msgid "Issue access: %s"
+#~ msgstr "Доступ к выпуску: %s"
+
+#~ msgid "Magaize subscribtion"
+#~ msgstr "Подписка на журнал"
+
+#~ msgid "Subscribe to journal"
+#~ msgstr "Подписка на журнал"
+
+#~ msgid "Newspaper"
+#~ msgstr "Газета"
+
+#~ msgid "Workshops"
+#~ msgstr "Семинары"
+
+#~ msgid "Education"
+#~ msgstr "Обучение"
+
+#~ msgid "Psychological help"
+#~ msgstr "Психологическая помощь"
+
+#~ msgid "%s on the web"
+#~ msgstr "%s в Интернете"
+
+#~ msgid "Specialists"
+#~ msgstr "Специалисты"
+
+#~ msgid "Events"
+#~ msgstr "Семинары"
+
+#~ msgid "Containers"
+#~ msgstr "Контейнеры"
+
+#~ msgid "Editorial"
+#~ msgstr "Редакция Вопросов Литературы "
+
+#~ msgid "Menu for top of the page"
+#~ msgstr "Меню для верхней части страницы"
+
+#~ msgid "Related atriles"
+#~ msgstr "J"
+
+#~ msgid "Specials issues"
+#~ msgstr "Спец.выпуски"
+
+#~ msgid "Total publications: %d"
+#~ msgstr "Всего публикаций: %d"
+
+#~ msgid "All categories"
+#~ msgstr "Все рубрики"
+
+#~ msgid "More publications"
+#~ msgstr "Еще публикации"
+
+#~ msgid "Pages: %s"
+#~ msgstr "Стр: %s"
+
+#~ msgid "Text Banner"
+#~ msgstr "Текстовый баннер"
+
+#~ msgid "Simple text banner"
+#~ msgstr "Простой текстовый баннер на фоне с градиентом"
+
+#~ msgid "Search form"
+#~ msgstr "Поиск"
+
+#~ msgid "Pop-up form"
+#~ msgstr "Всплывающая форма"
+
+#~ msgid "Pop-up form with button"
+#~ msgstr "Модальное окно, содержащее форму"
+
+#~ msgid "Register"
+#~ msgstr "Записаться"
+
+#~ msgid "Register button with tallanto link or popup form"
+#~ msgstr ""
+#~ "Кнопка записи со ссылкой на форму Талланто или общую форму в модальном "
+#~ "окне"
+
+#~ msgid "People"
+#~ msgstr "Люди"
+
+#~ msgid "People gallery by IDs or category"
+#~ msgstr "Галерея специалистов по списку или категории"
+
+#~ msgid "Author"
+#~ msgstr "Автор"
+
+#~ msgid "Author bio for materials"
+#~ msgstr "Блок автора в публикациях"
+
+#~ msgid "Specialist"
+#~ msgstr "Специалист"
+
+#~ msgid "Specialist block"
+#~ msgstr "Карточка специалиста"
+
+#~ msgid "Events list"
+#~ msgstr "Семинары - лента"
+
+#~ msgid "Main listings of events"
+#~ msgstr "Лента семинаров с фильтрами"
+
+#~ msgid "Events slider"
+#~ msgstr "Семинары - слайдер"
+
+#~ msgid "Slider for events select by category or list"
+#~ msgstr "Слайдер семинаров с выборкой по списку или по категории"
+
+#~ msgid "Gazeta"
+#~ msgstr "Газета"
+
+#~ msgid "Posts grid selected by category or list"
+#~ msgstr "Сетка записей с выборкой по списку или категории"
+
+#~ msgid "Gazeta mix"
+#~ msgstr "Газета Микс"
+
+#~ msgid "Posts grid selected with testimonial"
+#~ msgstr "Сетка статей с отзывом"
+
+#~ msgid "Programms list"
+#~ msgstr "Программы - список"
+
+#~ msgid "Main listings of programms"
+#~ msgstr "Основной список программ с фильтрами"
+
+#~ msgid "Programms grid"
+#~ msgstr "Программы - сетка"
+
+#~ msgid "Programms grid selected by category or list"
+#~ msgstr "Сетка программ с выборкой по списку или категории"
+
+#~ msgid "Subjects grid"
+#~ msgstr "Направления - сетка"
+
+#~ msgid "Subjects grid selected by list"
+#~ msgstr "Сетка направлений выбранных по списку"
+
+#~ msgid "Groups list"
+#~ msgstr "Группы - список"
+
+#~ msgid "Main listings of groups"
+#~ msgstr "Основной список групп с фильтрами"
+
+#~ msgid "Series"
+#~ msgstr "Сюжет"
+
+#~ msgid "All series"
+#~ msgstr "Все сюжеты"
+
+#~ msgid "Registration closed"
+#~ msgstr "Запись завершена"
+
+#~ msgid "Information"
+#~ msgstr "Информация"
+
+#~ msgid "Follow us"
+#~ msgstr "Мы в соц.сетях"
+
+#~ msgid "Privacy policy"
+#~ msgstr "Политика конфиденциальности"
+
+#~ msgid "Call me"
+#~ msgstr "Заказать звонок"
+
+#~ msgid "Categories"
+#~ msgstr "Рубрики"
+
+#~ msgid "All publications"
+#~ msgstr "Все материалы"
+
+#~ msgid "Contacts"
+#~ msgstr "Контакты"
+
+#~ msgid "Ask for colling back"
+#~ msgstr "Закажите обратный звонок"
+
+#~ msgid "Subscribe to our newsletter"
+#~ msgstr "Подпишитесь на рассылку"
+
+#~ msgid "Speciality"
+#~ msgstr "Специализация"
+
+#~ msgid "Experience"
+#~ msgstr "Опыт"
+
+#~ msgid "Teaching"
+#~ msgstr "Преподавание"
+
+#~ msgid "Consulting"
+#~ msgstr "Консультирование"
+
+#~ msgid "Publications"
+#~ msgstr "Публикации"
+
+#~ msgid "All events"
+#~ msgstr "Все анонсы"
+
+#~ msgid "More workshops"
+#~ msgstr "Еще семинары"
+
+#~ msgid "More groups"
+#~ msgstr "Еще группы"
+
+#~ msgid "All specialists"
+#~ msgstr "Все специалисты"
+
+#~ msgid "More programs"
+#~ msgstr "Еще программы"
+
+#~ msgid "Linked inline"
+#~ msgstr "Инлайн - ссылка"
+
+#~ msgid "Read more inline with link"
+#~ msgstr "Инлайн Читать еще в виде ссылки на статью"
+
+#~ msgid "Posts grid select by category or list"
+#~ msgstr "Сетка записей из газеты"
+
+#~ msgid "More events"
+#~ msgstr "Еще события"
+
+#~ msgid "Recommend"
+#~ msgstr "Рекомендуем"
+
+#~ msgid "Read our channel at Ynadex.Zen"
+#~ msgstr "Читайте лучшие материалы Милосердия.ru на Яндекс.Дзен"
+
+#~ msgid "All news"
+#~ msgstr "Все новости"
+
+#~ msgid "Programms"
+#~ msgstr "Программы"
+
+#~ msgid "Stories"
+#~ msgstr "Истории"
+
+#~ msgid "Cases"
+#~ msgstr "Кейсы"
+
+#~ msgid "Series: %s"
+#~ msgstr "Сюжет: %s"
+
+#~ msgid "Author: %s"
+#~ msgstr "Автор: %s"
+
+#~ msgid "Topic: %s"
+#~ msgstr "Тема: %s"
+
+#~ msgid "All topics"
+#~ msgstr "Все темы"
+
+#~ msgid "Donations List"
+#~ msgstr "Лента пожертвований"
+
+#~ msgid "Download file"
+#~ msgstr "Скачать файл"
+
+#~ msgid "Need help"
+#~ msgstr "Нужна помощь"
+
+#~ msgid "Buttoned inline"
+#~ msgstr "Инлайн с кнопкой"
+
+#~ msgid "Post inline with button"
+#~ msgstr "Инлайн внутри статьи с кнопкой"
+
+#~ msgid "Picture inline"
+#~ msgstr "Инлайн с картинкой"
+
+#~ msgid "Post inline with picture"
+#~ msgstr "Инлайновый блок ссылки на кампанию"
+
+#~ msgid "Campaign"
+#~ msgstr "Просьба"
+
+#~ msgid "Embedded campaign"
+#~ msgstr "Встроенная кампания"
+
+#~ msgid "Person"
+#~ msgstr "Персона"
+
+#~ msgid "Person reference"
+#~ msgstr "Эксперт, герой, автор цитаты"
+
+#~ msgid "Infoblock with background"
+#~ msgstr "Справка (фон)"
+
+#~ msgid "Text block with solid colored background"
+#~ msgstr "Блок текста на цветном фоне"
+
+#~ msgid "Editors team"
+#~ msgstr "Редакция"
+
+#~ msgid "Gallery of editors team"
+#~ msgstr "Команда редакции"
+
+#~ msgid "Figure"
+#~ msgstr "Цифра"
+
+#~ msgid "Large figure with description"
+#~ msgstr "Большая цифра с описанием"
+
+#~ msgid "Figures"
+#~ msgstr "Цифры"
+
+#~ msgid "List of figures with labels"
+#~ msgstr "Список цифр с описаниями"
+
+#~ msgid "Wrong server response"
+#~ msgstr "Неверный ответ сервера"
+
+#~ msgid "CP gateway does not set up"
+#~ msgstr "Платежная система не настроена"
+
+#~ msgid "red"
+#~ msgstr "красный"
+
+#~ msgid "green"
+#~ msgstr "зеленый"
+
+#~ msgid "blue"
+#~ msgstr "голубой"
+
+#~ msgid "yellow"
+#~ msgstr "желтый"
+
+#~ msgid "light-green"
+#~ msgstr "светло-зеленый"
+
+#~ msgid "light-yellow"
+#~ msgstr "светло-желтый"
+
+#~ msgid "dark-brown"
+#~ msgstr "темно-коричневый"
+
+#~ msgid "light-gray"
+#~ msgstr "светло-серый"
+
+#~ msgid "gray"
+#~ msgstr "серый"
+
+#~ msgid "semi-gray"
+#~ msgstr "переходный серый"
+
+#~ msgid "white"
+#~ msgstr "белый"
+
+#~ msgid "Themes"
+#~ msgstr "Темы"
+
+#~ msgid "News of campaign"
+#~ msgstr "Новости подопечного"
+
+#~ msgid "More news of campaigns"
+#~ msgstr "Еще новости подопечных"
+
+#~ msgid "News of campaigns"
+#~ msgstr "Новости подопечных"
+
+#~ msgid "You helped"
+#~ msgstr "Вы помогли"
+
+#~ msgid "rub."
+#~ msgstr "руб."
+
+#~ msgid "View all list"
+#~ msgstr "Развернуть всю ленту"
+
+#~ msgid "Where to help more"
+#~ msgstr "Где еще нужна помощь"
+
+#~ msgid "Where to help"
+#~ msgstr "Где нужна помощь"
+
+#~ msgid "More campaign"
+#~ msgstr "Еще просьбы"
+
+#~ msgid "Supporters"
+#~ msgstr "При поддержке"
+
+#~ msgid "Why we need regular help"
+#~ msgstr "Как мы помогаем постоянным подопечным"
+
+#~ msgid "How do we help"
+#~ msgstr "Как мы помогаем"
+
+#~ msgid "Monthly"
+#~ msgstr "Ежемесячно"
+
+#~ msgid "One time"
+#~ msgstr "Разово"
+
+#~ msgid "Other amount"
+#~ msgstr "Другая сумма"
+
+#~ msgid "Amount"
+#~ msgstr "Сумма"
+
+#~ msgid "Specify amount between %d and %d RUR."
+#~ msgstr "Укажите сумму между %d and %d руб."
+
+#~ msgid "Your name"
+#~ msgstr "Ваше имя"
+
+#~ msgid "Provide the name as text"
+#~ msgstr "Укажите ваше имя"
+
+#~ msgid "Your email"
+#~ msgstr "Ваш email"
+
+#~ msgid "Provide correct email, ex. name@email.ru"
+#~ msgstr "Укажите email вида name@email.ru"
+
+#~ msgid "Accept donations service terms"
+#~ msgstr "Ознакомьтесь с условиями"
+
+#~ msgid "Donate"
+#~ msgstr "Пожертвовать"
+
+#~ msgid "Beneficiary"
+#~ msgstr "Получатель"
+
+#~ msgid "OGRN"
+#~ msgstr "ОГРН"
+
+#~ msgid "INN /KPP "
+#~ msgstr "ИНН /КПП"
+
+#~ msgid "Account number"
+#~ msgstr "Расч. счет"
+
+#~ msgid "Bank name"
+#~ msgstr "Банк"
+
+#~ msgid "BIC"
+#~ msgstr "БИК"
+
+#~ msgid "Corr. account"
+#~ msgstr "Корр. счет"
+
+#~ msgid "Download details (.doc)"
+#~ msgstr "Скачать реквизиты (.doc)"
+
+#~ msgid "Bank details"
+#~ msgstr "Банковские реквизиты"
+
+#~ msgid ""
+#~ "I accept <a href=\"%s\" target=\"_blank\">the service terms</a> and <a "
+#~ "href=\"%s\" target=\"_blank\">privacy policy</a>"
+#~ msgstr ""
+#~ "Соглашаюсь с <a href=\"%s\" target=\"_blank\">офертой</a> и <a href=\"%s"
+#~ "\" target=\"_blank\">политикой конфиденциальности</a>"
+
+#~ msgid ""
+#~ "Accept <a href=\"%s\" target=\"_blank\">oferta</a> and <a href=\"%s\" "
+#~ "target=\"_blank\">privacy</a>"
+#~ msgstr ""
+#~ "Соглашаюсь с <a href=\"%s\" target=\"_blank\">офертой</a> и <a href=\"%s"
+#~ "\" target=\"_blank\">политикой ПД</a>"
+
+#~ msgid "I'd like to get website news"
+#~ msgstr "Хочу получать новости сайта"
+
+#~ msgid "Card"
+#~ msgstr "Карта"
+
+#~ msgid "Bank"
+#~ msgstr "Через банк"
+
+#~ msgid "SMS"
+#~ msgstr "СМС"
+
+#~ msgid "E-Money"
+#~ msgstr "Эл.деньги"
+
+#~ msgid "Payments need JavaScript to work. Please enable it for your browser."
+#~ msgstr ""
+#~ "Платежи не работают без JavaScript, пожалуйста, включите его поддержку в "
+#~ "браузере."
+
+#~ msgid "In bank"
+#~ msgstr "В отделении"
+
+#~ msgid "Internet-banking"
+#~ msgstr "Интернет-банк"
+
+#~ msgid "Longterm"
+#~ msgstr "Долгосрочное списание"
+
+#~ msgid "Please, fill-in the payment purpose as follows:"
+#~ msgstr "В графе \"Назначение платежа\" просим указывать:"
+
+#~ msgid "Full name"
+#~ msgstr "Ф.И.О. для квитанции"
+
+#~ msgid "Print order"
+#~ msgstr "Распечатать квитанцию"
+
+#~ msgid "Make donation"
+#~ msgstr "Пожертвовать"
+
+#~ msgid "Make payment"
+#~ msgstr "Перейти к оплате"
+
+#~ msgid "Back"
+#~ msgstr "Назад"
+
+#~ msgid "Help"
+#~ msgstr "Помочь"
+
+#~ msgid "Help with like"
+#~ msgstr "Помочь лайком"
+
+#~ msgid "Support with like"
+#~ msgstr "Поддержать лайком"
+
+#~ msgid "%s %s monthly"
+#~ msgstr "%s %s / мес."
+
+#~ msgid "%s %s"
+#~ msgstr "%s %s"
+
+#~ msgid "Needed"
+#~ msgstr "Нужно"
+
+#~ msgid "Collected %s out of %s"
+#~ msgstr "Собрано %s из %s"
+
+#~ msgid "Help monthly"
+#~ msgstr "Помогать ежемесячно"
+
+#~ msgid "What's going"
+#~ msgstr "Что будет"
+
+#~ msgid "Title"
+#~ msgstr "Заголовок"
+
+#~ msgid "Link"
+#~ msgstr "Ссылка"
+
+#~ msgid "Intro text"
+#~ msgstr "Вводный текст"
+
+#~ msgid "Image"
+#~ msgstr "Изображение"
+
+#~ msgid "Use clipped picture format"
+#~ msgstr "Использовать маску футболки для изображения"
+
+#~ msgid "Clipped Picture"
+#~ msgstr "Футболка"
+
+#~ msgid "Featured Block"
+#~ msgstr "Стартовый блок"
+
+#~ msgid "Settings"
+#~ msgstr "Настройки"
+
+#~ msgid "Connected partners"
+#~ msgstr "Связанные партнеры"
+
+#~ msgid "Select organizations"
+#~ msgstr "Выбрать организацию"
+
+#~ msgid "Actual links"
+#~ msgstr "Актуальные ссылки"
+
+#~ msgid "Html"
+#~ msgstr "HTML"
+
+#~ msgid "Link for image"
+#~ msgstr "Карти"
+
+#~ msgid "How to Title"
+#~ msgstr "Заголовок блока Как работает"
+
+#~ msgid "Connected projects"
+#~ msgstr "Связанные проекты"
+
+#~ msgid "Select projects"
+#~ msgstr "Выбрать проект"
+
+#~ msgid "Connected articles"
+#~ msgstr "Связанные статьи"
+
+#~ msgid "Where block"
+#~ msgstr "Блок Где сдать"
+
+#~ msgid "Where block Title"
+#~ msgstr "Заголовок блока Где сдать"
+
+#~ msgid "Where block Text"
+#~ msgstr "Текст блока Где сдать"
+
+#~ msgid "FAQ block Title"
+#~ msgstr "Заголовок блока FAQ"
+
+#~ msgid "FAQ block Text"
+#~ msgstr "Текст блока FAQ"
+
+#~ msgid "Action block Title"
+#~ msgstr "Заголовок блока Акция"
+
+#~ msgid "Action block Text"
+#~ msgstr "Текст блока Акция"
+
+#~ msgid "Action block Image"
+#~ msgstr "Изображение блока Акция"
+
+#~ msgid "Companies block"
+#~ msgstr "Блок Компаниям"
+
+#~ msgid "Companies Title"
+#~ msgstr "Заголовок"
+
+#~ msgid "Companies Text"
+#~ msgstr "Текст"
+
+#~ msgid "Testimonial"
+#~ msgstr "Цитата"
+
+#~ msgid "Links"
+#~ msgstr "Ссылки"
+
+#~ msgid "Image for Slides"
+#~ msgstr "Изображения слайдера"
+
+#~ msgid "More on topic"
+#~ msgstr "Еще по теме"
+
+#~ msgid "By filling in the form %sI agree%s with privacy policy"
+#~ msgstr ""
+#~ "Отправляя форму, я даю %sсогласие%s на обработку персональных данных"
+
+#~ msgid "Latest news in your inbox"
+#~ msgstr "Свежие новости и лучшие статьи  в вашем почтовом ящике"
+
+#~ msgid "Monthly news, tips, advices in your inbox"
+#~ msgstr ""
+#~ "Профессиональные новости, советы, интервью каждый месяц в вашем почтовом "
+#~ "ящике"
+
+#~ msgid "Full report"
+#~ msgstr "Полный отчет"
+
+#~ msgid "Reports archive"
+#~ msgstr "Архив отчетов"
+
+#~ msgid "Period"
+#~ msgstr "Период"
+
+#~ msgid "Income (%s)"
+#~ msgstr "Поступления (%s)"
+
+#~ msgid "Payments (%s)"
+#~ msgstr "Платежи (%s)"
+
+#~ msgid "Total"
+#~ msgstr "Всего"
+
+#~ msgid "All messages"
+#~ msgstr "Все сообщения"
+
+#~ msgid "Urgent help"
+#~ msgstr "Срочно нужна помощь"
+
+#~ msgid "Ask for help"
+#~ msgstr "Попросить помощи"
+
+#~ msgid "On the page"
+#~ msgstr "На этой странице"
+
+#~ msgid "Close"
+#~ msgstr "Закрыть"
+
+#~ msgid "Memory Pages"
+#~ msgstr "Страницы памяти"
+
+#~ msgid "When"
+#~ msgstr "Когда"
+
+#~ msgid "Where"
+#~ msgstr "Где"
+
+#~ msgid "Full donation history for campaign"
+#~ msgstr "Лента пожертвований"
+
+#~ msgid "Back to campaign view"
+#~ msgstr "Вернуться к просмотру просьбы"
+
+#~ msgid "No donations yet."
+#~ msgstr "Пожертвований пока нет"
+
+#~ msgid "How do money spend"
+#~ msgstr "Как расходуются средства"
+
+#~ msgid "Campaign published"
+#~ msgstr "Просьба опубликована"
+
+#~ msgid "Page gallery settings"
+#~ msgstr "Галерея элементов"
+
+#~ msgid "Gallery"
+#~ msgstr "Галерея"
+
+#~ msgid "Card's settings"
+#~ msgstr "Настройки карточки"
+
+#~ msgid "Subtitle"
+#~ msgstr "Подзаголовок"
+
+#~ msgid "Link text"
+#~ msgstr "Текст ссылки"
+
+#~ msgid "Blocks in row"
+#~ msgstr "Ряд блоков"
+
+#~ msgid "Blocks content"
+#~ msgstr "Контент блоков"
+
+#~ msgid "Chess Blocks"
+#~ msgstr "Шахматный блок"
+
+#~ msgid "Testimonials"
+#~ msgstr "Отзывы"
+
+#~ msgid "Contact form shortcode"
+#~ msgstr "Шорткод контактной формы"
+
+#~ msgid "Open Text"
+#~ msgstr "Открывающий текст"
+
+#~ msgid "Container Image"
+#~ msgstr "Изображение блока Контейнер"
+
+#~ msgid "Container Link"
+#~ msgstr "Ссылка блока Контейнер"
+
+#~ msgid "Container Link Text"
+#~ msgstr "Текст ссылки блока Контейнер"
+
+#~ msgid "Partners title"
+#~ msgstr "Заголовок блока Партнеры"
+
+#~ msgid "Actions Block"
+#~ msgstr "Блок действий"
+
+#~ msgid "Main action content"
+#~ msgstr "Блок главного действия"
+
+#~ msgid "Secondary actions"
+#~ msgstr "Дополнительные действия"
+
+#~ msgid "Blocks Title"
+#~ msgstr "Заголовок секции"
+
+#~ msgid "Blocks text"
+#~ msgstr "Текст блока"
+
+#~ msgid "Row Blocks Title"
+#~ msgstr "Заголовок секции"
+
+#~ msgid "Open Image"
+#~ msgstr "Открывающий блок - изображение"
+
+#~ msgid "Connected Form Title"
+#~ msgstr "Заголовок формы"
+
+#~ msgid "Connected Form"
+#~ msgstr "Встроенная форма (шорткод)"
+
+#~ msgid "Quatro blocks"
+#~ msgstr "Колонки текстовых блоков"
+
+#~ msgid "Containers variants"
+#~ msgstr "Варианты контейнера"
+
+#~ msgid "Social variants"
+#~ msgstr "Блоки Социальный эффект"
+
+#~ msgid "Image Slider"
+#~ msgstr "Блок слайдера"
+
+#~ msgid "Slider Intro"
+#~ msgstr "Вступительный текст"
+
+#~ msgid "Open video"
+#~ msgstr "Открывающее видео"
+
+#~ msgid "Action Image"
+#~ msgstr "Акция - фоновое изображение"
+
+#~ msgid "Action content"
+#~ msgstr "Акция - контент блока"
+
+#~ msgid "Action footer Text"
+#~ msgstr "Акция - текст в подвале"
+
+#~ msgid "Row blocks - 3"
+#~ msgstr "Ряд из 3 блоков"
+
+#~ msgid "Sharing block"
+#~ msgstr "Блок поделиться"
+
+#~ msgid "You Helped"
+#~ msgstr "Вы помогли"
+
+#~ msgid "More reports"
+#~ msgstr "Еще отчеты"
+
+#~ msgid "Start Date"
+#~ msgstr "Дата начала"
+
+#~ msgid "Start Time"
+#~ msgstr "Время начала"
+
+#~ msgid "End Time"
+#~ msgstr "Время окончания"
+
+#~ msgid "End Date"
+#~ msgstr "Дата окончания"
+
+#~ msgid "Location"
+#~ msgstr "Место"
+
+#~ msgid "Address"
+#~ msgstr "Адрес"
+
+#~ msgid "Video"
+#~ msgstr "Видео"
+
+#~ msgid "Social links"
+#~ msgstr "Социальные ссылки"
+
+#~ msgid "Contact name"
+#~ msgstr "Контактное лицо"
+
+#~ msgid "Contact text"
+#~ msgstr "Контактная инофрмация"
+
+#~ msgid "Thank you text"
+#~ msgstr "Текст Спасибо-сообщения"
+
+#~ msgid "Event map"
+#~ msgstr "Карта"
+
+#~ msgid "Address for map"
+#~ msgstr "Адрес для карты"
+
+#~ msgid "Map"
+#~ msgstr "Карта"
+
+#~ msgid "Begin: %s"
+#~ msgstr "Начало: %s"
+
+#~ msgid "Time: %s"
+#~ msgstr "Время: %s"
+
+#~ msgid "Online"
+#~ msgstr "Онлайн"
+
+#~ msgid "Russia"
+#~ msgstr "Россия"
+
+#~ msgid "By address"
+#~ msgstr "По адресу"
+
+#~ msgid "Photo: %s"
+#~ msgstr "Фото: %s"
+
+#~ msgid "Search or site"
+#~ msgstr "Поиск по сайту"
+
+#~ msgid "Type a few words to start searching."
+#~ msgstr "Введите ключевое слово для поиска"
+
+#~ msgid "What are you looking for?"
+#~ msgstr "Напишите, что ищем"
+
+#~ msgid "Reports"
+#~ msgstr "Отчеты"
+
+#~ msgid "All reports"
+#~ msgstr "Все отчеты"
+
+#~ msgid "Income (rub.)"
+#~ msgstr "Поступления (руб.)"
+
+#~ msgid "Payments (rub.)"
+#~ msgstr "Расходы (руб.)"
+
+#~ msgid "Person Settings"
+#~ msgstr "Данные персоны"
+
+#~ msgid "Name"
+#~ msgstr "Имя"
+
+#~ msgid "Lastname"
+#~ msgstr "Фамилия"
+
+#~ msgid "Role as supporter"
+#~ msgstr "Роль как благотворителя"
+
+#~ msgid "Primary Menu"
+#~ msgstr "﻿Главное меню"
+
+#~ msgid "Share"
+#~ msgstr "Поделиться"
+
+#~ msgid "Help info"
+#~ msgstr "Помогать - информация"
+
+#~ msgid "Help-oriented inline with image"
+#~ msgstr "Помогающий инлайн с изображением"
+
+#~ msgid "Readmore"
+#~ msgstr "Читать еще"
+
+#~ msgid "Read more inline"
+#~ msgstr "Инлайн блок - читать еще"
+
+#~ msgid "Button inline"
+#~ msgstr "Инлайн с кнопкой"
+
+#~ msgid "Help-oriented inline with button"
+#~ msgstr "Помогающий инлайн с кнопкой"
+
+#~ msgid "Help inline"
+#~ msgstr "Помогающий инлайн"
+
+#~ msgid "Custom help inline with text and button"
+#~ msgstr "Призыв о помощи со ссылкой на просьбу или сторонний проект"
+
+#~ msgid "Inline with button"
+#~ msgstr "Инлайн с кнопкой"
+
+#~ msgid "Custom inline with text and button"
+#~ msgstr "Инлайн с кнопкой Помочь и текстом"
+
+#~ msgid "Center"
+#~ msgstr "По центру"
+
+#~ msgid "Taglist"
+#~ msgstr "Список тегов"
+
+#~ msgid "Print"
+#~ msgstr "Распечатать"
+
+#~ msgid ""
+#~ "You can donate with internet-banking. Copy-paste bank details to avoid "
+#~ "mistakes"
+#~ msgstr ""
+#~ "Вы можете сделать перевод через интернет-банк. Копируйте реквизиты, чтобы "
+#~ "избегать ошибок."
+
+#~ msgid "Download details"
+#~ msgstr "Скачать реквизиты"
+
+#~ msgid "Make a donation"
+#~ msgstr "Сделать пожертвование"
+
+#~ msgid "Your variant of amount"
+#~ msgstr "Ваш вариант суммы"
+
+#~ msgid "Specify number between %d and %d"
+#~ msgstr "Укажите сумму между %d и %d"
+
+#~ msgid ""
+#~ "I accept <a href=\"%s\">the service terms</a> and <a href=\"%s\">privacy "
+#~ "policy</a>"
+#~ msgstr ""
+#~ "Соглашаюсь с <a href=\"%s\">офертой</a> и <a href=\"%s\">политикой "
+#~ "конфиденциальности</a>"
+
+#~ msgid "Provide your name as text"
+#~ msgstr "Укажите ваше имя"
+
+#~ msgid "Provide your full name for blank"
+#~ msgstr "Укажите фамилию, имя и отчество для квитанции"
+
+#~ msgid "INN"
+#~ msgstr "ИНН"
+
+#~ msgid "KPP"
+#~ msgstr "КПП"
+
+#~ msgid "We can accept amount between %d and %d RUR."
+#~ msgstr "Мы можем принять сумму между %d и %d руб."
+
+#~ msgid "main green"
+#~ msgstr "зеленый"
+
+#~ msgid "bright green"
+#~ msgstr "ярко-зеленый"
+
+#~ msgid "magenda"
+#~ msgstr "розовый"
+
+#~ msgid "text gray"
+#~ msgstr "серый текста"
+
+#~ msgid "bg gray"
+#~ msgstr "cерый фона"
+
+#~ msgid "border gray"
+#~ msgstr "серый обводки"
+
+#~ msgid "Post navigation"
+#~ msgstr "Навигация по записям"
+
+#~ msgid "Call to action"
+#~ msgstr "Призыв к действию"
+
+#~ msgid "Donations"
+#~ msgstr "Пожертвования"
+
+#~ msgid "Open campaign: spending comment"
+#~ msgstr "Открытая кампания: комментарий о расходах"
+
+#~ msgid "Closed campaign: spending comment"
+#~ msgstr "Закрытая кампания: комментарий о расходах"
+
+#~ msgid "Legal info: First part"
+#~ msgstr "Как мы помогаем: Первая часть"
+
+#~ msgid "Legal info: Second part"
+#~ msgstr "Как мы помогаем: Вторая часть"
+
+#~ msgid "Legal info for regular help: First part"
+#~ msgstr "Помогаем регулярно: Первая часть"
+
+#~ msgid "Legal info for regular help: Second part"
+#~ msgstr "Помогаем регулярно: Вторая часть"
+
+#~ msgid "We open campaign for %s %s"
+#~ msgstr "Объявляем сбор помощи в %s %s"
+
+#~ msgid "Footer Menu - 1"
+#~ msgstr "Подвал - 1"
+
+#~ msgid "Footer Menu - 2"
+#~ msgstr "Подвал - 2"
+
+#~ msgid "Footer Menu - 3"
+#~ msgstr "Подвал - 3"
+
+#~ msgid "Footer Menu - 4"
+#~ msgstr "Подвал - 4"
+
+#~ msgid "Footer Menu - 5"
+#~ msgstr "Подвал - 5"
+
+#~ msgid "Load more"
+#~ msgstr "Где"
+
+#~ msgid "What our clients say"
+#~ msgstr "Что говорят наши клиенты"
+
+#~ msgid "Gifts"
+#~ msgstr "Сувениры"
+
+#~ msgid ""
+#~ "We have completed target for this campaign, thank you for your interest "
+#~ "towards our %sprojects%s. You can support any of them by making a "
+#~ "donation to our foundation at the projects's page or Help-Us page."
+#~ msgstr ""
+#~ "Мы завершили сбор средств по данной просьбе. Спасибо за интерес к нашим "
+#~ "%sпроектам%s! Вы можете поддержать любой из них на странице проекта или "
+#~ "на странице «Поддержать нас»."
+
+#~ msgid "Campaign purpose"
+#~ msgstr "Цель пожертвования"
+
+#~ msgid "We open campaign for %d %s"
+#~ msgstr "Объявляем сбор помощи в %d %s"
+
+#~ msgid "Collected %s out of %s %s"
+#~ msgstr "Собрано %s из %s %s"
+
+#~ msgid "Future"
+#~ msgstr "Анонсы"
+
+#~ msgid "Past"
+#~ msgstr "Прошедшие"
+
+#~ msgid "Or donate online"
+#~ msgstr "Или пожертвовать онлайн"
+
+#~ msgid "Or get bank order"
+#~ msgstr "Или получить квитанцию для банка"
+
+#~ msgid ""
+#~ "Donations are currently unavaliable. No payment processors configured"
+#~ msgstr ""
+#~ "Не настроены платежные системы - пожертвования не работают в данный момент"
+
+#~ msgid "Make payment online"
+#~ msgstr "Пожертвовать онлайн"
+
+#~ msgid "Prepare payment order"
+#~ msgstr "Заполнить квитанцию"
+
+#~ msgid "Print the order"
+#~ msgstr "Печать квитанции"
+
+#~ msgid "Please provide your data to fill-in the blank"
+#~ msgstr "Пожалуйста, заполните поля для подстановки в бланк квитанции"
+
+#~ msgid "Print payment order"
+#~ msgstr "Распечатать квитанцию"
+
+#~ msgid ""
+#~ "I accept <a href=\"%s\">the service terms</a> and <a href=\"%s\">the "
+#~ "terms of personal data processing</a>"
+#~ msgstr ""
+#~ "Я принимаю <a href=\"%s\" target=\"_blank\">оферту</a> и даю свое <a href="
+#~ "\"%s\" target=\"_blank\">согласие</a> на обработку персональных данных"
+
+#~ msgid ""
+#~ "You may transfer your donation via Internet banking service. Copy the "
+#~ "Foundation details to avoid errors. Print out a bank order to make a "
+#~ "donation via any bank offline."
+#~ msgstr ""
+#~ "Вы можете сделать перевод через интернет-банк. Копируйте  реквизиты, "
+#~ "чтобы избегать ошибок. Для оплаты в отделении любого банка распечатайте "
+#~ "квитанцию."
+
+#~ msgid "Donation boxes"
+#~ msgstr "Блок пожертвований"
+
+#~ msgid "Connected campaign"
+#~ msgstr "Связанная кампания"
+
+#~ msgid "Select campaign"
+#~ msgstr "Выбрать кампанию"
+
+#~ msgid "Background image"
+#~ msgstr "Фоновое изображение"
+
+#~ msgid "Top text"
+#~ msgstr "Верхний текст"
+
+#~ msgid "Bottom text"
+#~ msgstr "Нижний текст"
+
+#~ msgid "Additional settings"
+#~ msgstr "Дополнительные настройки"
+
+#~ msgid "Thank-you text"
+#~ msgstr "Спасибо-текст"
+
+#~ msgid "Video-thumbnail"
+#~ msgstr "Видео-заставка"
+
+#~ msgid "Display video instead of the intro-picture at campaign page"
+#~ msgstr "Показывать видео вместо изображения в качестве заставки"
+
+#~ msgid "Redirect URL"
+#~ msgstr "URL перенаправления"
+
+#~ msgid ""
+#~ "If we build special landing page for this campaign - redirect it there"
+#~ msgstr ""
+#~ "Если для этой компании создан отдельный лендинг, укажите его адрес, чтобы "
+#~ "страницы не задваивались"
+
+#~ msgid "Collected"
+#~ msgstr "Собрано"
+
+#~ msgid "Common section"
+#~ msgstr "Общий раздел"
+
+#~ msgid "Main content"
+#~ msgstr "Главный контент"
+
+#~ msgid "Button: %d"
+#~ msgstr "Кнопка: %d"
+
+#~ msgid "Alternate section"
+#~ msgstr "Альтернативная секция"
+
+#~ msgid "Date"
+#~ msgstr "Дата"
+
+#~ msgid "Web"
+#~ msgstr "В сети"
+
+#~ msgid "Share in social media"
+#~ msgstr "Поделиться в соцсетях"
+
+#~ msgid "View on map"
+#~ msgstr "Посмотреть на карте"
+
+#~ msgid "By filling in the form I agree with %sprivacy policy%s"
+#~ msgstr ""
+#~ "Отправляя форму, я даю свое согласие %sна обработку персональных данных%s"
+
+#~ msgid "Connected menu"
+#~ msgstr "Меню раздела"
+
+#~ msgid "Attach menu to page"
+#~ msgstr "Привязать меню к странице"
+
+#~ msgid "Post settings"
+#~ msgstr "Настройки записи"
+
+#~ msgid "Hide thumbnail"
+#~ msgstr "Скрыть миниатюру"
+
+#~ msgid "Hide attached thumbnail on single page "
+#~ msgstr "Скрывать стандартную миниатюру на странице"
+
+#~ msgid "Projects"
+#~ msgstr "Проекты"
+
+#~ msgid "Page settings: %s"
+#~ msgstr "Настройки страницы: %s"
+
+#~ msgid "Connected story"
+#~ msgstr "Связанная история"
+
+#~ msgid "Select post or article"
+#~ msgstr "Выбрать статью или историю"
+
+#~ msgid "Media block"
+#~ msgstr "Медиа блок"
+
+#~ msgid "Help block"
+#~ msgstr "Блок Поддержать"
+
+#~ msgid "Contact block"
+#~ msgstr "Блок контактов"
+
+#~ msgid "%s. All materials of the site are avaliabe under license %s"
+#~ msgstr "%s. Материалы сайта, если не указано иное, доступны по лицензии %s"
+
+#~ msgid "Partner of the action"
+#~ msgstr "Партнер акции"
+
+#~ msgid "Case data"
+#~ msgstr "Настройки кейса"
+
+#~ msgid "Container data"
+#~ msgstr "Данные контейнера"
+
+#~ msgid "Type of the container"
+#~ msgstr "Тип пункта приема"
+
+#~ msgid "Select container type"
+#~ msgstr "Выберите тип"
+
+#~ msgid "Working hours"
+#~ msgstr "Часы работы"
+
+#~ msgid "What can be put"
+#~ msgstr "Что можно сдать"
+
+#~ msgid "Partner comment"
+#~ msgstr "Комментарий к партнерству"
+
+#~ msgid "Container address"
+#~ msgstr "Местоположение"
+
+#~ msgid "Address for print"
+#~ msgstr "Адрес для текста"
+
+#~ msgid "Find container"
+#~ msgstr "Найти контейнер"
+
+#~ msgid "Incorrect station selection"
+#~ msgstr "Некорректное наименование станции. Уточните ваш выбор"
+
+#~ msgid "No containers found for the station"
+#~ msgstr "Контейнеры не найдены. Попробуйте выбрать другую станцию."
+
+#~ msgid "Organization Settings"
+#~ msgstr "Настройки организации"
+
+#~ msgid "Website"
+#~ msgstr "Вебсайт"
+
+#~ msgid "Logo"
+#~ msgstr "Логотип"
+
+#~ msgid "Project story"
+#~ msgstr "История проекта"
+
+#~ msgid "Support the project"
+#~ msgstr "Поддержать проект"
+
+#~ msgid "Project"
+#~ msgstr "Проект"
+
+#~ msgid "Project Featured Block"
+#~ msgstr "Стартовый блок"
+
+#~ msgid "Project Content Blocks"
+#~ msgstr "Блоки содержания"
+
+#~ msgid "Leave empty to attach child page"
+#~ msgstr "Оставьте пустым чтобы использовать дочернюю страницу (по умолчанию)"
+
+#~ msgid "Select article"
+#~ msgstr "Выбрать статью"
+
+#~ msgid "Content Blocks (3)"
+#~ msgstr "Контент-блоки (3)"
+
+#~ msgid "Result Blocks (2)"
+#~ msgstr "Блоки результатов (2)"
+
+#~ msgid "Show Icon"
+#~ msgstr "Показывать иконку"
+
+#~ msgid "Project Help Block"
+#~ msgstr "Блок Поддержать"
+
+#~ msgid "Background image for regular help block"
+#~ msgstr "Фоновое изображение для регулярного блока"
+
+#~ msgid "Text for regular text block"
+#~ msgstr "Текст регулярного блока"
+
+#~ msgid "Alternative HTML"
+#~ msgstr "Альтернативный HTML"
+
+#~ msgid "User this to rewrite regular campaign block"
+#~ msgstr ""
+#~ "Используйте это поле если хотите заменить стандартный блок (например, "
+#~ "когда сбор осуществляется на сторонней платформе)"
+
+#~ msgid "Supporters Testimonials"
+#~ msgstr "Отзывы благотворителей"
+
+#~ msgid "Testimonial One: Text"
+#~ msgstr "Отзыв 1: Текст"
+
+#~ msgid "Testimonial One: Supporter"
+#~ msgstr "Отзыв 1: Автор"
+
+#~ msgid "Testimonial Two: Text"
+#~ msgstr "Отзыв 2: Текст"
+
+#~ msgid "Testimonial Two: Supporter"
+#~ msgstr "Отзыв 2: Автор"
+
+#~ msgid "Testimonial Three: Text"
+#~ msgstr "Отзыв 3: Текст"
+
+#~ msgid "Testimonial Three: Supporter"
+#~ msgstr "Отзыв 3: Автор"
+
+#~ msgid "Role"
+#~ msgstr "Роль"
+
+#~ msgid "Make your action"
+#~ msgstr "Провести акцию"
+
+#~ msgid "All containers as list"
+#~ msgstr "Все контейнеры списком"
+
+#~ msgid "Containers Map"
+#~ msgstr "Карта контейнеров"
+
+#~ msgid "Press about us"
+#~ msgstr "Пресса о нас"
+
+#~ msgid "Our team"
+#~ msgstr "Наша команда"
+
+#~ msgid "Companies"
+#~ msgstr "Компании"
+
+#~ msgid "Make a request"
+#~ msgstr "Отправить заявку"
+
+#~ msgid "Container for office"
+#~ msgstr "Контейнер в офис"
+
+#~ msgid "Latest events"
+#~ msgstr "Последние события"
+
+#~ msgid "Make and action"
+#~ msgstr "Провести акцию"
+
+#~ msgid "Modno"
+#~ msgstr "Модно сдать"
+
+#~ msgid "Make an event"
+#~ msgstr "Создать событие"
+
+#~ msgid "Your action"
+#~ msgstr "Ваша акция"
+
+#~ msgid "Projects news"
+#~ msgstr "Новости проектов"
+
+#~ msgid "Support the foundation"
+#~ msgstr "Поддержать фонд"
+
+#~ msgid "Search for"
+#~ msgstr "Найти"
+
+#~ msgid "More cases"
+#~ msgstr "Больше акций"
+
+#~ msgid "Metro station"
+#~ msgstr "Станция метро"
+
+#~ msgid "Parnters"
+#~ msgstr "Партнеры"
+
+#~ msgid "All containers on map"
+#~ msgstr "Все контейнеры на карте"
+
+#~ msgid "News and actions"
+#~ msgstr "Новости и акции"
+
+#~ msgid "Full project information"
+#~ msgstr "Полная информация о проекте"
+
+#~ msgid "Project reasults"
+#~ msgstr "Результаты проекта"
+
+#~ msgid "Help content"
+#~ msgstr "Содержания блока Помочь"
+
+#~ msgid "We can accept amount between %d and %d %s"
+#~ msgstr "Мы можем принять сумму между %d и %d %s"
+
+#~ msgid "Programm"
+#~ msgstr "Программа"
+
+#~ msgid "To support the foundation"
+#~ msgstr "В поддержку фонда «Гражданский союз»"
+
+#~ msgid "to support the foundation"
+#~ msgstr "в поддержку фонда «Гражданский союз»"
+
+#~ msgid "Confirm payment"
+#~ msgstr "Подтвердить"
+
+#~ msgid "Payment method"
+#~ msgstr "Платежный метод"
+
+#~ msgid "Donate online"
+#~ msgstr "Пожертвовать онлайн"
+
+#~ msgid "Get bank order"
+#~ msgstr "Или Получить квитанцию для банка"
+
+#~ msgid "Additional Campaign's Settings"
+#~ msgstr "Дополнительные настройки кампании"
+
+#~ msgid "Campaign for in-shop donation"
+#~ msgstr "Кампания, на которую относятся покупки в магазине"
+
+#~ msgid "Page Settings"
+#~ msgstr "Настройки страницы"
+
+#~ msgid "Select a campaign"
+#~ msgstr "Выберите кампанию"
+
+#~ msgid "Top items row"
+#~ msgstr "Нижний ряд блоков"
+
+#~ msgid "Bottom items row"
+#~ msgstr "Нижний ряд блоков"
+
+#~ msgid "Connected programm"
+#~ msgstr "Связанные программы"
+
+#~ msgid "Select a programm"
+#~ msgstr "Выберите программу"
+
+#~ msgid "Thank you message text"
+#~ msgstr "Текст благодарственного сообщения"
+
+#~ msgid "RBK (New)"
+#~ msgstr "RBK Money (Новый)"
+
+#~ msgid "Private key"
+#~ msgstr "Приватный ключ"
+
+#~ msgid "Please, enter your RBK API Key here"
+#~ msgstr "Укажите API Key вашего аккаунта "
+
+#~ msgid "Public key"
+#~ msgstr "Публичный ключ"
+
+#~ msgid "Public key for webhooks"
+#~ msgstr "Публичный ключ для веб-хука"
+
+#~ msgid "Shop ID"
+#~ msgstr "Shop ID"
+
+#~ msgid "Please, enter your RBK Shop ID"
+#~ msgstr "Укажите параметр Shop ID"
+
+#~ msgid "Recurring supported"
+#~ msgstr "Регулярные платежи"
+
+#~ msgid "Check if the gateway supports recurring"
+#~ msgstr "Отметить если шлюз поддерживает регулярные платежи"
+
+#~ msgid "Произошла ошибка при создании инвойса"
+#~ msgstr "Произошла ошибка при создании инвойса"
+
+#~ msgid "Bank card"
+#~ msgstr "Банковская карта"
+
+#~ msgid "Incorrect name"
+#~ msgstr "Неверное имя донора"
+
+#~ msgid "Incorrect email"
+#~ msgstr "Некорректный email "
+
+#~ msgid "Incorrect amount"
+#~ msgstr "Некорректная сумма"
+
+#~ msgid "Incorrect agree"
+#~ msgstr "Некорректное значение согласия"
+
+#~ msgid "Incorrect campaign"
+#~ msgstr "Некорректная кампания"
+
+#~ msgid "We cann't save your payment. Please try again later."
+#~ msgstr "Мы не можем сохранить ваш платеж, пожалуйста, попробуйте позже."
+
+#~ msgid "We cann't accept your payment. Please try again later."
+#~ msgstr "Мы не можем принять ваш платеж. Пожалуйста, попробуйте позже."
+
+#~ msgid "Static page settings"
+#~ msgstr "Статичная главная страница"
+
+#~ msgid "Base settings"
+#~ msgstr "Общие настройки"
+
+#~ msgid "Reports block description"
+#~ msgstr "Текст описания блока Отчеты"
+
+#~ msgid "Analytics block description"
+#~ msgstr "Описание блока"
+
+#~ msgid "Slider"
+#~ msgstr "Слайдер"
+
+#~ msgid "Slide: %d"
+#~ msgstr "Слайд: %d"
+
+#~ msgid "Recommended size 1400x500px"
+#~ msgstr "Рекомендованный размер 1400x500px"
+
+#~ msgid "Photo Credits"
+#~ msgstr "Автор фото"
+
+#~ msgid "Testimonial: %d"
+#~ msgstr "Отзыв: %d"
+
+#~ msgid "Supporter"
+#~ msgstr "Благотворитель"
+
+#~ msgid "News, events, education"
+#~ msgstr "Новости, события, обучение"
+
+#~ msgid "Attention"
+#~ msgstr "Обратите внимание"
+
+#~ msgid "Our work"
+#~ msgstr "Наша работа"
+
+#~ msgid "All projects"
+#~ msgstr "Все проекты"
+
+#~ msgid "Our supporters"
+#~ msgstr "Наши благотворители"
+
+#~ msgid "All"
+#~ msgstr "Все"
+
+#~ msgid "All containers"
+#~ msgstr "Все контейнеры"
+
+#~ msgid "As list"
+#~ msgstr "Все контейнеры списком"
+
+#~ msgid "Nearest metro"
+#~ msgstr "Ближайшая станция метро"
+
+#~ msgid "All containers on list"
+#~ msgstr "Все контейнеры списком"
+
+#~ msgid "How to find"
+#~ msgstr "Как найти"
+
+#~ msgid "FAQ block"
+#~ msgstr "Блок частных вопросов"
+
+#~ msgid "Open Text (or video)"
+#~ msgstr "Текст или видео "
+
+#~ msgid "3 Blocks Title"
+#~ msgstr "Заголовок секции 3 блока"
+
+#~ msgid "Open Link"
+#~ msgstr "Открывающий блок - ссылка"
+
+#~ msgid "Open Link Text"
+#~ msgstr "Открывающий блок - текст ссылки"
+
+#~ msgid "Horizontal Block"
+#~ msgstr "Горизонтальные блок"
+
+#~ msgid "Horizontal Image"
+#~ msgstr "Горизонтальное изображение"
+
+#~ msgid "Horizontal Link 1"
+#~ msgstr "Горизонтальный блок - ссылка 1"
+
+#~ msgid "Horizontal Link 1 Text"
+#~ msgstr "Горизонтальный блок - текст ссылки 1"
+
+#~ msgid "Horizontal Link 2"
+#~ msgstr "Горизонтальный блок - ссылка 2"
+
+#~ msgid "Horizontal Link 2 Text"
+#~ msgstr "Горизонтальный блок - текст ссылки 2"
+
+#~ msgid "How it's made"
+#~ msgstr "Как это работает"
+
+#~ msgid "Already working with us"
+#~ msgstr "С нами уже работают"
+
+#~ msgid "Setting Blocks"
+#~ msgstr "Настройки"
+
+#~ msgid "Materials for NGOs"
+#~ msgstr "Материалы для НКО"
+
+#~ msgid "Don't miss"
+#~ msgstr "Не пропустите"
+
+#~ msgid "Latest publications"
+#~ msgstr "Последние публикации"
+
+#~ msgid "Analytics"
+#~ msgstr "Аналитика"
+
+#~ msgid "Shopping"
+#~ msgstr "Магазин"
+
+#~ msgid "In the section"
+#~ msgstr "В разделе"
+
+#~ msgid "Number of items in News widget"
+#~ msgstr "Количество новостей в виджете"
+
+#~ msgid "Popular materials"
+#~ msgstr "Популярные материалы"
+
+#~ msgid "Sections"
+#~ msgstr "Разделы"
+
+#~ msgid "Column 1"
+#~ msgstr "Колонка 1"
+
+#~ msgid "Column 2"
+#~ msgstr "Колонка 2"
+
+#~ msgid "Time available for access"
+#~ msgstr "Время работы"
+
+#~ msgid "The project has been finished at %d"
+#~ msgstr "Проект завершен в  %d г."
+
+#~ msgid "light gray"
+#~ msgstr "светло-серый"
+
+#~ msgid "semi gray"
+#~ msgstr "серый"
+
+#~ msgid "main blue"
+#~ msgstr "синий"
+
+#~ msgid "violet"
+#~ msgstr "фиолетовый"
+
+#~ msgid "light blue"
+#~ msgstr "голубой"
+
+#~ msgid "Actual projects"
+#~ msgstr "Актуальные проекты"
+
+#~ msgid "Projects' news"
+#~ msgstr "Новости проектов"
+
+#~ msgid "Finished projects"
+#~ msgstr "Завершенные проекты"
+
+#~ msgid "More about project reasult"
+#~ msgstr "Подробнее о результатах проекта"
+
+#~ msgid "Project Settings"
+#~ msgstr "Настройки проекта"
+
+#~ msgid "Expiration year"
+#~ msgstr "Год окончания проекта"
+
+#~ msgid "Project's news"
+#~ msgstr "Новости проекта"
+
+#~ msgid "More projects"
+#~ msgstr "Больше проектов"
+
+#~ msgid "Block: %d"
+#~ msgstr "Блок: %d"
+
+#~ msgid "Top CTA blocks"
+#~ msgstr "Призыв к действию - верхний блок"
+
+#~ msgid "Leyka Donation"
+#~ msgstr "Пожертвование через Лейку"
+
+#~ msgid "Make a donation through Leyka"
+#~ msgstr "Сделать пожертвование через Лейку"
+
+#~ msgid "Select method"
+#~ msgstr "Выберите метод"
+
+#~ msgid "Enable/Disable"
+#~ msgstr "Включить/Выключить"
+
+#~ msgid "Enable Leyka Donation"
+#~ msgstr "Включить пожертвования через Лейку"
+
+#~ msgid "Payment method name that the customer will see on your checkout."
+#~ msgstr ""
+#~ "Название платежного метода, которое будет показано пользователю при "
+#~ "размещении заказа"
+
+#~ msgid "Online Donation"
+#~ msgstr "Онлайн пожертвование"
+
+#~ msgid "Description"
+#~ msgstr "Описание"
+
+#~ msgid ""
+#~ "Payment method description that the customer will see on your website."
+#~ msgstr ""
+#~ "Описание платежного метода, которое будет показано пользователю при "
+#~ "размещении заказа"
+
+#~ msgid "Make online donation to fullfill the order."
+#~ msgstr "Сделайте онлайн пожертвование, чтобы завершить заказ"
+
+#~ msgid "Instructions"
+#~ msgstr "Инструкции"
+
+#~ msgid "Instructions that will be added to the thank you page."
+#~ msgstr "Текст, который будет добавлен на страницу подтверждения заказа"
+
+#~ msgid "Please finish your order by paying donation amount online"
+#~ msgstr "Пожалуйста, сделайте пожертвование, для завершения заказа"
+
+#~ msgid "Peyment method supported by Leyka. Activate at least one there"
+#~ msgstr ""
+#~ "Онлайн платежный метод, настроенный в Лейке - должен быть активен, хотя "
+#~ "бы один"
+
+#~ msgid "Campaign ID"
+#~ msgstr "ID Кампании"
+
+#~ msgid "ID of campaign to relate orders to"
+#~ msgstr "ID кампании, на которую относятся заказы в магазине"
+
+#~ msgid "Awaiting for donation"
+#~ msgstr "Ожидает пожертвование"
+
+#~ msgid "Charitable order #%d"
+#~ msgstr "Благотворительный заказ #%d"
+
+#~ msgid ""
+#~ "Unfortunatly, your order data are not applicable for online donation. "
+#~ "Please contact us to finish your order"
+#~ msgstr ""
+#~ "К сожалению, параметры вашего заказа не позволяют нам принять "
+#~ "соответствующее пожертвование, пожалуйста, свяжитесь с нами, для "
+#~ "завершения заказа. "
+
+#~ msgid "Connected order"
+#~ msgstr "Заказ в магазине"
+
+#~ msgid "No connected order for this donation"
+#~ msgstr "С этим пожертвованием не связан ни один заказ"
+
+#~ msgid "Payment purporse"
+#~ msgstr "Назначение платежа"
+
+#~ msgid "Order"
+#~ msgstr "Заказ"
+
+#~ msgid "Our Charity Shop"
+#~ msgstr "Благотворительный магазин"
+
+#~ msgid "Related news"
+#~ msgstr "Новости по теме"
+
+#~ msgid "Related products"
+#~ msgstr "Еще в нашем магазине"
+
+#~ msgid "All supporters"
+#~ msgstr "Все благотворители"
+
+#~ msgid "Museums"
+#~ msgstr "Музеи"
+
+#~ msgid "Materials"
+#~ msgstr "Материалы"
+
+#~ msgid "Pages"
+#~ msgstr "Страницы"
+
+#~ msgid "See also"
+#~ msgstr "Также на сайте"
+
+#~ msgid "Error 404"
+#~ msgstr "Ошибка 404"
+
+#~ msgid "Page not found"
+#~ msgstr "Страница не найдена"
+
+#~ msgid ""
+#~ "Payment method description that the customer will see on your checkout."
+#~ msgstr ""
+#~ "Описание платежного метода, которое будет показано пользователю при "
+#~ "размещении заказа"
+
+#~ msgid "Page settings"
+#~ msgstr "Настройки страницы"
+
+#~ msgid "Contacts settings"
+#~ msgstr "Секции контактов"
+
+#~ msgid "Select icon"
+#~ msgstr "Выбрать иконку"
+
+#~ msgid "Icon"
+#~ msgstr "Иконка"
+
+#~ msgid "Iconic blocks"
+#~ msgstr "Блоки с иконками"
+
+#~ msgid "Subscribtion"
+#~ msgstr "Подписка"
+
+#~ msgid "Subscribe link"
+#~ msgstr "Ссылка на подписку"
+
+#~ msgid "Lear more"
+#~ msgstr "Подробнее"
+
+#~ msgid "Spporters Testimonials"
+#~ msgstr "Отзывы благотворителей"
+
+#~ msgid "All materials of the site are avaliabe under license %s"
+#~ msgstr "Если не указано иначе, все материалы сайта доступны по лицензии %s"
+
+#~ msgid "Secondary Menu"
+#~ msgstr "Вспомогательное меню"
+
+#~ msgid "Winners"
+#~ msgstr "Победители"
+
+#~ msgid "Year"
+#~ msgstr "Год участия"
+
+#~ msgid "All years"
+#~ msgstr "Все"
+
+#~ msgid "All rights reserved."
+#~ msgstr "Все права защищены."
+
+#~ msgid "More"
+#~ msgstr "Далее"
+
+#~ msgid "Thumbnail for - %s"
+#~ msgstr "Заставка для - %s"
+
+#~ msgid "Event date"
+#~ msgstr "Дата мероприятия"
+
+#~ msgid "Time"
+#~ msgstr "Время"
+
+#~ msgid "Made by %s"
+#~ msgstr "Сделано в %s"
+
+#~ msgid "Article"
+#~ msgstr "Статья"
+
+#~ msgid "Social Buttons"
+#~ msgstr "Социальные кнопки"
+
+#~ msgid "Social links menu with optional text"
+#~ msgstr "Меню социальных кнопок с сопроводительным текстом"
+
+#~ msgid "More about programm"
+#~ msgstr "Подробнее о программе"
+
+#~ msgid "Next project"
+#~ msgstr "Следующий проект"
+
+#~ msgid "%s - other rounds"
+#~ msgstr "%s - другие этапы"
+
+#~ msgid "About museum"
+#~ msgstr "О музее"
+
+#~ msgid "Participation"
+#~ msgstr "Участие"
+
+#~ msgid "Next museum"
+#~ msgstr "Следующий музей"
+
+#, fuzzy
+#~| msgid "Column-width"
+#~ msgid "Column 3"
+#~ msgstr "По ширине колонки"
+
+#, fuzzy
+#~| msgid "Title"
+#~ msgid "Title text"
+#~ msgstr "Заголовок"
+
+#~ msgid "404: Page not found"
+#~ msgstr "404: Страница не найдена"
+
+#~ msgid "Unfortunately, nothing found under your request"
+#~ msgstr "К сожалению, по вашему запросу ничего не найдено"
+
+#~ msgid "Oops! That page can&rsquo;t be found."
+#~ msgstr ""
+#~ "К сожалению, запрошенная страница не найдена, возможно она была "
+#~ "перемещена."
+
+#~ msgid "It looks like nothing was found at this location."
+#~ msgstr "К сожалению, по вашему запросу ничего не найдено"
+
+#~ msgid "Primary menu"
+#~ msgstr "﻿Главное меню"
+
+#~ msgid "Social menu"
+#~ msgstr "Социальные кнопки"
+
+#~ msgid "Event"
+#~ msgstr "Анонс"
+
+#~ msgid "Teplitsa of social technologies"
+#~ msgstr "Теплица социальных технологий"
+
+#~ msgid "All materials of the site are avaliabe under license %s."
+#~ msgstr "Все материалы сайта доступны по лиценции %s."
+
+#~ msgid "Left Menu in footer"
+#~ msgstr "Левое меню в футере"
+
+#~ msgid "Right Menu in footer"
+#~ msgstr "Правое меню в футере"
+
+#~ msgid "Languages"
+#~ msgstr "Языки"
+
+#~ msgid "Custom fields"
+#~ msgstr "Мета-поля"
+
+#~ msgid "Friendship stories"
+#~ msgstr "Истории дружбы"
+
+#~ msgid "Story"
+#~ msgstr "История"
+
+#~ msgid "Add a story"
+#~ msgstr "Добавить историю"
+
+#~ msgid "Add new"
+#~ msgstr "Добавить новую"
+
+#~ msgid "Add new story"
+#~ msgstr "Добавить новую"
+
+#~ msgid "New story"
+#~ msgstr "Новая история"
+
+#~ msgid "Edit the story"
+#~ msgstr "Редактировать"
+
+#~ msgid "View the story page"
+#~ msgstr "Открыть страницу истории"
+
+#~ msgid "All stories"
+#~ msgstr "Все истории"
+
+#~ msgid "Search for stories"
+#~ msgstr "Поиск историй"
+
+#~ msgid "Parent story"
+#~ msgstr "Родительская"
+
+#~ msgid "No stories found"
+#~ msgstr "Историй не найдено"
+
+#~ msgid "No stories found in Trash"
+#~ msgstr "Историй в корзине не найдено"
+
+#~ msgid "Add event"
+#~ msgstr "Добавить анонс"
+
+#~ msgid "Add new event"
+#~ msgstr "Добавить новый"
+
+#~ msgid "New event"
+#~ msgstr "Новый анонс"
+
+#~ msgid "Edit event"
+#~ msgstr "Редактировать"
+
+#~ msgid "View event"
+#~ msgstr "Просмотреть"
+
+#~ msgid "Search events"
+#~ msgstr "Поиск"
+
+#~ msgid "Parent event"
+#~ msgstr "Родительский"
+
+#~ msgid "No events found"
+#~ msgstr "Анонсы не найдены"
+
+#~ msgid "No events found in Trash"
+#~ msgstr "В Корзине мероприятия не найдены"
+
+#~ msgid "Programmes"
+#~ msgstr "Программы"
+
+#~ msgid "Add programm"
+#~ msgstr "Добавить программу"
+
+#~ msgid "Add new programm"
+#~ msgstr "Добавить новую"
+
+#~ msgid "New programm"
+#~ msgstr "Новая программа"
+
+#~ msgid "Edit programm"
+#~ msgstr "Редактировать"
+
+#~ msgid "View programm"
+#~ msgstr "Просмотреть"
+
+#~ msgid "All programmes"
+#~ msgstr "Все программы"
+
+#~ msgid "Search programmes"
+#~ msgstr "Поиск программ"
+
+#~ msgid "No programmes found"
+#~ msgstr "Программы не найдены"
+
+#~ msgid "No programmes found in Trash"
+#~ msgstr "В Корзине программы не найдены"
+
+#~ msgid "List of recent posts with some styling"
+#~ msgstr "Список последних записей с настройками оформления"
+
+#~ msgid "Recent Posts"
+#~ msgstr "Последние записи"
+
+#~ msgid "Permalink to %s"
+#~ msgstr "Постоянная ссылка %s"
+
+#~ msgid "Don't show"
+#~ msgstr "Не показывать"
+
+#~ msgid "Square thumbnail"
+#~ msgstr "Квадратная миниатюра"
+
+#~ msgid "Landscape thumnbail"
+#~ msgstr "Горизонтальная миниатюра"
+
+#~ msgid "Limit"
+#~ msgstr "Кол.-во"
+
+#~ msgid "Display Date?"
+#~ msgstr "Отображать дату?"
+
+#~ msgid "Display Excerpt?"
+#~ msgstr "Отображать аннотацию?"
+
+#~ msgid "Excerpt Length"
+#~ msgstr "Длина аннотации"
+
+#~ msgid "Thumbnail"
+#~ msgstr "Миниатюра"
+
+#~ msgid "Choose the Post Type"
+#~ msgstr "Тип контента"
+
+#~ msgid "Select post type"
+#~ msgstr "Выбрать"
+
+#~ msgid "Choose the Taxonomy"
+#~ msgstr "Выбрать таксономию"
+
+#~ msgid "Select taxonomy"
+#~ msgstr "Выбрать"
+
+#~ msgid "Term slug"
+#~ msgstr "Ярлык термина"
+
+#~ msgid ""
+#~ "Copy paste a slug (or comma-separated list of several slugs) of the term"
+#~ msgstr "Укажите ярлык (разделенный запятыми список ярлыков) термина"
+
+#~ msgid "Let&rsquo;s find the inforamtion you need"
+#~ msgstr "Давайте попробуем найти информацию, которая вам нужна."
+
+#~ msgid "Fixed: Large"
+#~ msgstr "Фикс.: Большой"
+
+#~ msgid "Program"
+#~ msgstr "Программа"
+
+#~ msgid "Add program"
+#~ msgstr "Добавить программу"
+
+#~ msgid "Add new program"
+#~ msgstr "Добавить новую"
+
+#~ msgid "New program"
+#~ msgstr "Новая программа"
+
+#~ msgid "Edit program"
+#~ msgstr "Редактировать"
+
+#~ msgid "View program"
+#~ msgstr "Просмотр"
+
+#~ msgid "Parent program"
+#~ msgstr "Родительская программа"
+
+#~ msgid "Our events"
+#~ msgstr "Наши события"
+
+#~ msgid "Our programmes"
+#~ msgstr "Наши программы"
+
+#~ msgid "Our friends"
+#~ msgstr "Наши друзья"
+
+#~ msgid "Published"
+#~ msgstr "Опубликовано"
+
+#~ msgid "Announcements"
+#~ msgstr "Анонсы"
+
+#~ msgid "Next"
+#~ msgstr "След."
+
+#~ msgid "Previous"
+#~ msgstr "Пред."
+
+#~ msgid "Home"
+#~ msgstr "Главная"
+
+#~ msgid "Friendship story"
+#~ msgstr "История дружбы"
+
+#~ msgid "Add a friendship story"
+#~ msgstr "Добавить историю"
+
+#~ msgid "Add new friendship story"
+#~ msgstr "Добавить новую историю"
+
+#~ msgid "New friendship story"
+#~ msgstr "Новая история дружбы"
+
+#~ msgid "All friendship stories"
+#~ msgstr "Все истории о дружбе"
+
+#~ msgid "Search for friendship stories"
+#~ msgstr "Поиск историй"

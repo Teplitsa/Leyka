@@ -1,0 +1,109 @@
+/** Presets **/
+
+// $color-main: var(--color-main);
+$base : 8px;
+
+$one:   480px; //small
+$two:   767px; //medium
+$three: 1024px; //large
+$four:  1200px; //exlarge
+$five:  1400px; //xxlarge 
+
+//Adminbar
+$adminbar_large_screen: 32px; //w > 780px
+$adminbar_small_screen: 46px;
+$adminbar_break: 780px;
+
+// text 
+$body: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+
+ 
+// color 
+$color-button-bg: var(--engb-color-button-bg); // #FF510D;
+$color-button-text: var(--engb-color-button-text);
+$color-body-bg: var(--engb-color-body-bg);
+$color-body-text: var(--engb-color-body-text);
+
+
+@mixin body-text() {
+    font-family: $body;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 16px;
+    line-height: 23px; 
+}
+
+
+/** MQ **/
+@mixin for($media) {
+    @if $media == small-screens {
+        @media screen and (min-width: $one) { @content; }
+    }
+    @else if $media == medium-screens {
+        @media screen and (min-width: $two) { @content; }
+    }
+    @else if $media == large-screens {
+        @media screen and (min-width: $three) { @content; }
+    }
+    @else if $media == exlarge-screens {
+        @media screen and (min-width: $four) { @content; }
+    }
+    @else if $media == xxlarge-screens {
+        @media screen and (min-width: $five) { @content; }
+    }
+}
+
+@mixin upto($media) {
+    @if $media == small-screens {
+        @media screen and (max-width: $one - 1) { @content; }
+    }
+    @else if $media == medium-screens {
+        @media screen and (max-width: $two - 1) { @content; }
+    }
+    @else if $media == large-screens {
+        @media screen and (max-width: $three - 1) { @content; }
+    }
+    @else if $media == exlarge-screens {
+        @media screen and (max-width: $four - 1) { @content; }
+    }
+    @else if $media == xxlarge-screens {
+        @media screen and (max-width: $five - 1) { @content; }
+    }
+}
+
+/** Animation **/
+@keyframes engbSlideUp {
+    0%   { 
+        display: none;
+        opacity: 0;
+        transform: translateY(0);
+    }
+    1%{
+        display: block; 
+        opacity: 0;
+        transform: translateY(100%);
+    }
+    100% { 
+        display: block; 
+        opacity: 1; 
+        transform: translateY(0);
+    }
+}
+
+@keyframes engbSlideDown {
+    0%   { 
+        display: none;
+        opacity: 0;
+        transform: translateY(0);
+    }
+    1%{
+        display: block; 
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+    100% { 
+        display: block; 
+        opacity: 1; 
+        transform: translateY(0);
+    }
+}

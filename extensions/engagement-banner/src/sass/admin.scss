@@ -1,0 +1,55 @@
+/** Admin styles **/
+#leyka_engagement_banner-content,
+#leyka_engagement_banner-placement,
+#leyka_engagement_banner-interactions  {
+    .field-component.title {
+        margin-bottom: 12px;
+    }
+
+    .field-component.help {
+        margin-top: 4px;
+    }
+
+    .settings-block {
+        margin-bottom: 24px;
+    }
+}
+
+#leyka_engagement_banner_text-wrapper {
+    textarea {
+        height: 90px;  
+    }
+}
+
+#extension_engagement_banner_time_amount,
+#extension_engagement_banner_scroll_amount {
+    display: none;
+}
+
+#extension_engagement_banner_time_amount.engb-active,
+#extension_engagement_banner_scroll_amount.engb-active {
+    display: block;
+}
+
+#extension_engagement_banner_show_on_home.readonly {
+    opacity: 0.5;
+    .field-component .required {
+        color: #999999;
+    }
+}
+
+
+// select 
+.leyka-admin ul.select2-selection__rendered li  {
+    margin: 0;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__clear {
+    font-size: 16px;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background: #f1f1f1;
+    border-color: #ccc;
+}
+

@@ -91,6 +91,7 @@ PHP version required: 5.6+
 == Changelog ==
 = 3.8 =
 * New: recurring subscriptions admin page added.
+* New: the Engagement banner extension added.
 * New: now Google UA supported directly, without dataLayer & GTA.
 * New: the procedure for Donors' notifications on recurring canceling added.
 * New: Donors admin list - bulk edit feature added.

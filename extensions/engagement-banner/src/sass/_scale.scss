@@ -1,0 +1,287 @@
+$diametr: 96px;
+
+.engb-scale-label {
+    text-transform: uppercase;
+    margin-top: 5px;
+    font-size: 0.9em;
+    font-weight: 500;
+    margin-top: 0.9em;
+    color: $color-body-text;
+
+    b {
+        font-weight: 900;
+    }
+}
+
+@include upto(medium-screens) {
+    .engb--format-scale {
+        padding-top: 5px;
+    }
+
+    .engb-scale-block {
+        margin-top: -20px;
+    }
+}
+
+
+@media screen and (min-width: $two) and (max-width: $three - 1) {
+
+    .engb--format-scale {
+        .engb-row {
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: space-between;
+        }
+
+        .engb-title {
+            flex: 0 0 auto;
+            margin: 0;
+            width: 160px;
+        }
+        
+        .engb-text {
+            width: calc(100% - 180px);
+        }
+
+        .engb-action {
+            width: 100%;
+            text-align: right;
+            margin-top: 1em;
+        }
+    }
+}
+
+@include for(large-screens) {
+    .engb-scale-block {
+        width: 160px;
+        text-align: center;
+    }
+
+    .engb-scale-circle {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+
+// circle 
+.engb-scale-block {
+    position: relative;
+
+    &:before {
+        content: '';
+        display: block;
+        width: $diametr;
+        height: $diametr;
+        border-radius: 50%;
+        background-color: $color-body-bg;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+
+        @include for(large-screens) {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    }
+}
+
+.engb-scale-circle {
+    font-size: 20px;
+    position: relative;
+    z-index: 10;
+    padding: 0;
+    width: $diametr;
+    height: $diametr;
+    line-height: $diametr;
+    text-align: center;
+}
+
+.engb-scale-circle:before {
+    content: "";
+    display: block;
+    width: $diametr;
+    height: $diametr;
+    position: absolute;
+    top: 0; 
+    left: 0;
+    background: $color-button-bg;
+    opacity: 0.3;
+    z-index: 11;
+    border-radius: 50%;
+}
+
+.engb-scale-circle:after {
+    border: none;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    text-align: center;
+    display: block;
+    border-radius: 50%;
+    width: $diametr - 20px;
+    height: $diametr - 20px;
+    background-color: $color-body-bg;
+    content: " ";
+    z-index: 12;
+}
+
+/* Text inside the control */
+.engb-scale-circle span {
+    display: block;
+    position: absolute;
+    line-height: $diametr;
+    width: $diametr;
+    padding-left: 6px;
+    text-align: center;
+    color: $color-body-text;
+    z-index: 20;
+    font-size: 24px;
+}
+
+.left-half-clipper { 
+   /* a round circle */
+   border-radius: 50%;
+   width: $diametr;
+   height: $diametr;
+   position: absolute; /* needed for clipping */
+   clip: rect(0, $diametr, $diametr, $diametr/2); /* clips the whole left half*/ 
+}
+
+/* when p>50, don't clip left half*/
+.engb-scale-circle.over50 .left-half-clipper {
+   clip: rect(auto,auto,auto,auto);
+}
+
+.value-bar {
+   /*This is an overlayed square, that is made round with the border radius,
+   then it is cut to display only the left half, then rotated clockwise
+   to escape the outer clipping path.*/ 
+   position: absolute; /*needed for clipping*/
+   clip: rect(0, $diametr/2, $diametr, 0);
+   width: $diametr;
+   height: $diametr;
+   border-radius: 50%;
+   border: 12px solid $color-button-bg; /*The border is 0.35 but making it larger removes visual artifacts */
+   /*background-color: #4D642D;*/ /* for debug */
+   box-sizing: border-box;
+  
+}
+
+/* Progress bar filling the whole right half for values above 50% */
+.engb-scale-circle.over50 .first50-bar {
+   /*Progress bar for the first 50%, filling the whole right half*/
+   position: absolute; /*needed for clipping*/
+   clip: rect(0, $diametr, $diametr, $diametr/2);
+   background-color: #53777A;
+   border-radius: 50%;
+   width: $diametr;
+   height: $diametr;
+}
+
+.engb-scale-circle:not(.over50) .first50-bar{ display: none; }
+
+
+/* Progress bar rotation position */
+.engb-scale-circle.p0 .value-bar { display: none; }
+.engb-scale-circle.p1 .value-bar { transform: rotate(4deg); }
+.engb-scale-circle.p2 .value-bar { transform: rotate(7deg); }
+.engb-scale-circle.p3 .value-bar { transform: rotate(11deg); }
+.engb-scale-circle.p4 .value-bar { transform: rotate(14deg); }
+.engb-scale-circle.p5 .value-bar { transform: rotate(18deg); }
+.engb-scale-circle.p6 .value-bar { transform: rotate(22deg); }
+.engb-scale-circle.p7 .value-bar { transform: rotate(25deg); }
+.engb-scale-circle.p8 .value-bar { transform: rotate(29deg); }
+.engb-scale-circle.p9 .value-bar { transform: rotate(32deg); }
+.engb-scale-circle.p10 .value-bar { transform: rotate(36deg); }
+.engb-scale-circle.p11 .value-bar { transform: rotate(40deg); }
+.engb-scale-circle.p12 .value-bar { transform: rotate(43deg); }
+.engb-scale-circle.p13 .value-bar { transform: rotate(47deg); }
+.engb-scale-circle.p14 .value-bar { transform: rotate(50deg); }
+.engb-scale-circle.p15 .value-bar { transform: rotate(54deg); }
+.engb-scale-circle.p16 .value-bar { transform: rotate(58deg); }
+.engb-scale-circle.p17 .value-bar { transform: rotate(61deg); }
+.engb-scale-circle.p18 .value-bar { transform: rotate(65deg); }
+.engb-scale-circle.p19 .value-bar { transform: rotate(68deg); }
+.engb-scale-circle.p20 .value-bar { transform: rotate(72deg); }
+.engb-scale-circle.p21 .value-bar { transform: rotate(76deg); }
+.engb-scale-circle.p22 .value-bar { transform: rotate(79deg); }
+.engb-scale-circle.p23 .value-bar { transform: rotate(83deg); }
+.engb-scale-circle.p24 .value-bar { transform: rotate(86deg); }
+.engb-scale-circle.p25 .value-bar { transform: rotate(90deg); }
+.engb-scale-circle.p26 .value-bar { transform: rotate(94deg); }
+.engb-scale-circle.p27 .value-bar { transform: rotate(97deg); }
+.engb-scale-circle.p28 .value-bar { transform: rotate(101deg); }
+.engb-scale-circle.p29 .value-bar { transform: rotate(104deg); }
+.engb-scale-circle.p30 .value-bar { transform: rotate(108deg); }
+.engb-scale-circle.p31 .value-bar { transform: rotate(112deg); }
+.engb-scale-circle.p32 .value-bar { transform: rotate(115deg); }
+.engb-scale-circle.p33 .value-bar { transform: rotate(119deg); }
+.engb-scale-circle.p34 .value-bar { transform: rotate(122deg); }
+.engb-scale-circle.p35 .value-bar { transform: rotate(126deg); }
+.engb-scale-circle.p36 .value-bar { transform: rotate(130deg); }
+.engb-scale-circle.p37 .value-bar { transform: rotate(133deg); }
+.engb-scale-circle.p38 .value-bar { transform: rotate(137deg); }
+.engb-scale-circle.p39 .value-bar { transform: rotate(140deg); }
+.engb-scale-circle.p40 .value-bar { transform: rotate(144deg); }
+.engb-scale-circle.p41 .value-bar { transform: rotate(148deg); }
+.engb-scale-circle.p42 .value-bar { transform: rotate(151deg); }
+.engb-scale-circle.p43 .value-bar { transform: rotate(155deg); }
+.engb-scale-circle.p44 .value-bar { transform: rotate(158deg); }
+.engb-scale-circle.p45 .value-bar { transform: rotate(162deg); }
+.engb-scale-circle.p46 .value-bar { transform: rotate(166deg); }
+.engb-scale-circle.p47 .value-bar { transform: rotate(169deg); }
+.engb-scale-circle.p48 .value-bar { transform: rotate(173deg); }
+.engb-scale-circle.p49 .value-bar { transform: rotate(176deg); }
+.engb-scale-circle.p50 .value-bar { transform: rotate(180deg); }
+.engb-scale-circle.p51 .value-bar { transform: rotate(184deg); }
+.engb-scale-circle.p52 .value-bar { transform: rotate(187deg); }
+.engb-scale-circle.p53 .value-bar { transform: rotate(191deg); }
+.engb-scale-circle.p54 .value-bar { transform: rotate(194deg); }
+.engb-scale-circle.p55 .value-bar { transform: rotate(198deg); }
+.engb-scale-circle.p56 .value-bar { transform: rotate(202deg); }
+.engb-scale-circle.p57 .value-bar { transform: rotate(205deg); }
+.engb-scale-circle.p58 .value-bar { transform: rotate(209deg); }
+.engb-scale-circle.p59 .value-bar { transform: rotate(212deg); }
+.engb-scale-circle.p60 .value-bar { transform: rotate(216deg); }
+.engb-scale-circle.p61 .value-bar { transform: rotate(220deg); }
+.engb-scale-circle.p62 .value-bar { transform: rotate(223deg); }
+.engb-scale-circle.p63 .value-bar { transform: rotate(227deg); }
+.engb-scale-circle.p64 .value-bar { transform: rotate(230deg); }
+.engb-scale-circle.p65 .value-bar { transform: rotate(234deg); }
+.engb-scale-circle.p66 .value-bar { transform: rotate(238deg); }
+.engb-scale-circle.p67 .value-bar { transform: rotate(241deg); }
+.engb-scale-circle.p68 .value-bar { transform: rotate(245deg); }
+.engb-scale-circle.p69 .value-bar { transform: rotate(248deg); }
+.engb-scale-circle.p70 .value-bar { transform: rotate(252deg); }
+.engb-scale-circle.p71 .value-bar { transform: rotate(256deg); }
+.engb-scale-circle.p72 .value-bar { transform: rotate(259deg); }
+.engb-scale-circle.p73 .value-bar { transform: rotate(263deg); }
+.engb-scale-circle.p74 .value-bar { transform: rotate(266deg); }
+.engb-scale-circle.p75 .value-bar { transform: rotate(270deg); }
+.engb-scale-circle.p76 .value-bar { transform: rotate(274deg); }
+.engb-scale-circle.p77 .value-bar { transform: rotate(277deg); }
+.engb-scale-circle.p78 .value-bar { transform: rotate(281deg); }
+.engb-scale-circle.p79 .value-bar { transform: rotate(284deg); }
+.engb-scale-circle.p80 .value-bar { transform: rotate(288deg); }
+.engb-scale-circle.p81 .value-bar { transform: rotate(292deg); }
+.engb-scale-circle.p82 .value-bar { transform: rotate(295deg); }
+.engb-scale-circle.p83 .value-bar { transform: rotate(299deg); }
+.engb-scale-circle.p84 .value-bar { transform: rotate(302deg); }
+.engb-scale-circle.p85 .value-bar { transform: rotate(306deg); }
+.engb-scale-circle.p86 .value-bar { transform: rotate(310deg); }
+.engb-scale-circle.p87 .value-bar { transform: rotate(313deg); }
+.engb-scale-circle.p88 .value-bar { transform: rotate(317deg); }
+.engb-scale-circle.p89 .value-bar { transform: rotate(320deg); }
+.engb-scale-circle.p90 .value-bar { transform: rotate(324deg); }
+.engb-scale-circle.p91 .value-bar { transform: rotate(328deg); }
+.engb-scale-circle.p92 .value-bar { transform: rotate(331deg); }
+.engb-scale-circle.p93 .value-bar { transform: rotate(335deg); }
+.engb-scale-circle.p94 .value-bar { transform: rotate(338deg); }
+.engb-scale-circle.p95 .value-bar { transform: rotate(342deg); }
+.engb-scale-circle.p96 .value-bar { transform: rotate(346deg); }
+.engb-scale-circle.p97 .value-bar { transform: rotate(349deg); }
+.engb-scale-circle.p98 .value-bar { transform: rotate(353deg); }
+.engb-scale-circle.p99 .value-bar { transform: rotate(356deg); }
+.engb-scale-circle.p100 .value-bar { transform: rotate(360deg); }

@@ -1,0 +1,60 @@
+/** Desktop vars **/
+@include for(large-screens) {
+    .engb {
+        display: none;
+        opacity: 0;
+        z-index: -1;
+
+        &.engb-position--bottom {
+            bottom: 0;
+            animation: engbSlideUp 0.4s ease-in-out;
+        }
+
+        &.engb-position--top {
+            border-bottom: 1px solid $color-body-text;
+            border-top: none;
+            animation: engbSlideDown 0.4s ease-in-out;
+        }
+    }
+    
+    .admin-bar .engb.engb-position--top {
+        top: $adminbar_large_screen;
+    }
+    
+    .engb.engb--visible {
+        display: block; 
+        opacity: 1; 
+        z-index: 3000;
+    }
+
+    .engb-row {
+        max-width: $four;
+        margin-left: auto;
+        margin-right: auto;
+
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+    }
+
+    .engb-title {
+        width: 15%;
+        flex: 0 0 auto;
+    }
+
+    .engb-text {
+        display: flex;
+        flex-flow: column;
+        justify-content: center;
+        padding: 0 4em;
+    }
+
+    .engb-action {
+        flex: 1 1 auto;
+        text-align: right;
+        display: flex;
+        flex-flow: column;
+        justify-content: center;
+        align-items: flex-end;
+    }
+}

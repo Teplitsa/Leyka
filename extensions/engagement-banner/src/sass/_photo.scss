@@ -1,0 +1,131 @@
+/** Photo block **/
+.engb-photo-image {
+    img {
+        border-radius: 50%;
+        object-fit: cover;
+    }
+}
+
+.engb-photo-name {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: $color-button-bg;
+}
+
+.engb-photo-role {
+    font-size: 0.8em;
+    opacity: 0.9;
+    color: $color-body-text; 
+}
+
+
+@include upto(large-screens) {
+
+    .engb-photo-block {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .engb-photo-image {
+        flex: 0 0 auto;
+        width: 135px;
+
+        img {
+            width: 105px;
+            height: 105px;
+        }
+    }
+
+    .engb-photo-content {
+        width: calc(100% - 135px);
+    }
+
+    .engb--format-photo {
+        padding-top: 5px;
+    }
+
+    .engb-photo-block {
+        margin-top: -20px;
+    }
+
+    .engb-photo-name {
+        padding-top: 20px;
+    }
+}
+
+@media screen and (min-width: $two) and (max-width: $three - 1) {
+
+    .engb--format-photo {
+        .engb-row {
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: space-between;
+        }
+        
+        .engb-text {
+            width: calc(100% - 212px);
+        }
+
+        .engb-action {
+            flex: 0 0 auto;
+            text-align: right;
+            margin-top: 0;
+            width: 212px;
+        }
+
+        .engb-action-rail {
+            display: flex;
+            flex-flow: column;
+            height: 100%;
+            width: 100%;
+            justify-content: flex-end;
+            align-items: flex-end;
+        }
+    }
+}
+
+
+@include for(large-screens) {
+
+    .engb-photo-name {
+        font-size: 1.1em;
+    }
+    
+    .engb-position--bottom {
+        .engb-photo-image {
+            display: inline-block;
+
+            img {
+                width: 130px;
+                height: 130px;
+            }
+        }
+
+        .engb-photo-block {
+            text-align: center;
+            margin-top: -70px;
+            float: left;
+        }
+    }
+
+    .engb-position--top {
+        padding-top: 2.2em;
+
+        .engb-photo-image {
+            display: inline-block;
+
+            img {
+                width: 100px;
+                height: 10-px;
+            }
+        }
+
+        .engb-photo-block {
+            text-align: center;
+            margin-top: -10px;
+            float: left;
+        }
+    }
+}
