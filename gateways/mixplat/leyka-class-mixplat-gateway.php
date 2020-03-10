@@ -298,6 +298,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
                 $message = sprintf(__("This message has been sent because a call to your MIXPLAT callback was made with invalid MIXPLAT signature. The details of the call are below. The callback type: %s. Signatures sent / calculated: %s / %s", 'leyka'), $response['request'], $response['signature'], $params_signature)."\n\r\n\r";
                 $is_error = true;
+
             }
 
         }
@@ -341,7 +342,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                 $donation->add_gateway_response($response);
 
                 $campaign = new Leyka_Campaign($donation->campaign_id);
-                $campaign->update_total_funded_amount();
+                $campaign->update_total_funded_amount($donation);
 
                 Leyka_Donation_Management::send_all_emails($donation->id);
 
