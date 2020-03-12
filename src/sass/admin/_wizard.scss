@@ -304,7 +304,35 @@
 
         }
 
-        .ui-accordion { // Accordion UI widget (used on Gateways Wizards first steps)
+        .ui-accordion.no-jquery-ui { // Accordion UI widget (used on Gateways Wizards first steps)
+
+            // Remove the jQuery UI styling:
+            .ui-state-default {
+
+                background: unset;
+                border: unset;
+                padding: unset;
+                font-family: $font-body;
+
+                .ui-accordion-header-icon {
+                    position: unset;
+                }
+
+            }
+
+            .ui-accordion-content {
+                background: unset;
+                border: unset;
+                padding: unset;
+                margin: unset;
+                font-family: $font-body;
+                overflow: unset;
+            }
+
+            input, select, textarea, button {
+                font-family: $font-body;
+            }
+            // Remove the jQuery UI styling - END
 
             border-bottom: 1px dashed $color-border-semilight;
 

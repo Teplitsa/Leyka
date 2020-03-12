@@ -12,7 +12,7 @@
         <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-card-mir.svg" alt="">
     </div>
 
-    <div class="ui-accordion">
+    <div class="ui-accordion no-jquery-ui">
 
         <h2><?php _e("I'm ready to follow the connection instructions", 'leyka');?></h2>
         <div>

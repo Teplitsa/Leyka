@@ -22,8 +22,8 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
 
         wp_enqueue_script('leyka-easy-modal', LEYKA_PLUGIN_BASE_URL . 'js/jquery.easyModal.min.js', array(), false, true);
 
-        wp_enqueue_script( 'jquery-ui-dialog' );
-        wp_enqueue_style( 'wp-jquery-ui-dialog' );
+        wp_enqueue_script('jquery-ui-dialog');
+        wp_enqueue_style('wp-jquery-ui-dialog');
 
         add_action('admin_enqueue_scripts', function(){
 

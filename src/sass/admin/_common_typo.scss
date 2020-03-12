@@ -1,10 +1,10 @@
 /** == Typography (_typo.scss) == **/
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,400i,500,700,900&subset=cyrillic');
 
-$body: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+$font-body: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 
 @mixin body-text($mod: default) {
-	font-family: $body;
+	font-family: $font-body;
 	font-weight: 400;
 	font-style: normal;
 	font-size: 14px;
@@ -20,7 +20,7 @@ $body: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial
 
 // Admin list pages text:
 @mixin leyka-admin-list-text() {
-    font-family: $body;
+    font-family: $font-body;
     font-weight: normal;
     font-style: normal;
     font-size: 13px;
@@ -77,7 +77,7 @@ $body: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial
 // Admin list pages text - END
 
 @mixin amount-input {
-	font-family: $body;
+	font-family: $font-body;
 	font-weight: 100;
 	font-style: normal;
 	font-size: 38px;
@@ -85,7 +85,7 @@ $body: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial
 }
 
 @mixin multiselect-input-typo() {
-    font-family: $body;
+    font-family: $font-body;
     font-weight: normal;
     font-style: normal;
     font-size: 13px;
@@ -93,7 +93,7 @@ $body: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial
 }
 
 @mixin step-back($mod: default) {
-	font-family: $body;
+	font-family: $font-body;
 	font-weight: normal;
 	font-style: normal;
 	font-size: 14px;
@@ -101,7 +101,7 @@ $body: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial
 }
 
 @mixin step-title($mod: default) {
-	font-family: $body;
+	font-family: $font-body;
 	font-weight: 500;
 	font-style: normal;
 	font-size: 16px;
@@ -109,7 +109,7 @@ $body: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial
 }
 
 @mixin input-text($mod: default) {
-	font-family: $body;
+	font-family: $font-body;
 	font-weight: 500;
 	font-style: normal;
 	font-size: 16px;
@@ -117,7 +117,7 @@ $body: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial
 }
 
 @mixin input-label($mod: default) {
-	font-family: $body;
+	font-family: $font-body;
 	font-weight: 400;
 	font-style: normal;
 	font-size: 14px;
@@ -125,7 +125,7 @@ $body: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial
 }
 
 @mixin note-text($mod: default) {
-	font-family: $body;
+	font-family: $font-body;
 	font-weight: 300;
 	font-style: normal;
 	font-size: 12px;
@@ -133,7 +133,7 @@ $body: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial
 }
 
 @mixin thankyou-title($mod: default) {
-    font-family: $body;
+    font-family: $font-body;
     font-weight: 500;
     font-style: normal;
     font-size: 18px;
@@ -141,7 +141,7 @@ $body: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial
 }
 
 @mixin no-thankyou-link($mod: default) {
-    font-family: $body;
+    font-family: $font-body;
     font-weight: 300;
     font-style: normal;
     font-size: 16px;
@@ -149,7 +149,7 @@ $body: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial
 }
 
 @mixin informyou-text($mod: default) {
-    font-family: $body;
+    font-family: $font-body;
     font-weight: 300;
     font-style: normal;
     font-size: 16px;
@@ -157,7 +157,7 @@ $body: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial
 }
 
 @mixin error-text($mod: default) {
-    font-family: $body;
+    font-family: $font-body;
     font-weight: 300;
     font-style: normal;
     font-size: 15px;
@@ -166,19 +166,19 @@ $body: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial
 
 // nav chain
 @mixin chain-section-marker {
-	font-family: $body;
+	font-family: $font-body;
 	font-size: 14px;
 }
 
 @mixin chain-section-title {
-	font-family: $body;
+	font-family: $font-body;
 	font-size: 12px;
 	font-weight: 600;
 	text-transform: uppercase;
 }
 
 @mixin chain-step {
-	font-family: $body;
+	font-family: $font-body;
 	font-size: 12px;
 	font-weight: 500;
 }
@@ -269,7 +269,7 @@ $body: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial
 }
 
 @mixin editor-text() {
-	font-family: $body;
+	font-family: $font-body;
 	font-weight: 400;
 	font-style: normal;
 	font-size: 14px;
@@ -277,14 +277,14 @@ $body: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial
 }
 
 @mixin info2copy() {
-	font-family: $body;
+	font-family: $font-body;
 	font-weight: 500;
 	font-size: 16px;
 	line-height: 19px;
 }
 
 @mixin copy2clipborad-link {
-    font-family: $body;
+    font-family: $font-body;
     font-weight: 500;
     font-style: normal;
     font-size: 10px;

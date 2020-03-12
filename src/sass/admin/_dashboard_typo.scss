@@ -1,7 +1,7 @@
 /** == Typography (_dashboard_typo.scss) == **/
 
 @mixin leyka-adb-text($mod: default) {
-	font-family: $body;
+	font-family: $font-body;
 	font-weight: normal;
 	font-style: normal;
 	font-size: 12px;

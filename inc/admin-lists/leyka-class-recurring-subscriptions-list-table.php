@@ -359,7 +359,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
             'next_donation' => __('Next donation', 'leyka'),
             'donations_number' => __('Donations total', 'leyka'),
             'gateway' => __('Gateway', 'leyka'),
-            'amount' => __('Amount', 'leyka'),
+            'amount' => __('Donation amount', 'leyka'),
         );
     }
 

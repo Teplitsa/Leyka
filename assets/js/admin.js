@@ -842,9 +842,13 @@ jQuery(document).ready(function($){
     // Datepicker fields for admin lists filters - END
 
     if(leyka_ui_widget_available('accordion')) {
-        $('.ui-accordion').accordion({
-            heightStyle: 'content',
-            // collapsible: true, active: false
+        $('.ui-accordion').each(function(){
+
+            let $this = $(this),
+                widget_options = {heightStyle: 'content',};
+
+            $this.accordion(widget_options);
+
         });
     }
 
