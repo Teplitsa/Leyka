@@ -577,15 +577,15 @@ self::$_options_meta = array(
     ),
     'recurring_canceling_donor_notification_emails_title' => array(
         'type' => 'text',
-        'default' => __('You stopped your recurring donations! Waaat the fuuu?!', 'leyka'),
+        'default' => __('Thank you for being with us!', 'leyka'),
         'title' => __('A title of a notification email', 'leyka'),
         'description' => __('Enter the email title.', 'leyka'),
         'required' => true,
-        'placeholder' => __('E.g., You stopped your recurring donations', 'leyka'),
+        'placeholder' => __('E.g., Thank you for being with us!', 'leyka'),
     ),
     'recurring_canceling_donor_notification_emails_text' => array(
         'type' => 'rich_html',
-        'default' => __('Hello, #DONOR_NAME#!<br><br>It certainly seems like you canceled your recurring subscription on the "#CAMPAIGN_NAME#" campaign.<br><br>We are totally, utterly and vastly dreaded by this fact.<br><br>Maybe, you would like to reconsider it? Pretty pleeease? Oh, you already agree? Cool! Then please subscribe to recurring donations on the <a href="#CAMPAIGN_URL#">campaign page</a>.<br><br>If you do not wish to make new recurring donations, just ignore this email.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
+        'default' => __('Hello, #DONOR_NAME#!<br><br>You canceled the recurring donations on the "#CAMPAIGN_NAME#" campaign. We thank you for support, and we will miss it greatly.<br><br>Recurring donations are very important for us, as they allow us to plan stable future works. You may subscribe to monthly recurring donations again on the <a href="#CAMPAIGN_URL#">campaign page</a>.<br><br>Sincerely thank you for your support,<br>#ORG_NAME#', 'leyka'),
         'title' => __('Notification email text', 'leyka'),
         'description' => __('Enter the text of notification email. It may include the following special entries:', 'leyka').$email_placeholders,
         'required' => true,

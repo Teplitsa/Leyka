@@ -10,7 +10,7 @@
     </div>
     <?php if($scale['delta'] > 0 ) { ?>
         <div class="engb-scale-label">
-            <?php printf(__('Out of %s %s', 'leyka_engb'), "<b>".$scale['target']."</b>", $scale['currency']); ?>
+            <?php printf(__('Out of %s %s', 'leyka'), "<b>".$scale['target']."</b>", $scale['currency']); ?>
         </div>
     <?php } ?>
 </div>

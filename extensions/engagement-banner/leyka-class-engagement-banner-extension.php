@@ -19,13 +19,13 @@ class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
 
     	$this->_id = 'engagement_banner'; 
 
-        $this->_title = __('Engagement Banner', 'leyka_engb'); 
+        $this->_title = __('Engagement Banner', 'leyka');
 
-        $this->_description = __('Display fundrising banner on website pages, control appearance logic.', 'leyka_engb');
+        $this->_description = __('Display fundrising banner on website pages, control appearance logic.', 'leyka');
 
-        $this->_full_description = __('Display fundrising banner on website pages. Customise its appearance and behaviour through set of simple options.', 'leyka_engb');
+        $this->_full_description = __('Display fundrising banner on website pages. Customise its appearance and behaviour through set of simple options.', 'leyka');
 
-        $this->_settings_description = __('Setup content of a banner and  color scheme, tune appeacne logic to you need and attract more donations.', 'leyka_engb');
+        $this->_settings_description = __('Setup content of a banner and  color scheme, tune appeacne logic to you need and attract more donations.', 'leyka');
 
         $this->_connection_description = '<p><strong>Шорткоды</strong></p><p>В заглавной части баннера (поле <em>Заголовок</em>) можно использовать следующие шорткоды:</p><p><code>[leyka_engb_scale id="campaign_id"]</code><br>прогрессбар сбора по кампании</p><p><code>[leyka_engb_photo img="media_lib_id" name="Иван Чернов" role="главный редактор"]</code><br>фото с подписью (2 уровня) - например фото человека с указанием имени и должности.</p><p>Фото должно быть загружено в медиа-библиотеку и в параметрах шорткода указывается его ID.</p>';
 
@@ -198,27 +198,27 @@ class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
 	
     /** Paths **/
     public static function get_base_path() {
-
         return __DIR__; 
     }
 
     public static function get_base_url() {
 
-        $path = str_replace( LEYKA_PLUGIN_DIR, '',  __DIR__ );
+        $path = str_replace(LEYKA_PLUGIN_DIR, '',  __DIR__);
 
-        return LEYKA_PLUGIN_BASE_URL . $path;
+        return LEYKA_PLUGIN_BASE_URL.$path;
+
     }
 
     
 	/* Core **/
     protected function _load_textdomain() {
 
-        $locale = get_locale();
-        $mofile = self::get_base_path()."/languages/leyka-engb-{$locale}.mo";
-
-        if( file_exists( $mofile ) ) {
-            load_textdomain( 'leyka_engb', $mofile );
-        }
+//        $locale = get_locale();
+//        $mofile = self::get_base_path()."/languages/leyka-engb-{$locale}.mo";
+//
+//        if( file_exists( $mofile ) ) {
+//            load_textdomain( 'leyka_engb', $mofile );
+//        }
         
     }
 
@@ -226,8 +226,8 @@ class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
 
 		$path = self::get_base_path().'/inc/'; 
 
-		require_once( $path.'class-controller.php' );
-		require_once( $path.'class-banner.php'  );
+		require_once($path.'class-controller.php');
+		require_once($path.'class-banner.php');
 
 	}
 
@@ -236,34 +236,17 @@ class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
 		$css_url = self::get_base_url() . '/assets/css/engb.css';
         $css_stamp = ( defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY ) ? uniqid() : null;
 
-		wp_enqueue_style(
-            $this->_id.'-front',
-            $css_url,
-            array(),
-            $css_stamp
-        );
+		wp_enqueue_style($this->_id.'-front', $css_url, array(), $css_stamp);
 
-        // color 
-        $colors_css  = $this->_build_colors_css();
+        wp_add_inline_style($this->_id.'-front', $this->_build_colors_css());
 
-        wp_add_inline_style( $this->_id.'-front', $colors_css );
+        $js_url = self::get_base_url().'/assets/js/engb.js';
+        $js_stamp = defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY ? uniqid() : null;
 
-        $js_url = self::get_base_url() . '/assets/js/engb.js';
-        $js_stamp = ( defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY ) ? uniqid() : null;
+        wp_enqueue_script($this->_id.'-front', $js_url, array('jquery'), $js_stamp);
 
-        wp_enqueue_script(
-            $this->_id.'-front',
-            $js_url,
-            array('jquery'),
-            $js_stamp
-        );
+        wp_enqueue_style($this->_id.'-front', $css_url, array(), $css_stamp);
 
-        wp_enqueue_style(
-            $this->_id.'-front',
-            $css_url,
-            array(),
-            $css_stamp
-        );
 	}
 
 
@@ -309,7 +292,7 @@ class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
         );
 
         $js_strings = array(
-            'placeholder' => __('Select user role', 'leyka_engb'),
+            'placeholder' => __('Select user role', 'leyka'),
         );
 
         wp_localize_script($this->_id.'-admin', 'engb', $js_strings);
