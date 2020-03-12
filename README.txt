@@ -5,7 +5,7 @@ Plugin URI: http://leyka.te-st.ru
 Tags: crowdfunding, fundraising, donations, recurring donations, charity, leyka, recurring, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, yandexmoney, yandex.money, яндекс.деньги, chronopay, sms, яндекс.касса, yandex.kassa, миксплат, mixplat, paypal, paymaster, qiwi, киви
 Requires at least: 3.6.1
 Tested up to: 5.3.2
-Stable tag: 3.6.1
+Stable tag: 3.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 

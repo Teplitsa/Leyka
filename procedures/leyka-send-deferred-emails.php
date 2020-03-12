@@ -45,6 +45,31 @@ if(leyka_options()->opt('send_recurring_canceling_donor_notification_email')) {
             continue;
         }
 
+        // Check for the current subscription Donor's later active subscriptions to the current campaign:
+        $later_recurring_subscriptions = new WP_Query(array(
+            'post_type' => Leyka_Donation_Management::$post_type,
+            'post_status' => 'funded',
+            'post_parent' => 0,
+            'posts_per_page' => 1,
+            'meta_query' => array(
+                'relation' => 'AND',
+                array('key' => 'donor_email', 'value' => $recurring_subscription->donor_email,),
+                array('key' => 'leyka_payment_type', 'value' => 'rebill',),
+                array('key' => 'leyka_campaign_id', 'value' => $recurring_subscription->campaign_id),
+                array('key' => '_rebilling_is_active', 'value' => 1),
+                array(
+                    'key' => 'leyka_recurrents_cancel_date',
+                    'value' => date('Y-m-d H:i', $recurring_subscription_date_timestamp),
+                    'compare' => '>',
+                ),
+            ),
+        ));
+
+        if($later_recurring_subscriptions->found_posts) {
+            continue;
+        }
+        // Check - END
+
         $campaign = new Leyka_Campaign($recurring_subscription->campaign_id);
 
         $email_placeholders = array(
