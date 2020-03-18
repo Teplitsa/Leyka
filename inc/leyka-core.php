@@ -1350,8 +1350,12 @@ class Leyka extends Leyka_Singleton {
     /** Register and enqueue public-facing JavaScript files. */
     public function enqueue_scripts() {
 
-        // Revo template or success/failure widgets JS:
-        if(leyka_modern_template_displayed() || leyka_success_widget_displayed() || leyka_failure_widget_displayed()) {
+        if( // New JS:
+            !leyka_options()->opt('load_scripts_if_need')
+            || leyka_modern_template_displayed()
+            || leyka_success_widget_displayed()
+            || leyka_failure_widget_displayed()
+        ) {
             wp_enqueue_script(
                 $this->_plugin_slug.'-revo-public',
                 LEYKA_PLUGIN_BASE_URL.'assets/js/public.js',

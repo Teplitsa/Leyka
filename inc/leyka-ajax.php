@@ -53,7 +53,7 @@ function leyka_recalculate_total_funded_action(){
         wp_die(__('Error: campaign ID is missing', 'leyka'));
     }
 
-    $campaign = new Leyka_Campaign((int)$_GET['campaign_id']);
+    $campaign = new Leyka_Campaign(absint($_GET['campaign_id']));
     $campaign->update_total_funded_amount();
 
     wp_die($campaign->total_funded);
@@ -190,7 +190,7 @@ function leyka_process_success_form(){
         die(json_encode(array('status' => 1, 'message' => __('No donation ID found in the submitted data', 'leyka'),)));
     }
 
-    $donation = new Leyka_Donation((int)$_POST['leyka_donation_id']);
+    $donation = new Leyka_Donation(absint($_POST['leyka_donation_id']));
     if( !$donation ) {
         die(json_encode(array('status' => 1, 'message' => __('Wrong donation ID in the submitted data', 'leyka'),)));
     }
@@ -229,8 +229,8 @@ function leyka_set_campaign_photo(){
         )));
     }
 
-    $attachment_id = (int)$_POST['attachment_id'];
-    $campaign_id = (int)$_POST['campaign_id'];
+    $attachment_id = absint($_POST['attachment_id']);
+    $campaign_id = absint($_POST['campaign_id']);
 
     update_post_meta($campaign_id, '_thumbnail_id', $attachment_id);
     sleep(1);
@@ -242,8 +242,8 @@ add_action('wp_ajax_leyka_set_campaign_photo', 'leyka_set_campaign_photo');
 
 function leyka_set_campaign_attachment(){
 
-    $_POST['campaign_id'] = empty($_POST['campaign_id']) ? false : (int)$_POST['campaign_id'];
-    $_POST['attachment_id'] = empty($_POST['attachment_id']) ? false : (int)$_POST['attachment_id'];
+    $_POST['campaign_id'] = empty($_POST['campaign_id']) ? false : absint($_POST['campaign_id']);
+    $_POST['attachment_id'] = empty($_POST['attachment_id']) ? false : absint($_POST['attachment_id']);
 
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'set-campaign-attachment')) {
         die(json_encode(array('status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
@@ -259,7 +259,7 @@ function leyka_set_campaign_attachment(){
     die(json_encode(array(
         'status' => 'ok',
         'post' => $_POST,
-        'img_url' => wp_get_attachment_image_url((int)$_POST['attachment_id'], 'thumbnail'),
+        'img_url' => wp_get_attachment_image_url(absint($_POST['attachment_id']), 'thumbnail'),
     )));
 
 }
@@ -273,7 +273,7 @@ function leyka_set_campaign_template(){
         die(json_encode(array('status' => 'error', 'message' => __('Error: campaign ID is missing', 'leyka'),)));
     }
 
-    update_post_meta((int)$_POST['campaign_id'], 'campaign_template', $_POST['template']);
+    update_post_meta(absint($_POST['campaign_id']), 'campaign_template', $_POST['template']);
 
     die(json_encode(array('status' => 'ok', 'post' => $_POST,)));
 
@@ -296,7 +296,7 @@ function leyka_edit_campaign_slug(){
     $_POST['slug'] = wp_unique_post_slug(sanitize_title($_POST['slug']), $_POST['campaign_id'], $campaign->post_status, $campaign->post_type, null);
 
     $res = wp_update_post(array(
-        'ID' => (int)$_POST['campaign_id'],
+        'ID' => absint($_POST['campaign_id']),
         'post_name' => $_POST['slug'],
     ));
 
@@ -401,7 +401,7 @@ function leyka_setup_donor_password(){
         || empty($_POST['leyka_donor_pass2'])
         || $_POST['leyka_donor_pass2'] !== $_POST['leyka_donor_pass2']
         || empty($_POST['donor_account_id'])
-        || (int)$_POST['donor_account_id'] <= 0
+        || absint($_POST['donor_account_id']) <= 0
     ) {
         $res = array(
             'status' => 'error',
@@ -410,7 +410,7 @@ function leyka_setup_donor_password(){
     } else {
 
         try {
-            $donor = new Leyka_Donor((int)$_POST['donor_account_id']);
+            $donor = new Leyka_Donor(absint($_POST['donor_account_id']));
         } catch(Exception $e) {
             die(json_encode(array('status' => 'error', 'message' => __('Wrong Donor ID given', 'leyka'))));
         }
@@ -577,7 +577,7 @@ function leyka_get_donations_history_page() {
         die(json_encode(array('status' => 'error',)));
     }
 
-    foreach($donor->get_donations((int)$_POST['page']) as $donation) {
+    foreach($donor->get_donations(absint($_POST['page'])) as $donation) {
         $res['items_html'] .= leyka_get_donor_account_donations_list_item_html(false, $donation)."\n";
     }
 
@@ -726,8 +726,8 @@ add_action('wp_ajax_nopriv_leyka_cancel_recurring', 'leyka_cancel_recurring_subs
 
 function leyka_reset_campaign_attachment(){
 
-    $_POST['campaign_id'] = empty((int)$_POST['campaign_id']) ? false : (int)$_POST['campaign_id'];
-    $_POST['attachment_id'] = empty((int)$_POST['attachment_id']) ? false : (int)$_POST['attachment_id'];
+    $_POST['campaign_id'] = empty($_POST['campaign_id']) ? false : absint($_POST['campaign_id']);
+    $_POST['attachment_id'] = empty($_POST['attachment_id']) ? false : absint($_POST['attachment_id']);
 
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'reset-campaign-attachment')) {
         die(json_encode(array('status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
@@ -937,7 +937,7 @@ function leyka_delete_donor_comment(){
         die(json_encode(array('status' => 'error', 'message' => __('Error: undefined comment id', 'leyka'),)));
     }
 
-    $_POST['comment_id'] = (int)$_POST['comment_id'];
+    $_POST['comment_id'] = absint($_POST['comment_id']);
     
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_delete_donor_comment')) {
         die(json_encode(array('status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
@@ -984,7 +984,7 @@ function leyka_save_editable_comment(){
     }
 
     $comment_text = sanitize_text_field($_POST['text']);
-    $donor->update_comment((int)$_POST['text_item_id'], $comment_text);
+    $donor->update_comment(absint($_POST['text_item_id']), $comment_text);
     
     die(json_encode(array(
         'status' => 'ok',
