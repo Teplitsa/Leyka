@@ -121,8 +121,7 @@ class Leyka_Donation_Management {
 			$actions['edit'] = '<a href="'.get_edit_post_link($donation->ID, 1).'">'.__('Edit').'</a>';
 		}
 
-        unset($actions['view']);
-        unset($actions['inline hide-if-no-js']);
+        unset($actions['view'], $actions['inline hide-if-no-js']);
 
         return $actions;
 
@@ -172,9 +171,12 @@ class Leyka_Donation_Management {
 
             /** @var Leyka_Gateway $gateway */
             $pm_list = $gateway->get_payment_methods();
-            if($pm_list)
+            if($pm_list) {
                 $gw_pm_list[] = array('gateway' => $gateway, 'pm_list' => $pm_list);
+            }
+
         }
+
         $gw_pm_list = apply_filters('leyka_donations_list_gw_pm_filter', $gw_pm_list);
 
         foreach($gw_pm_list as $element) {?>
@@ -241,7 +243,10 @@ class Leyka_Donation_Management {
             }
 
             if( isset($_REQUEST['donor_subscribed']) && $_REQUEST['donor_subscribed'] !== '-' ) {
-                $meta_query[] = array('key' => 'leyka_donor_subscribed', 'value' => !!$_REQUEST['donor_subscribed']);
+                $meta_query[] = array(
+                    'key' => 'leyka_donor_subscribed',
+                    'compare' => !!$_REQUEST['donor_subscribed'] ? 'EXTSTS' : 'NOT EXISTS',
+                );
             }
 
             if(count($meta_query) > 1) {
@@ -265,7 +270,6 @@ class Leyka_Donation_Management {
         }
 
         if(leyka()->opt('donations_managers_emails')) {
-
             if(
                 ($donation->payment_type === 'single' && leyka()->opt('notify_donations_managers')) ||
                 ($donation->payment_type === 'rebill' && leyka()->opt('notify_managers_on_recurrents'))

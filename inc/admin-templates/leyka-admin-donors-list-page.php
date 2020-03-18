@@ -110,16 +110,16 @@
 
                         </div>
 
-<!--                        <div class="filters-row">-->
-<!--                            <div class="option-block">-->
-<!--                            --><?php //leyka_render_checkbox_field('donors-cancelled', array(
-//                                'title' => __('Only unsubscribed donors', 'leyka'),
-//                                'comment' => __('Check to select only donors with cancelled recurring subscriptions', 'leyka'),
-//                                'short_format' => true,
-//                                'value' => !empty($_GET['leyka_donors-cancelled']),
-//                            ));?>
-<!--                            </div>-->
-<!--                        </div>-->
+                        <div class="filters-row">
+                            <div class="option-block">
+                            <?php leyka_render_checkbox_field('donors-mailout-subscribed', array(
+                                'title' => __('Only donors subscribed to mailouts', 'leyka'),
+                                'comment' => __('Check to select only donors who chose to subscribe to campaign news mailouts when they donated.', 'leyka'),
+                                'short_format' => true,
+                                'value' => !empty($_GET['leyka_donors-mailout-subscribed']),
+                            ));?>
+                            </div>
+                        </div>
 
                         <div class="filters-row">
                             <div class="filter-warning" id="leyka-filter-warning"></div>
@@ -129,7 +129,9 @@
 
                     <div class="col-2">
                         <input type="submit" class="button" value="<?php _e('Filter the data', 'leyka');?>">
-                        <a href="<?php echo admin_url('/admin.php?page=leyka_donors');?>" class="reset-filters"><?php _e('Reset the filter', 'leyka');?></a>
+                        <a href="<?php echo admin_url('/admin.php?page=leyka_donors');?>" class="reset-filters">
+                            <?php _e('Reset the filter', 'leyka');?>
+                        </a>
                     </div>
                 </div>
 
