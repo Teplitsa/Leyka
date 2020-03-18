@@ -110,16 +110,16 @@
 
                         </div>
 
-                        <div class="filters-row">
-                            <div class="option-block">
-                            <?php leyka_render_checkbox_field('donors-mailout-subscribed', array(
-                                'title' => __('Only donors subscribed to mailouts', 'leyka'),
-                                'comment' => __('Check to select only donors who chose to subscribe to campaign news mailouts when they donated.', 'leyka'),
-                                'short_format' => true,
-                                'value' => !empty($_GET['leyka_donors-mailout-subscribed']),
-                            ));?>
-                            </div>
-                        </div>
+<!--                        <div class="filters-row">-->
+<!--                            <div class="option-block">-->
+<!--                            --><?php //leyka_render_checkbox_field('donors-mailout-subscribed', array(
+//                                'title' => __('Only donors subscribed to mailouts', 'leyka'),
+//                                'comment' => __('Check to select only donors who chose to subscribe to campaign news mailouts when they donated.', 'leyka'),
+//                                'short_format' => true,
+//                                'value' => !empty($_GET['leyka_donors-mailout-subscribed']),
+//                            ));?>
+<!--                            </div>-->
+<!--                        </div>-->
 
                         <div class="filters-row">
                             <div class="filter-warning" id="leyka-filter-warning"></div>

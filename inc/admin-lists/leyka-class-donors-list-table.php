@@ -226,36 +226,36 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         }
 
         // "Only Donors with cancelled recurring subscriptions" filter:
-        if( !empty($_REQUEST['leyka_donors-cancelled']) ) {
-
-            $cancelled_recurring_subscriptions = get_posts(array(
-                'post_type' => Leyka_Donation_Management::$post_type,
-                'post_status' => 'funded',
-                'posts_per_page' => -1,
-                'post_parent' => 0,
-                'meta_query' => array(
-                    'relation' => 'AND',
-                    array('key' => 'leyka_payment_type', 'value' => 'rebill',),
-                    array('key' => '_rebilling_is_active', 'value' => 1, 'compare' => '!='),
-                ),
-            ));
-
-            $cancelled_donors_ids = array();
-            foreach($cancelled_recurring_subscriptions as $donation) {
-
-                $donation = new Leyka_Donation($donation);
-                $cancelled_donors_ids[] = $donation->donor_user_id;
-
-            }
-
-            if( !$cancelled_donors_ids ) {
-                $cancelled_donors_ids[] = 0;
-            }
-
-            global $wpdb;
-            $donors_query->query_where .= " AND {$wpdb->users}.ID IN (".implode(',', array_unique($cancelled_donors_ids)).")";
-
-        }
+//        if( !empty($_REQUEST['leyka_donors-cancelled']) ) {
+//
+//            $cancelled_recurring_subscriptions = get_posts(array(
+//                'post_type' => Leyka_Donation_Management::$post_type,
+//                'post_status' => 'funded',
+//                'posts_per_page' => -1,
+//                'post_parent' => 0,
+//                'meta_query' => array(
+//                    'relation' => 'AND',
+//                    array('key' => 'leyka_payment_type', 'value' => 'rebill',),
+//                    array('key' => '_rebilling_is_active', 'value' => 1, 'compare' => '!='),
+//                ),
+//            ));
+//
+//            $cancelled_donors_ids = array();
+//            foreach($cancelled_recurring_subscriptions as $donation) {
+//
+//                $donation = new Leyka_Donation($donation);
+//                $cancelled_donors_ids[] = $donation->donor_user_id;
+//
+//            }
+//
+//            if( !$cancelled_donors_ids ) {
+//                $cancelled_donors_ids[] = 0;
+//            }
+//
+//            global $wpdb;
+//            $donors_query->query_where .= " AND {$wpdb->users}.ID IN (".implode(',', array_unique($cancelled_donors_ids)).")";
+//
+//        }
 
     }
 
