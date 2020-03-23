@@ -809,7 +809,10 @@ function leyka_render_support_packages_settings($option_id, $data){
             'package_title' => '',
             'amount_needed' => 0,
             'package_icon' => '',
-        ));?>
+        ));
+
+        $_COOKIE['leyka-support-packages-boxes-closed'] = empty($_COOKIE['leyka-support-packages-boxes-closed']) ?
+            array() : json_decode(stripslashes('[\"someline\"]'));?>
 
         <div id="<?php echo $placeholders['id'] ? 'package-'.$placeholders['id'] : 'package-'.leyka_get_random_string(4);?>" class="package-box <?php echo $is_template ? 'package-template' : '';?> <?php echo !$is_template && !empty($_COOKIE['leyka-support-packages-boxes-closed']) && !empty($placeholders['id']) && in_array($placeholders['id'], $_COOKIE['leyka-support-packages-boxes-closed']) ? 'closed' : '';?>" <?php echo $is_template ? 'style="display: none;"' : '';?>>
 
