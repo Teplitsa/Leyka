@@ -235,42 +235,6 @@ jQuery(document).ready(function($){
         });
     }
 
-    /** @todo Check if it's still a needed feature */
-    // Recalculate total funded amount:
-    $('#recalculate_total_funded').click(function(e){
-
-        e.preventDefault();
-
-        var $link = $(this).attr('disabled', 'disabled'),
-            $indicator = $link.parent().find('#recalculate_total_funded_loader').show(),
-            $message = $link.parent().find('#recalculate_message').hide(),
-            $total_collected_field = $('#collected_target');
-
-        $.get(leyka.ajaxurl, {
-            campaign_id: $link.data('campaign-id'),
-            action: 'leyka_recalculate_total_funded_amount',
-            nonce: $link.data('nonce')
-        }, function(resp){
-
-            $link.removeAttr('disabled');
-            $indicator.hide();
-
-            if(parseFloat(resp) >= 0) {
-
-                var old_value = parseFloat($total_collected_field.val());
-                resp = parseFloat(resp);
-
-                $total_collected_field.val(resp);
-                if(old_value !== resp) { // If recalculated sum is different than saved one, refresh the campaign edition page
-                    $('#publish').click();
-                }
-
-            } else {
-                $message.html(resp).show();
-            }
-        });
-    });
-    
     // campaign template change
     $(':input[name="campaign_template"]').on('change.leyka', function(e){
 
@@ -285,5 +249,64 @@ jQuery(document).ready(function($){
         }
 
     }).change();
+
+    // Support packages Extension - available campaign existence check:
+    if(typeof($().dialog) === 'undefined') {
+        return;
+    }
+
+    let $campaign_needed_field = $('input#leyka-campaign-needed-for-support-packages'),
+        $modal = $('#leyka-campaign-needed-modal-content');
+
+    if( !$modal.length ) {
+        return;
+    }
+
+    $('form#post').submit(function(e){
+
+        /** @todo Get $campaign_needed_field value via ajax, mb */
+
+        // let $form = $(this);
+
+        if( !$campaign_needed_field.length || !parseInt($campaign_needed_field.val()) ) { // The check won't be needed
+            // console.log('HERE!');
+            return;
+        }
+
+        if($modal.data('leyka-dialog-initialized')) {
+            $modal.dialog('open');
+        } else {
+
+            $modal.dialog({
+                dialogClass: 'leyka-dialog',
+                modal: true,
+                draggable: false,
+                width: 'auto',
+                autoOpen: true,
+                closeOnEscape: true,
+                resizable: false,
+                buttons: [{
+                    'text': 'Close',
+                    'class': 'button-secondary',
+                    'click': function(){
+                        $modal.dialog('close');
+                    }
+                }, {
+                    'text': 'Apply',
+                    'class': 'button-primary',
+                    'click': function(){
+                        // console.log('Applying changes!');
+                        $modal.dialog('close');
+                    }
+                }]
+            });
+
+            $modal.data('leyka-dialog-initialized', 1);
+
+        }
+
+        return false;
+
+    });
 
 });

@@ -1,4 +1,4 @@
-// init "how to setup crom" modal
+// "How to setup cron" modal:
 jQuery(document).ready(function($){
 
     if(typeof($().dialog) === 'undefined') {
@@ -44,7 +44,9 @@ jQuery(document).ready(function($){
 
 // init "stats invite"
 jQuery(document).ready(function($){
+
     $('.send-plugin-stats-invite .send-plugin-usage-stats-y').on('click.leyka', function(e){
+
         e.preventDefault();
 
         let $button = $(this),
@@ -58,27 +60,28 @@ jQuery(document).ready(function($){
             nonce: $field_wrapper.find(':input[name="usage_stats_y"]').val()
         };
         
-        $loading.css('display', 'block');
-        $loading.find('.leyka-loader').css('display', 'block');
-        
+        $loading.show();
+        // $loading.css('display', 'block');
+        // $loading.find('.leyka-loader').css('display', 'block');
 
         $.post(leyka.ajaxurl, ajax_params, null, 'json')
             .done(function(json){
                 if(typeof json.status !== 'undefined') {
                     if(json.status === 'ok') {
-                        var $indicatorWrap = $loading.closest('.loading-indicator-wrap');
+
+                        $loading.closest('.loading-indicator-wrap').find('.ok-icon').show();
+                        // var $indicatorWrap = $loading.closest('.loading-indicator-wrap');
                         $loading.remove();
-                        $indicatorWrap.find('.ok-icon').show();
+                        // $indicatorWrap.find('.ok-icon').show();
                         setTimeout(function(){
-                            $field_wrapper.closest('.send-plugin-stats-invite').fadeOut("slow");;
+                            $field_wrapper.closest('.send-plugin-stats-invite').fadeOut('slow');
                         }, 1000);
-                    }
-                    else {
+
+                    } else {
                         if(json.message) {
                             alert(json.message);
                             $button.prop('disabled', false);
-                        }
-                        else {
+                        } else {
                             alert(leyka.error_message);
                             $button.prop('disabled', false);
                         }
@@ -91,10 +94,12 @@ jQuery(document).ready(function($){
                 $button.prop('disabled', false);
             })
             .always(function(){
-                $loading.css('display', 'none');
-                $loading.find('.leyka-loader').css('display', 'none');
+                $loading.hide();
+                // $loading.css('display', 'none');
+                // $loading.find('.leyka-loader').css('display', 'none');
             });
     });
+
 });
 
 // banner

@@ -158,14 +158,14 @@ if($main_settings_steps) {?>
         </div>
     </div>
 
-    <div id="how-to-setup-cron" class="leyka-adb-modal" title="<?php esc_html_e('How to setup cron?', 'leyka');?>" style="max-width:433px">
+    <div id="how-to-setup-cron" class="leyka-adb-modal" title="<?php _e('How to setup cron?', 'leyka');?>" style="max-width:433px;">
         <p class="error-notif">
-            <?php esc_html_e("For recurrent payments via Yandex.Cash, you need to set up a task for Cron.", 'leyka');?>
-            <a href="https://leyka.te-st.ru/instruction/"><?php esc_html_e("Read more here", 'leyka');?></a>
+            <?php _e('For recurrent payments via Yandex.Kassa, you need to set up a task for Cron.', 'leyka');?>
+            <a href="https://leyka.te-st.ru/instruction/" target="_blank"><?php _e('Read more here', 'leyka');?></a>
         </p>
         <p class="error-notif">
-            <?php esc_html_e('To send email when reaching the target amount of the campaign, you need to set up a task for Cron.', 'leyka');?>
-            <a href="https://leyka.te-st.ru/instruction/"><?php esc_html_e("Read more here", 'leyka');?></a>
+            <?php _e('To send an email when reaching the target amount of the campaign, you need to set up a task for Cron.', 'leyka');?>
+            <a href="https://leyka.te-st.ru/instruction/" target="_blank"><?php _e('Read more here', 'leyka');?></a>
         </p>
     </div>
 

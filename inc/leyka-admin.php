@@ -817,7 +817,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         if(isset($_GET['page']) && $_GET['page'] === 'leyka') {
 
             wp_enqueue_script('jquery-ui-dialog');
-            wp_enqueue_style('wp-jquery-ui-dialog');
+//            wp_enqueue_style('wp-jquery-ui-dialog');
+
             wp_enqueue_script('leyka-admin', LEYKA_PLUGIN_BASE_URL.'assets/js/Chart.v2.8.0.min.js', $dependencies, LEYKA_VERSION, true);
 
         }
@@ -836,6 +837,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             if(function_exists('wp_enqueue_code_editor')) { // The function is available in WP v4.9.0+
                 wp_enqueue_code_editor(array('type' => 'text/css')); // Add the code editor lib
             }
+
+            wp_enqueue_script('jquery-ui-dialog');
+//            wp_enqueue_style('wp-jquery-ui-dialog');
 
         }
 

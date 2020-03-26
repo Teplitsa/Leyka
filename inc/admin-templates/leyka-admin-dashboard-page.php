@@ -8,19 +8,27 @@
     <h1><?php _e('Leyka dashboard', 'leyka');?></h1>
 
 <?php if(leyka_options()->opt('send_plugin_stats') !== 'y' && leyka_options()->opt('plugin_stats_sync_enabled')) {?>
+
     <div class="send-plugin-stats-invite">
+
         <div class="invite-text">
             <?php _e('Please, turn on the option to send anonymous plugin usage data to help us diagnose', 'leyka');?>
         </div>
+
         <div class="invite-link">
+
             <button class="send-plugin-usage-stats-y"><?php _e('Allow usage statistics collection', 'leyka');?></button>
             <?php wp_nonce_field('usage_stats_y', 'usage_stats_y');?>
+
             <div class="loading-indicator-wrap">
-                <div class="loader-wrap"><span class="leyka-loader xxs"></span></div>
+                <div class="loader-wrap" style="display: none;"><span class="leyka-loader xxs"></span></div>
                 <img class="ok-icon" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/icon-check.svg" alt="">
             </div>
+
         </div>
+
     </div>
+
 <?php }?>
 
     <div class="leyka-dashaboard-content">

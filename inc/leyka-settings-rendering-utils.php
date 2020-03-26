@@ -883,7 +883,7 @@ function leyka_render_support_packages_settings($option_id, $data){
 
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-<?php echo $option_id;?>-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) ? '' : implode(' ', $data['field_classes']);?>">
 
-        <div class="leyka-main-support-packages" data-max-packages="<?php echo Leyka_Support_Packages_Extension::$max_packages_number;?>">
+        <div class="leyka-main-support-packages" data-max-packages="<?php echo Leyka_Support_Packages_Extension::MAX_PACKAGES_NUMBER;?>">
 
         <?php $data['value'] = empty($data['value']) || !is_array($data['value']) ?
             leyka_options()->opt('custom_support_packages_settings') :

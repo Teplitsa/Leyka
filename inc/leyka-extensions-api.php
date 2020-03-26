@@ -43,10 +43,7 @@ abstract class Leyka_Extension extends Leyka_Singleton {
 
     /**
      * @param $extension_id string
-     * @param $activation_status boolean True to check if given Extension is active, false to check if it's inactive.
-     *
-     * @throws Exception
-     * @return boolean True if given Extension has given activation status, false otherwise.
+     * @return boolean True if given Extension is active, false otherwise.
      */
     public static function is_active($extension_id) {
         return leyka()->extension_is_active(trim($extension_id));

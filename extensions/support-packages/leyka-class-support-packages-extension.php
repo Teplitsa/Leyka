@@ -9,8 +9,9 @@
 
 class Leyka_Support_Packages_Extension extends Leyka_Extension {
 
-    public static $max_packages_number = 5;
-    public static $FEATURES = array(
+    const MAX_PACKAGES_NUMBER = 5;
+
+    protected static $_features = array(
         'leyka_limited_content' => array(
             'class' => 'Leyka_Support_Packages_Limit_Content_Feature',
             'is_shortcode' => true,
@@ -214,7 +215,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
         return $active_package && $active_package->id === $package->id;
 
     }
-    
+
     public function is_activation_available($package, $user) {
 
         $active_package = $this->get_user_active_package($user);
@@ -339,7 +340,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
 
     public function setup_shortcodes() {
 
-        foreach(Leyka_Support_Packages_Extension::$FEATURES as $feature_name => $feature_config) {
+        foreach(Leyka_Support_Packages_Extension::$_features as $feature_name => $feature_config) {
             if(!empty($feature_config['is_shortcode']) && $feature_config['is_shortcode']) {
                 add_shortcode($feature_name, array($this, 'handle_shortcode'));
             }
@@ -376,7 +377,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
         $user = wp_get_current_user();
 
         $feature_name = 'leyka_limited_content';
-        $feature_config = Leyka_Support_Packages_Extension::$FEATURES[$feature_name];
+        $feature_config = Leyka_Support_Packages_Extension::$_features[$feature_name];
         $post = get_post($post_id);
         
         $pattern = get_shortcode_regex();
@@ -413,7 +414,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
             return do_shortcode($content);
         }
 
-        foreach(Leyka_Support_Packages_Extension::$FEATURES as $feature_name => $feature_config) {
+        foreach(Leyka_Support_Packages_Extension::$_features as $feature_name => $feature_config) {
 
             if($feature_name === $tag) {
 
@@ -421,7 +422,11 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
                     $feature_config['shortcode_atts'] = shortcode_atts( $feature_config['shortcode_atts'], $atts );
                 }
 
+                /** @var Leyka_Support_Packages_Feature $feature */
                 $feature = new $feature_config['class']($feature_name, $feature_config);
+                if( !is_object($feature) ) {
+                    return '';
+                }
 
                 if($this->is_feature_open($feature, $user)) {
                     return $feature->do_if_open(array('content' => $content));
@@ -433,9 +438,12 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
 
         }
 
+        return '';
+
     }
 
-    public function get_persistent_campaign() {
+    /** @return WP_Post A Campaign currently used for Support packages, or NULL if none found. */
+    public function get_available_campaign() {
 
         $sp_campaign_id = leyka()->opt('support_packages_campaign');
 
@@ -443,17 +451,18 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
             $sp_campaign = get_post($sp_campaign_id);
         } else {
 
-            $recurring_subscriptions = get_posts(array(
+            $sp_campaign = get_posts(array(
                 'post_type' => Leyka_Campaign_Management::$post_type,
                 'post_status' => 'publish',
                 'meta_query' => array(
                     array('key' => 'is_finished', 'value' => 1, 'compare' => '!=', 'type' => 'NUMERIC',),
                     array('key' => 'campaign_type', 'value' => 'persistent'),
                 ),
-                'nopaging' => true,
+                'posts_per_page' => 1,
+//                'nopaging' => true,
             ));
 
-            $sp_campaign = !empty($recurring_subscriptions) ? $recurring_subscriptions[0] : null;
+            $sp_campaign = $sp_campaign ? reset($sp_campaign) : null;
 
         }
 
@@ -461,34 +470,52 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
 
     }
 
+    public function get_available_campaigns_count() {
+
+        $campaigns = new WP_Query(array(
+            'post_type' => Leyka_Campaign_Management::$post_type,
+            'post_status' => 'publish',
+            'meta_query' => array(
+                array('key' => 'is_finished', 'value' => 1, 'compare' => '!=', 'type' => 'NUMERIC',),
+                array('key' => 'campaign_type', 'value' => 'persistent'),
+            ),
+            'nopaging' => true,
+        ));
+
+        return $campaigns->found_posts;
+
+    }
+
 }
 
-class Leyka_Support_Packages_Feature {
+abstract class Leyka_Support_Packages_Feature {
 
     protected $_config = array();
-    
-    public function __construct($feature_name, $config=array()) {
+
+    public function __construct($feature_name, array $config = array()) {
         $this->_config = $config;
     }
-    
-    public function __get($field) {
-    }
-    
-    public function __set($field, $value) {
-    }
-    
-    public function do_if_open($params) {
-    }
-    
-    public function do_if_closed($params) {
-    }
+
+    abstract public function do_if_open($params);
+
+    abstract public function do_if_closed($params);
 
 }
 
 class Leyka_Support_Packages_Shortcode_Feature extends Leyka_Support_Packages_Feature {
+
     public function __construct($feature_name, $config=array()) {
         parent::__construct($feature_name, $config);
     }
+
+    public function do_if_open($params) {
+        return '';
+    }
+
+    public function do_if_closed($params) {
+        return '';
+    }
+
 }
 
 class Leyka_Support_Packages_Limit_Content_Feature extends Leyka_Support_Packages_Shortcode_Feature {
@@ -526,7 +553,7 @@ class Leyka_Support_Packages_Limit_Content_Feature extends Leyka_Support_Package
 class Leyka_Support_Packages_Package {
 
     protected  $_package_data;
-    
+
     public function __construct($package_config=null) {
         if(is_array($package_config)) {
             $this->_package_data = $package_config;
@@ -566,17 +593,13 @@ class Leyka_Support_Packages_Package {
                 return apply_filters('leyka_ext_get_unknown_support_package_field', null, $field, $this);
         }
     }
-    
-    public function __set($field, $value) {
-    }
 
 }
 
 class Leyka_Support_Packages_Template_Tags {
-    public function __construct() {
-    }
 
-    protected function _show_card_data_3rows($package, $params=array()) {
+    protected function _show_card_data_3rows($package, array $params = array()) {
+
         $is_active = !empty($params['is_active']) && boolval($params['is_active']);
         
         if(empty($params['classes'])) {
@@ -587,16 +610,15 @@ class Leyka_Support_Packages_Template_Tags {
             $params['classes'][] = 'active';
         }
         
-        $extra_classes_str = !empty($params['classes']) ? implode(" ", $params['classes']) : '';        
-        ?>
-        
+        $extra_classes_str = !empty($params['classes']) ? implode(" ", $params['classes']) : '';?>
+
         <div class="leyka-ext-sp-card <?php echo $extra_classes_str;?>" data-amount_needed="<?php echo $package->amount_needed;?>">
             <div class="leyka-ext-sp-card-row1">
                 <div class="leyka-ext-sp-icon">
                 	<?php if(preg_match("/\.svg$/", $package->icon_url)) {?>
                 		<?php if(is_file($package->icon_path)) readfile($package->icon_path);?>
                 	<?php } else {?>
-                		<img src="<?php echo $package->icon_url;?>" />
+                		<img src="<?php echo $package->icon_url;?>" alt="">
             		<?php }?>
             	</div>
                 <div class="leyka-ext-sp-title"><?php echo $package->title;?></div>
@@ -616,7 +638,8 @@ class Leyka_Support_Packages_Template_Tags {
                 </div>
             </div>
         </div>
-        <?php 
+
+        <?php
     }
     
     public function show_manage_card($package, $params=array()) {
@@ -635,21 +658,22 @@ class Leyka_Support_Packages_Template_Tags {
         $this->_show_card_data_3rows($package, $params);
     }
     
-    public function show_activate_feature_form($feature, $user, $leyka_ext_sp) {
+    public function show_activate_feature_form($feature, $user, Leyka_Support_Packages_Extension $leyka_ext_sp) {
+
         $feature_min_package = $leyka_ext_sp->get_package($feature->support_plan);
+
         $packages = $leyka_ext_sp->get_packages($feature_min_package);
-        $packages_count = count($packages);
-        $packages_count = max($packages_count, 3);
-        $max_width = $packages_count * 186 - 16;
-        $campaign_post = $leyka_ext_sp->get_persistent_campaign();
-        $campaign_post_permalink = $campaign_post ? get_post_permalink($campaign_post) : '';
-        ?>
+        $packages_count = max(count($packages), 3);
+
+        $campaign_post = $leyka_ext_sp->get_available_campaign();
+        $campaign_post_permalink = $campaign_post ? get_post_permalink($campaign_post) : '';?>
+
         <div class="leyka-ext-sp-activate-feature-overlay">
         	<div class="leyka-ext-sp-activate-feature-overlay-gradient">
         	</div>
         	<div class="leyka-ext-sp-activate-feature-overlay-bg-wrapper">
             	<div class="leyka-ext-sp-activate-feature-overlay-bg">
-                    <div class="leyka-ext-sp-activate-feature <?php echo "packages-count-" . count($packages); ?>" style="max-width: <?php echo $max_width;?>px;">
+                    <div class="leyka-ext-sp-activate-feature <?php echo "packages-count-" . count($packages); ?>" style="max-width: <?php echo $packages_count * 186 - 16;?>px;">
                     	<h3><?php echo $feature->activate_title;?></h3>
                     	<div class="leyka-ext-sp-feature-subtitle"><?php echo $feature->activate_subtitle;?></div>
             			<div class="leyka-ext-support-packages">
@@ -684,8 +708,11 @@ class Leyka_Support_Packages_Template_Tags {
 }
 
 function leyka_add_extension_support_packages() { // Use named function to leave a possibility to remove/replace it on the hook
+
     leyka()->add_extension(Leyka_Support_Packages_Extension::get_instance());
+
     Leyka_Support_Packages_Extension::get_instance()->setup_shortcodes();
     Leyka_Support_Packages_Extension::get_instance()->setup_filters();
+
 }
 add_action('leyka_init_actions', 'leyka_add_extension_support_packages');

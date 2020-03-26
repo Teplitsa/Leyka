@@ -489,7 +489,48 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         </fieldset>
 
-    <?php }
+        <?php // If Support packages Extention is active, add the special fields to check if current campaign can be turned off.
+        // Also, the check is only for active persistent campaigns, as the Extension uses only such ones:
+        if(
+            !leyka()->extension_is_active('support_packages')
+            || $campaign->type !== 'persistent'
+            || $campaign->status != 'publish'
+            || $campaign->is_finished
+        ) {
+            return;
+        }
+
+        /** @var Leyka_Support_Packages_Extension $extension */
+        $extension = leyka_get_extension_by_id('support_packages');
+
+        $support_packages_campaign = $extension->get_available_campaign();
+        $support_packages_campaign = $support_packages_campaign ? new Leyka_Campaign($support_packages_campaign) : null;
+
+        // No need for checks in current campaign:
+        if( !$support_packages_campaign || $support_packages_campaign->id != $campaign->id ) {
+            return;
+        }?>
+
+        <input type="hidden" id="leyka-campaign-needed-for-support-packages" value="<?php echo $extension->get_available_campaigns_count() === 1 ? 1 : 0;?>">
+
+        <div id="leyka-campaign-needed-modal-content" style="display:none;" title="<?php _e('Closing the Support packages campaign', 'leyka');?>">
+
+            <?php _e("This campaign is currently used for recurring subscriptions in the Support packages extension, and if we proceed, it won't be available for donations anymore.<br><br>What should we do next?", 'leyka');?>
+
+            <ul>
+                <li><label><input type="radio" value="open-content" checked="checked">&nbsp;<?php _e('Make content open', 'leyka');?></label></li>
+                <li><label><input type="radio" value="another-campaign">&nbsp;<?php _e('Select another campaign', 'leyka');?></label></li>
+                <li><label><input type="radio" value="leave-closed">&nbsp;<?php _e('Leave content closed', 'leyka');?></label></li>
+            </ul>
+
+            <div class="new-campaign">
+                <?php leyka_render_campaign_select_field('support_packages_campaign', array('value' => $campaign->id));?>
+            </div>
+
+        </div>
+
+    <?php
+    }
 
     /**
      * @param $campaign WP_Post

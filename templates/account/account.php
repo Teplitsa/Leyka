@@ -14,7 +14,7 @@ $current_user = wp_get_current_user();
 // Support packages:
 $leyka_ext_sp = Leyka_Support_Packages_Extension::get_instance();
 $leyka_ext_sp_template_tags = new Leyka_Support_Packages_Template_Tags();
-$campaign_post = $leyka_ext_sp->get_persistent_campaign();
+$campaign_post = $leyka_ext_sp->get_available_campaign();
 $campaign_post_permalink = $campaign_post ? get_post_permalink($campaign_post) : '';
 
 include(LEYKA_PLUGIN_DIR.'templates/account/header.php');

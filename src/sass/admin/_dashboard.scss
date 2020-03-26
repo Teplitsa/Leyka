@@ -44,9 +44,10 @@
 // stats invite
 .leyka-dashboard-page {
     .send-plugin-stats-invite {
+
         background-color: $leyka-adb-color-notif-bg;
         border-radius: 6px;
-        padding: 8px 0px 8px 24px;
+        padding: 8px 8px 8px 24px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -67,9 +68,6 @@
             }
 
             .loading-indicator-wrap .ok-icon { // Indicator main styles moved to _common_leyka_mixins.scss
-                //display: block;
-                //width: 24px;
-                //height: 24px;
                 display: none;
             }
 

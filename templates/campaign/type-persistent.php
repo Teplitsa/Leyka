@@ -12,9 +12,11 @@ $campaign_id = null;
 if(is_singular(Leyka_Campaign_Management::$post_type)) {
     $campaign_id = get_the_ID();
 } else if(is_page(leyka()->opt('success_page')) || is_page(leyka()->opt('failure_page'))) {
+
     $donation_id = leyka_remembered_data('donation_id');
     $donation = $donation_id ? new Leyka_Donation($donation_id) : null;
     $campaign_id = $donation ? $donation->campaign_id : null;
+
 }
  
 $cover_url = null;
@@ -55,11 +57,11 @@ $cover_bg_color = $header_cover_type == 'color' ? get_post_meta($campaign_id, 'c
 <div id="page" class="site leyka-persistant-campaign">
 	<a class="skip-link screen-reader-text" href="#content"><?php _e('Skip to content', 'leyka');?></a>
 
-		<header id="masthead" class="leyka-campaign-header <?php echo $header_cover_type == 'color' ? '' : 'cover-type-image';?>" style="<?php if($cover_url && $header_cover_type != 'color'):?>background-image:url('<?php echo $cover_url;?>');<?php endif;?><?php echo $cover_bg_color ? "background-color:$cover_bg_color;" : '';?>">
+		<header id="masthead" class="leyka-campaign-header <?php echo $header_cover_type == 'color' ? '' : 'cover-type-image';?> <?php echo empty($logo_url) ? 'no-cover' : '';?>" style="<?php if($cover_url && $header_cover_type != 'color'):?>background-image:url('<?php echo $cover_url;?>');<?php endif;?><?php echo $cover_bg_color ? "background-color:$cover_bg_color;" : '';?>">
             <div class="header-tint <?php echo $hide_cover_tint ? 'hide-cover-tint' : '';?>">
             	<?php if($logo_url) {?>
                 <a href="<?php echo home_url();?>" class="leyka-campaign-logo">
-                	<img src="<?php echo $logo_url;?>" />
+                	<img src="<?php echo $logo_url;?>" alt="">
                 </a>
                 <?php } else {?>
                 	<div class="leyka-campaign-no-logo"></div>
