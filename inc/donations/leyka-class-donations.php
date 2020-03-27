@@ -667,8 +667,8 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         }
 
-        $params['order'] = empty($params['order']) || !in_array($params['order'], array('asc', 'desc', 'ASC', 'DESC',)) ?
-            'ASC' : mb_strtoupper($params['order']);
+        $params['order'] = empty($params['order']) || !in_array($params['order'], array('asc', 'desc',)) ?
+            'DESC' : mb_strtoupper($params['order']);
 
         if(empty($params['orderby'])) {
             $params['orderby'] = 'date';
