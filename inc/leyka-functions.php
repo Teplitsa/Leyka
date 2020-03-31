@@ -1485,25 +1485,6 @@ if( !function_exists('wp_validate_redirect') ) {
     }
 }
 
-if( !function_exists('leyka_get_client_ip') ) {
-
-    function leyka_get_client_ip() {
-
-        $client_ip = getenv('HTTP_CLIENT_IP') ? :
-            getenv('HTTP_X_FORWARDED_FOR') ? :
-                getenv('HTTP_X_FORWARDED') ? :
-                    getenv('HTTP_FORWARDED_FOR') ? :
-                        getenv('HTTP_FORWARDED') ? :
-                            getenv('REMOTE_ADDR');
-
-        $client_ip = is_array($client_ip) ? reset($client_ip) : $client_ip;
-
-        return trim($client_ip);
-
-    }
-
-}
-
 /**
  * @param $campaign_id int
  * @param $limit int|false False to get all donations (unlimited number).
@@ -2360,6 +2341,25 @@ if( !function_exists('leyka_gua_get_client_id') ) {
         return $cid;
 
     }
+}
+
+if( !function_exists('leyka_get_client_ip') ) {
+
+    function leyka_get_client_ip() {
+
+        $client_ip = getenv('HTTP_CLIENT_IP') ? :
+            getenv('HTTP_X_FORWARDED_FOR') ? :
+                getenv('HTTP_X_FORWARDED') ? :
+                    getenv('HTTP_FORWARDED_FOR') ? :
+                        getenv('HTTP_FORWARDED') ? :
+                            getenv('REMOTE_ADDR');
+
+        $client_ip = is_array($client_ip) ? reset($client_ip) : $client_ip;
+
+        return trim($client_ip);
+
+    }
+
 }
 
 /** Some gateways give their callbacks IPs only as CIDR ranges. */

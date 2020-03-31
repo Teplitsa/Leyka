@@ -513,19 +513,48 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         <input type="hidden" id="leyka-campaign-needed-for-support-packages" value="<?php echo $extension->get_available_campaigns_count() === 1 ? 1 : 0;?>">
 
-        <div id="leyka-campaign-needed-modal-content" style="display:none;" title="<?php _e('Closing the Support packages campaign', 'leyka');?>">
+        <div id="leyka-campaign-needed-modal-content" style="display:none;" title="<?php _e('You are closing the Support packages campaign', 'leyka');?>">
 
-            <?php _e("This campaign is currently used for recurring subscriptions in the Support packages extension, and if we proceed, it won't be available for donations anymore.<br><br>What should we do next?", 'leyka');?>
+            <?php _e("This campaign is currently used for recurring subscriptions in the Support packages extension, and if we proceed, it won't be available for donations anymore.<br><br>What should we do next?", 'leyka');
+
+            $campaigns = get_posts(array(
+                'post_type' => Leyka_Campaign_Management::$post_type,
+                'meta_query' => array(
+                    array('key' => 'campaign_type', 'value' => 'persistent',),
+                    array('key' => 'is_finished', 'value' => 1, 'compare' => '!=', 'type' => 'NUMERIC',),
+//                        array('key' => '', 'value' => '',),
+                ),
+                'post__not_in' => array($campaign->ID),
+                'posts_per_page' => 10,
+            ));?>
 
             <ul>
-                <li><label><input type="radio" value="open-content" checked="checked">&nbsp;<?php _e('Make content open', 'leyka');?></label></li>
-                <li><label><input type="radio" value="another-campaign">&nbsp;<?php _e('Select another campaign', 'leyka');?></label></li>
-                <li><label><input type="radio" value="leave-closed">&nbsp;<?php _e('Leave content closed', 'leyka');?></label></li>
+
+                <li><label><input type="radio" name="support-packages-campaign-changed" value="open-content" checked="checked">&nbsp;<?php _e('Make content open', 'leyka');?></label></li>
+
+                <?php if($campaigns) {?>
+                <li><label><input type="radio" name="support-packages-campaign-changed" value="another-campaign">&nbsp<?php _e('Select another campaign', 'leyka');?></label></li>
+                <?php }?>
+
+                <li><label><input type="radio" name="support-packages-campaign-changed" value="leave-closed">&nbsp<?php _e('Leave content closed', 'leyka');?></label></li>
+
             </ul>
 
-            <div class="new-campaign">
-                <?php leyka_render_campaign_select_field('support_packages_campaign', array('value' => $campaign->id));?>
+            <?php if($campaigns) {?>
+
+            <div class="new-campaign" style="display: none;">
+                <?php $list_entries = array();
+                foreach($campaigns as $campaign) {
+                    $list_entries[$campaign->ID] = $campaign->post_title;
+                }
+
+                leyka_render_select_field('support_packages_campaign', array(
+                    'value' => $campaign->id,
+                    'list_entries' => $list_entries,
+                ));?>
             </div>
+
+            <?php }?>
 
         </div>
 

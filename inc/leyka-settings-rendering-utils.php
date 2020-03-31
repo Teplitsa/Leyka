@@ -408,11 +408,11 @@ function leyka_render_select_field($option_id, $data){
         <label for="<?php echo $option_id.'-field';?>">
 
             <span class="field-component title">
-                <span class="text"><?php echo $data['title'];?></span>
+                <span class="text"><?php echo empty($data['title']) ? '' : esc_html($data['title']);?></span>
                 <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
                 <?php if( !empty($data['comment'])) {?>
                     <span class="field-q">
-                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-q.svg" alt="">
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
                     <span class="field-q-tooltip"><?php echo $data['comment']?></span>
                 </span>
                 <?php }?>
@@ -677,7 +677,7 @@ function leyka_render_campaign_select_field($option_id, $data) {
 
             <span class="field-component title">
 
-                <span class="text"><?php echo $data['title'];?></span>
+                <span class="text"><?php echo empty($data['title']) ? '' : esc_html($data['title']);?></span>
 
                 <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';
 
