@@ -73,35 +73,43 @@ add_filter('the_content', 'leyka_terms_of_pd_usage_page_text');
  * @return array
  */
 function leyka_star_body_classes($classes) {
-    if(!empty(get_query_var('leyka-screen'))) {
-        $classes[] = 'leyka-screen-' . get_query_var('leyka-screen');
+
+    $screen = get_query_var('leyka-screen');
+    if($screen) {
+        $classes[] = 'leyka-screen-'.$screen;
     }
-    
+
     $campaign_id = null;
-    if( is_singular(Leyka_Campaign_Management::$post_type) ) {
+    if(is_singular(Leyka_Campaign_Management::$post_type)) {
         $campaign_id = get_post()->ID;
-    }
-    elseif(is_page(leyka_options()->opt('success_page')) || is_page(leyka_options()->opt('failure_page'))) {
+    } else if(is_page(leyka_options()->opt('success_page')) || is_page(leyka_options()->opt('failure_page'))) {
+
         $donation_id = leyka_remembered_data('donation_id');
         $donation = $donation_id ? new Leyka_Donation($donation_id) : null;
         $campaign_id = $donation ? $donation->campaign_id : null;
+
     }
     
     if($campaign_id) {
+
         $campaign = leyka_get_validated_campaign($campaign_id);
         $campaign_type = get_post_meta($campaign_id, 'campaign_type', true);
-        
+
         if($campaign && $campaign_type == 'persistent' && $campaign->template == 'star') {
+
             $pos = array_search('leyka_campaign-template-default', $classes);
             if($pos !== false) {
                 array_splice($classes, $pos, 1);
             }
-            
+
             $classes[] = 'leyka_campaign-template-persistent';
+
         }
+
     }
     
     return $classes;
+
 }
 add_filter('body_class', 'leyka_star_body_classes');
 
