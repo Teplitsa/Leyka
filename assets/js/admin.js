@@ -1787,13 +1787,20 @@ jQuery(document).ready(function($){
     $('form#post').submit(function(e){
 
         /** @todo Get $campaign_needed_field value via ajax, mb */
-
-        // let $form = $(this);
-
         if( !$campaign_needed_field.length || !parseInt($campaign_needed_field.val()) ) { // The check won't be needed
-            // console.log('HERE!');
             return;
         }
+
+        let $form = $(this),
+            campaign_updated_status = $form.find('[name="post_status"]').val(),
+            campaign_updated_type = $form.find('[name="campaign_type"]:checked').val(),
+            campaign_updated_is_finished = $form.find('[name="is_finished"]').prop('checked');
+
+        if(campaign_updated_status === 'publish' && !campaign_updated_is_finished && campaign_updated_type === 'persistent') {
+            return;
+        }
+
+        e.preventDefault();
 
         if($modal.data('leyka-dialog-initialized')) {
             $modal.dialog('open');
@@ -1819,6 +1826,7 @@ jQuery(document).ready(function($){
                     'click': function(){
                         // console.log('Applying changes!');
                         $modal.dialog('close');
+                        $form.submit();
                     }
                 }]
             });
@@ -1827,7 +1835,20 @@ jQuery(document).ready(function($){
 
         }
 
-        return false;
+        // return false;
+
+    });
+
+    $('[name="support-packages-campaign-changed"]').on('change.leyka', function(){
+
+        let $this = $(this),
+            $new_campaign = $modal.find('.new-campaign');
+
+        if($this.val() === 'another-campaign') {
+            $new_campaign.show();
+        } else {
+            $new_campaign.hide();
+        }
 
     });
 

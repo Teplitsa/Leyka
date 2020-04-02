@@ -490,7 +490,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         </fieldset>
 
         <?php // If Support packages Extention is active, add the special fields to check if current campaign can be turned off.
-        // Also, the check is only for active persistent campaigns, as the Extension uses only such ones:
+        // Also, the check is only for active (published + non-finished) campaigns:
         if(
             !leyka()->extension_is_active('support_packages')
             || $campaign->type !== 'persistent'
@@ -517,12 +517,13 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <?php _e("This campaign is currently used for recurring subscriptions in the Support packages extension, and if we proceed, it won't be available for donations anymore.<br><br>What should we do next?", 'leyka');
 
-            $campaigns = get_posts(array(
+            $all_active_campaigns = get_posts(array(
                 'post_type' => Leyka_Campaign_Management::$post_type,
+                'post_status' => 'publish',
                 'meta_query' => array(
-                    array('key' => 'campaign_type', 'value' => 'persistent',),
+                    // Here user is to choose from all campaigns, nor just persistent ones:
+//                    array('key' => 'campaign_type', 'value' => 'persistent',),
                     array('key' => 'is_finished', 'value' => 1, 'compare' => '!=', 'type' => 'NUMERIC',),
-//                        array('key' => '', 'value' => '',),
                 ),
                 'post__not_in' => array($campaign->ID),
                 'posts_per_page' => 10,
@@ -532,19 +533,19 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
                 <li><label><input type="radio" name="support-packages-campaign-changed" value="open-content" checked="checked">&nbsp;<?php _e('Make content open', 'leyka');?></label></li>
 
-                <?php if($campaigns) {?>
-                <li><label><input type="radio" name="support-packages-campaign-changed" value="another-campaign">&nbsp<?php _e('Select another campaign', 'leyka');?></label></li>
-                <?php }?>
-
                 <li><label><input type="radio" name="support-packages-campaign-changed" value="leave-closed">&nbsp<?php _e('Leave content closed', 'leyka');?></label></li>
+
+            <?php if($all_active_campaigns) {?>
+                <li><label><input type="radio" name="support-packages-campaign-changed" value="another-campaign">&nbsp<?php _e('Select another campaign', 'leyka');?></label></li>
+            <?php }?>
 
             </ul>
 
-            <?php if($campaigns) {?>
+            <?php if($all_active_campaigns) {?>
 
             <div class="new-campaign" style="display: none;">
                 <?php $list_entries = array();
-                foreach($campaigns as $campaign) {
+                foreach($all_active_campaigns as $campaign) {
                     $list_entries[$campaign->ID] = $campaign->post_title;
                 }
 
@@ -743,6 +744,9 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         foreach($meta as $key => $value) {
             update_post_meta($campaign->id, $key, $value);
         }
+
+        // Support packages - the case of "single available camapign ceased to be available":
+//        $_REQUEST['support-packages-campaign-changed']
 
 	}
 
