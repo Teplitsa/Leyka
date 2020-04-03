@@ -1787,7 +1787,7 @@ jQuery(document).ready(function($){
     $('form#post').submit(function(e){
 
         /** @todo Get $campaign_needed_field value via ajax, mb */
-        if( !$campaign_needed_field.length || !parseInt($campaign_needed_field.val()) ) { // The check won't be needed
+        if( !$campaign_needed_field.length || !parseInt($campaign_needed_field.val()) ) {
             return;
         }
 
@@ -1797,6 +1797,11 @@ jQuery(document).ready(function($){
             campaign_updated_is_finished = $form.find('[name="is_finished"]').prop('checked');
 
         if(campaign_updated_status === 'publish' && !campaign_updated_is_finished && campaign_updated_type === 'persistent') {
+            return;
+        }
+
+        // If the packages behavior selected, submit the campaign changes normally:
+        if($modal.data('leyka-support-packages-campaign-behavior')) {
             return;
         }
 
@@ -1824,22 +1829,37 @@ jQuery(document).ready(function($){
                     'text': 'Apply',
                     'class': 'button-primary',
                     'click': function(){
-                        // console.log('Applying changes!');
-                        $modal.dialog('close');
+
+                        let $extension_behavior = $modal.find('[name="support-packages-campaign-changed"]:checked');
+                        $extension_behavior.appendTo($form);
+
+                        $modal.find('[name="leyka_support_packages_campaign"]').appendTo($form);
+                        $modal
+                            .dialog('close')
+                            .data('leyka-support-packages-campaign-behavior', $extension_behavior.val());
+
                         $form.submit();
+
                     }
-                }]
+                }],
+                create: function(e) {
+                    $(e.target).parent().css({'position': 'fixed', 'z-index': 1000});
+                },
+                resizeStart: function(e) {
+                    $(e.target).parent().css({'position': 'fixed', 'z-index': 1000});
+                },
+                resizeStop: function(e) {
+                    $(e.target).parent().css({'position': 'fixed', 'z-index': 1000});
+                }
             });
 
             $modal.data('leyka-dialog-initialized', 1);
 
         }
 
-        // return false;
-
     });
 
-    $('[name="support-packages-campaign-changed"]').on('change.leyka', function(){
+    $modal.on('change.leyka', '[name="support-packages-campaign-changed"]', function(){
 
         let $this = $(this),
             $new_campaign = $modal.find('.new-campaign');

@@ -491,12 +491,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         <?php // If Support packages Extention is active, add the special fields to check if current campaign can be turned off.
         // Also, the check is only for active (published + non-finished) campaigns:
-        if(
-            !leyka()->extension_is_active('support_packages')
-            || $campaign->type !== 'persistent'
-            || $campaign->status != 'publish'
-            || $campaign->is_finished
-        ) {
+        if( !leyka()->extension_is_active('support_packages') || $campaign->status != 'publish' || $campaign->is_finished ) {
             return;
         }
 
@@ -517,25 +512,26 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <?php _e("This campaign is currently used for recurring subscriptions in the Support packages extension, and if we proceed, it won't be available for donations anymore.<br><br>What should we do next?", 'leyka');
 
-            $all_active_campaigns = get_posts(array(
+            $support_packages_no_campaign_behavior = get_option('leyka_support_packages_no_campaign_behavior');?>
+
+            <ul>
+
+                <li><label><input type="radio" name="support-packages-campaign-changed" value="content-open" <?php echo $support_packages_no_campaign_behavior === 'content-open' || !$support_packages_no_campaign_behavior ? 'checked="checked"' : '';?>>&nbsp;<?php _e('Make content open', 'leyka');?></label></li>
+
+                <li><label><input type="radio" name="support-packages-campaign-changed" value="content-closed" <?php echo $support_packages_no_campaign_behavior === 'content-closed' ? 'checked="checked"' : '';?>>&nbsp<?php _e('Leave content closed', 'leyka');?></label></li>
+
+            <?php $all_active_campaigns = get_posts(array(
                 'post_type' => Leyka_Campaign_Management::$post_type,
                 'post_status' => 'publish',
                 'meta_query' => array(
-                    // Here user is to choose from all campaigns, nor just persistent ones:
-//                    array('key' => 'campaign_type', 'value' => 'persistent',),
+                    // Here user may choose from all campaigns, nor just persistent ones:
                     array('key' => 'is_finished', 'value' => 1, 'compare' => '!=', 'type' => 'NUMERIC',),
                 ),
                 'post__not_in' => array($campaign->ID),
                 'posts_per_page' => 10,
-            ));?>
+            ));
 
-            <ul>
-
-                <li><label><input type="radio" name="support-packages-campaign-changed" value="open-content" checked="checked">&nbsp;<?php _e('Make content open', 'leyka');?></label></li>
-
-                <li><label><input type="radio" name="support-packages-campaign-changed" value="leave-closed">&nbsp<?php _e('Leave content closed', 'leyka');?></label></li>
-
-            <?php if($all_active_campaigns) {?>
+            if($all_active_campaigns) {?>
                 <li><label><input type="radio" name="support-packages-campaign-changed" value="another-campaign">&nbsp<?php _e('Select another campaign', 'leyka');?></label></li>
             <?php }?>
 
@@ -729,7 +725,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         if($_REQUEST['hide_cover_tint'] != $campaign->hide_cover_tint) {
             $meta['hide_cover_tint'] = $_REQUEST['hide_cover_tint'];
         }
-        
+
         if(isset($_REQUEST['campaign_target']) && $_REQUEST['campaign_target'] != $campaign->target) {
 
             $_REQUEST['campaign_target'] = (float)$_REQUEST['campaign_target'];
@@ -745,8 +741,43 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             update_post_meta($campaign->id, $key, $value);
         }
 
-        // Support packages - the case of "single available camapign ceased to be available":
-//        $_REQUEST['support-packages-campaign-changed']
+        /* Support packages - the case of "single available camapign ceased to be available": */
+        if( !leyka()->extension_is_active('support_packages') ) {
+            return;
+        }
+
+        // If campaign is reactivated:
+        if(
+            $campaign_id == leyka_options()->opt('support_packages_campaign')
+            && ($_REQUEST['post_status'] === 'publish' || !empty($_REQUEST['publish']))
+            && empty($_REQUEST['is_finished'])
+            && get_option('leyka_support_packages_no_campaign_behavior')
+        ) {
+
+            delete_option('leyka_support_packages_no_campaign_behavior');
+            return;
+
+        }
+
+        // If campaign is deactivated & Support Packages behavior is set:
+        if(empty($_REQUEST['support-packages-campaign-changed'])) {
+            return;
+        }
+
+        if(
+            $_REQUEST['support-packages-campaign-changed'] === 'another-campaign'
+            && absint($_REQUEST['leyka_support_packages_campaign'])
+        ) {
+
+            leyka_options()->opt('support_packages_campaign', absint($_REQUEST['leyka_support_packages_campaign']));
+            delete_option('leyka_support_packages_no_campaign_behavior');
+
+        } else if($_REQUEST['support-packages-campaign-changed'] === 'content-open') {
+            update_option('leyka_support_packages_no_campaign_behavior', 'content-open');
+        } else if($_REQUEST['support-packages-campaign-changed'] === 'content-closed') {
+            update_option('leyka_support_packages_no_campaign_behavior', 'content-closed');
+        }
+        /* Support packages - END */
 
 	}
 
