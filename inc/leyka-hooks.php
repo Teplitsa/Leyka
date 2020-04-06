@@ -89,7 +89,7 @@ function leyka_star_body_classes($classes) {
         $campaign_id = $donation ? $donation->campaign_id : null;
 
     }
-    
+
     if($campaign_id) {
 
         $campaign = leyka_get_validated_campaign($campaign_id);
@@ -107,7 +107,7 @@ function leyka_star_body_classes($classes) {
         }
 
     }
-    
+
     return $classes;
 
 }

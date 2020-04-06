@@ -89,6 +89,13 @@ PHP version required: 5.6+
 10. Google Analytics events
 
 == Changelog ==
+= 3.8.0.1 =
+* Fix: CP gateway allowed IPs list updated. Now donations via CP are handled correctly.
+* Fix: the gear icon in the Gateways settings list fixed.
+* Fix: possible incompatibility with PHP 5.4 fixed.
+* Fix: returning Quittance PM fixed.
+* Fix: the Support packages in_array() error fixed.
+
 = 3.8 =
 * New: recurring subscriptions admin page added.
 * New: the Engagement banner extension added.

@@ -89,7 +89,7 @@ $gateways_categories = leyka_get_gateways_filter_categories_list();?>
                 <?php if($gateway->has_wizard && in_array($gateway_activation_status, array('inactive', 'activating'))) {?>
                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>src/svg/icon-wizard-stick-only.svg" class="wizard-available" alt="">
                 <?php } else {?>
-                	<img src="<?php echo LEYKA_PLUGIN_BASE_URL.'src/svg/icon-gear.svg';?>" alt="">
+                	<img src="<?php echo LEYKA_PLUGIN_BASE_URL.'img/icon-gear.svg';?>" alt="">
                 <?php }
 
                 echo leyka_get_gateway_activation_button_label($gateway);?>

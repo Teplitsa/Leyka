@@ -1268,6 +1268,12 @@ class Leyka extends Leyka_Singleton {
             }
         }
 
+        if($leyka_last_ver && $leyka_last_ver <= '3.8.0.1') { // CP IPs list fix
+            if(get_option('leyka_cp_ip')) {
+                update_option('leyka_cp_ip', '130.193.70.192, 185.98.85.109, 87.251.91.160/27, 185.98.81.0/28');
+            }
+        }
+
         // Set a flag to flush permalinks (needs to be done a bit later, than this activation itself):
         update_option('leyka_permalinks_flushed', 0);
 
