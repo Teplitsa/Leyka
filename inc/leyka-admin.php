@@ -118,7 +118,14 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                     return $admin_title;
                 }
 
-                $admin_title = sprintf(__('Leyka: Donor %s'), $donor->name).' &lsaquo; '.get_bloginfo('name');
+                $admin_title = sprintf(__('Leyka: Donor %s', 'leyka'), $donor->name).' &lsaquo; '.get_bloginfo('name');
+
+            } else if(isset($_GET['page']) && $_GET['page'] === 'leyka_extension_settings' && isset($_GET['extension'])) {
+
+                $extension = leyka_get_extension_by_id($_GET['extension']);
+
+                $admin_title = ($extension ? sprintf(__('Leyka: %s', 'leyka'), $extension->title) : __('Leyka: unknown extension', 'leyka'))
+                    .' &lsaquo; '.get_bloginfo('name');
 
             }
 
@@ -817,8 +824,6 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         if(isset($_GET['page']) && $_GET['page'] === 'leyka') {
 
             wp_enqueue_script('jquery-ui-dialog');
-//            wp_enqueue_style('wp-jquery-ui-dialog');
-
             wp_enqueue_script('leyka-admin', LEYKA_PLUGIN_BASE_URL.'assets/js/Chart.v2.8.0.min.js', $dependencies, LEYKA_VERSION, true);
 
         }
@@ -839,7 +844,6 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             }
 
             wp_enqueue_script('jquery-ui-dialog');
-//            wp_enqueue_style('wp-jquery-ui-dialog');
 
         }
 

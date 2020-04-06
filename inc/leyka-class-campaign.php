@@ -501,6 +501,8 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         $support_packages_campaign = $extension->get_available_campaign();
         $support_packages_campaign = $support_packages_campaign ? new Leyka_Campaign($support_packages_campaign) : null;
 
+//        echo '<pre>'.print_r($support_packages_campaign, 1).'</pre>';
+
         // No need for checks in current campaign:
         if( !$support_packages_campaign || $support_packages_campaign->id != $campaign->id ) {
             return;
@@ -516,7 +518,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <ul>
 
-                <li><label><input type="radio" name="support-packages-campaign-changed" value="content-open" <?php echo $support_packages_no_campaign_behavior === 'content-open' || !$support_packages_no_campaign_behavior ? 'checked="checked"' : '';?>>&nbsp;<?php _e('Make content open', 'leyka');?></label></li>
+                <li><label><input type="radio" name="support-packages-campaign-changed" value="content-open" <?php echo $support_packages_no_campaign_behavior === 'content-open' ? 'checked="checked"' : '';?>>&nbsp;<?php _e('Make content open', 'leyka');?></label></li>
 
                 <li><label><input type="radio" name="support-packages-campaign-changed" value="content-closed" <?php echo $support_packages_no_campaign_behavior === 'content-closed' ? 'checked="checked"' : '';?>>&nbsp<?php _e('Leave content closed', 'leyka');?></label></li>
 

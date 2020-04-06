@@ -457,10 +457,9 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
                     $this->is_feature_open($feature, $user)
                     || get_option('leyka_support_packages_no_campaign_behavior') === 'content-open'
                 ) {
-//                    echo '<pre>Open: '.print_r($feature, 1).'</pre>';
+                    echo '<pre>Open: '.print_r(get_option('leyka_support_packages_no_campaign_behavior'), 1).'</pre>';
                     return $feature->do_if_open(array('content' => $content));
                 } else {
-//                    echo '<pre>Closed: '.print_r($feature, 1).'</pre>';
                     return $feature->do_if_closed(array('content' => $content))
                         .$this->get_activate_feature_form($feature, $user);
                 }
@@ -479,25 +478,25 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
         $sp_campaign_id = leyka()->opt('support_packages_campaign');
 
         if($sp_campaign_id) {
+
             $sp_campaign = get_post($sp_campaign_id);
-        } else {
-
-            $sp_campaign = get_posts(array(
-                'post_type' => Leyka_Campaign_Management::$post_type,
-                'post_status' => 'publish',
-                'meta_query' => array(
-                    array('key' => 'is_finished', 'value' => 1, 'compare' => '!=', 'type' => 'NUMERIC',),
-                    array('key' => 'campaign_type', 'value' => 'persistent'),
-                ),
-                'posts_per_page' => 1,
-//                'nopaging' => true,
-            ));
-
-            $sp_campaign = $sp_campaign ? reset($sp_campaign) : null;
+            if($sp_campaign->post_status === 'publish') {
+                return $sp_campaign;
+            }
 
         }
 
-        return $sp_campaign;
+        $sp_campaign = get_posts(array(
+            'post_type' => Leyka_Campaign_Management::$post_type,
+            'post_status' => 'publish',
+            'meta_query' => array(
+                array('key' => 'is_finished', 'value' => 1, 'compare' => '!=', 'type' => 'NUMERIC',),
+                array('key' => 'campaign_type', 'value' => 'persistent'),
+            ),
+            'posts_per_page' => 1,
+        ));
+
+        return $sp_campaign ? reset($sp_campaign) : null;
 
     }
 
