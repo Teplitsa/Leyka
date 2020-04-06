@@ -90,15 +90,12 @@ class Leyka extends Leyka_Singleton {
 
         add_action('parse_request', array($this, 'parse_request')); // Service URLs handlers
 
-        function leyka_session_start() {
-            if( !session_id() ) {
-                session_start();
-            }
-        }
-        add_action('init', 'leyka_session_start', -2);
-
-//        $this->_initialize_extensions_list(); // Add the extensions from the files to the list & set their activity statuses
-//        $this->_run_active_extensions(); // Require the main files for all active extensions
+//        function leyka_session_start() {
+//            if( !session_id() ) {
+//                session_start();
+//            }
+//        }
+//        add_action('init', 'leyka_session_start', -2);
 
         if(get_option('leyka_plugin_stats_option_needs_sync')) {
 
