@@ -5,7 +5,7 @@ Plugin URI: http://leyka.te-st.ru
 Tags: crowdfunding, fundraising, donations, recurring donations, charity, leyka, recurring, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, yandexmoney, yandex.money, яндекс.деньги, chronopay, sms, яндекс.касса, yandex.kassa, миксплат, mixplat, paypal, paymaster, qiwi, киви
 Requires at least: 3.6.1
 Tested up to: 5.4
-Stable tag: 3.8
+Stable tag: 3.8.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -74,14 +74,15 @@ PHP version required: 5.6+
 
 == Screenshots ==
 
-1.  "Campaign card" widget example
-2.  Donations form example
-3.  Donors list page example
-3.  Recurring subscriptions list page example
-5.  The plugin start page (a console)
+1. "Campaign card" widget example
+2. Donations form example
+3. Donors list page example
+3. Recurring subscriptions list page example
+5. The plugin start page (a console)
 
 == Changelog ==
 = 3.8.0.1 =
+* Fix: "cURL error #28" fixed.
 * Fix: CP gateway allowed IPs list updated. Now donations via CP are handled correctly.
 * Fix: the gear icon in the Gateways settings list fixed.
 * Fix: possible incompatibility with PHP 5.4 fixed.
@@ -96,9 +97,9 @@ PHP version required: 5.6+
 * New: Donors admin list - bulk edit feature added.
 * Fix: Donations recurring canceling date bugfix.
 * Fix: Donations admin list - footer CSS bug fixed.
-~ Tweak: admin donation details page - details output improved.
-~ Tweak: the active recurring procedure improved.
-~ Tweak: admin styles improved.
+* Tweak: admin donation details page - details output improved.
+* Tweak: the active recurring procedure improved.
+* Tweak: admin styles improved.
 
 = 3.7 =
 * New: Extensions engine added.
