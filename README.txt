@@ -4,7 +4,7 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: crowdfunding, fundraising, donations, recurring donations, charity, leyka, recurring, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, yandexmoney, yandex.money, яндекс.деньги, chronopay, sms, яндекс.касса, yandex.kassa, миксплат, mixplat, paypal, paymaster, qiwi, киви
 Requires at least: 3.6.1
-Tested up to: 5.3.2
+Tested up to: 5.4
 Stable tag: 3.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -13,41 +13,38 @@ Leyka is a plugin for crowdfunding and donations collection via WordPress websit
 
 == Description ==
 
-Supported payment methods include Visa and MasterCard bank cards payments via **Cloudpayments**, **PayPal**, **Chronopay**, **QIWI Kassa**, **ROBOKASSA**, **Yandex.Kassa** and **RBK Money** systems, mobile and SMS payments via **MIXPLAT**, also **WebMoney** are supported. You can also use a **traditional bank payment orders** (quittances).
+Supported payment methods include Visa and MasterCard bank cards payments via **Cloudpayments**, **Yandex.Kassa**, **PayPal**, **Chronopay**, **QIWI Kassa**, **ROBOKASSA** and **RBK Money** systems, mobile and SMS payments via **MIXPLAT**, also **WebMoney**. You can also use a **traditional bank payment orders**.
 
-This plugin developed and supported by [Teplitsa of social technologies](//te-st.ru/).
+This plugin developed and supported by [Teplitsa of social technologies](https://te-st.ru/).
 
-The plugin's task is to ease and improve integrations of donations collecting function on websites of NGOs and any social oriented projects.
+The plugin’s task is to ease and improve integrations of donations collecting function on websites of NGOs and any social oriented projects.
 
-* Plugin is very easy to install, and it requires only a minimum of settings.
-* You can start to collect donations right after plugin setup.
-* Many important settings are setted automatically.
+- Plugin is very easy to install, and it requires only a minimum of settings.
+- You can start to collect donations right after plugin setup.
+- Many important settings are setted automatically.
 
-The plugin is designed for any website that wants to collect money online - NGOs, informal unions, individuals.
+The plugin is designed for any website that wants to collect money online – NGOs, informal unions, individuals.
 
-**Official website:** [leyka.te-st.ru](//leyka.te-st.ru/)
+**Official website:** [leyka.te-st.ru](https://leyka.te-st.ru/)
 
-**Warning:** you will need to sign a contract with some payment systems, like Yandex.Money or RBK, to collect donations through them.
+**Warning:** you will need to sign a contract with some payment systems, like Yandex.Money or RBK, to collect donations through them.
 
 **Core features**
 
-* Wide range of payment systems and options
-* Suitable for private persons and NGOs
-* Automatic e-mails to supporters
-* Multiple language support
-* Support for multiple currencies
-* Campaign templates and visualization of the progress bars
-* Widgets and shortcodes for WP
-* Legally correct templates, personal data usage agreement and oferta text
-* Ability to embed campaigns via iframe
-* Payment history and statistics on the website
-* Integration with Google Analytics out of the box
-* Partially complies with accessibility standards WCAG 2.0
+- Wide range of payment systems and options
+- Suitable for private persons and NGOs
+- Automatic e-mails to supporters
+- User accounts that help donors to manage recurring donations
+- Payment history and statistics on the website
+- Integration with Google Analytics out of the box
+- Campaign templates and visualization of the progress bars
+- Template color customization
+- Widgets and shortcodes for WP
+- Legally correct templates for personal data usage agreement and oferta text
+- Multiple language support
+- Partially complies with accessibility standards WCAG 2.0
 
-The plugin manual is avaliable at [official website](//leyka.te-st.ru/instruction/). Intallation and usage are illustrated with screencasts:
-
-* [basic features](//leyka.te-st.ru/docs/videourok-kak-ustanovit-i-nastroit-plagin-lejka/)
-* [extended features](//leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/)
+The plugin manual is avaliable at [official website](https://leyka.te-st.ru/instruction/). Intallation and usage are illustrated with [screencasts course](https://te-st.ru/2020/04/07/leyka-online-course/). 
 
 PHP at least 5.6 is required for plugin to work correctly.
 
@@ -55,11 +52,11 @@ PHP at least 5.6 is required for plugin to work correctly.
 
 We will be very grateful if you will help us to make Leyka better.
 
-* You can add a bugreport or a feature request on [GitHub](https://github.com/Teplitsa/Leyka/issues).
-* Send us your pull request to share a code impovement.
-* You can make a new plugin translation for your language or send us a fixes for an existing translation, if needed.
+- You can add a bugreport or a feature request on [GitHub](https://github.com/Teplitsa/Leyka/issues).
+- Send us your pull request to share a code impovement.
+- You can make a new plugin translation for your language or send us a fixes for an existing translation, if needed.
 
-If you have a questions for the plugin work in any aspect, please address our support service on [GitHub](https://github.com/Teplitsa/Leyka/issues/).
+If you have a questions for the plugin work in any aspect, please address our support service on [GitHub](https://github.com/Teplitsa/Leyka/issues/).
 
 == Installation ==
 
@@ -78,15 +75,10 @@ PHP version required: 5.6+
 == Screenshots ==
 
 1.  "Campaign card" widget example
-2.  "Donations list" widget example
-3.  Campaign target indicator example
-4.  The plugin start page (a console)
-5.  Incoming donations list page
-6.  Payment systems settings
-7.  Email notifications settings
-8.  Frontend donation form example
-9.  Bank payment order example
-10. Google Analytics events
+2.  Donations form example
+3.  Donors list page example
+3.  Recurring subscriptions list page example
+5.  The plugin start page (a console)
 
 == Changelog ==
 = 3.8.0.1 =
