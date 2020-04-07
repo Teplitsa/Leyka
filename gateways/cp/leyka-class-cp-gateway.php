@@ -54,7 +54,8 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                 'type' => 'text',
                 'title' => __('CloudPayments IP', 'leyka'),
                 'comment' => __('Comma-separated callback requests IP list. Leave empty to disable the check.', 'leyka'),
-                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '130.193.70.192,185.98.85.109'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '130.193.70.192, 185.98.85.109, 87.251.91.160/27, 185.98.81.0/28'),
+                'default' => '130.193.70.192, 185.98.85.109, 87.251.91.160/27, 185.98.81.0/28',
             ),
         );
 
@@ -346,7 +347,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                         $analytics = new TheIconic\Tracking\GoogleAnalytics\Analytics(true);
                         $analytics // Main params:
-                            ->setProtocolVersion('1')
+                        ->setProtocolVersion('1')
                             ->setTrackingId(leyka_options()->opt('gtm_ua_tracking_id'))
                             ->setClientId(leyka_gua_get_client_id())
                             // Transaction params:
@@ -379,11 +380,11 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                 if( !empty($_POST['Id']) ) { // Recurring subscription ID in the CP system
 
-	                $_POST['Id'] = trim($_POST['Id']);
-	                $init_recurring_donation = $this->get_init_recurrent_donation($_POST['Id']);
+                    $_POST['Id'] = trim($_POST['Id']);
+                    $init_recurring_donation = $this->get_init_recurrent_donation($_POST['Id']);
 
-	                if($init_recurring_donation && $init_recurring_donation->recurring_is_active) {
-		                $init_recurring_donation->recurring_is_active = false;
+                    if($init_recurring_donation && $init_recurring_donation->recurring_is_active) {
+                        $init_recurring_donation->recurring_is_active = false;
                     }
 
                 }

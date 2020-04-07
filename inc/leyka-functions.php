@@ -1485,6 +1485,19 @@ if( !function_exists('wp_validate_redirect') ) {
     }
 }
 
+if( !function_exists('leyka_get_client_ip') ) {
+
+    function leyka_get_client_ip() {
+        return getenv('HTTP_CLIENT_IP') ? :
+            getenv('HTTP_X_FORWARDED_FOR') ? :
+                getenv('HTTP_X_FORWARDED') ? :
+                    getenv('HTTP_FORWARDED_FOR') ? :
+                        getenv('HTTP_FORWARDED') ? :
+                            getenv('REMOTE_ADDR');
+    }
+
+}
+
 /**
  * @param $campaign_id int
  * @param $limit int|false False to get all donations (unlimited number).
@@ -2339,6 +2352,26 @@ if( !function_exists('leyka_gua_get_client_id') ) {
         }
 
         return $cid;
+
+    }
+}
+
+/** Some gateways give their callbacks IPs only as CIDR ranges. */
+if( !function_exists('is_ip_in_range') ) {
+    function is_ip_in_range($ip, $range) {
+
+        $range .= strpos(trim($range), '/') == false ? '/32' : ''; // No CIDR range is given, add the default one
+
+        list($net, $mask) = explode('/', $range);
+
+        $ip_net = ip2long($net);
+        $ip_mask = ~((1 << (32 - $mask)) - 1);
+
+        $ip_ip = ip2long($ip);
+
+        $ip_ip_net = $ip_ip & $ip_mask;
+
+        return $ip_ip_net == $ip_net;
 
     }
 }

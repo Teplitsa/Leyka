@@ -90,15 +90,12 @@ class Leyka extends Leyka_Singleton {
 
         add_action('parse_request', array($this, 'parse_request')); // Service URLs handlers
 
-        function leyka_session_start() {
-            if( !session_id() ) {
-                session_start();
-            }
-        }
-        add_action('init', 'leyka_session_start', -2);
-
-//        $this->_initialize_extensions_list(); // Add the extensions from the files to the list & set their activity statuses
-//        $this->_run_active_extensions(); // Require the main files for all active extensions
+//        function leyka_session_start() {
+//            if( !session_id() ) {
+//                session_start();
+//            }
+//        }
+//        add_action('init', 'leyka_session_start', -2);
 
         if(get_option('leyka_plugin_stats_option_needs_sync')) {
 
@@ -1265,6 +1262,12 @@ class Leyka extends Leyka_Singleton {
         if($leyka_last_ver && $leyka_last_ver <= '3.6') { // Donors management & Donors' accounts fields logical link
             if(get_option('leyka_donor_accounts_available')) {
                 update_option('leyka_donor_management_available', true);
+            }
+        }
+
+        if($leyka_last_ver && $leyka_last_ver <= '3.8.0.1') { // CP IPs list fix
+            if(get_option('leyka_cp_ip')) {
+                update_option('leyka_cp_ip', '130.193.70.192, 185.98.85.109, 87.251.91.160/27, 185.98.81.0/28');
             }
         }
 
