@@ -1170,3 +1170,35 @@ function leyka_delete_extension(){
 
 }
 add_action('wp_ajax_leyka_delete_extension', 'leyka_delete_extension');
+
+function leyka_support_packages_set_no_campaign_behavior(){
+
+    if( !wp_verify_nonce($_POST['nonce'], 'support-packages-no-campaign-behavior') ) {
+        die(json_encode(array('status' => -1, 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
+    }
+
+    if(empty($_POST['behavior'])) {
+        die(json_encode(array('status' => -1, 'message' => __('No new behavior is given for the Support packages', 'leyka'),)));
+    } else if( !in_array($_POST['behavior'], array('another-campaign', 'content-open', 'content-closed',))) {
+        die(json_encode(array('status' => -1, 'message' => __('Incorrect behavior is given for the Support packages', 'leyka'),)));
+    }
+
+    if($_POST['behavior'] === 'another-campaign') {
+
+        if( !absint($_POST['campaign_id']) ) {
+            die(json_encode(array('status' => -1, 'message' => __('No new campaign is given for the Support packages', 'leyka'),)));
+        }
+
+        leyka_options()->opt('support_packages_campaign', absint($_POST['campaign_id']));
+        delete_option('leyka_support_packages_no_campaign_behavior');
+
+    } else if($_POST['behavior'] === 'content-open') {
+        update_option('leyka_support_packages_no_campaign_behavior', 'content-open');
+    } else if($_POST['behavior'] === 'content-closed') {
+        update_option('leyka_support_packages_no_campaign_behavior', 'content-closed');
+    }
+
+    die(json_encode(array('status' => 0,)));
+
+}
+add_action('wp_ajax_leyka_support_packages_set_no_campaign_behavior', 'leyka_support_packages_set_no_campaign_behavior');

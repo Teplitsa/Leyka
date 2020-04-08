@@ -177,7 +177,9 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         $campaign = new Leyka_Campaign($campaign);
 
-		$cur_template = $campaign->template ? $campaign->template : 'default';?>
+		$cur_template = $campaign->template ? $campaign->template : 'default';
+
+//        echo '<pre>HERE: '.print_r(get_option('leyka_support_packages_no_campaign_behavior'), 1).'</pre>';?>
 
         <fieldset id="campaign-type" class="metabox-field campaign-field campaign-type">
 
@@ -510,50 +512,57 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         <input type="hidden" id="leyka-campaign-needed-for-support-packages" value="<?php echo $extension->get_available_campaigns_count() === 1 ? 1 : 0;?>">
 
-        <div id="leyka-campaign-needed-modal-content" style="display:none;" title="<?php _e('You are closing the Support packages campaign', 'leyka');?>">
+        <div id="leyka-campaign-needed-modal-content" style="display:none;" title="<?php _e('You are closing the Support packages campaign', 'leyka');?>" data-nonce="<?php echo wp_create_nonce('support-packages-no-campaign-behavior');?>" data-close-button-text="<?php _e('Close', 'leyka');?>" data-submit-button-text="<?php _e('Submit', 'leyka');?>">
 
-            <?php _e("This campaign is currently used for recurring subscriptions in the Support packages extension, and if we proceed, it won't be available for donations anymore.<br><br>What should we do next?", 'leyka');
+            <div id="leyka-support-packages-behavior-fields">
 
-            $support_packages_no_campaign_behavior = get_option('leyka_support_packages_no_campaign_behavior');?>
+                <?php _e("This campaign is currently used for recurring subscriptions in the Support packages extension, and if we proceed, it won't be available for donations anymore.<br><br>What should we do next?", 'leyka');
 
-            <ul>
+                $support_packages_no_campaign_behavior = get_option('leyka_support_packages_no_campaign_behavior');?>
 
-                <li><label><input type="radio" name="support-packages-campaign-changed" value="content-open" <?php echo $support_packages_no_campaign_behavior === 'content-open' ? 'checked="checked"' : '';?>>&nbsp;<?php _e('Make content open', 'leyka');?></label></li>
+                <ul>
 
-                <li><label><input type="radio" name="support-packages-campaign-changed" value="content-closed" <?php echo $support_packages_no_campaign_behavior === 'content-closed' ? 'checked="checked"' : '';?>>&nbsp<?php _e('Leave content closed', 'leyka');?></label></li>
+                    <li><label><input type="radio" name="support-packages-campaign-changed" value="content-open" <?php echo $support_packages_no_campaign_behavior === 'content-open' || !$support_packages_no_campaign_behavior ? 'checked="checked"' : '';?>>&nbsp;<?php _e('Make content open', 'leyka');?></label></li>
 
-            <?php $all_active_campaigns = get_posts(array(
-                'post_type' => Leyka_Campaign_Management::$post_type,
-                'post_status' => 'publish',
-                'meta_query' => array(
-                    // Here user may choose from all campaigns, nor just persistent ones:
-                    array('key' => 'is_finished', 'value' => 1, 'compare' => '!=', 'type' => 'NUMERIC',),
-                ),
-                'post__not_in' => array($campaign->ID),
-                'posts_per_page' => 10,
-            ));
+                    <li><label><input type="radio" name="support-packages-campaign-changed" value="content-closed" <?php echo $support_packages_no_campaign_behavior === 'content-closed' ? 'checked="checked"' : '';?>>&nbsp;<?php _e('Leave content closed', 'leyka');?></label></li>
 
-            if($all_active_campaigns) {?>
-                <li><label><input type="radio" name="support-packages-campaign-changed" value="another-campaign">&nbsp<?php _e('Select another campaign', 'leyka');?></label></li>
-            <?php }?>
+                <?php $campaigns_available = get_posts(array(
+                    'post_type' => Leyka_Campaign_Management::$post_type,
+                    'post_status' => 'publish',
+                    'meta_query' => array(
+                        // Here user may choose from all campaigns, nor just persistent ones:
+                        array('key' => 'is_finished', 'value' => 1, 'compare' => '!=', 'type' => 'NUMERIC',),
+                    ),
+                    'post__not_in' => array($campaign->ID),
+                    'posts_per_page' => 10,
+                ));
 
-            </ul>
+                if($campaigns_available) {?>
+                    <li><label><input type="radio" name="support-packages-campaign-changed" value="another-campaign">&nbsp<?php _e('Select another campaign', 'leyka');?></label></li>
+                <?php }?>
 
-            <?php if($all_active_campaigns) {?>
+                </ul>
 
-            <div class="new-campaign" style="display: none;">
-                <?php $list_entries = array();
-                foreach($all_active_campaigns as $campaign) {
-                    $list_entries[$campaign->ID] = $campaign->post_title;
-                }
+                <?php if($campaigns_available) {?>
 
-                leyka_render_select_field('support_packages_campaign', array(
-                    'value' => $campaign->id,
-                    'list_entries' => $list_entries,
-                ));?>
+                <div class="new-campaign" style="display: none;">
+                    <?php $list_entries = array();
+                    foreach($campaigns_available as $campaign) {
+                        $list_entries[$campaign->ID] = $campaign->post_title;
+                    }
+
+                    leyka_render_select_field('support_packages_campaign', array(
+                        'value' => $campaign->id,
+                        'list_entries' => $list_entries,
+                    ));?>
+                </div>
+
             </div>
 
             <?php }?>
+
+            <div id="leyka-loading" style="display: none"><?php _e('Please wait while we are saving your choice...', 'leyka');?></div>
+            <div id="leyka-message" style="display: none;" data-success-message="<?php _e('Done! Now saving your campaign changes...', 'leyka');?>" data-error-message="<?php _e('Request error encountered. Please check your campaign option in the Support packages settings manually.');?>" data-validation-error-message="<?php _e('Please choose how the Support packages will act, or the extension is going to work incorrectly.', 'leyka');?>"></div>
 
         </div>
 
@@ -743,41 +752,24 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             update_post_meta($campaign->id, $key, $value);
         }
 
-        /* Support packages - the case of "single available camapign ceased to be available": */
+        /* Support packages - the case of "single available campaign ceased to be available" */
         if( !leyka()->extension_is_active('support_packages') ) {
             return;
         }
 
-        // If campaign is reactivated:
+        // The case when Packages campaign is reactivated, or there is another campaign available for the extension:
         if(
-            $campaign_id == leyka_options()->opt('support_packages_campaign')
-            && ($_REQUEST['post_status'] === 'publish' || !empty($_REQUEST['publish']))
-            && empty($_REQUEST['is_finished'])
-            && get_option('leyka_support_packages_no_campaign_behavior')
+            (
+                $campaign_id == leyka_options()->opt('support_packages_campaign')
+                && ($_REQUEST['post_status'] === 'publish' || !empty($_REQUEST['publish']))
+                && empty($_REQUEST['is_finished'])
+                && get_option('leyka_support_packages_no_campaign_behavior')
+            ) || leyka_get_extension_by_id('support_packages')->get_available_campaigns_count()
         ) {
 
             delete_option('leyka_support_packages_no_campaign_behavior');
             return;
 
-        }
-
-        // If campaign is deactivated & Support Packages behavior is set:
-        if(empty($_REQUEST['support-packages-campaign-changed'])) {
-            return;
-        }
-
-        if(
-            $_REQUEST['support-packages-campaign-changed'] === 'another-campaign'
-            && absint($_REQUEST['leyka_support_packages_campaign'])
-        ) {
-
-            leyka_options()->opt('support_packages_campaign', absint($_REQUEST['leyka_support_packages_campaign']));
-            delete_option('leyka_support_packages_no_campaign_behavior');
-
-        } else if($_REQUEST['support-packages-campaign-changed'] === 'content-open') {
-            update_option('leyka_support_packages_no_campaign_behavior', 'content-open');
-        } else if($_REQUEST['support-packages-campaign-changed'] === 'content-closed') {
-            update_option('leyka_support_packages_no_campaign_behavior', 'content-closed');
         }
         /* Support packages - END */
 

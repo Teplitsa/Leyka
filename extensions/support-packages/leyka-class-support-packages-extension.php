@@ -457,7 +457,6 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
                     $this->is_feature_open($feature, $user)
                     || get_option('leyka_support_packages_no_campaign_behavior') === 'content-open'
                 ) {
-                    echo '<pre>Open: '.print_r(get_option('leyka_support_packages_no_campaign_behavior'), 1).'</pre>';
                     return $feature->do_if_open(array('content' => $content));
                 } else {
                     return $feature->do_if_closed(array('content' => $content))

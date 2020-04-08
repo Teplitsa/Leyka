@@ -250,7 +250,8 @@ jQuery(document).ready(function($){
 
     }).change();
 
-    // Support packages Extension - available campaign existence check:
+    /* Support packages Extension - available campaign existence check: */
+
     if(typeof($().dialog) === 'undefined') {
         return;
     }
@@ -263,125 +264,9 @@ jQuery(document).ready(function($){
         return;
     }
 
-    // function leyka_support_packages_campaign_deactivation_check(e){
-    //
-    //     /** @todo Get $campaign_needed_field value via ajax, mb */
-    //     if( !$campaign_needed_field.length || !parseInt($campaign_needed_field.val()) ) {
-    //         return;
-    //     }
-    //
-    //     let campaign_updated_status = $form.find('[name="post_status"]').val(),
-    //         campaign_updated_type = $form.find('[name="campaign_type"]:checked').val(),
-    //         campaign_updated_is_finished = $form.find('[name="is_finished"]').prop('checked');
-    //
-    //     if(campaign_updated_status === 'publish' && !campaign_updated_is_finished && campaign_updated_type === 'persistent') {
-    //         return;
-    //     }
-    //
-    //     // If the packages behavior selected, submit the campaign changes normally:
-    //     if($modal.data('leyka-support-packages-campaign-behavior')) {
-    //         return;
-    //     }
-    //
-    //     e.preventDefault();
-    //
-    //     if($modal.data('leyka-dialog-initialized')) {
-    //         $modal.dialog('open');
-    //     } else {
-    //
-    //         $modal.dialog({
-    //             dialogClass: 'leyka-dialog',
-    //             modal: true,
-    //             draggable: false,
-    //             width: 'auto',
-    //             autoOpen: true,
-    //             closeOnEscape: true,
-    //             resizable: false,
-    //             buttons: [{
-    //                 'text': 'Закрыть',
-    //                 'class': 'button-secondary',
-    //                 'click': function(){
-    //                     $modal.dialog('close');
-    //                 }
-    //             }, {
-    //                 'text': 'Применить',
-    //                 'class': 'button-primary',
-    //                 'click': function(){
-    //
-    //                     let $extension_behavior = $modal.find('[name="support-packages-campaign-changed"]:checked');
-    //
-    //                     if( !$extension_behavior.length ) {
-    //                         return;
-    //                     }
-    //
-    //                     $extension_behavior.appendTo($form);
-    //
-    //                     $modal.find('[name="leyka_support_packages_campaign"]').appendTo($form);
-    //                     $modal
-    //                         .dialog('close')
-    //                         .data('leyka-support-packages-campaign-behavior', $extension_behavior.val());
-    //
-    //                     $form.submit();
-    //
-    //                 }
-    //             }],
-    //             create: function(e) {
-    //                 $(e.target).parent().css({'position': 'fixed', 'z-index': 1000});
-    //             },
-    //             resizeStart: function(e) {
-    //                 $(e.target).parent().css({'position': 'fixed', 'z-index': 1000});
-    //             },
-    //             resizeStop: function(e) {
-    //                 $(e.target).parent().css({'position': 'fixed', 'z-index': 1000});
-    //             }
-    //         });
-    //
-    //         $modal.data('leyka-dialog-initialized', 1);
-    //
-    //     }
-    //
-    // }
+    function leyka_support_packages_campaign_deactivation_dialog($modal, retrigger_action){
 
-    $('.submitdelete.deletion').click(function(e){
-
-        let campaign_original_status = $form.find('#original_post_status').val(),
-            // campaign_updated_type = $form.find('[name="campaign_type"]:checked').val(),
-            campaign_updated_is_finished = $form.find('[name="is_finished"]').prop('checked');
-
-        if(campaign_original_status !== 'publish' || campaign_updated_is_finished /*&& campaign_updated_type === 'persistent'*/) {
-            return;
-        }
-
-        // If the packages behavior selected, submit the campaign changes normally:
-        if($modal.data('leyka-support-packages-campaign-behavior')) {
-            return;
-        }
-
-        e.preventDefault();
-        //...
-
-    });
-    $form.submit(function(e){
-
-        /** @todo Get $campaign_needed_field value via ajax, mb */
-        if( !$campaign_needed_field.length || !parseInt($campaign_needed_field.val()) ) {
-            return;
-        }
-
-        let campaign_updated_status = $form.find('[name="post_status"]').val(),
-            // campaign_updated_type = $form.find('[name="campaign_type"]:checked').val(),
-            campaign_updated_is_finished = $form.find('[name="is_finished"]').prop('checked');
-
-        if(campaign_updated_status === 'publish' && !campaign_updated_is_finished /*&& campaign_updated_type === 'persistent'*/) {
-            return;
-        }
-
-        // If the packages behavior selected, submit the campaign changes normally:
-        if($modal.data('leyka-support-packages-campaign-behavior')) {
-            return;
-        }
-
-        e.preventDefault();
+        let $modal_fields = $modal.find('#leyka-support-packages-behavior-fields');
 
         if($modal.data('leyka-dialog-initialized')) {
             $modal.dialog('open');
@@ -396,31 +281,84 @@ jQuery(document).ready(function($){
                 closeOnEscape: true,
                 resizable: false,
                 buttons: [{
-                    'text': 'Закрыть',
+                    'text': $modal.data('close-button-text'),
                     'class': 'button-secondary',
                     'click': function(){
                         $modal.dialog('close');
                     }
                 }, {
-                    'text': 'Применить',
+                    'text': $modal.data('submit-button-text'),
                     'class': 'button-primary',
                     'click': function(){
 
-                        let $extension_behavior = $modal.find('[name="support-packages-campaign-changed"]:checked');
+                        let $extension_behavior = $modal.find('[name="support-packages-campaign-changed"]:checked'),
+                            $loading = $modal.find('#leyka-loading'),
+                            $message = $modal.find('#leyka-message');
 
                         if( !$extension_behavior.length ) {
+
+                            $modal_fields.show();
+                            $message
+                                .removeClass('success-message')
+                                .addClass('error-message')
+                                .html($message.data('validation-error-message'))
+                                .show();
+
                             return;
+
                         }
 
-                        $extension_behavior.appendTo($form);
+                        $message.hide();
+                        $loading.show();
+                        $modal_fields.hide();
 
-                        $modal.find('[name="leyka_support_packages_campaign"]').appendTo($form);
-                        $modal
-                            .dialog('close')
-                            .data('leyka-support-packages-campaign-behavior', $extension_behavior.val());
+                        $.post(leyka.ajaxurl, {
+                            action: 'leyka_support_packages_set_no_campaign_behavior',
+                            behavior: $extension_behavior.val(),
+                            campaign_id: $modal.find('[name="leyka_support_packages_campaign"]').val(),
+                            nonce: $modal.data('nonce'),
+                        }, null, 'json')
+                            .done(function(json){
 
-                        $form.submit();
-                        // $(this).trigger(e.type);
+                                if(typeof json.status !== 'undefined' && json.status !== 0) { // Server-side error
+
+                                    $modal_fields.show();
+                                    $message
+                                        .removeClass('success-message')
+                                        .addClass('error-message')
+                                        .html($message.data('error-message'))
+                                        .show();
+
+                                } else {
+
+                                    $modal.data('leyka-support-packages-campaign-checked', true);
+                                    $message
+                                        .removeClass('error-message')
+                                        .addClass('success-message')
+                                        .html($message.data('success-message'))
+                                        .show();
+
+                                    // $tager.trigger(e.type) doesn't work for the "delete post" link, so use passed function:
+                                    if(typeof retrigger_action == 'function') {
+                                        retrigger_action();
+                                    }
+
+                                }
+
+                            })
+                            .fail(function(){ // Ajax request failure
+
+                                $modal_fields.show();
+                                $message
+                                    .removeClass('success-message')
+                                    .addClass('error-message')
+                                    .html($message.data('error-message'))
+                                    .show();
+
+                            })
+                            .always(function(){
+                                $loading.hide();
+                            });
 
                     }
                 }],
@@ -440,6 +378,57 @@ jQuery(document).ready(function($){
 
         }
 
+    }
+
+    $('.submitdelete.deletion').on('click.leyka', function(e){
+
+        let $this = $(this),
+            campaign_original_status = $form.find('#original_post_status').val(),
+            campaign_updated_is_finished = $form.find('[name="is_finished"]').prop('checked');
+
+        if(campaign_original_status !== 'publish' || campaign_updated_is_finished) {
+            return;
+        }
+
+        // The Support packages check passed - submit the campaign changes normally:
+        if($modal.data('leyka-support-packages-campaign-checked')) {
+            return;
+        }
+
+        e.preventDefault();
+
+        leyka_support_packages_campaign_deactivation_dialog($modal, function(){
+            window.location.href = $this.attr('href');
+        });
+
+    });
+    $form.on('submit.leyka', function(e){
+
+        /** @todo Get $campaign_needed_field value via ajax, mb */
+        if( !$campaign_needed_field.length || !parseInt($campaign_needed_field.val()) ) {
+            return;
+        }
+
+        let $this = $(this),
+            campaign_updated_status = $form.find('[name="post_status"]').val(),
+            campaign_updated_is_finished = $form.find('[name="is_finished"]').prop('checked');
+
+        // The campaign is published, so check won't be needed:
+        if(campaign_updated_status === 'publish' && !campaign_updated_is_finished) {
+            return;
+        }
+
+        // The Support packages check passed - submit the campaign changes normally:
+        if($modal.data('leyka-support-packages-campaign-checked')) {
+            return;
+        }
+
+        e.preventDefault();
+
+        leyka_support_packages_campaign_deactivation_dialog($modal, function(){
+            $this.trigger(e.type);
+        });
+
     });
 
     $modal.on('change.leyka', '[name="support-packages-campaign-changed"]', function(){
@@ -456,3 +445,4 @@ jQuery(document).ready(function($){
     });
 
 });
+/* Support packages Extension - available campaign existence check - END */
