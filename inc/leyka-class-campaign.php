@@ -503,8 +503,6 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         $support_packages_campaign = $extension->get_available_campaign();
         $support_packages_campaign = $support_packages_campaign ? new Leyka_Campaign($support_packages_campaign) : null;
 
-//        echo '<pre>'.print_r($support_packages_campaign, 1).'</pre>';
-
         // No need for checks in current campaign:
         if( !$support_packages_campaign || $support_packages_campaign->id != $campaign->id ) {
             return;

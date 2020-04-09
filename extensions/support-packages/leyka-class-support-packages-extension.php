@@ -191,8 +191,32 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
 
     }
 
-    /** Supplementary service actions */
-    public function add_actions() {
+    public function admin_notices() {
+
+        if( !$this->get_available_campaign() ) {
+            echo '<div class="error">
+                <p>'.sprintf(__("<strong>Leyka warning!</strong> The Support packages Extension currently doesn't have a campaign for donors to make recurring subscriptions. The campaign must be published and not marked as \"finished\" to be available. Please see to it that there is at least one such campaign, then select it in the <a href='%s'>Support packages settings page</a>.", 'leyka'), admin_url('admin.php?page=leyka_extension_settings&extension='.$this->_id)).'</p>
+            </div>';
+        }
+
+    }
+
+    protected function _initialize_active() {
+
+        add_filter('post_class', array($this, 'add_post_class'), 10, 3);
+        add_filter('leyka_js_localized_strings', array($this, 'add_js_localized_strings'));
+        add_action('admin_notices', array($this, 'admin_notices'));
+
+        // Setup the Extension shortcodes:
+        foreach(Leyka_Support_Packages_Extension::$_features as $feature_name => $feature_config) {
+            if( !empty($feature_config['is_shortcode']) && $feature_config['is_shortcode'] ) {
+                add_shortcode($feature_name, array($this, 'handle_shortcode'));
+            }
+        }
+
+    }
+
+    protected function _initialize_always() {
         add_action('leyka_set_support_packages_campaign_option_value', function($option_value){
             delete_option('leyka_support_packages_no_campaign_behavior');
         });
@@ -360,35 +384,19 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
         return false;
 
     }
-
-    public function setup_shortcodes() {
-
-        foreach(Leyka_Support_Packages_Extension::$_features as $feature_name => $feature_config) {
-            if(!empty($feature_config['is_shortcode']) && $feature_config['is_shortcode']) {
-                add_shortcode($feature_name, array($this, 'handle_shortcode'));
-            }
-        }
-
-    }
-    
-    public function setup_filters() {
-
-        if( !Leyka_Support_Packages_Extension::get_instance()->is_active ) {
-            return;
-        }
-        
-        add_filter('post_class', array($this, 'add_post_class'), 10, 3);
-        add_filter('leyka_js_localized_strings', array($this, 'add_js_localized_strings') );
-        
-    }
     
     public function add_js_localized_strings($strings) {
+
         $custom_locked_icon_path = leyka()->opt('support_packages_closed_content_icon');
+
         if($custom_locked_icon_path) {
+
             $upload_dir = wp_get_upload_dir();
             $strings['ext_sp_article_locked_icon'] = $upload_dir['baseurl'].$custom_locked_icon_path;
+
         } else {
-            $strings['ext_sp_article_locked_icon'] = LEYKA_PLUGIN_BASE_URL.'extensions/'.Leyka_Support_Packages_Extension::get_instance()->id_dash.'/img/icon-post-locked.png';
+            $strings['ext_sp_article_locked_icon'] = LEYKA_PLUGIN_BASE_URL.'extensions/'
+                .Leyka_Support_Packages_Extension::get_instance()->id_dash.'/img/icon-post-locked.png';
         }
 
         return $strings;
@@ -745,12 +753,6 @@ class Leyka_Support_Packages_Template_Tags {
 }
 
 function leyka_add_extension_support_packages() { // Use named function to leave a possibility to remove/replace it on the hook
-
     leyka()->add_extension(Leyka_Support_Packages_Extension::get_instance());
-
-    Leyka_Support_Packages_Extension::get_instance()->setup_shortcodes();
-    Leyka_Support_Packages_Extension::get_instance()->setup_filters();
-    Leyka_Support_Packages_Extension::get_instance()->add_actions();
-
 }
 add_action('leyka_init_actions', 'leyka_add_extension_support_packages');

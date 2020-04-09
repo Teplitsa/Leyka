@@ -94,6 +94,14 @@ class Leyka_Example_Extension extends Leyka_Extension {
 
     }
 
+    /** Will be called only if the Extension is active. */
+    protected function _initialize_active() {
+    }
+
+    /** Will be called everytime the Extension is loading into the plugin (i.e. always). */
+    protected function _initialize_always() {
+    }
+
 }
 
 function leyka_add_extension_test_1() { // Use named function to leave a possibility to remove/replace it on the hook

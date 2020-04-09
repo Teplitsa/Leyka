@@ -4,21 +4,16 @@
  * Version: 0.1.0
  * Author: Teplitsa of social technologies
  * Author URI: https://te-st.ru
- * Text Domain: leyka_engb
  **/
 
 class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
 
     protected static $_instance;
 
-
     /** Required methods **/
     protected function _set_attributes() {
 
-        $this->_load_textdomain();
-
-    	$this->_id = 'engagement_banner'; 
-
+    	$this->_id = 'engagement_banner';
         $this->_title = __('Engagement Banner', 'leyka');
 
         $this->_description = __('Display fundrising banner on website pages, control appearance logic.', 'leyka');
@@ -29,10 +24,8 @@ class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
 
         $this->_connection_description = '<p><strong>Шорткоды</strong></p><p>В заглавной части баннера (поле <em>Заголовок</em>) можно использовать следующие шорткоды:</p><p><code>[leyka_engb_scale id="campaign_id"]</code><br>прогрессбар сбора по кампании</p><p><code>[leyka_engb_photo img="media_lib_id" name="Иван Чернов" role="главный редактор"]</code><br>фото с подписью (2 уровня) - например фото человека с указанием имени и должности.</p><p>Фото должно быть загружено в медиа-библиотеку и в параметрах шорткода указывается его ID.</p>';
 
-        $this->_user_docs_link = false; 
-
+        $this->_user_docs_link = false;
         $this->_has_wizard = false;
-
         $this->_has_color_options = true;
 
     }
@@ -40,14 +33,11 @@ class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
 
 	protected function _set_options_defaults() {
  
-        require_once( self::get_base_path() . '/inc/config-options.php' );
+        require_once(self::get_base_path().'/inc/config-options.php');
 
-        $options_config = leyka_engb_options($this->_id);
-
-		$this->_options = apply_filters('leyka_'.$this->_id.'_extension_options', $options_config);
+		$this->_options = apply_filters('leyka_'.$this->_id.'_extension_options', leyka_engb_options($this->_id));
 
 	}
-
 
     protected function _initialize_always() {
 
@@ -60,22 +50,19 @@ class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
 
         if( !empty($custom_options) ) {
             foreach ($custom_options as $option_id) {
-                add_action(
-                "leyka_save_custom_option-{$option_id}", 
-                array($this, 'save_custom_multiselect'));
+                add_action("leyka_save_custom_option-$option_id", array($this, 'save_custom_multiselect'));
             }
         }
     }
 
-
     /** Support options with custom_multiselect type **/
-    public function render_custom_multiselect( $option_id, $option_info ) {
+    public function render_custom_multiselect($option_id, $option_info) {
 
         $option_info = $this->_get_multiselect_field_config($option_id); 
 
         $items_list = $option_info['list_entries'];
 
-        $field_key = "leyka_{$option_id}"; 
+        $field_key = "leyka_$option_id";
 
         $selection = get_option($field_key);
         $selection = is_array($selection) ? $selection : (array)$selection;?>
@@ -100,6 +87,7 @@ class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
         </div>
         <div class="field-errors "></div>
     </div>
+
     <?php
     }
 
@@ -108,22 +96,22 @@ class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
 
         $config = array();
 
-        if( empty($this->_options) ) {
+        if( !$this->_options ) {
             return $config;
         }
 
-        foreach ( $this->_options as $i => $section ) {
+        foreach($this->_options as $i => $section) {
+            if(isset($section['section']['options'][$option_id])) {
 
-            if( isset( $section['section']['options'][$option_id] ) ) {
                 $config = $section['section']['options'][$option_id];
                 break;
+
             }
         }
             
         return $config;
+
     }
-
-
 
     public function save_custom_multiselect() {
 
@@ -186,40 +174,20 @@ class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
 
         $this->_load_files();
 
-        add_action( 'wp_enqueue_scripts', array( $this, 'load_cssjs') );
+        add_action('wp_enqueue_scripts', array( $this, 'load_cssjs'));
+        add_action('wp_footer', array($this, 'display_banner'));
 
-        add_action( 'wp_footer', array( $this, 'display_banner') );
-
-        // shortcodes
         add_shortcode('leyka_engb_scale', array($this, 'shortcode_scale_screen'));
         add_shortcode('leyka_engb_photo', array($this, 'shortcode_photo_screen'));
+
     }
 
-	
-    /** Paths **/
     public static function get_base_path() {
         return __DIR__; 
     }
 
     public static function get_base_url() {
-
-        $path = str_replace(LEYKA_PLUGIN_DIR, '',  __DIR__);
-
-        return LEYKA_PLUGIN_BASE_URL.$path;
-
-    }
-
-    
-	/* Core **/
-    protected function _load_textdomain() {
-
-//        $locale = get_locale();
-//        $mofile = self::get_base_path()."/languages/leyka-engb-{$locale}.mo";
-//
-//        if( file_exists( $mofile ) ) {
-//            load_textdomain( 'leyka_engb', $mofile );
-//        }
-        
+        return LEYKA_PLUGIN_BASE_URL.str_replace(LEYKA_PLUGIN_DIR, '',  __DIR__);
     }
 
 	protected function _load_files() {
@@ -234,7 +202,7 @@ class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
 	public function load_cssjs() {
 
 		$css_url = self::get_base_url() . '/assets/css/engb.css';
-        $css_stamp = ( defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY ) ? uniqid() : null;
+        $css_stamp = defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY ? uniqid() : null;
 
 		wp_enqueue_style($this->_id.'-front', $css_url, array(), $css_stamp);
 
