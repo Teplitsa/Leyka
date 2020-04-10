@@ -446,13 +446,12 @@ techMessage="'.$tech_message.'"/>');
             return array();
         }
 
-        if(is_object($donation->gateway_response)) {
-            $response = serialize($donation->gateway_response);
-        }
+        require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
+
+        $response = is_object($donation->gateway_response) ?
+            serialize($donation->gateway_response) : $donation->gateway_response;
 
         if(stristr($response, 'YandexCheckout')) { // New API
-
-            require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
 
             $response = maybe_unserialize($response);
 
