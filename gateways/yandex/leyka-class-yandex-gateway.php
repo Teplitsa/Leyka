@@ -466,9 +466,12 @@ techMessage="'.$tech_message.'"/>');
                     __('Amount:', 'leyka') => round($response->amount->value, 2).' '
                         .leyka_get_currency_label($response->amount->currency),
                     __('Created at:', 'leyka') => leyka_get_i18n_datetime(strtotime($response->created_at->date)),
-                    __('Captured at:', 'leyka') => leyka_get_i18n_datetime(strtotime($response->captured_at->date)),
+                    __('Captured at:', 'leyka') => empty($response->captured_at->date) ?
+                        __('No') : leyka_get_i18n_datetime(strtotime($response->captured_at->date)),
                     __('Description:', 'leyka') => $response->description,
-                    __('Payment method:', 'leyka') => $response->payment_method->title,
+                    __('Payment method:', 'leyka') => empty($response->payment_method->title) ?
+                        (empty($response->payment_method->type) ? __('No') : $response->payment_method->type) :
+                        $response->payment_method->title,
                     __('Is test payment:', 'leyka') => !!$response->test ? __('Yes') : __('No'),
                 );
             } else if(is_a($response, 'Exception')) { // Exceptions were thrown
