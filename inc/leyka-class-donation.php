@@ -1926,7 +1926,7 @@ class Leyka_Donation {
 
         if((is_int($donation) || is_string($donation)) && absint($donation)) {
 
-            $donation = (int)$donation;
+            $donation = absint($donation);
             $this->_post_object = get_post($donation);
 
             if( !$this->_post_object || $this->_post_object->post_type !== Leyka_Donation_Management::$post_type ) {
@@ -2005,11 +2005,13 @@ class Leyka_Donation {
                 'recurrents_cancel_date' => isset($meta['leyka_recurrents_cancel_date']) ?
                     $meta['leyka_recurrents_cancel_date'][0] : false,
 
+                // For web-analytics services:
+                'ga_client_id' => empty($meta['leyka_ga_client_id'][0]) ? false : $meta['leyka_ga_client_id'][0],
+
                 // For active schemes of recurring donations:
                 'rebilling_is_active' => !empty($meta['_rebilling_is_active'][0]),
                 'cancel_recurring_requested' => isset($meta['leyka_cancel_recurring_requested']) ?
                     $meta['leyka_cancel_recurring_requested'][0] : false,
-
             );
         }
 
@@ -2224,6 +2226,10 @@ class Leyka_Donation {
             case 'recurring_cancel_date':
                 return $this->payment_type === 'rebill' && !empty($this->_donation_meta['recurrents_cancel_date']) ?
                     $this->_donation_meta['recurrents_cancel_date'] : NULL;
+
+            case 'ga_client_id':
+            case 'gua_client_id':
+                return empty($this->_donation_meta['ga_client_id']) ? NULL : $this->_donation_meta['ga_client_id'];
             default:
                 return apply_filters('leyka_'.$this->gateway_id.'_get_unknown_donation_field', null, $field, $this);
         }
@@ -2457,6 +2463,11 @@ class Leyka_Donation {
 
             case 'cancel_recurring_requested':
                 update_post_meta($this->_id, 'leyka_cancel_recurring_requested', !!$value);
+                break;
+
+            case 'ga_client_id':
+            case 'gua_client_id':
+                update_post_meta($this->_id, 'leyka_ga_client_id', trim($value));
                 break;
                 
             default:

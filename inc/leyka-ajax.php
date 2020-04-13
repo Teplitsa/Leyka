@@ -134,7 +134,7 @@ function leyka_get_gateway_redirect_data(){
                 $analytics // Main params:
                     ->setProtocolVersion('1')
                     ->setTrackingId(leyka_options()->opt('gtm_ua_tracking_id'))
-                    ->setClientId(leyka_gua_get_client_id())
+                    ->setClientId($donation->ga_client_id ? $donation->ga_client_id : leyka_gua_get_client_id())
                     ->setDocumentLocationUrl(get_permalink($donation->campaign_id))
                     // Transaction params:
                     ->setTransactionId($donation_id)

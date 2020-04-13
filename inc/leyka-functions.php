@@ -2356,26 +2356,6 @@ if( !function_exists('leyka_gua_get_client_id') ) {
     }
 }
 
-/** Some gateways give their callbacks IPs only as CIDR ranges. */
-if( !function_exists('is_ip_in_range') ) {
-    function is_ip_in_range($ip, $range) {
-
-        $range .= strpos(trim($range), '/') == false ? '/32' : ''; // No CIDR range is given, add the default one
-
-        list($net, $mask) = explode('/', $range);
-
-        $ip_net = ip2long($net);
-        $ip_mask = ~((1 << (32 - $mask)) - 1);
-
-        $ip_ip = ip2long($ip);
-
-        $ip_ip_net = $ip_ip & $ip_mask;
-
-        return $ip_ip_net == $ip_net;
-
-    }
-}
-
 if( !function_exists('leyka_get_client_ip') ) {
 
     function leyka_get_client_ip() {

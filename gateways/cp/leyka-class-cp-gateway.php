@@ -90,7 +90,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                 'leyka-cp',
                 LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_CP_Gateway::get_instance()->id.'/js/leyka.cp.js',
                 array('jquery', 'leyka-cp-widget', 'leyka-public'),
-                LEYKA_VERSION . ".001",
+                LEYKA_VERSION.'.001',
                 true
             );
 
@@ -106,6 +106,19 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
         if( !empty($form_data['leyka_recurring']) ) {
             $donation->payment_type = 'rebill';
+        }
+
+        if( // For the direct GA integration:
+            leyka_options()->opt('use_gtm_ua_integration') === 'enchanced_ua_only'
+            && leyka_options()->opt('gtm_ua_tracking_id')
+            && in_array('purchase', leyka_options()->opt('gtm_ua_enchanced_events'))
+        ) {
+
+            $ga_client_id = leyka_gua_get_client_id();
+            if(stristr($ga_client_id, '.')) { // A real GA client ID found, save it
+                $donation->ga_client_id = $ga_client_id;
+            }
+
         }
 
     }
@@ -143,7 +156,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         return array(
             'public_id' => trim(leyka_options()->opt('cp_public_id')),
             'donation_id' => $donation_id,
-            'amount' => number_format((float)$donation->amount, 2, '.', ''),
+            'amount' => number_format(floatval($donation->amount), 2, '.', ''),
             'currency' => $cp_currency,
             'payment_title' => $donation->payment_title,
             'donor_email' => $donation->donor_email,
@@ -349,7 +362,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                         $analytics // Main params:
                         ->setProtocolVersion('1')
                             ->setTrackingId(leyka_options()->opt('gtm_ua_tracking_id'))
-                            ->setClientId(leyka_gua_get_client_id())
+                            ->setClientId($donation->ga_client_id ? $donation->ga_client_id : leyka_gua_get_client_id())
                             // Transaction params:
                             ->setTransactionId($donation->id)
                             ->setAffiliation(get_bloginfo('name'))
