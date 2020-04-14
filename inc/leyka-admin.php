@@ -390,7 +390,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
      */
     public function save_user_profile_donor_fields($donor_user_id) {
 
-        if( !current_user_can('administrator') ) {
+        if( !current_user_can('administrator') || !is_array($_POST['leyka_donor_tags']) ) {
             return false;
         }
 
