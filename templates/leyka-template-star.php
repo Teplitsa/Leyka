@@ -266,6 +266,8 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                             </a>
                         </label>
 
+                    <?php }?>
+
                     <?php if(leyka_options()->opt('agree_to_pd_terms_needed')) {
 
                         $field_id = 'leyka-'.wp_rand();?>
@@ -284,7 +286,6 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                     <?php }?>
 
                     </span>
-                    <?php }?>
 
                 </div>
 
