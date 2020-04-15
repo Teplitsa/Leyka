@@ -2081,7 +2081,7 @@ function leyka_use_leyka_campaign_template($template) {
 
         $campaign = leyka_get_validated_campaign($campaign_id);
         if($campaign && $campaign->campaign_type === 'persistent' && $campaign->template === 'star') {
-            $template = LEYKA_PLUGIN_DIR . 'templates/campaign/type-persistent.php';
+            $template = LEYKA_PLUGIN_DIR.'templates/campaign/type-persistent.php';
         }
 
     }

@@ -80,7 +80,7 @@ jQuery(document).ready(function($){
 
             e.preventDefault();
 
-            var $pm_sortable_item = $(this).parents('li:first');
+            let $pm_sortable_item = $(this).parents('li:first');
 
             $pm_sortable_item.hide(); // Remove a sortable block from the PM order settings
             $pm_available_list.filter('#'+$pm_sortable_item.data('pm-id')).removeAttr('checked');
@@ -138,12 +138,12 @@ jQuery(document).ready(function($){
 
     $pm_available_list.change(function(){
 
-        var $pm_available_checkbox = $(this);
+        let $pm_available_checkbox = $(this);
 
         $('#pm-'+$pm_available_checkbox.prop('id')).toggle(); // Show/hide a PM settings
         $('#'+$pm_available_checkbox.prop('id')+'-commission-wrapper').toggle(); // Show/hide a PM commission field
 
-        var $sortable_pm = $('.pm-order[data-pm-id="'+$pm_available_checkbox.attr('id')+'"]');
+        let $sortable_pm = $('.pm-order[data-pm-id="'+$pm_available_checkbox.attr('id')+'"]');
 
         // Add/remove a sortable block from the PM order settings:
         if($pm_available_checkbox.prop('checked') && $sortable_pm.length) {
@@ -187,7 +187,7 @@ jQuery(document).ready(function($){
 // Yandex.Kassa old/new API options:
 jQuery(document).ready(function($){
 
-    var $gateway_settings = $('.single-gateway-settings.gateway-yandex'),
+    let $gateway_settings = $('.single-gateway-settings.gateway-yandex'),
         $new_api_used = $gateway_settings.find('input[name="leyka_yandex_new_api"]');
 
     if( !$gateway_settings.length || !$new_api_used.length ) {
@@ -196,39 +196,15 @@ jQuery(document).ready(function($){
 
     $new_api_used.on('change.leyka', function(){
 
-        var $smart_payment_pm_field = $('.gateway-pm-list').find(':input.pm-available[value="yandex-yandex_all"]');
-
         if($new_api_used.prop('checked')) {
 
             $gateway_settings.find('.new-api').show();
             $gateway_settings.find('.old-api').hide();
 
-            if($smart_payment_pm_field.length) {
-
-                if($smart_payment_pm_field.prop('checked')) {
-
-                    $smart_payment_pm_field.prop('checked', false).change();
-                    $new_api_used.data('yandex-all-pm-removed', true);
-
-                }
-
-                $('.settings-block#yandex-yandex_all').hide();
-
-            }
-
         } else {
 
             $gateway_settings.find('.new-api').hide();
             $gateway_settings.find('.old-api').show();
-
-            $('.settings-block#yandex-yandex_all').show();
-
-            if($new_api_used.data('yandex-all-pm-removed')) {
-
-                $new_api_used.data('yandex-all-pm-removed', false);
-                $smart_payment_pm_field.prop('checked', true).change();
-
-            }
 
         }
 
