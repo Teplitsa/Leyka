@@ -276,11 +276,15 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 
                         <label for="<?php echo $field_id;?>">
                         	<svg class="svg-icon icon-checkbox-check"><use xlink:href="#icon-checkbox-check"></use></svg>
-                        	
-                        <?php echo apply_filters('agree_to_pd_terms_text_text_part', leyka_options()->opt('agree_to_pd_terms_text_text_part')).' ';?>
+
+                        <?php if(leyka_options()->opt('agree_to_pd_terms_link_action') === 'popup') {?>
                             <a href="#" class="leyka-js-pd-trigger">
-                                <?php echo apply_filters('agree_to_pd_terms_text_link_part', leyka_options()->opt('agree_to_pd_terms_text_link_part'));?>
+                        <?php } else {?>
+                            <a target="_blank" href="<?php echo leyka_get_terms_of_pd_usage_page_url();?>">
+                        <?php }?>
+                        <?php echo apply_filters('agree_to_pd_terms_text_link_part', leyka_options()->opt('agree_to_pd_terms_text_link_part'));?>
                             </a>
+
                         </label>
 
                     <?php }?>

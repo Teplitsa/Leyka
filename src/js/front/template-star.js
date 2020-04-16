@@ -351,57 +351,61 @@
     }
     
     function toggleSwiperArrows($swiper) {
-        var $list = $swiper.find('.swiper-list');
-        
-        var listWidth = 0;
+
+        let $list = $swiper.find('.swiper-list'),
+            listWidth = 0;
+
         if(isMobileScreen()) {
             $list.width($swiper.width());
-        }
-        else {
+        } else {
             $list.find('.swiper-item:not(.disabled)').each(function(){
                 listWidth += $(this).outerWidth(true);
             });
             $list.width(listWidth);
         }
-        
+
         if($list.find('.swiper-item:not(.disabled)').length <= 1) {
             $swiper.addClass('only-one-item');
-        }
-        else {
+        } else {
             $swiper.removeClass('only-one-item');
         }
-        
+
         if($list.width() <= $swiper.width()) {
-            $swiper.removeClass('show-left-arrow');
-            $swiper.removeClass('show-right-arrow');
-            $list.width($swiper.width());
-            $list.css('left', 0);
+
+            $swiper
+                .removeClass('show-left-arrow')
+                .removeClass('show-right-arrow');
+
+            $list.width($swiper.width()).css('left', 0);
+
             return;
+
         }
-        
+
         if($swiper.find('.swiper-item:not(.disabled)').first().hasClass('selected')) {
             $swiper.removeClass('show-left-arrow');
-        }
-        else {
+        } else {
             $swiper.addClass('show-left-arrow');
         }
-        
+
         if($swiper.find('.swiper-item:not(.disabled)').last().hasClass('selected')) {
             $swiper.removeClass('show-right-arrow');
-        }
-        else {
+        } else {
             $swiper.addClass('show-right-arrow');
         }
+
     }
     
     // agree functions
     function bindAgreeEvents() {
+
         bindOfertaEvents();
         bindPdEvents();
         
         // agree
         $('.leyka-tpl-star-form .donor__oferta').on('change.leyka', 'input:checkbox', function(){
-            var $donorOferta = $(this).closest('.donor__oferta');
+
+            let $donorOferta = $(this).closest('.donor__oferta');
             
             if( $donorOferta.find('input:checkbox.required:not(:checked)').length ) {
                 $donorOferta.addClass('invalid');
@@ -410,49 +414,67 @@
             }
             
             checkFormFillCompletion($(this).closest('form.leyka-pm-form'));
+
         });
+
     }
     
     function bindOfertaEvents() {
         
         $('.leyka-tpl-star-form .leyka-js-oferta-trigger').on('click.leyka', function(e){
+
             e.preventDefault();
-            var $form = $(this).parents('.leyka-tpl-star-form');
-            $form.addClass('leyka-pf--oferta-open');
-            $form.find('.leyka-pf__agreement').css('top', getAgreeModalTop($form));
+
+            let $form = $(this).parents('.leyka-tpl-star-form');
+            $form
+                .addClass('leyka-pf--oferta-open')
+                .find('.leyka-pf__agreement')
+                    .css('top', getAgreeModalTop($form));
+
             $([document.documentElement, document.body]).animate({
                 scrollTop: $form.offset().top - 64
             });
+
         });
 
         $('.leyka-tpl-star-form .leyka-pf__agreement.oferta .agreement__close').on('click.leyka', function(e){
+
             e.preventDefault();
+
             $(this).parents('.leyka-tpl-star-form').removeClass('leyka-pf--oferta-open');
+
         });
     }
 
     function bindPdEvents() {
 
         $('.leyka-tpl-star-form .leyka-js-pd-trigger').on('click.leyka', function(e){
+
             e.preventDefault();
-            var $form = $(this).parents('.leyka-tpl-star-form');
-            $form.addClass('leyka-pf--pd-open');
-            $form.find('.leyka-pf__agreement').css('top', getAgreeModalTop($form));
+
+            let $form = $(this).parents('.leyka-tpl-star-form');
+            $form
+                .addClass('leyka-pf--pd-open')
+                .find('.leyka-pf__agreement')
+                    .css('top', getAgreeModalTop($form));
+
             $([document.documentElement, document.body]).animate({
                 scrollTop: $form.offset().top - 64
             });
+
         });
 
         $('.leyka-tpl-star-form .leyka-pf__agreement.pd .agreement__close').on('click.leyka', function(e){
+
             e.preventDefault();
+
             $(this).parents('.leyka-tpl-star-form').removeClass('leyka-pf--pd-open');
 
         });
     }
-    
+
     function getAgreeModalTop($form) {
-        var modalTop = -32;
-        return modalTop + 'px';
+        return '-32px';
     }
 
     function addError($errors_block, error_html) {
