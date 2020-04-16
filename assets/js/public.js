@@ -2533,9 +2533,9 @@ jQuery(window).load(function() {
                 .find('.leyka-pf__agreement')
                     .css('top', getAgreeModalTop($form));
 
-            $([document.documentElement, document.body]).animate({
-                scrollTop: $form.offset().top - 64
-            });
+            // $([document.documentElement, document.body]).animate({
+            //     scrollTop: $form.offset().top - 64
+            // });
 
         });
 
@@ -2576,7 +2576,11 @@ jQuery(window).load(function() {
     }
 
     function getAgreeModalTop($form) {
-        return '-32px';
+
+        let $wp_admin_bar = $('#wpadminbar');
+
+        return ($wp_admin_bar.length ? $wp_admin_bar.height() : 32) + 'px';
+
     }
 
     function addError($errors_block, error_html) {

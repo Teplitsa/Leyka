@@ -620,7 +620,7 @@
 
     // submit
     .donor__submit {
-        margin-bottom: 0px;
+        margin-bottom: 0;
         
         input {
             @include leyka-star-btn();
@@ -641,22 +641,38 @@
 	}
     
     .leyka-pf__agreement {
+
         display: none;
-        position: absolute;
-        top: 0;
+        position: fixed;
+        top: 64px;
         left: 0;
-        height: auto;
+        width: 100%;
+        height: calc(100% - 64px);
         z-index: 10015;
         border-radius: 4px;
         padding: 2.5 * $leyka-star-base 1 * $leyka-star-base 2 * $leyka-star-base 1 * $leyka-star-base;
         margin-bottom: 2 * $leyka-star-base;
-        width: 100%;
         background: $color-white;
 
         @include for(medium-screens) {
+
+            left: 64px;
+
+            width: calc(100% - 64px);
+
             padding: 2.5 * $leyka-star-base 2 * $leyka-star-base 3 * $leyka-star-base 2 * $leyka-star-base;
-            width: calc(100% + 64px);
             margin-left: -32px;
+
+        }
+
+        @include for(large-screens) {
+
+            left: 20%;
+
+            width: 60%;
+
+            padding: 2.5 * $leyka-star-base 2 * $leyka-star-base 3 * $leyka-star-base 2 * $leyka-star-base;
+
         }
         
         .agreement__frame {
