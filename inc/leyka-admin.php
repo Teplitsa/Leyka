@@ -51,8 +51,12 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		add_action('leyka_post_admin_actions', array($this, 'show_footer'));
 
 		// Donors' tags on the user profile page:
-        add_action('show_user_profile', array($this, 'show_user_profile_donor_fields'));
-        add_action('edit_user_profile', array($this, 'show_user_profile_donor_fields'));
+        if(leyka_options()->opt('donor_management_available') || leyka_options()->opt('donor_accounts_available')) {
+
+            add_action('show_user_profile', array($this, 'show_user_profile_donor_fields'));
+            add_action('edit_user_profile', array($this, 'show_user_profile_donor_fields'));
+
+        }
 
         add_action('personal_options_update', array($this, 'save_user_profile_donor_fields'));
         add_action('edit_user_profile_update', array($this, 'save_user_profile_donor_fields'));
@@ -349,6 +353,10 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         if( !current_user_can('administrator') ) {
             return;
+        }
+
+        if( !leyka_options()->opt('donor_management_available') && !leyka_options()->opt('donor_accounts_available') ) {
+            return;
         }?>
 
         <table class="form-table">
@@ -366,7 +374,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                         $donor_user->ID,
                         Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME,
                         array('fields' => 'ids')
-                    );?>
+                    );
+
+                    if( !$all_donors_tags ) {
+                        _e('No Donor tags added yet.', 'leyka');
+                    } else {?>
 
                     <select id="leyka-donors-tags-field" multiple="multiple" name="leyka_donor_tags[]">
                     <?php foreach($all_donors_tags as $donor_tag) {?>
@@ -375,6 +387,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                         </option>
                     <?php }?>
                     </select>
+
+                    <?php }?>
                 </td>
             </tr>
         </table>
