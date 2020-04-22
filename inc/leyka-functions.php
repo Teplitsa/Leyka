@@ -1555,6 +1555,10 @@ function leyka_get_donations_archive_url($campaign_id = false) {
 
 function leyka_remembered_data($name, $value = null, $delete = false) {
 
+    if(headers_sent()) {
+        return null;
+    }
+
     $name = stripos($name, 'leyka_') === false ? 'leyka_'.$name : $name;
 
     if($value) {

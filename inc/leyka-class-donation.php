@@ -1294,10 +1294,6 @@ class Leyka_Donation_Management {
         unset($unsort['date']);
 
 		$columns['donor'] = __('Donor', 'leyka');
-        if(leyka_options()->opt_template('show_donation_comment_field')) {
-            $columns['donor_comment'] = __("Donor's comment", 'leyka');
-        }
-
 		$columns['amount'] = __('Amount', 'leyka');
         if(leyka_options()->opt('admin_donations_list_display') == 'separate-column') {
             $columns['amount_total'] = __('Total amount', 'leyka');

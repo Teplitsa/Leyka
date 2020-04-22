@@ -715,13 +715,15 @@
 }
 
 @mixin leyka-admin-triangle-list-marker($color) {
+
     margin-top: -6px;
     margin-left: 12px;
     list-style: none;
+
     @include leyka-admin-list-text-small;
 
     &:before {
-        content: "";
+        content: '';
         border-color: transparent $color;
         opacity: 0.8;
         border-style: solid;
@@ -730,9 +732,10 @@
         height: 0;
         width: 0;
         left: -1em;
-        top: 0.9em;
+        top: 11px;
         position: relative;
     }
+
 }
 
 @mixin leyka-admin-icon($size: 24px) {

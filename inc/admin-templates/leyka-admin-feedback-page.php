@@ -28,6 +28,11 @@ $user = wp_get_current_user();?>
                     <label for="feedback-topic"><?php _e('Message topic:', 'leyka');?></label>
                     <input id="feedback-topic" name="topic" placeholder="<?php _e('For ex., Paypal support needed', 'leyka');?>" class="regular-text">
                     <div id="feedback-topic-error" class="leyka-ff-field-error" style="display: none;"></div>
+
+                    <?php /*leyka_render_text_field('feedback-topic', array(
+                        'title' => __('Message topic:', 'leyka'),
+                        'placeholder' => __('For ex., Paypal support needed', 'leyka'),
+                    ));*/?>
                 </fieldset>
 
                 <fieldset class="leyka-ff-field">

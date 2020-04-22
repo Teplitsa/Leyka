@@ -113,29 +113,32 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                 <?php }?>
             </select>
     <?php }
+
     }
 
     /**
      * @param $query WP_Query
      */
     public function do_filtering(WP_Query $query) {
-        if(is_admin() && $query->is_main_query() && get_current_screen()->id == 'edit-'.self::$post_type) {
 
-            $meta_query = array('relation' => 'AND');
-
-            if( !empty($_REQUEST['campaign_state']) && $_REQUEST['campaign_state'] !== 'all' ) {
-                $meta_query[] = array('key' => 'is_finished', 'value' => $_REQUEST['campaign_state'] == 'is_finished' ? 1 : 0);
-            }
-
-            if( !empty($_REQUEST['target_state']) ) {
-                $meta_query[] = array('key' => 'target_state', 'value' => $_REQUEST['target_state']);
-            }
-
-            if(count($meta_query) > 1) {
-                $query->set('meta_query', $meta_query);
-            }
-
+        if( !is_admin() || !$query->is_main_query() || get_current_screen()->id !== 'edit-'.self::$post_type ) {
+            return;
         }
+
+        $meta_query = array('relation' => 'AND');
+
+        if( !empty($_REQUEST['campaign_state']) && $_REQUEST['campaign_state'] !== 'all' ) {
+            $meta_query[] = array('key' => 'is_finished', 'value' => $_REQUEST['campaign_state'] == 'is_finished' ? 1 : 0);
+        }
+
+        if( !empty($_REQUEST['target_state']) ) {
+            $meta_query[] = array('key' => 'target_state', 'value' => $_REQUEST['target_state']);
+        }
+
+        if(count($meta_query) > 1) {
+            $query->set('meta_query', $meta_query);
+        }
+
     }
 
     public function set_metaboxes() {
@@ -177,9 +180,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         $campaign = new Leyka_Campaign($campaign);
 
-		$cur_template = $campaign->template ? $campaign->template : 'default';
-
-//        echo '<pre>HERE: '.print_r(get_option('leyka_support_packages_no_campaign_behavior'), 1).'</pre>';?>
+		$cur_template = $campaign->template ? $campaign->template : 'default';?>
 
         <fieldset id="campaign-type" class="metabox-field campaign-field campaign-type">
 
@@ -676,6 +677,10 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
      */
 	public function save_data($campaign_id, WP_Post $campaign) {
 
+	    if($campaign->post_type != Leyka_Campaign_Management::$post_type) {
+	        return;
+        }
+
 		$campaign = new Leyka_Campaign($campaign);
 
         $meta = array();
@@ -876,9 +881,9 @@ class Leyka_Campaign {
                 return $campaign;
             }
 
-		} else if((int)$campaign > 0) {
+		} else if(absint($campaign) > 0) {
 
-			$this->_id = (int)$campaign;
+			$this->_id = absint($campaign);
             $this->_post_object = get_post($this->_id);
 
 		}
@@ -1029,6 +1034,21 @@ class Leyka_Campaign {
 
     }
 
+    /**
+     * A special helper just to evade some type-checking notices.
+     * @return array
+     */
+    protected function _get_donations_types_available() {
+
+        $types_available = $this->donations_types;
+        if(in_array('recurring', $types_available) && !leyka_is_recurring_supported()) {
+            unset( $types_available[array_search('recurring', $types_available)] );
+        }
+
+        return $types_available;
+
+    }
+
     public function __get($field) {
 
         switch($field) {
@@ -1050,11 +1070,7 @@ class Leyka_Campaign {
             // Donation types really available for campaign:
             case 'donations_type_available':
             case 'donations_types_available':
-                $types_available = $this->donations_types;
-                if(in_array('recurring', $types_available) && !leyka_is_recurring_supported()) {
-                    unset( $types_available[array_search('recurring', $types_available)] );
-                }
-                return $types_available;
+                return $this->_get_donations_types_available();
 
             case 'donations_type_default':
                 $types_available = $this->donations_types_available;
