@@ -376,19 +376,20 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                         array('fields' => 'ids')
                     );
 
-                    if( !$all_donors_tags ) {
-                        _e('No Donor tags added yet.', 'leyka');
-                    } else {?>
+                    if($all_donors_tags) {?>
 
                     <select id="leyka-donors-tags-field" multiple="multiple" name="leyka_donor_tags[]">
-                    <?php foreach($all_donors_tags as $donor_tag) {?>
-                        <option value="<?php echo esc_attr($donor_tag->term_id);?>" <?php echo in_array($donor_tag->term_id, $donor_user_tags) ? 'selected="selected"' : '';?>>
-                            <?php echo esc_html($donor_tag->name);?>
-                        </option>
-                    <?php }?>
+                        <?php foreach($all_donors_tags as $donor_tag) {?>
+                            <option value="<?php echo esc_attr($donor_tag->term_id);?>" <?php echo in_array($donor_tag->term_id, $donor_user_tags) ? 'selected="selected"' : '';?>>
+                                <?php echo esc_html($donor_tag->name);?>
+                            </option>
+                        <?php }?>
+
                     </select>
 
-                    <?php }?>
+                    <?php } else {
+                        _e('No Donor tags added yet.', 'leyka');
+                    }?>
                 </td>
             </tr>
         </table>
