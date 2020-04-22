@@ -300,8 +300,6 @@ techMessage="'.$tech_message.'"/>');
 
                 $notification = json_decode(file_get_contents('php://input'), true);
 
-//                set_transient('leyka_dbg_tmp', $notification, 60*60*24);
-
                 if(empty($notification['event'])) {
                     /** @todo Process the error somehow */
                     exit(500);
