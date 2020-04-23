@@ -276,7 +276,7 @@ jQuery(document).ready(function($){
                 dialogClass: 'leyka-dialog',
                 modal: true,
                 draggable: false,
-                width: 'auto',
+                width: '600px',
                 autoOpen: true,
                 closeOnEscape: true,
                 resizable: false,
