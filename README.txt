@@ -81,6 +81,18 @@ PHP version required: 5.6+
 5. The plugin start page (a console)
 
 == Changelog ==
+= 3.9 =
++ New: now Smart payment is available for the YK REST API.
+* Fix: Support packages campaign check popup width for Safary fixed.
+* Fix: Gateways commission values saving fixed.
+* Fix: user profile Donor tags list when there are no any tags in DB fixed.
+* Fix: oferta & PD popups scrolling fixed.
+* Fix: PD text page link fixed.
+* Fix: the case when oferta & PD options logically linked together fixed.
+* Fix: array_walk() warning while saving Donor's admin profile fixed.
+* Fix: GA direct integration - client ID usage fixed.
+* Fix: Yandex.Kassa new API donations gateway response metabox warning fixed.
+
 = 3.8.0.1 =
 * Fix: "cURL error #28" fixed.
 * Fix: CP gateway allowed IPs list updated. Now donations via CP are handled correctly.
