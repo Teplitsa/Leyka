@@ -351,7 +351,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         $errors = array();
 
         if($this->is_required($option_id) && !$value) {
-            $errors[] = 'Значение поля обязательно'; //__('The field value is required', 'leyka');
+            $errors[] = __('The field value is required', 'leyka');
         }
 
         foreach($this->get_validation_rules($option_id) as $rule_regexp => $rule_invalid_message) {
