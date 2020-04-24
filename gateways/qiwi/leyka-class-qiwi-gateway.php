@@ -61,9 +61,24 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
         $donation = new Leyka_Donation($donation_id);
+
+        if( // For the direct GA integration:
+            leyka_options()->opt('use_gtm_ua_integration') === 'enchanced_ua_only'
+            && leyka_options()->opt('gtm_ua_tracking_id')
+            && in_array('purchase', leyka_options()->opt('gtm_ua_enchanced_events'))
+        ) {
+
+            $ga_client_id = leyka_gua_get_client_id();
+            if(stristr($ga_client_id, '.')) { // A real GA client ID found, save it
+                $donation->ga_client_id = $ga_client_id;
+            }
+
+        }
+
         $campaign = new Leyka_Campaign($form_data['leyka_campaign_id']);
         $description = $campaign->short_description;
-        $amount = (int)$donation->amount;
+        $amount = absint($donation->amount);
+
         $bill = new Leyka_Qiwi_Gateway_Helper();
 
         $response = $bill->create_bill(
@@ -78,7 +93,7 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
             )
         );
 
-        if (empty($response['body'])) {
+        if(empty($response['body'])) {
             $error = new WP_Error(
                 'gateway_settings_incorrect',
                 __('The gateway you used has incorrect or missing settings', 'leyka')

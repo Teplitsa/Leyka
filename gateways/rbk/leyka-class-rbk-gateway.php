@@ -125,6 +125,19 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
             $donation->payment_type = 'rebill';
         }
 
+        if( // For the direct GA integration:
+            leyka_options()->opt('use_gtm_ua_integration') === 'enchanced_ua_only'
+            && leyka_options()->opt('gtm_ua_tracking_id')
+            && in_array('purchase', leyka_options()->opt('gtm_ua_enchanced_events'))
+        ) {
+
+            $ga_client_id = leyka_gua_get_client_id();
+            if(stristr($ga_client_id, '.')) { // A real GA client ID found, save it
+                $donation->ga_client_id = $ga_client_id;
+            }
+
+        }
+
         // 1. Create an invoice:
         $api_request_url = self::RBK_API_HOST.self::RBK_API_PATH;
         $args = array(

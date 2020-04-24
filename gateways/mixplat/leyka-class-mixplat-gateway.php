@@ -125,6 +125,20 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         $is_test = leyka_options()->opt('mixplat_test_mode') ? 1 : 0;
 
         $donation = new Leyka_Donation($donation_id);
+
+        if( // For the direct GA integration:
+            leyka_options()->opt('use_gtm_ua_integration') === 'enchanced_ua_only'
+            && leyka_options()->opt('gtm_ua_tracking_id')
+            && in_array('purchase', leyka_options()->opt('gtm_ua_enchanced_events'))
+        ) {
+
+            $ga_client_id = leyka_gua_get_client_id();
+            if(stristr($ga_client_id, '.')) { // A real GA client ID found, save it
+                $donation->ga_client_id = $ga_client_id;
+            }
+
+        }
+
         $amount = (int)round((float)$donation->amount * 100);
         $donation->mixplat_phone = $phone;
         $currency = $this->_get_currency_id($donation->currency);

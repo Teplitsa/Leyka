@@ -140,6 +140,19 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
         }
 
+        if( // For the direct GA integration:
+            leyka_options()->opt('use_gtm_ua_integration') === 'enchanced_ua_only'
+            && leyka_options()->opt('gtm_ua_tracking_id')
+            && in_array('purchase', leyka_options()->opt('gtm_ua_enchanced_events'))
+        ) {
+
+            $ga_client_id = leyka_gua_get_client_id();
+            if(stristr($ga_client_id, '.')) { // A real GA client ID found, save it
+                $donation->ga_client_id = $ga_client_id;
+            }
+
+        }
+
         if(leyka_options()->opt('yandex_new_api')) {
 
             require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
@@ -462,8 +475,7 @@ techMessage="'.$tech_message.'"/>');
                     Leyka_Donation_Management::send_all_emails($donation->id);
 
                     if( // GUA direct integration - "purchase" event:
-                        $donation->status === 'funded'
-                        && leyka_options()->opt('use_gtm_ua_integration') === 'enchanced_ua_only'
+                        leyka_options()->opt('use_gtm_ua_integration') === 'enchanced_ua_only'
                         && leyka_options()->opt('gtm_ua_tracking_id')
                         && in_array('purchase', leyka_options()->opt('gtm_ua_enchanced_events'))
                     ) {
