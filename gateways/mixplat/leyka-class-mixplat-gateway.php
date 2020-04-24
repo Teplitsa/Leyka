@@ -348,7 +348,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
             } else if( !empty($response['status']) && $response['status'] == 'success' ) { // Mobile payment via website
 
-                $donation = new Leyka_Donation((int)stripslashes($response['external_id']));
+                $donation = new Leyka_Donation(absint($response['external_id']));
                 if($donation && $donation->status != 'funded') {
 
                     $donation->status = 'funded';
@@ -357,6 +357,39 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                 }
 
             }
+
+            if( // GUA direct integration - "purchase" event:
+                $donation->status === 'funded'
+                && leyka_options()->opt('use_gtm_ua_integration') === 'enchanced_ua_only'
+                && leyka_options()->opt('gtm_ua_tracking_id')
+                && in_array('purchase', leyka_options()->opt('gtm_ua_enchanced_events'))
+            ) {
+
+                require_once LEYKA_PLUGIN_DIR.'vendor/autoload.php';
+
+                $analytics = new TheIconic\Tracking\GoogleAnalytics\Analytics(true);
+                $analytics // Main params:
+                    ->setProtocolVersion('1')
+                    ->setTrackingId(leyka_options()->opt('gtm_ua_tracking_id'))
+                    ->setClientId($donation->ga_client_id ? $donation->ga_client_id : leyka_gua_get_client_id())
+                    // Transaction params:
+                    ->setTransactionId($donation->id)
+                    ->setAffiliation(get_bloginfo('name'))
+                    ->setRevenue($donation->amount)
+                    ->addProduct(array( // Donation params
+                        'name' => $donation->payment_title,
+                        'price' => $donation->amount,
+                        'brand' => get_bloginfo('name'), // Mb, it won't work with it
+                        'category' => $donation->type_label, // Mb, it won't work with it
+                        'quantity' => 1,
+                    ))
+                    ->setProductActionToPurchase()
+                    ->setEventCategory('Checkout')
+                    ->setEventAction('Purchase')
+                    ->sendEvent();
+
+            }
+            // GUA direct integration - "purchase" event END
 
         }
 

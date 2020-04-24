@@ -360,7 +360,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                         $analytics = new TheIconic\Tracking\GoogleAnalytics\Analytics(true);
                         $analytics // Main params:
-                        ->setProtocolVersion('1')
+                            ->setProtocolVersion('1')
                             ->setTrackingId(leyka_options()->opt('gtm_ua_tracking_id'))
                             ->setClientId($donation->ga_client_id ? $donation->ga_client_id : leyka_gua_get_client_id())
                             // Transaction params:

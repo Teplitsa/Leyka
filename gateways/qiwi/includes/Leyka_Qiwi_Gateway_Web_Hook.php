@@ -33,7 +33,7 @@ class Leyka_Qiwi_Gateway_Web_Hook {
             header('Content-Type: application/json');
             status_header(200);
 
-            if (0 < $out) {
+            if($out && !is_wp_error($out)) {
                 echo wp_json_encode(array('error' => 0), JSON_FORCE_OBJECT);
             } else {
                 echo wp_json_encode(array('error' => 1), JSON_FORCE_OBJECT);
