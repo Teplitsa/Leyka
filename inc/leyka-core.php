@@ -307,8 +307,9 @@ class Leyka extends Leyka_Singleton {
                     $donation_id = leyka_remembered_data('donation_id');
                     $campaign = null;
                     $campaign_id = null;
+
                     if( !$donation_id ) {
-                        return;
+                        return '';
                     }
                     $donation = new Leyka_Donation($donation_id);
                     $campaign_id = $donation ? $donation->campaign_id : null;
@@ -316,19 +317,18 @@ class Leyka extends Leyka_Singleton {
                     
                     if($campaign) {
                         $form_template = $campaign->template;
-                    }
-                    else {
+                    } else {
                         $form_template = '';
                     }
                     
-                    if(!$form_template) {
+                    if( !$form_template ) {
                         $form_template = leyka_remembered_data('template_id');
                     }
                     
-                    $form_template_suffix = $form_template === 'star' ? '-' . $form_template : '';
+                    $form_template_suffix = $form_template === 'star' ? '-'.$form_template : '';
 
                     ob_start();
-                    include(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-success-widget'.$form_template_suffix.'.php');
+                    include LEYKA_PLUGIN_DIR.'templates/service/leyka-template-success-widget'.$form_template_suffix.'.php';
                     $content = ob_get_clean();
 
                     if($form_template === 'star') {

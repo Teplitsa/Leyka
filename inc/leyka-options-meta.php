@@ -772,7 +772,7 @@ self::$_options_meta = array(
         'placeholder' => __('E.g., UA-12345678-90', 'leyka'),
     ),
     'revo_template_slider_max_sum' => array(
-        'type' => 'num',
+        'type' => 'number',
         'default' => 3000,
         'title' => __('Maximum sum available for slider', 'leyka'),
         'description' => __('Please set the maximum sum available for slider control.', 'leyka'),

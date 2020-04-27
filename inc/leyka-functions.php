@@ -1533,12 +1533,12 @@ function leyka_get_campaign_donations($campaign_id = false, $limit = false) {
 
 function leyka_get_donations_archive_url($campaign_id = false) {
 
-    if((int)$campaign_id > 0) {
+    if(absint($campaign_id) > 0) {
 
         $campaign = get_post($campaign_id);
 
         $donations_permalink = trim(get_permalink($campaign_id), '/');
-        if(strpos($donations_permalink, '?')) {
+        if(mb_strpos($donations_permalink, '?')) {
             $donations_permalink = home_url('?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter='.$campaign->post_name);
         } else {
             $donations_permalink = $donations_permalink.'/donations/';
@@ -1555,16 +1555,14 @@ function leyka_get_donations_archive_url($campaign_id = false) {
 
 function leyka_remembered_data($name, $value = null, $delete = false) {
 
-    if(headers_sent()) {
-        return null;
-    }
-
-    $name = stripos($name, 'leyka_') === false ? 'leyka_'.$name : $name;
+    $name = mb_stripos($name, 'leyka_') === false ? 'leyka_'.$name : $name;
 
     if($value) {
-        return setcookie($name, trim($value), current_time('timestamp')+60*60, COOKIEPATH, COOKIE_DOMAIN, false);
+        return headers_sent() ?
+            null : setcookie($name, trim($value), current_time('timestamp') + 60*60, COOKIEPATH, COOKIE_DOMAIN, false);
     } else if( !!$delete ) {
-        return setcookie($name, '', current_time('timestamp')-3600, COOKIEPATH, COOKIE_DOMAIN, false);
+        return headers_sent() ?
+            null : setcookie($name, '', current_time('timestamp') - 3600, COOKIEPATH, COOKIE_DOMAIN, false);
     } else {
         return empty($_COOKIE[$name]) ? '' : trim($_COOKIE[$name]);
     }
@@ -1577,7 +1575,7 @@ function leyka_calculate_donation_total_amount($donation = false, $amount = 0.0,
         $donation = leyka_get_validated_donation($donation);
     }
 
-    $amount = $amount ? $amount : ($donation ? $donation->amount : (float)$amount);
+    $amount = $amount ? $amount : ($donation ? $donation->amount : floatval($amount));
     $pm_full_id = $pm_full_id ? $pm_full_id : ($donation ? $donation->pm_full_id : false);
 
     if( !$amount || !$pm_full_id ) {
@@ -1585,8 +1583,7 @@ function leyka_calculate_donation_total_amount($donation = false, $amount = 0.0,
     }
 
     $commission = leyka_options()->opt('commission');
-    $commission = empty($commission[$pm_full_id]) ?
-        0.0 : $commission[$pm_full_id]/100.0;
+    $commission = empty($commission[$pm_full_id]) ? 0.0 : $commission[$pm_full_id]/100.0;
 
     return $commission && $commission > 0.0 ? $amount - round($amount*$commission, 2) : $amount;
 
