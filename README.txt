@@ -83,6 +83,7 @@ PHP version required: 5.6+
 == Changelog ==
 = 3.9 =
 + New: now Smart payment is available for the YK REST API.
++ New: now GA direct integration works with all supported gateways.
 * Fix: Support packages campaign check popup width for Safary fixed.
 * Fix: Gateways commission values saving fixed.
 * Fix: user profile Donor tags list when there are no any tags in DB fixed.
