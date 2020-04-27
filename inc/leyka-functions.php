@@ -2359,9 +2359,9 @@ if( !function_exists('leyka_gua_get_client_id') ) {
 
         if( !empty($_COOKIE['_ga']) ) {
 
-            list($version, $domainDepth, $cid1, $cid2) = explode('.', $_COOKIE['_ga'], 4);
+            list($version, $domain_depth, $cid1, $cid2) = explode('.', $_COOKIE['_ga'], 4);
 
-            $contents = array('version' => $version, 'domainDepth' => $domainDepth, 'cid' => $cid1.'.'.$cid2);
+            $contents = array('version' => $version, 'domainDepth' => $domain_depth, 'cid' => $cid1.'.'.$cid2);
             $cid = $contents['cid'];
 
         } else {

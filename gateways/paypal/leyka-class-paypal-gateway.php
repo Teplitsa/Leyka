@@ -259,19 +259,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
         $donation = new Leyka_Donation($donation_id);
 
-        if( // For the direct GA integration:
-            leyka_options()->opt('use_gtm_ua_integration') === 'enchanced_ua_only'
-            && leyka_options()->opt('gtm_ua_tracking_id')
-            && in_array('purchase', leyka_options()->opt('gtm_ua_enchanced_events'))
-        ) {
-
-            $ga_client_id = leyka_gua_get_client_id();
-            if(stristr($ga_client_id, '.')) { // A real GA client ID found, save it
-                $donation->ga_client_id = $ga_client_id;
-            }
-
-        }
-
         $payment_description = $donation->payment_title." (№ $donation_id)";
         if(mb_strlen($payment_description) > 127) { // 127 chars length is a PayPal restriction
             $payment_description = sprintf(__('Donation № %d', 'leyka'), $donation_id);

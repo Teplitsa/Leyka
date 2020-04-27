@@ -108,19 +108,6 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             $donation->payment_type = 'rebill';
         }
 
-        if( // For the direct GA integration:
-            leyka_options()->opt('use_gtm_ua_integration') === 'enchanced_ua_only'
-            && leyka_options()->opt('gtm_ua_tracking_id')
-            && in_array('purchase', leyka_options()->opt('gtm_ua_enchanced_events'))
-        ) {
-
-            $ga_client_id = leyka_gua_get_client_id();
-            if(stristr($ga_client_id, '.')) { // A real GA client ID found, save it
-                $donation->ga_client_id = $ga_client_id;
-            }
-
-        }
-
     }
 
     public function submission_redirect_url($current_url, $pm_id) {
@@ -638,8 +625,8 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             <div class="leyka-ddata-field">
                 <input type="text" id="cp-recurring-id" name="cp-recurring-id" placeholder="<?php _e('Enter CloudPayments subscription ID', 'leyka');?>" value="">
             </div>
-        <?php
-        }
+
+        <?php }
 
     }
 

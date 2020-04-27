@@ -1714,7 +1714,10 @@ class Leyka extends Leyka_Singleton {
 
                 $referer = wp_get_referer();
                 if(strstr($referer, '#') !== false) {
-                    $referer = reset(explode('#', $referer));
+
+                    $referer = explode('#', $referer);
+                    $referer = reset($referer);
+
                 }
 
                 wp_redirect($referer.'#leyka-submit-errors');
@@ -1794,17 +1797,28 @@ class Leyka extends Leyka_Singleton {
     /** Save the basic donation data and return new donation ID, so gateway can add it's specific data to the logs. */
     public function log_submission() {
 
-        if(empty($_POST['leyka_campaign_id']) || (int)$_POST['leyka_campaign_id'] <= 0) {
+        if(empty($_POST['leyka_campaign_id']) || absint($_POST['leyka_campaign_id']) <= 0) {
             return false;
         }
 
-        $campaign = new Leyka_Campaign((int)$_POST['leyka_campaign_id']);
+        $campaign = new Leyka_Campaign(absint($_POST['leyka_campaign_id']));
         $pm_data = leyka_pf_get_payment_method_value();
 
-        $donation_id = Leyka_Donation::add(apply_filters('leyka_new_donation_data', array(
-            'purpose_text' => $campaign->payment_title,
-            'gateway_id' => $pm_data['gateway_id'],
-        )));
+        $params = array('purpose_text' => $campaign->payment_title, 'gateway_id' => $pm_data['gateway_id'],);
+        if( // For the direct GA integration:
+            leyka_options()->opt('use_gtm_ua_integration') === 'enchanced_ua_only'
+            && leyka_options()->opt('gtm_ua_tracking_id')
+            && in_array('purchase', leyka_options()->opt('gtm_ua_enchanced_events'))
+        ) {
+
+            $ga_client_id = leyka_gua_get_client_id();
+            if(stristr($ga_client_id, '.')) { // A real GA client ID found, save it
+                $params['ga_client_id'] = $ga_client_id;
+            }
+
+        }
+
+        $donation_id = Leyka_Donation::add(apply_filters('leyka_new_donation_data', $params));
 
         if( !is_wp_error($donation_id) ) {
 
@@ -1827,7 +1841,8 @@ class Leyka extends Leyka_Singleton {
             !leyka()->opt('donor_accounts_available')
             || $donation->type !== 'rebill'
             || !$donation->init_recurring_donation_id
-            || ($donation->init_recurring_donation_id && $donation->init_recurring_donation_id == $donation->id)) {
+            || ($donation->init_recurring_donation_id && $donation->init_recurring_donation_id == $donation->id)
+        ) {
             return false;
         }
 

@@ -223,16 +223,16 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 
                 }
 
-                if(leyka_options()->opt_template('show_donation_comment_field')) {
+                if(leyka_options()->opt_template('show_donation_comment_field', 'star')) {
 
                     $field_id = 'leyka-'.wp_rand();?>
 
                 <div class="donor__textfield donor__textfield--comment leyka-field">
                     <div class="leyka-star-field-frame">
                         <label for="<?php echo $field_id;?>">
-                            <span class="donor__textfield-label leyka_donor_comment-label"><?php echo leyka_options()->opt_template('donation_comment_max_length') ? sprintf(__('Your comment (<span class="donation-comment-current-length">0</span> / <span class="donation-comment-max-length">%d</span> symbols)', 'leyka'), leyka_options()->opt_template('donation_comment_max_length')) : __('Your comment', 'leyka');?></span>
+                            <span class="donor__textfield-label leyka_donor_comment-label"><?php echo leyka_options()->opt_template('donation_comment_max_length', 'star') ? sprintf(__('Your comment (<span class="donation-comment-current-length">0</span> / <span class="donation-comment-max-length">%d</span> symbols)', 'leyka'), leyka_options()->opt_template('donation_comment_max_length', 'star')) : __('Your comment', 'leyka');?></span>
                         </label>
-                        <textarea id="<?php echo $field_id;?>" class="leyka-donor-comment" name="leyka_donor_comment" data-max-length="<?php echo leyka_options()->opt_template('donation_comment_max_length');?>"></textarea>
+                        <textarea id="<?php echo $field_id;?>" class="leyka-donor-comment" name="leyka_donor_comment" data-max-length="<?php echo leyka_options()->opt_template('donation_comment_max_length', 'star');?>"></textarea>
                     </div>
                     <div class="leyka-star-field-error-frame">
                         <span class="donor__textfield-error leyka_donor_comment-error"><?php _e('Entered value is too long', 'leyka');?></span>

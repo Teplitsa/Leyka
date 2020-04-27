@@ -89,7 +89,10 @@ function leyka_get_gateway_redirect_data(){
 
             do_action(
                 'leyka_payment_form_submission-'.$pm['gateway_id'],
-                $pm['gateway_id'], implode('-', array_slice($pm, 1)), $donation_id, $_POST
+                $pm['gateway_id'],
+                implode('-', array_slice($pm, 1)),
+                $donation_id,
+                $_POST
             );
 
         }
@@ -1162,7 +1165,7 @@ function leyka_delete_extension(){
     if( !leyka_delete_dir($extension->folder) ) {
         die(json_encode(array(
             'status' => -1,
-            'message' => sprintf(__('Cannot delete the extension. Please report this problem to the <a href="mailto:%s" target="_blank">Leyka technical support</a>.', 'leyka'), reset(explode(',', LEYKA_SUPPORT_EMAIL)))
+            'message' => sprintf(__('Cannot delete the extension. Please report this problem to the <a href="mailto:%s" target="_blank">Leyka technical support</a>.', 'leyka'), leyka_get_website_tech_support_email())
         )));
     }
 

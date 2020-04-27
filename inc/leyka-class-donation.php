@@ -1841,6 +1841,10 @@ class Leyka_Donation {
             add_post_meta($id, 'leyka_recurrents_cancel_date', 0);
         }
 
+        if( !empty($params['ga_client_id']) ) {
+            update_post_meta($id, 'leyka_ga_client_id', trim($value));
+        }
+
         return $id;
 
     }
