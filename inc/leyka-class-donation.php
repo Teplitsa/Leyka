@@ -852,6 +852,7 @@ class Leyka_Donation_Management {
         </div>
 
 	</fieldset>
+
     <?php }
 
     public function donation_data_metabox(WP_Post $donation) {
@@ -1842,7 +1843,7 @@ class Leyka_Donation {
         }
 
         if( !empty($params['ga_client_id']) ) {
-            update_post_meta($id, 'leyka_ga_client_id', trim($value));
+            update_post_meta($id, 'leyka_ga_client_id', trim($params['ga_client_id']));
         }
 
         return $id;

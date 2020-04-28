@@ -513,7 +513,7 @@ techMessage="'.$tech_message.'"/>');
 
         require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
 
-        $response = is_object($donation->gateway_response) ?
+        $response = is_object($donation->gateway_response) || is_array($donation->gateway_response) ?
             serialize($donation->gateway_response) : $donation->gateway_response;
 
         if(stristr($response, 'YandexCheckout')) { // New API
