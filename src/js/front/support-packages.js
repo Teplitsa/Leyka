@@ -87,15 +87,23 @@ jQuery(document).ready(function($){
 });
 
 function leyka_ext_sp_init_locked_content_icons($){
-    $('.leyka-ext-sp-locked-content .entry-title').each(function(i, el){
-        var $lockedIcon = $('<img />')
-            .attr('src', leyka.ext_sp_article_locked_icon)
-            .addClass('leyka-ext-sp-post-locked');
 
-        $(this).append($lockedIcon);
-    });
+    let $titles = $('.leyka-ext-sp-locked-content .entry-title');
+
+    if($titles.length) {
+        $titles.each(function(i, el){
+            $(this).append($('<img>')
+                .attr('src', leyka.ext_sp_article_locked_icon)
+                .addClass('leyka-ext-sp-post-locked'));
+        });
+    }
+
 }
 
 jQuery(window).load(function() {
     leyka_ext_sp_init_locked_content_icons(jQuery);
+
+    $('.sdffda').each(function(i, el){
+        console.log('HERE:');
+    });
 });
