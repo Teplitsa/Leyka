@@ -128,7 +128,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             (empty($params['payment_title']) ? leyka_options()->opt('donation_purpose_text') : $params['payment_title']) :
             $params['purpose_text'];
         if($params['payment_title']) {
-            $donation_meta_fields['payment_title'] = sanitize_title($params['payment_title']);
+            $donation_meta_fields['payment_title'] = esc_attr($params['payment_title']);
         }
 
         /** @todo Add the donor_user_id meta, if Donors management is on */

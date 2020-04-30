@@ -27,7 +27,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => array_key_exists($status, leyka_get_donation_status_list()) ? $status : 'submitted',
             'post_title' => empty($params['purpose_text']) ?
-                leyka_options()->opt('donation_purpose_text') : $params['purpose_text'],
+                leyka_options()->opt('donation_purpose_text') : esc_attr($params['purpose_text']),
             'post_name' => uniqid('donation-', true), // For fast WP_Post creation when DB already has lots of donations
             'post_parent' => $params['init_recurring_donation'],
         );
