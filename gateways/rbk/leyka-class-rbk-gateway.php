@@ -122,7 +122,10 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
         $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
 
         if( !empty($form_data['leyka_recurring']) ) {
+
             $donation->payment_type = 'rebill';
+            $donation->recurring_active = true;
+
         }
 
         // 1. Create an invoice:
@@ -152,7 +155,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
             $this->_rbk_log['RBK_Request'] = array('url' => $api_request_url, 'params' => $args,);
         }
 
-        $this->_rbk_response = json_decode(wp_remote_retrieve_body(wp_remote_post($api_request_url, $args)), true);
+        $this->_rbk_response = json_decode(wp_remote_retrieve_body(wp_remote_post($api_request_url, $args)));
 
         // 2. Create a payment for the invoice - will be done on the frontend, by the RBK Checkout widget
 
@@ -325,15 +328,14 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
         }
 
         $vars = $vars[array_key_last($vars)];
-        $vars = empty($vars['invoice']) ? array() : $vars;
 
         return array(
-            __('Invoice ID:', 'leyka') => $vars['invoice']['id'],
-            __('Operation date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($vars['invoice']['createdAt'])),
-            __('Operation status:', 'leyka') => $vars['invoice']['status'],
-            __('Full donation amount:', 'leyka') => $vars['invoice']['amount'] / 100,
-            __('Donation currency:', 'leyka') => $vars['invoice']['currency'],
-            __('Shop Account:', 'leyka') => $vars['invoice']['shopID'],
+            __('Invoice ID:', 'leyka') => $vars['id'],
+            __('Operation date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($vars['createdAt'])),
+            __('Operation status:', 'leyka') => $vars['status'],
+            __('Full donation amount:', 'leyka') => $vars['amount'] / 100,
+            __('Donation currency:', 'leyka') => $vars['currency'],
+            __('Shop Account:', 'leyka') => $vars['shopID'],
         );
 
     }
@@ -471,7 +473,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
         if($donation) { // Edit donation page displayed
 
-            $donation = leyka_get_validated_donation($donation);?>
+            $donation = Leyka_Donations::get_instance()->get_donation($donation);?>
 
             <label><?php _e('RBK Money invoice ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
