@@ -281,7 +281,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
     protected function _handle_payment_processed($data) {
 
         // Log the webhook request content:
-        $donation_id = self::get_donation_by_invoice_id($data['invoice']['id']);
+        $donation_id = $this->get_donation_by_invoice_id($data['invoice']['id']);
         $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
 
         $data_to_log = $data;
@@ -500,8 +500,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 <div class="recurring-is-active-field">
                     <label for="rbk-recurring-is-active"><?php _e('Recurring subscription is active', 'leyka'); ?>:</label>
                     <div class="leyka-ddata-field">
-                        <input type="checkbox" id="rbk-recurring-is-active" name="rbk-recurring-is-active"
-                               value="1" <?php echo $init_recurring_donation->recurring_is_active ? 'checked="checked"' : ''; ?>>
+                        <input type="checkbox" id="rbk-recurring-is-active" name="rbk-recurring-is-active" value="1" <?php echo $init_recurring_donation->recurring_is_active ? 'checked="checked"' : ''; ?>>
                     </div>
                 </div>
 
@@ -509,27 +508,27 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
                 <label><?php _e('Initial recurring invoice ID', 'leyka');?>:</label>
                 <div class="leyka-ddata-field">
-                    <?php if($donation->type === 'correction') { ?>
+                    <?php if($donation->type === 'correction') {?>
                     <input type="text" id="rbk-init-invoice-id" name="rbk-init-invoice-id"
                            placeholder="<?php _e('Enter RBK Money initial recurring invoice ID', 'leyka'); ?>"
                            value="<?php echo $init_recurring_donation->rbk_invoice_id; ?>">
                     <?php } else {?>
-                    <span class="fake-input"><?php echo $init_recurring_donation->rbk_invoice_id; ?></span>
+                    <span class="fake-input"><?php echo $init_recurring_donation->rbk_invoice_id;?></span>
                     <?php }?>
                 </div>
 
-                <br>
-
-                <label><?php _e('Initial recurring payment ID', 'leyka');?>:</label>
-                <div class="leyka-ddata-field">
-                    <?php if($donation->type === 'correction') {?>
-                        <input type="text" id="rbk-init-payment-id" name="rbk-init-payment-id"
-                               placeholder="<?php _e('Enter RBK Money initial recurring payment ID', 'leyka'); ?>"
-                               value="<?php echo $init_recurring_donation->rbk_payment_id; ?>">
-                    <?php } else {?>
-                    <span class="fake-input"><?php echo $init_recurring_donation->rbk_payment_id; ?></span>
-                    <?php }?>
-                </div>
+<!--                <br>-->
+<!---->
+<!--                <label>--><?php //_e('Initial recurring payment ID', 'leyka');?><!--:</label>-->
+<!--                <div class="leyka-ddata-field">-->
+<!--                    --><?php //if($donation->type === 'correction') {?>
+<!--                    <input type="text" id="rbk-init-payment-id" name="rbk-init-payment-id"-->
+<!--                           placeholder="--><?php //_e('Enter RBK Money initial recurring payment ID', 'leyka'); ?><!--"-->
+<!--                           value="--><?php //echo $init_recurring_donation->rbk_payment_id; ?><!--">-->
+<!--                    --><?php //} else {?>
+<!--                    <span class="fake-input">--><?php //echo $init_recurring_donation->rbk_payment_id; ?><!--</span>-->
+<!--                    --><?php //}?>
+<!--                </div>-->
 
             <?php }
 
