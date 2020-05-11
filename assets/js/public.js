@@ -2103,10 +2103,6 @@ function leyka_ext_sp_init_locked_content_icons($){
 
 jQuery(window).load(function() {
     leyka_ext_sp_init_locked_content_icons(jQuery);
-
-    $('.sdffda').each(function(i, el){
-        console.log('HERE:');
-    });
 });
 /*
  * Star form template functionality and handlers
