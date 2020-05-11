@@ -6,16 +6,16 @@
  * $campaign - current campaign
  **/
 
-$template_data = Leyka_Star_Template_Controller::get_instance()->get_template_data($campaign);
+$template_data = Leyka_Need_Help_Template_Controller::get_instance()->get_template_data($campaign);
 
-echo '<pre>'.print_r('HELP NEEDED HERE!', 1).'</pre>';
+//echo '<pre>'.print_r($template_data, 1).'</pre>';
 
 $is_recurring_campaign = false;
 if(count($campaign->donations_types_available) > 1) {
     if('recurring' == $campaign->donations_type_default) {
         $is_recurring_campaign = true;
     }
-} elseif(count($campaign->donations_types_available) == 1) {
+} else if(count($campaign->donations_types_available) == 1) {
     if(in_array('recurring', $campaign->donations_types_available)) {
         $is_recurring_campaign = true;
     }
