@@ -669,7 +669,7 @@ self::$_options_meta = array(
     'notify_tech_support_on_failed_donations' => array(
         'type' => 'checkbox',
         'default' => true,
-        'title' => __('Send error reporting emails to the tech. support on failed donations', 'leyka'),
+        'title' => __('Send error reporting emails to the tech support on failed donations', 'leyka'),
         'comment' => __('Check to notify the website technical support (see the "website technical support email" option) of each failed donation.', 'leyka'),
         'short_format' => true,
     ),

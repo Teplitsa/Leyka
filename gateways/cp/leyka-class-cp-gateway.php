@@ -160,7 +160,10 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             return true;
         }
 
-        $cp_ips_allowed = array_map(function($ip) { return trim($ip); }, explode(',', leyka_options()->opt('cp_ip')));
+        $cp_ips_allowed = array_map(
+            function($ip) { return trim(stripslashes($ip)); },
+            explode(',', leyka_options()->opt('cp_ip'))
+        );
 
         if( !$cp_ips_allowed ) {
             return true;
