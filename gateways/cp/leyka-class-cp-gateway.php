@@ -389,6 +389,8 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                 }
 
+                die(json_encode(array('code' => '0')));
+
             default:
         }
 
