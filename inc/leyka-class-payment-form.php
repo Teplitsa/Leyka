@@ -937,8 +937,7 @@ function leyka_get_current_template_data($campaign = null, $template = null, $is
 
     if( !$campaign ) { // Fallback if no leyka_remembered_data and campaign are specified
 
-        $campaign = get_post();
-        if($campaign->post_type != Leyka_Campaign_Management::$post_type) {
+        if(get_post_type() != Leyka_Campaign_Management::$post_type) {
             return false;
         }
 
