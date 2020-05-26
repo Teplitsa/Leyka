@@ -1,0 +1,99 @@
+/** == Seetings and variables (_presets.scss)  == **/
+
+$leyka-need-help-base:   16px;
+
+:root {
+
+    --leyka-color-main: #FFCF00;
+    --leyka-color-main-second: #FFCF00;
+    --leyka-color-main-third: #FFB600;
+    --leyka-color-main-inactive: rgba(255, 207, 0, 0.5); // The main color with 0.5 opacity
+
+    --leyka-color-form-background: #FBFBFB;
+
+    --leyka-color-blocks-border: #E6E6E6;
+    --leyka-color-blocks-background: #FFFFFF;
+    --leyka-color-blocks-active-border: #FFB600;
+    --leyka-color-blocks-active-background: #FFFFFF;
+
+    //--leyka-color-error: #d43c57;
+    //--leyka-color-error-second: #fc90a4;
+    //--leyka-color-error-third: #fcf2f4;
+    //
+    //--leyka-color-ok: #1aa316;
+    //--leyka-color-ok-second: #9adc98;
+    //--leyka-color-ok-third: #f3fcf2;
+    //
+    //--leyka-color-gray-dark: #474747;
+    //--leyka-color-grey-semi-dark: #4656565;
+    //--leyka-color-gray: #666666;
+    //--leyka-color-gray-notsolight: #aaaaaa;
+    //--leyka-color-gray-superlight: #ededed;
+    //
+    //--leyka-color-white: #ffffff;
+    //
+    //--leyka-color-pc-bg: #ff6347;
+    //
+    //--leyka-color-gradient: #ffffff;
+    //
+    //--leyka-font-main: unset; // Montserrat, "Helvetica Neue", sans-serif
+    //
+    //--leyka-star-base: 16px;
+
+    --leyka-color-text: #2A2A2A;
+    --leyka-color-text-light: #666666;
+    //--leyka-color-text-superlight: #999999;
+
+    --leyka-font-family-main: inherit;
+    --leyka-font-family-blocks: inherit;
+    --leyka-font-family-submit: inherit;
+    --leyka-font-family-section-titles: inherit;
+
+    --leyka-font-size-main: 14px;
+    --leyka-font-size-blocks-default: 14px;
+    --leyka-font-size-amounts: 14px;
+    --leyka-font-size-pm-options: 12px;
+    --leyka-font-size-donor-fields: 14px;
+    --leyka-font-size-submit: 14px;
+    --leyka-font-size-section-titles: 16px;
+
+}
+
+$leyka-need-help-color-main:             var(--leyka-color-main);
+$leyka-need-help-color-main-second:      var(--leyka-color-main-second);
+$leyka-need-help-color-main-third:       var(--leyka-color-main-third);
+
+$leyka-need-help-color-main-inactive:    var(--leyka-color-main-inactive);
+
+//$leyka-star-color-error:            var(--leyka-color-error);
+//$leyka-star-color-error-second:     var(--leyka-color-error-second);
+//$leyka-star-color-error-third:      var(--leyka-color-error-third);
+//
+//$leyka-star-color-ok:               var(--leyka-color-ok);
+//$leyka-star-color-ok-second:        var(--leyka-color-ok-second);
+//$leyka-star-color-ok-third:         var(--leyka-color-ok-third);
+//
+//$leyka-star-color-black:            #000000; // ATM it's used only in Accounts
+//$leyka-star-color-gray-dark:        var(--leyka-color-gray-dark); // #474747
+//$leyka-star-color-gray-semi-dark:   var(--leyka-color-gray-semi-dark); // #656565;
+////$leyka-star-color-gray:             #8f8f8f;
+//$leyka-star-color-gray:             var(--leyka-color-gray); // #666666;
+//
+//$leyka-star-color-gray-light:       #c0c0c0;
+//$leyka-star-color-swiper-arrow-border: #f1f1f1;
+//
+//$leyka-start-color-gray-notsolight:     var(--leyka-color-gray-notsolight); // #aaaaaa;
+//$leyka-star-color-gray-superlight:  var(--leyka-color-gray-superlight); // #ededed;
+//$leyka-star-color-white:            var(--leyka-color-white); // #ffffff;
+//$leyka-star-color-gradient:         var(--leyka-color-gradient); // #ffffff;
+
+$leyka-need-help-color-text: var(--leyka-color-text);
+$leyka-need-help-color-text-light: var(--leyka-color-text-light);
+$leyka-need-help-color-text-superlight: var(--leyka-color-text-light);
+
+//$leyka-star-color-tooltip-bg: #dddddd;
+//$leyka-star-color-tooltip-text: #44444a;
+//
+//$leyka-pc-color-main: var(--leyka-color-pc-bg);
+//
+//$leyka-font-main: var(--leyka-font-main);

@@ -1,0 +1,513 @@
+/** == Form elements (_form_elements.scss) == **/
+
+.leyka-tpl-need-help-form .section .section__fields
+/*,.leyka-screen-form .section .section__fields*/ {
+
+    font-size: var(--leyka-font-size-main);
+    font-family: var(--leyka-font-family-main);
+
+    &.periodicity {
+
+        width: calc(100% + 20px);
+        @include need-help-upto(small-screens) {
+            width: calc(100% + 10px);
+        }
+
+        display: flex;
+        flex-flow: row wrap;
+
+        margin-left: -20px;
+        margin-bottom: -20px;
+
+        @include need-help-upto(small-screens) {
+            margin-left: -10px;
+            margin-bottom: -10px;
+        }
+
+        a {
+
+            @include need-help-block();
+
+            flex: 220px 1 1;
+
+            margin-left: 20px;
+            margin-bottom: 20px;
+
+            @include need-help-upto(small-screens) {
+                margin-left: 10px;
+                margin-bottom: 10px;
+            }
+
+            &:first-of-type {
+
+                margin-left: 20px;
+                @include need-help-upto(small-screens) {
+                    margin-left: 10px;
+                }
+
+            }
+
+        }
+
+    }
+
+    // swiper
+    .star-swiper {
+
+        overflow: unset;
+
+        .full-list {
+
+            width: calc(100% + 10px);
+            margin-bottom: -10px;
+            margin-left: -10px;
+
+            overflow: unset;
+
+            &.equalize-elements-width {
+                justify-content: flex-start;
+            }
+
+            .swiper-item {
+
+                @include need-help-block();
+
+                margin-bottom: 10px;
+                margin-left: 10px;
+
+                flex: 100px 1 1;
+
+                font-size: var(--leyka-font-size-amounts);
+
+                &.selected {
+
+                    span {
+                        color: $leyka-need-help-color-text;
+                    }
+
+                    .swiper-item-inner {
+                        background-color: var(--leyka-color-blocks-background);
+                    }
+
+                }
+
+                &.flex-amount-item {
+
+                    &.focus, &.selected {
+                        @include need-help-block();
+                    }
+
+                    input {
+
+                        @include placeholder {
+                            color: $leyka-need-help-color-text-superlight !important;
+                            font-size: var(--leyka-font-size-amounts);
+                        }
+
+                        font-size: var(--leyka-font-size-amounts);
+
+                    }
+
+                }
+
+                span, input {
+                    font-size: var(--leyka-font-size-amounts);
+                    text-transform: none;
+                }
+
+                &.flex-amount-item {
+
+                    display: flex !important;
+                    flex: 200px 1 1;
+                    min-width: unset;
+
+                    padding: 8px 20px !important;
+                    height: 60px;
+
+                    .swiper-item-inner {
+                        display: flex;
+                    }
+
+                    input {
+                        cursor: pointer;
+                    }
+
+                    label {
+
+                        display: inline-block;
+
+                        span.textfield-label {
+                            display: none;
+                        }
+
+                    }
+
+                    &.empty {
+
+                        label {
+                            display: inherit;
+                        }
+
+                        input {
+                            text-align: left;
+                        }
+
+                    }
+
+                    input {
+
+                        display: inline-block;
+
+                        &[type="number"] {
+                            margin-bottom: 0;
+                        }
+
+                    }
+
+                }
+
+            }
+        }
+
+    }
+
+    // payment methods
+    &.payments-grid {
+
+        .star-swiper {
+
+            .full-list {
+
+                width: calc(100% + 20px);
+                @include need-help-upto(small-screens) {
+                    width: calc(100% + 10px);
+                }
+
+                margin-left: -20px;
+                margin-bottom: -20px;
+
+                @include need-help-upto(small-screens) {
+                    margin-left: -10px;
+                    margin-bottom: -10px;
+                }
+
+            }
+
+            .swiper-item {
+
+                .swiper-item-inner {
+                    justify-content: center;
+                }
+
+                .payment-opt__button {
+                    cursor: pointer;
+                }
+
+            }
+
+        }
+
+        overflow-y: unset;
+
+        .star-swiper {
+            &.no-swipe {
+
+                .swiper-item {
+                    &.payment-opt {
+
+                        flex: 220px 1 0;
+                        height: 80px;
+
+                        margin-left: 20px;
+                        margin-bottom: 20px;
+
+                        @include need-help-upto(small-screens) {
+                            margin-left: 10px;
+                            margin-bottom: 10px;
+                        }
+
+                        span {
+                            color: $leyka-need-help-color-text-superlight;
+                        }
+
+                        .payment-opt__label {
+                            cursor: pointer;
+                            font-size: var(--leyka-font-size-pm-options);
+                        }
+
+                    }
+                }
+
+            }
+        }
+
+    }
+
+    // donor data
+    &.donor {
+
+        display: flex;
+        flex-wrap: wrap;
+
+        margin-left: -20px;
+        margin-bottom: -20px;
+
+        @include need-help-upto(small-screens) {
+            margin-left: -10px;
+            margin-bottom: -10px;
+        }
+
+        .donor-field {
+
+            flex: 220px 1 0;
+
+            margin-left: 20px;
+            margin-bottom: 20px;
+
+            @include need-help-upto(small-screens) {
+                margin-left: 10px;
+                margin-bottom: 10px;
+            }
+
+        }
+
+        .donor__textfield {
+
+            margin-bottom: 2px;
+
+            &.focus .leyka-star-field-frame {
+                @include need-help-active-block();
+            }
+
+            .leyka-star-field-frame {
+
+                @include need-help-block();
+
+                display: flex;
+                align-items: center;
+
+                padding: 0 0 0 20px;
+
+            }
+
+            &.donor__textfield--phone {
+                flex-basis: calc(100% - 20px);
+            }
+
+            &.donor__textfield--comment {
+
+                flex-basis: calc(100% - 20px);
+
+                textarea {
+
+                    @include placeholder {
+                        color: $leyka-need-help-color-text-superlight !important;
+                        font-size: var(--leyka-font-size-donor-fields);
+                    }
+
+                    font-size: var(--leyka-font-size-donor-fields);
+
+                }
+
+            }
+
+            .leyka-star-field-error-frame {
+                min-height: 32px; // For cases when error message is a 2-liner
+            }
+
+            &.valid .leyka-star-field-frame {
+                background-image: none;
+                background-color: unset;
+            }
+
+            input {
+
+                @include placeholder {
+                    color: $leyka-need-help-color-text-superlight !important;
+                    font-size: var(--leyka-font-size-donor-fields);
+                }
+
+                cursor: pointer;
+                font-size: var(--leyka-font-size-donor-fields);
+
+            }
+
+        }
+
+    }
+
+    // oferta checkboxes
+	.donor__oferta {
+
+        padding: 0;
+
+        span {
+            margin-bottom: 20px;
+        }
+
+        input:checked + label::before {
+            background-color: unset;
+        }
+
+        label {
+
+            margin-bottom: 10px;
+
+            font-size: var(--leyka-font-size-main);
+
+            &::before {
+                border-color: $leyka-need-help-color-main-second;
+            }
+
+            a {
+                display: inline-block;
+                color: unset;
+
+                font-size: var(--leyka-font-size-main);
+                text-decoration: none;
+
+                padding-bottom: 2px;
+                border-bottom: 1px solid $leyka-need-help-color-main-second;
+
+                &:hover {
+                    text-decoration: none;
+                }
+
+            }
+
+        }
+
+	}
+
+    // submit
+    .donor__submit {
+
+        input {
+
+            color: $leyka-need-help-color-text;
+            font-size: var(--leyka-font-size-submit);
+            font-family: var(--leyka-font-family-submit);
+            font-weight: 600;
+
+            &:disabled {
+                color: $leyka-need-help-color-text-light;
+                background-color: $leyka-need-help-color-main-inactive;
+            }
+
+        }
+
+    }
+
+    .single-pm-icon {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: center;
+        margin-top: 15px;
+    }
+
+}
+
+.leyka-tpl-need-help-form .section.section--agreements {
+    margin-top: 12px;
+}
+
+//.single-leyka_campaign.leyka-screen-cancel-subscription,
+//.single-leyka_campaign.leyka-screen-thankyou,
+//.single-leyka_campaign.leyka-screen-history {
+//    .entry-header {
+//        display: none;
+//    }
+//
+//    .entry-header-single {
+//        display: none;
+//    }
+//}
+//
+//div[id*="leyka-pf-"].leyka-pf-star {
+//    .leyka-submit-errors {
+//        @include star-text-ui-caption();
+//        border-radius: 4px;
+//        margin: $leyka-star-base 0px 0px 0px;
+//
+//        &::after {
+//            content: " ";
+//            position: absolute;
+//            top: 0.75 * $leyka-star-base;
+//            right: 0.5 * $leyka-star-base;
+//            display: block;
+//            background-image: url(../../img/star-icon-close-white.svg);
+//            background-position: center center;
+//            background-repeat: no-repeat;
+//            color: transparent;
+//            width: 24px;
+//            height: 24px;
+//        }
+//    }
+//}
+//
+//// kandinsky optimization
+//div[id*="leyka-pf-"].leyka-pf-star {
+//    &.card-2col {
+//        margin-left: 0 !important;
+//        margin-right: 0 !important;
+//    }
+//
+//}
+//
+//.single-leyka_campaign .main-content.leyka-campaign {
+//    overflow: visible;
+//}
+//
+//.leyka-payment-form.leyka-tpl-star-form {
+//    a:link {
+//        -webkit-tap-highlight-color: unset;
+//    }
+//}
+//
+//.section--static {
+//    margin-top: $leyka-star-base;
+//
+//    .static-text {
+//        p {
+//            @include leyka-pc-text-content();
+//            margin-bottom: $leyka-star-base;
+//        }
+//    }
+//}
+
+// hide periodicity selection
+//.leyka-payment-form.leyka-tpl-star-form .section.section--periodicity {
+//    &.hidden {
+//        display: none;
+//    }
+//}
+
+// description and dividers
+div[id*="leyka-pf-"].leyka-pf-need-help {
+    .leyka-tpl-need-help-form {
+
+        .section-title-container {
+
+            justify-content: left;
+            margin: 0 0 14px 0;
+
+            .section-title-line {
+                display: none;
+            }
+
+            .section-title-text {
+                color: $leyka-need-help-color-text;
+                font-size: var(--leyka-font-size-section-titles);
+                font-family: var(--leyka-font-size-section-titles);
+                font-weight: 600;
+                text-transform: none;
+                padding: 0;
+            }
+
+        }
+    }
+}
+
+//.leyka-tmp-star-form .leyka-rbk-pre-submit-step button {
+//    @include leyka-star-btn();
+//}

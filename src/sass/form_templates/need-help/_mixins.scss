@@ -1,0 +1,43 @@
+@mixin need-help-active-block() {
+    background-color: var(--leyka-color-blocks-active-background);
+    color: var(--leyka-color-text);
+    border: 3px solid var(--leyka-color-blocks-active-border);
+}
+
+@mixin need-help-block() {
+
+    background-color: var(--leyka-color-blocks-background);
+    border: 1px solid var(--leyka-color-blocks-border);
+    box-shadow: 0 2px 6px rgba(0,0,0, 0.08);
+
+    font-size: var(--leyka-font-size-blocks-default);
+    font-family: var(--leyka-font-family-blocks);
+    text-transform: none;
+
+    cursor: pointer;
+
+    height: 60px;
+
+    &.active, &.selected {
+        @include need-help-active-block();
+    }
+
+}
+
+@mixin need-help-upto($media) {
+    @if $media == small-screens {
+        @media screen and (max-width: 460px + 20 - 1) { @content; } /*320px*/
+    }
+    @else if $media == medium-screens {
+        @media screen and (max-width: 600px + 20 - 1) { @content; }
+    }
+    @else if $media == large-screens {
+        @media screen and (max-width: 760px + 20 - 1) { @content; }
+    }
+    @else if $media == exlarge-screens {
+        @media screen and (max-width: 1020px + 20 - 1) { @content; }
+    }
+    @else if $media == xxlarge-screens {
+        @media screen and (max-width: 1280px + 20 - 1) { @content; }
+    }
+}
