@@ -3,8 +3,8 @@
 .leyka-tpl-need-help-form .section .section__fields
 /*,.leyka-screen-form .section .section__fields*/ {
 
-    font-size: var(--leyka-font-size-main);
-    font-family: var(--leyka-font-family-main);
+    font-size: var(--leyka-need-help-font-size-main);
+    font-family: var(--leyka-need-help-font-family-main);
 
     &.periodicity {
 
@@ -77,16 +77,16 @@
 
                 flex: 100px 1 1;
 
-                font-size: var(--leyka-font-size-amounts);
+                font-size: var(--leyka-need-help-font-size-amounts);
 
                 &.selected {
 
                     span {
-                        color: $leyka-need-help-color-text;
+                        color: var(--leyka-need-help-color-text);
                     }
 
                     .swiper-item-inner {
-                        background-color: var(--leyka-color-blocks-background);
+                        background-color: var(--leyka-need-help-color-blocks-background);
                     }
 
                 }
@@ -100,18 +100,18 @@
                     input {
 
                         @include placeholder {
-                            color: $leyka-need-help-color-text-superlight !important;
-                            font-size: var(--leyka-font-size-amounts);
+                            color: var(--leyka-need-help-color-text-light) !important;
+                            font-size: var(--leyka-need-help-font-size-amounts);
                         }
 
-                        font-size: var(--leyka-font-size-amounts);
+                        font-size: var(--leyka-need-help-font-size-amounts);
 
                     }
 
                 }
 
                 span, input {
-                    font-size: var(--leyka-font-size-amounts);
+                    font-size: var(--leyka-need-help-font-size-amounts);
                     text-transform: none;
                 }
 
@@ -227,12 +227,13 @@
                         }
 
                         span {
-                            color: $leyka-need-help-color-text-superlight;
+                            color: var(--leyka-need-help-color-text-superlight);
                         }
 
                         .payment-opt__label {
                             cursor: pointer;
-                            font-size: var(--leyka-font-size-pm-options);
+                            font-size: var(--leyka-need-help-font-size-pm-options);
+                            font-family: var(--leyka-need-help-font-family-blocks);
                         }
 
                     }
@@ -295,20 +296,7 @@
             }
 
             &.donor__textfield--comment {
-
                 flex-basis: calc(100% - 20px);
-
-                textarea {
-
-                    @include placeholder {
-                        color: $leyka-need-help-color-text-superlight !important;
-                        font-size: var(--leyka-font-size-donor-fields);
-                    }
-
-                    font-size: var(--leyka-font-size-donor-fields);
-
-                }
-
             }
 
             .leyka-star-field-error-frame {
@@ -318,17 +306,19 @@
             &.valid .leyka-star-field-frame {
                 background-image: none;
                 background-color: unset;
+                border-color: var(--leyka-need-help-color-main);
             }
 
-            input {
+            input, textarea {
 
                 @include placeholder {
-                    color: $leyka-need-help-color-text-superlight !important;
-                    font-size: var(--leyka-font-size-donor-fields);
+                    color: var(--leyka-need-help-color-text-superlight) !important;
+                    font-size: var(--leyka-need-help-font-size-donor-fields);
                 }
 
                 cursor: pointer;
-                font-size: var(--leyka-font-size-donor-fields);
+                font-size: var(--leyka-need-help-font-size-donor-fields);
+                font-family: var(--leyka-need-help-font-family-main);
 
             }
 
@@ -346,28 +336,36 @@
         }
 
         input:checked + label::before {
-            background-color: unset;
+            background-color: transparent;
+            border-color: var(--leyka-need-help-color-main-second);
         }
 
         label {
 
             margin-bottom: 10px;
 
-            font-size: var(--leyka-font-size-main);
+            cursor: pointer;
+            font-size: var(--leyka-need-help-font-size-main);
+            font-family: var(--leyka-need-help-font-family-main);
+
+            svg.icon-checkbox-check {
+                fill: var(--leyka-need-help-color-main-second);
+            }
 
             &::before {
-                border-color: $leyka-need-help-color-main-second;
+                border-color: var(--leyka-need-help-color-main-second);
             }
 
             a {
                 display: inline-block;
                 color: unset;
 
-                font-size: var(--leyka-font-size-main);
+                font-size: var(--leyka-need-help-font-size-main);
+                font-family: var(--leyka-need-help-font-family-main);
                 text-decoration: none;
 
                 padding-bottom: 2px;
-                border-bottom: 1px solid $leyka-need-help-color-main-second;
+                border-bottom: 1px solid var(--leyka-need-help-color-main-second);
 
                 &:hover {
                     text-decoration: none;
@@ -384,14 +382,16 @@
 
         input {
 
-            color: $leyka-need-help-color-text;
-            font-size: var(--leyka-font-size-submit);
-            font-family: var(--leyka-font-family-submit);
+            color: var(--leyka-need-help-color-text);
+            background-color: var(--leyka-need-help-color-main-second);
+
+            font-size: var(--leyka-need-help-font-size-submit);
+            font-family: var(--leyka-need-help-font-family-submit);
             font-weight: 600;
 
             &:disabled {
-                color: $leyka-need-help-color-text-light;
-                background-color: $leyka-need-help-color-main-inactive;
+                color: var(--leyka-need-help-color-text-light);
+                background-color: var(--leyka-need-help-color-main-inactive);
             }
 
         }
@@ -496,9 +496,9 @@ div[id*="leyka-pf-"].leyka-pf-need-help {
             }
 
             .section-title-text {
-                color: $leyka-need-help-color-text;
-                font-size: var(--leyka-font-size-section-titles);
-                font-family: var(--leyka-font-size-section-titles);
+                color: var(--leyka-need-help-color-text);
+                font-size: var(--leyka-need-help-font-size-section-titles);
+                font-family: var(--leyka-need-help-font-size-section-titles);
                 font-weight: 600;
                 text-transform: none;
                 padding: 0;

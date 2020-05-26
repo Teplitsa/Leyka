@@ -152,7 +152,7 @@
     }
     
     function setAmountInputValue($form, amount) {
-        $form.find('input.leyka_donation_amount').val(amount);
+        $form.find('input.leyka_donation_amount').val(parseFloat(amount.replace(' ', '')));
     }
 
     function bindModeEvents() {

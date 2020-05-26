@@ -480,7 +480,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
                 'donation_amount_too_great',
                 sprintf(
                     __('Donation amount you entered is too great (maximum %s allowed)', 'leyka'),
-                    $form_data['top_'.$currency].' '.leyka_options()->opt("currency_{$currency}_label")
+                    leyka_amount_format($form_data['top_'.$currency]).' '.leyka_options()->opt("currency_{$currency}_label")
                 )
             );
             leyka()->add_payment_form_error($error);
@@ -489,12 +489,11 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
         if( !empty($form_data['bottom_'.$currency]) && $form_data['leyka_donation_amount'] < $form_data['bottom_'.$currency] ) {
 
-            $bottom_amount_allowed = $form_data['bottom_'.$currency];
             $error = new WP_Error(
                 'donation_amount_too_small',
                 sprintf(
                     __('Donation amount you entered is too small (minimum %s allowed)', 'leyka'),
-                    $bottom_amount_allowed.' '.leyka_options()->opt("currency_{$currency}_label")
+                    leyka_amount_format($form_data['bottom_'.$currency]).' '.leyka_options()->opt("currency_{$currency}_label")
                 )
             );
             leyka()->add_payment_form_error($error);

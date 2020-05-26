@@ -1416,18 +1416,6 @@ function leyka_failure_widget_displayed() {
     return leyka_options()->opt_template('show_failure_widget_on_failure') && is_page(leyka_options()->opt('failure_page'));
 }
 
-function leyka_format_amount($amount) {
-
-    if((int)$amount >= 0) {
-        $amount_is_float = (float)$amount - (int)$amount > 0;
-    } else {
-        return false;
-    }
-
-    return number_format((float)$amount, $amount_is_float ? 2 : 0, '.', ' ');
-
-}
-
 function leyka_validate_donor_name($name) {
     return $name ? !preg_match('/[^\\x{0410}-\\x{044F}\w\s\-_\'\.]/iu', $name) : true;
 }
