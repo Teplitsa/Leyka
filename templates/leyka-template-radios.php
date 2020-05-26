@@ -24,7 +24,7 @@ $curr_pm = leyka_get_pm_by_id(reset($active_pm_list)->full_id, true);
 leyka_setup_current_pm($curr_pm, $curr_pm->default_currency);
 $campaign = leyka_get_validated_campaign($campaign);?>
 
-<div id="leyka-payment-form" class="leyka-tpl-radio" data-template="radio" data-leyka-ver="<?php Leyka_Payment_Form::get_plugin_ver_for_atts();?>">
+<div id="leyka-payment-form" class="leyka-tpl-radio" data-template="radio" data-leyka-ver="<?php echo Leyka_Payment_Form::get_plugin_ver_for_atts();?>">
 
 <div class="leyka-payment-option">
 <!-- <?php echo __("This donation form is created by Leyka WordPress plugin, created by Teplitsa of Social Technologies. If you are interested in some way, don't hesitate to write to us: support@te-st.ru", 'leyka');?> -->

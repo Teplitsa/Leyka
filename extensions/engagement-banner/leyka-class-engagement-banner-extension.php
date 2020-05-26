@@ -187,7 +187,7 @@ class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
     }
 
     public static function get_base_url() {
-        return LEYKA_PLUGIN_BASE_URL.str_replace(LEYKA_PLUGIN_DIR, '',  __DIR__);
+        return LEYKA_PLUGIN_BASE_URL.'extensions/engagement-banner';
     }
 
 	protected function _load_files() {

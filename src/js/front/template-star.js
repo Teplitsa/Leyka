@@ -10,6 +10,7 @@
 
     /* event handlers */
     function bindEvents() {
+
         bindModeEvents();
         bindAgreeEvents();
         bindSwiperEvents();
@@ -17,45 +18,72 @@
         bindDonorDataEvents();
         bindSubmitPaymentFormEvent();
         bindPMEvents();
+
+        // Window resize events:
+        $(window).on('resize.leyka', function(){
+            $('.full-list.equalize-elements-width').each(function(){
+                equalizeFormElementsWidth($(this));
+            });
+        }).resize();
+
+    }
+
+    function equalizeFormElementsWidth($elements_wrapper){
+
+        let width = 0;
+        $elements_wrapper.children(':not('+$elements_wrapper.data('equalize-elements-exceptions')+')').each(function(){
+
+            let $element = jQuery(this);
+            if( !width ) {
+                width = $element.outerWidth();
+            }
+
+            if($element.outerWidth() !== width) {
+                $element.css('flex', width+'px 0 1');
+            }
+
+        });
+
     }
 	
-	function resize(e, el, k) {
-        var val = $.trim(el.value);
-        
-        if(!val) {
-            $(el).addClass('empty');
+	function resize(e, element, k) {
+
+        let val = $.trim(element.value);
+
+        if( !val ) {
+
+            $(element).addClass('empty');
             
-            if(!e || e.type == 'blur') {
-                setAmountPlaceholder(el);
-                val = $(el).attr('placeholder');
-                $(el).siblings('.currency').hide();
-                $(el).addClass('show-ph');
+            if( !e || e.type == 'blur' ) {
+                setAmountPlaceholder(element);
+                val = $(element).attr('placeholder');
+                $(element).siblings('.currency').hide();
+                $(element).addClass('show-ph');
+            } else if(e.type == 'focus') {
+                $(element).siblings('.currency').show();
+                $(element).removeClass('show-ph');
             }
-            else if(e.type == 'focus') {
-                $(el).siblings('.currency').show();
-                $(el).removeClass('show-ph');
-            }
-        }
-        else {
-            $(el).removeClass('empty');
-            $(el).removeClass('show-ph');
+
+        } else {
+            $(element).removeClass('empty');
+            $(element).removeClass('show-ph');
         }
         
-        setAmountInputValue($(el).closest('.leyka-tpl-star-form'), $(el).val());
+        setAmountInputValue($(element).closest('.leyka-tpl-star-form'), $(element).val());
+
 	}
     
-    function setAmountPlaceholder(el) {
+    function setAmountPlaceholder(element) {
         if(isMobileScreen()) {
-            $(el).prop('placeholder', $(el).data('mobile-ph'));
-        }
-        else {
-            $(el).prop('placeholder', $(el).data('desktop-ph'));
+            $(element).prop('placeholder', $(element).data('mobile-ph'));
+        } else {
+            $(element).prop('placeholder', $(element).data('desktop-ph'));
         }
     }
 	
 	function bindAmountEvents() {
 		
-		function resizable (el, factor) {
+		function resizable(el, factor) {
 			var k = Number(factor) || 7.7;
 			var e = 'keyup,keypress,focus,blur,change'.split(',');
 			for(var i in e) {
@@ -103,7 +131,7 @@
         });
         
         $('.leyka-tpl-star-form .flex-amount-item input').each(function(i, el){
-            if(!$.trim($(el).val())) {
+            if( !$.trim($(el).val()) ) {
                 $(el).parent().addClass('empty');
             }
         });
@@ -199,46 +227,71 @@
         toggleSwiperArrows($swiper);
         swipeList($swiper, $activeItem);
     }
-    
+
     function setupPeriodicity($_form) {
-        var isRecurring = false;
-        var $activePeriodicityTab = $_form.find('.section__fields.periodicity a.active');
+
+        let isRecurring = false,
+            $activePeriodicityTab = $_form.find('.section__fields.periodicity a.active');
 
         if($activePeriodicityTab.length) {
             isRecurring = $activePeriodicityTab.data('periodicity') == 'monthly';
-        }
-        else {
+        } else {
             isRecurring = parseInt($_form.find('input.is-recurring-chosen').val()) == 1;
         }
-        
+
         $_form.find('.section__fields.periodicity a').removeClass('active');
+
         if(isRecurring) {
-            $_form.find('.section__fields.periodicity a[data-periodicity=monthly]').addClass('active');
-            $_form.find('input.is-recurring-chosen').val("1");
-            $_form.find('.payments-grid .swiper-item').each(function(i, el){
-                if($(el).find('input[data-has-recurring=0]').length > 0) {
-                    $(el).addClass('disabled').removeClass('selected');
-                    $(el).find('input[type=radio]').prop('checked', false);
+
+            $_form.find('.section__fields.periodicity a[data-periodicity="monthly"]').addClass('active');
+            $_form.find('input.is-recurring-chosen').val('1');
+            $_form.find('.payments-grid .swiper-item').each(function(i, element){
+                if($(element).find('input[data-has-recurring="0"]').length > 0) {
+                    $(element)
+                        .addClass('disabled')
+                        .removeClass('selected')
+                        .find('input[type="radio"]')
+                            .prop('checked', false);
                 }
             });
+
+        } else {
+
+            $_form.find('.section__fields.periodicity a[data-periodicity="once"]').addClass('active');
+            $_form.find('input.is-recurring-chosen').val('0');
+            $_form.find('.payments-grid .swiper-item').each(function(i, element){
+                if($(element).find('input[data-has-recurring="0"]').length > 0) {
+                    $(element).removeClass('disabled');
+                }
+            });
+
         }
-        else {
-            $_form.find('.section__fields.periodicity a[data-periodicity=once]').addClass('active');
-            $_form.find('input.is-recurring-chosen').val("0");
-            $_form.find('.payments-grid .swiper-item').each(function(i, el){
-                if($(el).find('input[data-has-recurring=0]').length > 0) {
-                    $(el).removeClass('disabled');
-                }
-            });
+
+        let $available_pm_blocks = $_form.find('.payments-grid .swiper-item:not(.disabled)'),
+            $single_pm_icon_block = $_form.find('.single-pm-icon'),
+            $pm_form_section = $_form.find('.section--cards');
+
+        if($available_pm_blocks.length === 1) {
+
+            $single_pm_icon_block.html($available_pm_blocks.find('.payment-opt__icon').html()).show();
+            $pm_form_section.hide();
+
+        } else {
+
+            $single_pm_icon_block.hide();
+            $pm_form_section.show();
+
         }
         
         checkFormFillCompletion($_form);
+
     }
 
     function bindSwiperEvents() {
         $('.leyka-tpl-star-form .star-swiper').on('click', '.swiper-item', function(e){
 
-            var $this = $(this);
+            let $this = $(this),
+                $swiper = $this.closest('.star-swiper');
 
         	if($this.hasClass('selected')) {
         		return;
@@ -248,7 +301,6 @@
             $this.addClass('selected');
             $this.find('input[type="radio"]').prop('checked', true).change();
 
-            var $swiper = $this.closest('.star-swiper');
             swipeList($swiper, $this);
             toggleSwiperArrows($swiper);
 
@@ -324,8 +376,13 @@
     
     function swipeList($swiper, $activeItem) {
         var $list = $swiper.find('.swiper-list');
-        $list.stop( true, true )
-        
+
+        if( !$list.length ) {
+            return;
+        }
+
+        $list.stop( true, true );
+
         var dif = $list.width() - $swiper.width();
         if(dif <= 0) {
             $list.width($swiper.width());
@@ -632,18 +689,27 @@
     function bindPMEvents() {
         $('.leyka-tpl-star-form form.leyka-pm-form').each(function(){
 
-            var $_form = $(this);
+            let $_form = $(this);
 
             toggleStaticPMForm($_form);
             togglePmSpecialFields($_form);
 
             $(this).find('input.payment-opt__radio').change(function(){
+
                 if($(this).prop('checked')) {
 
                     toggleStaticPMForm($_form);
                     togglePmSpecialFields($_form);
 
                 }
+
+                // console.log($_form.find('.equalize-elements-width'))
+
+                // Equalize the Donor info fields lengths:
+                $_form.find('.section--person .equalize-elements-width').each(function(){
+                    equalizeFormElementsWidth($(this));
+                });
+
             });
         });
 

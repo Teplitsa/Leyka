@@ -803,7 +803,7 @@ window.LeykaGUIFinal.prototype = {
         
     bindEvents: function(){
 
-        var self = this; var $ = self.$;
+        let self = this, $ = self.$;
 
         function leyka_remembered_data(data_name, data_value, data_delete) {
 
@@ -817,7 +817,7 @@ window.LeykaGUIFinal.prototype = {
             }
         }
 
-        var $success_forms = $('.leyka-success-form'),
+        let $success_forms = $('.leyka-success-form'),
             donation_id = leyka_remembered_data('leyka_donation_id', '', false);
 
         if( !donation_id ) { // Hide the success form if there are no donation ID stored...
@@ -825,7 +825,7 @@ window.LeykaGUIFinal.prototype = {
         } else { // ... or display them if there is one in the local storage
             $success_forms.each(function(index, element) {
 
-                var $form = $(element),
+                let $form = $(element),
                     $donation_id_field = $form.find('input[name="leyka_donation_id"]');
 
                 if( !$donation_id_field.val() ) {
@@ -838,7 +838,7 @@ window.LeykaGUIFinal.prototype = {
             });
         }
 
-        $success_forms.on('submit', function(e){
+        $success_forms.on('submit.leyka', function(e){
 
             e.preventDefault();
 
@@ -848,13 +848,13 @@ window.LeykaGUIFinal.prototype = {
 
         });
 
-        $('.leyka-js-no-subscribe').on('click', function(e){
+        $('.leyka-js-no-subscribe').on('click.leyka', function(e){
             
             e.preventDefault();
 
             $(this).closest('.leyka-final-subscribe-form').slideUp(100);
 
-            var $thankyou_block = $('.leyka-pf__final-thankyou');
+            let $thankyou_block = $('.leyka-pf__final-thankyou');
 
             $thankyou_block.find('.informyou-redirect-text').slideDown(100);
             self.runRedirectProcess($thankyou_block);
@@ -907,37 +907,36 @@ window.LeykaGUIFinal.prototype = {
         return form_valid;
 
     },
-    
+
     animateRedirectCountdown: function($container){
 
-        var self = this; var $ = self.$;
-        
-        var $countdown_div = $container.find('.informyou-redirect-text .leyka-redirect-countdown'),
-        countdown = $countdown_div.text();
+        let self = this,
+            $ = self.$,
+            $countdown_div = $container.find('.informyou-redirect-text .leyka-redirect-countdown'),
 
-        countdown = parseInt(countdown, 10);
-        countdown -= 1;
+        countdown = parseInt($countdown_div.text(), 10) - 1;
+
         if(countdown <= 0) {
             clearInterval(self.countdownInterval);
         }
+
         $countdown_div.text(String(countdown));
 
     },
 
     runRedirectProcess: function($container) {
 
-        var self = this; var $ = self.$;
-        
-        var ajax_url = leyka_get_ajax_url();
-        
+        let self = this,
+            $ = self.$,
+            ajax_url = leyka_get_ajax_url();
+
         setTimeout(function(){
             
-            var redirect_url;
+            let redirect_url;
 
             if( !ajax_url ) {
                 redirect_url = '/';
-            }
-            else {
+            } else {
                 redirect_url = ajax_url.replace(/\/core\/wp-admin\/.*/, '');
                 redirect_url = redirect_url.replace(/\/wp-admin\/.*/, '');
             }
@@ -952,9 +951,9 @@ window.LeykaGUIFinal.prototype = {
 
     subscribeUser: function(){
 
-        var self = this; var $ = self.$;
-
-        var $informyou_block = $('.leyka-pf__final-informyou');
+        let self = this,
+            $ = self.$,
+            $informyou_block = $('.leyka-pf__final-informyou');
 
         $.post(
             leyka_get_ajax_url(),
@@ -972,9 +971,7 @@ window.LeykaGUIFinal.prototype = {
             self.runRedirectProcess($informyou_block);
 
         }).always(function(){
-
             $('.leyka-pf__final-thankyou').hide();
-
         });
 
     }
@@ -1630,11 +1627,11 @@ var leykaValidateForm,
     /** payment step **/
     function setupPaymentsGrid() {
         
-        var $pg = $('.payments-grid');
-        if( $pg.find('.payment-opt').length <= 4 ) {
+        let $pg = $('.leyka-payment-form[data-template="star"] .payments-grid');
+        if($pg.find('.payment-opt').length <= 4) {
             $pg.css('overflow-y', 'hidden');
         }
-        
+
     }
     
     function selectPaymentProvider($_opt) {
@@ -1801,69 +1798,41 @@ window.LeykaPageMain.prototype = {
 
     initForms: function() {
 
-        var self = this; var $ = self.$;
+        var self = this,
+            $ = self.$;
 
         $('.leyka-pf').leykaForm();
 
-        /** Leyka success widget behavior - BEGIN */
-
-        // var $success_forms = $('.leyka-success-form'),
-        //     donation_id = leyka_remembered_data('leyka_donation_id');
-        //
-        // if( !donation_id ) { // Hide the success form if there are no donation ID stored...
-        //     // $success_forms.hide();
-        // } else { // ... or display them if there is one in the local storage
-        //     $success_forms.each(function(index, element) {
-        //
-        //         var $form = $(element),
-        //             $donation_id_field = $form.find('input[name="leyka_donation_id"]');
-        //
-        //         if( !$donation_id_field.val() ) {
-        //
-        //             $donation_id_field.val(donation_id);
-        //             $form.show();
-        //
-        //         }
-        //
-        //     });
-        // }
-        //
-        // $success_forms.on('submit', function(e){
-        //
-        //     e.preventDefault();
-        //
-        //     var $this = $(this);
-        //
-        // });
-
-        /** Leyka success widget behavior - END */
-
     },
-    
-    inpageCardColumns: function() {
-        var self = this; var $ = self.$;
-        
-        var form = $('.leyka-pf');
-        form.each(function(){
-            var w = $('.leyka-pf').width();
 
-            if(w >= 600) {
-                $(this).addClass('card-2col');
+    inpageCardColumns: function() {
+
+        var self = this,
+            $ = self.$,
+            $form = $('.leyka-pf');
+
+        $form.each(function(){
+
+            let $this = $(this),
+                current_width = $('.leyka-pf').width(),
+                max_width = $this.data('card-2column-breakpoint-width') ? $this.data('card-2column-breakpoint-width') : 600;
+
+            if(current_width >= max_width) {
+                $this.addClass('card-2col');
+            } else {
+                $this.removeClass('card-2col');
             }
-            else{
-                $(this).removeClass('card-2col');
-            }
+
         });
     },
     
     setupCustomRangeControl: function() {
 
         var self = this; var $ = self.$;
-        
-//        $('.amount__range_overlay').show();
-//        $('.amount__range_custom').show();
+
         $('.amount__range_overlay').addClass('amount__range_custom--visible');
         $('.amount__range_custom').addClass('amount__range_custom--visible');
+
     },
     
     handleHashChange: function() {
@@ -2116,6 +2085,7 @@ jQuery(document).ready(function($){
 
     /* event handlers */
     function bindEvents() {
+
         bindModeEvents();
         bindAgreeEvents();
         bindSwiperEvents();
@@ -2123,45 +2093,72 @@ jQuery(document).ready(function($){
         bindDonorDataEvents();
         bindSubmitPaymentFormEvent();
         bindPMEvents();
+
+        // Window resize events:
+        $(window).on('resize.leyka', function(){
+            $('.full-list.equalize-elements-width').each(function(){
+                equalizeFormElementsWidth($(this));
+            });
+        }).resize();
+
+    }
+
+    function equalizeFormElementsWidth($elements_wrapper){
+
+        let width = 0;
+        $elements_wrapper.children(':not('+$elements_wrapper.data('equalize-elements-exceptions')+')').each(function(){
+
+            let $element = jQuery(this);
+            if( !width ) {
+                width = $element.outerWidth();
+            }
+
+            if($element.outerWidth() !== width) {
+                $element.css('flex', width+'px 0 1');
+            }
+
+        });
+
     }
 	
-	function resize(e, el, k) {
-        var val = $.trim(el.value);
-        
-        if(!val) {
-            $(el).addClass('empty');
+	function resize(e, element, k) {
+
+        let val = $.trim(element.value);
+
+        if( !val ) {
+
+            $(element).addClass('empty');
             
-            if(!e || e.type == 'blur') {
-                setAmountPlaceholder(el);
-                val = $(el).attr('placeholder');
-                $(el).siblings('.currency').hide();
-                $(el).addClass('show-ph');
+            if( !e || e.type == 'blur' ) {
+                setAmountPlaceholder(element);
+                val = $(element).attr('placeholder');
+                $(element).siblings('.currency').hide();
+                $(element).addClass('show-ph');
+            } else if(e.type == 'focus') {
+                $(element).siblings('.currency').show();
+                $(element).removeClass('show-ph');
             }
-            else if(e.type == 'focus') {
-                $(el).siblings('.currency').show();
-                $(el).removeClass('show-ph');
-            }
-        }
-        else {
-            $(el).removeClass('empty');
-            $(el).removeClass('show-ph');
+
+        } else {
+            $(element).removeClass('empty');
+            $(element).removeClass('show-ph');
         }
         
-        setAmountInputValue($(el).closest('.leyka-tpl-star-form'), $(el).val());
+        setAmountInputValue($(element).closest('.leyka-tpl-star-form'), $(element).val());
+
 	}
     
-    function setAmountPlaceholder(el) {
+    function setAmountPlaceholder(element) {
         if(isMobileScreen()) {
-            $(el).prop('placeholder', $(el).data('mobile-ph'));
-        }
-        else {
-            $(el).prop('placeholder', $(el).data('desktop-ph'));
+            $(element).prop('placeholder', $(element).data('mobile-ph'));
+        } else {
+            $(element).prop('placeholder', $(element).data('desktop-ph'));
         }
     }
 	
 	function bindAmountEvents() {
 		
-		function resizable (el, factor) {
+		function resizable(el, factor) {
 			var k = Number(factor) || 7.7;
 			var e = 'keyup,keypress,focus,blur,change'.split(',');
 			for(var i in e) {
@@ -2209,7 +2206,7 @@ jQuery(document).ready(function($){
         });
         
         $('.leyka-tpl-star-form .flex-amount-item input').each(function(i, el){
-            if(!$.trim($(el).val())) {
+            if( !$.trim($(el).val()) ) {
                 $(el).parent().addClass('empty');
             }
         });
@@ -2305,46 +2302,71 @@ jQuery(document).ready(function($){
         toggleSwiperArrows($swiper);
         swipeList($swiper, $activeItem);
     }
-    
+
     function setupPeriodicity($_form) {
-        var isRecurring = false;
-        var $activePeriodicityTab = $_form.find('.section__fields.periodicity a.active');
+
+        let isRecurring = false,
+            $activePeriodicityTab = $_form.find('.section__fields.periodicity a.active');
 
         if($activePeriodicityTab.length) {
             isRecurring = $activePeriodicityTab.data('periodicity') == 'monthly';
-        }
-        else {
+        } else {
             isRecurring = parseInt($_form.find('input.is-recurring-chosen').val()) == 1;
         }
-        
+
         $_form.find('.section__fields.periodicity a').removeClass('active');
+
         if(isRecurring) {
-            $_form.find('.section__fields.periodicity a[data-periodicity=monthly]').addClass('active');
-            $_form.find('input.is-recurring-chosen').val("1");
-            $_form.find('.payments-grid .swiper-item').each(function(i, el){
-                if($(el).find('input[data-has-recurring=0]').length > 0) {
-                    $(el).addClass('disabled').removeClass('selected');
-                    $(el).find('input[type=radio]').prop('checked', false);
+
+            $_form.find('.section__fields.periodicity a[data-periodicity="monthly"]').addClass('active');
+            $_form.find('input.is-recurring-chosen').val('1');
+            $_form.find('.payments-grid .swiper-item').each(function(i, element){
+                if($(element).find('input[data-has-recurring="0"]').length > 0) {
+                    $(element)
+                        .addClass('disabled')
+                        .removeClass('selected')
+                        .find('input[type="radio"]')
+                            .prop('checked', false);
                 }
             });
+
+        } else {
+
+            $_form.find('.section__fields.periodicity a[data-periodicity="once"]').addClass('active');
+            $_form.find('input.is-recurring-chosen').val('0');
+            $_form.find('.payments-grid .swiper-item').each(function(i, element){
+                if($(element).find('input[data-has-recurring="0"]').length > 0) {
+                    $(element).removeClass('disabled');
+                }
+            });
+
         }
-        else {
-            $_form.find('.section__fields.periodicity a[data-periodicity=once]').addClass('active');
-            $_form.find('input.is-recurring-chosen').val("0");
-            $_form.find('.payments-grid .swiper-item').each(function(i, el){
-                if($(el).find('input[data-has-recurring=0]').length > 0) {
-                    $(el).removeClass('disabled');
-                }
-            });
+
+        let $available_pm_blocks = $_form.find('.payments-grid .swiper-item:not(.disabled)'),
+            $single_pm_icon_block = $_form.find('.single-pm-icon'),
+            $pm_form_section = $_form.find('.section--cards');
+
+        if($available_pm_blocks.length === 1) {
+
+            $single_pm_icon_block.html($available_pm_blocks.find('.payment-opt__icon').html()).show();
+            $pm_form_section.hide();
+
+        } else {
+
+            $single_pm_icon_block.hide();
+            $pm_form_section.show();
+
         }
         
         checkFormFillCompletion($_form);
+
     }
 
     function bindSwiperEvents() {
         $('.leyka-tpl-star-form .star-swiper').on('click', '.swiper-item', function(e){
 
-            var $this = $(this);
+            let $this = $(this),
+                $swiper = $this.closest('.star-swiper');
 
         	if($this.hasClass('selected')) {
         		return;
@@ -2354,7 +2376,6 @@ jQuery(document).ready(function($){
             $this.addClass('selected');
             $this.find('input[type="radio"]').prop('checked', true).change();
 
-            var $swiper = $this.closest('.star-swiper');
             swipeList($swiper, $this);
             toggleSwiperArrows($swiper);
 
@@ -2430,8 +2451,13 @@ jQuery(document).ready(function($){
     
     function swipeList($swiper, $activeItem) {
         var $list = $swiper.find('.swiper-list');
-        $list.stop( true, true )
-        
+
+        if( !$list.length ) {
+            return;
+        }
+
+        $list.stop( true, true );
+
         var dif = $list.width() - $swiper.width();
         if(dif <= 0) {
             $list.width($swiper.width());
@@ -2738,18 +2764,27 @@ jQuery(document).ready(function($){
     function bindPMEvents() {
         $('.leyka-tpl-star-form form.leyka-pm-form').each(function(){
 
-            var $_form = $(this);
+            let $_form = $(this);
 
             toggleStaticPMForm($_form);
             togglePmSpecialFields($_form);
 
             $(this).find('input.payment-opt__radio').change(function(){
+
                 if($(this).prop('checked')) {
 
                     toggleStaticPMForm($_form);
                     togglePmSpecialFields($_form);
 
                 }
+
+                // console.log($_form.find('.equalize-elements-width'))
+
+                // Equalize the Donor info fields lengths:
+                $_form.find('.section--person .equalize-elements-width').each(function(){
+                    equalizeFormElementsWidth($(this));
+                });
+
             });
         });
 

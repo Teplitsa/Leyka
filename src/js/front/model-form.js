@@ -642,11 +642,11 @@ var leykaValidateForm,
     /** payment step **/
     function setupPaymentsGrid() {
         
-        var $pg = $('.payments-grid');
-        if( $pg.find('.payment-opt').length <= 4 ) {
+        let $pg = $('.leyka-payment-form[data-template="star"] .payments-grid');
+        if($pg.find('.payment-opt').length <= 4) {
             $pg.css('overflow-y', 'hidden');
         }
-        
+
     }
     
     function selectPaymentProvider($_opt) {

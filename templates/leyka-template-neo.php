@@ -14,7 +14,7 @@ global $leyka_current_pm; /** @todo Make it a Leyka_Payment_Form class singleton
 
 leyka_pf_submission_errors();?>
 
-<div id="leyka-payment-form" class="leyka-tpl-neo" data-template="neo" data-leyka-ver="<?php Leyka_Payment_Form::get_plugin_ver_for_atts();?>">
+<div id="leyka-payment-form" class="leyka-tpl-neo" data-template="neo" data-leyka-ver="<?php echo Leyka_Payment_Form::get_plugin_ver_for_atts();?>">
 
     <!-- <?php echo __("This donation form is created by Leyka WordPress plugin, created by Teplitsa of Social Technologies. If you are interested in some way, don't hesitate to write to us: support@te-st.ru", 'leyka');?> -->
 

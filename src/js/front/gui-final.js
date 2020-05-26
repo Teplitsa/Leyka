@@ -12,7 +12,7 @@ window.LeykaGUIFinal.prototype = {
         
     bindEvents: function(){
 
-        var self = this; var $ = self.$;
+        let self = this, $ = self.$;
 
         function leyka_remembered_data(data_name, data_value, data_delete) {
 
@@ -26,7 +26,7 @@ window.LeykaGUIFinal.prototype = {
             }
         }
 
-        var $success_forms = $('.leyka-success-form'),
+        let $success_forms = $('.leyka-success-form'),
             donation_id = leyka_remembered_data('leyka_donation_id', '', false);
 
         if( !donation_id ) { // Hide the success form if there are no donation ID stored...
@@ -34,7 +34,7 @@ window.LeykaGUIFinal.prototype = {
         } else { // ... or display them if there is one in the local storage
             $success_forms.each(function(index, element) {
 
-                var $form = $(element),
+                let $form = $(element),
                     $donation_id_field = $form.find('input[name="leyka_donation_id"]');
 
                 if( !$donation_id_field.val() ) {
@@ -47,7 +47,7 @@ window.LeykaGUIFinal.prototype = {
             });
         }
 
-        $success_forms.on('submit', function(e){
+        $success_forms.on('submit.leyka', function(e){
 
             e.preventDefault();
 
@@ -57,13 +57,13 @@ window.LeykaGUIFinal.prototype = {
 
         });
 
-        $('.leyka-js-no-subscribe').on('click', function(e){
+        $('.leyka-js-no-subscribe').on('click.leyka', function(e){
             
             e.preventDefault();
 
             $(this).closest('.leyka-final-subscribe-form').slideUp(100);
 
-            var $thankyou_block = $('.leyka-pf__final-thankyou');
+            let $thankyou_block = $('.leyka-pf__final-thankyou');
 
             $thankyou_block.find('.informyou-redirect-text').slideDown(100);
             self.runRedirectProcess($thankyou_block);
@@ -116,37 +116,36 @@ window.LeykaGUIFinal.prototype = {
         return form_valid;
 
     },
-    
+
     animateRedirectCountdown: function($container){
 
-        var self = this; var $ = self.$;
-        
-        var $countdown_div = $container.find('.informyou-redirect-text .leyka-redirect-countdown'),
-        countdown = $countdown_div.text();
+        let self = this,
+            $ = self.$,
+            $countdown_div = $container.find('.informyou-redirect-text .leyka-redirect-countdown'),
 
-        countdown = parseInt(countdown, 10);
-        countdown -= 1;
+        countdown = parseInt($countdown_div.text(), 10) - 1;
+
         if(countdown <= 0) {
             clearInterval(self.countdownInterval);
         }
+
         $countdown_div.text(String(countdown));
 
     },
 
     runRedirectProcess: function($container) {
 
-        var self = this; var $ = self.$;
-        
-        var ajax_url = leyka_get_ajax_url();
-        
+        let self = this,
+            $ = self.$,
+            ajax_url = leyka_get_ajax_url();
+
         setTimeout(function(){
             
-            var redirect_url;
+            let redirect_url;
 
             if( !ajax_url ) {
                 redirect_url = '/';
-            }
-            else {
+            } else {
                 redirect_url = ajax_url.replace(/\/core\/wp-admin\/.*/, '');
                 redirect_url = redirect_url.replace(/\/wp-admin\/.*/, '');
             }
@@ -161,9 +160,9 @@ window.LeykaGUIFinal.prototype = {
 
     subscribeUser: function(){
 
-        var self = this; var $ = self.$;
-
-        var $informyou_block = $('.leyka-pf__final-informyou');
+        let self = this,
+            $ = self.$,
+            $informyou_block = $('.leyka-pf__final-informyou');
 
         $.post(
             leyka_get_ajax_url(),
@@ -181,9 +180,7 @@ window.LeykaGUIFinal.prototype = {
             self.runRedirectProcess($informyou_block);
 
         }).always(function(){
-
             $('.leyka-pf__final-thankyou').hide();
-
         });
 
     }
