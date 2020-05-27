@@ -265,7 +265,7 @@ class Leyka_Donation_Management {
             return false;
         }
 
-        if(leyka()->opt('send_donor_thanking_emails')) {
+        if(leyka()->opt('send_donor_thanking_emails') || leyka_options()->opt('send_donor_thanking_emails_on_recurring_init')) {
             Leyka_Donation_Management::send_donor_thanking_email($donation);
         }
 

@@ -1764,7 +1764,7 @@ jQuery(document).ready(function($){
 
         let $this = $(this);
 
-        if($this.val() === 'star') {
+        if($this.val() === 'star' || $this.val() === 'need-help') {
     		$('#campaign-css').show();
         } else {
         	$('#campaign-css').hide();
