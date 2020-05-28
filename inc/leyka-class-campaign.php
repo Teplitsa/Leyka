@@ -339,36 +339,91 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <div class="field-wrapper css-editor">
 
-                <?php $campaign_css_original = '/* :root { --leyka-color-main: #ff510d; } */ '
-                    .__('/* Active buttons & switches background color */', 'leyka')."\n".
-                    '/* :root { --leyka-color-main-second: #ffc29f; } */ '
-                    .__('/* Controls borders color */', 'leyka')."\n".
-                    '/* :root { --leyka-color-text-light: #ffffff; } */ '
-                    .__('/* Active buttons & switches text color */', 'leyka')."\n".
-                    '/* :root { --leyka-color-main-third: #fef5f1; } */ '
-                    .__('/* Selected payment method background color */', 'leyka')."\n".
-                    '/* :root { --leyka-color-main-inactive: rgba(255,81,13, 0.5); } */ '
-                    .__('/* Inactive main submit background color */', 'leyka')."\n".
-                    '/* :root { --leyka-color-error: #d43c57; } */ '
-                    .__('/* Error messages text color */', 'leyka')."\n".
-                    '/* :root { --leyka-color-gray-dark: #474747; } */ '
-                    .__('/* The main text color (controls & content) */', 'leyka')."\n".
-                    '/* :root { --leyka-color-gray-semi-dark: #656565; } */ '
-                    .__('/* Single/recurring switch inactive variant text color */', 'leyka')."\n".
-                    '/* :root { --leyka-color-gray: #666666; } */ '
-                    .__('/* Form fields labels color */', 'leyka')."\n".
-                    '/* :root { --leyka-color-gray-superlight: #ededed; } */ '
-                    .__('/* Checkboxes & other fields borders color */', 'leyka')."\n".
-                    '/* :root { --leyka-color-white: #ffffff; } */ '
-                    .__('/* The main form background color */', 'leyka')."\n".
-                    '/* :root { --leyka-font-main: unset; } */ '
-                    .__('/* The main form font family */', 'leyka')."\n".
-                    '/* :root { --leyka-color-gradient: #ffffff; } */ '
-                    .__('/* Payment methods selector gradient color */', 'leyka')."\n";?>
+                <?php $campaign_css_original = array(
+                    'star' => '/* :root { --leyka-color-main: #ff510d; } */ '
+                        .__('/* Active buttons & switches background color */', 'leyka')."\n".
+                        '/* :root { --leyka-color-main-second: #ffc29f; } */ '
+                        .__('/* Controls borders color */', 'leyka')."\n".
+                        '/* :root { --leyka-color-text-light: #ffffff; } */ '
+                        .__('/* Active buttons & switches text color */', 'leyka')."\n".
+                        '/* :root { --leyka-color-main-third: #fef5f1; } */ '
+                        .__('/* Selected payment method background color */', 'leyka')."\n".
+                        '/* :root { --leyka-color-main-inactive: rgba(255,81,13, 0.5); } */ '
+                        .__('/* Inactive main submit background color */', 'leyka')."\n".
+                        '/* :root { --leyka-color-error: #d43c57; } */ '
+                        .__('/* Error messages text color */', 'leyka')."\n".
+                        '/* :root { --leyka-color-gray-dark: #474747; } */ '
+                        .__('/* The main text color (controls & content) */', 'leyka')."\n".
+                        '/* :root { --leyka-color-gray-semi-dark: #656565; } */ '
+                        .__('/* Single/recurring switch inactive variant text color */', 'leyka')."\n".
+                        '/* :root { --leyka-color-gray: #666666; } */ '
+                        .__('/* Form fields labels color */', 'leyka')."\n".
+                        '/* :root { --leyka-color-gray-superlight: #ededed; } */ '
+                        .__('/* Checkboxes & other fields borders color */', 'leyka')."\n".
+                        '/* :root { --leyka-color-white: #ffffff; } */ '
+                        .__('/* The main form background color */', 'leyka')."\n".
+                        '/* :root { --leyka-font-main: unset; } */ '
+                        .__('/* The main form font family */', 'leyka')."\n".
+                        '/* :root { --leyka-color-gradient: #ffffff; } */ '
+                        .__('/* Payment methods selector gradient color */', 'leyka')."\n",
 
-                <textarea id="campaign-css-field" name="campaign_css" class="css-editor-field"><?php echo $campaign->additional_css ? $campaign->additional_css : $campaign_css_original;?></textarea>
+                    'need-help' => '/* :root { --leyka-need-help-color-main: #FFB600; } */ '
+                        .__('/* Active buttons & switches highlight color */', 'leyka')."\n".
+                        '/* :root { --leyka-need-help-color-main-second: #FFCF00; } */ '
+                        .__('/* Secondary elements color */', 'leyka')."\n".
+                        '/* :root { --leyka-need-help-color-main-inactive: rgba(255, 207, 0, 0.35); } */ '
+                        .__('/* The inactive elements color. Most of the times, the main color with lighter shade */', 'leyka')."\n".
+                        '/* :root { --leyka-need-help-color-form-background: #FBFBFB; } */ '
+                        .__('/* Form background color */', 'leyka')."\n".
+                        '/* :root { --leyka-need-help-color-blocks-border: #E6E6E6; } */ '
+                        .__('/* Form blocks border color */', 'leyka')."\n".
+                        '/* :root { --leyka-need-help-color-blocks-background: #FFFFFF; } */ '
+                        .__('/* Form blocks background color */', 'leyka')."\n".
+                        '/* :root { --leyka-need-help-color-blocks-active-border: var(--leyka-need-help-color-main); } */ '
+                        .__('/* Form active blocks border color */', 'leyka')."\n".
+                        '/* :root { --leyka-need-help-color-blocks-active-background: var(--leyka-need-help-color-blocks-background); } */ '
+                        .__('/* Form active blocks background color */', 'leyka')."\n".
+                        '/* :root { --leyka-need-help-color-text: #2A2A2A; } */ '
+                        .__('/* Form text color */', 'leyka')."\n".
+                        '/* :root { --leyka-need-help-color-text-light: #666666; } */ '
+                        .__('/* Form text color, lighter shade */', 'leyka')."\n".
+                        '/* :root { --leyka-need-help-color-text-superlight: #999999; } */ '
+                        .__('/* Form text color, the most light shade */', 'leyka')."\n".
+                        '/* :root { --leyka-need-help-font-family-main: Montserrat, "Helvetica Neue", sans-serif; } */ '
+                        .__('/* Form text font */', 'leyka')."\n".
+                        '/* :root { --leyka-need-help-font-family-blocks: Montserrat, "Helvetica Neue", sans-serif; } */ '
+                        .__('/* Form blocks text font */', 'leyka')."\n".
+                        '/* :root { --leyka-need-help-font-family-submit: Montserrat, "Helvetica Neue", sans-serif; } */ '
+                        .__('/* Form submit text font */', 'leyka')."\n".
+                        '/* :root { --leyka-need-help-font-family-section-titles: Montserrat, "Helvetica Neue", sans-serif; } */ '
+                        .__('/* Form sections titles text font */', 'leyka')."\n".
+                        '/* :root { --leyka-need-help-font-size-main: 14px; } */ '
+                        .__('/* Form text size */', 'leyka')."\n".
+                        '/* :root { --leyka-need-help-font-size-blocks-default: 14px; } */ '
+                        .__('/* Form blocks text size */', 'leyka')."\n".
+                        '/* :root { --leyka-need-help-font-size-amounts: 14px; } */ '
+                        .__('/* Donation amount blocks text size */', 'leyka')."\n".
+                        '/* :root { --leyka-need-help-font-size-pm-options: 12px; } */ '
+                        .__('/* Payment method blocks text size */', 'leyka')."\n".
+                        '/* :root { --leyka-need-help-font-size-donor-fields: 14px; } */ '
+                        .__('/* Donor data fields text size */', 'leyka')."\n".
+                        '/* :root { --leyka-need-help-font-size-submit: 14px; } */ '
+                        .__('/* Form submit text size */', 'leyka')."\n".
+                        '/* :root { --leyka-need-help-font-size-section-titles: 16px; } */ '
+                        .__('/* Form sections titles text size */', 'leyka')."\n"
+                );?>
+
+                <textarea id="campaign-css-field" name="campaign_css" class="css-editor-field" data-additional-css-used="<?php echo $campaign->additional_css ? 1 : 0;?>"><?php echo $campaign->additional_css ?
+                    trim($campaign->additional_css) :
+                    (empty($campaign_css_original[$campaign->template]) ?
+                        '' :
+                        trim($campaign_css_original[$campaign->template]));?></textarea>
+
                 <div class="css-editor-reset-value"><?php _e('Return original styles', 'leyka');?></div>
-                <input type="hidden" class="css-editor-original-value" value="<?php echo $campaign_css_original;?>">
+
+                <?php foreach($campaign_css_original as $template_id => $template_css) {?>
+                <input type="hidden" class="css-editor-<?php echo $template_id;?>-original-value" value="<?php echo esc_attr(trim($template_css));?>">
+                <?php }?>
 
             </div>
 

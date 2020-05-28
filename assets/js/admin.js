@@ -953,13 +953,19 @@ jQuery(document).ready(function($){
             });
         editor = wp.codeEditor.initialize($css_editor, editor_settings);
 
+        $css_editor.data('code-editor-object', editor);
+
         $('.css-editor-reset-value').on('click.leyka', function(e){ // Additional CSS value reset
 
             e.preventDefault();
 
             let $this = $(this),
                 $css_editor_field = $this.siblings('.css-editor-field'),
-                original_value = $this.siblings('.css-editor-original-value').val();
+                template_id = $this
+                    .parents('.campaign-css')
+                    .siblings('.campaign-template')
+                        .find('[name="campaign_template"]').val(),
+                original_value = $this.siblings('.css-editor-'+template_id+'-original-value').val();
 
             $css_editor_field.val(original_value);
             editor.codemirror.getDoc().setValue(original_value);
@@ -1762,10 +1768,23 @@ jQuery(document).ready(function($){
 
         e.preventDefault();
 
-        let $this = $(this);
+        let $campaign_template_field = $(this),
+            $css_editor_field = $('.css-editor-field');
 
-        if($this.val() === 'star' || $this.val() === 'need-help') {
+        if($campaign_template_field.val() === 'star' || $campaign_template_field.val() === 'need-help') {
+
     		$('#campaign-css').show();
+
+    		// Set the template-specific default CSS editor value, if needed:
+            if( !$css_editor_field.data('additional-css-used') ) {
+
+                let original_value = $('.css-editor-'+$campaign_template_field.val()+'-original-value').val();
+
+                $css_editor_field.val(original_value);
+                $css_editor_field.data('code-editor-object').codemirror.getDoc().setValue(original_value);
+
+            }
+
         } else {
         	$('#campaign-css').hide();
         }

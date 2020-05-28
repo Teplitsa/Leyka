@@ -240,10 +240,23 @@ jQuery(document).ready(function($){
 
         e.preventDefault();
 
-        let $this = $(this);
+        let $campaign_template_field = $(this),
+            $css_editor_field = $('.css-editor-field');
 
-        if($this.val() === 'star' || $this.val() === 'need-help') {
+        if($campaign_template_field.val() === 'star' || $campaign_template_field.val() === 'need-help') {
+
     		$('#campaign-css').show();
+
+    		// Set the template-specific default CSS editor value, if needed:
+            if( !$css_editor_field.data('additional-css-used') ) {
+
+                let original_value = $('.css-editor-'+$campaign_template_field.val()+'-original-value').val();
+
+                $css_editor_field.val(original_value);
+                $css_editor_field.data('code-editor-object').codemirror.getDoc().setValue(original_value);
+
+            }
+
         } else {
         	$('#campaign-css').hide();
         }
