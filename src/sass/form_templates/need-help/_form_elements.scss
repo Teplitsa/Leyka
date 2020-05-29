@@ -129,8 +129,6 @@
 
                     .swiper-item-inner {
                         display: flex;
-                        padding: 0 5px !important;
-                        margin: 0 -5px;
                     }
 
                     label {
@@ -152,6 +150,7 @@
                         }
 
                         display: inline-block;
+                        overflow: auto;
 
                         cursor: pointer;
                         font-size: var(--leyka-need-help-font-size-amounts);
