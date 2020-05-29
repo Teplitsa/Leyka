@@ -30,10 +30,24 @@
 
     function equalizeFormElementsWidth($elements_wrapper){
 
-        let width = 0;
-        $elements_wrapper.children(':not('+$elements_wrapper.data('equalize-elements-exceptions')+')').each(function(){
+        let width = 0,
+            wrapper_width = $elements_wrapper.innerWidth()
+                - Math.abs(parseInt($elements_wrapper.css('margin-left')))
+                - Math.abs(parseInt($elements_wrapper.css('margin-right'))),
+            $elements = $elements_wrapper
+                .children(':not('+$elements_wrapper.data('equalize-elements-exceptions')+'):not(.disabled)');
+
+        $elements.each(function(){
 
             let $element = jQuery(this);
+
+            if(wrapper_width / $elements.length > 230) { // Element total width: 220 is the basis, 10 is the margin
+
+                $element.removeProp('style'); // If elements are few, let them just stretch to fit in one line
+                return;
+
+            }
+
             if( !width ) {
                 width = $element.outerWidth();
             }
@@ -157,15 +171,24 @@
 
     function bindModeEvents() {
 
-        $('.leyka-tpl-star-form .section__fields.periodicity').on('click', 'a', function(e){
+        $('.leyka-tpl-star-form .section__fields.periodicity').on('click.leyka', 'a', function(e){
+
 			e.preventDefault();
-			
-			$(this).closest('.section__fields').find('a').removeClass('active');
-			$(this).addClass('active');
-            
-            var $_form = $(this).closest('form.leyka-pm-form');
+
+			let $this = $(this),
+                $_form = $(this).closest('form.leyka-pm-form');
+
+			$this.closest('.section__fields').find('a').removeClass('active');
+			$this.addClass('active');
+
             setupPeriodicity($_form);
             setupSwiperWidth($_form);
+
+            // Equalize the PM selection blocks widths:
+            $_form.find('.payments-grid .equalize-elements-width').each(function(){
+                equalizeFormElementsWidth($(this));
+            });
+
         });
         
         $('.leyka-tpl-star-form form.leyka-pm-form').each(function(){
@@ -703,9 +726,7 @@
 
                 }
 
-                // console.log($_form.find('.equalize-elements-width'))
-
-                // Equalize the Donor info fields lengths:
+                // Equalize the Donor info fields widths:
                 $_form.find('.section--person .equalize-elements-width').each(function(){
                     equalizeFormElementsWidth($(this));
                 });
