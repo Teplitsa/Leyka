@@ -1304,6 +1304,13 @@ class Leyka extends Leyka_Singleton {
 
         }
 
+        if(leyka_modern_template_displayed('need-help')) {
+            wp_enqueue_style(
+                $this->_plugin_slug.'-montserrat-font-styles',
+                'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap'
+            );
+        }
+
         if( // New CSS
             !leyka_options()->opt('load_scripts_if_need')
             || leyka_modern_template_displayed()

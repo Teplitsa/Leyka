@@ -723,7 +723,7 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
             case 'label':
             case 'title':
             case 'name':
-                $param = leyka_options()->opt_safe($this->full_id.'_label');
+                $param = stripslashes(leyka_options()->opt_safe($this->full_id.'_label'));
                 $param = apply_filters('leyka_get_pm_label', $param && $param != $this->_label ? $param : $this->_label, $this);
                 break;
             case 'label_backend':

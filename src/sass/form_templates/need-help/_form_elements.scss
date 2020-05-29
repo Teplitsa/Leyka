@@ -28,6 +28,8 @@
 
             @include need-help-block();
 
+            font-weight: 500;
+
             flex: 220px 1 1;
 
             margin-left: 20px;
@@ -74,6 +76,7 @@
 
                 margin-bottom: 10px;
                 margin-left: 10px;
+                padding: 0 10px;
 
                 flex: 100px 1 1;
 
@@ -91,26 +94,10 @@
 
                 }
 
-                &.flex-amount-item {
-
-                    &.focus, &.selected {
-                        @include need-help-block();
-                    }
-
-                    input {
-
-                        @include placeholder {
-                            color: var(--leyka-need-help-color-text-light) !important;
-                            font-size: var(--leyka-need-help-font-size-amounts);
-                        }
-
-                        font-size: var(--leyka-need-help-font-size-amounts);
-
-                    }
-
-                }
-
                 span, input {
+                    color: var(--leyka-need-help-color-text);
+                    font-family: var(--leyka-need-help-font-family-blocks);
+                    font-weight: 500;
                     font-size: var(--leyka-need-help-font-size-amounts);
                     text-transform: none;
                 }
@@ -124,22 +111,8 @@
                     padding: 8px 20px !important;
                     height: 60px;
 
-                    .swiper-item-inner {
-                        display: flex;
-                    }
-
-                    input {
-                        cursor: pointer;
-                    }
-
-                    label {
-
-                        display: inline-block;
-
-                        span.textfield-label {
-                            display: none;
-                        }
-
+                    &.focus, &.selected {
+                        @include need-help-block();
                     }
 
                     &.empty {
@@ -154,9 +127,35 @@
 
                     }
 
-                    input {
+                    .swiper-item-inner {
+                        display: flex;
+                        padding: 0 5px !important;
+                        margin: 0 -5px;
+                    }
+
+                    label {
 
                         display: inline-block;
+
+                        span.textfield-label {
+                            display: none;
+                        }
+
+                    }
+
+                    input {
+
+                        @include placeholder {
+                            color: var(--leyka-need-help-color-text-light) !important;
+                            font-size: var(--leyka-need-help-font-size-amounts);
+                            font-weight: 500;
+                        }
+
+                        display: inline-block;
+
+                        cursor: pointer;
+                        font-size: var(--leyka-need-help-font-size-amounts);
+                        font-weight: 500;
 
                         &[type="number"] {
                             margin-bottom: 0;
@@ -316,6 +315,8 @@
                 @include placeholder {
                     color: var(--leyka-need-help-color-text-superlight) !important;
                     font-size: var(--leyka-need-help-font-size-donor-fields);
+                    font-family: var(--leyka-need-help-font-family-blocks);
+                    font-weight: 500;
                 }
 
                 cursor: pointer;
@@ -349,6 +350,7 @@
             cursor: pointer;
             font-size: var(--leyka-need-help-font-size-main);
             font-family: var(--leyka-need-help-font-family-main);
+            font-weight: normal;
 
             svg.icon-checkbox-check {
                 fill: var(--leyka-need-help-color-main-second);
@@ -359,6 +361,7 @@
             }
 
             a {
+
                 display: inline-block;
                 color: unset;
 
@@ -500,7 +503,7 @@ div[id*="leyka-pf-"].leyka-pf-need-help {
             .section-title-text {
                 color: var(--leyka-need-help-color-text);
                 font-size: var(--leyka-need-help-font-size-section-titles);
-                font-family: var(--leyka-need-help-font-size-section-titles);
+                font-family: var(--leyka-need-help-font-family-section-titles);
                 font-weight: 600;
                 text-transform: none;
                 padding: 0;

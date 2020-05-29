@@ -1309,10 +1309,10 @@ function leyka_revo_template_displayed() {
 
 }
 
-function leyka_modern_template_displayed() {
+function leyka_modern_template_displayed($template_id = false) {
 
     $modern_template_displayed = false;
-    $modern_templates = array('revo', 'star', 'need-help',);
+    $modern_templates = $template_id ? array($template_id) : array('revo', 'star', 'need-help',);
 
     $post = get_post();
 
