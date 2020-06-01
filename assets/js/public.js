@@ -2386,10 +2386,12 @@ jQuery(document).ready(function($){
     }
 
     function bindSwiperEvents() {
-        $('.leyka-tpl-star-form .star-swiper').on('click', '.swiper-item', function(e){
+        $('.leyka-tpl-star-form .star-swiper').on('click.leyka', '.swiper-item', function(e){
 
             let $this = $(this),
-                $swiper = $this.closest('.star-swiper');
+                $swiper = $this.closest('.star-swiper'),
+                $daily_rouble_comment = $this.parents('.star-swiper'),
+                $daily_rouble_amount = $daily_rouble_comment.find('.daily-rouble-amount');
 
         	if($this.hasClass('selected')) {
         		return;
@@ -2398,6 +2400,10 @@ jQuery(document).ready(function($){
             $this.siblings('.swiper-item.selected').removeClass('selected');
             $this.addClass('selected');
             $this.find('input[type="radio"]').prop('checked', true).change();
+
+            if($daily_rouble_comment.length) {
+                $daily_rouble_amount.text(30 * parseInt($this.data('value')));
+            }
 
             swipeList($swiper, $this);
             toggleSwiperArrows($swiper);

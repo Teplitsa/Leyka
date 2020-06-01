@@ -182,58 +182,6 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
 		$cur_template = $campaign->template ? $campaign->template : 'default';?>
 
-        <fieldset id="campaign-type" class="metabox-field campaign-field campaign-type">
-
-            <h3 class="field-title"><?php _e('Campaign type', 'leyka');?></h3>
-
-            <div class="field-wrapper">
-                <label class="field-label">
-                    <input type="radio" name="campaign_type" value="temporary" <?php echo $campaign->type === 'temporary' ? 'checked="checked"' : '';?>><?php _e('Temporary', 'leyka');?>
-                </label>
-                <label class="field-label">
-                    <input type="radio" name="campaign_type" value="persistent" <?php echo $campaign->type === 'persistent' ? 'checked="checked"' : '';?>><?php _e('Persistent', 'leyka');?>
-                </label>
-            </div>
-        </fieldset>
-
-        <fieldset id="donations-types" class="metabox-field campaign-field donaitons-types">
-
-            <h3 class="field-title"><?php _e('Donations types available', 'leyka');?></h3>
-
-            <div class="field-wrapper">
-                <label class="field-label">
-                    <input type="checkbox" name="donations_type[]" value="recurring" <?php echo in_array('recurring', $campaign->donations_types_available) || $campaign->status === 'auto-draft' ? 'checked="checked"' : '';?>><?php echo _x('Recurring', 'In mult., like "recurring donations"', 'leyka');?>
-                </label>
-                <label class="field-label">
-                    <input type="checkbox" name="donations_type[]" value="single" <?php echo in_array('single', $campaign->donations_types_available) || $campaign->status === 'auto-draft' ? 'checked="checked"' : '';?>><?php echo _x('Single', 'In mult., like "single donations"', 'leyka');?>
-                </label>
-            </div>
-
-        </fieldset>
-
-        <fieldset id="donation-type-default" class="metabox-field campaign-field donaiton-type-default">
-
-            <h3 class="field-title">
-                <?php _e('Donation type by default', 'leyka');?>
-                <span class="field-q">
-                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
-                    <span class="field-q-tooltip">
-                        <?php esc_html_e('What donation type is going to be used when donor sees a campaign form firsthand? The default type may influence number of the single & recurring donations.', 'leyka');?>
-                    </span>
-                </span>
-            </h3>
-
-            <div class="field-wrapper">
-                <label class="field-label">
-                    <input type="radio" name="donations_type_default" value="recurring" <?php echo $campaign->donations_type_default === 'recurring' ? 'checked="checked"' : '';?>><?php echo _x('Recurring', 'In single, like "recurring donation"', 'leyka');?>
-                </label>
-                <label class="field-label">
-                    <input type="radio" name="donations_type_default" value="single" <?php echo $campaign->donations_type_default === 'single' ? 'checked="checked"' : '';?>><?php echo _x('Single', 'In single, like "single donation"', 'leyka');?>
-                </label>
-            </div>
-
-        </fieldset>
-
         <fieldset id="campaign-form-template" class="metabox-field campaign-field campaign-template">
 
             <h3 class="field-title">
@@ -273,16 +221,118 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                     <?php }?>
 
                 </select>
+
+                <?php /** @todo Check if this div is used */ ?>
                 <div class="form-template-demo" style="display: none;">
-                <?php foreach($templates as $template) {
+                    <?php foreach($templates as $template) {
 
-                    $template_id = esc_attr($template['id']);?>
+                        $template_id = esc_attr($template['id']);?>
 
-                    <img class="form-template-screenshot <?php echo $template_id;?>" src="<?php echo LEYKA_PLUGIN_BASE_URL.'/img/theme-screenshots/screen-'.$template_id.'-002.png';?>" alt="" style="display: none;">
+                        <img class="form-template-screenshot <?php echo $template_id;?>" src="<?php echo LEYKA_PLUGIN_BASE_URL.'/img/theme-screenshots/screen-'.$template_id.'-002.png';?>" alt="" style="display: none;">
 
-                <?php }?>
+                    <?php }?>
                 </div>
 
+            </div>
+
+            <div class="field-wrapper flex" style="<?php echo $cur_template === 'need-help' ? '' : 'display:none;'?>">
+
+                <label for="daily-rouble-mode-on">
+                    <input type="checkbox" id="daily-rouble-mode-on" name="daily_rouble_mode_on" value="1" <?php echo $campaign->daily_rouble_mode_on ? 'checked' : '';?>>&nbsp;<?php echo sprintf(__('Turn on the "<a href="%s" target="_blank">Rouble per day</a>" mode', 'leyka'), 'https://leyka.te-st.ru/docs/ruble-a-day/');?>
+                </label>
+
+                <div class="field-wrapper flex daily-rouble-settings" style="<?php //echo $campaign->daily_rouble_mode_on ? '' : 'display:none;';?>">
+
+                    <div class="field-wrapper flex">
+
+                        <h3 class="field-title">
+                            <label for="daily-rouble-amount-variants"><?php _e('Daily amount variants', 'leyka');?></label>
+                        </h3>
+
+                        <input type="text" id="daily-rouble-amount-variants" name="daily_rouble_amounts" value="<?php echo $campaign->daily_rouble_amounts ? $campaign->daily_rouble_amounts : '1,2,3,4,5,10,15';?>" placeholder="<?php _e('E. g., 1,2,3,4,5,10,15');?>">
+
+                    </div>
+
+                    <div class="field-wrapper flex">
+
+                        <h3 class="field-title">
+                            <label for="daily-rouble-pm"><?php _e('Daily amount payment method', 'leyka');?></label>
+                        </h3>
+
+                        <?php $recurring_pm_list = leyka_get_pm_list(true);
+                        foreach($recurring_pm_list as $index => $pm) { /** @var $pm Leyka_Payment_Method */
+                            if( !$pm->has_recurring_support() ) {
+                                unset($recurring_pm_list[$index]);
+                            }
+                        }?>
+
+                        <select name="daily_rouble_pm" id="daily-rouble-pm" <?php echo $recurring_pm_list ? '' : 'disabled="disabled"';?>>
+                            <option value=""><?php _e('Select the payment method', 'leyka');?></option>
+
+                        <?php foreach($recurring_pm_list as $pm) {?>
+                            <option value="<?php echo $pm->full_id;?>" <?php echo $pm->full_id === $campaign->daily_rouble_pm_id ? 'selected="selected"' : '';?>>
+                                <?php echo $pm->title.' ('.$pm->gateway->title.')';?>
+                            </option>
+                        <?php }?>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </fieldset>
+
+        <fieldset id="campaign-type" class="metabox-field campaign-field campaign-type">
+
+            <h3 class="field-title"><?php _e('Campaign type', 'leyka');?></h3>
+
+            <div class="field-wrapper">
+                <label class="field-label">
+                    <input type="radio" name="campaign_type" value="temporary" <?php echo $campaign->type === 'temporary' ? 'checked="checked"' : '';?>><?php _e('Temporary', 'leyka');?>
+                </label>
+                <label class="field-label">
+                    <input type="radio" name="campaign_type" value="persistent" <?php echo $campaign->type === 'persistent' ? 'checked="checked"' : '';?>><?php _e('Persistent', 'leyka');?>
+                </label>
+            </div>
+        </fieldset>
+
+        <fieldset id="donations-types" class="metabox-field campaign-field donaitons-types">
+
+            <h3 class="field-title"><?php _e('Donations types available', 'leyka');?></h3>
+
+            <div class="field-wrapper">
+                <label class="field-label">
+                    <input type="checkbox" name="donations_type[]" value="recurring" <?php echo in_array('recurring', $campaign->donations_types_available) || $campaign->status === 'auto-draft' ? 'checked="checked"' : '';?>><?php echo _x('Recurring', 'In mult., like "recurring donations"', 'leyka');?>
+                </label>
+                <label class="field-label">
+                    <input type="checkbox" name="donations_type[]" value="single" <?php echo in_array('single', $campaign->donations_types_available) || $campaign->status === 'auto-draft' ? 'checked="checked"' : '';?>><?php echo _x('Single', 'In mult., like "single donations"', 'leyka');?>
+                </label>
+            </div>
+
+        </fieldset>
+
+        <fieldset id="donation-type-default" class="metabox-field campaign-field donaiton-type-default">
+
+            <h3 class="field-title">
+                <?php _e('Donation type by default', 'leyka');?>
+                <span class="field-q">
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
+                    <span class="field-q-tooltip">
+                        <?php _e('What donation type is going to be used when donor sees a campaign form firsthand? The default type may influence number of the single & recurring donations.', 'leyka');?>
+                    </span>
+                </span>
+            </h3>
+
+            <div class="field-wrapper">
+                <label class="field-label">
+                    <input type="radio" name="donations_type_default" value="recurring" <?php echo $campaign->donations_type_default === 'recurring' ? 'checked="checked"' : '';?>><?php echo _x('Recurring', 'In single, like "recurring donation"', 'leyka');?>
+                </label>
+                <label class="field-label">
+                    <input type="radio" name="donations_type_default" value="single" <?php echo $campaign->donations_type_default === 'single' ? 'checked="checked"' : '';?>><?php echo _x('Single', 'In single, like "single donation"', 'leyka');?>
+                </label>
             </div>
 
         </fieldset>
@@ -411,9 +461,15 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                         .__('/* Form submit text size */', 'leyka')."\n".
                         '/* :root { --leyka-need-help-font-size-section-titles: 16px; } */ '
                         .__('/* Form sections titles text size */', 'leyka')."\n"
-                );?>
+                );
 
-                <textarea id="campaign-css-field" name="campaign_css" class="css-editor-field" data-additional-css-used="<?php echo $campaign->additional_css ? 1 : 0;?>"><?php echo $campaign->additional_css ?
+                $additional_css_used = !in_array(
+                    preg_replace('/\s+/u', '', html_entity_decode($campaign->additional_css, ENT_QUOTES)),
+                    array_map(function($value){
+                    return preg_replace('/\s+/u', '', $value);
+                }, $campaign_css_original));?>
+
+                <textarea id="campaign-css-field" name="campaign_css" class="css-editor-field" data-additional-css-used="<?php echo $additional_css_used;?>"><?php echo $campaign->additional_css ?
                     trim($campaign->additional_css) :
                     (empty($campaign_css_original[$campaign->template]) ?
                         '' :
@@ -739,6 +795,19 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 		$campaign = new Leyka_Campaign($campaign);
 
         $meta = array();
+
+        $_REQUEST['daily_rouble_mode_on'] = empty($_REQUEST['daily_rouble_mode_on']) ? 0 : 1;
+        if($campaign->daily_rouble_mode != $_REQUEST['daily_rouble_mode_on']) {
+            $meta['_leyka_daily_rouble_mode'] = $_REQUEST['daily_rouble_mode_on'];
+        }
+
+        if(isset($_REQUEST['daily_rouble_amounts']) && $campaign->daily_rouble_amounts !== $_REQUEST['daily_rouble_amounts'] ) {
+            $meta['_leyka_daily_rouble_amount_variants'] = esc_attr($_REQUEST['daily_rouble_amounts']);
+        }
+
+        if(isset($_REQUEST['daily_rouble_pm']) && $campaign->daily_rouble_pm_id !== $_REQUEST['daily_rouble_pm']) {
+            $meta['_leyka_daily_rouble_pm_id'] = esc_attr($_REQUEST['daily_rouble_pm']);
+        }
 
         if( !empty($_REQUEST['campaign_type']) && $campaign->type !== $_REQUEST['campaign_type'] ) {
             $meta['campaign_type'] = esc_attr($_REQUEST['campaign_type']);
@@ -1074,6 +1143,12 @@ class Leyka_Campaign {
                 'hide_cover_tint' => $meta['hide_cover_tint'] ? $meta['hide_cover_tint'][0] > 0 : 0,
                 'cover_bg_color' => empty($meta['cover_bg_color']) ? '' : $meta['cover_bg_color'][0],
                 'header_cover_type' => empty($meta['header_cover_type']) ? '' : $meta['header_cover_type'][0],
+                'daily_rouble_mode' => empty($meta['_leyka_daily_rouble_mode']) ?
+                    false : !!$meta['_leyka_daily_rouble_mode'][0],
+                'daily_rouble_amount_variants' =>
+                    empty($meta['_leyka_daily_rouble_amount_variants']) ? '' : $meta['_leyka_daily_rouble_amount_variants'][0],
+                'daily_rouble_pm_id' => empty($meta['_leyka_daily_rouble_pm_id']) ?
+                    false : $meta['_leyka_daily_rouble_pm_id'][0],
             );
 
         }
@@ -1108,22 +1183,25 @@ class Leyka_Campaign {
 
         switch($field) {
             case 'id':
-            case 'ID': return $this->_id;
+            case 'ID':
+                return $this->_id;
+
             case 'title':
-            case 'name': return $this->_post_object ? $this->_post_object->post_title : '';
+            case 'name':
+                return $this->_post_object ? $this->_post_object->post_title : '';
+
             case 'payment_title': return $this->_campaign_meta['payment_title'];
+
             case 'type':
             case 'campaign_type':
                 return empty($this->_campaign_meta['campaign_type']) ? 'temporary' : $this->_campaign_meta['campaign_type'];
 
-            // Donation types checked in campaign settings:
-            case 'donations_type':
+            case 'donations_type': // Donation types checked in campaign settings
             case 'donations_types':
                 return $this->_campaign_meta['donations_type'] ?
                     maybe_unserialize($this->_campaign_meta['donations_type']) : array('single', 'recurring');
 
-            // Donation types really available for campaign:
-            case 'donations_type_available':
+            case 'donations_type_available': // Donation types really available for campaign
             case 'donations_types_available':
                 return $this->_get_donations_types_available();
 
@@ -1148,36 +1226,45 @@ class Leyka_Campaign {
             case 'additional_css':
             case 'additional_campaign_css':
                 return $this->_campaign_meta['campaign_css'] ? $this->_campaign_meta['campaign_css'] : '';
+
             case 'cover':
             case 'cover_id':
             case 'campaign_cover':
             case 'campaign_cover_id':
                 return $this->_campaign_meta['campaign_cover'] ? $this->_campaign_meta['campaign_cover'] : '';
+
             case 'logo':
             case 'logo_id':
             case 'campaign_logo':
             case 'campaign_logo_id':
                 return $this->_campaign_meta['campaign_logo'] ? $this->_campaign_meta['campaign_logo'] : '';
+
             case 'campaign_target':
             case 'target':
                 return isset($this->_campaign_meta['campaign_target']) ? $this->_campaign_meta['campaign_target'] : 0;
+
             case 'content':
             case 'description': return $this->_post_object ? $this->_post_object->post_content : '';
+
             case 'excerpt':
             case 'post_excerpt':
             case 'short_description':
                 return $this->_post_object ? $this->_post_object->post_excerpt : '';
+
             case 'post_name': return $this->_post_object ? $this->_post_object->post_name : '';
             case 'status': return $this->_post_object ? $this->_post_object->post_status : '';
             case 'permalink':
             case 'url': return get_permalink($this->_id);
+
 			case 'is_finished':
 			case 'is_closed':
 				return $this->_campaign_meta['is_finished'];
+
             case 'ignore_view_settings':
             case 'ignore_global_template':
             case 'ignore_global_template_settings':
 				return $this->_campaign_meta['ignore_global_template'];
+
             case 'target_state':
                 return $this->_campaign_meta['target_state'];
             case 'date_reached':
@@ -1187,18 +1274,37 @@ class Leyka_Campaign {
                 return $date ? date(get_option('date_format'), $date) : 0;
             case 'target_reaching_mailout_sent': return !!$this->_campaign_meta['target_reaching_mailout_sent'];
             case 'target_reaching_mailout_errors': return !!$this->_campaign_meta['target_reaching_mailout_errors'];
+
             case 'views':
             case 'count_views':
-            case 'views_count': return $this->_campaign_meta['count_views'];
+            case 'views_count':
+                return $this->_campaign_meta['count_views'];
+
             case 'submits':
             case 'count_submits':
-            case 'submits_count': return $this->_campaign_meta['count_submits'];
+            case 'submits_count':
+                return $this->_campaign_meta['count_submits'];
+
             case 'total_funded':
             case 'total_collected':
-            case 'total_donations_funded': return $this->_campaign_meta['total_funded'];
+            case 'total_donations_funded':
+                return $this->_campaign_meta['total_funded'];
+
             case 'hide_cover_tint': return $this->_campaign_meta['hide_cover_tint'];
             case 'cover_bg_color': return $this->_campaign_meta['cover_bg_color'];
             case 'header_cover_type': return $this->_campaign_meta['header_cover_type'];
+
+            case 'daily_rouble_mode':
+            case 'daily_rouble_mode_on':
+                return $this->_campaign_meta['daily_rouble_mode'];
+            case 'daily_rouble_amounts':
+            case 'daily_rouble_amount_variants':
+                return $this->_campaign_meta['daily_rouble_amount_variants'];
+            case 'daily_rouble_pm_id':
+            case 'daily_rouble_pm_full_id':
+                return $this->_campaign_meta['daily_rouble_pm_id'];
+            case 'daily_rouble_pm': return leyka_get_pm_by_id($this->daily_rouble_pm_full_id, true);
+
             default:
                 return apply_filters('leyka_get_unknown_campaign_field', null, $field, $this);
         }
@@ -1231,6 +1337,31 @@ class Leyka_Campaign {
 
                     $this->_campaign_meta['campaign_template'] = $value;
                     update_post_meta($this->_id, 'campaign_template', $value);
+
+                }
+                break;
+
+            case 'daily_rouble_mode':
+            case 'daily_rouble_mode_on':
+                $this->_campaign_meta['daily_rouble_mode'] = !!$value;
+                update_post_meta($this->_id, '_leyka_daily_rouble_mode', !!$value);
+                break;
+
+            case 'daily_rouble_amounts':
+            case 'daily_rouble_amount_variants':
+                $variants = array_map( function($amount){ return absint(trim($amount)); }, explode(',', trim($value)) );
+                $value = implode(',', $variants);
+                $this->_campaign_meta['daily_rouble_amount_variants'] = $value;
+                update_post_meta($this->_id, '_leyka_daily_rouble_amount_variants', $value);
+                break;
+
+            case 'daily_rouble_pm':
+            case 'daily_rouble_pm_id':
+                $pm = leyka_get_pm_by_id($value, true);
+                if(is_a($pm, 'Leyka_Payment_Method') && $pm->has_recurring_support()) {
+
+                    $this->_campaign_meta['daily_rouble_pm_id'] = $value;
+                    update_post_meta($this->_id, '_leyka_daily_rouble_pm_id', $value);
 
                 }
                 break;

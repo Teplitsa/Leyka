@@ -88,6 +88,17 @@ if(in_array('recurring', $campaign->donations_types_available)) {?>
                         <?php }?>
 
                         </div>
+
+                        <?php if($campaign->daily_rouble_mode_on) {?>
+                            <div class="daily-rouble-comment">
+                                <?php echo sprintf(
+                                    '<span class="daily-rouble-text">'.__('You are making a monthly donation in the amount of %s', 'leyka').'</span>',
+                                    '<span class="daily-rouble-amount">'.(30*reset($template_data['amount_variants'])).'</span>'
+                                    .'<span class="daily-rouble-currency">'.$template_data['currency_label'].'</span>'
+                                );?>
+                            </div>
+                        <?php }?>
+
                         <input type="hidden" class="leyka_donation_amount" name="leyka_donation_amount" value="">
 
                     </div>
