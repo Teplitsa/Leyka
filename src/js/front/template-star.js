@@ -35,7 +35,7 @@
                 - Math.abs(parseInt($elements_wrapper.css('margin-left')))
                 - Math.abs(parseInt($elements_wrapper.css('margin-right'))),
             $elements = $elements_wrapper
-                .children(':not('+$elements_wrapper.data('equalize-elements-exceptions')+'):not(.disabled)');
+                .children(':not('+$elements_wrapper.data('equalize-elements-exceptions')+'):not(.disabled):visible');
 
         $elements.each(function(){
 
@@ -68,12 +68,12 @@
 
             $(element).addClass('empty');
             
-            if( !e || e.type == 'blur' ) {
+            if( !e || e.type === 'blur' ) {
                 setAmountPlaceholder(element);
                 val = $(element).attr('placeholder');
                 $(element).siblings('.currency').hide();
                 $(element).addClass('show-ph');
-            } else if(e.type == 'focus') {
+            } else if(e.type === 'focus') {
                 $(element).siblings('.currency').show();
                 $(element).removeClass('show-ph');
             }
@@ -728,6 +728,7 @@
     }
     
     function bindPMEvents() {
+
         $('.leyka-tpl-star-form form.leyka-pm-form').each(function(){
 
             let $_form = $(this);
@@ -750,11 +751,13 @@
                 });
 
             });
+
         });
 
         $('.leyka-tpl-star-form .payments-grid .swiper-item.selected').each(function(i, el){
             $(this).click();
         });
+
     }
     
     function toggleStaticPMForm($form) {
@@ -773,7 +776,7 @@
 
     function togglePmSpecialFields($form) {
 
-        var $pm_radio = $form.find('input[name="leyka_payment_method"]:checked');
+        let $pm_radio = $form.find('input[name="leyka_payment_method"]:checked');
 
         $form.find('.special-field').hide();
         $form.find('.special-field.'+$pm_radio.val()).show();
