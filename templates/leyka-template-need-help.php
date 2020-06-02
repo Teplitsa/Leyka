@@ -38,12 +38,14 @@ if(in_array('recurring', $campaign->donations_types_available)) {?>
 
         <form id="<?php echo leyka_pf_get_form_id($campaign->id).'-'.$campaign->template_id.'-form';?>" class="leyka-pm-form leyka-no-validation" action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate">
 
-            <div class="section section--periodicity <?php echo in_array('recurring', $campaign->donations_types_available) ? '' : 'hidden';?>">
+            <div class="section section--periodicity <?php echo in_array('recurring', $campaign->donations_types_available) ? '' : 'hidden';?>" style="<?php echo $campaign->daily_rouble_mode_on ? 'display: none;' : '';?>">
 
-                <div class="section-title-container"><div class="section-title-text"><?php _e('Donation type', 'leyka');?></div></div>
+                <div class="section-title-container">
+                    <div class="section-title-text"><?php _e('Donation type', 'leyka');?></div>
+                </div>
 
                 <div class="section__fields periodicity">
-                    <a href="#" class="<?php echo $campaign->donations_type_default === 'recurring' ? 'active' : '';?> <?php echo in_array('recurring', $campaign->donations_types_available) ? '' : 'invisible';?>" data-periodicity="monthly"><?php _ex('Monthly', '"Monthly" donation type name', 'leyka');?></a>
+                    <a href="#" class="<?php echo $campaign->donations_type_default === 'recurring' || $campaign->daily_rouble_mode_on ? 'active' : '';?> <?php echo $campaign->daily_rouble_mode_on || in_array('recurring', $campaign->donations_types_available) ? '' : 'invisible';?>" data-periodicity="monthly"><?php _ex('Monthly', '"Monthly" donation type name', 'leyka');?></a>
                     <a href="#" class="<?php echo $campaign->donations_type_default === 'single' ? 'active' : '';?> <?php echo !in_array('single', $campaign->donations_types_available) ? 'invisible' : '';?>" data-periodicity="once"><?php _ex('Single', '"Single" donation type name', 'leyka');?></a>
                 </div>
 
@@ -104,7 +106,8 @@ if(in_array('recurring', $campaign->donations_types_available)) {?>
                     </div>
 
                     <input type="hidden" class="leyka_donation_currency" name="leyka_donation_currency" data-currency-label="<?php echo $template_data['currency_label'];?>" value="<?php echo leyka_options()->opt('main_currency');?>">
-                    <input type="hidden" name="leyka_recurring" class="is-recurring-chosen" value="<?php echo $is_recurring_campaign ? '1' : '0';?>">
+                    <input type="hidden" name="leyka_recurring" class="is-recurring-chosen" value="<?php echo $is_recurring_campaign || $campaign->daily_rouble_mode_on ? '1' : '0';?>">
+
                 </div>
 
             </div>

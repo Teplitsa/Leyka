@@ -151,22 +151,32 @@
         });
 	}
     
-    function getAmountValueFromControl($el) {
-        var $predefinedAmount = $el.find('span.amount');
-        var val = '';
-        
-        if($predefinedAmount.length > 0) {
-            val = $el.find('span.amount').text();
+    function getAmountValueFromControl($element) {
+
+        let $predefined_amount = $element.find('span.amount'),
+            val = '';
+
+        if($predefined_amount.length > 0) {
+
+            let $daily_rouble_comment = $element.parents('.star-swiper').find('.daily-rouble-comment'),
+                $daily_rouble_amount = $daily_rouble_comment.find('.daily-rouble-amount')
+
+            val = $daily_rouble_comment.length ? $daily_rouble_amount.text() : $element.find('span.amount').text();
+
+        } else {
+            val = $element.find('input.donate_amount_flex').val();
         }
-        else {
-            val = $el.find('input.donate_amount_flex').val();
-        }
-        
-        return val;
+
+        return parseFloat(val.replace(/[^0-9]+/g, ''));
+
     }
-    
+
     function setAmountInputValue($form, amount) {
-        $form.find('input.leyka_donation_amount').val(parseFloat(amount.replace(' ', '')));
+
+        amount = typeof amount === 'string' ? parseFloat(amount.replace(/[^0-9]+/g, '')) : amount;
+
+        $form.find('input.leyka_donation_amount').val(amount);
+
     }
 
     function bindModeEvents() {
@@ -200,17 +210,18 @@
     function setupSwiperWidth($_form) {
         // amount swiper setup
         $('.amount__figure.star-swiper .swiper-list .swiper-item').last().css('margin-right', '0px');
-        
-        // pm swiper setup
-        var $swiper = $_form.find('.payments-grid .star-swiper');
-        // $list is empty in full-list width mode
-        var $list = $swiper.find('.swiper-list');
 
-        var $activeItem = $swiper.find('.swiper-item.selected:not(.disabled)').first();
-        if($activeItem.length == 0) {
+        // pm swiper setup
+        let $swiper = $_form.find('.payments-grid .star-swiper'),
+            $list = $swiper.find('.swiper-list'); // $list is empty in full-list width mode
+
+        var $active_item = $swiper.find('.swiper-item.selected:not(.disabled)').first();
+        if( !$active_item.length ) {
+
             $swiper.find('.swiper-item:not(.disabled)').first().addClass('selected');
-            $activeItem = $swiper.find('.swiper-item.selected:not(.disabled)').first();
-            $activeItem.find('input[type=radio]').prop('checked', true).change();
+            $active_item = $swiper.find('.swiper-item.selected:not(.disabled)').first();
+            $active_item.find('input[type=radio]').prop('checked', true).change();
+
         }
 
         $list.find('.swiper-item:not(.disabled)').css('margin-right', '16px');
@@ -218,53 +229,54 @@
         $list.css('width', '100%');
 
         // fix max width must work in swiper and full width mode, so use $swiper insted $list
-        var maxWidth = $swiper.closest('.leyka-payment-form').width();
+        var max_width = $swiper.closest('.leyka-payment-form').width();
 
         if($swiper.find('.full-list').length) {
-            maxWidth -= 60;
-            $swiper.find('.payment-opt__label').css('max-width', maxWidth);
-            $swiper.find('.payment-opt__icon').css('max-width', maxWidth);
-            //$list.find('.swiper-item').css('min-width', maxWidth);
-        }
-        else {
-            maxWidth -= 184;
-            $swiper.find('.payment-opt__label').css('max-width', maxWidth);
-            $swiper.find('.payment-opt__icon').css('max-width', maxWidth);
+
+            max_width -= 60;
+            $swiper.find('.payment-opt__label').css('max-width', max_width);
+            $swiper.find('.payment-opt__icon').css('max-width', max_width);
+
+        } else {
+
+            max_width -= 184;
+            $swiper.find('.payment-opt__label').css('max-width', max_width);
+            $swiper.find('.payment-opt__icon').css('max-width', max_width);
 
             $swiper.find('.swiper-item').each(function(i, item){
                 var w1 = $(item).find('.payment-opt__label').width();
                 var w2 = $(item).find('.pm-icon').length * 40; // max width of pm icon
-                $(item).css('min-width', Math.min(maxWidth, Math.max(w1, w2)) + 64);
+                $(item).css('min-width', Math.min(max_width, Math.max(w1, w2)) + 64);
             });
 
             // fix for FF and Safari
-            var $activePMItem = $swiper.find('.swiper-item:not(.disabled)');
-            if($activePMItem.length <= 1) {
-                $activePMItem.css('width', '100%');
+            let $active_pm_item = $swiper.find('.swiper-item:not(.disabled)');
+            if($active_pm_item.length <= 1) {
+                $active_pm_item.css('width', '100%');
+            } else {
+                $active_pm_item.css('width', 'auto');
             }
-            else {
-                $activePMItem.css('width', 'auto');
-            }
+
         }
         
         toggleSwiperArrows($swiper);
-        swipeList($swiper, $activeItem);
+        swipeList($swiper, $active_item);
     }
 
     function setupPeriodicity($_form) {
 
-        let isRecurring = false,
-            $activePeriodicityTab = $_form.find('.section__fields.periodicity a.active');
+        let is_recurring = false,
+            $active_periodicity_tab = $_form.find('.section__fields.periodicity a.active');
 
-        if($activePeriodicityTab.length) {
-            isRecurring = $activePeriodicityTab.data('periodicity') == 'monthly';
+        if($active_periodicity_tab.length) {
+            is_recurring = $active_periodicity_tab.data('periodicity') === 'monthly';
         } else {
-            isRecurring = parseInt($_form.find('input.is-recurring-chosen').val()) == 1;
+            is_recurring = parseInt($_form.find('input.is-recurring-chosen').val()) === 1;
         }
 
         $_form.find('.section__fields.periodicity a').removeClass('active');
 
-        if(isRecurring) {
+        if(is_recurring) {
 
             $_form.find('.section__fields.periodicity a[data-periodicity="monthly"]').addClass('active');
             $_form.find('input.is-recurring-chosen').val('1');
@@ -315,7 +327,7 @@
 
             let $this = $(this),
                 $swiper = $this.closest('.star-swiper'),
-                $daily_rouble_comment = $this.parents('.star-swiper'),
+                $daily_rouble_comment = $this.parents('.star-swiper').find('.daily-rouble-comment'),
                 $daily_rouble_amount = $daily_rouble_comment.find('.daily-rouble-amount');
 
         	if($this.hasClass('selected')) {
