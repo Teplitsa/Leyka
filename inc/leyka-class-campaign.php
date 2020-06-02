@@ -235,7 +235,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             </div>
 
-            <div class="field-wrapper flex" style="<?php echo $cur_template === 'need-help' ? '' : 'display:none;'?>">
+            <div class="field-wrapper flex daily-rouble-settings-wrapper" style="<?php echo $cur_template === 'need-help' ? '' : 'display:none;'?>">
 
                 <label for="daily-rouble-mode-on">
                     <input type="checkbox" id="daily-rouble-mode-on" name="daily_rouble_mode_on" value="1" <?php echo $campaign->daily_rouble_mode_on ? 'checked' : '';?>>&nbsp;<?php echo sprintf(__('Turn on the "<a href="%s" target="_blank">Rouble per day</a>" mode', 'leyka'), 'https://leyka.te-st.ru/docs/ruble-a-day/');?>
@@ -299,7 +299,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             </div>
         </fieldset>
 
-        <fieldset id="donations-types" class="metabox-field campaign-field donaitons-types">
+        <fieldset id="donations-types" class="metabox-field campaign-field donaitons-types" style="<?php echo $campaign->daily_rouble_mode_on ? 'display: none;' : '';?>">
 
             <h3 class="field-title"><?php _e('Donations types available', 'leyka');?></h3>
 
@@ -314,7 +314,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         </fieldset>
 
-        <fieldset id="donation-type-default" class="metabox-field campaign-field donaiton-type-default">
+        <fieldset id="donation-type-default" class="metabox-field campaign-field donaiton-type-default" style="<?php echo $campaign->daily_rouble_mode_on ? 'display: none;' : '';?>">
 
             <h3 class="field-title">
                 <?php _e('Donation type by default', 'leyka');?>

@@ -8,6 +8,30 @@ jQuery(document).ready(function($){
         return;
     }
 
+    // "Daily rouble mode" change:
+    let $daily_rouble_mode = $('input#daily-rouble-mode-on'),
+        $daily_rouble_settings_block = $('.daily-rouble-settings'),
+        $default_donations_types_field_block = $('#donations-types'),
+        $default_donation_type_field_block = $('#donation-type-default');
+
+    $daily_rouble_mode.change(function(){
+
+        if($daily_rouble_mode.prop('checked')) {
+
+            $default_donations_types_field_block.hide();
+            $default_donation_type_field_block.hide();
+            $daily_rouble_settings_block.show();
+
+        } else {
+
+            $default_donations_types_field_block.show();
+            $default_donation_type_field_block.show();
+            $daily_rouble_settings_block.hide();
+
+        }
+
+    }).change();
+
     // Campaign type change:
     $(':input[name="campaign_type"]').on('change.leyka', function(e){
 
@@ -48,8 +72,8 @@ jQuery(document).ready(function($){
     }).change();
     
     // Donation types field change:
-    let $donations_types_fields = $(':input[name="donations_type[]"]'),
-        $default_donation_type_field_block = $('#donation-type-default');
+    let $donations_types_fields = $(':input[name="donations_type[]"]');
+
     $donations_types_fields.on('change.leyka', function(e){
 
         e.preventDefault();
@@ -59,7 +83,7 @@ jQuery(document).ready(function($){
             donations_types_selected.push($(this).val());
         });
 
-        if(donations_types_selected.length > 1) {
+        if(donations_types_selected.length > 1 && !$daily_rouble_mode.prop('checked')) {
             $default_donation_type_field_block.show();
         } else {
             $default_donation_type_field_block.hide();
