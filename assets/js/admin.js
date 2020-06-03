@@ -953,13 +953,19 @@ jQuery(document).ready(function($){
             });
         editor = wp.codeEditor.initialize($css_editor, editor_settings);
 
+        $css_editor.data('code-editor-object', editor);
+
         $('.css-editor-reset-value').on('click.leyka', function(e){ // Additional CSS value reset
 
             e.preventDefault();
 
             let $this = $(this),
                 $css_editor_field = $this.siblings('.css-editor-field'),
-                original_value = $this.siblings('.css-editor-original-value').val();
+                template_id = $this
+                    .parents('.campaign-css')
+                    .siblings('.campaign-template')
+                        .find('[name="campaign_template"]').val(),
+                original_value = $this.siblings('.css-editor-'+template_id+'-original-value').val();
 
             $css_editor_field.val(original_value);
             editor.codemirror.getDoc().setValue(original_value);
@@ -1530,6 +1536,30 @@ jQuery(document).ready(function($){
         return;
     }
 
+    // "Daily rouble mode" change:
+    let $daily_rouble_mode = $('input#daily-rouble-mode-on'),
+        $daily_rouble_settings_block = $('.daily-rouble-settings'),
+        $default_donations_types_field_block = $('#donations-types'),
+        $default_donation_type_field_block = $('#donation-type-default');
+
+    $daily_rouble_mode.change(function(){
+
+        if($daily_rouble_mode.prop('checked')) {
+
+            $default_donations_types_field_block.hide();
+            $default_donation_type_field_block.hide();
+            $daily_rouble_settings_block.show();
+
+        } else {
+
+            $default_donations_types_field_block.show();
+            $default_donation_type_field_block.show();
+            $daily_rouble_settings_block.hide();
+
+        }
+
+    }).change();
+
     // Campaign type change:
     $(':input[name="campaign_type"]').on('change.leyka', function(e){
 
@@ -1570,8 +1600,8 @@ jQuery(document).ready(function($){
     }).change();
     
     // Donation types field change:
-    let $donations_types_fields = $(':input[name="donations_type[]"]'),
-        $default_donation_type_field_block = $('#donation-type-default');
+    let $donations_types_fields = $(':input[name="donations_type[]"]');
+
     $donations_types_fields.on('change.leyka', function(e){
 
         e.preventDefault();
@@ -1581,7 +1611,7 @@ jQuery(document).ready(function($){
             donations_types_selected.push($(this).val());
         });
 
-        if(donations_types_selected.length > 1) {
+        if(donations_types_selected.length > 1 && !$daily_rouble_mode.prop('checked')) {
             $default_donation_type_field_block.show();
         } else {
             $default_donation_type_field_block.hide();
@@ -1762,10 +1792,23 @@ jQuery(document).ready(function($){
 
         e.preventDefault();
 
-        let $this = $(this);
+        let $campaign_template_field = $(this),
+            $css_editor_field = $('.css-editor-field');
 
-        if($this.val() === 'star') {
+        if($campaign_template_field.val() === 'star' || $campaign_template_field.val() === 'need-help') {
+
     		$('#campaign-css').show();
+
+    		// Set the template-specific default CSS editor value, if needed:
+            if( !$css_editor_field.data('additional-css-used') ) {
+
+                let original_value = $('.css-editor-'+$campaign_template_field.val()+'-original-value').val();
+
+                $css_editor_field.val(original_value);
+                $css_editor_field.data('code-editor-object').codemirror.getDoc().setValue(original_value);
+
+            }
+
         } else {
         	$('#campaign-css').hide();
         }

@@ -736,7 +736,8 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
         if( !leyka_options()->opt('plugin_stats_sync_enabled') ) {
             return true;
-        } else if(is_wp_error($stats_option_synch_res) && LEYKA_DEBUG) { // DO NOT return WP_Error in production!
+        } else if(is_wp_error($stats_option_synch_res) && leyka_options()->opt('plugin_debug_mode')) {
+            // DO NOT return WP_Error in production!
             return $stats_option_synch_res; // We should save the option and go to the next step anyway
         } else {
             return delete_option('leyka_plugin_stats_option_needs_sync')

@@ -13,7 +13,7 @@ if(count($campaign->donations_types_available) > 1) {
     if('recurring' == $campaign->donations_type_default) {
         $is_recurring_campaign = true;
     }
-} elseif(count($campaign->donations_types_available) == 1) {
+} else if(count($campaign->donations_types_available) == 1) {
     if(in_array('recurring', $campaign->donations_types_available)) {
         $is_recurring_campaign = true;
     }
@@ -23,7 +23,7 @@ $is_swipe_amount_variants = count($template_data['amount_variants']) + ((int)($t
 $is_swipe_pm_list = count($template_data['pm_list']) > 3;
 
 $another_amount_title = count($template_data['amount_variants']) > 0 ?
-    __('Another amount', 'leyka') : esc_html__('Enter amount', 'leyka');?>
+    __('Another amount', 'leyka') : __('Enter amount', 'leyka');?>
 
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
 	<symbol width="12" height="9" viewBox="0 0 12 9" id="icon-checkbox-check">
@@ -31,7 +31,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 	</symbol>
 </svg>
 
-<div id="leyka-pf-<?php echo $campaign->id;?>" class="leyka-pf leyka-pf-star" data-form-id="leyka-pf-<?php echo $campaign->id;?>-star-form" data-leyka-ver="<?php Leyka_Payment_Form::get_plugin_ver_for_atts();?>">
+<div id="leyka-pf-<?php echo $campaign->id;?>" class="leyka-pf leyka-pf-star" data-form-id="leyka-pf-<?php echo $campaign->id;?>-star-form" data-leyka-ver="<?php echo Leyka_Payment_Form::get_plugin_ver_for_atts();?>" data-card-2column-breakpoint-width="600">
 
 <div class="leyka-payment-form leyka-tpl-star-form" data-template="star">
 
@@ -70,16 +70,16 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                     <div class="<?php if($is_swipe_amount_variants){?>swiper-list<?php }else{?>full-list<?php }?>">
 
                         <?php foreach($template_data['amount_variants'] as $i => $amount) {?>
-                            <div class="swiper-item <?php echo $i ? "" : "selected";?>" data-value="<?php echo (int)$amount;?>"><div class="swiper-item-inner"><span class="amount"><?php echo (int)$amount;?></span><span class="currency"><?php echo $template_data['currency_label'];?></span></div></div>
+                            <div class="swiper-item <?php echo $i ? '' : 'selected';?>" data-value="<?php echo absint($amount);?>"><div class="swiper-item-inner"><span class="amount"><?php echo absint($amount);?></span><span class="currency"><?php echo $template_data['currency_label'];?></span></div></div>
                         <?php }?>
         
                         <?php if($template_data['amount_mode'] != 'fixed') {?>
-                            <div class="swiper-item flex-amount-item <?php if(!count($template_data['amount_variants'])):?>selected<?php endif;?>">
+                            <div class="swiper-item flex-amount-item <?php echo empty($template_data['amount_variants']) ? 'selected' : '';?>">
                             	<div class="swiper-item-inner">
-                                <label for="leyka-flex-amount">
-                                    <span class="textfield-label"><?php echo $another_amount_title;?>, <span class="currency"><?php echo $template_data['currency_label'];?></span></span>
-                                </label>
-                                <input type="number" title="<?php esc_html_e('Enter your amount', 'leyka');?>" placeholder="<?php esc_html_e('Enter your amount', 'leyka');?>" data-desktop-ph="<?php echo $another_amount_title;?>" data-mobile-ph="<?php esc_html_e('Enter your amount', 'leyka');?>" name="donate_amount_flex" class="donate_amount_flex" value="<?php echo esc_attr($template_data['amount_default']);?>" min="1" max="999999">
+                                    <label for="leyka-flex-amount">
+                                        <span class="textfield-label"><?php echo $another_amount_title;?>, <span class="currency"><?php echo $template_data['currency_label'];?></span></span>
+                                    </label>
+                                    <input type="number" title="<?php esc_html_e('Enter your amount', 'leyka');?>" placeholder="<?php esc_html_e('Enter your amount', 'leyka');?>" data-desktop-ph="<?php echo $another_amount_title;?>" data-mobile-ph="<?php esc_html_e('Enter your amount', 'leyka');?>" name="donate_amount_flex" class="donate_amount_flex" value="<?php echo esc_attr($template_data['amount_default']);?>" min="1" max="999999">
                                 </div>
                             </div>
                         <?php }?>
@@ -92,8 +92,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
             </div>
     
         </div>
-        
-    
+
         <div class="section section--cards">
         	<div class="section-title-container"><div class="section-title-line"></div><div class="section-title-text"><?php esc_html_e('Payment method', 'leyka');?></div></div>
     
@@ -101,7 +100,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                 <div class="star-swiper  <?php if(!$is_swipe_pm_list){?>no-swipe<?php }?>">
                     <div class="arrow-gradient left"></div><a class="swiper-arrow swipe-left" href="#"></a>
                     <div class="arrow-gradient right"></div><a class="swiper-arrow swipe-right" href="#"></a>
-                    
+
                 	<div class="<?php if($is_swipe_pm_list){?>swiper-list<?php }else{?>full-list<?php }?>">
     
                     <?php foreach($template_data['pm_list'] as $number => $pm) { /** @var $pm Leyka_Payment_Method */?>
@@ -277,7 +276,9 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                         <label for="<?php echo $field_id;?>">
                         	<svg class="svg-icon icon-checkbox-check"><use xlink:href="#icon-checkbox-check"></use></svg>
 
-                        <?php if(leyka_options()->opt('agree_to_pd_terms_link_action') === 'popup') {?>
+                        <?php echo apply_filters('agree_to_pd_terms_text_text_part', leyka_options()->opt('agree_to_pd_terms_text_text_part')).' ';
+
+                        if(leyka_options()->opt('agree_to_pd_terms_link_action') === 'popup') {?>
                             <a href="#" class="leyka-js-pd-trigger">
                         <?php } else {?>
                             <a target="_blank" href="<?php echo leyka_get_terms_of_pd_usage_page_url();?>">

@@ -7,7 +7,7 @@ function leyka_sync_plugin_stats_option() {
         return true;
     }
 
-    $stats_server_base_url = defined('LEYKA_DEBUG') && LEYKA_DEBUG ?
+    $stats_server_base_url = leyka_options()->opt('plugin_debug_mode') ?
         rtrim(LEYKA_USAGE_STATS_DEV_SERVER_URL, '/') : rtrim(LEYKA_USAGE_STATS_PROD_SERVER_URL, '/');
 
     $leyka_installation_id = (int)get_option('leyka_installation_id');
@@ -63,7 +63,8 @@ function leyka_sync_plugin_stats_option() {
         'blocking' => true, // True for sync request, false otherwise
         'body' => $params,
         'headers' => array(
-            'Authorization' => 'Basic '.base64_encode(LEYKA_DEBUG ? 'test:testhouse' : 'leyka:kopeyka'),
+            'Authorization' =>
+                'Basic '.base64_encode(leyka_options()->opt('plugin_debug_mode') ? 'test:testhouse' : 'leyka:kopeyka'),
             'Expect' => '',
         ),
     ));

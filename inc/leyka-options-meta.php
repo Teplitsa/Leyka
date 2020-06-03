@@ -1153,6 +1153,13 @@ self::$_options_meta = array(
         'comment' => __('Check to turn on the plugin demonstration mode. While in it, no emails will be sent to the payment gateways.', 'leyka'),
         'short_format' => true,
     ),
+    'plugin_debug_mode' => array(
+        'type' => 'checkbox',
+        'default' => false,
+        'title' => __('Debugging mode on', 'leyka'),
+        'comment' => __('Check to turn on the plugin debugging mode. Warning: some of the logic checks will not be performed if the mode is on. Please, use the option with caution.', 'leyka'),
+        'short_format' => true,
+    ),
     'plugin_stats_sync_enabled' => array(
         'type' => 'checkbox',
         'default' => true,

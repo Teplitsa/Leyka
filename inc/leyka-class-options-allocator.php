@@ -281,7 +281,34 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                                 'options' => array('donation_sum_field_type',),
                             ),
                             array(
-                                'title' => __('Explanation of benefits of egular donations', 'leyka'),
+                                'title' => __('Explanation of benefits of regular donations', 'leyka'),
+                                'options' => array('recurring_donation_benefits_text',),
+                            ),
+                            array(
+                                'title' => __('Label of the button to submit a donation form', 'leyka'),
+                                'options' => array('donation_submit_text',),
+                            ),
+                            array(
+                                'title' => __('Additional settings', 'leyka'),
+                                'options' => array(
+                                    'show_success_widget_on_success',
+                                    'show_donation_comment_field', 'donation_comment_max_length',
+                                    'show_failure_widget_on_failure',
+                                    'do_not_display_donation_form',
+                                ),
+                            ),
+                        ),
+                    ),
+                    'template_options_need-help' => array(
+                        'title' => __('Need help', 'leyka'),
+                        'screenshots' => array('screen-star-001.png'),
+                        'sections' => array(
+                            array(
+                                'title' => __('Donation sum field type', 'leyka'),
+                                'options' => array('donation_sum_field_type',),
+                            ),
+                            array(
+                                'title' => __('Explanation of benefits of regular donations', 'leyka'),
                                 'options' => array('recurring_donation_benefits_text',),
                             ),
                             array(
@@ -466,7 +493,8 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'options' => array(
                             'show_donation_comments_in_frontend', 'success_page', 'failure_page', 'load_scripts_if_need',
                             'donors_data_editable', 'revo_thankyou_text', 'revo_thankyou_email_result_text',
-                            'allow_deprecated_form_templates', 'plugin_demo_mode', 'plugin_stats_sync_enabled',
+                            'allow_deprecated_form_templates', 'plugin_demo_mode', 'plugin_debug_mode',
+                            'plugin_stats_sync_enabled',
                         )
                     ),),
                 );

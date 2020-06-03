@@ -167,13 +167,19 @@ jQuery(document).ready(function($){
             });
         editor = wp.codeEditor.initialize($css_editor, editor_settings);
 
+        $css_editor.data('code-editor-object', editor);
+
         $('.css-editor-reset-value').on('click.leyka', function(e){ // Additional CSS value reset
 
             e.preventDefault();
 
             let $this = $(this),
                 $css_editor_field = $this.siblings('.css-editor-field'),
-                original_value = $this.siblings('.css-editor-original-value').val();
+                template_id = $this
+                    .parents('.campaign-css')
+                    .siblings('.campaign-template')
+                        .find('[name="campaign_template"]').val(),
+                original_value = $this.siblings('.css-editor-'+template_id+'-original-value').val();
 
             $css_editor_field.val(original_value);
             editor.codemirror.getDoc().setValue(original_value);

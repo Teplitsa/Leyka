@@ -18,7 +18,7 @@ class Leyka extends Leyka_Singleton {
      * Templates order.
      * @var array
      */
-    protected $_templates_order = array('star', 'revo', 'neo', 'toggles', 'radios',);
+    protected $_templates_order = array('need-help', 'star', 'revo', 'neo', 'toggles', 'radios',);
 
     /**
      * Gateways list.
@@ -69,6 +69,11 @@ class Leyka extends Leyka_Singleton {
 
             });
         }
+
+        add_filter('leyka_option_value', function($value, $option_id){ // If LEYKA_DEBUG const is set, use it's value
+            return $option_id === 'plugin_debug_mode' ?
+                (defined('LEYKA_DEBUG') && LEYKA_DEBUG !== 'inherit' ? !!LEYKA_DEBUG : $value) : $value;
+        }, 10, 2);
 
         // By default, we'll assume some errors in the payment form, so redirect will get us back to it:
         $this->_payment_url = wp_get_referer();
@@ -691,9 +696,7 @@ class Leyka extends Leyka_Singleton {
                 return;
             }
 
-            $donation_amount_total = round((float)$donation->amount_total, 2);
-
-            echo '<pre>'.print_r('HERE!', 1).'</pre>';?>
+            $donation_amount_total = round((float)$donation->amount_total, 2);?>
 
         <script>
             window.dataLayer = window.dataLayer || [];
@@ -1304,6 +1307,13 @@ class Leyka extends Leyka_Singleton {
             );
             return;
 
+        }
+
+        if(leyka_modern_template_displayed('need-help')) {
+            wp_enqueue_style(
+                $this->_plugin_slug.'-montserrat-font-styles',
+                'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap'
+            );
         }
 
         if( // New CSS
@@ -2091,9 +2101,7 @@ class Leyka extends Leyka_Singleton {
 
         $data['file'] = $file;
         $data['basename'] = basename($file);
-
-        $id = explode('-', str_replace('.php', '', $data['basename']));
-        $data['id'] = end($id); // Otherwise error appears in php 5.4.x
+        $data['id'] = str_replace(array('leyka-template-', '.php'), '', $data['basename']);
 
         if(empty($data['name'])) {
             $data['name'] = $data['basename'];
@@ -2102,6 +2110,7 @@ class Leyka extends Leyka_Singleton {
         return $data;
 
     }
+
     /** @deprecated From v3.5 use only $this->get_template($template_id). */
     public function get_template_data($file) {
         return $this->_get_template_data($file);
@@ -2116,8 +2125,7 @@ class Leyka extends Leyka_Singleton {
 
         foreach($templates as $template) {
 
-            $current_template_id = explode('-', str_replace('.php', '', $template['basename']));
-            $current_template_id = end($current_template_id);
+            $current_template_id = str_replace(array('leyka-template-', '.php'), '', $template['basename']);
 
             if($current_template_id == $template_id) {
                 return $template;

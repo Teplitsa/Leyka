@@ -544,7 +544,7 @@ function leyka_get_form_templates_list() {
     $list = array();
     foreach(leyka()->get_templates() as $template) {
 
-        if( !LEYKA_DEBUG && !empty($template['debug_only']) ) {
+        if( !leyka_options()->opt('plugin_debug_mode') && !empty($template['debug_only']) ) {
             continue;
         }
 
@@ -1309,10 +1309,10 @@ function leyka_revo_template_displayed() {
 
 }
 
-function leyka_modern_template_displayed() {
+function leyka_modern_template_displayed($template_id = false) {
 
     $modern_template_displayed = false;
-    $modern_templates = array('revo', 'star');
+    $modern_templates = $template_id ? array($template_id) : array('revo', 'star', 'need-help',);
 
     $post = get_post();
 
@@ -1414,18 +1414,6 @@ function leyka_success_widget_displayed() {
 
 function leyka_failure_widget_displayed() {
     return leyka_options()->opt_template('show_failure_widget_on_failure') && is_page(leyka_options()->opt('failure_page'));
-}
-
-function leyka_format_amount($amount) {
-
-    if((int)$amount >= 0) {
-        $amount_is_float = (float)$amount - (int)$amount > 0;
-    } else {
-        return false;
-    }
-
-    return number_format((float)$amount, $amount_is_float ? 2 : 0, '.', ' ');
-
 }
 
 function leyka_validate_donor_name($name) {
@@ -2326,7 +2314,7 @@ if( !function_exists('leyka_delete_dir') ) {
      */
     function leyka_delete_dir($path) {
 
-        if(LEYKA_DEBUG) {
+        if(leyka_options()->opt('plugin_debug_mode')) {
             return file_exists($path) && is_dir($path);
         }
 
