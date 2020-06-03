@@ -72,7 +72,7 @@ if( !defined('LEYKA_SUPPORT_EMAIL') ) {
 }
 
 if( !defined('LEYKA_DEBUG') ) {
-    define('LEYKA_DEBUG', true);
+    define('LEYKA_DEBUG', 'inherit');
 }
 
 if( !defined('LEYKA_USAGE_STATS_DEV_SERVER_URL') ) {
@@ -155,3 +155,5 @@ register_activation_hook(__FILE__, array('Leyka', 'activate')); // Activation
 register_deactivation_hook(__FILE__, array('Leyka', 'deactivate')); // Deactivate
 
 leyka(); // All systems go
+
+echo '<pre>HERE: '.print_r((int)leyka_options()->opt('plugin_debug_mode'), 1).'</pre>';

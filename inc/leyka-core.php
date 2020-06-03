@@ -70,6 +70,11 @@ class Leyka extends Leyka_Singleton {
             });
         }
 
+        add_filter('leyka_option_value', function($value, $option_id){ // If LEYKA_DEBUG const is set, use it's value
+            return $option_id === 'plugin_debug_mode' ?
+                (defined('LEYKA_DEBUG') && LEYKA_DEBUG !== 'inherit' ? !!LEYKA_DEBUG : $value) : $value;
+        }, 10, 2);
+
         // By default, we'll assume some errors in the payment form, so redirect will get us back to it:
         $this->_payment_url = wp_get_referer();
 
