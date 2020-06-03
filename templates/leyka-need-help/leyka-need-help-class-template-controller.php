@@ -16,7 +16,7 @@ class Leyka_Need_Help_Template_Controller extends Leyka_Template_Controller {
         $currencies = leyka_get_currencies_data();
         $main_currency_id = leyka_options()->opt('main_currency');
 
-        if($campaign->daily_rouble_mode_on) {
+        if($campaign->daily_rouble_mode_on_and_valid) {
 
             $amount_mode = 'fixed';
             $amount_variants = array_map(
@@ -42,7 +42,7 @@ class Leyka_Need_Help_Template_Controller extends Leyka_Template_Controller {
             'amount_min' => $currencies[$main_currency_id]['bottom'],
             'amount_max' => $currencies[$main_currency_id]['top'],
             'amount_max_total' => leyka_options()->opt('leyka_currency_'.$main_currency_id.'_max_sum'),
-            'pm_list' => $campaign->daily_rouble_mode_on ?
+            'pm_list' => $campaign->daily_rouble_mode_on_and_valid ?
                 array($campaign->daily_rouble_pm) : leyka_get_pm_list(true, $main_currency_id),
             'amount_mode' => $amount_mode,
             'amount_variants' => $amount_variants,

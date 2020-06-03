@@ -76,14 +76,19 @@ class Leyka_Payment_Form {
             $errors[] = new WP_Error('incorrect_donor_email', __('Incorrect donor email given while trying to add a donation', 'leyka'));
         }
 
+        $form_template_id = empty($_POST['leyka_template_id']) ? false : trim(esc_attr($_POST['leyka_template_id']));
+
         if(
-            leyka_options()->opt_template('show_donation_comment_field')
-            && leyka_options()->opt_template('donation_comment_max_length')
+            leyka_options()->opt_template('show_donation_comment_field', $form_template_id)
+            && leyka_options()->opt_template('donation_comment_max_length', $form_template_id)
         ) {
 
             $donor_comment = trim(leyka_pf_get_donor_comment_value());
-            if($donor_comment && mb_strlen($donor_comment) > leyka_options()->opt_template('donation_comment_max_length')) {
-                $errors[] = new WP_Error('donor_comment_too_long', sprintf(__('Entered comment is too long (maximum %d characters allowed)', 'leyka'), leyka_options()->opt_template('donation_comment_max_length')));
+            if(
+                $donor_comment
+                && mb_strlen($donor_comment) > leyka_options()->opt_template('donation_comment_max_length', $form_template_id)
+            ) {
+                $errors[] = new WP_Error('donor_comment_too_long', sprintf(__('Entered comment is too long (maximum %d characters allowed)', 'leyka'), leyka_options()->opt_template('donation_comment_max_length', $form_template_id)));
             }
 
         }

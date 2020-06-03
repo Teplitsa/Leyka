@@ -267,14 +267,11 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                         }?>
 
                         <select name="daily_rouble_pm" id="daily-rouble-pm" <?php echo $recurring_pm_list ? '' : 'disabled="disabled"';?>>
-                            <option value=""><?php _e('Select the payment method', 'leyka');?></option>
-
                         <?php foreach($recurring_pm_list as $pm) {?>
                             <option value="<?php echo $pm->full_id;?>" <?php echo $pm->full_id === $campaign->daily_rouble_pm_id ? 'selected="selected"' : '';?>>
                                 <?php echo $pm->title.' ('.$pm->gateway->title.')';?>
                             </option>
                         <?php }?>
-
                         </select>
 
                     </div>
@@ -1304,6 +1301,19 @@ class Leyka_Campaign {
             case 'daily_rouble_pm_full_id':
                 return $this->_campaign_meta['daily_rouble_pm_id'];
             case 'daily_rouble_pm': return leyka_get_pm_by_id($this->daily_rouble_pm_full_id, true);
+
+            case 'daily_rouble_mode_on_and_valid':
+                if( !$this->daily_rouble_mode_on ) {
+                    return false;
+                }
+
+                $pm = $this->daily_rouble_pm;
+                $variants = array_map(
+                    function($value){ return absint($value); },
+                    explode(',', $this->daily_rouble_amount_variants)
+                );
+
+                return $pm && $pm->has_recurring_support() && $pm->is_active && $variants;
 
             default:
                 return apply_filters('leyka_get_unknown_campaign_field', null, $field, $this);
