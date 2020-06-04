@@ -17,11 +17,10 @@
         flex-flow: row wrap;
 
         margin-left: -20px;
-        margin-bottom: -20px;
+        margin-bottom: -10px;
 
         @include need-help-upto(small-screens) {
             margin-left: -10px;
-            margin-bottom: -10px;
         }
 
         a {
@@ -33,11 +32,10 @@
             flex: 220px 1 1;
 
             margin-left: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
 
             @include need-help-upto(small-screens) {
                 margin-left: 10px;
-                margin-bottom: 10px;
             }
 
             &:first-of-type {
@@ -235,11 +233,10 @@
                 }
 
                 margin-left: -20px;
-                margin-bottom: -20px;
+                margin-bottom: -10px;
 
                 @include need-help-upto(small-screens) {
                     margin-left: -10px;
-                    margin-bottom: -10px;
                 }
 
             }
@@ -272,11 +269,11 @@
                         height: 80px;
 
                         margin-left: 20px;
-                        margin-bottom: 20px;
+                        margin-bottom: 10px;
 
                         @include need-help-upto(small-screens) {
                             margin-left: 10px;
-                            margin-bottom: 10px;
+                            //margin-bottom: 10px;
                         }
 
                         span {
@@ -304,11 +301,10 @@
         flex-wrap: wrap;
 
         margin-left: -20px;
-        margin-bottom: -20px;
+        margin-bottom: -10px;
 
         @include need-help-upto(small-screens) {
             margin-left: -10px;
-            margin-bottom: -10px;
         }
 
         .donor-field {
@@ -316,11 +312,10 @@
             flex: 220px 1 0;
 
             margin-left: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
 
             @include need-help-upto(small-screens) {
                 margin-left: 10px;
-                margin-bottom: 10px;
             }
 
         }
@@ -414,7 +409,7 @@
 
             a {
 
-                display: inline-block;
+                display: inline;
                 color: unset;
 
                 font-size: var(--leyka-need-help-font-size-main);
@@ -445,6 +440,7 @@
             font-size: var(--leyka-need-help-font-size-submit);
             font-family: var(--leyka-need-help-font-family-submit);
             font-weight: 600;
+            text-transform: none;
 
             &:disabled {
                 color: var(--leyka-need-help-color-text-light);
@@ -468,77 +464,6 @@
     margin-top: 12px;
 }
 
-//.single-leyka_campaign.leyka-screen-cancel-subscription,
-//.single-leyka_campaign.leyka-screen-thankyou,
-//.single-leyka_campaign.leyka-screen-history {
-//    .entry-header {
-//        display: none;
-//    }
-//
-//    .entry-header-single {
-//        display: none;
-//    }
-//}
-//
-//div[id*="leyka-pf-"].leyka-pf-star {
-//    .leyka-submit-errors {
-//        @include star-text-ui-caption();
-//        border-radius: 4px;
-//        margin: $leyka-star-base 0px 0px 0px;
-//
-//        &::after {
-//            content: " ";
-//            position: absolute;
-//            top: 0.75 * $leyka-star-base;
-//            right: 0.5 * $leyka-star-base;
-//            display: block;
-//            background-image: url(../../img/star-icon-close-white.svg);
-//            background-position: center center;
-//            background-repeat: no-repeat;
-//            color: transparent;
-//            width: 24px;
-//            height: 24px;
-//        }
-//    }
-//}
-//
-//// kandinsky optimization
-//div[id*="leyka-pf-"].leyka-pf-star {
-//    &.card-2col {
-//        margin-left: 0 !important;
-//        margin-right: 0 !important;
-//    }
-//
-//}
-//
-//.single-leyka_campaign .main-content.leyka-campaign {
-//    overflow: visible;
-//}
-//
-//.leyka-payment-form.leyka-tpl-star-form {
-//    a:link {
-//        -webkit-tap-highlight-color: unset;
-//    }
-//}
-//
-//.section--static {
-//    margin-top: $leyka-star-base;
-//
-//    .static-text {
-//        p {
-//            @include leyka-pc-text-content();
-//            margin-bottom: $leyka-star-base;
-//        }
-//    }
-//}
-
-// hide periodicity selection
-//.leyka-payment-form.leyka-tpl-star-form .section.section--periodicity {
-//    &.hidden {
-//        display: none;
-//    }
-//}
-
 // description and dividers
 div[id*="leyka-pf-"].leyka-pf-need-help {
     .leyka-tpl-need-help-form {
@@ -547,6 +472,7 @@ div[id*="leyka-pf-"].leyka-pf-need-help {
 
             justify-content: left;
             margin: 0 0 14px 0;
+            background-color: transparent;
 
             .section-title-line {
                 display: none;

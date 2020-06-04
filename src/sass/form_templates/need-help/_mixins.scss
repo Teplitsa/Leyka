@@ -1,7 +1,7 @@
 @mixin need-help-active-block() {
     background-color: var(--leyka-need-help-color-blocks-active-background);
     color: var(--leyka-need-help-color-text);
-    border: 3px solid var(--leyka-need-help-color-blocks-active-border);
+    border: 2px solid var(--leyka-need-help-color-blocks-active-border);
 }
 
 @mixin need-help-block() {

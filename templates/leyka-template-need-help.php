@@ -83,7 +83,7 @@ if(in_array('recurring', $campaign->donations_types_available)) {?>
                         <?php if($template_data['amount_mode'] !== 'fixed') {?>
                             <label class="swiper-item flex-amount-item <?php echo empty($template_data['amount_variants']) ? 'selected' : '';?>">
                                 <span class="swiper-item-inner">
-                                    <input type="number" title="<?php _e('Enter your amount', 'leyka');?>" placeholder="<?php _e('Enter your amount', 'leyka');?>" data-desktop-ph="<?php echo $another_amount_title;?>" data-mobile-ph="<?php _e('Enter your amount', 'leyka');?>" name="donate_amount_flex" class="donate_amount_flex" value="<?php echo esc_attr($template_data['amount_default']);?>" min="1" max="999999">
+                                    <input type="number" title="<?php _e('Enter your amount', 'leyka');?>" placeholder="<?php _e('Enter your amount', 'leyka');?>" data-desktop-ph="<?php echo $another_amount_title;?>" data-mobile-ph="<?php _e('Enter your amount', 'leyka');?>" name="donate_amount_flex" class="donate_amount_flex" value="" min="1" max="999999">
                                     <span for="leyka-flex-amount"><?php echo $template_data['currency_label'];?></span>
                                 </span>
                             </label>
