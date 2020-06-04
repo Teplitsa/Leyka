@@ -698,16 +698,15 @@
 }
 
 .init-wizard-tab {
-    float: right;
+    float: left;
     background-image: url(../../src/svg/icon-wizard-stick-only.svg);
     background-size: cover;
     background-color: $color-wizard-link;
     background-position: center;
-    width: 24px;
-    height: 24px;
+    width: 43px;
+    height: 43px;
     border-radius: 50%;
-    margin-top: 6px;
-
+    margin-left: 1.5em;
 }
 
 // wp messages
