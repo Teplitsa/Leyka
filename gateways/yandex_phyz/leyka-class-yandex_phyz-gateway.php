@@ -20,8 +20,9 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
 
     protected function _set_options_defaults() {
 
-        if($this->_options) // Create Gateway options, if needed
+        if($this->_options) { // Create Gateway options, if needed
             return;
+        }
 
         $this->_options = array(
             'yandex_money_account' => array(

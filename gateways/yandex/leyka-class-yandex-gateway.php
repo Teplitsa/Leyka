@@ -364,6 +364,11 @@ techMessage="'.$tech_message.'"/>');
                         break;
                     case 'canceled':
                         $donation->status = 'failed';
+
+                        if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
+                            Leyka_Donation_Management::send_error_notifications($donation);
+                        }
+
                         break;
                     case 'refund.succeeded':
                         $donation->status = 'refunded';
@@ -681,6 +686,10 @@ techMessage="'.$tech_message.'"/>');
 
                 $new_recurring_donation->status = 'failed';
                 $new_recurring_donation->add_gateway_response($ex);
+
+                if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
+                    Leyka_Donation_Management::send_error_notifications($new_recurring_donation);
+                }
 
             }
 
