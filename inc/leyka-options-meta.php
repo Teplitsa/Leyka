@@ -1024,7 +1024,7 @@ self::$_options_meta = array(
     'recurring_donation_benefits_text' => array(
         'type' => 'textarea',
         'default' => __('We will be happy with a small but monthly help, this gives us confidence in the future and the ability to plan our activities.', 'leyka'),
-        'title' => __('Explanation of benefits of egular donations', 'leyka'),
+        'title' => __('Explanation of benefits of regular donations', 'leyka'),
         'required' => false,
     ),
     'revo_donation_complete_button_text' => array(

@@ -672,6 +672,27 @@ class Leyka_Donation_Management {
         // Reset content-type to avoid conflicts -- http://core.trac.wordpress.org/ticket/23578
         remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
         return true;
+
+    }
+
+    public static function send_error_notifications($donation) {
+
+        if( !leyka_options()->opt('notify_tech_support_on_failed_donations') ) {
+            return false;
+        }
+
+        $tech_support_email = leyka_get_website_tech_support_email();
+
+        $donation = leyka_get_validated_donation($donation);
+
+        if( !$donation || $donation->managers_emails_date) {
+            return false;
+        }
+
+        add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
+
+        $res = true;
+
     }
 
     public function remove_metaboxes() {

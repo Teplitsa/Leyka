@@ -301,15 +301,11 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                     ),
                     'template_options_need-help' => array(
                         'title' => __('Need help', 'leyka'),
-                        'screenshots' => array('screen-star-001.png'),
+                        'screenshots' => array('screen-need-help-001.png'),
                         'sections' => array(
                             array(
                                 'title' => __('Donation sum field type', 'leyka'),
                                 'options' => array('donation_sum_field_type',),
-                            ),
-                            array(
-                                'title' => __('Explanation of benefits of regular donations', 'leyka'),
-                                'options' => array('recurring_donation_benefits_text',),
                             ),
                             array(
                                 'title' => __('Label of the button to submit a donation form', 'leyka'),

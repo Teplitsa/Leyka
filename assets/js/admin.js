@@ -1537,10 +1537,12 @@ jQuery(document).ready(function($){
     }
 
     // "Daily rouble mode" change:
-    let $daily_rouble_mode = $('input#daily-rouble-mode-on'),
-        $daily_rouble_settings_block = $('.daily-rouble-settings'),
+    let $daily_rouble_mode_wrapper = $('.daily-rouble-settings-wrapper'),
+        $daily_rouble_mode = $daily_rouble_mode_wrapper.find('input#daily-rouble-mode-on'),
+        $daily_rouble_settings_block = $daily_rouble_mode_wrapper.find('.daily-rouble-settings'),
         $default_donations_types_field_block = $('#donations-types'),
-        $default_donation_type_field_block = $('#donation-type-default');
+        $default_donation_type_field_block = $('#donation-type-default'),
+        $campaign_template_field = $(':input[name="campaign_template"]');
 
     $daily_rouble_mode.change(function(){
 
@@ -1788,16 +1790,42 @@ jQuery(document).ready(function($){
     }
 
     // campaign template change
-    $(':input[name="campaign_template"]').on('change.leyka', function(e){
+    $campaign_template_field.on('change.leyka', function(e){
 
         e.preventDefault();
 
         let $campaign_template_field = $(this),
-            $css_editor_field = $('.css-editor-field');
+            $css_editor_field = $('.css-editor-field'),
+            template_selected = $campaign_template_field.val() === 'default' ?
+                $campaign_template_field.data('default-template-id') : $campaign_template_field.val();
 
-        if($campaign_template_field.val() === 'star' || $campaign_template_field.val() === 'need-help') {
+        if(template_selected === 'star' || template_selected === 'need-help') {
 
     		$('#campaign-css').show();
+
+    		if(template_selected === 'need-help') { // Display/hide the "Daily rouble" form mode options
+
+                $daily_rouble_mode_wrapper.show();
+
+                if($daily_rouble_mode.prop('checked')) {
+
+                    $default_donations_types_field_block.hide();
+                    $default_donation_type_field_block.hide();
+
+                }
+
+            } else {
+
+                $daily_rouble_mode_wrapper.hide();
+
+                if($daily_rouble_mode.prop('checked')) {
+
+                    $default_donations_types_field_block.show();
+                    $default_donation_type_field_block.show();
+
+                }
+
+            }
 
     		// Set the template-specific default CSS editor value, if needed:
             if( !$css_editor_field.data('additional-css-used') ) {

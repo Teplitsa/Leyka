@@ -292,10 +292,13 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                     if( !$init_recurring_donation || !$init_recurring_donation->id || is_wp_error($init_recurring_donation) ) {
 
-                        /** @todo Send some email to the admin */
                         $donation->payment_type = 'rebill';
                         $donation->status = 'failed';
                         $donation->add_gateway_response($_POST);
+
+                        if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
+
+                        }
 
                         die(json_encode(array('code' => '0')));
 

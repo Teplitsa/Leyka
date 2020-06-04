@@ -224,13 +224,13 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
                 <?php /** @todo Check if this div is used */ ?>
                 <div class="form-template-demo" style="display: none;">
-                    <?php foreach($templates as $template) {
+                <?php foreach($templates as $template) {
 
-                        $template_id = esc_attr($template['id']);?>
+                    $template_id = esc_attr($template['id']);?>
 
-                        <img class="form-template-screenshot <?php echo $template_id;?>" src="<?php echo LEYKA_PLUGIN_BASE_URL.'/img/theme-screenshots/screen-'.$template_id.'-002.png';?>" alt="" style="display: none;">
+                    <img class="form-template-screenshot <?php echo $template_id;?>" src="<?php echo LEYKA_PLUGIN_BASE_URL.'/img/theme-screenshots/screen-'.$template_id.'-002.png';?>" alt="" style="display: none;">
 
-                    <?php }?>
+                <?php }?>
                 </div>
 
             </div>
@@ -350,12 +350,6 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <h3 class="field-title">
                 <label for="payment_title"><?php _e('Payment purpose', 'leyka');?></label>
-<!--                <span class="field-q" style="display: none;">-->
-<!--                    <img src="--><?php //echo LEYKA_PLUGIN_BASE_URL;?><!--img/icon-q.svg" alt="">-->
-<!--                    <span class="field-q-tooltip">-->
-<!--                        --><?php //esc_html_e('Some text here.', 'leyka');?>
-<!--                    </span>-->
-<!--                </span>-->
             </h3>
 
             <input type="text" name="payment_title" id="payment_title" class="leyka-field-wide" value="<?php echo $campaign->payment_title ? $campaign->payment_title : $campaign->title;?>" placeholder="<?php _e("If the field is empty, the campaign title will be used", 'leyka');?>">
@@ -460,17 +454,20 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                         .__('/* Form sections titles text size */', 'leyka')."\n"
                 );
 
-                $additional_css_used = !in_array(
+                $additional_css_used = $campaign->additional_css && !in_array(
                     preg_replace('/\s+/u', '', html_entity_decode($campaign->additional_css, ENT_QUOTES)),
                     array_map(function($value){
                     return preg_replace('/\s+/u', '', $value);
-                }, $campaign_css_original));?>
+                }, $campaign_css_original));
+
+                $campaign_template_id = $campaign->template_id ? // The new campaigns don't have even the "default" template yet
+                    $campaign->template_id : leyka_options()->opt('donation_form_template');?>
 
                 <textarea id="campaign-css-field" name="campaign_css" class="css-editor-field" data-additional-css-used="<?php echo $additional_css_used;?>"><?php echo $campaign->additional_css ?
                     trim($campaign->additional_css) :
-                    (empty($campaign_css_original[$campaign->template]) ?
+                    (empty($campaign_css_original[$campaign_template_id]) ?
                         '' :
-                        trim($campaign_css_original[$campaign->template]));?></textarea>
+                        trim($campaign_css_original[$campaign_template_id]));?></textarea>
 
                 <div class="css-editor-reset-value"><?php _e('Return original styles', 'leyka');?></div>
 
