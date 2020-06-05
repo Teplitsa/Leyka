@@ -502,7 +502,7 @@ self::$_options_meta = array(
     ),
     'email_thanks_text' => array(
         'type' => 'rich_html',
-        'default' => __('Hello, #DONOR_NAME#!<br><br>You have chosed to make a #SUM# donation to the following charity campaign: #CAMPAIGN_NAME#, using #PAYMENT_METHOD_NAME#.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
+        'default' => __('Hello, #DONOR_NAME#!<br><br>You made a #SUM# donation to the following charity campaign: #CAMPAIGN_NAME#, using #PAYMENT_METHOD_NAME#.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
         'title' => __('Email text', 'leyka'),
         'description' => $email_placeholders,
         'required' => true,

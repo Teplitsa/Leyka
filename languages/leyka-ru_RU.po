@@ -6426,7 +6426,7 @@ msgid "Thank you for your unwavering support!"
 msgstr "Спасибо за ваше пожертвование!"
 
 #: inc/leyka-options-meta.php:505
-msgid "Hello, #DONOR_NAME#!<br><br>You have chosed to make a #SUM# donation to the following charity campaign: #CAMPAIGN_NAME#, using #PAYMENT_METHOD_NAME#.<br><br>Sincerely thank you,<br>#ORG_NAME#"
+msgid "Hello, #DONOR_NAME#!<br><br>You made a #SUM# donation to the following charity campaign: #CAMPAIGN_NAME#, using #PAYMENT_METHOD_NAME#.<br><br>Sincerely thank you,<br>#ORG_NAME#"
 msgstr "Здравствуйте, #DONOR_NAME#!<br><br>Вы сделали пожертвование в размере #SUM# в пользу организации #ORG_NAME# на нашем сайте.<br><br>Цель пожертвования: #PURPOSE#<br>Способ оплаты: #PAYMENT_METHOD_NAME#<br><br>Искренне благодарим вас,<br>#ORG_NAME#"
 
 #: inc/leyka-options-meta.php:501 inc/leyka-options-meta.php:518

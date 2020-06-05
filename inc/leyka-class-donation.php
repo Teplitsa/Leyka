@@ -2263,7 +2263,7 @@ class Leyka_Donation {
                 return maybe_unserialize($this->_donation_meta['gateway_response']);
             case 'gateway_response_formatted':
                 return $this->gateway ?
-                    leyka_get_gateway_by_id($this->gateway)->get_gateway_response_formatted($this) : array();
+                    leyka_get_gateway_by_id($this->gateway)->get_gateway_response_formatted($this) : $this->gateway_response;
 
             case 'type':
             case 'payment_type': return $this->_donation_meta['payment_type'];
