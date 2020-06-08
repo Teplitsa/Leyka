@@ -160,7 +160,10 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             return true;
         }
 
-        $cp_ips_allowed = array_map(function($ip) { return trim($ip); }, explode(',', leyka_options()->opt('cp_ip')));
+        $cp_ips_allowed = array_map(
+            function($ip) { return trim(stripslashes($ip)); },
+            explode(',', leyka_options()->opt('cp_ip'))
+        );
 
         if( !$cp_ips_allowed ) {
             return true;
@@ -289,10 +292,13 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                     if( !$init_recurring_donation || !$init_recurring_donation->id || is_wp_error($init_recurring_donation) ) {
 
-                        /** @todo Send some email to the admin */
                         $donation->payment_type = 'rebill';
                         $donation->status = 'failed';
                         $donation->add_gateway_response($_POST);
+
+                        if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
+                            Leyka_Donation_Management::send_error_notifications($donation);
+                        }
 
                         die(json_encode(array('code' => '0')));
 
@@ -370,7 +376,13 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                     // GUA direct integration - "purchase" event END
 
                 } else {
+
                     $donation->status = 'failed';
+
+                    if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
+                        Leyka_Donation_Management::send_error_notifications($donation);
+                    }
+
                 }
 
                 die(json_encode(array('code' => '0'))); // Payment completed / fail registered
@@ -388,6 +400,8 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                     }
 
                 }
+
+                die(json_encode(array('code' => '0')));
 
             default:
         }

@@ -209,8 +209,8 @@ class Leyka_Donation_Management {
 
         <label for="donor-subscribed-select"></label>
         <select id="donor-subscribed-select" name="donor_subscribed">
-            <option value="-" <?php echo !isset($_GET['donor_subscribed']) ? 'selected="selected"' : '';?>><?php _e('Donors subscription', 'leyka');?></option>
-            <option value="1" <?php echo isset($_GET['donor_subscribed']) && $_GET['donor_subscribed'] ? 'selected="selected"' : '';?>><?php _e('Subscribed donors', 'leyka');?></option>
+            <option value="-" <?php echo !isset($_GET['donor_subscribed']) || $_GET['donor_subscribed'] === '-' ? 'selected="selected"' : '';?>><?php _e('Donors subscription', 'leyka');?></option>
+            <option value="1" <?php echo isset($_GET['donor_subscribed']) && absint($_GET['donor_subscribed']) ? 'selected="selected"' : '';?>><?php _e('Subscribed donors', 'leyka');?></option>
             <option value="0" <?php echo isset($_GET['donor_subscribed']) && !$_GET['donor_subscribed'] ? 'selected="selected"' : '';?>><?php _e('Unsubscribed donors', 'leyka');?></option>
         </select>
 
@@ -265,7 +265,7 @@ class Leyka_Donation_Management {
             return false;
         }
 
-        if(leyka()->opt('send_donor_thanking_emails')) {
+        if(leyka()->opt('send_donor_thanking_emails') || leyka_options()->opt('send_donor_thanking_emails_on_recurring_init')) {
             Leyka_Donation_Management::send_donor_thanking_email($donation);
         }
 
@@ -663,6 +663,7 @@ class Leyka_Donation_Management {
             ) ) {
                 $res &= false;
             }
+
         }
 
         if($res) {
@@ -672,6 +673,84 @@ class Leyka_Donation_Management {
         // Reset content-type to avoid conflicts -- http://core.trac.wordpress.org/ticket/23578
         remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
         return true;
+
+    }
+
+    public static function send_error_notifications($donation) {
+
+        if( !leyka_options()->opt('notify_tech_support_on_failed_donations') ) {
+            return false;
+        }
+
+        $donation = leyka_get_validated_donation($donation);
+
+        if( !$donation || $donation->managers_emails_date) {
+            return false;
+        }
+
+        add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
+
+        $campaign = new Leyka_Campaign($donation->campaign_id);
+        $res = wp_mail(
+            leyka_get_website_tech_support_email(),
+            apply_filters(
+                'leyka_error_email_notification_title',
+                __('Donation error occured', 'leyka'),
+                $donation, $campaign
+            ),
+            wpautop(str_replace(
+                array(
+                    '#SITE_NAME#',
+                    '#ORG_NAME#',
+                    '#DONATION_ID#',
+                    '#DONATION_TYPE#',
+                    '#DONOR_NAME#',
+                    '#DONOR_EMAIL#',
+                    '#DONOR_COMMENT#',
+                    '#PAYMENT_METHOD_NAME#',
+                    '#CAMPAIGN_NAME#',
+                    '#CAMPAIGN_URL#',
+                    '#PURPOSE#',
+                    '#CAMPAIGN_TARGET#',
+                    '#SUM#',
+                    '#DATE#',
+                ),
+                array(
+                    get_bloginfo('name'),
+                    leyka_options()->opt('org_full_name'),
+                    $donation->id,
+                    leyka_get_payment_type_label($donation->type),
+                    $donation->donor_name ? $donation->donor_name : __('anonymous', 'leyka'),
+                    $donation->donor_email ? $donation->donor_email : __('unknown email', 'leyka'),
+                    $donation->donor_comment,
+                    $donation->payment_method_label,
+                    $campaign->title,
+                    $campaign->url,
+                    $campaign->payment_title,
+                    $campaign->target,
+                    $donation->amount.' '.$donation->currency_label,
+                    $donation->date,
+                ),
+                apply_filters(
+                    'leyka_error_email_notification_text',
+                    sprintf(__("Hello!\n\nDonation failure detected on the #SITE_NAME# website.\n\nCampaign: #CAMPAIGN_NAME#\nAmount: #SUM#\nPayment method: #PAYMENT_METHOD_NAME#\nType: #DONATION_TYPE#\n\nYou may revise the donation <a href='%s' target='_blank'>here</a>.\n\nYour Leyka", 'leyka'), admin_url('post.php?post='.$donation->id.'&action=edit')),
+                    $donation, $campaign
+                )
+            )),
+            array(
+                'From: '.apply_filters(
+                    'leyka_email_from_name',
+                    leyka_options()->opt_safe('email_from_name'),
+                    $donation,
+                    $campaign
+                ).' <'.leyka_options()->opt_safe('email_from').'>',
+            )
+        );
+
+        remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
+
+        return $res;
+
     }
 
     public function remove_metaboxes() {
@@ -2184,7 +2263,7 @@ class Leyka_Donation {
                 return maybe_unserialize($this->_donation_meta['gateway_response']);
             case 'gateway_response_formatted':
                 return $this->gateway ?
-                    leyka_get_gateway_by_id($this->gateway)->get_gateway_response_formatted($this) : array();
+                    leyka_get_gateway_by_id($this->gateway)->get_gateway_response_formatted($this) : $this->gateway_response;
 
             case 'type':
             case 'payment_type': return $this->_donation_meta['payment_type'];

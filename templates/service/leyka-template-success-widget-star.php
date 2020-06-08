@@ -9,13 +9,14 @@ if( !leyka_options()->opt_template('show_success_widget_on_success') ) {
 }
 
 $donation_id = leyka_remembered_data('donation_id');
+$template_id = leyka_remembered_data('template_id');
 
 if( !$donation_id ) {
     return;
 }?>
 
 <div id="content" class="site-content leyka-campaign-content">
-    
+
 <section id="primary" class="content-area">
     <main id="main" class="site-main">
         <div class="entry-content">
@@ -23,15 +24,15 @@ if( !$donation_id ) {
 
                 <div class="leyka-pf__final-screen">
 
-                    <div class="leyka-screen-form leyka-screen-thankyou">
+                    <div class="leyka-screen-form leyka-screen-thankyou <?php echo $template_id === 'need-help' ? 'leyka-need-help-thankyou' : '';?>">
 
-                        <h1><?php esc_html_e('Thank you for your donation!', 'leyka');?></h1>
-                        <p><?php esc_html_e('We will be happy with a small but monthly assistance, this gives us confidence in the future and the opportunity to plan our activities.', 'leyka');?></p>
+                        <h1><?php _e('Thank you for your donation!', 'leyka');?></h1>
+                        <p><?php _e('We will be happy with a small but monthly assistance, this gives us confidence in the future and the opportunity to plan our activities.', 'leyka');?></p>
 
                         <div class="leyka-pf__final-thankyou">
 
                             <div class="leyka-final-subscribe-form">
-                                <h2><?php esc_html_e("Let's stay in touch.", 'leyka');?></h2>
+                                <h2><?php _e("Let's stay in touch.", 'leyka');?></h2>
 
                                 <form action="#" class=" leyka-success-form" method="post" novalidate="novalidate" <?php echo empty($donation_id) ? 'style="display: none;"' : '';?>>
 
@@ -47,7 +48,7 @@ if( !$donation_id ) {
                                                     <label for="<?php echo $field_id;?>">
                                                         <span class="donor__textfield-label leyka_donor_name-label"><?php _e('Email', 'leyka');?></span>
                                                     </label>
-                                                    <input type="email" id="<?php echo $field_id;?>" name="leyka_donor_email" value="<?php echo leyka_remembered_data('donor_email');?>" autocomplete="off">
+                                                    <input type="email" id="<?php echo $field_id;?>" name="leyka_donor_email" value="<?php echo leyka_remembered_data('donor_email');?>" autocomplete="off" placeholder="<?php _e('Your email', 'leyka');?>">
                                                 </div>
                                                 <div class="leyka-star-field-error-frame">
                                                     <span class="donor__textfield-error leyka_donor_email-error">
@@ -63,9 +64,7 @@ if( !$donation_id ) {
                                     </div>
 
                                     <div class="leyka-star-submit">
-                                        <a href="<?php echo home_url();?>" class="leyka-star-btn leyka-js-no-subscribe">
-                                            <?php _e('No, thank you', 'leyka');?>
-                                        </a>
+                                        <a href="<?php echo home_url();?>" class="leyka-star-btn leyka-js-no-subscribe"><?php _e('No, thank you', 'leyka');?></a>
                                     </div>
 
                                 </form>

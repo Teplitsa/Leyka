@@ -72,7 +72,7 @@ if( !defined('LEYKA_SUPPORT_EMAIL') ) {
 }
 
 if( !defined('LEYKA_DEBUG') ) {
-    define('LEYKA_DEBUG', false);
+    define('LEYKA_DEBUG', 'inherit');
 }
 
 if( !defined('LEYKA_USAGE_STATS_DEV_SERVER_URL') ) {

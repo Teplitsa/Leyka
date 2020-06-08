@@ -5,7 +5,7 @@ require_once 'procedures-common.php';
 if( !defined('WPINC') ) die;
 
 // The procedure should be called no more than once per day:
-if(get_transient('leyka_last_deferred_emails_date') === date('d.m.Y') && !LEYKA_DEBUG) {
+if(get_transient('leyka_last_deferred_emails_date') === date('d.m.Y') && !leyka_options()->opt('plugin_debug_mode')) {
     return;
 } else {
     set_transient('leyka_last_deferred_emails_date', date('d.m.Y'), 60*60*24);

@@ -1,0 +1,28 @@
+/** == Form layout and states (_form_layout.scss) == **/
+
+div[id*="leyka-pf-"].leyka-pf-need-help {
+
+	max-width: 1160px !important;
+
+    background-color: var(--leyka-need-help-color-form-background);
+    border-radius: 0;
+    box-shadow: none;
+
+    padding: 60px 200px;
+
+    @include need-help-upto(exlarge-screens) {
+        padding: 60px 70px;
+    }
+    @include need-help-upto(large-screens) {
+        padding: 36px 40px;
+    }
+    @include need-help-upto(small-screens) {
+        padding: 26px 15px;
+    }
+
+    // 2020 width fix
+    //&:not(.alignwide):not(.alignfull):not(.alignleft):not(.alignright):not(.is-style-wide) {
+    //    max-width: 1160px;
+    //    width: auto;
+
+}

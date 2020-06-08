@@ -502,7 +502,7 @@ self::$_options_meta = array(
     ),
     'email_thanks_text' => array(
         'type' => 'rich_html',
-        'default' => __('Hello, #DONOR_NAME#!<br><br>You have chosed to make a #SUM# donation to the following charity campaign: #CAMPAIGN_NAME#, using #PAYMENT_METHOD_NAME#.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
+        'default' => __('Hello, #DONOR_NAME#!<br><br>You made a #SUM# donation to the following charity campaign: #CAMPAIGN_NAME#, using #PAYMENT_METHOD_NAME#.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
         'title' => __('Email text', 'leyka'),
         'description' => $email_placeholders,
         'required' => true,
@@ -669,7 +669,7 @@ self::$_options_meta = array(
     'notify_tech_support_on_failed_donations' => array(
         'type' => 'checkbox',
         'default' => true,
-        'title' => __('Send error reporting emails to the tech. support on failed donations', 'leyka'),
+        'title' => __('Send error reporting emails to the tech support on failed donations', 'leyka'),
         'comment' => __('Check to notify the website technical support (see the "website technical support email" option) of each failed donation.', 'leyka'),
         'short_format' => true,
     ),
@@ -1024,7 +1024,7 @@ self::$_options_meta = array(
     'recurring_donation_benefits_text' => array(
         'type' => 'textarea',
         'default' => __('We will be happy with a small but monthly help, this gives us confidence in the future and the ability to plan our activities.', 'leyka'),
-        'title' => __('Explanation of benefits of egular donations', 'leyka'),
+        'title' => __('Explanation of benefits of regular donations', 'leyka'),
         'required' => false,
     ),
     'revo_donation_complete_button_text' => array(
@@ -1151,6 +1151,13 @@ self::$_options_meta = array(
         'default' => false,
         'title' => __('Demo mode on', 'leyka'),
         'comment' => __('Check to turn on the plugin demonstration mode. While in it, no emails will be sent to the payment gateways.', 'leyka'),
+        'short_format' => true,
+    ),
+    'plugin_debug_mode' => array(
+        'type' => 'checkbox',
+        'default' => false,
+        'title' => __('Debugging mode on', 'leyka'),
+        'comment' => __('Check to turn on the plugin debugging mode. Warning: some of the logic checks will not be performed if the mode is on. Please, use the option with caution.', 'leyka'),
         'short_format' => true,
     ),
     'plugin_stats_sync_enabled' => array(

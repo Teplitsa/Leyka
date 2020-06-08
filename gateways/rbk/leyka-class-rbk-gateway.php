@@ -262,6 +262,10 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
         $donation = new Leyka_Donation($donation_id);
         $donation->status = $map_status[ $data['eventType'] ];
 
+        if($donation->status === 'failed' && leyka_options()->opt('notify_tech_support_on_failed_donations')) {
+            Leyka_Donation_Management::send_error_notifications($donation);
+        }
+
         // Log webhook response:
         $data_to_log = $data;
         if(leyka_options()->opt('rbk_keep_payment_logs')) {

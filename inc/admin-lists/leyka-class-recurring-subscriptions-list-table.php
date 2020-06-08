@@ -236,8 +236,8 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
             case 'gateway':
             case 'amount':
                 return $item[$column_name];
-            default:
-                return LEYKA_DEBUG ? print_r($item, true) : ''; // Show the whole array for troubleshooting purposes
+            default: // Show the whole array for troubleshooting purposes
+                return leyka_options()->opt('plugin_debug_mode') ? print_r($item, true) : '';
         }
     }
 

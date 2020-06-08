@@ -65,69 +65,41 @@ window.LeykaPageMain.prototype = {
 
     initForms: function() {
 
-        var self = this; var $ = self.$;
+        var self = this,
+            $ = self.$;
 
         $('.leyka-pf').leykaForm();
 
-        /** Leyka success widget behavior - BEGIN */
-
-        // var $success_forms = $('.leyka-success-form'),
-        //     donation_id = leyka_remembered_data('leyka_donation_id');
-        //
-        // if( !donation_id ) { // Hide the success form if there are no donation ID stored...
-        //     // $success_forms.hide();
-        // } else { // ... or display them if there is one in the local storage
-        //     $success_forms.each(function(index, element) {
-        //
-        //         var $form = $(element),
-        //             $donation_id_field = $form.find('input[name="leyka_donation_id"]');
-        //
-        //         if( !$donation_id_field.val() ) {
-        //
-        //             $donation_id_field.val(donation_id);
-        //             $form.show();
-        //
-        //         }
-        //
-        //     });
-        // }
-        //
-        // $success_forms.on('submit', function(e){
-        //
-        //     e.preventDefault();
-        //
-        //     var $this = $(this);
-        //
-        // });
-
-        /** Leyka success widget behavior - END */
-
     },
-    
-    inpageCardColumns: function() {
-        var self = this; var $ = self.$;
-        
-        var form = $('.leyka-pf');
-        form.each(function(){
-            var w = $('.leyka-pf').width();
 
-            if(w >= 600) {
-                $(this).addClass('card-2col');
+    inpageCardColumns: function() {
+
+        var self = this,
+            $ = self.$,
+            $form = $('.leyka-pf');
+
+        $form.each(function(){
+
+            let $this = $(this),
+                current_width = $('.leyka-pf').width(),
+                max_width = $this.data('card-2column-breakpoint-width') ? $this.data('card-2column-breakpoint-width') : 600;
+
+            if(current_width >= max_width) {
+                $this.addClass('card-2col');
+            } else {
+                $this.removeClass('card-2col');
             }
-            else{
-                $(this).removeClass('card-2col');
-            }
+
         });
     },
     
     setupCustomRangeControl: function() {
 
         var self = this; var $ = self.$;
-        
-//        $('.amount__range_overlay').show();
-//        $('.amount__range_custom').show();
+
         $('.amount__range_overlay').addClass('amount__range_custom--visible');
         $('.amount__range_custom').addClass('amount__range_custom--visible');
+
     },
     
     handleHashChange: function() {

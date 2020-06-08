@@ -711,7 +711,6 @@
             background-image: url(../../img/star-icon-close.svg);
             background-position: center center;
             background-repeat: no-repeat;
-            display: block;
             color: transparent;
             width: 24px;
             height: 24px;
@@ -861,7 +860,6 @@ div[id*="leyka-pf-"].leyka-pf-star {
             background-image: url(../../img/star-icon-close-white.svg);
             background-position: center center;
             background-repeat: no-repeat;
-            display: block;
             color: transparent;
             width: 24px;
             height: 24px;
@@ -872,10 +870,9 @@ div[id*="leyka-pf-"].leyka-pf-star {
 // kandinsky optimization
 div[id*="leyka-pf-"].leyka-pf-star {
     &.card-2col {
-        margin-left: 0px !important;
-        margin-right: 0px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
     }
-    
 }
 
 .single-leyka_campaign .main-content.leyka-campaign {
@@ -885,7 +882,6 @@ div[id*="leyka-pf-"].leyka-pf-star {
 .leyka-payment-form.leyka-tpl-star-form {
     a:link {
         -webkit-tap-highlight-color: unset;
-        -webkit-tap-highlight-color : unset; 
     }
 }
 

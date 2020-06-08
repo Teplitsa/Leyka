@@ -12,13 +12,12 @@ class Leyka_Options_Controller extends Leyka_Singleton {
     );
 
     protected $_templates_common_options = array(
-        'donation_sum_field_type', 'scale_widget_place', 'donation_submit_text', 'donations_history_under_forms',
+        'donation_sum_field_type', 'recurring_donation_benefits_text', 'scale_widget_place', 'donation_submit_text', 'donations_history_under_forms',
         'show_success_widget_on_success', 'show_donation_comment_field', 'donation_comment_max_length',
         'show_campaign_sharing', 'show_failure_widget_on_failure', 'do_not_display_donation_form',
     );
 
-    /** @todo Automatise it, but w/o leyka()->get_templates(). */
-    protected $_template_options = array('star' => array(), 'revo' => array(), 'neo' => array(), 'toggles' => array(), 'radios' => array(),);
+    protected $_template_options = array();
 
     protected function __construct() {
 
@@ -487,6 +486,29 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
     public function add_template_options() {
 
+        // Initialize template options array (must be [template_id] => array() for each template ):
+        $custom_templates = glob(get_template_directory().'/leyka-template-*.php');
+        $custom_templates = $custom_templates ? $custom_templates : array();
+
+        $this->_template_options = apply_filters(
+            'leyka_templates_list',
+            array_merge($custom_templates, glob(LEYKA_PLUGIN_DIR.'templates/leyka-template-*.php'))
+        );
+
+        if( !$this->_template_options ) {
+            $this->_template_options = array();
+        }
+
+        foreach($this->_template_options as $key => $template_file_addr) {
+
+            $template_id = str_replace(array('leyka-template-', '.php'), '', basename($template_file_addr));
+            $this->_template_options[$template_id] = array();
+
+            unset($this->_template_options[$key]);
+
+        }
+
+        // Fill it with template options:
         foreach($this->_template_options as $template_id => $options) {
 
             $this->_template_options[$template_id] = array_merge($options, $this->_templates_common_options);

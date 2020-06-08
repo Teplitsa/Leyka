@@ -8,7 +8,7 @@
 
 @import 'campaign';
 
-@import 'form_templates/star/presets';
+@import 'form_templates/star/presets'; // Star inclusions should be here (spinner uses some Star vars)
 @import 'form_templates/star/typo';
 @import 'form_templates/star/mixins';
 
@@ -23,6 +23,12 @@
 
 @import 'form_templates/star/form_layout';
 @import 'form_templates/star/form_elements';
+
+@import 'form_templates/need-help/presets';
+@import 'form_templates/need-help/typo';
+@import 'form_templates/need-help/mixins';
+@import 'form_templates/need-help/form_layout';
+@import 'form_templates/need-help/form_elements';
 
 @import 'shortcodes';
 

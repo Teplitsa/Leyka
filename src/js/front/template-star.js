@@ -10,6 +10,7 @@
 
     /* event handlers */
     function bindEvents() {
+
         bindModeEvents();
         bindAgreeEvents();
         bindSwiperEvents();
@@ -17,45 +18,86 @@
         bindDonorDataEvents();
         bindSubmitPaymentFormEvent();
         bindPMEvents();
+
+        // Window resize events:
+        $(window).on('resize.leyka', function(){
+            $('.full-list.equalize-elements-width').each(function(){
+                equalizeFormElementsWidth($(this));
+            });
+        }).resize();
+
+    }
+
+    function equalizeFormElementsWidth($elements_wrapper){
+
+        let width = 0,
+            wrapper_width = $elements_wrapper.innerWidth()
+                - Math.abs(parseInt($elements_wrapper.css('margin-left')))
+                - Math.abs(parseInt($elements_wrapper.css('margin-right'))),
+            $elements = $elements_wrapper
+                .children(':not('+$elements_wrapper.data('equalize-elements-exceptions')+'):not(.disabled):visible');
+
+        $elements.each(function(){
+
+            let $element = jQuery(this);
+
+            if(wrapper_width / $elements.length > 230) { // Element total width: 220 is the basis, 10 is the margin
+
+                $element.removeProp('style'); // If elements are few, let them just stretch to fit in one line
+                return;
+
+            }
+
+            if( !width ) {
+                width = $element.outerWidth();
+            }
+
+            if($element.outerWidth() !== width) {
+                $element.css('flex', width+'px 0 1');
+            }
+
+        });
+
     }
 	
-	function resize(e, el, k) {
-        var val = $.trim(el.value);
-        
-        if(!val) {
-            $(el).addClass('empty');
+	function resize(e, element, k) {
+
+        let val = $.trim(element.value);
+
+        if( !val ) {
+
+            $(element).addClass('empty');
             
-            if(!e || e.type == 'blur') {
-                setAmountPlaceholder(el);
-                val = $(el).attr('placeholder');
-                $(el).siblings('.currency').hide();
-                $(el).addClass('show-ph');
+            if( !e || e.type === 'blur' ) {
+                setAmountPlaceholder(element);
+                val = $(element).attr('placeholder');
+                $(element).siblings('.currency').hide();
+                $(element).addClass('show-ph');
+            } else if(e.type === 'focus') {
+                $(element).siblings('.currency').show();
+                $(element).removeClass('show-ph');
             }
-            else if(e.type == 'focus') {
-                $(el).siblings('.currency').show();
-                $(el).removeClass('show-ph');
-            }
-        }
-        else {
-            $(el).removeClass('empty');
-            $(el).removeClass('show-ph');
+
+        } else {
+            $(element).removeClass('empty');
+            $(element).removeClass('show-ph');
         }
         
-        setAmountInputValue($(el).closest('.leyka-tpl-star-form'), $(el).val());
+        setAmountInputValue($(element).closest('.leyka-tpl-star-form'), $(element).val());
+
 	}
     
-    function setAmountPlaceholder(el) {
+    function setAmountPlaceholder(element) {
         if(isMobileScreen()) {
-            $(el).prop('placeholder', $(el).data('mobile-ph'));
-        }
-        else {
-            $(el).prop('placeholder', $(el).data('desktop-ph'));
+            $(element).prop('placeholder', $(element).data('mobile-ph'));
+        } else {
+            $(element).prop('placeholder', $(element).data('desktop-ph'));
         }
     }
 	
 	function bindAmountEvents() {
 		
-		function resizable (el, factor) {
+		function resizable(el, factor) {
 			var k = Number(factor) || 7.7;
 			var e = 'keyup,keypress,focus,blur,change'.split(',');
 			for(var i in e) {
@@ -103,41 +145,60 @@
         });
         
         $('.leyka-tpl-star-form .flex-amount-item input').each(function(i, el){
-            if(!$.trim($(el).val())) {
+            if( !$.trim($(el).val()) ) {
                 $(el).parent().addClass('empty');
             }
         });
 	}
     
-    function getAmountValueFromControl($el) {
-        var $predefinedAmount = $el.find('span.amount');
-        var val = '';
-        
-        if($predefinedAmount.length > 0) {
-            val = $el.find('span.amount').text();
+    function getAmountValueFromControl($element) {
+
+        let $predefined_amount = $element.find('span.amount'),
+            val = '';
+
+        if($predefined_amount.length > 0) {
+
+            let $daily_rouble_comment = $element.parents('.star-swiper').find('.daily-rouble-comment'),
+                $daily_rouble_amount = $daily_rouble_comment.find('.daily-rouble-amount')
+
+            val = $daily_rouble_comment.length ? $daily_rouble_amount.text() : $element.find('span.amount').text();
+
+        } else {
+            val = $element.find('input.donate_amount_flex').val();
         }
-        else {
-            val = $el.find('input.donate_amount_flex').val();
-        }
-        
-        return val;
+
+        return parseFloat(val.replace(/[^0-9]+/g, ''));
+
     }
-    
+
     function setAmountInputValue($form, amount) {
+
+        amount = typeof amount === 'string' ? parseFloat(amount.replace(/[^0-9]+/g, '')) : amount;
+
         $form.find('input.leyka_donation_amount').val(amount);
+
     }
 
     function bindModeEvents() {
 
-        $('.leyka-tpl-star-form .section__fields.periodicity').on('click', 'a', function(e){
+        $('.leyka-tpl-star-form .section__fields.periodicity').on('click.leyka', 'a', function(e){
+
 			e.preventDefault();
-			
-			$(this).closest('.section__fields').find('a').removeClass('active');
-			$(this).addClass('active');
-            
-            var $_form = $(this).closest('form.leyka-pm-form');
+
+			let $this = $(this),
+                $_form = $(this).closest('form.leyka-pm-form');
+
+			$this.closest('.section__fields').find('a').removeClass('active');
+			$this.addClass('active');
+
             setupPeriodicity($_form);
             setupSwiperWidth($_form);
+
+            // Equalize the PM selection blocks widths:
+            $_form.find('.payments-grid .equalize-elements-width').each(function(){
+                equalizeFormElementsWidth($(this));
+            });
+
         });
         
         $('.leyka-tpl-star-form form.leyka-pm-form').each(function(){
@@ -149,17 +210,18 @@
     function setupSwiperWidth($_form) {
         // amount swiper setup
         $('.amount__figure.star-swiper .swiper-list .swiper-item').last().css('margin-right', '0px');
-        
-        // pm swiper setup
-        var $swiper = $_form.find('.payments-grid .star-swiper');
-        // $list is empty in full-list width mode
-        var $list = $swiper.find('.swiper-list');
 
-        var $activeItem = $swiper.find('.swiper-item.selected:not(.disabled)').first();
-        if($activeItem.length == 0) {
+        // pm swiper setup
+        let $swiper = $_form.find('.payments-grid .star-swiper'),
+            $list = $swiper.find('.swiper-list'); // $list is empty in full-list width mode
+
+        var $active_item = $swiper.find('.swiper-item.selected:not(.disabled)').first();
+        if( !$active_item.length ) {
+
             $swiper.find('.swiper-item:not(.disabled)').first().addClass('selected');
-            $activeItem = $swiper.find('.swiper-item.selected:not(.disabled)').first();
-            $activeItem.find('input[type=radio]').prop('checked', true).change();
+            $active_item = $swiper.find('.swiper-item.selected:not(.disabled)').first();
+            $active_item.find('input[type=radio]').prop('checked', true).change();
+
         }
 
         $list.find('.swiper-item:not(.disabled)').css('margin-right', '16px');
@@ -167,78 +229,106 @@
         $list.css('width', '100%');
 
         // fix max width must work in swiper and full width mode, so use $swiper insted $list
-        var maxWidth = $swiper.closest('.leyka-payment-form').width();
+        var max_width = $swiper.closest('.leyka-payment-form').width();
 
         if($swiper.find('.full-list').length) {
-            maxWidth -= 60;
-            $swiper.find('.payment-opt__label').css('max-width', maxWidth);
-            $swiper.find('.payment-opt__icon').css('max-width', maxWidth);
-            //$list.find('.swiper-item').css('min-width', maxWidth);
-        }
-        else {
-            maxWidth -= 184;
-            $swiper.find('.payment-opt__label').css('max-width', maxWidth);
-            $swiper.find('.payment-opt__icon').css('max-width', maxWidth);
+
+            max_width -= 60;
+            $swiper.find('.payment-opt__label').css('max-width', max_width);
+            $swiper.find('.payment-opt__icon').css('max-width', max_width);
+
+        } else {
+
+            max_width -= 184;
+            $swiper.find('.payment-opt__label').css('max-width', max_width);
+            $swiper.find('.payment-opt__icon').css('max-width', max_width);
 
             $swiper.find('.swiper-item').each(function(i, item){
                 var w1 = $(item).find('.payment-opt__label').width();
                 var w2 = $(item).find('.pm-icon').length * 40; // max width of pm icon
-                $(item).css('min-width', Math.min(maxWidth, Math.max(w1, w2)) + 64);
+                $(item).css('min-width', Math.min(max_width, Math.max(w1, w2)) + 64);
             });
 
             // fix for FF and Safari
-            var $activePMItem = $swiper.find('.swiper-item:not(.disabled)');
-            if($activePMItem.length <= 1) {
-                $activePMItem.css('width', '100%');
+            let $active_pm_item = $swiper.find('.swiper-item:not(.disabled)');
+            if($active_pm_item.length <= 1) {
+                $active_pm_item.css('width', '100%');
+            } else {
+                $active_pm_item.css('width', 'auto');
             }
-            else {
-                $activePMItem.css('width', 'auto');
-            }
+
         }
         
         toggleSwiperArrows($swiper);
-        swipeList($swiper, $activeItem);
+        swipeList($swiper, $active_item);
     }
-    
-    function setupPeriodicity($_form) {
-        var isRecurring = false;
-        var $activePeriodicityTab = $_form.find('.section__fields.periodicity a.active');
 
-        if($activePeriodicityTab.length) {
-            isRecurring = $activePeriodicityTab.data('periodicity') == 'monthly';
+    function setupPeriodicity($_form) {
+
+        let is_recurring = false,
+            $active_periodicity_tab = $_form.find('.section__fields.periodicity a.active');
+
+        if($active_periodicity_tab.length) {
+            is_recurring = $active_periodicity_tab.data('periodicity') === 'monthly';
+        } else {
+            is_recurring = parseInt($_form.find('input.is-recurring-chosen').val()) === 1;
         }
-        else {
-            isRecurring = parseInt($_form.find('input.is-recurring-chosen').val()) == 1;
-        }
-        
+
         $_form.find('.section__fields.periodicity a').removeClass('active');
-        if(isRecurring) {
-            $_form.find('.section__fields.periodicity a[data-periodicity=monthly]').addClass('active');
-            $_form.find('input.is-recurring-chosen').val("1");
-            $_form.find('.payments-grid .swiper-item').each(function(i, el){
-                if($(el).find('input[data-has-recurring=0]').length > 0) {
-                    $(el).addClass('disabled').removeClass('selected');
-                    $(el).find('input[type=radio]').prop('checked', false);
+
+        if(is_recurring) {
+
+            $_form.find('.section__fields.periodicity a[data-periodicity="monthly"]').addClass('active');
+            $_form.find('input.is-recurring-chosen').val('1');
+            $_form.find('.payments-grid .swiper-item').each(function(i, element){
+                if($(element).find('input[data-has-recurring="0"]').length > 0) {
+                    $(element)
+                        .addClass('disabled')
+                        .removeClass('selected')
+                        .find('input[type="radio"]')
+                            .prop('checked', false);
                 }
             });
+
+        } else {
+
+            $_form.find('.section__fields.periodicity a[data-periodicity="once"]').addClass('active');
+            $_form.find('input.is-recurring-chosen').val('0');
+            $_form.find('.payments-grid .swiper-item').each(function(i, element){
+                if($(element).find('input[data-has-recurring="0"]').length > 0) {
+                    $(element).removeClass('disabled');
+                }
+            });
+
         }
-        else {
-            $_form.find('.section__fields.periodicity a[data-periodicity=once]').addClass('active');
-            $_form.find('input.is-recurring-chosen').val("0");
-            $_form.find('.payments-grid .swiper-item').each(function(i, el){
-                if($(el).find('input[data-has-recurring=0]').length > 0) {
-                    $(el).removeClass('disabled');
-                }
-            });
+
+        let $available_pm_blocks = $_form.find('.payments-grid .swiper-item:not(.disabled)'),
+            $single_pm_icon_block = $_form.find('.single-pm-icon'),
+            $pm_form_section = $_form.find('.section--cards');
+
+        if($available_pm_blocks.length === 1) {
+
+            $single_pm_icon_block.html($available_pm_blocks.find('.payment-opt__icon').html()).show();
+            $pm_form_section.hide();
+
+        } else {
+
+            $single_pm_icon_block.hide();
+            $pm_form_section.show();
+
         }
         
         checkFormFillCompletion($_form);
+
     }
 
     function bindSwiperEvents() {
-        $('.leyka-tpl-star-form .star-swiper').on('click', '.swiper-item', function(e){
+        $('.leyka-tpl-star-form .star-swiper').on('click.leyka', '.swiper-item', function(e){
 
-            var $this = $(this);
+            let $this = $(this),
+                $swiper = $this.closest('.star-swiper'),
+                $daily_rouble_comment = $this.parents('.star-swiper').find('.daily-rouble-comment'),
+                $daily_rouble_amount = $daily_rouble_comment.find('.daily-rouble-amount');
 
         	if($this.hasClass('selected')) {
         		return;
@@ -248,7 +338,10 @@
             $this.addClass('selected');
             $this.find('input[type="radio"]').prop('checked', true).change();
 
-            var $swiper = $this.closest('.star-swiper');
+            if($daily_rouble_comment.length) {
+                $daily_rouble_amount.text(30 * parseInt($this.data('value')));
+            }
+
             swipeList($swiper, $this);
             toggleSwiperArrows($swiper);
 
@@ -324,8 +417,13 @@
     
     function swipeList($swiper, $activeItem) {
         var $list = $swiper.find('.swiper-list');
-        $list.stop( true, true )
-        
+
+        if( !$list.length ) {
+            return;
+        }
+
+        $list.stop( true, true );
+
         var dif = $list.width() - $swiper.width();
         if(dif <= 0) {
             $list.width($swiper.width());
@@ -630,26 +728,36 @@
     }
     
     function bindPMEvents() {
+
         $('.leyka-tpl-star-form form.leyka-pm-form').each(function(){
 
-            var $_form = $(this);
+            let $_form = $(this);
 
             toggleStaticPMForm($_form);
             togglePmSpecialFields($_form);
 
             $(this).find('input.payment-opt__radio').change(function(){
+
                 if($(this).prop('checked')) {
 
                     toggleStaticPMForm($_form);
                     togglePmSpecialFields($_form);
 
                 }
+
+                // Equalize the Donor info fields widths:
+                $_form.find('.section--person .equalize-elements-width').each(function(){
+                    equalizeFormElementsWidth($(this));
+                });
+
             });
+
         });
 
         $('.leyka-tpl-star-form .payments-grid .swiper-item.selected').each(function(i, el){
             $(this).click();
         });
+
     }
     
     function toggleStaticPMForm($form) {
@@ -668,7 +776,7 @@
 
     function togglePmSpecialFields($form) {
 
-        var $pm_radio = $form.find('input[name="leyka_payment_method"]:checked');
+        let $pm_radio = $form.find('input[name="leyka_payment_method"]:checked');
 
         $form.find('.special-field').hide();
         $form.find('.special-field.'+$pm_radio.val()).show();

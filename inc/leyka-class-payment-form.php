@@ -76,14 +76,19 @@ class Leyka_Payment_Form {
             $errors[] = new WP_Error('incorrect_donor_email', __('Incorrect donor email given while trying to add a donation', 'leyka'));
         }
 
+        $form_template_id = empty($_POST['leyka_template_id']) ? false : trim(esc_attr($_POST['leyka_template_id']));
+
         if(
-            leyka_options()->opt_template('show_donation_comment_field')
-            && leyka_options()->opt_template('donation_comment_max_length')
+            leyka_options()->opt_template('show_donation_comment_field', $form_template_id)
+            && leyka_options()->opt_template('donation_comment_max_length', $form_template_id)
         ) {
 
             $donor_comment = trim(leyka_pf_get_donor_comment_value());
-            if($donor_comment && mb_strlen($donor_comment) > leyka_options()->opt_template('donation_comment_max_length')) {
-                $errors[] = new WP_Error('donor_comment_too_long', sprintf(__('Entered comment is too long (maximum %d characters allowed)', 'leyka'), leyka_options()->opt_template('donation_comment_max_length')));
+            if(
+                $donor_comment
+                && mb_strlen($donor_comment) > leyka_options()->opt_template('donation_comment_max_length', $form_template_id)
+            ) {
+                $errors[] = new WP_Error('donor_comment_too_long', sprintf(__('Entered comment is too long (maximum %d characters allowed)', 'leyka'), leyka_options()->opt_template('donation_comment_max_length', $form_template_id)));
             }
 
         }
@@ -935,9 +940,10 @@ function leyka_get_current_template_data($campaign = null, $template = null, $is
 
     }
 
-    if( !$campaign ) { // Fallback if no leyka_remembered_data and campaign are specified
+    if( !$campaign ) { // Fallback if neither campaign nor leyka_remembered_data() specified
 
-        if(get_post_type() != Leyka_Campaign_Management::$post_type) {
+        $campaign = get_post();
+        if( !$campaign || $campaign->post_type != Leyka_Campaign_Management::$post_type ) {
             return false;
         }
 
@@ -952,7 +958,7 @@ function leyka_get_current_template_data($campaign = null, $template = null, $is
 		$template = $campaign->template;
 
 	}
-    
+
     if( !$template || $template === 'default' ) {
         $template = leyka_options()->opt('donation_form_template');
     }
@@ -993,7 +999,7 @@ function get_leyka_payment_form_template_html($campaign = null, $template = null
         <div class="<?php echo apply_filters('leyka_no_pm_error_classes', 'leyka-nopm-error');?>">
             <?php echo is_user_logged_in() ?
                    str_replace('%s', admin_url('admin.php?page=leyka_settings&stage=payment#leyka_pm_available-wrapper'), __('There are no payment methods selected to donate! Please, <a href="%s">set them up</a>.', 'leyka')) :
-                    __('Dear donor, we are very sorry, but we had not setted up the donations module yet :( Please try to donate later.', 'leyka');?>
+                    __('Dear donor, we are very sorry, but we haven\'t set up the donations module yet :( Please try to donate later.', 'leyka');?>
         </div>
 
         <?php } else {
@@ -1010,8 +1016,8 @@ function get_leyka_payment_form_template_html($campaign = null, $template = null
                         }
                     }
                 }
-                
-                if($template['id'] == 'revo') { /** @todo TMP!!! Make it normal */
+
+                if($template['id'] === 'revo') {
                     echo leyka_inline_campaign(array('id' => $campaign->id, 'template' => 'revo'));
                 } else {
                     require $template['file'];
