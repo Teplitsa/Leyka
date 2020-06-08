@@ -1,3 +1,19 @@
+@mixin need-help-section-title() {
+    color: var(--leyka-need-help-color-text);
+    font-size: var(--leyka-need-help-font-size-section-titles);
+    font-family: var(--leyka-need-help-font-family-section-titles);
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0;
+    padding: 0;
+}
+
+@mixin need-help-main-text() {
+    font-size: var(--leyka-need-help-font-size-main);
+    font-family: var(--leyka-need-help-font-family-main);
+    font-weight: normal;
+}
+
 @mixin need-help-active-block() {
     background-color: var(--leyka-need-help-color-blocks-active-background);
     color: var(--leyka-need-help-color-text);
@@ -20,6 +36,23 @@
 
     &.active, &.selected {
         @include need-help-active-block();
+    }
+
+}
+
+@mixin need-help-submit() {
+
+    color: var(--leyka-need-help-color-text);
+    background-color: var(--leyka-need-help-color-main-second);
+
+    font-size: var(--leyka-need-help-font-size-submit);
+    font-family: var(--leyka-need-help-font-family-submit);
+    font-weight: 600;
+    text-transform: none;
+
+    &:disabled {
+        color: var(--leyka-need-help-color-text-light);
+        background-color: var(--leyka-need-help-color-main-inactive);
     }
 
 }

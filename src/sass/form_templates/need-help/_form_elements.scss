@@ -392,12 +392,11 @@
 
         label {
 
+            @include need-help-main-text();
+
             margin-bottom: 10px;
 
             cursor: pointer;
-            font-size: var(--leyka-need-help-font-size-main);
-            font-family: var(--leyka-need-help-font-family-main);
-            font-weight: normal;
 
             svg.icon-checkbox-check {
                 fill: var(--leyka-need-help-color-main-second);
@@ -409,12 +408,10 @@
 
             a {
 
+                @include need-help-main-text();
+
                 display: inline;
                 color: unset;
-
-                font-size: var(--leyka-need-help-font-size-main);
-                font-family: var(--leyka-need-help-font-family-main);
-                text-decoration: none;
 
                 padding-bottom: 2px;
                 border-bottom: 1px solid var(--leyka-need-help-color-main-second);
@@ -429,24 +426,10 @@
 
 	}
 
-    // submit
     .donor__submit {
 
         input {
-
-            color: var(--leyka-need-help-color-text);
-            background-color: var(--leyka-need-help-color-main-second);
-
-            font-size: var(--leyka-need-help-font-size-submit);
-            font-family: var(--leyka-need-help-font-family-submit);
-            font-weight: 600;
-            text-transform: none;
-
-            &:disabled {
-                color: var(--leyka-need-help-color-text-light);
-                background-color: var(--leyka-need-help-color-main-inactive);
-            }
-
+            @include need-help-submit();
         }
 
     }
@@ -479,16 +462,96 @@ div[id*="leyka-pf-"].leyka-pf-need-help {
             }
 
             .section-title-text {
-                color: var(--leyka-need-help-color-text);
-                font-size: var(--leyka-need-help-font-size-section-titles);
-                font-family: var(--leyka-need-help-font-family-section-titles);
-                font-weight: 600;
-                text-transform: none;
-                padding: 0;
+                @include need-help-section-title();
             }
 
         }
     }
+}
+
+// Success widget
+
+.leyka-screen-form.leyka-screen-thankyou.leyka-need-help-thankyou {
+
+    @include need-help-main-text();
+
+    p {
+        @include need-help-main-text();
+    }
+
+    h1, h2 {
+        @include need-help-section-title();
+    }
+
+    .section .section__fields {
+
+        .donor__textfield {
+
+            &.focus .leyka-star-field-frame {
+                @include need-help-active-block();
+            }
+
+            .leyka-star-field-frame {
+
+                @include need-help-block();
+
+                display: flex;
+                align-items: center;
+
+                padding: 0 0 0 20px;
+
+                label {
+                    display: none;
+                }
+
+            }
+
+            &.valid .leyka-star-field-frame {
+                background-image: none;
+                background-color: unset;
+                border-color: var(--leyka-need-help-color-main);
+            }
+
+            input, textarea {
+
+                @include placeholder {
+                    color: var(--leyka-need-help-color-text-superlight) !important;
+                    font-size: var(--leyka-need-help-font-size-donor-fields);
+                    font-family: var(--leyka-need-help-font-family-blocks);
+                    font-weight: 500;
+                }
+
+                cursor: pointer;
+                font-size: var(--leyka-need-help-font-size-donor-fields);
+                font-family: var(--leyka-need-help-font-family-main);
+
+            }
+
+        }
+
+    }
+
+    // Submit:
+    .thankyou-email-me-button input[type="submit"].leyka-success-submit {
+        @include need-help-submit();
+    }
+
+    // "No, thank you" link:
+    .leyka-star-submit a.leyka-star-btn {
+
+        color: unset;
+        text-transform: none;
+
+        padding-bottom: 2px;
+        border-bottom: 1px solid var(--leyka-need-help-color-main-second);
+
+        &:hover {
+            text-decoration: none;
+            border-bottom: 1px solid var(--leyka-need-help-color-main-second);
+        }
+
+    }
+
 }
 
 //.leyka-tmp-star-form .leyka-rbk-pre-submit-step button {

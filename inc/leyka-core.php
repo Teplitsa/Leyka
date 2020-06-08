@@ -330,7 +330,8 @@ class Leyka extends Leyka_Singleton {
                         $form_template = leyka_remembered_data('template_id');
                     }
                     
-                    $form_template_suffix = $form_template === 'star' ? '-'.$form_template : '';
+                    $form_template_suffix = $form_template === 'star' || $form_template === 'need-help' ?
+                        /*'-'.$form_template*/ '-star' : '';
 
                     ob_start();
                     include LEYKA_PLUGIN_DIR.'templates/service/leyka-template-success-widget'.$form_template_suffix.'.php';
@@ -1309,7 +1310,12 @@ class Leyka extends Leyka_Singleton {
 
         }
 
-        if(leyka_modern_template_displayed('need-help')) {
+        $is_need_help_success_page =
+            is_page(leyka_options()->opt('success_page'))
+            && leyka_remembered_data('template_id') === 'need-help'
+            && leyka_options()->opt_template('show_success_widget_on_success', 'need-help');
+
+        if(leyka_modern_template_displayed('need-help') || $is_need_help_success_page) {
             wp_enqueue_style(
                 $this->_plugin_slug.'-montserrat-font-styles',
                 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap'

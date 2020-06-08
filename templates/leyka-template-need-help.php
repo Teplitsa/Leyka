@@ -20,11 +20,7 @@ if(count($campaign->donations_types_available) > 1) {
 }
 
 $another_amount_title = count($template_data['amount_variants']) > 0 ?
-    __('Another amount', 'leyka') : __('Enter the amount', 'leyka');
-
-if(in_array('recurring', $campaign->donations_types_available)) {?>
-    <div class="leyka-recurring-benefits"><?php echo leyka_options()->opt_template('recurring_donation_benefits_text', 'need-help');?></div>
-<?php }?>
+    __('Another amount', 'leyka') : __('Enter the amount', 'leyka');?>
 
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
 	<symbol width="12" height="9" viewBox="0 0 12 9" id="icon-checkbox-check">
