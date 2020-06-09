@@ -9,11 +9,15 @@ if( !leyka_options()->opt_template('show_success_widget_on_success') ) {
 }
 
 $donation_id = leyka_remembered_data('donation_id');
-$template_id = leyka_remembered_data('template_id');
 
 if( !$donation_id ) {
     return;
-}?>
+}
+
+$donation = new Leyka_Donation($donation_id);
+$campaign = $donation->campaign;
+
+$template_id = $campaign ? $campaign->template_id : leyka_remembered_data('template_id');?>
 
 <div id="content" class="site-content leyka-campaign-content">
 
