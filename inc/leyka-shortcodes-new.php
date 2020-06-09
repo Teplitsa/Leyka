@@ -14,6 +14,8 @@ function leyka_shortcode_amount_collected($atts) {
         'campaign_id' => 'current',
         'total_funded' => 0, // True/1 to use the "amount_total" field in counting, false/0 to use the "amount" field.
         'recurring' => 0, // True/1 to count only active recurring subscriptions amount, false/0 otherwise
+        'date_from' => false, // strtotime-compatible string, like dd.mm.yyyy
+        'date_to' => false, // strtotime-compatible string, like dd.mm.yyyy
         'classes' => '', // HTML classes for the shortcode wrapper
         'unstyled' => 0, // True/1 to use Leyka styling for the output, false/0 otherwise
     ), $atts);
@@ -23,6 +25,7 @@ function leyka_shortcode_amount_collected($atts) {
         'post_type' => Leyka_Donation_Management::$post_type,
         'nopaging' => true,
         'post_status' => 'funded',
+        'meta_query' => array(),
     );
 
     if($atts['campaign_id']) {
@@ -41,6 +44,12 @@ function leyka_shortcode_amount_collected($atts) {
         $donation_params['post_parent'] = 0;
         $donation_params['meta_query'][] = array('key' => 'leyka_payment_type', 'value' => 'rebill',);
 
+    }
+    if($atts['date_from']) {
+        $donation_params['date_query'][] = array('after' => $atts['date_from'],);
+    }
+    if($atts['date_to']) {
+        $donation_params['date_query'][] = array('before' => esc_sql($atts['date_to']),);
     }
 
     foreach(get_posts($donation_params) as $donation) {
