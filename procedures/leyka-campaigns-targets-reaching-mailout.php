@@ -10,6 +10,10 @@ if( !leyka()->opt('send_donor_emails_on_campaign_target_reaching') ) {
     die;
 }
 
+ini_set('max_execution_time', 0);
+set_time_limit(0);
+ini_set('memory_limit', 256*1024*1024); // 256 Mb, just in case
+
 $campaigns_ids = empty($_POST['procedure_params'][0]) ? false : array((int)$_POST['procedure_params'][0]);
 
 $reached_targets_campaigns = get_posts(array(
@@ -23,7 +27,8 @@ $reached_targets_campaigns = get_posts(array(
         array(
             'relation' => 'OR',
             array('key' => '_leyka_target_reaching_mailout_sent', 'value' => false),
-            array('key' => '_leyka_target_reaching_mailout_sent', 'value' => '1', 'compare' => 'NOT EXISTS'),
+            array('key' => '_leyka_target_reaching_mailout_sent', 'value' => '0'),
+            array('key' => '_leyka_target_reaching_mailout_sent', 'compare' => 'NOT EXISTS'),
         ),
     ),
 ));
@@ -79,56 +84,56 @@ foreach($reached_targets_campaigns as $campaign) {
 
     }
 
-//    add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
+    add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
     // Do the campaign mailout:
     $mailout_succeeded = true;
     foreach($mailout_list as $donor_email => $donor_data) {
 
         $mailout_succeeded = $mailout_succeeded && wp_mail(
-            $donor_email, // Email to
-            apply_filters( // Email title
-                'leyka_email_campaign_target_reaching_title',
-                leyka_options()->opt('email_campaign_target_reaching_title'),
-                $donor_data,
-                $campaign
-            ),
-            wpautop(str_replace( // Email text
-                array(
-                    '#SITE_NAME#',
-                    '#SITE_EMAIL#',
-                    '#ORG_NAME#',
-                    '#DONOR_NAME#',
-                    '#DONOR_EMAIL#',
-                    '#SUM#',
-                    '#CAMPAIGN_NAME#',
-                    '#CAMPAIGN_TARGET#',
-                    '#CAMPAIGN_PURPOSE#',
-                ),
-                array(
-                    get_bloginfo('name'),
-                    get_bloginfo('admin_email'),
-                    leyka_options()->opt('org_full_name'),
-                    $donor_data['donor_name'] ? $donor_data['donor_name'] : __('dear donor', 'leyka'),
-                    $donor_email,
-                    $donor_data['amount_donated_to_campaign'].' '.$donor_data['currency_donated_to_campaign'],
-                    $campaign->title,
-                    $campaign->target,
-                    $campaign->payment_title,
-                ),
-                leyka_options()->opt('email_campaign_target_reaching_text')
-            )),
-            array(
-                'Content-Type: text/html; charset=UTF-8',
-                'From: '.apply_filters( // Email additional headers
-                    'leyka_campaign_target_reaching_email_from_name',
-                    leyka_options()->opt_safe('email_from_name'),
-                    $donor_email,
+                $donor_email, // Email to
+                apply_filters( // Email title
+                    'leyka_email_campaign_target_reaching_title',
+                    leyka_options()->opt('email_campaign_target_reaching_title'),
                     $donor_data,
                     $campaign
-                ).' <'.leyka_options()->opt_safe('email_from').'>',
-            )
-        );
+                ),
+                wpautop(str_replace( // Email text
+                    array(
+                        '#SITE_NAME#',
+                        '#SITE_EMAIL#',
+                        '#ORG_NAME#',
+                        '#DONOR_NAME#',
+                        '#DONOR_EMAIL#',
+                        '#SUM#',
+                        '#CAMPAIGN_NAME#',
+                        '#CAMPAIGN_TARGET#',
+                        '#CAMPAIGN_PURPOSE#',
+                    ),
+                    array(
+                        get_bloginfo('name'),
+                        get_bloginfo('admin_email'),
+                        leyka_options()->opt('org_full_name'),
+                        $donor_data['donor_name'] ? $donor_data['donor_name'] : __('dear donor', 'leyka'),
+                        $donor_email,
+                        $donor_data['amount_donated_to_campaign'].' '.$donor_data['currency_donated_to_campaign'],
+                        $campaign->title,
+                        $campaign->target,
+                        $campaign->payment_title,
+                    ),
+                    leyka_options()->opt('email_campaign_target_reaching_text')
+                )),
+                array(
+                    'Content-Type: text/html; charset=UTF-8',
+                    'From: '.apply_filters( // Email additional headers
+                        'leyka_campaign_target_reaching_email_from_name',
+                        leyka_options()->opt_safe('email_from_name'),
+                        $donor_email,
+                        $donor_data,
+                        $campaign
+                    ).' <'.leyka_options()->opt_safe('email_from').'>',
+                )
+            );
 
     }
 
@@ -139,6 +144,8 @@ foreach($reached_targets_campaigns as $campaign) {
     }
 
     // Reset content-type to avoid conflicts (http://core.trac.wordpress.org/ticket/23578):
-//    remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
+    remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
+
+    echo $campaign->id.': '.($campaign->target_reaching_mailout_sent ? 'OK' : 'NOT OK');
 
 }
