@@ -111,6 +111,7 @@ abstract class Leyka_Extension extends Leyka_Singleton {
             'author_url' => 'Author URI',
             'debug_only' => 'Debug only',
             'deprecated' => 'Deprecated',
+            'disabled' => 'Disabled',
         ));
         $this->_author_name = empty($data['author_name']) ? '' : $data['author_name'];
         $this->_author_url = empty($data['author_url']) ? '' : $data['author_url'];

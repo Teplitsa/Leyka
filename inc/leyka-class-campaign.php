@@ -200,7 +200,10 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                     $templates[] = leyka()->get_template($cur_template);
                 }
 
-                $default_template = leyka()->get_template(leyka_options()->opt('donation_form_template'));?>
+                $default_template = leyka()->get_template(leyka_options()->opt('donation_form_template'));
+                if( !$default_template || leyka()->template_is_disabled($default_template['id']) ) {
+                    $default_template = leyka()->get_template('star');
+                }?>
 
                 <select id="campaign-form-template-field" name="campaign_template" data-default-template-id="<?php echo empty($default_template['id']) ? '' : esc_attr($default_template['id']);?>">
 

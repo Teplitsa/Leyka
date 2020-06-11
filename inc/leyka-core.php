@@ -75,6 +75,19 @@ class Leyka extends Leyka_Singleton {
                 (defined('LEYKA_DEBUG') && LEYKA_DEBUG !== 'inherit' ? !!LEYKA_DEBUG : $value) : $value;
         }, 10, 2);
 
+        // If the default template is disabled, don't use it as a default:
+//        add_filter('leyka_option_value', function($value, $option_id){
+//
+//            if($option_id !== 'donation_form_template') {
+//                return $value;
+//            }
+//
+//            $default_template_data = $this->_get_template_data($value);
+//
+//            return empty($default_template_data['disabled']) || $default_template_data['disabled'] === false ? $value : 'star';
+//
+//        }, 10, 2);
+
         // By default, we'll assume some errors in the payment form, so redirect will get us back to it:
         $this->_payment_url = wp_get_referer();
 
@@ -2066,6 +2079,12 @@ class Leyka extends Leyka_Singleton {
 
         $this->_templates = array_map(array($this, '_get_template_data'), $this->_templates);
 
+        foreach($this->_templates as $index => $template_data) { // Remove the disabled templates from the list
+            if( !empty($template_data['disabled']) && $template_data['disabled'] !== 'false') {
+                unset($this->_templates[$index]);
+            }
+        }
+
         if( !$params['include_deprecated'] ) {
             foreach($this->_templates as $index => $template_data) {
                 if( !empty($template_data['deprecated']) ) {
@@ -2103,6 +2122,7 @@ class Leyka extends Leyka_Singleton {
             'description' => 'Description',
             'debug_only' => 'Debug only',
             'deprecated' => 'Deprecated',
+            'disabled' => 'Disabled',
         ));
 
         $data['file'] = $file;
@@ -2155,6 +2175,7 @@ class Leyka extends Leyka_Singleton {
             'description' => 'Description',
             'debug_only' => 'Debug only',
             'deprecated' => 'Deprecated',
+            'disabled' => 'Disabled',
         ));
 
         if( !$template_data ) {
@@ -2162,6 +2183,29 @@ class Leyka extends Leyka_Singleton {
         }
 
         return !empty($template_data['deprecated']);
+
+    }
+
+    public function template_is_disabled($template_id) {
+
+        $template_main_file_addr = LEYKA_PLUGIN_DIR."templates/leyka-template-$template_id.php";
+        if($template_id === 'default' || !file_exists($template_main_file_addr)) {
+            /** @todo Throw some Ex? */ return false;
+        }
+
+        $template_data = get_file_data($template_main_file_addr, array(
+            'name' => 'Leyka Template',
+            'description' => 'Description',
+            'debug_only' => 'Debug only',
+            'deprecated' => 'Deprecated',
+            'disabled' => 'Disabled',
+        ));
+
+        if( !$template_data ) {
+            /** @todo Throw some Ex? */ return false;
+        }
+
+        return !empty($template_data['disabled']) && $template_data['disabled'] !== 'false';
 
     }
 

@@ -61,6 +61,24 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         add_action('personal_options_update', array($this, 'save_user_profile_donor_fields'));
         add_action('edit_user_profile_update', array($this, 'save_user_profile_donor_fields'));
 
+        // If template is disabled, remove its options:
+        add_filter('leyka_view_options_allocation', function($options_allocated){
+
+            if( !empty($options_allocated[0]['section']['tabs']) ) {
+                foreach($options_allocated[0]['section']['tabs'] as $tab_id => $tab_options) {
+                    if(stristr($tab_id, 'template_options_') !== false) {
+
+                        $template_id = str_replace('template_options_', '', $tab_id);
+                        if(leyka()->template_is_disabled($template_id)) {
+                            unset($options_allocated[0]['section']['tabs'][$tab_id]);
+                        }
+
+                    }
+                }
+            }
+            return $options_allocated;
+        });
+
 		require_once LEYKA_PLUGIN_DIR.'/inc/leyka-class-portlet-controller.php'; // Portlet controller API
 
     }
