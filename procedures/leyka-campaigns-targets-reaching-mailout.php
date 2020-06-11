@@ -90,6 +90,9 @@ foreach($reached_targets_campaigns as $campaign) {
     $mailout_succeeded = true;
     foreach($mailout_list as $donor_email => $donor_data) {
 
+        $campaign->target_reaching_mailout_sent = true;
+        $campaign->target_reaching_mailout_errors = true;
+
         $mailout_succeeded = $mailout_succeeded && wp_mail(
                 $donor_email, // Email to
                 apply_filters( // Email title
@@ -137,10 +140,8 @@ foreach($reached_targets_campaigns as $campaign) {
 
     }
 
-    $campaign->target_reaching_mailout_sent = true;
-
-    if( !$mailout_succeeded ) {
-        $campaign->target_reaching_mailout_errors = true;
+    if($mailout_succeeded) {
+        $campaign->target_reaching_mailout_errors = false;
     }
 
     // Reset content-type to avoid conflicts (http://core.trac.wordpress.org/ticket/23578):
