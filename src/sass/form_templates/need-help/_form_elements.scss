@@ -1,7 +1,6 @@
 /** == Form elements (_form_elements.scss) == **/
 
-.leyka-tpl-need-help-form .section .section__fields
-/*,.leyka-screen-form .section .section__fields*/ {
+.leyka-tpl-need-help-form .section .section__fields {
 
     font-size: var(--leyka-need-help-font-size-main);
     font-family: var(--leyka-need-help-font-family-main);
@@ -53,7 +52,7 @@
 
     }
 
-    // swiper
+    // Amounts:
     .star-swiper {
 
         overflow: unset;
@@ -180,6 +179,7 @@
 
             border: 1px solid var(--leyka-need-help-color-main-second);
             border-radius: 0;
+            background-color: var(--leyka-need-help-color-blocks-background);
 
             font-size: var(--leyka-need-help-font-size-main);
             font-family: var(--leyka-need-help-font-family-main);
@@ -190,11 +190,11 @@
             &:before {
                 content: '';
                 position: absolute;
-                top: -5px;
+                top: -6px;
                 left: 50px;
                 height: 10px;
                 width: 10px;
-                background: var(--leyka-need-help-color-form-background); // inherit
+                background: var(--leyka-need-help-color-blocks-background);
                 transform: rotate(-135deg);
                 border-bottom: inherit;
                 border-right: inherit;
@@ -204,6 +204,7 @@
 
             .daily-rouble-text {
                 line-height: 20px;
+                font-family: var(--leyka-need-help-font-family-main);
                 font-size: var(--leyka-need-help-font-size-main);
             }
 
@@ -211,18 +212,18 @@
                 white-space: nowrap;
                 line-height: 20px;
                 font-size: var(--leyka-need-help-font-size-main);
-                font-weight: 500;
+                //font-weight: 500;
             }
 
             .daily-rouble-currency {
-                margin-left: 2px;
+                margin-left: 4px;
             }
 
         }
 
     }
 
-    // payment methods
+    // Payment methods:
     &.payments-grid {
 
         .star-swiper {
@@ -296,7 +297,7 @@
 
     }
 
-    // donor data
+    // Donor data:
     &.donor {
 
         display: flex;
@@ -483,7 +484,7 @@
 
 }
 
-// description and dividers
+// Description and dividers:
 div[id*="leyka-pf-"].leyka-pf-need-help {
     .leyka-tpl-need-help-form {
 
@@ -592,7 +593,3 @@ div[id*="leyka-pf-"].leyka-pf-need-help {
     }
 
 }
-
-//.leyka-tmp-star-form .leyka-rbk-pre-submit-step button {
-//    @include leyka-star-btn();
-//}
