@@ -2,7 +2,7 @@
 /**
  * Leyka Template: Need Help
  * Description: Yet another modern and lightweight form template
- * Disabled: true
+ * Disabled: false
  * 
  * $campaign - current campaign
  **/

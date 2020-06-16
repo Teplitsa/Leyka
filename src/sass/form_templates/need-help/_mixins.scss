@@ -24,7 +24,8 @@
 
     background-color: var(--leyka-need-help-color-blocks-background);
     border: 1px solid var(--leyka-need-help-color-blocks-border);
-    box-shadow: 0 2px 6px rgba(0,0,0, 0.08);
+    //box-shadow: 0 2px 6px rgba(0,0,0, 0.08);
+    border-radius: 0;
 
     font-size: var(--leyka-need-help-font-size-blocks-default);
     font-family: var(--leyka-need-help-font-family-blocks);
@@ -42,16 +43,17 @@
 
 @mixin need-help-submit() {
 
-    color: var(--leyka-need-help-color-text);
+    color: var(--leyka-need-help-color-text-dark-bg);
     background-color: var(--leyka-need-help-color-main-second);
 
     font-size: var(--leyka-need-help-font-size-submit);
     font-family: var(--leyka-need-help-font-family-submit);
-    font-weight: 600;
-    text-transform: none;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 
     &:disabled {
-        color: var(--leyka-need-help-color-text-light);
+        color: var(--leyka-need-help-color-text-dark-bg);
         background-color: var(--leyka-need-help-color-main-inactive);
     }
 
