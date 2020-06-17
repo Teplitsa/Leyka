@@ -965,14 +965,14 @@ self::$_options_meta = array(
     ),
     'agree_to_pd_terms_text_text_part' => array(
         'type' => 'text',
-        'default' => __('I agree with', 'leyka'),
+        'default' => __('I agree with the processing of', 'leyka'),
         'title' => __('Personal data usage Terms checkbox label - the first (text) part', 'leyka'),
         'required' => true,
         'placeholder' => __('E.g., I agree with', 'leyka'),
     ),
     'agree_to_pd_terms_text_link_part' => array(
         'type' => 'text',
-        'default' => _x('Terms of personal data usage', 'In instrumental case', 'leyka'),
+        'default' => _x('my personal data', 'In instrumental case', 'leyka'),
         'title' => __('Personal data usage Terms checkbox label - the second (link) part', 'leyka'),
         'required' => true,
         'placeholder' => __('E.g., Terms of personal data usage', 'leyka'),
