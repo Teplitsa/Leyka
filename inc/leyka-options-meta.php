@@ -1144,7 +1144,7 @@ self::$_options_meta = array(
         'default' => 'rur',
         'title' => __('Primary currency', 'leyka'),
         'required' => true,
-        'list_entries' => array('rur' => __('RUB', 'leyka'), 'usd' => __('$', 'leyka'), 'eur' => __('euro', 'leyka'),),
+        'list_entries' => array('rur' => __('₽', 'leyka'), 'usd' => __('$', 'leyka'), 'eur' => __('€', 'leyka'),),
     ),
     'plugin_demo_mode' => array(
         'type' => 'checkbox',
