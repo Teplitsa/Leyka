@@ -106,10 +106,10 @@ if( !function_exists('leyka_pm_sortable_option_html_new') ) {
                 <?php if($pm) {
                     if($pm->icons) {
                         foreach($pm->icons as $icon_url) {?>
-                            <img class="pm-icon" src="<?php echo $icon_url;?>" alt="">
+                            <img class="pm-icon <?php echo $pm->full_id.' '.basename($icon_url, '.svg');?>" src="<?php echo $icon_url;?>" alt="">
                         <?php }
                     } else if($pm->main_icon) {?>
-                        <img class="pm-icon" src="<?php echo $pm->main_icon_url;?>" alt="">
+                        <img class="pm-icon <?php echo $pm->full_id.' '.basename($pm->main_icon_url, '.svg');?>" src="<?php echo $pm->main_icon_url;?>" alt="">
                     <?php }
                 }?>
                 </div>

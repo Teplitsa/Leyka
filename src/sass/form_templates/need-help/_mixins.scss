@@ -5,6 +5,7 @@
     font-weight: 600;
     text-transform: none;
     letter-spacing: 0;
+    line-height: 24px;
     padding: 0;
 }
 
@@ -30,6 +31,7 @@
     font-size: var(--leyka-need-help-font-size-blocks-default);
     font-family: var(--leyka-need-help-font-family-blocks);
     text-transform: none;
+    line-height: 21px;
 
     cursor: pointer;
 
@@ -76,3 +78,21 @@
         @media screen and (max-width: 1280px + 20 - 1) { @content; }
     }
 }
+
+//@mixin need-help-lower-than($media) {
+//    @if $media == small-screens {
+//        @media screen and (max-width: 320px + 20 - 1) { @content; }
+//    }
+//    @else if $media == medium-screens {
+//        @media screen and (max-width: 600px + 20 - 1) { @content; }
+//    }
+//    @else if $media == large-screens {
+//        @media screen and (max-width: 760px + 20 - 1) { @content; }
+//    }
+//    @else if $media == exlarge-screens {
+//        @media screen and (max-width: 1020px + 20 - 1) { @content; }
+//    }
+//    @else if $media == xxlarge-screens {
+//        @media screen and (max-width: 1280px + 20 - 1) { @content; }
+//    }
+//}

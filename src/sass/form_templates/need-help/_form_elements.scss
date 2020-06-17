@@ -4,6 +4,7 @@
 
     font-size: var(--leyka-need-help-font-size-main);
     font-family: var(--leyka-need-help-font-family-main);
+    line-height: 21px;
 
     &.periodicity {
 
@@ -26,9 +27,9 @@
 
             @include need-help-block();
 
-            font-weight: 400;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            line-height: 21px;
 
             flex: 220px 1 1;
 
@@ -48,6 +49,10 @@
 
             }
 
+            &.active {
+                font-weight: 600;
+            }
+
         }
 
     }
@@ -57,11 +62,15 @@
 
         overflow: unset;
 
+        &.amount__figure .full-list .swiper-item.selected span {
+            font-weight: 600;
+        }
+
         .full-list {
 
-            width: calc(100% + 10px);
+            width: calc(100% + 20px);
             margin-bottom: -10px;
-            margin-left: -10px;
+            margin-left: -20px;
 
             overflow: unset;
 
@@ -74,10 +83,13 @@
                 @include need-help-block();
 
                 margin-bottom: 10px;
-                margin-left: 10px;
+                margin-left: 20px;
                 padding: 0 20px;
 
-                flex: 100px 1 1;
+                flex: 110px 0 0; // Make amount blocks fix width on large screens...
+                @include need-help-upto(xxlarge-screens) { // ... but on any other width let amounts widen to fit
+                    flex: 100px 1 1;
+                }
 
                 font-size: var(--leyka-need-help-font-size-amounts);
 
@@ -85,6 +97,7 @@
 
                     span {
                         color: var(--leyka-need-help-color-text);
+                        //font-weight: 600;
                     }
 
                     .swiper-item-inner {
@@ -164,6 +177,7 @@
                 }
 
             }
+
         }
 
         .daily-rouble-comment {
@@ -287,6 +301,13 @@
                             cursor: pointer;
                             font-size: var(--leyka-need-help-font-size-pm-options);
                             font-family: var(--leyka-need-help-font-family-blocks);
+                            line-height: 16px;
+                        }
+
+                        .swiper-item-inner .payment-opt__icon {
+                            display: flex;
+                            flex-flow: row nowrap;
+                            align-items: center;
                         }
 
                     }
@@ -331,6 +352,17 @@
                 @include need-help-active-block();
             }
 
+            &.invalid .leyka-star-field-frame {
+
+                border: 2px solid var(--leyka-need-help-color-error);
+                background-image: none;
+
+                input {
+                    color: var(--leyka-need-help-color-main);
+                }
+
+            }
+
             .leyka-star-field-frame {
 
                 @include need-help-block();
@@ -353,9 +385,14 @@
             .leyka-star-field-error-frame {
 
                 min-height: 32px; // For cases when error message is a 2-liner
+                margin-left: 0;
+                margin-top: 11px;
 
                 span.donor__textfield-error {
                     color: var(--leyka-need-help-color-error);
+                    font-size: var(--leyka-need-help-font-size-main);
+                    font-family: var(--leyka-need-help-font-family-main);
+                    line-height: 20px;
                 }
 
             }
@@ -406,6 +443,7 @@
             margin-bottom: 10px;
 
             cursor: pointer;
+            line-height: 21px;
 
             &::before { // Unchecked
                 border-color: var(--leyka-need-help-color-blocks-border);
@@ -491,7 +529,7 @@ div[id*="leyka-pf-"].leyka-pf-need-help {
         .section-title-container {
 
             justify-content: left;
-            margin: 0 0 14px 0;
+            margin: 0 0 12px 0;
             background-color: transparent;
 
             .section-title-line {

@@ -323,7 +323,10 @@
     }
 
     function bindSwiperEvents() {
-        $('.leyka-tpl-star-form .star-swiper').on('click.leyka', '.swiper-item', function(e){
+
+        let $swiper = $('.leyka-tpl-star-form .star-swiper');
+
+        $swiper.on('click.leyka', '.swiper-item', function(e){
 
             let $this = $(this),
                 $swiper = $this.closest('.star-swiper'),
@@ -339,7 +342,13 @@
             $this.find('input[type="radio"]').prop('checked', true).change();
 
             if($daily_rouble_comment.length) {
-                $daily_rouble_amount.text(30 * parseInt($this.data('value')));
+
+                let $submit = $swiper.parents('.leyka-pm-form').find('.donor__submit input[type="submit"]'),
+                    monthly_amount_formatted = (30 * parseInt($this.data('value'))).format();
+
+                $daily_rouble_amount.text(monthly_amount_formatted);
+                $submit.val( $submit.data('submit-text-template').replace('#DAILY_ROUBLE_AMOUNT#', monthly_amount_formatted) );
+
             }
 
             swipeList($swiper, $this);
@@ -365,7 +374,7 @@
                 .prop('checked', true)
                 .change();
 
-        $('.leyka-tpl-star-form .star-swiper').on('click', 'a.swiper-arrow', function(e){
+        $swiper.on('click.leyka', 'a.swiper-arrow', function(e){
 
             e.preventDefault();
 
@@ -413,6 +422,7 @@
         $('.star-swiper').each(function() {
             toggleSwiperArrows($(this));
         });
+
     }
     
     function swipeList($swiper, $activeItem) {

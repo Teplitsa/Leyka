@@ -209,6 +209,28 @@ function leyka_empty(mixed_var) {
     return false;
 
 }
+
+/**
+ * Number.prototype.format(decimal_length, section_length, sections_delimiter, decimal_delimiter)
+ *
+ * @param integer decimal_length The length of decimal
+ * @param integer section_length: length of whole part
+ * @param mixed   sections_delimiter: sections delimiter
+ * @param mixed   decimal_delimiter: decimal delimiter
+ */
+Number.prototype.format = function(decimal_length, section_length, sections_delimiter, decimal_delimiter) {
+
+    decimal_length = typeof decimal_length === 'undefined' ? 0 : parseInt(decimal_length);
+    section_length = typeof section_length === 'undefined' ? 3 : parseInt(section_length);
+    sections_delimiter = typeof sections_delimiter === 'undefined' ? ' ' : sections_delimiter;
+    decimal_delimiter = typeof decimal_delimiter === 'undefined' ? '.' : decimal_delimiter;
+
+    var re = '\\d(?=(\\d{' + (section_length || 3) + '})+' + (decimal_length > 0 ? '\\D' : '$') + ')',
+        num = this.toFixed(Math.max(0, ~~decimal_length));
+
+    return (decimal_delimiter ? num.replace('.', decimal_delimiter) : num).replace(new RegExp(re, 'g'), '$&' + (sections_delimiter || ','));
+
+};
 /** Donor's account frontend */
 
 var leyka; // L10n lines
@@ -2398,7 +2420,10 @@ jQuery(document).ready(function($){
     }
 
     function bindSwiperEvents() {
-        $('.leyka-tpl-star-form .star-swiper').on('click.leyka', '.swiper-item', function(e){
+
+        let $swiper = $('.leyka-tpl-star-form .star-swiper');
+
+        $swiper.on('click.leyka', '.swiper-item', function(e){
 
             let $this = $(this),
                 $swiper = $this.closest('.star-swiper'),
@@ -2414,7 +2439,13 @@ jQuery(document).ready(function($){
             $this.find('input[type="radio"]').prop('checked', true).change();
 
             if($daily_rouble_comment.length) {
-                $daily_rouble_amount.text(30 * parseInt($this.data('value')));
+
+                let $submit = $swiper.parents('.leyka-pm-form').find('.donor__submit input[type="submit"]'),
+                    monthly_amount_formatted = (30 * parseInt($this.data('value'))).format();
+
+                $daily_rouble_amount.text(monthly_amount_formatted);
+                $submit.val( $submit.data('submit-text-template').replace('#DAILY_ROUBLE_AMOUNT#', monthly_amount_formatted) );
+
             }
 
             swipeList($swiper, $this);
@@ -2440,7 +2471,7 @@ jQuery(document).ready(function($){
                 .prop('checked', true)
                 .change();
 
-        $('.leyka-tpl-star-form .star-swiper').on('click', 'a.swiper-arrow', function(e){
+        $swiper.on('click.leyka', 'a.swiper-arrow', function(e){
 
             e.preventDefault();
 
@@ -2488,6 +2519,7 @@ jQuery(document).ready(function($){
         $('.star-swiper').each(function() {
             toggleSwiperArrows($(this));
         });
+
     }
     
     function swipeList($swiper, $activeItem) {

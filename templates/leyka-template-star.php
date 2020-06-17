@@ -111,7 +111,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                                 <input class="payment-opt__radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="radio" data-processing="<?php echo $pm->processing_type;?>" data-has-recurring="<?php echo $pm->has_recurring_support() ? '1' : '0';?>" data-ajax-without-form-submission="<?php echo $pm->ajax_without_form_submission ? '1' : '0';?>">
                                 <span class="payment-opt__icon">
                                     <?php foreach($pm->icons ? $pm->icons : array($pm->main_icon_url) as $icon_url) {?>
-                                        <img class="pm-icon" src="<?php echo $icon_url;?>" alt="">
+                                        <img class="pm-icon <?php echo $pm->full_id.' '.basename($icon_url, '.svg');?>" src="<?php echo $icon_url;?>" alt="">
                                     <?php }?>
                                 </span>
                             </label>

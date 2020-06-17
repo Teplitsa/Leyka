@@ -415,7 +415,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                         .__('/* Active buttons & switches highlight color */', 'leyka')."\n".
                         '/* :root { --leyka-need-help-color-main-second: #000000; } */ '
                         .__('/* Secondary elements color */', 'leyka')."\n".
-                        '/* :root { --leyka-need-help-color-main-inactive: rgba(0, 0, 0, 0.35); } */ '
+                        '/* :root { --leyka-need-help-color-main-inactive: #CCCCCC; } */ '
                         .__('/* The inactive elements color. Most of the times, the main color with lighter shade */', 'leyka')."\n".
                         '/* :root { --leyka-need-help-color-form-background: #FAFAFA; } */ '
                         .__('/* Form background color */', 'leyka')."\n".

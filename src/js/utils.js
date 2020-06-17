@@ -91,3 +91,25 @@ function leyka_empty(mixed_var) {
     return false;
 
 }
+
+/**
+ * Number.prototype.format(decimal_length, section_length, sections_delimiter, decimal_delimiter)
+ *
+ * @param integer decimal_length The length of decimal
+ * @param integer section_length: length of whole part
+ * @param mixed   sections_delimiter: sections delimiter
+ * @param mixed   decimal_delimiter: decimal delimiter
+ */
+Number.prototype.format = function(decimal_length, section_length, sections_delimiter, decimal_delimiter) {
+
+    decimal_length = typeof decimal_length === 'undefined' ? 0 : parseInt(decimal_length);
+    section_length = typeof section_length === 'undefined' ? 3 : parseInt(section_length);
+    sections_delimiter = typeof sections_delimiter === 'undefined' ? ' ' : sections_delimiter;
+    decimal_delimiter = typeof decimal_delimiter === 'undefined' ? '.' : decimal_delimiter;
+
+    var re = '\\d(?=(\\d{' + (section_length || 3) + '})+' + (decimal_length > 0 ? '\\D' : '$') + ')',
+        num = this.toFixed(Math.max(0, ~~decimal_length));
+
+    return (decimal_delimiter ? num.replace('.', decimal_delimiter) : num).replace(new RegExp(re, 'g'), '$&' + (sections_delimiter || ','));
+
+};

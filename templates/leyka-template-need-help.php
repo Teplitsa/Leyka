@@ -127,7 +127,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                                         <input class="payment-opt__radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="radio" data-processing="<?php echo $pm->processing_type;?>" data-has-recurring="<?php echo $pm->has_recurring_support() ? '1' : '0';?>" data-ajax-without-form-submission="<?php echo $pm->ajax_without_form_submission ? '1' : '0';?>">
                                         <span class="payment-opt__icon">
                                         <?php foreach($pm->icons ? $pm->icons : array($pm->main_icon_url) as $icon_url) {?>
-                                            <img class="pm-icon" src="<?php echo $icon_url;?>" alt="">
+                                            <img class="pm-icon <?php echo $pm->full_id.' '.basename($icon_url, '.svg');?>" src="<?php echo $icon_url;?>" alt="">
                                         <?php }?>
                                         </span>
                                     </label>
@@ -284,7 +284,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                             <label for="<?php echo $field_id;?>">
                                 <svg class="svg-icon icon-checkbox-check"><use xlink:href="#icon-checkbox-check"></use></svg>
 
-                            <?php echo apply_filters('agree_to_pd_terms_text_text_part', leyka_options()->opt('agree_to_terms_text_text_part')).' ';
+                            <?php echo apply_filters('agree_to_pd_terms_text_text_part', leyka_options()->opt('agree_to_pd_terms_text_text_part')).' ';
 
                             if(leyka_options()->opt('agree_to_pd_terms_link_action') === 'popup') {?>
                                 <a href="#" class="leyka-js-pd-trigger">
@@ -305,7 +305,20 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                     <?php }?>
 
                     <div class="donor__submit">
-                        <?php echo apply_filters('leyka_star_template_final_submit', '<input type="submit" disabled="disabled" class="leyka-default-submit" value="'.leyka_options()->opt_template('donation_submit_text').'">');?>
+                        <?php echo apply_filters(
+                            'leyka_need-help_template_final_submit',
+                            '<input type="submit" disabled="disabled" class="leyka-default-submit" value="'
+                            .($campaign->daily_rouble_mode_on_and_valid ?
+                                sprintf(
+                                    __('Make a monthly donation of %s %s', 'leyka'),
+                                    30 * reset($template_data['amount_variants']),
+                                    $template_data['currency_label']
+                                ) :
+                                leyka_options()->opt_template('donation_submit_text'))
+                            .'" data-submit-text-template="'
+                            .sprintf(__('Make a monthly donation of #DAILY_ROUBLE_AMOUNT# %s', 'leyka'), $template_data['currency_label'])
+                            .'">'
+                        );?>
                     </div>
 
                     <div class="single-pm-icon"></div>

@@ -70,7 +70,7 @@ $gateways_categories = leyka_get_gateways_filter_categories_list();?>
 
                         <?php $icons = leyka_get_gateway_icons_list($gateway);
                         foreach($icons as $icon_url) {?>
-                            <img class="pm-icon" src="<?php echo $icon_url;?>" alt="">
+                            <img class="pm-icon <?php echo $gateway->id.' '.basename($icon_url, '.svg');?>" src="<?php echo $icon_url;?>" alt="">
                         <?php }?>
 
                         </div>
