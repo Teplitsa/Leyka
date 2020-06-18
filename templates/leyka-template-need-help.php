@@ -25,7 +25,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
 	<symbol width="12" height="9" viewBox="0 0 12 9" id="icon-checkbox-check">
-		<path d="M3.81353 7.10067L0.968732 4.30201L0 5.24832L3.81353 9L12 0.946309L11.0381 0L3.81353 7.10067Z"></path>
+        <path d="M11.0263 1.69231L5.17386 7.86923L5.17386 7.86923L4.66495 8.46154L0 3.46923L1.52671 1.77692L4.66495 5.07692L9.49954 0L11.0263 1.69231Z">
 	</symbol>
 </svg>
 
@@ -174,7 +174,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                         </label>
                         <div class="leyka-star-field-error-frame">
                             <span class="donor__textfield-error leyka_donor_email-error">
-                                <?php _e('Enter an email in the some@email.com format', 'leyka');?>
+                                <?php _e('Please, enter a valid email', 'leyka');?>
                             </span>
                         </div>
                     </div>
@@ -186,7 +186,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                         </label>
                         <div class="leyka-star-field-error-frame">
                             <span class="donor__textfield-error leyka_donor_name-error">
-                                <?php _e('Enter your name', 'leyka');?>
+                                <?php _e('Please, enter your name', 'leyka');?>
                             </span>
                         </div>
                     </div>

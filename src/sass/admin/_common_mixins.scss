@@ -504,8 +504,11 @@
             margin-right: 12px;
         }
 
-        &.sber {
-            height: 18px;
+        &.sber,
+        &.card-visa,&.card-mastercard,&.card-maestro,&.card-mir,
+        &.mobile-beeline,&.mobile-megafon,&.mobile-mts,&.mobile-tele2 {
+            height: 16px;
+            margin-right: 12px;
         }
 
     }

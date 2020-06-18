@@ -204,12 +204,12 @@
             &:before {
                 content: '';
                 position: absolute;
-                top: -6px;
-                left: 50px;
-                height: 10px;
-                width: 10px;
+                top: -10px;
+                left: 39px;
+                height: 20px;
+                width: 20px;
                 background: var(--leyka-need-help-color-blocks-background);
-                transform: rotate(-135deg);
+                transform: scale(0.75, 0.75) rotate(-135deg);
                 border-bottom: inherit;
                 border-right: inherit;
                 box-shadow: inherit;
@@ -220,13 +220,14 @@
                 line-height: 20px;
                 font-family: var(--leyka-need-help-font-family-main);
                 font-size: var(--leyka-need-help-font-size-main);
+                font-weight: 400;
             }
 
             .daily-rouble-amount, .daily-rouble-currency {
                 white-space: nowrap;
                 line-height: 20px;
                 font-size: var(--leyka-need-help-font-size-main);
-                //font-weight: 500;
+                font-weight: 600;
             }
 
             .daily-rouble-currency {
@@ -305,9 +306,21 @@
                         }
 
                         .swiper-item-inner .payment-opt__icon {
+
                             display: flex;
                             flex-flow: row nowrap;
                             align-items: center;
+
+                            .pm-icon {
+
+                                margin-right: 8px;
+
+                                &:last-child {
+                                    margin-right: 0;
+                                }
+
+                            }
+
                         }
 
                     }
@@ -346,8 +359,6 @@
 
         .donor__textfield {
 
-            margin-bottom: 2px;
-
             &.focus .leyka-star-field-frame {
                 @include need-help-active-block();
             }
@@ -384,9 +395,10 @@
 
             .leyka-star-field-error-frame {
 
-                min-height: 32px; // For cases when error message is a 2-liner
+                min-height: 40px; // For cases when error message is a 2-liner
                 margin-left: 0;
-                margin-top: 11px;
+                margin-top: 10px;
+                padding: 0;
 
                 span.donor__textfield-error {
                     color: var(--leyka-need-help-color-error);
@@ -446,14 +458,17 @@
             line-height: 21px;
 
             &::before { // Unchecked
-                border-color: var(--leyka-need-help-color-blocks-border);
+                border: 1px solid var(--leyka-need-help-color-blocks-border-dark);
                 border-radius: 0;
                 left: -30px;
+                width: 20px;
+                height: 20px;
             }
 
             svg.icon-checkbox-check { // Checked - sign
                 fill: var(--leyka-need-help-color-text-dark-bg);
-                left: -27px;
+                left: -25px;
+                top: 8px;
             }
 
             a {
@@ -485,10 +500,24 @@
     }
 
     .single-pm-icon {
+
         display: flex;
         flex-flow: row nowrap;
         justify-content: center;
-        margin-top: 15px;
+        margin-top: 40px;
+        height: 16px;
+
+        .pm-icon {
+
+            height: 100%;
+            margin-right: 30px;
+
+            &:last-child {
+                margin-right: 0;
+            }
+
+        }
+
     }
 
 }
@@ -497,7 +526,7 @@
 .leyka-tpl-need-help-form {
 
     .section.section--agreements {
-        margin-top: 12px;
+        margin-top: 4px;
     }
 
     // Agreement popup content:
@@ -522,26 +551,48 @@
 
 }
 
-// Description and dividers:
-div[id*="leyka-pf-"].leyka-pf-need-help {
-    .leyka-tpl-need-help-form {
+div[id*="leyka-pf-"].leyka-pf-need-help .leyka-tpl-need-help-form {
 
-        .section-title-container {
+    // Description and dividers:
+    .section-title-container {
 
-            justify-content: left;
-            margin: 0 0 12px 0;
-            background-color: transparent;
+        justify-content: left;
+        margin: 0 0 12px 0;
+        background-color: transparent;
 
-            .section-title-line {
-                display: none;
-            }
-
-            .section-title-text {
-                @include need-help-section-title();
-            }
-
+        .section-title-line {
+            display: none;
         }
+
+        .section-title-text {
+            @include need-help-section-title();
+        }
+
     }
+
+    // Override the Star template Person section margin settings:
+    .section {
+
+        margin-bottom: 30px;
+
+        &.section--person {
+            margin-bottom: 30px;
+        }
+
+    }
+
+    // Override the Star template fields errors settings:
+    .donor__textfield .donor__textfield-error {
+        display: block;
+    }
+    .leyka-star-field-error-frame {
+        display: none;
+    }
+
+    .donor__textfield.invalid .leyka-star-field-error-frame {
+        display: block;
+    }
+
 }
 
 // Success widget:

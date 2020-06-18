@@ -501,7 +501,10 @@ class Leyka_Mixplat_Mobile extends Leyka_Payment_Method {
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             //LEYKA_PLUGIN_BASE_URL.'gateways/mixplat/icons/sms.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/mixplat/icons/sms.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-beeline.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-megafon.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-mts.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-tele2.svg',
         ));
 
         $this->_specific_fields = array(array( // For the new templates - from Star & further
@@ -566,7 +569,10 @@ class Leyka_Mixplat_Text extends Leyka_Payment_Method {
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             //LEYKA_PLUGIN_BASE_URL.'gateways/mixplat/icons/sms.png',
-            LEYKA_PLUGIN_BASE_URL.'gateways/mixplat/icons/sms.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-beeline.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-megafon.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-mts.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-tele2.svg',
         ));
 
         $this->_supported_currencies[] = 'rur';

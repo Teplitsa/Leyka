@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+  <desc>Created with Lunacy</desc>
+  <defs>
+    <linearGradient x1="0" y1="0.500001" x2="1.00000262" y2="0.500001" id="gradient_1">
+      <stop offset="0.1" stop-color="#F7A700" />
+      <stop offset="0.8864" stop-color="#FEDA00" />
+    </linearGradient>
+    <path d="M0 8.93357C0 13.8679 3.99948 17.8676 8.93404 17.8676C13.8672 17.8676 17.8673 13.868 17.8673 8.93357C17.8673 3.99972 13.8673 0 8.93404 0C3.99937 0 0 3.99972 0 8.93357" transform="translate(0.0004645161 0.04854194)" id="path_1" />
+    <clipPath id="mask_1">
+      <use xlink:href="#path_1" />
+    </clipPath>
+  </defs>
+  <g id="beeline">
+    <g id="Clipped">
+      <path d="M0 8.93357C0 13.8679 3.99948 17.8676 8.93404 17.8676C13.8672 17.8676 17.8673 13.868 17.8673 8.93357C17.8673 3.99972 13.8673 0 8.93404 0C3.99937 0 0 3.99972 0 8.93357" transform="translate(0.0004645161 0.04854194)" id="SVGID_1_" fill="none" stroke="none" />
+      <g clip-path="url(#mask_1)">
+        <path d="M0 0L17.8673 0L17.8673 3.8239L0 3.8239L0 0ZM0 11.4711L17.8673 11.4711L17.8673 7.64721L0 7.64721L0 11.4711Z" transform="translate(0 3.253703)" id="Shape" fill="url(#gradient_1)" fill-rule="evenodd" stroke="none" />
+      </g>
+    </g>
+    <g id="Clipped">
+      <path d="M0 8.93357C0 13.8679 3.99948 17.8676 8.93404 17.8676C13.8672 17.8676 17.8673 13.868 17.8673 8.93357C17.8673 3.99972 13.8673 0 8.93404 0C3.99937 0 0 3.99972 0 8.93357" transform="translate(0.0004645161 0.04854194)" id="SVGID_6_" fill="none" stroke="none" />
+      <g clip-path="url(#mask_1)">
+        <path d="M0 3.20435L17.8673 3.20435L17.8673 0L0 0L0 3.20435ZM0.000232258 7.02743L17.8673 7.02743L17.8673 10.8511L0.000232258 10.8511L0.000232258 7.02743ZM17.8673 14.6745L0.000232258 14.6745L0.000232258 17.8629L17.8673 17.8629L17.8673 14.6745Z" transform="translate(0 0.04981935)" id="Shape" fill="#1D1D1B" fill-rule="evenodd" stroke="none" />
+      </g>
+    </g>
+  </g>
+</svg>

@@ -13,7 +13,7 @@
 @mixin need-help-main-text() {
     font-size: var(--leyka-need-help-font-size-main);
     font-family: var(--leyka-need-help-font-family-main);
-    font-weight: normal;
+    font-weight: 400;
 }
 
 @mixin need-help-active-block() {
@@ -53,6 +53,8 @@
     font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+
+    border-radius: 0;
 
     &:disabled {
         color: var(--leyka-need-help-color-text-dark-bg);
