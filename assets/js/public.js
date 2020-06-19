@@ -2391,10 +2391,18 @@ jQuery(document).ready(function($){
             if($daily_rouble_comment.length) {
 
                 let $submit = $swiper.parents('.leyka-pm-form').find('.donor__submit input[type="submit"]'),
+                    first_amount_block_offset = $swiper.find('.swiper-item:first-child').offset().left,
+                    $selected_amount_block = $swiper.find('.swiper-item.selected'),
+                    comment_arrow_offset = $selected_amount_block.offset().left
+                        - first_amount_block_offset
+                        + $selected_amount_block.outerWidth()/3,
                     monthly_amount_formatted = (30 * parseInt($this.data('value'))).format();
 
                 $daily_rouble_amount.text(monthly_amount_formatted);
                 $submit.val( $submit.data('submit-text-template').replace('#DAILY_ROUBLE_AMOUNT#', monthly_amount_formatted) );
+
+                // Move the "daily rouble" comment arrow to the selected amount block:
+                document.styleSheets[0].addRule('.amount__figure.star-swiper .daily-rouble-comment:before', 'left: '+comment_arrow_offset+'px !important;');
 
             }
 

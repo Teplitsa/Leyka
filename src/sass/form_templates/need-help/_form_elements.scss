@@ -123,6 +123,9 @@
                     padding: 8px 20px !important;
                     height: 60px;
 
+                    border: 1px solid var(--leyka-need-help-color-blocks-border);
+                    border-radius: 0;
+
                     &.focus, &.selected {
                         @include need-help-block();
                     }
@@ -468,7 +471,7 @@
             svg.icon-checkbox-check { // Checked - sign
                 fill: var(--leyka-need-help-color-text-dark-bg);
                 left: -25px;
-                top: 8px;
+                top: 7px;
             }
 
             a {
