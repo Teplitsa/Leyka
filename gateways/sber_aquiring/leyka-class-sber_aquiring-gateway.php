@@ -1,0 +1,596 @@
+<?php if( !defined('WPINC') ) die;
+/**
+ * Leyka_Sber_Aquiring_Gateway class
+ */
+
+class Leyka_Sber_Aquiring_Gateway extends Leyka_Gateway {
+
+    protected static $_instance;
+
+    protected $_redirect_url = '';
+
+    protected function _set_attributes() {
+
+        $this->_id = 'sber_aquiring';
+        $this->_title = __('Sberbank Aquiring', 'leyka');
+
+        $this->_description = apply_filters(
+            'leyka_gateway_description',
+            __('<a href="//www.sberbank.ru/ru/s_m_business/bankingservice/acquiring_total/">Sberbank Aquiring</a> description here.', 'leyka'),
+            $this->_id
+        );
+
+        $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-sber-aquiring/';
+        $this->_registration_link = '//www.sberbank.ru/ru/s_m_business/bankingservice/acquiring_total#application';
+        $this->_has_wizard = false;
+
+        $this->_min_commission = 1;
+        $this->_receiver_types = array('legal');
+        $this->_may_support_recurring = false;
+
+    }
+
+    protected function _set_options_defaults() {
+
+        if($this->_options) {
+            return;
+        }
+
+        $this->_options = array(
+            $this->_id.'_api_login' => array(
+                'type' => 'text',
+                'title' => __('API Login', 'leyka'),
+                'comment' => __('Please, enter your Sberbank API login here. You should have received it from your Sberbank connection manager.', 'leyka'),
+                'required' => false,
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'somelogin_1-api'),
+            ),
+            $this->_id.'_api_password' => array(
+                'type' => 'text',
+                'title' => __('API Password', 'leyka'),
+                'comment' => __('Please, enter your Sberbank API password here. You should have received it from your Sberbank connection manager.', 'leyka'),
+                'is_password' => true,
+                'required' => false,
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '16918737fgc9fbdgc7c312dkmp7u27iu'),
+            ),
+            $this->_id.'_api_token' => array(
+                'type' => 'text',
+                'title' => __('API token', 'leyka'),
+                'comment' => __('Please, enter your Sberbank API token here. You may have received it from your Sberbank connection manager.', 'leyka'),
+                'required' => false,
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'c5fcan980a7c38418932y476g4931'),
+            ),
+            $this->_id.'_test_mode' => array(
+                'type' => 'checkbox',
+                'default' => true,
+                'title' => __('Payments testing mode', 'leyka'),
+                'comment' => __('Check if the gateway integration is in test mode.', 'leyka'),
+                'short_format' => true,
+            ),
+        );
+
+    }
+
+    public function is_setup_complete($pm_id = false) {
+        return leyka_options()->opt($this->_id.'_api_token')
+            || (leyka_options()->opt($this->_id.'_api_login') && leyka_options()->opt($this->_id.'_api_password'));
+    }
+
+    protected function _initialize_pm_list() {
+        if(empty($this->_payment_methods['card'])) {
+            $this->_payment_methods['card'] = Leyka_Sber_Aquiring_Card::get_instance();
+        }
+    }
+
+    public function localize_js_strings(array $js_data) {
+        return array_merge($js_data, array(
+            'ajax_wrong_server_response' => __('Error in server response. Please report to the website tech support.', 'leyka'),
+            'gateway_not_set_up' => __('Error in CloudPayments settings. Please report to the website tech support.', 'leyka'),
+//            'cp_donation_failure_reasons' => array(
+//                'User has cancelled' => __('You cancelled the payment', 'leyka'),
+//            ),
+        ));
+    }
+
+    public function enqueue_gateway_scripts() {
+
+//        if(Leyka_CP_Card::get_instance()->active) {
+//
+//            wp_enqueue_script('leyka-cp-widget', 'https://widget.cloudpayments.ru/bundles/cloudpayments', array(), false, true);
+//            wp_enqueue_script(
+//                'leyka-cp',
+//                LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_CP_Gateway::get_instance()->id.'/js/leyka.cp.js',
+//                array('jquery', 'leyka-cp-widget', 'leyka-public'),
+//                LEYKA_VERSION.'.001',
+//                true
+//            );
+//
+//        }
+//
+//        add_filter('leyka_js_localized_strings', array($this, 'localize_js_strings'));
+
+    }
+
+    public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
+
+        $donation = new Leyka_Donation($donation_id);
+
+        require_once LEYKA_PLUGIN_DIR.'gateways/sber_aquiring/lib/Client.php';
+        require_once LEYKA_PLUGIN_DIR.'gateways/sber_aquiring/lib/Currency.php';
+        require_once LEYKA_PLUGIN_DIR.'gateways/sber_aquiring/lib/HttpClient/HttpClientInterface.php';
+        require_once LEYKA_PLUGIN_DIR.'gateways/sber_aquiring/lib/HttpClient/CurlClient.php';
+//        require_once LEYKA_PLUGIN_DIR.'gateways/sber_aquiring/lib/OrderStatus.php';
+
+        $connection = array('currency' => Voronkovich\SberbankAcquiring\Currency::RUB,);
+
+        if(leyka_options()->opt($this->_id.'_api_token')) {
+            $connection['token'] = $this->_id.'_api_token';
+        } else {
+
+            $connection['userName'] = leyka_options()->opt($this->_id.'_api_login');
+            $connection['password'] = leyka_options()->opt($this->_id.'_api_password');
+
+        }
+
+        if(leyka_options()->opt($this->_id.'_test_mode')) {
+            $connection['apiUri'] = Voronkovich\SberbankAcquiring\Client::API_URI_TEST;
+        }
+
+        try {
+
+            $client = new Voronkovich\SberbankAcquiring\Client($connection);
+
+            $result = $client->registerOrder($donation->id, 100*$donation->amount, leyka_get_success_page_url(), array(
+                'failUrl' => leyka_get_failure_page_url(),
+            ));
+
+            $donation->sber_order_id = empty($result['orderId']) ? '' : esc_sql($result['orderId']);
+            $donation->add_gateway_response($result);
+
+            $this->_redirect_url = $result['formUrl'];
+
+        } catch(Exception $ex) {
+
+            $donation->add_gateway_response($ex);
+
+            leyka()->add_payment_form_error( new WP_Error('leyka_donation_error', sprintf(__('Error while processing the payment: %s. Your money will remain intact. Please report to the <a href="mailto:%s" target="_blank">website tech support</a>.', 'leyka'), $ex->getMessage(), leyka_get_website_tech_support_email())) );
+            return;
+
+        }
+
+    }
+
+    public function submission_redirect_url($current_url, $pm_id) {
+        return $this->_redirect_url ? $this->_redirect_url : ''; // Sberbank Aquiring receives redirection URL on payment
+    }
+
+    public function submission_form_data($form_data, $pm_id, $donation_id) {
+
+		if( !array_key_exists($pm_id, $this->_payment_methods) ) {
+			return $form_data; // It's not our PM
+        }
+
+        if(is_wp_error($donation_id)) { /** @var WP_Error $donation_id */
+            return array('status' => 1, 'message' => $donation_id->get_error_message());
+        } else if( !$donation_id ) {
+            return array('status' => 1, 'message' => __('The donation was not created due to error.', 'leyka'));
+        } else if( !$this->is_setup_complete() ) {
+            return array(
+                'status' => 1,
+                'message' => __('Error in the gateway settings. Please report to the website tech support.', 'leyka'),
+            );
+        }
+
+        return apply_filters('leyka_sber_aquiring_custom_submission_data', array(), $pm_id);
+
+    }
+
+    /** @todo */
+    public function _handle_service_calls($call_type = '') {
+
+//        switch($call_type) {
+//
+//            case 'check': // Check if payment is correct
+//
+//                // InvoiceId - leyka donation ID, SubscriptionId - CP recurring subscription ID:
+//                if(empty($_POST['InvoiceId']) && empty($_POST['SubscriptionId'])) {
+//                    die(json_encode(array('code' => '10')));
+//                }
+//
+//                if(empty($_POST['Amount']) || (float)$_POST['Amount'] <= 0 || empty($_POST['Currency'])) {
+//                    die(json_encode(array(
+//                        'code' => '11',
+//                        'reason' => sprintf(
+//                            __('Amount or Currency in POST are empty. Amount: %s, Currency: %s', 'leyka'),
+//                            $_POST['Amount'], $_POST['Currency']
+//                        )
+//                    )));
+//                }
+//
+//                if(empty($_POST['InvoiceId'])) { // Non-init recurring donation
+//
+//                    $init_recurring_donation = $this->get_init_recurrent_donation($_POST['SubscriptionId']);
+//                    if( !$init_recurring_donation || !$init_recurring_donation->id || is_wp_error($init_recurring_donation) ) {
+//                        die(json_encode(array(
+//                            'code' => '11',
+//                            'reason' => sprintf(
+//                                __('Init recurring payment is not found. POST SubscriptionId: %s', 'leyka'),
+//                                $_POST['SubscriptionId']
+//                            )
+//                        )));
+//                    }
+//
+//                } else if($_POST['InvoiceId'] !== 'leyka-test-donation') { // Single or init recurring donation
+//
+//                    $donation = new Leyka_Donation((int)$_POST['InvoiceId']);
+//                    $donation->add_gateway_response($_POST);
+//
+//                    switch($_POST['Currency']) {
+//                        case 'RUB': $_POST['Currency'] = 'rur'; break;
+//                        case 'USD': $_POST['Currency'] = 'usd'; break;
+//                        case 'EUR': $_POST['Currency'] = 'eur'; break;
+//                        default:
+//                    }
+//
+//                    if($donation->sum != $_POST['Amount'] || $donation->currency != $_POST['Currency']) {
+//                        die(json_encode(array(
+//                            'code' => '11',
+//                            'reason' => sprintf(
+//                                __('Amount of original data and POST are mismatching. Orig.: %.2f %s, POST: %.2f %s', 'leyka'),
+//                                $donation->sum, $donation->currency, $_POST['Amount'], $_POST['Currency']
+//                            )
+//                        )));
+//                    }
+//                }
+//
+//                die(json_encode(array('code' => '0'))); // Payment check passed
+//
+//            case 'complete':
+//            case 'fail':
+//
+//                // InvoiceId - leyka donation ID, SubscriptionId - CP recurring subscription ID
+//                if(empty($_POST['InvoiceId']) && empty($_POST['SubscriptionId'])) {
+//                    die(json_encode(array('code' => '0')));
+//                }
+//
+//                if(empty($_POST['InvoiceId'])) { // Non-init recurring donation
+//
+//                    $donation = $this->get_donation_by_transaction_id($_POST['TransactionId']);
+//
+//                    if( !$donation || !$donation->id || is_wp_error($donation) ) {
+//                        die(json_encode(array('code' => '0')));
+//                    }
+//
+//                    $init_recurring_donation = $this->get_init_recurrent_donation($_POST['SubscriptionId']);
+//
+//                    if( !$init_recurring_donation || !$init_recurring_donation->id || is_wp_error($init_recurring_donation) ) {
+//
+//                        $donation->payment_type = 'rebill';
+//                        $donation->status = 'failed';
+//                        $donation->add_gateway_response($_POST);
+//
+//                        if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
+//                            Leyka_Donation_Management::send_error_notifications($donation);
+//                        }
+//
+//                        die(json_encode(array('code' => '0')));
+//
+//                    }
+//
+//                    $donation->init_recurring_donation_id = $init_recurring_donation->id;
+//                    $donation->payment_title = $init_recurring_donation->title;
+//                    $donation->campaign_id = $init_recurring_donation->campaign_id;
+//                    $donation->payment_method_id = $init_recurring_donation->pm_id;
+//                    $donation->gateway_id = $init_recurring_donation->gateway_id;
+//                    $donation->donor_name = $init_recurring_donation->donor_name;
+//                    $donation->donor_email = $init_recurring_donation->donor_email;
+//                    $donation->donor_user_id = $init_recurring_donation->donor_user_id;
+//                    $donation->amount = $init_recurring_donation->amount;
+//                    $donation->currency = $init_recurring_donation->currency;
+//
+//                    // If init donation was made before the commission was set, apply a commission to the recurring one:
+//                    if(
+//                        $init_recurring_donation->amount == $init_recurring_donation->amount_total &&
+//                        $donation->amount == $donation->amount_total &&
+//                        leyka_get_pm_commission($donation->pm_full_id) > 0.0
+//                    ) {
+//                        $donation->amount_total = leyka_calculate_donation_total_amount($donation);
+//                    }
+//
+//                } else { // Single or init recurring donation
+//                    $donation = new Leyka_Donation((int)$_POST['InvoiceId']);
+//                }
+//
+//                if( !empty($_POST['SubscriptionId']) ) {
+//
+//                    $donation->payment_type = 'rebill';
+//                    $donation->recurring_id = $_POST['SubscriptionId'];
+//                    $donation->recurring_is_active = true;
+//
+//                }
+//
+//                $donation->add_gateway_response($_POST);
+//
+//                if($call_type === 'complete') {
+//
+//                    $donation->status = 'funded';
+//                    Leyka_Donation_Management::send_all_emails($donation->id);
+//
+//                    if( // GUA direct integration - "purchase" event:
+//                        leyka_options()->opt('use_gtm_ua_integration') === 'enchanced_ua_only'
+//                        && leyka_options()->opt('gtm_ua_tracking_id')
+//                        && in_array('purchase', leyka_options()->opt('gtm_ua_enchanced_events'))
+//                    ) {
+//
+//                        require_once LEYKA_PLUGIN_DIR.'vendor/autoload.php';
+//
+//                        $analytics = new TheIconic\Tracking\GoogleAnalytics\Analytics(true);
+//                        $analytics // Main params:
+//                            ->setProtocolVersion('1')
+//                            ->setTrackingId(leyka_options()->opt('gtm_ua_tracking_id'))
+//                            ->setClientId($donation->ga_client_id ? $donation->ga_client_id : leyka_gua_get_client_id())
+//                            // Transaction params:
+//                            ->setTransactionId($donation->id)
+//                            ->setAffiliation(get_bloginfo('name'))
+//                            ->setRevenue($donation->amount)
+//                            ->addProduct(array( // Donation params
+//                                'name' => $donation->payment_title,
+//                                'price' => $donation->amount,
+//                                'brand' => get_bloginfo('name'), // Mb, it won't work with it
+//                                'category' => $donation->type_label, // Mb, it won't work with it
+//                                'quantity' => 1,
+//                            ))
+//                            ->setProductActionToPurchase()
+//                            ->setEventCategory('Checkout')
+//                            ->setEventAction('Purchase')
+//                            ->sendEvent();
+//
+//                    }
+//                    // GUA direct integration - "purchase" event END
+//
+//                } else {
+//
+//                    $donation->status = 'failed';
+//
+//                    if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
+//                        Leyka_Donation_Management::send_error_notifications($donation);
+//                    }
+//
+//                }
+//
+//                die(json_encode(array('code' => '0'))); // Payment completed / fail registered
+//
+//            case 'recurring_change':
+//            case 'recurrent_change':
+//
+//                if( !empty($_POST['Id']) ) { // Recurring subscription ID in the CP system
+//
+//                    $_POST['Id'] = trim($_POST['Id']);
+//                    $init_recurring_donation = $this->get_init_recurrent_donation($_POST['Id']);
+//
+//                    if($init_recurring_donation && $init_recurring_donation->recurring_is_active) {
+//                        $init_recurring_donation->recurring_is_active = false;
+//                    }
+//
+//                }
+//
+//                die(json_encode(array('code' => '0')));
+//
+//            default:
+//        }
+
+    }
+
+    /**
+     * It is possible for the Gateway to call a callback several times for one donation.
+     * This donation must be created only once and then updated. It can be identified with CP transaction id.
+     *
+     * @param $cp_transaction_id integer
+     * @return Leyka_Donation
+     * @todo
+     */
+//    public function get_donation_by_transaction_id($cp_transaction_id) {
+//
+//        $donation = get_posts(array( // Get init recurrent payment with customer_id given
+//            'posts_per_page' => 1,
+//            'post_type' => Leyka_Donation_Management::$post_type,
+//            'post_status' => 'any',
+//            'meta_query' => array(
+//                'RELATION' => 'AND',
+//                array(
+//                    'key'     => '_cp_transaction_id',
+//                    'value'   => $cp_transaction_id,
+//                    'compare' => '=',
+//                ),
+//            ),
+//        ));
+//
+//        if(count($donation)) {
+//            $donation = new Leyka_Donation($donation[0]->ID);
+//        } else {
+//            $donation = new Leyka_Donation(Leyka_Donation::add(array(
+//                'status' => 'submitted',
+//                'cp_transaction_id' => $cp_transaction_id,
+//                'force_insert' => true, // Turn off donation fields validation checks
+//            )));
+//        }
+//
+//        return $donation;
+//
+//    }
+
+    protected function _get_value_if_any($arr, $key, $val = false) {
+        return empty($arr[$key]) ? '' : ($val ? $val : $arr[$key]);
+    }
+
+    public function get_gateway_response_formatted(Leyka_Donation $donation) {
+
+        if( !$donation->gateway_response ) {
+            return array();
+        }
+
+        $vars = maybe_unserialize($donation->gateway_response);
+        if( !$vars || !is_array($vars) ) {
+            return array();
+        }
+
+        /** @todo */
+        $vars_final = array(
+//            __('Transaction ID:', 'leyka') => $this->_get_value_if_any($vars, 'TransactionId'),
+//            __('Outcoming sum:', 'leyka') => $this->_get_value_if_any($vars, 'Amount'),
+//            __('Outcoming currency:', 'leyka') => $this->_get_value_if_any($vars, 'Currency'),
+//            __('Incoming sum:', 'leyka') => $this->_get_value_if_any($vars, 'PaymentAmount'),
+//            __('Incoming currency:', 'leyka') => $this->_get_value_if_any($vars, 'PaymentCurrency'),
+//            __('Donor name:', 'leyka') => $this->_get_value_if_any($vars, 'Name'),
+//            __('Donor email:', 'leyka') => $this->_get_value_if_any($vars, 'Email'),
+//            __('Callback time:', 'leyka') => $this->_get_value_if_any($vars, 'DateTime'),
+//            __('Donor IP:', 'leyka') => $this->_get_value_if_any($vars, 'IpAddress'),
+//            __('Donation description:', 'leyka') => $this->_get_value_if_any($vars, 'Description'),
+//            __('Is test donation:', 'leyka') => $this->_get_value_if_any($vars, 'TestMode'),
+//            __('Invoice status:', 'leyka') => $this->_get_value_if_any($vars, 'Status'),
+        );
+
+//        if( !empty($vars['reason']) ) {
+//            $vars_final[__('Donation failure reason:', 'leyka')] = $vars['reason'];
+//        }
+//        if( !empty($vars['SubscriptionId']) ) {
+//            $vars_final[__('Recurrent subscription ID:', 'leyka')] = $this->_get_value_if_any($vars, 'SubscriptionId');
+//        }
+//        if( !empty($vars['StatusCode']) ) {
+//            $vars_final[__('Invoice status code:', 'leyka')] = $this->_get_value_if_any($vars, 'StatusCode');
+//        }
+
+        return $vars_final;
+
+    }
+
+    /** @todo */
+    public function display_donation_specific_data_fields($donation = false) {
+
+        /*if($donation) { // Edit donation page displayed
+
+            $donation = leyka_get_validated_donation($donation);
+
+            if($donation->type !== 'rebill') {
+                return;
+            }?>
+
+            <label><?php _e('CloudPayments subscription ID', 'leyka');?>:</label>
+
+            <div class="leyka-ddata-field">
+
+                <?php if($donation->type == 'correction') {?>
+                    <input type="text" id="cp-recurring-id" name="cp-recurring-id" placeholder="<?php _e('Enter CloudPayments subscription ID', 'leyka');?>" value="<?php echo $donation->recurring_id;?>">
+                <?php } else {?>
+                    <span class="fake-input"><?php echo $donation->recurring_id;?></span>
+                <?php }?>
+            </div>
+
+            <?php $init_recurring_donation = $donation->init_recurring_donation;?>
+
+            <div class="recurring-is-active-field">
+
+                <label><?php _e('Recurring subscription is active', 'leyka');?>:</label>
+                <div class="leyka-ddata-field">
+                    <?php echo $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka');
+
+                    if( !$init_recurring_donation->recurring_is_active && $init_recurring_donation->recurring_cancel_date ) {
+                    echo ' ('.sprintf(__('canceled on %s', 'leyka'), date(get_option('date_format').', '.get_option('time_format'), $init_recurring_donation->recurring_cancel_date)).')';
+                    }?>
+                </div>
+
+            </div>
+
+        <?php } else { // New donation page displayed ?>
+
+            <label for="cp-recurring-id"><?php _e('CloudPayments subscription ID', 'leyka');?>:</label>
+            <div class="leyka-ddata-field">
+                <input type="text" id="cp-recurring-id" name="cp-recurring-id" placeholder="<?php _e('Enter CloudPayments subscription ID', 'leyka');?>" value="">
+            </div>
+
+        <?php }*/
+
+    }
+
+    public function get_specific_data_value($value, $field_name, Leyka_Donation $donation) {
+
+        switch($field_name) { /** @todo */
+//            case 'transaction_id':
+//            case 'invoice_id':
+//            case 'cp_transaction_id':
+//            case 'cp_invoice_id': return get_post_meta($donation->id, '_cp_transaction_id', true);
+            default: return $value;
+        }
+
+    }
+
+    public function set_specific_data_value($field_name, $value, Leyka_Donation $donation) {
+
+        switch($field_name) { /** @todo */
+//            case 'transaction_id':
+//            case 'invoice_id':
+//            case 'cp_transaction_id':
+//            case 'cp_invoice_id':
+//                return update_post_meta($donation->id, '_cp_transaction_id', $value);
+            default: return false;
+        }
+
+    }
+
+    public function save_donation_specific_data(Leyka_Donation $donation) { /** @todo */
+    }
+
+    public function add_donation_specific_data($donation_id, array $donation_params) { /** @todo */
+
+//        if( !empty($donation_params['transaction_id']) ) {
+//            update_post_meta($donation_id, '_cp_transaction_id', $donation_params['transaction_id']);
+//        }
+
+    }
+
+}
+
+class Leyka_Sber_Aquiring_Card extends Leyka_Payment_Method {
+
+    protected static $_instance = null;
+
+    public function _set_attributes() {
+
+        $this->_id = 'card';
+        $this->_gateway_id = 'sber_aquiring';
+        $this->_category = 'bank_cards';
+
+        $this->_description = apply_filters(
+            'leyka_pm_description',
+            __('<a href="//www.sberbank.ru/ru/s_m_business/bankingservice/acquiring_total/">Sberbank Aquiring</a> cards payment description here.', 'leyka'),
+            $this->_id,
+            $this->_gateway_id,
+            $this->_category
+        );
+
+        $this->_label_backend = __('Bank card', 'leyka');
+        $this->_label = __('Bank card', 'leyka');
+
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
+        ));
+
+        $this->_supported_currencies[] = 'rur';
+        $this->_default_currency = 'rur';
+
+//        $this->_processing_type = 'custom-process-submit-event';
+
+    }
+
+    public function has_recurring_support() {
+        return false;
+    }
+
+}
+
+function leyka_add_gateway_sber_aquiring() { // Use named function to leave a possibility to remove/replace it on the hook
+    leyka_add_gateway(Leyka_Sber_Aquiring_Gateway::get_instance());
+}
+add_action('leyka_init_actions', 'leyka_add_gateway_sber_aquiring');

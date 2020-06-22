@@ -300,7 +300,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         ),
                     ),
                     'template_options_need-help' => array(
-                        'title' => __('Need help', 'leyka'),
+                        'title' => __('Need Help', 'leyka'),
                         'screenshots' => array('screen-need-help-001.png'),
                         'sections' => array(
                             array(
