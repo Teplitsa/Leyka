@@ -85,9 +85,6 @@ class Leyka_Sber_Aquiring_Gateway extends Leyka_Gateway {
         return array_merge($js_data, array(
             'ajax_wrong_server_response' => __('Error in server response. Please report to the website tech support.', 'leyka'),
             'gateway_not_set_up' => __('Error in CloudPayments settings. Please report to the website tech support.', 'leyka'),
-//            'cp_donation_failure_reasons' => array(
-//                'User has cancelled' => __('You cancelled the payment', 'leyka'),
-//            ),
         ));
     }
 
@@ -463,61 +460,41 @@ class Leyka_Sber_Aquiring_Gateway extends Leyka_Gateway {
 
     }
 
-    /** @todo */
     public function display_donation_specific_data_fields($donation = false) {
 
-        /*if($donation) { // Edit donation page displayed
+        if($donation) { // Edit donation page displayed
 
-            $donation = leyka_get_validated_donation($donation);
+            $donation = leyka_get_validated_donation($donation); ?>
 
-            if($donation->type !== 'rebill') {
-                return;
-            }?>
-
-            <label><?php _e('CloudPayments subscription ID', 'leyka');?>:</label>
+            <label><?php _e('Sberbank order ID', 'leyka');?>:</label>
 
             <div class="leyka-ddata-field">
 
-                <?php if($donation->type == 'correction') {?>
-                    <input type="text" id="cp-recurring-id" name="cp-recurring-id" placeholder="<?php _e('Enter CloudPayments subscription ID', 'leyka');?>" value="<?php echo $donation->recurring_id;?>">
+                <?php if($donation->type === 'correction') {?>
+                    <input type="text" id="sber-order-id" name="sber-order-id" placeholder="<?php _e('Enter a Sberbank order ID', 'leyka');?>" value="<?php echo $donation->sber_order_id;?>">
                 <?php } else {?>
-                    <span class="fake-input"><?php echo $donation->recurring_id;?></span>
+                    <span class="fake-input"><?php echo $donation->sber_order_id;?></span>
                 <?php }?>
-            </div>
-
-            <?php $init_recurring_donation = $donation->init_recurring_donation;?>
-
-            <div class="recurring-is-active-field">
-
-                <label><?php _e('Recurring subscription is active', 'leyka');?>:</label>
-                <div class="leyka-ddata-field">
-                    <?php echo $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka');
-
-                    if( !$init_recurring_donation->recurring_is_active && $init_recurring_donation->recurring_cancel_date ) {
-                    echo ' ('.sprintf(__('canceled on %s', 'leyka'), date(get_option('date_format').', '.get_option('time_format'), $init_recurring_donation->recurring_cancel_date)).')';
-                    }?>
-                </div>
-
             </div>
 
         <?php } else { // New donation page displayed ?>
 
-            <label for="cp-recurring-id"><?php _e('CloudPayments subscription ID', 'leyka');?>:</label>
+            <label for="sber-order-id"><?php _e('Sberbank order ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <input type="text" id="cp-recurring-id" name="cp-recurring-id" placeholder="<?php _e('Enter CloudPayments subscription ID', 'leyka');?>" value="">
+                <input type="text" id="sber-order-id" name="sber-order-id" placeholder="<?php _e('Enter Sberbank order ID', 'leyka');?>" value="">
             </div>
 
-        <?php }*/
+        <?php }
 
     }
 
     public function get_specific_data_value($value, $field_name, Leyka_Donation $donation) {
 
-        switch($field_name) { /** @todo */
-//            case 'transaction_id':
-//            case 'invoice_id':
-//            case 'cp_transaction_id':
-//            case 'cp_invoice_id': return get_post_meta($donation->id, '_cp_transaction_id', true);
+        switch($field_name) {
+            case 'order_id':
+            case 'sber_order_id':
+            case 'sber_aquiring_order_id':
+                return get_post_meta($donation->id, '_leyka_sber_order_id', true);
             default: return $value;
         }
 
@@ -525,25 +502,29 @@ class Leyka_Sber_Aquiring_Gateway extends Leyka_Gateway {
 
     public function set_specific_data_value($field_name, $value, Leyka_Donation $donation) {
 
-        switch($field_name) { /** @todo */
-//            case 'transaction_id':
-//            case 'invoice_id':
-//            case 'cp_transaction_id':
-//            case 'cp_invoice_id':
-//                return update_post_meta($donation->id, '_cp_transaction_id', $value);
+        switch($field_name) {
+            case 'order_id':
+            case 'sber_order_id':
+            case 'sber_aquiring_order_id':
+                return update_post_meta($donation->id, '_leyka_sber_order_id', $value);
             default: return false;
         }
 
     }
 
-    public function save_donation_specific_data(Leyka_Donation $donation) { /** @todo */
+    public function save_donation_specific_data(Leyka_Donation $donation) {
+
+        if(isset($_POST['sber-order-id']) && $donation->sber_order_id != $_POST['sber-order-id']) {
+            $donation->sber_order_id = $_POST['sber-order-id'];
+        }
+
     }
 
-    public function add_donation_specific_data($donation_id, array $donation_params) { /** @todo */
+    public function add_donation_specific_data($donation_id, array $donation_params) {
 
-//        if( !empty($donation_params['transaction_id']) ) {
-//            update_post_meta($donation_id, '_cp_transaction_id', $donation_params['transaction_id']);
-//        }
+        if( !empty($donation_params['sber_order_id']) ) {
+            update_post_meta($donation_id, '_leyka_sber_order_id', $donation_params['sber_order_id']);
+        }
 
     }
 
