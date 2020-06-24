@@ -695,7 +695,7 @@ self::$_options_meta = array(
     ),
     'donation_sum_field_type' => array(
         'type' => 'radio',
-        'default' => 'flexible',
+        'default' => 'mixed',
         'title' => __('Select a type of the sum field for all your donation forms', 'leyka'),
         'description' => __('Select a type of the sum field. «Fixed» means a set of stable sum variants, while «flexible» is a free input field.', 'leyka'),
         'required' => true,

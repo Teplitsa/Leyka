@@ -252,7 +252,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                             <label for="daily-rouble-amount-variants"><?php _e('Daily amount variants', 'leyka');?></label>
                         </h3>
 
-                        <input type="text" id="daily-rouble-amount-variants" name="daily_rouble_amounts" value="<?php echo $campaign->daily_rouble_amounts ? $campaign->daily_rouble_amounts : '1,2,3,4,5,10,15';?>" placeholder="<?php _e('E. g., 1,2,3,4,5,10,15');?>">
+                        <input type="text" id="daily-rouble-amount-variants" name="daily_rouble_amounts" value="<?php echo $campaign->daily_rouble_amounts ? $campaign->daily_rouble_amounts : '1,2,3,4,5,10';?>" placeholder="<?php _e('E. g., 1,2,3,4,5,10');?>">
 
                     </div>
 
