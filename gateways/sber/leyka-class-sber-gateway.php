@@ -118,11 +118,11 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
 
         $donation = new Leyka_Donation($donation_id);
 
-        require_once LEYKA_PLUGIN_DIR.'gateways/sber_aquiring/lib/Client.php';
-        require_once LEYKA_PLUGIN_DIR.'gateways/sber_aquiring/lib/Currency.php';
-        require_once LEYKA_PLUGIN_DIR.'gateways/sber_aquiring/lib/HttpClient/HttpClientInterface.php';
-        require_once LEYKA_PLUGIN_DIR.'gateways/sber_aquiring/lib/HttpClient/CurlClient.php';
-//        require_once LEYKA_PLUGIN_DIR.'gateways/sber_aquiring/lib/OrderStatus.php';
+        require_once LEYKA_PLUGIN_DIR.'gateways/sber/lib/Client.php';
+        require_once LEYKA_PLUGIN_DIR.'gateways/sber/lib/Currency.php';
+        require_once LEYKA_PLUGIN_DIR.'gateways/sber/lib/HttpClient/HttpClientInterface.php';
+        require_once LEYKA_PLUGIN_DIR.'gateways/sber/lib/HttpClient/CurlClient.php';
+//        require_once LEYKA_PLUGIN_DIR.'gateways/sber/lib/OrderStatus.php';
 
         $connection = array('currency' => Voronkovich\SberbankAcquiring\Currency::RUB,);
 
@@ -201,7 +201,7 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
             case 'process':
             case 'response':
             case 'notify':
-
+                set_transient('leyka_tmp_callback', $_REQUEST, 60*60*24*7);
 
             default:
                 exit(500);
