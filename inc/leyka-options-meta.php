@@ -116,7 +116,11 @@ self::$_options_meta = array(
         'default' => 'ru', // leyka_get_default_receiver_country(),
         'title' => __('Select your country', 'leyka'),
         'required' => true,
-        'list_entries' => array('-' => __('Not set', 'leyka'), 'ru' => __('Russia', 'leyka')),
+        'list_entries' => array(
+            '-' => __('Not set', 'leyka'),
+            'ru' => __('Russia', 'leyka'),
+            'ua' => __('Ukraine', 'leyka'),
+        ),
         'description' => __('Leyka architecture allows you to collect funds even in other countries. Read more about it <a href="//leyka.te-st.ru/docs/translating-leyka/" target="_blank">here</a>.', 'leyka'),
     ),
     'receiver_legal_type' => array(
@@ -343,6 +347,14 @@ self::$_options_meta = array(
         'placeholder' => __('Enter rate value (e.g., 80)', 'leyka'),
         'length' => 6,
     ),
+    'currency_rur2uah' => array(
+        'type' => 'number',
+        'title' => __('Exchange rate', 'leyka'),
+        'description' => __('Please set the RUR to UAH currency rate here.', 'leyka'),
+        'required' => true,
+        'placeholder' => __('Enter rate value (e.g., 80)', 'leyka'),
+        'length' => 6,
+    ),
     'currency_rur_label' => array(
         'type' => 'text',
         'default' => __('RUB', 'leyka'),
@@ -478,6 +490,51 @@ self::$_options_meta = array(
         'placeholder' => '3,5,10,100,500',
         'length' => 25,
     ),
+    'currency_uah_label' => array(
+        'type' => 'text',
+        'default' => __('UAH', 'leyka'),
+        'title' => __('UAH label', 'leyka'),
+        'description' => __('Please set the UAH currency label here.', 'leyka'),
+        'required' => true,
+        'placeholder' => __('E.g., UAH', 'leyka'),
+        'length' => 6,
+    ),
+    'currency_uah_min_sum' => array(
+        'type' => 'number',
+        'default' => 50,
+        'title' => __('Minimum sum available for UAH', 'leyka'),
+        'description' => __('Please set minimum sum available for UAH donations.', 'leyka'),
+        'required' => true,
+        'placeholder' => '50',
+        'length' => 6,
+    ),
+    'currency_uah_max_sum' => array(
+        'type' => 'number',
+        'default' => 15000,
+        'title' => __('Maximum sum available for UAH', 'leyka'),
+        'description' => __('Please set maximum sum available for UAH donations.', 'leyka'),
+        'required' => true,
+        'placeholder' => '15000',
+        'length' => 6,
+    ),
+    'currency_uah_flexible_default_amount' => array(
+        'type' => 'number',
+        'default' => 200,
+        'title' => __('Default amount of donation in UAH (for «flexible» donation type)', 'leyka'),
+        'description' => __('Please, set a default amount of donation when UAH selected as currency.', 'leyka'),
+        'required' => true,
+        'placeholder' => '200',
+        'length' => 6,
+    ),
+    'currency_uah_fixed_amounts' => array(
+        'type' => 'text',
+        'default' => '50,100,200,500',
+        'title' => __('Possible amounts of donation in UAH (for «fixed» donation type)', 'leyka'),
+        'description' => __('Please, set possible amounts of donation in UAH when «fixed» donation type is selected. Only an integer non-negative values, separated with commas.', 'leyka'),
+        'required' => true,
+        'placeholder' => '50,100,200,500',
+        'length' => 25,
+    ),
     'email_from_name' => array(
         'type' => 'text',
         'default' => get_bloginfo('name'),
@@ -525,6 +582,21 @@ self::$_options_meta = array(
         'required' => true,
         'field_classes' => array('type-rich_html'),
     ),
+    'email_recurring_ongoing_1_day_notification_title' => array(
+        'type' => 'text',
+        'default' => __('Your next support payment is scheduled for tomorrow!', 'leyka'),
+        'title' => __('A title of an before-rebill donation notice for a donor', 'leyka'),
+        'description' => __('Enter a title of a donor notification email with donation data that will be sent before each recurring auto-payment.', 'leyka'),
+        'required' => true,
+    ),
+    'email_recurring_ongoing_1_day_notification_text' => array(
+        'type' => 'rich_html',
+        'default' => __('Hello, #DONOR_NAME#!<br><br>Tomorrow we are going to took a #SUM# from your account as a regular donation to the campaign «#CAMPAIGN_NAME#», using #PAYMENT_METHOD_NAME#.<br><br>#DONOR_ACCOUNT_LOGIN_LINK#<br><br>If you, regretfully, wish to stop future regular donations to this campaign, please #RECURRING_SUBSCRIPTION_CANCELLING_LINK#.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
+        'title' => __('A text of before-rebill donation notice sent to a donor', 'leyka'),
+        'description' => __('Enter the text of the notification email that would be sended to each donor before each rebill donation. It may include the following special entries:', 'leyka').$email_placeholders,
+        'required' => true,
+        'field_classes' => array('type-rich_html'),
+    ),
     'email_recurring_ongoing_thanks_title' => array(
         'type' => 'text',
         'default' => __('Thank you for your unwavering support!', 'leyka'),
@@ -552,6 +624,13 @@ self::$_options_meta = array(
         'default' => true,
         'title' => __('Send the emails', 'leyka'),
         'comment' => __('Check to send a thankful email to a donor on each recurring donations subscription', 'leyka'),
+        'short_format' => true,
+    ),
+    'send_donor_1_day_notification_emails_on_recurring_ongoing' => array(
+        'type' => 'checkbox',
+        'default' => true,
+        'title' => __('Send the emails', 'leyka'),
+        'comment' => __('Check to send a 1-day notification email to a donor before each non-initial recurring donation', 'leyka'),
         'short_format' => true,
     ),
     'send_donor_thanking_emails_on_recurring_ongoing' => array(
@@ -1144,7 +1223,12 @@ self::$_options_meta = array(
         'default' => 'rur',
         'title' => __('Primary currency', 'leyka'),
         'required' => true,
-        'list_entries' => array('rur' => __('₽', 'leyka'), 'usd' => __('$', 'leyka'), 'eur' => __('€', 'leyka'),),
+        'list_entries' => array(
+            'rur' => __('RUB', 'leyka'),
+            'usd' => __('$', 'leyka'),
+            'eur' => __('euro', 'leyka'),
+            'uah' => __('UAH', 'leyka'),
+        ),
     ),
     'plugin_demo_mode' => array(
         'type' => 'checkbox',
@@ -1167,3 +1251,7 @@ self::$_options_meta = array(
         'short_format' => true,
     ),
 );
+
+if (leyka_options()->opt('receiver_country') === 'ua') {
+    self::$_options_meta['main_currency']['default'] = 'uah';
+}

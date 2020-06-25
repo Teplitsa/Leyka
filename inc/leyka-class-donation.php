@@ -314,32 +314,46 @@ class Leyka_Donation_Management {
             $donor_email = leyka_pf_get_donor_email_value();
         }
 
-        if( !$donation || !$donor_email || $donation->donor_email_date ) {
-            return false;
-        }
-
-        if(
-            ($donation->type === 'single' && !leyka_options()->opt('send_donor_thanking_emails'))
-            || ($donation->type === 'rebill' && !leyka_options()->opt('send_donor_thanking_emails_on_recurring_init'))
-        ) {
+        if (!$donation || !$donor_email) {
             return false;
         }
 
         add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
         $campaign = new Leyka_Campaign($donation->campaign_id);
+        if ($donation->type !== 'rebill') {
+            $notificationType = 'email_thanks';
+            $email_title = leyka_options()->opt('email_thanks_title');
+            $email_text = leyka_options()->opt('email_thanks_text');
+        } elseif (date('Y-m-d', $donation->date_timestamp) < date('Y-m-d')) {
+            $notificationType = 'email_recurring_ongoing_1_day_notification';
+            $email_title = leyka_options()->opt('email_recurring_ongoing_1_day_notification_title');
+            $email_text = leyka_options()->opt('email_recurring_ongoing_1_day_notification_text');
+        } elseif ($donation->init_recurring_payment_id === $donation->id) {
+            $notificationType = 'email_recurring_init_thanks';
+            $email_title = leyka_options()->opt('email_recurring_init_thanks_title');
+            $email_text = leyka_options()->opt('email_recurring_init_thanks_text');
+        } else {
+            $notificationType = 'email_recurring_ongoing_thanks';
+            $email_title = leyka_options()->opt('email_recurring_ongoing_thanks_title');
+            $email_text = leyka_options()->opt('email_recurring_ongoing_thanks_text');
+        }
 
-        $email_title = $donation->type === 'rebill' ?
-            ($donation->init_recurring_payment_id === $donation->id ?
-                leyka_options()->opt('email_recurring_init_thanks_title') :
-                leyka_options()->opt('email_recurring_ongoing_thanks_title')) :
-            leyka_options()->opt('email_thanks_title');
+        if (false
+            || ($notificationType === 'email_recurring_ongoing_1_day_notification' && $donation->donor_1_day_notification_email_date)
+            || ($notificationType !== 'email_recurring_ongoing_1_day_notification' && $donation->donor_email_date)
+        ) {
+            return false;
+        }
 
-        $email_text = $donation->type === 'rebill' ?
-            ($donation->init_recurring_payment_id === $donation->id ?
-                leyka_options()->opt('email_recurring_init_thanks_text') :
-                leyka_options()->opt('email_recurring_ongoing_thanks_text')) :
-            leyka_options()->opt('email_thanks_text');
+        if (false
+            || ($notificationType === 'email_thanks' && !leyka_options()->opt('send_donor_thanking_emails'))
+            || ($notificationType === 'email_recurring_ongoing_1_day_notification' && !leyka_options()->opt('send_donor_thanking_emails_on_recurring_init'))
+            || ($notificationType === 'email_recurring_init_thanks' && !leyka_options()->opt('send_donor_thanking_emails_on_recurring_init'))
+            || ($notificationType === 'email_recurring_ongoing_thanks' && !leyka_options()->opt('send_donor_thanking_emails_on_recurring_ongoing'))
+        ) {
+            return false;
+        }
 
         $email_placeholders = array(
             '#SITE_NAME#',
@@ -434,10 +448,16 @@ class Leyka_Donation_Management {
         // Reset content-type to avoid conflicts (http://core.trac.wordpress.org/ticket/23578):
         remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
-        $res &= update_post_meta($donation->id, '_leyka_donor_email_date', current_time('timestamp'));
-
-        if( !$res ) {
-            $res = get_post_meta($donation->id, '_leyka_donor_email_date', true) > 0;
+        if ($notificationType === 'email_recurring_ongoing_1_day_notification') {
+            $res &= update_post_meta($donation->id, '_leyka_donor_1_day_notification_email_date', current_time('timestamp'));
+            if (!$res) {
+                $res = get_post_meta($donation->id, '_leyka_donor_1_day_notification_email_date', true) > 0;
+            }
+        } else {
+            $res &= update_post_meta($donation->id, '_leyka_donor_email_date', current_time('timestamp'));
+            if (!$res) {
+                $res = get_post_meta($donation->id, '_leyka_donor_email_date', true) > 0;
+            }
         }
 
         return $res;
@@ -2071,6 +2091,8 @@ class Leyka_Donation {
                     '' : $meta['leyka_donor_subscription_email'][0],
                 'donor_email_date' => empty($meta['_leyka_donor_email_date']) ?
                     '' : $meta['_leyka_donor_email_date'][0],
+                'donor_1_day_notification_email_date' => empty($meta['_leyka_donor_1_day_notification_email_date']) ?
+                    '' : $meta['_leyka_donor_1_day_notification_email_date'][0],
                 'managers_emails_date' => empty($meta['_leyka_managers_emails_date']) ?
                     '' : $meta['_leyka_managers_emails_date'][0],
                 'campaign_id' => empty($meta['leyka_campaign_id']) ? 0 : $meta['leyka_campaign_id'][0],
@@ -2236,6 +2258,8 @@ class Leyka_Donation {
                 return $this->_donation_meta['donor_email'];
             case 'donor_email_date':
                 return $this->_donation_meta['donor_email_date'];
+            case 'donor_1_day_notification_email_date':
+                return $this->_donation_meta['donor_1_day_notification_email_date'];
             case 'donor_comment':
                 return empty($this->_donation_meta['donor_comment']) ? '' : $this->_donation_meta['donor_comment'];
             case 'managers_emails_date':

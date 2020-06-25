@@ -15,39 +15,50 @@ ini_set('max_execution_time', 0);
 set_time_limit(0);
 ini_set('memory_limit', 268435456); // 256 Mb, just in case
 
-// Get all active initial donations for the recurring subscriptions:
-$current_day = (int)date('j');
-$max_days_in_month = (int)date('t');
-$current_day_param = array('relation' => 'AND',);
-if( !leyka_options()->opt('plugin_debug_mode') ) { // In production mode, rebill only subscriptions older than 1 full day
-    $current_day_param[] = array('before' => '-1 day');
+function getLeykaPostSearchParams($date)
+{
+    $timestamp = strtotime($date);
+    $current_day = (int)date('j', $timestamp);
+    $max_days_in_month = (int)date('t', $timestamp);
+    $current_day_param = ['relation' => 'AND',];
+    if (!LEYKA_DEBUG) { // In production mode, rebill only subscriptions older than 1 full day
+        $current_day_param[] = ['before' => '-1 day'];
+    }
+    $current_day_param[] = $max_days_in_month < 31 && $max_days_in_month === $current_day
+
+        // Last day of short month
+        ? [['day' => $current_day, 'compare' => '>='], ['day' => 31, 'compare' => '<=']]
+
+        // All the other days
+        : [['day' => (int)date('j', $timestamp)]];
+
+    $params = [
+        'post_type'   => Leyka_Donation_Management::$post_type,
+        'nopaging'    => true,
+        'post_status' => 'funded',
+        'post_parent' => 0,
+        'meta_query'  => [
+            'relation' => 'AND',
+            [
+                'key'     => 'leyka_payment_type',
+                'value'   => 'rebill',
+                'compare' => '=',
+            ],
+            [
+                'key'     => '_rebilling_is_active',
+                'value'   => '1',
+                'compare' => '=',
+            ],
+        ],
+        'date_query'  => $current_day_param,
+    ];
+
+    return $params;
 }
-$current_day_param[] = $max_days_in_month < 31 && $max_days_in_month === $current_day ? // Last day of short month
-    array(array('day' => $current_day, 'compare' => '>='), array('day' => 31, 'compare' => '<=')) :
-    array(array('day' => (int)date('j')));
 
-$params = array(
-    'post_type' => Leyka_Donation_Management::$post_type,
-    'nopaging' => true,
-    'post_status' => 'funded',
-    'post_parent' => 0,
-    'meta_query' => array(
-        'relation' => 'AND',
-        array(
-            'key' => 'leyka_payment_type',
-            'value' => 'rebill',
-            'compare' => '=',
-        ),
-        array(
-            'key' => '_rebilling_is_active',
-            'value' => '1',
-            'compare' => '=',
-        ),
-    ),
-    'date_query' => $current_day_param,
-);
-
-foreach(get_posts($params) as $donation) {
+// Get all active initial donations for the recurring subscriptions:
+$todayDonations = get_posts(getLeykaPostSearchParams('today'));
+foreach ($todayDonations as $donation) {
 
     $donation = new Leyka_Donation($donation);
 
@@ -59,6 +70,19 @@ foreach(get_posts($params) as $donation) {
             Leyka_Donation_Management::send_all_recurring_emails($new_recurring_donation);
         } // else if( !$new_recurring_donation || is_wp_error($new_recurring_donation) ) { ... } /** @todo Log & handle error */
 
+    }
+
+}
+
+// Get all active initial donations for the recurring subscriptions:
+$tomorrowDonations = get_posts(getLeykaPostSearchParams('tomorrow'));
+foreach ($tomorrowDonations as $donation) {
+
+    $donation = new Leyka_Donation($donation);
+
+    $gateway = leyka_get_gateway_by_id($donation->gateway_id);
+    if ($gateway) {
+        Leyka_Donation_Management::send_donor_thanking_email($donation);
     }
 
 }

@@ -590,6 +590,15 @@ function leyka_get_currencies_data($currency_id = false) {
                 'fixed' => leyka_options()->opt('currency_eur_fixed_amounts')
             ),
         ),
+        'uah' => array(
+            'label' => leyka_options()->opt('currency_uah_label'),
+            'top' => leyka_options()->opt('currency_uah_max_sum'),
+            'bottom' => leyka_options()->opt('currency_uah_min_sum'),
+            'amount_settings' => array(
+                'flexible' => leyka_options()->opt('currency_uah_flexible_default_amount'),
+                'fixed' => leyka_options()->opt('currency_uah_fixed_amounts')
+            ),
+        ),
     );
     $currencies['rub'] = $currencies['rur'];
 

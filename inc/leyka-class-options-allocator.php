@@ -52,7 +52,9 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'title' => __("Organization's bank essentials", 'leyka'),
                         'description' => __('Data needed for accounting documents, as well as to connect the payment with receipt', 'leyka'),
                         'is_default_collapsed' => false,
-                        'options' => array('org_bank_name', 'org_bank_account', 'org_bank_corr_account', 'org_bank_bic',)
+                        'options' => array(
+                            'main_currency', 'org_bank_name', 'org_bank_account', 'org_bank_corr_account', 'org_bank_bic',
+                        ),
                     )),
                     array('section' => array(
                         'name' => 'person_bank_essentials',
@@ -60,8 +62,8 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'description' => __('Data needed for accounting documents, as well as to connect the payment with receipt', 'leyka'),
                         'is_default_collapsed' => false,
                         'options' => array(
-                            'person_bank_name', 'person_bank_account', 'person_bank_corr_account', 'person_bank_bic',
-                        )
+                            'main_currency', 'person_bank_name', 'person_bank_account', 'person_bank_corr_account', 'person_bank_bic',
+                        ),
                     )),
                     array('section' => array(
                         'name' => 'terms_of_service',
@@ -121,6 +123,17 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'options' => array(
                             'email_recurring_init_thanks_title', 'email_recurring_init_thanks_text',
                             'send_donor_thanking_emails_on_recurring_init',
+                        )
+                    ),),
+                    array('section' => array(
+                        'name' => 'email_recurring_payment_1_day_notification',
+                        'title' => __('Recurring payment 1-day notification emails options', 'leyka'),
+                        'description' => __('Dispatched 1 day before each recurrent payment', 'leyka'),
+                        'is_default_collapsed' => false,
+                        'options' => array(
+                            'email_recurring_ongoing_1_day_notification_title',
+                            'email_recurring_ongoing_1_day_notification_text',
+                            'send_donor_1_day_notification_emails_on_recurring_ongoing',
                         )
                     ),),
                     array('section' => array(
@@ -343,7 +356,43 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         ),
                     ),
                 ) : array();
-                
+
+                switch (leyka_options()->opt('main_currency')) {
+                    case 'uah':
+                        $options_allocated_main_currency = array(
+                            'uah_currency' => array(
+                                'title' => __('Hryvnia', 'leyka'),
+                                'sections' => array(
+                                    array(
+                                        'title' => __('View', 'leyka'),
+                                        'options' => array(
+                                            'currency_uah_label', 'currency_uah_min_sum', 'currency_uah_max_sum',
+                                            'currency_uah_flexible_default_amount', 'currency_uah_fixed_amounts',
+                                        ),
+                                    ),
+                                ),
+                            ),
+                        );
+                        break;
+                    case 'rur':
+                    default:
+                        $options_allocated_main_currency = array(
+                            'rur_currency' => array(
+                                'title' => __('Rubles', 'leyka'),
+                                'sections' => array(
+                                    array(
+                                        'title' => __('View', 'leyka'),
+                                        'options' => array(
+                                            'currency_rur_label', 'currency_rur_min_sum', 'currency_rur_max_sum',
+                                            'currency_rur_flexible_default_amount', 'currency_rur_fixed_amounts',
+                                        ),
+                                    ),
+                                ),
+                            ),
+                        );
+                        break;
+                }
+
                 $options_allocated = array(
                     array('section' => array(
                         'name' => 'campaign_templates_options',
@@ -361,19 +410,7 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
                         'title' => __('Currency settings', 'leyka'),
                         'description' => __('Here you can change currency options', 'leyka'),
                         'is_default_collapsed' => false,
-                        'tabs' => array(
-                            'rur_currency' => array(
-                                'title' => __('Rubles', 'leyka'),
-                                'sections' => array(
-                                    array(
-                                        'title' => __('View', 'leyka'),
-                                        'options' => array(
-                                            'currency_rur_label', 'currency_rur_min_sum', 'currency_rur_max_sum',
-                                            'currency_rur_flexible_default_amount', 'currency_rur_fixed_amounts',
-                                        ),
-                                    ),
-                                ),
-                            ),
+                        'tabs' => $options_allocated_main_currency + array(
                             'usd_currency' => array(
                                 'title' => __('US Dollars', 'leyka'),
                                 'sections' => array(
