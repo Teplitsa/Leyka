@@ -4,7 +4,7 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: crowdfunding, fundraising, donations, recurring donations, charity, leyka, recurring, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, yandexmoney, yandex.money, яндекс.деньги, chronopay, sms, яндекс.касса, yandex.kassa, миксплат, mixplat, paypal, paymaster, qiwi, киви
 Requires at least: 3.6.1
-Tested up to: 5.4.1
+Tested up to: 5.4.2
 Stable tag: 3.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -81,6 +81,24 @@ PHP version required: 5.6+
 5. The plugin start page (a console)
 
 == Changelog ==
+= 3.10 =
++ New: the "Need Help" template added.
++ New: date parameters added for the leyka_sum shortcode.
++ New: now the form templates may be disabled (via template parameter in comment header).
++ New: now "send tech. support emails on failed donations" option works on all Gateways that use "failed" donations status.
++ New: now the special option added for plugin debug mode.
++ New: IP list entries for CP are stripslashed.
+* Fix: a rare bug causing notices on the success page fixed.
+* Fix: the default GUA client ID changed to constant value.
+* Fix: Donations list filtering bug fixed.
+* Fix: RUB & EUR symbols added as default currency labels.
+* Fix: improvements of the campaigns target mailout procedure.
+* Fix: now Yandex.money for phys. persons has a proper min. commission value.
+* Fix: now CloudPayments recurring_change callbacks answer correctly.
+* Fix: for the bug of init recurring emails not sending when single donations emails are turned off.
+* Fix: admin. settings tabs redesigned.
+* Fix: different CSS, JS & backend fixes.
+
 = 3.9 =
 + New: now Smart payment is available for the YK REST API.
 + New: now GA direct integration works with all supported gateways.
