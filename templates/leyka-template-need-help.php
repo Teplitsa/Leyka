@@ -1,6 +1,6 @@
 <?php if( !defined('WPINC') ) die;
 /**
- * Leyka Template: Need Help
+ * Leyka Template: Need help
  * Description: Yet another modern and lightweight form template
  * Disabled: false
  * 
