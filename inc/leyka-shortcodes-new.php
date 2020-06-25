@@ -539,7 +539,16 @@ function leyka_shortcode_campaign_card($atts) {
         <div class="progressbar-unfulfilled sub-block" style="<?php echo $atts['color_unfulfilled'] ? 'background-color:'.$atts['color_unfulfilled'] : '';?>">
 
         <?php if($atts['show_progressbar'] && $campaign->target) {?>
-            <div class="progressbar-fulfilled" style="width: <?php echo round(100.0*$funded/$campaign->target, 1);?>%; <?php echo $atts['color_fulfilled'] ? 'background-color:'.$atts['color_fulfilled'] : '';?>"></div>
+            <?php
+                $percent = 0;
+                if ($campaign->target) {
+                    $percent = round(100.0 * $funded / $campaign->target, 1);
+                }
+                if ($percent > 100) {
+                    $percent = 100;
+                }
+            ?>
+            <div class="progressbar-fulfilled" style="width: <?php echo $percent; ?>%; <?php echo $atts['color_fulfilled'] ? 'background-color:'.$atts['color_fulfilled'] : '';?>"></div>
         <?php }?>
 
         </div>
