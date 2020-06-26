@@ -134,7 +134,7 @@ msgstr "Текст письма донору о предстоящем спис�
 msgid "Enter the text of the notification email that would be sended to each donor before each rebill donation. It may include the following special entries:"
 msgstr "Укажите текст email-уведомления, которое будет отправлено донору перед каждым рекуретным списании. Текст может включать следующие специальные элементы:"
 
-msgid "Hello, #DONOR_NAME#!<br><br>Tomorrow we are going to took a #SUM# from your account as a regular donation to the campaign «#CAMPAIGN_NAME#», using #PAYMENT_METHOD_NAME#.<br><br>#DONOR_ACCOUNT_LOGIN_LINK#<br><br>If you, regretfully, wish to stop future regular donations to this campaign, please #RECURRING_SUBSCRIPTION_CANCELLING_LINK#.<br><br>Sincerely thank you,<br>#ORG_NAME#"
+msgid "Hello, #DONOR_NAME#!<br><br>Tomorrow we are going to take a #SUM# from your account as a regular donation to the campaign «#CAMPAIGN_NAME#», using #PAYMENT_METHOD_NAME#.<br><br>#DONOR_ACCOUNT_LOGIN_LINK#<br><br>If you, regretfully, wish to stop future regular donations to this campaign, please #RECURRING_SUBSCRIPTION_CANCELLING_LINK#.<br><br>Sincerely thank you,<br>#ORG_NAME#"
 msgstr "Hello, #DONOR_NAME#!<br><br>Завтра ми збираємось #SUM# з вашого рахунку як звичайне пожертвування для кампанії" #CAMPAIGN_NAME# ", використовуючи #PAYMENT_METHOD_NAME#.<br><br>#DONOR_ACCOUNT_LOGIN_LINK#<br><br>Якщо ви, на жаль, хочете припинити майбутні регулярні пожертви на цю кампанію, будь ласка, #RECURRING_SUBSCRIPTION_CANCELLING_LINK#.<br><br>Щиро вдячні Вам за підтримку, <br>#ORG_NAME#"
 
 #: inc/leyka-options-meta.php:588
@@ -5565,9 +5565,9 @@ msgstr "Например, «Договор оферты»"
 msgid "Terms of the donation service"
 msgstr "Договір оферти"
 
-#: inc/leyka-options-meta.php:826 inc/leyka-options-meta.php:968
-msgid "I agree with"
-msgstr "Я приймаю"
+#: inc/leyka-options-meta.php:968
+msgid "I agree with the processing of"
+msgstr "Я даю згоду на обробку моїх"
 
 #: inc/leyka-class-options-allocator.php:206 inc/leyka-core.php:2153
 msgid "Neo"
@@ -6484,7 +6484,7 @@ msgid "Thank you for your unwavering support!"
 msgstr "Спасибі вам за вашу підтримку!"
 
 #: inc/leyka-options-meta.php:505
-msgid "Hello, #DONOR_NAME#!<br><br>You have chosed to make a #SUM# donation to the following charity campaign: #CAMPAIGN_NAME#, using #PAYMENT_METHOD_NAME#.<br><br>Sincerely thank you,<br>#ORG_NAME#"
+msgid "Hello, #DONOR_NAME#!<br><br>You made a #SUM# donation to the following charity campaign: #CAMPAIGN_NAME#, using #PAYMENT_METHOD_NAME#.<br><br>Sincerely thank you,<br>#ORG_NAME#"
 msgstr "Вітаємо, #DONOR_NAME#!<br><br>Ви зробили пожертвовання в розмірі #SUM# в пользу организации #ORG_NAME# на нашому сайті.<br><br>Ціль пожертвовань: #МЕТА#<br>Способи оплати: #PAYMENT_METHOD_NAME#<br><br>Щиро вдячні Вам за підтримку,<br>#ORG_NAME#"
 
 #: inc/leyka-options-meta.php:501 inc/leyka-options-meta.php:518
