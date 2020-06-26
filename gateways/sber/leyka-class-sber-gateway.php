@@ -52,20 +52,6 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
                 'required' => false,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '16918737fgc9fbdgc7c312dkmp7u27iu'),
             ),
-            $this->_id.'_api_token' => array(
-                'type' => 'text',
-                'title' => __('API token', 'leyka'),
-                'comment' => __('Please, enter your Sberbank API token here. You may have received it from your Sberbank connection manager.', 'leyka'),
-                'required' => false,
-                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'c5fcan980a7c38418932y476g4931'),
-            ),
-            $this->_id.'_public_key' => array(
-                'type' => 'textarea',
-                'title' => __('Public key for callbacks checksum', 'leyka'),
-                'comment' => __("Please, enter a public key text that you received from Sberbank Aquiring technical support. If it's set, Leyka will perform hash checks for each incoming donation data integrity. More information  <a href='https://securepayments.sberbank.ru/wiki/doku.php/integration:api:callback:start' target='_blank'>here</a>.", 'leyka'),
-                'required' => true,
-                'placeholder' => __('-----BEGIN CERTIFICATE----- ...', 'leyka'),
-            ),
             $this->_id.'_test_mode' => array(
                 'type' => 'checkbox',
                 'default' => true,
@@ -73,6 +59,21 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
                 'comment' => __('Check if the gateway integration is in test mode.', 'leyka'),
                 'short_format' => true,
             ),
+//            $this->_id.'_verify_checksum' => array( /** @todo Add support for sym/asym checksum verifying */
+//                'type' => 'checkbox',
+//                'default' => true,
+//                'title' => __('Verify the callbacks with checksum', 'leyka'),
+//                'comment' => __('Check if the gateway callbacks should be verified with checksums.', 'leyka'),
+//                'short_format' => true,
+//            ),
+//            $this->_id.'_checksum_symmetic_token' => array(
+//                'type' => 'text',
+//                'title' => __('A secret token for symmetric cryptography', 'leyka'),
+//                'comment' => __('Please, enter your secret cryptographic token value. You should have received it from your Sberbank tech. support.', 'leyka'),
+//                'is_password' => true,
+//                'required' => false,
+//                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'fkpmerpsh9hhlomngkq21cpstk'),
+//            ),
         );
 
     }
@@ -95,25 +96,6 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
         ));
     }
 
-    public function enqueue_gateway_scripts() {
-
-//        if(Leyka_CP_Card::get_instance()->active) {
-//
-//            wp_enqueue_script('leyka-cp-widget', 'https://widget.cloudpayments.ru/bundles/cloudpayments', array(), false, true);
-//            wp_enqueue_script(
-//                'leyka-cp',
-//                LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_CP_Gateway::get_instance()->id.'/js/leyka.cp.js',
-//                array('jquery', 'leyka-cp-widget', 'leyka-public'),
-//                LEYKA_VERSION.'.001',
-//                true
-//            );
-//
-//        }
-//
-//        add_filter('leyka_js_localized_strings', array($this, 'localize_js_strings'));
-
-    }
-
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
         $donation = new Leyka_Donation($donation_id);
@@ -126,14 +108,8 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
 
         $connection = array('currency' => Voronkovich\SberbankAcquiring\Currency::RUB,);
 
-        if(leyka_options()->opt($this->_id.'_api_token')) {
-            $connection['token'] = $this->_id.'_api_token';
-        } else {
-
-            $connection['userName'] = leyka_options()->opt($this->_id.'_api_login');
-            $connection['password'] = leyka_options()->opt($this->_id.'_api_password');
-
-        }
+        $connection['userName'] = leyka_options()->opt($this->_id.'_api_login');
+        $connection['password'] = leyka_options()->opt($this->_id.'_api_password');
 
         if(leyka_options()->opt($this->_id.'_test_mode')) {
             $connection['apiUri'] = Voronkovich\SberbankAcquiring\Client::API_URI_TEST;
@@ -201,7 +177,79 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
             case 'process':
             case 'response':
             case 'notify':
-                set_transient('leyka_tmp_callback', $_REQUEST, 60*60*24*7);
+
+                $donation = NULL;
+                if( !empty($_REQUEST['orderNumber']) ) {
+                    $donation = new Leyka_Donation(absint($_REQUEST['orderNumber']));
+                }
+                if( !$donation && !empty($_REQUEST['mdOrder']) ) {
+                    $donation = $this->get_donation_by_transaction_id(trim($_REQUEST['mdOrder']));
+                }
+                if( !$donation ) {
+                    exit(500);
+                }
+
+                if(empty($_REQUEST['status']) || empty($_REQUEST['operation'])) { // Operation failed
+
+                    $donation->status = 'failed';
+                    $donation->add_gateway_response($_REQUEST);
+
+                    if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
+                        Leyka_Donation_Management::send_error_notifications($donation);
+                    }
+
+                    exit(500);
+
+                }
+
+                switch($_REQUEST['operation']) {
+                    case 'deposited':
+                        $donation->status = 'funded';
+
+                        Leyka_Donation_Management::send_all_emails($donation->id);
+
+                        if( // GUA direct integration - "purchase" event:
+                            leyka_options()->opt('use_gtm_ua_integration') === 'enchanced_ua_only'
+                            && leyka_options()->opt('gtm_ua_tracking_id')
+                            && in_array('purchase', leyka_options()->opt('gtm_ua_enchanced_events'))
+                        ) {
+
+                            require_once LEYKA_PLUGIN_DIR.'vendor/autoload.php';
+
+                            $analytics = new TheIconic\Tracking\GoogleAnalytics\Analytics(true);
+                            $analytics // Main params:
+                            ->setProtocolVersion('1')
+                                ->setTrackingId(leyka_options()->opt('gtm_ua_tracking_id'))
+                                ->setClientId($donation->ga_client_id ? $donation->ga_client_id : leyka_gua_get_client_id())
+                                // Transaction params:
+                                ->setTransactionId($donation->id)
+                                ->setAffiliation(get_bloginfo('name'))
+                                ->setRevenue($donation->amount)
+                                ->addProduct(array( // Donation params
+                                    'name' => $donation->payment_title,
+                                    'price' => $donation->amount,
+                                    'brand' => get_bloginfo('name'), // Mb, it won't work with it
+                                    'category' => $donation->type_label, // Mb, it won't work with it
+                                    'quantity' => 1,
+                                ))
+                                ->setProductActionToPurchase()
+                                ->setEventCategory('Checkout')
+                                ->setEventAction('Purchase')
+                                ->sendEvent();
+
+                        }
+                        // GUA direct integration - "purchase" event END
+
+                        break;
+                    case 'refunded':
+                        $donation->status = 'refunded';
+                        break;
+                    default:
+                }
+
+                $donation->add_gateway_response($_REQUEST);
+
+                exit(200);
 
             default:
                 exit(500);
@@ -261,31 +309,12 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
             return array();
         }
 
-        /** @todo */
         $vars_final = array(
-//            __('Transaction ID:', 'leyka') => $this->_get_value_if_any($vars, 'TransactionId'),
-//            __('Outcoming sum:', 'leyka') => $this->_get_value_if_any($vars, 'Amount'),
-//            __('Outcoming currency:', 'leyka') => $this->_get_value_if_any($vars, 'Currency'),
-//            __('Incoming sum:', 'leyka') => $this->_get_value_if_any($vars, 'PaymentAmount'),
-//            __('Incoming currency:', 'leyka') => $this->_get_value_if_any($vars, 'PaymentCurrency'),
-//            __('Donor name:', 'leyka') => $this->_get_value_if_any($vars, 'Name'),
-//            __('Donor email:', 'leyka') => $this->_get_value_if_any($vars, 'Email'),
-//            __('Callback time:', 'leyka') => $this->_get_value_if_any($vars, 'DateTime'),
-//            __('Donor IP:', 'leyka') => $this->_get_value_if_any($vars, 'IpAddress'),
-//            __('Donation description:', 'leyka') => $this->_get_value_if_any($vars, 'Description'),
-//            __('Is test donation:', 'leyka') => $this->_get_value_if_any($vars, 'TestMode'),
-//            __('Invoice status:', 'leyka') => $this->_get_value_if_any($vars, 'Status'),
+            __('Sberbank Order number:', 'leyka') => $this->_get_value_if_any($vars, 'mdOrder'),
+            __('Leyka Order Number:', 'leyka') => $this->_get_value_if_any($vars, 'orderNumber'),
+            __('Last operation:', 'leyka') => $this->_get_value_if_any($vars, 'operation'),
+            __('Last operation status:', 'leyka') => $this->_get_value_if_any($vars, 'status'),
         );
-
-//        if( !empty($vars['reason']) ) {
-//            $vars_final[__('Donation failure reason:', 'leyka')] = $vars['reason'];
-//        }
-//        if( !empty($vars['SubscriptionId']) ) {
-//            $vars_final[__('Recurrent subscription ID:', 'leyka')] = $this->_get_value_if_any($vars, 'SubscriptionId');
-//        }
-//        if( !empty($vars['StatusCode']) ) {
-//            $vars_final[__('Invoice status code:', 'leyka')] = $this->_get_value_if_any($vars, 'StatusCode');
-//        }
 
         return $vars_final;
 
