@@ -1224,10 +1224,10 @@ self::$_options_meta = array(
         'title' => __('Primary currency', 'leyka'),
         'required' => true,
         'list_entries' => array(
-            'rur' => __('RUB', 'leyka'),
+            'rur' => __('₽', 'leyka'),
             'usd' => __('$', 'leyka'),
-            'eur' => __('euro', 'leyka'),
-            'uah' => __('UAH', 'leyka'),
+            'eur' => __('€', 'leyka'),
+            'uah' => __('₴', 'leyka'),
         ),
     ),
     'plugin_demo_mode' => array(
