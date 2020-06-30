@@ -20,7 +20,6 @@
     "del": "^3.0.0",
     "event-stream": "^4.0.1",
     "geckodriver": "^1.19.1",
-    "gulp": "^4.0.2",
     "gulp-autoprefixer": "^6.1.0",
     "gulp-cheerio": "^0.6.3",
     "gulp-concat": "^2.6.1",

@@ -591,7 +591,7 @@ self::$_options_meta = array(
     ),
     'email_recurring_ongoing_1_day_notification_text' => array(
         'type' => 'rich_html',
-        'default' => __('Hello, #DONOR_NAME#!<br><br>Tomorrow we are going to take a #SUM# from your account as a regular donation to the campaign «#CAMPAIGN_NAME#», using #PAYMENT_METHOD_NAME#.<br><br>#DONOR_ACCOUNT_LOGIN_LINK#<br><br>If you, regretfully, wish to stop future regular donations to this campaign, please #RECURRING_SUBSCRIPTION_CANCELLING_LINK#.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
+        'default' => __('Hello, #DONOR_NAME#!<br><br>Tomorrow we are going to took a #SUM# from your account as a regular donation to the campaign «#CAMPAIGN_NAME#», using #PAYMENT_METHOD_NAME#.<br><br>#DONOR_ACCOUNT_LOGIN_LINK#<br><br>If you, regretfully, wish to stop future regular donations to this campaign, please #RECURRING_SUBSCRIPTION_CANCELLING_LINK#.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
         'title' => __('A text of before-rebill donation notice sent to a donor', 'leyka'),
         'description' => __('Enter the text of the notification email that would be sended to each donor before each rebill donation. It may include the following special entries:', 'leyka').$email_placeholders,
         'required' => true,
@@ -902,7 +902,7 @@ self::$_options_meta = array(
     ),
     'agree_to_terms_text_text_part' => array(
         'type' => 'text',
-        'default' => __('I agree with the processing of', 'leyka'),
+        'default' => __('I agree with', 'leyka'),
         'title' => __('Terms acception checkbox label - the first (text) part', 'leyka'),
         'required' => true,
         'placeholder' => __('E.g., I agree with', 'leyka'),
