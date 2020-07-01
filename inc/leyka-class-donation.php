@@ -1845,7 +1845,7 @@ class Leyka_Donation {
         );
 
         if(
-            (empty($params['amount_total']) || $params['amount_total'] == 'auto') &&
+            (empty($params['amount_total']) || $params['amount_total'] === 'auto') &&
             ( !empty($pm_data['payment_method_id']) && !empty($pm_data['gateway_id']) )
         ) {
             add_post_meta($id, 'leyka_donation_amount_total', leyka_calculate_donation_total_amount(false, $amount, "{$pm_data['gateway_id']}-{$pm_data['payment_method_id']}"));
