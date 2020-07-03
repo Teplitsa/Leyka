@@ -278,29 +278,29 @@
 
                 .swiper-item-inner {
                     flex-direction: column;
-                    justify-content: flex-start;
+                    justify-content: center;
                     width: calc(100% - 68px);
                     margin-left: $leyka-star-base;
                 }
                 
                 &.payment-opt {
-                    margin: 0px;
+                    margin: 0;
 
                     @include for(medium-screens) {
-                        margin: 0px $leyka-star-base 0px 0px;
+                        margin: 0 $leyka-star-base 0 0;
                         width: auto;
 
                         .swiper-item-inner {
                             width: auto;
-                            margin-left: 0px;
+                            margin-left: 0;
                         }
                     }
                     
                     &:not(.disabled):last-of-type {
-                        margin-right: 0px;
+                        margin-right: 0;
 
                         .swiper-item-inner {
-                            margin-left: 0px;
+                            margin-left: 0;
                             width: calc(100% - 84px);
 
                             @include for(medium-screens) {
@@ -311,32 +311,46 @@
                 }
                 
                 .payment-opt__button {
+
                     display: block;
-                    margin-bottom: 0px;
-                    margin-top: 0px;
+                    margin-bottom: 0;
+                    margin-top: 0;
                     
                     .payment-opt__icon {
+
                         height: 30px;
                         margin-top: -3px;
                         overflow: hidden;
-                        display: block;
                         border-radius: unset;
                         background-color: transparent;
                         width: auto;
                         margin-left: auto;
                         margin-right: auto;
-                        
+
+                        display: flex;
+                        flex-flow: row nowrap;
+
                         img.pm-icon {
+
                             max-height: 40px;
                             display: inline-block;
+
+                            margin-right: 8px;
+
+                            &:last-child {
+                                margin-right: 0;
+                            }
                             
                             &[src$="pic-main-text-text_box.svg"] {
                                 max-height: 20px;
                                 margin-top: 6px;
                                 height: 24px;
                             }
+
                         }
+
                     }
+
                 }
                 
                 span.payment-opt__label {
@@ -345,7 +359,7 @@
                     // color: $leyka-star-color-gray;
                     color: $leyka-start-color-gray-notsolight;
                     display: block;
-                    margin-top: 5px;
+                    margin-top: 0;
                     z-index: 20;
                 }
                 
@@ -382,20 +396,20 @@
                 .swiper-item {
                     &.payment-opt {
                         margin-bottom: $leyka-star-base;
-                        margin-right: 0px;
+                        margin-right: 0;
                         margin-left: $leyka-star-base;
                         width: 100%;
 
                         &:not(.disabled):last-of-type {
                             .swiper-item-inner {
                                 width: 100%;
-                                margin-left: 0px;
+                                margin-left: 0;
                             }
                         }
 
                         .swiper-item-inner {
                             width: 100%;
-                            margin-left: 0px;
+                            margin-left: 0;
 
                             .payment-opt__icon {
                                 display: inline-block;
@@ -433,7 +447,7 @@
                     margin-right: 3%;
                     
                     &:last-child {
-                        margin-right: 0px;
+                        margin-right: 0;
                     }
                 }
             }
@@ -497,7 +511,7 @@
                     label {
                         .donor__textfield-label {
                             @include star-text-field-title();
-                            margin-top: 0px;
+                            margin-top: 0;
                         }
                     }
                 }
@@ -620,13 +634,19 @@
 
     // submit
     .donor__submit {
+
         margin-bottom: 0;
         
         input {
+
             @include leyka-star-btn();
+
+            height: 100%;
+
             &:disabled {
                 background-color: $leyka-star-color-main-inactive;
             }
+
         }
     }
 }
@@ -849,7 +869,7 @@ div[id*="leyka-pf-"].leyka-pf-star {
     .leyka-submit-errors {
         @include star-text-ui-caption();
         border-radius: 4px;
-        margin: $leyka-star-base 0px 0px 0px;
+        margin: $leyka-star-base 0 0 0;
 
         &::after {
             content: " ";
