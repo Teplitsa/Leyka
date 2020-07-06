@@ -364,7 +364,7 @@ jQuery(document).ready(function($){
 
     // Delete fields comments:
     $('.leyka-admin .leyka-options-section .field-component.help').contents().filter(function(){
-        return (this.nodeType === 3);
+        return this.nodeType === 1 || this.nodeType === 3; // 1 is for links, 3 - for plain text
     }).remove();
 
     // Rules of the dependence of the set of fields on the legal type:

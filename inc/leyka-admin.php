@@ -575,7 +575,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		$base_url = 'admin.php?page=leyka_settings';
 
 		$out = '';
-		foreach(Leyka_Options_Allocator::get_instance()->get_tabs() as $tab_id => $tab_label) {
+		foreach(leyka_opt_alloc()->get_tabs() as $tab_id => $tab_label) {
 			$out .= '<a href="'
 			    .($this->get_default_settings_tab() === $tab_id ? $base_url : add_query_arg('stage', $tab_id, $base_url))
 			    .'" class="'.($this->get_current_settings_tab() === $tab_id ? 'nav-tab nav-tab-active' : 'nav-tab').'">'

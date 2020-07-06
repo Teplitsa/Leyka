@@ -116,7 +116,7 @@ self::$_options_meta = array(
         'default' => 'ru', // leyka_get_default_receiver_country(),
         'title' => __('Select your country', 'leyka'),
         'required' => true,
-        'list_entries' => array('-' => __('Not set', 'leyka'), 'ru' => __('Russia', 'leyka')),
+        'list_entries' => array('-' => __('Not set', 'leyka'), 'ru' => __('Russia', 'leyka'), 'by' => __('Belarus Republic', 'leyka')),
         'description' => __('Leyka architecture allows you to collect funds even in other countries. Read more about it <a href="//leyka.te-st.ru/docs/translating-leyka/" target="_blank">here</a>.', 'leyka'),
     ),
     'receiver_legal_type' => array(

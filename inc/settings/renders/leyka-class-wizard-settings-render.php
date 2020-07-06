@@ -258,12 +258,15 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
         $option_info = leyka_options()->get_info_of($block->get_content());?>
 
         <div id="<?php echo $block->id;?>" class="settings-block option-block type-<?php echo $option_info['type']?> <?php echo $block->show_title ? '' : 'option-title-hidden';?> <?php echo $block->show_description ? '' : 'option-description-hidden';?> <?php echo $this->_controller->has_component_errors($block->id) ? 'has-errors' : '';?>">
+
             <?php do_action("leyka_render_{$option_info['type']}", $block->get_content(), $option_info);?>
+
             <div class="field-errors <?php echo $this->_controller->has_component_errors($block->id) ? 'has-errors' : '';?>">
                 <?php foreach($this->_controller->get_component_errors($block->id) as $error) { /** @var $error WP_Error */?>
                     <span><?php echo $error->get_error_message();?></span>
                 <?php }?>
             </div>
+
         </div>
 
     <?php }

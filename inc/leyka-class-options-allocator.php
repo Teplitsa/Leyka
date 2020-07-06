@@ -32,6 +32,12 @@ class Leyka_Options_Allocator extends Leyka_Singleton {
             case 'beneficiary':
                 $options_allocated = array(
                     array('section' => array(
+                        'name' => 'receiver_country',
+                        'title' => __('Country', 'leyka'),
+                        'is_default_collapsed' => false,
+                        'options' => array('receiver_country',),
+                    ),),
+                    array('section' => array(
                         'name' => 'beneficiary_org_name',
                         'title' => __("Organization's official name and contacts", 'leyka'),
                         'description' => __('These data we will use for reporting documents to your donors. All data can be found in documents', 'leyka'),

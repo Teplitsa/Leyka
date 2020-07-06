@@ -74,7 +74,7 @@ $is_separate_sections_forms = $this->is_separate_forms_stage($current_stage);?>
 
             do_action("leyka_settings_post_{$current_stage}_fields");?>
 
-            <?php if(!$is_separate_sections_forms) {?>
+            <?php if( !$is_separate_sections_forms ) {?>
                 <p class="submit">
                     <input type="submit" name="<?php echo "leyka_settings_{$current_stage}";?>_submit" value="<?php _e('Save settings', 'leyka');?>" class="button-primary">
                 </p>
