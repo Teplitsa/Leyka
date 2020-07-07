@@ -192,6 +192,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     protected $_docs_link = ''; // Gateways user manual page URL
     protected $_registration_link = ''; // Gateway registration page URL
     protected $_has_wizard = false;
+    protected $_countries = array('ru',);
 
     protected $_min_commission = 0.0;
     protected $_receiver_types = array('legal'); // legal|physical
@@ -660,6 +661,14 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
         return $status;
 
+    }
+
+    /**
+     * Get Gateway supported countries IDs as an array of countries IDs.
+     * @return mixed Either an array of supported countries IDs, or NULL if all countries supported.
+     */
+    public function get_countries() {
+        return empty($this->_countries) && !is_array($this->_countries) ? NULL : $this->_countries;
     }
 
 }

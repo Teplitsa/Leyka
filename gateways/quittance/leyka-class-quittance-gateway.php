@@ -36,6 +36,8 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
             $this->_id
         );
 
+        $this->_countries = array('ru', 'by');
+
         $this->_docs_link = '//leyka.te-st.ru/docs/nastrojka-lejki/';
         $this->_registration_link = '';
 

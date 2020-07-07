@@ -74,7 +74,7 @@ if($main_settings_steps) {?>
 
     <div class="sidebar-part-content gateways">
 
-        <?php foreach(leyka()->get_gateways('activating') as $gateway) {?>
+        <?php foreach(leyka()->get_gateways(array('activation_status' => 'activating')) as $gateway) {?>
             <div class="gateway status-activating">
                 <div class="module-logo"><img src="<?php echo $gateway->icon_url;?>" alt=""></div>
                 <div class="gateway-data">
@@ -84,7 +84,7 @@ if($main_settings_steps) {?>
             </div>
         <?php }?>
 
-        <?php foreach(leyka()->get_gateways('active') as $gateway) {?>
+        <?php foreach(leyka()->get_gateways(array('activation_status' => 'active')) as $gateway) {?>
             <div class="gateway status-active">
                 <div class="module-logo"><img src="<?php echo $gateway->icon_url;?>" alt=""></div>
                 <div class="gateway-data">
