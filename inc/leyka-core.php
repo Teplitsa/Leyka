@@ -2243,4 +2243,5 @@ __('correction', 'leyka');
 __('The donations management system for your WP site', 'leyka');
 __('Teplitsa of Social Technologies', 'leyka');
 __('Star', 'leyka');
+__('Need Help', 'leyka');
 __('A modern and lightweight form template', 'leyka');
