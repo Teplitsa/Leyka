@@ -10,6 +10,7 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
             return false;
         }
 
+        $options_allocated = array();
         switch($tab_id) {
             case 'beneficiary':
                 $options_allocated = $this->get_beneficiary_options();
@@ -26,8 +27,7 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
             case 'additional':
                 $options_allocated = $this->get_additional_options();
                 break;
-            default:
-                throw new Exception(sprintf(__('Wrong options tab ID given to the allocation: %s'), $tab_id));
+            default: // Don't throw the Exception here, or it is's going to disrupt the action below
         }
 
         return apply_filters("leyka_{$tab_id}_options_allocation", $options_allocated);

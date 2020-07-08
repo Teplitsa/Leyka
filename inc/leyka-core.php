@@ -1150,7 +1150,7 @@ class Leyka extends Leyka_Singleton {
                 continue;
             }
 
-            $gateways[] = $gateway;
+            $gateways[$gateway->id] = $gateway;
 
         }
 
