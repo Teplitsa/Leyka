@@ -34,6 +34,53 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
 
     }
 
+    protected function _get_currency_options_tabs() {
+        return array(
+            'rur_currency' => array(
+                'title' => __('Rubles', 'leyka'),
+                'sections' => array(
+                    array(
+                        'title' => '',
+                        'options' => array(
+                            'currency_rur_label', 'currency_rur_min_sum', 'currency_rur_max_sum',
+                            'currency_rur_flexible_default_amount', 'currency_rur_fixed_amounts',
+                        ),
+                    ),
+                ),
+            ),
+            'usd_currency' => array(
+                'title' => __('US Dollars', 'leyka'),
+                'sections' => array(
+                    array(
+                        'options' => array('currency_rur2usd',), //'auto_refresh_currency_rate_usd'
+                    ),
+                    array(
+                        'title' => __('Additional settings', 'leyka'),
+                        'options' => array(
+                            'currency_usd_label', 'currency_usd_min_sum', 'currency_usd_max_sum',
+                            'currency_usd_flexible_default_amount', 'currency_usd_fixed_amounts',
+                        ),
+                    ),
+                ),
+            ),
+            'eur_currency' => array(
+                'title' => __('Euro', 'leyka'),
+                'sections' => array(
+                    array(
+                        'options' => array('currency_rur2eur',), // 'auto_refresh_currency_rates'
+                    ),
+                    array(
+                        'title' => __('Additional settings', 'leyka'),
+                        'options' => array(
+                            'currency_eur_label', 'currency_eur_min_sum', 'currency_eur_max_sum',
+                            'currency_eur_flexible_default_amount', 'currency_eur_fixed_amounts',
+                        ),
+                    ),
+                ),
+            ),
+        );
+    }
+
     public function get_beneficiary_options() {
         return array(
             array('section' => array(
@@ -373,50 +420,7 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
                 'title' => __('Currency settings', 'leyka'),
                 'description' => __('Here you can change currency options', 'leyka'),
                 'is_default_collapsed' => false,
-                'tabs' => array(
-                    'rur_currency' => array(
-                        'title' => __('Rubles', 'leyka'),
-                        'sections' => array(
-                            array(
-                                'title' => __('View', 'leyka'),
-                                'options' => array(
-                                    'currency_rur_label', 'currency_rur_min_sum', 'currency_rur_max_sum',
-                                    'currency_rur_flexible_default_amount', 'currency_rur_fixed_amounts',
-                                ),
-                            ),
-                        ),
-                    ),
-                    'usd_currency' => array(
-                        'title' => __('US Dollars', 'leyka'),
-                        'sections' => array(
-                            array(
-                                'options' => array('currency_rur2usd',), //'auto_refresh_currency_rate_usd'
-                            ),
-                            array(
-                                'title' => __('Additional settings', 'leyka'),
-                                'options' => array(
-                                    'currency_usd_label', 'currency_usd_min_sum', 'currency_usd_max_sum',
-                                    'currency_usd_flexible_default_amount', 'currency_usd_fixed_amounts',
-                                ),
-                            ),
-                        ),
-                    ),
-                    'eur_currency' => array(
-                        'title' => __('Euro', 'leyka'),
-                        'sections' => array(
-                            array(
-                                'options' => array('currency_rur2eur',), // 'auto_refresh_currency_rates'
-                            ),
-                            array(
-                                'title' => __('Additional settings', 'leyka'),
-                                'options' => array(
-                                    'currency_eur_label', 'currency_eur_min_sum', 'currency_eur_max_sum',
-                                    'currency_eur_flexible_default_amount', 'currency_eur_fixed_amounts',
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
+                'tabs' => $this->_get_currency_options_tabs(),
             ),),
             array('section' => array(
                 'name' => 'misc_view_settings',

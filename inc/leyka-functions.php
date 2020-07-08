@@ -611,7 +611,7 @@ function leyka_get_currency_data($currency_code) {
 
 function leyka_get_currency_label($currency_code = false) {
 
-    $currency_code = empty($currency_code) ? leyka_options()->opt('main_currency') : mb_strtolower($currency_code);
+    $currency_code = empty($currency_code) ? leyka_options()->opt_safe('currency_main') : mb_strtolower($currency_code);
     $currencies = leyka_get_currencies_data();
 
     return isset($currencies[$currency_code]['label']) ? $currencies[$currency_code]['label'] : false;
@@ -966,8 +966,9 @@ function leyka_get_countries_list() {
 
 }
 
-function leyka_get_currencies_full_info() {
-    return apply_filters('leyka_main_currencies_list', array(
+function leyka_get_currencies_full_info($currency_id = null) {
+
+    $currencies = apply_filters('leyka_main_currencies_list', array(
         'rur' => array(
             'title' => __('Russian Rouble', 'leyka'),
             'label' => __('RUB', 'leyka'),
@@ -985,6 +986,13 @@ function leyka_get_currencies_full_info() {
             'fixed_amounts' => '100,300,500,1000',
         ),
     ));
+
+    if(empty($currency_id)) {
+        return $currencies;
+    }
+
+    return empty($currencies[$currency_id]) ? false : $currencies[$currency_id];
+
 }
 
 function leyka_get_currencies_list() {

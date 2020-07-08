@@ -319,7 +319,7 @@
                     .payment-opt__icon {
 
                         height: 30px;
-                        margin-top: -3px;
+                        //margin-top: -3px;
                         overflow: hidden;
                         border-radius: unset;
                         background-color: transparent;
@@ -329,6 +329,7 @@
 
                         display: flex;
                         flex-flow: row nowrap;
+                        align-items: center;
 
                         img.pm-icon {
 
@@ -411,9 +412,9 @@
                             width: 100%;
                             margin-left: 0;
 
-                            .payment-opt__icon {
-                                display: inline-block;
-                            }
+                            //.payment-opt__icon {
+                            //    display: inline-block;
+                            //}
 
                             .payment-opt__label {
                                 display: inline-block;

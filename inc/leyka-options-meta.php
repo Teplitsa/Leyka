@@ -351,6 +351,7 @@ self::$_options_meta = array(
         'placeholder' => __('Enter rate value (e.g., 80)', 'leyka'),
         'length' => 6,
     ),
+    // Russian Roubles:
     'currency_rur_label' => array(
         'type' => 'text',
         'default' => __('RUB', 'leyka'),
@@ -396,6 +397,53 @@ self::$_options_meta = array(
         'placeholder' => '100,300,500,1000',
         'length' => 25,
     ),
+    // Belarus Roubles:
+    'currency_byn_label' => array(
+        'type' => 'text',
+        'default' => __('BYN', 'leyka'),
+        'title' => __('BYN label', 'leyka'),
+        'description' => sprintf(__('Please set the %s currency label here.', 'leyka'), __('BYN', 'leyka')),
+        'required' => true,
+        'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('BYN', 'leyka')),
+        'length' => 6,
+    ),
+    'currency_byn_min_sum' => array(
+        'type' => 'number',
+        'default' => 100,
+        'title' => sprintf(__('Minimum sum available for %s', 'leyka'), __('BYN', 'leyka')),
+        'description' => sprintf(__('Please set minimum amount available for %s donations.', 'leyka'), __('BYN', 'leyka')),
+        'required' => true,
+        'placeholder' => '100',
+        'length' => 6,
+    ),
+    'currency_byn_max_sum' => array(
+        'type' => 'number',
+        'default' => 30000,
+        'title' => sprintf(__('Maximum sum available for %s', 'leyka'), __('BYN', 'leyka')),
+        'description' => sprintf(__('Please set maximum amount available for %s donations.', 'leyka'), __('BYN', 'leyka')),
+        'required' => true,
+        'placeholder' => '30000',
+        'length' => 6,
+    ),
+    'currency_byn_flexible_default_amount' => array(
+        'type' => 'number',
+        'default' => 500,
+        'title' => sprintf(__('Default amount of donation in %s (for "flexible" donation type)', 'leyka'), __('BYN', 'leyka')),
+        'description' => sprintf(__('Please, set a default amount of donation when %s selected as currency.', 'leyka'), __('BYN', 'leyka')),
+        'required' => true,
+        'placeholder' => '500',
+        'length' => 6,
+    ),
+    'currency_byn_fixed_amounts' => array(
+        'type' => 'text',
+        'default' => '100,300,500,1000',
+        'title' => sprintf(__('Possible %s donation amounts (for "fixed" donation type)', 'leyka'), __('BYN', 'leyka')),
+        'description' => sprintf(__('Please, set possible donation amounts in %s when "fixed" donation type is selected. Only an integer non-negative values, separated with commas.', 'leyka'), __('BYN', 'leyka')),
+        'required' => true,
+        'placeholder' => '100,300,500,1000',
+        'length' => 25,
+    ),
+    // USD:
     'currency_usd_label' => array(
         'type' => 'text',
         'default' => __('$', 'leyka'),
@@ -441,6 +489,7 @@ self::$_options_meta = array(
         'placeholder' => '3,5,10,15,50',
         'length' => 25,
     ),
+    // EUR:
     'currency_eur_label' => array(
         'type' => 'text',
         'default' => __('euro', 'leyka'),
@@ -1146,13 +1195,6 @@ self::$_options_meta = array(
         'type' => 'checkbox',
         'title' => __("You can edit donors' data for all donation types", 'leyka'),
         'description' => __("Donation administrators and managers are allowed to edit donors' data for non-correctional donations.", 'leyka'),
-    ),
-    'main_currency' => array(
-        'type' => 'select',
-        'default' => 'rur',
-        'title' => __('Primary currency', 'leyka'),
-        'required' => true,
-        'list_entries' => array('rur' => __('₽', 'leyka'), 'usd' => __('$', 'leyka'), 'eur' => __('€', 'leyka'),),
     ),
     'plugin_demo_mode' => array(
         'type' => 'checkbox',
