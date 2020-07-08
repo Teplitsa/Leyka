@@ -40,7 +40,7 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
                 'name' => 'receiver_country',
                 'title' => __('Country', 'leyka'),
                 'is_default_collapsed' => false,
-                'options' => array('receiver_country',),
+                'options' => array('receiver_country', 'currency_main',),
             ),),
             array('section' => array(
                 'name' => 'beneficiary_org_name',

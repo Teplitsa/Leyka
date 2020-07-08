@@ -921,9 +921,9 @@ function leyka_fake_scale_ultra($campaign) {
 /** @return array An array of possible payment types with labels */
 function leyka_get_payment_types_list() {
     return array(
-        'single'     => esc_attr__('Single', 'leyka'),
-        'rebill'     => esc_attr__('Recurrent (rebill)', 'leyka'),
-        'correction' => esc_attr__('Correction', 'leyka')
+        'single' => __('Single', 'leyka'),
+        'rebill' => __('Recurrent (rebill)', 'leyka'),
+        'correction' => __('Correction', 'leyka'),
     );
 }
 
@@ -936,6 +936,80 @@ function leyka_get_payment_type_label($type) {
     $types = leyka_get_payment_types_list();
 
     return in_array($type, array_keys($types)) ? $types[$type] : false;
+
+}
+
+function leyka_get_countries_full_info($country_id = null) {
+
+    $countries = apply_filters('leyka_supported_countries_full_info', array(
+        'ru' => array('title' => __('Russia', 'leyka'), 'currency' => 'rur',),
+        'by' => array('title' => __('Belarus Republic', 'leyka'), 'currency' => 'byn'),
+    ));
+
+    if(empty($country_id)) {
+        return $countries;
+    }
+
+    return empty($countries[$country_id]) ? false : $countries[$country_id];
+
+}
+
+/** @return array */
+function leyka_get_countries_list() {
+
+    $countries_simple_list = array();
+    foreach(leyka_get_countries_full_info() as $country_id => $info) {
+        $countries_simple_list[$country_id] = $info['title'];
+    }
+
+    return apply_filters('leyka_supported_countries_list', $countries_simple_list);
+
+}
+
+function leyka_get_currencies_full_info() {
+    return apply_filters('leyka_main_currencies_list', array(
+        'rur' => array(
+            'title' => __('Russian Rouble', 'leyka'),
+            'label' => __('RUB', 'leyka'),
+            'min_amount' => 100,
+            'max_amount' => 30000,
+            'flexible_default_amount' => 500,
+            'fixed_amounts' => '100,300,500,1000',
+        ),
+        'byn' => array(
+            'title' => __('Belarus Rouble', 'leyka'),
+            'label' => __('BYN', 'leyka'),
+            'min_amount' => 100,
+            'max_amount' => 30000,
+            'flexible_default_amount' => 500,
+            'fixed_amounts' => '100,300,500,1000',
+        ),
+    ));
+}
+
+function leyka_get_currencies_list() {
+
+    $currencies_simple_list = array();
+    foreach(leyka_get_currencies_full_info() as $currency_id => $info) {
+        $currencies_simple_list[$currency_id] = $info['title'].' ('.$info['label'].')';
+    }
+
+    return apply_filters('leyka_supported_currencies_list', $currencies_simple_list);
+
+}
+
+/**
+ * Get the default main currency for given country. If none given, currently selected receiver county will be used.
+ *
+ * @param string $country_id
+ * @return mixed Either string Country ID, or false if no given Country found.
+ */
+function leyka_get_country_currency($country_id = null) {
+
+    $country_id = $country_id ? trim($country_id) : get_option('leyka_receiver_country');
+    $country = leyka_get_countries_full_info($country_id);
+
+    return $country && !empty($country['currency']) ? $country['currency'] : false;
 
 }
 

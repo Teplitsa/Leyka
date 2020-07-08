@@ -4,7 +4,7 @@
 add_action('leyka_render_section', 'leyka_render_section_area');
 function leyka_render_section_area($section){?>
 
-    <div class="leyka-options-section <?php echo $section['is_default_collapsed'] ? 'collapsed' : '';?> <?php echo !empty($section['tabs']) ? 'with-tabs' : '';?>" id="<?php echo $section['name'];?>">
+    <div class="leyka-options-section <?php echo $section['is_default_collapsed'] ? 'collapsed' : '';?> <?php echo empty($section['tabs']) ? '' : 'with-tabs';?>" id="<?php echo $section['name'];?>">
         <div class="header"><h3><?php echo esc_attr($section['title']);?></h3></div>
         <div class="content">
 
