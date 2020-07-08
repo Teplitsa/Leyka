@@ -147,7 +147,11 @@
                         text-transform: none;
                         
                         span.currency {
+
                             @include star-text-field-title();
+
+                            position: inherit;
+
                             color: $leyka-star-color-gray;
                             text-transform: lowercase;
                             
@@ -156,6 +160,7 @@
                                 display: none;
                                 margin-left: 0;
                             }
+
                         }
                     }
                 }
@@ -319,7 +324,6 @@
                     .payment-opt__icon {
 
                         height: 30px;
-                        //margin-top: -3px;
                         overflow: hidden;
                         border-radius: unset;
                         background-color: transparent;
