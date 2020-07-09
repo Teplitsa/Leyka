@@ -607,6 +607,7 @@ function leyka_get_currency_data($currency_code) {
     $currecies = leyka_get_currencies_data();
 
     return isset($currecies[$currency_code]) ? $currecies[$currency_code] : false;
+
 }
 
 function leyka_get_currency_label($currency_code = false) {
@@ -966,6 +967,7 @@ function leyka_get_countries_list() {
 
 }
 
+/** A low-level function to get all supported currencies & their default settings for all currently supported countries */
 function leyka_get_currencies_full_info($currency_id = null) {
 
     $currencies = apply_filters('leyka_main_currencies_list', array(

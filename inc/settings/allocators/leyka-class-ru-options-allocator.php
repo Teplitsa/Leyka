@@ -503,8 +503,7 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
                 'is_default_collapsed' => true,
                 'options' => array(
                     'show_donation_comments_in_frontend', 'success_page', 'failure_page', 'load_scripts_if_need',
-                    'donors_data_editable', 'revo_thankyou_text', 'revo_thankyou_email_result_text',
-                    'allow_deprecated_form_templates', 'plugin_demo_mode', 'plugin_debug_mode',
+                    'donors_data_editable', 'allow_deprecated_form_templates', 'plugin_demo_mode', 'plugin_debug_mode',
                     'plugin_stats_sync_enabled',
                 )
             ),),
