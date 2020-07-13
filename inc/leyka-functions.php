@@ -560,65 +560,6 @@ function leyka_get_form_templates_list() {
 
 }
 
-function leyka_get_currencies_data($currency_id = false) {
-
-    $currencies = array(
-        'rur' => array(
-            'label' => leyka_options()->opt('currency_rur_label'),
-            'top' => leyka_options()->opt('currency_rur_max_sum'),
-            'bottom' => leyka_options()->opt('currency_rur_min_sum'),
-            'amount_settings' => array(
-                'flexible' => leyka_options()->opt('currency_rur_flexible_default_amount'),
-                'fixed' => leyka_options()->opt('currency_rur_fixed_amounts')
-            ),
-        ),
-        'usd' => array(
-            'label' => leyka_options()->opt('currency_usd_label'),
-            'top' => leyka_options()->opt('currency_usd_max_sum'),
-            'bottom' => leyka_options()->opt('currency_usd_min_sum'),
-            'amount_settings' => array(
-                'flexible' => leyka_options()->opt('currency_usd_flexible_default_amount'),
-                'fixed' => leyka_options()->opt('currency_usd_fixed_amounts')
-            ),
-        ),
-        'eur' => array(
-            'label' => leyka_options()->opt('currency_eur_label'),
-            'top' => leyka_options()->opt('currency_eur_max_sum'),
-            'bottom' => leyka_options()->opt('currency_eur_min_sum'),
-            'amount_settings' => array(
-                'flexible' => leyka_options()->opt('currency_eur_flexible_default_amount'),
-                'fixed' => leyka_options()->opt('currency_eur_fixed_amounts')
-            ),
-        ),
-    );
-    $currencies['rub'] = $currencies['rur'];
-
-    return $currency_id && !empty($currencies[$currency_id]) ? $currencies[$currency_id] : $currencies;
-
-}
-
-/** @deprecated Use leyka_get_currencies_data($currency_id) instead. */
-function leyka_get_active_currencies($currency_id = false) {
-    return leyka_get_currencies_data($currency_id);
-}
-
-function leyka_get_currency_data($currency_code) {
-
-    $currecies = leyka_get_currencies_data();
-
-    return isset($currecies[$currency_code]) ? $currecies[$currency_code] : false;
-
-}
-
-function leyka_get_currency_label($currency_code = false) {
-
-    $currency_code = empty($currency_code) ? leyka_options()->opt_safe('currency_main') : mb_strtolower($currency_code);
-    $currencies = leyka_get_currencies_data();
-
-    return isset($currencies[$currency_code]['label']) ? $currencies[$currency_code]['label'] : false;
-
-}
-
 
 /**
  * Get possible leyka_donation post type's status list as an array.
@@ -967,7 +908,7 @@ function leyka_get_countries_list() {
 
 }
 
-/** A low-level function to get all supported currencies & their default settings for all currently supported countries */
+/** A low-level function to get all supported currencies & their default settings for all supported countries */
 function leyka_get_currencies_full_info($currency_id = null) {
 
     $currencies = apply_filters('leyka_main_currencies_list', array(
@@ -997,17 +938,6 @@ function leyka_get_currencies_full_info($currency_id = null) {
 
 }
 
-function leyka_get_currencies_list() {
-
-    $currencies_simple_list = array();
-    foreach(leyka_get_currencies_full_info() as $currency_id => $info) {
-        $currencies_simple_list[$currency_id] = $info['title'].' ('.$info['label'].')';
-    }
-
-    return apply_filters('leyka_supported_currencies_list', $currencies_simple_list);
-
-}
-
 /**
  * Get the default main currency for given country. If none given, currently selected receiver county will be used.
  *
@@ -1020,6 +950,102 @@ function leyka_get_country_currency($country_id = null) {
     $country = leyka_get_countries_full_info($country_id);
 
     return $country && !empty($country['currency']) ? $country['currency'] : false;
+
+}
+
+/**
+ * A high-level function to get all supported currencies ACTUAL (not default) data.
+ * The client code users should use it.
+ *
+ * @param string $currency_id
+ * @return mixed If $currency_id is given, either it's data will return, or false (if the ID is not found). If no $currency_id is geiven, all currencies data will be returned as an array of [currency_id => currency_data] pairs.
+ */
+function leyka_get_currencies_data($currency_id = null) {
+
+    $currencies = array(
+        'rur' => array(
+            'label' => leyka_options()->opt('currency_rur_label'),
+            'top' => leyka_options()->opt('currency_rur_max_sum'),
+            'bottom' => leyka_options()->opt('currency_rur_min_sum'),
+            'amount_settings' => array(
+                'flexible' => leyka_options()->opt('currency_rur_flexible_default_amount'),
+                'fixed' => leyka_options()->opt('currency_rur_fixed_amounts')
+            ),
+        ),
+        'usd' => array(
+            'label' => leyka_options()->opt('currency_usd_label'),
+            'top' => leyka_options()->opt('currency_usd_max_sum'),
+            'bottom' => leyka_options()->opt('currency_usd_min_sum'),
+            'amount_settings' => array(
+                'flexible' => leyka_options()->opt('currency_usd_flexible_default_amount'),
+                'fixed' => leyka_options()->opt('currency_usd_fixed_amounts')
+            ),
+        ),
+        'eur' => array(
+            'label' => leyka_options()->opt('currency_eur_label'),
+            'top' => leyka_options()->opt('currency_eur_max_sum'),
+            'bottom' => leyka_options()->opt('currency_eur_min_sum'),
+            'amount_settings' => array(
+                'flexible' => leyka_options()->opt('currency_eur_flexible_default_amount'),
+                'fixed' => leyka_options()->opt('currency_eur_fixed_amounts')
+            ),
+        ),
+    );
+    $currencies['rub'] = $currencies['rur'];
+
+    return $currency_id && !empty($currencies[$currency_id]) ? $currencies[$currency_id] : $currencies;
+
+}
+
+/**
+ * @deprecated Use leyka_get_currencies_data($currency_id) instead.
+ * @param bool $currency_id string
+ * @return array|false
+ */
+function leyka_get_active_currencies($currency_id = null) {
+    return leyka_get_currencies_data($currency_id);
+}
+
+/** A high-level function to get currencies list as a simple array of [currency_id => currency_title] pairs. */
+function leyka_get_currencies_list() {
+
+    $currencies_simple_list = array();
+    foreach(leyka_get_currencies_full_info() as $currency_id => $data) { // Can't use leyka_get_currencies_data() here
+        $currencies_simple_list[$currency_id] = $data['title'].' ('.$data['label'].')';
+    }
+
+    return apply_filters('leyka_supported_currencies_list', $currencies_simple_list);
+
+}
+
+/**
+ * A high-level function to get all current settings of given currency ID.
+ *
+ * @param string $currency_id If none given, the current main currency is used.
+ * @return string|false A current currency settings, or false if no given currency ID is found.
+ */
+function leyka_get_currency_data($currency_id = null) {
+
+    $currency_id = empty($currency_id) ? leyka_options()->opt_safe('currency_main') : mb_strtolower($currency_id);
+    $currency = leyka_get_currencies_data($currency_id);
+
+    return empty($currency[$currency_id]) ?
+        false : apply_filters('leyka_'.$currency_id.'_currency_data', $currency[$currency_id]);
+
+}
+
+/**
+ * A high-level function to get a label of given currency ID.
+ *
+ * @param string $currency_id If none given, the current main currency is used.
+ * @return string|false A current currency label, or false if no given currency ID is found.
+ */
+function leyka_get_currency_label($currency_id = null) {
+
+    $currency_id = empty($currency_id) ? leyka_options()->opt_safe('currency_main') : mb_strtolower($currency_id);
+    $currency = leyka_get_currencies_data($currency_id);
+
+    return empty($currency['label']) ? false : apply_filters('leyka_'.$currency_id.'_currency_label', $currency['label']);
 
 }
 
