@@ -1176,7 +1176,7 @@ class Leyka_Campaign {
             unset( $types_available[array_search('recurring', $types_available)] );
         }
 
-        return $types_available;
+        return $types_available && is_array($types_available) ? $types_available : array();
 
     }
 

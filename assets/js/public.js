@@ -2830,11 +2830,16 @@ jQuery(document).ready(function($){
         var $pmRadio = $form.find('input[name="leyka_payment_method"]:checked');
 
         if($pmRadio.data('processing') === 'static') {
-            $form.find('.section--static.' + $pmRadio.val()).show();
+
+            $form.find('.section--static').hide();
             $form.find('.section--person').hide();
+            $form.find('.section--static.' + $pmRadio.val()).show();
+
         } else {
+
             $form.find('.section--static').hide();
             $form.find('.section--person').show();
+
         }
 
     }
