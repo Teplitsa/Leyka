@@ -1132,21 +1132,29 @@ class Leyka extends Leyka_Singleton {
      */
     public function get_gateways(array $params = array()) {
 
-        if( !empty($params['activation_status']) && !in_array($params['activation_status'], array('active', 'inactive', 'activating')) ) {
+        $params = wp_parse_args($params, array(
+            'activation_status' => null,
+            'country_id' => leyka_options()->opt_safe('receiver_country'),
+        ));
+
+        if($params['activation_status'] && !in_array($params['activation_status'], array('active', 'inactive', 'activating')) ) {
             throw new Exception(sprintf(__('Unknown gateways activation status given: %s'), $params['activation_status']));
         }
 
-        $params['country_id'] = empty($params['country_id']) ?
-            leyka_options()->opt_safe('receiver_country') : trim($params['country_id']);
+        $params['country_id'] = $params['country_id'] ? trim($params['country_id']) : null;
 
         $gateways = array();
         foreach($this->_gateways as $gateway) { /** @var $gateway Leyka_Gateway */
 
-            if( !empty($params['activation_status']) && $gateway->get_activation_status() !== $params['activation_status']) {
+            if($params['activation_status'] && $gateway->get_activation_status() !== $params['activation_status']) {
                 continue;
             }
 
-            if($gateway->get_countries() && !in_array($params['country_id'], $gateway->get_countries())) {
+            if(
+                $params['country_id']
+                && $gateway->get_countries()
+                && !in_array($params['country_id'], $gateway->get_countries())
+            ) {
                 continue;
             }
 

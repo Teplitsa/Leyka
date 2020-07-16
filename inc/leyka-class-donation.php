@@ -166,28 +166,59 @@ class Leyka_Donation_Management {
         <select id="gateway-pm-select" name="gateway_pm">
             <option value="" <?php echo empty($_GET['gateway_pm']) ? '' : 'selected="selected"';?>><?php _e('Select a gateway or a payment method', 'leyka');?></option>
 
-        <?php $gw_pm_list = array();
+        <?php $current_country_gateway_pm_list = array();
         foreach(leyka_get_gateways() as $gateway) {
 
             /** @var Leyka_Gateway $gateway */
             $pm_list = $gateway->get_payment_methods();
             if($pm_list) {
-                $gw_pm_list[] = array('gateway' => $gateway, 'pm_list' => $pm_list);
+                $current_country_gateway_pm_list[] = array('gateway' => $gateway, 'pm_list' => $pm_list);
             }
 
         }
 
-        $gw_pm_list = apply_filters('leyka_donations_list_gw_pm_filter', $gw_pm_list);
+        $current_country_gateway_pm_list = apply_filters('leyka_donations_list_gw_pm_filter', $current_country_gateway_pm_list);
+        $other_countries_pm_full_ids = leyka_get_pm_full_ids_used();
 
-        foreach($gw_pm_list as $element) {?>
+        foreach($current_country_gateway_pm_list as $gateway_pm_data) {?>
 
-            <option value="<?php echo 'gateway__'.$element['gateway']->id;?>" <?php echo !empty($_GET['gateway_pm']) && $_GET['gateway_pm'] == 'gateway__'.$element['gateway']->id ? 'selected="selected"' : '';?>><?php echo $element['gateway']->name;?></option>
+            <option value="<?php echo 'gateway__'.$gateway_pm_data['gateway']->id;?>" <?php echo !empty($_GET['gateway_pm']) && $_GET['gateway_pm'] == 'gateway__'.$gateway_pm_data['gateway']->id ? 'selected="selected"' : '';?>><?php echo $gateway_pm_data['gateway']->name;?></option>
 
-            <?php foreach($element['pm_list'] as $pm) {?>
+            <?php foreach($gateway_pm_data['pm_list'] as $pm) {
 
-                <option value="<?php echo 'pm__'.$pm->id;?>" <?php echo !empty($_GET['gateway_pm']) && $_GET['gateway_pm'] == 'pm__'.$pm->id ? 'selected="selected"' : '';?>><?php echo '&nbsp;&nbsp;&nbsp;&nbsp;'.$pm->name;?></option>
+                if(in_array($pm->full_id, $other_countries_pm_full_ids)) {
+                    unset( $other_countries_pm_full_ids[ array_search($pm->full_id, $other_countries_pm_full_ids) ] );
+                }?>
+
+                <option value="<?php echo 'pm__'.$pm->full_id;?>" <?php echo !empty($_GET['gateway_pm']) && $_GET['gateway_pm'] == 'pm__'.$pm->full_id ? 'selected="selected"' : '';?>><?php echo '&nbsp;&nbsp;&nbsp;&nbsp;'.$pm->name;?></option>
+
             <?php }
-        }?>
+
+        }
+
+        if($other_countries_pm_full_ids) {?>
+
+            <optgroup label="<?php _e('Another countries', 'leyka');?>">
+
+                <?php $current_gateway_id = false;
+                foreach($other_countries_pm_full_ids as $pm_full_id) {
+
+                    $pm = leyka_get_pm_by_id($pm_full_id, true);
+                    if($pm->gateway_id !== $current_gateway_id) {
+
+                        $current_gateway_id = $pm->gateway_id;?>
+
+                        <option value="<?php echo 'gateway__'.$pm->gateway_id;?>" <?php echo !empty($_GET['gateway_pm']) && $_GET['gateway_pm'] == 'gateway__'.$pm->gateway_id ? 'selected="selected"' : '';?>><?php echo leyka_get_gateway_by_id($pm->gateway_id)->name;?></option>
+
+                    <?php }?>
+
+                    <option value="<?php echo 'pm__'.$pm->full_id;?>" <?php echo !empty($_GET['gateway_pm']) && $_GET['gateway_pm'] == 'pm__'.$pm->full_id ? 'selected="selected"' : '';?>><?php echo '&nbsp;&nbsp;&nbsp;&nbsp;'.$pm->name;?></option>
+
+                <?php }?>
+
+            </optgroup>
+
+        <?php }?>
 
         </select>
 
@@ -236,9 +267,12 @@ class Leyka_Donation_Management {
                         'key' => 'leyka_gateway', 'value' => str_replace('gateway__', '', $_REQUEST['gateway_pm'])
                     );
                 } else if(strpos($_REQUEST['gateway_pm'], 'pm__') !== false) {
-                    $meta_query[] = array(
-                        'key' => 'leyka_payment_method', 'value' => str_replace('pm__', '', $_REQUEST['gateway_pm'])
-                    );
+
+                    $pm_full_id = explode('-', str_replace('pm__', '', $_REQUEST['gateway_pm']));
+
+                    $meta_query[] = array('key' => 'leyka_gateway', 'value' => $pm_full_id[0]);
+                    $meta_query[] = array('key' => 'leyka_payment_method', 'value' => $pm_full_id[1]);
+
                 }
             }
 
@@ -1428,7 +1462,9 @@ class Leyka_Donation_Management {
             case 'method':
                 $gateway_label = $donation->gateway_id ? $donation->gateway_label : __('Custom payment info', 'leyka');
                 $pm_label = $donation->gateway_id ? $donation->pm_label : $donation->pm;
+
                 echo "<b>{$donation->payment_type_label}:</b> $pm_label <small>/ $gateway_label</small>";
+
                 break;
             case 'donation_date':
                 echo $donation->date_time;

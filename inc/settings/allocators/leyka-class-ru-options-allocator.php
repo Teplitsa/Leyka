@@ -52,7 +52,7 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
                 'title' => __('US Dollars', 'leyka'),
                 'sections' => array(
                     array(
-                        'options' => array('currency_rur2usd',), //'auto_refresh_currency_rate_usd'
+                        'options' => array(/*'currency_rur2usd', 'auto_refresh_currency_rate_usd' */),
                     ),
                     array(
                         'title' => __('Additional settings', 'leyka'),
@@ -67,7 +67,7 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
                 'title' => __('Euro', 'leyka'),
                 'sections' => array(
                     array(
-                        'options' => array('currency_rur2eur',), // 'auto_refresh_currency_rates'
+                        'options' => array(/*'currency_rur2eur', 'auto_refresh_currency_rate_usd' */),
                     ),
                     array(
                         'title' => __('Additional settings', 'leyka'),
@@ -439,13 +439,6 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
                 'title' => __('Technical support', 'leyka'),
                 'is_default_collapsed' => false,
                 'options' => array('org_contact_person_name', 'tech_support_email',)
-            ),),
-            array('section' => array(
-                'name' => 'upload_l10n',
-                'title' => __('Load translation', 'leyka'),
-                'is_default_collapsed' => false,
-                'action_button' => array( 'title' => __('Download', 'leyka'), 'id' => 'upload-l10n-button'),
-                'options' => array('lang2upload',)
             ),),
             array('section' => array(
                 'name' => 'stats_connections',

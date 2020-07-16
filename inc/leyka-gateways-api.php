@@ -108,7 +108,7 @@ function leyka_get_pm_by_id($pm_id, $is_full_id = false) {
  */
 function leyka_get_gateway_by_id($gateway_id) {
 
-    $gateways = leyka()->get_gateways();
+    $gateways = leyka()->get_gateways(array('country_id' => NULL,));
     return empty($gateways[$gateway_id]) ? false : $gateways[$gateway_id];
 
 }
