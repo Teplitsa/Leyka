@@ -4,7 +4,7 @@
 add_action('leyka_render_section', 'leyka_render_section_area');
 function leyka_render_section_area($section){?>
 
-    <div class="leyka-options-section <?php echo $section['is_default_collapsed'] ? 'collapsed' : '';?> <?php echo !empty($section['tabs']) ? 'with-tabs' : '';?>" id="<?php echo $section['name'];?>">
+    <div class="leyka-options-section <?php echo $section['is_default_collapsed'] ? 'collapsed' : '';?> <?php echo empty($section['tabs']) ? '' : 'with-tabs';?>" id="<?php echo $section['name'];?>">
         <div class="header"><h3><?php echo esc_attr($section['title']);?></h3></div>
         <div class="content">
 
@@ -23,9 +23,9 @@ function leyka_render_section_area($section){?>
                 }
             }
 
-            if( !empty($section['is_separate_sections_forms']) ) { ?>
+            if( !empty($section['is_separate_sections_forms']) ) {?>
                 <p class="submit">
-                    <input type="submit" name="leyka_settings_<?php echo $section['current_stage'];?>_submit" class="button-primary" <?php if(!empty($section['action_button']['id'])) { printf(' id="%s" ', $section['action_button']['id']); } ?>" value="<?php echo !empty($section['action_button']['title']) ? $section['action_button']['title'] : __('Save', 'leyka');?>">
+                    <input type="submit" name="leyka_settings_<?php echo $section['current_stage'];?>_submit" class="button-primary" <?php echo empty($section['action_button']['id']) ? '' : 'id="'.esc_attr($section['action_button']['id']).'"';?> value="<?php echo empty($section['action_button']['title']) ? __('Save', 'leyka') : $section['action_button']['title'];?>">
                 </p>
             <?php }?>
 

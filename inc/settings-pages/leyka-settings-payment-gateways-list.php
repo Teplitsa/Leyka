@@ -1,7 +1,4 @@
-<?php if( !defined('WPINC') ) die;
-
-$gateways = leyka()->get_gateways();
-$gateways_categories = leyka_get_gateways_filter_categories_list();?>
+<?php if( !defined('WPINC') ) die;?>
 
 <div class="main-area-top">
 
@@ -13,7 +10,7 @@ $gateways_categories = leyka_get_gateways_filter_categories_list();?>
         </div>
 
         <div class="filter-categories">
-        <?php foreach($gateways_categories as $category_slug => $category_label) {?>
+        <?php foreach(leyka_get_gateways_filter_categories_list() as $category_slug => $category_label) {?>
             <a class="filter-category-item" data-category="<?php echo $category_slug;?>" href="#">
                 <?php echo leyka_get_filter_category_label($category_slug);?>
             </a>
@@ -35,7 +32,7 @@ $gateways_categories = leyka_get_gateways_filter_categories_list();?>
     
     <div class="modules-cards-list">
         
-    <?php foreach($gateways as $i => $gateway) { /** @var $gateway Leyka_Gateway */
+    <?php foreach(leyka()->get_gateways() as $gateway) { /** @var $gateway Leyka_Gateway */
 
         $gateway_activation_status = $gateway->get_activation_status();?>
 

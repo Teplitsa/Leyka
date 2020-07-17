@@ -20,7 +20,7 @@ if( !$donation_id ) {
     <div class="leyka-pf__final-screen leyka-pf__final-thankyou">
 
         <svg class="svg-icon icon"><use xlink:href="#pic-heart"></svg>
-        <div class="text"><div><?php echo leyka_options()->opt('revo_thankyou_text');?></div></div>
+        <div class="text"><div><?php _e("Thank you! We appreciate your help! Let's stay in touch.", 'leyka');?></div></div>
 
         <div class="leyka-final-subscribe-form">
 
@@ -58,7 +58,7 @@ if( !$donation_id ) {
 
     <div class="leyka-pf__final-screen leyka-pf__final-informyou">
         <svg class="svg-icon icon"><use xlink:href="#pic-check-mark"></svg>
-        <div class="text"><div><?php echo leyka_options()->opt('revo_thankyou_email_result_text');?></div></div>
+        <div class="text"><div><?php _e('We will inform you about the result by email', 'leyka');?></div></div>
         <div class="informyou-redirect-text"><div><?php _e('Redirecting in <span class="leyka-redirect-countdown">5</span> seconds...', 'leyka');?></div></div>
         <div class="leyka-logo"> </div>
     </div>

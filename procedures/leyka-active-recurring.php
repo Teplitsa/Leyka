@@ -52,12 +52,13 @@ foreach(get_posts($params) as $donation) {
     $donation = new Leyka_Donation($donation);
 
     $gateway = leyka_get_gateway_by_id($donation->gateway_id);
-    if($gateway) {
+    if($gateway && $gateway->id === 'sber') { // TODO TMP, until Sber debugging is finished
 
         $new_recurring_donation = $gateway->do_recurring_donation($donation);
+
         if($new_recurring_donation && is_a($new_recurring_donation, 'Leyka_Donation')) {
             Leyka_Donation_Management::send_all_recurring_emails($new_recurring_donation);
-        } // else if( !$new_recurring_donation || is_wp_error($new_recurring_donation) ) { ... } /** @todo Log & handle error */
+        } // else if( !$new_recurring_donation || is_wp_error($new_recurring_donation) ) { ... } // TODO Log & handle error
 
     }
 

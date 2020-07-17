@@ -259,7 +259,7 @@ class Leyka extends Leyka_Singleton {
 
         if(is_admin()) { // Admin area only
 
-            require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-allocator.php');
+            require_once(LEYKA_PLUGIN_DIR.'inc/settings/allocators/leyka-class-options-allocator.php');
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-settings-rendering-utils.php');
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-admin.php');
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-donations-export.php');
@@ -1123,28 +1123,46 @@ class Leyka extends Leyka_Singleton {
     }
 
     /**
-     * @param mixed $activation_status If given, get only gateways with it.
-     * NULL for both types altogether.
+     * @param array $params An assoc. array of possible fields:
+     * * mixed 'activation_status' - If given, get only gateways with it.  Give NULL for all types altogether.
+     * * mixed 'country_id' - Either string country ID ('ru', 'by'), or NULL to turn off the country filtering. Default is current country ID ('receiver_country' option value).
+     *
      * @return array Of Leyka_Gateway objects.
+     * @throws Exception
      */
-    public function get_gateways($activation_status = null) {
+    public function get_gateways(array $params = array()) {
 
-        if( !$activation_status ) {
-            return $this->_gateways;
-        } else if( !in_array($activation_status, array('active', 'inactive', 'activating')) ) {
-            return array(); /** @todo Throw some Leyka_Exception */
-        } else {
+        $params = wp_parse_args($params, array(
+            'activation_status' => null,
+            'country_id' => leyka_options()->opt_safe('receiver_country'),
+        ));
 
-            $gateways = array();
-            foreach($this->_gateways as $gateway) { /** @var $gateway Leyka_Gateway */
-                if($gateway->get_activation_status() === $activation_status) {
-                    $gateways[] = $gateway;
-                }
+        if($params['activation_status'] && !in_array($params['activation_status'], array('active', 'inactive', 'activating')) ) {
+            throw new Exception(sprintf(__('Unknown gateways activation status given: %s'), $params['activation_status']));
+        }
+
+        $params['country_id'] = $params['country_id'] ? trim($params['country_id']) : null;
+
+        $gateways = array();
+        foreach($this->_gateways as $gateway) { /** @var $gateway Leyka_Gateway */
+
+            if($params['activation_status'] && $gateway->get_activation_status() !== $params['activation_status']) {
+                continue;
             }
 
-            return $gateways;
+            if(
+                $params['country_id']
+                && $gateway->get_countries()
+                && !in_array($params['country_id'], $gateway->get_countries())
+            ) {
+                continue;
+            }
+
+            $gateways[$gateway->id] = $gateway;
 
         }
+
+        return $gateways;
 
     }
 
@@ -2233,4 +2251,5 @@ __('correction', 'leyka');
 __('The donations management system for your WP site', 'leyka');
 __('Teplitsa of Social Technologies', 'leyka');
 __('Star', 'leyka');
+__('Need Help', 'leyka');
 __('A modern and lightweight form template', 'leyka');

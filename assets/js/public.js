@@ -1198,7 +1198,7 @@ var leykaValidateForm,
 
                 }
 
-                var redirect_form_html = '<form class="leyka-auto-submit" action="'+response.payment_url+'" method="post">';
+                var redirect_form_html = '<form class="leyka-auto-submit" action="'+response.payment_url+'" method="'+(response.payment_url.indexOf('?') === -1 ? 'post' : 'get')+'">';
 
                 $.each(response, function(field_name, value){
                     if(field_name !== 'payment_url') {
