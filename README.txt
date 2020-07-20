@@ -81,6 +81,16 @@ PHP version required: 5.6+
 5. The plugin start page (a console)
 
 == Changelog ==
+= 3.11 =
++ New: plugin internationalization framework added.
++ New: SBerbank Acquiring gateway added.
+~ Now options meta is kept in the separate class.
+~ Now options allocation is managed by the Allocators classes family.
+* Star styling fixes.
+* Fix: multiple static PMs bug fixed.
+
+* Fix: different CSS, JS & backend fixes.
+
 = 3.10 =
 + New: the "Need Help" template added.
 + New: date parameters added for the leyka_sum shortcode.

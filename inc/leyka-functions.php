@@ -928,6 +928,7 @@ function leyka_get_countries_full_info($country_id = null) {
     $countries = apply_filters('leyka_supported_countries_full_info', array(
         'ru' => array('title' => __('Russia', 'leyka'), 'currency' => 'rur',),
 //        'by' => array('title' => __('Belarus Republic', 'leyka'), 'currency' => 'byn'),
+//        'ua' => array('title' => __('Ukraine', 'leyka'), 'currency' => 'uah'),
     ));
 
     if(empty($country_id)) {
@@ -1015,6 +1016,14 @@ function leyka_get_main_currencies_full_info() {
         'byn' => array(
             'title' => __('Belarus Rouble', 'leyka'),
             'label' => __('BYN', 'leyka'),
+            'min_amount' => 10,
+            'max_amount' => 30000,
+            'flexible_default_amount' => 500,
+            'fixed_amounts' => '100,300,500,1000',
+        ),
+        'uah' => array(
+            'title' => __('Ukraine Hryvnia', 'leyka'),
+            'label' => __('₴', 'leyka'),
             'min_amount' => 10,
             'max_amount' => 30000,
             'flexible_default_amount' => 500,
