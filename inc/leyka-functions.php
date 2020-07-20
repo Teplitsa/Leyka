@@ -927,7 +927,7 @@ function leyka_get_countries_full_info($country_id = null) {
 
     $countries = apply_filters('leyka_supported_countries_full_info', array(
         'ru' => array('title' => __('Russia', 'leyka'), 'currency' => 'rur',),
-        'by' => array('title' => __('Belarus Republic', 'leyka'), 'currency' => 'byn'),
+//        'by' => array('title' => __('Belarus Republic', 'leyka'), 'currency' => 'byn'),
     ));
 
     if(empty($country_id)) {
@@ -960,6 +960,26 @@ function leyka_get_default_receiver_country_id() {
 }
 
 /**
+ * A high-level function to get country associated with given currency ID.
+ *
+ * @param string $currency_id
+ * @return string|false Either country ID, or false if no coountry found for given currency ID.
+ */
+function leyka_get_currency_country($currency_id) {
+
+    foreach(leyka_get_countries_full_info() as $country_id => $data) {
+
+        if($data['currency'] === $currency_id) {
+            return $country_id;
+        }
+
+    }
+
+    return false;
+
+}
+
+/**
  * A service function to get currencies list as a simple array of [currency_id => currency_title] pairs.
  *
  * @return array
@@ -967,8 +987,15 @@ function leyka_get_default_receiver_country_id() {
 function leyka_get_currencies_list() {
 
     $currencies_simple_list = array();
+
     foreach(leyka_get_main_currencies_full_info() as $currency_id => $data) { // Can't use leyka_get_currencies_data() here
+
+        if( !leyka_get_currency_country($currency_id) ) {
+            continue;
+        }
+
         $currencies_simple_list[$currency_id] = $data['title'].' ('.$data['label'].')';
+
     }
 
     return apply_filters('leyka_supported_currencies_list', $currencies_simple_list);
