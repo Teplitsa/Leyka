@@ -14,11 +14,11 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
         $this->_id = 'sber';
         $this->_title = __('Sberbank Acquiring', 'leyka');
 
-        $this->_description = apply_filters(
-            'leyka_gateway_description',
-            __('<a href="//www.sberbank.ru/ru/s_m_business/bankingservice/acquiring_total/">Sberbank Acquiring</a> description here.', 'leyka'),
-            $this->_id
-        );
+//        $this->_description = apply_filters(
+//            'leyka_gateway_description',
+//            __('<a href="//www.sberbank.ru/ru/s_m_business/bankingservice/acquiring_total/">Sberbank Acquiring</a> description here.', 'leyka'),
+//            $this->_id
+//        );
 
         $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-sber-acquiring/';
         $this->_registration_link = '//www.sberbank.ru/ru/s_m_business/bankingservice/acquiring_total#application';
@@ -530,13 +530,13 @@ class Leyka_Sber_Card extends Leyka_Payment_Method {
         $this->_gateway_id = 'sber';
         $this->_category = 'bank_cards';
 
-        $this->_description = apply_filters(
-            'leyka_pm_description',
-            __('<a href="//www.sberbank.ru/ru/s_m_business/bankingservice/acquiring_total/">Sberbank Acquiring</a> cards payment description here.', 'leyka'),
-            $this->_id,
-            $this->_gateway_id,
-            $this->_category
-        );
+//        $this->_description = apply_filters(
+//            'leyka_pm_description',
+//            __('<a href="//www.sberbank.ru/ru/s_m_business/bankingservice/acquiring_total/">Sberbank Acquiring</a> cards payment description here.', 'leyka'),
+//            $this->_id,
+//            $this->_gateway_id,
+//            $this->_category
+//        );
 
         $this->_label_backend = __('Bank card', 'leyka');
         $this->_label = __('Bank card', 'leyka');
