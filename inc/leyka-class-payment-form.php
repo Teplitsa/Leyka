@@ -471,7 +471,7 @@ class Leyka_Payment_Form {
 
     public function get_supported_currencies() {
 
-		$supported_curr = $this->_pm ? $this->_pm->currencies : array(leyka_options()->opt('main_currency'));
+		$supported_curr = $this->_pm ? $this->_pm->currencies : array(leyka_options()->opt('currency_main'));
 		$active_curr = leyka_get_currencies_data();
 		$curr = array();
 
@@ -488,7 +488,7 @@ class Leyka_Payment_Form {
     public function get_current_currency() {
 
 		if( !$this->_current_currency ) {
-			$this->_current_currency = $this->_pm ? $this->_pm->default_currency : leyka_options()->opt('main_currency');
+			$this->_current_currency = $this->_pm ? $this->_pm->default_currency : leyka_options()->opt('currency_main');
         }
 
 		return $this->_current_currency;

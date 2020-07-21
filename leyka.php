@@ -112,9 +112,13 @@ if($gateways_dir) {
 
     while(false !== ($gateway_id = $gateways_dir->read())) {
 
+        if(in_array($gateway_id, array('.', '..', 'index.php'))) {
+            continue;
+        }
+
         $file_addr = LEYKA_PLUGIN_DIR."gateways/$gateway_id/leyka-class-$gateway_id-gateway.php";
 
-        if($gateway_id !== '.' && $gateway_id !== '..' && file_exists($file_addr)) {
+        if(file_exists($file_addr)) {
             require_once($file_addr);
         }
 
@@ -130,9 +134,13 @@ if($extensions_dir) {
 
     while(false !== ($extension_id = $extensions_dir->read())) {
 
+        if(in_array($extension_id, array('.', '..', 'index.php'))) {
+            continue;
+        }
+
         $file_addr = LEYKA_PLUGIN_DIR."extensions/$extension_id/leyka-class-{$extension_id}-extension.php";
 
-        if($extension_id !== '.' && $extension_id !== '..' && file_exists($file_addr)) {
+        if(file_exists($file_addr)) {
             require_once($file_addr);
         }
 

@@ -87,7 +87,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                     <input type="hidden" class="leyka_donation_amount" name="leyka_donation_amount" value="">
                 </div>
                 
-                <input type="hidden" class="leyka_donation_currency" name="leyka_donation_currency" data-currency-label="<?php echo $template_data['currency_label'];?>" value="<?php echo leyka_options()->opt('main_currency');?>">
+                <input type="hidden" class="leyka_donation_currency" name="leyka_donation_currency" data-currency-label="<?php echo $template_data['currency_label'];?>" value="<?php echo leyka_options()->opt('currency_main');?>">
                 <input type="hidden" name="leyka_recurring" class="is-recurring-chosen" value="<?php echo $is_recurring_campaign ? "1" : "0";?>">
             </div>
     

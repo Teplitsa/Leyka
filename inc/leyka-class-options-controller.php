@@ -25,7 +25,24 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
         self::$_options_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta(array('main', 'templates'));
 
+        $this->_add_options_alt_ids();
         $this->add_template_options();
+
+    }
+
+    /** Service function to add filters for options alternative IDs. */
+    protected function _add_options_alt_ids() {
+        add_filter('leyka_option_id-main_currency', function(){ // 'main_currency' was renamed to 'currency_main' in v3.11
+            return 'currency_main';
+        });
+    }
+
+    protected function _get_filtered_option_id($option_id) {
+
+        $option_id = apply_filters('leyka_option_id-'.$option_id, str_replace('leyka_', '', $option_id));
+        $option_id = apply_filters('leyka_option_id', $option_id);
+
+        return $option_id;
 
     }
 
@@ -42,6 +59,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
      */
     public static function get_option_value($option_id) {
 
+        // Don't use $this->_get_filtered_option_id() here:
         $option_id = stristr($option_id, 'leyka_') !== false ? $option_id : 'leyka_'.$option_id;
 
         return apply_filters('leyka_option_value', get_option($option_id), $option_id);
@@ -94,7 +112,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
      */
     protected function _intialize_option($option_id, $load_value = false) {
 
-        $option_id = str_replace('leyka_', '', $option_id);
+        $option_id = $this->_get_filtered_option_id($option_id);
 
         if(empty(self::$_options_meta[$option_id])) { // Initialize option group metadata, if needed
             $this->_initialize_options_group_meta($option_id);
@@ -129,7 +147,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
      */
     protected function _initialize_value($option_id) {
 
-        $option_id = str_replace('leyka_', '', $option_id);
+        $option_id = $this->_get_filtered_option_id($option_id);
 
         if( !isset($this->_options[$option_id]['value']) ) {
 
@@ -167,7 +185,8 @@ class Leyka_Options_Controller extends Leyka_Singleton {
      */
     public function get_value($option_id) {
 
-        $option_id = str_replace('leyka_', '', $option_id);
+        $option_id = $this->_get_filtered_option_id($option_id);
+
         if( !$this->_intialize_option($option_id, true) ) {
             return null;
         }
@@ -251,11 +270,13 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
     }
 
-    public function option_exists($name) {
+    public function option_exists($option_id) {
 
-        $this->_intialize_option($name);
+        $option_id = $this->_get_filtered_option_id($option_id);
 
-        return isset($this->_options[str_replace('leyka_', '', $name)]);
+        $this->_intialize_option($option_id);
+
+        return isset($this->_options[$option_id]);
 
     }
 
@@ -266,7 +287,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
      */
     public function set_value($option_id, $option_value = null) {
 
-        $option_id = str_replace('leyka_', '', $option_id);
+        $option_id = $this->_get_filtered_option_id($option_id);
 
         $this->_intialize_option($option_id, true);
 
@@ -303,7 +324,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
     public function opt_template($option_id, $template_id = false) {
 
-        $option_id = str_replace('leyka_', '', $option_id);
+        $option_id = $this->_get_filtered_option_id($option_id);
         
         $val = false;
         if(leyka_options()->is_template_option($option_id)) {
@@ -331,11 +352,11 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         return $new_value === null ? $this->get_value($option_id) : $this->set_value($option_id, $new_value);
     }
 
-    public function opt_safe($option_name) {
+    public function opt_safe($option_id) {
 
-        $value = $this->get_value($option_name); 
+        $value = $this->get_value($option_id);
 
-        return $value ? $value : $this->get_default_of($option_name);
+        return $value ? $value : $this->get_default_of($option_id);
 
     }
 
@@ -346,7 +367,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
      */
     protected function _validate_option($option_id, $value = null) {
 
-        $option_id = str_replace('leyka_', '', $option_id);
+        $option_id = $this->_get_filtered_option_id($option_id);
         $value = $value === NULL ? $this->get_value($option_id) : $value;
 
         foreach($this->get_validation_rules($option_id) as $rule_regexp => $rule_invalid_message) {
@@ -365,7 +386,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
      */
     public function get_validation_rules($option_id) {
 
-        $option_id = str_replace('leyka_', '', $option_id);
+        $option_id = $this->_get_filtered_option_id($option_id);
 
         $this->_intialize_option($option_id, true);
 
@@ -383,7 +404,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
      */
     public function get_validation_errors($option_id, $value = false) {
 
-        $option_id = str_replace('leyka_', '', $option_id);
+        $option_id = $this->_get_filtered_option_id($option_id);
         $value = $value === false ? $this->opt_safe($option_id) : $value;
 
         if( !$this->option_exists($option_id)) {
@@ -408,7 +429,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
     public function get_info_of($option_id) {
 
-        $option_id = str_replace('leyka_', '', $option_id);
+        $option_id = $this->_get_filtered_option_id($option_id);
 
         $this->_intialize_option($option_id, true);
         
@@ -432,7 +453,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
     public function get_title_of($option_id) {
 
-        $option_id = str_replace('leyka_', '', $option_id);
+        $option_id = $this->_get_filtered_option_id($option_id);
 
         $this->_intialize_option($option_id, true);
 
@@ -442,7 +463,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
     public function get_default_of($option_id) {
 
-        $option_id = str_replace('leyka_', '', $option_id);
+        $option_id = $this->_get_filtered_option_id($option_id);
 
         $this->_intialize_option($option_id);
 
@@ -454,7 +475,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
     public function get_type_of($option_id) {
 
-        $option_id = str_replace('leyka_', '', $option_id);
+        $option_id = $this->_get_filtered_option_id($option_id);
 
         $this->_intialize_option($option_id);
 
@@ -466,7 +487,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
     public function is_required($option_id) {
 
-        $option_id = str_replace('leyka_', '', $option_id);
+        $option_id = $this->_get_filtered_option_id($option_id);
 
         $this->_intialize_option($option_id);
 
@@ -478,7 +499,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
     public function is_valid($option_id, $value = false) {
 
-        $option_id = str_replace('leyka_', '', $option_id);
+        $option_id = $this->_get_filtered_option_id($option_id);
 
         $this->_intialize_option($option_id, true);
         $value = $value === false ? $this->opt_safe($option_id) : $value;
@@ -521,6 +542,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
     }
 
     /**
+     * @param $template_id string
      * @return string
      */
     protected function _get_template_options_prefix($template_id) {
@@ -587,11 +609,8 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
                 $prefix = $this->_get_template_options_prefix($template_id);
 
-                if(strpos($option, $prefix) === 0) {
-
-                    $old_common_option_name = str_replace($prefix.'_', '', $option);
-                    $value = $this->opt_safe($old_common_option_name);
-
+                if(stripos($option, $prefix) === 0) {
+                    $value = $this->opt_safe(str_replace($prefix.'_', '', $option));
                 }
 
             }
@@ -610,13 +629,14 @@ class Leyka_Options_Controller extends Leyka_Singleton {
      */
     public function is_multi_value_checked($option_id, $value_to_check) {
 
-        $option_id = str_replace('leyka_', '', $option_id);
+        $option_id = $this->_get_filtered_option_id($option_id);
 
         if( !$this->option_exists($option_id) || $this->get_type_of($option_id) !== 'multi_checkbox' ) {
             return NULL;
         }
 
         $check_list = $this->opt($option_id);
+
         return is_array($check_list) ? in_array($value_to_check, $check_list) : false;
 
     }

@@ -624,7 +624,7 @@ class Leyka_Support_Packages_Package {
 
             case 'price_currency':
                 $currencies = leyka_get_currencies_data();
-                $currency_sign = $currencies[ leyka_options()->opt('main_currency') ]['label'];
+                $currency_sign = $currencies[ leyka_options()->opt('currency_main') ]['label'];
                 return $currency_sign ? $currency_sign : __('₽', 'leyka');
 
             default:

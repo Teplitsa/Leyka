@@ -14,7 +14,7 @@ class Leyka_Revo_Template_Controller extends Leyka_Template_Controller {
         }
 
         $currencies = leyka_get_currencies_data();
-        $main_currency_id = leyka_options()->opt('main_currency');
+        $main_currency_id = leyka_options()->opt('currency_main');
 
         $this->_template_data[$campaign->id] = array(
         	'currency_id' => $main_currency_id,

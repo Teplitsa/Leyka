@@ -32,7 +32,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
                 <input type="text" class="leyka_donation_amount" name="leyka_donation_amount" value="<?php echo $template_data['amount_default'];?>" autocomplete="off" placeholder="<?php echo apply_filters('leyka_form_free_amount_placeholder', $template_data['amount_default']);?>" data-default-value="<?php echo $template_data['amount_default'];?>" data-min-value="<?php echo $template_data['amount_min'];?>" data-max-value="<?php echo $template_data['amount_max_total'];?>">
                 <span class="curr-mark"><?php echo $template_data['currency_label'];?></span>
 
-                <input type="hidden" class="leyka_donation_currency" name="leyka_donation_currency" data-currency-label="<?php echo $template_data['currency_label'];?>" value="<?php echo leyka_options()->opt('main_currency');?>">
+                <input type="hidden" class="leyka_donation_currency" name="leyka_donation_currency" data-currency-label="<?php echo $template_data['currency_label'];?>" value="<?php echo leyka_options()->opt('currency_main');?>">
 
             </div>
 

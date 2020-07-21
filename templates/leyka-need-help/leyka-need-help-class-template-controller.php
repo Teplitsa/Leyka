@@ -14,7 +14,7 @@ class Leyka_Need_Help_Template_Controller extends Leyka_Template_Controller {
         }
 
         $currencies = leyka_get_currencies_data();
-        $main_currency_id = leyka_options()->opt('main_currency');
+        $main_currency_id = leyka_options()->opt('currency_main');
 
         if($campaign->daily_rouble_mode_on_and_valid) {
 

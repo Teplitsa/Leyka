@@ -306,7 +306,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
         if($is_error) {
 
-            $message .= "CALLBACK TYPE: ".print_r($response['request'], true)."\n\r\n\r";
+            $message .= "CALLBACK TYPE: ".print_r(empty($response['request']) ? '-' : $response['request'], true)."\n\r\n\r";
             $message .= "THEIR POST:\n\r".print_r($_POST, true)."\n\r\n\r";
             $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
             $message .= "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";

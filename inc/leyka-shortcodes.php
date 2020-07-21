@@ -750,7 +750,7 @@ function leyka_inline_campaign_small($atts) {
         return '';
     }
 
-    $currency_data = leyka_get_currencies_data(leyka_options()->opt('main_currency'));
+    $currency_data = leyka_get_currencies_data(leyka_options()->opt('currency_main'));
 
     ob_start();?>
 
