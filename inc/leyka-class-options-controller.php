@@ -26,6 +26,8 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         self::$_options_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta(array('main', 'templates'));
 
         $this->_add_options_alt_ids();
+        $this->_modify_options_values();
+
         $this->add_template_options();
 
     }
@@ -34,6 +36,12 @@ class Leyka_Options_Controller extends Leyka_Singleton {
     protected function _add_options_alt_ids() {
         add_filter('leyka_option_id-main_currency', function(){ // 'main_currency' was renamed to 'currency_main' in v3.11
             return 'currency_main';
+        });
+    }
+
+    protected function _modify_options_values() {
+        add_filter('leyka_option_value-commission', function($value){
+            return $value ? $value : array();
         });
     }
 
@@ -61,8 +69,9 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
         // Don't use $this->_get_filtered_option_id() here:
         $option_id = stristr($option_id, 'leyka_') !== false ? $option_id : 'leyka_'.$option_id;
+        $value = apply_filters('leyka_option_value-'.$option_id, get_option($option_id));
 
-        return apply_filters('leyka_option_value', get_option($option_id), $option_id);
+        return apply_filters('leyka_option_value', $value, $option_id);
 
     }
 
@@ -158,6 +167,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
                 $this->_options[$option_id]['value'] = empty(self::$_options_meta[$option_id]['default']) ?
                     '' : self::$_options_meta[$option_id]['default'];
             }
+
         }
 
         if(

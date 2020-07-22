@@ -1011,7 +1011,7 @@ function leyka_get_main_currencies_full_info() {
             'min_amount' => 10,
             'max_amount' => 30000,
             'flexible_default_amount' => 500,
-            'fixed_amounts' => '10,100,300,500,1000',
+            'fixed_amounts' => '100,300,500,1000',
         ),
         'byn' => array(
             'title' => __('Belarus Rouble', 'leyka'),
