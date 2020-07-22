@@ -178,7 +178,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                 && (is_ip_in_range($_SERVER['REMOTE_ADDR'], $ip_or_cidr) || is_ip_in_range($client_ip, $ip_or_cidr))
             ) {
                 return true;
-            } else if($_SERVER['REMOTE_ADDR'] == $ip_or_cidr) { // Simple IP check
+            } else if($client_ip == $ip_or_cidr) { // Simple IP check
                 return true;
             }
 
