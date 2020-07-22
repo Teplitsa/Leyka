@@ -1,7 +1,7 @@
 <?php if( !defined('WPINC') ) die;
 /**
  * Leyka Template: Need help
- * Description: Yet another modern and lightweight form template
+ * Description: Another modern and lightweight form template
  * Disabled: false
  * 
  * $campaign - current campaign

@@ -2253,3 +2253,4 @@ __('Teplitsa of Social Technologies', 'leyka');
 __('Star', 'leyka');
 __('Need Help', 'leyka');
 __('A modern and lightweight form template', 'leyka');
+__('Another modern and lightweight form template', 'leyka');

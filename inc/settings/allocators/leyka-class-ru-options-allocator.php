@@ -397,7 +397,7 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
             }
         }
 
-        $main_form_template_select_options = leyka_options()->opt('allow_deprecated_form_templates') ? array(
+        $main_form_template_select_options = array(
             'main_template' => array(
                 'title' => __('Main template', 'leyka'),
                 'sections' => array(
@@ -407,7 +407,7 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
                     ),
                 ),
             ),
-        ) : array();
+        );
 
         return array(
             array('section' => array(
