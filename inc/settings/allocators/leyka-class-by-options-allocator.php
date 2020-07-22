@@ -4,7 +4,7 @@ class Leyka_By_Options_Allocator extends Leyka_Ru_Options_Allocator {
 
     protected static $_instance;
 
-    protected function _get_currency_options_tabs() {
+    protected function _get_main_currency_options_tabs() {
 
         $main_currency_id = leyka_options()->opt_safe('currency_main');
         $main_currency_info = leyka_get_currencies_full_info($main_currency_id);

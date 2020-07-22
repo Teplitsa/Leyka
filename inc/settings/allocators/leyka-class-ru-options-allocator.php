@@ -34,51 +34,57 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
 
     }
 
-    protected function _get_currency_options_tabs() {
+    protected function _get_main_currency_options_tabs() {
+
+        $main_currency_id = leyka_get_country_currency();
+        $main_currencies = leyka_get_main_currencies_full_info();
+
+        if(empty($main_currencies[$main_currency_id])) {
+            return array();
+        }
+
         return array(
-            'rur_currency' => array(
-                'title' => __('Rubles', 'leyka'),
+            $main_currency_id.'_currency' => array(
+                'title' => $main_currencies[$main_currency_id]['title'],
                 'sections' => array(
                     array(
                         'title' => '',
                         'options' => array(
-                            'currency_rur_label', 'currency_rur_min_sum', 'currency_rur_max_sum',
-                            'currency_rur_flexible_default_amount', 'currency_rur_fixed_amounts',
-                        ),
-                    ),
-                ),
-            ),
-            'usd_currency' => array(
-                'title' => __('US Dollars', 'leyka'),
-                'sections' => array(
-                    array(
-                        'options' => array(/*'currency_rur2usd', 'auto_refresh_currency_rate_usd' */),
-                    ),
-                    array(
-                        'title' => __('Additional settings', 'leyka'),
-                        'options' => array(
-                            'currency_usd_label', 'currency_usd_min_sum', 'currency_usd_max_sum',
-                            'currency_usd_flexible_default_amount', 'currency_usd_fixed_amounts',
-                        ),
-                    ),
-                ),
-            ),
-            'eur_currency' => array(
-                'title' => __('Euro', 'leyka'),
-                'sections' => array(
-                    array(
-                        'options' => array(/*'currency_rur2eur', 'auto_refresh_currency_rate_usd' */),
-                    ),
-                    array(
-                        'title' => __('Additional settings', 'leyka'),
-                        'options' => array(
-                            'currency_eur_label', 'currency_eur_min_sum', 'currency_eur_max_sum',
-                            'currency_eur_flexible_default_amount', 'currency_eur_fixed_amounts',
+                            "currency_{$main_currency_id}_label", "currency_{$main_currency_id}_min_sum",
+                            "currency_{$main_currency_id}_max_sum", "currency_{$main_currency_id}_flexible_default_amount",
+                            "currency_{$main_currency_id}_fixed_amounts",
                         ),
                     ),
                 ),
             ),
         );
+
+    }
+
+    protected function _get_secondary_currencies_options_tabs() {
+        
+        $secondary_currencies_tabs = array();
+        
+        foreach(leyka_get_secondary_currencies_full_info() as $currency_id => $data) {
+
+            $secondary_currencies_tabs[$currency_id.'_currency'] = array(
+                'title' => $data['title'],
+                'sections' => array(
+                    array(
+                        'title' => '',
+                        'options' => array(
+                            "currency_{$currency_id}_label", "currency_{$currency_id}_min_sum",
+                            "currency_{$currency_id}_max_sum", "currency_{$currency_id}_flexible_default_amount",
+                            "currency_{$currency_id}_fixed_amounts",
+                        ),
+                    ),
+                ),
+            );
+
+        }
+
+        return $secondary_currencies_tabs;
+
     }
 
     public function get_beneficiary_options() {
@@ -412,21 +418,19 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
                 'is_default_collapsed' => false,
                 'tabs' => array_merge($main_form_template_select_options, $templates_options),
             ),),
-
-            // Currency settings:
             array('section' => array(
                 'name' => 'currency_options',
                 'content_area_render' => 'leyka_render_tabbed_section_options_area',
                 'title' => __('Currency settings', 'leyka'),
                 'description' => __('Here you can change currency options', 'leyka'),
                 'is_default_collapsed' => false,
-                'tabs' => $this->_get_currency_options_tabs(),
+                'tabs' => $this->_get_main_currency_options_tabs(),
             ),),
             array('section' => array(
                 'name' => 'misc_view_settings',
                 'title' => __('Miscellaneous', 'leyka'),
                 'is_default_collapsed' => true,
-                'options' => array('widgets_total_amount_usage',)
+                'options' => array('widgets_total_amount_usage',),
             ),),
         );
 
@@ -499,6 +503,14 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
                     'donors_data_editable', 'allow_deprecated_form_templates', 'plugin_demo_mode', 'plugin_debug_mode',
                     'plugin_stats_sync_enabled',
                 )
+            ),),
+            array('section' => array(
+                'name' => 'secondary_currency_options',
+                'content_area_render' => 'leyka_render_tabbed_section_options_area',
+                'title' => __('Secondary currency settings', 'leyka'),
+                'description' => __('Here you can change secondary currencies options', 'leyka'),
+                'is_default_collapsed' => true,
+                'tabs' => $this->_get_secondary_currencies_options_tabs(),
             ),),
         );
     }
