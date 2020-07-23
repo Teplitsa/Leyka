@@ -2,7 +2,7 @@
  * Star form template functionality and handlers
  */
 
-(function($){
+jQuery(document).ready(function($){
 
     function init() {
 		bindEvents();
@@ -812,4 +812,4 @@
 
 	init();
 
-}( jQuery ));
+});
