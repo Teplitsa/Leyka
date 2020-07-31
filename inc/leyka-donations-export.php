@@ -85,7 +85,7 @@ function leyka_do_donations_export() {
 
     echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
         'UTF-8',
-        apply_filters('leyka_donations_export_content_charset', 'windows-1251'),
+        apply_filters('leyka_donations_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
         "sep=;\n".implode(';', apply_filters('leyka_donations_export_headers', array(
             'ID', 'Имя донора', 'Email', 'Тип платежа', 'Плат. оператор', 'Способ платежа', 'Полная сумма', 'Итоговая сумма', 'Валюта', 'Дата пожертвования', 'Статус', 'Кампания', 'Подписка на рассылку', 'Email подписки', 'Комментарий'
         )))
@@ -96,6 +96,14 @@ function leyka_do_donations_export() {
         $donation = new Leyka_Donation($donation);
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
+        $currency = $donation->currency_label;
+        $currency_label_encoded = @iconv( // Sometimes currency sighs can't be encoded, so check for it
+            'UTF-8',
+            apply_filters('leyka_recurring_subscriptions_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
+            $currency
+        );
+        $currency = $currency_label_encoded ? $currency : $donation->currency_id;
+
         $donor_subscription = 'Нет';
         if($donation->donor_subscribed === true) {
             $donor_subscription = 'Полная';
@@ -105,7 +113,7 @@ function leyka_do_donations_export() {
 
         echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
             'UTF-8',
-            apply_filters('leyka_donations_export_content_charset', 'windows-1251'),
+            apply_filters('leyka_donations_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
             "\r\n".implode(';', apply_filters(
                 'leyka_donations_export_line',
                 array(
@@ -117,7 +125,7 @@ function leyka_do_donations_export() {
                     $donation->payment_method_label,
                     $donation->sum,
                     $donation->amount_total,
-                    $donation->currency_label,
+                    $currency,
                     $donation->date,
                     $donation->status_label,
                     $campaign->title,

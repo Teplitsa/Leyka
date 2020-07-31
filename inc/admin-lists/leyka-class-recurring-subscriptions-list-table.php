@@ -478,7 +478,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
 
         echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
             'UTF-8',
-            apply_filters('leyka_recurring_subscriptions_export_content_charset', 'windows-1251'),
+            apply_filters('leyka_recurring_subscriptions_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
             "sep=;\n".implode(';', apply_filters('leyka_recurring_subscriptions_export_headers', array(
                 'ID', 'Статус подписки', 'Имя донора', 'Email', 'Кампания', 'Дата первого пожертвования', 'Дата следующего пожертвования', 'Всего пожертвований', 'Платёжный оператор', 'Сумма подписки', 'Валюта',
             )))
@@ -491,9 +491,17 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
             $pm = leyka_get_pm_by_id($item['gateway'], true);
             $gateway = leyka_get_gateway_by_id($pm->gateway_id);
 
+            $currency = leyka_get_currency_label('rur');
+            $currency_label_encoded = @iconv( // Sometimes currency sighs can't be encoded, so check for it
+                'UTF-8',
+                apply_filters('leyka_recurring_subscriptions_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
+                $currency
+            );
+            $currency = $currency_label_encoded ? $currency : 'rur';
+
             echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
                 'UTF-8',
-                apply_filters('leyka_recurring_subscriptions_export_content_charset', 'windows-1251'),
+                apply_filters('leyka_recurring_subscriptions_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
                 "\r\n".implode(';', apply_filters('leyka_recurring_subscriptions_export_line', array(
                         $item['id'],
                         empty($item['status']) ? 'неактивна' : 'активна',
@@ -508,8 +516,8 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
                         ),
                         $item['donations_number'],
                         $gateway->label.', '.$pm->label,
-                        empty($item['amount']) || $item['amount'] == 0 ? '' : leyka_amount_format(round($item['amount'], 2)),
-                        leyka_get_currency_label('rur'),
+                        empty($item['amount']) ? '' : leyka_amount_format(round($item['amount'], 2)),
+                        $currency,
                     ), $item)
                 )
             );

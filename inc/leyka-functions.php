@@ -2510,7 +2510,7 @@ function leyka_export_data_prepare($text) {
 }
 
 /** Service function to prepare some object data array for export as a CSV line. */
-function leyka_prepare_data_line_for_export(array $line_data, $object_to_export) {
+function leyka_prepare_data_line_for_export(array $line_data) {
 
     foreach($line_data as &$data) {
         $data = leyka_export_data_prepare($data);
