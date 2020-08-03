@@ -52,7 +52,7 @@ foreach(get_posts($params) as $donation) {
     $donation = new Leyka_Donation($donation);
 
     $gateway = leyka_get_gateway_by_id($donation->gateway_id);
-    if($gateway && $gateway->id === 'sber') { // TODO TMP, until Sber debugging is finished
+    if($gateway) {
 
         $new_recurring_donation = $gateway->do_recurring_donation($donation);
 

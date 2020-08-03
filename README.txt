@@ -5,7 +5,7 @@ Plugin URI: http://leyka.te-st.ru
 Tags: crowdfunding, fundraising, donations, recurring donations, charity, leyka, recurring, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, yandexmoney, yandex.money, яндекс.деньги, chronopay, sms, яндекс.касса, yandex.kassa, миксплат, mixplat, paypal, paymaster, qiwi, киви
 Requires at least: 3.6.1
 Tested up to: 5.4.2
-Stable tag: 3.11
+Stable tag: 3.11.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,9 +13,9 @@ Leyka is a plugin for crowdfunding and donations collection via WordPress websit
 
 == Description ==
 
-Supported payment methods include Visa and MasterCard bank cards payments via **Cloudpayments**, **Yandex.Kassa**, **PayPal**, **Chronopay**, **QIWI Kassa**, **ROBOKASSA** and **RBK Money** systems, mobile and SMS payments via **MIXPLAT**, also **WebMoney**. You can also use a **traditional bank payment orders**.
+Supported payment methods include Visa and MasterCard bank cards payments via **Cloudpayments**, **Yandex.Kassa**, **PayPal**, **Chronopay**, **QIWI Kassa**, **ROBOKASSA** and **RBK Money** systems, mobile and SMS payments via **MIXPLAT**, also **WebMoney**. You can also use a **traditional bank payment orders**.
 
-This plugin developed and supported by [Teplitsa of social technologies](https://te-st.ru/).
+This plugin developed and supported by [Teplitsa of social technologies](https://te-st.ru/).
 
 The plugin’s task is to ease and improve integrations of donations collecting function on websites of NGOs and any social oriented projects.
 
@@ -25,9 +25,9 @@ The plugin’s task is to ease and improve integrations of donations collecting 
 
 The plugin is designed for any website that wants to collect money online – NGOs, informal unions, individuals.
 
-**Official website:** [leyka.te-st.ru](https://leyka.te-st.ru/)
+**Official website:** [leyka.te-st.ru](https://leyka.te-st.ru/)
 
-**Warning:** you will need to sign a contract with some payment systems, like Yandex.Money or RBK, to collect donations through them.
+**Warning:** you will need to sign a contract with some payment systems, like Yandex.Money or RBK, to collect donations through them.
 
 **Core features**
 
@@ -44,7 +44,7 @@ The plugin is designed for any website that wants to collect money online – NG
 - Multiple language support
 - Partially complies with accessibility standards WCAG 2.0
 
-The plugin manual is avaliable at [official website](https://leyka.te-st.ru/instruction/). Intallation and usage are illustrated with [screencasts course](https://te-st.ru/2020/04/07/leyka-online-course/). 
+The plugin manual is avaliable at [official website](https://leyka.te-st.ru/instruction/). Intallation and usage are illustrated with [screencasts course](https://te-st.ru/2020/04/07/leyka-online-course/). 
 
 PHP at least 5.6 is required for plugin to work correctly.
 
@@ -52,11 +52,11 @@ PHP at least 5.6 is required for plugin to work correctly.
 
 We will be very grateful if you will help us to make Leyka better.
 
-- You can add a bugreport or a feature request on [GitHub](https://github.com/Teplitsa/Leyka/issues).
+- You can add a bugreport or a feature request on [GitHub](https://github.com/Teplitsa/Leyka/issues).
 - Send us your pull request to share a code impovement.
 - You can make a new plugin translation for your language or send us a fixes for an existing translation, if needed.
 
-If you have a questions for the plugin work in any aspect, please address our support service on [GitHub](https://github.com/Teplitsa/Leyka/issues/).
+If you have a questions for the plugin work in any aspect, please address our support service on [GitHub](https://github.com/Teplitsa/Leyka/issues/).
 
 == Installation ==
 
@@ -81,11 +81,15 @@ PHP version required: 5.6+
 5. The plugin start page (a console)
 
 == Changelog ==
+= 3.11.1 =
+* Fix: donations & subscriptions export fix.
+* Fix: non-workiing active recurring fix.
+
 = 3.11 =
 + New: plugin internationalization framework added.
 + New: SBerbank Acquiring gateway added.
-~ Now options meta is kept in the separate class.
-~ Now options allocation is managed by the Allocators classes family.
+~ Tweak: now options meta is kept in the separate class.
+~ Tweak: now options allocation is managed by the Allocators classes family.
 * Fix: Star template styling fixes.
 * Fix: now gateways commissions are saved correctly.
 * Fix: multiple static PMs bug fixed.
