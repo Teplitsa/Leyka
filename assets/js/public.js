@@ -147,9 +147,9 @@ function leyka_is_digit_key(e, numpad_allowed) {
     }
 
     if( // Allowed special keys
-        e.keyCode == 46 || e.keyCode == 8 || e.keyCode == 9 || e.keyCode == 13 || // Backspace, delete, tab, enter
-        (e.keyCode == 65 && e.ctrlKey) || // Ctrl+A
-        (e.keyCode == 67 && e.ctrlKey) || // Ctrl+C
+        e.keyCode === 46 || e.keyCode === 8 || e.keyCode === 9 || e.keyCode === 13 || // Backspace, delete, tab, enter
+        (e.keyCode === 65 && e.ctrlKey) || // Ctrl+A
+        (e.keyCode === 67 && e.ctrlKey) || // Ctrl+C
         (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
     ) {
         return true;
@@ -169,9 +169,8 @@ function leyka_is_digit_key(e, numpad_allowed) {
 
 /** @var e JS keyup/keydown event */
 function leyka_is_special_key(e) {
-
-    // Allowed special keys
-    return (
+    return ( // Allowed special keys
+        e.keyCode === 46 || e.keyCode === 8 || e.keyCode === 9 || e.keyCode === 13 || // Backspace, delete, tab, enter
         e.keyCode === 9 || // Tab
         (e.keyCode === 65 && e.ctrlKey) || // Ctrl+A
         (e.keyCode === 67 && e.ctrlKey) || // Ctrl+C

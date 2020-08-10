@@ -186,8 +186,8 @@ function leyka_get_validated_user($user) {
 
     if(is_int($user) || is_string($user)) {
 
-        if(absint($user) > 0) {
-            $user = get_user_by('id', (int)$user);
+        if(absint($user) > 0 && !strstr($user, '@')) {
+            $user = get_user_by('id', absint($user));
         } else {
             $user = get_user_by('email', esc_sql($user));
         }

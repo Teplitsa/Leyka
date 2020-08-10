@@ -1467,14 +1467,13 @@ function leyka_is_digit_key(e, numpad_allowed) {
 
 /** @var e JS keyup/keydown event */
 function leyka_is_special_key(e) {
-
     return ( // Allowed special keys
+        e.keyCode === 46 || e.keyCode === 8 || e.keyCode === 9 || e.keyCode === 13 || // Backspace, delete, tab, enter
         e.keyCode === 9 || // Tab
         (e.keyCode === 65 && e.ctrlKey) || // Ctrl+A
         (e.keyCode === 67 && e.ctrlKey) || // Ctrl+C
         (e.keyCode >= 35 && e.keyCode <= 40) // Home, end, left, right, down, up
     );
-
 }
 
 function leyka_make_password(pass_length) {
@@ -1529,7 +1528,7 @@ function leyka_ui_widget_available(widget = '', object = null) {
 // Campaign add/edit page:
 jQuery(document).ready(function($){
 
-    var $page_type = $('#originalaction'),
+    let $page_type = $('#originalaction'),
         $post_type = $('#post_type');
 
     if( !$page_type.length || $page_type.val() !== 'editpost' || !$post_type.length || $post_type.val() !== 'leyka_campaign' ) {
@@ -1679,11 +1678,11 @@ jQuery(document).ready(function($){
 
                     if(typeof json.status !== 'undefined' && json.status === 'error') {
                         alert('Ошибка!');
-                        return;
-                    }
-                    else {
+                    } else {
+
                     	$img_wrapper.find('.img-value').html('<img src="'+json.img_url+'" />');
                     	$img_wrapper.find('.reset-to-default').show();
+
                     }
 
                     // reloadPreviewFrame(); /** @todo */
@@ -1743,13 +1742,14 @@ jQuery(document).ready(function($){
         $.post(leyka.ajaxurl, ajax_params, null, 'json')
             .done(function(json){
                 if(typeof json.status !== 'undefined' && json.status === 'error') {
+
                     alert('Ошибка!');
-                    $field_wrapper.find('.reset-to-default').show();                    
-                    return;
-                }
-                else {
+                    $field_wrapper.find('.reset-to-default').show();
+
+                } else {
                 	$field_wrapper.find('.img-value').html(leyka.default_image_message);
                 }
+
             })
             .fail(function(){
                 alert('Ошибка!');
@@ -1759,6 +1759,26 @@ jQuery(document).ready(function($){
                 $loading.hide();
             });
     });
+
+    // Dynamic fields values length display in field description:
+    $(':input[maxlength]').keyup(function(e){
+
+        let $field = $(this),
+            $description = $('[data-description-for="'+$field.prop('id')+'"]'),
+            max_value_length = $field.prop('maxlength'),
+            $current_value_length = $description.find('.leyka-field-current-value-length');
+
+        if( !$description.length ) {
+            return;
+        }
+
+        if($current_value_length.text() >= max_value_length && !leyka_is_special_key(e)) {
+            e.preventDefault();
+        } else {
+            $current_value_length.text($field.val().length);
+        }
+
+    }).keyup();
 
     // Donations list data table:
     if(typeof $().DataTable !== 'undefined' && typeof leyka_dt !== 'undefined') {
