@@ -562,15 +562,17 @@ techMessage="'.$tech_message.'"/>');
             }
 
             $response = array(
-                __('Last response operation:', 'leyka') => $response['action'] == 'checkOrder' ?
-                    __('Donation confirmation', 'leyka') : __('Donation approval notice', 'leyka'),
-                __('Gateway invoice ID:', 'leyka') => $response['invoiceId'],
-                __('Full donation amount:', 'leyka') =>
-                    (float)$response['orderSumAmount'].' '.$donation->currency_label,
-                __('Donation amount after gateway commission:', 'leyka') =>
-                    (float)$response['shopSumAmount'].' '.$donation->currency_label,
-                __("Gateway's donor ID:", 'leyka') => $response['customerNumber'],
-                __('Response date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($response['requestDatetime'])),
+                __('Last response operation:', 'leyka') => empty($response['action']) ?
+                    __('Unknown', 'leyka') :
+                    ($response['action'] == 'checkOrder' ? __('Donation confirmation', 'leyka') : __('Donation approval notice', 'leyka')),
+                __('Gateway invoice ID:', 'leyka') => empty($response['invoiceId']) ? '' : $response['invoiceId'],
+                __('Full donation amount:', 'leyka') => empty($response['orderSumAmount']) ?
+                    '' : (float)$response['orderSumAmount'].' '.$donation->currency_label,
+                __('Donation amount after gateway commission:', 'leyka') => empty($response['shopSumAmount']) ?
+                    '' : (float)$response['shopSumAmount'].' '.$donation->currency_label,
+                __('Gateway donor ID:', 'leyka') => empty($response['customerNumber']) ? '' : $response['customerNumber'],
+                __('Response date:', 'leyka') => empty($response['requestDatetime']) ?
+                    '' : date('d.m.Y, H:i:s', strtotime($response['requestDatetime'])),
             );
 
         }
