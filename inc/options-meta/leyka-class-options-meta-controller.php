@@ -207,6 +207,14 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'placeholder' => __('E.g., 4283256127', 'leyka'),
                 'mask' => "'mask': '9{10}'",
             ),
+            'org_erdpou' => array(
+                'type' => 'text',
+                'title' => __('The organization ERDPOU number', 'leyka'),
+                'description' => __('Enter the organization ERDPOU number.', 'leyka'),
+                'required' => true,
+                'placeholder' => __('E.g., 32852561', 'leyka'),
+                'mask' => "'mask': '9{8}'",
+            ),
             'org_bank_account' => array(
                 'type' => 'text',
                 'title' => __('The organization bank account number', 'leyka'),
@@ -237,6 +245,14 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'required' => true,
                 'placeholder' => __('E.g., 30101810270902010595', 'leyka'),
                 'mask' => "'mask': '9{20}'",
+            ),
+            'org_bank_mfo' => array(
+                'type' => 'text',
+                'title' => __('The organization bank MFO number', 'leyka'),
+                'comment' => '',
+                'required' => true,
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '309412'),
+                'mask' => "'mask': '9{6}'",
             ),
         );
     }

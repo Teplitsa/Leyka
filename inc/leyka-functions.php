@@ -928,7 +928,7 @@ function leyka_get_countries_full_info($country_id = null) {
     $countries = apply_filters('leyka_supported_countries_full_info', array(
         'ru' => array('title' => __('Russia', 'leyka'), 'currency' => 'rur',),
 //        'by' => array('title' => __('Belarus Republic', 'leyka'), 'currency' => 'byn'),
-//        'ua' => array('title' => __('Ukraine', 'leyka'), 'currency' => 'uah'),
+        'ua' => array('title' => __('Ukraine', 'leyka'), 'currency' => 'uah'),
     ));
 
     if(empty($country_id)) {
