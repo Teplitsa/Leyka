@@ -19,6 +19,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	    require_once LEYKA_PLUGIN_DIR.'inc/leyka-admin-functions.php';
         require_once LEYKA_PLUGIN_DIR.'inc/settings/leyka-admin-template-tags.php';
         require_once LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php';
+        require_once LEYKA_PLUGIN_DIR.'inc/gutenberg-blocks/test.php';
 
 		add_action('admin_menu', array($this, 'admin_menu_setup'), 9);
 
