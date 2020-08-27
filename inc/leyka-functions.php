@@ -1100,36 +1100,23 @@ function leyka_get_country_currency($country_id = null) {
  */
 function leyka_get_currencies_data($currency_id = null) {
 
-    $currencies = array(
-        'rur' => array(
-            'label' => leyka_options()->opt('currency_rur_label'),
-            'top' => leyka_options()->opt('currency_rur_max_sum'),
-            'bottom' => leyka_options()->opt('currency_rur_min_sum'),
+    $currencies = array();
+
+    foreach(leyka_get_currencies_full_info() as $id => $data) {
+        $currencies[$id] = array(
+            'label' => leyka_options()->opt('currency_'.$id.'_label'),
+            'top' => leyka_options()->opt('currency_'.$id.'_max_sum'),
+            'bottom' => leyka_options()->opt('currency_'.$id.'_min_sum'),
             'amount_settings' => array(
-                'flexible' => leyka_options()->opt('currency_rur_flexible_default_amount'),
-                'fixed' => leyka_options()->opt('currency_rur_fixed_amounts')
+                'flexible' => leyka_options()->opt('currency_'.$id.'_flexible_default_amount'),
+                'fixed' => leyka_options()->opt('currency_'.$id.'_fixed_amounts'),
             ),
-        ),
-        'usd' => array(
-            'label' => leyka_options()->opt('currency_usd_label'),
-            'top' => leyka_options()->opt('currency_usd_max_sum'),
-            'bottom' => leyka_options()->opt('currency_usd_min_sum'),
-            'amount_settings' => array(
-                'flexible' => leyka_options()->opt('currency_usd_flexible_default_amount'),
-                'fixed' => leyka_options()->opt('currency_usd_fixed_amounts')
-            ),
-        ),
-        'eur' => array(
-            'label' => leyka_options()->opt('currency_eur_label'),
-            'top' => leyka_options()->opt('currency_eur_max_sum'),
-            'bottom' => leyka_options()->opt('currency_eur_min_sum'),
-            'amount_settings' => array(
-                'flexible' => leyka_options()->opt('currency_eur_flexible_default_amount'),
-                'fixed' => leyka_options()->opt('currency_eur_fixed_amounts')
-            ),
-        ),
-    );
-    $currencies['rub'] = $currencies['rur'];
+        );
+    }
+
+    if(empty($currencies['rub']) && !empty($currencies['rur'])) {
+        $currencies['rub'] = $currencies['rur'];
+    }
 
     return $currency_id && !empty($currencies[$currency_id]) ? $currencies[$currency_id] : $currencies;
 
