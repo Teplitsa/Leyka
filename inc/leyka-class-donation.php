@@ -204,6 +204,11 @@ class Leyka_Donation_Management {
                 foreach($other_countries_pm_full_ids as $pm_full_id) {
 
                     $pm = leyka_get_pm_by_id($pm_full_id, true);
+
+                    if( !$pm ) {
+                        continue;
+                    }
+
                     if($pm->gateway_id !== $current_gateway_id) {
 
                         $current_gateway_id = $pm->gateway_id;?>
