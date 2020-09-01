@@ -47,7 +47,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
         </div>
         
         <?php if(in_array('recurring', $campaign->donations_types_available)) {?>
-        <div class="section section--description"><?php echo leyka_options()->opt_template('recurring_donation_benefits_text');?></div>
+        <div class="section section--description"><?php echo leyka_options()->opt_template('recurring_donation_benefits_text', 'star');?></div>
         <?php }?>
 
         <div class="section section--amount">
@@ -297,7 +297,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                 <?php }?>
 
                 <div class="donor__submit">
-                    <?php echo apply_filters('leyka_star_template_final_submit', '<input type="submit" disabled="disabled" class="leyka-default-submit" value="'.leyka_options()->opt_template('donation_submit_text').'">');?>
+                    <?php echo apply_filters('leyka_star_template_final_submit', '<input type="submit" disabled="disabled" class="leyka-default-submit" value="'.leyka_options()->opt_template('donation_submit_text', 'star').'">');?>
                 </div>
 
             </div>
