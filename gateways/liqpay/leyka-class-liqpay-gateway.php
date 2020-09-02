@@ -231,12 +231,30 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
             $new_status = 'failed';
             $redirect_url = leyka_get_failure_page_url();
 
-        } else if( !empty($data['action']) && in_array($data['action'], array('subscribe', 'regular')) ) { // Recur. subscription
+        } else if( !empty($data['action']) && in_array($data['action'], array('subscribe', 'regular')) ) { // Recurring
 
             if( in_array($data['status'], array('subscribed', 'sandbox')) ) {
 
-                $new_status = 'funded';
-                $donation->payment_type = 'rebill';
+                if(time() - $donation->date_timestamp >= 60*60*24*3) { // More than 3 days passed, so it's a rebill callback
+
+                    $donation = Leyka_Donation::add_clone(
+                        $donation,
+                        array(
+                            'init_recurring_donation' => $donation->id,
+                        ),
+                        array('recalculate_total_amount' => true,)
+                    );
+
+                    if(is_wp_error($donation)) {
+                        exit(200);
+                    }
+
+                } else { // Recurring subscription callback
+
+                    $new_status = 'funded';
+                    $donation->payment_type = 'rebill';
+
+                }
 
                 if( !empty($data['card_token']) ) {
 
