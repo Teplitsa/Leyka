@@ -42,7 +42,7 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
         $this->_registration_link = '';
 
         $this->_min_commission = 2.1;
-        $this->_receiver_types = array('legal', 'physical');
+        $this->_receiver_types = array('legal', /*'physical'*/);
 
     }
 
