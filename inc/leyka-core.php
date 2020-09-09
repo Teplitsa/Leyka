@@ -1138,7 +1138,9 @@ class Leyka extends Leyka_Singleton {
         ));
 
         if($params['activation_status'] && !in_array($params['activation_status'], array('active', 'inactive', 'activating')) ) {
-            throw new Exception(sprintf(__('Unknown gateways activation status given: %s'), $params['activation_status']));
+            throw new Exception(sprintf(
+                __('Unknown gateways activation status given: %s', 'leyka'), $params['activation_status']
+            ));
         }
 
         $params['country_id'] = $params['country_id'] ? trim($params['country_id']) : null;

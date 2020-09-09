@@ -671,6 +671,15 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
         return empty($this->_countries) && !is_array($this->_countries) ? NULL : $this->_countries;
     }
 
+    public function is_country_supported($country_id = false) {
+
+        $country_id = $country_id ? trim(esc_attr($country_id)) : leyka_options()->opt_safe('receiver_country');
+        $countries = $this->get_countries();
+
+        return $countries && in_array($country_id, $countries);
+
+    }
+
 }
 
 /**
