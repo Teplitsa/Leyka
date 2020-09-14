@@ -314,7 +314,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                                     30 * reset($template_data['amount_variants']),
                                     $template_data['currency_label']
                                 ) :
-                                leyka_options()->opt_template('donation_submit_text'))
+                                leyka_options()->opt_template('donation_submit_text', 'need-help'))
                             .'" data-submit-text-template="'
                             .sprintf(__('Make a monthly donation of #DAILY_ROUBLE_AMOUNT# %s', 'leyka'), $template_data['currency_label'])
                             .'">'

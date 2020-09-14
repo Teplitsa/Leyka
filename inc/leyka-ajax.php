@@ -524,7 +524,7 @@ function leyka_donor_password_reset_request(){
                     $donor->display_name,
                     home_url(),
                     get_bloginfo('name'),
-                    home_url('/donor-account/reset-password/?code='.$pass_reset_key.'&donor='.$_POST['leyka_donor_email'])
+                    home_url('/donor-account/reset-password/?code='.$pass_reset_key.'&donor='.urlencode($_POST['leyka_donor_email']))
                 );
 
                 add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
