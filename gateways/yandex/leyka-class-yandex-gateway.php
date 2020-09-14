@@ -542,7 +542,7 @@ techMessage="'.$tech_message.'"/>');
                     __('Payment method:', 'leyka') => empty($response->payment_method->title) ?
                         (empty($response->payment_method->type) ? __('No') : $response->payment_method->type) :
                         $response->payment_method->title,
-                    __('Is test payment:', 'leyka') => !!$response->test ? __('Yes') : __('No'),
+//                    __('Is test payment:', 'leyka') => !!$response->test ? __('Yes') : __('No'),
                 );
             } else if(is_a($response, 'Exception')) { // Exceptions were thrown
                 $response = array(
