@@ -359,7 +359,13 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <input type="text" name="payment_title" id="payment_title" class="leyka-field-wide" value="<?php echo $payment_title;?>" placeholder="<?php _e("If the field is empty, the campaign title will be used", 'leyka');?>" maxlength="128">
 
-            <div class="campaign-field-description" data-description-for="payment_title"><?php echo sprintf(__('The value should be max. 128 characters length (currently: <span class="leyka-field-current-value-length">%s</span> / 128)', 'leyka'), mb_strlen($payment_title));?></div>
+            <div class="campaign-field-description" data-description-for="payment_title">
+
+                <?php $description_max_length = 128 - mb_strlen(_x('[RS]', 'For "recurring subscription"', 'leyka')) - 1;
+
+                echo sprintf(__('The value should be max. %d characters length (currently: <span class="leyka-field-current-value-length">%d</span> / %d)', 'leyka'), $description_max_length, mb_strlen($payment_title), $description_max_length);?>
+
+            </div>
 
         </fieldset>
 
