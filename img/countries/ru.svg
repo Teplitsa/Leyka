@@ -1,14 +1,12 @@
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0)">
-<path d="M12 24C18.6274 24 24 18.6274 24 12C24 5.37258 18.6274 0 12 0C5.37258 0 0 5.37258 0 12C0 18.6274 5.37258 24 12 24Z" fill="white"/>
-<path d="M23.2536 16.174C23.736 14.874 24 13.4679 24 12.0001C24 10.5322 23.736 9.12616 23.2536 7.82617H0.746391C0.264047 9.12616 0 10.5322 0 12.0001C0 13.4679 0.264047 14.874 0.746391 16.174L12 17.2174L23.2536 16.174Z" fill="#0052B4"/>
-<path d="M11.9997 23.9999C17.1593 23.9999 21.5578 20.7434 23.2533 16.1738H0.746094C2.44161 20.7434 6.84013 23.9999 11.9997 23.9999Z" fill="#D80027"/>
-<circle cx="12" cy="12" r="10.25" stroke="white" stroke-width="2"/>
-<circle cx="12" cy="12" r="9.5" stroke="white" stroke-width="2"/>
-</g>
-<rect x="1" y="1" width="22" height="22" rx="11" stroke="#006799" stroke-width="2"/>
-<defs>
-<clipPath id="clip0">
-</clipPath>
-</defs>
+    <mask id="mask0" mask-type="alpha" maskUnits="userSpaceOnUse" x="1" y="1" width="22" height="22">
+        <circle cx="12" cy="12" r="10.5" fill="#C4C4C4"/>
+    </mask>
+    <g mask="url(#mask0)">
+        <rect y="2" width="24" height="6" fill="white"/>
+        <rect y="8" width="24" height="8" fill="#0052B4"/>
+        <rect y="16" width="24" height="6" fill="#D80027"/>
+    </g>
+    <circle cx="12" cy="12" r="9.5" stroke="white" stroke-width="2"/>
+    <rect x="1" y="1" width="22" height="22" rx="11" stroke="#006799" stroke-width="2"/>
 </svg>

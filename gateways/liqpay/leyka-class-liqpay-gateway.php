@@ -499,7 +499,7 @@ class Leyka_Liqpay_Privat24 extends Leyka_Payment_Method {
         $this->_label = __('Liqpay privat24 payment', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'gateways/liqpay/icons/privat_logo_full.svg',
+            LEYKA_PLUGIN_BASE_URL.'gateways/liqpay/icons/privat_logo_short.svg',
         ));
 
         $this->_supported_currencies = array('rur', 'uah', 'usd', 'eur',);
