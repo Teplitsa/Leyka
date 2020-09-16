@@ -1,10 +1,49 @@
 <?php if( !defined('WPINC') ) die;
 
-class Leyka_Options_Meta_Controller extends Leyka_Singleton {
+abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
 
     protected static $_instance;
 
     protected $_options_meta = array();
+
+    /** Can't make instance of the root/factory class, so overload the get_instance() */
+    public static function get_instance(array $params = array()) {
+        return self::get_controller();
+    }
+
+    /**
+     * @return Leyka_Options_Meta_Controller
+     * @throws Exception
+     */
+    public static function get_controller() {
+
+        $country_id = get_option('leyka_receiver_country');
+        $country_id = $country_id ? $country_id : 'ru'; // Default country
+
+        // Specific Options Meta Controller class:
+        $file_path = LEYKA_PLUGIN_DIR.'inc/options-meta/leyka-class-'.$country_id.'-options-meta-controller.php';
+
+        if(file_exists($file_path)) {
+            require_once($file_path);
+        } else {
+            throw new Exception(
+                sprintf(
+                    __("Options Meta Controllers Factory error: Can't find Controller script by given country ID (%s, %s)"),
+                    $country_id, $file_path
+                ), 600
+            );
+        }
+
+        $class_name = 'Leyka_'.mb_ucfirst($country_id).'_Options_Meta_Controller';
+        if(class_exists($class_name)) {
+            return new $class_name();
+        } else {
+            throw new Exception(
+                sprintf(__('Options Meta Controllers Factory error: wrong allocator class given (%s)'), $class_name), 601
+            );
+        }
+
+    }
 
     /**
      * Get option group metadata by group ID (the options prefixes or some keywords most of the time).
@@ -43,6 +82,7 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
             case 'terms': $this->_options_meta = $this->_get_meta_terms(); break;
             case 'admin': $this->_options_meta = $this->_get_meta_admin(); break;
             default:
+                $this->_options_meta = $this->_get_unknown_group_options_meta($options_group);
         }
 
         $this->_options_meta = apply_filters("leyka_{$options_group}_options_meta", $this->_options_meta);
@@ -134,7 +174,8 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
         );
     }
 
-    protected function _get_meta_org() { // Keywords: org_
+    // Default implementation - common NGO org options fields:
+    protected function _get_meta_org() {
         return array(
             'org_full_name' => array(
                 'type' => 'text',
@@ -183,37 +224,12 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'required' => true,
                 'placeholder' => __('E.g., Malrose str., 4, Washington, DC, USA', 'leyka'),
             ),
-            'org_state_reg_number' => array(
+            'org_bank_name' => array(
                 'type' => 'text',
-                'title' => __('The organization state registration number', 'leyka'),
-                'description' => __('Enter the organization state registration number.', 'leyka'),
+                'title' => __('The organization bank name', 'leyka'),
+                'description' => __('Enter a full name for the organization bank.', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., 1023400056789', 'leyka'),
-                'mask' => "'mask': '9{13}'",
-            ),
-            'org_kpp' => array(
-                'type' => 'text',
-                'title' => __('The organization statement of the account number', 'leyka'),
-                'description' => __("Enter the organization statement of the account number.", 'leyka'),
-                'required' => true,
-                'placeholder' => __('E.g., 780302015', 'leyka'),
-                'mask' => "'mask': '9{9}'",
-            ),
-            'org_inn' => array(
-                'type' => 'text',
-                'title' => __('The organization taxpayer individual number', 'leyka'),
-                'description' => __('Enter the organization individual number of a taxpayer.', 'leyka'),
-                'required' => true,
-                'placeholder' => __('E.g., 4283256127', 'leyka'),
-                'mask' => "'mask': '9{10}'",
-            ),
-            'org_erdpou' => array(
-                'type' => 'text',
-                'title' => __('The organization ERDPOU number', 'leyka'),
-                'description' => __('Enter the organization ERDPOU number.', 'leyka'),
-                'required' => true,
-                'placeholder' => __('E.g., 32852561', 'leyka'),
-                'mask' => "'mask': '9{8}'",
+                'placeholder' => __('E.g., First Columbia Credit Bank', 'leyka'),
             ),
             'org_bank_account' => array(
                 'type' => 'text',
@@ -222,37 +238,6 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'required' => true,
                 'placeholder' => __('E.g., 40123840529627089012', 'leyka'),
                 'mask' => "'mask': '9{20}'",
-            ),
-            'org_bank_name' => array(
-                'type' => 'text',
-                'title' => __('The organization bank name', 'leyka'),
-                'description' => __('Enter a full name for the organization bank.', 'leyka'),
-                'required' => true,
-                'placeholder' => __('E.g., First Columbia Credit Bank', 'leyka'),
-            ),
-            'org_bank_bic' => array(
-                'type' => 'text',
-                'title' => __('The organization bank BIC number', 'leyka'),
-                'description' => __("Enter a BIC of the organization bank.", 'leyka'),
-                'required' => true,
-                'placeholder' => __('E.g., 044180293', 'leyka'),
-                'mask' => "'mask': '9{9}'",
-            ),
-            'org_bank_corr_account' => array(
-                'type' => 'text',
-                'title' => __('The organization bank correspondent account number', 'leyka'),
-                'description' => __('Enter a correspondent account number of the organization.', 'leyka'),
-                'required' => true,
-                'placeholder' => __('E.g., 30101810270902010595', 'leyka'),
-                'mask' => "'mask': '9{20}'",
-            ),
-            'org_bank_mfo' => array(
-                'type' => 'text',
-                'title' => __('The organization bank MFO number', 'leyka'),
-                'comment' => '',
-                'required' => true,
-                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '309412'),
-                'mask' => "'mask': '9{6}'",
             ),
         );
     }
@@ -1133,5 +1118,20 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
             ),
         );
     }
+
+    // The default implementation to get some country-specific options group:
+    protected function _get_unknown_group_options_meta($options_group) {
+        return array();
+    }
+
+    /** @todo */
+//    public function get_terms_of_service_placeholders() {
+//        return array(
+//            '#LEGAL_NAME#' => array(
+//                'title' => __('Org legal name', 'leyka'),
+//                'value' => leyka_options()->opt('org_full_name'),
+//            ),
+//        );
+//    }
 
 }
