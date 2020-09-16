@@ -8,7 +8,13 @@ $is_separate_sections_forms = $this->is_separate_forms_stage($current_stage);?>
 
 <div class="wrap leyka-admin leyka-settings-page">
 
-    <h1><?php _e('Leyka settings', 'leyka');?></h1>
+    <h1 class="with-country">
+
+        <a href="<?php echo admin_url('admin.php?page=leyka_settings&stage=beneficiary#receiver_country');?>" title="tst"><img src="<?php echo LEYKA_PLUGIN_BASE_URL.'img/countries/'.leyka_options()->opt_safe('receiver_country').'.svg';?>" alt="" class="country-flag-icon"></a>
+
+        <?php _e('Leyka settings', 'leyka');?>
+
+    </h1>
 
     <h2 class="nav-tab-wrapper"><?php echo $this->settings_tabs_menu();?></h2>
 
