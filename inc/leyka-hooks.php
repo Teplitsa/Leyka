@@ -16,6 +16,8 @@ function leyka_terms_of_service_text($text) {
             '#BANK_NAME#',
             '#BANK_BIC#',
             '#BANK_CORR_ACCOUNT#',
+            '#UA_ERDPOU#',
+            '#UA_BANK_MFO#',
         ),
         array(
             leyka_options()->opt('org_full_name'),
@@ -29,6 +31,8 @@ function leyka_terms_of_service_text($text) {
             leyka_options()->opt('org_bank_name'),
             leyka_options()->opt('org_bank_bic'),
             leyka_options()->opt('org_bank_corr_account'),
+            leyka_options()->opt('org_erdpou'),
+            leyka_options()->opt('org_bank_mfo'),
         ),
         $text
     ));
@@ -49,6 +53,8 @@ function leyka_terms_of_pd_usage_text($text) {
             '#SITE_URL#',
             '#PD_TERMS_PAGE_URL#',
             '#ADMIN_EMAIL#',
+            '#UA_ERDPOU#',
+            '#UA_BANK_MFO#',
         ),
         array(
             leyka_options()->opt('org_full_name'),
@@ -56,6 +62,8 @@ function leyka_terms_of_pd_usage_text($text) {
             home_url(),
             leyka_get_pd_terms_page_url(),
             get_option('admin_email'),
+            leyka_options()->opt('org_erdpou'),
+            leyka_options()->opt('org_bank_mfo'),
         ),
         $text
     ));

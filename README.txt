@@ -4,7 +4,7 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: crowdfunding, fundraising, donations, recurring donations, charity, leyka, recurring, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, yandexmoney, yandex.money, яндекс.деньги, chronopay, sms, яндекс.касса, yandex.kassa, миксплат, mixplat, paypal, paymaster, qiwi, киви
 Requires at least: 3.6.1
-Tested up to: 5.4.2
+Tested up to: 5.5.1
 Stable tag: 3.11.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -81,6 +81,20 @@ PHP version required: 5.6+
 5. The plugin start page (a console)
 
 == Changelog ==
+= 3.12 =
+* New: internalization code framework added.
+* New: UA Liqpay gateway added.
+* New: now campaigns settings have a character counter for the payment title setting.
+* New: Star template displays PM icons when only one PM available.
+* Fix: CP recurring cancelling callback handling fixed.
+* Fix: now recurring subscription cancelling hook for CP gateway is triggered at all times.
+* Fix: the "notify_tech_support_on_failed_donations" error fixed.
+* Fix: Yandex.Kassa get_gateway_response_formatted() method is more error-proof now.
+* Fix: Star template controller errors fixed for cases when non-RU l10n is used.
+* Fix: small errors in Star & Heed Help templates fixed.
+* Removed: the redundant test payment marker removed for Yandex.Kassa gateeway donations.
+* Removed: phys. persons support removed for the Quittances & PayPal gateways.
+
 = 3.11.1 =
 * Fix: donations & subscriptions export fix.
 * Fix: non-workiing active recurring fix.

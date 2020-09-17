@@ -300,6 +300,8 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                     <?php echo apply_filters('leyka_star_template_final_submit', '<input type="submit" disabled="disabled" class="leyka-default-submit" value="'.leyka_options()->opt_template('donation_submit_text', 'star').'">');?>
                 </div>
 
+                <div class="single-pm-icon"></div>
+
             </div>
                 
         </div>

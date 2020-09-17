@@ -174,7 +174,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                         </label>
                         <div class="leyka-star-field-error-frame">
                             <span class="donor__textfield-error leyka_donor_email-error">
-                                <?php echo 'Укажите, пожалуйста, корректный адрес электронной почты'; //_e('Please, enter a valid email', 'leyka');?>
+                                <?php _e('Please, enter a valid email', 'leyka');?>
                             </span>
                         </div>
                     </div>
@@ -186,7 +186,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                         </label>
                         <div class="leyka-star-field-error-frame">
                             <span class="donor__textfield-error leyka_donor_name-error">
-                                <?php echo 'Укажите, пожалуйста, ваше имя'; //_e('Please, enter your name', 'leyka');?>
+                                <?php _e('Please, enter your name', 'leyka');?>
                             </span>
                         </div>
                     </div>
