@@ -818,7 +818,7 @@ function leyka_scale_compact($campaign) {
         return;
     }
 
-    $curr_label = leyka_get_currency_label('rur');
+    $curr_label = leyka_get_currency_label();
 
     $percentage = round(($campaign->total_funded/$target)*100);
 	if($percentage > 100) {
@@ -852,8 +852,8 @@ function leyka_scale_ultra($campaign) {
     }
 
     $target = (float)$campaign->target;
-    $curr_label = leyka_get_currency_label('rur');
-   
+    $curr_label = leyka_get_currency_label();
+
     if($target == 0) {
         return;
     }
@@ -887,7 +887,7 @@ function leyka_fake_scale_ultra($campaign) {
         $campaign = new Leyka_Campaign($campaign);
     }
 
-    $curr_label = leyka_get_currency_label('rur');
+    $curr_label = leyka_get_currency_label();
     $collected_f = number_format($campaign->total_funded, ($campaign->total_funded - round($campaign->total_funded) > 0.0 ? 2 : 0), '.', ' ');?>
 
 <div class="leyka-scale-ultra-fake">
