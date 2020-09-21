@@ -5,6 +5,8 @@
 function leyka_terms_of_service_text($text) {
     return wpautop(str_replace(
         array(
+            '#SITE_URL#',
+            '#ADMIN_EMAIL#',
             '#LEGAL_NAME#',
             '#LEGAL_FACE#',
             '#LEGAL_FACE_POSITION#',
@@ -20,6 +22,8 @@ function leyka_terms_of_service_text($text) {
             '#UA_BANK_MFO#',
         ),
         array(
+            home_url(),
+            get_option('admin_email'),
             leyka_options()->opt('org_full_name'),
             leyka_options()->opt('org_face_fio_ip'),
             leyka_options()->opt('org_face_position'),
@@ -48,6 +52,8 @@ add_filter('the_content', 'leyka_service_terms_page_text');
 function leyka_terms_of_pd_usage_text($text) {
     return wpautop(str_replace(
         array(
+            '#SITE_URL#',
+            '#ADMIN_EMAIL#',
             '#LEGAL_NAME#',
             '#LEGAL_ADDRESS#',
             '#SITE_URL#',
@@ -57,6 +63,8 @@ function leyka_terms_of_pd_usage_text($text) {
             '#UA_BANK_MFO#',
         ),
         array(
+            home_url(),
+            get_option('admin_email'),
             leyka_options()->opt('org_full_name'),
             leyka_options()->opt('org_address'),
             home_url(),

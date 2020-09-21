@@ -288,32 +288,6 @@ function leyka_get_pm_full_ids_used() {
 
 }
 
-///**
-// * A callback for the default gateway select field.
-// * It's not in use explicitly - the PM list is always set up programmatically.
-// * @todo Check if we could remove it completely.
-// *
-// * @param $gateway_id string|false
-// * @return array
-// */
-//function leyka_get_gateways_pm_list($gateway_id = false) {
-//
-//    $options = array();
-//    foreach(leyka_get_pm_list(null, false, false) as $pm) {
-//
-//        if($gateway_id && $pm->gateway_id !== $gateway_id) {
-//            continue;
-//        }
-//
-//        $gateway_title = leyka_get_gateway_by_id($pm->gateway_id)->title;
-//        $options[$pm->full_id] = $pm->label_backend.($gateway_title == $pm->label_backend ? '' : ' ('.$gateway_title.')');
-//
-//    }
-//
-//    return $options;
-//
-//}
-
 function leyka_get_pd_usage_info_links() {
     return __('<a href="//te-st.ru/reports/personal-data-perm/" target="_blank" rel="noopener noreferrer">the Teplitsa article</a>.', 'leyka');
 }
@@ -2234,6 +2208,7 @@ if( !function_exists('leyka_localize_rich_html_text_tags') ) {
                     '#BANK_BIC#',
                     '#BANK_CORR_ACCOUNT#',
                     '#SITE_NAME#',
+                    '#SITE_URL#',
                     '#ORG_NAME#',
                 ),
                 array(
@@ -2249,6 +2224,7 @@ if( !function_exists('leyka_localize_rich_html_text_tags') ) {
                     $is_legal ? leyka_options()->opt('org_bank_bic') : leyka_options()->opt('person_bank_bic'),
                     $is_legal ? leyka_options()->opt('org_bank_corr_account') : leyka_options()->opt('person_bank_corr_account'),
                     get_bloginfo('name'),
+                    home_url(),
                     $is_legal ? leyka_options()->opt('org_full_name') : leyka_options()->opt('person_full_name'),
                 ),
             ),

@@ -383,6 +383,7 @@ class Leyka_Donation_Management {
         $email_placeholders = array(
             '#SITE_NAME#',
             '#SITE_EMAIL#',
+            '#SITE_URL#',
             '#ORG_NAME#',
             '#DONATION_ID#',
             '#DONATION_TYPE#',
@@ -402,6 +403,7 @@ class Leyka_Donation_Management {
         $email_placeholder_values = array(
             get_bloginfo('name'),
             get_bloginfo('admin_email'),
+            home_url(),
             leyka_options()->opt('org_full_name'),
             $donation->id,
             leyka_get_payment_type_label($donation->type),
@@ -508,6 +510,7 @@ class Leyka_Donation_Management {
         $email_placeholders = array(
             '#SITE_NAME#',
             '#SITE_EMAIL#',
+            '#SITE_URL#',
             '#SITE_TECH_SUPPORT_EMAIL#',
             '#ORG_NAME#',
             '#DONATION_ID#',
@@ -528,6 +531,7 @@ class Leyka_Donation_Management {
         $email_placeholder_values = array(
             get_bloginfo('name'),
             get_bloginfo('admin_email'),
+            home_url(),
             leyka_options()->opt('tech_support_email'),
             leyka_options()->opt('org_full_name'),
             $donation->id,
@@ -657,6 +661,7 @@ class Leyka_Donation_Management {
                 wpautop(str_replace(
                     array(
                         '#SITE_NAME#',
+                        '#SITE_URL#',
                         '#ORG_NAME#',
                         '#DONATION_ID#',
                         '#DONATION_TYPE#',
@@ -673,6 +678,7 @@ class Leyka_Donation_Management {
                     ),
                     array(
                         get_bloginfo('name'),
+                        home_url(),
                         leyka_options()->opt('org_full_name'),
                         $donation->id,
                         leyka_get_payment_type_label($donation->type),
@@ -740,6 +746,7 @@ class Leyka_Donation_Management {
             wpautop(str_replace(
                 array(
                     '#SITE_NAME#',
+                    '#SITE_URL#',
                     '#ORG_NAME#',
                     '#DONATION_ID#',
                     '#DONATION_TYPE#',
@@ -756,6 +763,7 @@ class Leyka_Donation_Management {
                 ),
                 array(
                     get_bloginfo('name'),
+                    home_url(),
                     leyka_options()->opt('org_full_name'),
                     $donation->id,
                     leyka_get_payment_type_label($donation->type),

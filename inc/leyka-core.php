@@ -1899,6 +1899,7 @@ class Leyka extends Leyka_Singleton {
         $email_placeholders = array(
             '#SITE_NAME#',
             '#SITE_EMAIL#',
+            '#SITE_URL#',
             '#ORG_NAME#',
             '#DONATION_ID#',
             '#DONATION_TYPE#',
@@ -1917,6 +1918,7 @@ class Leyka extends Leyka_Singleton {
         $email_placeholder_values = array(
             get_bloginfo('name'),
             get_bloginfo('admin_email'),
+            home_url(),
             leyka()->opt('org_full_name'),
             $donation->id,
             leyka_get_payment_type_label($donation->type),
