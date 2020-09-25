@@ -27,9 +27,6 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
         $this->_may_support_recurring = true;
         $this->_countries = array('ua',);
 
-        $this->default_currency = 'uah'; /** @todo Refactor to use the option value */
-        $this->currency_label = 'UAH'; /** @todo Refactor to use the option value */
-
     }
 
     protected function _set_options_defaults() {
