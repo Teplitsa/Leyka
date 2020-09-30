@@ -39,7 +39,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
             $this->_id.'_store_id' => array(
                 'type' => 'text',
                 'title' => __('Store ID', 'leyka'),
-                'comment' => sprintf(__('Please, enter your %s %s here. It can be found in your contract with the gateway or (for most gateways) by asking your gateway connection manager for it.', 'leyka'), __('Store ID', 'leyka')),
+                'comment' => sprintf(__('Please, enter your %s here. It can be found in your contract with the gateway or (for most gateways) by asking your gateway connection manager for it.', 'leyka'), __('Store ID', 'leyka')),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '123456789'),
             ),
