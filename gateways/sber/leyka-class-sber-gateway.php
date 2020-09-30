@@ -239,8 +239,6 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
             case 'response':
             case 'notify':
 
-                delete_transient('leyka_tmp_callback');
-
                 $donation = NULL;
                 if( !empty($_REQUEST['orderNumber']) ) {
                     $donation = new Leyka_Donation(absint($_REQUEST['orderNumber']));
@@ -332,8 +330,6 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
                             '' : esc_sql($result['bindingInfo']['clientId']);
 
                     }
-
-                    set_transient('leyka_tmp_2', array('sber_order_id' => $donation->sber_order_id, 'extended_status' => $result));
 
                 }
 

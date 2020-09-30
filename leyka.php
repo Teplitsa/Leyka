@@ -163,3 +163,7 @@ register_activation_hook(__FILE__, array('Leyka', 'activate')); // Activation
 register_deactivation_hook(__FILE__, array('Leyka', 'deactivate')); // Deactivate
 
 leyka(); // All systems go
+
+//if(isset($_GET['tst'])) {
+//    echo '<pre>Callback: '.print_r(get_transient('leyka_tmp'), 1).'</pre>';
+//}

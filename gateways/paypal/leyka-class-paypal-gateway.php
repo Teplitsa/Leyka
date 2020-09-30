@@ -1005,8 +1005,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     $headers = array_change_key_case(getallheaders(), CASE_UPPER);
                     $body = file_get_contents('php://input');
 
-//                    set_transient('leyka_tmp_dbg', array('headers' => $headers, 'body' => $body,));
-
                     $signature_verification = new \PayPal\Api\VerifyWebhookSignature(array(
                         'authAlgo' => empty($headers['PAYPAL-AUTH-ALGO']) ? '' : $headers['PAYPAL-AUTH-ALGO'],
                         'transmissionId' => empty($headers['PAYPAL-TRANSMISSION-ID']) ? '' : $headers['PAYPAL-TRANSMISSION-ID'],
@@ -1026,7 +1024,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 }
 
                 if($output->getVerificationStatus() !== 'SUCCESS') {
-//                    set_transient('leyka_tmp_dbg', array('verification status IS NOT success :(' => $output->getVerificationStatus(),));
                     /** @todo Log the error somehow... */ exit(3);
                 }
 
