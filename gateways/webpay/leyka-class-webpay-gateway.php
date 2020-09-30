@@ -153,6 +153,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
 //        }
 
 //        $donation->status = 'refunded';
+
     }
 
     public function get_gateway_response_formatted(Leyka_Donation $donation) {
@@ -239,11 +240,11 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
 //            case 'recurrent_id':
 //            case 'invoice_id':
 //            case 'payment_id':
-//            case 'yandex_recurrent_id':
-//            case 'yandex_recurring_id':
-//            case 'yandex_invoice_id':
-//            case 'yandex_payment_id':
-//                return get_post_meta($donation->id, '_yandex_invoice_id', true);
+//            case 'webpay_recurrent_id':
+//            case 'webpay_recurring_id':
+//            case 'webpay_invoice_id':
+//            case 'webpay_payment_id':
+//                return get_post_meta($donation->id, '_webpay_invoice_id', true);
             default: return $value;
         }
     }
@@ -254,28 +255,28 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
 //            case 'recurrent_id':
 //            case 'invoice_id':
 //            case 'payment_id':
-//            case 'yandex_recurrent_id':
-//            case 'yandex_recurring_id':
-//            case 'yandex_invoice_id':
-//            case 'yandex_payment_id':
-//                return update_post_meta($donation->id, '_yandex_invoice_id', $value);
+//            case 'webpay_recurrent_id':
+//            case 'webpay_recurring_id':
+//            case 'webpay_invoice_id':
+//            case 'webpay_payment_id':
+//                return update_post_meta($donation->id, '_webpay_invoice_id', $value);
             default: return false;
         }
     }
 
 //    public function save_donation_specific_data(Leyka_Donation $donation) {
 //
-//        if(isset($_POST['yandex-recurring-id']) && $donation->recurring_id != $_POST['yandex-recurring-id']) {
-//            $donation->recurring_id = $_POST['yandex-recurring-id'];
+//        if(isset($_POST['webpay-recurring-id']) && $donation->recurring_id != $_POST['webpay-recurring-id']) {
+//            $donation->recurring_id = $_POST['webpay-recurring-id'];
 //        }
 //
-//        $donation->recurring_is_active = !empty($_POST['yandex-recurring-is-active']);
+//        $donation->recurring_is_active = !empty($_POST['webpay-recurring-is-active']);
 //
 //    }
 
 //    public function add_donation_specific_data($donation_id, array $donation_params) {
 //        if( !empty($donation_params['recurring_id']) ) {
-//            update_post_meta($donation_id, '_yandex_invoice_id', $donation_params['recurring_id']);
+//            update_post_meta($donation_id, '_webpay_invoice_id', $donation_params['recurring_id']);
 //        }
 //    }
 

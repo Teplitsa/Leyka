@@ -18,7 +18,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
     public static function get_controller() {
 
         $country_id = get_option('leyka_receiver_country');
-        $country_id = $country_id ? $country_id : 'ru'; // Default country
+        $country_id = $country_id && mb_strlen($country_id) > 1 ? $country_id : 'ru'; // Default country
 
         // Specific Options Meta Controller class:
         $file_path = LEYKA_PLUGIN_DIR.'inc/options-meta/leyka-class-'.$country_id.'-options-meta-controller.php';
