@@ -560,7 +560,7 @@ class Leyka_Sber_Card extends Leyka_Payment_Method {
                 'type' => 'checkbox',
                 'default' => false,
                 'title' => __('Monthly recurring subscriptions are available', 'leyka'),
-                'comment' => __('Check if Sberbank Acquiring allows you to create recurrent subscriptions to do regular automatic payments. WARNING: you should enable the Sberbank auto-payments feature for test mode and for production mode separately.', 'leyka'),
+                'comment' => __('Check if the gateway allows you to create recurrent subscriptions to do regular automatic payments.', 'leyka').' '.__('WARNING: you should enable the Sberbank auto-payments feature for test mode and for production mode separately.', 'leyka'),
                 'short_format' => true,
             ),
         );

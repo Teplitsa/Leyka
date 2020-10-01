@@ -968,7 +968,7 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
                 'type' => 'checkbox',
                 'default' => false,
                 'title' => __('Monthly recurring subscriptions are available', 'leyka'),
-                'comment' => __('Check if Yandex.Kassa allows you to create recurrent subscriptions to do regular automatic payments.', 'leyka'),
+                'comment' => __('Check if the gateway allows you to create recurrent subscriptions to do regular automatic payments.', 'leyka'),
                 'short_format' => true,
             ),
             $this->full_id.'_certificate_path' => array(
