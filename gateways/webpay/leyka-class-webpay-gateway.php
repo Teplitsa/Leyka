@@ -200,6 +200,8 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
 
     public function _handle_service_calls($call_type = '') {
 
+        set_transient('leyka_tmp', $_POST);
+
         if( !$_POST || empty($_POST['site_order_id']) ) {
             $this->_handle_callback_error(__('No donation ID given', 'leyka'));
         }
@@ -242,12 +244,19 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
                 $this->_handle_callback_error(__('Cannot check callback signature - no signature given', 'leyka'), $donation);
             }
 
-            if($donation->is_init_recurring_donation) {
+            if($donation->is_init_recurring_donation) { // Recurring subscription
                 $signature_calculated = md5(
                     $_POST['batch_timestamp'].$_POST['currency_id'].$_POST['amount'].$_POST['payment_method'].$_POST['order_id']
                     .$_POST['site_order_id'].$_POST['transaction_id'].$_POST['payment_type'].$_POST['rrn']
                     .$_POST['card'].$_POST['customer_id'].$_POST['operation_type'].$_POST['recurring_token']
                     .$_POST['offer_exp_date'].leyka_options()->opt($this->_id.'_secret_key')
+                );
+            } else if($donation->type === 'rebill') { // Non-init recurring donation
+                $signature_calculated = md5(
+                    $_POST['batch_timestamp'].$_POST['currency_id'].$_POST['amount'].$_POST['payment_method'].$_POST['order_id']
+                    .$_POST['site_order_id'].$_POST['transaction_id'].$_POST['payment_type'].$_POST['rrn']
+                    .$_POST['card'].$_POST['customer_id'].$_POST['operation_type'].$_POST['recurring_token']
+                    .leyka_options()->opt($this->_id.'_secret_key')
                 );
             } else { // Single donation
                 $signature_calculated = md5(
@@ -262,8 +271,6 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
             }
 
         }
-
-//        set_transient('leyka_tmp', $_POST);
 
         $donation_status = $this->_get_donation_status(absint($_POST['payment_type']));
         $donation->status = $donation_status;
@@ -289,20 +296,10 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
             $response = array();
         }
 
-//        $signature_calculated = md5(
-//            $response['batch_timestamp'].$response['currency_id'].$response['amount'].$response['payment_method'].$response['order_id']
-//            .$response['site_order_id'].$response['transaction_id'].$response['payment_type'].$response['rrn']
-//            .$response['card'].$response['customer_id'].$response['operation_type'].$response['recurring_token'].$response['offer_exp_date']
-//            .leyka_options()->opt($this->_id.'_secret_key')
-//        );
-//
-//        echo '<pre>'.print_r($donation->gateway_response, 1).'</pre>';
-//        echo '<pre>Signature calculated: '.print_r($signature_calculated, 1).'</pre>';
-
         $response = array(
             __('Callback received at:', 'leyka') => empty($response['batch_timestamp']) ?
                 '-' : date_i18n(get_option('date_format').' '.get_option('time_format'), $response['batch_timestamp']),
-            __('Amount:', 'leyka') => empty($response['']) ? '-' : $response['amount'],
+            __('Amount:', 'leyka') => empty($response['amount']) ? '-' : $response['amount'],
             __('Currency ID:', 'leyka') => empty($response['currency_id']) ? '-' : $response['currency_id'],
             __('Payment method:', 'leyka') => empty($response['payment_method']) ? '-' : $response['payment_method'],
             __('Gateway order ID:', 'leyka') => empty($response['order_id']) ? '-' : $response['order_id'],
@@ -527,8 +524,15 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
 
     public function do_recurring_donation(Leyka_Donation $init_recurring_donation) {
 
-        if( !$init_recurring_donation->recurring_id) {
+        if( !$init_recurring_donation->webpay_customer_id) {
             return false;
+        }
+
+        if( $init_recurring_donation->webpay_card_expiring_date < strtotime(date('Y-m-d')) ) { // The Donor's card is expired
+
+            $init_recurring_donation->recurring_is_active = false;
+            return false;
+
         }
 
         $new_recurring_donation = Leyka_Donation::add_clone(
@@ -537,7 +541,13 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
                 'status' => 'submitted',
                 'payment_type' => 'rebill',
                 'init_recurring_donation' => $init_recurring_donation->id,
-                'yandex_recurring_id' => $init_recurring_donation->recurring_id,
+                'webpay_order_id' => $init_recurring_donation->webpay_order_id,
+                'webpay_transaction_id' => $init_recurring_donation->webpay_transaction_id,
+                'webpay_rrn' => $init_recurring_donation->webpay_rrn,
+                'webpay_approval' => $init_recurring_donation->webpay_approval,
+                'webpay_customer_id' => $init_recurring_donation->webpay_customer_id,
+                'webpay_recurring_token' => $init_recurring_donation->webpay_recurring_token,
+                'webpay_card_expiring_date' => $init_recurring_donation->webpay_card_expiring_date,
             ),
             array('recalculate_total_amount' => true,)
         );
@@ -546,7 +556,72 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
             return false;
         }
 
-        // ...
+        $seed = time();
+        $is_test_mode = leyka_options()->opt('webpay_test_mode') ? '1' : '0';
+        $currency_id = mb_strtoupper(leyka_options()->opt('currency_main'));
+
+        $signature = sha1(
+            $seed.leyka_options()->opt($this->_id.'_store_id').$init_recurring_donation->webpay_customer_id
+            .$new_recurring_donation->id.$is_test_mode.$currency_id.$new_recurring_donation->amount.'recurring_pay'
+            .$init_recurring_donation->webpay_recurring_token.leyka_options()->opt($this->_id.'_secret_key')
+        );
+
+        $data = array(
+            '*scart' => '',
+            'wsb_storeid' => leyka_options()->opt($this->_id.'_store_id'),
+            'wsb_store' => __('Leyka', 'leyka').' - '.(
+                leyka_options()->opt('webpay_test_mode') ?
+                    _x('test', 'like in "test donation"', 'leyka').' '.mb_strtolower(__('Recurring donation', 'leyka')) :
+                    mb_strtolower(__('Recurring donation', 'leyka'))
+                ),
+            'wsb_order_num' => $new_recurring_donation->id,
+            'wsb_currency_id' => $currency_id,
+            'wsb_version' => '2',
+//            'wsb_language_id' => '',
+            'wsb_seed' => $seed,
+            'wsb_signature' => $signature,
+            'wsb_return_url' => leyka_get_success_page_url(),
+            'wsb_cancel_return_url' => leyka_get_failure_page_url(),
+            'wsb_notify_url' => site_url('/leyka/service/webpay/process/'), // Callback URL
+            'wsb_test' => $is_test_mode,
+            'wsb_customer_name' => $init_recurring_donation->donor_name,
+//            'wsb_customer_address' => '',
+            'wsb_email' => $init_recurring_donation->donor_email,
+            'wsb_invoice_item_name[0]' => $init_recurring_donation->payment_title,
+            'wsb_invoice_item_quantity[0]' => 1,
+            'wsb_invoice_item_price[0]' => $init_recurring_donation->amount,
+            'wsb_total' => $init_recurring_donation->amount,
+            'wsb_order_tag' => __('Recurring donation', 'leyka'),
+            'wsb_customer_id' => $init_recurring_donation->webpay_customer_id,
+            'wsb_operation_type' => 'recurring_pay',
+            'wsb_recurring_token' => $init_recurring_donation->webpay_recurring_token,
+        );
+
+        $ch = curl_init();
+        curl_setopt_array($ch, array(
+            CURLOPT_URL => rtrim($this->submission_redirect_url('', ''), '/'),
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => http_build_query($data),
+            CURLOPT_VERBOSE => true,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CONNECTTIMEOUT => 60,
+        ));
+
+        if( !$result = curl_exec($ch) ) {
+            $this->_handle_callback_error(sprintf(__("Rebilling request to the WebPay system couldn't be made due to some error.\n\nThe error: %s", 'leyka'), curl_error($ch).' ('.curl_errno($ch).')'), $new_recurring_donation);
+        }
+
+        curl_close($ch);
+
+        $result = json_decode($result, true);
+
+        if(empty($result['payment_type']) || $this->_get_donation_status($result['payment_type']) === 'failed') {
+            $new_recurring_donation->status = 'failed';
+        }
+
+        $new_recurring_donation->add_gateway_response($result);
+
+        return $new_recurring_donation;
 
     }
 
