@@ -332,9 +332,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
         <?php if(leyka_options()->opt('agree_to_terms_needed')) {?>
         <div class="leyka-pf__agreement oferta">
             <div class="agreement__frame">
-                <div class="agreement__flow">
-                    <?php echo apply_filters('leyka_terms_of_service_text', do_shortcode(leyka_options()->opt('terms_of_service_text')));?>
-                </div>
+                <div class="agreement__flow"><?php echo leyka_get_terms_text();?></div>
             </div>
             <a href="#" class="agreement__close">
                 <?php echo leyka_options()->opt('leyka_agree_to_terms_text_text_part').' '.leyka_options()->opt('leyka_agree_to_terms_text_link_part');?>
@@ -345,9 +343,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
         <?php if(leyka_options()->opt('agree_to_pd_terms_needed')) {?>
         <div class="leyka-pf__agreement pd">
             <div class="agreement__frame">
-                <div class="agreement__flow">
-                    <?php echo apply_filters('leyka_terms_of_pd_usage_text', do_shortcode(leyka_options()->opt('pd_terms_text')));?>
-                </div>
+                <div class="agreement__flow"><?php echo leyka_get_pd_terms_text();?></div>
             </div>
             <a href="#" class="agreement__close">
                 <?php echo leyka_options()->opt('agree_to_pd_terms_text_text_part').' '.leyka_options()->opt('agree_to_pd_terms_text_link_part');?>

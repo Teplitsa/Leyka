@@ -407,7 +407,7 @@ class Leyka_Payment_Form {
                 <div class="leyka-modal-close">X</div>
                 <div class="leyka-oferta-text-frame">
                     <div class="leyka-oferta-text-flow">
-                        <?php echo apply_filters('leyka_terms_of_pd_usage_text', do_shortcode(leyka_options()->opt('pd_terms_text')));?>
+                        <?php echo leyka_get_pd_terms_text();?>
                     </div>
                 </div>
             </div>

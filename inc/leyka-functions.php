@@ -1356,6 +1356,22 @@ function leyka_get_campaigns_select_default() {
 
 }
 
+function leyka_get_terms_text() {
+    return apply_filters(
+        'leyka_terms_of_service_text',
+        leyka_options()->opt('receiver_legal_type') === 'legal' ?
+            leyka_options()->opt('terms_of_service_text') : leyka_options()->opt('person_terms_of_service_text')
+    );
+}
+
+function leyka_get_pd_terms_text() {
+    return apply_filters(
+        'leyka_terms_of_pd_usage_text',
+        leyka_options()->opt('receiver_legal_type') === 'legal' ?
+            leyka_options()->opt('pd_terms_text') : leyka_options()->opt('person_pd_terms_text')
+    );
+}
+
 /** Default campaign ID cache invalidation */
 function leyka_flush_cache_default_campaign_id($new_status, $old_status, WP_Post $campaign) {
 
@@ -2528,7 +2544,6 @@ if( !function_exists('leyka_delete_dir') ) {
         return is_file($path) ? @unlink($path) : (array_map(__FUNCTION__, glob($path.'/*')) == @rmdir($path));
 
     }
-
 }
 
 /** @todo Move the function to the special GA integration class */
@@ -2559,7 +2574,6 @@ if( !function_exists('leyka_gua_get_client_id') ) {
 }
 
 if( !function_exists('leyka_get_client_ip') ) {
-
     function leyka_get_client_ip() {
 
         $client_ip = getenv('HTTP_CLIENT_IP') ? :
@@ -2574,7 +2588,6 @@ if( !function_exists('leyka_get_client_ip') ) {
         return trim($client_ip);
 
     }
-
 }
 
 /** Some gateways give their callbacks IPs only as CIDR ranges. */

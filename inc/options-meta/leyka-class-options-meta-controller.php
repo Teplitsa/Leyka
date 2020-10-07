@@ -111,6 +111,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                     'physical' => array('title' => __('Physical person', 'leyka'), 'comment' => '',),
                 ),
                 'description' => __('If you plan to collect funds as a physical person, please <a href="https://te-st.ru/2019/09/03/donations-to-individuals/" target="_blank">read this</a>.', 'leyka'),
+                'default' => 'legal',
             ),
             'pm_available' => array( // The option is never displayed in UI via standard means
                 'type' => 'multi_checkbox',

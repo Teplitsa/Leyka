@@ -80,7 +80,7 @@ add_filter('leyka_terms_of_pd_usage_text', 'leyka_terms_of_pd_usage_text');
 
 function leyka_terms_of_pd_usage_page_text($page_content) {
     return leyka_options()->opt('pd_terms_page') && is_page(leyka_options()->opt('pd_terms_page')) ?
-        apply_filters('leyka_terms_of_pd_usage_text', do_shortcode($page_content)) : $page_content;
+        leyka_get_pd_terms_text() : $page_content;
 }
 add_filter('the_content', 'leyka_terms_of_pd_usage_page_text');
 
