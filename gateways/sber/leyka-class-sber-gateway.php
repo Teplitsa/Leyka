@@ -242,13 +242,15 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
                 $donation = NULL;
                 if( !empty($_REQUEST['orderNumber']) ) {
                     $donation = new Leyka_Donation(absint($_REQUEST['orderNumber']));
-                }
-                if( !$donation && !empty($_REQUEST['mdOrder']) ) {
+                } else if( !empty($_REQUEST['mdOrder']) ) {
                     $donation = $this->get_donation_by_transaction_id(trim($_REQUEST['mdOrder']));
                 }
+
                 if( !$donation ) {
                     exit(500);
                 }
+
+                $donation->add_gateway_response($_REQUEST);
 
                 if(empty($_REQUEST['status']) || empty($_REQUEST['operation'])) { // Operation failed
 
@@ -279,7 +281,7 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
 
                             $analytics = new TheIconic\Tracking\GoogleAnalytics\Analytics(true);
                             $analytics // Main params:
-                            ->setProtocolVersion('1')
+                                ->setProtocolVersion('1')
                                 ->setTrackingId(leyka_options()->opt('gtm_ua_tracking_id'))
                                 ->setClientId($donation->ga_client_id ? $donation->ga_client_id : leyka_gua_get_client_id())
                                 // Transaction params:
