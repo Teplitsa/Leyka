@@ -124,19 +124,13 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
 
     public function submission_form_data($form_data_vars, $pm_id, $donation_id) {
 
-        if( !array_key_exists($pm_id, $this->_payment_methods) )
+        if( !array_key_exists($pm_id, $this->_payment_methods) ) {
             return $form_data_vars; //it's not our PM
+        }
 
         $donation = new Leyka_Donation($donation_id);
         $amount = number_format((float)$donation->amount, 2, '.', '');
-        $currency = mb_strtoupper($donation->currency);
-
-        $public = leyka_options()->opt('liqpay_public_key');
-        $private = leyka_options()->opt('liqpay_private_key');
-
-        if ($currency === 'RUR') {
-            $currency = 'RUB';
-        }
+        $currency = $donation->currency == 'rur' ? 'RUB' : mb_strtoupper($donation->currency);
 
         if( !empty($form_data['leyka_recurring']) ) {
             $donation->payment_type = 'rebill';
@@ -151,31 +145,28 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
         $form_data_vars =  array(
             'version' 					=> 3,
             'public_key' 				=> leyka_options()->opt('liqpay_public_key'),
-            'action'                    => !empty($form_data_vars['leyka_recurring']) ? 'subscribe' : 'paydonate',
+            'action'                    => empty($form_data_vars['leyka_recurring']) ? 'paydonate' : 'subscribe',
             'amount' 					=> $amount,
             'currency' 					=> $currency,
             'description' 				=> $donation->payment_title,
             'order_id' 					=> $donation_id,
-            'subscribe'                 => !empty($form_data_vars['leyka_recurring']) ? 1 : 0,
-            'subscribe_date_start'      => !empty($form_data_vars['leyka_recurring']) ? date("Y-m-d H:i:s") : '',
-            'subscribe_periodicity'     => !empty($form_data_vars['leyka_recurring']) ? 'month' : '',
-            'recurringbytoken' 			=> !empty($form_data_vars['leyka_recurring']) ? 1 : 0,
+            'subscribe'                 => empty($form_data_vars['leyka_recurring']) ? 0 : 1,
+            'subscribe_date_start'      => empty($form_data_vars['leyka_recurring']) ? '' : date('Y-m-d H:i:s'),
+            'subscribe_periodicity'     => empty($form_data_vars['leyka_recurring']) ? '' : 'month',
+            'recurringbytoken' 			=> empty($form_data_vars['leyka_recurring']) ? 0 : 1,
             'customer'                  => $donation->donor_name,
-            'customer_user_id'           => $donation->donor_user_id,
+            'customer_user_id'          => $donation->donor_user_id,
             'paytypes' 					=> $pm_id == 'privat24' ? 'card,privat24' : $pm_id,
             'server_url'                => home_url('/leyka/service/'.$this->_id.'/response/'),
             'result_url'                => home_url('/leyka/service/'.$this->_id.'/response/'),
             'language' 					=> $language,
         );
 
-        $submission = array();
-
-        //check params
-        $submission['data'] = base64_encode(json_encode($form_data_vars));
+        $submission = array('data' => base64_encode(json_encode($form_data_vars)));
 
         try {
 
-            $api = new Liqpay($public, $private);
+            $api = new Liqpay(leyka_options()->opt('liqpay_public_key'), leyka_options()->opt('liqpay_private_key'));
             $submission['signature'] = $api->cnb_signature($form_data_vars);
 
         } catch(Exception $e) {
