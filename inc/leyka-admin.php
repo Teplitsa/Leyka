@@ -423,7 +423,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
      */
     public function save_user_profile_donor_fields($donor_user_id) {
 
-        if( !current_user_can('administrator') || !is_array($_POST['leyka_donor_tags']) ) {
+        if( !current_user_can('administrator') || empty($_POST['leyka_donor_tags']) || !is_array($_POST['leyka_donor_tags']) ) {
             return false;
         }
 
@@ -431,7 +431,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             $value = (int)$value;
         });
 
-        return !is_wp_error(wp_set_object_terms($donor_user_id, $_POST['leyka_donor_tags'], Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME));
+        return !is_wp_error(wp_set_object_terms(
+            $donor_user_id,
+            $_POST['leyka_donor_tags'],
+            Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME
+        ));
 
     }
 

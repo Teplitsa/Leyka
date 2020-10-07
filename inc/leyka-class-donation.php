@@ -241,14 +241,14 @@ class Leyka_Donation_Management {
         <input id="campaign-select" type="text" data-nonce="<?php echo wp_create_nonce('leyka_get_campaigns_list_nonce');?>" placeholder="<?php _e('Select a campaign', 'leyka');?>" value="<?php echo $campaign_title;?>">
         <input id="campaign-id" type="hidden" name="campaign" value="<?php echo !empty($_GET['campaign']) ? (int)$_GET['campaign'] : '';?>">
 
-        <?php }?>
-
         <label for="donor-subscribed-select"></label>
         <select id="donor-subscribed-select" name="donor_subscribed">
             <option value="-" <?php echo !isset($_GET['donor_subscribed']) || $_GET['donor_subscribed'] === '-' ? 'selected="selected"' : '';?>><?php _e('Donors subscription', 'leyka');?></option>
             <option value="1" <?php echo isset($_GET['donor_subscribed']) && absint($_GET['donor_subscribed']) ? 'selected="selected"' : '';?>><?php _e('Subscribed donors', 'leyka');?></option>
             <option value="0" <?php echo isset($_GET['donor_subscribed']) && !$_GET['donor_subscribed'] ? 'selected="selected"' : '';?>><?php _e('Unsubscribed donors', 'leyka');?></option>
         </select>
+
+        <?php }?>
 
     <?php }
 
