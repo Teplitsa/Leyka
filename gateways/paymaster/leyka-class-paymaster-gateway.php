@@ -80,7 +80,16 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
 
         $donation = new Leyka_Donation($donation_id);
         $amount = number_format((float)$donation->amount, 2, '.', '');
-        $pm_curr = 'RUB';
+
+        $pm_curr = $pm_id;
+        switch ($pm_id) {
+            case 'paymaster_all':
+                $pm_curr = 'RUB';
+                break;
+            case 'Other':
+                $pm_curr = 'RUB';
+                break;
+        }
 
         return array(
             'LMI_MERCHANT_ID' => leyka_options()->opt('paymaster_merchant_id'),
@@ -89,7 +98,7 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
             'LMI_CURRENCY' => $pm_curr,
             'LMI_PAYMENT_DESC' => sprintf(__('PayMaster service donation payment #%s', 'leyka'), $donation_id),
             'SIGN' => md5(leyka_options()->opt('paymaster_merchant_id').':'.$amount.':'.$donation_id.':'.leyka_options()->opt('paymaster_secret_word')),
-            'LMI_PAYMENT_NOTIFICATION_URL' => home_url('leyka/service/'.$this->_id.'/response/'),
+            'LMI_PAYMENT_NOTIFICATION_URL' => home_url('leyka/service/' . $this->_id . '/response/'),
             'LMI_SUCCESS_URL' => leyka_get_success_page_url(),
             'LMI_FAILURE_URL' => leyka_get_failure_page_url(),
         );
@@ -112,7 +121,21 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
 
         }
 
-        $donation = new Leyka_Donation((int)$_REQUEST['LMI_PAYMENT_NO']);
+        $donation = new Leyka_Donation(absint($_REQUEST['LMI_PAYMENT_NO']));
+
+        if(empty($donation) || empty($donation->id) || is_wp_error($donation)) {
+
+            $message = __('This message has been sent because a call to your Paymaster callback was made with unknown LMI_PAYMENT_NO parameter value given. The details of the call are below:', 'leyka') . "\n\r\n\r";
+
+            $message .= "THEIR_POST:\n\r" . print_r($_POST, true) . "\n\r\n\r";
+            $message .= "GET:\n\r" . print_r($_GET, true) . "\n\r\n\r";
+            $message .= "SERVER:\n\r" . print_r($_SERVER, true) . "\n\r\n\r";
+
+            wp_mail(get_option('admin_email'), __('Paymaster callback error - unknown LMI_PAYMENT_NO value', 'leyka'), $message);
+            status_header(200);
+            die();
+
+        }
 
         // Sign and hash
         $sign = $this->_get_signature($_REQUEST);
@@ -130,8 +153,11 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
             $message .= "POST:\n\r" . print_r($_POST, true) . "\n\r\n\r";
             $message .= "GET:\n\r" . print_r($_GET, true) . "\n\r\n\r";
             $message .= "SERVER:\n\r" . print_r($_SERVER, true) . "\n\r\n\r";
-            $message .= "Signature from request:\n\r" . print_r($_REQUEST['SIGN'], true) . "\n\r\n\r";
+            $message .= "Signature from request:\n\r" . print_r($_REQUEST['SignatureValue'], true) . "\n\r\n\r";
             $message .= "Signature calculated:\n\r" . print_r($sign, true) . "\n\r\n\r";
+
+            $donation->add_gateway_response($_REQUEST);
+            $donation->status = 'failed';
 
             wp_mail(get_option('admin_email'), __('Paymaster digital signature check failed!', 'leyka'), $message);
             die();
@@ -164,7 +190,7 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
 
                 $analytics = new TheIconic\Tracking\GoogleAnalytics\Analytics(true);
                 $analytics // Main params:
-                    ->setProtocolVersion('1')
+                ->setProtocolVersion('1')
                     ->setTrackingId(leyka_options()->opt('gtm_ua_tracking_id'))
                     ->setClientId($donation->ga_client_id ? $donation->ga_client_id : leyka_gua_get_client_id())
                     // Transaction params:
