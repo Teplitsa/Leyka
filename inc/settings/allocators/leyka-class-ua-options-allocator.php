@@ -47,7 +47,7 @@ class Leyka_Ua_Options_Allocator extends Leyka_Ru_Options_Allocator {
                 'title' => __('Organization bank essentials', 'leyka'),
                 'description' => __('Data needed for accounting documents, as well as to connect the payment with receipt', 'leyka'),
                 'is_default_collapsed' => false,
-                'options' => array('org_bank_name', 'org_bank_iban', 'org_bank_account', 'org_bank_mfo',)
+                'options' => array('org_bank_name', 'org_bank_iban', 'org_bank_mfo',)
             )),
             array('section' => array(
                 'name' => 'terms_of_service',
