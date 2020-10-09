@@ -6,6 +6,14 @@ class Leyka_Ua_Options_Meta_Controller extends Leyka_Options_Meta_Controller {
 
     protected function _get_meta_org() { // Keywords: org_
         return parent::_get_meta_org() + array(
+            'org_bank_iban' => array(
+                'type' => 'text',
+                'title' => __('The organization bank account IBAN', 'leyka'),
+                'comment' => '',
+                'required' => true,
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'BY20 OLMP 3135 0000 0010 0000 0933'),
+//                'mask' => "'mask': '9{6}'",
+            ),
             'org_erdpou' => array(
                 'type' => 'text',
                 'title' => __('The organization ERDPOU number', 'leyka'),
