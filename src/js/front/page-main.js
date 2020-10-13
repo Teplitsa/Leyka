@@ -95,40 +95,48 @@ window.LeykaPageMain.prototype = {
     
     setupCustomRangeControl: function() {
 
-        var self = this; var $ = self.$;
+        let self = this; var $ = self.$;
 
         $('.amount__range_overlay').addClass('amount__range_custom--visible');
         $('.amount__range_custom').addClass('amount__range_custom--visible');
 
     },
     
-    handleHashChange: function() {
-        var self = this; var $ = self.$;
-        
-        var hash = window.location.hash.substr(1);
+    handleHashChange: function(){
+
+        let self = this,
+            $ = self.$,
+            hash = window.location.hash.substr(1);
 
         if(hash.indexOf('leyka-activate-package|') > -1) {
             self.handleHashActivatePackageChange(hash);
-        }
-        else if(hash) {
-            var parts = hash.split('|');
+        } else if(hash) {
+
+            let parts = hash.split('|');
+
             if(parts.length > 0) {
-                var form_id = parts[0];
-                
+
+                let form_id = parts[0];
+
                 if(form_id) {
-                    var $_form = $('.leyka-pf#' + form_id);
+
+                    let $_form = $('#' + form_id);
                     
                     if($_form.length > 0) {
+
                         $_form.leykaForm('open');
-                        
-                        for(var i in parts) {
-                            var part = parts[i];
-                            self.handleFinalScreenParams($_form, part);
+
+                        for(let i in parts) {
+                            self.handleFinalScreenParams($_form, parts[i]);
                         }
+
                     }
+
                 }
+
             }
         }
+
     },
 
     handleHashActivatePackageChange: function(hash) {
@@ -157,22 +165,31 @@ window.LeykaPageMain.prototype = {
             if($selectedSum) {
                 $selectedSum.trigger('click');
             }
+
         }
     },
     
-    handleFinalScreenParams: function($_form, part) {
+    handleFinalScreenParams: function($_form, part){
         if(part.search(/final-open/) > -1) {
-            $_form.find('.leyka-pf__final-screen').removeClass('leyka-pf__final--open').removeClass('leyka-pf__final--open-half');
-            var final_parts = part.split('_');
+
+            $_form
+                .find('.leyka-pf__final-screen')
+                .removeClass('leyka-pf__final--open')
+                .removeClass('leyka-pf__final--open-half');
+
+            let final_parts = part.split('_');
             try {
-                var $final_screen = $_form.find('.leyka-pf__final-screen.leyka-pf__final-' + final_parts[1]);
+
+                let $final_screen = $_form.find('.leyka-pf__final-screen.leyka-pf__final-' + final_parts[1]);
+
                 $final_screen.addClass('leyka-pf__final--open');
                 if(final_parts[2]) {
                     $final_screen.addClass('leyka-pf__final--open-half');
                 }
+
+            } catch(ex) {
             }
-            catch(ex) {
-            }
+
         }
     }
 }

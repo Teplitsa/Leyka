@@ -35,6 +35,13 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         }
 
         $this->_options = array(
+            $this->_id.'_new_api' => array(
+                'type' => 'checkbox',
+                'default' => false,
+                'title' => sprintf(__('Use %s new API', 'leyka'), $this->_title),
+                'comment' => sprintf(__('Check if your %s connection uses the new API', 'leyka'), $this->_title),
+                'short_format' => true,
+            ),
             'mixplat_service_id' => array(
                 'type' => 'text',
                 'title' => __('MIXPLAT project ID', 'leyka'),
@@ -44,8 +51,8 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             ),
             'mixplat_secret_key' => array(
                 'type' => 'text',
-                'title' => __('MIXPLAT project secret key', 'leyka'),
-                'comment' => __('Please, enter your MIXPLAT project secret key here. It can be found in your MIXPLAT project settings page on MIXPLAT site.', 'leyka'),
+                'title' => __('MIXPLAT project secret API key', 'leyka'),
+                'comment' => __('Please, enter your MIXPLAT project secret key (or API key for the new API) here. It can be found in your MIXPLAT project settings page on MIXPLAT site.', 'leyka'),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'c23a4398db8ef7b3ae1f4b07aeeb7c54f8e3c7c9'),
             ),
@@ -129,46 +136,84 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         $amount = (int)round((float)$donation->amount * 100);
         $donation->mixplat_phone = $phone;
         $currency = $this->_get_currency_id($donation->currency);
-
-        $ch = curl_init();
-        curl_setopt_array($ch, array(
-            CURLOPT_URL => 'http://api.mixplat.com/mc/create_payment',
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => json_encode(array(
-                'service_id' => leyka_options()->opt('mixplat_service_id'),
-                'phone' => $phone,
-                'amount' => $amount,
-                'currency' => $currency,
-                'external_id' => $donation_id,
-                'test' => $is_test,
-                'signature' => md5(
-                    leyka_options()->opt('mixplat_service_id').$phone.$amount.$currency.$donation_id.$is_test.
-                    leyka_options()->opt('mixplat_secret_key')
-                ),
-            )),
-            CURLOPT_VERBOSE => true,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_CONNECTTIMEOUT => 60,
-        ));
-        $answer = curl_exec($ch);
-        curl_close($ch);
-
-        $json = null;
-        if($answer) {
-            try {
-                $json = json_decode($answer, true);
-            } catch (Exception $ex) {
-                error_log($ex);
-            }
-        }
-
         $is_success = false;
-        if($json) {
 
-            $donation->add_gateway_response($json);
+        if(leyka_options()->opt('mixplat_new_api')) { // API v3
 
-            if($json['result'] == 'ok') {
+            require_once LEYKA_PLUGIN_DIR.'gateways/mixplat/lib/autoload.php';
+
+            $mixplat_conf = new \MixplatClient\Configuration();
+            $mixplat_conf->projectId = leyka_options()->opt('mixplat_service_id');
+            $mixplat_conf->apiKey = leyka_options()->opt('mixplat_secret_key');
+
+            $http_client = new \MixplatClient\HttpClient\SimpleHttpClient();
+            $mixplat_client = new \MixplatClient\MixplatClient();
+            $mixplat_client->setConfig($mixplat_conf);
+            $mixplat_client->setHttpClient($http_client);
+
+            $new_payment = new \MixplatClient\Method\CreatePayment();
+
+            $new_payment->test = $is_test;
+            $new_payment->merchantPaymentId = $donation_id;
+            $new_payment->paymentMethod = \MixplatClient\MixplatVars::PAYMENT_METHOD_MOBILE;
+            $new_payment->userPhone = $phone;
+            $new_payment->amount = $amount;
+            $new_payment->merchantFields = array(
+                'donor_name' => $donation->donor_name,
+                'email' => $donation->donor_email,
+                'payment_title' => $donation->payment_title,
+            );
+
+            $response = $mixplat_client->request($new_payment);
+
+            $donation->add_gateway_response($response);
+
+            if( !empty($response['result']) && $response['result'] == 'ok' ) {
                 $is_success = true;
+            }
+
+        } else { // Older APIs
+
+            $ch = curl_init();
+            curl_setopt_array($ch, array(
+                CURLOPT_URL => 'http://api.mixplat.com/mc/create_payment',
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => json_encode(array(
+                    'service_id' => leyka_options()->opt('mixplat_service_id'),
+                    'phone' => $phone,
+                    'amount' => $amount,
+                    'currency' => $currency,
+                    'external_id' => $donation_id,
+                    'test' => $is_test,
+                    'signature' => md5(
+                        leyka_options()->opt('mixplat_service_id').$phone.$amount.$currency.$donation_id.$is_test.
+                        leyka_options()->opt('mixplat_secret_key')
+                    ),
+                )),
+                CURLOPT_VERBOSE => true,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_CONNECTTIMEOUT => 60,
+            ));
+            $answer = curl_exec($ch);
+            curl_close($ch);
+
+            $json = null;
+            if($answer) {
+                try {
+                    $json = json_decode($answer, true);
+                } catch (Exception $ex) {
+                    error_log($ex);
+                }
+            }
+
+            if($json) {
+
+                $donation->add_gateway_response($json);
+
+                if($json['result'] == 'ok') {
+                    $is_success = true;
+                }
+
             }
 
         }
@@ -250,15 +295,21 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             $message = __("This message was sent because a call to your MIXPLAT callback was made with an empty request parameter value. The details of the call are below.", 'leyka')."\n\r\n\r";
             $is_error = true;
 
-        } else if( !in_array($response['request'], array('check', 'status')) ) {
+        } else if(
+            ($response['api_version'] == 3 && !in_array($response['request'], array('payment_status', 'payment_check')))
+            || ($response['api_version'] != 3 && !in_array($response['request'], array('check', 'status')))
+        ) {
 
             $message = sprintf(__("This message was sent because a call to your MIXPLAT callback was made with an unknown request parameter value. The details of the call are below. Request value: %s", 'leyka'), $response['request'])."\n\r\n\r";
             $is_error = true;
+
         }
 
         if( !$is_error ) {
 
-            if($response['request'] == 'check') { // Check request
+            if($response['api_version'] == 3) { // Only 1 callback request type for the API v.3
+                $nessessary_params = array('request', 'status', 'user_phone', 'amount', 'signature',);
+            } else if($response['request'] == 'check') { // Check request
                 $nessessary_params = array(
                     'id', 'service_id', 'phone', 'date_created', 'amount', 'currency', 'text', 'signature',
                 );
@@ -275,14 +326,17 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                     $message = sprintf(__("This message has been sent because a call to your MIXPLAT callback was made without required parameters given. The details of the call are below. The callback type: %s. The parameter missing: %s", 'leyka'), $response['request'], $param_name)."\n\r\n\r";
                     $is_error = true;
                     break;
+
                 }
             }
 
         }
 
-        if( !$is_error ) {
+        if( !$is_error ) { // Signature check
 
-            if($response['request'] == 'check') { // Check request
+            if($response['api_version'] == 3) {
+                $params_signature = md5($response['payment_id'].leyka_options()->opt('mixplat_secret_key'));
+            } else if($response['request'] == 'check') { // Check request
                 $params_signature = md5(
                     $response['id'].$response['service_id'].$response['phone'].$response['amount'].
                     leyka_options()->opt('mixplat_secret_key')
@@ -306,6 +360,10 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
         if($is_error) {
 
+            $donation = new Leyka_Donation(absint($response['merchant_payment_id']));
+            $donation->status = 'failed';
+            $donation->add_gateway_response($response);
+
             $message .= "CALLBACK TYPE: ".print_r(empty($response['request']) ? '-' : $response['request'], true)."\n\r\n\r";
             $message .= "THEIR POST:\n\r".print_r($_POST, true)."\n\r\n\r";
             $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
@@ -314,88 +372,147 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             $message .= "THEIR JSON DECODED:\n\r".print_r(json_decode($json_string), true)."\n\r\n\r";
 
             wp_mail(get_option('admin_email'), __('MIXPLAT - payment callback error occured', 'leyka'), $message);
-            status_header(200);
+            status_header(500);
 
             die('Payment callback error');
 
         }
 
-        if($response['request'] == 'status') { // Status request
+        if($response['api_version'] == 3 && $response['request'] == 'payment_status') {
 
             // SMS payment:
-            if(empty($response['external_id']) && !empty($response['status']) && $response['status'] == 'success') {
+            if(empty($response['merchant_payment_id']) && !empty($response['status']) && $response['status'] == 'success') {
+                $this->_handle_sms_donation_callback($response);
+            } else if( !empty($response['status']) ) { // Mobile payment via website
 
-                $response['currency'] = empty($response['currency']) ? 'rur' : trim($response['currency']);
+                $donation = new Leyka_Donation(absint($response['merchant_payment_id']));
+                if( !$donation || !$donation->id ) {
 
-                $donation_id = Leyka_Donation::add(array(
-                    'gateway_id' => $this->_id,
-                    'payment_method_id' => 'sms',
-                    'campaign_id' => leyka_options()->opt('mixplat-sms_default_campaign_id'),
-                    'status' => 'funded',
-                    'payment_type' => 'single',
-                    'amount' => $response['amount']/100.0,
-                    'currency' => empty($response['currency']) ?
-                        'rur' : ($response['currency'] == 'RUB' ? 'rur' : strtolower($response['currency'])),
-                    'mixplat_phone' => $response['phone'],
-                ));
+                    $message .= "CALLBACK TYPE: ".print_r(empty($response['request']) ? '-' : $response['request'], true)."\n\r\n\r";
+                    $message .= "THEIR POST:\n\r".print_r($_POST, true)."\n\r\n\r";
+                    $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
+                    $message .= "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
+                    $message .= "THEIR JSON:\n\r".print_r($json_string, true)."\n\r\n\r";
+                    $message .= "THEIR JSON DECODED:\n\r".print_r(json_decode($json_string), true)."\n\r\n\r";
 
-                $donation = new Leyka_Donation($donation_id);
-                $donation->add_gateway_response($response);
+                    wp_mail(get_option('admin_email'), __('MIXPLAT - payment callback error: unknown donation', 'leyka'), $message);
+                    status_header(500);
 
-                $campaign = new Leyka_Campaign($donation->campaign_id);
-                $campaign->update_total_funded_amount($donation);
+                    die('Payment callback error');
 
-                Leyka_Donation_Management::send_all_emails($donation->id);
+                }
 
+                switch($response['status']) {
+                    case 'success':
+
+                        $donation->status = 'funded';
+                        $donation->add_gateway_response($response);
+
+                        Leyka_Donation_Management::send_all_emails($donation->id);
+
+                        $this->_handle_ga_purchase_event($donation);
+
+                        break;
+                    case 'failure':
+
+                        $donation->status = 'failed';
+                        $donation->add_gateway_response($response);
+
+                        break;
+                    default:
+                }
+
+            }
+
+        } else if($response['request'] == 'status') { // Status request
+
+            if(empty($response['external_id']) && !empty($response['status']) && $response['status'] == 'success') { // SMS
+                $this->_handle_sms_donation_callback($response);
             } else if( !empty($response['status']) && $response['status'] == 'success' ) { // Mobile payment via website
 
                 $donation = new Leyka_Donation(absint($response['external_id']));
                 if($donation && $donation->status != 'funded') {
 
                     $donation->status = 'funded';
+                    $donation->add_gateway_response($response);
+
                     Leyka_Donation_Management::send_all_emails($donation->id);
+
+                    $this->_handle_ga_purchase_event($donation);
 
                 }
 
             }
 
-            if( // GUA direct integration - "purchase" event:
-                $donation->status === 'funded'
-                && leyka_options()->opt('use_gtm_ua_integration') === 'enchanced_ua_only'
-                && leyka_options()->opt('gtm_ua_tracking_id')
-                && in_array('purchase', leyka_options()->opt('gtm_ua_enchanced_events'))
-            ) {
-
-                require_once LEYKA_PLUGIN_DIR.'vendor/autoload.php';
-
-                $analytics = new TheIconic\Tracking\GoogleAnalytics\Analytics(true);
-                $analytics // Main params:
-                    ->setProtocolVersion('1')
-                    ->setTrackingId(leyka_options()->opt('gtm_ua_tracking_id'))
-                    ->setClientId($donation->ga_client_id ? $donation->ga_client_id : leyka_gua_get_client_id())
-                    // Transaction params:
-                    ->setTransactionId($donation->id)
-                    ->setAffiliation(get_bloginfo('name'))
-                    ->setRevenue($donation->amount)
-                    ->addProduct(array( // Donation params
-                        'name' => $donation->payment_title,
-                        'price' => $donation->amount,
-                        'brand' => get_bloginfo('name'), // Mb, it won't work with it
-                        'category' => $donation->type_label, // Mb, it won't work with it
-                        'quantity' => 1,
-                    ))
-                    ->setProductActionToPurchase()
-                    ->setEventCategory('Checkout')
-                    ->setEventAction('Purchase')
-                    ->sendEvent();
-
-            }
-            // GUA direct integration - "purchase" event END
-
         }
 
         status_header(200);
 		die(json_encode(array('result' => 'ok')));
+
+    }
+
+    protected function _handle_sms_donation_callback($response) {
+
+        $response['currency'] = empty($response['currency']) ? 'rur' : trim($response['currency']);
+
+        $donation_id = Leyka_Donation::add(array(
+            'gateway_id' => $this->_id,
+            'payment_method_id' => 'sms',
+            'campaign_id' => leyka_options()->opt('mixplat-sms_default_campaign_id'),
+            'status' => 'funded',
+            'payment_type' => 'single',
+            'amount' => $response['amount']/100.0,
+            'currency' => empty($response['currency']) ?
+                'rur' : ($response['currency'] == 'RUB' ? 'rur' : strtolower($response['currency'])),
+            'mixplat_phone' => $response['phone'],
+        ));
+
+        $donation = new Leyka_Donation($donation_id);
+        $donation->add_gateway_response($response);
+
+        $campaign = new Leyka_Campaign($donation->campaign_id);
+        $campaign->update_total_funded_amount($donation);
+
+        Leyka_Donation_Management::send_all_emails($donation->id);
+
+        $this->_handle_ga_purchase_event($donation);
+
+    }
+
+    protected function _handle_ga_purchase_event(Leyka_Donation $donation) {
+
+        if( // GUA direct integration - "purchase" event:
+            $donation->status === 'funded'
+            && leyka_options()->opt('use_gtm_ua_integration') === 'enchanced_ua_only'
+            && leyka_options()->opt('gtm_ua_tracking_id')
+            && in_array('purchase', leyka_options()->opt('gtm_ua_enchanced_events'))
+        ) {
+
+            require_once LEYKA_PLUGIN_DIR.'vendor/autoload.php';
+
+            $analytics = new TheIconic\Tracking\GoogleAnalytics\Analytics(true);
+            $analytics // Main params:
+            ->setProtocolVersion('1')
+                ->setTrackingId(leyka_options()->opt('gtm_ua_tracking_id'))
+                ->setClientId($donation->ga_client_id ? $donation->ga_client_id : leyka_gua_get_client_id())
+                // Transaction params:
+                ->setTransactionId($donation->id)
+                ->setAffiliation(get_bloginfo('name'))
+                ->setRevenue($donation->amount)
+                ->addProduct(array( // Donation params
+                    'name' => $donation->payment_title,
+                    'price' => $donation->amount,
+                    'brand' => get_bloginfo('name'), // Mb, it won't work with it
+                    'category' => $donation->type_label, // Mb, it won't work with it
+                    'quantity' => 1,
+                ))
+                ->setProductActionToPurchase()
+                ->setEventCategory('Checkout')
+                ->setEventAction('Purchase')
+                ->sendEvent();
+
+        }
+        // GUA direct integration - "purchase" event END
 
     }
 
@@ -414,11 +531,17 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             return array();
         }
 
+//        echo '<pre>'.print_r($vars, 1).'</pre>';
+
+        $payment_id = $this->_get_value_if_any($vars, 'id');
+        $payment_id = $payment_id ? $payment_id : $this->_get_value_if_any($vars, 'payment_id');
+        $error_text = $this->_get_value_if_any($vars, 'message');
+
         return array(
-            __('MIXPLAT payment ID:', 'leyka') => $this->_get_value_if_any($vars, 'id'),
+            __('MIXPLAT payment ID:', 'leyka') => $payment_id,
             __('Operation result:', 'leyka') => $this->_get_value_if_any($vars, 'result'),
 			__('Operator:', 'leyka') => $this->_get_value_if_any($vars, 'operator'),
-			__('Error message:', 'leyka') => $this->_get_value_if_any($vars, 'message'),
+			__('Error message:', 'leyka') => $error_text ? $error_text : __('none'),
         );
 
     }
