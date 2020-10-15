@@ -81,6 +81,20 @@ PHP version required: 5.6+
 5. The plugin start page (a console)
 
 == Changelog ==
+= 3.13 =
+* New: BY l10n added.
+* New: BY WebPay gateway added.
+* New: MIXPLAT - API v.3 support added.
+* New: many new UA l10n lines.
+* New: bank IBAN setting field added for UA l10n.
+* Fix: for donations export when PM filter used.
+* Fix: callback handling improved for the Paymaster gateway.
+* Fix: for donor field notice when saving Donor's admin profile.
+* Fix: for org/person terms mixup on the forms if "physical" legal type is selected.
+* Fix: small improvements for the Sber gateway callback handling.
+* Fix: for UA Liqpay recurring cancelling.
+- Removed: bank account setting field removed for UA l10n.
+
 = 3.12 =
 * New: internalization code framework added.
 * New: UA Liqpay gateway added.

@@ -33,4 +33,14 @@ class Leyka_By_Options_Meta_Controller extends Leyka_Options_Meta_Controller {
         );
     }
 
+    protected function _get_meta_terms() {
+
+        $default_options_meta = parent::_get_meta_terms();
+
+        $default_options_meta['agree_to_pd_terms_needed']['default'] = false;
+
+        return $default_options_meta;
+
+    }
+
 }
