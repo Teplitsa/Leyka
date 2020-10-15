@@ -4,6 +4,8 @@ abstract class Leyka_Donations extends Leyka_Singleton {
 
     protected static $_instance = null;
 
+    public static $use_leyka_object_cache = true; // A flag to turn on/off the Leyka donations object cache
+
     /** @var array An array of Leyka_Donation_Base objects cache */
     protected static $_objects = array();
 
@@ -40,11 +42,17 @@ abstract class Leyka_Donations extends Leyka_Singleton {
     public function get_donation($donation) {
 
         $donation_id = $this->_get_donation_id($donation);
-        if(empty(self::$_objects[$donation_id])) {
-            self::$_objects[$donation_id] = $this->_get_donation($donation);
-        }
+        if(self::$use_leyka_object_cache) {
 
-        return self::$_objects[$donation_id];
+            if(empty(self::$_objects[$donation_id])) {
+                self::$_objects[$donation_id] = $this->_get_donation($donation);
+            }
+
+            return self::$_objects[$donation_id];
+
+        } else {
+            return $this->_get_donation($donation);
+        }
 
     }
 
@@ -222,11 +230,14 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
     protected function _get_query(array $params = array()) {
 
-        $query = new WP_Query(array(
+        $query_params = array(
             'post_type' => Leyka_Donation_Management::$post_type,
             'posts_per_page' => -1,
             'post_status' => 'any',
-        ));
+            'cache_results' => defined('WP_CACHE') ? WP_CACHE : true,
+            'update_post_meta_cache' => defined('WP_CACHE') ? WP_CACHE : true,
+            'update_post_term_cache' => defined('WP_CACHE') ? WP_CACHE : true,
+        );
 
         $params['meta'] = empty($params['meta']) || !is_array($params['meta']) ? array() : $params['meta'];
 
@@ -235,36 +246,36 @@ class Leyka_Donations_Posts extends Leyka_Donations {
             $values_list = $this->_get_multiple_filter_values($params['status'], leyka_get_donation_status_list());
 
             if($values_list) {
-                $query->set('post_status', $values_list);
+                $query_params['post_status'] = $values_list;
             }
 
         }
 
-        if( !empty($params['results_limit']) && (int)$params['results_limit'] > 0 ) {
-            $query->set('posts_per_page', (int)$params['results_limit']);
+        if( !empty($params['results_limit']) && absint($params['results_limit']) ) {
+            $query_params['posts_per_page'] = absint($params['results_limit']);
         }
 
         if( !empty($params['get_single']) ) {
-            $query->set('posts_per_page', 1);
-        } else if( !empty($params['page']) && (int)$params['results_limit'] > 1 ) {
-            $query->set('page', (int)$params['page']);
+            $query_params['posts_per_page'] = 1;
+        } else if( !empty($params['page']) && absint($params['results_limit']) > 1 ) {
+            $query_params['page'] = absint($params['page']);
         }
 
-        if(isset($params['year_month']) && (int)$params['year_month'] > 0) {
-            $query->set('m', (int)$params['year_month']);
+        if(isset($params['year_month']) && absint($params['year_month'])) {
+            $query_params['m'] = absint($params['year_month']);
         }
 
         if(isset($params['day']) && (int)$params['day'] >= 1 && (int)$params['day'] <= 31) {
-            $query->set('day', (int)$params['day']);
+            $query_params['day'] = (int)$params['day'];
         }
 
         if( !empty(trim($params['search_string'])) ) {
-            $query->set('s', trim($params['search_string']));
+            $query_params['s'] = trim($params['search_string']);
         }
 
         if( !empty($params['recurring_only_init']) ) {
 
-            $query->set('post_parent', 0);
+            $query_params['post_parent'] = 0;
             $params['payment_type'] = 'rebill';
 
         }
@@ -352,28 +363,28 @@ class Leyka_Donations_Posts extends Leyka_Donations {
                 $params['meta']['relation'] = 'AND';
             }
 
-            $query->set('meta_query', $params['meta']);
+            $query_params['meta_query'] = $params['meta'];
 
         }
 
         if( !empty($params['order']) && in_array($params['order'], array('asc', 'desc',)) ) {
-            $query->set('order', mb_strtoupper($params['order']));
+            $query_params['order'] = mb_strtoupper($params['order']);
         }
 
         if( !empty($params['orderby']) ) {
             switch($params['orderby']) {
-                case 'ID': $query->set('orderby', 'ID'); break;
-                case 'date': $query->set('orderby', 'date'); break;
+                case 'ID': $query_params['orderby'] = 'ID'; break;
+                case 'date': $query_params['orderby'] = 'date'; break;
                 case 'amount':
-                    $query->set('meta_key', 'leyka_donation_amount');
-                    $query->set('orderby', 'meta_value_num');
+                    $query_params['meta_key'] = 'leyka_donation_amount';
+                    $query_params['orderby'] = 'meta_value_num';
                     break;
                 case 'status': // Post status ordering is handled manually in the get() method.
                 default:
             }
         }
 
-        return $query;
+        return new WP_Query($query_params);
 
     }
 

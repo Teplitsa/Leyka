@@ -38,11 +38,12 @@ class Leyka_Procedure_Convert_Donations_Format {
 
         global $wpdb;
 
-        $query = $wpdb->prepare("SELECT ID FROM {$wpdb->prefix}posts WHERE post_type=%s", Leyka_Donation_Management::$post_type);
-//        $query .= " LIMIT 0,10000"; // For debugging only
+        ob_start();
 
-        $donations_ids = $wpdb->get_col($query);
-        $total_donations = count($donations_ids);
+        $query = $wpdb->prepare("SELECT COUNT(ID) FROM {$wpdb->prefix}posts WHERE post_type=%s", Leyka_Donation_Management::$post_type);
+        $query .= " LIMIT 0,1000"; // DBG ONLY
+
+        $total_donations = $wpdb->get_var($query); //count($donations_ids);
 
         echo '<pre>Total donations: '.print_r($total_donations, 1).'</pre>'."\n";
         ob_flush();
@@ -50,12 +51,12 @@ class Leyka_Procedure_Convert_Donations_Format {
         $process_completed_totally = true;
         $donations_processed = 0;
 
-        foreach($donations_ids as $donation_id) {
+        foreach(self::processDonations() as $donation_id) {
 
-            echo "Processing the donation #{$donations_processed}/{$total_donations}... ";
+            echo "Processing the donation #{$donations_processed} (ID: $donation_id)/{$total_donations}... ";
             ob_flush();
 
-            if(self::processDonation($donation_id)) {
+            if($donation_id) {
 
                 $donations_processed++;
                 echo "donation inserted (".round($donations_processed*100.0/$total_donations, 3)."% finished).\n";
@@ -71,6 +72,28 @@ class Leyka_Procedure_Convert_Donations_Format {
             update_option('leyka_donations_storage_type', 'sep');
         } else {
             update_option('leyka_donations_storage_type', 'sep-incompleted');
+        }
+
+    }
+
+    public static function getDonationId() {
+
+        global $wpdb;
+
+        $query = $wpdb->prepare("SELECT ID FROM {$wpdb->prefix}posts WHERE post_type=%s", Leyka_Donation_Management::$post_type);
+        $query .= " LIMIT 0,1000"; // For debugging only
+
+        foreach($wpdb->get_col($query) as $donation_id) {
+            yield $donation_id;
+        }
+
+    }
+
+    public static function processDonations() {
+
+        foreach(self::getDonationId() as $donation_id) {
+            yield $donation_id;
+//            yield self::processDonation($donation_id);
         }
 
     }
@@ -149,7 +172,7 @@ class Leyka_Procedure_Convert_Donations_Format {
 
             ob_start();
             echo "ERROR: ".$query_values."\n\n";
-            fputs($err_log_fp, "ERROR: ".ob_get_clean());
+            fputs($err_log_fp, ob_get_clean());
             fclose($err_log_fp);
 
             return false;
@@ -193,9 +216,11 @@ class Leyka_Procedure_Convert_Donations_Format {
         if($donation_post_data['payment_type'] === 'rebill') {
 
             $old_ver_donation = new Leyka_Donation($donation_post_data['ID']);
-            $init_recurring_donation = Leyka_Donation::getInitRecurringDonation($old_ver_donation);
+            $init_recurring_donation = Leyka_Donation::get_init_recurring_donation($old_ver_donation);
 
             $donation_post_meta['init_recurring_donation_id'] = $init_recurring_donation ? $init_recurring_donation->id : 0;
+
+            unset($old_ver_donation, $init_recurring_donation);
 
         }
 
@@ -234,7 +259,7 @@ class Leyka_Procedure_Convert_Donations_Format {
 
                 ob_start();
                 echo "META ERROR: ".$query."\n\n";
-                fputs($err_log_fp, "META ERROR: ".ob_get_clean());
+                fputs($err_log_fp, ob_get_clean());
                 fclose($err_log_fp);
 
             }
@@ -242,6 +267,9 @@ class Leyka_Procedure_Convert_Donations_Format {
         }
 
         fclose($err_log_fp);
+
+        wp_delete_post($donation_id, true);
+
         return true;
 
     }

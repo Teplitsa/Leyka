@@ -20,7 +20,7 @@ function leyka_get_wordpress_base_path() {
 
 }
 
-define('BASE_PATH', leyka_get_wp_core_path()."/");
+define('BASE_PATH', leyka_get_wordpress_base_path()."/");
 define('WP_USE_THEMES', false);
 define('WP_CURRENT_THEME', 'teplitsa');
 

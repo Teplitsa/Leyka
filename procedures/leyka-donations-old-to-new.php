@@ -15,11 +15,25 @@ $procedure_options = leyka_procedures_get_procedure_options(array(
     'limit' => false,
 ));
 
-//update_option('leyka_donations_storage_type', 'post'); // TMP, for debugging only
+Leyka_Donations::$use_leyka_object_cache = false; // So Donations objects wouldn't stay in memory (and lead to leaking problem)
+
+update_option('leyka_donations_storage_type', 'post'); // TMP, for debugging only
+
+function leyka_get_memory_formatted($bytes) {
+
+    $mbytes = $bytes % (1024*1024) ? intval($bytes/(1024*1024)) : 0;
+    $bytes -= $mbytes*1024*1024;
+
+    $kbytes = $bytes % 1024 ? intval($bytes/1024) : 0;
+    $bytes -= $kbytes*1024;
+
+    return ($mbytes ? $mbytes.'M ' : '').($kbytes ? $kbytes.'K ' : '').$bytes;
+
+}
 
 $time_start = microtime(true);
 
-leyka_procedures_print('Memory before anything: '.memory_get_usage(true));
+leyka_procedures_print('Memory before anything: '.leyka_get_memory_formatted(memory_get_usage()).' / '.ini_get('memory_limit'));
 
 if($procedure_options['pre_clear_sep_storage']) {
 
@@ -43,12 +57,16 @@ if($procedure_options['limit'] > 0) {
 $donations_ids = $wpdb->get_col($query);
 $total_donations = count($donations_ids);
 
+//leyka_procedures_print('Memory after getting donations IDs: '.get_memory_formatted(memory_get_usage()));
+
 leyka_procedures_print('Total donations: '.print_r($total_donations, 1));
 
 $process_completed_totally = true;
 $donations_processed = 0;
 
 foreach($donations_ids as $donation_id) {
+
+//    leyka_procedures_print('Memory before donation ID='.$donation_id.': '.get_memory_formatted(memory_get_usage()));
 
     leyka_procedures_print("Processing the donation #{$donations_processed}/{$total_donations}... ", 0);
 
@@ -70,6 +88,8 @@ foreach($donations_ids as $donation_id) {
         $process_completed_totally = $process_completed_totally & false;
     }
 
+//    leyka_procedures_print('Memory after donation ID='.$donation_id.': '.get_memory_formatted(memory_get_usage()));
+
 }
 
 if($process_completed_totally) {
@@ -80,7 +100,7 @@ if($process_completed_totally) {
 
 leyka_procedures_print('Donations transferring finished.');
 
-leyka_procedures_print('Memory '.memory_get_usage(true));
+leyka_procedures_print('Memory '.memory_get_usage());
 
 $total_time_sec = microtime(true) - $time_start;
 $total_time_min = intval($total_time_sec/60);
@@ -98,7 +118,7 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
     global $wpdb, $procedure_options;
 
     // 1. Main donation data insertion:
-
+//    leyka_procedures_print('Memory before processing ID='.$donation_id.': '.get_memory_formatted(memory_get_usage()));
     $query = $wpdb->prepare(
         "SELECT 
             {$wpdb->prefix}posts.`ID`, {$wpdb->prefix}posts.`post_title`, {$wpdb->prefix}posts.`post_status`,
@@ -114,7 +134,7 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
 
     if( !$donation_post_data ) {
 
-        leyka_procedures_print("the donation is not found.");
+        leyka_procedures_print('the donation is not found.');
         return false;
 
     }
@@ -180,12 +200,13 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
 
         ob_start();
         echo "ERROR migrating donation ID={$donation_id}: ".$query_values."\n\n";
-        fputs($err_log_fp, 'ERROR: '.ob_get_clean());
+        fputs($err_log_fp, ob_get_clean());
         fclose($err_log_fp);
 
         return false;
 
     }
+//    leyka_procedures_print('Memory after inserting main data for ID='.$donation_id.': '.get_memory_formatted(memory_get_usage()));
     // 1. Main donation data insertion - DONE
 
     // 2. Donation metas insertion:
@@ -230,10 +251,20 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
     // Find and save $donation_post_meta['init_recurring_donation_id'] for each "rebill"-type donation
     if($donation_post_data['payment_type'] === 'rebill') {
 
-        $old_ver_donation = new Leyka_Donation($donation_post_data['ID']);
+//        leyka_procedures_print('Memory before recurring d ID='.$donation_id.': '.get_memory_formatted(memory_get_usage()));
+
+        $old_ver_donation = new Leyka_Donation_Post($donation_post_data['ID']);
+
+//        leyka_procedures_print('Memory after getting old ver. recurring d ID='.$donation_id.': '.get_memory_formatted(memory_get_usage()));
+
         $init_recurring_donation = Leyka_Donation::get_init_recurring_donation($old_ver_donation);
 
+//        leyka_procedures_print('Memory after getting init recurring d ID='.$donation_id.': '.get_memory_formatted(memory_get_usage()));
+
         $donation_post_meta['init_recurring_donation_id'] = $init_recurring_donation ? $init_recurring_donation->id : 0;
+
+//        leyka_procedures_print('Memory after recurring donation ID='.$donation_id.': '.get_memory_formatted(memory_get_usage()));
+//        exit;
 
     }
 
@@ -272,7 +303,7 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
 
             ob_start();
             echo "META ERROR: ".$query."\n\n";
-            fputs($err_log_fp, "META ERROR: ".ob_get_clean());
+            fputs($err_log_fp, ob_get_clean());
             fclose($err_log_fp);
 
         }
@@ -280,12 +311,14 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
     }
 
     fclose($err_log_fp);
+//    leyka_procedures_print('Memory after processing ID='.$donation_id.': '.get_memory_formatted(memory_get_usage()));
 
     // 2. Donation metas insertion - DONE
 
     // 3. Delete the old (post-stored) donation
     if($procedure_options['delete_old_donations']) {
         wp_delete_post($donation_id, true);
+//        leyka_procedures_print('Memory after deleting original ID='.$donation_id.': '.get_memory_formatted(memory_get_usage()));
     }
 
     return true;

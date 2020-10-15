@@ -214,7 +214,9 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
         if((is_int($donation) || is_string($donation)) && absint($donation)) {
 
             $donation = absint($donation);
-            $this->_main_data = get_post($donation);
+
+            global $wpdb;
+            $this->_main_data = $wpdb->get_row($wpdb->prepare("SELECT * FROM $wpdb->posts WHERE ID = %d LIMIT 1", $donation));
 
             if( !$this->_main_data || $this->_main_data->post_type !== Leyka_Donation_Management::$post_type ) {
                 return false;
@@ -805,6 +807,17 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
         }
 
         return $this->_donation_meta[$meta_name];
+
+    }
+
+    public static function get_meta_singular($donation_id, $meta_name) {
+
+        $meta_name = trim($meta_name);
+        if( !absint($donation_id) || !$meta_name ) { /** @todo Throw an Ex? */
+            return NULL;
+        }
+
+        return get_post_meta($donation_id, $meta_name, true);
 
     }
 
