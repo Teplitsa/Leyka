@@ -21,6 +21,7 @@ function leyka_terms_of_service_text($text) {
             '#BANK_CORR_ACCOUNT#',
             '#UA_ERDPOU#',
             '#UA_BANK_MFO#',
+            '#BY_UNP#',
         ),
         array(
             home_url(),
@@ -39,6 +40,7 @@ function leyka_terms_of_service_text($text) {
             leyka_options()->opt('org_bank_corr_account'),
             leyka_options()->opt('org_erdpou'),
             leyka_options()->opt('org_bank_mfo'),
+            leyka_options()->opt('org_unp'),
         ),
         $text
     ));
@@ -63,6 +65,7 @@ function leyka_terms_of_pd_usage_text($text) {
             '#ADMIN_EMAIL#',
             '#UA_ERDPOU#',
             '#UA_BANK_MFO#',
+            '#BY_UNP#',
         ),
         array(
             home_url(),
@@ -74,6 +77,7 @@ function leyka_terms_of_pd_usage_text($text) {
             get_option('admin_email'),
             leyka_options()->opt('org_erdpou'),
             leyka_options()->opt('org_bank_mfo'),
+            leyka_options()->opt('org_unp'),
         ),
         $text
     ));

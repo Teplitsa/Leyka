@@ -216,7 +216,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'default' => __('Director', 'leyka'),
                 'description' => __('Enter an official position of a person representing the NGO.', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., Director', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s'), __('Director', 'leyka')),
             ),
             'org_address' => array(
                 'type' => 'text',
@@ -237,7 +237,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'title' => __('The organization bank account number', 'leyka'),
                 'description' => __('Enter a bank account number of the organization', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., 40123840529627089012', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s'), '40123840529627089012'),
                 'mask' => "'mask': '9{20}'",
             ),
         );
@@ -263,7 +263,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'text',
                 'title' => _x('Your taxpayer individual number', 'For a physical person', 'leyka'),
                 'required' => false,
-                'placeholder' => __('E.g., 4283256127', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s'), '4283256127'),
                 'mask' => "'mask': '9{12}'",
             ),
             'person_bank_name' => array(
@@ -274,19 +274,19 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
             'person_bank_account' => array(
                 'type' => 'text',
                 'title' => _x('Your bank account number', 'For a physical person', 'leyka'),
-                'placeholder' => _x('E.g., 40123840529627089012', 'For a physical person', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s'), '40123840529627089012'),
                 'mask' => "'mask': '9{20}'",
             ),
             'person_bank_bic' => array(
                 'type' => 'text',
                 'title' => _x('Your bank BIC number', 'For a physical person', 'leyka'),
-                'placeholder' => _x('E.g., 044180293', 'For a physical person', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s'), '044180293'),
                 'mask' => "'mask': '9{9}'",
             ),
             'person_bank_corr_account' => array(
                 'type' => 'text',
                 'title' => _x('Your correspondent bank account number', 'For a physical person', 'leyka'),
-                'placeholder' => _x('E.g., 30101810270902010595', 'For a physical person', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s'), '30101810270902010595'),
                 'mask' => "'mask': '9{20}'",
             ),
         );
@@ -468,7 +468,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'email',
                 'title' => __('Website technical support email', 'leyka'),
                 'description' => __('E-mail that you want to use to collect technical support requests from the donors.', 'leyka'),
-                'placeholder' => __('E.g., techsupport@email.com', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s'), 'techsupport@email.com'),
             ),
             'email_from_name' => array(
                 'type' => 'text',
@@ -481,7 +481,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'text',
                 'default' => leyka_get_default_email_from(),
                 'title' => __('Sender email', 'leyka'),
-                'placeholder' => __('E.g., donations@daisyfoundation.org', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s'), 'donations@daisyfoundation.org'),
                 'comment' => __('What your donors will see in the "from email" field. For the most of the cases, your organization contact email will do fine.', 'leyka'),
             ),
             'email_thanks_title' => array(

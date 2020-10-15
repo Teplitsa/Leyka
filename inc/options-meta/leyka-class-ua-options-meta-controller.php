@@ -19,7 +19,7 @@ class Leyka_Ua_Options_Meta_Controller extends Leyka_Options_Meta_Controller {
                 'title' => __('The organization ERDPOU number', 'leyka'),
                 'description' => __('Enter the organization ERDPOU number.', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., 32852561', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '32852561'),
                 'mask' => "'mask': '9{8}'",
             ),
             'org_bank_mfo' => array(
