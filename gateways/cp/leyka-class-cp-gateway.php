@@ -400,7 +400,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                         $init_recurring_donation->recurring_is_active = false;
 
-                        do_action("leyka_cp_cancel_recurring_subscription", $init_recurring_donation);
+                        do_action('leyka_cp_cancel_recurring_subscription', $init_recurring_donation);
 
                     }
 
@@ -426,6 +426,10 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
     }
 
     public function cancel_recurring_subscription(Leyka_Donation $donation) {
+
+        if( !$donation->recurring_is_active ) {
+            return true;
+        }
 
         if($donation->type !== 'rebill') {
             return new WP_Error(
@@ -469,8 +473,12 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
     public function cancel_recurring_subscription_by_link(Leyka_Donation $donation) {
 
-        if($donation->type !== 'rebill') {
-            die();
+        if($donation->type !== 'rebill' || !$donation->recurring_is_active) {
+            if( !empty($_POST['Id']) ) {
+                die(json_encode(array('code' => '0')));
+            } else {
+                die();
+            }
         }
 
         header('Content-type: text/html; charset=utf-8');
