@@ -200,7 +200,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
 
     public function _handle_service_calls($call_type = '') {
 
-        set_transient('leyka_tmp', $_POST);
+//        set_transient('leyka_tmp', $_POST);
 
         if( !$_POST || empty($_POST['site_order_id']) ) {
             $this->_handle_callback_error(__('No donation ID given', 'leyka'));
@@ -296,6 +296,13 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
             $response = array();
         }
 
+        $calculated = $response['batch_timestamp'].$response['currency_id'].$response['amount'].$response['payment_method'].$response['order_id']
+            .$response['site_order_id'].$response['transaction_id'].$response['payment_type'].$response['rrn']
+            .leyka_options()->opt($this->_id.'_secret_key');
+
+        echo '<pre>'.print_r($response, 1).'</pre>';
+        echo '<pre>'.print_r($calculated.' - '.md5($calculated), 1).'</pre>';
+
         $response = array(
             __('Callback received at:', 'leyka') => empty($response['batch_timestamp']) ?
                 '-' : date_i18n(get_option('date_format').' '.get_option('time_format'), $response['batch_timestamp']),
@@ -308,6 +315,11 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
             __('Payment type:', 'leyka') => empty($response['payment_type']) ? '-' : $response['payment_type'],
             __('RRN:', 'leyka') => empty($response['rrn']) ? '-' : $response['rrn'],
             __('Digital signature:', 'leyka') => empty($response['wsb_signature']) ? '-' : $response['wsb_signature'],
+//            __('Calculated signature:', 'leyka') => md5(
+//                $response['batch_timestamp'].$response['currency_id'].$response['amount'].$response['payment_method'].$response['order_id']
+//                .$response['site_order_id'].$response['transaction_id'].$response['payment_type'].$response['rrn']
+//                .leyka_options()->opt($this->_id.'_secret_key')
+//            ),
             __('Action:', 'leyka') => isset($response['action']) ? $response['action'] : '-',
             __('RC', 'leyka') => empty($response['rc']) ? '-' : $response['rc'],
             __('Approval:', 'leyka') => empty($response['approval']) ? '-' : $response['approval'],
