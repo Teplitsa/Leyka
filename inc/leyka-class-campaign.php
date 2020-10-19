@@ -267,14 +267,19 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                             if( !$pm->has_recurring_support() ) {
                                 unset($recurring_pm_list[$index]);
                             }
-                        }?>
+                        }
+
+                        $pm = leyka_get_pm_by_id($campaign->daily_rouble_pm_id, true);?>
 
                         <select name="daily_rouble_pm" id="daily-rouble-pm" <?php echo $recurring_pm_list ? '' : 'disabled="disabled"';?>>
+                            <option value="" <?php echo $pm && $pm->is_active ? '' : 'selected="selected"';?>><?php _e('Not set', 'leyka');?></option>
+
                         <?php foreach($recurring_pm_list as $pm) {?>
                             <option value="<?php echo $pm->full_id;?>" <?php echo $pm->full_id === $campaign->daily_rouble_pm_id ? 'selected="selected"' : '';?>>
                                 <?php echo $pm->title.' ('.$pm->gateway->title.')';?>
                             </option>
                         <?php }?>
+
                         </select>
 
                     </div>
