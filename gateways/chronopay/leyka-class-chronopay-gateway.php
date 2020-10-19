@@ -327,7 +327,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         }
 
         $init_recurring_donation = Leyka_Donations::get_instance()->get(array(
-            'meta' => array(array('key' => 'chronopay_customer_id', 'value' => $recurring,),),
+            'meta' => array(array('key' => '_chronopay_customer_id', 'value' => $recurring,),),
             'type' => 'rebill',
             'status' => 'funded',
             'orderby' => 'date',
@@ -490,16 +490,16 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
     public function get_specific_data_value($value, $field_name, Leyka_Donation_Base $donation) {
         switch($field_name) {
-            case 'chronopay_customer_id': return $donation->get_meta('chronopay_customer_id');
-            case 'chronopay_transaction_id': return $donation->get_meta('chronopay_transaction_id');
+            case 'chronopay_customer_id': return $donation->get_meta('_chronopay_customer_id');
+            case 'chronopay_transaction_id': return $donation->get_meta('_chronopay_transaction_id');
             default: return $value;
         }
     }
 
     public function set_specific_data_value($field_name, $value, Leyka_Donation_Base $donation) {
         switch($field_name) {
-            case 'chronopay_customer_id': return $donation->set_meta('chronopay_customer_id', $value);
-            case 'chronopay_transaction_id': return $donation->set_meta('chronopay_transaction_id', $value);
+            case 'chronopay_customer_id': return $donation->set_meta('_chronopay_customer_id', $value);
+            case 'chronopay_transaction_id': return $donation->set_meta('_chronopay_transaction_id', $value);
             default: return false;
         }
     }
@@ -521,13 +521,13 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         if( !empty($donation_params['chronopay_customer_id']) ) {
             Leyka_Donations::get_instance()
                 ->get_donation($donation_id)
-                ->set_meta('chronopay_customer_id', $donation_params['chronopay_customer_id']);
+                ->set_meta('_chronopay_customer_id', $donation_params['chronopay_customer_id']);
         }
 
         if( !empty($donation_params['chronopay_transaction_id']) ) {
             Leyka_Donations::get_instance()
                 ->get_donation($donation_id)
-                ->set_meta('chronopay_transaction_id', $donation_params['chronopay_transaction_id']);
+                ->set_meta('_chronopay_transaction_id', $donation_params['chronopay_transaction_id']);
         }
 
     }

@@ -9,10 +9,12 @@ if( !defined('WPINC') ) die;
 global $wpdb;
 
 $procedure_options = leyka_procedures_get_procedure_options(array(
-    'migrate_donors' => false, /** @todo Migrate as donation_meta "donor_user_id" */
+//    'migrate_donors' => false, /** @todo Migrate as donation_meta "donor_user_id" */
     'delete_old_donations' => false,
     'pre_clear_sep_storage' => false,
+    'only_funded' => false,
     'limit' => false,
+    'debug_profiling' => false, // Display time to complete each sub-operation
 ));
 
 Leyka_Donations::$use_leyka_object_cache = false; // So Donations objects wouldn't stay in memory (and lead to leaking problem)
@@ -47,7 +49,7 @@ if($procedure_options['pre_clear_sep_storage']) {
 }
 
 $query = $wpdb->prepare(
-    "SELECT {$wpdb->prefix}posts.ID as ID FROM {$wpdb->prefix}posts WHERE {$wpdb->prefix}posts.post_type=%s ORDER BY ID",
+    "SELECT {$wpdb->prefix}posts.ID FROM {$wpdb->prefix}posts WHERE {$wpdb->prefix}posts.post_type=%s ".($procedure_options['only_funded'] ? "AND {$wpdb->prefix}posts.post_status='funded'" : '')." ORDER BY {$wpdb->prefix}posts.ID",
     Leyka_Donation_Management::$post_type
 );
 if($procedure_options['limit'] > 0) {
@@ -57,9 +59,17 @@ if($procedure_options['limit'] > 0) {
 $donations_ids = $wpdb->get_col($query);
 $total_donations = count($donations_ids);
 
+$recurring_subscriptions = $wpdb->get_results("SELECT {$wpdb->prefix}posts.ID, {$wpdb->prefix}postmeta.meta_value FROM `mlsd_posts` JOIN {$wpdb->prefix}postmeta ON {$wpdb->prefix}posts.id={$wpdb->prefix}postmeta.post_id WHERE ".($procedure_options['only_funded'] ? "{$wpdb->prefix}posts.post_status='funded' AND" : '')." {$wpdb->prefix}postmeta.meta_key='_chronopay_customer_id' GROUP BY {$wpdb->prefix}postmeta.meta_value ORDER BY {$wpdb->prefix}postmeta.meta_value, {$wpdb->prefix}posts.ID");
+foreach($recurring_subscriptions as $key => $values) {
+
+    $recurring_subscriptions[$values->meta_value] = $values->ID;
+    unset($recurring_subscriptions[$key]);
+
+}
+
 //leyka_procedures_print('Memory after getting donations IDs: '.get_memory_formatted(memory_get_usage()));
 
-leyka_procedures_print('Total donations: '.print_r($total_donations, 1));
+leyka_procedures_print('Converting non-recurring donations (total: '.print_r($total_donations, 1).')');
 
 $process_completed_totally = true;
 $donations_processed = 0;
@@ -70,7 +80,8 @@ foreach($donations_ids as $donation_id) {
 
     leyka_procedures_print("Processing the donation #{$donations_processed}/{$total_donations}... ", 0);
 
-    if($donation_id <= get_option('leyka_donations_storage_last_post2sep_id')) {
+//    if($donation_id <= get_option('leyka_donations_storage_last_post2sep_id')) {
+    if($wpdb->get_var("SELECT COUNT(ID) FROM {$wpdb->prefix}leyka_donations WHERE ID=".$donation_id)) {
 
         leyka_procedures_print("donation #{$donation_id} already migrated - skipping it. ");
         continue;
@@ -92,6 +103,31 @@ foreach($donations_ids as $donation_id) {
 
 }
 
+// Delete all non-converted donations, if needed:
+if($procedure_options['only_funded'] && $procedure_options['delete_old_donations']) {
+
+    leyka_procedures_print("Deleting non-converted donations...");
+
+    $donations_ids = $wpdb->get_col($wpdb->prepare("SELECT {$wpdb->prefix}posts.ID as ID FROM {$wpdb->prefix}posts WHERE {$wpdb->prefix}posts.post_type=%s AND post_status != %s", Leyka_Donation_Management::$post_type, 'funded'));
+
+    $total_donations = count($donations_ids);
+    $donations_processed = 0;
+
+    foreach($donations_ids as $donation_id) {
+
+        $wpdb->delete($wpdb->postmeta, array('post_id' => $donation_id), array('%d'));
+        $wpdb->delete($wpdb->posts, array('ID' => $donation_id), array('%d'));
+
+        $donations_processed++;
+
+        leyka_procedures_print("Donation deleted (".round($donations_processed*100.0/$total_donations, 3)."% finished).");
+
+    }
+
+    leyka_procedures_print("All non-converted donations deleted.");
+
+}
+
 if($process_completed_totally) {
     update_option('leyka_donations_storage_type', 'sep');
 } else {
@@ -100,12 +136,12 @@ if($process_completed_totally) {
 
 leyka_procedures_print('Donations transferring finished.');
 
-leyka_procedures_print('Memory '.memory_get_usage());
+leyka_procedures_print('Memory '.leyka_get_memory_formatted(memory_get_usage()));
 
 $total_time_sec = microtime(true) - $time_start;
 $total_time_min = intval($total_time_sec/60);
 
-leyka_procedures_print('Total execution time: '.($total_time_min ? "$total_time_min min, ".round($total_time_sec % $total_time_min, 2).' sec' : round($total_time_sec, 2)." sec"));
+leyka_procedures_print('Total execution time: '.($total_time_min ? "$total_time_min min, ".round($total_time_sec % $total_time_min, 2).' sec' : round($total_time_sec, 2).' sec'));
 
 /**
  * Convert the donation from Post-based to separate-storage-based.
@@ -115,10 +151,12 @@ leyka_procedures_print('Total execution time: '.($total_time_min ? "$total_time_
  */
 function leyka_change_donation_storage_type_post2sep($donation_id) {
 
-    global $wpdb, $procedure_options;
+    global $wpdb, $procedure_options, $recurring_subscriptions;
 
     // 1. Main donation data insertion:
 //    leyka_procedures_print('Memory before processing ID='.$donation_id.': '.get_memory_formatted(memory_get_usage()));
+    $donation_time_current_sec = $donation_time_total_sec = microtime(true);
+
     $query = $wpdb->prepare(
         "SELECT 
             {$wpdb->prefix}posts.`ID`, {$wpdb->prefix}posts.`post_title`, {$wpdb->prefix}posts.`post_status`,
@@ -129,6 +167,13 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
         $donation_id
     );
     $donation_post_data = $wpdb->get_row($query, ARRAY_A);
+
+    if($procedure_options['debug_profiling']) {
+
+        leyka_procedures_print('Getting the initial d post: '.(microtime(true) - $donation_time_current_sec));
+        $donation_time_current_sec = microtime(true);
+
+    }
 
     $err_log_fp = fopen('error.log', 'a+');
 
@@ -144,6 +189,13 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
     $query = "INSERT INTO {$wpdb->prefix}leyka_donations (`ID`, `campaign_id`, `status`, `payment_type`, `date_created`, `gateway_id`, `pm_id`, `currency_id`, `amount`, `amount_total`, `amount_in_main_currency`, `amount_total_in_main_currency`,`donor_name`, `donor_email`) VALUES ";
 
     $donation_post_meta = $wpdb->get_results($wpdb->prepare("SELECT `meta_key`,`meta_value` FROM {$wpdb->prefix}postmeta WHERE `post_id`=%d", $donation_post_data['ID']), ARRAY_A);
+
+    if($procedure_options['debug_profiling']) {
+
+        leyka_procedures_print('Getting the initial d post metas: '.(microtime(true) - $donation_time_current_sec));
+        $donation_time_current_sec = microtime(true);
+
+    }
 
     if( !$donation_post_meta ) {
 
@@ -206,6 +258,14 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
         return false;
 
     }
+
+    if($procedure_options['debug_profiling']) {
+
+        leyka_procedures_print('Inserting the d sep main data: '.(microtime(true) - $donation_time_current_sec));
+        $donation_time_current_sec = microtime(true);
+
+    }
+
 //    leyka_procedures_print('Memory after inserting main data for ID='.$donation_id.': '.get_memory_formatted(memory_get_usage()));
     // 1. Main donation data insertion - DONE
 
@@ -255,16 +315,33 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
 
         $old_ver_donation = new Leyka_Donation_Post($donation_post_data['ID']);
 
+//        leyka_procedures_print('The d ('.$donation_post_data['ID'].') is recurring - getting old post instance: '.(microtime(true) - $donation_time_current_sec));
+//        $donation_time_current_sec = microtime(true);
+
 //        leyka_procedures_print('Memory after getting old ver. recurring d ID='.$donation_id.': '.get_memory_formatted(memory_get_usage()));
 
-        $init_recurring_donation = Leyka_Donation::get_init_recurring_donation($old_ver_donation);
+        $customer_id = $old_ver_donation->chronopay_customer_id;
+
+//        leyka_procedures_print("D ID: {$donation_post_data['ID']}, customer ID: ".$customer_id.", init D ID: ".(empty($recurring_subscriptions[$customer_id]) ? '-' : $recurring_subscriptions[$customer_id]));
+
+        if($customer_id && !empty($recurring_subscriptions[$customer_id])) { // Init recurring donation ID found
+            $donation_post_meta['init_recurring_donation_id'] = $recurring_subscriptions[$customer_id];
+        } else {
+
+            $donation_post_meta['init_recurring_donation_id'] = 0;
+
+            ob_start();
+            echo "META ERROR: can't find init recurring donation for Chronopay Customer ID {$customer_id}\n\n";
+            fputs($err_log_fp, ob_get_clean());
+
+        }
+
+//        leyka_procedures_print('The d is recurring - getting init recurring d post instance: '.(microtime(true) - $donation_time_current_sec));
+//        $donation_time_current_sec = microtime(true);
 
 //        leyka_procedures_print('Memory after getting init recurring d ID='.$donation_id.': '.get_memory_formatted(memory_get_usage()));
 
-        $donation_post_meta['init_recurring_donation_id'] = $init_recurring_donation ? $init_recurring_donation->id : 0;
-
 //        leyka_procedures_print('Memory after recurring donation ID='.$donation_id.': '.get_memory_formatted(memory_get_usage()));
-//        exit;
 
     }
 
@@ -291,22 +368,29 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
         $donation_post_meta['_is_subscribed']
     );
 
-    foreach($donation_post_meta as $key => $value) {
+    if($donation_post_meta) {
 
-        if(stripos($key, '_') === 0) { // If meta key starts with "_", remove the symbol
-            $key = mb_substr($key, 1);
+        $query = $wpdb->prepare("INSERT INTO {$wpdb->prefix}leyka_donations_meta (`donation_id`,`meta_key`,`meta_value`) VALUES ");
+
+        foreach($donation_post_meta as $key => $value) {
+            $query .= $wpdb->prepare("(%d, %s, %s),", $donation_post_data['ID'], $key, $value);
         }
 
-        $query = $wpdb->prepare("INSERT INTO {$wpdb->prefix}leyka_donations_meta (`donation_id`,`meta_key`,`meta_value`) VALUES (%d, %s, %s)", $donation_post_data['ID'], $key, $value);
-
+        $query = rtrim($query, ',');
         if($wpdb->query($query) === false) {
 
             ob_start();
             echo "META ERROR: ".$query."\n\n";
             fputs($err_log_fp, ob_get_clean());
-            fclose($err_log_fp);
 
         }
+
+    }
+
+    if($procedure_options['debug_profiling']) {
+
+        leyka_procedures_print('Inserting the d sep metas: '.(microtime(true) - $donation_time_current_sec));
+        $donation_time_current_sec = microtime(true);
 
     }
 
@@ -317,8 +401,17 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
 
     // 3. Delete the old (post-stored) donation
     if($procedure_options['delete_old_donations']) {
-        wp_delete_post($donation_id, true);
+
+//        wp_delete_post($donation_id, true);
+        $wpdb->delete($wpdb->postmeta, array('post_id' => $donation_post_data['ID']), array('%d'));
+        $wpdb->delete($wpdb->posts, array('ID' => $donation_post_data['ID']), array('%d'));
+
 //        leyka_procedures_print('Memory after deleting original ID='.$donation_id.': '.get_memory_formatted(memory_get_usage()));
+        if($procedure_options['debug_profiling']) {
+            leyka_procedures_print('Deleting the old d post: '.(microtime(true) - $donation_time_current_sec));
+            leyka_procedures_print('D conversion total time: '.(microtime(true) - $donation_time_total_sec));
+        }
+
     }
 
     return true;
