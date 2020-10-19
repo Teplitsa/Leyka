@@ -5,6 +5,8 @@
  * Deprecated: true
  **/
 
+/** @var $campaign Leyka_Campaign */
+
 $active_pm = apply_filters('leyka_form_pm_order', leyka_get_pm_list(true));
 
 leyka_pf_submission_errors();?>

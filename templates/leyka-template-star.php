@@ -6,6 +6,7 @@
  * $campaign - current campaign
  **/
 
+/** @var $campaign Leyka_Campaign */
 $template_data = Leyka_Star_Template_Controller::get_instance()->get_template_data($campaign);
 
 $is_recurring_campaign = false;
