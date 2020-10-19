@@ -200,8 +200,6 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
 
     public function _handle_service_calls($call_type = '') {
 
-//        set_transient('leyka_tmp', $_POST);
-
         if( !$_POST || empty($_POST['site_order_id']) ) {
             $this->_handle_callback_error(__('No donation ID given', 'leyka'));
         }
@@ -262,6 +260,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
                 $signature_calculated = md5(
                     $_POST['batch_timestamp'].$_POST['currency_id'].$_POST['amount'].$_POST['payment_method'].$_POST['order_id']
                     .$_POST['site_order_id'].$_POST['transaction_id'].$_POST['payment_type'].$_POST['rrn']
+                    .(leyka_options()->opt($this->_id.'-webpay_card_rebilling_available') ? $_POST['card'] : '')
                     .leyka_options()->opt($this->_id.'_secret_key')
                 );
             }
