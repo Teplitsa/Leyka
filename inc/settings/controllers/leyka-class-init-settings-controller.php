@@ -813,8 +813,27 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
     public function handle_init_section(array $section_settings) {
 
-        if($section_settings['receiver_country'] !== '-' && $section_settings['receiver_country'] !== 'ru') {
-            wp_redirect(admin_url('admin.php?page=leyka_settings&stage=beneficiary'));
+        $section_settings['receiver_country'] = empty($section_settings['receiver_country'])
+            || $section_settings['receiver_country'] === '-' ?
+            'ru' : $section_settings['receiver_country'];
+
+        switch($section_settings['receiver_country']) {
+            case 'ua':
+
+                leyka_options()->opt('currency_main', 'uah');
+                leyka_options()->opt('receiver_legal_type', 'legal');
+                wp_redirect(admin_url('admin.php?page=leyka_settings&stage=beneficiary'));
+                exit;
+
+            case 'by':
+
+                leyka_options()->opt('currency_main', 'byn');
+                leyka_options()->opt('receiver_legal_type', 'legal');
+                wp_redirect(admin_url('admin.php?page=leyka_settings&stage=beneficiary'));
+                exit;
+
+            case 'ru':
+            default:
         }
 
         return true;
