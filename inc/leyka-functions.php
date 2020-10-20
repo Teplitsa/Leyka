@@ -990,10 +990,10 @@ function leyka_get_main_currencies_full_info() {
         'byn' => array(
             'title' => __('Belarus Rouble', 'leyka'),
             'label' => __('BYN', 'leyka'),
-            'min_amount' => 10,
+            'min_amount' => 1,
             'max_amount' => 30000,
-            'flexible_default_amount' => 500,
-            'fixed_amounts' => '100,300,500,1000',
+            'flexible_default_amount' => 10,
+            'fixed_amounts' => '5,10,20,50',
         ),
         'uah' => array(
             'title' => __('Ukraine Hryvnia', 'leyka'),

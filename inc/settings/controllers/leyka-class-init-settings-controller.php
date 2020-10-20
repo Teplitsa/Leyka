@@ -48,7 +48,8 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         )))->add_block(new Leyka_Option_Block(array(
             'id' => 'receiver_country',
             'option_id' => 'receiver_country',
-        )))->add_to($stage);
+        )))->add_handler(array($this, 'handle_init_section'))
+            ->add_to($stage);
 
         // Receiver type step:
         $section = new Leyka_Settings_Section('receiver_type', $stage->id, __('Donations receiver', 'leyka'));
@@ -810,6 +811,16 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
 
     }
 
+    public function handle_init_section(array $section_settings) {
+
+        if($section_settings['receiver_country'] !== '-' && $section_settings['receiver_country'] !== 'ru') {
+            wp_redirect(admin_url('admin.php?page=leyka_settings&stage=beneficiary'));
+        }
+
+        return true;
+
+    }
+
     public function handle_campaign_completed_section(array $section_settings) {
 
         $campaign_id = get_transient('leyka_init_campaign_id');
@@ -856,7 +867,7 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             leyka_save_option(preg_replace("/^leyka_/", "", $option_id));
         }
 
-        return !empty($errors) ? $errors : true;
+        return $errors ? $errors : true;
 
     }
 
