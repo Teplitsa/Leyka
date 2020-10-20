@@ -1763,6 +1763,22 @@ if( !function_exists('leyka_save_option') ) {
     }
 }
 
+if( !function_exists('leyka_save_commission_field') ) {
+    /** An utility function to save the Gateways commission fields. For "leyka_save_custom_option-commission" hook only. */
+    function leyka_save_commission_field() {
+        if( !empty($_POST['leyka_commission']) && is_array($_POST['leyka_commission']) ) {
+
+            foreach($_POST['leyka_commission'] as &$commission) {
+                $commission = $commission >= 0.0 ? (float)$commission : 0.0;
+            }
+
+            leyka_options()->opt('commission', array_merge(leyka_options()->opt('commission'), $_POST['leyka_commission']));
+
+        }
+    }
+}
+add_action('leyka_save_custom_option-commission', 'leyka_save_commission_field');
+
 if( !function_exists('leyka_add_editor_css') ) {
 	function leyka_add_editor_css() {
 		add_editor_style( LEYKA_PLUGIN_BASE_URL.'assets/css/editor.css' );
