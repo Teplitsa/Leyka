@@ -10,6 +10,7 @@ function leyka_ajax_get_campaigns_list() {
     $_REQUEST['term'] = empty($_REQUEST['term']) ? '' : trim($_REQUEST['term']);
 
     $campaigns = leyka_get_campaigns_list(array(
+        'posts_per_page' => 10,
         'meta_query' => array(array(
             'key' => 'payment_title', 'value' => $_REQUEST['term'], 'compare' => 'LIKE', 'type' => 'CHAR',
         )),
@@ -27,7 +28,9 @@ function leyka_ajax_get_campaigns_list() {
         );
     }
 
-    foreach(leyka_get_campaigns_list(array('s' => $_REQUEST['term']), 0) as $campaign) { // Any criteria search - low priority
+    $campaigns_tmp = leyka_get_campaigns_list(array('s' => $_REQUEST['term'], 'posts_per_page' => 10,), 0);
+
+    foreach($campaigns_tmp as $campaign) { // Any criteria search - low priority
         if( !in_array($campaign->ID, $ids_found) ) {
             $campaigns[] = array(
                 'value' => $campaign->ID,
@@ -754,10 +757,9 @@ function leyka_campaigns_autocomplete(){
     $res = array();
 
     if($filter) {
-        $campaigns = leyka_get_campaigns_list(array('s' => $filter));
-    }
-    else {
-        $campaigns = leyka_get_campaigns_list(array());
+        $campaigns = leyka_get_campaigns_list(array('s' => $filter, 'posts_per_page' => 10,));
+    } else {
+        $campaigns = leyka_get_campaigns_list(array('posts_per_page' => 10,));
     }
 
     foreach($campaigns as $campaign_id => $campaign_title) {

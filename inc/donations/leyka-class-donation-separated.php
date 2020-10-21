@@ -148,7 +148,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             $donation_meta_fields['init_recurring_donation_id'] = $params['init_recurring_donation'];
         }
 
-        $donation_meta_fields['status_log'] = array(array('date' => current_time('timestamp'), 'status' => $params['status']));
+        $donation_meta_fields['_status_log'] = array(array('date' => current_time('timestamp'), 'status' => $params['status']));
 
         if($params['payment_type'] === 'rebill' && !$donation_meta_fields['init_recurring_donation_id']) {
 
@@ -199,6 +199,8 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             }
 
         }
+
+        Leyka_Donation_Management::get_instance()->donation_status_changed($params['status'], 'new', $donation_id);
 
         return $donation_id;
 
@@ -279,7 +281,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                 return leyka()->get_donation_status_info($this->_main_data->status, 'description');
 
             case 'status_log':
-                return $this->get_meta('status_log');
+                return $this->get_meta('_status_log');
 
             case 'date':
             case 'date_label':
@@ -384,9 +386,9 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'donor_comment':
                 return $this->get_meta('donor_comment');
             case 'donor_email_date':
-                return $this->get_meta('donor_email_date');
+                return $this->get_meta('_donor_email_date');
             case 'managers_emails_date':
-                return $this->get_meta('managers_emails_date');
+                return $this->get_meta('_managers_emails_date');
 
             case 'is_subscribed':
             case 'donor_subscribed':
@@ -498,22 +500,26 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                 return $this->set_meta('payment_title', $value);
 
             case 'status':
+
+                $old_status = $this->status;
                 if(
                     !array_key_exists($value, leyka_get_donation_status_list())
-                    || $this->status === $value
+                    || $old_status === $value
                     || !$this->_set_data('status', $value)
                 ) {
                     return false;
                 }
 
-                $status_log = $this->get_meta('status_log');
+                Leyka_Donation_Management::get_instance()->donation_status_changed($value, $old_status, $this);
+
+                $status_log = $this->get_meta('_status_log');
                 if($status_log && is_array($status_log)) {
                     $status_log[] = array('date' => current_time('timestamp'), 'status' => $value);
                 } else {
                     $status_log = array(array('date' => current_time('timestamp'), 'status' => $value));
                 }
 
-                return $this->set_meta('status_log', $status_log);
+                return $this->set_meta('_status_log', $status_log);
 
             case 'date':
                 return $this->_set_data('date_created', $value);
@@ -804,14 +810,20 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             return false; /** @todo Throw an Ex? */
         }
 
+        die('<pre>'.print_r('HERE! Deleting the sep-D: '.$this->_id, 1).'</pre>');
+
+        Leyka_Donation_Management::get_instance()->donation_status_changed('trash', $this->status, $this);
+
         global $wpdb;
 
 //        if( !!$force ) {
-        return !(
+        $res = !(
             $wpdb->delete($wpdb->prefix.'leyka_donations_meta', array('donation_id' => $this->_id), array('%d')) === false
             || $wpdb->delete($wpdb->prefix.'leyka_donations', array('ID' => $this->_id), array('%d')) === false
         );
 //        } else { } /** @todo Implement $force == false */
+
+        return $res;
 
     }
 

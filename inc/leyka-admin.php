@@ -358,7 +358,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		return in_array($stage, array('email', 'beneficiary', 'technical', 'view', 'additional'));
 	}
 
-	// (Separate stored) Donations related methods:
+	/** (Separate stored) Donations related methods: */
     public function donations_list_screen_options() {
 
         add_screen_option('per_page', array(
@@ -583,9 +583,6 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
     }
     protected function _handle_donation_add() {
 
-//        echo '<pre>'.print_r($_POST, 1).'</pre>';
-//        echo '<pre>Errors: '.print_r(empty($_SESSION['leyka_new_donation_error']) ? '' : $_SESSION['leyka_new_donation_error'], 1).'</pre>';
-
         $gateway_pm = empty($_POST['donation-pm']) || $_POST['donation-pm'] === 'custom' ?
             'custom' : leyka_get_pm_by_id($_POST['donation-pm'], true);
         $gateway_id = $gateway_pm === 'custom' ? '' : $gateway_pm->gateway_id;
@@ -601,7 +598,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             'donor_name' => $_POST['donor-name'],
             'donor_email' => $_POST['donor-email'],
             'donor_comment' => empty($_POST['donor-comment']) ? '' : $_POST['donor-comment'],
-            'date_created' => $_POST['donation_date'], /** @todo Make it use time also? */
+            'date_created' => $_POST['donation_date'].' '.date('H:i:s'),
         );
         if( !empty($_POST['donation-amount-total']) && $_POST['donation-amount-total'] !== $_POST['donation-amount'] ) {
             $new_donation_params['amount_total'] = round($_POST['donation-amount-total'], 2);
@@ -632,9 +629,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         <?php }
 
     }
-    // Donations related methods - END
+    /** Donations related methods - END */
 
-    // Donors related methods:
+    /** Donors related methods: */
     public function donors_list_screen_options() {
 
         add_screen_option('per_page', array(
@@ -747,7 +744,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         ));
 
     }
-    // Donors related methods - END
+    /** Donors related methods - END */
 
 	public function settings_screen() {
 

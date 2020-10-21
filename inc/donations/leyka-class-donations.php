@@ -773,14 +773,23 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
     public function delete_donation($donation_id, $force_delete = false) {
 
+        $donation = $this->get_donation($donation_id);
+
+        Leyka_Donation_Management::get_instance()->donation_status_changed('trash', $donation->status, $donation);
+
         global $wpdb;
 
         /** @todo Implement $force_delete == false. Keep the original donation status in meta, then update the donation status to "trash" */
 //        if( !!$force_delete ) {
-        return !!$wpdb->delete($wpdb->prefix.'leyka_donations', array('ID' => absint($donation_id)));
+        $res = !(
+            $wpdb->delete($wpdb->prefix.'leyka_donations_meta', array('donation_id' => $donation_id), array('%d')) === false
+            || $wpdb->delete($wpdb->prefix.'leyka_donations', array('ID' => $donation_id), array('%d')) === false
+        );
 //        } else {
 //            $wpdb->update();
 //        }
+
+        return $res;
 
     }
 

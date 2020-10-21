@@ -991,13 +991,7 @@ function leyka_get_campaigns_list($params = array(), $simple_format = true) {
         return $list;
 
     } else { // Simple assoc. array of ID => title
-
-        foreach($campaigns as $campaign) {
-            $campaign->post_title = htmlentities($campaign->post_title, ENT_QUOTES, 'UTF-8');
-        }
-
         return $campaigns;
-
     }
 
 }

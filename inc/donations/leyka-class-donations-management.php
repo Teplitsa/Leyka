@@ -118,24 +118,25 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 			$actions['edit'] = '<a href="'.get_edit_post_link($donation->ID, 1).'">'.__('Edit').'</a>';
 		}
 
-        unset($actions['view']);
-        unset($actions['inline hide-if-no-js']);
+        unset($actions['view'], $actions['inline hide-if-no-js']);
 
         return $actions;
 
     }
 
-    public function donation_status_changed($new, $old, WP_Post $donation) {
+    public function donation_status_changed($new, $old, $donation) {
 
-        if($new === $old || $donation->post_type !== self::$post_type) {
+        if($new === $old || (is_a($donation, 'WP_Post') && $donation->post_type !== self::$post_type)) {
             return;
         }
 
-        $donation = new Leyka_Donation($donation);
+        $donation = Leyka_Donations::get_instance()->get_donation($donation);
 
         if($old === 'new' && $new !== 'trash') {
             do_action('leyka_new_donation_added', $donation->id);
-        } else if($new === 'funded' || $old === 'funded') {
+        }
+
+        if($new === 'funded' || $old === 'funded') {
 
             do_action('leyka_donation_funded_status_changed', $donation->id, $old, $new);
 
