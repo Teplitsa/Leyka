@@ -1232,6 +1232,7 @@ class Leyka_Campaign {
 
         if( !$donation ) { // Recalculate total collected amount for a campaign and recache it
 
+            /** @todo Optimize it for the case of MANY donations here! Make a sep method to get an amount_total metas sum() with one query. */
             $sum = 0.0;
             foreach($this->get_donations(array('funded')) as $donation) {
                 $sum += $donation->sum_total;
