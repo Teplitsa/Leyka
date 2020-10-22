@@ -1607,8 +1607,8 @@ class Leyka_Campaign {
 
     }
 
-    public function delete($force = False) {
-        wp_delete_post( $this->_id, $force );
+    public function delete($force = false) {
+        wp_delete_post($this->_id, $force);
     }
     
 }
