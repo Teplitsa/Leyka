@@ -56,17 +56,24 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
         }
 
-        $pm_full_id = leyka_get_pm_by_id("{$params['gateway_id']}-{$params['pm_id']}", true);
+        $pm_data = leyka_pf_get_payment_method_value();
+        $pm_data = $pm_data ?
+            $pm_data :
+            array(
+                'payment_method_id' => empty($params['pm_id']) ?
+                    (empty($params['payment_method_id']) ? '' : $params['payment_method_id']) :
+                    $params['pm_id'],
+                'gateway_id' => empty($params['gateway_id']) ? '' : $params['gateway_id'],
+            );
 
-        if( !$params['force_insert'] && empty($params['pm_id']) ) { // Gateway ID may be empty (for custom payment info cases)
+        $pm_full_id = $pm_data['gateway_id'].'-'.$pm_data['payment_method_id'];
+
+        // Gateway ID may be empty (for custom payment info cases):
+        if( !$params['force_insert'] && empty($pm_data['payment_method_id']) ) {
             return new WP_Error('donation_addition_error', __('Gateway or PM ID is missing while adding a donation', 'leyka'));
         }
 
-        if(
-            !$params['force_insert']
-            && $params['gateway_id'] !== 'correction'
-            && !leyka_get_pm_by_id($params['gateway_id'].'-'.$params['pm_id'], true)
-        ) {
+        if( !$params['force_insert'] && $params['gateway_id'] !== 'correction' && !leyka_get_pm_by_id($pm_full_id, true)) {
             return new WP_Error('donation_addition_error', __('Incorrect gateway or PM ID given while adding a donation', 'leyka'));
         }
 
@@ -77,8 +84,12 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
         $params['currency_id'] = empty($params['currency_id']) || !leyka_get_currencies_data($params['currency_id']) ?
             'RUB' : mb_strtoupper($params['currency_id']);
 
-        $params['amount_total'] = empty($params['amount_total']) ? $params['amount'] : round((float)$params['amount_total'], 2);
-        if($pm_full_id && (empty($params['amount_total']) || $params['amount_total'] === 'auto')) {
+        $params['amount_total'] = empty($params['amount_total']) ? 'auto' : round((float)$params['amount_total'], 2);
+
+        if(
+            (empty($params['amount_total']) || $params['amount_total'] == 'auto')
+            && ( !empty($pm_data['payment_method_id']) && !empty($pm_data['gateway_id']) )
+        ) {
             $params['amount_total'] = leyka_calculate_donation_total_amount(false, $params['amount'], $pm_full_id);
         }
 
