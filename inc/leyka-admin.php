@@ -518,6 +518,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             if($_POST['donation-pm'] === 'custom') {
 
                 $donation->gateway_id = '';
+                $_POST['custom-payment-info'] = mb_substr($_POST['custom-payment-info'], 0, 255);
+
                 if($donation->pm_id !== $_POST['custom-payment-info']) {
                     $donation->pm_id = $_POST['custom-payment-info'];
                 }
@@ -586,7 +588,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         $gateway_pm = empty($_POST['donation-pm']) || $_POST['donation-pm'] === 'custom' ?
             'custom' : leyka_get_pm_by_id($_POST['donation-pm'], true);
         $gateway_id = $gateway_pm === 'custom' ? '' : $gateway_pm->gateway_id;
-        $pm_id = $gateway_pm === 'custom' ? esc_html($_POST['custom-payment-info']) : $gateway_pm->id;
+        $pm_id = $gateway_pm === 'custom' ? mb_substr(esc_html($_POST['custom-payment-info']), 0, 255) : $gateway_pm->id;
 
         $new_donation_params = array(
             'payment_type' => empty($_POST['payment-type']) ? 'correction' : $_POST['payment-type'],

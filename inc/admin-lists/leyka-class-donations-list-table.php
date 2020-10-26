@@ -241,8 +241,8 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
     public function column_gateway_pm($donation) { /** @var $donation Leyka_Donation_Base */
 
-        $gateway_label = $donation->gateway_id ? $donation->gateway_label : __('Custom payment info', 'leyka');
-        $pm_label = $donation->gateway_id ? $donation->pm_label : $donation->pm;
+        $gateway_label = $donation->gateway_id == 'correction' ? __('Custom payment info', 'leyka') : $donation->gateway_label;
+        $pm_label = $donation->gateway_id == 'correction' ? $donation->pm : $donation->pm_label;
 
         return apply_filters(
             'leyka_admin_donation_gateway_pm_column_content',

@@ -19,7 +19,7 @@ $procedure_options = leyka_procedures_get_procedure_options(array(
 
 Leyka_Donations::$use_leyka_object_cache = false; // So Donations objects wouldn't stay in memory (and lead to leaking problem)
 
-update_option('leyka_donations_storage_type', 'post'); // TMP, for debugging only
+//update_option('leyka_donations_storage_type', 'post'); // TODO TMP, for debugging only
 
 function leyka_get_memory_formatted($bytes) {
 
@@ -128,11 +128,12 @@ if($procedure_options['only_funded'] && $procedure_options['delete_old_donations
 
 }
 
-if($process_completed_totally) {
-    update_option('leyka_donations_storage_type', 'sep');
-} else {
-    update_option('leyka_donations_storage_type', 'sep-incompleted');
-}
+//if($process_completed_totally) { // TODO TMP, 4 dbg only
+//    update_option('leyka_donations_storage_type', 'sep');
+//} else {
+//    update_option('leyka_donations_storage_type', 'sep-incompleted');
+//}
+update_option('leyka_donations_storage_type', 'sep'); // TODO TMP, 4 dbg only
 
 leyka_procedures_print('Donations transferring finished.');
 

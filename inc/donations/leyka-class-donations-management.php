@@ -809,7 +809,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 <option value="custom"><?php _e('Custom payment info', 'leyka');?></option>
             </select>
 
-            <input type="text" id="custom-payment-info" name="custom-payment-info" placeholder="<?php _e('Enter some info about source of a new donation', 'leyka');?>" style="display: none;" value="">
+            <input type="text" id="custom-payment-info" name="custom-payment-info" placeholder="<?php _e('Enter some info about source of a new donation', 'leyka');?>" style="display: none;" value="" maxlength="255">
 
             <div id="donation_pm-error" class="field-error"></div>
 			</div>
@@ -1010,10 +1010,10 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                         <?php }?>
 
                     <?php }?>
-                    <option value="custom" <?php echo $donation->gw_id == '' && $donation->pm_id ? 'selected="selected"' : '';?>><?php _e('Custom payment info', 'leyka');?></option>
+                    <option value="custom" <?php echo ($donation->gw_id == 'correction' || !$donation->gw_id) && $donation->pm_id ? 'selected="selected"' : '';?>><?php _e('Custom payment info', 'leyka');?></option>
                 </select>
 
-                <input type="text" id="custom-payment-info" name="custom-payment-info" placeholder="<?php _e('Enter the new donation source info', 'leyka');?>" <?php echo $donation->gw_id == '' && $donation->pm_id ? '' : 'style="display: none;"';?> value="<?php echo $donation->gw_id == '' ? $donation->pm_id : '';?>" />
+                <input type="text" id="custom-payment-info" name="custom-payment-info" placeholder="<?php _e('Enter the donation source info', 'leyka');?>" <?php echo ($donation->gw_id == 'correction' || !$donation->gw_id) && $donation->pm_id ? '' : 'style="display: none;"';?> value="<?php echo $donation->gw_id == 'correction' || !$donation->gw_id ? $donation->pm_id : '';?>">
 
             <?php } else {?>
 
@@ -1346,8 +1346,9 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 echo apply_filters('leyka_admin_donation_donor_comment_column_content', $donation->donor_comment, $donation);
                 break;
             case 'method':
-                $gateway_label = $donation->gateway_id ? $donation->gateway_label : __('Custom payment info', 'leyka');
-                $pm_label = $donation->gateway_id ? $donation->pm_label : $donation->pm;
+                $gateway_label = $donation->gateway_id && $donation->gateway_id != 'correction' ?
+                    $donation->gateway_label : __('Custom payment info', 'leyka');
+                $pm_label = $donation->gateway_id == 'correction' ? $donation->pm_id : $donation->pm_label;
                 echo "<b>{$donation->payment_type_label}:</b> $pm_label <small>/ $gateway_label</small>";
                 break;
             case 'donation_date':

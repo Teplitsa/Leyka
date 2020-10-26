@@ -483,6 +483,10 @@ class Leyka extends Leyka_Singleton {
                 return $this->_submission_redirect_type;
             case 'form_is_screening': return !!$this->_form_is_screening;
             case 'extensions': return !!$this->_extensions;
+            case 'storage_type':
+            case 'donations_storage_type':
+                $storage_type = get_option('leyka_donations_storage_type');
+                return in_array($storage_type, array('sep', 'post')) ? $storage_type : 'post';
             default: return '';
         }
     }
@@ -845,7 +849,9 @@ class Leyka extends Leyka_Singleton {
             'id' => 'leyka-toolbar-donations',
             'title' => __('Donations', 'leyka'),
             'parent' => 'leyka-toolbar-menu',
-            'href' => admin_url('edit.php?post_type='.Leyka_Donation_Management::$post_type),
+            'href' => leyka()->donations_storage_type == 'sep' ?
+                admin_url('admin.php?page=leyka_donations') :
+                admin_url('edit.php?post_type='.Leyka_Donation_Management::$post_type),
         ));
         $wp_admin_bar->add_node(array(
             'id' => 'leyka-toolbar-campaigns',
