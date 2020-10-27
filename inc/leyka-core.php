@@ -483,6 +483,7 @@ class Leyka extends Leyka_Singleton {
                 return $this->_submission_redirect_type;
             case 'form_is_screening': return !!$this->_form_is_screening;
             case 'extensions': return !!$this->_extensions;
+            case 'storage_mode':
             case 'storage_type':
             case 'donations_storage_type':
                 $storage_type = get_option('leyka_donations_storage_type');

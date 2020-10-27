@@ -1417,7 +1417,7 @@ function leyka_remembered_data($name, $value = null, $delete = false) {
 function leyka_calculate_donation_total_amount($donation = false, $amount = 0.0, $pm_full_id = '') {
 
     if($donation) {
-        $donation = leyka_get_validated_donation($donation);
+        $donation = Leyka_Donations::get_instance()->get_donation($donation);
     }
 
     $amount = $amount ? $amount : ($donation ? $donation->amount : (float)$amount);

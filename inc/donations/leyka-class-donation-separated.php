@@ -133,7 +133,12 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             do_action("leyka_{$params['gateway_id']}_add_donation_specific_data", $donation_id, $params);
         }
 
-        $donation_meta_fields = array();
+        $donation_meta_fields = apply_filters(
+            "leyka_{$params['gateway_id']}_new_donation_specific_data",
+            array(),
+            $donation_id,
+            $params
+        );
 
         $params['payment_title'] = empty($params['purpose_text']) ?
             (empty($params['payment_title']) ? leyka_options()->opt('donation_purpose_text') : $params['payment_title']) :
@@ -225,7 +230,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
             /** @var $donation WP_Post */
             if($donation->post_type !== Leyka_Donation_Management::$post_type) {
-                return false;
+                throw new Exception(sprintf(__('Wrong post type for donation ("%s" given)', 'leyka'), $donation->post_type));
             }
 
             $this->_id = $donation->ID;
@@ -233,7 +238,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
         } else if(is_a($donation, 'Leyka_Donation_Base')) {
             $this->_id = $donation->id;
         } else {
-            return false; /** @todo Throw an Ex? */
+            throw new Exception(sprintf(__('Incorrect argument for donation initialization in the DB', 'leyka')));
         }
 
         global $wpdb;
@@ -242,10 +247,8 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
         );
 
         if( !$this->_main_data ) {
-            return false;
+            throw new Exception(sprintf(__('No donation #%s in the DB', 'leyka'), $this->_id));
         }
-
-        return $this;
 
     }
 
@@ -446,16 +449,17 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                     return false;
                 }
 
-                return leyka_get_gateway_by_id($this->gateway_id)->get_init_recurring_donation($this);
+                return Leyka_Donations::get_instance()->get_donation($this->init_recurring_donation_id);
 
             case 'init_recurring_donation_id':
                 if($this->payment_type !== 'rebill') {
                     return false;
                 }
 
-                $init_recurring_donation = $this->init_recurring_donation;
+                $init_recurring_donation_id = $this->get_meta('init_recurring_donation_id');
 
-                return $init_recurring_donation ? $init_recurring_donation->id : $this->id;
+                return $init_recurring_donation_id && $init_recurring_donation_id != $this->id ?
+                    $init_recurring_donation_id : $this->id;
 
             case 'is_init_recurring_donation':
                 return $this->init_recurring_donation_id === $this->id;

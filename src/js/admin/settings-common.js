@@ -398,7 +398,7 @@ jQuery(document).ready(function($){
 
         $wrap.load(leyka.ajaxurl, {
             action: 'leyka_send_donor_email',
-            nonce: $wrap.find('#_leyka_donor_email_nonce').val(),
+            nonce: $wrap.data('nonce'),
             donation_id: donation_id
         });
 

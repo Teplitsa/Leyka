@@ -25,24 +25,28 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
             add_action('save_post_'.self::$post_type, array($this, 'save_donation_data'));
 
+            add_filter('manage_'.self::$post_type.'_posts_columns', array($this, 'manage_columns_names'));
+            add_action('manage_'.self::$post_type.'_posts_custom_column', array($this, 'manage_columns_content'), 2, 2);
+            add_filter('manage_edit-'.self::$post_type.'_columns', array($this, 'remove_columns')); // Remove unneeded columns
+
+            add_filter('manage_edit-'.self::$post_type.'_sortable_columns', array($this, 'manage_sortable_columns'));
+            add_filter('request', array($this, 'do_column_sorting'));
+
+            add_action('transition_post_status',  array($this, 'donation_status_changed'), 10, 3);
+
         }
 
-		add_filter('manage_'.self::$post_type.'_posts_columns', array($this, 'manage_columns_names'));
-		add_action('manage_'.self::$post_type.'_posts_custom_column', array($this, 'manage_columns_content'), 2, 2);
-        add_filter('manage_edit-'.self::$post_type.'_columns', array($this, 'remove_columns')); // Remove unneeded columns
-
-        add_filter('manage_edit-'.self::$post_type.'_sortable_columns', array($this, 'manage_sortable_columns'));
-        add_filter('request', array($this, 'do_column_sorting'));
-
-        /** Donation status transitions */
-        add_action('transition_post_status',  array($this, 'donation_status_changed'), 10, 3);
-
         add_action('wp_ajax_leyka_send_donor_email', array($this, 'ajax_send_donor_email'));
+//        echo '<pre>'.print_r('HERE!', 1).'</pre>';
 
+        /**
+         * Donors data refresh actions.
+         * @todo ATM, these actions dont' work in SEP-storage mode (as Donors management is not supported yet).
+         */
         // If some funded donation data are changed, order it's donor's data cache refreshing:
         function leyka_order_donation_to_refresh($donation_id) {
 
-            $donation = new Leyka_Donation($donation_id);
+            $donation = Leyka_DonationS::get_instance()->get_donation($donation_id);
             if($donation && $donation->status === 'funded') {
                 Leyka_Donor::order_donor_data_refreshing($donation_id);
             }
@@ -61,7 +65,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         add_action('leyka_new_donation_added', function($donation_id){
 
-            $donation = new Leyka_Donation($donation_id);
+            $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
             if($donation && $donation->status === 'funded') {
                 Leyka_Donor::create_donor_from_donation($donation_id);
             }
@@ -73,7 +77,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         add_action('leyka_donation_total_amount_changed', 'leyka_order_donation_to_refresh');
         add_action('leyka_donation_pm_changed', 'leyka_order_donation_to_refresh');
         add_action('leyka_donation_campaign_changed', 'leyka_order_donation_to_refresh');
-        // Donors data refresh actions - end
+        /** Donors data refresh actions - END */
 
 	}
 
@@ -252,7 +256,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
     public static function send_all_emails($donation) {
 
-        $donation = leyka_get_validated_donation($donation);
+        $donation = Leyka_Donations::get_instance()->get_donation($donation);
 
         if( !$donation ) {
             return false;
@@ -283,7 +287,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             return;
         }
 
-        $donation = new Leyka_Donation((int)$_POST['donation_id']);
+        $donation = Leyka_Donations::get_instance()->get_donation($_POST['donation_id']);
 
         if($donation && Leyka_Donation_Management::send_donor_thanking_email($donation)) {
             die(__('Grateful email has been sent to the donor', 'leyka'));
@@ -296,14 +300,14 @@ class Leyka_Donation_Management extends Leyka_Singleton {
     /**
      * Send a donor thanking email on single & initial recurring donation.
      *
-     * @param $donation Leyka_Donation|integer|WP_Post
+     * @param $donation Leyka_Donation_Base|integer
      * @return boolean
      */
     public static function send_donor_thanking_email($donation) {
 
-        $donation = leyka_get_validated_donation($donation);
-
+        $donation = Leyka_Donations::get_instance()->get_donation($donation);
         $donor_email = $donation->donor_email;
+
         if( !$donor_email ) {
             $donor_email = leyka_pf_get_donor_email_value();
         }
@@ -404,6 +408,14 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         } else {
             $email_placeholder_values[] = ''; // Replace '#DONOR_ACCOUNT_LOGIN_LINK#' with empty string
         }
+
+//        echo '<pre>'.print_r($donor_email, 1).'</pre>';
+//        echo '<pre>'.print_r(apply_filters('leyka_email_thanks_title', $email_title, $donation, $campaign), 1).'</pre>';
+//        echo '<pre>'.print_r(wpautop(str_replace(
+//                $email_placeholders,
+//                $email_placeholder_values,
+//                apply_filters('leyka_email_thanks_text', $email_text, $donation, $campaign)
+//            )), 1).'</pre>';
 
         $res = wp_mail(
             $donor_email,
@@ -1029,6 +1041,13 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         </div>
 
         <div class="leyka-ddata-string">
+            <label><?php _e('Payment type', 'leyka');?>:</label>
+            <div class="leyka-ddata-field">
+                <span class="fake-input"><?php echo $donation->type_label;?></span>
+            </div>
+        </div>
+
+        <div class="leyka-ddata-string">
             <?php $gateway = leyka_get_gateway_by_id($donation->gateway_id);
             if($gateway) {
                 $gateway->display_donation_specific_data_fields($donation);
@@ -1036,20 +1055,34 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         </div>
 
         <div class="leyka-ddata-string">
-            <label><?php _e('Payment type', 'leyka');?>:</label>
-			<div class="leyka-ddata-field">
-                <span class="fake-input"><?php echo $donation->type_label;?></span>
-            </div>
-        </div>
 
-        <?php if($donation->init_recurring_donation_id) {?>
-        <div class="leyka-ddata-string">
-            <label><?php _e('Initial donation of the recurring subscription', 'leyka');?>:</label>
-            <div class="leyka-ddata-field">
-                <a href="<?php echo admin_url('post.php?post='.$donation->init_recurring_donation_id.'&action=edit');?>">#<?php echo $donation->init_recurring_donation_id;?></a>
-            </div>
+            <?php echo '<pre>'.print_r(Leyka_Donations::get_instance()->get(array(
+                    'recurring_only_init' => true,
+                    'get_single' => true,
+                    'meta' => array(array('key' => 'cp_recurring_id', 'value' => 'sc_8150a33c44a5bb5a9d4b870145be9',))
+                )), 1).'</pre>';?>
+
+            <?php if($donation->is_init_recurring_donation) {?>
+
+                <label><?php _e('Initial donation of the recurring subscription', 'leyka');?>:</label>
+                <div class="leyka-ddata-field"><?php echo 'текущее';?></div>
+
+            <?php } else if($donation->init_recurring_donation_id) {?>
+
+                <label><?php _e('Initial donation of the recurring subscription', 'leyka');?>:</label>
+                <div class="leyka-ddata-field">
+
+                    <?php $url = leyka()->storage_type == 'sep' ?
+                        admin_url('page=leyka_donation_info&donation='.$donation->init_recurring_donation_id) :
+                        admin_url('post.php?post='.$donation->init_recurring_donation_id.'&action=edit');?>
+
+                    <a href="<?php echo $url;?>">#<?php echo $donation->init_recurring_donation_id;?></a>
+
+                </div>
+
+            <?php }?>
+
         </div>
-        <?php }?>
 
         <div class="leyka-ddata-string">
             <label for="donation-date-view"><?php _e('Donation date', 'leyka');?>:</label>
@@ -1659,18 +1692,17 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 function leyka_donation_management() {
     return Leyka_Donation_Management::get_instance();
 }
+add_action('admin_init', 'leyka_donation_management');
 
-function leyka_cancel_recurrents_action() {
-
-    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_recurrent_cancel') || empty($_POST['donation_id'])) {
-        die('-1');
-    }
-
-    $_POST['donation_id'] = (int)$_POST['donation_id'];
-
-    $donation = new Leyka_Donation($_POST['donation_id']);
-    do_action('leyka_cancel_recurrents-'.$donation->gateway_id, $donation);
-
-}
+//function leyka_cancel_recurrents_action() {
+//
+//    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_recurrent_cancel') || empty($_POST['donation_id'])) {
+//        die('-1');
+//    }
+//
+//    $donation = Leyka_Donations::get_instance()->get_donation($_POST['donation_id']);
+//    do_action('leyka_cancel_recurrents-'.$donation->gateway_id, $donation);
+//
+//}
 //add_action('wp_ajax_leyka_cancel_recurrents', 'leyka_cancel_recurrents_action');
 //add_action('wp_ajax_nopriv_leyka_cancel_recurrents', 'leyka_cancel_recurrents_action');

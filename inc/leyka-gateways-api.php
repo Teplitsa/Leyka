@@ -238,6 +238,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
         add_action("leyka_{$this->_id}_save_donation_data", array($this, 'save_donation_specific_data'));
         add_action("leyka_{$this->_id}_add_donation_specific_data", array($this, 'add_donation_specific_data'), 10, 2);
+        add_filter("leyka_{$this->_id}_new_donation_specific_data", array($this, 'new_donation_specific_data'), 10, 3);
 
         add_filter('leyka_'.$this->_id.'_get_unknown_donation_field', array($this, 'get_specific_data_value'), 10, 3);
         add_action('leyka_'.$this->_id.'_set_unknown_donation_field', array($this, 'set_specific_data_value'), 10, 3);
@@ -637,6 +638,11 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
     /** Action called when new donation (Leyka_Donation::add()) is being created to add gateway-specific fields. */
     public function add_donation_specific_data($donation_id, array $donation_params) {
+    }
+
+    /** Filter called when new donation (Leyka_Donation::add()) is being created to add gateway-specific meta fields. */
+    public function new_donation_specific_data(array $meta_fields, $donation_id, array $donation_params) {
+        return $meta_fields;
     }
     
     /**

@@ -280,7 +280,6 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                     }
 
-                    $donation->init_recurring_donation_id = $init_recurring_donation->id;
                     $donation->payment_title = $init_recurring_donation->title;
                     $donation->campaign_id = $init_recurring_donation->campaign_id;
                     $donation->payment_method_id = $init_recurring_donation->pm_id;
@@ -290,14 +289,11 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                     $donation->donor_user_id = $init_recurring_donation->donor_user_id;
                     $donation->amount = $init_recurring_donation->amount;
                     $donation->currency = $init_recurring_donation->currency;
+                    $donation->payment_type = 'rebill';
+                    $donation->init_recurring_donation_id = $init_recurring_donation->id;
 
-                    // If init donation was made before the commission was set, apply a commission to the recurring one:
-                    if(
-                        $init_recurring_donation->amount == $init_recurring_donation->amount_total &&
-                        $donation->amount == $donation->amount_total &&
-                        leyka_get_pm_commission($donation->pm_full_id) > 0.0
-                    ) {
-                        $donation->amount_total = leyka_calculate_donation_total_amount($donation);
+                    if($donation->amount == $donation->amount_total && leyka_get_pm_commission($donation->pm_full_id) > 0.0) {
+                        $donation->amount_total = leyka_calculate_donation_total_amount(false, $donation->amount, $donation->pm_full_id);
                     }
 
                 } else { // Single or init recurring donation
@@ -306,13 +302,16 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                 if( !empty($_POST['SubscriptionId']) ) {
 
-                    $donation->payment_type = 'rebill';
                     $donation->cp_recurring_id = $_POST['SubscriptionId'];
 
                     if( !empty($_POST['InvoiceId']) ) { // Add recurring activity meta only for init recurring donations
                         $donation->recurring_is_active = true;
                     }
 
+                }
+
+                if( !empty($_POST['TransactionId']) && !$donation->cp_transaction_id ) {
+                    $donation->cp_transaction_id = $_POST['TransactionId'];
                 }
 
                 $donation->add_gateway_response($_POST);
@@ -350,12 +349,20 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
     public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation_Base $donation) {
 
         $init_recurring_donation = $this->get_init_recurring_donation($donation);
-        $cancelling_url = (get_option('permalink_structure') ?
-                home_url("leyka/service/cancel_recurring/{$donation->id}") :
-                home_url("?page=leyka/service/cancel_recurring/{$donation->id}"))
-            .'/'.md5($donation->id.'_'.$init_recurring_donation->id.'_leyka_cancel_recurring_subscription');
 
-        return sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">click here</a>', 'leyka'), $cancelling_url);
+        if($init_recurring_donation) {
+
+            $cancelling_url = (
+                get_option('permalink_structure') ?
+                    home_url("leyka/service/cancel_recurring/{$donation->id}") :
+                    home_url("?page=leyka/service/cancel_recurring/{$donation->id}")
+                ).'/'.md5($donation->id.'_'.$init_recurring_donation->id.'_leyka_cancel_recurring_subscription');
+
+            return sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">click here</a>', 'leyka'), $cancelling_url);
+
+        } else {
+            return sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">email abount this to the website tech. support</a>', 'leyka'), leyka_get_website_tech_support_email());
+        }
 
     }
 
@@ -419,6 +426,8 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         if( !$donation ) {
             $donation = Leyka_Donations::get_instance()->add(array(
                 'status' => 'submitted',
+                'gateway_id' => 'cp',
+                'payment_method_id' => 'card',
                 'cp_transaction_id' => $cp_transaction_id,
                 'force_insert' => true, // Turn off donation fields validation checks
             ), true);
@@ -439,7 +448,9 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         return Leyka_Donations::get_instance()->get(array(
             'recurring_only_init' => true,
             'get_single' => true,
-            'meta' => array(array('key' => 'cp_recurring_id', 'value' => $recurring,))
+            'meta' => array(array('key' => 'cp_recurring_id', 'value' => $recurring,)),
+            'orderby' => 'id',
+            'order' => 'asc',
         ));
 
     }
@@ -492,9 +503,20 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
         if($donation) { // Edit donation page displayed
 
-            $donation = Leyka_Donations::get_instance()->get_donation($donation);
+            $donation = Leyka_Donations::get_instance()->get_donation($donation);?>
 
-            if($donation->type !== 'rebill') {
+            <label><?php _e('CloudPayments transaction ID', 'leyka');?>:</label>
+
+            <div class="leyka-ddata-field">
+
+                <?php if($donation->type === 'correction') {?>
+                    <input type="text" id="cp-transaction-id" name="cp-transaction-id" placeholder="<?php _e('Enter CloudPayments transaction ID', 'leyka');?>" value="<?php echo $donation->cp_transaction_id;?>">
+                <?php } else {?>
+                    <span class="fake-input"><?php echo $donation->cp_transaction_id;?></span>
+                <?php }?>
+            </div>
+
+            <?php if($donation->type !== 'rebill') {
                 return;
             }?>
 
@@ -520,10 +542,16 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
         <?php } else { // New donation page displayed ?>
 
+            <label for="cp-transaction-id"><?php _e('CloudPayments transaction ID', 'leyka');?>:</label>
+            <div class="leyka-ddata-field">
+                <input type="text" id="cp-transaction-id" name="cp-transaction-id" placeholder="<?php _e('Enter CloudPayments transaction ID', 'leyka');?>" value="">
+            </div>
+
             <label for="cp-recurring-id"><?php _e('CloudPayments subscription ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
                 <input type="text" id="cp-recurring-id" name="cp-recurring-id" placeholder="<?php _e('Enter CloudPayments subscription ID', 'leyka');?>" value="">
             </div>
+
         <?php
         }
 
@@ -568,21 +596,25 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
     }
 
     public function save_donation_specific_data(Leyka_Donation_Base $donation) {
+
         if(isset($_POST['cp-recurring-id']) && $donation->recurring_id != $_POST['cp-recurring-id']) {
-            $donation->recurring_id = $_POST['cp-recurring-id'];
+            $donation->cp_recurring_id = $_POST['cp-recurring-id'];
         }
+
+        if(isset($_POST['cp-transaction-id']) && $donation->transaction_id != $_POST['cp-transaction-id']) {
+            $donation->cp_transaction_id = $_POST['cp-transaction-id'];
+        }
+
     }
 
     public function add_donation_specific_data($donation_id, array $donation_params) {
 
-        $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
-
-        if( !empty($donation_params['recurring_id']) ) {
-            $donation->set_meta('cp_recurring_id', $donation_params['recurring_id']);
+        if( !empty($donation_params['cp_recurring_id']) ) {
+            Leyka_Donations::get_instance()->set_donation_meta($donation_id, 'cp_recurring_id', $donation_params['cp_recurring_id']);
         }
 
-        if( !empty($donation_params['transaction_id']) ) {
-            $donation->set_meta('cp_transaction_id', $donation_params['transaction_id']);
+        if( !empty($donation_params['cp_transaction_id']) ) {
+            Leyka_Donations::get_instance()->set_donation_meta($donation_id, 'cp_transaction_id', $donation_params['cp_transaction_id']);
         }
 
     }

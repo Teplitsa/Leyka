@@ -214,6 +214,9 @@ abstract class Leyka_Donations extends Leyka_Singleton {
 
     }
 
+    abstract public function set_donation_meta($donation_id, $meta_name, $value);
+    abstract public function get_donation_meta($donation_id, $meta_key);
+
 }
 
 class Leyka_Donations_Posts extends Leyka_Donations {
@@ -435,6 +438,14 @@ class Leyka_Donations_Posts extends Leyka_Donations {
         return !!wp_delete_post(absint($donation_id), !!$force_delete);
     }
 
+    public function get_donation_meta($donation_id, $meta_key) {
+        return get_post_meta($donation_id, $meta_key, true);
+    }
+
+    public function set_donation_meta($donation_id, $meta_name, $value) {
+        return !!update_post_meta($donation_id, trim($meta_name), $value);
+    }
+
 }
 
 class Leyka_Donations_Separated extends Leyka_Donations {
@@ -443,7 +454,11 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
     protected function _get_donation($donation) {
 
-        $donation = new Leyka_Donation_Separated($donation);
+        try {
+            $donation = new Leyka_Donation_Separated($donation);
+        } catch(Exception $ex) {
+            return false;
+        }
 
         return is_a($donation, 'Leyka_Donation_Base') && $donation->id ? $donation : false;
 
@@ -767,7 +782,15 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         $donation = Leyka_Donation_Separated::add($params);
 
-        return $return_object && !is_wp_error($donation) ? new Leyka_Donation_Separated($donation) : $donation;
+        if ($return_object && !is_wp_error($donation)) {
+            try {
+                $donation = new Leyka_Donation_Separated($donation);
+            } catch(Exception $ex) {
+                return false;
+            }
+        }
+
+        return $donation;
 
     }
 
@@ -775,7 +798,9 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         $donation = $this->get_donation($donation_id);
 
-        Leyka_Donation_Management::get_instance()->donation_status_changed('trash', $donation->status, $donation);
+        if($donation) {
+            Leyka_Donation_Management::get_instance()->donation_status_changed('trash', $donation->status, $donation);
+        }
 
         global $wpdb;
 
@@ -791,6 +816,35 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         return $res;
 
+    }
+
+    public function set_donation_meta($donation_id, $meta_name, $value) {
+
+        global $wpdb;
+
+        $meta_id = $wpdb->get_var($wpdb->prepare(
+            "SELECT meta_id FROM {$wpdb->prefix}leyka_donations_meta WHERE donation_id=%d AND meta_key=%s LIMIT 0,1",
+            array($donation_id, $meta_name)
+        ));
+
+        if($meta_id) { // Meta exists
+            return !!$wpdb->update(
+                $wpdb->prefix.'leyka_donations_meta', array('meta_value' => trim($value)),
+                array('meta_id' => $meta_id),
+                array('%s'), array('%d')
+            );
+        } else {
+            return !!$wpdb->insert(
+                $wpdb->prefix.'leyka_donations_meta',
+                array('donation_id' => $donation_id, 'meta_key' => $meta_name, 'meta_value' => $value),
+                array('%d', '%s', '%s')
+            );
+        }
+
+    }
+
+    public function get_donation_meta($donation_id, $meta_key) {
+//        return get_post_meta($donation_id, $meta_key, true);
     }
 
 }
