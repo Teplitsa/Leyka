@@ -114,7 +114,8 @@ function leyka_get_gateway_redirect_data(){
 
         } else if(leyka()->payment_form_has_errors()) {
 
-            $error = reset(leyka()->get_payment_form_errors());
+            $error = leyka()->get_payment_form_errors();
+            $error = reset($error);
 
             $payment_vars['errors'] = $error;
             $payment_vars['message'] = $error->get_error_message();

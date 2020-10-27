@@ -714,6 +714,10 @@ function leyka_pf_get_payment_method_value() {
 
 }
 
+function leyka_pf_get_donor_subscribed_value() {
+    return !empty($_POST['leyka_donor_subscribed']);
+}
+
 function leyka_pf_get_name_field($value = '') {
     /** @var Leyka_Payment_Form $leyka_current_pm */
 	global $leyka_current_pm;

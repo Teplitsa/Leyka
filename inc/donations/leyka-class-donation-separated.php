@@ -198,6 +198,9 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             }
         }
 
+        $donation_meta_fields['donor_subscribed'] = isset($params['donor_subscribed']) ?
+            !!$params['donor_subscribed'] : leyka_pf_get_donor_subscribed_value();
+
         foreach($donation_meta_fields as $key => $value) {
 
             $res = $wpdb->insert($wpdb->prefix.'leyka_donations_meta', array(
@@ -825,8 +828,6 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
         if( !$this->_id ) {
             return false; /** @todo Throw an Ex? */
         }
-
-        die('<pre>'.print_r('HERE! Deleting the sep-D: '.$this->_id, 1).'</pre>');
 
         Leyka_Donation_Management::get_instance()->donation_status_changed('trash', $this->status, $this);
 

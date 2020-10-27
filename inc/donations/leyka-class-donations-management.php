@@ -37,7 +37,6 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         }
 
         add_action('wp_ajax_leyka_send_donor_email', array($this, 'ajax_send_donor_email'));
-//        echo '<pre>'.print_r('HERE!', 1).'</pre>';
 
         /**
          * Donors data refresh actions.

@@ -288,9 +288,9 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
     public function column_donor_subscription($donation) { /** @var $donation Leyka_Donation_Base */
 
-        if($donation->donor_subscribed === true) {
+        if($donation->donor_subscribed == 1) { // true|1|'1' - all news
             $column_content = '<div class="donor-subscription-status total">'.__('Full subscription', 'leyka').'</div>';
-        } else if($donation->donor_subscribed > 0) {
+        } else if($donation->donor_subscribed > 0) { // Other positive integer (campaign ID) - only news for given campaign
             $column_content = '<div class="donor-subscription-status on-campaign">'
                 .sprintf(__('On <a href="%s">campaign</a> news', 'leyka'), admin_url('post.php?post='.$donation->campaign_id.'&action=edit'))
             .'</div>';
