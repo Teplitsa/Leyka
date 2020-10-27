@@ -346,6 +346,10 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
 
     }
 
+    if( !empty($donation_post_meta['_is_subscribed']) ) { // Rename the donations meta from miloserdie.ru format to Leyka one
+        $donation_post_meta['donor_subscribed'] = 1;
+    }
+
     // Don't insert empty meta fields:
     if(empty($donation_post_meta['recurrents_cancel_date'])) {
         unset($donation_post_meta['recurrents_cancel_date']);
@@ -361,13 +365,11 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
     if(empty($donation_post_meta['managers_emails_date'])) {
         unset($donation_post_meta['managers_emails_date']);
     }
-    unset( // Don't transfer the unneeded post meta
-        $donation_post_meta['_edit_last'], $donation_post_meta['_edit_lock'], $donation_post_meta['_gapp_post_views'],
-        $donation_post_meta['_wp_desired_post_slug'], $donation_post_meta['_wp_trash_meta_status'],
-        $donation_post_meta['_wp_trash_meta_time'], $donation_post_meta['_yoast_wpseo_content_score'],
-        $donation_post_meta['_yoast_wpseo_is_cornerstone'], $donation_post_meta['_count_view'], $donation_post_meta['views'],
-        $donation_post_meta['_is_subscribed']
-    );
+
+    // Don't transfer the unneeded post meta:
+    foreach(array('_edit_last', '_edit_lock', '_gapp_post_views', '_wp_desired_post_slug', '_wp_trash_meta_status', '_wp_trash_meta_time', '_yoast_wpseo_content_score', '_yoast_wpseo_is_cornerstone', '_count_view', 'views', '_is_subscribed') as $key) {
+        unset($donation_post_meta[$key]);
+    }
 
     if($donation_post_meta) {
 
