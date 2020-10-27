@@ -37,14 +37,15 @@ abstract class Leyka_Donations extends Leyka_Singleton {
 
     /**
      * @param int|WP_Post|Leyka_Donation_Base $donation
+     * @param bool $update_cache
      * @return Leyka_Donation_Base|null
      */
-    public function get_donation($donation) {
+    public function get_donation($donation, $update_cache = false) {
 
         $donation_id = $this->_get_donation_id($donation);
         if(self::$use_leyka_object_cache) {
 
-            if(empty(self::$_objects[$donation_id])) {
+            if(empty(self::$_objects[$donation_id]) || !!$update_cache) {
                 self::$_objects[$donation_id] = $this->_get_donation($donation);
             }
 
@@ -455,7 +456,9 @@ class Leyka_Donations_Separated extends Leyka_Donations {
     protected function _get_donation($donation) {
 
         try {
-            $donation = new Leyka_Donation_Separated($donation);
+            if( !is_a($donation, 'Leyka_Donation_Separated') ) { // Don't make a new instance if argument is already a Sep-typed
+                $donation = new Leyka_Donation_Separated($donation);
+            }
         } catch(Exception $ex) {
             return false;
         }

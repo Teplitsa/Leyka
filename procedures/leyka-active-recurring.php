@@ -13,7 +13,7 @@ if(get_transient('leyka_last_active_recurring_date') === date('d.m.Y') && !LEYKA
 
 ini_set('max_execution_time', 0);
 set_time_limit(0);
-ini_set('memory_limit', 268435456); // 256 Mb, just in case
+ini_set('memory_limit', 536870912); // 512 Mb, just in case
 
 // Get all active initial donations for the recurring subscriptions:
 $current_day = (int)date('j');
@@ -38,7 +38,7 @@ foreach($donations as $init_recurring_donation) {
 
         $new_recurring_donation = $gateway->do_recurring_donation($init_recurring_donation);
         if($new_recurring_donation && is_a($new_recurring_donation, 'Leyka_Donation_Base')) {
-            Leyka_Donation_Management::send_all_recurring_emails($new_recurring_donation);
+            Leyka_Donation_Management::send_all_emails($new_recurring_donation);
         } // else if( !$new_recurring_donation || is_wp_error($new_recurring_donation) ) { ... } /** @todo Log & handle error */
 
     }
