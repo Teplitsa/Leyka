@@ -107,13 +107,20 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
     public function get_donation_by_invoice_id($invoice_id) {
 
         global $wpdb;
-        return $wpdb->get_var(
-            "SELECT `post_id` FROM 
-			{$wpdb->postmeta}
-			WHERE `meta_key` = '_leyka_rbk_invoice_id'
-			AND `meta_value`  = '$invoice_id'
-			LIMIT 1"
-        );
+
+        if(leyka()->storage_type === 'sep') {
+            $query = $wpdb->prepare(
+                "SELECT `donation_id` FROM {$wpdb->prefix}leyka_donations_meta WHERE `meta_key`=%s AND `meta_value`=%s LIMIT 1",
+                array('rbk_invoice_id', $invoice_id)
+            );
+        } else {
+            $query = $wpdb->prepare(
+                "SELECT `post_id` FROM {$wpdb->postmeta} WHERE `meta_key`=%s AND `meta_value`=%s LIMIT 1",
+                array('_leyka_rbk_invoice_id', $invoice_id)
+            );
+        }
+
+        return $wpdb->get_var($query);
 
     }
 
@@ -272,6 +279,11 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
             $data_to_log = $donation->gateway_response;
             $data_to_log['RBK_Hook_data'] = $data;
 
+        }
+
+        // No emails for non-init recurring donations - the active recurring procedure do mailouts for them:
+        if($donation->status === 'funded' && ($donation->type === 'single' || $donation->is_init_recurring_donation)) {
+            Leyka_Donation_Management::send_all_emails($donation);
         }
 
         return $donation->add_gateway_response($data_to_log);
@@ -510,7 +522,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 <div class="leyka-ddata-field">
                     <?php if($donation->type === 'correction') {?>
                     <input type="text" id="rbk-init-invoice-id" name="rbk-init-invoice-id"
-                           placeholder="<?php _e('Enter RBK Money initial recurring invoice ID', 'leyka'); ?>"
+                           placeholder="<?php _e('Enter RBK Money initial recurring invoice ID', 'leyka');?>"
                            value="<?php echo $init_recurring_donation->rbk_invoice_id; ?>">
                     <?php } else {?>
                     <span class="fake-input"><?php echo $init_recurring_donation->rbk_invoice_id;?></span>
@@ -554,10 +566,10 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
         switch($field_name) {
             case 'invoice_id':
             case 'rbk_invoice_id':
-                return get_post_meta($donation->id, '_leyka_rbk_invoice_id', true);
+                return $donation->get_meta('rbk_invoice_id');
             case 'payment_id':
             case 'rbk_payment_id':
-                return get_post_meta($donation->id, '_leyka_rbk_payment_id', true);
+                return $donation->get_meta('rbk_payment_id');
             default:
                 return $value;
         }
@@ -567,10 +579,10 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
         switch($field_name) {
             case 'invoice_id':
             case 'rbk_invoice_id':
-                return update_post_meta($donation->id, '_leyka_rbk_invoice_id', $value);
+                return $donation->set_meta('rbk_invoice_id', $value);
             case 'payment_id':
             case 'rbk_payment_id':
-                return update_post_meta($donation->id, '_leyka_rbk_payment_id', $value);
+                return $donation->set_meta('rbk_payment_id', $value);
             default: return false;
         }
     }
@@ -591,10 +603,12 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
     public function add_donation_specific_data($donation_id, array $donation_params) {
 
         if( !empty($donation_params['rbk_invoice_id']) ) {
-            update_post_meta($donation_id, '_leyka_rbk_invoice_id', $donation_params['rbk_invoice_id']);
+            Leyka_Donations::get_instance()
+                ->set_donation_meta($donation_id, 'rbk_invoice_id', $donation_params['rbk_invoice_id']);
         }
         if( !empty($donation_params['rbk_payment_id']) ) {
-            update_post_meta($donation_id, '_leyka_rbk_payment_id', $donation_params['rbk_payment_id']);
+            Leyka_Donations::get_instance()
+                ->set_donation_meta($donation_id, 'rbk_payment_id', $donation_params['rbk_payment_id']);
         }
 
     }

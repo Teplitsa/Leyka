@@ -715,8 +715,7 @@ techMessage="'.$tech_message.'"/>');
     public function add_donation_specific_data($donation_id, array $donation_params) {
         if( !empty($donation_params['recurring_id']) ) {
             Leyka_Donations::get_instance()
-                ->get_donation($donation_id)
-                ->set_meta('yandex_invoice_id', $donation_params['recurring_id']);
+                ->set_donation_meta($donation_id, 'yandex_invoice_id', $donation_params['recurring_id']);
         }
     }
 
