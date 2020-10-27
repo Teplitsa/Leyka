@@ -335,7 +335,6 @@ techMessage="'.$tech_message.'"/>');
                 switch($payment->status) {
                     case 'succeeded':
                         $donation->status = 'funded';
-                        Leyka_Donation_Management::send_all_emails($donation->id);
                         break;
                     case 'canceled':
                         $donation->status = 'failed';
@@ -344,6 +343,11 @@ techMessage="'.$tech_message.'"/>');
                         $donation->status = 'refunded';
                         break;
                     default: // Also possible yandex payment statuses: 'pending', 'waiting_for_capture'
+                }
+
+                // No emails for non-init recurring donations - the active recurring procedure do mailouts for them:
+                if($donation->status === 'funded' && ($donation->type === 'single' || $donation->is_init_recurring_donation)) {
+                    Leyka_Donation_Management::send_all_emails($donation);
                 }
 
                 exit(200);
@@ -404,7 +408,9 @@ techMessage="'.$tech_message.'"/>');
                         $donation->yandex_recurring_id = $_POST['invoiceId'];
                     }
 
-                    Leyka_Donation_Management::send_all_emails($donation->id);
+                    if($donation->type === 'single' || $donation->is_init_recurring_donation) {
+                        Leyka_Donation_Management::send_all_emails($donation);
+                    }
 
                 }
 

@@ -192,10 +192,10 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
         $params['recurring_cancel_date'] = empty($params['recurring_cancel_date']) ? 0 : $params['recurring_cancel_date'];
         if($params['payment_type'] === 'rebill') {
             if($params['recurrents_cancel_date']) {
-                $donation_meta_fields['recurring_cancel_date'] = $params['recurring_cancel_date'];
-            } else if(empty($params['recurring_cancel_date'])) {
+                $donation_meta_fields['recurring_cancel_date'] = $params['recurrents_cancel_date'];
+            } /*else if(empty($params['recurring_cancel_date'])) { // Don't know why it should be here, but let's left it ATM
                 $donation_meta_fields['recurring_cancel_date'] = current_time('timestamp');
-            }
+            }*/
         }
 
         $params['donor_subscribed'] = isset($params['donor_subscribed']) ?
@@ -426,7 +426,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'donor_subscription_email':
                 return $this->get_meta('donor_subscription_email') ?
                     $this->get_meta('donor_subscription_email') :
-                    ($this->get_meta('donor_email') ? $this->get_meta('donor_email') : '');
+                    ($this->donor_email ? $this->donor_email : '');
 
 //            case 'donor_user_id':
 //            case 'donor_account_id':
@@ -477,7 +477,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
             case 'is_init_recurring':
             case 'is_init_recurring_donation':
-                return $this->init_recurring_donation_id === $this->id;
+                return $this->type === 'rebill' && $this->init_recurring_donation_id === $this->id;
 
             case 'cancel_recurring_requested':
             case 'recurring_cancelling_requested':

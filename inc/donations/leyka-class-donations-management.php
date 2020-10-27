@@ -655,7 +655,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             $donor_email,
             apply_filters(
                 'leyka_email_thanks_title',
-                leyka_options()->opt('email_recurring_init_thanks_title'),
+                leyka_options()->opt('email_recurring_ongoing_thanks_title'),
                 $donation,
                 $campaign
             ),
@@ -664,7 +664,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 $email_placeholder_values,
                 apply_filters(
                     'leyka_email_thanks_text',
-                    leyka_options()->opt('email_recurring_init_thanks_text'),
+                    leyka_options()->opt('email_recurring_ongoing_thanks_text'),
                     $donation,
                     $campaign
                 )
@@ -1195,10 +1195,10 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 			<div class="leyka-ddata-field">
             <?php if($donation->type === 'correction') {?>
 
-                <input type="text" id="donation-date-view" value="<?php echo date(get_option('date_format'), $donation->date_timestamp);?>">
+                <input type="text" id="donation-date-view" value="<?php echo $donation->date_label;?>">
                 <input type="hidden" id="donation-date" name="donation_date" value="<?php echo date('Y-m-d', $donation->date_timestamp);?>">
             <?php } else {?>
-                <span class="fake-input"><?php echo $donation->date;?></span>
+                <span class="fake-input"><?php echo $donation->date_time_label;?></span>
             <?php }?>
             </div>
         </div>
@@ -1208,7 +1208,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             <div class="leyka-ddata-field">
                 <span class="fake-input">
                 <?php $subscription_status = __('None', 'leyka');
-                if($donation->donor_subscribed === true) {
+                if($donation->donor_subscribed === true || $donation->donor_subscribed == 1) {
                     $subscription_status = __('Full subscription', 'leyka');
                 } else if($donation->donor_subscribed > 0) {
                     $subscription_status = sprintf(__('On <a href="%s">campaign</a> news', 'leyka'), admin_url('post.php?post='.$donation->campaign_id.'&action=edit'));

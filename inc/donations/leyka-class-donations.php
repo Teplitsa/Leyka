@@ -146,7 +146,6 @@ abstract class Leyka_Donations extends Leyka_Singleton {
         if( // If the original donation was made before the commission was set, apply a commission to the cloned one
             $settings['recalculate_total_amount']
             && $original->amount == $original->amount_total
-            && $original->amount == $original->amount_total
             && leyka_get_pm_commission($original->pm_full_id) > 0.0
         ) {
             $new->amount_total = leyka_calculate_donation_total_amount($new);
