@@ -355,11 +355,11 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
         unset($donation_post_meta['recurrents_cancel_date']);
 
     }
-    if(empty($donation_post_meta['_donor_email_date'])) {
-        unset($donation_post_meta['_donor_email_date']);
+    if(empty($donation_post_meta['donor_email_date'])) {
+        unset($donation_post_meta['donor_email_date']);
     }
-    if(empty($donation_post_meta['_managers_emails_date'])) {
-        unset($donation_post_meta['_managers_emails_date']);
+    if(empty($donation_post_meta['managers_emails_date'])) {
+        unset($donation_post_meta['managers_emails_date']);
     }
     unset( // Don't transfer the unneeded post meta
         $donation_post_meta['_edit_last'], $donation_post_meta['_edit_lock'], $donation_post_meta['_gapp_post_views'],

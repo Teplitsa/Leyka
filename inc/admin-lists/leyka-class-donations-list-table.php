@@ -7,6 +7,8 @@ if( !class_exists('WP_List_Table') ) {
 
 class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
+    protected static $_records_count = NULL;
+
     public function __construct() {
 
         parent::__construct(array(
@@ -20,8 +22,6 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
     }
 
     /**
-     * WP_User & user meta fields filtering.
-     *
      * @param $donations_params array
      * @param $filter_type string
      * @return array|false An array of get_users() params, or false if the $filter_type is wrong
@@ -45,6 +45,9 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
         }
         if( !empty($_GET['campaign']) && absint($_GET['campaign']) ) {
             $donations_params['campaign_id'] = absint($_GET['campaign']);
+        }
+        if(isset($_GET['donor_subscribed']) && $_GET['donor_subscribed'] != '-') {
+            $donations_params['donor_subscribed'] = !!$_GET['donor_subscribed'];
         }
         if( !empty($_GET['orderby']) ) {
 
@@ -95,9 +98,15 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
      * @return int
      */
     public static function record_count() {
-        return Leyka_Donations::get_instance()->get_count(
-            apply_filters('leyka_admin_donations_list_filter', array(), 'get_donations_count')
-        );
+
+        if(self::$_records_count === NULL) {
+            self::$_records_count = Leyka_Donations::get_instance()->get_count(
+                apply_filters('leyka_admin_donations_list_filter', array(), 'get_donations_count')
+            );
+        }
+
+        return self::$_records_count;
+
     }
 
     /** Text displayed when no data is available. */
@@ -376,9 +385,9 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
         <label for="donor-subscribed-select"></label>
         <select id="donor-subscribed-select" name="donor_subscribed">
-            <option value="-" <?php echo !isset($_GET['donor_subscribed']) ? 'selected="selected"' : '';?>><?php _e('Donors subscription', 'leyka');?></option>
-            <option value="1" <?php echo isset($_GET['donor_subscribed']) && $_GET['donor_subscribed'] ? 'selected="selected"' : '';?>><?php _e('Subscribed donors', 'leyka');?></option>
-            <option value="0" <?php echo isset($_GET['donor_subscribed']) && !$_GET['donor_subscribed'] ? 'selected="selected"' : '';?>><?php _e('Unsubscribed donors', 'leyka');?></option>
+            <option value="-" <?php echo !isset($_GET['donor_subscribed']) || $_GET['donor_subscribed'] == '-' ? 'selected="selected"' : '';?>><?php _e('Donors subscription', 'leyka');?></option>
+            <option value="1" <?php echo isset($_GET['donor_subscribed']) && $_GET['donor_subscribed'] == 1 ? 'selected="selected"' : '';?>><?php _e('Subscribed donors', 'leyka');?></option>
+            <!--<option value="0" <?php echo isset($_GET['donor_subscribed']) && !$_GET['donor_subscribed'] ? 'selected="selected"' : '';?>><?php _e('Unsubscribed donors', 'leyka');?></option>--> <?php /** @todo Debugging needed: somehow site overloads when $params['donor_subscribed'] == false */?>
         </select>
 
         <input type="submit" class="button action" name="leyka-donations-filter" value="<?php _e('Filter', 'leyka');?>">

@@ -58,7 +58,7 @@ abstract class Leyka_Donations extends Leyka_Singleton {
     }
 
     /**
-     * @param int|WP_Post|Leyka_Donation_Base $donation
+     * @param int|WP_Post|Leyka_Donation_Base|object $donation
      * @return int|false
      */
     protected static function _get_donation_id($donation) {
@@ -76,6 +76,8 @@ abstract class Leyka_Donations extends Leyka_Singleton {
 
         } else if(is_a($donation, 'Leyka_Donation_Base')) {
             return $donation->id;
+        } else if(is_object($donation) && isset($donation->ID) && isset($donation->campaign_id)) {
+            return $donation->ID;
         } else {
             return false;
         }
@@ -87,34 +89,6 @@ abstract class Leyka_Donations extends Leyka_Singleton {
      * @return Leyka_Donation_Base|null
      */
     abstract protected function _get_donation($donation);
-
-    /**
-     * @param int|WP_Post|Leyka_Donation_Base $donation
-     * @param string $field_name
-     * @return mixed
-     */
-//    public function get_donation_field($donation, $field_name) {
-//
-//        $donation = $this->get_donation($donation);
-//
-//        return $donation ? $donation->$field_name : null;
-//
-//    }
-//
-//    /**
-//     * @param int|WP_Post|Leyka_Donation_Base $donation
-//     * @param string $field_name
-//     * @param string $field_value
-//     * @return mixed
-//     */
-//    public function set_donation_field($donation, $field_name, $field_value) {
-//
-//        $field_name = trim($field_name);
-//        $donation = $this->get_donation($donation);
-//
-//        return $donation ? ($donation->$field_name = $field_value) : false;
-//
-//    }
 
     /**
      * @param $params array
@@ -728,6 +702,18 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         }
 
+        if( !empty($params['donor_subscribed']) ) {
+            $params['meta'][] = array('key' => 'donor_subscribed', 'compare' => '>=', 'value' => 1);
+            /** @todo Debugging needed: somehow site overloads when $params['donor_subscribed'] == false */
+//            $params['meta'][] = $params['donor_subscribed'] ?
+//                array('key' => 'donor_subscribed', 'compare' => '>=', 'value' => 1) :
+//                array(
+//                    'relation' => 'OR',
+//                    array('key' => 'donor_subscribed', 'value' => 0),
+//                    array('key' => 'donor_subscribed', 'compare' => 'NOT EXISTS'),
+//                );
+        }
+
         if($params['meta']) {
 
             $meta_query_parts = $this->_get_meta_query_parts($params['meta']);
@@ -756,10 +742,10 @@ class Leyka_Donations_Separated extends Leyka_Donations {
         $query = $this->_get_query_parts($params);
 
         $donations = array();
-        $query = "SELECT {$wpdb->prefix}leyka_donations.ID FROM {$wpdb->prefix}leyka_donations {$query['joins']} {$query['where']} {$query['orderby']} {$query['limit']}";
+        $query = "SELECT {$wpdb->prefix}leyka_donations.* FROM {$wpdb->prefix}leyka_donations {$query['joins']} {$query['where']} {$query['orderby']} {$query['limit']}";
 
-        foreach($wpdb->get_col($query) as $donation_id) {
-            $donations[] = $this->get_donation($donation_id);
+        foreach($wpdb->get_results($query) as $donation) {
+            $donations[] = $this->get_donation($donation);
         }
 
         return empty($params['get_single']) ? $donations : reset($donations);
@@ -771,7 +757,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
         global $wpdb;
 
         $query = $this->_get_query_parts($params);
-        $query = "SELECT COUNT({$wpdb->prefix}leyka_donations.ID) FROM {$wpdb->prefix}leyka_donations {$query['joins']} {$query['where']} {$query['limit']}";
+        $query = "SELECT COUNT({$wpdb->prefix}leyka_donations.ID) FROM {$wpdb->prefix}leyka_donations {$query['joins']} {$query['where']}";
 
         return absint($wpdb->get_var($query));
 

@@ -198,8 +198,11 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             }
         }
 
-        $donation_meta_fields['donor_subscribed'] = isset($params['donor_subscribed']) ?
-            !!$params['donor_subscribed'] : leyka_pf_get_donor_subscribed_value();
+        $params['donor_subscribed'] = isset($params['donor_subscribed']) ?
+            $params['donor_subscribed'] : leyka_pf_get_donor_subscribed_value();
+        if($params['donor_subscribed']) {
+            $donation_meta_fields['donor_subscribed'] = $params['donor_subscribed'];
+        }
 
         foreach($donation_meta_fields as $key => $value) {
 
@@ -240,6 +243,14 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
         } else if(is_a($donation, 'Leyka_Donation_Base')) {
             $this->_id = $donation->id;
+        } else if(is_object($donation) && isset($donation->ID) && isset($donation->campaign_id)) { // Donations table row object
+
+            $this->_id = $donation->ID;
+            $this->_main_data = $donation;
+            unset($this->_main_data->ID);
+
+            return;
+
         } else {
             throw new Exception(sprintf(__('Incorrect argument for donation initialization in the DB', 'leyka')));
         }
@@ -403,9 +414,9 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'donor_comment':
                 return $this->get_meta('donor_comment');
             case 'donor_email_date':
-                return $this->get_meta('_donor_email_date');
+                return $this->get_meta('donor_email_date');
             case 'managers_emails_date':
-                return $this->get_meta('_managers_emails_date');
+                return $this->get_meta('managers_emails_date');
 
             case 'is_subscribed':
             case 'donor_subscribed':

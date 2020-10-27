@@ -72,7 +72,8 @@ ALTER TABLE `mlsd_leyka_donations`
 ALTER TABLE `mlsd_leyka_donations_meta`
   ADD PRIMARY KEY (`meta_id`),
   ADD KEY `donation_id_fk` (`donation_id`),
-  ADD KEY `meta_key_index` (`meta_key`);
+  ADD KEY `meta_key_index` (`meta_key`),
+  ADD INDEX `donation_id2meta_key` (`donation_id`, `meta_id`);
 
 --
 -- AUTO_INCREMENT для сохранённых таблиц
