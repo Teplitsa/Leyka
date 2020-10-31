@@ -29,7 +29,7 @@ CREATE TABLE `mlsd_leyka_donations` (
   `campaign_id` bigint(20) UNSIGNED NOT NULL,
   `status` varchar(20) NOT NULL,
   `payment_type` varchar(20) NOT NULL,
-  `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `date_created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `gateway_id` varchar(30) NOT NULL,
   `pm_id` varchar(30) NOT NULL,
   `currency_id` varchar(10) NOT NULL,
