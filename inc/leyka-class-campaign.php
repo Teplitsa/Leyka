@@ -119,23 +119,30 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
      * @param $query WP_Query
      */
     public function do_filtering(WP_Query $query) {
-        if(is_admin() && $query->is_main_query() && get_current_screen()->id == 'edit-'.self::$post_type) {
 
-            $meta_query = array('relation' => 'AND');
-
-            if( !empty($_REQUEST['campaign_state']) && $_REQUEST['campaign_state'] !== 'all' ) {
-                $meta_query[] = array('key' => 'is_finished', 'value' => $_REQUEST['campaign_state'] == 'is_finished' ? 1 : 0);
-            }
-
-            if( !empty($_REQUEST['target_state']) ) {
-                $meta_query[] = array('key' => 'target_state', 'value' => $_REQUEST['target_state']);
-            }
-
-            if(count($meta_query) > 1) {
-                $query->set('meta_query', $meta_query);
-            }
-
+        if(
+            !is_admin()
+            || !$query->is_main_query()
+            || !get_current_screen()
+            || get_current_screen()->id !== 'edit-'.self::$post_type
+        ) {
+            return;
         }
+
+        $meta_query = array('relation' => 'AND');
+
+        if( !empty($_REQUEST['campaign_state']) && $_REQUEST['campaign_state'] !== 'all' ) {
+            $meta_query[] = array('key' => 'is_finished', 'value' => $_REQUEST['campaign_state'] == 'is_finished' ? 1 : 0);
+        }
+
+        if( !empty($_REQUEST['target_state']) ) {
+            $meta_query[] = array('key' => 'target_state', 'value' => $_REQUEST['target_state']);
+        }
+
+        if(count($meta_query) > 1) {
+            $query->set('meta_query', $meta_query);
+        }
+
     }
 
     public function set_metaboxes() {

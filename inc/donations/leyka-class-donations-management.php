@@ -217,38 +217,43 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
     public function do_filtering(WP_Query $query) {
 
-        if(is_admin() && $query->is_main_query() && get_current_screen()->id == 'edit-'.self::$post_type) {
+        if(
+            !is_admin()
+            || !$query->is_main_query()
+            || !get_current_screen()
+            || get_current_screen()->id !== 'edit-'.self::$post_type
+        ) {
+            return;
+        }
 
-            $meta_query = array('relation' => 'AND');
+        $meta_query = array('relation' => 'AND');
 
-            if( !empty($_REQUEST['campaign']) ) {
-                $meta_query[] = array('key' => 'leyka_campaign_id', 'value' => (int)$_REQUEST['campaign']);
+        if( !empty($_REQUEST['campaign']) ) {
+            $meta_query[] = array('key' => 'leyka_campaign_id', 'value' => (int)$_REQUEST['campaign']);
+        }
+
+        if( !empty($_REQUEST['payment_type']) ) {
+            $meta_query[] = array('key' => 'leyka_payment_type', 'value' => $_REQUEST['payment_type']);
+        }
+
+        if( !empty($_REQUEST['gateway_pm']) ) {
+            if(strpos($_REQUEST['gateway_pm'], 'gateway__') !== false) {
+                $meta_query[] = array(
+                    'key' => 'leyka_gateway', 'value' => str_replace('gateway__', '', $_REQUEST['gateway_pm'])
+                );
+            } else if(strpos($_REQUEST['gateway_pm'], 'pm__') !== false) {
+                $meta_query[] = array(
+                    'key' => 'leyka_payment_method', 'value' => str_replace('pm__', '', $_REQUEST['gateway_pm'])
+                );
             }
+        }
 
-            if( !empty($_REQUEST['payment_type']) ) {
-                $meta_query[] = array('key' => 'leyka_payment_type', 'value' => $_REQUEST['payment_type']);
-            }
+        if( isset($_REQUEST['donor_subscribed']) && $_REQUEST['donor_subscribed'] !== '-' ) {
+            $meta_query[] = array('key' => 'leyka_donor_subscribed', 'value' => !!$_REQUEST['donor_subscribed']);
+        }
 
-            if( !empty($_REQUEST['gateway_pm']) ) {
-                if(strpos($_REQUEST['gateway_pm'], 'gateway__') !== false) {
-                    $meta_query[] = array(
-                        'key' => 'leyka_gateway', 'value' => str_replace('gateway__', '', $_REQUEST['gateway_pm'])
-                    );
-                } else if(strpos($_REQUEST['gateway_pm'], 'pm__') !== false) {
-                    $meta_query[] = array(
-                        'key' => 'leyka_payment_method', 'value' => str_replace('pm__', '', $_REQUEST['gateway_pm'])
-                    );
-                }
-            }
-
-            if( isset($_REQUEST['donor_subscribed']) && $_REQUEST['donor_subscribed'] !== '-' ) {
-                $meta_query[] = array('key' => 'leyka_donor_subscribed', 'value' => !!$_REQUEST['donor_subscribed']);
-            }
-
-            if(count($meta_query) > 1) {
-                $query->set('meta_query', $meta_query);
-            }
-
+        if(count($meta_query) > 1) {
+            $query->set('meta_query', $meta_query);
         }
 
     }
