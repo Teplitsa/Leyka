@@ -152,13 +152,48 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
     }
 
+    /* Check if callback is sent from correct IP. */
+    protected function _is_callback_caller_correct() {
+
+        if( !leyka_options()->opt('cp_ip') ) { // The caller IP check is off
+            return true;
+        }
+
+        $cp_ips_allowed = array_map(
+            function($ip) { return trim(stripslashes($ip)); },
+            explode(',', leyka_options()->opt('cp_ip'))
+        );
+
+        if( !$cp_ips_allowed ) {
+            return true;
+        }
+
+        $client_ip = leyka_get_client_ip();
+
+        foreach($cp_ips_allowed as $ip_or_cidr) {
+
+            if( // Check if caller IP is in CIDR range
+                strpos($ip_or_cidr, '/')
+                && (is_ip_in_range($_SERVER['REMOTE_ADDR'], $ip_or_cidr) || is_ip_in_range($client_ip, $ip_or_cidr))
+            ) {
+                return true;
+            } else if($client_ip == $ip_or_cidr) { // Simple IP check
+                return true;
+            }
+
+        }
+
+        return false;
+
+    }
+
     public function _handle_service_calls($call_type = '') {
 
         // Test for gateway's IP:
         if(leyka_options()->opt('cp_ip')) {
 
             $cp_ip = explode(',', leyka_options()->opt('cp_ip'));
-            if( !in_array($_SERVER['REMOTE_ADDR'], $cp_ip) ) {
+            if( !$this->_is_callback_caller_correct() ) {
 
                 $client_ip = trim(array_slice(explode(',', leyka_get_client_ip()), 0, 1));
 
