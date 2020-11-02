@@ -210,7 +210,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             $hook = add_submenu_page('leyka', __('Donations', 'leyka'), __('Donations', 'leyka'), 'leyka_manage_donations', 'leyka_donations', array($this, 'donations_list_screen'));
             add_action("load-$hook", array($this, 'donations_list_screen_options'));
 
-            add_submenu_page('leyka', __('New correctional donation', 'leyka'), _x('Add new', 'donation', 'leyka'), 'leyka_manage_donations', '?page=leyka_donation_info');
+            add_submenu_page('leyka', __('New correctional donation', 'leyka'), _x('Add new', 'donation', 'leyka'), 'leyka_manage_donations', 'leyka_donation_info', array($this, 'donation_info_screen'));
 
         }
 
@@ -251,7 +251,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         add_submenu_page('leyka', __('Contact us', 'leyka'), __('Feedback', 'leyka'), 'leyka_manage_donations', 'leyka_feedback', array($this, 'feedback_screen'));
 
         // Fake pages:
-        add_submenu_page(NULL, 'Donation info', 'Donation info', 'leyka_manage_donations', 'leyka_donation_info', array($this, 'donation_info_screen'));
+//        add_submenu_page(NULL, 'Donation info', 'Donation info', 'leyka_manage_donations', 'leyka_donation_info', array($this, 'donation_info_screen'));
 
         // ATM, Wizards, Donors & Extensions are untested with "sep" storage type:
         if(leyka_get_donations_storage_type() === 'post') {

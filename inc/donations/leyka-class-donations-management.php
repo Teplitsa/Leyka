@@ -1785,7 +1785,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
     public static function get_donation_edit_link(Leyka_Donation_Base $donation) {
         return leyka_get_donations_storage_type() === 'post' ?
             admin_url('post.php?post='.$donation->id.'&action=edit') :
-            admin_url('?page=leyka_donation_info&donation='.$donation->id);
+            admin_url('admin.php?page=leyka_donation_info&donation='.$donation->id);
     }
 
 }
