@@ -653,7 +653,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             do_action("leyka_{$donation->gateway_id}_save_donation_data", $donation);
 
             // WARNING: we can't use wp_redirect here due to admin headers already sent:
-            $new_donation_edit_url = admin_url('?page=leyka_donation_info&donation='.$donation_id.'&msg=ok');?>
+            $new_donation_edit_url = admin_url('admin.php?page=leyka_donation_info&donation='.$donation_id.'&msg=ok');?>
 
             <div id="message" class="updated notice notice-success">
                 <p><?php echo sprintf(__("Donation added. If you are not redirected to it's edit page, <a href='%s'>click here</a>.", 'leyka'), $new_donation_edit_url);?></p>

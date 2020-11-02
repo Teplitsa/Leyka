@@ -6,7 +6,7 @@
 <div class="wrap" data-leyka-admin-page-type="donations-list-page">
 
     <h1 class="wp-heading-inline"><?php _e('Donations', 'leyka');?></h1>
-    <a href="<?php echo admin_url('?page=leyka_donation_info');?>" class="page-title-action"><?php _e('Add correctional donation', 'leyka');?></a>
+    <a href="<?php echo admin_url('admin.php?page=leyka_donation_info');?>" class="page-title-action"><?php _e('Add correctional donation', 'leyka');?></a>
 
     <div id="poststuff">
         <div>
