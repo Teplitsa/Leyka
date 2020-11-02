@@ -21,6 +21,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         require_once LEYKA_PLUGIN_DIR.'inc/settings/leyka-admin-template-tags.php';
         require_once LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php';
 
+        add_filter('admin_body_class', array($this, 'leyka_admin_body_class_setup'), 1000); // To apply CSS in needed places
+
 		add_action('admin_menu', array($this, 'admin_menu_setup'), 9);
 
 		if(leyka_options()->opt('donor_management_available')) { // Save Donors pages custom options
@@ -189,6 +191,37 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             }, 10, 3);
 
         }
+
+    }
+
+    function leyka_admin_body_class_setup($classes) {
+
+        $leyka_page_class = '';
+
+        if( !empty($_GET['screen']) && strpos($_GET['screen'], 'wizard-') === 0 ) {
+            $leyka_page_class .= 'leyka-admin-wizard';
+        } else if( !empty($_GET['page']) && $_GET['page'] == 'leyka_settings' && empty($_GET['screen']) ) {
+            $leyka_page_class .= 'leyka-admin-settings';
+        } else if( !empty($_GET['page']) && $_GET['page'] == 'leyka' && empty($_GET['screen']) ) {
+            $leyka_page_class .= 'leyka-admin-dashboard';
+        } else if( !empty($_GET['page']) && $_GET['page'] == 'leyka_donations' ) { // [Sep-D] Donations list page
+            $leyka_page_class .= 'leyka-admin-donations-list';
+        } else if( !empty($_GET['page']) && $_GET['page'] == 'leyka_donation_info' ) { // [Sep-D] Donation Add/Edit page
+
+            $leyka_page_class .= 'leyka-admin-donation-info '
+                .(empty($_GET['donation']) ? 'leyka-donation-add' : 'leyka-donation-edit');
+
+        } else if( !empty($_GET['page']) && $_GET['page'] == 'leyka_donors' && empty($_GET['screen']) ) {
+            $leyka_page_class .= 'leyka-admin-donors-list';
+        } else if(
+            ( !empty($_GET['post_type']) && in_array($_GET['post_type'], array('leyka_donation', 'leyka_campaign')) )
+            || ( !empty($_GET['page']) && $_GET['page'] === 'leyka_feedback' && empty($_GET['screen']))
+            || ( !empty($_GET['page']) && $_GET['page'] === 'leyka_donors' && empty($_GET['screen']) )
+        ) {
+            $leyka_page_class .= 'leyka-admin-default';
+        }
+
+        return $classes.' '.$leyka_page_class.' ';
 
     }
 
