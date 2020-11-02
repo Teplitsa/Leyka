@@ -1711,15 +1711,6 @@ class Leyka_Donation {
 
         add_post_meta($id, 'leyka_donor_name', htmlentities($value, ENT_QUOTES, 'UTF-8'));
 
-        // Donor's email is set earlier:
-        if($donor_email && is_email($donor_email) && empty($params['force_insert'])) {
-
-            wp_delete_post($id, true);
-            return new WP_Error('incorrect_donor_email', __('Incorrect donor email given while adding a donation', 'leyka'));
-
-        }
-        add_post_meta($id, 'leyka_donor_email', $donor_email);
-
         $value = empty($params['donor_comment']) ? leyka_pf_get_donor_comment_value() : $params['donor_comment'];
         $value = trim($value);
         if($value) {
@@ -1780,6 +1771,20 @@ class Leyka_Donation {
             'single' :
             ($params['payment_type'] == 'rebill' ? 'rebill' : 'correction');
         add_post_meta($id, 'leyka_payment_type', $params['payment_type']);
+
+        // Donor's email should be here, after payment type:
+        if(
+            !$params['force_insert']
+            && $params['payment_type'] != 'correction'
+            && ( !$donor_email || !is_email($donor_email) )
+        ) {
+
+            wp_delete_post($id, true);
+
+            return new WP_Error('incorrect_donor_email', __('Incorrect donor email given while adding a donation', 'leyka'));
+
+        }
+        add_post_meta($id, 'leyka_donor_email', $donor_email);
 
         if( !empty($params['gateway_id']) ) {
             do_action("leyka_{$params['gateway_id']}_add_donation_specific_data", $id, $params);

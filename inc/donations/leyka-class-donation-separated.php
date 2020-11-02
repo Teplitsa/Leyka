@@ -16,11 +16,6 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
         $params['status'] = empty($params['status']) || !array_key_exists($params['status'], leyka_get_donation_status_list()) ?
             'submitted' : $params['status'];
 
-        $params['donor_email'] = empty($params['donor_email']) ? leyka_pf_get_donor_email_value() : $params['donor_email'];
-        if( !$params['force_insert'] && ( !$params['donor_email'] && !is_email($params['donor_email']) ) ) {
-            return new WP_Error('incorrect_donor_email', __('Incorrect donor email given while adding a donation', 'leyka'));
-        }
-
         $params['donor_name'] = empty($params['donor_name']) ? leyka_pf_get_donor_name_value() : $params['donor_name'];
         if($params['donor_name'] && !leyka_validate_donor_name($params['donor_name']) && !$params['force_insert']) {
             return new WP_Error('incorrect_donor_name', __('Incorrect donor name given while adding a donation', 'leyka'));
@@ -34,6 +29,16 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
         $params['payment_type'] =
             empty($params['payment_type']) || !array_key_exists($params['payment_type'], leyka_get_payment_types_data()) ?
                 'single' : $params['payment_type'];
+
+        $params['donor_email'] = empty($params['donor_email']) ? leyka_pf_get_donor_email_value() : $params['donor_email'];
+
+        if(
+            !$params['force_insert']
+            && $params['payment_type'] != 'correction'
+            && ( !$params['donor_email'] || !is_email($params['donor_email']) )
+        ) {
+            return new WP_Error('incorrect_donor_email', __('Incorrect donor email given while adding a donation', 'leyka'));
+        }
 
         $params['date_created'] = empty($params['date_created']) ? date('Y-m-d H:i:s') : $params['date_created'];
 
