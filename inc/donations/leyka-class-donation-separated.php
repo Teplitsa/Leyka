@@ -40,7 +40,8 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             return new WP_Error('incorrect_donor_email', __('Incorrect donor email given while adding a donation', 'leyka'));
         }
 
-        $params['date_created'] = empty($params['date_created']) ? date('Y-m-d H:i:s') : $params['date_created'];
+        $params['date_created'] = empty($params['date_created']) ?
+            date('Y-m-d H:i:s', current_time('timestamp')) : $params['date_created'];
 
         if(empty($params['pm_id']) && empty($params['gateway_id'])) { // Try to get Gateway & PM from $_POST
 
