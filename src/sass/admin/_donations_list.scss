@@ -1,0 +1,16 @@
+/** Donations list page **/
+.leyka-admin-donations-list {
+
+    .column-status {
+
+        .funded {
+            color: $color-main-green;
+        }
+
+        .failed {
+            color: $color-main-red;
+        }
+
+    }
+
+}
