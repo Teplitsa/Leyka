@@ -37,7 +37,7 @@ class Leyka_Settings_Section {
             case 'title':
                 return $this->_title;
             case 'blocks':
-                return $this->_blocks;
+                return $this->_blocks ? $this->_blocks : array();
             case 'handler':
                 return $this->_handler;
             default:
@@ -88,12 +88,12 @@ class Leyka_Settings_Section {
 
     /** @return array */
     public function get_blocks() {
-        return $this->_blocks;
+        return $this->blocks;
     }
 
     public function is_valid() {
 
-        foreach($this->_blocks as $block) { /** @var $block Leyka_Settings_Block */
+        foreach($this->blocks as $block) { /** @var $block Leyka_Settings_Block */
             if( !$block->is_valid() ) {
                 return false;
             }
@@ -110,7 +110,7 @@ class Leyka_Settings_Section {
 
         $errors = array();
 
-        foreach($this->_blocks as $block) { /** @var $block Leyka_Settings_Block */
+        foreach($this->blocks as $block) { /** @var $block Leyka_Settings_Block */
             $errors = array_merge($errors, $block->get_errors());
         }
 
@@ -125,7 +125,7 @@ class Leyka_Settings_Section {
 
         $fields = array();
 
-        foreach($this->_blocks as $block) { /** @var $block Leyka_Settings_Block */
+        foreach($this->blocks as $block) { /** @var $block Leyka_Settings_Block */
             $fields = array_merge($fields, $block->get_fields_values());
         }
 

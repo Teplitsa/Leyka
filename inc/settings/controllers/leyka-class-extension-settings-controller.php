@@ -56,10 +56,6 @@ class Leyka_Extension_Settings_Controller extends Leyka_Settings_Controller {
      */
     protected function _set_stages() {
 
-        if( !$this->_options || !is_array($this->_options) ) {
-            return;
-        }
-
         $stage = new Leyka_Settings_Stage($this->_id, ''); // There is only one stage by default
 
         $section_check = reset($this->_options); // If there are no section set in options, add the default "main options" one
