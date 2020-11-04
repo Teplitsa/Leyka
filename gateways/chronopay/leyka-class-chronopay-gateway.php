@@ -165,7 +165,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
             $message .= "POST:\n\r".print_r($_POST, true)."\n\r\n\r";
             $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
-            $message .= "SERVER:\n\r".print_r(leyka_clear_server_data($_SERVER), true)."\n\r\n\r";
+            $message .= "SERVER:\n\r".print_r(apply_filters('leyka_notification_server_data', $_SERVER), true)."\n\r\n\r";
             $message .= "IP: ".print_r($client_ip, true)."\n\r\n\r";
             $message .= "Chronopay IP setting value: ".print_r(leyka_options()->opt('chronopay_ip'),true)."\n\r\n\r";
 
@@ -189,7 +189,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
             $message .= "POST:\n\r".print_r($_POST, true)."\n\r\n\r";
             $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
-            $message .= "SERVER:\n\r".print_r(leyka_clear_server_data($_SERVER), true)."\n\r\n\r";
+            $message .= "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
 
             wp_mail(get_option('admin_email'), __('Chronopay security key check failed!', 'leyka'), $message);
 
@@ -207,7 +207,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
             $message .= "POST:\n\r".print_r($_POST, true)."\n\r\n\r";
             $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
-            $message .= "SERVER:\n\r".print_r(leyka_clear_server_data($_SERVER), true)."\n\r\n\r";
+            $message .= "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
             $message .= "Donation ID: ".$_POST['cs2']."\n\r\n\r";
 
             wp_mail(get_option('admin_email'), __('Chronopay gives unknown donation ID parameter!', 'leyka'), $message);
@@ -230,7 +230,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
             $message .= "POST:\n\r".print_r($_POST, true)."\n\r\n\r";
             $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
-            $message .= "SERVER:\n\r".print_r(leyka_clear_server_data($_SERVER), true)."\n\r\n\r";
+            $message .= "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
 
             wp_mail(get_option('admin_email'), __('Chronopay gives unknown currency parameter!', 'leyka'), $message);
             status_header(200);

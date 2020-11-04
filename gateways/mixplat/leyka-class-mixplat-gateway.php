@@ -307,7 +307,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             $message .= "CALLBACK TYPE: ".print_r($response['request'], true)."\n\r\n\r";
             $message .= "THEIR POST:\n\r".print_r($_POST, true)."\n\r\n\r";
             $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
-            $message .= "SERVER:\n\r".print_r(leyka_clear_server_data($_SERVER), true)."\n\r\n\r";
+            $message .= "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
             $message .= "THEIR JSON:\n\r".print_r($json_string, true)."\n\r\n\r";
             $message .= "THEIR JSON DECODED:\n\r".print_r(json_decode($json_string), true)."\n\r\n\r";
 
