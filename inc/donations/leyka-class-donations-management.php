@@ -1187,7 +1187,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 <div class="leyka-ddata-field">
 
                     <?php $url = leyka()->storage_type == 'sep' ?
-                        admin_url('page=leyka_donation_info&donation='.$donation->init_recurring_donation_id) :
+                        admin_url('admin.php?page=leyka_donation_info&donation='.$donation->init_recurring_donation_id) :
                         admin_url('post.php?post='.$donation->init_recurring_donation_id.'&action=edit');?>
 
                     <a href="<?php echo $url;?>">#<?php echo $donation->init_recurring_donation_id;?></a>
