@@ -1370,6 +1370,30 @@ if( !function_exists('is_ip_in_range') ) {
     }
 }
 
+if( !function_exists('leyka_clear_server_data') ) {
+    function leyka_clear_server_data(array $_SERVER = array()) {
+
+        if( !empty($_SERVER['WORDPRESS_DB_USER'])) {
+            $_SERVER['WORDPRESS_DB_USER'] = 'XXXXXXXXXXXX';
+        }
+
+        if( !empty($_SERVER['WORDPRESS_DB_NAME'])) {
+            $_SERVER['WORDPRESS_DB_NAME'] = 'XXXXXXXXXXXX';
+        }
+
+        if( !empty($_SERVER['WORDPRESS_DB_HOST'])) {
+            $_SERVER['WORDPRESS_DB_HOST'] = 'XXXXXXXXXXXXXXXXXXXX';
+        }
+
+        if( !empty($_SERVER['WORDPRESS_DB_PASSWORD']) ) {
+            $_SERVER['WORDPRESS_DB_PASSWORD'] = 'XXXXXXXXXXXXXXXXXXXX';
+        }
+
+        return $_SERVER;
+
+    }
+}
+
 /**
  * @param $campaign_id int
  * @param $limit int|false False to get all donations (unlimited number).
