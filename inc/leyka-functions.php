@@ -1372,27 +1372,30 @@ if( !function_exists('is_ip_in_range') ) {
 
 // TODO Ttry to make it a filter for "leyka_notification_server_data" hook
 if( !function_exists('leyka_clear_server_data') ) {
-    function leyka_clear_server_data(array $_SERVER = array()) {
 
-        if( !empty($_SERVER['WORDPRESS_DB_USER'])) {
-            $_SERVER['WORDPRESS_DB_USER'] = 'XXXXXXXXXXXX';
+    function leyka_clear_server_data(array $server_data = array()) {
+
+        if( !empty($server_data['WORDPRESS_DB_USER'])) {
+            $server_data['WORDPRESS_DB_USER'] = 'XXXXXXXXXXXX';
         }
 
-        if( !empty($_SERVER['WORDPRESS_DB_NAME'])) {
-            $_SERVER['WORDPRESS_DB_NAME'] = 'XXXXXXXXXXXX';
+        if( !empty($server_data['WORDPRESS_DB_NAME'])) {
+            $server_data['WORDPRESS_DB_NAME'] = 'XXXXXXXXXXXX';
         }
 
-        if( !empty($_SERVER['WORDPRESS_DB_HOST'])) {
-            $_SERVER['WORDPRESS_DB_HOST'] = 'XXXXXXXXXXXXXXXXXXXX';
+        if( !empty($server_data['WORDPRESS_DB_HOST'])) {
+            $server_data['WORDPRESS_DB_HOST'] = 'XXXXXXXXXXXXXXXXXXXX';
         }
 
-        if( !empty($_SERVER['WORDPRESS_DB_PASSWORD']) ) {
-            $_SERVER['WORDPRESS_DB_PASSWORD'] = 'XXXXXXXXXXXXXXXXXXXX';
+        if( !empty($server_data['WORDPRESS_DB_PASSWORD']) ) {
+            $server_data['WORDPRESS_DB_PASSWORD'] = 'XXXXXXXXXXXXXXXXXXXX';
         }
 
-        return $_SERVER;
+        return $server_data;
 
     }
+    add_filter('leyka_notification_server_data', 'leyka_clear_server_data');
+
 }
 
 /**
