@@ -91,7 +91,7 @@ class Leyka extends Leyka_Singleton {
         add_action('parse_request', array($this, 'parse_request')); // Service URLs handlers
 
         function leyka_session_start() {
-            if( !session_id() ) {
+            if( !session_id() && !headers_sent() ) {
                 session_start();
             }
         }
