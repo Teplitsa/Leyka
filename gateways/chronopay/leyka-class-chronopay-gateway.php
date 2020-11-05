@@ -145,13 +145,6 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
     public function _handle_service_calls($call_type = '') {
 
-        // TODO DBG
-        $tmp_log = get_transient('leyka_tmp_dbg');
-        $tmp_log = $tmp_log ? $tmp_log : array();
-
-        $tmp_log_entry = array('time' => current_time('d.m.Y H:i:s'), 'post' => $_POST);
-        // TODO DBG - END
-
         $client_ip = leyka_get_client_ip();
 
         // Test for gateway's IP:
@@ -211,12 +204,6 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
             wp_mail(get_option('admin_email'), __('Chronopay gives unknown donation ID parameter!', 'leyka'), $message);
 
-            // TODO DBG
-            $tmp_log_entry['error'] = 'Do init donation found by ID: '.$_POST['cs2'];
-            $tmp_log[] = $tmp_log_entry;
-            set_transient('leyka_tmp_dbg', $tmp_log);
-            // TODO DBG - END
-
             status_header(200);
             die(3);
 
@@ -237,12 +224,6 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
             $message .= "SERVER:\n\r".print_r(apply_filters('leyka_notification_server_data', $_SERVER), true)."\n\r\n\r";
 
-            // TODO DBG
-            $tmp_log_entry['error'] = 'Unknown donation currency: '.$_POST['currency'];
-            $tmp_log[] = $tmp_log_entry;
-            set_transient('leyka_tmp_dbg', $tmp_log);
-            // TODO DBG - END
-
             wp_mail(get_option('admin_email'), __('Chronopay gives unknown currency parameter!', 'leyka'), $message);
             status_header(200);
             die(4);
@@ -252,20 +233,11 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         // Store donation data - rebill payment:
         if(apply_filters(
             'leyka_chronopay_callback_is_recurring',
-            (
-                leyka_options()->opt('chronopay_card_rebill_product_id_'.$currency_string) &&
-                $_POST['product_id'] == leyka_options()->opt('chronopay_card_rebill_product_id_'.$currency_string)
-            ),
+            $_POST['product_id'] == leyka_options()->opt('chronopay_card_rebill_product_id_'.$currency_string),
             $_POST['product_id']
         )) {
 
-            // TODO DBG
-            $tmp_log_entry['chronopay_is_recurring'] = array();
-            // TODO DBG - END
-
             if($transaction_type == 'Purchase') { // Initial recurring donation (subscription)
-
-                $tmp_log_entry['chronopay_is_recurring'][] = 'Is init recurring'; // TODO DBG
 
                 if($donation->status != 'funded') {
 
@@ -282,18 +254,12 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                     $donation->chronopay_customer_id = $customer_id;
                     $donation->chronopay_transaction_id = $transaction_id;
 
-                    $tmp_log_entry['chronopay_is_recurring'][] = 'Init recurring added'; // TODO DBG
-
                 }
 
             } else if($transaction_type == 'Rebill') { // Non-init recurring donation
 
-                $tmp_log_entry['chronopay_is_recurring'][] = 'Is rebill recurring'; // TODO DBG
-
                 // Callback is repeated (like when Chronopay didn't get an answer in prev. attempt):
                 if($this->_donation_exists($transaction_id)) {
-
-                    $tmp_log_entry['chronopay_is_recurring'][] = 'Rebill recurring already exists: '.$transaction_id; // TODO DBG
 
                     status_header(200);
                     die(0);
@@ -301,8 +267,6 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                 }
 
                 $init_recurring_donation = $this->get_init_recurring_donation($customer_id);
-
-                $tmp_log_entry['chronopay_is_recurring'][] = 'Init recurring D found: '.$init_recurring_donation->id; // TODO DBG
 
                 $new_recurring_donation = Leyka_Donations::get_instance()->add_clone(
                     $init_recurring_donation,
@@ -317,11 +281,8 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                 );
 
                 if(is_wp_error($new_recurring_donation)) {
-                    $tmp_log_entry['chronopay_is_recurring'][] = print_r('Error adding rebill recurring', $new_recurring_donation); // TODO DBG
                     return false;
                 }
-
-                $tmp_log_entry['chronopay_is_recurring'][] = 'Rebill recurring added: '.$new_recurring_donation->id; // TODO DBG
 
                 Leyka_Donation_Management::send_all_emails($new_recurring_donation->id);
 
@@ -331,8 +292,6 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             leyka_options()->opt('chronopay_card_product_id_'.$currency_string) &&
             $_POST['product_id'] == leyka_options()->opt('chronopay_card_product_id_'.$currency_string)
         ) {
-
-            $tmp_log_entry['chronopay_is_single'] = array('Is single'); // TODO DBG
 
             if($donation->status != 'funded') {
 
@@ -348,15 +307,8 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                 $donation->chronopay_customer_id = $customer_id;
                 $donation->chronopay_transaction_id = $transaction_id;
 
-                $tmp_log_entry['chronopay_is_single'][] = 'Single added'; // TODO DBG
-
             }
         }
-
-        // TODO DBG
-        $tmp_log[] = $tmp_log_entry;
-        set_transient('leyka_tmp_dbg', $tmp_log);
-        // TODO DBG - END
 
         status_header(200);
         die(0);
