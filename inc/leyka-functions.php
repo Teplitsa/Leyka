@@ -1370,7 +1370,6 @@ if( !function_exists('is_ip_in_range') ) {
     }
 }
 
-// TODO Ttry to make it a filter for "leyka_notification_server_data" hook
 if( !function_exists('leyka_clear_server_data') ) {
 
     function leyka_clear_server_data(array $server_data = array()) {
