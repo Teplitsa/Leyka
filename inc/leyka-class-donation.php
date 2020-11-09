@@ -254,7 +254,13 @@ class Leyka_Donation_Management {
 
     public function do_filtering(WP_Query $query) {
 
-        if($query->is_main_query() && get_current_screen() && get_current_screen()->id == 'edit-'.self::$post_type) {
+        if(
+            is_admin()
+            && $query->is_main_query()
+            && get_current_screen()
+            && get_current_screen()->id == 'edit-'.self::$post_type
+        ) {
+
             $meta_query = array('relation' => 'AND');
 
             if( !empty($_REQUEST['campaign']) ) {
