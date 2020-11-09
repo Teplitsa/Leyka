@@ -1690,19 +1690,6 @@ if( !function_exists('wp_validate_redirect') ) {
     }
 }
 
-if( !function_exists('leyka_get_client_ip') ) {
-
-    function leyka_get_client_ip() {
-        return getenv('HTTP_CLIENT_IP') ? :
-            getenv('HTTP_X_FORWARDED_FOR') ? :
-                getenv('HTTP_X_FORWARDED') ? :
-                    getenv('HTTP_FORWARDED_FOR') ? :
-                        getenv('HTTP_FORWARDED') ? :
-                            getenv('REMOTE_ADDR');
-    }
-
-}
-
 /**
  * @param $campaign_id int
  * @param $limit int|false False to get all donations (unlimited number).
