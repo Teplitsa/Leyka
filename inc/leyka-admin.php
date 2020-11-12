@@ -485,6 +485,10 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             $donation->status = $_POST['donation_status'];
         }
 
+        if( !$donation->payment_title && $campaign->payment_title ) {
+            $donation->payment_title = $campaign->payment_title;
+        }
+
         if(isset($_POST['donation-amount'])) {
 
             $_POST['donation-amount'] = round((float)str_replace(',', '.', $_POST['donation-amount']), 2);
@@ -622,10 +626,12 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             'custom' : leyka_get_pm_by_id($_POST['donation-pm'], true);
         $gateway_id = $gateway_pm === 'custom' ? '' : $gateway_pm->gateway_id;
         $pm_id = $gateway_pm === 'custom' ? mb_substr(esc_html($_POST['custom-payment-info']), 0, 255) : $gateway_pm->id;
+        $campaign = new Leyka_Campaign(absint($_POST['campaign-id']));
 
         $new_donation_params = array(
             'payment_type' => empty($_POST['payment-type']) ? 'correction' : $_POST['payment-type'],
             'campaign_id' => absint($_POST['campaign-id']),
+            'payment_title' => $campaign->payment_title,
             'status' => $_POST['donation_status'],
             'amount' => round($_POST['donation-amount'], 2),
             'gateway_id' => $gateway_id,

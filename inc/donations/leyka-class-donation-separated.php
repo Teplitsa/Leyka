@@ -303,7 +303,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'purpose_text':
             case 'payment_title':
             case 'campaign_payment_title':
-                return $this->get_meta('payment_title');
+                return $this->get_meta('payment_title') ? $this->get_meta('payment_title') : $this->campaign->payment_title;
 
             case 'status':
                 return $this->_main_data->status;

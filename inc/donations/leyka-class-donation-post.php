@@ -324,7 +324,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 $campaign = new Leyka_Campaign($this->_donation_meta['campaign_id']);
                 return $campaign ? $campaign : false;
 
-            case 'campaign_title': /** @todo Make an Object Cache singleton class for Campaigns!!! */
+            case 'campaign_title':
                 $campaign = new Leyka_Campaign($this->_donation_meta['campaign_id']);
                 return $campaign ? $campaign->title : $this->payment_title;
 
@@ -336,7 +336,8 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'purpose_text':
             case 'payment_title':
             case 'campaign_payment_title':
-                return $this->_donation_meta['payment_title'];
+                return $this->_donation_meta['payment_title'] ?
+                    $this->_donation_meta['payment_title'] : $this->campaign->payment_title;
 
             case 'status':
                 return $this->_main_data->post_status;
