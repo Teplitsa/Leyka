@@ -129,6 +129,20 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
     }
 
+    protected function _handle_donation_failure(Leyka_Donation $donation, $gateway_response = false) {
+
+        $donation->status = 'failed';
+
+        if($gateway_response) {
+            $donation->add_gateway_response($gateway_response);
+        }
+
+        if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
+            Leyka_Donation_Management::send_error_notifications($donation);
+        }
+
+    }
+
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
         $donation = new Leyka_Donation($donation_id);
@@ -363,12 +377,7 @@ techMessage="'.$tech_message.'"/>');
 
                         break;
                     case 'canceled':
-                        $donation->status = 'failed';
-
-                        if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
-                            Leyka_Donation_Management::send_error_notifications($donation);
-                        }
-
+                        $this->_handle_donation_failure($donation, false);
                         break;
                     case 'refund.succeeded':
                         $donation->status = 'refunded';
@@ -662,15 +671,12 @@ techMessage="'.$tech_message.'"/>');
                 $new_recurring_donation->add_gateway_response($payment); // On callback the response will be re-written
                 $new_recurring_donation->recurring_id = $payment->id;
 
-            } catch(Exception $ex) {
-
-                $new_recurring_donation->status = 'failed';
-                $new_recurring_donation->add_gateway_response($ex);
-
-                if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
-                    Leyka_Donation_Management::send_error_notifications($new_recurring_donation);
+                if($payment->status == 'canceled') { // If rebill donation didn't succedded, there won't be callbacks
+                    $this->_handle_donation_failure($new_recurring_donation, $payment);
                 }
 
+            } catch(Exception $ex) {
+                $this->_handle_donation_failure($new_recurring_donation, $ex);
             }
 
         } else {
