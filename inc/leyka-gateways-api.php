@@ -148,8 +148,7 @@ function leyka_get_gateway_icons_list($gateway) {
     foreach($pm_list as $pm) {
         if($pm->icons) {
             $icons = array_merge($icons, $pm->icons);
-        }
-        else {
+        } else {
             $icons[] = $pm->main_icon_url;
         }
     }
