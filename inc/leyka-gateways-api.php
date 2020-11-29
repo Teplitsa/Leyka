@@ -695,7 +695,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
         $country_id = $country_id ? trim(esc_attr($country_id)) : leyka_options()->opt_safe('receiver_country');
         $countries = $this->get_countries();
 
-        return $countries && in_array($country_id, $countries);
+        return $countries ? in_array($country_id, $countries) : true;
 
     }
 

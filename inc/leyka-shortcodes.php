@@ -692,9 +692,7 @@ function leyka_inline_campaign(array $atts = array()) {
             <?php if(leyka_options()->opt('agree_to_terms_needed')) {?>
             <div class="leyka-pf__oferta oferta">
                 <div class="oferta__frame">
-                    <div class="oferta__flow">
-                        <?php echo apply_filters('leyka_terms_of_service_text', do_shortcode(leyka_options()->opt('terms_of_service_text')));?>
-                    </div>
+                    <div class="oferta__flow"><?php echo leyka_get_terms_text();?></div>
                 </div>
                 <div class="oferta__action">
                     <a href="#" class="leyka-js-oferta-close">

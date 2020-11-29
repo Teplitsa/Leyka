@@ -10,7 +10,11 @@ $is_separate_sections_forms = $this->is_separate_forms_stage($current_stage);?>
 
     <h1 class="with-country">
 
-        <a href="<?php echo admin_url('admin.php?page=leyka_settings&stage=beneficiary#receiver_country');?>" title="tst"><img src="<?php echo LEYKA_PLUGIN_BASE_URL.'img/countries/'.leyka_options()->opt_safe('receiver_country').'.svg';?>" alt="" class="country-flag-icon"></a>
+        <?php $current_country = leyka_get_countries_full_info(leyka_options()->opt_safe('receiver_country'));?>
+
+        <a href="<?php echo admin_url('admin.php?page=leyka_settings&stage=beneficiary#receiver_country');?>" title="<?php echo $current_country ? sprintf(__('Receiver country: %s', 'leyka'), $current_country['title']) : '';?>">
+            <img src="<?php echo LEYKA_PLUGIN_BASE_URL.'img/countries/'.leyka_options()->opt_safe('receiver_country').'.svg';?>" alt="" class="country-flag-icon">
+        </a>
 
         <?php _e('Leyka settings', 'leyka');?>
 
