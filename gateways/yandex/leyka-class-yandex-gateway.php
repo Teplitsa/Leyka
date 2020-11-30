@@ -840,7 +840,7 @@ techMessage="'.$tech_message.'"/>');
 
         $all_pm_ids = leyka_options()->opt('yandex_new_api') ? array(
             'yandex_card' => 'bank_card',
-            'yandex_money' => 'yandex_money',
+            'yandex_money' => 'yoomoney',
             'yandex_wm' => 'webmoney',
             'yandex_sb' => 'sberbank',
             'yandex_ab' => 'alfabank',
