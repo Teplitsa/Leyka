@@ -1,14 +1,95 @@
-<svg width="85" height="60" viewBox="0 0 169 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M108.99 0C75.5725 0 48.9902 26.962 48.9902 60C48.9902 93.4177 75.9523 120 108.99 120C142.028 120 168.99 93.038 168.99 60C168.99 26.962 142.028 0 108.99 0ZM108.99 82.4051C96.8383 82.4051 86.5852 72.1519 86.5852 60C86.5852 47.8481 96.8383 37.5949 108.99 37.5949C121.142 37.5949 131.395 47.8481 131.395 60C131.016 72.1519 121.142 82.4051 108.99 82.4051Z" fill="url(#paint0_linear)"/>
-    <path d="M48.6076 17.4684V104.81H27.3418L0 17.4684H48.6076V17.4684Z" fill="url(#paint1_linear)"/>
-    <defs>
-        <linearGradient id="paint0_linear" x1="108.99" y1="0" x2="108.99" y2="120" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#0160D1"/>
-            <stop offset="1" stop-color="#00479C"/>
-        </linearGradient>
-        <linearGradient id="paint1_linear" x1="24.3038" y1="17.4684" x2="24.3038" y2="104.81" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#0160D1"/>
-            <stop offset="1" stop-color="#00479C"/>
-        </linearGradient>
-    </defs>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="29"
+   height="21"
+   viewBox="0 0 57.658823 42"
+   id="svg4136"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="yandex-money.svg"
+   style="fill:none">
+  <metadata
+     id="metadata4156">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="2560"
+     inkscape:window-height="1361"
+     id="namedview4154"
+     showgrid="false"
+     inkscape:zoom="19.466667"
+     inkscape:cx="42.5"
+     inkscape:cy="12.328767"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4136" />
+  <path
+     d="m 37.089227,0.97260317 c -11.151446,0 -20.02198,8.99723813 -20.02198,20.02204083 0,11.151512 8.997273,20.022046 20.02198,20.022046 11.024805,0 20.022045,-8.99724 20.022045,-20.022046 0,-11.0248027 -8.99724,-20.02204083 -20.022045,-20.02204083 z m 0,27.49863883 c -4.055032,0 -7.476499,-3.4215 -7.476499,-7.476598 0,-4.055099 3.421467,-7.476599 7.476499,-7.476599 4.055131,0 7.476565,3.4215 7.476565,7.476599 -0.126473,4.055098 -3.421434,7.476598 -7.476565,7.476598 z"
+     id="path4138"
+     style="fill:url(#paint0_linear)"
+     inkscape:connector-curvature="0" />
+  <path
+     d="m 16.939573,6.8018215 0,29.1459535 -7.0964163,0 -9.12397859,-29.1459535 16.22039489,0 0,0 z"
+     id="path4140"
+     style="fill:url(#paint1_linear)"
+     inkscape:connector-curvature="0" />
+  <defs
+     id="defs4142">
+    <linearGradient
+       id="paint0_linear"
+       x1="108.99"
+       y1="0"
+       x2="108.99"
+       y2="120"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.33370076,0,0,0.33370076,0.71917811,0.97260317)">
+      <stop
+         stop-color="#0160D1"
+         id="stop4145" />
+      <stop
+         offset="1"
+         stop-color="#00479C"
+         id="stop4147" />
+    </linearGradient>
+    <linearGradient
+       id="paint1_linear"
+       x1="24.303801"
+       y1="17.468399"
+       x2="24.303801"
+       y2="104.81"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.33370076,0,0,0.33370076,0.71917811,0.97260317)">
+      <stop
+         stop-color="#0160D1"
+         id="stop4150" />
+      <stop
+         offset="1"
+         stop-color="#00479C"
+         id="stop4152" />
+    </linearGradient>
+  </defs>
 </svg>
