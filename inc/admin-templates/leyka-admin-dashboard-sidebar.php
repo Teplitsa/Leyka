@@ -102,6 +102,10 @@ if($main_settings_steps) {?>
 
 </div>
 
+<?php if( !leyka_options()->opt('plugin_debug_mode') ) {
+    exit;
+}?>
+
 <div class="leyka-dashboard-sidebar-part">
 
     <h3><?php  _e('Diagnostic data', 'leyka');?></h3>
@@ -128,14 +132,6 @@ if($main_settings_steps) {?>
 
         </div>
         <div class="data-line"><?php echo 'WordPress '.get_bloginfo('version');?></div>
-
-        <?php $cronjobs_status = leyka_get_cronjobs_status();?>
-        <div class="data-line cron-state">
-            Cron: <span class="cron-state <?php echo $cronjobs_status['status'];?>"><?php echo mb_strtolower($cronjobs_status['title']);?></span>
-            <?php if($cronjobs_status['status'] === 'not-set') {?>
-                <a href="#" class="cron-setup-howto"><?php _e('How to set it up?', 'leyka');?></a>
-            <?php }?>
-        </div>
 
         <div class="data-line">
 
