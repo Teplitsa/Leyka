@@ -2213,6 +2213,7 @@ if( !function_exists('leyka_localize_rich_html_text_tags') ) {
                     '#SITE_NAME#',
                     '#SITE_URL#',
                     '#ORG_NAME#',
+                    '#ORG_SHORT_NAME#',
                 ),
                 array(
                     $is_legal ? leyka_options()->opt('org_full_name') : leyka_options()->opt('person_full_name'),
@@ -2229,6 +2230,7 @@ if( !function_exists('leyka_localize_rich_html_text_tags') ) {
                     get_bloginfo('name'),
                     home_url(),
                     $is_legal ? leyka_options()->opt('org_full_name') : leyka_options()->opt('person_full_name'),
+                    $is_legal ? leyka_options()->opt('org_short_name') : leyka_options()->opt('person_full_name'),
                 ),
             ),
             'pdKeys' => array(
