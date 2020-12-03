@@ -995,16 +995,26 @@ class Leyka_Donation_Management {
 		<legend><?php _e('Campaign Data', 'leyka');?></legend>
 
         <div class="leyka-ddata-string">
+
 			<label><?php echo _x('Campaign', 'In subjective case', 'leyka');?>:</label>
 			<div class="leyka-ddata-field">
-			<?php if($campaign->id && $campaign->status == 'publish') {?>
+
+			<?php if($campaign->id && $campaign->status === 'publish') {?>
+
 			<span class="text-line">
-            <span class="campaign-name"><?php echo htmlentities($campaign->title, ENT_QUOTES, 'UTF-8');?></span> <span class="campaign-actions"><a href="<?php echo admin_url('/post.php?action=edit&post='.$campaign->id);?>"><?php _e('Edit campaign', 'leyka');?></a> <a href="<?php echo $campaign->url;?>" target="_blank" rel="noopener noreferrer"><?php _e('Preview campaign', 'leyka');?></a></span></span>
+                <span class="campaign-name"><?php echo htmlentities($campaign->title, ENT_QUOTES, 'UTF-8');?></span>
+                <span class="campaign-actions">
+                    <a href="<?php echo admin_url('/post.php?action=edit&post='.$campaign->id);?>"><?php _e('Edit campaign', 'leyka');?></a>
+                    <a href="<?php echo $campaign->url;?>" target="_blank" rel="noopener noreferrer"><?php _e('Preview campaign', 'leyka');?></a>
+                </span>
+            </span>
 
 			<?php } else {
 				echo '<span class="text-line">'.__('the campaign has been removed or drafted', 'leyka').'</span>';
 			}?>
+
 			</div>
+
 		</div>
 
 		<div class="leyka-ddata-string">
@@ -1070,7 +1080,7 @@ class Leyka_Donation_Management {
 
         <?php if(leyka_options()->opt_template('show_donation_comment_field') || $donation->donor_comment) {?>
         <div class="leyka-ddata-string">
-            <label for="donor-comment"><?php _e('Comment', 'leyka');?>:</label>
+            <label for="donor-comment"><?php _e('Donor comment', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
             <?php if(
                 leyka_options()->opt_template('show_donation_comment_field') &&
@@ -1373,11 +1383,11 @@ class Leyka_Donation_Management {
 
         $donation = new Leyka_Donation($donation);
 
-        if($donation->payment_type != 'rebill' || !function_exists('curl_init')) {?>
+        if($donation->payment_type !== 'rebill' || !function_exists('curl_init')) {?>
             <div id="hide-recurrent-metabox"></div>
         <?php return; } else {
 
-            $init_recurrent_donation = Leyka_Donation::get_init_recurrent_donation($donation);
+            $init_recurrent_donation = Leyka_Donation::get_init_recurring_donation($donation);
             if( !$init_recurrent_donation->recurring_is_active ) {?>
 
             <div class="">
@@ -1437,6 +1447,7 @@ class Leyka_Donation_Management {
 		$columns['type'] = __('Payment type', 'leyka');
 		$columns['emails'] = __('Letter', 'leyka');
 		$columns['donor_subscribed'] = __('Donor subscription', 'leyka');
+		$columns['donation_comment'] = __('Donor comment', 'leyka');
 
 		if($unsort) {
 			$columns = array_merge($columns, $unsort);
@@ -1531,6 +1542,9 @@ class Leyka_Donation_Management {
 
                 <?php }
 
+                break;
+            case 'donation_comment':
+                echo $donation->donor_comment;
                 break;
             default:
         }
