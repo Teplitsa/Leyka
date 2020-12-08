@@ -349,18 +349,6 @@ function leyka_get_default_pd_terms_page() {
 
 }
 
-function leyka_get_pd_terms_page_url() {
-
-    $url = leyka_options()->opt('pd_terms_page') ? get_permalink(leyka_options()->opt('pd_terms_page')) : home_url();
-
-    if( !$url ) { // It can be in case when "last posts" is selected for homepage
-        $url = home_url();
-    }
-
-    return $url;
-
-}
-
 function leyka_get_default_service_terms_page() {
 
     $default_page = get_option('leyka_terms_of_service_page');
@@ -2245,7 +2233,7 @@ if( !function_exists('leyka_localize_rich_html_text_tags') ) {
                     $is_legal ? leyka_options()->opt('org_full_name') : leyka_options()->opt('person_full_name'),
                     $is_legal ? leyka_options()->opt('org_address') : leyka_options()->opt('person_address'),
                     home_url(),
-                    leyka_get_pd_terms_page_url(),
+                    leyka_get_terms_of_pd_usage_page_url(),
                     get_option('admin_email'),
                 ),
             ),

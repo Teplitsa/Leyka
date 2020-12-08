@@ -378,6 +378,12 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
 
     protected function _get_meta_emails() { // Keywords: email, notify
 
+        $placeholders_controls = "<div class='placeholders-help-actions'>
+    <a href='#' class='inner hide-available-tags'>Свернуть доступные теги</a>
+    <a href='#' class='inner show-available-tags'>Посмотреть доступные теги</a>
+    <a href='#' class='inner restore-original-doc'>Вернуть первоначальный текст</a>
+</div>";
+
         $email_placeholders = "<span class='placeholders-help'>
     <span class='item'>
         <code>#SITE_NAME#</code><span class='description'>Название сайта</span>
@@ -386,7 +392,10 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
         <code>#SITE_EMAIL#</code><span class='description'>Email сайта</span>
     </span>
     <span class='item'>
-        <code>#ORG_NAME#</code><span class='description'>Официальное название организации</span>
+        <code>#ORG_NAME#</code><span class='description'>Полное официальное название организации</span>
+    </span>
+    <span class='item'>
+        <code>#ORG_SHORT_NAME#</code><span class='description'>Сокращённое название организации</span>
     </span>
     <span class='item'>
         <code>#DONATION_ID#</code><span class='description'>Идентификатор текущего пожертвования</span>
@@ -433,12 +442,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
     <span class='item'>
         <code>#DONOR_ACCOUNT_LOGIN_LINK#</code><span class='description'>Ссылка на активацию/вход в Личный кабинет донора</span>
     </span>
-</span>
-<div class='placeholders-help-actions'>
-    <a href='#' class='inner hide-available-tags'>Свернуть доступные теги</a>
-    <a href='#' class='inner show-available-tags'>Посмотреть доступные теги</a>
-    <a href='#' class='inner restore-original-doc'>Вернуть первоначальный текст</a>
-</div>";
+</span>".$placeholders_controls;
 
         $campaign_target_reaching_email_placeholders = "<span class='placeholders-help'>
     <code>#SITE_NAME#</code> — ".__('a website title', 'leyka')."<br>
@@ -449,12 +453,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
     <code>#CAMPAIGN_NAME#</code> — ".__('a campaign to which donation was made', 'leyka')."<br>
     <code>#CAMPAIGN_TARGET#</code> — ".__('a campaign target amount', 'leyka')."<br>
     <code>#PURPOSE#</code> — ".__('a campaign title for payment systems (see campaign settings)', 'leyka')."<br>
-</span>
-<div class='placeholders-help-actions'>
-    <a href='#' class='inner hide-available-tags'>Свернуть доступные теги</a>
-    <a href='#' class='inner show-available-tags'>Посмотреть доступные теги</a>
-    <a href='#' class='inner restore-original-doc'>Вернуть первоначальный текст</a>
-</div>";
+</span>".$placeholders_controls;
 
         return array(
             'notify_tech_support_on_failed_donations' => array(
@@ -488,7 +487,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'text',
                 'default' => __('Thank you for your donation!', 'leyka'),
                 'title' => __('A title of after-donation notice sended to a donor', 'leyka'),
-                'description' => __('Enter the title of the notification (or thankful) email with donation data that would be sended to each donor right after his donation is made.', 'leyka'),
+                'comment' => __('A title of the notification (or thankful) email with donation data that would be sended to each donor right after his donation is made.', 'leyka'),
                 'required' => true,
                 'placeholder' => __('E.g., Daisy Foundation thanks you for your kindness', 'leyka'),
             ),
@@ -496,16 +495,16 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'rich_html',
                 'default' => __('Hello, #DONOR_NAME#!<br><br>You made a #SUM# donation to the following charity campaign: #CAMPAIGN_NAME#, using #PAYMENT_METHOD_NAME#.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
                 'title' => __('Email text', 'leyka'),
+                'comment' => __('An email text that your donor will see. You may use the special tags in the text.', 'leyka'),
                 'description' => $email_placeholders,
                 'required' => true,
-                'comment' => __('An email text that your donor will see. You may use the special tags in the text.', 'leyka'),
                 'field_classes' => array('type-rich_html'),
             ),
             'email_recurring_init_thanks_title' => array(
                 'type' => 'text',
                 'default' => __('Thank you for your support!', 'leyka'),
                 'title' => __('A title of an initial recurring donation notice sent to a donor', 'leyka'),
-                'description' => __('Enter a title of a notification email with donation data that would be sended to each donor on each rebill donation.', 'leyka'),
+                'comment' => __('A title of a notification email with donation data that would be sended to each donor on each rebill donation.', 'leyka'),
                 'required' => true,
                 'placeholder' => __('E.g., Daisy Foundation thanks you for your kindness', 'leyka'),
             ),
@@ -513,7 +512,8 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'rich_html',
                 'default' => __('Hello, #DONOR_NAME#!<br><br>We just took a #SUM# from your account as a regular donation to the campaign «#CAMPAIGN_NAME#», using #PAYMENT_METHOD_NAME#.<br><br>#DONOR_ACCOUNT_LOGIN_LINK#<br><br>If you, regretfully, wish to stop future regular donations to this campaign, please #RECURRING_SUBSCRIPTION_CANCELLING_LINK#.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
                 'title' => __('A text of a recurring subscription donation notice sent to a donor', 'leyka'),
-                'description' => __('Enter the text of the notification email that would be sended to each donor on each rebill donation. It may include the following special entries:', 'leyka').$email_placeholders,
+                'comment' => __('A text of the notification email that would be sended to each donor on each rebill donation.', 'leyka'),
+                'description' => $email_placeholders,
                 'required' => true,
                 'field_classes' => array('type-rich_html'),
             ),
@@ -521,14 +521,15 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'text',
                 'default' => __('Thank you for your unwavering support!', 'leyka'),
                 'title' => __('A title of an after-rebill donation notice for a donor', 'leyka'),
-                'description' => __('Enter a title of a donor notification email with donation data that will be sent on each recurring auto-payment.', 'leyka'),
+                'comment' => __('A title of a donor notification email with donation data that will be sent on each recurring auto-payment.', 'leyka'),
                 'required' => true,
             ),
             'email_recurring_ongoing_thanks_text' => array(
                 'type' => 'rich_html',
                 'default' => __('Hello, #DONOR_NAME#!<br><br>We just took a #SUM# from your account as a regular donation to the campaign «#CAMPAIGN_NAME#», using #PAYMENT_METHOD_NAME#.<br><br>#DONOR_ACCOUNT_LOGIN_LINK#<br><br>If you, regretfully, wish to stop future regular donations to this campaign, please #RECURRING_SUBSCRIPTION_CANCELLING_LINK#.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
                 'title' => __('A text of after-rebill donation notice sent to a donor', 'leyka'),
-                'description' => __('Enter the text of the notification email that would be sended to each donor on each rebill donation. It may include the following special entries:', 'leyka').$email_placeholders,
+                'comment' => __('A text of the notification email that would be sended to each donor on each rebill donation.', 'leyka'),
+                'description' => $email_placeholders,
                 'required' => true,
                 'field_classes' => array('type-rich_html'),
             ),
@@ -579,7 +580,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'rich_html',
                 'default' => __('Hello, #DONOR_NAME#!<br><br>You canceled the recurring donations on the "#CAMPAIGN_NAME#" campaign. We thank you for support, and we will miss it greatly.<br><br>Recurring donations are very important for us, as they allow us to plan stable future works. You may subscribe to monthly recurring donations again on the <a href="#CAMPAIGN_URL#">campaign page</a>.<br><br>Sincerely thank you for your support,<br>#ORG_NAME#', 'leyka'),
                 'title' => __('Notification email text', 'leyka'),
-                'description' => __('Enter the text of notification email. It may include the following special entries:', 'leyka').$email_placeholders,
+                'description' => $email_placeholders,
                 'required' => true,
                 'field_classes' => array('type-rich_html'),
             ),
@@ -597,15 +598,14 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'text',
                 'default' => __('Your personal account was created', 'leyka'),
                 'title' => __('A title of a notification email', 'leyka'),
-                'description' => __('Enter the email title.', 'leyka'),
                 'required' => true,
                 'placeholder' => __('E.g., Your personal account was created', 'leyka'),
             ),
             'non_init_recurring_donor_registration_emails_text' => array(
                 'type' => 'rich_html',
                 'default' => __('Hello, #DONOR_NAME#!<br><br>We created a personal account for you to manage your donations.<br><br>#DONOR_ACCOUNT_LOGIN_LINK#<br><br>If you do not wish to use it, just ignore this email.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
-                'title' => __("Notification email text", 'leyka'),
-                'description' => __("Enter the text of notification email. It may include the following special entries:", 'leyka').$email_placeholders,
+                'title' => __('Notification email text', 'leyka'),
+                'description' => $email_placeholders,
                 'required' => true,
                 'field_classes' => array('type-rich_html'),
             ),
@@ -613,7 +613,6 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'text',
                 'default' => __('Thanks to you, the campaign succeeded!', 'leyka'),
                 'title' => __('A title of an email notification sent to each donor when campaign target reached', 'leyka'),
-                'description' => __('Enter the title of an email.', 'leyka'),
                 'required' => true,
                 'placeholder' => __('E.g., Thanks to you, the campaign succeeded!', 'leyka'),
             ),
@@ -621,7 +620,8 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'rich_html',
                 'default' => __("Hello, #DONOR_NAME#!<br><br>You've donated #SUM# totally to the campaign: «#CAMPAIGN_NAME#».<br><br>We're glad to tell that just now this campaign successfully finished!<br><br>We heartfully thank you for your support,<br>#ORG_NAME#", 'leyka'),
                 'title' => __('A text of a notification email sent to each donor when campaign target reached', 'leyka'),
-                'description' => __('Enter the text of a notification email sent to each donor when campaign target reached. The text may include the following special entries:', 'leyka').$campaign_target_reaching_email_placeholders,
+                'comment' => __('A text of a notification email sent to each donor when campaign target reached.', 'leyka'),
+                'description' => $campaign_target_reaching_email_placeholders,
                 'required' => true,
                 'field_classes' => array('type-rich_html'),
             ),
@@ -655,10 +655,12 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'rich_html',
                 'default' => __('Hello!<br><br>A new donation has been made on a #SITE_NAME#:<br><br>Campaign: #CAMPAIGN_NAME#.<br>Donation purpose: #PURPOSE#<br>Amount: #SUM#.<br>Payment method: #PAYMENT_METHOD_NAME#.<br>Date: #DATE#<br><br>Your Leyka', 'leyka'),
                 'title' => __('A text of after-donation notification sended to a website personnel', 'leyka'),
-                'description' => __("Enter the text of the notification email that would be sended to each email stated before right after donation is made. It may include the following special entries:", 'leyka').$email_placeholders,
+                'comment' => __('A text of the notification email that would be sended to each email stated before right after donation is made.', 'leyka'),
+                'description' => $email_placeholders,
                 'field_classes' => array('type-rich_html'),
             ),
         );
+
     }
 
     protected function _get_meta_templates() { // Keywords: template, display, show, widget, revo
@@ -855,6 +857,88 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
     }
 
     protected function _get_meta_terms() { // Keywords: terms
+
+        $placeholders_controls = "<div class='placeholders-help-actions'>
+    <a href='#' class='inner hide-available-tags'>Свернуть доступные теги</a>
+    <a href='#' class='inner show-available-tags'>Посмотреть доступные теги</a>
+    <a href='#' class='inner restore-original-doc'>Вернуть первоначальный текст</a>
+</div>";
+
+        $terms_placeholders = "<span class='placeholders-help'>
+    <span class='item'>
+        <code>#SITE_URL#</code><span class='description'>Адрес сайта</span>
+    </span>
+    <span class='item'>
+        <code>#SITE_NAME#</code><span class='description'>Название сайта</span>
+    </span>
+    <span class='item'>
+        <code>#ADMIN_EMAIL#</code><span class='description'>Email администратора сайта</span>
+    </span>
+    <span class='item'>
+        <code>#LEGAL_NAME#</code><span class='description'>Полное официальное название организации</span>
+    </span>
+    <span class='item'>
+        <code>#LEGAL_FACE#</code><span class='description'>Имя руководителя организации</span>
+    </span>
+    <span class='item'>
+        <code>#LEGAL_FACE_POSITION#</code><span class='description'>Название должности руководителя организации</span>
+    </span>
+    <span class='item'>
+        <code>#LEGAL_ADDRESS#</code><span class='description'>Юридический адрес организации</span>
+    </span>
+    <span class='item'>
+        <code>#STATE_REG_NUMBER#</code><span class='description'>ОГРН организации</span>
+    </span>
+    <span class='item'>
+        <code>#KPP#</code><span class='description'>КПП организации</span>
+    </span>
+    <span class='item'>
+        <code>#INN#</code><span class='description'>ИНН организации</span>
+    </span>
+    <span class='item'>
+        <code>#BANK_ACCOUNT#</code><span class='description'>Номер банковского счёта организации</span>
+    </span>
+    <span class='item'>
+        <code>#BANK_NAME#</code><span class='description'>Название банка организации</span>
+    </span>
+    <span class='item'>
+        <code>#BANK_BIC#</code><span class='description'>БИК банка организации</span>
+    </span>
+    <span class='item'>
+        <code>#BANK_CORR_ACCOUNT#</code><span class='description'>Номер корр. счёта банка организации</span>
+    </span>
+    <span class='item'>
+        <code>#TERMS_PAGE_URL#</code><span class='description'>Адрес страницы с текстом условий Договора оферты</span>
+    </span>
+</span>".$placeholders_controls;
+
+        $pd_terms_placeholders = "<span class='placeholders-help'>
+    <span class='item'>
+        <code>#SITE_URL#</code><span class='description'>Адрес сайта</span>
+    </span>
+    <span class='item'>
+        <code>#SITE_NAME#</code><span class='description'>Название сайта</span>
+    </span>
+    <span class='item'>
+        <code>#ADMIN_EMAIL#</code><span class='description'>Email администратора сайта</span>
+    </span>
+    <span class='item'>
+        <code>#LEGAL_NAME#</code><span class='description'>Полное официальное название организации</span>
+    </span>
+    <span class='item'>
+        <code>#LEGAL_FACE#</code><span class='description'>Имя руководителя организации</span>
+    </span>
+    <span class='item'>
+        <code>#LEGAL_FACE_POSITION#</code><span class='description'>Название должности руководителя организации</span>
+    </span>
+    <span class='item'>
+        <code>#LEGAL_ADDRESS#</code><span class='description'>Юридический адрес организации</span>
+    </span>
+    <span class='item'>
+        <code>#PD_TERMS_PAGE_URL#</code><span class='description'>Адрес страницы с текстом условий Соглашения о персональных данных</span>
+    </span>
+</span>".$placeholders_controls;
+
         return array(
             'agree_to_terms_needed' => array(
                 'type' => 'checkbox',
@@ -881,6 +965,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'default' => __('Organization Terms of service text', 'leyka'),
                 'title' => __('A text of Terms of donation service', 'leyka'),
                 'required' => true,
+                'description' => $terms_placeholders,
                 'field_classes' => array('type-rich_html'),
             ),
             'person_terms_of_service_text' => array(
@@ -938,6 +1023,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'default' => __('Terms of personal data usage full text. Use <br> for line-breaks.', 'leyka'),
                 'title' => __('A text of personal data usage Terms', 'leyka'),
                 'required' => true,
+                'description' => $pd_terms_placeholders,
                 'field_classes' => array('type-rich_html'),
             ),
             'person_pd_terms_text' => array(

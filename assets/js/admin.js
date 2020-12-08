@@ -1149,51 +1149,9 @@ jQuery(document).ready(function($){
     });
 
     // Delete fields comments:
-    $('.leyka-admin .leyka-options-section .field-component.help').contents().filter(function(){
-        return this.nodeType === 1 || this.nodeType === 3; // 1 is for links, 3 - for plain text
-    }).remove();
-
-    // Rules of the dependence of the set of fields on the legal type:
-    // UPD: now it's handled on the Allocator level - different portlets are allocated according to the curr. "legal type" value
-    // if($('#change_receiver_legal_type').length) {
-    //
-    //     leyka_toggle_sections_dependent_on_legal_type($('input[type=radio][name=leyka_receiver_legal_type]:checked').val());
-    //
-    //     $('input[type="radio"][name="leyka_receiver_legal_type"]').change(function(){
-    //         leyka_toggle_sections_dependent_on_legal_type(
-    //             $('input[type="radio"][name="leyka_receiver_legal_type"]:checked').val()
-    //         );
-    //     });
-    //
-    //     function leyka_toggle_sections_dependent_on_legal_type($val) {
-    //         if($val === 'legal') {
-    //
-    //             $('#person_terms_of_service').hide();
-    //             $('#person_terms_of_pd').hide();
-    //             $('#beneficiary_person_name').hide();
-    //             $('#person_bank_essentials').hide();
-    //
-    //             $('#terms_of_service').show();
-    //             $('#terms_of_pd').show();
-    //             $('#beneficiary_org_name').show();
-    //             $('#org_bank_essentials').show();
-    //
-    //         } else {
-    //
-    //             $('#person_terms_of_service').show();
-    //             $('#person_terms_of_pd').show();
-    //             $('#beneficiary_person_name').show();
-    //             $('#person_bank_essentials').show();
-    //
-    //             $('#terms_of_service').hide();
-    //             $('#terms_of_pd').hide();
-    //             $('#beneficiary_org_name').hide();
-    //             $('#org_bank_essentials').hide();
-    //
-    //         }
-    //     }
-    //
-    // }
+    // $('.leyka-admin .leyka-options-section .field-component.help').contents().filter(function(){
+    //     return this.nodeType === 1 || this.nodeType === 3; // 1 is for links, 3 - for plain text
+    // }).remove();
 
     // Upload l10n:
     $('#upload-l10n-button').click(function(){
