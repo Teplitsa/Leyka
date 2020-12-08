@@ -697,12 +697,20 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             sort($donor_gateways_list);
             $donor_gateways_list = implode(', ', $donor_gateways_list);
 
+            $currency = leyka_get_currency_label();
+            $currency_label_encoded = @iconv( // Sometimes currency sighs symbols can't be encoded, so check for it
+                'UTF-8',
+                apply_filters('leyka_donations_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
+                $currency
+            );
+            $currency = $currency_label_encoded ? $currency : leyka_options()->opt_safe('currency_main');
+
             echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
                 'UTF-8',
-                apply_filters('leyka_donations_export_content_charset', 'windows-1251'),
+                apply_filters('leyka_donations_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
                 "\r\n".implode(';', apply_filters('leyka_donations_export_line', array(
                         $donor_data['donor_id'],
-                        _x(mb_ucfirst($donor_data['donor_type']), "Donor's type", 'leyka'),
+                        _x(mb_ucfirst($donor_data['donor_type']), 'Donor type', 'leyka'),
                         $donor_data['donor_name'],
                         $donor_data['donor_email'],
                         ($first_donation ? $first_donation->date : ''),
@@ -715,7 +723,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
                         ($last_donation ? $last_donation->amount : ''),
                         ($last_donation ? $last_donation->campaign_title : ''),
                         $donor_data['amount_donated'],
-                        leyka_get_currency_label(),
+                        $currency,
                     ), $donor_data)
                 )
             );
