@@ -39,7 +39,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                 'type' => 'checkbox',
                 'default' => false,
                 'title' => sprintf(__('Use %s new API', 'leyka'), $this->_title),
-                'comment' => sprintf(__('Check if your %s connection uses the new API', 'leyka'), $this->_title),
+                'comment' => sprintf(__('Check if your %s connection uses MIXPLAT API v3', 'leyka'), $this->_title),
                 'short_format' => true,
             ),
             'mixplat_service_id' => array(
