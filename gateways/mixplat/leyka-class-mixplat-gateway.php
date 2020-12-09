@@ -342,14 +342,16 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                     leyka_options()->opt('mixplat_secret_key')
                 );
             } else { // Status request
-                $params_signature = mb_strtolower(md5(
+                $params_signature = md5(
                     $response['id'].$response['external_id'].$response['service_id'].$response['status'].
                     $response['status_extended'].$response['phone'].$response['amount'].$response['amount_merchant'].
                     $response['currency'].$response['test'].leyka_options()->opt('mixplat_secret_key')
-                ));
+                );
             }
 
-            if($params_signature !== mb_strtolower($response['signature'])) {
+            $response['signature_calculated'] = $params_signature;
+
+            if($params_signature !== $response['signature']) {
 
                 $message = sprintf(__("This message has been sent because a call to your MIXPLAT callback was made with invalid MIXPLAT signature. The details of the call are below. The callback type: %s. Signatures sent / calculated: %s / %s", 'leyka'), $response['request'], $response['signature'], $params_signature)."\n\r\n\r";
                 $is_error = true;
@@ -402,11 +404,12 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
                 }
 
+                $donation->add_gateway_response($response);
+
                 switch($response['status']) {
                     case 'success':
 
                         $donation->status = 'funded';
-                        $donation->add_gateway_response($response);
 
                         Leyka_Donation_Management::send_all_emails($donation->id);
 
@@ -414,10 +417,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
                         break;
                     case 'failure':
-
                         $donation->status = 'failed';
-                        $donation->add_gateway_response($response);
-
                         break;
                     default:
                 }
@@ -531,14 +531,13 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             return array();
         }
 
-//        echo '<pre>'.print_r($vars, 1).'</pre>';
-
         $payment_id = $this->_get_value_if_any($vars, 'id');
         $payment_id = $payment_id ? $payment_id : $this->_get_value_if_any($vars, 'payment_id');
         $error_text = $this->_get_value_if_any($vars, 'message');
 
         return array(
             __('MIXPLAT payment ID:', 'leyka') => $payment_id,
+            __('Payments testing mode', 'leyka') => $this->_get_value_if_any($vars, 'test') ? __('yes', 'leyka') : '',
             __('Operation result:', 'leyka') => $this->_get_value_if_any($vars, 'result'),
 			__('Operator:', 'leyka') => $this->_get_value_if_any($vars, 'operator'),
 			__('Error message:', 'leyka') => $error_text ? $error_text : __('none'),
