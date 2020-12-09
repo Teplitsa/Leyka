@@ -342,14 +342,14 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                     leyka_options()->opt('mixplat_secret_key')
                 );
             } else { // Status request
-                $params_signature = md5(
+                $params_signature = mb_strtolower(md5(
                     $response['id'].$response['external_id'].$response['service_id'].$response['status'].
                     $response['status_extended'].$response['phone'].$response['amount'].$response['amount_merchant'].
                     $response['currency'].$response['test'].leyka_options()->opt('mixplat_secret_key')
-                );
+                ));
             }
 
-            if($params_signature != $response['signature']) {
+            if($params_signature !== mb_strtolower($response['signature'])) {
 
                 $message = sprintf(__("This message has been sent because a call to your MIXPLAT callback was made with invalid MIXPLAT signature. The details of the call are below. The callback type: %s. Signatures sent / calculated: %s / %s", 'leyka'), $response['request'], $response['signature'], $params_signature)."\n\r\n\r";
                 $is_error = true;
