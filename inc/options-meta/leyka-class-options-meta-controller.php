@@ -46,50 +46,73 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
     }
 
     /**
-     * Get option group metadata by group ID (the options prefixes or some keywords most of the time).
+     * A service function to get options meta as an array.
      *
-     * @param $options_group string|array|NULL Either options group ID, or an array of them, or NULL
-     * @return array The options metadata as an array of [option_id => metadata] pairs, or empty array if group is not found.
+     * @param string $options_group string|array Either options group ID, or an array of them.
+     * @return array
      */
-    public function get_options_meta($options_group = 'main') {
+    protected function _get_options_meta($options_group = 'main') {
 
-        if(is_array($options_group)) {
+        if($options_group == 'all') {
+            return $this->_get_options_meta(
+                array('main', 'org', 'person', 'currency', 'email', 'templates', 'analytics', 'terms', 'admin',)
+            );
+        } else if(is_array($options_group)) {
 
+            $options_meta = array();
             foreach($options_group as $group) {
-                $this->_options_meta = array_merge($this->_options_meta, $this->get_options_meta($group));
+                $options_meta = array_merge($options_meta, $this->_get_options_meta($group));
             }
 
-            return $this->_options_meta;
+            return $options_meta;
 
         }
 
         $options_group = empty($options_group) ? false : trim($options_group);
 
         switch($options_group) {
-            case 'main': $this->_options_meta = $this->_get_meta_main(); break;
-            case 'org': $this->_options_meta = $this->_get_meta_org(); break;
-            case 'person': $this->_options_meta = $this->_get_meta_person(); break;
-            case 'currency': $this->_options_meta = $this->_get_meta_currency(); break;
+            case 'main': return $this->_get_meta_main();
+            case 'org': return $this->_get_meta_org();
+            case 'person': return $this->_get_meta_person();
+            case 'currency': return $this->_get_meta_currency();
             case 'email':
             case 'emails':
-                $this->_options_meta = $this->_get_meta_emails();
-                break;
+               return $this->_get_meta_emails();
             case 'template':
             case 'templates':
-                $this->_options_meta = $this->_get_meta_templates();
-                break;
-            case 'analytics': $this->_options_meta = $this->_get_meta_analytics(); break;
-            case 'terms': $this->_options_meta = $this->_get_meta_terms(); break;
-            case 'admin': $this->_options_meta = $this->_get_meta_admin(); break;
+               return $this->_get_meta_templates();
+            case 'analytics': return $this->_get_meta_analytics();
+            case 'terms': return $this->_get_meta_terms();
+            case 'admin': return $this->_get_meta_admin();
             default:
-                $this->_options_meta = $this->_get_unknown_group_options_meta($options_group);
+               return $this->_get_unknown_group_options_meta($options_group);
         }
 
-        $this->_options_meta = apply_filters("leyka_{$options_group}_options_meta", $this->_options_meta);
-        $this->_options_meta = apply_filters("leyka_options_meta", $this->_options_meta, $options_group);
+    }
+
+    /**
+     * Initialize & return option group metadata array by group ID (the options prefixes or some keywords most of the time).
+     *
+     * @param $options_group string|array Either options group ID, or an array of them, or 'all' value for all groups.
+     * @return array The options metadata as an array of [option_id => metadata] pairs, or empty array if group is not found.
+     */
+    public function get_options_meta($options_group = 'main') {
+
+        $this->_options_meta = $this->_get_options_meta($options_group);
+
+        if( !is_array($options_group) ) {
+
+            $this->_options_meta = apply_filters("leyka_{$options_group}_options_meta", $this->_options_meta);
+            $this->_options_meta = apply_filters("leyka_options_meta", $this->_options_meta, $options_group);
+
+        }
 
         return $this->_options_meta;
 
+    }
+    
+    public function get_options_names($options_group = 'main') {
+        return array_keys($this->_get_options_meta($options_group));
     }
 
     protected function _get_meta_main() {

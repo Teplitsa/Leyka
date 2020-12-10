@@ -23,7 +23,9 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
         require_once(LEYKA_PLUGIN_DIR.'inc/options-meta/leyka-class-options-meta-controller.php');
 
-        self::$_options_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta(array('main', 'templates'));
+        self::$_options_meta = apply_filters('leyka_init_options_meta',
+            Leyka_Options_Meta_Controller::get_instance()->get_options_meta(array('main', 'templates'))
+        );
 
         $this->_add_options_alt_ids();
         $this->_modify_options_values();
@@ -216,6 +218,11 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
     }
 
+    /**
+     * Get all currently initialized options names/IDs as array.
+     *
+     * @return array
+     */
     public function get_options_names() {
         return array_unique(array_merge(array_keys(self::$_options_meta), array_keys($this->_options)));
     }

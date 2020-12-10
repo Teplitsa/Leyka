@@ -154,10 +154,13 @@ function leyka_engb_options($prefix) {
                     )
                 ),
                 $prefix.'_time_amount' => array(
-                    'type'          => 'text',
+                    'type'          => 'number',
                     'title'         => __('Delay - sec.', 'leyka'),
                     'required'      => false,
-                    'default'       => '30',
+                    'default'       => 30,
+                    'min' => 1,
+                    'max' => 60,
+                    'step' => 1,
                 ),
                 $prefix.'_scroll_amount' => array(
                     'type'          => 'number',
