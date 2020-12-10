@@ -96,6 +96,10 @@ if(defined('POLYLANG_VERSION')) {
 
     function leyka_localize_options() {
 
+        if( !function_exists('pll_register_string') ) {
+            return;
+        }
+
         // All localization filters are in places, now create all gateways:
         do_action('leyka_init_actions');
 
