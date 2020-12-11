@@ -81,6 +81,27 @@ PHP version required: 5.6+
 5. The plugin start page (a console)
 
 == Changelog ==
+= 3.14 =
+* New: now Extensions Controller & Render support the case of Extension w/o options.
+* New: Yandex.Kassa to YooKassa - gateway renaming & logo changes.
+* New: Donation donor comment added as a separate column in admin donations list table.
+* New: Organization short name emails placeholder added.
+* New: Emails & Terms placeholders display in the options returned.
+* Fix: Mixplat options - small additions & wording fixes.
+* Fix: Mixplat vulnerability with signature check in callbacks fixed.
+* Fix: empty Donors export bug fixed.
+* Fix: Extensions engine - small fixes.
+* Fix: Polylang compatibility bugfix.
+* Fix: text gateway for non-RU int-ns.
+* Fix: now all admin SVG icons sources are correct.
+* Fix: now YooKassa gives canceled rebills a "failed" status & handles failed donations better.
+* Fix: now recurring emails are sent only if active recurring donation is funded.
+* Fix: Init Wizard handle for non-ru countries improved.
+* Fix: Webpay single donatioons checksums checking fix if recurring is on.
+* Fix: CP recurring cancelling callback handling fixed.
+* Removed: now Diagnostic data Dashboard block is displayed only if plugin debug mode is on.
+* Removed: Cron setup info removed from the Diagnostic data Dashboard block.
+
 = 3.13 =
 * New: BY l10n added.
 * New: BY WebPay gateway added.
