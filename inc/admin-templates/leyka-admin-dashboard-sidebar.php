@@ -102,10 +102,6 @@ if($main_settings_steps) {?>
 
 </div>
 
-<?php if( !leyka_options()->opt('plugin_debug_mode') ) {
-    exit;
-}?>
-
 <div class="leyka-dashboard-sidebar-part">
 
     <h3><?php  _e('Diagnostic data', 'leyka');?></h3>
@@ -139,9 +135,13 @@ if($main_settings_steps) {?>
             echo __('Protocol:', 'leyka').' ';?>
             <span class="protocol <?php echo $protocol == 'https' ? 'safe' : 'not-safe';?>"><?php echo mb_strtoupper($protocol);?></span>
         </div>
+
+        <?php if(leyka_options()->opt('plugin_debug_mode')) {?>
+
         <div class="data-line">
 
             <?php $php_extensions_needed = array('curl', 'date', 'ereg', 'filter', 'ftp', 'gd', 'hash', 'iconv', 'json', 'libxml', 'mbstring', 'mysql', 'mysqli', 'openssl', 'pcre', 'simplexml', 'sockets', 'spl', 'tokenizer', 'xmlreader', 'xmlwriter', 'zlib',); // According to https://wordpress.stackexchange.com/questions/42098/what-are-php-extensions-and-libraries-wp-needs-and-or-uses
+
             $php_extensions = get_loaded_extensions();
 
             foreach($php_extensions_needed as &$extension_needed) {
@@ -152,17 +152,9 @@ if($main_settings_steps) {?>
             <?php echo implode(', ', $php_extensions_needed);?>
 
         </div>
-    </div>
 
-    <div id="how-to-setup-cron" class="leyka-adb-modal" title="<?php _e('How to setup cron?', 'leyka');?>" style="max-width:433px;">
-        <p class="error-notif">
-            <?php _e('For recurrent payments via Yandex.Kassa, you need to set up a task for Cron.', 'leyka');?>
-            <a href="https://leyka.te-st.ru/instruction/" target="_blank"><?php _e('Read more here', 'leyka');?></a>
-        </p>
-        <p class="error-notif">
-            <?php _e('To send an email when reaching the target amount of the campaign, you need to set up a task for Cron.', 'leyka');?>
-            <a href="https://leyka.te-st.ru/instruction/" target="_blank"><?php _e('Read more here', 'leyka');?></a>
-        </p>
+        <?php }?>
+
     </div>
 
 </div>

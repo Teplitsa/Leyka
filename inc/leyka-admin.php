@@ -860,7 +860,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         if(isset($_GET['page']) && $_GET['page'] === 'leyka') {
 
-            wp_enqueue_script('jquery-ui-dialog');
+            $dependencies[] = 'jquery-ui-dialog'; // wp_enqueue_script('jquery-ui-dialog');
+
             wp_enqueue_script('leyka-admin', LEYKA_PLUGIN_BASE_URL.'assets/js/Chart.v2.8.0.min.js', $dependencies, LEYKA_VERSION, true);
 
         }
