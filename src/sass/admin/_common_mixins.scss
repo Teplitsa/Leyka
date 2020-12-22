@@ -504,11 +504,20 @@
             margin-right: 12px;
         }
 
+        // PM icons SVGs are all different! RAAAGE
         &.sber,
         &.card-visa,&.card-mastercard,&.card-maestro,&.card-mir,
         &.mobile-beeline,&.mobile-megafon,&.mobile-mts,&.mobile-tele2 {
             height: 16px;
             margin-right: 12px;
+        }
+
+        &.yandex-money {
+            height: 16px;
+        }
+
+        &.liqpay {
+            margin-right: 10px;
         }
 
     }

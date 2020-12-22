@@ -392,10 +392,7 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
 }
 
 /** Terms of Service shortcode. */
-add_shortcode('leyka_service_terms_text', 'leyka_get_terms_text');
-function leyka_get_terms_text() {
-    return apply_filters('leyka_terms_of_service_text', leyka_options()->opt('terms_of_service_text'));
-}
+add_shortcode('leyka_service_terms_text', 'leyka_get_terms_text'); // The function is defined in the functions.php
 
 function leyka_get_wrong_campaign_message($campaign) {
     return apply_filters('leyka_wrong_campaign_shortcode_message', '<div class="leyka-nopm-error leyka-form-level-error">'.__('Campaign shortcode error: wrong campaign given.', 'leyka').'</div>', $campaign);
@@ -695,9 +692,7 @@ function leyka_inline_campaign(array $atts = array()) {
             <?php if(leyka_options()->opt('agree_to_terms_needed')) {?>
             <div class="leyka-pf__oferta oferta">
                 <div class="oferta__frame">
-                    <div class="oferta__flow">
-                        <?php echo apply_filters('leyka_terms_of_service_text', do_shortcode(leyka_options()->opt('terms_of_service_text')));?>
-                    </div>
+                    <div class="oferta__flow"><?php echo leyka_get_terms_text();?></div>
                 </div>
                 <div class="oferta__action">
                     <a href="#" class="leyka-js-oferta-close">
@@ -710,9 +705,7 @@ function leyka_inline_campaign(array $atts = array()) {
             <?php if(leyka_options()->opt('agree_to_pd_terms_needed')) {?>
             <div class="leyka-pf__pd pd">
                 <div class="pd__frame">
-                    <div class="pd__flow">
-                        <?php echo apply_filters('leyka_terms_of_pd_usage_text', do_shortcode(leyka_options()->opt('pd_terms_text')));?>
-                    </div>
+                    <div class="pd__flow"><?php echo leyka_get_pd_terms_text();?></div>
                 </div>
                 <div class="pd__action">
                     <a href="#" class="leyka-js-pd-close">

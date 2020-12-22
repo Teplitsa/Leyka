@@ -32,7 +32,7 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
                 'title' => __('Yandex account ID', 'leyka'),
                 'comment' => __("Please, enter your Yandex.Money account ID here. It's else known as Yandex.wallet number.", 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., 4100111111111111', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '4100111111111111'),
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
             ),
@@ -43,7 +43,7 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
                 'title' => __('Yandex account API secret', 'leyka'),
                 'comment' => __('Please, enter your Yandex.Money account API secret string here.', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., QweR+1TYUIo/p2aS3DFgHJ4K5', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'QweR+1TYUIo/p2aS3DFgHJ4K5'),
                 'list_entries' => array(), // For select, radio & checkbox fields
                 'validation_rules' => array(), // List of regexp?..
             ),

@@ -407,7 +407,7 @@ class Leyka_Payment_Form {
                 <div class="leyka-modal-close">X</div>
                 <div class="leyka-oferta-text-frame">
                     <div class="leyka-oferta-text-flow">
-                        <?php echo apply_filters('leyka_terms_of_pd_usage_text', do_shortcode(leyka_options()->opt('pd_terms_text')));?>
+                        <?php echo leyka_get_pd_terms_text();?>
                     </div>
                 </div>
             </div>
@@ -999,6 +999,14 @@ function get_leyka_payment_form_template_html($campaign = null, $template = null
         <div class="<?php echo apply_filters('leyka_no_pm_error_classes', 'leyka-nopm-error');?>">
             <?php echo is_user_logged_in() ?
                    str_replace('%s', admin_url('admin.php?page=leyka_settings&stage=payment#leyka_pm_available-wrapper'), __('There are no payment methods selected to donate! Please, <a href="%s">set them up</a>.', 'leyka')) :
+                    __('Dear donor, we are very sorry, but we haven\'t set up the donations module yet :( Please try to donate later.', 'leyka');?>
+        </div>
+
+        <?php } else if($campaign->daily_rouble_mode_on && !$campaign->daily_rouble_mode_on_and_valid) {?>
+
+            <div class="<?php echo apply_filters('leyka_no_pm_error_classes', 'leyka-nopm-error');?>">
+            <?php echo is_user_logged_in() ?
+                   str_replace('%s', admin_url('post.php?post='.$campaign->id.'&action=edit'), __('The payment method for this "Raily rouble" campaign is not selected! Please, <a href="%s">set it up</a>.', 'leyka')) :
                     __('Dear donor, we are very sorry, but we haven\'t set up the donations module yet :( Please try to donate later.', 'leyka');?>
         </div>
 

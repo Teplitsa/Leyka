@@ -239,18 +239,18 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
             case 'response':
             case 'notify':
 
-                delete_transient('leyka_tmp_callback');
-
                 $donation = NULL;
                 if( !empty($_REQUEST['orderNumber']) ) {
                     $donation = new Leyka_Donation(absint($_REQUEST['orderNumber']));
-                }
-                if( !$donation && !empty($_REQUEST['mdOrder']) ) {
+                } else if( !empty($_REQUEST['mdOrder']) ) {
                     $donation = $this->get_donation_by_transaction_id(trim($_REQUEST['mdOrder']));
                 }
+
                 if( !$donation ) {
                     exit(500);
                 }
+
+                $donation->add_gateway_response($_REQUEST);
 
                 if(empty($_REQUEST['status']) || empty($_REQUEST['operation'])) { // Operation failed
 
@@ -281,7 +281,7 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
 
                             $analytics = new TheIconic\Tracking\GoogleAnalytics\Analytics(true);
                             $analytics // Main params:
-                            ->setProtocolVersion('1')
+                                ->setProtocolVersion('1')
                                 ->setTrackingId(leyka_options()->opt('gtm_ua_tracking_id'))
                                 ->setClientId($donation->ga_client_id ? $donation->ga_client_id : leyka_gua_get_client_id())
                                 // Transaction params:
@@ -332,8 +332,6 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
                             '' : esc_sql($result['bindingInfo']['clientId']);
 
                     }
-
-                    set_transient('leyka_tmp_2', array('sber_order_id' => $donation->sber_order_id, 'extended_status' => $result));
 
                 }
 
@@ -564,7 +562,7 @@ class Leyka_Sber_Card extends Leyka_Payment_Method {
                 'type' => 'checkbox',
                 'default' => false,
                 'title' => __('Monthly recurring subscriptions are available', 'leyka'),
-                'comment' => __('Check if Sberbank Acquiring allows you to create recurrent subscriptions to do regular automatic payments. WARNING: you should enable the Sberbank auto-payments feature for test mode and for production mode separately.', 'leyka'),
+                'comment' => __('Check if the gateway allows you to create recurrent subscriptions to do regular automatic payments.', 'leyka').' '.__('WARNING: you should enable the Sberbank auto-payments feature for test mode and for production mode separately.', 'leyka'),
                 'short_format' => true,
             ),
         );

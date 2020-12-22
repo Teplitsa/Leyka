@@ -1,19 +1,99 @@
-<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-<circle cx="20" cy="20" r="19.5" fill="white" stroke="#F1F1F1"/>
-<path d="M28.0382 23.5305C29.9723 23.5305 31.5402 21.9626 31.5402 20.0284C31.5402 18.0943 29.9723 16.5264 28.0382 16.5264C26.1041 16.5264 24.5361 18.0943 24.5361 20.0284C24.5361 21.9626 26.1041 23.5305 28.0382 23.5305Z" fill="#00EEBC"/>
-<path d="M26.0111 13.9119L19.0992 7L11.0583 14.9948C9.74208 16.3143 9.00293 18.102 9.00293 19.9657C9.00293 21.8294 9.74208 23.617 11.0583 24.9365L13.0397 26.9179C13.0397 26.9179 26.1148 13.9119 26.0111 13.9119Z" fill="#00EEBC"/>
-<path d="M16.1613 16.2157L15.9654 16.066L15.7581 15.8586C15.0397 15.0889 14.6478 14.0704 14.665 13.0176C14.6822 11.9649 15.1071 10.9598 15.8502 10.2139L11.0579 14.9946L10.7815 15.2941C9.58774 16.635 8.95149 18.3814 9.00289 20.1759C9.05428 21.9704 9.78943 23.6775 11.0579 24.9478L19.0528 32.9427L25.9647 26.0307C26.0108 26.0538 20.0204 20.0864 16.1613 16.2157Z" fill="url(#paint0_linear)"/>
-<path d="M28.0848 23.5768C30.0125 23.5768 31.5753 22.014 31.5753 20.0862C31.5753 18.1585 30.0125 16.5957 28.0848 16.5957C26.157 16.5957 24.5942 18.1585 24.5942 20.0862C24.5942 22.014 26.157 23.5768 28.0848 23.5768Z" fill="#00EEBC"/>
-<path d="M26.0569 14.0155L19.145 7.10352L11.1271 15.0638C9.81161 16.3813 9.07275 18.167 9.07275 20.0289C9.07275 21.8907 9.81161 23.6764 11.1271 24.9939L13.097 26.9639C13.097 26.9639 26.2182 14.0155 26.0569 14.0155Z" fill="#00EEBC"/>
-<path d="M16.2187 16.3196L16.0229 16.1238L15.8501 15.9164C15.1212 15.1797 14.708 14.188 14.6981 13.1517C14.687 12.0807 15.1013 11.049 15.8501 10.2832L11.1269 15.064C11.0251 15.1581 10.9289 15.2581 10.8389 15.3635V15.3635C9.63917 16.6985 8.99778 18.4432 9.04708 20.2374C9.09638 22.0317 9.83263 23.7385 11.1039 25.0057L19.0872 33.0005L25.9991 26.0885C26.0567 26.1116 20.0779 20.1558 16.2187 16.3196Z" fill="url(#paint1_linear)"/>
-<defs>
-<linearGradient id="paint0_linear" x1="11.0003" y1="15.1905" x2="23.9142" y2="28.1043" gradientUnits="userSpaceOnUse">
-<stop stop-color="#00A9F9"/>
-<stop offset="0.99" stop-color="#0B89EA"/>
-</linearGradient>
-<linearGradient id="paint1_linear" x1="40.4113" y1="173.166" x2="284.114" y2="355.054" gradientUnits="userSpaceOnUse">
-<stop stop-color="#00A9F9"/>
-<stop offset="0.99" stop-color="#0B89EA"/>
-</linearGradient>
-</defs>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+        xmlns:dc="http://purl.org/dc/elements/1.1/"
+        xmlns:cc="http://creativecommons.org/ns#"
+        xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        xmlns:svg="http://www.w3.org/2000/svg"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+        xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+        width="40"
+        height="40"
+        viewBox="0 0 40 40"
+        fill="none"
+        id="svg4136"
+        version="1.1"
+        inkscape:version="0.91 r13725"
+        sodipodi:docname="yandex.svg">
+    <metadata id="metadata4166">
+        <rdf:RDF>
+            <cc:Work rdf:about="">
+                <dc:format>image/svg+xml</dc:format>
+                <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+                <dc:title></dc:title>
+            </cc:Work>
+        </rdf:RDF>
+    </metadata>
+    <sodipodi:namedview
+            pagecolor="#ffffff"
+            bordercolor="#666666"
+            borderopacity="1"
+            objecttolerance="10"
+            gridtolerance="10"
+            guidetolerance="10"
+            inkscape:pageopacity="0"
+            inkscape:pageshadow="2"
+            inkscape:window-width="2560"
+            inkscape:window-height="1361"
+            id="namedview4164"
+            showgrid="false"
+            inkscape:zoom="20.647518"
+            inkscape:cx="6.8462076"
+            inkscape:cy="17.185159"
+            inkscape:window-x="-9"
+            inkscape:window-y="-9"
+            inkscape:window-maximized="1"
+            inkscape:current-layer="svg4136" />
+    <circle cx="20" cy="20" r="19.5" fill="white" stroke="#F1F1F1" id="circle4138" />
+    <defs id="defs4152">
+        <linearGradient
+                id="paint0_linear"
+                x1="11.0003"
+                y1="15.1905"
+                x2="23.9142"
+                y2="28.1043"
+                gradientUnits="userSpaceOnUse">
+            <stop stop-color="#00A9F9" id="stop4155" />
+            <stop offset="0.99" stop-color="#0B89EA" id="stop4157" />
+        </linearGradient>
+        <linearGradient
+                id="paint1_linear"
+                x1="40.4113"
+                y1="173.166"
+                x2="284.114"
+                y2="355.054"
+                gradientUnits="userSpaceOnUse">
+            <stop stop-color="#00A9F9" id="stop4160" />
+            <stop offset="0.99" stop-color="#0B89EA" id="stop4162" />
+        </linearGradient>
+        <linearGradient
+                gradientUnits="userSpaceOnUse"
+                y2="120"
+                x2="108.99"
+                y1="0"
+                x1="108.99"
+                id="paint0_linear-3">
+            <stop id="stop4177" stop-color="#0160D1" />
+            <stop id="stop4179" stop-color="#00479C" offset="1" />
+        </linearGradient>
+        <linearGradient
+                gradientUnits="userSpaceOnUse"
+                y2="104.81"
+                x2="24.3038"
+                y1="17.4684"
+                x1="24.3038"
+                id="paint1_linear-4">
+            <stop
+                    id="stop4182"
+                    stop-color="#0160D1" />
+            <stop
+                    id="stop4184"
+                    stop-color="#00479C"
+                    offset="1" />
+        </linearGradient>
+    </defs>
+    <g style="fill:none" id="g4196" transform="matrix(0.15883878,0,0,0.15883878,6.605538,9.9793901)">
+        <path style="fill:url(#paint0_linear-3)" id="path4170" d="M 108.99,0 C 75.5725,0 48.9902,26.962 48.9902,60 c 0,33.4177 26.9621,60 59.9998,60 33.038,0 60,-26.962 60,-60 0,-33.038 -26.962,-60 -60,-60 z m 0,82.4051 C 96.8383,82.4051 86.5852,72.1519 86.5852,60 c 0,-12.1519 10.2531,-22.4051 22.4048,-22.4051 12.152,0 22.405,10.2532 22.405,22.4051 -0.379,12.1519 -10.253,22.4051 -22.405,22.4051 z" inkscape:connector-curvature="0" />
+        <path style="fill:url(#paint1_linear-4)" id="path4172" d="m 48.6076,17.4684 0,87.3416 -21.2658,0 L 0,17.4684 l 48.6076,0 0,0 z" inkscape:connector-curvature="0" />
+    </g>
 </svg>

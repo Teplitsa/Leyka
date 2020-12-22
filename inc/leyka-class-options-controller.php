@@ -23,7 +23,9 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
         require_once(LEYKA_PLUGIN_DIR.'inc/options-meta/leyka-class-options-meta-controller.php');
 
-        self::$_options_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta(array('main', 'templates'));
+        self::$_options_meta = apply_filters('leyka_init_options_meta',
+            Leyka_Options_Meta_Controller::get_instance()->get_options_meta(array('main', 'templates'))
+        );
 
         $this->_add_options_alt_ids();
         $this->_modify_options_values();
@@ -40,9 +42,19 @@ class Leyka_Options_Controller extends Leyka_Singleton {
     }
 
     protected function _modify_options_values() {
+
         add_filter('leyka_option_value-commission', function($value){
             return $value ? $value : array();
         });
+
+        // If Country option value changes, clear active PM lists:
+        add_action('leyka_set_receiver_country_option_value', function($option_value){
+
+            self::set_option_value('pm_order', '');
+            self::set_option_value('pm_available', '');
+
+        });
+
     }
 
     protected function _get_filtered_option_id($option_id) {
@@ -72,6 +84,27 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         $value = apply_filters('leyka_option_value-'.$option_id, get_option($option_id));
 
         return apply_filters('leyka_option_value', $value, $option_id);
+
+    }
+
+    /**
+     * A service method to set a plugin option value when the plugin is just being initialized
+     * and it can't properly load options metadata yet.
+     *
+     * @param $option_id string
+     * @return bool
+     */
+    public static function set_option_value($option_id, $value) {
+
+        $option_id = stristr($option_id, 'leyka_') !== false ? $option_id : 'leyka_'.$option_id;
+        $value = apply_filters('leyka_new_option_value', $value, $option_id);
+
+        $updated = update_option($option_id, $value);
+
+        do_action('leyka_set_option_value', $option_id, $value);
+        do_action("leyka_set_{$option_id}_option_value", $value);
+
+        return $updated;
 
     }
 
@@ -185,6 +218,11 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
     }
 
+    /**
+     * Get all currently initialized options names/IDs as array.
+     *
+     * @return array
+     */
     public function get_options_names() {
         return array_unique(array_merge(array_keys(self::$_options_meta), array_keys($this->_options)));
     }

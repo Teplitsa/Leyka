@@ -56,7 +56,11 @@ foreach(get_posts($params) as $donation) {
 
         $new_recurring_donation = $gateway->do_recurring_donation($donation);
 
-        if($new_recurring_donation && is_a($new_recurring_donation, 'Leyka_Donation')) {
+        if(
+            $new_recurring_donation
+            && is_a($new_recurring_donation, 'Leyka_Donation')
+            && $new_recurring_donation->status === 'funded'
+        ) {
             Leyka_Donation_Management::send_all_recurring_emails($new_recurring_donation);
         } // else if( !$new_recurring_donation || is_wp_error($new_recurring_donation) ) { ... } // TODO Log & handle error
 

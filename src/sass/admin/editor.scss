@@ -2,8 +2,11 @@
 @import 'common_presets';
 
 @mixin leyka-wizard-tiny-mce {
+
     margin-left: 1rem;
     margin-right: 1rem;
+
+    font-size: 14px;
     
     .leyka-doc-key {
         background-color: $color-editor-leyka-key;
@@ -13,6 +16,8 @@
 }
 
 body.mce-content-body {
+
     @include editor-text();
     @include leyka-wizard-tiny-mce();
+
 }

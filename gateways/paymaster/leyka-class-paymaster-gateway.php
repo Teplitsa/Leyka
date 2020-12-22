@@ -121,7 +121,21 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
 
         }
 
-        $donation = new Leyka_Donation((int)$_REQUEST['LMI_PAYMENT_NO']);
+        $donation = new Leyka_Donation(absint($_REQUEST['LMI_PAYMENT_NO']));
+
+        if(empty($donation) || empty($donation->id) || is_wp_error($donation)) {
+
+            $message = __('This message has been sent because a call to your Paymaster callback was made with unknown LMI_PAYMENT_NO parameter value given. The details of the call are below:', 'leyka') . "\n\r\n\r";
+
+            $message .= "THEIR_POST:\n\r" . print_r($_POST, true) . "\n\r\n\r";
+            $message .= "GET:\n\r" . print_r($_GET, true) . "\n\r\n\r";
+            $message .= "SERVER:\n\r" . print_r($_SERVER, true) . "\n\r\n\r";
+
+            wp_mail(get_option('admin_email'), __('Paymaster callback error - unknown LMI_PAYMENT_NO value', 'leyka'), $message);
+            status_header(200);
+            die();
+
+        }
 
         // Sign and hash
         $sign = $this->_get_signature($_REQUEST);
@@ -141,6 +155,9 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
             $message .= "SERVER:\n\r" . print_r($_SERVER, true) . "\n\r\n\r";
             $message .= "Signature from request:\n\r" . print_r($_REQUEST['SignatureValue'], true) . "\n\r\n\r";
             $message .= "Signature calculated:\n\r" . print_r($sign, true) . "\n\r\n\r";
+
+            $donation->add_gateway_response($_REQUEST);
+            $donation->status = 'failed';
 
             wp_mail(get_option('admin_email'), __('Paymaster digital signature check failed!', 'leyka'), $message);
             die();
@@ -173,7 +190,7 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
 
                 $analytics = new TheIconic\Tracking\GoogleAnalytics\Analytics(true);
                 $analytics // Main params:
-                    ->setProtocolVersion('1')
+                ->setProtocolVersion('1')
                     ->setTrackingId(leyka_options()->opt('gtm_ua_tracking_id'))
                     ->setClientId($donation->ga_client_id ? $donation->ga_client_id : leyka_gua_get_client_id())
                     // Transaction params:

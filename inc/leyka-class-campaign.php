@@ -121,7 +121,12 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
      */
     public function do_filtering(WP_Query $query) {
 
-        if( !is_admin() || !$query->is_main_query() || get_current_screen()->id !== 'edit-'.self::$post_type ) {
+        if(
+            !is_admin()
+            || !$query->is_main_query()
+            || !get_current_screen()
+            || get_current_screen()->id !== 'edit-'.self::$post_type
+        ) {
             return;
         }
 
@@ -267,14 +272,19 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                             if( !$pm->has_recurring_support() ) {
                                 unset($recurring_pm_list[$index]);
                             }
-                        }?>
+                        }
+
+                        $pm = leyka_get_pm_by_id($campaign->daily_rouble_pm_id, true);?>
 
                         <select name="daily_rouble_pm" id="daily-rouble-pm" <?php echo $recurring_pm_list ? '' : 'disabled="disabled"';?>>
+                            <option value="" <?php echo $pm && $pm->is_active ? '' : 'selected="selected"';?>><?php _e('Not set', 'leyka');?></option>
+
                         <?php foreach($recurring_pm_list as $pm) {?>
                             <option value="<?php echo $pm->full_id;?>" <?php echo $pm->full_id === $campaign->daily_rouble_pm_id ? 'selected="selected"' : '';?>>
                                 <?php echo $pm->title.' ('.$pm->gateway->title.')';?>
                             </option>
                         <?php }?>
+
                         </select>
 
                     </div>
@@ -359,7 +369,13 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <input type="text" name="payment_title" id="payment_title" class="leyka-field-wide" value="<?php echo $payment_title;?>" placeholder="<?php _e("If the field is empty, the campaign title will be used", 'leyka');?>" maxlength="128">
 
-            <div class="campaign-field-description" data-description-for="payment_title"><?php echo sprintf(__('The value should be max. 128 characters length (currently: <span class="leyka-field-current-value-length">%s</span> / 128)', 'leyka'), mb_strlen($payment_title));?></div>
+            <div class="campaign-field-description" data-description-for="payment_title">
+
+                <?php $description_max_length = 128 - mb_strlen(_x('[RS]', 'For "recurring subscription"', 'leyka')) - 1;
+
+                echo sprintf(__('The value should be max. %d characters length (currently: <span class="leyka-field-current-value-length">%d</span> / %d)', 'leyka'), $description_max_length, mb_strlen($payment_title), $description_max_length);?>
+
+            </div>
 
         </fieldset>
 
@@ -1596,8 +1612,8 @@ class Leyka_Campaign {
 
     }
 
-    public function delete($force = False) {
-        wp_delete_post( $this->_id, $force );
+    public function delete($force = false) {
+        wp_delete_post($this->_id, $force);
     }
     
 }

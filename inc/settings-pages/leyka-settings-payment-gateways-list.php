@@ -84,7 +84,7 @@
                 <a class="button <?php echo'button-primary';?> activation-button <?php echo 'leyka-card-'.$gateway_activation_status;?>" href="<?php echo leyka_get_gateway_settings_url($gateway);?>">
 
                 <?php if($gateway->has_wizard && in_array($gateway_activation_status, array('inactive', 'activating'))) {?>
-                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>src/svg/icon-wizard-stick-only.svg" class="wizard-available" alt="">
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-wizard-stick-only.svg" class="wizard-available" alt="">
                 <?php } else {?>
                 	<img src="<?php echo LEYKA_PLUGIN_BASE_URL.'img/icon-gear.svg';?>" alt="">
                 <?php }

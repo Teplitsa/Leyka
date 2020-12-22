@@ -4,8 +4,8 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: crowdfunding, fundraising, donations, recurring donations, charity, leyka, recurring, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, yandexmoney, yandex.money, яндекс.деньги, chronopay, sms, яндекс.касса, yandex.kassa, миксплат, mixplat, paypal, paymaster, qiwi, киви
 Requires at least: 3.6.1
-Tested up to: 5.4.2
-Stable tag: 3.11.1
+Tested up to: 5.6
+Stable tag: 3.14
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -81,6 +81,55 @@ PHP version required: 5.6+
 5. The plugin start page (a console)
 
 == Changelog ==
+= 3.14 =
+* New: now Extensions Controller & Render support the case of Extension w/o options.
+* New: Yandex.Kassa to YooKassa - gateway renaming & logo changes.
+* New: Donation donor comment added as a separate column in admin donations list table.
+* New: Organization short name emails placeholder added.
+* New: Emails & Terms placeholders display in the options returned.
+* Fix: Mixplat options - small additions & wording fixes.
+* Fix: Mixplat vulnerability with signature check in callbacks fixed.
+* Fix: empty Donors export bug fixed.
+* Fix: Extensions engine - small fixes.
+* Fix: Polylang compatibility bugfix.
+* Fix: text gateway for non-RU int-ns.
+* Fix: now all admin SVG icons sources are correct.
+* Fix: now YooKassa gives canceled rebills a "failed" status & handles failed donations better.
+* Fix: now recurring emails are sent only if active recurring donation is funded.
+* Fix: Init Wizard handle for non-ru countries improved.
+* Fix: Webpay single donatioons checksums checking fix if recurring is on.
+* Fix: CP recurring cancelling callback handling fixed.
+* Removed: now Diagnostic data Dashboard block is displayed only if plugin debug mode is on.
+* Removed: Cron setup info removed from the Diagnostic data Dashboard block.
+
+= 3.13 =
+* New: BY l10n added.
+* New: BY WebPay gateway added.
+* New: MIXPLAT - API v.3 support added.
+* New: many new UA l10n lines.
+* New: bank IBAN setting field added for UA l10n.
+* Fix: for donations export when PM filter used.
+* Fix: callback handling improved for the Paymaster gateway.
+* Fix: for donor field notice when saving Donor's admin profile.
+* Fix: for org/person terms mixup on the forms if "physical" legal type is selected.
+* Fix: small improvements for the Sber gateway callback handling.
+* Fix: for UA Liqpay recurring cancelling.
+- Removed: bank account setting field removed for UA l10n.
+
+= 3.12 =
+* New: internalization code framework added.
+* New: UA Liqpay gateway added.
+* New: now campaigns settings have a character counter for the payment title setting.
+* New: Star template displays PM icons when only one PM available.
+* Fix: CP recurring cancelling callback handling fixed.
+* Fix: now recurring subscription cancelling hook for CP gateway is triggered at all times.
+* Fix: the "notify_tech_support_on_failed_donations" error fixed.
+* Fix: Yandex.Kassa get_gateway_response_formatted() method is more error-proof now.
+* Fix: Star template controller errors fixed for cases when non-RU l10n is used.
+* Fix: small errors in Star & Heed Help templates fixed.
+* Removed: the redundant test payment marker removed for Yandex.Kassa gateeway donations.
+* Removed: phys. persons support removed for the Quittances & PayPal gateways.
+
 = 3.11.1 =
 * Fix: donations & subscriptions export fix.
 * Fix: non-workiing active recurring fix.

@@ -148,8 +148,7 @@ function leyka_get_gateway_icons_list($gateway) {
     foreach($pm_list as $pm) {
         if($pm->icons) {
             $icons = array_merge($icons, $pm->icons);
-        }
-        else {
+        } else {
             $icons[] = $pm->main_icon_url;
         }
     }
@@ -384,6 +383,25 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
      * @return bool|WP_Error True if cancelling request succeeded, false otherwise, WP_Error if request error can be verbal.
      */
     public function cancel_recurring_subscription(Leyka_Donation $donation) {
+
+        if($donation->type !== 'rebill') {
+            return new WP_Error(
+                'wrong_recurring_donation_to_cancel',
+                __('Wrong donation given to cancel a recurring subscription.', 'leyka')
+            );
+        }
+
+        $init_recurring_donation = Leyka_Donation::get_init_recurring_donation($donation);
+        if($init_recurring_donation) {
+
+            $init_recurring_donation->recurring_is_active = false;
+
+            return true;
+
+        } else {
+            return false;
+        }
+
     }
 
     /** A wrapper to fire when recurring subscription is cancelled via link. Should use the cancel_recurring_subscription(). */
@@ -669,6 +687,15 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
      */
     public function get_countries() {
         return empty($this->_countries) && !is_array($this->_countries) ? NULL : $this->_countries;
+    }
+
+    public function is_country_supported($country_id = false) {
+
+        $country_id = $country_id ? trim(esc_attr($country_id)) : leyka_options()->opt_safe('receiver_country');
+        $countries = $this->get_countries();
+
+        return $countries ? in_array($country_id, $countries) : true;
+
     }
 
 }

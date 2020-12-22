@@ -50,10 +50,13 @@ function leyka_do_donations_export() {
     if( !empty($_GET['gateway_pm']) ) {
         if(strpos($_GET['gateway_pm'], 'gateway__') !== false) {
             $meta_query[] = array('key' => 'leyka_gateway', 'value' => str_replace('gateway__', '', $_GET['gateway_pm']));
-        } elseif(strpos($_GET['gateway_pm'], 'pm__') !== false) {
-            $meta_query[] = array(
-                'key' => 'leyka_payment_method', 'value' => str_replace('pm__', '', $_GET['gateway_pm'])
-            );
+        } else if(strpos($_GET['gateway_pm'], 'pm__') !== false) {
+
+            $_GET['gateway_pm'] = explode('-', str_replace('pm__', '', $_GET['gateway_pm']));
+
+            $meta_query[] = array('key' => 'leyka_gateway', 'value' => $_GET['gateway_pm'][0]);
+            $meta_query[] = array('key' => 'leyka_payment_method', 'value' => $_GET['gateway_pm'][1]);
+
         }
     }
 

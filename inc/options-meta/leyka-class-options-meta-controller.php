@@ -1,55 +1,118 @@
 <?php if( !defined('WPINC') ) die;
 
-class Leyka_Options_Meta_Controller extends Leyka_Singleton {
+abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
 
     protected static $_instance;
 
     protected $_options_meta = array();
 
+    /** Can't make instance of the root/factory class, so overload the get_instance() */
+    public static function get_instance(array $params = array()) {
+        return self::get_controller();
+    }
+
     /**
-     * Get option group metadata by group ID (the options prefixes or some keywords most of the time).
-     *
-     * @param $options_group string|array|NULL Either options group ID, or an array of them, or NULL
-     * @return array The options metadata as an array of [option_id => metadata] pairs, or empty array if group is not found.
+     * @return Leyka_Options_Meta_Controller
+     * @throws Exception
      */
-    public function get_options_meta($options_group = 'main') {
+    public static function get_controller() {
 
-        if(is_array($options_group)) {
+        $country_id = get_option('leyka_receiver_country');
+        $country_id = $country_id && mb_strlen($country_id) > 1 ? $country_id : 'ru'; // Default country
 
+        // Specific Options Meta Controller class:
+        $file_path = LEYKA_PLUGIN_DIR.'inc/options-meta/leyka-class-'.$country_id.'-options-meta-controller.php';
+
+        if(file_exists($file_path)) {
+            require_once($file_path);
+        } else {
+            throw new Exception(
+                sprintf(
+                    __("Options Meta Controllers Factory error: Can't find Controller script by given country ID (%s, %s)"),
+                    $country_id, $file_path
+                ), 600
+            );
+        }
+
+        $class_name = 'Leyka_'.mb_ucfirst($country_id).'_Options_Meta_Controller';
+        if(class_exists($class_name)) {
+            return new $class_name();
+        } else {
+            throw new Exception(
+                sprintf(__('Options Meta Controllers Factory error: wrong allocator class given (%s)'), $class_name), 601
+            );
+        }
+
+    }
+
+    /**
+     * A service function to get options meta as an array.
+     *
+     * @param string $options_group string|array Either options group ID, or an array of them.
+     * @return array
+     */
+    protected function _get_options_meta($options_group = 'main') {
+
+        if($options_group == 'all') {
+            return $this->_get_options_meta(
+                array('main', 'org', 'person', 'currency', 'email', 'templates', 'analytics', 'terms', 'admin',)
+            );
+        } else if(is_array($options_group)) {
+
+            $options_meta = array();
             foreach($options_group as $group) {
-                $this->_options_meta = array_merge($this->_options_meta, $this->get_options_meta($group));
+                $options_meta = array_merge($options_meta, $this->_get_options_meta($group));
             }
 
-            return $this->_options_meta;
+            return $options_meta;
 
         }
 
         $options_group = empty($options_group) ? false : trim($options_group);
 
         switch($options_group) {
-            case 'main': $this->_options_meta = $this->_get_meta_main(); break;
-            case 'org': $this->_options_meta = $this->_get_meta_org(); break;
-            case 'person': $this->_options_meta = $this->_get_meta_person(); break;
-            case 'currency': $this->_options_meta = $this->_get_meta_currency(); break;
+            case 'main': return $this->_get_meta_main();
+            case 'org': return $this->_get_meta_org();
+            case 'person': return $this->_get_meta_person();
+            case 'currency': return $this->_get_meta_currency();
             case 'email':
             case 'emails':
-                $this->_options_meta = $this->_get_meta_emails();
-                break;
+               return $this->_get_meta_emails();
             case 'template':
             case 'templates':
-                $this->_options_meta = $this->_get_meta_templates();
-                break;
-            case 'analytics': $this->_options_meta = $this->_get_meta_analytics(); break;
-            case 'terms': $this->_options_meta = $this->_get_meta_terms(); break;
-            case 'admin': $this->_options_meta = $this->_get_meta_admin(); break;
+               return $this->_get_meta_templates();
+            case 'analytics': return $this->_get_meta_analytics();
+            case 'terms': return $this->_get_meta_terms();
+            case 'admin': return $this->_get_meta_admin();
             default:
+               return $this->_get_unknown_group_options_meta($options_group);
         }
 
-        $this->_options_meta = apply_filters("leyka_{$options_group}_options_meta", $this->_options_meta);
-        $this->_options_meta = apply_filters("leyka_options_meta", $this->_options_meta, $options_group);
+    }
+
+    /**
+     * Initialize & return option group metadata array by group ID (the options prefixes or some keywords most of the time).
+     *
+     * @param $options_group string|array Either options group ID, or an array of them, or 'all' value for all groups.
+     * @return array The options metadata as an array of [option_id => metadata] pairs, or empty array if group is not found.
+     */
+    public function get_options_meta($options_group = 'main') {
+
+        $this->_options_meta = $this->_get_options_meta($options_group);
+
+        if( !is_array($options_group) ) {
+
+            $this->_options_meta = apply_filters("leyka_{$options_group}_options_meta", $this->_options_meta);
+            $this->_options_meta = apply_filters("leyka_options_meta", $this->_options_meta, $options_group);
+
+        }
 
         return $this->_options_meta;
 
+    }
+    
+    public function get_options_names($options_group = 'main') {
+        return array_keys($this->_get_options_meta($options_group));
     }
 
     protected function _get_meta_main() {
@@ -71,6 +134,7 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                     'physical' => array('title' => __('Physical person', 'leyka'), 'comment' => '',),
                 ),
                 'description' => __('If you plan to collect funds as a physical person, please <a href="https://te-st.ru/2019/09/03/donations-to-individuals/" target="_blank">read this</a>.', 'leyka'),
+                'default' => 'legal',
             ),
             'pm_available' => array( // The option is never displayed in UI via standard means
                 'type' => 'multi_checkbox',
@@ -134,7 +198,8 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
         );
     }
 
-    protected function _get_meta_org() { // Keywords: org_
+    // Default implementation - common NGO org options fields:
+    protected function _get_meta_org() {
         return array(
             'org_full_name' => array(
                 'type' => 'text',
@@ -174,7 +239,7 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'default' => __('Director', 'leyka'),
                 'description' => __('Enter an official position of a person representing the NGO.', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., Director', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s'), __('Director', 'leyka')),
             ),
             'org_address' => array(
                 'type' => 'text',
@@ -183,38 +248,6 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'required' => true,
                 'placeholder' => __('E.g., Malrose str., 4, Washington, DC, USA', 'leyka'),
             ),
-            'org_state_reg_number' => array(
-                'type' => 'text',
-                'title' => __('The organization state registration number', 'leyka'),
-                'description' => __('Enter the organization state registration number.', 'leyka'),
-                'required' => true,
-                'placeholder' => __('E.g., 1023400056789', 'leyka'),
-                'mask' => "'mask': '9{13}'",
-            ),
-            'org_kpp' => array(
-                'type' => 'text',
-                'title' => __('The organization statement of the account number', 'leyka'),
-                'description' => __("Enter the organization statement of the account number.", 'leyka'),
-                'required' => true,
-                'placeholder' => __('E.g., 780302015', 'leyka'),
-                'mask' => "'mask': '9{9}'",
-            ),
-            'org_inn' => array(
-                'type' => 'text',
-                'title' => __('The organization taxpayer individual number', 'leyka'),
-                'description' => __('Enter the organization individual number of a taxpayer.', 'leyka'),
-                'required' => true,
-                'placeholder' => __('E.g., 4283256127', 'leyka'),
-                'mask' => "'mask': '9{10}'",
-            ),
-            'org_bank_account' => array(
-                'type' => 'text',
-                'title' => __('The organization bank account number', 'leyka'),
-                'description' => __('Enter a bank account number of the organization', 'leyka'),
-                'required' => true,
-                'placeholder' => __('E.g., 40123840529627089012', 'leyka'),
-                'mask' => "'mask': '9{20}'",
-            ),
             'org_bank_name' => array(
                 'type' => 'text',
                 'title' => __('The organization bank name', 'leyka'),
@@ -222,20 +255,12 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'required' => true,
                 'placeholder' => __('E.g., First Columbia Credit Bank', 'leyka'),
             ),
-            'org_bank_bic' => array(
+            'org_bank_account' => array(
                 'type' => 'text',
-                'title' => __('The organization bank BIC number', 'leyka'),
-                'description' => __("Enter a BIC of the organization bank.", 'leyka'),
+                'title' => __('The organization bank account number', 'leyka'),
+                'description' => __('Enter a bank account number of the organization', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., 044180293', 'leyka'),
-                'mask' => "'mask': '9{9}'",
-            ),
-            'org_bank_corr_account' => array(
-                'type' => 'text',
-                'title' => __('The organization bank correspondent account number', 'leyka'),
-                'description' => __('Enter a correspondent account number of the organization.', 'leyka'),
-                'required' => true,
-                'placeholder' => __('E.g., 30101810270902010595', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s'), '40123840529627089012'),
                 'mask' => "'mask': '9{20}'",
             ),
         );
@@ -261,7 +286,7 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'text',
                 'title' => _x('Your taxpayer individual number', 'For a physical person', 'leyka'),
                 'required' => false,
-                'placeholder' => __('E.g., 4283256127', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s'), '4283256127'),
                 'mask' => "'mask': '9{12}'",
             ),
             'person_bank_name' => array(
@@ -272,19 +297,19 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
             'person_bank_account' => array(
                 'type' => 'text',
                 'title' => _x('Your bank account number', 'For a physical person', 'leyka'),
-                'placeholder' => _x('E.g., 40123840529627089012', 'For a physical person', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s'), '40123840529627089012'),
                 'mask' => "'mask': '9{20}'",
             ),
             'person_bank_bic' => array(
                 'type' => 'text',
                 'title' => _x('Your bank BIC number', 'For a physical person', 'leyka'),
-                'placeholder' => _x('E.g., 044180293', 'For a physical person', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s'), '044180293'),
                 'mask' => "'mask': '9{9}'",
             ),
             'person_bank_corr_account' => array(
                 'type' => 'text',
                 'title' => _x('Your correspondent bank account number', 'For a physical person', 'leyka'),
-                'placeholder' => _x('E.g., 30101810270902010595', 'For a physical person', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s'), '30101810270902010595'),
                 'mask' => "'mask': '9{20}'",
             ),
         );
@@ -376,6 +401,12 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
 
     protected function _get_meta_emails() { // Keywords: email, notify
 
+        $placeholders_controls = "<div class='placeholders-help-actions'>
+    <a href='#' class='inner hide-available-tags'>Свернуть доступные теги</a>
+    <a href='#' class='inner show-available-tags'>Посмотреть доступные теги</a>
+    <a href='#' class='inner restore-original-doc'>Вернуть первоначальный текст</a>
+</div>";
+
         $email_placeholders = "<span class='placeholders-help'>
     <span class='item'>
         <code>#SITE_NAME#</code><span class='description'>Название сайта</span>
@@ -384,7 +415,10 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
         <code>#SITE_EMAIL#</code><span class='description'>Email сайта</span>
     </span>
     <span class='item'>
-        <code>#ORG_NAME#</code><span class='description'>Официальное название организации</span>
+        <code>#ORG_NAME#</code><span class='description'>Полное официальное название организации</span>
+    </span>
+    <span class='item'>
+        <code>#ORG_SHORT_NAME#</code><span class='description'>Сокращённое название организации</span>
     </span>
     <span class='item'>
         <code>#DONATION_ID#</code><span class='description'>Идентификатор текущего пожертвования</span>
@@ -431,12 +465,7 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
     <span class='item'>
         <code>#DONOR_ACCOUNT_LOGIN_LINK#</code><span class='description'>Ссылка на активацию/вход в Личный кабинет донора</span>
     </span>
-</span>
-<div class='placeholders-help-actions'>
-    <a href='#' class='inner hide-available-tags'>Свернуть доступные теги</a>
-    <a href='#' class='inner show-available-tags'>Посмотреть доступные теги</a>
-    <a href='#' class='inner restore-original-doc'>Вернуть первоначальный текст</a>
-</div>";
+</span>".$placeholders_controls;
 
         $campaign_target_reaching_email_placeholders = "<span class='placeholders-help'>
     <code>#SITE_NAME#</code> — ".__('a website title', 'leyka')."<br>
@@ -447,19 +476,21 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
     <code>#CAMPAIGN_NAME#</code> — ".__('a campaign to which donation was made', 'leyka')."<br>
     <code>#CAMPAIGN_TARGET#</code> — ".__('a campaign target amount', 'leyka')."<br>
     <code>#PURPOSE#</code> — ".__('a campaign title for payment systems (see campaign settings)', 'leyka')."<br>
-</span>
-<div class='placeholders-help-actions'>
-    <a href='#' class='inner hide-available-tags'>Свернуть доступные теги</a>
-    <a href='#' class='inner show-available-tags'>Посмотреть доступные теги</a>
-    <a href='#' class='inner restore-original-doc'>Вернуть первоначальный текст</a>
-</div>";
+</span>".$placeholders_controls;
 
         return array(
+            'notify_tech_support_on_failed_donations' => array(
+                'type' => 'checkbox',
+                'default' => true,
+                'title' => __('Send error reporting emails to the tech. support on failed donations', 'leyka'),
+                'comment' => __('Check to notify the website technical support (see the "website technical support email" option) of each failed donation.', 'leyka'),
+                'short_format' => true,
+            ),
             'tech_support_email' => array(
                 'type' => 'email',
                 'title' => __('Website technical support email', 'leyka'),
                 'description' => __('E-mail that you want to use to collect technical support requests from the donors.', 'leyka'),
-                'placeholder' => __('E.g., techsupport@email.com', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s'), 'techsupport@email.com'),
             ),
             'email_from_name' => array(
                 'type' => 'text',
@@ -472,14 +503,14 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'text',
                 'default' => leyka_get_default_email_from(),
                 'title' => __('Sender email', 'leyka'),
-                'placeholder' => __('E.g., donations@daisyfoundation.org', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s'), 'donations@daisyfoundation.org'),
                 'comment' => __('What your donors will see in the "from email" field. For the most of the cases, your organization contact email will do fine.', 'leyka'),
             ),
             'email_thanks_title' => array(
                 'type' => 'text',
                 'default' => __('Thank you for your donation!', 'leyka'),
                 'title' => __('A title of after-donation notice sended to a donor', 'leyka'),
-                'description' => __('Enter the title of the notification (or thankful) email with donation data that would be sended to each donor right after his donation is made.', 'leyka'),
+                'comment' => __('A title of the notification (or thankful) email with donation data that would be sended to each donor right after his donation is made.', 'leyka'),
                 'required' => true,
                 'placeholder' => __('E.g., Daisy Foundation thanks you for your kindness', 'leyka'),
             ),
@@ -487,16 +518,16 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'rich_html',
                 'default' => __('Hello, #DONOR_NAME#!<br><br>You made a #SUM# donation to the following charity campaign: #CAMPAIGN_NAME#, using #PAYMENT_METHOD_NAME#.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
                 'title' => __('Email text', 'leyka'),
+                'comment' => __('An email text that your donor will see. You may use the special tags in the text.', 'leyka'),
                 'description' => $email_placeholders,
                 'required' => true,
-                'comment' => __('An email text that your donor will see. You may use the special tags in the text.', 'leyka'),
                 'field_classes' => array('type-rich_html'),
             ),
             'email_recurring_init_thanks_title' => array(
                 'type' => 'text',
                 'default' => __('Thank you for your support!', 'leyka'),
                 'title' => __('A title of an initial recurring donation notice sent to a donor', 'leyka'),
-                'description' => __('Enter a title of a notification email with donation data that would be sended to each donor on each rebill donation.', 'leyka'),
+                'comment' => __('A title of a notification email with donation data that would be sended to each donor on each rebill donation.', 'leyka'),
                 'required' => true,
                 'placeholder' => __('E.g., Daisy Foundation thanks you for your kindness', 'leyka'),
             ),
@@ -504,7 +535,8 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'rich_html',
                 'default' => __('Hello, #DONOR_NAME#!<br><br>We just took a #SUM# from your account as a regular donation to the campaign «#CAMPAIGN_NAME#», using #PAYMENT_METHOD_NAME#.<br><br>#DONOR_ACCOUNT_LOGIN_LINK#<br><br>If you, regretfully, wish to stop future regular donations to this campaign, please #RECURRING_SUBSCRIPTION_CANCELLING_LINK#.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
                 'title' => __('A text of a recurring subscription donation notice sent to a donor', 'leyka'),
-                'description' => __('Enter the text of the notification email that would be sended to each donor on each rebill donation. It may include the following special entries:', 'leyka').$email_placeholders,
+                'comment' => __('A text of the notification email that would be sended to each donor on each rebill donation.', 'leyka'),
+                'description' => $email_placeholders,
                 'required' => true,
                 'field_classes' => array('type-rich_html'),
             ),
@@ -512,14 +544,15 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'text',
                 'default' => __('Thank you for your unwavering support!', 'leyka'),
                 'title' => __('A title of an after-rebill donation notice for a donor', 'leyka'),
-                'description' => __('Enter a title of a donor notification email with donation data that will be sent on each recurring auto-payment.', 'leyka'),
+                'comment' => __('A title of a donor notification email with donation data that will be sent on each recurring auto-payment.', 'leyka'),
                 'required' => true,
             ),
             'email_recurring_ongoing_thanks_text' => array(
                 'type' => 'rich_html',
                 'default' => __('Hello, #DONOR_NAME#!<br><br>We just took a #SUM# from your account as a regular donation to the campaign «#CAMPAIGN_NAME#», using #PAYMENT_METHOD_NAME#.<br><br>#DONOR_ACCOUNT_LOGIN_LINK#<br><br>If you, regretfully, wish to stop future regular donations to this campaign, please #RECURRING_SUBSCRIPTION_CANCELLING_LINK#.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
                 'title' => __('A text of after-rebill donation notice sent to a donor', 'leyka'),
-                'description' => __('Enter the text of the notification email that would be sended to each donor on each rebill donation. It may include the following special entries:', 'leyka').$email_placeholders,
+                'comment' => __('A text of the notification email that would be sended to each donor on each rebill donation.', 'leyka'),
+                'description' => $email_placeholders,
                 'required' => true,
                 'field_classes' => array('type-rich_html'),
             ),
@@ -570,7 +603,7 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'rich_html',
                 'default' => __('Hello, #DONOR_NAME#!<br><br>You canceled the recurring donations on the "#CAMPAIGN_NAME#" campaign. We thank you for support, and we will miss it greatly.<br><br>Recurring donations are very important for us, as they allow us to plan stable future works. You may subscribe to monthly recurring donations again on the <a href="#CAMPAIGN_URL#">campaign page</a>.<br><br>Sincerely thank you for your support,<br>#ORG_NAME#', 'leyka'),
                 'title' => __('Notification email text', 'leyka'),
-                'description' => __('Enter the text of notification email. It may include the following special entries:', 'leyka').$email_placeholders,
+                'description' => $email_placeholders,
                 'required' => true,
                 'field_classes' => array('type-rich_html'),
             ),
@@ -588,15 +621,14 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'text',
                 'default' => __('Your personal account was created', 'leyka'),
                 'title' => __('A title of a notification email', 'leyka'),
-                'description' => __('Enter the email title.', 'leyka'),
                 'required' => true,
                 'placeholder' => __('E.g., Your personal account was created', 'leyka'),
             ),
             'non_init_recurring_donor_registration_emails_text' => array(
                 'type' => 'rich_html',
                 'default' => __('Hello, #DONOR_NAME#!<br><br>We created a personal account for you to manage your donations.<br><br>#DONOR_ACCOUNT_LOGIN_LINK#<br><br>If you do not wish to use it, just ignore this email.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
-                'title' => __("Notification email text", 'leyka'),
-                'description' => __("Enter the text of notification email. It may include the following special entries:", 'leyka').$email_placeholders,
+                'title' => __('Notification email text', 'leyka'),
+                'description' => $email_placeholders,
                 'required' => true,
                 'field_classes' => array('type-rich_html'),
             ),
@@ -604,7 +636,6 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'text',
                 'default' => __('Thanks to you, the campaign succeeded!', 'leyka'),
                 'title' => __('A title of an email notification sent to each donor when campaign target reached', 'leyka'),
-                'description' => __('Enter the title of an email.', 'leyka'),
                 'required' => true,
                 'placeholder' => __('E.g., Thanks to you, the campaign succeeded!', 'leyka'),
             ),
@@ -612,7 +643,8 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'rich_html',
                 'default' => __("Hello, #DONOR_NAME#!<br><br>You've donated #SUM# totally to the campaign: «#CAMPAIGN_NAME#».<br><br>We're glad to tell that just now this campaign successfully finished!<br><br>We heartfully thank you for your support,<br>#ORG_NAME#", 'leyka'),
                 'title' => __('A text of a notification email sent to each donor when campaign target reached', 'leyka'),
-                'description' => __('Enter the text of a notification email sent to each donor when campaign target reached. The text may include the following special entries:', 'leyka').$campaign_target_reaching_email_placeholders,
+                'comment' => __('A text of a notification email sent to each donor when campaign target reached.', 'leyka'),
+                'description' => $campaign_target_reaching_email_placeholders,
                 'required' => true,
                 'field_classes' => array('type-rich_html'),
             ),
@@ -646,10 +678,12 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'rich_html',
                 'default' => __('Hello!<br><br>A new donation has been made on a #SITE_NAME#:<br><br>Campaign: #CAMPAIGN_NAME#.<br>Donation purpose: #PURPOSE#<br>Amount: #SUM#.<br>Payment method: #PAYMENT_METHOD_NAME#.<br>Date: #DATE#<br><br>Your Leyka', 'leyka'),
                 'title' => __('A text of after-donation notification sended to a website personnel', 'leyka'),
-                'description' => __("Enter the text of the notification email that would be sended to each email stated before right after donation is made. It may include the following special entries:", 'leyka').$email_placeholders,
+                'comment' => __('A text of the notification email that would be sended to each email stated before right after donation is made.', 'leyka'),
+                'description' => $email_placeholders,
                 'field_classes' => array('type-rich_html'),
             ),
         );
+
     }
 
     protected function _get_meta_templates() { // Keywords: template, display, show, widget, revo
@@ -846,6 +880,88 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
     }
 
     protected function _get_meta_terms() { // Keywords: terms
+
+        $placeholders_controls = "<div class='placeholders-help-actions'>
+    <a href='#' class='inner hide-available-tags'>Свернуть доступные теги</a>
+    <a href='#' class='inner show-available-tags'>Посмотреть доступные теги</a>
+    <a href='#' class='inner restore-original-doc'>Вернуть первоначальный текст</a>
+</div>";
+
+        $terms_placeholders = "<span class='placeholders-help'>
+    <span class='item'>
+        <code>#SITE_URL#</code><span class='description'>Адрес сайта</span>
+    </span>
+    <span class='item'>
+        <code>#SITE_NAME#</code><span class='description'>Название сайта</span>
+    </span>
+    <span class='item'>
+        <code>#ADMIN_EMAIL#</code><span class='description'>Email администратора сайта</span>
+    </span>
+    <span class='item'>
+        <code>#LEGAL_NAME#</code><span class='description'>Полное официальное название организации</span>
+    </span>
+    <span class='item'>
+        <code>#LEGAL_FACE#</code><span class='description'>Имя руководителя организации</span>
+    </span>
+    <span class='item'>
+        <code>#LEGAL_FACE_POSITION#</code><span class='description'>Название должности руководителя организации</span>
+    </span>
+    <span class='item'>
+        <code>#LEGAL_ADDRESS#</code><span class='description'>Юридический адрес организации</span>
+    </span>
+    <span class='item'>
+        <code>#STATE_REG_NUMBER#</code><span class='description'>ОГРН организации</span>
+    </span>
+    <span class='item'>
+        <code>#KPP#</code><span class='description'>КПП организации</span>
+    </span>
+    <span class='item'>
+        <code>#INN#</code><span class='description'>ИНН организации</span>
+    </span>
+    <span class='item'>
+        <code>#BANK_ACCOUNT#</code><span class='description'>Номер банковского счёта организации</span>
+    </span>
+    <span class='item'>
+        <code>#BANK_NAME#</code><span class='description'>Название банка организации</span>
+    </span>
+    <span class='item'>
+        <code>#BANK_BIC#</code><span class='description'>БИК банка организации</span>
+    </span>
+    <span class='item'>
+        <code>#BANK_CORR_ACCOUNT#</code><span class='description'>Номер корр. счёта банка организации</span>
+    </span>
+    <span class='item'>
+        <code>#TERMS_PAGE_URL#</code><span class='description'>Адрес страницы с текстом условий Договора оферты</span>
+    </span>
+</span>".$placeholders_controls;
+
+        $pd_terms_placeholders = "<span class='placeholders-help'>
+    <span class='item'>
+        <code>#SITE_URL#</code><span class='description'>Адрес сайта</span>
+    </span>
+    <span class='item'>
+        <code>#SITE_NAME#</code><span class='description'>Название сайта</span>
+    </span>
+    <span class='item'>
+        <code>#ADMIN_EMAIL#</code><span class='description'>Email администратора сайта</span>
+    </span>
+    <span class='item'>
+        <code>#LEGAL_NAME#</code><span class='description'>Полное официальное название организации</span>
+    </span>
+    <span class='item'>
+        <code>#LEGAL_FACE#</code><span class='description'>Имя руководителя организации</span>
+    </span>
+    <span class='item'>
+        <code>#LEGAL_FACE_POSITION#</code><span class='description'>Название должности руководителя организации</span>
+    </span>
+    <span class='item'>
+        <code>#LEGAL_ADDRESS#</code><span class='description'>Юридический адрес организации</span>
+    </span>
+    <span class='item'>
+        <code>#PD_TERMS_PAGE_URL#</code><span class='description'>Адрес страницы с текстом условий Соглашения о персональных данных</span>
+    </span>
+</span>".$placeholders_controls;
+
         return array(
             'agree_to_terms_needed' => array(
                 'type' => 'checkbox',
@@ -869,99 +985,15 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
             ),
             'terms_of_service_text' => array(
                 'type' => 'rich_html',
-                'default' => 'Публичная оферта о заключении договора пожертвования<br>
-<br>
-#LEGAL_NAME# (#LEGAL_FACE_POSITION#: #LEGAL_FACE#),<br>
-предлагает гражданам сделать пожертвование на ниже приведенных условиях:<br>
-<br>
-1. Общие положения<br>1.1. В соответствии с п. 2 ст. 437 Гражданского кодекса Российской Федерации данное предложение является публичной офертой (далее – Оферта).<br>
-1.2. В настоящей Оферте употребляются термины, имеющие следующее значение:<br>«Пожертвование» - «дарение вещи или права в общеполезных целях»;<br>
-«Жертвователь» - «граждане, делающие пожертвования»;<br>
-«Получатель пожертвования» - «#LEGAL_NAME#».<br>
-<br>
-1.3. Оферта действует бессрочно с момента размещения ее на сайте Получателя пожертвования.<br>
-1.4. Получатель пожертвования вправе отменить Оферту в любое время путем удаления ее со страницы своего сайта в Интернете.<br>
-1.5. Недействительность одного или нескольких условий Оферты не влечет недействительность всех остальных условий Оферты.<br>
-<br>
-2. Существенные условия договора пожертвования:<br>
-2.1. Пожертвование используется на содержание и ведение уставной деятельности Получателя пожертвования.<br>
-2.2. Сумма пожертвования определяется Жертвователем.<br>
-<br>
-3. Порядок заключения договора пожертвования:<br>
-3.1. В соответствии с п. 3 ст. 434 Гражданского кодекса Российской Федерации договор пожертвования заключается в письменной форме путем акцепта Оферты Жертвователем.<br>
-3.2. Оферта может быть акцептована путем перечисления Жертвователем денежных средств в пользу Получателя пожертвования платежным поручением по реквизитам, указанным в разделе 5 Оферты, с указанием в строке «назначение платежа»: «пожертвование на содержание и ведение уставной деятельности», а также с использованием пластиковых карт, электронных платежных систем и других средств и систем, позволяющих Жертвователю перечислять Получателю пожертвования денежных средств.<br>
-3.3. Совершение Жертвователем любого из действий, предусмотренных п. 3.2. Оферты, считается акцептом Оферты в соответствии с п. 3 ст. 438 Гражданского кодекса Российской Федерации.<br>
-3.4. Датой акцепта Оферты – датой заключения договора пожертвования является дата поступления пожертвования в виде денежных средств от Жертвователя на расчетный счет Получателя пожертвования.<br>
-<br>
-4. Заключительные положения:<br>
-4.1. Совершая действия, предусмотренные настоящей Офертой, Жертвователь подтверждает, что ознакомлен с условиями Оферты, целями деятельности Получателя пожертвования, осознает значение своих действий и имеет полное право на их совершение, полностью и безоговорочно принимает условия настоящей Оферты.<br>
-4.2. Настоящая Оферта регулируется и толкуется в соответствии с действующим российском законодательством.<br>
-<br>
-5. Подпись и реквизиты Получателя пожертвования<br>
-<br>
-#LEGAL_NAME#<br>
-<br>
-ОГРН: #STATE_REG_NUMBER#<br>
-ИНН/КПП: #INN#/#KPP#<br>
-Адрес места нахождения: #LEGAL_ADDRESS#<br>
-<br>
-Банковские реквизиты:<br>
-Номер банковского счёта: #BANK_ACCOUNT#<br>
-Банк: #BANK_NAME#<br>
-БИК банка: #BANK_BIC#<br>
-Номер корреспондентского счёта банка: #BANK_CORR_ACCOUNT#<br>
-<br>
-<br>
-#LEGAL_FACE_POSITION#<br>
-#LEGAL_FACE#',
+                'default' => __('Organization Terms of service text', 'leyka'),
                 'title' => __('A text of Terms of donation service', 'leyka'),
                 'required' => true,
+                'description' => $terms_placeholders,
                 'field_classes' => array('type-rich_html'),
             ),
             'person_terms_of_service_text' => array(
                 'type' => 'rich_html',
-                'default' => 'Публичная оферта о заключении договора пожертвования<br>
-<br>
-#LEGAL_NAME#,<br>
-предлагает гражданам сделать пожертвование на ниже приведенных условиях:<br>
-<br>
-1. Общие положения<br>1.1. В соответствии с п. 2 ст. 437 Гражданского кодекса Российской Федерации данное предложение является публичной офертой (далее – Оферта).<br>
-1.2. В настоящей Оферте употребляются термины, имеющие следующее значение:<br>«Пожертвование» - «дарение вещи или права в общеполезных целях»;<br>
-«Жертвователь» - «граждане, делающие пожертвования»;<br>
-«Получатель пожертвования» - «#LEGAL_NAME#».<br>
-<br>
-1.3. Оферта действует бессрочно с момента размещения ее на сайте Получателя пожертвования.<br>
-1.4. Получатель пожертвования вправе отменить Оферту в любое время путем удаления ее со страницы своего сайта в Интернете.<br>
-1.5. Недействительность одного или нескольких условий Оферты не влечет недействительность всех остальных условий Оферты.<br>
-<br>
-2. Существенные условия договора пожертвования:<br>
-2.1. Пожертвование используется на содержание и ведение уставной деятельности Получателя пожертвования.<br>
-2.2. Сумма пожертвования определяется Жертвователем.<br>
-<br>
-3. Порядок заключения договора пожертвования:<br>
-3.1. В соответствии с п. 3 ст. 434 Гражданского кодекса Российской Федерации договор пожертвования заключается в письменной форме путем акцепта Оферты Жертвователем.<br>
-3.2. Оферта может быть акцептована путем перечисления Жертвователем денежных средств в пользу Получателя пожертвования платежным поручением по реквизитам, указанным в разделе 5 Оферты, с указанием в строке «назначение платежа»: «пожертвование на содержание и ведение уставной деятельности», а также с использованием пластиковых карт, электронных платежных систем и других средств и систем, позволяющих Жертвователю перечислять Получателю пожертвования денежных средств.<br>
-3.3. Совершение Жертвователем любого из действий, предусмотренных п. 3.2. Оферты, считается акцептом Оферты в соответствии с п. 3 ст. 438 Гражданского кодекса Российской Федерации.<br>
-3.4. Датой акцепта Оферты – датой заключения договора пожертвования является дата поступления пожертвования в виде денежных средств от Жертвователя на расчетный счет Получателя пожертвования.<br>
-<br>
-4. Заключительные положения:<br>
-4.1. Совершая действия, предусмотренные настоящей Офертой, Жертвователь подтверждает, что ознакомлен с условиями Оферты, целями деятельности Получателя пожертвования, осознает значение своих действий и имеет полное право на их совершение, полностью и безоговорочно принимает условия настоящей Оферты.<br>
-4.2. Настоящая Оферта регулируется и толкуется в соответствии с действующим российском законодательством.<br>
-<br>
-5. Подпись и реквизиты Получателя пожертвования<br>
-<br>
-#LEGAL_NAME#<br>
-<br>
-ИНН: #INN#<br>
-Адрес места нахождения: #LEGAL_ADDRESS#<br>
-<br>
-Банковские реквизиты:<br>
-Номер банковского счёта: #BANK_ACCOUNT#<br>
-Банк: #BANK_NAME#<br>
-БИК банка: #BANK_BIC#<br>
-Номер корреспондентского счёта банка: #BANK_CORR_ACCOUNT#<br>
-<br>
-#LEGAL_FACE#',
+                'default' => __('Person Terms of service text'),
                 'title' => __('A text of Terms of donation service', 'leyka'),
                 'required' => true,
                 'field_classes' => array('type-rich_html'),
@@ -1014,6 +1046,7 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'default' => __('Terms of personal data usage full text. Use <br> for line-breaks.', 'leyka'),
                 'title' => __('A text of personal data usage Terms', 'leyka'),
                 'required' => true,
+                'description' => $pd_terms_placeholders,
                 'field_classes' => array('type-rich_html'),
             ),
             'person_pd_terms_text' => array(
@@ -1110,5 +1143,20 @@ class Leyka_Options_Meta_Controller extends Leyka_Singleton {
             ),
         );
     }
+
+    // The default implementation to get some country-specific options group:
+    protected function _get_unknown_group_options_meta($options_group) {
+        return array();
+    }
+
+    /** @todo */
+//    public function get_terms_of_service_placeholders() {
+//        return array(
+//            '#LEGAL_NAME#' => array(
+//                'title' => __('Org legal name', 'leyka'),
+//                'value' => leyka_options()->opt('org_full_name'),
+//            ),
+//        );
+//    }
 
 }

@@ -299,15 +299,17 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
     protected function _add_sections_metaboxes() {
 
         foreach($this->_controller->get_current_stage()->get_sections() as $section) {
-            add_meta_box(
-                'leyka_'.$section->id,
-                $section->title,
-                array($this, 'render_section_metabox'),
-                $this->_controller->id.'-options_main_area',
-                'normal',
-                'default',
-                $section // We may pass several args to the metabox callback - just use an array here
-            );
+            if($section->blocks) {
+                add_meta_box(
+                    'leyka_'.$section->id,
+                    $section->title,
+                    array($this, 'render_section_metabox'),
+                    $this->_controller->id.'-options_main_area',
+                    'normal',
+                    'default',
+                    $section // We may pass several args to the metabox callback - just use an array here
+                );
+            }
         }
 
     }

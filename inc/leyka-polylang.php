@@ -86,29 +86,52 @@ if(defined('POLYLANG_VERSION')) {
         }
         add_action('leyka_init_gateway_redirect_page', 'leyka_localize_gateway_redirect_page');
 
-        function leyka_localize_options() {
+    }
+    add_action('pll_language_defined', 'leyka_pll_do_localization', 10, 2);
 
-            // All localization filters are in places, now create all gateways:
-            do_action('leyka_init_actions');
+    // If Polylang is active, init all options at once (to localize them):
+    add_filter('leyka_init_options_meta', function($initialize_options_meta){
+        return Leyka_Options_Meta_Controller::get_instance()->get_options_meta('all');
+    });
 
-            // Register user-defined strings:
-            foreach(leyka_options()->get_options_names() as $option) {
+    function leyka_localize_options() {
 
-                $option_data = leyka_options()->get_info_of($option);
+        if( !function_exists('pll_register_string') ) {
+            return;
+        }
 
-                if($option_data['type'] == 'text') {
-                    pll_register_string($option_data['title'], $option_data['value'], 'leyka');
-                } elseif(in_array($option_data['type'], array('textarea', 'html', 'rich_html'))) {
-                    pll_register_string($option_data['title'], leyka_options()->opt($option), 'leyka', true);
-                }
+        // All localization filters are in places, now create all gateways:
+        do_action('leyka_init_actions');
 
+        // Register user-defined strings:
+        foreach(leyka_options()->get_options_names() as $option_id) {
+
+            $option_data = leyka_options()->get_info_of($option_id);
+            $value = leyka_options()->opt($option_id);
+
+            if( !$value && !empty($option_data['default']) ) {
+                $value = $option_data['default'];
+            }
+
+            if(is_numeric($value)) { // Don't localize the numeric values
+                continue;
+            }
+
+            if($option_data['type'] == 'text') {
+                pll_register_string($option_data['title'], $value, 'leyka');
+            } else if(in_array($option_data['type'], array('textarea', 'html', 'rich_html'))) {
+                pll_register_string(
+                    $option_data['title'],
+                    $value,
+                    'leyka',
+                    true
+                );
             }
 
         }
-        add_action('init', 'leyka_localize_options', 11);
 
     }
-    add_action('pll_language_defined', 'leyka_pll_do_localization', 10, 2);
+    add_action('init', 'leyka_localize_options');
 
     // Fallback to native WP language if Polylang doesn't have languages set up:
     function leyka_pll_languages_not_set(){

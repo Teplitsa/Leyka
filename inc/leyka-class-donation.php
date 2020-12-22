@@ -204,6 +204,11 @@ class Leyka_Donation_Management {
                 foreach($other_countries_pm_full_ids as $pm_full_id) {
 
                     $pm = leyka_get_pm_by_id($pm_full_id, true);
+
+                    if( !$pm ) {
+                        continue;
+                    }
+
                     if($pm->gateway_id !== $current_gateway_id) {
 
                         $current_gateway_id = $pm->gateway_id;?>
@@ -236,8 +241,6 @@ class Leyka_Donation_Management {
         <input id="campaign-select" type="text" data-nonce="<?php echo wp_create_nonce('leyka_get_campaigns_list_nonce');?>" placeholder="<?php _e('Select a campaign', 'leyka');?>" value="<?php echo $campaign_title;?>">
         <input id="campaign-id" type="hidden" name="campaign" value="<?php echo !empty($_GET['campaign']) ? (int)$_GET['campaign'] : '';?>">
 
-        <?php }?>
-
         <label for="donor-subscribed-select"></label>
         <select id="donor-subscribed-select" name="donor_subscribed">
             <option value="-" <?php echo !isset($_GET['donor_subscribed']) || $_GET['donor_subscribed'] === '-' ? 'selected="selected"' : '';?>><?php _e('Donors subscription', 'leyka');?></option>
@@ -245,11 +248,18 @@ class Leyka_Donation_Management {
             <option value="0" <?php echo isset($_GET['donor_subscribed']) && !$_GET['donor_subscribed'] ? 'selected="selected"' : '';?>><?php _e('Unsubscribed donors', 'leyka');?></option>
         </select>
 
+        <?php }?>
+
     <?php }
 
     public function do_filtering(WP_Query $query) {
 
-        if(is_admin() && $query->is_main_query() && get_current_screen()->id == 'edit-'.self::$post_type) {
+        if(
+            is_admin()
+            && $query->is_main_query()
+            && get_current_screen()
+            && get_current_screen()->id == 'edit-'.self::$post_type
+        ) {
 
             $meta_query = array('relation' => 'AND');
 
@@ -378,7 +388,9 @@ class Leyka_Donation_Management {
         $email_placeholders = array(
             '#SITE_NAME#',
             '#SITE_EMAIL#',
+            '#SITE_URL#',
             '#ORG_NAME#',
+            '#ORG_SHORT_NAME#',
             '#DONATION_ID#',
             '#DONATION_TYPE#',
             '#DONOR_NAME#',
@@ -397,7 +409,9 @@ class Leyka_Donation_Management {
         $email_placeholder_values = array(
             get_bloginfo('name'),
             get_bloginfo('admin_email'),
+            home_url(),
             leyka_options()->opt('org_full_name'),
+            leyka_options()->opt('org_short_name'),
             $donation->id,
             leyka_get_payment_type_label($donation->type),
             $donation->donor_name ? $donation->donor_name : __('dear donor', 'leyka'),
@@ -503,8 +517,10 @@ class Leyka_Donation_Management {
         $email_placeholders = array(
             '#SITE_NAME#',
             '#SITE_EMAIL#',
+            '#SITE_URL#',
             '#SITE_TECH_SUPPORT_EMAIL#',
             '#ORG_NAME#',
+            '#ORG_SHORT_NAME#',
             '#DONATION_ID#',
             '#DONATION_TYPE#',
             '#DONOR_NAME#',
@@ -523,8 +539,10 @@ class Leyka_Donation_Management {
         $email_placeholder_values = array(
             get_bloginfo('name'),
             get_bloginfo('admin_email'),
+            home_url(),
             leyka_options()->opt('tech_support_email'),
             leyka_options()->opt('org_full_name'),
+            leyka_options()->opt('org_short_name'),
             $donation->id,
             leyka_get_payment_type_label($donation->type),
             $donation->donor_name ? $donation->donor_name : __('dear donor', 'leyka'),
@@ -652,7 +670,9 @@ class Leyka_Donation_Management {
                 wpautop(str_replace(
                     array(
                         '#SITE_NAME#',
+                        '#SITE_URL#',
                         '#ORG_NAME#',
+                        '#ORG_SHORT_NAME#',
                         '#DONATION_ID#',
                         '#DONATION_TYPE#',
                         '#DONOR_NAME#',
@@ -668,7 +688,9 @@ class Leyka_Donation_Management {
                     ),
                     array(
                         get_bloginfo('name'),
+                        home_url(),
                         leyka_options()->opt('org_full_name'),
+                        leyka_options()->opt('org_short_name'),
                         $donation->id,
                         leyka_get_payment_type_label($donation->type),
                         $donation->donor_name ? $donation->donor_name : __('anonymous', 'leyka'),
@@ -735,7 +757,9 @@ class Leyka_Donation_Management {
             wpautop(str_replace(
                 array(
                     '#SITE_NAME#',
+                    '#SITE_URL#',
                     '#ORG_NAME#',
+                    '#ORG_SHORT_NAME#',
                     '#DONATION_ID#',
                     '#DONATION_TYPE#',
                     '#DONOR_NAME#',
@@ -751,7 +775,9 @@ class Leyka_Donation_Management {
                 ),
                 array(
                     get_bloginfo('name'),
+                    home_url(),
                     leyka_options()->opt('org_full_name'),
+                    leyka_options()->opt('org_short_name'),
                     $donation->id,
                     leyka_get_payment_type_label($donation->type),
                     $donation->donor_name ? $donation->donor_name : __('anonymous', 'leyka'),
@@ -977,16 +1003,26 @@ class Leyka_Donation_Management {
 		<legend><?php _e('Campaign Data', 'leyka');?></legend>
 
         <div class="leyka-ddata-string">
+
 			<label><?php echo _x('Campaign', 'In subjective case', 'leyka');?>:</label>
 			<div class="leyka-ddata-field">
-			<?php if($campaign->id && $campaign->status == 'publish') {?>
+
+			<?php if($campaign->id && $campaign->status === 'publish') {?>
+
 			<span class="text-line">
-            <span class="campaign-name"><?php echo htmlentities($campaign->title, ENT_QUOTES, 'UTF-8');?></span> <span class="campaign-actions"><a href="<?php echo admin_url('/post.php?action=edit&post='.$campaign->id);?>"><?php _e('Edit campaign', 'leyka');?></a> <a href="<?php echo $campaign->url;?>" target="_blank" rel="noopener noreferrer"><?php _e('Preview campaign', 'leyka');?></a></span></span>
+                <span class="campaign-name"><?php echo htmlentities($campaign->title, ENT_QUOTES, 'UTF-8');?></span>
+                <span class="campaign-actions">
+                    <a href="<?php echo admin_url('/post.php?action=edit&post='.$campaign->id);?>"><?php _e('Edit campaign', 'leyka');?></a>
+                    <a href="<?php echo $campaign->url;?>" target="_blank" rel="noopener noreferrer"><?php _e('Preview campaign', 'leyka');?></a>
+                </span>
+            </span>
 
 			<?php } else {
 				echo '<span class="text-line">'.__('the campaign has been removed or drafted', 'leyka').'</span>';
 			}?>
+
 			</div>
+
 		</div>
 
 		<div class="leyka-ddata-string">
@@ -1052,7 +1088,7 @@ class Leyka_Donation_Management {
 
         <?php if(leyka_options()->opt_template('show_donation_comment_field') || $donation->donor_comment) {?>
         <div class="leyka-ddata-string">
-            <label for="donor-comment"><?php _e('Comment', 'leyka');?>:</label>
+            <label for="donor-comment"><?php _e('Donor comment', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
             <?php if(
                 leyka_options()->opt_template('show_donation_comment_field') &&
@@ -1355,11 +1391,11 @@ class Leyka_Donation_Management {
 
         $donation = new Leyka_Donation($donation);
 
-        if($donation->payment_type != 'rebill' || !function_exists('curl_init')) {?>
+        if($donation->payment_type !== 'rebill' || !function_exists('curl_init')) {?>
             <div id="hide-recurrent-metabox"></div>
         <?php return; } else {
 
-            $init_recurrent_donation = Leyka_Donation::get_init_recurrent_donation($donation);
+            $init_recurrent_donation = Leyka_Donation::get_init_recurring_donation($donation);
             if( !$init_recurrent_donation->recurring_is_active ) {?>
 
             <div class="">
@@ -1419,6 +1455,7 @@ class Leyka_Donation_Management {
 		$columns['type'] = __('Payment type', 'leyka');
 		$columns['emails'] = __('Letter', 'leyka');
 		$columns['donor_subscribed'] = __('Donor subscription', 'leyka');
+		$columns['donation_comment'] = __('Donor comment', 'leyka');
 
 		if($unsort) {
 			$columns = array_merge($columns, $unsort);
@@ -1513,6 +1550,9 @@ class Leyka_Donation_Management {
 
                 <?php }
 
+                break;
+            case 'donation_comment':
+                echo $donation->donor_comment;
                 break;
             default:
         }

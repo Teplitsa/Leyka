@@ -18,7 +18,7 @@ function leyka_tmp__($line, $locale = false) {
         'Payment failure' => array('ru_RU' => 'Ошибка платежа'),
         'We are deeply sorry, but for some technical reason we failed to receive your donation. Your money are intact. Please try again later!' => array('ru_RU' => 'Мы извиняемся, но по какой-то причине мы не смогли получить ваше пожертвование. Ваши деньги вернутся на ваш счёт. Пожалуйста, попробуйте ещё раз попозже!'),
 //        '' => array('ru_RU' => ''),
-        'Terms of donation service text. Use <br /> for line-breaks, please.' => array('ru_RU' => 'Публичная оферта о заключении договора пожертвования<br>
+        'Organization Terms of service text' => array('ru_RU' => 'Публичная оферта о заключении договора пожертвования<br>
 <br>
 #LEGAL_NAME# (#LEGAL_FACE_POSITION#: #LEGAL_FACE#),<br>
 предлагает гражданам сделать пожертвование на ниже приведенных условиях:<br>
@@ -153,7 +153,7 @@ function leyka_tmp__($line, $locale = false) {
 __('Terms of personal data usage', 'leyka');
 __('Terms of personal data usage full text. Use <br> for line-breaks.', 'leyka');
 __('Terms of donation service', 'leyka');
-__('Terms of donation service text. Use <br /> for line-breaks, please.', 'leyka');
+__('Organization Terms of service text', 'leyka');
 __('Thank you!', 'leyka');
 __('Your donation completed. We are grateful for your help.', 'leyka');
 __('Payment failure', 'leyka');

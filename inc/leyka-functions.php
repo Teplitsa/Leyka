@@ -288,32 +288,6 @@ function leyka_get_pm_full_ids_used() {
 
 }
 
-///**
-// * A callback for the default gateway select field.
-// * It's not in use explicitly - the PM list is always set up programmatically.
-// * @todo Check if we could remove it completely.
-// *
-// * @param $gateway_id string|false
-// * @return array
-// */
-//function leyka_get_gateways_pm_list($gateway_id = false) {
-//
-//    $options = array();
-//    foreach(leyka_get_pm_list(null, false, false) as $pm) {
-//
-//        if($gateway_id && $pm->gateway_id !== $gateway_id) {
-//            continue;
-//        }
-//
-//        $gateway_title = leyka_get_gateway_by_id($pm->gateway_id)->title;
-//        $options[$pm->full_id] = $pm->label_backend.($gateway_title == $pm->label_backend ? '' : ' ('.$gateway_title.')');
-//
-//    }
-//
-//    return $options;
-//
-//}
-
 function leyka_get_pd_usage_info_links() {
     return __('<a href="//te-st.ru/reports/personal-data-perm/" target="_blank" rel="noopener noreferrer">the Teplitsa article</a>.', 'leyka');
 }
@@ -372,18 +346,6 @@ function leyka_get_default_pd_terms_page() {
     }
 
     return $page ? $page : 0;
-
-}
-
-function leyka_get_pd_terms_page_url() {
-
-    $url = leyka_options()->opt('pd_terms_page') ? get_permalink(leyka_options()->opt('pd_terms_page')) : home_url();
-
-    if( !$url ) { // It can be in case when "last posts" is selected for homepage
-        $url = home_url();
-    }
-
-    return $url;
 
 }
 
@@ -818,7 +780,7 @@ function leyka_scale_compact($campaign) {
         return;
     }
 
-    $curr_label = leyka_get_currency_label('rur');
+    $curr_label = leyka_get_currency_label();
 
     $percentage = round(($campaign->total_funded/$target)*100);
 	if($percentage > 100) {
@@ -852,8 +814,8 @@ function leyka_scale_ultra($campaign) {
     }
 
     $target = (float)$campaign->target;
-    $curr_label = leyka_get_currency_label('rur');
-   
+    $curr_label = leyka_get_currency_label();
+
     if($target == 0) {
         return;
     }
@@ -887,7 +849,7 @@ function leyka_fake_scale_ultra($campaign) {
         $campaign = new Leyka_Campaign($campaign);
     }
 
-    $curr_label = leyka_get_currency_label('rur');
+    $curr_label = leyka_get_currency_label();
     $collected_f = number_format($campaign->total_funded, ($campaign->total_funded - round($campaign->total_funded) > 0.0 ? 2 : 0), '.', ' ');?>
 
 <div class="leyka-scale-ultra-fake">
@@ -927,8 +889,8 @@ function leyka_get_countries_full_info($country_id = null) {
 
     $countries = apply_filters('leyka_supported_countries_full_info', array(
         'ru' => array('title' => __('Russia', 'leyka'), 'currency' => 'rur',),
-//        'by' => array('title' => __('Belarus Republic', 'leyka'), 'currency' => 'byn'),
-//        'ua' => array('title' => __('Ukraine', 'leyka'), 'currency' => 'uah'),
+        'by' => array('title' => __('Belarus Republic', 'leyka'), 'currency' => 'byn'),
+        'ua' => array('title' => __('Ukraine', 'leyka'), 'currency' => 'uah'),
     ));
 
     if(empty($country_id)) {
@@ -1016,10 +978,10 @@ function leyka_get_main_currencies_full_info() {
         'byn' => array(
             'title' => __('Belarus Rouble', 'leyka'),
             'label' => __('BYN', 'leyka'),
-            'min_amount' => 10,
+            'min_amount' => 1,
             'max_amount' => 30000,
-            'flexible_default_amount' => 500,
-            'fixed_amounts' => '100,300,500,1000',
+            'flexible_default_amount' => 10,
+            'fixed_amounts' => '5,10,20,50',
         ),
         'uah' => array(
             'title' => __('Ukraine Hryvnia', 'leyka'),
@@ -1100,36 +1062,23 @@ function leyka_get_country_currency($country_id = null) {
  */
 function leyka_get_currencies_data($currency_id = null) {
 
-    $currencies = array(
-        'rur' => array(
-            'label' => leyka_options()->opt('currency_rur_label'),
-            'top' => leyka_options()->opt('currency_rur_max_sum'),
-            'bottom' => leyka_options()->opt('currency_rur_min_sum'),
+    $currencies = array();
+
+    foreach(leyka_get_currencies_full_info() as $id => $data) {
+        $currencies[$id] = array(
+            'label' => leyka_options()->opt('currency_'.$id.'_label'),
+            'top' => leyka_options()->opt('currency_'.$id.'_max_sum'),
+            'bottom' => leyka_options()->opt('currency_'.$id.'_min_sum'),
             'amount_settings' => array(
-                'flexible' => leyka_options()->opt('currency_rur_flexible_default_amount'),
-                'fixed' => leyka_options()->opt('currency_rur_fixed_amounts')
+                'flexible' => leyka_options()->opt('currency_'.$id.'_flexible_default_amount'),
+                'fixed' => leyka_options()->opt('currency_'.$id.'_fixed_amounts'),
             ),
-        ),
-        'usd' => array(
-            'label' => leyka_options()->opt('currency_usd_label'),
-            'top' => leyka_options()->opt('currency_usd_max_sum'),
-            'bottom' => leyka_options()->opt('currency_usd_min_sum'),
-            'amount_settings' => array(
-                'flexible' => leyka_options()->opt('currency_usd_flexible_default_amount'),
-                'fixed' => leyka_options()->opt('currency_usd_fixed_amounts')
-            ),
-        ),
-        'eur' => array(
-            'label' => leyka_options()->opt('currency_eur_label'),
-            'top' => leyka_options()->opt('currency_eur_max_sum'),
-            'bottom' => leyka_options()->opt('currency_eur_min_sum'),
-            'amount_settings' => array(
-                'flexible' => leyka_options()->opt('currency_eur_flexible_default_amount'),
-                'fixed' => leyka_options()->opt('currency_eur_fixed_amounts')
-            ),
-        ),
-    );
-    $currencies['rub'] = $currencies['rur'];
+        );
+    }
+
+    if(empty($currencies['rub']) && !empty($currencies['rur'])) {
+        $currencies['rub'] = $currencies['rur'];
+    }
 
     return $currency_id && !empty($currencies[$currency_id]) ? $currencies[$currency_id] : $currencies;
 
@@ -1393,6 +1342,22 @@ function leyka_get_campaigns_select_default() {
 
     return $default_campaign;
 
+}
+
+function leyka_get_terms_text() {
+    return apply_filters(
+        'leyka_terms_of_service_text',
+        leyka_options()->opt('receiver_legal_type') === 'legal' ?
+            leyka_options()->opt('terms_of_service_text') : leyka_options()->opt('person_terms_of_service_text')
+    );
+}
+
+function leyka_get_pd_terms_text() {
+    return apply_filters(
+        'leyka_terms_of_pd_usage_text',
+        leyka_options()->opt('receiver_legal_type') === 'legal' ?
+            leyka_options()->opt('pd_terms_text') : leyka_options()->opt('person_pd_terms_text')
+    );
 }
 
 /** Default campaign ID cache invalidation */
@@ -1711,19 +1676,6 @@ if( !function_exists('wp_validate_redirect') ) {
         return $location;
 
     }
-}
-
-if( !function_exists('leyka_get_client_ip') ) {
-
-    function leyka_get_client_ip() {
-        return getenv('HTTP_CLIENT_IP') ? :
-            getenv('HTTP_X_FORWARDED_FOR') ? :
-                getenv('HTTP_X_FORWARDED') ? :
-                    getenv('HTTP_FORWARDED_FOR') ? :
-                        getenv('HTTP_FORWARDED') ? :
-                            getenv('REMOTE_ADDR');
-    }
-
 }
 
 /**
@@ -2247,7 +2199,9 @@ if( !function_exists('leyka_localize_rich_html_text_tags') ) {
                     '#BANK_BIC#',
                     '#BANK_CORR_ACCOUNT#',
                     '#SITE_NAME#',
+                    '#SITE_URL#',
                     '#ORG_NAME#',
+                    '#ORG_SHORT_NAME#',
                 ),
                 array(
                     $is_legal ? leyka_options()->opt('org_full_name') : leyka_options()->opt('person_full_name'),
@@ -2262,7 +2216,9 @@ if( !function_exists('leyka_localize_rich_html_text_tags') ) {
                     $is_legal ? leyka_options()->opt('org_bank_bic') : leyka_options()->opt('person_bank_bic'),
                     $is_legal ? leyka_options()->opt('org_bank_corr_account') : leyka_options()->opt('person_bank_corr_account'),
                     get_bloginfo('name'),
+                    home_url(),
                     $is_legal ? leyka_options()->opt('org_full_name') : leyka_options()->opt('person_full_name'),
+                    $is_legal ? leyka_options()->opt('org_short_name') : leyka_options()->opt('person_full_name'),
                 ),
             ),
             'pdKeys' => array(
@@ -2277,7 +2233,7 @@ if( !function_exists('leyka_localize_rich_html_text_tags') ) {
                     $is_legal ? leyka_options()->opt('org_full_name') : leyka_options()->opt('person_full_name'),
                     $is_legal ? leyka_options()->opt('org_address') : leyka_options()->opt('person_address'),
                     home_url(),
-                    leyka_get_pd_terms_page_url(),
+                    leyka_get_terms_of_pd_usage_page_url(),
                     get_option('admin_email'),
                 ),
             ),
@@ -2442,68 +2398,6 @@ function leyka_get_dm_list_or_alternatives() {
 
 }
 
-function leyka_cronjob_exists($command, $strict = false) {
-
-    exec('crontab -l', $crontab);
-
-    if(isset($crontab) && is_array($crontab)) {
-
-        if( !!$strict ) {
-            return in_array($command, $crontab);
-        }
-
-        foreach($crontab as $job) {
-            if(stristr($job, $command) !== false) {
-                return true;
-            }
-        }
-
-    }
-
-    return false;
-
-}
-
-function leyka_get_cronjobs_status() {
-
-    $status = 'no-need';
-
-    foreach(leyka_get_pm_list(true) as $pm) {
-        if($pm->full_id === 'yandex-yandex_card' && leyka()->opt('yandex-yandex_card_rebilling_available')) {
-            if(
-                leyka_cronjob_exists(home_url('/leyka/service/do_recurring'))
-                || leyka_cronjob_exists(home_url('/leyka/service/procedure/active-recurring'))
-                || leyka_cronjob_exists(LEYKA_PLUGIN_DIR.'procedures/leyka-active-recurring.php')
-            ) {
-                $status = 'ok';
-            } else {
-                $status = 'not-set';
-            }
-        }
-    }
-
-    if($status === 'no-need' && leyka()->opt('send_donor_emails_on_campaign_target_reaching')) {
-        if(
-            leyka_cronjob_exists(home_url('/leyka/service/do_campaigns_targets_reaching_mailout'))
-            || leyka_cronjob_exists(home_url('/leyka/service/procedure/campaigns-targets-reaching-mailout'))
-            || leyka_cronjob_exists(LEYKA_PLUGIN_DIR.'procedures/leyka-campaigns-targets-reaching-mailout.php')
-        ) {
-            $status = 'ok';
-        } else {
-            $status = 'not-set';
-        }
-    }
-
-    switch($status) {
-        case 'ok': return array('status' => $status, 'title' => __('Connected', 'leyka'));
-        case 'not-set': return array('status' => $status, 'title' => __('Setup needed', 'leyka'));
-        case 'no-need':
-        default:
-            return array('status' => $status, 'title' => __('No need', 'leyka'));
-    }
-
-}
-
 /** Service function to prepare a singular object data value for export as a CSV cell. */
 function leyka_export_data_prepare($text) {
     return '"'.str_replace(array(';', '"'), array('', ''), $text).'"';
@@ -2565,7 +2459,6 @@ if( !function_exists('leyka_delete_dir') ) {
         return is_file($path) ? @unlink($path) : (array_map(__FUNCTION__, glob($path.'/*')) == @rmdir($path));
 
     }
-
 }
 
 /** @todo Move the function to the special GA integration class */
@@ -2596,7 +2489,6 @@ if( !function_exists('leyka_gua_get_client_id') ) {
 }
 
 if( !function_exists('leyka_get_client_ip') ) {
-
     function leyka_get_client_ip() {
 
         $client_ip = getenv('HTTP_CLIENT_IP') ? :
@@ -2611,7 +2503,6 @@ if( !function_exists('leyka_get_client_ip') ) {
         return trim($client_ip);
 
     }
-
 }
 
 /** Some gateways give their callbacks IPs only as CIDR ranges. */

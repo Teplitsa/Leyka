@@ -39,7 +39,7 @@ abstract class Leyka_Options_Allocator extends Leyka_Singleton {
         // Specific Allocator class:
         $file_path = LEYKA_PLUGIN_DIR.'inc/settings/allocators/leyka-class-'.$country_id.'-options-allocator.php';
 
-        if(in_array($country_id, array('by',))) { // Some countries allocators are descendants of the Ru allocator
+        if(in_array($country_id, array('by', 'ua',))) { // Some countries allocators are descendants of the Ru allocator
             require_once LEYKA_PLUGIN_DIR.'inc/settings/allocators/leyka-class-ru-options-allocator.php';
         }
 

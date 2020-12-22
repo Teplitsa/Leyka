@@ -7,6 +7,7 @@
  * $campaign - current campaign
  **/
 
+/** @var $campaign Leyka_Campaign */
 $template_data = Leyka_Need_Help_Template_Controller::get_instance()->get_template_data($campaign);
 
 $is_recurring_campaign = false;
@@ -174,7 +175,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                         </label>
                         <div class="leyka-star-field-error-frame">
                             <span class="donor__textfield-error leyka_donor_email-error">
-                                <?php echo 'Укажите, пожалуйста, корректный адрес электронной почты'; //_e('Please, enter a valid email', 'leyka');?>
+                                <?php _e('Please, enter a valid email', 'leyka');?>
                             </span>
                         </div>
                     </div>
@@ -186,7 +187,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                         </label>
                         <div class="leyka-star-field-error-frame">
                             <span class="donor__textfield-error leyka_donor_name-error">
-                                <?php echo 'Укажите, пожалуйста, ваше имя'; //_e('Please, enter your name', 'leyka');?>
+                                <?php _e('Please, enter your name', 'leyka');?>
                             </span>
                         </div>
                     </div>
@@ -314,7 +315,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                                     30 * reset($template_data['amount_variants']),
                                     $template_data['currency_label']
                                 ) :
-                                leyka_options()->opt_template('donation_submit_text'))
+                                leyka_options()->opt_template('donation_submit_text', 'need-help'))
                             .'" data-submit-text-template="'
                             .sprintf(__('Make a monthly donation of #DAILY_ROUBLE_AMOUNT# %s', 'leyka'), $template_data['currency_label'])
                             .'">'
@@ -332,9 +333,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
         <?php if(leyka_options()->opt('agree_to_terms_needed')) {?>
         <div class="leyka-pf__agreement oferta">
             <div class="agreement__frame">
-                <div class="agreement__flow">
-                    <?php echo apply_filters('leyka_terms_of_service_text', do_shortcode(leyka_options()->opt('terms_of_service_text')));?>
-                </div>
+                <div class="agreement__flow"><?php echo leyka_get_terms_text();?></div>
             </div>
             <a href="#" class="agreement__close">
                 <?php echo leyka_options()->opt('leyka_agree_to_terms_text_text_part').' '.leyka_options()->opt('leyka_agree_to_terms_text_link_part');?>
@@ -345,9 +344,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
         <?php if(leyka_options()->opt('agree_to_pd_terms_needed')) {?>
         <div class="leyka-pf__agreement pd">
             <div class="agreement__frame">
-                <div class="agreement__flow">
-                    <?php echo apply_filters('leyka_terms_of_pd_usage_text', do_shortcode(leyka_options()->opt('pd_terms_text')));?>
-                </div>
+                <div class="agreement__flow"><?php echo leyka_get_pd_terms_text();?></div>
             </div>
             <a href="#" class="agreement__close">
                 <?php echo leyka_options()->opt('agree_to_pd_terms_text_text_part').' '.leyka_options()->opt('agree_to_pd_terms_text_link_part');?>

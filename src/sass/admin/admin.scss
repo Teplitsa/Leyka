@@ -46,8 +46,16 @@
     }
 
     h1 {
+
         @include wizard-h2();
         margin-bottom: 8px;
+
+        &.with-country a { // Country flag icon v-align
+            display: inline-block;
+            height: 100%;
+            vertical-align: text-top;
+        }
+
     }
 
     #tab-container {
@@ -695,7 +703,6 @@
         flex-wrap: wrap;
 
         .module-card {
-
             
             background-color: #E6F4FA;
             border-radius: 6px;

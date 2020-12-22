@@ -653,7 +653,30 @@
             }
 
         }
+
     }
+
+    .single-pm-icon {
+
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: center;
+        margin-top: 32px;
+        height: 16px;
+
+        .pm-icon {
+
+            height: 100%;
+            margin-right: 30px;
+
+            &:last-child {
+                margin-right: 0;
+            }
+
+        }
+
+    }
+
 }
 
 .leyka-tpl-star-form {

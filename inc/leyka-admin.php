@@ -423,7 +423,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
      */
     public function save_user_profile_donor_fields($donor_user_id) {
 
-        if( !current_user_can('administrator') || !is_array($_POST['leyka_donor_tags']) ) {
+        if( !current_user_can('administrator') || empty($_POST['leyka_donor_tags']) || !is_array($_POST['leyka_donor_tags']) ) {
             return false;
         }
 
@@ -431,7 +431,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             $value = (int)$value;
         });
 
-        return !is_wp_error(wp_set_object_terms($donor_user_id, $_POST['leyka_donor_tags'], Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME));
+        return !is_wp_error(wp_set_object_terms(
+            $donor_user_id,
+            $_POST['leyka_donor_tags'],
+            Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME
+        ));
 
     }
 
@@ -856,7 +860,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         if(isset($_GET['page']) && $_GET['page'] === 'leyka') {
 
-            wp_enqueue_script('jquery-ui-dialog');
+            $dependencies[] = 'jquery-ui-dialog'; // wp_enqueue_script('jquery-ui-dialog');
+
             wp_enqueue_script('leyka-admin', LEYKA_PLUGIN_BASE_URL.'assets/js/Chart.v2.8.0.min.js', $dependencies, LEYKA_VERSION, true);
 
         }

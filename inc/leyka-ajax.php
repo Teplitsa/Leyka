@@ -135,7 +135,7 @@ function leyka_get_gateway_redirect_data(){
 
                 $analytics = new TheIconic\Tracking\GoogleAnalytics\Analytics(true);
                 $analytics // Main params:
-                    ->setProtocolVersion('1')
+                ->setProtocolVersion('1')
                     ->setTrackingId(leyka_options()->opt('gtm_ua_tracking_id'))
                     ->setClientId($donation->ga_client_id ? $donation->ga_client_id : leyka_gua_get_client_id())
                     ->setDocumentLocationUrl(get_permalink($donation->campaign_id))
@@ -524,7 +524,7 @@ function leyka_donor_password_reset_request(){
                     $donor->display_name,
                     home_url(),
                     get_bloginfo('name'),
-                    home_url('/donor-account/reset-password/?code='.$pass_reset_key.'&donor='.$_POST['leyka_donor_email'])
+                    home_url('/donor-account/reset-password/?code='.$pass_reset_key.'&donor='.urlencode($_POST['leyka_donor_email']))
                 );
 
                 add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
@@ -575,7 +575,7 @@ function leyka_get_donations_history_page() {
     }
 
     try {
-    	$donor = new Leyka_Donor(absint($_POST['donor_id']));
+        $donor = new Leyka_Donor(absint($_POST['donor_id']));
     } catch(Exception $e) {
         die(json_encode(array('status' => 'error',)));
     }
@@ -667,12 +667,12 @@ function leyka_cancel_recurring_subscription(){
         $cancelling_result = $donation_gateway->cancel_recurring_subscription($init_recurring_donation);
 
         if(is_wp_error($cancelling_result)) { /** @var $cancelling_result WP_Error */
-            $res = array('status' => 'error', 'message' => $cancelling_result->get_error_message());
+            die( json_encode(array('status' => 'error', 'message' => $cancelling_result->get_error_message())) );
         } else if( !$cancelling_result ) {
-            $res = array(
+            die(json_encode(array(
                 'status' => 'error',
-                'message' => sprintf(__('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email())
-            );
+                'message' => sprintf(__('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="mailto:%s" target="_blank">website tech. support</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email())
+            )));
         }
 
         $res['message'] = __('Your recurring subscription cancelled.', 'leyka');
@@ -748,14 +748,14 @@ function leyka_reset_campaign_attachment(){
 add_action('wp_ajax_leyka_reset_campaign_attachment', 'leyka_reset_campaign_attachment');
 
 function leyka_usage_stats_y(){
-    
+
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'usage_stats_y')) {
         die(json_encode(array('status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
     }
-    
+
     update_option('leyka_plugin_stats_option_needs_sync', time());
     $stats_option_synch_res = leyka_sync_plugin_stats_option();
-    
+
     if(is_wp_error($stats_option_synch_res)) {
         die(json_encode(array(
             'status' => 'error',
@@ -769,9 +769,9 @@ function leyka_usage_stats_y(){
         leyka()->opt('send_plugin_stats', 'y');
 
     }
-    
+
     die(json_encode(array('status' => 'ok', 'message' => __('Thank you!', 'leyka'),)));
-    
+
 }
 add_action('wp_ajax_leyka_usage_stats_y', 'leyka_usage_stats_y');
 
@@ -831,14 +831,14 @@ function leyka_donors_autocomplete(){
 add_action('wp_ajax_leyka_donors_autocomplete', 'leyka_donors_autocomplete');
 
 function leyka_gateways_autocomplete(){
-    
+
     $res = array();
 
     $pm_list = leyka_get_pm_list();
     foreach($pm_list as $pm) {
         $res[] = array('label' => sprintf("%s (%s)", $pm->title, $pm->gateway->title), 'value' => $pm->full_id);
     }
-    
+
     die(json_encode($res));
 
 }
@@ -859,7 +859,7 @@ function leyka_campaigns_autocomplete(){
     foreach($campaigns as $campaign_id => $campaign_title) {
         $res[] = array('label' => $campaign_title, 'value' => $campaign_id);
     }
-    
+
     die(json_encode($res));
 
 }
@@ -868,9 +868,9 @@ add_action('wp_ajax_leyka_campaigns_autocomplete', 'leyka_campaigns_autocomplete
 function leyka_donors_tags_autocomplete(){
 
     $filter = isset($_GET['term']) ? sanitize_text_field($_GET['term']) : '';
-    
+
     $res = array();
-    
+
     if($filter) {
         $donors_tags = get_terms(
             Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME,
@@ -882,53 +882,53 @@ function leyka_donors_tags_autocomplete(){
             array('hide_empty' => false, 'orderby' => 'count', 'order' => 'DESC', 'count' => 10,)
         );
     }
-    
+
     foreach($donors_tags as $tag) {
         $res[] = array('label' => $tag->name, 'value' => $tag->term_id);
     }
-    
+
     die(json_encode($res));
 
 }
 add_action('wp_ajax_leyka_donors_tags_autocomplete', 'leyka_donors_tags_autocomplete');
 
 function leyka_add_donor_comment(){
-    
+
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_add_donor_comment')) {
         die(json_encode(array('status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
     }
-    
+
     try {
         $donor = new Leyka_Donor(absint($_POST['donor']));
     } catch(Exception $e) {
         die(json_encode(array('status' => 'error', 'message' => __('Error: donor not found', 'leyka'),)));
     }
-    
+
     if(empty($_POST['comment'])) {
         die(json_encode(array('status' => 'error', 'message' => __('Error: empty comment', 'leyka'),)));
     }
-    
+
     $comment_text = sanitize_text_field($_POST['comment']);
     $donor->add_comment($comment_text);
-    
+
     $comments = $donor->get_comments();
     $comment_id = 0;
     $comment = array();
-    
+
     foreach($comments as $donor_comment_id => $donor_comment) {
         $comment_id = $donor_comment_id;
         $comment = $donor_comment;
     }
-    
+
     $comment = array(
         'id' => $comment_id,
         'text' => stripslashes(esc_html($comment['text'])),
         'date' => time(),
         'author_name' => $comment['author_name'],
     );
-    
+
     $comment_table_row_html = leyka_admin_get_donor_comment_table_row($comment_id, $comment);
-    
+
     die(json_encode(array('status' => 'ok', 'comment_html' => $comment_table_row_html)));
 
 }
@@ -941,17 +941,17 @@ function leyka_delete_donor_comment(){
     }
 
     $_POST['comment_id'] = absint($_POST['comment_id']);
-    
+
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_delete_donor_comment')) {
         die(json_encode(array('status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
     }
-    
+
     try {
         $donor = new Leyka_Donor(absint($_POST['donor']));
     } catch(Exception $e) {
         die(json_encode(array('status' => 'error', 'message' => __('Error: donor not found', 'leyka'),)));
     }
-    
+
     try {
         $donor->delete_comment($_POST['comment_id']);
     } catch(Exception $ex) {
@@ -960,35 +960,35 @@ function leyka_delete_donor_comment(){
             'message' => $ex->getMessage()
         )));
     }
-    
+
     die(json_encode(array('status' => 'ok')));
 
 }
 add_action('wp_ajax_leyka_delete_donor_comment', 'leyka_delete_donor_comment');
 
 function leyka_save_editable_comment(){
-    
+
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_save_editable_str')) {
         die(json_encode(array('status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
     }
-    
+
     try {
         $donor = new Leyka_Donor(absint($_POST['donor']));
     } catch(Exception $e) {
         die(json_encode(array('status' => 'error', 'message' => __('Error: donor not found', 'leyka'),)));
     }
-    
+
     if(empty($_POST['text_item_id'])) {
         die(json_encode(array('status' => 'error', 'message' => __('Error: empty comment id', 'leyka'),)));
     }
-    
+
     if(empty($_POST['text'])) {
         die(json_encode(array('status' => 'error', 'message' => __('Error: empty text', 'leyka'),)));
     }
 
     $comment_text = sanitize_text_field($_POST['text']);
     $donor->update_comment(absint($_POST['text_item_id']), $comment_text);
-    
+
     die(json_encode(array(
         'status' => 'ok',
         'saved_text' => stripcslashes(stripcslashes(htmlspecialchars_decode($comment_text))),
@@ -999,21 +999,21 @@ add_action('wp_ajax_leyka_save_editable_comment', 'leyka_save_editable_comment')
 
 
 function leyka_save_donor_description(){
-    
+
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_save_editable_str')) {
         die(json_encode(array('status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
     }
-    
+
     try {
         $donor = new Leyka_Donor(absint($_POST['donor']));
     } catch(Exception $e) {
         die(json_encode(array('status' => 'error', 'message' => __('Error: donor not found', 'leyka'),)));
     }
-    
+
     $donor->description = !empty($_POST['text']) ? sanitize_text_field($_POST['text']) : "";
-    
+
     die(json_encode(array(
-        'status' => 'ok', 
+        'status' => 'ok',
         'saved_text' => stripcslashes(stripcslashes(htmlspecialchars_decode($donor->description))),
     )));
 
@@ -1021,19 +1021,19 @@ function leyka_save_donor_description(){
 add_action('wp_ajax_leyka_save_donor_description', 'leyka_save_donor_description');
 
 function leyka_save_donor_name(){
-    
+
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_save_editable_str')) {
         die(json_encode(array('status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),)));
     }
-    
+
     try {
         $donor = new Leyka_Donor(absint($_POST['donor']));
     } catch(Exception $e) {
         die(json_encode(array('status' => 'error', 'message' => __('Error: donor not found', 'leyka'),)));
     }
-    
+
     $donor->name = !empty($_POST['text']) ? sanitize_text_field($_POST['text']) : '';
-    
+
     die(json_encode(array(
         'status' => 'ok',
         'saved_text' => stripcslashes(stripcslashes(htmlspecialchars_decode($donor->name))),
@@ -1053,10 +1053,10 @@ function leyka_save_donor_tags(){
     } catch(Exception $e) {
         die(json_encode(array('status' => 'error', 'message' => __('Error: donor not found', 'leyka'),)));
     }
-    
+
     $tags = !empty($_POST['tags']) ? explode(',', sanitize_text_field($_POST['tags'])) : '';
     wp_set_object_terms($donor->id, $tags, Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME);
-    
+
     die(json_encode(array('status' => 'ok',)));
 
 }
@@ -1117,7 +1117,7 @@ function leyka_bulk_edit_donors(){
     }
 
     $_POST['bulk-edit-action'] = empty($_POST['bulk-edit-action'])
-        || !in_array($_POST['bulk-edit-action'], array('add', 'remove', 'replace')) ?
+    || !in_array($_POST['bulk-edit-action'], array('add', 'remove', 'replace')) ?
         'add' : trim($_POST['bulk-edit-action']);
 
     if( !empty($_POST['donors']) && !empty($_POST['donors-bulk-tags']) ) {
