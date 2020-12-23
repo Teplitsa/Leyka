@@ -675,6 +675,8 @@ function leyka_cancel_recurring_subscription(){
             )));
         }
 
+        $init_recurring_donation->recurrents_cancel_reason = $reason_text;
+        
         $res['message'] = __('Your recurring subscription cancelled.', 'leyka');
 
     } else { // We can only "request to cancel a recurring subscription", so the website admin could cancel it manually
