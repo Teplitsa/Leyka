@@ -675,7 +675,7 @@ function leyka_cancel_recurring_subscription(){
             )));
         }
 
-        $init_recurring_donation->recurrents_cancel_reason = $reason_text;
+        $init_recurring_donation->recurring_cancel_reason = $reason_text;
         
         $res['message'] = __('Your recurring subscription cancelled.', 'leyka');
 
