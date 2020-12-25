@@ -1824,6 +1824,10 @@ window.LeykaPageMain.prototype = {
 
                 if(form_id) {
 
+                    if(form_id.includes("!/")){ // If site navigation works via "#!" in URLs
+                        return false;
+                    }
+
                     let $_form = $('#' + form_id);
                     
                     if($_form.length > 0) {

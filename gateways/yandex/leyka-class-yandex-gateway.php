@@ -671,7 +671,7 @@ techMessage="'.$tech_message.'"/>');
                 $new_recurring_donation->add_gateway_response($payment); // On callback the response will be re-written
                 $new_recurring_donation->recurring_id = $payment->id;
 
-                if($payment->status == 'canceled') { // If rebill donation didn't succedded, there won't be callbacks
+                if($payment->status === 'canceled') { // If rebill donation didn't succedded, there won't be callbacks
                     $this->_handle_donation_failure($new_recurring_donation, $payment);
                 }
 

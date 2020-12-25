@@ -331,6 +331,16 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
                         $donation->sber_client_id = empty($result['bindingInfo']['clientId']) ?
                             '' : esc_sql($result['bindingInfo']['clientId']);
 
+                    } else { // The gateway didn't return needed values
+
+                        $donation->recurring_is_active = false;
+
+                        if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
+                            Leyka_Donation_Management::send_error_notifications($donation);
+                        }
+
+                        exit(500);
+
                     }
 
                 }
