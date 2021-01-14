@@ -1989,6 +1989,10 @@ class Leyka_Donation {
             add_post_meta($id, 'leyka_donor_subscribed', true);
         }
 
+        if( !empty($params['recurring_cancel_reason']) ) {
+          add_post_meta($id, 'leyka_recurring_cancel_reason', $params['recurring_cancel_reason']);
+        }
+
         if( !empty($params['recurrents_cancel_date']) ) {
             add_post_meta($id, 'leyka_recurrents_cancel_date', $params['recurrents_cancel_date']);
         } elseif( !empty($params['recurrents_cancelled']) && $params['recurrents_cancelled']) {
@@ -2160,6 +2164,8 @@ class Leyka_Donation {
                     $meta['leyka_recurrents_cancelled'][0] : false,
                 'recurrents_cancel_date' => isset($meta['leyka_recurrents_cancel_date']) ?
                     $meta['leyka_recurrents_cancel_date'][0] : false,
+                'recurring_cancel_reason' => isset($meta['leyka_recurring_cancel_reason']) ?
+                    $meta['leyka_recurring_cancel_reason'][0] : '',
 
                 // For web-analytics services:
                 'ga_client_id' => empty($meta['leyka_ga_client_id'][0]) ? false : $meta['leyka_ga_client_id'][0],
@@ -2382,6 +2388,9 @@ class Leyka_Donation {
             case 'recurring_cancel_date':
                 return $this->payment_type === 'rebill' && !empty($this->_donation_meta['recurrents_cancel_date']) ?
                     $this->_donation_meta['recurrents_cancel_date'] : NULL;
+            case 'recurring_cancel_reason':
+                return $this->payment_type === 'rebill' && !empty($this->_donation_meta['recurring_cancel_reason']) ?
+                    $this->_donation_meta['recurring_cancel_reason'] : NULL;
 
             case 'ga_client_id':
             case 'gua_client_id':
@@ -2617,6 +2626,10 @@ class Leyka_Donation {
                 }
                 break;
 
+            case 'recurring_cancel_reason':
+                $this->_donation_meta['recurring_cancel_reason'] = trim($value);
+                update_post_meta($this->_id, 'leyka_recurring_cancel_reason', trim($value));
+								
             case 'cancel_recurring_requested':
                 update_post_meta($this->_id, 'leyka_cancel_recurring_requested', !!$value);
                 break;
