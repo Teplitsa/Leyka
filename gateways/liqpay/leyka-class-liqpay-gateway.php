@@ -177,9 +177,6 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
 
     }
 
-    public function log_gateway_fields($donation_id) {
-    }
-
     public function _handle_service_calls($call_type = '') {
 
         // Decode a response:

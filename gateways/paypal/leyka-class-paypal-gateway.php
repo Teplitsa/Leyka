@@ -466,7 +466,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     'leyka_paypal_process_payment_callback_url',
                     home_url('?p=leyka/service/'.$this->_id.'/process_payment/')
                 ),
-                'CANCELURL' => leyka_get_failure_page_url($donation->campaign_id),
+                'CANCELURL' => leyka_get_failure_page_url(),
                 'PAYMENTREQUEST_0_NOTIFYURL' => apply_filters(
                     'leyka_paypal_ipn_callback_url',
                     home_url('?p=leyka/service/'.$this->_id.'/ipn/')

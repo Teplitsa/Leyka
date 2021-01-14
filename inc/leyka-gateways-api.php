@@ -548,7 +548,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
     }
 
-    /** @param mixed $pm A PM object or it's ID to remove from gateway. */
+    /** @param Leyka_Payment_Method|string $pm A PM object or it's ID to remove from gateway. */
     public function remove_payment_method($pm) {
 
         if(is_object($pm) && $pm instanceof Leyka_Payment_Method) {
@@ -560,9 +560,8 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     }
 
     /**
-     * @param mixed $activity True to select only active PMs, false for only non-active ones,
-     * NULL for both types altogether.
-     * @param mixed $currency
+     * @param boolean|NULL $activity True to select only active PMs, false for only non-active ones, NULL for both types.
+     * @param string|false $currency
      * @param boolean $by_categories
      * @return array Of Leyka_Payment_Method objects.
      */
@@ -611,7 +610,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
     /**
      * @param string $pm_id
-     * @return Leyka_Payment_Method Object|boolean.
+     * @return Leyka_Payment_Method|false
      */
     public function get_payment_method_by_id($pm_id) {
         return empty($this->_payment_methods[$pm_id]) ? false : $this->_payment_methods[$pm_id];
@@ -772,10 +771,16 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
             case 'specific_fields': $param = $this->_specific_fields ? $this->_specific_fields : array(); break;
             case 'custom_fields': $param = $this->_custom_fields ? $this->_custom_fields : array(); break;
             case 'icons': $param = $this->_icons; break;
-            case 'main_icon': /** @todo Mb, add a filter here to set a custom main icon */
+            case 'main_icon':
                 $param = $this->_main_icon ? $this->_main_icon : 'pic-main-'.$this->full_id;
+                $param = apply_filters('leyka_pm_main_icon_name', $param, $this->_id);
+                $param = apply_filters('leyka_'.$this->_id.'_pm_main_icon_name', $param);
                 break;
-            case 'main_icon_url': $param = LEYKA_PLUGIN_BASE_URL."gateways/{$this->gateway_id}/icons/{$this->main_icon}.svg"; break;
+            case 'main_icon_url':
+                $param = LEYKA_PLUGIN_BASE_URL."gateways/{$this->gateway_id}/icons/{$this->main_icon}.svg";
+                $param = apply_filters('leyka_pm_main_icon_url', $param, $this->_id);
+                $param = apply_filters('leyka_'.$this->_id.'_pm_main_icon_url', $param);
+                break;
             case 'submit_label': $param = $this->_submit_label; break;
             case 'currencies': $param = $this->_supported_currencies; break;
             case 'default_currency': $param = $this->_default_currency; break;
@@ -853,7 +858,6 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
 
         $this->_active = $this->_active = is_array(leyka_options()->opt('pm_available')) ?
             in_array($this->full_id, leyka_options()->opt('pm_available')) : array();
-        //in_array($this->full_id, leyka_options()->opt('pm_available'));
 
         add_filter('leyka_payment_options_allocation', array($this, 'allocate_pm_options'), 10, 1);
 
