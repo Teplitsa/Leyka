@@ -481,6 +481,7 @@
 
     @include star-text-ui-caption();
 
+    font-weight: 500;
     text-decoration: none;
     border: none;
     box-shadow: none;
@@ -507,23 +508,25 @@
 }
 
 @mixin leyka-star-single-link($mod: default) {
+
     @include star-text-ui-caption();
+
     font-weight: normal;
     display: inline-block;
-    color: $leyka-star-color-white;
     width: auto;
     
     background-color: transparent;
     color: $leyka-star-color-main;
     border: none;
-    padding-top: 0px;
-    padding-bottom: 0px;
+    padding-top: 0;
+    padding-bottom: 0;
     
     @include star-clean-a();
     
     &:hover {
         text-decoration: underline;
     }
+
 }
 
 @mixin field-q {
