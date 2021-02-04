@@ -5,6 +5,8 @@
  *
  * Title: Main statistics
  * Thumbnail: /img/dashboard/icon-money.svg
+ *
+ * @var $params
  **/
 
 $data = Leyka_Donations_Main_Stats_Portlet_Controller::get_instance()->get_template_data($params);?>

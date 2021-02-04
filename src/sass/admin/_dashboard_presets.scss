@@ -1,20 +1,14 @@
 /** == Seetings and variables (_dashboard_presets.scss)  == **/
 
-$leyka-adb-color-text:          #44444A;
 $leyka-adb-color-text-light1:   #565656;
 
 $leyka-adb-color-link:          $leyka-admin-color-link;
 $leyka-adb-color-link-active:   $leyka-admin-color-link-active;
 
-$leyka-adb-color-error:         #D43C57;
-$leyka-adb-color-error-light1:  #FC90A4;
+$leyka-adb-color-error:         $color-error-message;
 
-$leyka-adb-color-ok:            #1AA316;
-
-$leyka-adb-color-border:        #DDDDDD;
-$leyka-adb-color-border-light1: #F1F1F1;
-
-$leyka-adb-color-bg:        	rgba(241,241,241, 0.5); 
+$leyka-adb-color-border:        $color-border-semilight;
+$leyka-adb-color-border-light1: $color-border-light-001;
 
 $leyka-adb-color-notif-text:    #006799;
 $leyka-adb-color-notif-bg:      #C5E6F3;
@@ -22,7 +16,7 @@ $leyka-adb-color-notif-bg:      #C5E6F3;
 $leyka-adb-color-recurring-chart-recurring:	#006799;
 $leyka-adb-color-recurring-chart-other:	#25A0D1;
 
-$leyka-color-donation-status-funded: $leyka-adb-color-ok;
+$leyka-color-donation-status-funded: $color-ok-message;
 $leyka-color-donation-status-refunded: #0085BA;
 $leyka-color-donation-status-submitted: #F2C94C;
 $leyka-color-donation-status-failed: $leyka-adb-color-error;

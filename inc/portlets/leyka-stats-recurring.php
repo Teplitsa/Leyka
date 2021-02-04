@@ -5,6 +5,8 @@
  *
  * Title: Recurrings
  * Thumbnail: /img/dashboard/icon-money-recurring.svg
+ *
+ * @var $params
  **/
 
 /** @var $params */

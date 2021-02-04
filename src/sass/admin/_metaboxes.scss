@@ -1,0 +1,90 @@
+/** Particular metaboxes styling */
+
+// Metaboxes restyling - common part
+.leyka-admin .postbox, #poststuff .postbox {
+
+    .handlediv,.handle-actions { // Hide the default metabox open/close & "move higher/lower" handles
+        display: none;
+    }
+
+    @include leyka-metabox-styling();
+
+} // Metabox restyling - END
+
+/** "Help" admin page: */
+.leyka-docs-info {
+
+    display: flex;
+    flex-flow: row wrap;
+
+    margin-left: 8px;
+
+    .col-left,.col-right {
+        flex: 250px 1 0;
+    }
+
+    ul {
+
+        margin-bottom: 0;
+        margin-top: -10px;
+
+        li {
+            margin-top: 10px;
+        }
+
+    }
+
+    .col-left {
+
+        border-right: 1px solid $color-border-semilight;
+
+        a {
+            margin-left: 8px;
+            text-decoration: none;
+            border-bottom: 0;
+        }
+
+    }
+
+    .col-right {
+
+        padding-left: 40px;
+
+        ul {
+
+            li {
+                margin-left: 0;
+                list-style: none;
+
+                display: flex;
+                flex-flow: row nowrap;
+
+                a {
+                    margin-left: 12px;
+                }
+
+            }
+        }
+
+    }
+
+}
+
+.leyka-feedback-form {
+
+    &.leyka-options-section {
+        margin-bottom: 0 !important;
+        padding: 0 !important;
+    }
+
+    .field-wrapper:not(:last-child) {
+        margin-bottom: 16px;
+    }
+
+    .leyka-submit {
+        margin-top: 24px;
+    }
+
+}
+
+/** "Help" admin page - END */

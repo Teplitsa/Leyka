@@ -63,11 +63,14 @@ $color-wizard-link-sec: #8f8f8f;
 $color-wizard-link-sec-hover: #aaaaaa;
 $color-wizard-link-sec-active: #44444a;
 
-$color-wizard-error-message: #d43c57;
 $color-wizard-required-sign: #d43c57;
 $color-wizard-preview-border: #dddddd;
 
 $color-wizard-tooltip-bg: #006799;
+
+$color-ok-message: #1AA316;
+$color-error-message: #d43c57;
+$leyka-color-error-light:  #FC90A4;
 
 // Single settings spresifics:
 $color-inline-instructions-background: #E0F3FA;
@@ -77,6 +80,7 @@ $color-editor-leyka-key: #80c2dc;
 
 // Metaboxes
 $color-metabox-title: #44444a;
+$color-metabox-text: #44444a;
 
 //SASS variables
 $color-main: 		var(--color-main);
@@ -94,7 +98,9 @@ $color-text-light2:		#b2b2b2;
 $color-secondary-button: #0085BA; // #44444a;
 
 $color-background-light1: #fafafa;
+$color-background-light2: rgba(241,241,241, 0.5);
 $color-background-lightblue1: #D3ECF6;
+$color-metaboxes-background: #f1f1f1;
 
 $color-border-normal:	#cccccc;
 $color-border-semilight: #dddddd;
@@ -103,7 +109,7 @@ $color-border-tiny:		#f6f6f6;
 $color-border-semidark: #aaaaaa;
 $color-border-dark:		#353d3f;
 $color-border-light-001: #f1f1f1;
-$color-border-secondary-button: #0085BA; // #dddddd;
+$color-border-secondary-button: #0085BA;
 
 $color-form-invalid:	#D0011B;
 $color-form-active:		var(--color-main-light);
@@ -296,7 +302,7 @@ $leyka-admin-color-btn-stroke:    #006799;
 
     font-size: 13px;
     color: $color-text-semi;
-    border: 1px solid transparentize($color-wizard-error-message, 0.6);
-    background-color: transparentize($color-wizard-error-message, 0.8);
+    border: 1px solid transparentize($color-error-message, 0.6);
+    background-color: transparentize($color-error-message, 0.8);
 
 }

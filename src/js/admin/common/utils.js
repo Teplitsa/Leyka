@@ -90,6 +90,24 @@ function leyka_support_metaboxes(metabox_area) {
 
 }
 
+// Metabox thumbnails:
+jQuery(document).ready(function($){
+
+    $('.postbox').each(function(){
+
+        let $metabox = $(this),
+            thumbnail = $metabox.find('.metabox-content').data('thumbnail');
+
+        if(thumbnail) {
+            $metabox
+                .find('.postbox-header h2.hndle')
+                .prepend('<img class="metabox-thumbnail" src="'+leyka.plugin_url+thumbnail+'" alt="">');
+        }
+
+    });
+
+});
+
 /** Check if UI widget is available. Widget is looked in $.ui by default. */
 function leyka_ui_widget_available(widget = '', object = null) {
 

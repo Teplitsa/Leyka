@@ -509,7 +509,7 @@
                 }
                 &.fail {
 
-                    color: $color-wizard-error-message;
+                    color: $color-error-message;
 
                     &:before {
                         @include error-icon();

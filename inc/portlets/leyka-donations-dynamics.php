@@ -5,6 +5,8 @@
  *
  * Title: Donations dynamics
  * Thumbnail: /img/dashboard/icon-chart.svg
+ *
+ * @var $params
  **/
 
 $data = Leyka_Donations_Dynamics_Portlet_Controller::get_instance()->get_template_data($params);?>

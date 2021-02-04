@@ -1,20 +1,3 @@
-// Dashboard footer
-.leyka-dashboard-footer {
-	margin-top: 2*$leyka-base;
-	margin-left: 12px;
-	
-	&.leyka-wizard-footer {
-	   margin-top: $leyka-base;
-	   margin-bottom: $leyka-base;
-	   margin-left: 12px;
-	}
-	
-	&.leyka-settings-footer {
-	   margin-left: 72px;
-	   margin-bottom: -20px;
-	}
-}
-
 .leyka-admin-wizard {
 
     .leyka-wizard {
@@ -40,9 +23,10 @@
     #wpbody-content > .leyka-admin-footer {
 	   display: none;
     }
+
 }
 
-// Admin footer
+// Admin footer:
 .leyka-admin-footer {
 
 	display: flex;
@@ -181,16 +165,6 @@
     @include body-text();
     @include leyka-loading-indicator();
 
-    .postbox, #poststuff .postbox { // Metaboxes restyling
-
-        .handlediv { // Hide the default metabox open/close handle
-            display: none;
-        }
-
-        @include leyka-metabox-styling();
-
-    } // Metabox restyling - END
-
     // Typo:
     p {
 
@@ -239,7 +213,6 @@
         @include wizard-h4();
         margin-bottom: 8px;
     }
-
 
     // controls
     .button-primary {
@@ -307,7 +280,7 @@
 
 
     // forms
-    .option-block, .leyka-options-section  {
+    .option-block, .leyka-options-section {
 
         margin-bottom: 16px;
 
@@ -444,11 +417,16 @@
 
 .wp-core-ui .leyka-admin {
     .leyka-options-section {
+
         background-color: $color-white;
         border-radius: 6px;
         margin-bottom: 2rem;
         padding: 24px 24px 32px 24px;
         width: 675px;
+
+        &.no-background {
+            background-color: transparent;
+        }
 
         &.collapsed {
             padding-bottom: 24px;
@@ -521,7 +499,7 @@
                 }
 
                 .attention {
-                    color: $color-wizard-error-message;
+                    color: $color-error-message;
                     font-weight: normal;
                 }
 
@@ -722,10 +700,6 @@
         width: calc(100% - 14px);
     }
 }
-
-//#message {
-//    margin-left: 72px;
-//}
 
 .leyka-admin-list-page {
 
@@ -1053,7 +1027,261 @@
 
 }
 
-// connect stats option
+// Markup for pages with info-sidebars (Dashboard, Help, ...):
+.leyka-info-sidebar-page {
+
+    margin: 41px 36px;
+    box-sizing: border-box;
+    color: $color-metabox-text;
+
+    a {
+        @include leyka-admin-a;
+    }
+
+    a[href='#'] {
+        @include leyka-admin-a(dashed);
+    }
+
+    h1 {
+        @include leyka-info-page-h1;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    // Main part:
+    .leyka-page-content {
+
+        margin-top: 24px;
+        display: flex;
+
+        .main-col {
+
+            border-right: 1px solid $color-border-semilight;
+            padding-right: 2*$leyka-base;
+            margin-right: 2*$leyka-base;
+            flex-grow: 1;
+
+            & > div {
+
+                //margin-bottom: 1.5*$leyka-base;
+
+                &:last-of-type {
+                    margin-bottom: 0;
+                }
+
+            }
+
+            .leyka-content-row {
+
+                display: flex;
+                flex-flow: row wrap;
+                justify-content: space-between;
+                align-items: stretch;
+
+                & > * {
+
+                    //margin-right: 1.5*$leyka-base;
+
+                    //&:last-of-type {
+                    //    margin-right: 0;
+                    //}
+
+                }
+
+            }
+
+        }
+
+        // Sidebar part:
+        .sidebar-col {
+
+            flex: 250px 0 0;
+
+            .leyka-info-sidebar-part {
+
+                @include leyka-info-page-text-smaller1;
+
+                font-weight: 500;
+
+                border-top: 1px solid $color-border-semilight;
+                margin-bottom: 1.5*$leyka-base;
+
+                & > * {
+                    margin-top: $leyka-base;
+                }
+
+                &:first-of-type {
+                    border-top: none;
+                }
+
+                .leyka-logo {
+                    text-align: center;
+                    margin-top: 0;
+                }
+
+                .leyka-official-website {
+                    @include leyka-info-sidebar-part-iconed-link('../../img/dashboard/icon-docs.svg');
+                }
+
+                // Sidebar settings state:
+                .sidebar-part-content.settings-state {
+
+                    .settings-step-set {
+
+                        display: flex;
+                        align-items: flex-start;
+                        justify-content: flex-start;
+                        margin-bottom: 16px;
+
+                        .step-setup-status {
+
+                            background-image: url(../../img/dashboard/icon-bad.svg);
+                            background-repeat: no-repeat;
+                            background-size: 24px;
+                            background-position: top left;
+                            width: 24px;
+                            height: 24px;
+                            margin-right: 8px;
+
+                            &.step-valid {
+                                background-image: url(../../img/dashboard/icon-check.svg);
+                            }
+
+                        }
+
+                        .step-title-wrapper {
+
+                            padding-top: 4px;
+
+                            .step-invalid-options {
+
+                                @include leyka-info-page-text-smaller2;
+
+                                margin-top: 4px;
+                                color: $leyka-color-error-light;
+
+                            }
+
+                        }
+                    }
+
+                } // Sidebar settings state - END
+
+                .leyka-wizard-link {
+                    @include leyka-info-sidebar-part-iconed-link('../../img/icon-wizard.svg');
+                }
+
+                // Sidebar gateways:
+                .sidebar-part-content.gateways {
+
+                    .gateway {
+
+                        display: flex;
+                        align-items: flex-start;
+                        justify-content: flex-start;
+                        margin-bottom: 16px;
+
+                        .module-logo {
+
+                            align-items: flex-start;
+                            width: 24px;
+                            height: 24px;
+                            margin-right: 8px;
+
+                            img {
+                                max-width: 24px;
+                                max-height: 24px;
+                            }
+
+                        }
+
+                        .gateway-data {
+
+                            padding-top: 2px;
+
+                            .gateway-activation-status {
+                                margin-top: 4px;
+                            }
+
+                        }
+
+                    }
+
+                }
+
+                .add-gateway-link {
+                    @include leyka-info-sidebar-part-iconed-link('../../img/dashboard/icon-plus.svg');
+                }
+                // Sidebar gateways - END
+
+                // Sidebar diagnostic data:
+                .sidebar-part-content.diagnostic-data {
+
+                    .data-line {
+
+                        margin-bottom: 16px;
+
+                        &.php-actuality-status {
+                            .php-version {
+                                &.bad {
+                                    color: $color-error-message;
+                                }
+                            }
+                        }
+
+
+                        &.cron-state {
+
+                            .cron-state {
+
+                                color: $color-ok-message;
+
+                                &.not-set {
+                                    color: $color-error-message;
+                                }
+
+                            }
+
+                            a {
+                                @include leyka-info-page-text-smaller2;
+                                margin-left: 0.5 * $leyka-base;
+                            }
+
+                        }
+
+                        .protocol {
+
+                            text-transform: uppercase;
+                            color: $color-ok-message;
+
+                            &.not-safe {
+                                color: $color-error-message;
+                            }
+
+                        }
+
+                        .php-modules-title {
+                            display: block;
+                        }
+
+                        .php-ext-missing {
+                            color: $color-error-message;
+                        }
+
+                    }
+
+                }
+                // Sidebar diagnostic data - END
+
+            }
+
+        } // Sidebar part - END
+
+    }
+
+}
+
+// Connect stats option:
 .wp-core-ui .leyka-admin {
 
     .leyka-options-section {

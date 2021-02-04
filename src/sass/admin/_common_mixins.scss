@@ -35,6 +35,60 @@
     }
 }
 
+@mixin leyka-info-page-text($mod: default) {
+
+    font-family: $font-body;
+    font-weight: normal;
+    font-style: normal;
+    font-size: 12px;
+    line-height: 14px;
+    letter-spacing: -0.02em;
+
+    @if $mod == strong {
+        font-weight: 700;
+    }
+    @else if $mod == italic {
+        font-style: italic;
+    }
+
+}
+
+@mixin leyka-info-page-text-smaller1($mod: default) {
+    @include leyka-info-page-text($mod);
+    font-size: 11px;
+    line-height: 16px;
+}
+
+@mixin leyka-info-page-h1 {
+    @include leyka-info-page-text();
+    font-size: 23px;
+    line-height: 32px;
+}
+
+@mixin leyka-info-sidebar-part-iconed-link($icon_url) {
+
+    background-image: url($icon_url);
+    background-size: 24px 24px;
+    background-repeat: no-repeat;
+    background-position: left center;
+    width: auto;
+    min-height: 24px;
+    display: flex;
+    padding-left: 32px;
+    align-items: center;
+
+    a {
+        @include leyka-admin-a;
+    }
+
+}
+
+@mixin leyka-info-page-text-smaller2($mod: default) {
+    @include leyka-info-page-text($mod);
+    font-size: 10px;
+    line-height: 16px;
+}
+
 // form fields
 @mixin leyka-rich-html {
 
@@ -859,44 +913,54 @@
 
     border: 1px solid $color-border-semilight;
     border-radius: 6px;
-    background-color: $color-background-light1;
+    background-color: $color-metaboxes-background;
     box-shadow: 0 2px 2px $color-border-semilight;
 
     color: $leyka-admin-color-text;
 
+    .postbox-header {
+        border-bottom: 1px solid $color-border-light-001;
+    }
+
     h2.hndle {
 
         display: flex;
+        justify-content: flex-start;
         align-items: center;
 
         border: 0;
-        padding: 12px 16px;
+        margin: 24px 0;
+        padding: 0 24px;
 
-        font-size: 14px;
+        color: $color-metabox-title;
+        font-size: 16px;
+        font-weight: 500;
         line-height: 24px;
 
-        &:before {
+        .metabox-thumbnail {
+            margin-right: 12px;
+        }
 
+        &:after { // Restyled metabox/portlet open/close handle
             content: ' ';
             display: inline-block;
-            background-image: url(../../img/icon-accord-expanded.svg);
+            background-image: url(../../img/icon-arrow-expanded.svg);
             cursor: pointer;
             pointer-events: all;
-            width: 22px;
-            height: 22px;
-            margin-right: 8px;
-
+            width: 24px;
+            height: 24px;
+            margin-left: auto; // Align the open/close control to the right
         }
 
     }
 
-    &.closed h2.hndle:before {
-        background-image: url(../../img/icon-accord-collapsed.svg) !important;
+    &.closed h2.hndle:after {
+        background-image: url(../../img/icon-arrow-collapsed.svg) !important;
     }
 
     .inside {
-        margin-top: 0;
-        padding: 16px;
+        margin: 0 0 24px 0;
+        padding: 0 24px;
     }
 
 }

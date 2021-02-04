@@ -1,0 +1,306 @@
+/* Portlets: */
+.leyka-admin-portlet {
+
+    // Common:
+    background-color: $color-white;
+    min-width: 304px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    border-radius: 6px;
+    flex: calc(50% - 24px) 1 1;
+
+    margin-bottom: 24px;
+
+    &:not(:first-child) {
+        margin-left: 24px;
+    }
+
+    .portlet-header {
+
+        font-weight: 400;
+        height: 78px;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid $leyka-adb-color-border-light1;
+        line-height: 16px;
+
+        h2,h3 {
+            color: $color-metabox-title;
+            margin: 0;
+        }
+
+        h2 {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        h3 {
+            font-size: 13px;
+        }
+
+        img {
+            margin-left: $leyka-base;
+            margin-right: 0.75*$leyka-base;
+        }
+
+    }
+
+    .portlet-content {
+
+        padding: $leyka-base 1.5*$leyka-base 1.5*$leyka-base 1.5*$leyka-base;
+
+        .portlet-row {
+
+            margin-bottom: $leyka-base;
+
+            &:last-of-type {
+                margin-bottom: 0;
+            }
+
+            .row-label {
+                @include leyka-adb-portlet-row-label;
+                margin-bottom: 0.5*$leyka-base;
+            }
+
+            .row-data {
+                display: flex;
+                justify-content: flex-start;
+
+                .main-number {
+                    @include leyka-adb-portlet-stats-num;
+                    margin-right: 0.5*$leyka-base;
+                }
+
+                .percent {
+
+                    @include leyka-adb-text-bigger1;
+
+                    color: darken($leyka-adb-color-border, 25);
+                    background-repeat: no-repeat;
+                    background-size: 12px 12px;
+                    background-position: left 2px;
+                    padding-left: 14px;
+
+                    &.negative {
+                        color: $leyka-adb-color-error;
+                        background-image: url(../../img/dashboard/icon-arrow-down.svg);
+                    }
+
+                    &.positive {
+                        color: $color-ok-message;
+                        background-image: url(../../img/dashboard/icon-arrow-up.svg);
+                    }
+                }
+            }
+
+        }
+
+    } // Common - END
+
+    &.portlet-recent-donations {
+        width: 100%;
+    }
+
+    &.portlet-donations-dynamics {
+
+        width: 100%;
+
+        .portlet-content {
+            padding-left: $leyka-base;
+            padding-right: 3*$leyka-base;
+        }
+
+    }
+
+    &.portlet-stats-recurring .donations-number-percent-chart {
+
+        .chart-wrapper {
+
+            display: flex;
+            align-items: flex-start;
+
+            .chart {
+
+                margin-right: 1.5*$leyka-base;
+                position: relative;
+
+                .chart-center {
+
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    .circle-label {
+
+                        @include leyka-adb-portlet-stats-num;
+                        vertical-align: top;
+
+                        span.percent {
+                            @include leyka-adb-text-bigger1;
+                            vertical-align: super;
+                        }
+
+                    }
+
+                }
+
+            }
+
+            .legend {
+
+                margin-top: $leyka-base;
+
+                .legend-item {
+
+                    vertical-align: top;
+
+                    .icon {
+
+                        display: inline-block;
+                        width: 8px;
+                        height: 8px;
+                        border-radius: 4px;
+                        background-color: $leyka-adb-color-recurring-chart-recurring;
+                        margin-right: 0.5 * $leyka-base;
+                        vertical-align: baseline;
+
+                        &.other {
+                            background-color: $leyka-adb-color-recurring-chart-other;
+                        }
+
+                    }
+
+                    .label {
+                        @include leyka-adb-portlet-row-label;
+                        display: inline-block;
+                        max-width: 72px;
+                        vertical-align: text-top;
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+    // Recent donations:
+    table.recent-donations {
+
+        @include leyka-adb-text-bigger1;
+
+        color: $color-metabox-text;
+        width: 100%;
+
+        thead {
+            tr th {
+                @include leyka-adb-text-table-head;
+                text-align: left;
+                border-bottom: 1px solid $color-border-light-001;
+                padding-bottom: $leyka-base;
+            }
+        }
+
+        tbody {
+
+            tr {
+
+                &:nth-child(even) {
+                    background-color: $color-background-light2;
+                }
+
+                td {
+                    padding-top: 12px;
+                    padding-bottom: 12px;
+                    vertical-align: top;
+                }
+
+                td.donation-type {
+                    min-width: 59px;
+                    text-align: center;
+                }
+
+                td.donation-donor {
+
+                    min-width: 216px;
+                    width: 40%;
+
+                    a {
+                        @include leyka-admin-a;
+                    }
+
+                    .donor-contact {
+                        @include leyka-info-page-text-smaller1;
+                    }
+
+                }
+
+                td.donation-campaign-date {
+
+                    min-width: 227px;
+                    width: 40%;
+
+                    .date {
+                        @include leyka-info-page-text-smaller1;
+                    }
+
+                }
+
+                td.donation-amount-status {
+
+                    min-width: 83px;
+
+                    .donation-status {
+
+                        @include leyka-donation-status-marker;
+
+                        display: inline-block;
+                        width: 8px;
+                        height: 8px;
+                        border-radius: 4px;
+                        background-color: $leyka-color-donation-status-submitted;
+                        margin-right: 0.5 * $leyka-base;
+
+                        &.funded {
+                            background-color: $leyka-color-donation-status-funded;
+                        }
+
+                        &.refunded {
+                            background-color: $leyka-color-donation-status-refunded;
+                        }
+
+                        &.failed {
+                            background-color: $leyka-color-donation-status-failed;
+                        }
+
+                        &.field-q {
+
+                            @include field-q();
+
+                            .field-q-tooltip {
+                                top: 250%;
+                                padding-left: 2* $leyka-base;
+                                padding-right: 2* $leyka-base;
+                                font-weight: 500;
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    } // Recent donations - END
+
+
+} // Portlets - END

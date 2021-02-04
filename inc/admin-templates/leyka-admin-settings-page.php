@@ -18,6 +18,8 @@ $is_separate_sections_forms = $this->is_separate_forms_stage($current_stage);?>
 
         <?php _e('Leyka settings', 'leyka');?>
 
+        <a href="<?php echo admin_url('admin.php?page=leyka_extensions');?>" class="button"><?php _e('Extensions', 'leyka');?></a>
+
     </h1>
 
     <h2 class="nav-tab-wrapper"><?php echo $this->settings_tabs_menu();?></h2>

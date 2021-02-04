@@ -3,8 +3,16 @@
 
 /** @var $this Leyka_Admin_Setup */?>
 
-<div class="leyka-admin wrap donors-list" data-leyka-admin-page-type="donors-list-page">
-    <h1 class="wp-heading-inline"><?php _e('Donors', 'leyka');?></h1>
+<div class="leyka-admin wrap donors-list leyka-settings-page" data-leyka-admin-page-type="donors-list-page">
+
+    <h1 class="wp-heading-inline">
+
+        <?php _e('Donors', 'leyka');
+
+        $taxonomy = $taxonomy = get_taxonomy(Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME);?>
+
+        <a href="<?php echo admin_url('edit-tags.php?taxonomy='.$taxonomy->name);?>" class="button"><?php echo $taxonomy->labels->menu_name;?></a>
+    </h1>
 
     <div id="poststuff">
         <div>

@@ -15,7 +15,7 @@
 
         h1.wp-heading-inline {
 
-            @include leyka-adb-h1();
+            @include leyka-info-page-h1();
 
             padding-top: 0;
             padding-bottom: 0;
@@ -252,7 +252,7 @@
 
             text-align: right;
 
-            color: $color-wizard-error-message;
+            color: $color-error-message;
 
             .delete-package {
                 cursor: pointer;

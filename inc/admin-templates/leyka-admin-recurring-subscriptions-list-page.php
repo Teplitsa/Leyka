@@ -3,7 +3,7 @@
 
 /** @var $this Leyka_Admin_Setup */?>
 
-<div class="leyka-admin wrap recurring-subscriptions-list" data-leyka-admin-page-type="recurring-subscriptions-list-page">
+<div class="leyka-admin wrap recurring-subscriptions-list leyka-settings-page" data-leyka-admin-page-type="recurring-subscriptions-list-page">
     <h1 class="wp-heading-inline"><?php _e('Recurring subscriptions', 'leyka');?></h1>
 
     <div id="poststuff">

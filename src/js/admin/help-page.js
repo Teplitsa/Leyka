@@ -1,12 +1,12 @@
-/** Feedback page */
+/** Help page */
 jQuery(document).ready(function($){
 
-    var $page_wrapper = $('.wrap');
-    if( !$page_wrapper.length || $page_wrapper.data('leyka-admin-page-type') !== 'feedback-page' ) {
+    let $page_wrapper = $('.wrap');
+    if( !$page_wrapper.length || !$page_wrapper.hasClass('leyka-help-page') ) {
         return;
     }
 
-    var $form = $('#feedback'),
+    let $form = $('#feedback'),
         $loader = $('#feedback-loader'),
         $message_ok = $('#message-ok'),
         $message_error = $('#message-error');
@@ -16,6 +16,7 @@ jQuery(document).ready(function($){
         e.preventDefault();
 
         if( !validate_feedback_form($form) ) {
+            console.log('Not valid!');
             return false;
         }
 
@@ -24,10 +25,10 @@ jQuery(document).ready(function($){
 
         $.post(leyka.ajaxurl, {
             action: 'leyka_send_feedback',
-            topic: $form.find('#feedback-topic').val(),
-            name: $form.find('#feedback-name').val(),
-            email: $form.find('#feedback-email').val(),
-            text: $form.find('#feedback-text').val(),
+            topic: $form.find('input[name="leyka_feedback_topic"]').val(),
+            name: $form.find('input[name="leyka_feedback_name"]').val(),
+            email: $form.find('input[name="leyka_feedback_email"]').val(),
+            text: $form.find('textarea[name="leyka_feedback_text"]').val(),
             nonce: $form.find('#nonce').val()
         }, function(response){
 
@@ -47,8 +48,8 @@ jQuery(document).ready(function($){
 
     function validate_feedback_form($form) {
 
-        var is_valid = true,
-            $field = $form.find('#feedback-topic');
+        let is_valid = true,
+            $field = $form.find('input[name="leyka_feedback_name"]');
 
         if( !$field.val() ) {
 
@@ -59,17 +60,7 @@ jQuery(document).ready(function($){
             $form.find('#'+$field.attr('id')+'-error').html('').hide();
         }
 
-        $field = $form.find('#feedback-name');
-        if( !$field.val() ) {
-
-            is_valid = false;
-            $form.find('#'+$field.attr('id')+'-error').html(leyka.field_required).show();
-
-        } else {
-            $form.find('#'+$field.attr('id')+'-error').html('').hide();
-        }
-
-        $field = $form.find('#feedback-email');
+        $field = $form.find('input[name="leyka_feedback_email"]');
         if( !$field.val() ) {
 
             is_valid = false;
@@ -84,7 +75,7 @@ jQuery(document).ready(function($){
             $form.find('#'+$field.attr('id')+'-error').html('').hide();
         }
 
-        $field = $form.find('#feedback-text');
+        $field = $form.find('textarea[name="leyka_feedback_text"]');
         if( !$field.val() ) {
 
             is_valid = false;

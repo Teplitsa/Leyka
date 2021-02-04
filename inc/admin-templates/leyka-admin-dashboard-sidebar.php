@@ -5,7 +5,7 @@
 
 require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php');?>
 
-<div class="leyka-dashboard-sidebar-part">
+<div class="leyka-info-sidebar-part">
 
     <div class="leyka-logo"><img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/logo-leyka.svg" alt=""></div>
 
@@ -28,7 +28,7 @@ $main_settings_steps = $init_wizard_controller->navigation_data[0]['stage_id'] =
     $init_wizard_controller->navigation_data[0]['sections'] : array();
 
 if($main_settings_steps) {?>
-    <div class="leyka-dashboard-sidebar-part">
+    <div class="leyka-info-sidebar-part">
 
         <h3><?php _e('My data', 'leyka');?></h3>
 
@@ -68,7 +68,7 @@ if($main_settings_steps) {?>
     </div>
 <?php }?>
 
-<div class="leyka-dashboard-sidebar-part">
+<div class="leyka-info-sidebar-part">
 
     <h3><?php  _e('Payment gateways', 'leyka');?></h3>
 
@@ -102,7 +102,7 @@ if($main_settings_steps) {?>
 
 </div>
 
-<div class="leyka-dashboard-sidebar-part">
+<div class="leyka-info-sidebar-part">
 
     <h3><?php  _e('Diagnostic data', 'leyka');?></h3>
 

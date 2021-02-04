@@ -3,7 +3,7 @@
 
 /** @var $this Leyka_Admin_Setup */?>
 
-<div class="wrap leyka-admin leyka-dashboard-page">
+<div class="wrap leyka-admin leyka-info-sidebar-page leyka-dashboard-page">
 
     <h1><?php _e('Leyka dashboard', 'leyka');?></h1>
 
@@ -31,7 +31,7 @@
 
 <?php }?>
 
-    <div class="leyka-dashaboard-content">
+    <div class="leyka-page-content">
 
         <div class="main-col">
 
@@ -50,16 +50,16 @@
                 <a href="<?php echo add_query_arg('interval', 'week', $current_url);?>" class="<?php echo $_GET['interval'] === 'week' ? 'current-interval' : '';?>"><?php _e('Week', 'leyka');?></a>
             </div>
 
-            <div class="leyka-dashboard-row">
+            <div class="leyka-content-row">
                 <?php $this->show_admin_portlet('stats-donations-main', array('interval' => $_GET['interval']));
                 $this->show_admin_portlet('stats-recurring', array('interval' => $_GET['interval']));?>
             </div>
 
-            <div class="leyka-dashboard-row">
+            <div class="leyka-content-row">
                 <?php $this->show_admin_portlet('donations-dynamics', array('interval' => $_GET['interval']));?>
             </div>
 
-            <div class="leyka-dashboard-row">
+            <div class="leyka-content-row">
                 <?php $this->show_admin_portlet('recent-donations', array(
                     'interval' => $_GET['interval'],
                     'number' => 5,

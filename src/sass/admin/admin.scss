@@ -17,6 +17,11 @@
 @import 'dashboard_mixins';
 @import 'dashboard';
 
+@import 'help';
+
+@import 'metaboxes';
+@import 'portlets';
+
 @import 'donors_presets';
 @import 'donors_typo';
 @import 'donors_mixins';
@@ -26,11 +31,11 @@
 
 @import 'extensions';
 
-@import 'feedback';
+//@import 'feedback';
 
 .leyka-settings-page {
 
-    margin: 41px 72px;
+    margin: 41px 30px;
 
     @include body-text();
     font-size: 13px;
@@ -343,7 +348,7 @@
                     &.error-message {
 
                         font-size: 10px;
-                        color: $color-wizard-error-message;
+                        color: $color-error-message;
 
                     }
 

@@ -5,6 +5,8 @@
  *
  * Title: Recent donations
  * Thumbnail: /img/dashboard/icon-donors.svg
+ *
+ * @var $params
  **/
 
 $data = Leyka_Recent_Donations_Portlet_Controller::get_instance()->get_template_data($params);?>

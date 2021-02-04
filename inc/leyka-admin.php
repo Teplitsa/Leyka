@@ -45,6 +45,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		add_filter('plugin_action_links_'.LEYKA_PLUGIN_INNER_SHORT_NAME, array($this, 'add_plugins_list_links'));
 
         // Metaboxes support where it is needed:
+        add_action('leyka_pre_help_actions', array($this, 'full_metaboxes_support'));
         add_action('leyka_pre_donor_info_actions', array($this, 'full_metaboxes_support'));
         add_action('leyka_pre_extension_settings_actions', array($this, 'full_metaboxes_support'));
 
@@ -222,17 +223,17 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         add_submenu_page('leyka', __('Leyka Dashboard', 'leyka'), __('Dashboard', 'leyka'), 'leyka_manage_donations', 'leyka', array($this, 'dashboard_screen'));
 
+        add_submenu_page('leyka', __('Campaigns', 'leyka'), __('Campaigns', 'leyka'), 'leyka_manage_donations', 'edit.php?post_type='.Leyka_Campaign_Management::$post_type);
+
         add_submenu_page('leyka', __('Donations', 'leyka'), __('Donations', 'leyka'), 'leyka_manage_donations', 'edit.php?post_type='.Leyka_Donation_Management::$post_type);
 
-        add_submenu_page('leyka', __('New correctional donation', 'leyka'), _x('Add new', 'donation', 'leyka'), 'leyka_manage_donations', 'post-new.php?post_type='.Leyka_Donation_Management::$post_type);
+//        add_submenu_page('leyka', __('New correctional donation', 'leyka'), _x('Add new', 'donation', 'leyka'), 'leyka_manage_donations', 'post-new.php?post_type='.Leyka_Donation_Management::$post_type);
 
         // Recurring subscriptions list page:
         $hook = add_submenu_page('leyka', __('Recurring subscriptions', 'leyka'), __('Recurring subscriptions', 'leyka'), 'leyka_manage_donations', 'leyka_recurring_subscriptions', array($this, 'recurring_subscriptions_list_screen'));
         add_action("load-$hook", array($this, 'recurring_subscriptions_list_screen_options'));
 
-        add_submenu_page('leyka', __('Campaigns', 'leyka'), __('Campaigns', 'leyka'), 'leyka_manage_donations', 'edit.php?post_type='.Leyka_Campaign_Management::$post_type);
-
-        add_submenu_page('leyka', __('New campaign', 'leyka'), _x('Add new', 'campaign', 'leyka'), 'leyka_manage_donations', 'post-new.php?post_type='.Leyka_Campaign_Management::$post_type);
+//        add_submenu_page('leyka', __('New campaign', 'leyka'), _x('Add new', 'campaign', 'leyka'), 'leyka_manage_donations', 'post-new.php?post_type='.Leyka_Campaign_Management::$post_type);
 
         if(leyka()->opt('donor_management_available')) {
 
@@ -243,27 +244,27 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             // Donors tags page:
             $taxonomy = get_taxonomy(Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME);
 
-            add_submenu_page('leyka', esc_attr($taxonomy->labels->menu_name), esc_attr($taxonomy->labels->menu_name), $taxonomy->cap->manage_terms, 'edit-tags.php?taxonomy='.$taxonomy->name);
-
-            add_filter('submenu_file', function($submenu_file) { // Fix for parent menu
-
-                global $parent_file;
-                if($submenu_file == 'edit-tags.php?taxonomy='.Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME) {
-                    $parent_file = 'leyka';
-                }
-                return $submenu_file;
-
-            });
+            add_submenu_page('', esc_attr($taxonomy->labels->menu_name), esc_attr($taxonomy->labels->menu_name), $taxonomy->cap->manage_terms, 'edit-tags.php?taxonomy='.$taxonomy->name);
+//
+//            add_filter('submenu_file', function($submenu_file) { // Fix for parent menu
+//
+//                global $parent_file;
+//                if($submenu_file == 'edit-tags.php?taxonomy='.Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME) {
+//                    $parent_file = 'leyka';
+//                }
+//                return $submenu_file;
+//
+//            });
 
         }
 
         add_submenu_page('leyka', __('Leyka Settings', 'leyka'), __('Settings', 'leyka'), 'leyka_manage_options', 'leyka_settings', array($this, 'settings_screen'));
 
-        add_submenu_page('leyka', __('Extensions', 'leyka'), __('Extensions', 'leyka'), 'leyka_manage_options', 'leyka_extensions', array($this, 'extensions_screen'));
+        add_submenu_page('', __('Extensions', 'leyka'), __('Extensions', 'leyka'), 'leyka_manage_options', 'leyka_extensions', array($this, 'extensions_screen'));
         
-        add_submenu_page('leyka', __('Setup helper', 'leyka'), _x('Setup helper', 'campaign', 'leyka'), 'leyka_manage_donations', 'https://leyka.te-st.ru/step/step-setup-your-leyka-data/');
+//        add_submenu_page('leyka', __('Setup helper', 'leyka'), _x('Setup helper', 'campaign', 'leyka'), 'leyka_manage_donations', 'https://leyka.te-st.ru/step/step-setup-your-leyka-data/');
 
-        add_submenu_page('leyka', __('Contact us', 'leyka'), __('Feedback', 'leyka'), 'leyka_manage_donations', 'leyka_feedback', array($this, 'feedback_screen'));
+        add_submenu_page('leyka', __('Help', 'leyka'), __('Help', 'leyka'), 'leyka_manage_donations', 'leyka_help', array($this, 'help_screen'));
 
         // Fake pages:
         add_submenu_page(NULL, 'Leyka Wizard', 'Leyka Wizard', 'leyka_manage_options', 'leyka_settings_new', array($this, 'settings_new_screen'));
@@ -327,17 +328,33 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             'name' => 'Leyka Portlet',
             'description' => 'Description',
             'title' => 'Title',
+            'subtitle' => 'Subtitle',
             'thumbnail' => 'Thumbnail',
-        ));?>
+        ));
+
+	    $portlet_data['title'] = empty($params['title']) ? esc_attr__($portlet_data['title'], 'leyka') : $params['title'];
+	    $portlet_data['subtitle'] = empty($params['subtitle']) ?
+            esc_attr__($portlet_data['subtitle'], 'leyka') : $params['subtitle'];
+	    $portlet_data['thumbnail'] = empty($params['thumbnail']) ? $portlet_data['thumbnail'] : $params['thumbnail'];?>
 
 	    <div class="leyka-admin-portlet portlet-<?php echo esc_attr($portlet_id);?>">
 
             <div class="portlet-header">
+
                 <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL.trim($portlet_data['thumbnail'], '/'));?>" alt="">
-                <?php echo apply_filters('leyka_admin_portlet_title', esc_attr__($portlet_data['title'], 'leyka'), $portlet_id);?>
+
+                <div class="portlet-title">
+
+                <?php if( !empty($portlet_data['subtitle'])) {?>
+                    <h3><?php echo apply_filters('leyka_admin_portlet_subtitle', $portlet_data['subtitle'], $portlet_id);?></h3>
+                <?php }?>
+
+                    <h2><?php echo apply_filters('leyka_admin_portlet_title', $portlet_data['title'], $portlet_id);?></h2>
+
+                </div>
             </div>
 
-            <div class="portlet-content"><?php require_once $portlet_file;?></div>
+            <div class="portlet-content"><?php require $portlet_file;?></div>
 
         </div>
 
@@ -652,17 +669,25 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
     }
 
-    public function feedback_screen() {
+    public function help_screen() {
 
         if( !current_user_can('leyka_manage_donations') ) {
             wp_die(__('You do not have permissions to access this page.', 'leyka'));
 		}
 
-        do_action('leyka_pre_feedback_actions');
+        do_action('leyka_pre_help_actions');
 
-        $this->_show_admin_template('feedback-page');
+        add_meta_box('leyka_docs_info', __('Leyka documentation', 'leyka'), function(){
+            $this->_show_admin_template('metabox-docs-info');
+        }, 'dashboard_page_leyka_help', 'normal');
 
-        do_action('leyka_post_feedback_actions');
+        add_meta_box('leyka_feedback', __('Ask a question', 'leyka'), function(){
+            $this->_show_admin_template('metabox-feedback');
+        }, 'dashboard_page_leyka_help', 'lower');
+
+        $this->_show_admin_template('help-page');
+
+        do_action('leyka_post_help_actions');
         do_action('leyka_post_admin_actions');
 
     }
@@ -782,7 +807,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             || (isset($_GET['page']) && ($_GET['page'] === 'leyka' || $_GET['page'] === 'leyka_recurring_subscriptions'))
             || (isset($_GET['page']) && $_GET['page'] === 'leyka_extensions')
             || (isset($_GET['page']) && $_GET['page'] === 'leyka_extension_settings' && !empty($_GET['extension']))
-            || (isset($_GET['page']) && $_GET['page'] === 'leyka_feedback');
+            || (isset($_GET['page']) && $_GET['page'] === 'leyka_help');
 
         $current_screen = get_current_screen();
         $dependencies = array('jquery',);
@@ -843,6 +868,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         $js_data = apply_filters('leyka_admin_js_localized_strings', array(
             'ajaxurl' => admin_url('admin-ajax.php'),
             'ajax_loader_url' => LEYKA_PLUGIN_BASE_URL.'img/ajax-loader.gif',
+            'homeurl' => home_url('/'),
+            'plugin_url' => LEYKA_PLUGIN_BASE_URL,
             'field_required' => __('This field is required to be filled', 'leyka'),
             'email_invalid_msg' => __('You have entered an invalid email', 'leyka'),
             'common_error_message' => __('Error while saving the data', 'leyka'),
