@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,14 +24,14 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Model\Confirmation;
+namespace YooKassa\Model\Confirmation;
 
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueTypeException;
-use YandexCheckout\Helpers\TypeCast;
-use YandexCheckout\Model\ConfirmationType;
+use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
+use YooKassa\Helpers\TypeCast;
+use YooKassa\Model\ConfirmationType;
 
 /**
- * Сценарий, при котором необходимо отправить плательщика на веб-страницу Яндекс Кассы или партнера для
+ * Сценарий, при котором необходимо отправить плательщика на веб-страницу ЮKassa или партнера для
  * подтверждения платежа
  *
  * @property bool $enforce Требование принудительного подтверждения платежа покупателем, требование 3-D Secure для

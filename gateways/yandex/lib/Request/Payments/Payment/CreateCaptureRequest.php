@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,11 +24,11 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Request\Payments\Payment;
+namespace YooKassa\Request\Payments\Payment;
 
-use YandexCheckout\Common\AbstractPaymentRequest;
-use YandexCheckout\Model\AmountInterface;
-use YandexCheckout\Model\ReceiptInterface;
+use YooKassa\Common\AbstractPaymentRequest;
+use YooKassa\Model\AmountInterface;
+use YooKassa\Model\ReceiptInterface;
 
 /**
  * Класс объекта запроса к API на подтверждение оплаты
@@ -52,9 +52,9 @@ class CreateCaptureRequest extends AbstractPaymentRequest implements CreateCaptu
                 return false;
             }
         }
-        if ($this->_receipt !== null && $this->_receipt->notEmpty()) {
-            $email = $this->_receipt->getEmail();
-            $phone = $this->_receipt->getPhone();
+        if ($this->getReceipt() && $this->getReceipt()->notEmpty()) {
+            $email = $this->getReceipt()->getCustomer()->getEmail();
+            $phone = $this->getReceipt()->getCustomer()->getPhone();
             if (empty($email) && empty($phone)) {
                 $this->setValidationError('Both email and phone values are empty in receipt');
                 return false;

@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,28 +24,27 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Request\Payments;
+namespace YooKassa\Request\Payments;
 
-use YandexCheckout\Model\Airline;
-use YandexCheckout\Model\AmountInterface;
-use YandexCheckout\Model\ConfirmationAttributes\AbstractConfirmationAttributes;
-use YandexCheckout\Model\Metadata;
-use YandexCheckout\Model\PaymentData\AbstractPaymentData;
-use YandexCheckout\Model\ReceiptInterface;
-use YandexCheckout\Model\RecipientInterface;
+use YooKassa\Model\Airline;
+use YooKassa\Model\AmountInterface;
+use YooKassa\Model\ConfirmationAttributes\AbstractConfirmationAttributes;
+use YooKassa\Model\Metadata;
+use YooKassa\Model\PaymentData\AbstractPaymentData;
+use YooKassa\Model\ReceiptInterface;
+use YooKassa\Model\RecipientInterface;
+use YooKassa\Model\TransferInterface;
 
 /**
  * Interface CreatePaymentRequestInterface
  *
- * @package YandexCheckout\Request\Payments
+ * @package YooKassa\Request\Payments
  *
  * @property-read RecipientInterface|null $recipient Получатель платежа, если задан
  * @property-read AmountInterface $amount Сумма создаваемого платежа
  * @property-read ReceiptInterface $receipt Данные фискального чека 54-ФЗ
- * @property-read string $paymentToken Одноразовый токен для проведения оплаты, сформированный
- * Yandex.Checkout JS widget
- * @property-read string $payment_token Одноразовый токен для проведения оплаты, сформированный
- * Yandex.Checkout JS widget
+ * @property-read string $paymentToken Одноразовый токен для проведения оплаты, сформированный YooKassa JS widget
+ * @property-read string $payment_token Одноразовый токен для проведения оплаты, сформированный YooKassa JS widget
  * @property-read string $paymentMethodId Идентификатор записи о сохраненных платежных данных покупателя
  * @property-read string $payment_method_id Идентификатор записи о сохраненных платежных данных покупателя
  * @property-read AbstractPaymentData $paymentMethodData Данные используемые для создания метода оплаты
@@ -106,7 +105,7 @@ interface CreatePaymentRequestInterface
 
     /**
      * Возвращает одноразовый токен для проведения оплаты
-     * @return string Одноразовый токен для проведения оплаты, сформированный Yandex.Checkout JS widget
+     * @return string Одноразовый токен для проведения оплаты, сформированный YooKassa JS widget
      */
     function getPaymentToken();
 
@@ -211,4 +210,14 @@ interface CreatePaymentRequestInterface
      * @return Airline
      */
     function getAirline();
+
+    /**
+     * @return bool
+     */
+    function hasTransfers();
+
+    /**
+     * @return TransferInterface[]
+     */
+    function getTransfers();
 }

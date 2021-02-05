@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,12 +24,12 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Common;
+namespace YooKassa\Common;
 
 /**
  * Базовый класс генерируемых enum'ов
  *
- * @package YandexCheckout\Common
+ * @package YooKassa\Common
  */
 abstract class AbstractEnum
 {

@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +24,15 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Model;
+namespace YooKassa\Model;
 
-use YandexCheckout\Common\AbstractEnum;
+use YooKassa\Common\AbstractEnum;
 
 /**
  * PaymentMethodType - Тип источника средств для проведения платежа
  * |Код|Описание|
  * --- | ---
- * |yandex_money|Платеж из кошелька Яндекс.Деньги|
+ * |yoo_money|Платеж из кошелька ЮMoney|
  * |bank_card|Платеж с произвольной банковской карты|
  * |sberbank|Платеж СбербанкОнлайн|
  * |cash|Платеж наличными|
@@ -41,11 +41,14 @@ use YandexCheckout\Common\AbstractEnum;
  * |google_pay|Платеж Google Pay|
  * |qiwi|Платеж из кошелька Qiwi|
  * |installments|Заплатить по частям|
- *
+ * |b2b_sberbank|Сбербанк Бизнес Онлайн|
+ * |tinkoff_bank|Интернет-банк Тинькофф|
+ * |psb|ПромсвязьБанк|
+ * |wechat|Платеж через WeChat|
  */
 class PaymentMethodType extends AbstractEnum
 {
-    const YANDEX_MONEY   = 'yandex_money';
+    const YOO_MONEY      = 'yoo_money';
     const BANK_CARD      = 'bank_card';
     const SBERBANK       = 'sberbank';
     const CASH           = 'cash';
@@ -56,9 +59,14 @@ class PaymentMethodType extends AbstractEnum
     const WEBMONEY       = 'webmoney';
     const ALFABANK       = 'alfabank';
     const INSTALLMENTS   = 'installments';
+    const B2B_SBERBANK   = 'b2b_sberbank';
+    const TINKOFF_BANK   = 'tinkoff_bank';
+    const PSB            = 'psb';
+    /** @deprecated Будет удален в следующих версиях */
+    const WECHAT         = 'wechat';
 
     protected static $validValues = array(
-        self::YANDEX_MONEY   => true,
+        self::YOO_MONEY   => true,
         self::BANK_CARD      => true,
         self::SBERBANK       => true,
         self::CASH           => true,
@@ -68,6 +76,10 @@ class PaymentMethodType extends AbstractEnum
         self::QIWI           => true,
         self::WEBMONEY       => true,
         self::ALFABANK       => true,
+        self::TINKOFF_BANK   => true,
         self::INSTALLMENTS   => true,
+        self::B2B_SBERBANK   => true,
+        self::PSB            => false,
+        self::WECHAT         => true,
     );
 }

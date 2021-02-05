@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,14 +24,14 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Model\ConfirmationAttributes;
+namespace YooKassa\Model\ConfirmationAttributes;
 
-use YandexCheckout\Common\AbstractObject;
-use YandexCheckout\Common\Exceptions\EmptyPropertyValueException;
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueException;
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueTypeException;
-use YandexCheckout\Helpers\TypeCast;
-use YandexCheckout\Model\ConfirmationType;
+use YooKassa\Common\AbstractObject;
+use YooKassa\Common\Exceptions\EmptyPropertyValueException;
+use YooKassa\Common\Exceptions\InvalidPropertyValueException;
+use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
+use YooKassa\Helpers\TypeCast;
+use YooKassa\Model\ConfirmationType;
 
 /**
  * Способ подтверждения платежа
@@ -44,6 +44,11 @@ abstract class AbstractConfirmationAttributes extends AbstractObject
      * @var string
      */
     private $_type;
+
+    /**
+     * @var string
+     */
+    private $_locale;
 
     /**
      * @return string
@@ -74,6 +79,34 @@ abstract class AbstractConfirmationAttributes extends AbstractObject
             throw new InvalidPropertyValueTypeException(
                 'Invalid value type for "type" parameter in ConfirmationAttributes', 0, 'confirmationAttributes.type', $value
             );
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getLocale()
+    {
+        return $this->_locale;
+    }
+
+    /**
+     * @param string $value
+     */
+    public function setLocale($value)
+    {
+        if ($value === null || $value === '') {
+            $this->_locale = null;
+        } elseif (!TypeCast::canCastToString($value)) {
+            throw new InvalidPropertyValueTypeException(
+                'Invalid value type for "locale" parameter in ConfirmationAttributes', 0, 'confirmationAttributes.locale', $value
+            );
+        } elseif (!preg_match('/^[a-z]{2}_[A-Z]{2}$/', (string)$value)) {
+            throw new InvalidPropertyValueException(
+                'Invalid value type for "locale" parameter in ConfirmationAttributes', 0, 'confirmationAttributes.locale', $value
+            );
+        } else {
+            $this->_locale = (string)$value;
         }
     }
 }

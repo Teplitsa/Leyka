@@ -1,9 +1,8 @@
 <?php
-
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,25 +23,22 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Model;
+namespace YooKassa\Model\Receipt;
 
-use YandexCheckout\Common\AbstractEnum;
 
-/**
- * Статус платежа
- *
- * @deprecated Класс будет удалён в одной из будущих версий, используйте класс \YandexCheckout\Model\PaymentStatus
- *
- */
-class Status extends AbstractEnum
+use YooKassa\Common\AbstractEnum;
+
+class SettlementType extends AbstractEnum
 {
-    const SUCCEEDED = 'succeeded';
-    const PENDING = 'pending';
-    const CANCELED = 'canceled';
+    const CASHLESS = 'cashless';
+    const PREPAYMENT = 'prepayment';
+    const POSTPAYMENT = 'postpayment';
+    const CONSIDERATION = 'consideration';
 
     protected static $validValues = array(
-        self::SUCCEEDED => true,
-        self::PENDING => true,
-        self::CANCELED => true,
+        self::CASHLESS      => true,
+        self::PREPAYMENT    => true,
+        self::POSTPAYMENT   => true,
+        self::CONSIDERATION => true,
     );
 }

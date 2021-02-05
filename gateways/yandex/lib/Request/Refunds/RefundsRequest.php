@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,40 +24,52 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Request\Refunds;
+namespace YooKassa\Request\Refunds;
 
-use YandexCheckout\Common\AbstractRequest;
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueException;
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueTypeException;
-use YandexCheckout\Helpers\TypeCast;
-use YandexCheckout\Model\RefundStatus;
+use Exception;
+use YooKassa\Common\AbstractRequest;
+use YooKassa\Common\Exceptions\InvalidPropertyValueException;
+use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
+use YooKassa\Helpers\TypeCast;
+use YooKassa\Model\RefundStatus;
 
 /**
  * Класс объекта запроса к API списка возвратов магазина
  *
- * @package YandexCheckout\Request\Refunds
+ * @package YooKassa\Request\Refunds
  *
- * @property string $refundId Идентификатор возврата
+ * @property \DateTime $createdAtGte Время создания, от (включительно)
+ * @property \DateTime $createdAtGt Время создания, от (не включая)
+ * @property \DateTime $createdAtLte Время создания, до (включительно)
+ * @property \DateTime $createdAtLt Время создания, до (не включая)
  * @property string $paymentId Идентификатор платежа
- * @property string $accountId Идентификатор магазина
- * @property string $gatewayId Идентификатор шлюза
- * @property \DateTime $createdGte Время создания, от (включительно)
- * @property \DateTime $createdGt Время создания, от (не включая)
- * @property \DateTime $createdLte Время создания, до (включительно)
- * @property \DateTime $createdLt Время создания, до (не включая)
- * @property \DateTime $authorizedGte Время проведения операции, от (включительно)
- * @property \DateTime $authorizedGt Время проведения операции, от (не включая)
- * @property \DateTime $authorizedLte Время проведения, до (включительно)
- * @property \DateTime $authorizedLt Время проведения, до (не включая)
  * @property string $status Статус возврата
- * @property string $nextPage Токен для получения следующей страницы выборки
+ * @property integer|null $limit Ограничение количества объектов возврата, отображаемых на одной странице выдачи
+ * @property string $cursor Токен для получения следующей страницы выборки
  */
 class RefundsRequest extends AbstractRequest implements RefundsRequestInterface
 {
+    const MAX_LIMIT_VALUE = 100;
+
     /**
-     * @var string Идентификатор возврата
+     * @var \DateTime Время создания, от (включительно)
      */
-    private $_refundId;
+    private $_createdAtGte;
+
+    /**
+     * @var \DateTime Время создания, от (не включая)
+     */
+    private $_createdAtGt;
+
+    /**
+     * @var \DateTime Время создания, до (включительно)
+     */
+    private $_createdAtLte;
+
+    /**
+     * @var \DateTime Время создания, до (не включая)
+     */
+    private $_createdAtLt;
 
     /**
      * @var string Идентификатор шлюза
@@ -65,108 +77,19 @@ class RefundsRequest extends AbstractRequest implements RefundsRequestInterface
     private $_paymentId;
 
     /**
-     * @var string Идентификатор магазина
-     */
-    private $_accountId;
-
-    /**
-     * @var string Идентификатор шлюза
-     */
-    private $_gatewayId;
-
-    /**
-     * @var \DateTime Время создания, от (включительно)
-     */
-    private $_createdGte;
-
-    /**
-     * @var \DateTime Время создания, от (не включая)
-     */
-    private $_createdGt;
-
-    /**
-     * @var \DateTime Время создания, до (включительно)
-     */
-    private $_createdLte;
-
-    /**
-     * @var \DateTime Время создания, до (не включая)
-     */
-    private $_createdLt;
-
-    /**
-     * @var \DateTime Время проведения операции, от (включительно)
-     */
-    private $_authorizedGte;
-
-    /**
-     * @var \DateTime Время проведения операции, от (не включая)
-     */
-    private $_authorizedGt;
-
-    /**
-     * @var \DateTime Время проведения, до (включительно)
-     */
-    private $_authorizedLte;
-
-    /**
-     * @var \DateTime Время проведения, до (не включая)
-     */
-    private $_authorizedLt;
-
-    /**
      * @var string Статус возврата
      */
     private $_status;
 
     /**
+     * @var string Ограничение количества объектов платежа
+     */
+    private $_limit;
+
+    /**
      * @var string Токен для получения следующей страницы выборки
      */
-    private $_nextPage;
-
-    /**
-     * Возвращает идентификатор возврата
-     * @return string Идентификатор возврата
-     */
-    public function getRefundId()
-    {
-        return $this->_refundId;
-    }
-
-    /**
-     * Проверяет был ли установлен идентификатор возврата
-     * @return bool True если идентификатор возврата был установлен, false если не был
-     */
-    public function hasRefundId()
-    {
-        return $this->_refundId !== null;
-    }
-
-    /**
-     * Устанавливает идентификатор возврата
-     * @param string $value Идентификатор возврата, который ищется в API
-     *
-     * @throws InvalidPropertyValueException Выбрасывается если длина переданного значения не равна 36
-     * @throws InvalidPropertyValueTypeException Выбрасывается если в метод была передана не строка
-     */
-    public function setRefundId($value)
-    {
-        if ($value === null || $value === '') {
-            $this->_refundId = null;
-        } elseif (TypeCast::canCastToString($value)) {
-            $length = mb_strlen((string)$value, 'utf-8');
-            if ($length != 36) {
-                throw new InvalidPropertyValueException(
-                    'Invalid refund id value', 0, 'RefundsRequest.refundId', $value
-                );
-            }
-            $this->_refundId = (string)$value;
-        } else {
-            throw new InvalidPropertyValueTypeException(
-                'Invalid refund id value type', 0, 'RefundsRequest.refundId', $value
-            );
-        }
-    }
+    private $_cursor;
 
     /**
      * Возвращает идентификатор платежа если он задан или null
@@ -213,95 +136,21 @@ class RefundsRequest extends AbstractRequest implements RefundsRequestInterface
     }
 
     /**
-     * Возвращает идентификатор магазина, если он был задан
-     * @return string|null Идентификатор магазина
-     */
-    public function getAccountId()
-    {
-        return $this->_accountId;
-    }
-
-    /**
-     * Проверяет, был ли установлен идентификатор магазина
-     * @return bool True если идентификатор магазина был установлен, false если нет
-     */
-    public function hasAccountId()
-    {
-        return !empty($this->_accountId);
-    }
-
-    /**
-     * Устанавлвиает идентификатор магазина
-     * @param string $value Идентификатор магазина или null чтобы удалить значение
-     *
-     * @throws InvalidPropertyValueTypeException Выбрасывается если в метод была передана не строка
-     */
-    public function setAccountId($value)
-    {
-        if ($value === null || $value === '') {
-            $this->_accountId = null;
-        } elseif (TypeCast::canCastToString($value)) {
-            $this->_accountId = (string)$value;
-        } else {
-            throw new InvalidPropertyValueTypeException(
-                'Invalid accountId value type in RefundsRequest', 0, 'RefundsRequest.accountId', $value
-            );
-        }
-    }
-
-    /**
-     * Возвращает идентификатор шлюза
-     * @return string|null Идентификатор шлюза
-     */
-    public function getGatewayId()
-    {
-        return $this->_gatewayId;
-    }
-
-    /**
-     * Проверяет был ли установлен идентификатор шлюза
-     * @return bool True если идентификатор шлюза был установлен, false если нет
-     */
-    public function hasGatewayId()
-    {
-        return !empty($this->_gatewayId);
-    }
-
-    /**
-     * Устанавливает идентификатор шлюза
-     * @param string|null $value Идентификатор шлюза или null чтобы удалить значение
-     *
-     * @throws InvalidPropertyValueTypeException Выбрасывается если в метод была передана не строка
-     */
-    public function setGatewayId($value)
-    {
-        if ($value === null || $value === '') {
-            $this->_gatewayId = null;
-        } elseif (TypeCast::canCastToString($value)) {
-            $this->_gatewayId = (string)$value;
-        } else {
-            throw new InvalidPropertyValueTypeException(
-                'Invalid gatewayId value type in RefundsRequest', 0, 'RefundsRequest.gatewayId', $value
-            );
-        }
-    }
-
-    /**
      * Возвращает дату создания от которой будут возвращены возвраты или null если дата не была установлена
      * @return \DateTime|null Время создания, от (включительно)
      */
-    public function getCreatedGte()
+    public function getCreatedAtGte()
     {
-        return $this->_createdGte;
+        return $this->_createdAtGte;
     }
 
     /**
      * Проверяет была ли установлена дата создания от которой выбираются возвраты
      * @return bool True если дата была установлена, false если нет
      */
-    public function hasCreatedGte()
+    public function hasCreatedAtGte()
     {
-        return !empty($this->_createdGte);
+        return !empty($this->_createdAtGte);
     }
 
     /**
@@ -310,24 +159,24 @@ class RefundsRequest extends AbstractRequest implements RefundsRequestInterface
      *
      * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
      * строка или число, которые не удалось преобразовать в валидную дату)
-     * @throws InvalidPropertyValueTypeException Генерируется если была передана дата с не тем типом (передана не
+     * @throws InvalidPropertyValueTypeException|Exception Генерируется если была передана дата с не тем типом (передана не
      * строка, не число и не значение типа \DateTime)
      */
-    public function setCreatedGte($value)
+    public function setCreatedAtGte($value)
     {
         if ($value === null || $value === '') {
-            $this->_createdGte = null;
+            $this->_createdAtGte = null;
         } elseif (TypeCast::canCastToDateTime($value)) {
             $dateTime = TypeCast::castToDateTime($value);
             if ($dateTime === null) {
                 throw new InvalidPropertyValueException(
-                    'Invalid created_gte value in RefundsRequest', 0, 'RefundsRequest.createdGte'
+                    'Invalid created_gte value in RefundsRequest', 0, 'RefundsRequest.createdAtGte'
                 );
             }
-            $this->_createdGte = $dateTime;
+            $this->_createdAtGte = $dateTime;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid created_gte value type in RefundsRequest', 0, 'RefundsRequest.createdGte'
+                'Invalid created_gte value type in RefundsRequest', 0, 'RefundsRequest.createdAtGte'
             );
         }
     }
@@ -336,18 +185,18 @@ class RefundsRequest extends AbstractRequest implements RefundsRequestInterface
      * Возвращает дату создания от которой будут возвращены возвраты или null если дата не была установлена
      * @return \DateTime|null Время создания, от (не включая)
      */
-    public function getCreatedGt()
+    public function getCreatedAtGt()
     {
-        return $this->_createdGt;
+        return $this->_createdAtGt;
     }
 
     /**
      * Проверяет была ли установлена дата создания от которой выбираются возвраты
      * @return bool True если дата была установлена, false если нет
      */
-    public function hasCreatedGt()
+    public function hasCreatedAtGt()
     {
-        return !empty($this->_createdGt);
+        return !empty($this->_createdAtGt);
     }
 
     /**
@@ -356,24 +205,24 @@ class RefundsRequest extends AbstractRequest implements RefundsRequestInterface
      *
      * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
      * строка или число, которые не удалось преобразовать в валидную дату)
-     * @throws InvalidPropertyValueTypeException Генерируется если была передана дата с не тем типом (передана не
+     * @throws InvalidPropertyValueTypeException|Exception Генерируется если была передана дата с не тем типом (передана не
      * строка, не число и не значение типа \DateTime)
      */
-    public function setCreatedGt($value)
+    public function setCreatedAtGt($value)
     {
         if ($value === null || $value === '') {
-            $this->_createdGt = null;
+            $this->_createdAtGt = null;
         } elseif (TypeCast::canCastToDateTime($value)) {
             $dateTime = TypeCast::castToDateTime($value);
             if ($dateTime === null) {
                 throw new InvalidPropertyValueException(
-                    'Invalid created_gt value in RefundsRequest', 0, 'RefundsRequest.createdGt'
+                    'Invalid created_gt value in RefundsRequest', 0, 'RefundsRequest.createdAtGt'
                 );
             }
-            $this->_createdGt = $dateTime;
+            $this->_createdAtGt = $dateTime;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid created_gt value type in RefundsRequest', 0, 'RefundsRequest.createdGt'
+                'Invalid created_gt value type in RefundsRequest', 0, 'RefundsRequest.createdAtGt'
             );
         }
     }
@@ -382,18 +231,18 @@ class RefundsRequest extends AbstractRequest implements RefundsRequestInterface
      * Возвращает дату создания до которой будут возвращены возвраты или null если дата не была установлена
      * @return \DateTime|null Время создания, до (включительно)
      */
-    public function getCreatedLte()
+    public function getCreatedAtLte()
     {
-        return $this->_createdLte;
+        return $this->_createdAtLte;
     }
 
     /**
      * Проверяет была ли установлена дата создания до которой выбираются возвраты
      * @return bool True если дата была установлена, false если нет
      */
-    public function hasCreatedLte()
+    public function hasCreatedAtLte()
     {
-        return !empty($this->_createdLte);
+        return !empty($this->_createdAtLte);
     }
 
     /**
@@ -402,13 +251,13 @@ class RefundsRequest extends AbstractRequest implements RefundsRequestInterface
      *
      * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
      * строка или число, которые не удалось преобразовать в валидную дату)
-     * @throws InvalidPropertyValueTypeException Генерируется если была передана дата с не тем типом (передана не
+     * @throws InvalidPropertyValueTypeException|Exception Генерируется если была передана дата с не тем типом (передана не
      * строка, не число и не значение типа \DateTime)
      */
-    public function setCreatedLte($value)
+    public function setCreatedAtLte($value)
     {
         if ($value === null || $value === '') {
-            $this->_createdLte = null;
+            $this->_createdAtLte = null;
         } elseif (TypeCast::canCastToDateTime($value)) {
             $dateTime = TypeCast::castToDateTime($value);
             if ($dateTime === null) {
@@ -416,7 +265,7 @@ class RefundsRequest extends AbstractRequest implements RefundsRequestInterface
                     'Invalid created_lte value in RefundsRequest', 0, 'RefundsRequest.createdLte'
                 );
             }
-            $this->_createdLte = $dateTime;
+            $this->_createdAtLte = $dateTime;
         } else {
             throw new InvalidPropertyValueTypeException(
                 'Invalid created_lte value type in RefundsRequest', 0, 'RefundsRequest.createdLte'
@@ -428,18 +277,18 @@ class RefundsRequest extends AbstractRequest implements RefundsRequestInterface
      * Возвращает дату создания до которой будут возвращены возвраты или null если дата не была установлена
      * @return \DateTime|null Время создания, до (не включая)
      */
-    public function getCreatedLt()
+    public function getCreatedAtLt()
     {
-        return $this->_createdLt;
+        return $this->_createdAtLt;
     }
 
     /**
      * Проверяет была ли установлена дата создания до которой выбираются возвраты
      * @return bool True если дата была установлена, false если нет
      */
-    public function hasCreatedLt()
+    public function hasCreatedAtLt()
     {
-        return !empty($this->_createdLt);
+        return !empty($this->_createdAtLt);
     }
 
     /**
@@ -448,13 +297,13 @@ class RefundsRequest extends AbstractRequest implements RefundsRequestInterface
      *
      * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
      * строка или число, которые не удалось преобразовать в валидную дату)
-     * @throws InvalidPropertyValueTypeException Генерируется если была передана дата с не тем типом (передана не
+     * @throws InvalidPropertyValueTypeException|Exception Генерируется если была передана дата с не тем типом (передана не
      * строка, не число и не значение типа \DateTime)
      */
-    public function setCreatedLt($value)
+    public function setCreatedAtLt($value)
     {
         if ($value === null || $value === '') {
-            $this->_createdLt = null;
+            $this->_createdAtLt = null;
         } elseif (TypeCast::canCastToDateTime($value)) {
             $dateTime = TypeCast::castToDateTime($value);
             if ($dateTime === null) {
@@ -462,196 +311,10 @@ class RefundsRequest extends AbstractRequest implements RefundsRequestInterface
                     'Invalid created_lt value in RefundsRequest', 0, 'RefundsRequest.createdLt'
                 );
             }
-            $this->_createdLt = $dateTime;
+            $this->_createdAtLt = $dateTime;
         } else {
             throw new InvalidPropertyValueTypeException(
                 'Invalid created_lt value type in RefundsRequest', 0, 'RefundsRequest.createdLt'
-            );
-        }
-    }
-
-    /**
-     * Возвращает дату проведения от которой будут возвращены возвраты или null если дата не была установлена
-     * @return \DateTime|null Время проведения операции, от (включительно)
-     */
-    public function getAuthorizedGte()
-    {
-        return $this->_authorizedGte;
-    }
-
-    /**
-     * Проверяет была ли установлена дата проведения от которой выбираются возвраты
-     * @return bool True если дата была установлена, false если нет
-     */
-    public function hasAuthorizedGte()
-    {
-        return !empty($this->_authorizedGte);
-    }
-
-    /**
-     * Устанавливает дату проведения от которой выбираются возвраты
-     * @param \DateTime|string|int|null $value Время проведения операции, от (не включая) или null чтобы удалить
-     * значение
-     *
-     * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
-     * строка или число, которые не удалось преобразовать в валидную дату)
-     * @throws InvalidPropertyValueTypeException Генерируется если была передана дата с не тем типом (передана не
-     * строка, не число и не значение типа \DateTime)
-     */
-    public function setAuthorizedGte($value)
-    {
-        if ($value === null || $value === '') {
-            $this->_authorizedGte = null;
-        } elseif (TypeCast::canCastToDateTime($value)) {
-            $dateTime = TypeCast::castToDateTime($value);
-            if ($dateTime === null) {
-                throw new InvalidPropertyValueException(
-                    'Invalid authorized_gte value in RefundsRequest', 0, 'RefundsRequest.authorizedGte'
-                );
-            }
-            $this->_authorizedGte = $dateTime;
-        } else {
-            throw new InvalidPropertyValueTypeException(
-                'Invalid authorized_gte value type in RefundsRequest', 0, 'RefundsRequest.authorizedGte'
-            );
-        }
-    }
-
-    /**
-     * Возвращает дату проведения от которой будут возвращены возвраты или null если дата не была установлена
-     * @return \DateTime|null Время проведения операции, от (не включая)
-     */
-    public function getAuthorizedGt()
-    {
-        return $this->_authorizedGt;
-    }
-
-    /**
-     * Проверяет была ли установлена дата проведения от которой выбираются возвраты
-     * @return bool True если дата была установлена, false если нет
-     */
-    public function hasAuthorizedGt()
-    {
-        return !empty($this->_authorizedGt);
-    }
-
-    /**
-     * Устанавливает дату проведения от которой выбираются возвраты
-     * @param \DateTime|string|int|null $value Время проведения операции, от (не включая) или null чтобы удалить
-     * значение
-     *
-     * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
-     * строка или число, которые не удалось преобразовать в валидную дату)
-     * @throws InvalidPropertyValueTypeException Генерируется если была передана дата с не тем типом (передана не
-     * строка, не число и не значение типа \DateTime)
-     */
-    public function setAuthorizedGt($value)
-    {
-        if ($value === null || $value === '') {
-            $this->_authorizedGt = null;
-        } elseif (TypeCast::canCastToDateTime($value)) {
-            $dateTime = TypeCast::castToDateTime($value);
-            if ($dateTime === null) {
-                throw new InvalidPropertyValueException(
-                    'Invalid authorized_gt value in RefundsRequest', 0, 'RefundsRequest.authorizedGt'
-                );
-            }
-            $this->_authorizedGt = $dateTime;
-        } else {
-            throw new InvalidPropertyValueTypeException(
-                'Invalid authorized_gt value type in RefundsRequest', 0, 'RefundsRequest.authorizedGt'
-            );
-        }
-    }
-
-    /**
-     * Возвращает дату проведения до которой будут возвращены возвраты или null если дата не была установлена
-     * @return \DateTime|null Время проведения, до (включительно)
-     */
-    public function getAuthorizedLte()
-    {
-        return $this->_authorizedLte;
-    }
-
-    /**
-     * Проверяет была ли установлена дата проведения до которой выбираются возвраты
-     * @return bool True если дата была установлена, false если нет
-     */
-    public function hasAuthorizedLte()
-    {
-        return !empty($this->_authorizedLte);
-    }
-
-    /**
-     * Устанавливает дату проведения до которой выбираются возвраты
-     * @param \DateTime|string|int|null $value Время проведения, до (включительно) или null чтобы удалить значение
-     *
-     * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
-     * строка или число, которые не удалось преобразовать в валидную дату)
-     * @throws InvalidPropertyValueTypeException Генерируется если была передана дата с не тем типом (передана не
-     * строка, не число и не значение типа \DateTime)
-     */
-    public function setAuthorizedLte($value)
-    {
-        if ($value === null || $value === '') {
-            $this->_authorizedLte = null;
-        } elseif (TypeCast::canCastToDateTime($value)) {
-            $dateTime = TypeCast::castToDateTime($value);
-            if ($dateTime === null) {
-                throw new InvalidPropertyValueException(
-                    'Invalid authorized_lte value in RefundsRequest', 0, 'RefundsRequest.authorizedLte'
-                );
-            }
-            $this->_authorizedLte = $dateTime;
-        } else {
-            throw new InvalidPropertyValueTypeException(
-                'Invalid authorized_lte value type in RefundsRequest', 0, 'RefundsRequest.authorizedLte'
-            );
-        }
-    }
-
-    /**
-     * Возвращает дату проведения до которой будут возвращены платежи возвраты или null если она не была установлена
-     * @return \DateTime|null Время проведения, до (не включая)
-     */
-    public function getAuthorizedLt()
-    {
-        return $this->_authorizedLt;
-    }
-
-    /**
-     * Проверяет была ли установлена дата проведения до которой выбираются вовзраты
-     * @return bool True если дата была установлена, false если нет
-     */
-    public function hasAuthorizedLt()
-    {
-        return !empty($this->_authorizedLt);
-    }
-
-    /**
-     * Устанавливает дату проведения до которой выбираются возвраты
-     * @param \DateTime|string|int|null $value Время проведения, до (не включая) или null чтобы удалить значение
-     *
-     * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
-     * строка или число, которые не удалось преобразовать в валидную дату)
-     * @throws InvalidPropertyValueTypeException Генерируется если была передана дата с не тем типом (передана не
-     * строка, не число и не значение типа \DateTime)
-     */
-    public function setAuthorizedLt($value)
-    {
-        if ($value === null || $value === '') {
-            $this->_authorizedLt = null;
-        } elseif (TypeCast::canCastToDateTime($value)) {
-            $dateTime = TypeCast::castToDateTime($value);
-            if ($dateTime === null) {
-                throw new InvalidPropertyValueException(
-                    'Invalid authorized_lt value in RefundsRequest', 0, 'RefundsRequest.authorizedLt'
-                );
-            }
-            $this->_authorizedLt = $dateTime;
-        } else {
-            throw new InvalidPropertyValueTypeException(
-                'Invalid authorized_lt value type in RefundsRequest', 0, 'RefundsRequest.authorizedLt'
             );
         }
     }
@@ -704,18 +367,18 @@ class RefundsRequest extends AbstractRequest implements RefundsRequestInterface
      * Возвращает токен для получения следующей страницы выборки
      * @return string|null Токен для получения следующей страницы выборки
      */
-    public function getNextPage()
+    public function getCursor()
     {
-        return $this->_nextPage;
+        return $this->_cursor;
     }
 
     /**
      * Проверяет был ли установлен токен следующей страницы
      * @return bool True если токен был установлен, false если нет
      */
-    public function hasNextPage()
+    public function hasCursor()
     {
-        return !empty($this->_nextPage);
+        return !empty($this->_cursor);
     }
 
     /**
@@ -724,15 +387,57 @@ class RefundsRequest extends AbstractRequest implements RefundsRequestInterface
      *
      * @throws InvalidPropertyValueTypeException Выбрасывается если в метод была передана не строка
      */
-    public function setNextPage($value)
+    public function setCursor($value)
     {
         if ($value === null || $value === '') {
-            $this->_nextPage = null;
+            $this->_cursor = null;
         } elseif (TypeCast::canCastToString($value)) {
-            $this->_nextPage = (string) $value;
+            $this->_cursor = (string) $value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid status value in PaymentsRequest', 0, 'PaymentsRequest.status', $value
+                'Invalid status value in RefundsRequest', 0, 'RefundsRequest.cursor', $value
+            );
+        }
+    }
+
+    /**
+     * Ограничение количества объектов платежа
+     * @return integer|null Ограничение количества объектов платежа
+     */
+    public function getLimit()
+    {
+        return $this->_limit;
+    }
+
+    /**
+     * Проверяет был ли установлено ограничение количества объектов платежа
+     * @return bool True если было установлено, false если нет
+     */
+    public function hasLimit()
+    {
+        return $this->_limit !== null;
+    }
+
+    /**
+     * Устанавливает ограничение количества объектов платежа
+     * @param integer|null $value Ограничение количества объектов платежа или null чтобы удалить значение
+     *
+     * @throws InvalidPropertyValueTypeException Выбрасывается если в метод была передано не целое число
+     */
+    public function setLimit($value)
+    {
+        if ($value === null || $value === '') {
+            $this->_limit = null;
+        } elseif (is_int($value)) {
+            if ($value < 0 || $value > self::MAX_LIMIT_VALUE) {
+                throw new InvalidPropertyValueException(
+                    'Invalid limit value in RefundsRequest', 0, 'RefundsRequest.limit', $value
+                );
+            }
+            $this->_limit = $value;
+        } else {
+            throw new InvalidPropertyValueTypeException(
+                'Invalid limit value type in RefundsRequest', 0, 'RefundsRequest.limit', $value
             );
         }
     }
@@ -743,10 +448,6 @@ class RefundsRequest extends AbstractRequest implements RefundsRequestInterface
      */
     public function validate()
     {
-        if (empty($this->_accountId)) {
-            $this->setValidationError('Shop id not specified');
-            return false;
-        }
         return true;
     }
 

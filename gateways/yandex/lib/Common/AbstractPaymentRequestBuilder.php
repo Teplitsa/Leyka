@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,21 +24,25 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Common;
+namespace YooKassa\Common;
 
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueException;
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueTypeException;
-use YandexCheckout\Model\AmountInterface;
-use YandexCheckout\Model\MonetaryAmount;
-use YandexCheckout\Model\Receipt;
-use YandexCheckout\Model\ReceiptInterface;
-use YandexCheckout\Model\ReceiptItem;
-use YandexCheckout\Model\ReceiptItemInterface;
+use YooKassa\Common\Exceptions\InvalidPropertyValueException;
+use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
+use YooKassa\Model\AmountInterface;
+use YooKassa\Model\MonetaryAmount;
+use YooKassa\Model\Receipt;
+use YooKassa\Model\Receipt\ReceiptItemAmount;
+use YooKassa\Model\ReceiptCustomer;
+use YooKassa\Model\ReceiptInterface;
+use YooKassa\Model\ReceiptItem;
+use YooKassa\Model\ReceiptItemInterface;
+use YooKassa\Model\Transfer;
+use YooKassa\Model\TransferInterface;
 
 /**
  * Базовый класс объекта платежного запроса, передаваемого в методы клиента API
  *
- * @package YandexCheckout\Common
+ * @package YooKassa\Common
  *
  * @since 1.0.18
  */
@@ -55,26 +59,42 @@ abstract class AbstractPaymentRequestBuilder extends AbstractRequestBuilder
     protected $receipt;
 
     /**
+     * @var TransferInterface[] Массив платежей в пользу разных мерчантов
+     */
+    protected $transfers;
+
+    /**
      * @return self
      */
     protected function initCurrentObject()
     {
-        $this->amount  = new MonetaryAmount();
-        $this->receipt = new Receipt();
+        $this->amount    = new MonetaryAmount();
+        $this->receipt   = new Receipt();
+        $this->transfers = array();
 
         return $this;
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function build(array $options = null)
+    {
+        return parent::build($options);
+    }
+
+    /**
      * Устанавливает сумму
+     *
      * @param AmountInterface|array|string $value Сумма оплаты
+     *
      * @return self Инстанс билдера запросов
      */
     public function setAmount($value)
     {
         if ($value === null || $value === '') {
             $this->amount = new MonetaryAmount();
-        } elseif (is_object($value) && $value instanceof AmountInterface) {
+        } elseif ($value instanceof AmountInterface) {
             $this->amount->setValue($value->getValue());
             $this->amount->setCurrency($value->getCurrency());
         } elseif (is_array($value)) {
@@ -87,8 +107,41 @@ abstract class AbstractPaymentRequestBuilder extends AbstractRequestBuilder
     }
 
     /**
+     * Устанавливает трансферы
+     *
+     * @param array|string $value Массив трансферов
+     *
+     * @return self Инстанс билдера запросов
+     */
+    public function setTransfers($value)
+    {
+        $value = (array)$value;
+        $this->transfers = array();
+
+        foreach ($value as $item) {
+            $transfer = new Transfer();
+
+            if ($item instanceof TransferInterface) {
+                $transfer->setAmount($item->getAmount());
+                $transfer->setAccountId($item->getAccountId());
+                if ($item->hasPlatformFeeAmount()) {
+                    $transfer->setPlatformFeeAmount($item->getPlatformFeeAmount());
+                }
+            } elseif (is_array($item)) {
+                $transfer->fromArray($item);
+            }
+
+            $this->transfers[] = $transfer;
+        }
+
+        return $this;
+    }
+
+    /**
      * Устанавливает валюту в которой будет происходить подтверждение оплаты заказа
+     *
      * @param string $value Валюта в которой подтверждается оплата
+     *
      * @return self Инстанс билдера запросов
      */
     public function setCurrency($value)
@@ -103,7 +156,9 @@ abstract class AbstractPaymentRequestBuilder extends AbstractRequestBuilder
 
     /**
      * Устанавливает чек
+     *
      * @param ReceiptInterface|array $value Инстанс чека или ассоциативный массив с данными чека
+     *
      * @return self
      *
      * @throws InvalidPropertyValueTypeException Генерируется если было передано значение невалидного типа
@@ -123,7 +178,9 @@ abstract class AbstractPaymentRequestBuilder extends AbstractRequestBuilder
 
     /**
      * Устанавлвиает список товаров для создания чека
+     *
      * @param array $value Массив товаров в заказе
+     *
      * @return self Инстанс билдера запросов
      *
      * @throws InvalidPropertyValueException Выбрасывается если хотя бы один из товаров имеет неверную структуру
@@ -169,19 +226,29 @@ abstract class AbstractPaymentRequestBuilder extends AbstractRequestBuilder
 
     /**
      * Добавляет в чек товар
+     *
      * @param string $title Название или описание товара
      * @param string $price Цена товара в валюте, заданной в заказе
      * @param float $quantity Количество товара
      * @param int $vatCode Ставка НДС
+     *
+     * @param null|string $paymentSubject значение перечисления PaymentSubject
+     * @see \YooKassa\Model\Receipt\PaymentSubject::class
+     *
+     * @param null|string $paymentMode значение перечисления PaymentMode
+     * @see \YooKassa\Model\Receipt\PaymentMode::class
+     *
      * @return self Инстанс билдера запросов
      */
-    public function addReceiptItem($title, $price, $quantity, $vatCode)
+    public function addReceiptItem($title, $price, $quantity, $vatCode, $paymentMode = null, $paymentSubject = null)
     {
         $item = new ReceiptItem();
         $item->setDescription($title);
         $item->setQuantity($quantity);
         $item->setVatCode($vatCode);
-        $item->setPrice(new MonetaryAmount($price, $this->amount->getCurrency()));
+        $item->setPrice(new ReceiptItemAmount($price, $this->amount->getCurrency()));
+        $item->setPaymentSubject($paymentSubject);
+        $item->setPaymentMode($paymentMode);
         $this->receipt->addItem($item);
 
         return $this;
@@ -189,19 +256,29 @@ abstract class AbstractPaymentRequestBuilder extends AbstractRequestBuilder
 
     /**
      * Добавляет в чек доставку товара
+     *
      * @param string $title Название доставки в чеке
      * @param string $price Стоимость доставки
      * @param int $vatCode Ставка НДС
+     *
+     * @param null|string $paymentSubject значение перечисления PaymentSubject
+     * @see \YooKassa\Model\Receipt\PaymentSubject::class
+     *
+     * @param null|string $paymentMode значение перечисления PaymentMode
+     * @see \YooKassa\Model\Receipt\PaymentMode::class
+     *
      * @return self Инстанс билдера запросов
      */
-    public function addReceiptShipping($title, $price, $vatCode)
+    public function addReceiptShipping($title, $price, $vatCode, $paymentMode = null, $paymentSubject = null)
     {
         $item = new ReceiptItem();
         $item->setDescription($title);
         $item->setQuantity(1);
         $item->setVatCode($vatCode);
         $item->setIsShipping(true);
-        $item->setPrice(new MonetaryAmount($price, $this->amount->getCurrency()));
+        $item->setPrice(new ReceiptItemAmount($price, $this->amount->getCurrency()));
+        $item->setPaymentMode($paymentMode);
+        $item->setPaymentSubject($paymentSubject);
         $this->receipt->addItem($item);
 
         return $this;
@@ -209,31 +286,44 @@ abstract class AbstractPaymentRequestBuilder extends AbstractRequestBuilder
 
     /**
      * Устанавливает адрес электронной почты получателя чека
+     *
      * @param string $value Email получателя чека
+     *
      * @return self Инстанс билдера запросов
      */
     public function setReceiptEmail($value)
     {
-        $this->receipt->setEmail($value);
+        if (!$this->receipt->getCustomer()) {
+            $this->receipt->setCustomer(new ReceiptCustomer());
+        }
+        $this->receipt->getCustomer()->setEmail($value);
 
         return $this;
     }
 
     /**
      * Устанавливает телефон получателя чека
+     *
      * @param string $value Телефон получателя чека
      * @return self Инстанс билдера запросов
+     *
+     * @throws InvalidPropertyValueTypeException Выбрасывается если в качестве значения была передана не строка
      */
     public function setReceiptPhone($value)
     {
-        $this->receipt->setPhone($value);
+        if (!$this->receipt->getCustomer()) {
+            $this->receipt->setCustomer(new ReceiptCustomer());
+        }
+        $this->receipt->getCustomer()->setPhone($value);
 
         return $this;
     }
 
     /**
      * Устанавливает код системы налогообложения.
+     *
      * @param int $value Код системы налогообложения. Число 1-6.
+     *
      * @return self Инстанс билдера запросов
      */
     public function setTaxSystemCode($value)

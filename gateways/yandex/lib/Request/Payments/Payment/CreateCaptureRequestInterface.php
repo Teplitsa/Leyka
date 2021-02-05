@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,16 +24,17 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Request\Payments\Payment;
+namespace YooKassa\Request\Payments\Payment;
 
-use YandexCheckout\Model\AmountInterface;
-use YandexCheckout\Model\MonetaryAmount;
-use YandexCheckout\Model\ReceiptInterface;
+use YooKassa\Model\AmountInterface;
+use YooKassa\Model\MonetaryAmount;
+use YooKassa\Model\ReceiptInterface;
+use YooKassa\Model\TransferInterface;
 
 /**
  * Interface CreateCaptureRequestInterface
  *
- * @package YandexCheckout\Request\Payments\Payment
+ * @package YooKassa\Request\Payments\Payment
  *
  * @property-read MonetaryAmount $amount Подтверждаемая сумма оплаты
  * @property-read ReceiptInterface $receipt Данные фискального чека 54-ФЗ
@@ -65,4 +66,14 @@ interface CreateCaptureRequestInterface
      * @since 1.0.2
      */
     function hasReceipt();
+
+    /**
+     * @return bool
+     */
+    function hasTransfers();
+
+    /**
+     * @return TransferInterface[]
+     */
+    function getTransfers();
 }

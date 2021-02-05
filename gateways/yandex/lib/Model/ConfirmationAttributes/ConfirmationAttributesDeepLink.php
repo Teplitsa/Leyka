@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,14 +24,14 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Model\ConfirmationAttributes;
+namespace YooKassa\Model\ConfirmationAttributes;
 
-use YandexCheckout\Model\ConfirmationType;
+use YooKassa\Model\ConfirmationType;
 
 /**
  * Сценарий при котором необходимо направить плательщика в приложение партнера
  *
- * @package YandexCheckout\Model\ConfirmationAttributes
+ * @package YooKassa\Model\ConfirmationAttributes
  */
 class ConfirmationAttributesDeepLink extends AbstractConfirmationAttributes
 {

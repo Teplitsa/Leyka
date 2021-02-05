@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,13 +24,12 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Model;
+namespace YooKassa\Model;
 
-use YandexCheckout\Common\AbstractObject;
-use YandexCheckout\Common\Exceptions\EmptyPropertyValueException;
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueException;
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueTypeException;
-use YandexCheckout\Helpers\TypeCast;
+use YooKassa\Common\AbstractObject;
+use YooKassa\Common\Exceptions\EmptyPropertyValueException;
+use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
+use YooKassa\Helpers\TypeCast;
 
 /**
  * CancellationDetails - Комментарий к отмене платежа
@@ -104,19 +103,10 @@ class CancellationDetails extends AbstractObject implements CancellationDetailsI
     {
         if ($value === null || $value === '') {
             throw new EmptyPropertyValueException('Empty party value', 0, 'cancellation_details.party');
-        }
-        if (TypeCast::canCastToEnumString($value)) {
-            $value = strtolower((string)$value);
-            if (CancellationDetailsPartyCode::valueExists($value)) {
-                $this->_party = $value;
-            } else {
-                throw new InvalidPropertyValueException(
-                    'Invalid party value: "'.$value.'"', 0, 'cancellation_details.party', $value
-                );
-            }
+        } elseif (!TypeCast::canCastToString($value)) {
+            throw new InvalidPropertyValueTypeException('Invalid party value type', 0, 'cancellation_details.party', $value);
         } else {
-            throw new InvalidPropertyValueTypeException('Invalid party value type', 0, 'cancellation_details.party',
-                $value);
+            $this->_party = strtolower((string)$value);
         }
     }
 
@@ -128,19 +118,10 @@ class CancellationDetails extends AbstractObject implements CancellationDetailsI
     {
         if ($value === null || $value === '') {
             throw new EmptyPropertyValueException('Empty reason value', 0, 'cancellation_details.reason');
-        }
-        if (TypeCast::canCastToEnumString($value)) {
-            $value = strtolower((string)$value);
-            if (CancellationDetailsReasonCode::valueExists($value)) {
-                $this->_reason = $value;
-            } else {
-                throw new InvalidPropertyValueException(
-                    'Invalid reason value: "'.$value.'"', 0, 'cancellation_details.reason', $value
-                );
-            }
+        } elseif (!TypeCast::canCastToString($value)) {
+            throw new InvalidPropertyValueTypeException('Invalid reason value type', 0, 'cancellation_details.reason');
         } else {
-            throw new InvalidPropertyValueTypeException('Invalid reason value type', 0, 'cancellation_details.reason',
-                $value);
+            $this->_reason = strtolower((string)$value);
         }
     }
 }

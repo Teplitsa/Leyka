@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,9 +24,9 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Model;
+namespace YooKassa\Model;
 
-use YandexCheckout\Common\AbstractEnum;
+use YooKassa\Common\AbstractEnum;
 
 /**
  * CancellationDetailsReasonCode - Возможные причины отмены платежа
@@ -46,6 +46,12 @@ class CancellationDetailsReasonCode extends AbstractEnum
     const ISSUER_UNAVAILABLE = 'issuer_unavailable';
     const PAYMENT_METHOD_LIMIT_EXCEEDED = 'payment_method_limit_exceeded';
     const PAYMENT_METHOD_RESTRICTED = 'payment_method_restricted';
+    const PERMISSION_REVOKED = 'permission_revoked';
+    const INTERNAL_TIMEOUT = 'internal_timeout';
+    const CANCELED_BY_MERCHANT = 'canceled_by_merchant';
+    const PAYMENT_EXPIRED = 'payment_expired';
+    const EXPIRED_ON_CONFIRMATION = 'expired_on_confirmation';
+    const EXPIRED_ON_CAPTURE = 'expired_on_capture';
 
     protected static $validValues = array(
         self::THREE_D_SECURE_FAILED         => true,
@@ -61,5 +67,11 @@ class CancellationDetailsReasonCode extends AbstractEnum
         self::ISSUER_UNAVAILABLE            => true,
         self::PAYMENT_METHOD_LIMIT_EXCEEDED => true,
         self::PAYMENT_METHOD_RESTRICTED     => true,
+        self::PERMISSION_REVOKED            => true,
+        self::INTERNAL_TIMEOUT              => true,
+        self::CANCELED_BY_MERCHANT          => true,
+        self::PAYMENT_EXPIRED               => true,
+        self::EXPIRED_ON_CONFIRMATION       => true,
+        self::EXPIRED_ON_CAPTURE            => true,
     );
 }

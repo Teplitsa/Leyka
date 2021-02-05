@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,13 +24,13 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Client;
+namespace YooKassa\Client;
 
 use Psr\Log\LoggerInterface;
 
 /**
  * Interface ApiClientInterface
- * @package YandexCheckout\Client
+ * @package YooKassa\Client
  */
 interface ApiClientInterface
 {
@@ -48,4 +48,32 @@ interface ApiClientInterface
      * @param LoggerInterface|null $logger
      */
     public function setLogger($logger);
+
+    /**
+     * @return UserAgent
+     */
+    public function getUserAgent();
+
+    /**
+     * @param $shopId
+     * @return mixed
+     */
+    public function setShopId($shopId);
+
+    /**
+     * @param $shopPassword
+     * @return mixed
+     */
+    public function setShopPassword($shopPassword);
+
+    /**
+     * @param $bearerToken
+     * @return mixed
+     */
+    public function setBearerToken($bearerToken);
+
+    /**
+     * @param array $config
+     */
+    public function setConfig($config);
 }

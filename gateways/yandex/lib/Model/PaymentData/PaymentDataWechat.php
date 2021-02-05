@@ -1,9 +1,8 @@
 <?php
-
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,27 +23,18 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Request;
+namespace YooKassa\Model\PaymentData;
 
-class PaymentOptionsRequestSerializer
+
+use YooKassa\Model\PaymentMethodType;
+
+/**
+ * @deprecated Класс будет удалён в одной из будущих версий.
+ */
+class PaymentDataWechat extends AbstractPaymentData
 {
-    public function serialize(PaymentOptionsRequestInterface $request)
+    public function __construct()
     {
-        $result = array(
-            'account_id' => $request->getAccountId(),
-        );
-        if ($request->hasGatewayId()) {
-            $result['gateway_id'] = $request->getGatewayId();
-        }
-        if ($request->hasAmount()) {
-            $result['amount'] = $request->getAmount();
-        }
-        if ($request->hasCurrency()) {
-            $result['currency'] = $request->getCurrency();
-        }
-        if ($request->hasConfirmationType()) {
-            $result['confirmation_types'] = $request->getConfirmationType();
-        }
-        return $result;
+        $this->_setType(PaymentMethodType::WECHAT);
     }
 }

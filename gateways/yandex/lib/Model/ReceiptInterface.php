@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,52 +24,67 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Model;
+namespace YooKassa\Model;
 
 /**
  * Interface ReceiptInterface
  * 
- * @package YandexCheckout\Model
+ * @package YooKassa\Model
  * 
+ * @property-read ReceiptCustomerInterface $customer Информация о плательщике
  * @property-read ReceiptItemInterface[] $items Список товаров в заказе
  * @property-read int $taxSystemCode Код системы налогообложения. Число 1-6.
  * @property-read int $tax_system_code Код системы налогообложения. Число 1-6.
- * @property-read string $phone Номер телефона плательщика в формате ITU-T E.164 на который будет выслан чек.
- * @property-read string $email E-mail адрес плательщика на который будет выслан чек.
  */
 interface ReceiptInterface
 {
     /**
-     * Возврвщает список позиций в текущем чеке
+     * Возвращает Id объекта чека
+     *
+     * @return string Id объекта чека
+     */
+    public function getObjectId();
+
+    /**
+     * Возвращает информацию о плательщике
+     *
+     * @return ReceiptCustomerInterface Информация о плательщике
+     */
+    public function getCustomer();
+
+    /**
+     * Возвращает список позиций в текущем чеке
      *
      * @return ReceiptItemInterface[] Список товаров в заказе
      */
-    function getItems();
+    public function getItems();
+
+    /**
+     * Возвращает массив оплат, обеспечивающих выдачу товара.
+     *
+     * @return SettlementInterface[] Массив оплат, обеспечивающих выдачу товара.
+     */
+    public function getSettlements();
 
     /**
      * Возвращает код системы налогообложения
      *
      * @return int Код системы налогообложения. Число 1-6.
      */
-    function getTaxSystemCode();
-
-    /**
-     * Возвращает номер телефона плательщика в формате ITU-T E.164 на который будет выслан чек
-     *
-     * @return string Номер телефона плательщика
-     */
-    function getPhone();
-
-    /**
-     * Возвращает адрес электронной почты на который будет выслан чек
-     *
-     * @return string E-mail адрес плательщика
-     */
-    function getEmail();
+    public function getTaxSystemCode();
 
     /**
      * Проверяет есть ли в чеке хотя бы одна позиция
+     *
      * @return bool True если чек не пуст, false если в чеке нет ни одной позиции
      */
-    function notEmpty();
+    public function notEmpty();
+
+    /**
+     * Подгоняет стоимость товаров в чеке к общей цене заказа
+     *
+     * @param AmountInterface $orderAmount Общая стоимость заказа
+     * @param bool $withShipping Поменять ли заодно и цену доставки
+     */
+    public function normalize(AmountInterface $orderAmount, $withShipping = false);
 }

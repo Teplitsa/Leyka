@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,20 +24,20 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Model\Notification;
+namespace YooKassa\Model\Notification;
 
-use YandexCheckout\Common\AbstractObject;
-use YandexCheckout\Common\Exceptions\EmptyPropertyValueException;
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueException;
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueTypeException;
-use YandexCheckout\Helpers\TypeCast;
-use YandexCheckout\Model\NotificationEventType;
-use YandexCheckout\Model\NotificationType;
+use YooKassa\Common\AbstractObject;
+use YooKassa\Common\Exceptions\EmptyPropertyValueException;
+use YooKassa\Common\Exceptions\InvalidPropertyValueException;
+use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
+use YooKassa\Helpers\TypeCast;
+use YooKassa\Model\NotificationEventType;
+use YooKassa\Model\NotificationType;
 
 /**
  * Базовый класс уведомлений
  *
- * @package YandexCheckout\Model\Notification
+ * @package YooKassa\Model\Notification
  *
  * @property-read string $type Тип уведомления в виде строки
  * @property-read string $event Тип события

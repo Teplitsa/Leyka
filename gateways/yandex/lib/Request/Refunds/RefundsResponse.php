@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,14 +24,14 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Request\Refunds;
+namespace YooKassa\Request\Refunds;
 
-use YandexCheckout\Model\RefundInterface;
+use YooKassa\Model\RefundInterface;
 
 /**
  * Класс объекта ответа от API со списком возвратов магазина
  *
- * @package YandexCheckout\Request\Refunds
+ * @package YooKassa\Request\Refunds
  */
 class RefundsResponse
 {
@@ -43,7 +43,7 @@ class RefundsResponse
     /**
      * @var string|null Токен следующей страницы
      */
-    private $nextPage;
+    private $nextCursor;
 
     /**
      * Конструктор, устанавливает свойства объекта из пришедшего из API ассоциативного массива
@@ -55,8 +55,8 @@ class RefundsResponse
         foreach ($options['items'] as $item) {
             $this->items[] = new RefundResponse($item);
         }
-        if (!empty($options['next_page'])) {
-            $this->nextPage = $options['next_page'];
+        if (!empty($options['next_cursor'])) {
+            $this->nextCursor = $options['next_cursor'];
         }
     }
 
@@ -73,17 +73,18 @@ class RefundsResponse
      * Возвращает токен следующей страницы, если он задан, или null
      * @return string|null Токен следующей страницы
      */
-    public function getNextPage()
+    public function getNextCursor()
     {
-        return $this->nextPage;
+        return $this->nextCursor;
     }
 
     /**
      * Проверяет имееотся ли в ответе токен следующей страницы
      * @return bool True если токен следующей страницы есть, false если нет
      */
-    public function hasNextPage()
+    public function hasNextCursor()
     {
-        return $this->nextPage !== null;
+        return $this->nextCursor !== null;
     }
+
 }

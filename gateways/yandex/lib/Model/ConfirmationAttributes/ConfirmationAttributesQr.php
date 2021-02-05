@@ -1,9 +1,8 @@
 <?php
-
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,17 +23,15 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Model\PaymentData;
+namespace YooKassa\Model\ConfirmationAttributes;
 
-use YandexCheckout\Model\PaymentMethodType;
 
-/**
- * Данные для проведения оплаты через Яндекс.Деньги
- */
-class PaymentDataYandexWallet extends AbstractPaymentData
+use YooKassa\Model\ConfirmationType;
+
+class ConfirmationAttributesQr extends AbstractConfirmationAttributes
 {
     public function __construct()
     {
-        $this->_setType(PaymentMethodType::YANDEX_MONEY);
+        $this->_setType(ConfirmationType::QR);
     }
 }

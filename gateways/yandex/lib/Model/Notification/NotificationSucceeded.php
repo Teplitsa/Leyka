@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,20 +24,20 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Model\Notification;
+namespace YooKassa\Model\Notification;
 
-use YandexCheckout\Common\Exceptions\EmptyPropertyValueException;
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueException;
-use YandexCheckout\Model\NotificationEventType;
-use YandexCheckout\Model\NotificationType;
-use YandexCheckout\Model\Payment;
-use YandexCheckout\Model\PaymentInterface;
-use YandexCheckout\Request\Payments\PaymentResponse;
+use YooKassa\Common\Exceptions\EmptyPropertyValueException;
+use YooKassa\Common\Exceptions\InvalidPropertyValueException;
+use YooKassa\Model\NotificationEventType;
+use YooKassa\Model\NotificationType;
+use YooKassa\Model\Payment;
+use YooKassa\Model\PaymentInterface;
+use YooKassa\Request\Payments\PaymentResponse;
 
 /**
  * Класс объекта, присылаемого API при изменении статуса платежа на "succeeded"
  *
- * @package YandexCheckout\Model\Notification
+ * @package YooKassa\Model\Notification
  *
  * @property-read PaymentInterface $object Объект с информацией о платеже
  */

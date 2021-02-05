@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,11 +24,11 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Request\Payments\Payment;
+namespace YooKassa\Request\Payments\Payment;
 
-use YandexCheckout\Common\AbstractPaymentRequestBuilder;
-use YandexCheckout\Common\Exceptions\InvalidPropertyException;
-use YandexCheckout\Common\Exceptions\InvalidRequestException;
+use YooKassa\Common\AbstractPaymentRequestBuilder;
+use YooKassa\Common\Exceptions\InvalidPropertyException;
+use YooKassa\Common\Exceptions\InvalidRequestException;
 
 class CreateCaptureRequestBuilder extends AbstractPaymentRequestBuilder
 {
@@ -60,6 +60,9 @@ class CreateCaptureRequestBuilder extends AbstractPaymentRequestBuilder
     {
         if (!empty($options)) {
             $this->setOptions($options);
+        }
+        if (!empty($this->transfers)) {
+            $this->currentObject->setTransfers($this->transfers);
         }
         if ($this->amount->getValue() > 0) {
             $this->currentObject->setAmount($this->amount);

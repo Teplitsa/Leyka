@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,14 +24,14 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Model;
+namespace YooKassa\Model;
 
-use YandexCheckout\Model\PaymentMethod\AbstractPaymentMethod;
+use YooKassa\Model\PaymentMethod\AbstractPaymentMethod;
 
 /**
  * Interface PaymentInterface
  *
- * @package YandexCheckout\Model
+ * @package YooKassa\Model
  *
  * @property-read string $id Идентификатор платежа
  * @property-read string $status Текущее состояние платежа
@@ -47,6 +47,7 @@ use YandexCheckout\Model\PaymentMethod\AbstractPaymentMethod;
  * @property-read AmountInterface $refundedAmount Сумма возвращенных средств платежа
  * @property-read AmountInterface $refunded_amount Сумма возвращенных средств платежа
  * @property-read bool $paid Признак оплаты заказа
+ * @property-read bool $refundable Возможность провести возврат по API
  * @property-read string $receiptRegistration Состояние регистрации фискального чека
  * @property-read string $receipt_registration Состояние регистрации фискального чека
  * @property-read Metadata $metadata Метаданные платежа указанные мерчантом
@@ -114,6 +115,12 @@ interface PaymentInterface
     public function getPaid();
 
     /**
+     * Возможность провести возврат по API
+     * @return bool Возможность провести возврат по API
+     */
+    public function getRefundable();
+
+    /**
      * Возвращает состояние регистрации фискального чека
      * @return string Состояние регистрации фискального чека
      */
@@ -145,4 +152,21 @@ interface PaymentInterface
      * @since 1.0.18
      */
     public function getAuthorizationDetails();
+
+    /**
+     * Возвращает данные о распределении платежа между магазинами
+     * @return TransferInterface[]
+     */
+    public function getTransfers();
+
+    /**
+     * Возвращает сумму перечисляемая магазину за вычетом комиссий платежной системы.(только для успешных платежей)
+     * @return MonetaryAmount|null
+     */
+    public function getIncomeAmount();
+
+    /**
+     * @return RequestorInterface
+     */
+    public function getRequestor();
 }

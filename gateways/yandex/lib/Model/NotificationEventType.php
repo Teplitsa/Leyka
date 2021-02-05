@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,17 +24,21 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Model;
+namespace YooKassa\Model;
 
-use YandexCheckout\Common\AbstractEnum;
+use YooKassa\Common\AbstractEnum;
 
 class NotificationEventType extends AbstractEnum
 {
     const PAYMENT_WAITING_FOR_CAPTURE = 'payment.waiting_for_capture';
-    const PAYMENT_SUCCEEDED           = 'payment.succeeded';
+    const PAYMENT_SUCCEEDED = 'payment.succeeded';
+    const PAYMENT_CANCELED = 'payment.canceled';
+    const REFUND_SUCCEEDED = 'refund.succeeded';
 
     protected static $validValues = array(
         self::PAYMENT_WAITING_FOR_CAPTURE => true,
-        self::PAYMENT_SUCCEEDED => true,
+        self::PAYMENT_SUCCEEDED           => true,
+        self::PAYMENT_CANCELED            => true,
+        self::REFUND_SUCCEEDED            => true,
     );
 }

@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,13 +24,13 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Model;
+namespace YooKassa\Model;
 
-use YandexCheckout\Common\AbstractObject;
-use YandexCheckout\Common\Exceptions\EmptyPropertyValueException;
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueException;
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueTypeException;
-use YandexCheckout\Helpers\TypeCast;
+use YooKassa\Common\AbstractObject;
+use YooKassa\Common\Exceptions\EmptyPropertyValueException;
+use YooKassa\Common\Exceptions\InvalidPropertyValueException;
+use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
+use YooKassa\Helpers\TypeCast;
 
 /**
  * Класс объекта с информацией о возврате платежа
@@ -44,7 +44,7 @@ use YandexCheckout\Helpers\TypeCast;
  * @property AmountInterface $amount Сумма возврата
  * @property string $receiptRegistration Статус регистрации чека
  * @property string $receipt_registration Статус регистрации чека
- * @property string $comment Комментарий, основание для возврата средств покупателю
+ * @property string $description Комментарий, основание для возврата средств покупателю
  */
 class Refund extends AbstractObject implements RefundInterface
 {
@@ -81,7 +81,18 @@ class Refund extends AbstractObject implements RefundInterface
     /**
      * @var string Комментарий, основание для возврата средств покупателю
      */
-    private $_comment;
+    private $_description;
+
+    /**
+     * @var SourceInterface[] Данные о распределении денег — сколько и в какой магазин нужно перевести.
+     */
+    private $_sources;
+
+    /**
+     * @var RequestorInterface
+     */
+    private $_requestor;
+
 
     /**
      * Возвращает идентификатор возврата платежа
@@ -208,7 +219,7 @@ class Refund extends AbstractObject implements RefundInterface
      * @throws EmptyPropertyValueException Выбрасывается если быо передано пустое значение
      * @throws InvalidPropertyValueException Выбрасывается если переданную строку или число не удалось интерпретировать
      * как дату и время
-     * @throws InvalidPropertyValueTypeException Выбрасывается если было передано значение невалидного типа
+     * @throws InvalidPropertyValueTypeException|\Exception Выбрасывается если было передано значение невалидного типа
      */
     public function setCreatedAt($value)
     {
@@ -289,9 +300,9 @@ class Refund extends AbstractObject implements RefundInterface
      * Возвращает комментарий к возврату
      * @return string Комментарий, основание для возврата средств покупателю
      */
-    public function getComment()
+    public function getDescription()
     {
-        return $this->_comment;
+        return $this->_description;
     }
 
     /**
@@ -299,21 +310,75 @@ class Refund extends AbstractObject implements RefundInterface
      * @param string $value Комментарий, основание для возврата средств покупателю
      *
      * @throws EmptyPropertyValueException Выбрасывается если был передан пустой аргумент
-     * @throws InvalidPropertyValueException Выбрасывается если було передано невалидное значение
      * @throws InvalidPropertyValueTypeException Выбрасывается если аргумент не является строкой
      */
-    public function setComment($value)
+    public function setDescription($value)
     {
         if ($value === null || $value === '') {
-            throw new EmptyPropertyValueException('Empty refund comment', 0, 'Refund.comment');
+            throw new EmptyPropertyValueException('Empty refund description', 0, 'Refund.description');
         } elseif (TypeCast::canCastToEnumString($value)) {
-            $length = mb_strlen((string)$value, 'utf-8');
-            if ($length > 250) {
-                throw new InvalidPropertyValueException('Empty refund comment', 0, 'Refund.comment', $value);
-            }
-            $this->_comment = (string)$value;
+            $this->_description = (string)$value;
         } else {
-            throw new InvalidPropertyValueTypeException('Empty refund comment', 0, 'Refund.comment', $value);
+            throw new InvalidPropertyValueTypeException('Empty refund description', 0, 'Refund.description', $value);
         }
+    }
+
+    /**
+     * @return SourceInterface[]
+     */
+    public function getSources()
+    {
+        return $this->_sources;
+    }
+
+    /**
+     * Устанавливает sources (массив распределения денег между магазинами)
+     * @param SourceInterface[]|array $value
+     */
+    public function setSources($value)
+    {
+        if (!is_array($value)) {
+            $message = 'Sources must be an array of SourceInterface';
+            throw new InvalidPropertyValueTypeException($message, 0, 'Refund.sources', $value);
+        }
+
+        $sources = array();
+        foreach ($value as $item) {
+            if (is_array($item)) {
+                $item = new Source($item);
+            }
+
+            if (!($item instanceof SourceInterface)) {
+                $message = 'Source must be instance of SourceInterface';
+                throw new InvalidPropertyValueTypeException($message, 0, 'Refund.sources', $value);
+            }
+            $sources[] = $item;
+        }
+
+        $this->_sources = $sources;
+    }
+
+    /**
+     * @return RequestorInterface
+     */
+    public function getRequestor()
+    {
+        return $this->_requestor;
+    }
+
+    /**
+     * @param $value
+     */
+    public function setRequestor($value)
+    {
+        if (is_array($value)) {
+            $value = new Requestor($value);
+        }
+
+        if (!($value instanceof RequestorInterface)) {
+            throw new InvalidPropertyValueTypeException('Invalid Requestor type', 0, 'Refund.requestor', $value);
+        }
+
+        $this->_requestor = $value;
     }
 }

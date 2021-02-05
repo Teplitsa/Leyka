@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,16 +24,16 @@
  * THE SOFTWARE.
  */
 
-define('YANDEX_CHECKOUT_SDK_ROOT_PATH', dirname(__FILE__));
-define('YANDEX_CHECKOUT_PSR_LOG_PATH', dirname(__FILE__).'/../vendor/psr/log/Psr/Log');
+define('YOOKASSA_SDK_ROOT_PATH', dirname(__FILE__));
+define('YOOKASSA_SDK_PSR_LOG_PATH', dirname(__FILE__).'/../vendor/psr/log/Psr/Log');
 
-function yandexCheckoutLoadClass($className)
+function yookassaSdkLoadClass($className)
 {
-    if (strncmp('YandexCheckout', $className, 14) === 0) {
-        $path   = YANDEX_CHECKOUT_SDK_ROOT_PATH;
-        $length = 14;
+    if (strncmp('YooKassa', $className, 8) === 0) {
+        $path   = YOOKASSA_SDK_ROOT_PATH;
+        $length = 8;
     } elseif (strncmp('Psr\Log', $className, 7) === 0) {
-        $path   = YANDEX_CHECKOUT_PSR_LOG_PATH;
+        $path   = YOOKASSA_SDK_PSR_LOG_PATH;
         $length = 7;
     } else {
         return;
@@ -44,4 +44,4 @@ function yandexCheckoutLoadClass($className)
     }
 }
 
-spl_autoload_register('yandexCheckoutLoadClass');
+spl_autoload_register('yookassaSdkLoadClass');

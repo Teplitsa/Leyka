@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,12 +24,12 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Model;
+namespace YooKassa\Model;
 
 /**
  * Interface AmountInterface
  *
- * @package YandexCheckout\Model
+ * @package YooKassa\Model
  *
  * @property-read string $value Сумма
  * @property-read string $currency Код валюты
@@ -40,23 +40,28 @@ interface AmountInterface
      * Возвращает значение суммы
      * @return string Сумма
      */
-    function getValue();
+    public function getValue();
+
+    /**
+     * @param $value
+     */
+    public function setValue($value);
 
     /**
      * Возвращает сумму в копейках в виде целого числа
      * @return int Сумма в копейках/центах
      */
-    function getIntegerValue();
+    public function getIntegerValue();
 
     /**
      * Возвращает валюту
      * @return string Код валюты
      */
-    function getCurrency();
+    public function getCurrency();
 
     /**
      * Устанавливает код валюты
      * @param string $value Код валюты
      */
-    function setCurrency($value);
+    public function setCurrency($value);
 }

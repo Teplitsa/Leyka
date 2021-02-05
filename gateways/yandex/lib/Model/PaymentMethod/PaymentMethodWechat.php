@@ -1,9 +1,8 @@
 <?php
-
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,16 +23,18 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Client;
+namespace YooKassa\Model\PaymentMethod;
 
-use YandexCheckout\Client;
+
+use YooKassa\Model\PaymentMethodType;
 
 /**
- * Класс оставлен для обратной совместимости
- *
- * @deprecated Класс будет удалён в одной из будущих версий, используйте класс \YandexCheckout\Client
- *
- * @package YandexCheckout\Client
+ * @deprecated Класс будет удалён в одной из будущих версий.
  */
-final class YandexMoneyApi extends Client
-{}
+class PaymentMethodWechat extends AbstractPaymentMethod
+{
+    public function __construct()
+    {
+        $this->_setType(PaymentMethodType::WECHAT);
+    }
+}

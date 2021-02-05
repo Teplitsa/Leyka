@@ -1,6 +1,6 @@
 <?php
 
-namespace YandexCheckout\Helpers;
+namespace YooKassa\Helpers;
 
 
 class UUID

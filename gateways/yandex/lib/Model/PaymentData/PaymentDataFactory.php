@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,14 +24,14 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Model\PaymentData;
+namespace YooKassa\Model\PaymentData;
 
-use YandexCheckout\Model\PaymentMethodType;
+use YooKassa\Model\PaymentMethodType;
 
 class PaymentDataFactory
 {
     private $typeClassMap = array(
-        PaymentMethodType::YANDEX_MONEY   => 'PaymentDataYandexWallet',
+        PaymentMethodType::YOO_MONEY      => 'PaymentDataYooMoney',
         PaymentMethodType::BANK_CARD      => 'PaymentDataBankCard',
         PaymentMethodType::SBERBANK       => 'PaymentDataSberbank',
         PaymentMethodType::CASH           => 'PaymentDataCash',
@@ -42,10 +42,14 @@ class PaymentDataFactory
         PaymentMethodType::WEBMONEY       => 'PaymentDataWebmoney',
         PaymentMethodType::ALFABANK       => 'PaymentDataAlfabank',
         PaymentMethodType::INSTALLMENTS   => 'PaymentDataInstallments',
+        PaymentMethodType::B2B_SBERBANK   => 'PaymentDataB2bSberbank',
+        PaymentMethodType::TINKOFF_BANK   => 'PaymentDataTinkoffBank',
+        PaymentMethodType::WECHAT         => 'PaymentDataWechat',
     );
 
     /**
      * @param string $type
+     *
      * @return AbstractPaymentData
      */
     public function factory($type)
@@ -56,13 +60,15 @@ class PaymentDataFactory
         if (!array_key_exists($type, $this->typeClassMap)) {
             throw new \InvalidArgumentException('Invalid payment data type "'.$type.'"');
         }
-        $className = __NAMESPACE__ . '\\' . $this->typeClassMap[$type];
+        $className = __NAMESPACE__.'\\'.$this->typeClassMap[$type];
+
         return new $className();
     }
 
     /**
      * @param array $data
      * @param string|null $type
+     *
      * @return AbstractPaymentData
      */
     public function factoryFromArray(array $data, $type = null)
@@ -83,6 +89,7 @@ class PaymentDataFactory
                 $paymentData->offsetSet($key, $value);
             }
         }
+
         return $paymentData;
     }
 }

@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Common;
+namespace YooKassa\Common;
 
 if (!interface_exists('JsonSerializable')) {
     require_once dirname(__FILE__) . '/legacy_json_serializable.php';
@@ -33,7 +33,7 @@ if (!interface_exists('JsonSerializable')) {
 /**
  * Базовый класс генерируемых объектов
  *
- * @package YandexCheckout\Common
+ * @package YooKassa\Common
  */
 abstract class AbstractObject implements \ArrayAccess, \JsonSerializable
 {
@@ -41,6 +41,17 @@ abstract class AbstractObject implements \ArrayAccess, \JsonSerializable
      * @var array Свойства установленные пользователем
      */
     private $unknownProperties = array();
+
+    /**
+     * AbstractObject constructor.
+     * @param array $data
+     */
+    public function __construct($data = array())
+    {
+        if (!empty($data) && is_array($data)) {
+            $this->fromArray($data);
+        }
+    }
 
     /**
      * Проверяет наличие свойства

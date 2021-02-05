@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,23 +24,24 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Request\Refunds;
+namespace YooKassa\Request\Refunds;
 
-use YandexCheckout\Model\MonetaryAmount;
-use YandexCheckout\Model\Refund;
+use YooKassa\Model\MonetaryAmount;
+use YooKassa\Model\Refund;
 
 /**
  * Абстрактный класс ответа от API с информацией о возврате
  *
- * @package YandexCheckout\Request\Refunds
+ * @package YooKassa\Request\Refunds
  */
 abstract class AbstractRefundResponse extends Refund
 {
     /**
      * Конструктор
      * @param array $options Ассоциативный массив с информацией, вернувшейся от API
+     * @throws \Exception
      */
-    public function __construct(array $options)
+    public function __construct($options)
     {
         $this->setId(empty($options['id']) ? null : $options['id']);
         $this->setPaymentId(empty($options['payment_id']) ? null : $options['payment_id']);
@@ -48,12 +49,20 @@ abstract class AbstractRefundResponse extends Refund
         $this->setCreatedAt(empty($options['created_at']) ? null : $options['created_at']);
         $this->setAmount(new MonetaryAmount($options['amount']['value'], $options['amount']['currency']));
 
+        if (!empty($options['requestor'])) {
+            $this->setRequestor($options['requestor']);
+        }
+
+        if (!empty($options['sources'])) {
+            $this->setSources($options['sources']);
+        }
+
         if (!empty($options['receipt_registration'])) {
             $this->setReceiptRegistration($options['receipt_registration']);
         }
 
-        if (!empty($options['comment'])) {
-            $this->setComment($options['comment']);
+        if (!empty($options['description'])) {
+            $this->setDescription($options['description']);
         }
     }
 }

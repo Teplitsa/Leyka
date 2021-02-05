@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,9 +24,9 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Model;
+namespace YooKassa\Model;
 
-use YandexCheckout\Common\AbstractEnum;
+use YooKassa\Common\AbstractEnum;
 
 /**
  * ConfirmationType - Тип пользовательского процесса подтверждения платежа
@@ -36,19 +36,24 @@ use YandexCheckout\Common\AbstractEnum;
  * |external|Необходимо ождать пока плательщик самостоятельно подтвердит платеж|
  * |deeplink|Необходимо направить плательщика в приложение партнера|
  * |code_verification|Необходимо получить одноразовый код от плательщика для подтверждения платежа|
- * 
+ * |embedded|Необходимо получить токен для checkout.js|
+ * |qr|Необходимо получить QR-код|
  */
 class ConfirmationType extends AbstractEnum
 {
-    const REDIRECT = 'redirect';
-    const EXTERNAL = 'external';
-    const DEEPLINK = 'deeplink';
+    const REDIRECT          = 'redirect';
+    const EXTERNAL          = 'external';
+    const DEEPLINK          = 'deeplink';
     const CODE_VERIFICATION = 'code_verification';
+    const EMBEDDED          = 'embedded';
+    const QR                = 'qr';
 
     protected static $validValues = array(
-        self::REDIRECT => true,
-        self::EXTERNAL => true,
-        self::DEEPLINK => false,
+        self::REDIRECT          => true,
+        self::EXTERNAL          => true,
+        self::DEEPLINK          => false,
         self::CODE_VERIFICATION => false,
+        self::EMBEDDED          => true,
+        self::QR                => true,
     );
 }

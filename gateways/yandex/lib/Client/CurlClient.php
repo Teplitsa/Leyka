@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,19 +24,19 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Client;
+namespace YooKassa\Client;
 
 use Psr\Log\LoggerInterface;
-use YandexCheckout\Common\Exceptions\ApiConnectionException;
-use YandexCheckout\Common\Exceptions\ApiException;
-use YandexCheckout\Common\Exceptions\AuthorizeException;
-use YandexCheckout\Common\HttpVerb;
-use YandexCheckout\Common\ResponseObject;
-use YandexCheckout\Helpers\RawHeadersParser;
+use YooKassa\Common\Exceptions\ApiConnectionException;
+use YooKassa\Common\Exceptions\ApiException;
+use YooKassa\Common\Exceptions\AuthorizeException;
+use YooKassa\Common\Exceptions\ExtensionNotFoundException;
+use YooKassa\Common\ResponseObject;
+use YooKassa\Helpers\RawHeadersParser;
 
 /**
  * Class CurlClient
- * @package YandexCheckout\Client
+ * @package YooKassa\Client
  */
 class CurlClient implements ApiClientInterface
 {
@@ -56,6 +56,11 @@ class CurlClient implements ApiClientInterface
     private $shopPassword;
 
     /**
+     * @var string
+     */
+    private $bearerToken;
+
+    /**
      * @var int
      */
     private $timeout = 80;
@@ -70,6 +75,9 @@ class CurlClient implements ApiClientInterface
      */
     private $proxy;
 
+    /** @var UserAgent */
+    private $userAgent;
+
     /**
      * @var bool
      */
@@ -80,7 +88,7 @@ class CurlClient implements ApiClientInterface
      */
     private $defaultHeaders = array(
         'Content-Type' => 'application/json',
-        'Accept' => 'application/json'
+        'Accept'       => 'application/json',
     );
 
     /**
@@ -94,6 +102,14 @@ class CurlClient implements ApiClientInterface
     private $logger;
 
     /**
+     * CurlClient constructor.
+     */
+    public function __construct()
+    {
+        $this->userAgent = new UserAgent();
+    }
+
+    /**
      * @param LoggerInterface|null $logger
      */
     public function setLogger($logger)
@@ -103,68 +119,28 @@ class CurlClient implements ApiClientInterface
 
     /**
      * @inheritdoc
+     *
      * @param $path
      * @param $method
      * @param $queryParams
      * @param null $httpBody
      * @param array $headers
+     *
      * @return ResponseObject
      * @throws ApiConnectionException
      * @throws ApiException
      * @throws AuthorizeException
+     * @throws ExtensionNotFoundException
      */
     public function call($path, $method, $queryParams, $httpBody = null, $headers = array())
     {
-        if ($this->logger !== null) {
-            $message = 'Send request: ' . $method . ' ' . $path;
-            if (!empty($queryParams)) {
-                $message .= ' with query params: ' . json_encode($queryParams);
-            }
-            if (!empty($httpBody)) {
-                $message .= ' with body: ' . $httpBody;
-            }
-            if (!empty($httpBody)) {
-                $message .= ' with headers: ' . json_encode($headers);
-            }
-            $this->logger->info($message);
-        }
-
-        $url = $this->getUrl() . $path;
-
-        if (!empty($queryParams)) {
-            $url = $url . '?' . http_build_query($queryParams);
-        }
-
         $headers = $this->prepareHeaders($headers);
 
-        $this->initCurl();
+        $this->logRequestParams($path, $method, $queryParams, $httpBody, $headers);
 
-        $this->setCurlOption(CURLOPT_URL, $url);
+        $url = $this->prepareUrl($path, $queryParams);
 
-        $this->setCurlOption(CURLOPT_RETURNTRANSFER, true);
-
-        $this->setCurlOption(CURLOPT_HEADER, true);
-
-        $this->setCurlOption(CURLOPT_BINARYTRANSFER, true);
-
-        if (!$this->shopId || !$this->shopPassword) {
-            throw new AuthorizeException('shopId or shopPassword not set');
-        } else {
-            $this->setCurlOption(CURLOPT_USERPWD, "{$this->shopId}:{$this->shopPassword}");
-        }
-
-        if ($this->proxy) {
-            $this->setCurlOption(CURLOPT_PROXY, $this->proxy);
-            $this->setCurlOption(CURLOPT_HTTPPROXYTUNNEL, true);
-        }
-
-        $this->setBody($method, $httpBody);
-
-        $this->setCurlOption(CURLOPT_HTTPHEADER, $headers);
-
-        $this->setCurlOption(CURLOPT_CONNECTTIMEOUT, $this->connectionTimeout);
-
-        $this->setCurlOption(CURLOPT_TIMEOUT, $this->timeout);
+        $this->prepareCurl($method, $httpBody, $this->implodeHeaders($headers), $url);
 
         list($httpHeaders, $httpBody, $responseInfo) = $this->sendRequest();
 
@@ -172,25 +148,19 @@ class CurlClient implements ApiClientInterface
             $this->closeCurlConnection();
         }
 
-        if ($this->logger !== null) {
-            $message = 'Response with code ' . $responseInfo['http_code'] . ' received with headers: '
-                . json_encode($httpHeaders);
-            if (!empty($httpBody)) {
-                $message .= ' and body: ' . $httpBody;
-            }
-            $this->logger->info($message);
-        }
+        $this->logResponse($httpBody, $responseInfo, $httpHeaders);
 
         return new ResponseObject(array(
-            'code' => $responseInfo['http_code'],
+            'code'    => $responseInfo['http_code'],
             'headers' => $httpHeaders,
-            'body' => $httpBody
+            'body'    => $httpBody,
         ));
     }
 
     /**
      * @param $optionName
      * @param $optionValue
+     *
      * @return bool
      */
     public function setCurlOption($optionName, $optionValue)
@@ -201,9 +171,14 @@ class CurlClient implements ApiClientInterface
 
     /**
      * @return resource
+     * @throws ExtensionNotFoundException
      */
     private function initCurl()
     {
+        if (!extension_loaded('curl')) {
+            throw new ExtensionNotFoundException('curl');
+        }
+
         if (!$this->curl || !$this->keepAlive) {
             $this->curl = curl_init();
         }
@@ -227,13 +202,13 @@ class CurlClient implements ApiClientInterface
      */
     public function sendRequest()
     {
-        $response = curl_exec($this->curl);
+        $response       = curl_exec($this->curl);
         $httpHeaderSize = curl_getinfo($this->curl, CURLINFO_HEADER_SIZE);
-        $httpHeaders = RawHeadersParser::parse(substr($response, 0, $httpHeaderSize));
-        $httpBody = substr($response, $httpHeaderSize);
-        $responseInfo = curl_getinfo($this->curl);
-        $curlError = curl_error($this->curl);
-        $curlErrno = curl_errno($this->curl);
+        $httpHeaders    = RawHeadersParser::parse(substr($response, 0, $httpHeaderSize));
+        $httpBody       = substr($response, $httpHeaderSize);
+        $responseInfo   = curl_getinfo($this->curl);
+        $curlError      = curl_error($this->curl);
+        $curlErrno      = curl_errno($this->curl);
         if ($response === false) {
             $this->handleCurlError($curlError, $curlErrno);
         }
@@ -244,59 +219,37 @@ class CurlClient implements ApiClientInterface
     /**
      * @param $method
      * @param $httpBody
-     * @throws ApiException
      */
     public function setBody($method, $httpBody)
     {
-        switch ($method) {
-            case HttpVerb::POST:
-                $this->setCurlOption(CURLOPT_POST, true);
-                $this->setCurlOption(CURLOPT_POSTFIELDS, $httpBody);
-                break;
-            case HttpVerb::PUT:
-                $this->setCurlOption(CURLOPT_CUSTOMREQUEST, HttpVerb::PUT);
-                $this->setCurlOption(CURLOPT_POSTFIELDS, $httpBody);
-                break;
-            case HttpVerb::DELETE:
-                $this->setCurlOption(CURLOPT_CUSTOMREQUEST, HttpVerb::DELETE);
-                $this->setCurlOption(CURLOPT_POSTFIELDS, $httpBody);
-                break;
-            case HttpVerb::PATCH:
-                $this->setCurlOption(CURLOPT_CUSTOMREQUEST, HttpVerb::PATCH);
-                $this->setCurlOption(CURLOPT_POSTFIELDS, $httpBody);
-                break;
-            case HttpVerb::OPTIONS:
-                $this->setCurlOption(CURLOPT_CUSTOMREQUEST, HttpVerb::OPTIONS);
-                $this->setCurlOption(CURLOPT_POSTFIELDS, $httpBody);
-                break;
-            case HttpVerb::HEAD:
-                $this->setCurlOption(CURLOPT_NOBODY, true);
-                break;
-            case HttpVerb::GET:
-                $this->setCurlOption(CURLOPT_HTTPGET, true);
-                break;
-            default:
-                throw new ApiException('Invalid method verb: ' . $method);
+
+        $this->setCurlOption(CURLOPT_CUSTOMREQUEST, $method);
+        if(!empty($httpBody)) {
+            $this->setCurlOption(CURLOPT_POSTFIELDS, $httpBody);
         }
     }
 
     /**
      * @param mixed $shopId
+     *
      * @return CurlClient
      */
     public function setShopId($shopId)
     {
         $this->shopId = $shopId;
+
         return $this;
     }
 
     /**
      * @param mixed $shopPassword
+     *
      * @return CurlClient
      */
     public function setShopPassword($shopPassword)
     {
         $this->shopPassword = $shopPassword;
+
         return $this;
     }
 
@@ -343,6 +296,7 @@ class CurlClient implements ApiClientInterface
 
     /**
      * @param string $proxy
+     *
      * @since 1.0.14
      */
     public function setProxy($proxy)
@@ -359,7 +313,7 @@ class CurlClient implements ApiClientInterface
     }
 
     /**
-     * @param mixed $config
+     * @inheritDoc
      */
     public function setConfig($config)
     {
@@ -367,8 +321,41 @@ class CurlClient implements ApiClientInterface
     }
 
     /**
+     * @return UserAgent
+     */
+    public function getUserAgent()
+    {
+        return $this->userAgent;
+    }
+
+    /**
+     * @param string $bearerToken
+     *
+     * @return static $this
+     */
+    public function setBearerToken($bearerToken)
+    {
+        $this->bearerToken = $bearerToken;
+
+        return $this;
+    }
+
+    /**
+     * @param bool $keepAlive
+     *
+     * @return CurlClient
+     */
+    public function setKeepAlive($keepAlive)
+    {
+        $this->keepAlive = $keepAlive;
+
+        return $this;
+    }
+
+    /**
      * @param string $error
      * @param int $errno
+     *
      * @throws ApiConnectionException
      */
     private function handleCurlError($error, $errno)
@@ -377,14 +364,14 @@ class CurlClient implements ApiClientInterface
             case CURLE_COULDNT_CONNECT:
             case CURLE_COULDNT_RESOLVE_HOST:
             case CURLE_OPERATION_TIMEOUTED:
-                $msg = "Could not connect to Yandex Money API. Please check your internet connection and try again.";
+                $msg = 'Could not connect to YooKassa API. Please check your internet connection and try again.';
                 break;
             case CURLE_SSL_CACERT:
             case CURLE_SSL_PEER_CERTIFICATE:
-                $msg = "Could not verify SSL certificate.";
+                $msg = 'Could not verify SSL certificate.';
                 break;
             default:
-                $msg = "Unexpected error communicating.";
+                $msg = 'Unexpected error communicating.';
         }
         $msg .= "\n\n(Network error [errno $errno]: $error)";
         throw new ApiConnectionException($msg);
@@ -396,30 +383,145 @@ class CurlClient implements ApiClientInterface
     private function getUrl()
     {
         $config = $this->config;
+
         return $config['url'];
     }
 
     /**
-     * @param bool $keepAlive
-     * @return CurlClient
-     */
-    public function setKeepAlive($keepAlive)
-    {
-        $this->keepAlive = $keepAlive;
-        return $this;
-    }
-
-    /**
      * @param $headers
+     *
      * @return array
+     * @throws AuthorizeException
      */
     private function prepareHeaders($headers)
     {
         $headers = array_merge($this->defaultHeaders, $headers);
-        $headers = array_map(function ($key, $value) {
-            return $key . ":" . $value;
-        }, array_keys($headers), $headers);
+
+        $headers[UserAgent::HEADER] = $this->getUserAgent()->getHeaderString();
+
+        if ($this->shopId && $this->shopPassword) {
+            $encodedAuth = base64_encode($this->shopId . ':' . $this->shopPassword);
+            $headers['Authorization'] = 'Basic ' . $encodedAuth;
+        } else if ($this->bearerToken) {
+            $headers['Authorization'] = 'Bearer ' . $this->bearerToken;
+        }
+
+        if (empty($headers['Authorization'])) {
+            throw new AuthorizeException('Authorization headers not set');
+        }
 
         return $headers;
+    }
+
+    /**
+     * @param array $headers
+     * @return array
+     */
+    private function implodeHeaders($headers)
+    {
+        return array_map(function ($key, $value) { return $key . ':' . $value; }, array_keys($headers), $headers);
+    }
+
+    /**
+     * @param $path
+     * @param $method
+     * @param $queryParams
+     * @param $httpBody
+     * @param $headers
+     */
+    private function logRequestParams($path, $method, $queryParams, $httpBody, $headers)
+    {
+        if ($this->logger !== null) {
+            $message = 'Send request: ' . $method . ' ' . $path;
+            $context = array();
+            if (!empty($queryParams)) {
+                $context['_params'] = $queryParams;
+            }
+            if (!empty($httpBody)) {
+                $data = json_decode($httpBody, true);
+                if (JSON_ERROR_NONE !== json_last_error()) {
+                    $data = $httpBody;
+                }
+                $context['_body'] = $data;
+            }
+            if (!empty($headers)) {
+                $context['_headers'] = $headers;
+            }
+            $this->logger->info($message, $context);
+        }
+    }
+
+    /**
+     * @param $path
+     * @param $queryParams
+     *
+     * @return string
+     */
+    private function prepareUrl($path, $queryParams)
+    {
+        $url = $this->getUrl() . $path;
+
+        if (!empty($queryParams)) {
+            $url = $url . '?' . http_build_query($queryParams);
+        }
+
+        return $url;
+    }
+
+    /**
+     * @param $httpBody
+     * @param $responseInfo
+     * @param $httpHeaders
+     */
+    private function logResponse($httpBody, $responseInfo, $httpHeaders)
+    {
+        if ($this->logger !== null) {
+            $message = 'Response with code ' . $responseInfo['http_code'] . ' received.';
+            $context = array();
+            if (!empty($httpBody)) {
+                $data = json_decode($httpBody, true);
+                if (JSON_ERROR_NONE !== json_last_error()) {
+                    $data = $httpBody;
+                }
+                $context['_body'] = $data;
+            }
+            if (!empty($httpHeaders)) {
+                $context['_headers'] = $httpHeaders;
+            }
+            $this->logger->info($message, $context);
+        }
+    }
+
+    /**
+     * @param $method
+     * @param $httpBody
+     * @param $headers
+     * @param $url
+     * @throws ExtensionNotFoundException
+     */
+    private function prepareCurl($method, $httpBody, $headers, $url)
+    {
+        $this->initCurl();
+
+        $this->setCurlOption(CURLOPT_URL, $url);
+
+        $this->setCurlOption(CURLOPT_RETURNTRANSFER, true);
+
+        $this->setCurlOption(CURLOPT_HEADER, true);
+
+        $this->setCurlOption(CURLOPT_BINARYTRANSFER, true);
+
+        if ($this->proxy) {
+            $this->setCurlOption(CURLOPT_PROXY, $this->proxy);
+            $this->setCurlOption(CURLOPT_HTTPPROXYTUNNEL, true);
+        }
+
+        $this->setBody($method, $httpBody);
+
+        $this->setCurlOption(CURLOPT_HTTPHEADER, $headers);
+
+        $this->setCurlOption(CURLOPT_CONNECTTIMEOUT, $this->connectionTimeout);
+
+        $this->setCurlOption(CURLOPT_TIMEOUT, $this->timeout);
     }
 }

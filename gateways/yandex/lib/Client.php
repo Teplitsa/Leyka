@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,255 +24,73 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout;
+namespace YooKassa;
 
-use Psr\Log\LoggerInterface;
-use YandexCheckout\Common\Exceptions\ApiException;
-use YandexCheckout\Common\Exceptions\BadApiRequestException;
-use YandexCheckout\Common\Exceptions\ForbiddenException;
-use YandexCheckout\Common\Exceptions\JsonException;
-use YandexCheckout\Common\Exceptions\InternalServerError;
-use YandexCheckout\Common\Exceptions\NotFoundException;
-use YandexCheckout\Common\Exceptions\ResponseProcessingException;
-use YandexCheckout\Common\Exceptions\TooManyRequestsException;
-use YandexCheckout\Common\Exceptions\UnauthorizedException;
-use YandexCheckout\Common\HttpVerb;
-use YandexCheckout\Common\LoggerWrapper;
-use YandexCheckout\Common\ResponseObject;
-use YandexCheckout\Helpers\Config\ConfigurationLoader;
-use YandexCheckout\Helpers\Config\ConfigurationLoaderInterface;
-use YandexCheckout\Helpers\TypeCast;
-use YandexCheckout\Helpers\UUID;
-use YandexCheckout\Model\PaymentInterface;
-use YandexCheckout\Request\PaymentOptionsRequest;
-use YandexCheckout\Request\PaymentOptionsRequestInterface;
-use YandexCheckout\Request\PaymentOptionsRequestSerializer;
-use YandexCheckout\Request\PaymentOptionsResponse;
-use YandexCheckout\Request\Payments\CreatePaymentRequest;
-use YandexCheckout\Request\Payments\CreatePaymentRequestInterface;
-use YandexCheckout\Request\Payments\CreatePaymentResponse;
-use YandexCheckout\Request\Payments\CreatePaymentRequestSerializer;
-use YandexCheckout\Request\Payments\Payment\CancelResponse;
-use YandexCheckout\Request\Payments\Payment\CreateCaptureRequest;
-use YandexCheckout\Request\Payments\Payment\CreateCaptureRequestInterface;
-use YandexCheckout\Request\Payments\Payment\CreateCaptureRequestSerializer;
-use YandexCheckout\Request\Payments\Payment\CreateCaptureResponse;
-use YandexCheckout\Request\Payments\PaymentResponse;
-use YandexCheckout\Request\Payments\PaymentsRequest;
-use YandexCheckout\Request\Payments\PaymentsRequestInterface;
-use YandexCheckout\Request\Payments\PaymentsRequestSerializer;
-use YandexCheckout\Request\Payments\PaymentsResponse;
-use YandexCheckout\Request\Refunds\CreateRefundRequest;
-use YandexCheckout\Request\Refunds\CreateRefundRequestInterface;
-use YandexCheckout\Request\Refunds\CreateRefundRequestSerializer;
-use YandexCheckout\Request\Refunds\CreateRefundResponse;
-use YandexCheckout\Request\Refunds\RefundResponse;
-use YandexCheckout\Request\Refunds\RefundsRequest;
-use YandexCheckout\Request\Refunds\RefundsRequestInterface;
-use YandexCheckout\Request\Refunds\RefundsRequestSerializer;
-use YandexCheckout\Request\Refunds\RefundsResponse;
+use Exception;
+use InvalidArgumentException;
+use YooKassa\Client\BaseClient;
+use YooKassa\Common\Exceptions\ApiException;
+use YooKassa\Common\Exceptions\AuthorizeException;
+use YooKassa\Common\Exceptions\BadApiRequestException;
+use YooKassa\Common\Exceptions\ExtensionNotFoundException;
+use YooKassa\Common\Exceptions\ForbiddenException;
+use YooKassa\Common\Exceptions\InternalServerError;
+use YooKassa\Common\Exceptions\NotFoundException;
+use YooKassa\Common\Exceptions\ResponseProcessingException;
+use YooKassa\Common\Exceptions\TooManyRequestsException;
+use YooKassa\Common\Exceptions\UnauthorizedException;
+use YooKassa\Common\HttpVerb;
+use YooKassa\Helpers\TypeCast;
+use YooKassa\Helpers\UUID;
+use YooKassa\Model\PaymentInterface;
+use YooKassa\Model\RefundInterface;
+use YooKassa\Model\Webhook\Webhook;
+use YooKassa\Request\Payments\CreatePaymentRequest;
+use YooKassa\Request\Payments\CreatePaymentRequestInterface;
+use YooKassa\Request\Payments\CreatePaymentResponse;
+use YooKassa\Request\Payments\CreatePaymentRequestSerializer;
+use YooKassa\Request\Payments\Payment\CancelResponse;
+use YooKassa\Request\Payments\Payment\CreateCaptureRequest;
+use YooKassa\Request\Payments\Payment\CreateCaptureRequestInterface;
+use YooKassa\Request\Payments\Payment\CreateCaptureRequestSerializer;
+use YooKassa\Request\Payments\Payment\CreateCaptureResponse;
+use YooKassa\Request\Payments\PaymentResponse;
+use YooKassa\Request\Payments\PaymentsRequest;
+use YooKassa\Request\Payments\PaymentsRequestInterface;
+use YooKassa\Request\Payments\PaymentsRequestSerializer;
+use YooKassa\Request\Payments\PaymentsResponse;
+use YooKassa\Request\Receipts\AbstractReceiptResponse;
+use YooKassa\Request\Receipts\CreatePostReceiptRequest;
+use YooKassa\Request\Receipts\CreatePostReceiptRequestInterface;
+use YooKassa\Request\Receipts\CreatePostReceiptRequestSerializer;
+use YooKassa\Request\Receipts\ReceiptResponseFactory;
+use YooKassa\Request\Receipts\ReceiptsRequest;
+use YooKassa\Request\Receipts\ReceiptsRequestSerializer;
+use YooKassa\Request\Receipts\ReceiptsResponse;
+use YooKassa\Request\Refunds\CreateRefundRequest;
+use YooKassa\Request\Refunds\CreateRefundRequestInterface;
+use YooKassa\Request\Refunds\CreateRefundRequestSerializer;
+use YooKassa\Request\Refunds\CreateRefundResponse;
+use YooKassa\Request\Refunds\RefundResponse;
+use YooKassa\Request\Refunds\RefundsRequest;
+use YooKassa\Request\Refunds\RefundsRequestInterface;
+use YooKassa\Request\Refunds\RefundsRequestSerializer;
+use YooKassa\Request\Refunds\RefundsResponse;
+use YooKassa\Request\Webhook\WebhookListResponse;
 
 /**
  * Класс клиента API
  *
- * @package YandexCheckout
+ * @package YooKassa
  *
  * @since 1.0.1
  */
-class Client
+class Client extends BaseClient
 {
-    const PAYMENTS_PATH = '/payments';
-    const REFUNDS_PATH = '/refunds';
     /**
      * Текущая версия библиотеки
      */
-    const SDK_VERSION = '1.0.18';
-
-    /**
-     * Имя HTTP заголовка, используемого для передачи idempotence key
-     */
-    const IDEMPOTENCY_KEY_HEADER = 'Idempotence-Key';
-
-    /**
-     * Значение по умолчанию времени ожидания между запросами при отправке повторного запроса в случае получения
-     * ответа с HTTP статусом 202
-     */
-    const DEFAULT_DELAY = 1800;
-
-    /**
-     * Значение по умолчанию количества попыток получения информации от API если пришёл ответ с HTTP статусом 202
-     */
-    const DEFAULT_TRIES_COUNT = 3;
-
-    /**
-     * Значение по умолчанию количества попыток получения информации от API если пришёл ответ с HTTP статусом 202
-     */
-    const DEFAULT_ATTEMPTS_COUNT = 3;
-
-    /**
-     * @var null|Client\ApiClientInterface
-     */
-    protected $apiClient;
-
-    /**
-     * @var string
-     */
-    private $login;
-
-    /**
-     * @var string
-     */
-    private $password;
-
-    /**
-     * @var array
-     */
-    private $config;
-
-    /**
-     * Время через которое будут осуществляться повторные запросы
-     * Значение по умолчанию - 1800 миллисекунд.
-     * @link https://kassa.yandex.ru/docs/checkout-api/?php#asinhronnost
-     * @var int значение в миллисекундах
-     */
-    private $timeout;
-
-    /**
-     * Количество повторных запросов при ответе API статусом 202
-     * Значение по умолчанию 3
-     * @link https://kassa.yandex.ru/docs/checkout-api/?php#asinhronnost
-     * @var int
-     */
-    private $attempts;
-
-    /**
-     * @var LoggerInterface|null
-     */
-    private $logger;
-
-    /**
-     * Constructor
-     *
-     * @param Client\ApiClientInterface|null $apiClient
-     * @param ConfigurationLoaderInterface|null $configLoader
-     */
-    public function __construct(
-        Client\ApiClientInterface $apiClient = null,
-        ConfigurationLoaderInterface $configLoader = null
-    ) {
-        if ($apiClient === null) {
-            $apiClient = new Client\CurlClient();
-        }
-
-        if ($configLoader === null) {
-            $configLoader = new ConfigurationLoader();
-            $config       = $configLoader->load()->getConfig();
-            $this->setConfig($config);
-            $apiClient->setConfig($config);
-        }
-        $this->attempts  = self::DEFAULT_ATTEMPTS_COUNT;
-        $this->apiClient = $apiClient;
-    }
-
-    /**
-     * @param $login
-     * @param $password
-     *
-     * @return Client $this
-     */
-    public function setAuth($login, $password)
-    {
-        $this->login    = $login;
-        $this->password = $password;
-
-        $this->apiClient
-            ->setShopId($this->login)
-            ->setShopPassword($this->password);
-
-        return $this;
-    }
-
-    /**
-     * @return Client\ApiClientInterface
-     */
-    public function getApiClient()
-    {
-        return $this->apiClient;
-    }
-
-    /**
-     * @param Client\ApiClientInterface $apiClient
-     *
-     * @return Client
-     */
-    public function setApiClient(Client\ApiClientInterface $apiClient)
-    {
-        $this->apiClient = $apiClient;
-        $this->apiClient->setConfig($this->config);
-        $this->apiClient->setLogger($this->logger);
-
-        return $this;
-    }
-
-    /**
-     * Устанавливает логгер приложения
-     *
-     * @param null|callable|object|LoggerInterface $value Инстанс логгера
-     */
-    public function setLogger($value)
-    {
-        if ($value === null || $value instanceof LoggerInterface) {
-            $this->logger = $value;
-        } else {
-            $this->logger = new LoggerWrapper($value);
-        }
-        if ($this->apiClient !== null) {
-            $this->apiClient->setLogger($this->logger);
-        }
-    }
-
-    /**
-     * Доступные способы оплаты.
-     * Используйте этот метод, чтобы получить способы оплаты и сценарии, доступные для вашего заказа.
-     *
-     * @param PaymentOptionsRequestInterface|array $paymentOptionsRequest
-     *
-     * @return PaymentOptionsResponse
-     * @throws ApiException
-     * @throws BadApiRequestException
-     * @throws ForbiddenException
-     * @throws InternalServerError
-     * @throws NotFoundException
-     * @throws ResponseProcessingException
-     * @throws TooManyRequestsException
-     * @throws UnauthorizedException
-     */
-    public function getPaymentOptions($paymentOptionsRequest = null)
-    {
-        $path = "/payment_options";
-
-        if ($paymentOptionsRequest === null) {
-            $queryParams = array();
-        } else {
-            if (is_array($paymentOptionsRequest)) {
-                $paymentOptionsRequest = PaymentOptionsRequest::builder()->build($paymentOptionsRequest);
-            }
-            $serializer  = new PaymentOptionsRequestSerializer();
-            $queryParams = $serializer->serialize($paymentOptionsRequest);
-        }
-
-        $response = $this->execute($path, HttpVerb::GET, $queryParams);
-
-        $result = null;
-        if ($response->getCode() == 200) {
-            $responseArray = $this->decodeData($response);
-            $result        = new PaymentOptionsResponse($responseArray);
-        } else {
-            $this->handleError($response);
-        }
-
-        return $result;
-    }
+    const SDK_VERSION = '2.0.5';
 
     /**
      * Получить список платежей магазина.
@@ -288,6 +106,8 @@ class Client
      * @throws ResponseProcessingException
      * @throws TooManyRequestsException
      * @throws UnauthorizedException
+     * @throws ExtensionNotFoundException
+     * @throws Exception
      */
     public function getPayments($filter = null)
     {
@@ -325,7 +145,7 @@ class Client
      *
      * Необходимо указать один из параметров:
      * <ul>
-     * <li>payment_token — оплата по одноразовому PaymentToken, сформированному виджетом Yandex.Checkout JS;</li>
+     * <li>payment_token — оплата по одноразовому PaymentToken, сформированному виджетом YooKassa JS;</li>
      * <li>payment_method_id — оплата по сохраненным платежным данным;</li>
      * <li>payment_method_data — оплата по новым платежным данным.</li>
      * </ul>
@@ -340,7 +160,7 @@ class Client
      * </ul>
      *
      * @param CreatePaymentRequestInterface|array $payment
-     * @param string $idempotencyKey {@link https://kassa.yandex.ru/docs/checkout-api/?php#idempotentnost}
+     * @param string|null $idempotenceKey {@link https://yookassa.ru/developers/using-api/basics?lang=php#idempotence}
      *
      * @return CreatePaymentResponse
      * @throws ApiException
@@ -351,16 +171,16 @@ class Client
      * @throws ResponseProcessingException
      * @throws TooManyRequestsException
      * @throws UnauthorizedException
-     * @throws \Exception
+     * @throws Exception
      */
-    public function createPayment($payment, $idempotencyKey = null)
+    public function createPayment($payment, $idempotenceKey = null)
     {
         $path = self::PAYMENTS_PATH;
 
         $headers = array();
 
-        if ($idempotencyKey) {
-            $headers[self::IDEMPOTENCY_KEY_HEADER] = $idempotencyKey;
+        if ($idempotenceKey) {
+            $headers[self::IDEMPOTENCY_KEY_HEADER] = $idempotenceKey;
         } else {
             $headers[self::IDEMPOTENCY_KEY_HEADER] = UUID::v4();
         }
@@ -401,6 +221,7 @@ class Client
      * @throws ResponseProcessingException
      * @throws TooManyRequestsException
      * @throws UnauthorizedException
+     * @throws ExtensionNotFoundException
      */
     public function getPaymentInfo($paymentId)
     {
@@ -433,14 +254,14 @@ class Client
      * Подтверждает вашу готовность принять платеж. Платеж можно подтвердить, только если он находится
      * в статусе `waiting_for_capture`. Если платеж подтвержден успешно — значит, оплата прошла, и вы можете выдать
      * товар или оказать услугу пользователю. На следующий день после подтверждения платеж попадет в реестр,
-     * и Яндекс.Касса переведет деньги на ваш расчетный счет. Если вы не подтверждаете платеж до момента, указанного
+     * и ЮKassa переведет деньги на ваш расчетный счет. Если вы не подтверждаете платеж до момента, указанного
      * в `expire_at`, по умолчанию он отменяется, а деньги возвращаются пользователю. При оплате банковской картой
      * у вас есть 7 дней на подтверждение платежа. Для остальных способов оплаты платеж необходимо подтвердить
      * в течение 6 часов.
      *
      * @param CreateCaptureRequestInterface|array $captureRequest
      * @param $paymentId
-     * @param $idempotencyKey {@link https://kassa.yandex.ru/docs/checkout-api/?php#idempotentnost}
+     * @param $idempotencyKey {@link https://yookassa.ru/developers/using-api/basics?lang=php#idempotence}
      *
      * @return CreateCaptureResponse
      * @throws ApiException
@@ -451,7 +272,7 @@ class Client
      * @throws ResponseProcessingException
      * @throws TooManyRequestsException
      * @throws UnauthorizedException
-     * @throws \Exception
+     * @throws Exception
      */
     public function capturePayment($captureRequest, $paymentId, $idempotencyKey = null)
     {
@@ -502,7 +323,7 @@ class Client
      * Для остальных способов оплаты возврат может занимать до нескольких дней.
      *
      * @param $paymentId
-     * @param $idempotencyKey {@link https://kassa.yandex.ru/docs/checkout-api/?php#idempotentnost}
+     * @param $idempotencyKey {@link https://yookassa.ru/developers/using-api/basics?lang=php#idempotence}
      *
      * @return CancelResponse
      * @throws ApiException
@@ -513,7 +334,7 @@ class Client
      * @throws ResponseProcessingException
      * @throws TooManyRequestsException
      * @throws UnauthorizedException
-     * @throws \Exception
+     * @throws Exception
      */
     public function cancelPayment($paymentId, $idempotencyKey = null)
     {
@@ -560,6 +381,7 @@ class Client
      * @throws ResponseProcessingException
      * @throws TooManyRequestsException
      * @throws UnauthorizedException
+     * @throws ExtensionNotFoundException
      */
     public function getRefunds($filter = null)
     {
@@ -593,10 +415,10 @@ class Client
      *
      * Создает объект возврата — `Refund`. Возвращает успешно завершенный платеж по уникальному идентификатору
      * этого платежа. Создание возврата возможно только для платежей в статусе `succeeded`. Комиссии за проведение
-     * возврата нет. Комиссия, которую Яндекс.Касса берёт за проведение исходного платежа, не возвращается.
+     * возврата нет. Комиссия, которую ЮKassa берёт за проведение исходного платежа, не возвращается.
      *
      * @param CreateRefundRequestInterface|array $request
-     * @param null $idempotencyKey {@link https://kassa.yandex.ru/docs/checkout-api/?php#idempotentnost}
+     * @param null $idempotencyKey {@link https://yookassa.ru/developers/using-api/basics?lang=php#idempotence}
      *
      * @return CreateRefundResponse
      * @throws ApiException
@@ -607,7 +429,7 @@ class Client
      * @throws ResponseProcessingException
      * @throws TooManyRequestsException
      * @throws UnauthorizedException
-     * @throws \Exception
+     * @throws Exception
      */
     public function createRefund($request, $idempotencyKey = null)
     {
@@ -655,6 +477,7 @@ class Client
      * @throws ResponseProcessingException
      * @throws TooManyRequestsException
      * @throws UnauthorizedException
+     * @throws ExtensionNotFoundException
      */
     public function getRefundInfo($refundId)
     {
@@ -681,83 +504,144 @@ class Client
     }
 
     /**
-     * @return array
-     */
-    public function getConfig()
-    {
-        return $this->config;
-    }
-
-    /**
-     * @param array $config
-     */
-    public function setConfig($config)
-    {
-        $this->config = $config;
-    }
-
-    /**
-     * Установка значение задержки между повторными запросами
+     * Создание Webhook
+     * Запрос позволяет подписаться на уведомления о событии (например, на переход платежа в статус successed).
      *
-     * @param int $timeout
+     * @param $request
+     * @param null $idempotencyKey
+     * @return Webhook|null
      *
-     * @return Client
+     * @throws ApiException
+     * @throws BadApiRequestException
+     * @throws AuthorizeException
+     * @throws ForbiddenException
+     * @throws InternalServerError
+     * @throws NotFoundException
+     * @throws ResponseProcessingException
+     * @throws TooManyRequestsException
+     * @throws UnauthorizedException
+     * @throws Exception
      */
-    public function setRetryTimeout($timeout)
+    public function addWebhook($request, $idempotencyKey = null)
     {
-        $this->timeout = $timeout;
+        $path = self::WEBHOOKS_PATH;
 
-        return $this;
-    }
+        $headers = array();
 
-    /**
-     * Установка значения количества попыток повторных запросов при статусе 202
-     *
-     * @param int $attempts
-     *
-     * @return Client
-     */
-    public function setMaxRequestAttempts($attempts)
-    {
-        $this->attempts = $attempts;
+        if ($idempotencyKey) {
+            $headers[self::IDEMPOTENCY_KEY_HEADER] = $idempotencyKey;
+        } else {
+            $headers[self::IDEMPOTENCY_KEY_HEADER] = UUID::v4();
+        }
+        if (is_array($request)) {
+            $webhook = new Webhook($request);
+        } else {
+            $webhook = $request;
+        }
 
-        return $this;
-    }
+        if (!($webhook instanceof Webhook)) {
+            throw new InvalidArgumentException();
+        }
 
-    /**
-     * @param $serializedData
-     *
-     * @return string
-     * @throws \Exception
-     */
-    private function encodeData($serializedData)
-    {
-        $result = json_encode($serializedData);
-        if ($result === false) {
-            $errorCode = json_last_error();
-            throw new JsonException("Failed serialize json.", $errorCode);
+        $httpBody = $this->encodeData($webhook->jsonSerialize());
+
+        $response = $this->execute($path, HttpVerb::POST, null, $httpBody, $headers);
+
+        $result = null;
+        if ($response->getCode() == 200) {
+            $resultArray = $this->decodeData($response);
+            $result      = new Webhook($resultArray);
+        } else {
+            $this->handleError($response);
         }
 
         return $result;
     }
 
     /**
-     * @param ResponseObject $response
+     * Удаление Webhook
+     * Запрос позволяет отписаться от уведомлений о событии для переданного OAuth-токена. Чтобы удалить webhook, вам нужно передать в запросе его идентификатор.
      *
-     * @return array
+     * @param $webhookId
+     * @param null $idempotencyKey
+
+     * @return Webhook|null
+     *
+     * @throws ApiException
+     * @throws BadApiRequestException
+     * @throws Common\Exceptions\AuthorizeException
+     * @throws ForbiddenException
+     * @throws InternalServerError
+     * @throws NotFoundException
+     * @throws ResponseProcessingException
+     * @throws TooManyRequestsException
+     * @throws UnauthorizedException
+     * @throws Exception
      */
-    private function decodeData(ResponseObject $response)
+    public function removeWebhook($webhookId, $idempotencyKey = null)
     {
-        $resultArray = json_decode($response->getBody(), true);
-        if ($resultArray === null) {
-            throw new JsonException('Failed to decode response', json_last_error());
+        $headers = array();
+
+        if ($idempotencyKey) {
+            $headers[self::IDEMPOTENCY_KEY_HEADER] = $idempotencyKey;
+        } else {
+            $headers[self::IDEMPOTENCY_KEY_HEADER] = UUID::v4();
+        }
+        $path    = self::WEBHOOKS_PATH.'/'.$webhookId;
+
+        $response = $this->execute($path, HttpVerb::DELETE, null, null, $headers);
+
+        $result = null;
+        if ($response->getCode() == 200) {
+            $resultArray = $this->decodeData($response);
+            $result      = new Webhook($resultArray);
+        } else {
+            $this->handleError($response);
         }
 
-        return $resultArray;
+        return $result;
     }
 
     /**
-     * @param ResponseObject $response
+     * Список созданных Webhook
+     * Запрос позволяет узнать, какие webhook есть для переданного OAuth-токена.
+     *
+     * @return WebhookListResponse|null
+     *
+     * @throws ApiException
+     * @throws BadApiRequestException
+     * @throws Common\Exceptions\AuthorizeException
+     * @throws ForbiddenException
+     * @throws InternalServerError
+     * @throws NotFoundException
+     * @throws ResponseProcessingException
+     * @throws TooManyRequestsException
+     * @throws UnauthorizedException
+     * @throws ExtensionNotFoundException
+     */
+    public function getWebhooks()
+    {
+        $path = self::WEBHOOKS_PATH;
+
+        $response = $this->execute($path, HttpVerb::GET, null);
+
+        $result = null;
+        if ($response->getCode() == 200) {
+            $responseArray = $this->decodeData($response);
+            $result        = new WebhookListResponse($responseArray);
+        } else {
+            $this->handleError($response);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Получить список платежей магазина.
+     *
+     * @param PaymentInterface|RefundInterface|array|null $filter
+     *
+     * @return ReceiptsResponse
      *
      * @throws ApiException
      * @throws BadApiRequestException
@@ -767,87 +651,119 @@ class Client
      * @throws ResponseProcessingException
      * @throws TooManyRequestsException
      * @throws UnauthorizedException
+     * @throws ExtensionNotFoundException
+     * @throws Exception
      */
-    private function handleError(ResponseObject $response)
+    public function getReceipts($filter = null)
     {
-        switch ($response->getCode()) {
-            case BadApiRequestException::HTTP_CODE:
-                throw new BadApiRequestException($response->getHeaders(), $response->getBody());
-                break;
-            case ForbiddenException::HTTP_CODE:
-                throw new ForbiddenException($response->getHeaders(), $response->getBody());
-                break;
-            case UnauthorizedException::HTTP_CODE:
-                throw new UnauthorizedException($response->getHeaders(), $response->getBody());
-                break;
-            case InternalServerError::HTTP_CODE:
-                throw new InternalServerError($response->getHeaders(), $response->getBody());
-                break;
-            case NotFoundException::HTTP_CODE:
-                throw new NotFoundException($response->getHeaders(), $response->getBody());
-                break;
-            case TooManyRequestsException::HTTP_CODE:
-                throw new TooManyRequestsException($response->getHeaders(), $response->getBody());
-                break;
-            case ResponseProcessingException::HTTP_CODE:
-                throw new ResponseProcessingException($response->getHeaders(), $response->getBody());
-                break;
-            default:
-                if ($response->getCode() > 399) {
-                    throw new ApiException(
-                        'Unexpected response error code',
-                        $response->getCode(),
-                        $response->getHeaders(),
-                        $response->getBody()
-                    );
-                }
-        }
-    }
+        $path = self::RECEIPTS_PATH;
 
-    /**
-     * Задержка между повторными запросами
-     *
-     * @param $response
-     */
-    protected function delay($response)
-    {
-        $timeout      = $this->timeout;
-        $responseData = $this->decodeData($response);
-        if ($timeout) {
-            $delay = $timeout;
+        if ($filter === null) {
+            $queryParams = array();
         } else {
-            if (isset($responseData['retry_after'])) {
-                $delay = $responseData['retry_after'];
-            } else {
-                $delay = self::DEFAULT_DELAY;
+            if (is_array($filter)) {
+                $filter = ReceiptsRequest::builder()->build($filter);
             }
+            $serializer  = new ReceiptsRequestSerializer();
+            $queryParams = $serializer->serialize($filter);
         }
-        usleep($delay * 1000);
+
+        $response = $this->execute($path, HttpVerb::GET, $queryParams);
+
+        $receiptsResponse = null;
+        if ($response->getCode() == 200) {
+            $responseArray    = $this->decodeData($response);
+            $receiptsResponse = new ReceiptsResponse($responseArray);
+        } else {
+            $this->handleError($response);
+        }
+
+        return $receiptsResponse;
     }
 
     /**
-     * Выполнение запроса и обработка 202 статуса
+     * @param CreatePostReceiptRequestInterface|array $receipt
+     * @param string|null $idempotenceKey
      *
-     * @param $path
-     * @param $method
-     * @param $queryParams
-     * @param null $httpBody
-     * @param array $headers
+     * @return AbstractReceiptResponse|null
      *
-     * @return ResponseObject
+     * @throws ApiException
+     * @throws BadApiRequestException
+     * @throws Common\Exceptions\ApiConnectionException
      * @throws Common\Exceptions\AuthorizeException
+     * @throws ForbiddenException
+     * @throws InternalServerError
+     * @throws NotFoundException
+     * @throws ResponseProcessingException
+     * @throws TooManyRequestsException
+     * @throws UnauthorizedException
+     * @throws Exception
      */
-    private function execute($path, $method, $queryParams, $httpBody = null, $headers = array())
+    public function createReceipt($receipt, $idempotenceKey = null)
     {
-        $attempts = $this->attempts;
-        $response = $this->apiClient->call($path, $method, $queryParams, $httpBody, $headers);
+        $path = self::RECEIPTS_PATH;
 
-        while ($response->getCode() == 202 && $attempts > 0) {
-            $this->delay($response);
-            $attempts--;
-            $response = $this->apiClient->call($path, $method, $queryParams, $httpBody, $headers);
+        $headers = array();
+
+        if ($idempotenceKey) {
+            $headers[self::IDEMPOTENCY_KEY_HEADER] = $idempotenceKey;
+        } else {
+            $headers[self::IDEMPOTENCY_KEY_HEADER] = UUID::v4();
         }
 
-        return $response;
+        if (is_array($receipt)) {
+            $receipt = CreatePostReceiptRequest::builder()->build($receipt);
+        }
+
+        $serializer     = new CreatePostReceiptRequestSerializer();
+        $serializedData = $serializer->serialize($receipt);
+        $httpBody       = $this->encodeData($serializedData);
+
+        $response = $this->execute($path, HttpVerb::POST, null, $httpBody, $headers);
+
+        $receiptResponse = null;
+        if ($response->getCode() == 200) {
+            $resultArray = $this->decodeData($response);
+            $factory = new ReceiptResponseFactory();
+            $receiptResponse = $factory->factory($resultArray);
+        } else {
+            $this->handleError($response);
+        }
+
+        return $receiptResponse;
+    }
+
+    /**
+     * Информация о магазине
+     * Запрос позволяет получить информацию о магазине для переданного OAuth-токена.
+     *
+     * @return array|null
+     *
+     * @throws ApiException
+     * @throws BadApiRequestException
+     * @throws Common\Exceptions\AuthorizeException
+     * @throws ForbiddenException
+     * @throws InternalServerError
+     * @throws NotFoundException
+     * @throws ResponseProcessingException
+     * @throws TooManyRequestsException
+     * @throws UnauthorizedException
+     * @throws ExtensionNotFoundException
+     */
+    public function me()
+    {
+        $path = self::ME_PATH;
+
+        $response = $this->execute($path, HttpVerb::GET, null);
+
+        $result = null;
+        if ($response->getCode() == 200) {
+            $responseArray = $this->decodeData($response);
+            $result        = $responseArray;
+        } else {
+            $this->handleError($response);
+        }
+
+        return $result;
     }
 }

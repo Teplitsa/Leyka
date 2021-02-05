@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,12 +24,12 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Model;
+namespace YooKassa\Model;
 
 /**
  * Interface RefundInterface
  *
- * @package YandexCheckout\Model
+ * @package YooKassa\Model
  *
  * @property-read string $id Идентификатор возврата платежа
  * @property-read string $paymentId Идентификатор платежа
@@ -40,7 +40,7 @@ namespace YandexCheckout\Model;
  * @property-read AmountInterface $amount Сумма возврата
  * @property-read string $receiptRegistration Статус регистрации чека
  * @property-read string $receipt_registration Статус регистрации чека
- * @property-read string $comment Комментарий, основание для возврата средств покупателю
+ * @property-read string $description Комментарий, основание для возврата средств покупателю
  */
 interface RefundInterface
 {
@@ -84,5 +84,17 @@ interface RefundInterface
      * Возвращает комментарий к возврату
      * @return string Комментарий, основание для возврата средств покупателю
      */
-    function getComment();
+    function getDescription();
+
+    /**
+     * Возвращает информацию об инициаторе платежа или возврата
+     * @return RequestorInterface
+     */
+    function getRequestor();
+
+    /**
+     * Возвращает информацию о распределении денег — сколько и в какой магазин нужно перевести
+     * @return SourceInterface[]
+     */
+    function getSources();
 }

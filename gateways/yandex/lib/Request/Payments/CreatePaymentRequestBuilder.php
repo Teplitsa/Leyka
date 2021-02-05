@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,27 +24,27 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Request\Payments;
+namespace YooKassa\Request\Payments;
 
-use YandexCheckout\Common\AbstractPaymentRequestBuilder;
-use YandexCheckout\Common\Exceptions\EmptyPropertyValueException;
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueException;
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueTypeException;
-use YandexCheckout\Common\Exceptions\InvalidRequestException;
-use YandexCheckout\Model\Airline;
-use YandexCheckout\Model\AirlineInterface;
-use YandexCheckout\Model\ConfirmationAttributes\AbstractConfirmationAttributes;
-use YandexCheckout\Model\ConfirmationAttributes\ConfirmationAttributesFactory;
-use YandexCheckout\Model\Metadata;
-use YandexCheckout\Model\PaymentData\AbstractPaymentData;
-use YandexCheckout\Model\PaymentData\PaymentDataFactory;
-use YandexCheckout\Model\Recipient;
-use YandexCheckout\Model\RecipientInterface;
+use YooKassa\Common\AbstractPaymentRequestBuilder;
+use YooKassa\Common\Exceptions\EmptyPropertyValueException;
+use YooKassa\Common\Exceptions\InvalidPropertyValueException;
+use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
+use YooKassa\Common\Exceptions\InvalidRequestException;
+use YooKassa\Model\Airline;
+use YooKassa\Model\AirlineInterface;
+use YooKassa\Model\ConfirmationAttributes\AbstractConfirmationAttributes;
+use YooKassa\Model\ConfirmationAttributes\ConfirmationAttributesFactory;
+use YooKassa\Model\Metadata;
+use YooKassa\Model\PaymentData\AbstractPaymentData;
+use YooKassa\Model\PaymentData\PaymentDataFactory;
+use YooKassa\Model\Recipient;
+use YooKassa\Model\RecipientInterface;
 
 /**
  * Класс билдера объектов запрсов к API на создание платежа
  *
- * @package YandexCheckout\Request\Payments
+ * @package YooKassa\Request\Payments
  */
 class CreatePaymentRequestBuilder extends AbstractPaymentRequestBuilder
 {
@@ -298,7 +298,7 @@ class CreatePaymentRequestBuilder extends AbstractPaymentRequestBuilder
     }
 
     /**
-     * Строит и возвращает объект запроса для отправки в API яндекс денег
+     * Строит и возвращает объект запроса для отправки в API ЮKassa
      * @param array|null $options Массив параметров для установки в объект запроса
      * @return CreatePaymentRequestInterface Инстанс объекта запроса
      *
@@ -309,9 +309,8 @@ class CreatePaymentRequestBuilder extends AbstractPaymentRequestBuilder
         if (!empty($options)) {
             $this->setOptions($options);
         }
-        $accountId = $this->recipient->getAccountId();
         $gatewayId = $this->recipient->getGatewayId();
-        if (!empty($accountId) && !empty($gatewayId)) {
+        if (!empty($gatewayId)) {
             $this->currentObject->setRecipient($this->recipient);
         }
         if ($this->receipt->notEmpty()) {
@@ -321,6 +320,8 @@ class CreatePaymentRequestBuilder extends AbstractPaymentRequestBuilder
             $this->currentObject->setAirline($this->airline);
         }
         $this->currentObject->setAmount($this->amount);
+        $this->currentObject->setTransfers($this->transfers);
+
         return parent::build();
     }
 

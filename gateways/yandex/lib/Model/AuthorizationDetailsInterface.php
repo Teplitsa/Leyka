@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,12 +24,12 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Model;
+namespace YooKassa\Model;
 
 /**
  * Interface AuthorizationDetailsInterface - Данные об авторизации платежа
  *
- * @package YandexCheckout\Model
+ * @package YooKassa\Model
  *
  * @property-read string $rrn Retrieval Reference Number — уникальный идентификатор транзакции в системе эмитента
  * @property-read string $authCode Код авторизации банковской карты

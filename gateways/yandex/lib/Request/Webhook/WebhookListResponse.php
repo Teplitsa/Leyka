@@ -1,9 +1,8 @@
 <?php
-
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,45 +23,44 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Request;
+namespace YooKassa\Request\Webhook;
 
-use YandexCheckout\Common\AbstractObject;
+use YooKassa\Model\Webhook\Webhook;
 
-/**
- * Класс объекта ответа на запрос получения доступных способов оплаты
- *
- * @package YandexCheckout\Request
- *
- * @property-read PaymentOptionsResponseItem[] $items
- */
-class PaymentOptionsResponse extends AbstractObject
+class WebhookListResponse
 {
+    private $type;
+
     /**
      * Список способов оплаты подходящих для оплаты заказа
      * Если нет ни одного доступного способа оплаты, список будет пустым
-     * @var PaymentOptionsResponseItem[] Список способов оплаты
+     * @var Webhook[] Список способов оплаты
      */
-    private $_items;
+    private $items;
 
     /**
      * Конструктор, устанавливает список полученныз от API способов оплаты
+     *
      * @param array $response Разобранный ответ от API в виде массива
      */
     public function __construct($response)
     {
-        $this->_items = array();
+        if (!empty($response['type'])) {
+            $this->type = $response['type'];
+        }
+        $this->items = array();
         foreach ($response['items'] as $item) {
-            $this->_items[] = new PaymentOptionsResponseItem($item);
+            $this->items[] = new Webhook($item);
         }
     }
 
     /**
      * Возаращает список способов оплаты подходящих для оплаты заказа
      * Если нет ни одного доступного способа оплаты, список будет пустым
-     * @return PaymentOptionsResponseItem[] Список способов оплаты
+     * @return Webhook[] Список способов оплаты
      */
     public function getItems()
     {
-        return $this->_items;
+        return $this->items;
     }
 }

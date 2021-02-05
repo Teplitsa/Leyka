@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +24,15 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Model\Confirmation;
+namespace YooKassa\Model\Confirmation;
 
-use YandexCheckout\Model\ConfirmationType;
+use YooKassa\Model\ConfirmationType;
 
 /**
  * Сценарий при котором необходимо ожидать пока пользователь самостоятельно подтвердит платеж. Например,
  * пользователь подтверждает платеж ответом на SMS или в приложении партнера
  *
- * @package YandexCheckout\Model\Confirmation
+ * @package YooKassa\Model\Confirmation
  */
 class ConfirmationExternal extends AbstractConfirmation
 {

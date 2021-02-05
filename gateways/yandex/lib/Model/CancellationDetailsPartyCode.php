@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,9 +24,9 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Model;
+namespace YooKassa\Model;
 
-use YandexCheckout\Common\AbstractEnum;
+use YooKassa\Common\AbstractEnum;
 
 /**
  * CancellationDetailsPartyCode - Возможные инициаторы отмены платежа
@@ -39,9 +39,9 @@ class CancellationDetailsPartyCode extends AbstractEnum
     const MERCHANT = 'merchant';
 
     /**
-     * Яндекс.Касса
+     * ЮKassa
      */
-    const YANDEX_CHECKOUT = 'yandex_checkout';
+    const YOO_KASSA = 'yoo_kassa';
 
     /**
      * «Внешние» участники платежного процесса (например, эмитент, сторонний платежный сервис)
@@ -51,7 +51,7 @@ class CancellationDetailsPartyCode extends AbstractEnum
 
     protected static $validValues = array(
         self::MERCHANT        => true,
-        self::YANDEX_CHECKOUT => true,
+        self::YOO_KASSA       => true,
         self::PAYMENT_NETWORK => true,
     );
 }

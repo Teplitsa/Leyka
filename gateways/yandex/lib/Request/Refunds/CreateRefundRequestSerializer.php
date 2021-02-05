@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,59 +24,113 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Request\Refunds;
+namespace YooKassa\Request\Refunds;
+
+use YooKassa\Model\AmountInterface;
+use YooKassa\Model\ReceiptItem;
+use YooKassa\Model\SourceInterface;
 
 /**
  * Класс сериалайзера запросов к API на создание нового возврата средств
  *
- * @package YandexCheckout\Request\Refunds
+ * @package YooKassa\Request\Refunds
  */
 class CreateRefundRequestSerializer
 {
     /**
      * Сериализует переданный объект запроса к API в массив
+     *
      * @param CreateRefundRequestInterface $request Сериализуемый объект запроса
+     *
      * @return array Ассоциативный массив для передачи в API
      */
     public function serialize(CreateRefundRequestInterface $request)
     {
         $result = array(
             'payment_id' => $request->getPaymentId(),
-            'amount' => array(
+            'amount'     => array(
                 'value'    => $request->getAmount()->getValue(),
                 'currency' => $request->getAmount()->getCurrency(),
             ),
         );
-        if ($request->hasComment()) {
-            $result['comment'] = $request->getComment();
+        if ($request->hasDescription()) {
+            $result['description'] = $request->getDescription();
         }
         if ($request->hasReceipt()) {
-            $receipt = $request->getReceipt();
+            $receipt           = $request->getReceipt();
             $result['receipt'] = array();
+            /** @var ReceiptItem $item */
             foreach ($receipt->getItems() as $item) {
-                $result['receipt']['items'][] = array(
-                    'description' => $item->getDescription(),
-                    'amount'      => array(
+                $itemArray = array(
+                    'description'     => $item->getDescription(),
+                    'amount'          => array(
                         'value'    => $item->getPrice()->getValue(),
                         'currency' => $item->getPrice()->getCurrency(),
                     ),
-                    'quantity'    => $item->getQuantity(),
-                    'vat_code'    => $item->getVatCode(),
+                    'quantity'        => $item->getQuantity(),
+                    'vat_code'        => $item->getVatCode(),
                 );
+
+                if ($item->getPaymentSubject()) {
+                    $itemArray['payment_subject'] = $item->getPaymentSubject();
+                }
+
+                if ($item->getPaymentMode()) {
+                    $itemArray['payment_mode'] = $item->getPaymentMode();
+                }
+
+                $result['receipt']['items'][] = $itemArray;
             }
-            $value = $receipt->getEmail();
+
+            $value = $receipt->getCustomer()->getEmail();
             if (!empty($value)) {
-                $result['receipt']['email'] = $value;
+                $result['receipt']['customer']['email'] = $value;
             }
-            $value = $receipt->getPhone();
+            $value = $receipt->getCustomer()->getPhone();
             if (!empty($value)) {
-                $result['receipt']['phone'] = $value;
+                $result['receipt']['customer']['phone'] = $value;
             }
             $value = $receipt->getTaxSystemCode();
             if (!empty($value)) {
                 $result['receipt']['tax_system_code'] = $value;
             }
         }
+
+        if ($request->hasSources()) {
+            $result['sources'] = $this->serializeSources($request->getSources());
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param AmountInterface $amount
+     *
+     * @return array
+     */
+    private function serializeAmount(AmountInterface $amount)
+    {
+        return array(
+            'value'    => $amount->getValue(),
+            'currency' => $amount->getCurrency(),
+        );
+    }
+
+    /**
+     * @param SourceInterface[] $transfers
+     *
+     * @return array
+     */
+    private function serializeSources(array $sources)
+    {
+        $result = array();
+        foreach ($sources as $source) {
+            $result[] = array(
+                'account_id' => $source->getAccountId(),
+                'amount' => $this->serializeAmount($source->getAmount())
+            );
+        }
+
         return $result;
     }
 }

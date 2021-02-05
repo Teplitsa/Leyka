@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,19 +24,20 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Request\Refunds;
+namespace YooKassa\Request\Refunds;
 
-use YandexCheckout\Model\AmountInterface;
-use YandexCheckout\Model\ReceiptInterface;
+use YooKassa\Model\AmountInterface;
+use YooKassa\Model\ReceiptInterface;
+use YooKassa\Model\SourceInterface;
 
 /**
  * Интерфейс объекта запроса на возврат
  *
- * @package YandexCheckout\Request\Refunds
+ * @package YooKassa\Request\Refunds
  *
  * @property-read string $paymentId Айди платежа для которого создаётся возврат
  * @property-read AmountInterface $amount Сумма возврата
- * @property-read string $comment Комментарий к операции возврата, основание для возврата средств покупателю.
+ * @property-read string $description Комментарий к операции возврата, основание для возврата средств покупателю.
  * @property-read ReceiptInterface|null $receipt Инстанс чека или null
  */
 interface CreateRefundRequestInterface
@@ -57,13 +58,13 @@ interface CreateRefundRequestInterface
      * Возвращает комментарий к возврату или null, если комментарий не задан
      * @return string Комментарий к операции возврата, основание для возврата средств покупателю.
      */
-    function getComment();
+    function getDescription();
 
     /**
      * Проверяет задан ли комментарий к создаваемому возврату
      * @return bool True если комментарий установлен, false если нет
      */
-    function hasComment();
+    function hasDescription();
 
     /**
      * Возвращает инстанс чека или null если чек не задан
@@ -76,4 +77,14 @@ interface CreateRefundRequestInterface
      * @return bool True если чек есть, false если нет
      */
     function hasReceipt();
+
+    /**
+     * @return SourceInterface[]
+     */
+    function getSources();
+
+    /**
+     * @return bool
+     */
+    function hasSources();
 }

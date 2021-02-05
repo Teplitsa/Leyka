@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Common\Exceptions;
+namespace YooKassa\Common\Exceptions;
 
 class ResponseProcessingException extends ApiException
 {
@@ -40,7 +40,7 @@ class ResponseProcessingException extends ApiException
         $message   = '';
 
         if (isset($errorData['description'])) {
-            $message .= $errorData['description'].'.';
+            $message .= $errorData['description'] . '. ';
         }
 
         if (isset($errorData['retry_after'])) {
@@ -51,6 +51,6 @@ class ResponseProcessingException extends ApiException
             $this->type = $errorData['type'];
         }
 
-        parent::__construct($message, self::HTTP_CODE, $responseHeaders, $responseBody);
+        parent::__construct(trim($message), self::HTTP_CODE, $responseHeaders, $responseBody);
     }
 }

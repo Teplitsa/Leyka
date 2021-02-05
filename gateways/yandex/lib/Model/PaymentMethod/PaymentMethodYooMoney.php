@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,35 +24,35 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Model\PaymentMethod;
+namespace YooKassa\Model\PaymentMethod;
 
-use YandexCheckout\Common\Exceptions\EmptyPropertyValueException;
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueException;
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueTypeException;
-use YandexCheckout\Helpers\TypeCast;
-use YandexCheckout\Model\PaymentMethodType;
+use YooKassa\Common\Exceptions\EmptyPropertyValueException;
+use YooKassa\Common\Exceptions\InvalidPropertyValueException;
+use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
+use YooKassa\Helpers\TypeCast;
+use YooKassa\Model\PaymentMethodType;
 
 /**
- * PaymentMethodYandexWallet
- * Объект, описывающий метод оплаты, при оплате через Яндекс Деньги
+ * PaymentMethodYooMoney
+ * Объект, описывающий метод оплаты, при оплате через ЮMoney
  * @property string $type Тип объекта
- * @property string $accountNumber Номер кошелька в Яндекс.Деньгах с которого была произведена оплата.
- * @property string $account_number Номер кошелька в Яндекс.Деньгах с которого была произведена оплата.
+ * @property string $accountNumber Номер кошелька в ЮMoney с которого была произведена оплата.
+ * @property string $account_number Номер кошелька в ЮMoney с которого была произведена оплата.
  */
-class PaymentMethodYandexWallet extends AbstractPaymentMethod
+class PaymentMethodYooMoney extends AbstractPaymentMethod
 {
     /**
-     * @var string Номер кошелька в Яндекс.Деньгах с которого была произведена оплата.
+     * @var string Номер кошелька в ЮMoney с которого была произведена оплата.
      */
     private $_accountNumber;
 
     public function __construct()
     {
-        $this->_setType(PaymentMethodType::YANDEX_MONEY);
+        $this->_setType(PaymentMethodType::YOO_MONEY);
     }
 
     /**
-     * @return string Номер кошелька в Яндекс.Деньгах с которого была произведена оплата.
+     * @return string Номер кошелька в ЮMoney с которого была произведена оплата.
      */
     public function getAccountNumber()
     {
@@ -60,25 +60,25 @@ class PaymentMethodYandexWallet extends AbstractPaymentMethod
     }
 
     /**
-     * @param string $value Номер кошелька в Яндекс.Деньгах с которого была произведена оплата.
+     * @param string $value Номер кошелька в ЮMoney с которого была произведена оплата.
      */
     public function setAccountNumber($value)
     {
         if ($value === null || $value === '') {
             throw new EmptyPropertyValueException(
-                'Empty accountNumber value', 0, 'PaymentMethodYandexWallet.accountNumber'
+                'Empty accountNumber value', 0, 'PaymentMethodYooMoney.accountNumber'
             );
         } elseif (TypeCast::canCastToString($value)) {
             if (preg_match('/^[0-9]{11,33}$/', $value)) {
                 $this->_accountNumber = (string)$value;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid accountNumber value', 0, 'PaymentMethodYandexWallet.accountNumber', $value
+                    'Invalid accountNumber value', 0, 'PaymentMethodYooMoney.accountNumber', $value
                 );
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid accountNumber value type', 0, 'PaymentMethodYandexWallet.accountNumber', $value
+                'Invalid accountNumber value type', 0, 'PaymentMethodYooMoney.accountNumber', $value
             );
         }
     }

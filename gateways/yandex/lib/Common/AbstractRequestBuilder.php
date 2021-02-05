@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +24,15 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Common;
+namespace YooKassa\Common;
 
-use YandexCheckout\Common\Exceptions\InvalidPropertyException;
-use YandexCheckout\Common\Exceptions\InvalidRequestException;
+use YooKassa\Common\Exceptions\InvalidPropertyException;
+use YooKassa\Common\Exceptions\InvalidRequestException;
 
 /**
  * Базовый класс билдера запросов
  *
- * @package YandexCheckout\Common
+ * @package YooKassa\Common
  */
 abstract class AbstractRequestBuilder
 {
@@ -106,8 +106,9 @@ abstract class AbstractRequestBuilder
             if (method_exists($this, $method)) {
                 $this->{$method} ($value);
             } else {
-                $tmp = preg_replace('/\_(\w)/', '\1', $property);
-                $method = 'set' . ucfirst($tmp);
+                $property = str_replace('.', '_', $property);
+                $field = implode('', array_map('ucfirst', explode('_', $property)));
+                $method = 'set' . ucfirst($field);
                 if (method_exists($this, $method)) {
                     $this->{$method} ($value);
                 }

@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,27 +24,18 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Request\Payments;
+namespace YooKassa\Request\Payments;
 
-use YandexCheckout\Model\AuthorizationDetails;
-use YandexCheckout\Model\CancellationDetails;
-use YandexCheckout\Model\Confirmation\ConfirmationRedirect;
-use YandexCheckout\Model\Confirmation\ConfirmationExternal;
-use YandexCheckout\Model\ConfirmationType;
-use YandexCheckout\Model\Metadata;
-use YandexCheckout\Model\MonetaryAmount;
-use YandexCheckout\Model\Payment;
-use YandexCheckout\Model\PaymentInterface;
-use YandexCheckout\Model\PaymentMethod\AbstractPaymentMethod;
-use YandexCheckout\Model\PaymentMethod\PaymentMethodFactory;
-use YandexCheckout\Model\Recipient;
+use Exception;
+use YooKassa\Common\AbstractObject;
+use YooKassa\Model\PaymentInterface;
 
 /**
  * Класс объекта ответа от API со списком платежей магазина
  *
- * @package YandexCheckout\Request\Payments
+ * @package YooKassa\Request\Payments
  */
-class PaymentsResponse
+class PaymentsResponse extends AbstractObject
 {
     /**
      * @var PaymentInterface[] Массив платежей
@@ -54,79 +45,23 @@ class PaymentsResponse
     /**
      * @var string|null Токен следующей страницы
      */
-    private $nextPage;
+    private $nextCursor;
 
     /**
      * Конструктор, устанавливает свойства объекта из пришедшего из API ассоциативного массива
-     * @param array $options Массив настроек, пришедший от API
+     *
+     * @param array $sourceArray Массив настроек, пришедший от API
+     * @throws Exception
      */
-    public function __construct($options)
+    public function fromArray($sourceArray)
     {
         $this->items = array();
-        foreach ($options['items'] as $paymentInfo) {
-            $payment = new Payment();
-            $payment->setId($paymentInfo['id']);
-            $payment->setStatus($paymentInfo['status']);
-            $payment->setAmount(new MonetaryAmount(
-                $paymentInfo['amount']['value'],
-                $paymentInfo['amount']['currency']
-            ));
-            if (!empty($paymentInfo['description'])) {
-                $payment->setDescription($paymentInfo['description']);
-            }
-            $payment->setCreatedAt(strtotime($paymentInfo['created_at']));
-            $payment->setPaymentMethod($this->factoryPaymentMethod($paymentInfo['payment_method']));
-            $payment->setPaid($paymentInfo['paid']);
-
-            if (!empty($paymentInfo['recipient'])) {
-                $recipient = new Recipient();
-                $recipient->setAccountId($paymentInfo['recipient']['account_id']);
-                $recipient->setGatewayId($paymentInfo['recipient']['gateway_id']);
-                $payment->setRecipient($recipient);
-            }
-            if (!empty($paymentInfo['captured_at'])) {
-                $payment->setCapturedAt(strtotime($paymentInfo['captured_at']));
-            }
-            if (!empty($paymentInfo['confirmation'])) {
-                if ($paymentInfo['confirmation']['type'] === ConfirmationType::REDIRECT) {
-                    $confirmation = new ConfirmationRedirect();
-                    $confirmation->setConfirmationUrl($paymentInfo['confirmation']['confirmation_url']);
-                    $confirmation->setEnforce($paymentInfo['confirmation']['enforce']);
-                    $confirmation->setReturnUrl($paymentInfo['confirmation']['return_url']);
-                } else {
-                    $confirmation = new ConfirmationExternal();
-                }
-                $payment->setConfirmation($confirmation);
-            }
-            if (!empty($paymentInfo['refunded_amount'])) {
-                $payment->setRefundedAmount(new MonetaryAmount(
-                    $paymentInfo['refunded_amount']['value'], $paymentInfo['refunded_amount']['currency']
-                ));
-            }
-            if (!empty($paymentInfo['receipt_registration'])) {
-                $payment->setReceiptRegistration($paymentInfo['receipt_registration']);
-            }
-            if (!empty($paymentInfo['metadata'])) {
-                $metadata = new Metadata();
-                foreach ($paymentInfo['metadata'] as $key => $value) {
-                    $metadata->offsetSet($key, $value);
-                }
-                $payment->setMetadata($metadata);
-            }
-            if (!empty($paymentInfo['cancellation_details'])) {
-                $payment->setCancellationDetails(new CancellationDetails(
-                    $paymentInfo['cancellation_details']['party'], $paymentInfo['cancellation_details']['reason']
-                ));
-            }
-            if (!empty($paymentInfo['authorization_details'])) {
-                $payment->setAuthorizationDetails(new AuthorizationDetails(
-                    $paymentInfo['authorization_details']['rrn'], $paymentInfo['authorization_details']['auth_code']
-                ));
-            }
+        foreach ($sourceArray['items'] as $paymentInfo) {
+            $payment = new PaymentResponse($paymentInfo);
             $this->items[] = $payment;
         }
-        if (!empty($options['next_page'])) {
-            $this->nextPage = $options['next_page'];
+        if (!empty($sourceArray['next_cursor'])) {
+            $this->nextCursor = $sourceArray['next_cursor'];
         }
     }
 
@@ -143,28 +78,18 @@ class PaymentsResponse
      * Возвращает токен следующей страницы, если он задан, или null
      * @return string|null Токен следующей страницы
      */
-    public function getNextPage()
+    public function getNextCursor()
     {
-        return $this->nextPage;
+        return $this->nextCursor;
     }
 
     /**
      * Проверяет имееотся ли в ответе токен следующей страницы
      * @return bool True если токен следующей страницы есть, false если нет
      */
-    public function hasNextPage()
+    public function hasNextCursor()
     {
-        return $this->nextPage !== null;
+        return $this->nextCursor !== null;
     }
 
-    /**
-     * Фабричный метод для создания объектов методов оплаты
-     * @param array $options Массив настроек метода оплаты
-     * @return AbstractPaymentMethod Используемый способ оплаты
-     */
-    private function factoryPaymentMethod($options)
-    {
-        $factory = new PaymentMethodFactory();
-        return $factory->factoryFromArray($options);
-    }
 }

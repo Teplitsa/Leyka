@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,14 +24,14 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Model\PaymentMethod;
+namespace YooKassa\Model\PaymentMethod;
 
-use YandexCheckout\Model\PaymentMethodType;
+use YooKassa\Model\PaymentMethodType;
 
 class PaymentMethodFactory
 {
     private $typeClassMap = array(
-        PaymentMethodType::YANDEX_MONEY   => 'PaymentMethodYandexWallet',
+        PaymentMethodType::YOO_MONEY      => 'PaymentMethodYooMoney',
         PaymentMethodType::BANK_CARD      => 'PaymentMethodBankCard',
         PaymentMethodType::SBERBANK       => 'PaymentMethodSberbank',
         PaymentMethodType::CASH           => 'PaymentMethodCash',
@@ -42,6 +42,10 @@ class PaymentMethodFactory
         PaymentMethodType::WEBMONEY       => 'PaymentMethodWebmoney',
         PaymentMethodType::ALFABANK       => 'PaymentMethodAlfaBank',
         PaymentMethodType::INSTALLMENTS   => 'PaymentMethodInstallments',
+        PaymentMethodType::B2B_SBERBANK   => 'PaymentMethodB2bSberbank',
+        PaymentMethodType::TINKOFF_BANK   => 'PaymentMethodTinkoffBank',
+        PaymentMethodType::PSB            => 'PaymentMethodPsb',
+        PaymentMethodType::WECHAT         => 'PaymentMethodWechat',
     );
 
     private $optionsMap = array(
@@ -53,6 +57,7 @@ class PaymentMethodFactory
 
     /**
      * @param string $type
+     *
      * @return AbstractPaymentMethod
      */
     public function factory($type)
@@ -63,13 +68,15 @@ class PaymentMethodFactory
         if (!array_key_exists($type, $this->typeClassMap)) {
             throw new \InvalidArgumentException('Invalid payment method data type "'.$type.'"');
         }
-        $className = __NAMESPACE__ . '\\' . $this->typeClassMap[$type];
+        $className = __NAMESPACE__.'\\'.$this->typeClassMap[$type];
+
         return new $className();
     }
 
     /**
      * @param array $data
      * @param string|null $type
+     *
      * @return AbstractPaymentMethod
      */
     public function factoryFromArray(array $data, $type = null)

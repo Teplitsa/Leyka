@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,13 +24,13 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Model\PaymentMethod;
+namespace YooKassa\Model\PaymentMethod;
 
-use YandexCheckout\Common\Exceptions\EmptyPropertyValueException;
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueException;
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueTypeException;
-use YandexCheckout\Helpers\TypeCast;
-use YandexCheckout\Model\PaymentMethodType;
+use YooKassa\Common\Exceptions\EmptyPropertyValueException;
+use YooKassa\Common\Exceptions\InvalidPropertyValueException;
+use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
+use YooKassa\Helpers\TypeCast;
+use YooKassa\Model\PaymentMethodType;
 
 /**
  * PaymentMethodBankCard
@@ -44,9 +44,19 @@ use YandexCheckout\Model\PaymentMethodType;
  * @property string $expiry_month Срок действия, месяц
  * @property string $cardType Тип банковской карты
  * @property string $card_type Тип банковской карты
+ * @property string $issuerCountry Тип банковской карты
+ * @property string $issuer_country Тип банковской карты
+ * @property string issuerName Тип банковской карты
+ * @property string $issuer_name Тип банковской карты
+ * @property string $source Тип банковской карты
  */
 class PaymentMethodBankCard extends AbstractPaymentMethod
 {
+    /**
+     * @var string Длина кода страны по ISO 3166 https://www.iso.org/obp/ui/#iso:pub:PUB500001:en
+     */
+    const ISO_3166_CODE_LENGTH = 2;
+
     /**
      * @var string Последние 4 цифры номера карты
      */
@@ -71,6 +81,21 @@ class PaymentMethodBankCard extends AbstractPaymentMethod
      * @var string Тип банковской карты
      */
     private $_cardType;
+
+    /**
+     * @var string Код страны, в которой выпущена карта
+     */
+    private $_issuerCountry;
+
+    /**
+     * @var string Наименование банка, выпустившего карту
+     */
+    private $_issuerName;
+
+    /**
+     * @var string Источник данных банковской карты
+     */
+    private $_source;
 
     public function __construct()
     {
@@ -228,18 +253,91 @@ class PaymentMethodBankCard extends AbstractPaymentMethod
         if ($value === null || $value === '') {
             throw new EmptyPropertyValueException('Empty cardType value', 0, 'PaymentMethodBankCard.cardType');
         } elseif (TypeCast::canCastToString($value)) {
-            $castedValue = (string)$value;
-            if (PaymentMethodCardType::valueExists($castedValue)) {
-                $this->_cardType = $castedValue;
-            } else {
-                throw new InvalidPropertyValueException(
-                    'Invalid cardType value', 0, 'PaymentMethodBankCard.cardType', $value
-                );
-            }
+            $this->_cardType = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
                 'Invalid cardType value type', 0, 'PaymentMethodBankCard.cardType', $value
             );
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getIssuerCountry()
+    {
+        return $this->_issuerCountry;
+    }
+
+    /**
+     * @param string $value
+     */
+    public function setIssuerCountry($value)
+    {
+        if ($value === null || $value === '') {
+            $this->_issuerCountry = (string)$value;
+        } elseif (!TypeCast::canCastToString($value)) {
+            throw new InvalidPropertyValueTypeException(
+                'Invalid issuerCountry value type', 0, 'PaymentMethodBankCard.issuerCountry', $value
+            );
+        } elseif (strlen($value) !== self::ISO_3166_CODE_LENGTH) {
+            throw new InvalidPropertyValueException(
+                'Invalid issuerCountry value', 0, 'PaymentMethodBankCard.issuerCountry', $value
+            );
+        }
+
+        $this->_issuerCountry = (string)$value;
+    }
+
+    /**
+     * @param string $value
+     */
+    public function setIssuerName($value)
+    {
+        if ($value === null || $value === '') {
+            $this->_issuerName = (string)$value;
+        } elseif (!TypeCast::canCastToString($value)) {
+            throw new EmptyPropertyValueException(
+                'Empty issuerName value', 0, 'PaymentMethodBankCard.issuerName'
+            );
+        }
+
+        $this->_issuerName = (string)$value;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIssuerName()
+    {
+        return $this->_issuerName;
+    }
+
+    /**
+     * @param string $value
+     */
+    public function setSource($value)
+    {
+        if ($value === null || $value === '') {
+            $this->_source = (string)$value;
+        } elseif (!TypeCast::canCastToEnumString($value)) {
+            throw new InvalidPropertyValueTypeException(
+                'Invalid source value type', 0, 'PaymentMethodBankCard.source', $value
+            );
+        } elseif (!BankCardSource::valueExists($value)) {
+            throw new InvalidPropertyValueException(
+                'Invalid source value', 0, 'PaymentMethodBankCard.source', $value
+            );
+        }
+
+        $this->_source = (string)$value;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSource()
+    {
+        return $this->_source;
     }
 }

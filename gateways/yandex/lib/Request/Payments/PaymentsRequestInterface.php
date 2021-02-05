@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,18 +24,22 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Request\Payments;
+namespace YooKassa\Request\Payments;
 
 /**
  * Interface PaymentsRequestInterface
  *
- * @package YandexCheckout\Request\Payments
+ * @package YooKassa\Request\Payments
  *
- * @property-read string|null $page Страница выдачи результатов, которую необходимо отобразить
+ * @property-read string|null $cursor Страница выдачи результатов, которую необходимо отобразить
  * @property-read \DateTime|null $createdAtGte Время создания, от (включительно)
  * @property-read \DateTime|null $createdAtGt Время создания, от (не включая)
  * @property-read \DateTime|null $createdAtLte Время создания, до (включительно)
  * @property-read \DateTime|null $createdAtLt Время создания, до (не включая)
+ * @property-read \DateTime|null $capturedAtGte Время подтверждения, от (включительно)
+ * @property-read \DateTime|null $capturedAtGt Время подтверждения, от (не включая)
+ * @property-read \DateTime|null $capturedAtLte Время подтверждения, до (включительно)
+ * @property-read \DateTime|null $capturedAtLt Время подтверждения, до (не включая)
  * @property-read integer|null $limit Ограничение количества объектов платежа, отображаемых на одной странице выдачи
  * @property-read string|null $recipientGatewayId Идентификатор шлюза.
  * @property-read string|null $status Статус платежа
@@ -46,13 +50,20 @@ interface PaymentsRequestInterface
      * Возвращает страницу выдачи результатов или null если она до этого не была установлена
      * @return string|null Страница выдачи результатов
      */
-    function getPage();
+    function getCursor();
 
     /**
      * Проверяет была ли установлена страница выдачи результатов
      * @return bool True если страница выдачи результатов была установлена, false если нет
      */
-    function hasPage();
+    function hasCursor();
+
+    /**
+     * Устанавливает страницу выдачи результатов
+     * @param string $value Страница
+     * @return void
+     */
+    function setCursor($value);
 
     /**
      * Возвращает дату создания от которой будут возвращены платежи или null если дата не была установлена
@@ -67,6 +78,13 @@ interface PaymentsRequestInterface
     function hasCreatedAtGte();
 
     /**
+     * Устанавливает дату создания от которой выбираются платежи
+     * @param \DateTime $value Дата
+     * @return void
+     */
+    function setCreatedAtGte($value);
+
+    /**
      * Возвращает дату создания от которой будут возвращены платежи или null если дата не была установлена
      * @return \DateTime|null Время создания, от (не включая)
      */
@@ -77,6 +95,13 @@ interface PaymentsRequestInterface
      * @return bool True если дата была установлена, false если нет
      */
     function hasCreatedAtGt();
+
+    /**
+     * Устанавливает дату создания от которой выбираются платежи
+     * @param \DateTime $value Дата
+     * @return void
+     */
+    function setCreatedAtGt($value);
 
     /**
      * Возвращает дату создания до которой будут возвращены платежи или null если дата не была установлена
@@ -91,6 +116,13 @@ interface PaymentsRequestInterface
     function hasCreatedAtLte();
 
     /**
+     * Устанавливает дату создания до которой выбираются платежи
+     * @param \DateTime $value Дата
+     * @return void
+     */
+    function setCreatedAtLte($value);
+
+    /**
      * Возвращает дату создания до которой будут возвращены платежи или null если дата не была установлена
      * @return \DateTime|null Время создания, до (не включая)
      */
@@ -101,6 +133,13 @@ interface PaymentsRequestInterface
      * @return bool True если дата была установлена, false если нет
      */
     function hasCreatedAtLt();
+
+    /**
+     * Устанавливает дату создания до которой выбираются платежи
+     * @param \DateTime $value Дата
+     * @return void
+     */
+    function setCreatedAtLt($value);
 
     /**
      * Возвращает ограничение количества объектов платежа или null если оно до этого не было установлено
@@ -115,16 +154,11 @@ interface PaymentsRequestInterface
     function hasLimit();
 
     /**
-     * Возвращает идентификатор шлюза
-     * @return string|null Идентификатор шлюза
+     * Устанавливает ограничение количества объектов платежа
+     * @param int $value Количества объектов платежа на странице
+     * @return void
      */
-    function getRecipientGatewayId();
-
-    /**
-     * Проверяет был ли установлен идентификатор шлюза
-     * @return bool True если идентификатор шлюза был установлен, false если нет
-     */
-    function hasRecipientGatewayId();
+    function setLimit($value);
 
     /**
      * Возвращает статус выбираемых платежей или null если он до этого не был установлен
@@ -138,4 +172,10 @@ interface PaymentsRequestInterface
      */
     function hasStatus();
 
+    /**
+     * Устанавливает статус выбираемых платежей
+     * @param string $value Статус платежей
+     * @return void
+     */
+    function setStatus($value);
 }

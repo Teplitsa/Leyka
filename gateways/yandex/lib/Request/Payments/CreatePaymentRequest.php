@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,32 +24,32 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Request\Payments;
+namespace YooKassa\Request\Payments;
 
-use YandexCheckout\Common\AbstractPaymentRequest;
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueException;
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueTypeException;
-use YandexCheckout\Helpers\TypeCast;
-use YandexCheckout\Model\AirlineInterface;
-use YandexCheckout\Model\AmountInterface;
-use YandexCheckout\Model\Payment;
-use YandexCheckout\Model\PaymentData\AbstractPaymentData;
-use YandexCheckout\Model\ConfirmationAttributes\AbstractConfirmationAttributes;
-use YandexCheckout\Model\Metadata;
-use YandexCheckout\Model\ReceiptInterface;
-use YandexCheckout\Model\RecipientInterface;
+use YooKassa\Common\AbstractPaymentRequest;
+use YooKassa\Common\Exceptions\InvalidPropertyValueException;
+use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
+use YooKassa\Helpers\TypeCast;
+use YooKassa\Model\AirlineInterface;
+use YooKassa\Model\AmountInterface;
+use YooKassa\Model\Payment;
+use YooKassa\Model\PaymentData\AbstractPaymentData;
+use YooKassa\Model\ConfirmationAttributes\AbstractConfirmationAttributes;
+use YooKassa\Model\Metadata;
+use YooKassa\Model\ReceiptInterface;
+use YooKassa\Model\RecipientInterface;
 
 /**
  * Класс объекта запроса к API на проведение нового платежа
  *
- * @package YandexCheckout\Request\Payments
+ * @package YooKassa\Request\Payments
  *
  * @property RecipientInterface $recipient Получатель платежа, если задан
  * @property AmountInterface $amount Сумма создаваемого платежа
  * @property string $description Описание транзакции
  * @property ReceiptInterface $receipt Данные фискального чека 54-ФЗ
- * @property string $paymentToken Одноразовый токен для проведения оплаты, сформированный Yandex.Checkout JS widget
- * @property string $payment_token Одноразовый токен для проведения оплаты, сформированный Yandex.Checkout JS widget
+ * @property string $paymentToken Одноразовый токен для проведения оплаты, сформированный YooKassa JS widget
+ * @property string $payment_token Одноразовый токен для проведения оплаты, сформированный YooKassa JS widget
  * @property string $paymentMethodId Идентификатор записи о сохраненных платежных данных покупателя
  * @property string $payment_method_id Идентификатор записи о сохраненных платежных данных покупателя
  * @property AbstractPaymentData $paymentMethodData Данные используемые для создания метода оплаты
@@ -79,7 +79,7 @@ class CreatePaymentRequest extends AbstractPaymentRequest implements CreatePayme
     private $_description;
 
     /**
-     * @var string Одноразовый токен для проведения оплаты, сформированный Yandex.Checkout JS widget
+     * @var string Одноразовый токен для проведения оплаты, сформированный YooKassa JS widget
      */
     private $_paymentToken;
 
@@ -202,7 +202,7 @@ class CreatePaymentRequest extends AbstractPaymentRequest implements CreatePayme
 
     /**
      * Возвращает одноразовый токен для проведения оплаты
-     * @return string Одноразовый токен для проведения оплаты, сформированный Yandex.Checkout JS widget
+     * @return string Одноразовый токен для проведения оплаты, сформированный YooKassa JS widget
      */
     public function getPaymentToken()
     {
@@ -219,7 +219,7 @@ class CreatePaymentRequest extends AbstractPaymentRequest implements CreatePayme
     }
 
     /**
-     * Устанавливает одноразовый токен для проведения оплаты, сформированный Yandex.Checkout JS widget
+     * Устанавливает одноразовый токен для проведения оплаты, сформированный YooKassa JS widget
      * @param string $value Одноразовый токен для проведения оплаты
      *
      * @throws InvalidPropertyValueException Выбрасывается если переданное значение превышает допустимую длину
@@ -556,14 +556,6 @@ class CreatePaymentRequest extends AbstractPaymentRequest implements CreatePayme
     {
         if (!parent::validate()) {
             return false;
-        }
-        if ($this->_receipt !== null && $this->_receipt->notEmpty()) {
-            $email = $this->_receipt->getEmail();
-            $phone = $this->_receipt->getPhone();
-            if (empty($email) && empty($phone)) {
-                $this->setValidationError('Both email and phone values are empty in receipt');
-                return false;
-            }
         }
         if ($this->hasPaymentToken()) {
             if ($this->hasPaymentMethodId()) {

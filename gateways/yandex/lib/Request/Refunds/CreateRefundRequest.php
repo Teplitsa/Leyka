@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,22 +24,24 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Request\Refunds;
+namespace YooKassa\Request\Refunds;
 
-use YandexCheckout\Common\AbstractPaymentRequest;
-use YandexCheckout\Common\Exceptions\EmptyPropertyValueException;
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueException;
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueTypeException;
-use YandexCheckout\Helpers\TypeCast;
-use YandexCheckout\Model\AmountInterface;
-use YandexCheckout\Model\ReceiptInterface;
+use YooKassa\Common\AbstractPaymentRequest;
+use YooKassa\Common\Exceptions\EmptyPropertyValueException;
+use YooKassa\Common\Exceptions\InvalidPropertyValueException;
+use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
+use YooKassa\Helpers\TypeCast;
+use YooKassa\Model\AmountInterface;
+use YooKassa\Model\ReceiptInterface;
+use YooKassa\Model\Source;
+use YooKassa\Model\SourceInterface;
 
 /**
  * Класс объекта запроса для создания возврата
  *
  * @property string $paymentId Айди платежа для которого создаётся возврат
  * @property AmountInterface $amount Сумма возврата
- * @property string $comment Комментарий к операции возврата, основание для возврата средств покупателю.
+ * @property string $description Комментарий к операции возврата, основание для возврата средств покупателю.
  * @property ReceiptInterface|null $receipt Инстанс чека или null
  */
 class CreateRefundRequest extends AbstractPaymentRequest implements CreateRefundRequestInterface
@@ -52,7 +54,12 @@ class CreateRefundRequest extends AbstractPaymentRequest implements CreateRefund
     /**
      * @var string Комментарий к операции возврата, основание для возврата средств покупателю.
      */
-    private $_comment;
+    private $_description;
+
+    /**
+     * @var SourceInterface[]
+     */
+    private $_sources;
 
     /**
      * Возвращает айди платежа для которого создаётся возврат средств
@@ -97,44 +104,80 @@ class CreateRefundRequest extends AbstractPaymentRequest implements CreateRefund
      * Возвращает комментарий к возврату или null, если комментарий не задан
      * @return string Комментарий к операции возврата, основание для возврата средств покупателю.
      */
-    public function getComment()
+    public function getDescription()
     {
-        return $this->_comment;
+        return $this->_description;
     }
 
     /**
      * Проверяет задан ли комментарий к создаваемому возврату
      * @return bool True если комментарий установлен, false если нет
      */
-    public function hasComment()
+    public function hasDescription()
     {
-        return $this->_comment !== null;
+        return $this->_description !== null;
     }
 
     /**
      * Устанавливает комментарий к возврату
      * @param string $value Комментарий к операции возврата, основание для возврата средств покупателю
      *
-     * @throws InvalidPropertyValueException Выбрасывается если переданная строка длинее 250 символов
      * @throws InvalidPropertyValueTypeException Выбрасывается если была передана не строка
      */
-    public function setComment($value)
+    public function setDescription($value)
     {
         if ($value === null || $value === '') {
-            $this->_comment = null;
+            $this->_description = null;
         } elseif (TypeCast::canCastToString($value)) {
-            $length = mb_strlen($value, 'utf-8');
-            if ($length > 250) {
-                throw new InvalidPropertyValueException(
-                    'Invalid commend value in CreateRefundRequest', 0, 'CreateRefundRequest.comment', $value
-                );
-            }
-            $this->_comment = (string)$value;
+            $this->_description = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid commend value type in CreateRefundRequest', 0, 'CreateRefundRequest.comment', $value
+                'Invalid description value type in CreateRefundRequest', 0, 'CreateRefundRequest.description', $value
             );
         }
+    }
+
+    /**
+     * Устанавливает transfers (массив распределения денег между магазинами)
+     * @param SourceInterface[]|array $value
+     */
+    public function setSources($value)
+    {
+        if (!is_array($value)) {
+            $message = 'Sources must be an array of SourceInterface';
+            throw new InvalidPropertyValueTypeException($message, 0, 'CreateRefundRequest.sources', $value);
+        }
+
+        $sources = array();
+        foreach ($value as $item) {
+            if (is_array($item)) {
+                $item = new Source($item);
+            }
+
+            if (!($item instanceof SourceInterface)) {
+                $message = 'Source must be instance of SourceInterface';
+                throw new InvalidPropertyValueTypeException($message, 0, 'CreateRefundRequest.sources', $value);
+            }
+            $sources[] = $item;
+        }
+        
+        $this->_sources = $sources;
+    }
+
+    /**
+     * @return SourceInterface[]
+     */
+    public function getSources()
+    {
+        return $this->_sources;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasSources()
+    {
+        return !empty($this->_sources);
     }
 
     /**

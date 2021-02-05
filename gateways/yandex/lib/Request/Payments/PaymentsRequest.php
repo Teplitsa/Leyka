@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,34 +24,35 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Request\Payments;
+namespace YooKassa\Request\Payments;
 
-use YandexCheckout\Common\AbstractRequest;
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueException;
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueTypeException;
-use YandexCheckout\Helpers\TypeCast;
-use YandexCheckout\Model\PaymentStatus;
+use Exception;
+use YooKassa\Common\AbstractRequest;
+use YooKassa\Common\Exceptions\InvalidPropertyValueException;
+use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
+use YooKassa\Helpers\TypeCast;
+use YooKassa\Model\PaymentMethodType;
+use YooKassa\Model\PaymentStatus;
 
 /**
  * Класс объекта запроса к API для получения списка платежей магазина
  *
- * @property string|null $page Страница выдачи результатов, которую необходимо отобразить
  * @property \DateTime|null $createdAtGte Время создания, от (включительно)
  * @property \DateTime|null $createdAtGt Время создания, от (не включая)
  * @property \DateTime|null $createdAtLte Время создания, до (включительно)
  * @property \DateTime|null $createdAtLt Время создания, до (не включая)
- * @property integer|null $limit Ограничение количества объектов платежа, отображаемых на одной странице выдачи
- * @property string|null $recipientGatewayId Идентификатор шлюза.
+ * @property \DateTime|null $capturedAtGte Время подтверждения, от (включительно)
+ * @property \DateTime|null $capturedAtGt Время подтверждения, от (не включая)
+ * @property \DateTime|null $capturedAtLte Время подтверждения, до (включительно)
+ * @property \DateTime|null $capturedAtLt Время подтверждения, до (не включая)
  * @property string|null $status Статус платежа
+ * @property string|null $paymentMethod Платежный метод
+ * @property integer|null $limit Ограничение количества объектов платежа, отображаемых на одной странице выдачи
+ * @property string|null $cursor Страница выдачи результатов, которую необходимо отобразить
  */
 class PaymentsRequest extends AbstractRequest implements PaymentsRequestInterface
 {
     const MAX_LIMIT_VALUE = 100;
-
-    /**
-     * @var string Страница выдачи результатов, которую необходимо отобразить
-     */
-    private $_page;
 
     /**
      * @var \DateTime Время создания, от (включительно)
@@ -74,14 +75,24 @@ class PaymentsRequest extends AbstractRequest implements PaymentsRequestInterfac
     private $_createdAtLt;
 
     /**
-     * @var string Ограничение количества объектов платежа
+     * @var \DateTime Время подтверждения, от (включительно)
      */
-    private $_limit;
+    private $_capturedAtGte;
 
     /**
-     * @var string Идентификатор шлюза
+     * @var \DateTime Время подтверждения, от (не включая)
      */
-    private $_recipientGatewayId;
+    private $_capturedAtGt;
+
+    /**
+     * @var \DateTime Время подтверждения, до (включительно)
+     */
+    private $_capturedAtLte;
+
+    /**
+     * @var \DateTime Время подтверждения, до (не включая)
+     */
+    private $_capturedAtLt;
 
     /**
      * @var string Статус платежа
@@ -89,41 +100,19 @@ class PaymentsRequest extends AbstractRequest implements PaymentsRequestInterfac
     private $_status;
 
     /**
-     * Страница выдачи результатов, которую необходимо отобразить
-     * @return string|null
+     * @var string Платежный метод
      */
-    public function getPage()
-    {
-        return $this->_page;
-    }
+    private $_paymentMethod;
 
     /**
-     * Проверяет был ли установлена страница выдачи результатов, которую необходимо отобразить
-     * @return bool True если была установлена, false если нет
+     * @var string Ограничение количества объектов платежа
      */
-    public function hasPage()
-    {
-        return $this->_page !== null;
-    }
+    private $_limit;
 
     /**
-     * Устанавливает cтраницw выдачи результатов, которую необходимо отобразить
-     * @param string $value Страница выдачи результатов или null чтобы удалить значение
-     *
-     * @throws InvalidPropertyValueTypeException Выбрасывается если в метод была передана не строка
+     * @var string Страница выдачи результатов, которую необходимо отобразить
      */
-    public function setPage($value)
-    {
-        if ($value === null || $value === '') {
-            $this->_page = null;
-        } elseif (TypeCast::canCastToString($value)) {
-            $this->_page = (string)$value;
-        } else {
-            throw new InvalidPropertyValueTypeException(
-                'Invalid status value in PaymentsRequest', 0, 'PaymentsRequest.page', $value
-            );
-        }
-    }
+    private $_cursor;
 
     /**
      * Возвращает дату создания от которой будут возвращены платежи или null если дата не была установлена
@@ -149,7 +138,7 @@ class PaymentsRequest extends AbstractRequest implements PaymentsRequestInterfac
      *
      * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
      * строка или число, которые не удалось преобразовать в валидную дату)
-     * @throws InvalidPropertyValueTypeException Генерируется если была передана дата с не тем типом (передана не
+     * @throws InvalidPropertyValueTypeException|Exception Генерируется если была передана дата с не тем типом (передана не
      * строка, не число и не значение типа \DateTime)
      */
     public function setCreatedAtGte($value)
@@ -195,7 +184,7 @@ class PaymentsRequest extends AbstractRequest implements PaymentsRequestInterfac
      *
      * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
      * строка или число, которые не удалось преобразовать в валидную дату)
-     * @throws InvalidPropertyValueTypeException Генерируется если была передана дата с не тем типом (передана не
+     * @throws InvalidPropertyValueTypeException|Exception Генерируется если была передана дата с не тем типом (передана не
      * строка, не число и не значение типа \DateTime)
      */
     public function setCreatedAtGt($value)
@@ -241,7 +230,7 @@ class PaymentsRequest extends AbstractRequest implements PaymentsRequestInterfac
      *
      * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
      * строка или число, которые не удалось преобразовать в валидную дату)
-     * @throws InvalidPropertyValueTypeException Генерируется если была передана дата с не тем типом (передана не
+     * @throws InvalidPropertyValueTypeException|Exception Генерируется если была передана дата с не тем типом (передана не
      * строка, не число и не значение типа \DateTime)
      */
     public function setCreatedAtLte($value)
@@ -287,7 +276,7 @@ class PaymentsRequest extends AbstractRequest implements PaymentsRequestInterfac
      *
      * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
      * строка или число, которые не удалось преобразовать в валидную дату)
-     * @throws InvalidPropertyValueTypeException Генерируется если была передана дата с не тем типом (передана не
+     * @throws InvalidPropertyValueTypeException|Exception Генерируется если была передана дата с не тем типом (передана не
      * строка, не число и не значение типа \DateTime)
      */
     public function setCreatedAtLt($value)
@@ -310,81 +299,185 @@ class PaymentsRequest extends AbstractRequest implements PaymentsRequestInterfac
     }
 
     /**
-     * Ограничение количества объектов платежа
-     * @return integer|null Ограничение количества объектов платежа
+     * Возвращает дату подтверждения от которой будут возвращены платежи или null если дата не была установлена
+     * @return \DateTime|null Время подтверждения, от (включительно)
      */
-    public function getLimit()
+    public function getCapturedAtGte()
     {
-        return $this->_limit;
+        return $this->_capturedAtGte;
     }
 
     /**
-     * Проверяет был ли установлено ограничение количества объектов платежа
-     * @return bool True если было установлено, false если нет
+     * Проверяет была ли установлена дата подтверждения от которой выбираются платежи
+     * @return bool True если дата была установлена, false если нет
      */
-    public function hasLimit()
+    public function hasCapturedAtGte()
     {
-        return $this->_limit !== null;
+        return $this->_capturedAtGte !== null;
     }
 
     /**
-     * Устанавливает ограничение количества объектов платежа
-     * @param integer|null $value Ограничение количества объектов платежа или null чтобы удалить значение
+     * Устанавливает дату подтверждения от которой выбираются платежи
+     * @param \DateTime|string|int|null $value Время подтверждения, от (включительно) или null чтобы удалить значение
      *
-     * @throws InvalidPropertyValueTypeException Выбрасывается если в метод была передано не целое число
+     * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
+     * строка или число, которые не удалось преобразовать в валидную дату)
+     * @throws InvalidPropertyValueTypeException|Exception Генерируется если была передана дата с не тем типом (передана не
+     * строка, не число и не значение типа \DateTime)
      */
-    public function setLimit($value)
+    public function setCapturedAtGte($value)
     {
-        if ($value === null) {
-            $this->_limit = null;
-        } elseif (is_int($value)) {
-            if ($value < 0 || $value > self::MAX_LIMIT_VALUE) {
+        if ($value === null || $value === '') {
+            $this->_capturedAtGte = null;
+        } elseif (TypeCast::canCastToDateTime($value)) {
+            $dateTime = TypeCast::castToDateTime($value);
+            if ($dateTime === null) {
                 throw new InvalidPropertyValueException(
-                    'Invalid limit value in PaymentsRequest', 0, 'PaymentsRequest.limit', $value
+                    'Invalid capturedAtGte value in PaymentsRequest', 0, 'PaymentRequest.capturedAtGte'
                 );
             }
-            $this->_limit = $value;
+            $this->_capturedAtGte = $dateTime;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid limit value type in PaymentsRequest', 0, 'PaymentsRequest.limit', $value
+                'Invalid capturedAtGte value type in PaymentsRequest', 0, 'PaymentRequest.capturedAtGte'
             );
         }
     }
 
     /**
-     * Возвращает идентификатор шлюза
-     * @return string|null Идентификатор шлюза
+     * Возвращает дату подтверждения от которой будут возвращены платежи или null если дата не была установлена
+     * @return \DateTime|null Время подтверждения, от (не включая)
      */
-    public function getRecipientGatewayId()
+    public function getCapturedAtGt()
     {
-        return $this->_recipientGatewayId;
+        return $this->_capturedAtGt;
     }
 
     /**
-     * Проверяет был ли установлен идентификатор шлюза
-     * @return bool True если идентификатор шлюза был установлен, false если нет
+     * Проверяет была ли установлена дата подтверждения от которой выбираются платежи
+     * @return bool True если дата была установлена, false если нет
      */
-    public function hasRecipientGatewayId()
+    public function hasCapturedAtGt()
     {
-        return $this->_recipientGatewayId !== null;
+        return $this->_capturedAtGt !== null;
     }
 
     /**
-     * Устанавливает идентификатор шлюза
-     * @param string|null $value Идентификатор шлюза или null чтобы удалить значение
+     * Устанавливает дату подтверждения от которой выбираются платежи
+     * @param \DateTime|string|int|null $value Время подтверждения, от (не включая) или null чтобы удалить значение
      *
-     * @throws InvalidPropertyValueTypeException Выбрасывается если в метод была передана не строка
+     * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
+     * строка или число, которые не удалось преобразовать в валидную дату)
+     * @throws InvalidPropertyValueTypeException|Exception Генерируется если была передана дата с не тем типом (передана не
+     * строка, не число и не значение типа \DateTime)
      */
-    public function setRecipientGatewayId($value)
+    public function setCapturedAtGt($value)
     {
         if ($value === null || $value === '') {
-            $this->_recipientGatewayId = null;
-        } elseif (TypeCast::canCastToString($value)) {
-            $this->_recipientGatewayId = (string)$value;
+            $this->_capturedAtGt = null;
+        } elseif (TypeCast::canCastToDateTime($value)) {
+            $dateTime = TypeCast::castToDateTime($value);
+            if ($dateTime === null) {
+                throw new InvalidPropertyValueException(
+                    'Invalid capturedAtGt value in PaymentsRequest', 0, 'PaymentRequest.capturedAtGt'
+                );
+            }
+            $this->_capturedAtGt = $dateTime;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid recipientGatewayId value type in PaymentsRequest', 0, 'PaymentsRequest.recipientGatewayId',
-                $value
+                'Invalid capturedAtGt value type in PaymentsRequest', 0, 'PaymentRequest.capturedAtGt'
+            );
+        }
+    }
+
+    /**
+     * Возвращает дату подтверждения до которой будут возвращены платежи или null если дата не была установлена
+     * @return \DateTime|null Время подтверждения, до (включительно)
+     */
+    public function getCapturedAtLte()
+    {
+        return $this->_capturedAtLte;
+    }
+
+    /**
+     * Проверяет была ли установлена дата подтверждения до которой выбираются платежи
+     * @return bool True если дата была установлена, false если нет
+     */
+    public function hasCapturedAtLte()
+    {
+        return $this->_capturedAtLte !== null;
+    }
+
+    /**
+     * Устанавливает дату подтверждения до которой выбираются платежи
+     * @param \DateTime|string|int|null $value Время подтверждения, до (включительно) или null чтобы удалить значение
+     *
+     * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
+     * строка или число, которые не удалось преобразовать в валидную дату)
+     * @throws InvalidPropertyValueTypeException|Exception Генерируется если была передана дата с не тем типом (передана не
+     * строка, не число и не значение типа \DateTime)
+     */
+    public function setCapturedAtLte($value)
+    {
+        if ($value === null || $value === '') {
+            $this->_capturedAtLte = null;
+        } elseif (TypeCast::canCastToDateTime($value)) {
+            $dateTime = TypeCast::castToDateTime($value);
+            if ($dateTime === null) {
+                throw new InvalidPropertyValueException(
+                    'Invalid capturedAtLte value in PaymentsRequest', 0, 'PaymentRequest.capturedAtLte'
+                );
+            }
+            $this->_capturedAtLte = $dateTime;
+        } else {
+            throw new InvalidPropertyValueTypeException(
+                'Invalid capturedAtLte value type in PaymentsRequest', 0, 'PaymentRequest.capturedAtLte'
+            );
+        }
+    }
+
+    /**
+     * Возвращает дату подтверждения до которой будут возвращены платежи или null если дата не была установлена
+     * @return \DateTime|null Время подтверждения, до (не включая)
+     */
+    public function getCapturedAtLt()
+    {
+        return $this->_capturedAtLt;
+    }
+
+    /**
+     * Проверяет была ли установлена дата подтверждения до которой выбираются платежи
+     * @return bool True если дата была установлена, false если нет
+     */
+    public function hasCapturedAtLt()
+    {
+        return $this->_capturedAtLt !== null;
+    }
+
+    /**
+     * Устанавливает дату подтверждения до которой выбираются платежи
+     * @param \DateTime|string|int|null $value Время подтверждения, до (не включая) или null чтобы удалить значение
+     *
+     * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
+     * строка или число, которые не удалось преобразовать в валидную дату)
+     * @throws InvalidPropertyValueTypeException|Exception Генерируется если была передана дата с не тем типом (передана не
+     * строка, не число и не значение типа \DateTime)
+     */
+    public function setCapturedAtLt($value)
+    {
+        if ($value === null || $value === '') {
+            $this->_capturedAtLt = null;
+        } elseif (TypeCast::canCastToDateTime($value)) {
+            $dateTime = TypeCast::castToDateTime($value);
+            if ($dateTime === null) {
+                throw new InvalidPropertyValueException(
+                    'Invalid capturedAtLt value in PaymentsRequest', 0, 'PaymentRequest.capturedAtLt'
+                );
+            }
+            $this->_capturedAtLt = $dateTime;
+        } else {
+            throw new InvalidPropertyValueTypeException(
+                'Invalid capturedAlLt value type in PaymentsRequest', 0, 'PaymentRequest.capturedAtLt'
             );
         }
     }
@@ -433,6 +526,128 @@ class PaymentsRequest extends AbstractRequest implements PaymentsRequestInterfac
         }
     }
 
+    /**
+     * Возвращает платежный метод выбираемых платежей или null если он до этого не был установлен
+     * @return string|null Платежный метод выбираемых платежей
+     */
+    public function getPaymentMethod()
+    {
+        return $this->_paymentMethod;
+    }
+
+    /**
+     * Проверяет был ли установлен платежный метод выбираемых платежей
+     * @return bool True если платежный метод был установлен, false если нет
+     */
+    public function hasPaymentMethod()
+    {
+        return $this->_paymentMethod !== null;
+    }
+
+    /**
+     * Устанавливает платежный метод выбираемых платежей
+     * @param string $value Платежный метод выбираемых платежей или null чтобы удалить значение
+     *
+     * @throws InvalidPropertyValueException Выбрасывается если переданное значение не является валидным статусом
+     * @throws InvalidPropertyValueTypeException Выбрасывается если в метод была передана не строка
+     */
+    public function setPaymentMethod($value)
+    {
+        if ($value === null || $value === '') {
+            $this->_paymentMethod = null;
+        } elseif (TypeCast::canCastToEnumString($value)) {
+            if (!PaymentMethodType::valueExists((string)$value)) {
+                throw new InvalidPropertyValueException(
+                    'Invalid status value in PaymentsRequest', 0, 'PaymentsRequest.paymentMethod', $value
+                );
+            } else {
+                $this->_paymentMethod = (string)$value;
+            }
+        } else {
+            throw new InvalidPropertyValueTypeException(
+                'Invalid status value type in PaymentsRequest', 0, 'PaymentsRequest.paymentMethod', $value
+            );
+        }
+    }
+
+    /**
+     * Ограничение количества объектов платежа
+     * @return integer|null Ограничение количества объектов платежа
+     */
+    public function getLimit()
+    {
+        return $this->_limit;
+    }
+
+    /**
+     * Проверяет был ли установлено ограничение количества объектов платежа
+     * @return bool True если было установлено, false если нет
+     */
+    public function hasLimit()
+    {
+        return $this->_limit !== null;
+    }
+
+    /**
+     * Устанавливает ограничение количества объектов платежа
+     * @param integer|null $value Ограничение количества объектов платежа или null чтобы удалить значение
+     *
+     * @throws InvalidPropertyValueTypeException Выбрасывается если в метод была передано не целое число
+     */
+    public function setLimit($value)
+    {
+        if ($value === null || $value === '') {
+            $this->_limit = null;
+        } elseif (is_int($value)) {
+            if ($value < 0 || $value > self::MAX_LIMIT_VALUE) {
+                throw new InvalidPropertyValueException(
+                    'Invalid limit value in PaymentsRequest', 0, 'PaymentsRequest.limit', $value
+                );
+            }
+            $this->_limit = $value;
+        } else {
+            throw new InvalidPropertyValueTypeException(
+                'Invalid limit value type in PaymentsRequest', 0, 'PaymentsRequest.limit', $value
+            );
+        }
+    }
+
+    /**
+     * Страница выдачи результатов, которую необходимо отобразить
+     * @return string|null
+     */
+    public function getCursor()
+    {
+        return $this->_cursor;
+    }
+
+    /**
+     * Проверяет был ли установлена страница выдачи результатов, которую необходимо отобразить
+     * @return bool True если была установлена, false если нет
+     */
+    public function hasCursor()
+    {
+        return $this->_cursor !== null;
+    }
+
+    /**
+     * Устанавливает cтраницw выдачи результатов, которую необходимо отобразить
+     * @param string $value Страница выдачи результатов или null чтобы удалить значение
+     *
+     * @throws InvalidPropertyValueTypeException Выбрасывается если в метод была передана не строка
+     */
+    public function setCursor($value)
+    {
+        if ($value === null || $value === '') {
+            $this->_cursor = null;
+        } elseif (TypeCast::canCastToString($value)) {
+            $this->_cursor = (string)$value;
+        } else {
+            throw new InvalidPropertyValueTypeException(
+                'Invalid status value type in PaymentsRequest', 0, 'PaymentsRequest.limit', $value
+            );
+        }
+    }
 
     /**
      * Проверяет валидность текущего объекта запроса

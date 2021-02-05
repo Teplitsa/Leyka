@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2017 NBCO Yandex.Money LLC
+ * Copyright (c) 2020 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,20 +24,22 @@
  * THE SOFTWARE.
  */
 
-namespace YandexCheckout\Request\Refunds;
+namespace YooKassa\Request\Refunds;
 
-use YandexCheckout\Common\AbstractPaymentRequestBuilder;
-use YandexCheckout\Common\Exceptions\EmptyPropertyValueException;
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueException;
-use YandexCheckout\Common\Exceptions\InvalidPropertyValueTypeException;
+use YooKassa\Common\AbstractPaymentRequestBuilder;
+use YooKassa\Common\Exceptions\EmptyPropertyValueException;
+use YooKassa\Common\Exceptions\InvalidPropertyValueException;
+use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
+use YooKassa\Model\SourceInterface;
 
 /**
  * Класс билдера запросов к API на создание возврата средств
  *
- * @package YandexCheckout\Request\Refunds
+ * @package YooKassa\Request\Refunds
  */
 class CreateRefundRequestBuilder extends AbstractPaymentRequestBuilder
 {
+
     /**
      * @var CreateRefundRequest Собираемый объет запроса к API
      */
@@ -50,8 +52,7 @@ class CreateRefundRequestBuilder extends AbstractPaymentRequestBuilder
     protected function initCurrentObject()
     {
         parent::initCurrentObject();
-        $request = new CreateRefundRequest();
-        return $request;
+        return new CreateRefundRequest();
     }
 
     /**
@@ -75,12 +76,24 @@ class CreateRefundRequestBuilder extends AbstractPaymentRequestBuilder
      * @param string $value Комментарий к возврату
      * @return CreateRefundRequestBuilder Инстанс текущего билдера
      *
-     * @throws InvalidPropertyValueException Выбрасывается если переданная строка длинее 250 символов
      * @throws InvalidPropertyValueTypeException Выбрасывается если была передана не строка
      */
-    public function setComment($value)
+    public function setDescription($value)
     {
-        $this->currentObject->setComment($value);
+        $this->currentObject->setDescription($value);
+        return $this;
+    }
+
+    /**
+     * Устанавливает источники возврата
+     *
+     * @param SourceInterface[]|array $value Массив трансферов
+     *
+     * @return self Инстанс билдера запросов
+     */
+    public function setSources($value)
+    {
+        $this->currentObject->setSources($value);
         return $this;
     }
 
@@ -94,7 +107,9 @@ class CreateRefundRequestBuilder extends AbstractPaymentRequestBuilder
         if (!empty($options)) {
             $this->setOptions($options);
         }
+
         $this->currentObject->setAmount($this->amount);
+
         if ($this->receipt->notEmpty()) {
             $this->currentObject->setReceipt($this->receipt);
         }
