@@ -158,7 +158,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
             require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
 
-            $client = new YandexCheckout\Client();
+            $client = new YooKassa\Client();
             $client->setAuth(leyka_options()->opt('yandex_shop_id'), leyka_options()->opt('yandex_secret_key'));
 
             try {
@@ -320,9 +320,9 @@ techMessage="'.$tech_message.'"/>');
                 }
 
                 try {
-                    $notification = ($notification['event'] === YandexCheckout\Model\NotificationEventType::PAYMENT_SUCCEEDED) ?
-                        new YandexCheckout\Model\Notification\NotificationSucceeded($notification) :
-                        new YandexCheckout\Model\Notification\NotificationWaitingForCapture($notification);
+                    $notification = ($notification['event'] === YooKassa\Model\NotificationEventType::PAYMENT_SUCCEEDED) ?
+                        new YooKassa\Model\Notification\NotificationSucceeded($notification) :
+                        new YooKassa\Model\Notification\NotificationWaitingForCapture($notification);
                 } catch (Exception $e) {
                     /** @todo Process the error somehow */
                     exit(500);
@@ -530,13 +530,13 @@ techMessage="'.$tech_message.'"/>');
         $response = is_object($donation->gateway_response) || is_array($donation->gateway_response) ?
             serialize($donation->gateway_response) : $donation->gateway_response;
 
-        if(stristr($response, 'YandexCheckout')) { // New API
+        if(stristr($response, 'YandexCheckout') || stristr($response, 'YooKassa')) { // New API
 
             $response = maybe_unserialize($response);
 
             if(
-                is_a($response, 'YandexCheckout\Request\Payments\PaymentResponse')
-                || is_a($response, 'YandexCheckout\Request\Payments\CreatePaymentResponse')
+                is_a($response, 'YooKassa\Request\Payments\PaymentResponse')
+                || is_a($response, 'YooKassa\Request\Payments\CreatePaymentResponse')
             ) { // Payment proceeded normally
                 $response = array(
                     __('YooKassa payment ID:', 'leyka') => $response->id,
@@ -647,7 +647,7 @@ techMessage="'.$tech_message.'"/>');
 
             require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
 
-            $client = new YandexCheckout\Client();
+            $client = new YooKassa\Client();
             $client->setAuth(leyka_options()->opt('yandex_shop_id'), leyka_options()->opt('yandex_secret_key'));
 
             try {
