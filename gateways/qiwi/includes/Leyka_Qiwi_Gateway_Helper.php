@@ -2,8 +2,9 @@
     die;
 }
 
-class Leyka_Qiwi_Gateway_Helper
-{
+class Leyka_Qiwi_Gateway_Helper {
+
+    private $_key;
 
     public static $map_status = array(
         'PAID' => 'funded',
@@ -14,12 +15,9 @@ class Leyka_Qiwi_Gateway_Helper
         'EXPIRED' => 'failed'
     );
 
-    private $_key;
+    public function __construct($key = false) {
 
-    public function __construct($key = false)
-    {
-
-        if (!$key) {
+        if( !$key ) {
             $this->_key = leyka_options()->opt('leyka_qiwi_secret_key');
         }
 
@@ -27,25 +25,25 @@ class Leyka_Qiwi_Gateway_Helper
 
     }
 
-    public function create_refund(WP_Post $donation)
-    {
-        if (Leyka_Donation_Management::$post_type == $donation->post_type) {
+    public function create_refund(WP_Post $donation) {
+
+        if(Leyka_Donation_Management::$post_type == $donation->post_type) {
 
             $donation = new Leyka_Donation($donation);
-            $billId = get_post_meta(
+            $bill_id = get_post_meta(
                 $donation->id . "-{$this->salt}",
                 '_leyka_donation_id_on_gateway_response',
                 true
             );
-            $this->refund($billId, $donation->amount);
+            $this->refund($bill_id, $donation->amount);
 
         }
+
     }
 
-    public function refund($billId, $amount)
-    {
+    public function refund($bill_id, $amount) {
 
-        $billId = $billId . "-{$this->salt}";
+        $bill_id = $bill_id."-{$this->salt}";
         $args = array(
             "amount" => array(
                 "currency" => "RUB",
@@ -54,7 +52,7 @@ class Leyka_Qiwi_Gateway_Helper
         );
 
         $response = wp_remote_request(
-            "https://api.qiwi.com/partner/bill/v1/bills/{$billId}/refunds/refund_{$billId}",
+            "https://api.qiwi.com/partner/bill/v1/bills/{$bill_id}/refunds/refund_{$bill_id}",
             array(
                 'method' => 'PUT',
                 'headers' => array(
@@ -70,9 +68,9 @@ class Leyka_Qiwi_Gateway_Helper
 
     }
 
-    public function create_bill($billId, $amount, $args = array())
-    {
-        $billId = $billId . "-{$this->salt}";
+    public function create_bill($bill_id, $amount, $args = array()) {
+
+        $bill_id = $bill_id."-{$this->salt}";
         $amount = intval($amount);
         $amount = number_format($amount, 2, '.', '');
         $args = wp_parse_args(
@@ -95,7 +93,7 @@ class Leyka_Qiwi_Gateway_Helper
         $args['amount']['value'] = $amount;
 
         $response = wp_remote_request(
-            "https://api.qiwi.com/partner/bill/v1/bills/{$billId}",
+            "https://api.qiwi.com/partner/bill/v1/bills/{$bill_id}",
             array(
                 'method' => 'PUT',
                 'headers' => array(
@@ -115,47 +113,28 @@ class Leyka_Qiwi_Gateway_Helper
      * @param $timestamp integer UNIX timestamp.
      * @return string
      */
-    public static function date_formatter($timestamp)
-    {
+    public static function date_formatter($timestamp) {
         return str_replace(' ', 'T', date('Y-m-d H:i:s', $timestamp)) . self::gtm_prefix();
     }
 
-    private static function gtm_prefix()
-    {
+    private static function gtm_prefix() {
 
         $gmt = get_option('gmt_offset', 3);
 
-        $zero = '';
-
-        if (0 < $gmt) {
-            $sign = "+";
-        } else {
-            $sign = "-";
-        }
-
-        $suffix = abs($gmt);
-
-        $suffix = number_format($suffix, 2, ':', ' ');
-
-        if (9 >= $gmt) {
-            $zero = '0';
-        }
-
-        return $sign . $zero . $suffix;
+        return ($gmt > 0 ? '+' : '-') . ($gmt <= 9 ? '0' : '') . (number_format(abs($gmt), 2, ':', ' '));
 
     }
 
-    public static function get_payment_id_by_response_data($billId)
-    {
+    public static function get_payment_id_by_response_data($bill_id) {
+
         global $wpdb;
 
-        return $wpdb->get_var("
-			SELECT post_id FROM 
+        return $wpdb->get_var(
+            "SELECT post_id FROM 
 			{$wpdb->postmeta}
 			WHERE meta_key = '_leyka_donation_id_on_gateway_response'
-			AND meta_value  = '{$billId}'
-			LIMIT 1
-		");
+			AND meta_value  = '{$bill_id}'
+			LIMIT 1");
 
     }
 

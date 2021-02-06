@@ -23,8 +23,10 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
         require_once(LEYKA_PLUGIN_DIR.'inc/options-meta/leyka-class-options-meta-controller.php');
 
+        $init_options_group = apply_filters('leyka_init_options_meta_group', array('main', 'templates'));
         self::$_options_meta = apply_filters('leyka_init_options_meta',
-            Leyka_Options_Meta_Controller::get_instance()->get_options_meta(array('main', 'templates'))
+            Leyka_Options_Meta_Controller::get_instance()->get_options_meta($init_options_group),
+            $init_options_group
         );
 
         $this->_add_options_alt_ids();

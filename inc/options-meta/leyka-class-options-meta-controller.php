@@ -39,7 +39,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
             return new $class_name();
         } else {
             throw new Exception(
-                sprintf(__('Options Meta Controllers Factory error: wrong allocator class given (%s)'), $class_name), 601
+                sprintf(__('Options Meta Controllers Factory error: wrong controller class given (%s)'), $class_name), 601
             );
         }
 
@@ -103,7 +103,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
         if( !is_array($options_group) ) {
 
             $this->_options_meta = apply_filters("leyka_{$options_group}_options_meta", $this->_options_meta);
-            $this->_options_meta = apply_filters("leyka_options_meta", $this->_options_meta, $options_group);
+            $this->_options_meta = apply_filters('leyka_options_meta', $this->_options_meta, $options_group);
 
         }
 

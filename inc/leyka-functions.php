@@ -1043,9 +1043,8 @@ function leyka_get_currencies_full_info($currency_id = null) {
  */
 function leyka_get_country_currency($country_id = null) {
 
-    /** @todo Mb, use get_options('leyka_receiver_country') instead. */
     $country_id = $country_id ? trim($country_id) : Leyka_Options_Controller::get_option_value('leyka_receiver_country');
-    $country_id = $country_id ? $country_id : leyka_options()->opt_safe('receiver_country');
+    $country_id = $country_id ? $country_id : leyka_get_default_receiver_country_id();
 
     $country = leyka_get_countries_full_info($country_id);
 

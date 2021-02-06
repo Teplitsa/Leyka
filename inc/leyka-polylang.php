@@ -89,9 +89,10 @@ if(defined('POLYLANG_VERSION')) {
     }
     add_action('pll_language_defined', 'leyka_pll_do_localization', 10, 2);
 
-    // If Polylang is active, init all options at once (to localize them):
-    add_filter('leyka_init_options_meta', function($initialize_options_meta){
-        return Leyka_Options_Meta_Controller::get_instance()->get_options_meta('all');
+    // If Polylang is active, we need to init all options at once (to localize them).
+    // By default, only 'main' & 'templates' opt. groups initialized. Polylang needs all Leyka options to l10n them properly:
+    add_filter('leyka_init_options_meta_group', function($initialize_options_meta_group){
+        return 'all';
     });
 
     function leyka_localize_options() {
