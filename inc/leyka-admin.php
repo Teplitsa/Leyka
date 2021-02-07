@@ -227,13 +227,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         add_submenu_page('leyka', __('Donations', 'leyka'), __('Donations', 'leyka'), 'leyka_manage_donations', 'edit.php?post_type='.Leyka_Donation_Management::$post_type);
 
-//        add_submenu_page('leyka', __('New correctional donation', 'leyka'), _x('Add new', 'donation', 'leyka'), 'leyka_manage_donations', 'post-new.php?post_type='.Leyka_Donation_Management::$post_type);
-
         // Recurring subscriptions list page:
         $hook = add_submenu_page('leyka', __('Recurring subscriptions', 'leyka'), __('Recurring subscriptions', 'leyka'), 'leyka_manage_donations', 'leyka_recurring_subscriptions', array($this, 'recurring_subscriptions_list_screen'));
         add_action("load-$hook", array($this, 'recurring_subscriptions_list_screen_options'));
-
-//        add_submenu_page('leyka', __('New campaign', 'leyka'), _x('Add new', 'campaign', 'leyka'), 'leyka_manage_donations', 'post-new.php?post_type='.Leyka_Campaign_Management::$post_type);
 
         if(leyka()->opt('donor_management_available')) {
 
@@ -245,24 +241,12 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             $taxonomy = get_taxonomy(Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME);
 
             add_submenu_page('', esc_attr($taxonomy->labels->menu_name), esc_attr($taxonomy->labels->menu_name), $taxonomy->cap->manage_terms, 'edit-tags.php?taxonomy='.$taxonomy->name);
-//
-//            add_filter('submenu_file', function($submenu_file) { // Fix for parent menu
-//
-//                global $parent_file;
-//                if($submenu_file == 'edit-tags.php?taxonomy='.Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME) {
-//                    $parent_file = 'leyka';
-//                }
-//                return $submenu_file;
-//
-//            });
 
         }
 
         add_submenu_page('leyka', __('Leyka Settings', 'leyka'), __('Settings', 'leyka'), 'leyka_manage_options', 'leyka_settings', array($this, 'settings_screen'));
 
         add_submenu_page('', __('Extensions', 'leyka'), __('Extensions', 'leyka'), 'leyka_manage_options', 'leyka_extensions', array($this, 'extensions_screen'));
-        
-//        add_submenu_page('leyka', __('Setup helper', 'leyka'), _x('Setup helper', 'campaign', 'leyka'), 'leyka_manage_donations', 'https://leyka.te-st.ru/step/step-setup-your-leyka-data/');
 
         add_submenu_page('leyka', __('Help', 'leyka'), __('Help', 'leyka'), 'leyka_manage_donations', 'leyka_help', array($this, 'help_screen'));
 
@@ -524,6 +508,14 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             wp_die(__('You do not have permissions to access this page.', 'leyka'));
         }
 
+		add_filter('leyka_admin_settings_tabs_menu', function($settings_tabs_html){
+
+		    $settings_tabs_html .= '<a href="'.admin_url('admin.php?page=leyka_extensions').'" class="nav-tab">'.__('Extensions', 'leyka').'</a>';
+
+		    return $settings_tabs_html;
+
+        });
+
         $current_stage = $this->get_current_settings_tab();
 
 		require_once LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php'; // Basic Controllers Factory class
@@ -602,6 +594,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 			    .'" class="'.($this->get_current_settings_tab() === $tab_id ? 'nav-tab nav-tab-active' : 'nav-tab').'">'
 			    .$tab_label.'</a>';
 		}
+
+		$out = apply_filters('leyka_admin_settings_tabs_menu', $out); // To add some new tabs to the nav menu
 
 		$out .= '<a href="'.admin_url('/admin.php?page=leyka_settings_new&screen=wizard-init').'" class="init-wizard-tab"></a>';
 
