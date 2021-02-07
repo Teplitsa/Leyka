@@ -4,7 +4,7 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: crowdfunding, fundraising, donations, recurring donations, charity, leyka, recurring, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, yandexmoney, yandex.money, яндекс.деньги, chronopay, sms, яндекс.касса, yandex.kassa, миксплат, mixplat, paypal, paymaster, qiwi, киви
 Requires at least: 3.6.1
-Tested up to: 5.6
+Tested up to: 5.6.1
 Stable tag: 3.14
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -81,6 +81,15 @@ PHP version required: 5.6+
 5. The plugin start page (a console)
 
 == Changelog ==
+= 3.15 =
+* New: admin menu refactored (shortened).
+* New: now Star template text styles are irrelevant of current website theme.
+* New: Sber callbacks for recurring transaction errors handling improved.
+* New: now Donor's reason to cancel a recurring subscription is saved in the subscription Donation metadata.
+* Fix: YooKassa YooMoney payments bug - "yoomoney" error fixed.
+* Fix: Polylang compatibility bug fixed.
+~ Tweak: CSS for some new admin pages optimized.
+
 = 3.14 =
 * New: now Extensions Controller & Render support the case of Extension w/o options.
 * New: Yandex.Kassa to YooKassa - gateway renaming & logo changes.
