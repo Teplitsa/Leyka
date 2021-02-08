@@ -1620,8 +1620,8 @@ function leyka_failure_widget_displayed() {
     return leyka_options()->opt_template('show_failure_widget_on_failure') && is_page(leyka_options()->opt('failure_page'));
 }
 
-function leyka_validate_donor_name($name) {
-    return $name ? !preg_match('/[^\\x{0410}-\\x{044F}\w\s\-_\'\.]/iu', $name) : true;
+function leyka_validate_donor_name($name, $is_correctional = false) {
+    return $name ? !preg_match('/[^\\x{0410}-\\x{044F}\w\s\-_\''.( !!$is_correctional ? '\"' : '').'\.]/iu', $name) : true;
 }
 
 function leyka_validate_email($email) {
