@@ -7,7 +7,7 @@
 
     <h1><?php _e('Leyka dashboard', 'leyka');?></h1>
 
-<?php if(leyka_options()->opt('send_plugin_stats') !== 'y' && leyka_options()->opt('plugin_stats_sync_enabled')) {?>
+<?php if( 1 /*leyka_options()->opt('send_plugin_stats') !== 'y' && leyka_options()->opt('plugin_stats_sync_enabled')*/ ) {?>
 
     <div class="send-plugin-stats-invite">
 
