@@ -346,17 +346,23 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	}
 
 	public function has_banners($page = false, $location = false) {
-	    return !get_user_meta(get_current_user_id(), 'leyka_dashboard_banner_closed', true);
+	    return !get_user_meta(get_current_user_id(), 'leyka_dashboard_banner_closed-grade_plugin', true);
     }
 
     public function show_banner($page = false, $location = false) {?>
     
         <div class="banner-wrapper">
         	<div class="banner-inner">
-                <a href="<?php echo admin_url('/admin.php?page=leyka_settings_new&screen=wizard-init');?>" class="banner">
-                	<img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/banner-run-wizard.svg" alt="">
+                <a href="https://wordpress.org/support/plugin/leyka/reviews/#new-post" class="banner" target="_blank">
+                    <div class="banner-text">
+                        <div class="banner-subtitle"><?php _e('Like Leyka?', 'leyka');?></div>
+                        <div class="banner-title"><?php _e('Give a mark to the plugin', 'leyka');?></div>
+                    </div>
+                    <div class="banner-thumbnail">
+                        <img src="<?php echo LEYKA_PLUGIN_BASE_URL.'/img/dashboard/banner-grade-plugin.svg';?>" alt="">
+                    </div>
             	</a>
-            	<a class="close" href="#" title="<?php esc_html_e('Close permanently', 'leyka');?>"> </a>
+            	<a class="close" href="#" title="<?php _e('Close permanently', 'leyka');?>"></a>
         	</div>
         </div>
 
