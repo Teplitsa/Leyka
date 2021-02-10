@@ -1621,7 +1621,7 @@ function leyka_failure_widget_displayed() {
 }
 
 function leyka_validate_donor_name($name, $is_correctional = false) {
-    return $name ? !preg_match('/[^\\x{0410}-\\x{044F}\w\s\-_\''.( !!$is_correctional ? '\"' : '').'\.]/iu', $name) : true;
+    return $name && !$is_correctional ? !preg_match('/[^\\x{0410}-\\x{044F}\w\s\-_\'\.]/iu', $name) : true;
 }
 
 function leyka_validate_email($email) {
