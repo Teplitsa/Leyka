@@ -14,7 +14,7 @@ try {
         <dt><?php _e('Amount donated', 'leyka');?></dt>
         <dd><?php echo $donor->amount_donated.' '.leyka_get_currency_label('rur');?></dd>
 
-        <dt><?php echo str_replace(":", "", __('Donations number', 'leyka'));?></dt>
+        <dt><?php echo str_replace(':', '', __('Donations number', 'leyka'));?></dt>
         <dd><?php echo $donor->get_donations_count();?></dd>
     </dl>
 </div>
@@ -22,7 +22,7 @@ try {
 <table id="donations-data-table" class="leyka-data-table donor-info-table">
     <thead>
         <tr>
-            <!-- <td><?php _e('ID', 'leyka');?></td> -->
+             <td><?php _e('ID', 'leyka');?></td>
             <td><?php _e('Type', 'leyka');?></td>
             <td><?php _e('Date', 'leyka');?></td>
             <td><?php _e('Campaign', 'leyka');?></td>
@@ -32,7 +32,7 @@ try {
     </thead>
     <tfoot>
         <tr>
-            <!-- <td><?php _e('ID', 'leyka');?></td> -->
+             <td><?php _e('ID', 'leyka');?></td>
             <td><?php _e('Type', 'leyka');?></td>
             <td><?php _e('Date', 'leyka');?></td>
             <td><?php _e('Campaign', 'leyka');?></td>
@@ -42,13 +42,17 @@ try {
     </tfoot>
 
     <tbody>
-    <?php foreach($donor->get_donations() as $donation) { /** @var $donation Leyka_Donation */
+    <?php foreach($donor->get_donations(false, -1) as $donation) { /** @var $donation Leyka_Donation */
 
         $gateway_label = $donation->gateway_id ? $donation->gateway_label : __('Custom payment info', 'leyka');
         $pm_label = $donation->gateway_id ? $donation->pm_label : $donation->pm;?>
 
         <tr <?php echo $donation->type == 'correction' ? 'class="leyka-donation-row-correction"' : '';?>>
-            <!-- <td><?php echo $donation->id;?></td> -->
+            <td>
+                <a href="<?php echo admin_url("/post.php?post={$donation->id}&action=edit");?>" target="_blank">
+                    <?php echo $donation->id;?>
+                </a>
+            </td>
             <td class="column-donor_type"><div class="<?php echo $donation->type;?>"></div></td>
             <td><?php echo $donation->date;?></td>
             <td class="data-campaign">
@@ -62,7 +66,7 @@ try {
             </td>
             <td><?php echo '<span class="amount">'.$donation->amount.'&nbsp;'.$donation->currency_label.'</span>';?></td>
 
-            <!--<td><a href="<?php echo admin_url("/post.php?post={$donation->id}&action=edit");?>"><?php echo __('Edit', 'leyka');?></a></td>-->
+<!--            <td><a href="--><?php //echo admin_url("/post.php?post={$donation->id}&action=edit");?><!--">--><?php //echo __('Edit', 'leyka');?><!--</a></td>-->
         </tr>
 
     <?php }?>

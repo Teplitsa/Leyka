@@ -664,9 +664,12 @@ class Leyka_Donor {
 
     }
 
-    function get_donations($page_number = false) {
+    function get_donations($page_number = false, $posts_per_page = false) {
 
         $page_number = (int)$page_number > 0 ? (int)$page_number : 1;
+        $posts_per_page = $posts_per_page === 'all' || $posts_per_page === -1 ?
+            -1 :
+            ((int)$posts_per_page > 0 ? (int)$posts_per_page : static::DONOR_ACCOUNT_DONATIONS_PER_PAGE);
 
         if( !$this->_id || !$this->email ) {
             return array();
@@ -676,7 +679,7 @@ class Leyka_Donor {
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => array('funded', 'refunded', 'failed'),
             'author' => $this->_id,
-            'posts_per_page' => static::DONOR_ACCOUNT_DONATIONS_PER_PAGE,
+            'posts_per_page' => $posts_per_page,
             'paged' => $page_number,
             'orderby' => 'date ID',
             'order' => 'DESC',
