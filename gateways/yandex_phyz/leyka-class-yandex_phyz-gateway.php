@@ -10,7 +10,7 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
     protected function _set_attributes() {
 
         $this->_id = 'yandex_phyz';
-        $this->_title = __('Yandex.Money for physical persons', 'leyka');
+        $this->_title = __('YooMoney for physical persons', 'leyka');
         $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-yandeks-dengi-dlya-fizicheskih-lits/';
 
         $this->_min_commission = 2;
@@ -29,8 +29,8 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
                 'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox  
                 'value' => '',
                 'default' => '',
-                'title' => __('Yandex account ID', 'leyka'),
-                'comment' => __("Please, enter your Yandex.Money account ID here. It's else known as Yandex.wallet number.", 'leyka'),
+                'title' => __('YooMoney account ID', 'leyka'),
+                'comment' => __('Please, enter your YooMoney account ID here.', 'leyka'),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '4100111111111111'),
                 'list_entries' => array(), // For select, radio & checkbox fields
@@ -40,8 +40,8 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
                 'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox  
                 'value' => '',
                 'default' => '',
-                'title' => __('Yandex account API secret', 'leyka'),
-                'comment' => __('Please, enter your Yandex.Money account API secret string here.', 'leyka'),
+                'title' => __('YooMoney account API secret', 'leyka'),
+                'comment' => __('Please, enter your YooMoney account API secret string here.', 'leyka'),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'QweR+1TYUIo/p2aS3DFgHJ4K5'),
                 'list_entries' => array(), // For select, radio & checkbox fields
@@ -262,14 +262,14 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
 
 		$payment_type = '';
 		if($response_vars['notification_type'] == 'p2p-incoming') {
-			$payment_type = __('Using Yandex.Money Account', 'leyka');
+			$payment_type = __('Using YooMoney Account', 'leyka');
 		} else if($response_vars['notification_type'] == 'card-incoming') {
 			$payment_type = __('Using Banking Card', 'leyka');
 		}
 
         return array(
             __('Last response operation:', 'leyka') => __('Donation confirmation', 'leyka'),
-            __('Yandex payment type:', 'leyka') => $payment_type,
+            __('YooMoney payment type:', 'leyka') => $payment_type,
             __('Gateway invoice ID:', 'leyka') => $response_vars['operation_id'],
             __('Full donation amount:', 'leyka') =>
                 (float)$response_vars['withdraw_amount'].' '.$donation->currency_label,
@@ -300,8 +300,8 @@ class Leyka_Yandex_Phyz_Money extends Leyka_Payment_Method {
             $this->_category
         );
 
-        $this->_label_backend = __('Virtual cash Yandex.Money', 'leyka');
-        $this->_label = __('Virtual cash Yandex.Money', 'leyka');
+        $this->_label_backend = __('YooMoney virtual cash', 'leyka');
+        $this->_label = __('YooMoney', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/yandex-money.svg',

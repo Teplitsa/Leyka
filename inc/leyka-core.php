@@ -1308,6 +1308,10 @@ class Leyka extends Leyka_Singleton {
             }
         }
 
+        if($leyka_last_ver && $leyka_last_ver <= '3.15') {
+            update_option('leyka_yandex-yandex_money_label', __('YooMoney', 'leyka'));
+        }
+
         // Set a flag to flush permalinks (needs to be done a bit later, than this activation itself):
         update_option('leyka_permalinks_flushed', 0);
 
