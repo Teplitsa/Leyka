@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Leyka - Development (trunk) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2021-02-08 13:26:26+0000\n"
+"PO-Revision-Date: 2021-02-10 12:28:17+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1512,7 +1512,7 @@ msgstr "Расширение позволяет создавать группы 
 
 #: inc/admin-templates/leyka-admin-extensions-list-page.php:74
 msgid "Extension settings"
-msgstr "Настройки расширений"
+msgstr "Настройки расширения"
 
 #: inc/leyka-extensions-api.php:82
 msgctxt "[for extension]"

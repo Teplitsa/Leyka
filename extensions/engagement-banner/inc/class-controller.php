@@ -205,74 +205,65 @@ class Leyka_Engagement_Banner_Controller  {
 
 		return true;
 	}
-	
 
 	protected function _exclude_rule() {
 
-		$ids 	= array();
-		$tids 	= array();
-		$pts 	= array();
-		$taxes 	= array();
+		$ids = array();
+		$tids = array();
+		$pts = array();
+		$taxes = array();
 
 		$raw_rules = leyka_engb_get_option('exclude_rules');
 
-		if(empty($raw_rules)) {
+		if( !$raw_rules ) {
 			return true;
 		}
 
-		$parts = explode(PHP_EOL, $raw_rules);
+		foreach(explode(PHP_EOL, $raw_rules) as $i => $rule) {
 
-		foreach ($parts as $i => $rule) {
 			$rule_parts = array_map('trim', explode(':', $rule));
-			
+
 			if( !is_array($rule_parts) || 2 !== count($rule_parts) ) {
 				continue;
 			}
 
-			if( $rule_parts[0] == 'id' ) {
+			if($rule_parts[0] == 'id') {
 				$ids[] = (int)$rule_parts[1];
-			}
-			elseif( $rule_parts[0] == 'pt' ) {
+			} else if($rule_parts[0] == 'pt') {
 				$pts[] = $rule_parts[1];
-			}
-			elseif( $rule_parts[0] == 'tid' ) {
+			} else if($rule_parts[0] == 'tid') {
 				$tids[] = $rule_parts[1];
-			}
-			elseif( $rule_parts[0] == 'tax' ) {
+			} else if($rule_parts[0] == 'tax') {
 				$taxes[] = $rule_parts[1];
 			}
+
 		}
 
-		$ids = !empty($ids) ? array_map('intval', $ids) : $ids;
-		$tids = !empty($tids) ? array_map('intval', $tids) : $tids;
+		$ids = $ids ? array_map('absint', $ids) : $ids;
+		$tids = $tids ? array_map('absint', $tids) : $tids;
 
-		if( !empty($ids) && is_single($ids) ) {
+		if($ids && is_singular() && in_array(get_the_ID(), $ids)) {
 			return false;
 		}
-
-		if( !empty($pts) && is_singular($pts) ) {
+		if($pts && is_singular($pts)) {
 			return false;
 		}
-
-		if( !empty($tids) && ( is_tax('', $tids) || is_tag($tids) || is_category() ) ) {
+		if( $tids && (is_tax('', $tids) || is_tag($tids) || is_category()) ) {
 			return false;
 		}
-
-		if( !empty($taxes) && is_tax($taxes) ) {
+		if($taxes && is_tax($taxes)) {
 			return false;
 		}
-
-		if( !empty($taxes) && in_array('post_tag', $taxes) && is_tag() ) {
+		if($taxes && in_array('post_tag', $taxes) && is_tag()) {
 			return false;
 		}
-
-		if( !empty($taxes) && in_array('category', $taxes) && is_category() ) {
+		if($taxes && in_array('category', $taxes) && is_category()) {
 			return false;
 		}
 
 		return true;
-	}
 
+	}
 
 	protected function _set_banner() {
 
