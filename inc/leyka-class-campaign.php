@@ -1463,23 +1463,18 @@ class Leyka_Campaign {
             return false;
         }
 
-        $recurring_subscriptions = get_posts(array(
-            'post_type' => Leyka_Donation_Management::$post_type,
-            'post_status' => 'funded',
-            'meta_query' => array(
-                array('key' => 'leyka_campaign_id', 'value' => $this->_id,),
-                array('key' => 'leyka_payment_type', 'value' => 'rebill',),
-                array('key' => '_rebilling_is_active', 'value' => 0, 'compare' => '!='),
-            ),
-            'post_parent' => 0,
-            'nopaging' => true,
+        $recurring_subscriptions = Leyka_Donations::get_instance()->get(array(
+            'campaign_id' => $this->_id,
+            'status' => 'funded',
+            'recurring_only_init' => true,
+            'recurring_active' => true,
         ));
 
         $monthly_incoming_amount = 0.0;
-        foreach($recurring_subscriptions as $subscription) {
+        foreach($recurring_subscriptions as $init_donation) {
 
-            $subscription = new Leyka_Donation($subscription);
-            $monthly_incoming_amount += $subscription->amount;
+            $init_donation = Leyka_Donations::get_instance()->get_donation($init_donation);
+            $monthly_incoming_amount += $init_donation->amount;
 
         }
 
@@ -1568,6 +1563,7 @@ class Leyka_Campaign {
 
         if( !$donation ) { // Recalculate total collected amount for a campaign and recache it
 
+            /** @todo Optimize it for the case of MANY donations here! Make a sep method to get an amount_total metas sum() with one query. */
             $sum = 0.0;
             foreach($this->get_donations(array('funded')) as $donation) {
                 $sum += $donation->sum_total;
@@ -1578,12 +1574,12 @@ class Leyka_Campaign {
 
         } else { // Add/subtract a sum of a donation from it's campaign metadata
 
-            $donation = leyka_get_validated_donation($donation);
+            $donation = Leyka_Donations::get_instance()->get_donation($donation);
             if( !$donation ) {
                 return false;
             }
 
-            if($action == 'remove') { // Subtract given donation's sum from campaign's total_funded
+            if($action === 'remove') { // Subtract given donation's sum from campaign's total_funded
                 $sum = -$donation->sum_total;
             } else { // Add given donation's sum to campaign's total_funded
 

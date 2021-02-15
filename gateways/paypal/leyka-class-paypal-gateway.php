@@ -728,7 +728,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                 if($webhook_event === 'completed') { // New non-init recurring donation
 
-                    $new_recurring_donation = Leyka_Donation::add_clone(
+                    $new_recurring_donation = Leyka_Donations::get_instance()->add_clone(
                         $init_recurring_donation,
                         array(
                             'status' => 'funded',
@@ -1445,19 +1445,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
     }
 
-    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation $donation) {
-
-        $init_recurring_donation = Leyka_Donation::get_init_recurring_donation($donation);
-        $cancelling_url = (get_option('permalink_structure') ?
-                home_url("leyka/service/cancel_recurring/{$donation->id}") :
-                home_url("?page=leyka/service/cancel_recurring/{$donation->id}"))
-            .'/'.md5($donation->id.'_'.$init_recurring_donation->id.'_leyka_cancel_recurring_subscription');
-
-        return sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">click here</a>', 'leyka'), $cancelling_url);
-
-    }
-
-    public function cancel_recurring_subscription(Leyka_Donation $donation) {
+    public function cancel_recurring_subscription(Leyka_Donation_Base $donation) {
 
         if($donation->type !== 'rebill') {
             return new WP_Error(
@@ -1579,7 +1567,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         return $default_submit.'<div class="leyka-paypal-form-submit" style="display: none;"></div>';
     }
 
-    public function get_gateway_response_formatted(Leyka_Donation $donation) {
+    public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {
 
         if( !$donation->gateway_response ) {
             return array();
@@ -1732,7 +1720,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
     }
 
-    public function get_specific_data_value($value, $field_name, Leyka_Donation $donation) {
+    public function get_specific_data_value($value, $field_name, Leyka_Donation_Base $donation) {
         switch($field_name) {
             case 'paypal_token':
             case 'pp_token': return get_post_meta($donation->id, '_paypal_token', true);
@@ -1759,7 +1747,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         }
     }
 
-    public function set_specific_data_value($field_name, $value, Leyka_Donation $donation) {
+    public function set_specific_data_value($field_name, $value, Leyka_Donation_Base $donation) {
         switch($field_name) {
             case 'paypal_token':
             case 'paypal_payment_token':
@@ -1787,7 +1775,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         }
     }
 
-    public function save_donation_specific_data(Leyka_Donation $donation) {
+    public function save_donation_specific_data(Leyka_Donation_Base $donation) {
 
         if(isset($_POST['paypal-token']) && $donation->paypal_token !== $_POST['paypal-token']) {
             $donation->paypal_token = $_POST['paypal-token'];
@@ -1982,7 +1970,7 @@ class Leyka_Paypal_All extends Leyka_Payment_Method {
     }
 
     public function has_recurring_support() {
-        return !!leyka_options()->opt('paypal_enable_recurring');
+        return !!leyka_options()->opt('paypal_enable_recurring') ? 'passive' : false;
     }
 
 }

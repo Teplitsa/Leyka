@@ -1,7 +1,7 @@
 !.gitignore
 node_modules
 .idea
+vendor
 php7cc.phar
 .DS_Store
 composer.lock
-package-lock.json

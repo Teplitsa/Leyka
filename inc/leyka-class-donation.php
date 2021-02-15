@@ -4,23 +4,13 @@
  * Leyka Donation History
  **/
 
-class Leyka_Donation_Management {
+class Leyka_Donation_Management extends Leyka_Singleton {
 	
-	private static $_instance = null;
+	protected static $_instance = null;
 
 	public static $post_type = 'leyka_donation';
 
-    public static function get_instance() {
-
-        if( !self::$_instance ) { // If the single instance hasn't been set, set it now
-            self::$_instance = new self;
-        }
-
-        return self::$_instance;
-
-    }
-
-	private function __construct() {
+	protected function __construct() {
 
         add_filter('post_row_actions', array($this, 'row_actions'), 10, 2);
 
@@ -286,7 +276,7 @@ class Leyka_Donation_Management {
                 }
             }
 
-            if( isset($_REQUEST['donor_subscribed']) && $_REQUEST['donor_subscribed'] !== '-' ) {
+            if(isset($_REQUEST['donor_subscribed']) && $_REQUEST['donor_subscribed'] !== '-') {
                 $meta_query[] = array(
                     'key' => 'leyka_donor_subscribed',
                     'compare' => !!$_REQUEST['donor_subscribed'] ? 'EXTSTS' : 'NOT EXISTS',
@@ -413,7 +403,7 @@ class Leyka_Donation_Management {
             leyka_options()->opt('org_full_name'),
             leyka_options()->opt('org_short_name'),
             $donation->id,
-            leyka_get_payment_type_label($donation->type),
+            leyka_get_payment_types_list($donation->type),
             $donation->donor_name ? $donation->donor_name : __('dear donor', 'leyka'),
             $donation->donor_email ? $donation->donor_email : __('unknown email', 'leyka'),
             $donation->donor_comment,
@@ -544,7 +534,7 @@ class Leyka_Donation_Management {
             leyka_options()->opt('org_full_name'),
             leyka_options()->opt('org_short_name'),
             $donation->id,
-            leyka_get_payment_type_label($donation->type),
+            leyka_get_payment_types_list($donation->type),
             $donation->donor_name ? $donation->donor_name : __('dear donor', 'leyka'),
             $donation->donor_email ? $donation->donor_email : __('unknown email', 'leyka'),
             $donation->donor_comment,
@@ -692,7 +682,7 @@ class Leyka_Donation_Management {
                         leyka_options()->opt('org_full_name'),
                         leyka_options()->opt('org_short_name'),
                         $donation->id,
-                        leyka_get_payment_type_label($donation->type),
+                        leyka_get_payment_types_list($donation->type),
                         $donation->donor_name ? $donation->donor_name : __('anonymous', 'leyka'),
                         $donation->donor_email ? $donation->donor_email : __('unknown email', 'leyka'),
                         $donation->donor_comment,
@@ -738,7 +728,7 @@ class Leyka_Donation_Management {
             return false;
         }
 
-        $donation = leyka_get_validated_donation($donation);
+        $donation = Leyka_Donations::get_instance()->get_donation($donation);
 
         if( !$donation || $donation->managers_emails_date) {
             return false;
@@ -1201,7 +1191,7 @@ class Leyka_Donation_Management {
         <div class="leyka-ddata-string">
             <label><?php _e('Payment type', 'leyka');?>:</label>
 			<div class="leyka-ddata-field">
-                <span class="fake-input"><?php echo leyka_get_payment_type_label($donation->payment_type);?></span>
+                <span class="fake-input"><?php echo leyka_get_payment_types_list($donation->payment_type); // "single", "rebill", "correction" ?></span>
             </div>
         </div>
 
@@ -1385,6 +1375,7 @@ class Leyka_Donation_Management {
             <?php }
             }?>
         </div>
+
     <?php }
 
     public function recurrent_cancel_metabox($donation) {
@@ -1428,8 +1419,10 @@ class Leyka_Donation_Management {
 		$columns = array();
 
 		if(isset($unsort['cb'])){
+
 			$columns['cb'] = $unsort['cb'];
 			unset($unsort['cb']);
+
 		}
 
 		$columns['ID'] = 'ID';
@@ -1569,6 +1562,7 @@ class Leyka_Donation_Management {
 //        $sortable_columns['status'] = 'donation_status'; // Apparently, WP can't sort posts by status
 
         return $sortable_columns;
+
     }
 
     public function do_column_sorting($vars) {
@@ -1578,22 +1572,15 @@ class Leyka_Donation_Management {
         }
 
         if($vars['orderby'] == 'donation_date') {
-            $vars = array_merge($vars, array(
-                'orderby' => 'date',
-            ));
-        } elseif($vars['orderby'] == 'donor_name') {
-            $vars = array_merge($vars, array(
-                'meta_key' => 'leyka_donor_name',
-                'orderby' => 'meta_value',
-            ));
-        } elseif($vars['orderby'] == 'payment_type') {
-            $vars = array_merge($vars, array(
-                'meta_key' => 'leyka_payment_type',
-                'orderby' => 'meta_value',
-            ));
+            $vars = array_merge($vars, array('orderby' => 'date',));
+        } else if($vars['orderby'] == 'donor_name') {
+            $vars = array_merge($vars, array('meta_key' => 'leyka_donor_name', 'orderby' => 'meta_value',));
+        } else if($vars['orderby'] == 'payment_type') {
+            $vars = array_merge($vars, array('meta_key' => 'leyka_payment_type', 'orderby' => 'meta_value',));
         }
 
         return $vars;
+
     }
 
     /** Donation data editing.
@@ -1929,7 +1916,7 @@ class Leyka_Donation {
             add_post_meta($id, 'leyka_donation_amount_total', leyka_calculate_donation_total_amount(false, $amount, "{$pm_data['gateway_id']}-{$pm_data['payment_method_id']}"));
         }
 
-        $currency = empty($params['currency']) ? leyka_pf_get_currency_value() : strtolower($params['currency']);
+        $currency = empty($params['currency']) ? leyka_pf_get_currency_value() : mb_strtolower($params['currency']);
         if( !$currency || !array_key_exists($currency, leyka_get_currencies_data()) ) {
             $currency = 'rur';
         }
@@ -1961,6 +1948,20 @@ class Leyka_Donation {
             ($params['payment_type'] == 'rebill' ? 'rebill' : 'correction');
         add_post_meta($id, 'leyka_payment_type', $params['payment_type']);
 
+        // Donor's email should be here, after payment type:
+        if(
+            !$params['force_insert']
+            && $params['payment_type'] != 'correction'
+            && ( !$donor_email || !is_email($donor_email) )
+        ) {
+
+            wp_delete_post($id, true);
+
+            return new WP_Error('incorrect_donor_email', __('Incorrect donor email given while adding a donation', 'leyka'));
+
+        }
+        add_post_meta($id, 'leyka_donor_email', $donor_email);
+
         if( !empty($params['gateway_id']) ) {
             do_action("leyka_{$params['gateway_id']}_add_donation_specific_data", $id, $params);
         }
@@ -1987,12 +1988,8 @@ class Leyka_Donation {
             add_post_meta($id, 'leyka_donor_subscribed', true);
         }
 
-        if( !empty($params['donor_subscribed']) ) {
-            add_post_meta($id, 'leyka_donor_subscribed', true);
-        }
-
         if( !empty($params['recurring_cancel_reason']) ) {
-          add_post_meta($id, 'leyka_recurring_cancel_reason', $params['recurring_cancel_reason']);
+            add_post_meta($id, 'leyka_recurring_cancel_reason', $params['recurring_cancel_reason']);
         }
 
         if( !empty($params['recurrents_cancel_date']) ) {
@@ -2072,7 +2069,7 @@ class Leyka_Donation {
             return false;
         }
 
-        return leyka_get_gateway_by_id($donation->gateway_id)->get_init_recurrent_donation($donation);
+        return leyka_get_gateway_by_id($donation->gateway_id)->get_init_recurring_donation($donation);
 
     }
     /**
@@ -2364,10 +2361,13 @@ class Leyka_Donation {
             case 'init_recurring_donation_id':
                 return $this->payment_type === 'rebill' ?
                     ($this->_post_object->post_parent ? $this->_post_object->post_parent : $this->_id) : false;
+
             case 'is_init_recurring_donation':
                 return $this->payment_type === 'rebill' ? !$this->_post_object->post_parent : false;
+
             case 'cancel_recurring_requested':
                 return $this->payment_type === 'rebill' ? $this->_donation_meta['cancel_recurring_requested'] : false;
+
             case 'init_recurring_payment':
             case 'init_recurring_donation':
                 if($this->payment_type != 'rebill') {
@@ -2377,15 +2377,16 @@ class Leyka_Donation {
                 } else {
                     return $this;
                 }
+
             case 'recurring_subscription_is_active':
             case 'rebilling_on':
             case 'rebilling_is_on':
             case 'recurring_on':
             case 'recurring_is_on':
             case 'rebilling_is_active':
-            case 'recurring_is_active': $tmp = $this->payment_type === 'rebill' ?
-                !empty($this->_donation_meta['rebilling_is_active']) : NULL;
-                return $tmp;
+            case 'recurring_is_active':
+                return $this->payment_type === 'rebill' ? !empty($this->_donation_meta['rebilling_is_active']) : NULL;
+
             case 'recurrents_cancel_date':
             case 'recurring_cancel_date':
                 return $this->payment_type === 'rebill' && !empty($this->_donation_meta['recurrents_cancel_date']) ?
@@ -2631,7 +2632,7 @@ class Leyka_Donation {
             case 'recurring_cancel_reason':
                 $this->_donation_meta['recurring_cancel_reason'] = trim($value);
                 update_post_meta($this->_id, 'leyka_recurring_cancel_reason', trim($value));
-								
+
             case 'cancel_recurring_requested':
                 update_post_meta($this->_id, 'leyka_cancel_recurring_requested', !!$value);
                 break;
@@ -2640,7 +2641,7 @@ class Leyka_Donation {
             case 'gua_client_id':
                 update_post_meta($this->_id, 'leyka_ga_client_id', trim($value));
                 break;
-                
+
             default:
                 do_action('leyka_'.$this->gateway_id.'_set_unknown_donation_field', $field, $value, $this);
         }

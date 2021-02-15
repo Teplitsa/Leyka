@@ -163,14 +163,16 @@ function leyka_user_has_role($role, $is_only_role = false, $user = false) {
 /**
  * @param $donation mixed
  * @return Leyka_Donation|false A donation object, if parameter is valid in one way or another; false otherwise.
+ *
+ * @deprecated Just use Leyka_Donations::get_instance()->get_donation($donation);
  */
 function leyka_get_validated_donation($donation) {
 
-    if(is_numeric($donation) && (int)$donation > 0) {
-        $donation = new Leyka_Donation((int)$donation);
+    if(is_numeric($donation) && absint($donation)) {
+        $donation = Leyka_Donations::get_instance()->get_donation(absint($donation));
     } else if(is_a($donation, 'WP_Post')) {
-        $donation = new Leyka_Donation($donation);
-    } elseif( !is_a($donation, 'Leyka_Donation') ) {
+        $donation = Leyka_Donations::get_instance()->get_donation($donation);
+    } elseif( !is_a($donation, 'Leyka_Donation_Base') ) {
         return false;
     }
 
@@ -597,12 +599,12 @@ function leyka_get_donation_type_description($type) {
 
 function leyka_get_pm_categories_list() {
     return apply_filters('leyka_pm_categories', array(
-        'bank_cards' => esc_attr__('Bank cards', 'leyka'),
-        'digital_currencies' => esc_attr__('Digital currrencies', 'leyka'),
-        'online_banking' => esc_attr__('Online banking', 'leyka'),
-        'mobile_payments' => esc_attr__('Mobile payments', 'leyka'),
-        'misc' => esc_attr__('Miscellaneous', 'leyka'),
-        'offline' => esc_attr__('Offline', 'leyka'),
+        'bank_cards' => __('Bank cards', 'leyka'),
+        'digital_currencies' => __('Digital currrencies', 'leyka'),
+        'online_banking' => __('Online banking', 'leyka'),
+        'mobile_payments' => __('Mobile payments', 'leyka'),
+        'misc' => __('Miscellaneous', 'leyka'),
+        'offline' => __('Offline', 'leyka'),
     ));
 }
 
@@ -637,7 +639,9 @@ function leyka_get_filter_category_label($category_id) {
 }
 
 /**
- * Gateway activation status labels
+ * Gateway activation status labels.
+ *
+ * @param $activation_status string
  * @return string
  */
 function leyka_get_gateway_activation_status_label($activation_status) {
@@ -864,24 +868,36 @@ function leyka_fake_scale_ultra($campaign) {
 <?php
 }
 
-/** @return array An array of possible payment types with labels */
-function leyka_get_payment_types_list() {
-    return array(
+/**
+ * @param $type_id string|false
+ * @return array|string Either type label or false if the $type_id given, or an array of all types w/labels.
+ */
+function leyka_get_payment_types_list($type_id = false) {
+
+    $types = array(
         'single' => __('Single', 'leyka'),
         'rebill' => __('Recurrent (rebill)', 'leyka'),
         'correction' => __('Correction', 'leyka'),
     );
+
+    return $type_id ?
+        (in_array($type_id, array_keys($types)) ? $types[$type_id] : false) :
+        $types;
+
 }
 
-function leyka_get_payment_type_label($type) {
+/**
+ * @param $type_id string
+ * @return string|false
+ * @deprecated Use leyka_get_payment_types_list($type_id) instead.
+ */
+function leyka_get_payment_type_label($type_id) {
 
-    if( !$type ) {
+    if( !$type_id ) {
         return false;
     }
 
-    $types = leyka_get_payment_types_list();
-
-    return in_array($type, array_keys($types)) ? $types[$type] : false;
+    return leyka_get_payment_types_list($type_id);
 
 }
 
@@ -1129,170 +1145,11 @@ function leyka_get_currency_label($currency_id = null) {
 
 /**
  * Service function to get an actual rates from cbr.ru
- * @return array An assoc array of currency_code => it's rate to RUR
+ * @return array An assoc array of currency_code => it's rate to RUB
  */
 function leyka_get_actual_currency_rates() {
-
-    $url = 'http://www.cbr.ru/scripts/XML_daily.asp?date_req='.date('d.m.Y');
-    $currencies = array();
-
-    if(class_exists('XMLReader')) {
-
-        function leyka_xml2assoc(XMLReader $xml) {
-
-            $tree = null;
-            while($xml->read()) {
-
-                switch($xml->nodeType) {
-
-                    case XMLReader::END_ELEMENT: return $tree;
-                    case XMLReader::ELEMENT:
-                        $node = array('tag' => $xml->name, 'value' => $xml->isEmptyElement ? '' : leyka_xml2assoc($xml));
-                        if($xml->hasAttributes) {
-                            while($xml->moveToNextAttribute()) {
-                                $node['attributes'][$xml->name] = $xml->value;
-                            }
-                        }
-                        $tree[] = $node;
-                        break;
-                    case XMLReader::TEXT:
-                    case XMLReader::CDATA:
-                        $tree .= $xml->value;
-                }
-            }
-
-            return $tree;
-        }
-
-        $xml = new XMLReader();
-        if( @$xml->open($url) ) {
-
-            $currencies_tmp = leyka_xml2assoc($xml);
-            $xml->close();
-
-            if( !empty($currencies_tmp[0]) ) {
-                foreach($currencies_tmp[0]['value'] as $currency) {
-
-                    $currency = $currency['value']; // Just to shorten this things a bit
-
-                    $code = $currency[1]['value']; // USD, EUR etc.
-                    $rate = (float)str_replace(',', '.', $currency[4]['value']);
-                    if($code == 'USD' || $code == 'EUR') {
-                        $currencies[$code] = $rate;
-                    }
-                }
-            }
-        }
-
-    } else if(class_exists('DOMDocument')) {
-
-        $xml = new DOMDocument();
-        if( @$xml->load($url) ) {
-
-            foreach($xml->documentElement->getElementsByTagName('Valute') as $item) {
-
-                /** @var $item DOMElement */
-
-                $currency = $item->getElementsByTagName('CharCode')->item(0)->nodeValue;
-                if($currency == 'USD' || $currency == 'EUR') {
-                    $currencies[$currency] = (float)str_replace(
-                        ',', '.',
-                        $item->getElementsByTagName('Value')->item(0)->nodeValue
-                    );
-                }
-            }
-        }
-    }
-
-    return $currencies;
-
-}
-
-function leyka_are_settings_complete($settings_tab) {
-
-    $settings_complete = true;
-    $tab_options = leyka_opt_alloc()->get_tab_options($settings_tab); // Specially to support PHP strict standards
-
-    $receiver_legal_type = leyka_options()->opt_safe('receiver_legal_type');
-    $exclude_legal_type_fields_regex = array('legal' => '/^person_/', 'physical' => '/^org_/',);
-    
-    foreach($tab_options as $option_section) {
-        foreach($option_section['section']['options'] as $option_name) {
-            if(empty($exclude_legal_type_fields_regex[$receiver_legal_type]) || preg_match($exclude_legal_type_fields_regex[$receiver_legal_type], $option_name)) {
-                continue;
-            }
-            
-            if(!leyka_options()->opt_safe($option_name) && leyka_options()->is_required($option_name) ) {
-                $settings_complete = false;
-                break;
-            }
-        }
-    }
-    
-    return $settings_complete;
-
-}
-
-function leyka_is_min_payment_settings_complete() {
-
-    $pm_list = leyka_get_pm_list(true, false, false);
-    if( !$pm_list ) {
-        return false;
-    }
-
-    $gateway_options_valid = array(); // Array of already validated gateways
-
-    foreach($pm_list as $pm) { /** @var $pm Leyka_Payment_Method */
-
-        $gateway = leyka_get_gateway_by_id($pm->gateway_id);
-
-        if( !$pm || !$gateway ) {
-            continue;
-        }
-
-        $min_settings_complete = true;
-        foreach($pm->get_pm_options_names() as $option_name) {
-
-            if( !leyka_options()->is_valid($option_name) ) {
-
-                $min_settings_complete = false;
-                break;
-            }
-        }
-
-        if( !isset($gateway_options_valid[$gateway->id]) ) {
-
-            foreach($gateway->get_options_names() as $option_name) {
-                if( !leyka_options()->is_valid($option_name) ) {
-
-                    $gateway_options_valid[$gateway->id] = false;
-                    break;
-                }
-            }
-
-            if( !isset($gateway_options_valid[$gateway->id]) ) {
-                $gateway_options_valid[$gateway->id] = true;
-            }
-        }
-
-        if($min_settings_complete && !empty($gateway_options_valid[$gateway->id])) {
-            return true;
-        }
-    }
-
-    return false;
-
-}
-
-function leyka_is_campaign_published() {
-
-    global $wpdb;
-
-    return $wpdb->get_var("SELECT COUNT(*)
-      FROM $wpdb->posts
-      WHERE post_type='".Leyka_Campaign_Management::$post_type."' AND post_status = 'publish' LIMIT 0,1"
-    ) > 0;
-
+    // Implement it...
+    return array();
 }
 
 function leyka_get_campaigns_list($params = array(), $simple_format = true) {
@@ -1302,7 +1159,7 @@ function leyka_get_campaigns_list($params = array(), $simple_format = true) {
         'posts_per_page' => -1,
     ), $params));
 
-    if( !!$simple_format ) { // Array of WP_Post objects
+    if( !!$simple_format ) { // Simple assoc. array of ID => title
 
         $list = array();
         foreach($campaigns as $campaign) {
@@ -1314,14 +1171,8 @@ function leyka_get_campaigns_list($params = array(), $simple_format = true) {
 
         return $list;
 
-    } else { // Simple assoc. array of ID => title
-
-        foreach($campaigns as $campaign) {
-            $campaign->post_title = htmlentities($campaign->post_title, ENT_QUOTES, 'UTF-8');
-        }
-
+    } else { // Array of WP_Post objects
         return $campaigns;
-
     }
 
 }
@@ -1460,7 +1311,7 @@ function leyka_get_shortcodes() {
 }
 
 /** @return boolean True if at least one Leyka form is currently on the screen, false otherwise */
-function leyka_form_is_screening($widgets_also = true) {
+function leyka_form_is_displayed($widgets_also = true) {
 
     if( !leyka_options()->opt('load_scripts_if_need') || apply_filters('leyka_form_is_screening', false)) {
         return true;
@@ -1620,6 +1471,18 @@ function leyka_failure_widget_displayed() {
     return leyka_options()->opt_template('show_failure_widget_on_failure') && is_page(leyka_options()->opt('failure_page'));
 }
 
+function leyka_format_amount($amount) {
+
+    if((int)$amount >= 0) {
+        $amount_is_float = (float)$amount - (int)$amount > 0;
+    } else {
+        return false;
+    }
+
+    return number_format((float)$amount, $amount_is_float ? 2 : 0, '.', ' ');
+
+}
+
 function leyka_validate_donor_name($name, $is_correctional = false) {
     return $name && !$is_correctional ? !preg_match('/[^\\x{0410}-\\x{044F}\w\s\-_\'\.]/iu', $name) : true;
 }
@@ -1675,6 +1538,37 @@ if( !function_exists('wp_validate_redirect') ) {
         return $location;
 
     }
+}
+
+/**
+ * A filter function to remove the DB access details from the $_SERVER fields that sometimes are publically sent
+ * (e.g. in Gateways errors reports).
+ */
+if( !function_exists('leyka_clear_server_data') ) {
+
+    function leyka_clear_server_data(array $server_data = array()) {
+
+        if( !empty($server_data['WORDPRESS_DB_USER'])) {
+            $server_data['WORDPRESS_DB_USER'] = 'XXXXXXXXXXXX';
+        }
+
+        if( !empty($server_data['WORDPRESS_DB_NAME'])) {
+            $server_data['WORDPRESS_DB_NAME'] = 'XXXXXXXXXXXX';
+        }
+
+        if( !empty($server_data['WORDPRESS_DB_HOST'])) {
+            $server_data['WORDPRESS_DB_HOST'] = 'XXXXXXXXXXXXXXXXXXXX';
+        }
+
+        if( !empty($server_data['WORDPRESS_DB_PASSWORD']) ) {
+            $server_data['WORDPRESS_DB_PASSWORD'] = 'XXXXXXXXXXXXXXXXXXXX';
+        }
+
+        return $server_data;
+
+    }
+    add_filter('leyka_notification_server_data', 'leyka_clear_server_data');
+
 }
 
 /**
@@ -1751,7 +1645,7 @@ function leyka_remembered_data($name, $value = null, $delete = false) {
 function leyka_calculate_donation_total_amount($donation = false, $amount = 0.0, $pm_full_id = '') {
 
     if($donation) {
-        $donation = leyka_get_validated_donation($donation);
+        $donation = Leyka_Donations::get_instance()->get_donation($donation);
     }
 
     $amount = $amount ? $amount : ($donation ? $donation->amount : floatval($amount));
@@ -1873,7 +1767,7 @@ function leyka_get_db_stats() {
     $all_posts_count = $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->posts");
     
     $db_stats = array(
-        'db_stats' =>array(
+        'db_stats' => array(
             'all_posts_count' => $all_posts_count,
             'payments_count' => $payments_count,
             'query_exec_time' => sprintf("%.10f", microtime(true) - $query_time_start),
@@ -1988,54 +1882,6 @@ function leyka_get_all_options() {
     }
 
     return $res;
-
-}
-
-function leyka_is_tab_valid($tab_id) {
-
-    $tab_options = Leyka_Options_Allocator::get_instance()->get_tab_options($tab_id);
-
-    if( !$tab_options ) {
-        return false;
-    }
-
-    foreach($tab_options as $key => $option_params) {
-
-        if($key === 'section') {
-
-            if( !empty($option_params['options']) ) { // Noramal section - validate all options
-                foreach($option_params['options'] as $option_id) {
-                    if( !leyka_options()->is_valid($option_id) ) {
-                        return false;
-                    }
-                }
-            } else if( !empty($option_params['tabs']) ) {
-
-                foreach($option_params['tabs'] as $sub_tab_id => $sub_tab_content) {
-
-                    if( !empty($sub_tab_content['sections']) ) {
-                        foreach($sub_tab_content['sections'] as $sub_section) {
-                            if( !empty($sub_section['options']) ) {
-                                foreach($sub_section['options'] as $sub_section_option_id) {
-                                    if( !leyka_options()->is_valid($sub_section_option_id) ) {
-                                        return false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                }
-
-            }
-
-        } else if( !leyka_options()->is_valid($key) ) { // Validate single option
-            return false;
-        }
-
-    }
-
-    return true;
 
 }
 
@@ -2413,6 +2259,37 @@ function leyka_prepare_data_line_for_export(array $line_data) {
 
 }
 
+/** A service class - to use meta queries (a la WP_Query) with separate-stored Donations. */
+class Leyka_Donations_Meta_Query extends WP_Meta_Query {
+
+    public function get_sql( $type = null, $primary_table = null, $primary_id_column = null, $context = null ) {
+
+        global $wpdb;
+
+        $this->table_aliases = array();
+
+        $this->meta_table = $wpdb->prefix.'leyka_donations_meta';
+        $this->meta_id_column = sanitize_key('donation_id');
+
+        $this->primary_table = $primary_table ? $primary_table : $wpdb->prefix.'leyka_donations';
+        $this->primary_id_column = $primary_id_column ? $primary_id_column : 'ID';
+
+        $sql = $this->get_sql_clauses();
+
+        /*
+         * If any JOINs are LEFT JOINs (as in the case of NOT EXISTS), then all JOINs should
+         * be LEFT. Otherwise posts with no metadata will be excluded from results.
+         */
+        if ( false !== strpos( $sql['join'], 'LEFT JOIN' ) ) {
+            $sql['join'] = str_replace( 'INNER JOIN', 'LEFT JOIN', $sql['join'] );
+        }
+
+        return $sql;
+
+    }
+
+}
+
 // By default, wp_attachment_is() doesn't treat SVGs as images. It's a f*ckin oppression, we think.
 if( !function_exists('leyka_attachment_is') ) {
     function leyka_attachment_is($type, $attachment = null) {
@@ -2521,5 +2398,11 @@ if( !function_exists('is_ip_in_range') ) {
 
         return $ip_ip_net == $ip_net;
 
+    }
+}
+
+if( !function_exists('leyka_get_donations_storage_type') ) {
+    function leyka_get_donations_storage_type() {
+        return in_array(get_option('leyka_donations_storage_type'), array('sep', 'sep-incompleted')) ? 'sep' : 'post';
     }
 }

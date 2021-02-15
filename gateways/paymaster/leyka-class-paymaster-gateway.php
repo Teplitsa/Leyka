@@ -113,7 +113,7 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
 
             $message .= "THEIR_POST:\n\r" . print_r($_POST, true) . "\n\r\n\r";
             $message .= "GET:\n\r" . print_r($_GET, true) . "\n\r\n\r";
-            $message .= "SERVER:\n\r" . print_r($_SERVER, true) . "\n\r\n\r";
+            $message .= "SERVER:\n\r" . print_r(apply_filters('leyka_notification_server_data', $_SERVER), true) . "\n\r\n\r";
 
             wp_mail(get_option('admin_email'), __('Paymaster callback error - missing LMI_PAYMENT_NO value', 'leyka'), $message);
             status_header(200);
@@ -152,7 +152,7 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
 
             $message .= "POST:\n\r" . print_r($_POST, true) . "\n\r\n\r";
             $message .= "GET:\n\r" . print_r($_GET, true) . "\n\r\n\r";
-            $message .= "SERVER:\n\r" . print_r($_SERVER, true) . "\n\r\n\r";
+            $message .= "SERVER:\n\r" . print_r(apply_filters('leyka_notification_server_data', $_SERVER), true) . "\n\r\n\r";
             $message .= "Signature from request:\n\r" . print_r($_REQUEST['SignatureValue'], true) . "\n\r\n\r";
             $message .= "Signature calculated:\n\r" . print_r($sign, true) . "\n\r\n\r";
 
@@ -249,7 +249,7 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
         return empty($arr[$key]) ? '' : ($val ? $val : $arr[$key]);
     }
 
-    public function get_gateway_response_formatted(Leyka_Donation $donation) {
+    public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {
 
         if( !$donation->gateway_response ) {
             return array();

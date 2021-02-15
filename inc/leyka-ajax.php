@@ -10,6 +10,7 @@ function leyka_ajax_get_campaigns_list() {
     $_REQUEST['term'] = empty($_REQUEST['term']) ? '' : trim($_REQUEST['term']);
 
     $campaigns = leyka_get_campaigns_list(array(
+        'posts_per_page' => 10,
         'meta_query' => array(array(
             'key' => 'payment_title', 'value' => $_REQUEST['term'], 'compare' => 'LIKE', 'type' => 'CHAR',
         )),
@@ -27,7 +28,9 @@ function leyka_ajax_get_campaigns_list() {
         );
     }
 
-    foreach(leyka_get_campaigns_list(array('s' => $_REQUEST['term']), 0) as $campaign) { // Any criteria search - low priority
+    $campaigns_tmp = leyka_get_campaigns_list(array('s' => $_REQUEST['term'], 'posts_per_page' => 10,), 0);
+
+    foreach($campaigns_tmp as $campaign) { // Any criteria search - low priority
         if( !in_array($campaign->ID, $ids_found) ) {
             $campaigns[] = array(
                 'value' => $campaign->ID,
@@ -124,7 +127,7 @@ function leyka_get_gateway_redirect_data(){
         } else { // Donation created successfully
 
             $payment_vars['donation_id'] = $donation_id;
-            $donation = new Leyka_Donation($donation_id);
+            $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
 
             if( // Direct integration with GUA - checkout event:
                 leyka_options()->opt('use_gtm_ua_integration') === 'enchanced_ua_only'
@@ -676,7 +679,7 @@ function leyka_cancel_recurring_subscription(){
         }
 
         $init_recurring_donation->recurring_cancel_reason = $reason_text;
-        
+
         $res['message'] = __('Your recurring subscription cancelled.', 'leyka');
 
     } else { // We can only "request to cancel a recurring subscription", so the website admin could cancel it manually

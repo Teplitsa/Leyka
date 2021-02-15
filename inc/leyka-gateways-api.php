@@ -24,6 +24,8 @@ function leyka_get_gateways() {
  * @param $currency mixed
  * @param $sorted boolean
  * @return array
+ *
+ * @todo Refactor the hell out of this method. It should accept an array of $params, and return.
  */
 function leyka_get_pm_list($activity = null, $currency = false, $sorted = true) {
 
@@ -44,6 +46,7 @@ function leyka_get_pm_list($activity = null, $currency = false, $sorted = true) 
             if( ( !$activity || $pm->active == $activity ) && ( !$currency || $pm->has_currency_support($currency) ) ) {
                 $pm_list[] = $pm;
             }
+
         }
 
     } else {
@@ -53,6 +56,19 @@ function leyka_get_pm_list($activity = null, $currency = false, $sorted = true) 
     }
 
     return apply_filters('leyka_active_pm_list', $pm_list, $activity, $currency);
+
+}
+
+function leyka_get_active_recurring_pm_list() {
+
+    $result = array();
+    foreach(leyka_get_pm_list(true) as $pm) {
+        if($pm->has_recurring_support() === 'active') {
+            $result[$pm->full_id] = $pm;
+        }
+    }
+
+    return $result;
 
 }
 
@@ -88,13 +104,13 @@ function leyka_get_pm_by_id($pm_id, $is_full_id = false) {
         $pm = $gateway->get_payment_method_by_id(end($id));
 
     } else {
-
         foreach(leyka()->get_gateways() as $gateway) { /** @var Leyka_Gateway $gateway */
 
             $pm = $gateway->get_payment_method_by_id($pm_id);
             if($pm) {
                 break;
             }
+
         }
     }
 
@@ -104,7 +120,7 @@ function leyka_get_pm_by_id($pm_id, $is_full_id = false) {
 
 /**
  * @param $gateway_id string
- * @return mixed Leyka_Gateway object or false if none found.
+ * @return Leyka_Gateway|false object or false if none found.
  */
 function leyka_get_gateway_by_id($gateway_id) {
 
@@ -174,7 +190,7 @@ function leyka_get_gateway_settings_url($gateway, $type = 'adaptive') {
 
 /**
  * @param Leyka_Gateway $gateway
- * @return mixed; string wizard suffix or false if wizard unavailable for gateway
+ * @return string|false Gateway ID, or false if there is no Wizard for a fiven gateway.
  */
 function leyka_gateway_setup_wizard($gateway) {
     return $gateway->has_wizard ? $gateway->id : false;
@@ -225,6 +241,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
         add_action("leyka_{$this->_id}_save_donation_data", array($this, 'save_donation_specific_data'));
         add_action("leyka_{$this->_id}_add_donation_specific_data", array($this, 'add_donation_specific_data'), 10, 2);
+        add_filter("leyka_{$this->_id}_new_donation_specific_data", array($this, 'new_donation_specific_data'), 10, 3);
 
         add_filter('leyka_'.$this->_id.'_get_unknown_donation_field', array($this, 'get_specific_data_value'), 10, 3);
         add_action('leyka_'.$this->_id.'_set_unknown_donation_field', array($this, 'set_specific_data_value'), 10, 3);
@@ -235,10 +252,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
             array($this, 'get_recurring_subscription_cancelling_link'),
             10, 2
         );
-        add_action(
-            "leyka_{$this->_id}_cancel_recurring_subscription",
-            array($this, 'cancel_recurring_subscription_by_link')
-        );
+        add_action("leyka_{$this->_id}_cancel_recurring_subscription", array($this, 'cancel_recurring_subscription'));
 
         $this->_initialize_options();
 
@@ -359,20 +373,25 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     // Handler for Gateway's service calls (activate the donations, etc.):
     public function _handle_service_calls($call_type = '') {}
 
-    /** Default behavior, may be substituted in descendants: */
-    public function get_init_recurrent_donation($donation) {
+    /**
+     * Default behavior - search for initial recurring donation ID in the donation meta field.
+     * This behavior may be substituted in Gateway subclasses.
+     *
+     * @param $donation mixed
+     * @return Leyka_Donation_Base|false
+     */
+    public function get_init_recurring_donation($donation) {
 
-        if(is_a($donation, 'Leyka_Donation')) {
-            return new Leyka_Donation($donation->init_recurring_donation_id);
-        } elseif( !empty($donation) && (int)$donation > 0 ) {
+        $donation = Leyka_Donations::get_instance()->get_donation($donation);
 
-            $donation = new Leyka_Donation($donation);
-
-            return new Leyka_Donation($donation->init_recurring_donation_id);
-
-        } else {
+        if($donation->type !== 'rebill') {
             return false;
         }
+
+        $init_recurring_donation_id = $donation->get_meta('init_recurring_donation_id');
+
+        return $init_recurring_donation_id ?
+            Leyka_Donations::get_instance()->get_donation($init_recurring_donation_id) : $donation;
 
     }
 
@@ -382,7 +401,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
      * @param $donation Leyka_Donation
      * @return bool|WP_Error True if cancelling request succeeded, false otherwise, WP_Error if request error can be verbal.
      */
-    public function cancel_recurring_subscription(Leyka_Donation $donation) {
+    public function cancel_recurring_subscription(Leyka_Donation_Base $donation) {
 
         if($donation->type !== 'rebill') {
             return new WP_Error(
@@ -391,7 +410,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
             );
         }
 
-        $init_recurring_donation = Leyka_Donation::get_init_recurring_donation($donation);
+        $init_recurring_donation = $donation->init_recurring_donation;
         if($init_recurring_donation) {
 
             $init_recurring_donation->recurring_is_active = false;
@@ -405,19 +424,27 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     }
 
     /** A wrapper to fire when recurring subscription is cancelled via link. Should use the cancel_recurring_subscription(). */
-    public function cancel_recurring_subscription_by_link(Leyka_Donation $donation) {
+    public function cancel_recurring_subscription_by_link(Leyka_Donation_Base $donation) {
     }
 
-    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation $donation) {
-        return $link_text;
+    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation_Base $donation) {
+
+        $init_recurring_donation = $this->get_init_recurring_donation($donation);
+        $cancelling_url = (get_option('permalink_structure') ?
+                home_url("leyka/service/cancel_recurring/{$donation->id}") :
+                home_url("?page=leyka/service/cancel_recurring/{$donation->id}"))
+            .'/'.md5($donation->id.'_'.$init_recurring_donation->id.'_leyka_cancel_recurring_subscription');
+
+        return sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">click here</a>', 'leyka'), $cancelling_url);
+
     }
 
-    public function do_recurring_donation(Leyka_Donation $init_recurring_donation) {
+    public function do_recurring_donation(Leyka_Donation_Base $init_recurring_donation) {
         return false;
     }
 
     // Handler to use Gateway's responses in Leyka UI:
-    abstract public function get_gateway_response_formatted(Leyka_Donation $donation);
+    abstract public function get_gateway_response_formatted(Leyka_Donation_Base $donation);
 
     protected function _get_gateway_pm_list($pm_id = false) {
         return $pm_id ? array_keys($this->_payment_methods, $pm_id) : array_keys($this->_payment_methods);
@@ -575,7 +602,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
                 if(empty($currency)) {
                     $pm_list[] = $pm;
-                } elseif($currency && $pm->has_currency_support($currency)) {
+                } else if($currency && $pm->has_currency_support($currency)) {
                     $pm_list[] = $pm;
                 }
 
@@ -630,22 +657,27 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     }
 
     /** For "leyka_get_unknown_donation_field" filter hook, to get gateway specific donation data values. */
-    public function get_specific_data_value($value, $field_name, Leyka_Donation $donation) {
+    public function get_specific_data_value($value, $field_name, Leyka_Donation_Base $donation) {
         return $value;
     }
 
     /** For "leyka_set_unknown_donation_field" action hook, to set gateway specific donation data values. */
-    public function set_specific_data_value($field_name, $value, Leyka_Donation $donation) {
+    public function set_specific_data_value($field_name, $value, Leyka_Donation_Base $donation) {
     }
 
     /** To save gateway specific fields when donation editing page is being saved */
-    public function save_donation_specific_data(Leyka_Donation $donation) {
+    public function save_donation_specific_data(Leyka_Donation_Base $donation) {
     }
 
     /** Action called when new donation (Leyka_Donation::add()) is being created to add gateway-specific fields. */
     public function add_donation_specific_data($donation_id, array $donation_params) {
     }
-    
+
+    /** Filter called when new donation (Leyka_Donation::add()) is being created to add gateway-specific meta fields. */
+    public function new_donation_specific_data(array $meta_fields, $donation_id, array $donation_params) {
+        return $meta_fields;
+    }
+
     /**
      * @return array; list of possible values in leyka_get_gateways_filter_categories_list function
      */

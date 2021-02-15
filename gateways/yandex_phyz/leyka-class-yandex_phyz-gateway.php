@@ -249,7 +249,7 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
         }
     }
 
-    public function get_gateway_response_formatted(Leyka_Donation $donation) {
+    public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {
 
         if( !$donation->gateway_response ) {
             return array();

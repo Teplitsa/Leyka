@@ -369,7 +369,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             $message .= "CALLBACK TYPE: ".print_r(empty($response['request']) ? '-' : $response['request'], true)."\n\r\n\r";
             $message .= "THEIR POST:\n\r".print_r($_POST, true)."\n\r\n\r";
             $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
-            $message .= "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
+            $message .= "SERVER:\n\r".print_r(apply_filters('leyka_notification_server_data', $_SERVER), true)."\n\r\n\r";
             $message .= "THEIR JSON:\n\r".print_r($json_string, true)."\n\r\n\r";
             $message .= "THEIR JSON DECODED:\n\r".print_r(json_decode($json_string), true)."\n\r\n\r";
 
@@ -520,7 +520,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         return empty($arr[$key]) ? '' : ($val ? $val : $arr[$key]);
     }
 
-    public function get_gateway_response_formatted(Leyka_Donation $donation) {
+    public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {
 
         if( !$donation->gateway_response ) {
             return array();
@@ -571,14 +571,14 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
     }
 
-    public function get_specific_data_value($value, $field_name, Leyka_Donation $donation) {
+    public function get_specific_data_value($value, $field_name, Leyka_Donation_Base $donation) {
         switch($field_name) {
             case 'mixplat_phone': return get_post_meta($donation->id, '_leyka_mixplat_phone', true);
             default: return $value;
         }
     }
 
-    public function set_specific_data_value($field_name, $value, Leyka_Donation $donation) {
+    public function set_specific_data_value($field_name, $value, Leyka_Donation_Base $donation) {
         switch($field_name) {
             case 'mixplat_phone':
                 return update_post_meta($donation->id, '_leyka_mixplat_phone', $value);
@@ -586,7 +586,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         }
     }
 
-    public function save_donation_specific_data(Leyka_Donation $donation) {
+    public function save_donation_specific_data(Leyka_Donation_Base $donation) {
         if(isset($_POST['mixplat-phone']) && $donation->mixplat_phone != $_POST['mixplat-phone']) {
             $donation->mixplat_phone = $_POST['mixplat-phone'];
         }

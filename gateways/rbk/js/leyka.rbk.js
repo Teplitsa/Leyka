@@ -72,27 +72,6 @@ jQuery(document).ready(function($){
 
             }
 
-            if(leyka.gtm_ga_eec_available) {
-
-                window.dataLayer = window.dataLayer || [];
-
-                dataLayer.push({
-                    'event': 'eec.add',
-                    'ecommerce': {
-                        // 'currencyCode': response.currency, // For some reason it doesn't work
-                        'add': {
-                            'products': [{
-                                'name': response.description,
-                                'id': response.donation_id,
-                                'price': response.amount,
-                                'quantity': 1
-                            }]
-                        }
-                    }
-                });
-
-            }
-
             var $pre_submit_step = $form_wrapper.find('.leyka-rbk-pre-submit-step')
                 .on('click.leyka', '.rbk-final-submit-button', function(e){ // Display the RBK payment data widget
 

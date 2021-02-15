@@ -4,7 +4,7 @@
  * Plugin Name: Leyka
  * Plugin URI:  https://leyka.te-st.ru/
  * Description: The donations management system for your WP site
- * Version:     3.15
+ * Version:     4.0
  * Author:      Teplitsa of social technologies
  * Author URI:  https://te-st.ru
  * Text Domain: leyka
@@ -38,7 +38,7 @@
 
 // Leyka plugin version:
 if( !defined('LEYKA_VERSION') ) {
-    define('LEYKA_VERSION', '3.15');
+    define('LEYKA_VERSION', '4.0');
 }
 
 // Plugin base file:
@@ -91,12 +91,17 @@ load_plugin_textdomain('leyka', false, basename(dirname(__FILE__)).'/languages/'
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-tmp-translations.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-functions.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-controller.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-updates.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-polylang.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-core.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-gateways-api.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-extensions-api.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-campaign.php');
-require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-donation.php');
+//require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-donation.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donation-base.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donation-post.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donations-management.php'); /** @todo Make this class ADMIN ONLY. */
+require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donations.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-donor.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-payment-form.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-template-controller.php');
@@ -140,7 +145,7 @@ if($extensions_dir) {
 
         $file_addr = LEYKA_PLUGIN_DIR."extensions/$extension_id/leyka-class-{$extension_id}-extension.php";
 
-        if(file_exists($file_addr)) {
+        if($extension_id !== '.' && $extension_id !== '..' && file_exists($file_addr)) {
             require_once($file_addr);
         }
 

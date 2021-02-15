@@ -131,23 +131,24 @@ if( !function_exists('leyka_get_admin_footer') ) {
 
 if( !function_exists('leyka_show_admin_footer') ) {
     function leyka_show_admin_footer($old_footer_html = '') {
+
         $footer_class = '';
-        if(!empty($_GET['screen']) && strpos($_GET['screen'], 'wizard-') === 0) {
+        if( !empty($_GET['screen']) && strpos($_GET['screen'], 'wizard-') === 0 ) {
             $footer_class .= 'leyka-wizard-footer';
-        }
-        elseif(!empty($_GET['page']) && $_GET['page'] === 'leyka_settings' && empty($_GET['screen'])) {
+        } else if( !empty($_GET['page']) && $_GET['page'] === 'leyka_settings' && empty($_GET['screen']) ) {
             $footer_class .= 'leyka-settings-footer';
         }
 
         echo leyka_get_admin_footer($footer_class, $old_footer_html);
+
     }
 }
 
 if( !function_exists('leyka_show_admin_footer_on_default_pages') ) {
 
     function leyka_show_admin_footer_on_default_pages($old_footer_html = '') {
-        global $typenow;
-        
+//        global $typenow;
+
         $screen = get_current_screen();
 
         if(false === stripos($screen->base, 'leyka') && false === stripos($screen->id, 'leyka')) {
@@ -157,7 +158,7 @@ if( !function_exists('leyka_show_admin_footer_on_default_pages') ) {
         } else if( !empty($_GET['action']) && in_array($_GET['action'], array('edit')) && in_array($screen->post_type, array('leyka_donation', 'leyka_campaign')) ) {
             return leyka_get_admin_footer('', $old_footer_html);
         }
-    
+
     }
     add_filter('admin_footer_text', 'leyka_show_admin_footer_on_default_pages', 20);
 

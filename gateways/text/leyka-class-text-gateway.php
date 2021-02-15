@@ -46,7 +46,7 @@ class Leyka_Text_Gateway extends Leyka_Gateway {
         return $form_data;
     }
 
-    public function get_gateway_response_formatted(Leyka_Donation $donation) {
+    public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {
         return array();
     }
 
