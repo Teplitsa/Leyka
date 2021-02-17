@@ -252,4 +252,166 @@
     color: $color-error-message;
 
 }
+
+// Common multi-valued items fields settings:
+.multi-valued-items-field-wrapper {
+
+    .multi-valued-item-box {
+
+        @include leyka-metabox-styling();
+
+        margin-bottom: 16px;
+
+        h2.hndle {
+
+            .title {
+                flex: 1 1 100%;
+            }
+
+            &:after {
+
+                content: ' ';
+                background-image: url(../../img/icon-metabox-draggable.svg) !important;
+
+                pointer-events: all;
+                width: 8px;
+                height: 14px;
+
+            }
+
+        }
+
+        .box-footer {
+
+            margin: -16px;
+            margin-top: 16px;
+
+            border-top: 1px solid $color-border-semilight;
+            padding: 12px 16px;
+
+            text-align: right;
+
+            color: $color-error-message;
+
+            .delete-item {
+                cursor: pointer;
+            }
+
+        }
+
+    }
+
+    .add-item {
+
+        margin-left: 8px;
+        padding-bottom: 16px;
+
+        cursor: pointer;
+        color: $color-wizard-link-active;
+
+        &:before {
+            display: inline-block;
+            content: '+';
+            margin-right: 4px;
+        }
+
+    }
+
+}
+// Common multi-valued item fields settings - END
+
+// Additional fields settings:
+.multi-valued-items-field-wrapper.additional-fields-settings {
+
+    max-width: 100% !important;
+
+    h2.hndle {
+        padding: 0;
+        margin: 10px 12px 10px 10px;
+    }
+
+    .box-content {
+
+        padding: 0 10px 10px 10px;
+
+        margin-bottom: 0;
+
+        .single-line {
+
+            display: flex;
+            flex-flow: row nowrap;
+
+            margin-bottom: 10px;
+
+            .option-block {
+
+                flex: 33.33% 0 1;
+
+                &:not(:first-child) {
+                    margin-left: 10px;
+                }
+                margin-bottom: 0;
+
+            }
+
+        }
+
+        hr {
+            margin: 0;
+            border: 1px solid $color-border-semilight;
+        }
+
+        .notes-and-errors {
+
+            margin: 10px 0 0 0;
+
+            li {
+
+                list-style: none;
+                margin: 0;
+
+                line-height: 12px;
+                font-size: 10px;
+
+                &:not(:last-child) {
+                    margin-bottom: 8px;
+                }
+
+                &:before {
+                    content: '';
+                    display: inline-block;
+                    width: 8px;
+                    height: 8px;
+                    margin-right: 4px;
+                    mask: url(../../img/icon-info.svg); // Instead of background-image: url(), so we can give colors to the icon
+                    mask-size: cover;
+                    background-color: $leyka-admin-color-link;
+                }
+
+                &.error {
+
+                    color: $color-error-message;
+
+                    &:before {
+                        background-color: $color-error-message;
+                    }
+
+                }
+
+            }
+
+        }
+
+        .box-footer {
+            border: 0;
+            margin: 0;
+            padding: 0;
+            line-height: 13px;
+        }
+
+    }
+
+}
+// Additional fields settings - END
+
 // Settings fields - END

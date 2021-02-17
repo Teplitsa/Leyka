@@ -152,6 +152,11 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'custom_gateways_commission', // Special option type
                 'title' => __('Payment operators commission', 'leyka'),
             ),
+            'common_additional_fields' => array(
+                'type' => 'custom_additional_fields', // Special option type
+                'title' => __('Additional form fields', 'leyka'),
+                'field_classes' => array('additional-fields-settings'),
+            ),
             'extensions_available' => array(
                 'type' => 'custom_extensions', // Special option type
                 'title' => __('Extensions available', 'leyka'),

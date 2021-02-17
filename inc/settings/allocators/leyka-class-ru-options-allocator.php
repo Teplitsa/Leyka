@@ -62,9 +62,9 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
     }
 
     protected function _get_secondary_currencies_options_tabs() {
-        
+
         $secondary_currencies_tabs = array();
-        
+
         foreach(leyka_get_secondary_currencies_full_info() as $currency_id => $data) {
 
             $secondary_currencies_tabs[$currency_id.'_currency'] = array(
@@ -440,6 +440,12 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
                 'description' => __('Here you can change donation forms view', 'leyka'),
                 'is_default_collapsed' => false,
                 'tabs' => array_merge($main_form_template_select_options, $templates_options),
+            ),),
+            array('section' => array(
+                'name' => 'common_additional_fields_settings',
+                'title' => __('Additional form fields', 'leyka'),
+                'is_default_collapsed' => false,
+                'options' => array('common_additional_fields',),
             ),),
             array('section' => array(
                 'name' => 'currency_options',
