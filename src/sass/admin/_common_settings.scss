@@ -258,27 +258,66 @@
 
     .multi-valued-item-box {
 
-        @include leyka-metabox-styling();
+        //@include leyka-metabox-styling();
+
+        border: 1px solid $color-border-semilight;
+        border-radius: 6px;
+        background-color: $color-metaboxes-background;
+        //box-shadow: 0 2px 2px $color-border-semilight;
+
+        color: $leyka-admin-color-text;
 
         margin-bottom: 16px;
 
         h2.hndle {
 
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+
+            border: 0;
+
+            padding: 0;
+            margin: 8px 16px;
+
+            //margin: 24px 0;
+            //padding: 0 24px;
+
+            cursor: pointer;
+            color: $color-metabox-title;
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 24px;
+
             .title {
                 flex: 1 1 100%;
+                font-size: 13px;
+                line-height: 16px;
+                font-weight: 400;
             }
 
-            &:after {
-
-                content: ' ';
+            .draggable {
                 background-image: url(../../img/icon-metabox-draggable.svg) !important;
-
                 pointer-events: all;
+                cursor: grab;
                 width: 8px;
                 height: 14px;
-
+                margin-right: 10px;
             }
 
+        }
+
+        &.closed h2.hndle:hover:after { // Restyled metabox/portlet open/close handle
+            content: ' ';
+            display: inline-block;
+            pointer-events: all;
+            width: 14px;
+            height: 13px;
+            margin-left: auto; // Align the open/close control to the right
+
+            mask: url(../../img/icon-edit.svg); // Instead of background-image: url(), so we can give colors to the icon
+            mask-size: cover;
+            background-color: $color-border-semidark;
         }
 
         .box-footer {
@@ -303,7 +342,7 @@
 
     .add-item {
 
-        margin-left: 8px;
+        //margin-left: 8px;
         padding-bottom: 16px;
 
         cursor: pointer;
@@ -325,11 +364,6 @@
 
     max-width: 100% !important;
 
-    h2.hndle {
-        padding: 0;
-        margin: 10px 12px 10px 10px;
-    }
-
     .box-content {
 
         padding: 0 10px 10px 10px;
@@ -345,12 +379,25 @@
 
             .option-block {
 
-                flex: 33.33% 0 1;
+                flex: 50% 0 1;
+
+                margin-bottom: 0;
 
                 &:not(:first-child) {
                     margin-left: 10px;
                 }
-                margin-bottom: 0;
+
+                input,select,textarea {
+
+                    border: 1px solid #828991;
+
+                    &:focus {
+                        border: 2px solid #D43C57;
+                        box-shadow: none;
+                        padding: 0 5px 2px 5px;
+                    }
+
+                }
 
             }
 

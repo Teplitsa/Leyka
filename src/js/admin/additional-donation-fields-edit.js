@@ -13,7 +13,7 @@ jQuery(document).ready(function($){
         closed_boxes = typeof $.cookie('leyka-common-additional-fields-boxes-closed') === 'string' ?
             JSON.parse($.cookie('leyka-common-additional-fields-boxes-closed')) : [];
 
-    if($.isArray(closed_boxes)) { // Close the package boxes needed
+    if($.isArray(closed_boxes)) { // Close the item boxes needed
         $.each(closed_boxes, function(key, value){
             $fields_wrapper.find('#'+value).addClass('closed');
         });
@@ -26,7 +26,7 @@ jQuery(document).ready(function($){
 
         $current_box.toggleClass('closed');
 
-        // Save the open/closed state for all packages boxes:
+        // Save the open/closed state for all items boxes:
         let current_box_id = $current_box.prop('id'),
             current_box_index = $.inArray(current_box_id, closed_boxes);
 
@@ -40,17 +40,39 @@ jQuery(document).ready(function($){
 
     });
 
+    // Change field box title when field title value changes:
+    $fields_wrapper.on('keyup.leyka change.leyka click.leyka', '[name="leyka_field_title"]', function(){
+
+        let $field_title = $(this),
+            $box_title = $field_title.parents('.multi-valued-item-box').find('h2.hndle .title');
+
+        if($field_title.val().length) {
+            $box_title.html($field_title.val());
+        } else {
+            $box_title.html($box_title.data('empty-box-title'));
+        }
+
+    });
+
     $fields_wrapper.sortable({
         placeholder: 'ui-state-highlight', // A class for dropping item placeholder
         update: function(event, ui){
 
             let additional_fields_options = [];
-            $.each($fields_wrapper.sortable('toArray'), function(key, field_id){ // Value is a package ID
+            $.each($fields_wrapper.sortable('toArray'), function(key, field_id){ // Value is a field ID (generated randomly)
 
                 let field_options = {'id': field_id}; // Assoc. array key should be initialized explicitly
 
-                $.each($fields_wrapper.find('#'+field_id).find(':input').serializeArray(), function(key, field_setting_input){
-                    field_options[ field_setting_input.name.replace('leyka_field_', '') ] = field_setting_input.value;
+                $.each($fields_wrapper.find('#'+field_id).find(':input'), function(key, field_setting_input){
+
+                    let $input = $(field_setting_input);
+
+                    if($input.prop('type') === 'checkbox') {
+                        field_options[ $input.prop('name').replace('leyka_field_', '') ] = $input.prop('checked');
+                    } else {
+                        field_options[ $input.prop('name').replace('leyka_field_', '') ] = $input.val();
+                    }
+
                 });
 
                 additional_fields_options.push(field_options);
@@ -64,6 +86,7 @@ jQuery(document).ready(function($){
         }
     });
 
+    // Delete item:
     $fields_wrapper.on('click.leyka', '.delete-additional-field', function(e){
 
         e.preventDefault();
@@ -84,6 +107,8 @@ jQuery(document).ready(function($){
         }
 
     });
+
+    // Add new item:
     $add_field_button.on('click.leyka', function(e){
 
         e.preventDefault();
@@ -92,7 +117,7 @@ jQuery(document).ready(function($){
             return;
         }
 
-        // Generate & set the new package ID:
+        // Generate & set the new field ID:
         let new_additional_field_id = '';
         do {
             new_additional_field_id = leyka_get_random_string(4);
@@ -121,13 +146,20 @@ jQuery(document).ready(function($){
 
     });
 
-    if( !$fields_wrapper.find('.field-box').length ) { // No additional fields added yet - add the first (empty) one
+    if( !$fields_wrapper.find('.field-box').length ) { // No items added yet - add the first (empty) one
         $add_field_button.trigger('click.leyka');
     }
 
-    // Refresh the main additional fields option value before submit:
-    $fields_wrapper.parents('.leyka-options-form').on('submit.leyka', function(){
-        $fields_wrapper.sortable('option', 'update')();
+    // Pre-submit actions:
+    $fields_wrapper.parents('form:first').on('submit.leyka', function(){
+
+        $fields_wrapper.sortable('option', 'update')(); // Refresh the main items option value before submit
+
+        // Validation:
+        if( !leyka_all_fields_valid($fields_wrapper) ) {
+            e.preventDefault();
+        }
+
     });
 
 });

@@ -808,7 +808,7 @@ function leyka_scale_compact($campaign) {
 }
 
 function leyka_scale_ultra($campaign) {
-    
+
     if( !is_a($campaign, 'Leyka_Campaign') ) {
         $campaign = new Leyka_Campaign($campaign);
     }
@@ -819,7 +819,7 @@ function leyka_scale_ultra($campaign) {
     if($target == 0) {
         return;
     }
-    
+
     $percentage = round(($campaign->total_funded/$target)*100);
 	$percentage = $percentage > 100 ? 100 : $percentage;?>
 
