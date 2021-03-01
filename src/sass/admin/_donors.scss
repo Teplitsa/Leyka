@@ -198,9 +198,7 @@
 			}
 
 			.donor-data-edit {
-				background-image: url(../../img/icon-edit.svg);
-				@include leyka-admin-icon(24px);
-				@include leyka-admin-clean-a;
+                @include leyka-colored-icon('../../img/icon-edit.svg', 18px, $leyka-admin-color-link);
 				margin-left: $leyka-base;
 			}
 
@@ -213,10 +211,7 @@
 
 				h2 {
 					@include leyka-admin-list-text-h2;
-					padding-left: 0;
-					padding-right: 0;
-					padding-top: 0;
-					padding-bottom: 0;
+					padding: 0;
 					width: auto;
 				}
 
@@ -272,6 +267,7 @@
 				}
 				
 				.donor-add-description-wrapper {
+
 					width: 100%;
 
 					a {
@@ -401,6 +397,7 @@
 
 // donor table
 table.donor-info-table {
+
 	width: 100%;
     border-spacing: 0;
     margin-top: 20px;
@@ -416,25 +413,22 @@ table.donor-info-table {
 			padding-bottom: 12px;
 
 			&:first-of-type {
-				padding-left: 0.5 * $leyka-base;
+				padding-left: 0.5*$leyka-base;
 			}
 		}
 	}
 
 	tbody {
 
-		tr {
-
-		}
-
 		td {
+
 			margin: 0;
 			border: none;
 			border-top: 1px solid $leyka-donors-stroke;
 			padding: 12px 0 12px 0;
 
 			&:first-of-type {
-				padding-left: 0.5 * $leyka-base;
+				padding-left: 0.5*$leyka-base;
 			}
 
 			&.donor-comment-edit {
@@ -443,15 +437,11 @@ table.donor-info-table {
 			}
 
 			.comment-icon-edit {
-				background-image: url(../../img/icon-edit.svg);
-				@include leyka-admin-icon(19px);
-				@include leyka-admin-clean-a;
+                @include leyka-colored-icon('../../img/icon-edit.svg', 16px, $leyka-admin-color-link);
 			}
 
 			.comment-icon-delete {
-				background-image: url(../../img/dashboard/icon-bad.svg);
-				@include leyka-admin-icon(19px);
-				@include leyka-admin-clean-a;
+                @include leyka-colored-icon('../../img/dashboard/icon-bad.svg', 19px);
 			}
 
 			&.donor-comment-delete {
@@ -464,17 +454,21 @@ table.donor-info-table {
 					.ok-icon {
 						display: none; // fix donor info indicators bug
 					}
+
 				}
 			}
+
 		}
+
 	}
+
 }
 
 // tags metabox
 .dashboard_page_leyka_donor_info {
 	#leyka_donor_tags {
 		.inside {
-			padding: $leyka-base $leyka-base 1.5 * $leyka-base $leyka-base;
+			padding: $leyka-base $leyka-base 1.5*$leyka-base $leyka-base;
 			margin-top: 0;
 
 			& > p {
@@ -492,11 +486,11 @@ table.donor-info-table {
 			}
 
 			input.newtag {
-				background: #FFFFFF;
-				border: 1px solid #0085BA;
+				background: $color-white;
+				border: 1px solid $leyka-admin-color-link;
 				box-sizing: border-box;
 				box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.4);
-				margin-right: 0.5 * $leyka-base;
+				margin-right: 0.5*$leyka-base;
 				height: 24px;
 			}
 
@@ -507,7 +501,7 @@ table.donor-info-table {
 
 			.howto {
 				@include leyka-admin-list-text-tags-explanation;
-				margin-top: 0.5 * $leyka-base;
+				margin-top: 0.5*$leyka-base;
 				color: $leyka-donor-color-explanation;
 			}
 		}
@@ -521,7 +515,7 @@ table.donor-info-table {
 // donations list
 #leyka_donor_donations {
 	.inside {
-		padding: $leyka-base $leyka-base 1.5 * $leyka-base $leyka-base;
+		padding: $leyka-base $leyka-base 1.5*$leyka-base $leyka-base;
 		margin-top: 0;
 	}
 

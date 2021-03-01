@@ -639,7 +639,7 @@
 
     .screen-wrapper {
         position: relative;
-        line-height: 0px;
+        line-height: 0;
     }
 
     img.zoom-screen {
@@ -715,6 +715,24 @@
         }
 
     }
+
+}
+
+@mixin leyka-colored-icon($icon-url, $icon-size, $icon-color: default) {
+
+    @if $icon-color != default {
+
+        mask: url($icon-url); // Instead of background-image: url(), so we can give colors to the icon
+        mask-size: cover;
+        background-color: $icon-color;
+
+    }
+    @else {
+        background-image: url($icon-url);
+    }
+
+    @include leyka-admin-icon($icon-size);
+    @include leyka-admin-clean-a;
 
 }
 
@@ -808,13 +826,18 @@
 
 }
 
-@mixin leyka-admin-icon($size: 24px) {
+@mixin leyka-admin-icon($size-w: 24px, $size-h: default) {
     background-position: center;
     background-repeat: no-repeat;
     display: inline-block;
-    background-size: $size;
-    width: $size;
-    height: $size;
+    background-size: $size-w;
+
+    @if $size-h == default {
+        $size-h: $size-w;
+    }
+    width: $size-w;
+    height: $size-h;
+
 }
 
 @mixin leyka-admin-outer-link($icon-margin-left: default) {
@@ -944,7 +967,7 @@
         &:after { // Restyled metabox/portlet open/close handle
             content: ' ';
             display: inline-block;
-            background-image: url(../../img/icon-arrow-expanded.svg);
+            background-image: url(../../img/icon-arrow-expanded-circled.svg); /** @todo Refactor to the icon-arrow-expanded.svg, then remove the "-circled" SVGs */
             cursor: pointer;
             pointer-events: all;
             width: 24px;
@@ -955,7 +978,7 @@
     }
 
     &.closed h2.hndle:after {
-        background-image: url(../../img/icon-arrow-collapsed.svg) !important;
+        background-image: url(../../img/icon-arrow-collapsed-circled.svg) !important; /** @todo Refactor to the icon-arrow-collapsed.svg, then remove the "-circled" SVGs */
     }
 
     .inside {

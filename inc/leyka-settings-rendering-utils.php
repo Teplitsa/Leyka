@@ -907,7 +907,7 @@ function leyka_render_additional_fields_settings($option_id, $data){
 
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-<?php echo $option_id;?>-field-wrapper multi-valued-items-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) ? '' : implode(' ', $data['field_classes']);?>">
 
-        <div class="leyka-main-muli-items leyka-main-additional-fields" data-max-additional-fields="<?php echo 5; //Leyka_Support_Packages_Extension::MAX_PACKAGES_NUMBER;?>">
+        <div class="leyka-main-multi-items leyka-main-additional-fields" data-max-additional-fields="<?php echo 5; //Leyka_Support_Packages_Extension::MAX_PACKAGES_NUMBER;?>">
 
             <?php $data['value'] = empty($data['value']) || !is_array($data['value']) ?
                 leyka_options()->opt('common_additional_fields') :
@@ -921,7 +921,6 @@ function leyka_render_additional_fields_settings($option_id, $data){
                         'box_title' => $field_options['title'],
                         'type' => $field_options['type'],
                         'title' => $field_options['title'],
-                        'slug' => $field_options['slug'],
                         'is_required' => $field_options['is_required'],
                     ));
                 }
@@ -955,7 +954,6 @@ function leyka_save_common_additional_fields_settings() {
         $result[$field->id] = array(
             'type' => $field->type,
             'title' => $field->title,
-            'slug' => $field->slug,
             'is_required' => !empty($field->is_required),
         );
 

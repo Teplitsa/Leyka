@@ -255,13 +255,13 @@
     .color-actions {
         text-align: right;
         position: absolute;
-        right: 0px;
+        right: 0;
         bottom: $base;
 
         a {
             display: inline-block;
             text-decoration: none;
-            padding-bottom: 0px;
+            padding-bottom: 0;
             border-bottom: none;
 
             &:not(:last-child) {
@@ -271,7 +271,7 @@
             &:before {
                 background-image: url('../../img/icon-color-reset.svg');
                 background-size: 16px 16px;
-                content: " ";
+                content: ' ';
                 display: inline-block;
                 width: 16px;
                 height: 16px;

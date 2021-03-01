@@ -1527,7 +1527,7 @@ jQuery(document).ready(function($){
         });
     }
 
-    $fields_wrapper.on('click.leyka', 'h2.hndle', function(e){
+    $fields_wrapper.on('click.leyka', 'h2.hndle .title', function(e){
 
         let $this = $(this),
             $current_box = $this.parents('.field-box');
