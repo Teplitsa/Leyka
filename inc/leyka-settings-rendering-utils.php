@@ -41,7 +41,7 @@ function leyka_render_text_field($option_id, $data){
     $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
     $data['value'] = isset($data['value']) ? $data['value'] : '';?>
 
-    <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-text-field-wrapper field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">
+    <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-field-inner-wrapper leyka-text-field-wrapper field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>" data-field-title="<?php echo empty($data['title']) ? '' : $data['title'];?>">
         <label>
 
         <?php if(empty($data['hide_title'])) {?>
@@ -410,7 +410,7 @@ function leyka_render_select_field($option_id, $data){
 
     $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;?>
 
-    <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-select-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">
+    <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-field-inner-wrapper leyka-select-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>" data-field-title="<?php echo empty($data['title']) ? '' : $data['title'];?>">
 
         <label for="<?php echo $option_id.'-field';?>">
 
@@ -824,23 +824,23 @@ function leyka_render_additional_fields_settings($option_id, $data){
         $_COOKIE['leyka-common-additional-fields-boxes-closed'] = empty($_COOKIE['leyka-common-additional-fields-boxes-closed']) ?
             array() : json_decode(stripslashes('[\"someline\"]'));?>
 
-        <div id="<?php echo $placeholders['id'] ? 'field-'.$placeholders['id'] : 'field-'.leyka_get_random_string(4);?>" class="multi-valued-item-box field-box <?php echo $is_template ? 'field-template' : '';?> <?php echo !$is_template && !empty($_COOKIE['leyka-additional-fields-boxes-closed']) && !empty($placeholders['id']) && in_array($placeholders['id'], $_COOKIE['leyka-additional-fields-boxes-closed']) ? 'closed' : '';?>" <?php echo $is_template ? 'style="display: none;"' : '';?>>
+        <div id="<?php echo $placeholders['id'] ? 'item-'.$placeholders['id'] : 'item-'.leyka_get_random_string(4);?>" class="multi-valued-item-box field-box <?php echo $is_template ? 'item-template' : '';?> <?php echo !$is_template && !empty($_COOKIE['leyka-additional-fields-boxes-closed']) && !empty($placeholders['id']) && in_array($placeholders['id'], $_COOKIE['leyka-additional-fields-boxes-closed']) ? 'closed' : '';?>" <?php echo $is_template ? 'style="display: none;"' : '';?>>
 
-            <h2 class="ui-sortable-handle hndle">
+            <h3 class="item-box-title ui-sortable-handle">
                 <span class="draggable"></span>
                 <span class="title" data-empty-box-title="<?php _e('New field', 'leyka');?>">
                     <?php echo esc_html($placeholders['box_title']);?>
                 </span>
-            </h2>
+            </h3>
 
-            <div class="box-content inside">
+            <div class="box-content">
 
                 <div class="single-line">
 
                     <div class="option-block type-select">
                         <div class="leyka-select-field-wrapper">
                             <?php leyka_render_select_field('field_type', array(
-                                'title' => '', //__('Field type', 'leyka'),
+                                'title' => __('Field type', 'leyka'),
                                 'hide_title' => true,
                                 'type' => 'select',
                                 'value' => $placeholders['type'] ? $placeholders['type'] : '-',
@@ -861,7 +861,7 @@ function leyka_render_additional_fields_settings($option_id, $data){
                     <div class="option-block type-text">
                         <div class="leyka-text-field-wrapper">
                             <?php leyka_render_text_field('field_title', array(
-                                'title' => '',
+                                'title' => __('Field title', 'leyka'),
                                 'hide_title' => true,
                                 'type' => 'text',
                                 'placeholder' => __('Field title', 'leyka'),
@@ -873,24 +873,22 @@ function leyka_render_additional_fields_settings($option_id, $data){
 
                 </div>
 
-                <div class="option-block type-checkbox">
-                    <div class="leyka-checkbox-field-wrapper">
-                        <?php leyka_render_checkbox_field('field_is_required', array(
-                            'title' => __('The field is required on donation form', 'leyka'),
-                            'type' => 'checkbox',
-                            'value' => !!$placeholders['is_required'],
-                            'short_format' => true,
-                        ));?>
+                <div class="single-line">
+                    <div class="option-block type-checkbox">
+                        <div class="leyka-checkbox-field-wrapper">
+                            <?php leyka_render_checkbox_field('field_is_required', array(
+                                'title' => __('The field is required on donation form', 'leyka'),
+                                'type' => 'checkbox',
+                                'value' => !!$placeholders['is_required'],
+                                'short_format' => true,
+                            ));?>
+                        </div>
+                        <div class="field-errors"></div>
                     </div>
-                    <div class="field-errors"></div>
                 </div>
-
-                <hr>
 
                 <ul class="notes-and-errors">
                     <li><?php _e("Don't forget to put a point for processing telephone numbers to your Personal data usage terms", 'leyka');?></li>
-                    <li><?php _e('Slug is a field service name in database, it should consist of latin characters only', 'leyka')?></li>
-                    <li class="error"><?php echo 'Test error message';?></li>
                 </ul>
 
                 <div class="box-footer">
@@ -907,7 +905,7 @@ function leyka_render_additional_fields_settings($option_id, $data){
 
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-<?php echo $option_id;?>-field-wrapper multi-valued-items-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) ? '' : implode(' ', $data['field_classes']);?>">
 
-        <div class="leyka-main-multi-items leyka-main-additional-fields" data-max-additional-fields="<?php echo 5; //Leyka_Support_Packages_Extension::MAX_PACKAGES_NUMBER;?>">
+        <div class="leyka-main-multi-items leyka-main-additional-fields" data-max-items="<?php echo 5; //Leyka_Support_Packages_Extension::MAX_PACKAGES_NUMBER;?>" data-min-items="0" data-items-cookie-name="leyka-common-additional-fields-boxes-closed" data-item-inputs-names-prefix="leyka_field_">
 
             <?php $data['value'] = empty($data['value']) || !is_array($data['value']) ?
                 leyka_options()->opt('common_additional_fields') :
@@ -928,11 +926,11 @@ function leyka_render_additional_fields_settings($option_id, $data){
 
         </div>
 
-        <?php leyka_additional_form_field_html(true); // Package box template ?>
+        <?php leyka_additional_form_field_html(true); // Additional field box template ?>
 
-        <div class="add-common-field add-item bottom"><?php _e('Add field', 'leyka');?></div>
+        <div class="add-field add-item bottom"><?php _e('Add field', 'leyka');?></div>
 
-        <input type="hidden" id="leyka-common-additional-fields-options" name="leyka_common_additional_fields" value="">
+        <input type="hidden" class="leyka-items-options" name="leyka_common_additional_fields" value="">
 
     </div>
 
@@ -947,7 +945,7 @@ function leyka_save_common_additional_fields_settings() {
 
     foreach($_POST['leyka_common_additional_fields'] as $field) {
 
-        $field->id = mb_stristr($field->id, 'field-') === false || empty($field->title) ?
+        $field->id = mb_stristr($field->id, 'item-') === false || empty($field->title) ?
             $field->id :
             trim(preg_replace('~[^-a-z0-9_]+~u', '-', mb_strtolower(leyka_cyr2lat($field->title))), '-');
 
@@ -984,14 +982,14 @@ function leyka_render_support_packages_settings($option_id, $data){
         $_COOKIE['leyka-support-packages-boxes-closed'] = empty($_COOKIE['leyka-support-packages-boxes-closed']) ?
             array() : json_decode(stripslashes('[\"someline\"]'));?>
 
-        <div id="<?php echo $placeholders['id'] ? 'package-'.$placeholders['id'] : 'package-'.leyka_get_random_string(4);?>" class="multi-valued-item-box package-box <?php echo $is_template ? 'package-template' : '';?> <?php echo !$is_template && !empty($_COOKIE['leyka-support-packages-boxes-closed']) && !empty($placeholders['id']) && in_array($placeholders['id'], $_COOKIE['leyka-support-packages-boxes-closed']) ? 'closed' : '';?>" <?php echo $is_template ? 'style="display: none;"' : '';?>>
+        <div id="<?php echo $placeholders['id'] ? 'item-'.$placeholders['id'] : 'item-'.leyka_get_random_string(4);?>" class="multi-valued-item-box package-box <?php echo $is_template ? 'item-template' : '';?> <?php echo !$is_template && !empty($_COOKIE['leyka-support-packages-boxes-closed']) && !empty($placeholders['id']) && in_array($placeholders['id'], $_COOKIE['leyka-support-packages-boxes-closed']) ? 'closed' : '';?>" <?php echo $is_template ? 'style="display: none;"' : '';?>>
 
-            <h2 class="ui-sortable-handle hndle">
-                <span class="title"><?php echo esc_html($placeholders['box_title']);?></span>
+            <h3 class="item-box-title ui-sortable-handle">
                 <span class="draggable"></span>
-            </h2>
+                <span class="title"><?php echo esc_html($placeholders['box_title']);?></span>
+            </h3>
 
-            <div class="box-content inside">
+            <div class="box-content">
 
                 <div class="option-block type-text">
                     <div class="leyka-text-field-wrapper">
@@ -1053,7 +1051,7 @@ function leyka_render_support_packages_settings($option_id, $data){
 
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-<?php echo $option_id;?>-field-wrapper multi-valued-items-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) ? '' : implode(' ', $data['field_classes']);?>">
 
-        <div class="leyka-main-support-packages" data-max-packages="<?php echo Leyka_Support_Packages_Extension::MAX_PACKAGES_NUMBER;?>">
+        <div class="leyka-main-multi-items leyka-main-support-packages" data-max-items="<?php echo Leyka_Support_Packages_Extension::MAX_PACKAGES_NUMBER;?>" data-min-items="1" data-items-cookie-name="leyka-support-packages-boxes-closed" data-item-inputs-names-prefix="leyka_package_">
 
         <?php $data['value'] = empty($data['value']) || !is_array($data['value']) ?
             leyka_options()->opt('custom_support_packages_settings') :
@@ -1077,7 +1075,7 @@ function leyka_render_support_packages_settings($option_id, $data){
 
         <div class="add-item bottom"><?php _e('Add reward', 'leyka');?></div>
 
-        <input type="hidden" id="leyka-support-packages-options" name="leyka_support_packages" value="">
+        <input type="hidden" class="leyka-items-options" name="leyka_support_packages" value="">
 
     </div>
 
@@ -1091,7 +1089,7 @@ function leyka_save_support_packages_settings() {
 
     foreach($_POST['leyka_support_packages'] as $package) {
 
-        $package->id = stristr($package->id, 'package-') === false || empty($package->title) ?
+        $package->id = stristr($package->id, 'item-') === false || empty($package->title) ?
             $package->id :
             trim(preg_replace('~[^-a-z0-9_]+~u', '-', mb_strtolower(leyka_cyr2lat($package->title))), '-');
 

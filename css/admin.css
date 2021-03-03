@@ -849,13 +849,9 @@
 }
 
 #leyka-settings-form div#leyka_lang2upload-wrapper .field-component.help {
-    padding-left: 0px;
+    padding-left: 0;
     margin-top: -1px;
     min-height: 40px;
-}
-
-#leyka-settings-form div#leyka_lang2upload-wrapper #upload-l10n-button {
-    margin-right: 1.5rem;
 }
 
 #leyka-settings-form div#leyka_lang2upload-wrapper .leyka-loader {
@@ -865,7 +861,6 @@
 #leyka-settings-form div#leyka_lang2upload-wrapper .field-errors,
 #leyka-settings-form div#leyka_lang2upload-wrapper .field-success {
     padding: 8px 16px;
-    max-width: 100%;
     font-size: 13px;
     color: #666666;
     border: 1px solid rgba(212, 60, 87, 0.4);

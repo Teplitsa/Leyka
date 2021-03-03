@@ -1153,41 +1153,6 @@ jQuery(document).ready(function($){
     //     return this.nodeType === 1 || this.nodeType === 3; // 1 is for links, 3 - for plain text
     // }).remove();
 
-    // Upload l10n:
-    $('#upload-l10n-button').click(function(){
-
-        let $btn = $(this),
-            $loading = $('<span class="leyka-loader xs"></span>'),
-            actionData = {action: 'leyka_upload_l10n'};
-
-        $btn.parent().append($loading);
-        $btn.prop('disabled', true);
-        $btn.closest('.content').find('.field-errors').removeClass('has-errors').find('span').empty();
-        $btn.closest('.content').find('.field-success').hide();
-
-        $.post(leyka.ajaxurl, actionData, null, 'json')
-            .done(function(json) {
-
-                if(json.status === 'ok') {
-                    $btn.closest('.content').find('.field-success').show();
-                    setTimeout(function(){
-                        location.reload();
-                    }, 500);
-                } else if(json.status === 'error' && json.message) {
-                    $btn.closest('.content').find('.field-errors').addClass('has-errors').find('span').html(json.message);
-                } else {
-                    $btn.closest('.content').find('.field-errors').addClass('has-errors').find('span').html(leyka.error_message);
-                }
-
-            }).fail(function(){
-            $btn.closest('.content').find('.field-errors').addClass('has-errors').find('span').html(leyka.error_message);
-        }).always(function(){
-            $loading.remove();
-            $btn.prop('disabled', false);
-        });
-
-    });
-
     // Connect to stats:
     if($('#leyka_send_plugin_stats-y-field').prop('checked')) {
 
@@ -1364,6 +1329,146 @@ jQuery(document).ready(function($){
 
     }
 
+    // Multi-valued item complex fields:
+    $('.leyka-main-multi-items').each(function(index, outer_items_wrapper){
+
+        let $items_wrapper = $(outer_items_wrapper),
+            $item_template = $items_wrapper.siblings('.item-template'),
+            $add_item_button = $items_wrapper.siblings('.add-item'),
+            items_cookie_name = $items_wrapper.data('items-cookie-name'),
+            closed_boxes = typeof $.cookie(items_cookie_name) === 'string' ?
+                JSON.parse($.cookie(items_cookie_name)) : [];
+
+        if($.isArray(closed_boxes)) { // Close the item boxes needed
+            $.each(closed_boxes, function(key, value){
+                $items_wrapper.find('#'+value).addClass('closed');
+            });
+        }
+
+        $items_wrapper.on('click.leyka', '.item-box-title .title', function(e){
+
+            let $this = $(this),
+                $current_box = $this.parents('.multi-valued-item-box');
+
+            $current_box.toggleClass('closed');
+
+            // Save the open/closed state for all items boxes:
+            let current_box_id = $current_box.prop('id'),
+                current_box_index = $.inArray(current_box_id, closed_boxes);
+
+            if(current_box_index === -1 && $current_box.hasClass('closed')) {
+                closed_boxes.push(current_box_id);
+            } else if(current_box_index !== -1 && !$current_box.hasClass('closed')) {
+                closed_boxes.splice(current_box_index, 1);
+            }
+
+            $.cookie(items_cookie_name, JSON.stringify(closed_boxes));
+
+        });
+
+        $items_wrapper.on('click.leyka', '.delete-item', function(e){
+
+            e.preventDefault();
+
+            if($items_wrapper.find('.multi-valued-item-box').length > $items_wrapper.data('min-items')) {
+
+                $(this).parents('.multi-valued-item-box').remove();
+                $items_wrapper.sortable('option', 'update')();
+
+            }
+
+            let items_current_count = $items_wrapper.find('.multi-valued-item-box').length;
+            if(items_current_count <= $items_wrapper.data('min-items')) {
+                $items_wrapper.find('.delete-item').addClass('inactive');
+            }
+            if(items_current_count < $items_wrapper.data('max-items')) {
+                $add_item_button.removeClass('inactive');
+            }
+
+        });
+
+        $add_item_button.on('click.leyka', function(e){
+
+            e.preventDefault();
+
+            if($add_item_button.hasClass('inactive')) {
+                return;
+            }
+
+            // Generate & set the new item ID:
+            let new_item_id = '';
+            do {
+                new_item_id = leyka_get_random_string(4);
+            } while($items_wrapper.find('#item-'+new_item_id).length);
+
+            $item_template
+                .clone()
+                .appendTo($items_wrapper)
+                .removeClass('item-template')
+                .prop('id', 'item-'+new_item_id)
+                .show();
+
+            $items_wrapper.sortable('option', 'update')();
+
+            let items_current_count = $items_wrapper.find('.multi-valued-item-box').length;
+
+            if(items_current_count >= $items_wrapper.data('max-items')) {
+                $add_item_button.addClass('inactive');
+            }
+
+            if(items_current_count <= 1) { // When adding initial item
+                $items_wrapper.find('.delete-item').addClass('inactive');
+            } else if(items_current_count > 1) {
+                $items_wrapper.find('.delete-item').removeClass('inactive');
+            }
+
+        });
+
+        if( !$items_wrapper.find('.multi-valued-item-box').length ) { // No items added yet - add the first (empty) one
+            $add_item_button.trigger('click.leyka');
+        }
+
+        $items_wrapper.sortable({
+            placeholder: 'ui-state-highlight', // A class for dropping item placeholder
+            update: function(event, ui){
+
+                let items_options = [];
+                $.each($items_wrapper.sortable('toArray'), function(key, item_id){ // Value is an item ID (generated randomly)
+
+                    let item_options = {'id': item_id}; // Assoc. array key should be initialized explicitly
+
+                    $.each($items_wrapper.find('#'+item_id).find(':input'), function(key, item_setting_input){
+
+                        let $input = $(item_setting_input),
+                            input_name = $input.prop('name').replace($items_wrapper.data('item-inputs-names-prefix'), '');
+
+                        if($input.prop('type') === 'checkbox') {
+                            item_options[input_name] = $input.prop('checked');
+                        } else {
+                            item_options[input_name] = $input.val();
+                        }
+
+                    });
+
+                    items_options.push(item_options);
+
+                });
+
+                $items_wrapper.siblings('input.leyka-items-options').val(
+                    encodeURIComponent(JSON.stringify(items_options))
+                );
+
+            }
+        });
+
+        // Refresh the main items option value before submit:
+        $items_wrapper.parents('form:first').on('submit.leyka', function(e){
+            $items_wrapper.sortable('option', 'update')();
+        });
+
+    });
+    // Multi-valued item complex fields - END
+
     // Donors management & Donors' accounts fields logical link:
     $('input[name="leyka_donor_accounts_available"]').change(function(){
 
@@ -1515,41 +1620,10 @@ jQuery(document).ready(function($){
         return;
     }
 
-    let $fields_wrapper = $('.leyka-main-additional-fields'),
-        $field_template = $fields_wrapper.siblings('.field-template'),
-        $add_field_button = $fields_wrapper.siblings('.add-common-field'),
-        closed_boxes = typeof $.cookie('leyka-common-additional-fields-boxes-closed') === 'string' ?
-            JSON.parse($.cookie('leyka-common-additional-fields-boxes-closed')) : [];
-
-    if($.isArray(closed_boxes)) { // Close the item boxes needed
-        $.each(closed_boxes, function(key, value){
-            $fields_wrapper.find('#'+value).addClass('closed');
-        });
-    }
-
-    $fields_wrapper.on('click.leyka', 'h2.hndle .title', function(e){
-
-        let $this = $(this),
-            $current_box = $this.parents('.field-box');
-
-        $current_box.toggleClass('closed');
-
-        // Save the open/closed state for all items boxes:
-        let current_box_id = $current_box.prop('id'),
-            current_box_index = $.inArray(current_box_id, closed_boxes);
-
-        if(current_box_index === -1 && $current_box.hasClass('closed')) {
-            closed_boxes.push(current_box_id);
-        } else if(current_box_index !== -1 && !$current_box.hasClass('closed')) {
-            closed_boxes.splice(current_box_index, 1);
-        }
-
-        $.cookie('leyka-common-additional-fields-boxes-closed', JSON.stringify(closed_boxes));
-
-    });
+    let $items_wrapper = $additional_fields_settings_wrapper.find('.leyka-main-multi-items');
 
     // Change field box title when field title value changes:
-    $fields_wrapper.on('keyup.leyka change.leyka click.leyka', '[name="leyka_field_title"]', function(){
+    $items_wrapper.on('keyup.leyka change.leyka click.leyka', '[name="leyka_field_title"]', function(){
 
         let $field_title = $(this),
             $box_title = $field_title.parents('.multi-valued-item-box').find('h2.hndle .title');
@@ -1562,113 +1636,59 @@ jQuery(document).ready(function($){
 
     });
 
-    $fields_wrapper.sortable({
-        placeholder: 'ui-state-highlight', // A class for dropping item placeholder
-        update: function(event, ui){
-
-            let additional_fields_options = [];
-            $.each($fields_wrapper.sortable('toArray'), function(key, field_id){ // Value is a field ID (generated randomly)
-
-                let field_options = {'id': field_id}; // Assoc. array key should be initialized explicitly
-
-                $.each($fields_wrapper.find('#'+field_id).find(':input'), function(key, field_setting_input){
-
-                    let $input = $(field_setting_input);
-
-                    if($input.prop('type') === 'checkbox') {
-                        field_options[ $input.prop('name').replace('leyka_field_', '') ] = $input.prop('checked');
-                    } else {
-                        field_options[ $input.prop('name').replace('leyka_field_', '') ] = $input.val();
-                    }
-
-                });
-
-                additional_fields_options.push(field_options);
-
-            });
-
-            $fields_wrapper.siblings('input#leyka-common-additional-fields-options').val(
-                encodeURIComponent(JSON.stringify(additional_fields_options))
-            );
-
-        }
-    });
-
-    // Delete item:
-    $fields_wrapper.on('click.leyka', '.delete-additional-field', function(e){
-
-        e.preventDefault();
-
-        if($fields_wrapper.find('.field-box').length > 1) {
-
-            $(this).parents('.field-box').remove();
-            $fields_wrapper.sortable('option', 'update')();
-
-        }
-
-        let additional_fields_current_count = $fields_wrapper.find('.field-box').length;
-        if(additional_fields_current_count <= 1) {
-            $fields_wrapper.find('.delete-additional-field').addClass('inactive');
-        }
-        if(additional_fields_current_count < $fields_wrapper.data('max-additional-fields')) {
-            $add_field_button.removeClass('inactive');
-        }
-
-    });
-
-    // Add new item:
-    $add_field_button.on('click.leyka', function(e){
-
-        e.preventDefault();
-
-        if($add_field_button.hasClass('inactive')) {
-            return;
-        }
-
-        // Generate & set the new field ID:
-        let new_additional_field_id = '';
-        do {
-            new_additional_field_id = leyka_get_random_string(4);
-        } while($fields_wrapper.find('#field-'+new_additional_field_id).length);
-
-        $field_template
-            .clone()
-            .appendTo($fields_wrapper)
-            .removeClass('field-template')
-            .prop('id', 'field-'+new_additional_field_id)
-            .show();
-
-        $fields_wrapper.sortable('option', 'update')();
-
-        let additional_fields_current_count = $fields_wrapper.find('.field-box').length;
-
-        if(additional_fields_current_count >= $fields_wrapper.data('max-additional-fields')) {
-            $add_field_button.addClass('inactive');
-        }
-
-        if(additional_fields_current_count <= 1) { // When adding initial field box
-            $fields_wrapper.find('.delete-additional-field').addClass('inactive');
-        } else if(additional_fields_current_count > 1) {
-            $fields_wrapper.find('.delete-additional-field').removeClass('inactive');
-        }
-
-    });
-
-    if( !$fields_wrapper.find('.field-box').length ) { // No items added yet - add the first (empty) one
-        $add_field_button.trigger('click.leyka');
-    }
-
     // Pre-submit actions:
-    $fields_wrapper.parents('form:first').on('submit.leyka', function(){
-
-        $fields_wrapper.sortable('option', 'update')(); // Refresh the main items option value before submit
+    $items_wrapper.parents('form:first').on('submit.leyka', function(e){
 
         // Validation:
-        if( !leyka_all_fields_valid($fields_wrapper) ) {
+        if( !leyka_all_fields_valid($items_wrapper) ) {
             e.preventDefault();
         }
 
     });
+
+    // Validate the multi-blocked complex field:
+    function leyka_all_fields_valid($fields_wrapper) {
+
+        let fields_valid = true;
+
+        $fields_wrapper.find('.multi-valued-item-box').each(function(index, item_box){
+
+            let $fields_box = $(item_box),
+                $box_errors_list = $fields_box.find('.notes-and-errors');
+
+            $box_errors_list.find('.error').remove();
+
+            let $field = $fields_box.find('[name="leyka_field_type"]'),
+                $field_outer_wrapper = $field.parents('.option-block');
+
+            $field_outer_wrapper.removeClass('has-errors');
+
+            // Field type isn't selected:
+            if( !$field.val().length || $field.val() === '-' ) {
+
+                fields_valid = false;
+                $field_outer_wrapper.addClass('has-errors');
+                $box_errors_list.append('<li class="error">'+leyka.field_x_required.replace('%s', $field_outer_wrapper.find('.leyka-field-inner-wrapper').data('field-title'))+'</li>');
+
+            }
+
+            $field = $fields_box.find('[name="leyka_field_title"]');
+            $field_outer_wrapper = $field.parents('.option-block').removeClass('has-errors');
+
+            // Field title isn't entered:
+            if( !$field.val().length ) {
+
+                fields_valid = false;
+                $field_outer_wrapper.addClass('has-errors');
+                $box_errors_list.append('<li class="error">'+leyka.field_x_required.replace('%s', $field_outer_wrapper.find('.leyka-field-inner-wrapper').data('field-title'))+'</li>');
+
+            }
+
+        });
+
+        return fields_valid;
+
+    }
 
 });
 // Campaign add/edit page:
@@ -3188,7 +3208,7 @@ jQuery(document).ready(function($){
     })
 
 });
-/** Extension settings (edit page) JS. */
+/** Common JS for Extension settings (Extensiton edit page). */
 
 jQuery(document).ready(function($){
 
@@ -3236,250 +3256,6 @@ jQuery(document).ready(function($){
     });
 
 });
-
-/** @todo After debugging, move all the following code to the Extension own JS: */
-jQuery(document).ready(function($){
-
-    let $admin_page_wrapper = $('.leyka-admin');
-    if(
-        !$admin_page_wrapper.length
-        || !$admin_page_wrapper.hasClass('extension-settings')
-    ) {
-        return;
-    }
-
-    var LEYKA_EXT_AUTO_CALC_COLORS = false;
-    var $mainColorInput = $admin_page_wrapper.find('.extension-color-options input[name$="_main_color"]'),
-        $backgroundColorInput = $admin_page_wrapper.find('.extension-color-options input[name$="_background_color"]')
-            .closest('.field-component.field')
-            .find('.leyka-setting-field.colorpicker'),
-        $captionColorInput = $admin_page_wrapper.find('.extension-color-options input[name$="_caption_color"]')
-            .closest('.field-component.field')
-            .find('.leyka-setting-field.colorpicker'),
-        $textColorInput = $admin_page_wrapper.find('.extension-color-options input[name$="_text_color"]')
-            .closest('.field-component.field')
-            .find('.leyka-setting-field.colorpicker');
-
-    $mainColorInput.closest('.field-component').find('.leyka-setting-field.colorpicker').data('stored-color', $mainColorInput.val());
-    $backgroundColorInput.data('stored-color', $backgroundColorInput.closest('.field-component').find('.leyka-colorpicker-value').val());
-    $captionColorInput.data('stored-color', $captionColorInput.closest('.field-component').find('.leyka-colorpicker-value').val());
-    $textColorInput.data('stored-color', $textColorInput.closest('.field-component').find('.leyka-colorpicker-value').val());
-
-    function leykaSetupGeneralColors(mainColorHex) {
-        let mainColorHsl = leykaHex2Hsl(mainColorHex);
-
-        let backgroundColorHsl = leykaMainHslColor2Background(mainColorHsl[0], mainColorHsl[1], mainColorHsl[2]);
-        let backgroundColorHex = leykaHsl2Hex(backgroundColorHsl[0], backgroundColorHsl[1], backgroundColorHsl[2]);
-
-        LEYKA_EXT_AUTO_CALC_COLORS = true;
-        if(!$backgroundColorInput.data('changed')) {
-            $backgroundColorInput.wpColorPicker('color', backgroundColorHex);
-        }
-
-        if(!$captionColorInput.data('changed')) {
-            $captionColorInput.wpColorPicker('color', backgroundColorHex);
-        }
-
-        let textColorHsl = leykaMainHslColor2Text(mainColorHsl[0], mainColorHsl[1], mainColorHsl[2]);
-        let textColorHex = leykaHsl2Hex(textColorHsl[0], textColorHsl[1], textColorHsl[2]);
-        
-        if(!$textColorInput.data('changed')) {
-            $textColorInput.wpColorPicker('color', textColorHex);
-        }
-        LEYKA_EXT_AUTO_CALC_COLORS = false;
-    }
-
-    $mainColorInput.on('change.leyka', function(){
-        leykaSetupGeneralColors($(this).val());
-    });
-
-    $backgroundColorInput.closest('.field-component').find('.leyka-colorpicker-value').on('change.leyka', function(){
-        if(!LEYKA_EXT_AUTO_CALC_COLORS) {
-            $(this).closest('.field-component').find('.leyka-setting-field.colorpicker').data('changed', '1');
-        }
-    });
-
-    $captionColorInput.closest('.field-component').find('.leyka-colorpicker-value').on('change.leyka', function(){
-        if(!LEYKA_EXT_AUTO_CALC_COLORS) {
-            $(this).closest('.field-component').find('.leyka-setting-field.colorpicker').data('changed', '1');
-        }
-    });
-
-    $textColorInput.closest('.field-component').find('.leyka-colorpicker-value').on('change.leyka', function(){
-        if(!LEYKA_EXT_AUTO_CALC_COLORS) {
-            $(this).closest('.field-component').find('.leyka-setting-field.colorpicker').data('changed', '1');
-        }
-    });
-
-    var $colorOptionsBlock = $('.settings-block.extension-color-options');
-    var $colorActions = $('<div class="color-actions"><a href="#" class="reset-colors"><span>'+leyka.extension_colors_reset+'</span></a><a href="#" class="unlock-changes"><span>'+leyka.extension_colors_make_change+'</span></a></div>');
-    $colorOptionsBlock.append($colorActions);
-
-    $colorOptionsBlock.find('.leyka-colorpicker-field-wrapper').each(function(){
-        $(this).append('<div class="leyka-colorpicker-field-overlay"/>');
-    });
-
-    $colorOptionsBlock.on('click', '.unlock-changes', function(e){
-        e.preventDefault();
-        $colorOptionsBlock.toggleClass('changes-unlocked');
-    });
-
-    $colorOptionsBlock.on('click', '.reset-colors', function(e){
-        e.preventDefault();
-
-        $backgroundColorInput.data('changed', '');
-        $captionColorInput.data('changed', '');
-        $textColorInput.data('changed', '');
-
-        $mainColorInput.change();
-        // $mainColorInputPicker = $mainColorInput.closest('.field-component').find('.leyka-setting-field.colorpicker');
-        // $mainColorInputPicker.wpColorPicker('color', $mainColorInputPicker.data('stored-color'));
-    });
-
-    $colorOptionsBlock.on('click', 'leyka-colorpicker-field-overlay', function(e){
-        e.stopPropagation();
-    });
-
-});
-
-// Support packages extension - custom field:
-jQuery(document).ready(function($){
-
-    let $admin_page_wrapper = $('.leyka-admin');
-    if(
-        !$admin_page_wrapper.length
-        || !$admin_page_wrapper.hasClass('extension-settings')
-        || $admin_page_wrapper.data('leyka-extension-id') !== 'support_packages'
-        || !leyka_ui_widget_available('sortable')
-    ) {
-        return;
-    }
-
-    let $packages_wrapper = $('.leyka-main-support-packages'),
-        $package_template = $packages_wrapper.siblings('.package-template'),
-        $add_package_button = $packages_wrapper.siblings('.add-package'),
-        closed_boxes = typeof $.cookie('leyka-support-packages-boxes-closed') === 'string' ?
-            JSON.parse($.cookie('leyka-support-packages-boxes-closed')) : [];
-
-    if($.isArray(closed_boxes)) { // Close the package boxes needed
-        $.each(closed_boxes, function(key, value){
-            $packages_wrapper.find('#'+value).addClass('closed');
-        });
-    }
-
-    $packages_wrapper.on('click.leyka', 'h2.hndle', function(e){
-
-        let $this = $(this),
-            $current_box = $this.parents('.package-box');
-
-        $current_box.toggleClass('closed');
-
-        // Save the open/closed state for all packages boxes:
-        let current_box_id = $current_box.prop('id'),
-            current_box_index = $.inArray(current_box_id, closed_boxes);
-
-        if(current_box_index === -1 && $current_box.hasClass('closed')) {
-            closed_boxes.push(current_box_id);
-        } else if(current_box_index !== -1 && !$current_box.hasClass('closed')) {
-            closed_boxes.splice(current_box_index, 1);
-        }
-
-        $.cookie('leyka-support-packages-boxes-closed', JSON.stringify(closed_boxes));
-
-    });
-
-    $packages_wrapper.sortable({
-        placeholder: 'ui-state-highlight', // A class for dropping item placeholder
-        update: function(event, ui){
-
-            let packages_options = [];
-            $.each($packages_wrapper.sortable('toArray'), function(key, package_id){ // Value is a package ID
-
-                let package_options = {'id': package_id}; // Assoc. array key should be initialized explicitly
-
-                $.each($packages_wrapper.find('#'+package_id).find(':input').serializeArray(), function(key, package_field){
-                    package_options[ package_field.name.replace('leyka_package_', '') ] = package_field.value;
-                });
-
-                packages_options.push(package_options);
-
-            });
-
-            $packages_wrapper.siblings('input#leyka-support-packages-options').val(
-                encodeURIComponent(JSON.stringify(packages_options))
-            );
-
-        }
-    });
-
-    $packages_wrapper.on('click.leyka', '.delete-package', function(e){
-
-        e.preventDefault();
-
-        if($packages_wrapper.find('.package-box').length > 1) {
-
-            $(this).parents('.package-box').remove();
-            $packages_wrapper.sortable('option', 'update')();
-
-        }
-
-        let packages_current_count = $packages_wrapper.find('.package-box').length;
-        if(packages_current_count <= 1) {
-            $packages_wrapper.find('.delete-package').addClass('inactive');
-        }
-        if(packages_current_count < $packages_wrapper.data('max-packages')) {
-            $add_package_button.removeClass('inactive');
-        }
-
-    });
-    $add_package_button.on('click.leyka', function(e){
-
-        e.preventDefault();
-
-        if($add_package_button.hasClass('inactive')) {
-            return;
-        }
-
-        // Generate & set the new package ID:
-        let new_package_id = '';
-        do {
-            new_package_id = leyka_get_random_string(4);
-        } while($packages_wrapper.find('#package-'+new_package_id).length);
-
-        $package_template
-            .clone()
-            .appendTo($packages_wrapper)
-            .removeClass('package-template')
-            .prop('id', 'package-'+new_package_id)
-            .show();
-
-        $packages_wrapper.sortable('option', 'update')();
-
-        let packages_current_count = $packages_wrapper.find('.package-box').length;
-
-        if(packages_current_count >= $packages_wrapper.data('max-packages')) {
-            $add_package_button.addClass('inactive');
-        }
-
-        if(packages_current_count <= 1) { // When adding initial package box
-            $packages_wrapper.find('.delete-package').addClass('inactive');
-        } else if(packages_current_count > 1) {
-            $packages_wrapper.find('.delete-package').removeClass('inactive');
-        }
-
-    });
-
-    if( !$packages_wrapper.find('.package-box').length ) { // No packages added yet - add the first (empty) one
-        $add_package_button.trigger('click.leyka');
-    }
-
-    // Refresh the main packages option value before submit:
-    $packages_wrapper.parents('.leyka-options-form').on('submit.leyka', function(){
-        $packages_wrapper.sortable('option', 'update')();
-    });
-
-});
-/** @todo Move to the Extension JS - END */
 /** Gateways settings board */
 
 // Payment settings page:

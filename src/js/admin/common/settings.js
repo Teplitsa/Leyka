@@ -367,41 +367,6 @@ jQuery(document).ready(function($){
     //     return this.nodeType === 1 || this.nodeType === 3; // 1 is for links, 3 - for plain text
     // }).remove();
 
-    // Upload l10n:
-    $('#upload-l10n-button').click(function(){
-
-        let $btn = $(this),
-            $loading = $('<span class="leyka-loader xs"></span>'),
-            actionData = {action: 'leyka_upload_l10n'};
-
-        $btn.parent().append($loading);
-        $btn.prop('disabled', true);
-        $btn.closest('.content').find('.field-errors').removeClass('has-errors').find('span').empty();
-        $btn.closest('.content').find('.field-success').hide();
-
-        $.post(leyka.ajaxurl, actionData, null, 'json')
-            .done(function(json) {
-
-                if(json.status === 'ok') {
-                    $btn.closest('.content').find('.field-success').show();
-                    setTimeout(function(){
-                        location.reload();
-                    }, 500);
-                } else if(json.status === 'error' && json.message) {
-                    $btn.closest('.content').find('.field-errors').addClass('has-errors').find('span').html(json.message);
-                } else {
-                    $btn.closest('.content').find('.field-errors').addClass('has-errors').find('span').html(leyka.error_message);
-                }
-
-            }).fail(function(){
-            $btn.closest('.content').find('.field-errors').addClass('has-errors').find('span').html(leyka.error_message);
-        }).always(function(){
-            $loading.remove();
-            $btn.prop('disabled', false);
-        });
-
-    });
-
     // Connect to stats:
     if($('#leyka_send_plugin_stats-y-field').prop('checked')) {
 
@@ -577,6 +542,146 @@ jQuery(document).ready(function($){
         };
 
     }
+
+    // Multi-valued item complex fields:
+    $('.leyka-main-multi-items').each(function(index, outer_items_wrapper){
+
+        let $items_wrapper = $(outer_items_wrapper),
+            $item_template = $items_wrapper.siblings('.item-template'),
+            $add_item_button = $items_wrapper.siblings('.add-item'),
+            items_cookie_name = $items_wrapper.data('items-cookie-name'),
+            closed_boxes = typeof $.cookie(items_cookie_name) === 'string' ?
+                JSON.parse($.cookie(items_cookie_name)) : [];
+
+        if($.isArray(closed_boxes)) { // Close the item boxes needed
+            $.each(closed_boxes, function(key, value){
+                $items_wrapper.find('#'+value).addClass('closed');
+            });
+        }
+
+        $items_wrapper.on('click.leyka', '.item-box-title .title', function(e){
+
+            let $this = $(this),
+                $current_box = $this.parents('.multi-valued-item-box');
+
+            $current_box.toggleClass('closed');
+
+            // Save the open/closed state for all items boxes:
+            let current_box_id = $current_box.prop('id'),
+                current_box_index = $.inArray(current_box_id, closed_boxes);
+
+            if(current_box_index === -1 && $current_box.hasClass('closed')) {
+                closed_boxes.push(current_box_id);
+            } else if(current_box_index !== -1 && !$current_box.hasClass('closed')) {
+                closed_boxes.splice(current_box_index, 1);
+            }
+
+            $.cookie(items_cookie_name, JSON.stringify(closed_boxes));
+
+        });
+
+        $items_wrapper.on('click.leyka', '.delete-item', function(e){
+
+            e.preventDefault();
+
+            if($items_wrapper.find('.multi-valued-item-box').length > $items_wrapper.data('min-items')) {
+
+                $(this).parents('.multi-valued-item-box').remove();
+                $items_wrapper.sortable('option', 'update')();
+
+            }
+
+            let items_current_count = $items_wrapper.find('.multi-valued-item-box').length;
+            if(items_current_count <= $items_wrapper.data('min-items')) {
+                $items_wrapper.find('.delete-item').addClass('inactive');
+            }
+            if(items_current_count < $items_wrapper.data('max-items')) {
+                $add_item_button.removeClass('inactive');
+            }
+
+        });
+
+        $add_item_button.on('click.leyka', function(e){
+
+            e.preventDefault();
+
+            if($add_item_button.hasClass('inactive')) {
+                return;
+            }
+
+            // Generate & set the new item ID:
+            let new_item_id = '';
+            do {
+                new_item_id = leyka_get_random_string(4);
+            } while($items_wrapper.find('#item-'+new_item_id).length);
+
+            $item_template
+                .clone()
+                .appendTo($items_wrapper)
+                .removeClass('item-template')
+                .prop('id', 'item-'+new_item_id)
+                .show();
+
+            $items_wrapper.sortable('option', 'update')();
+
+            let items_current_count = $items_wrapper.find('.multi-valued-item-box').length;
+
+            if(items_current_count >= $items_wrapper.data('max-items')) {
+                $add_item_button.addClass('inactive');
+            }
+
+            if(items_current_count <= 1) { // When adding initial item
+                $items_wrapper.find('.delete-item').addClass('inactive');
+            } else if(items_current_count > 1) {
+                $items_wrapper.find('.delete-item').removeClass('inactive');
+            }
+
+        });
+
+        if( !$items_wrapper.find('.multi-valued-item-box').length ) { // No items added yet - add the first (empty) one
+            $add_item_button.trigger('click.leyka');
+        }
+
+        $items_wrapper.sortable({
+            placeholder: 'ui-state-highlight', // A class for dropping item placeholder
+            update: function(event, ui){
+
+                let items_options = [];
+                $.each($items_wrapper.sortable('toArray'), function(key, item_id){ // Value is an item ID (generated randomly)
+
+                    let item_options = {'id': item_id}; // Assoc. array key should be initialized explicitly
+
+                    $.each($items_wrapper.find('#'+item_id).find(':input'), function(key, item_setting_input){
+
+                        let $input = $(item_setting_input),
+                            input_name = $input.prop('name').replace($items_wrapper.data('item-inputs-names-prefix'), '');
+
+                        if($input.prop('type') === 'checkbox') {
+                            item_options[input_name] = $input.prop('checked');
+                        } else {
+                            item_options[input_name] = $input.val();
+                        }
+
+                    });
+
+                    items_options.push(item_options);
+
+                });
+
+                $items_wrapper.siblings('input.leyka-items-options').val(
+                    encodeURIComponent(JSON.stringify(items_options))
+                );
+
+            }
+        });
+
+        // Refresh the main items option value before submit:
+        $items_wrapper.parents('form:first').on('submit.leyka', function(e){
+            $items_wrapper.sortable('option', 'update')();
+        });
+
+    });
+    // Multi-valued item complex fields - END
 
     // Donors management & Donors' accounts fields logical link:
     $('input[name="leyka_donor_accounts_available"]').change(function(){

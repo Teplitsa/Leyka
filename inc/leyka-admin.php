@@ -671,13 +671,31 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         do_action('leyka_pre_help_actions');
 
-        add_meta_box('leyka_docs_info', __('Leyka documentation', 'leyka'), function(){
-            $this->_show_admin_template('metabox-docs-info');
-        }, 'dashboard_page_leyka_help', 'normal');
+        add_meta_box(
+            'leyka_docs_info',
+            __('Leyka documentation', 'leyka'),
+            function(){ $this->_show_admin_template('metabox-docs-info'); },
+            'dashboard_page_leyka_help',
+            'normal'
+        );
+        // Dark background for the metabox:
+        add_filter('postbox_classes_dashboard_page_leyka_help_leyka_docs_info', function($classes){
+            return array('leyka-metabox-dark');
+        });
 
-        add_meta_box('leyka_feedback', __('Ask a question', 'leyka'), function(){
-            $this->_show_admin_template('metabox-feedback');
-        }, 'dashboard_page_leyka_help', 'lower');
+        add_meta_box(
+            'leyka_feedback',
+            __('Ask a question', 'leyka'),
+            function(){
+                $this->_show_admin_template('metabox-feedback');
+            },
+            'dashboard_page_leyka_help',
+            'lower'
+        );
+        // Dark background for the metabox:
+        add_filter('postbox_classes_dashboard_page_leyka_help_leyka_feedback', function($classes){
+            return array('leyka-metabox-dark');
+        });
 
         $this->_show_admin_template('help-page');
 
@@ -865,6 +883,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             'homeurl' => home_url('/'),
             'plugin_url' => LEYKA_PLUGIN_BASE_URL,
             'field_required' => __('This field is required to be filled', 'leyka'),
+            'field_x_required'=> __('%s value is mandatory', 'leyka'),
             'email_invalid_msg' => __('You have entered an invalid email', 'leyka'),
             'common_error_message' => __('Error while saving the data', 'leyka'),
 			'error_message' => __('Error!', 'leyka'),
