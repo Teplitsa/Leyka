@@ -45,12 +45,6 @@ if( !function_exists('array_key_last') ) {
     }
 }
 
-if( !function_exists('leyka_is_phone_number') ) {
-    function leyka_is_phone_number($value) {
-        return preg_match('/^[0-9\+\-\. ]{10,}$/i', $value);
-    }
-}
-
 if( !function_exists('leyka_strip_string_by_words') ) {
     function leyka_strip_string_by_words($string, $length = 350, $strip_tags_shortcodes = true) {
 
@@ -1626,6 +1620,43 @@ function leyka_validate_donor_name($name, $is_correctional = false) {
 
 function leyka_validate_email($email) {
     return $email ? preg_match("/^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|expert|[a-z]+)|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i", $email) : true;
+}
+
+if( !function_exists('leyka_is_phone_number') ) {
+    /**
+     * @param string $phone A phone number to validate. If empty, will always return true.
+     * @return boolean True if given phone is valid (or empty), false otherwise.
+     * @deprecated Please use leyka_validate_donor_phone($phone) instead.
+     */
+    function leyka_is_phone_number($phone) {
+        return leyka_validate_donor_phone($phone);
+    }
+}
+
+if( !function_exists('leyka_validate_donor_phone') ) {
+    /**
+     * @param string $phone A phone number to validate. If empty, will always return true.
+     * @return boolean True if given phone is valid (or empty), false otherwise.
+     */
+    function leyka_validate_donor_phone($phone) {
+
+        $phone = trim($phone);
+        return $phone ? preg_match('/^[0-9\+\-\. ]{10,}$/i', $phone) : true;
+
+    }
+}
+
+if( !function_exists('leyka_validate_donor_date') ) {
+    /**
+     * @param string $date A date to validate (format: DD.MM.YYYY). If empty, will always return true.
+     * @return boolean True if given date is valid (or empty), false otherwise.
+     */
+    function leyka_validate_donor_date($date) {
+
+        $date = trim($date);
+        return $date ? preg_match('/^[0-9]{2}\.[0-9]{2}\.[0-9]{4}$/i', $date) : true;
+
+    }
 }
 
 /** @return string URL of a current page, according to permalinks stucture setting. */

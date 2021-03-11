@@ -93,6 +93,61 @@ class Leyka_Payment_Form {
 
         }
 
+        if(empty($_POST['leyka_donation_amount']) || (float)$_POST['leyka_donation_amount'] <= 0) {
+            $errors[] = new WP_Error('wrong_donation_amount', __('Donation amount must be specified to submit the form', 'leyka'));
+        }
+
+        $currency = $_POST['leyka_donation_currency'];
+        if(empty($currency)) {
+            $errors[] = new WP_Error('wrong_donation_currency', __('Wrong donation currency in submitted form data', 'leyka'));
+        }
+
+        if( !empty($_POST['top_'.$currency]) && $_POST['leyka_donation_amount'] > $_POST['top_'.$currency] ) {
+            $errors[] = new WP_Error('donation_amount_too_great', sprintf(
+                __('Donation amount you entered is too great (maximum %s allowed)', 'leyka'),
+                leyka_amount_format($_POST['top_'.$currency]).' '.leyka_options()->opt("currency_{$currency}_label")
+            ));
+        }
+
+        if( !empty($_POST['bottom_'.$currency]) && $_POST['leyka_donation_amount'] < $_POST['bottom_'.$currency] ) {
+            $errors[] = new WP_Error('donation_amount_too_small', sprintf(
+                __('Donation amount you entered is too small (minimum %s allowed)', 'leyka'),
+                leyka_amount_format($_POST['bottom_'.$currency]).' '.leyka_options()->opt("currency_{$currency}_label")
+            ));
+        }
+
+        if(empty($_POST['leyka_agree']) && leyka_options()->opt('agree_to_terms_needed')) {
+            $errors[] = new WP_Error('terms_not_agreed', __('You must agree to the terms of donation service', 'leyka'));
+        }
+
+        // Server-side validation of Additional form fields:
+        foreach(Leyka_Campaign::get_additional_fields_settings($_POST['leyka_campaign_id']) as $field_id => $field) {
+
+            if( !empty($field['is_required']) && empty($_POST['leyka_'.$field_id]) ) { // Check for mandatory field value
+                $errors[] = new WP_Error('no_value_for_required_field', sprintf(__('%s value is mandatory', 'leyka'), $field['title']));
+            }
+
+            switch($field['type']) {
+                case 'phone':
+                    $_POST['leyka_'.$field_id] = str_replace(array('+', '(', ')', '-'), '', $_POST['leyka_'.$field_id]);
+
+                    if( !leyka_validate_donor_phone($_POST['leyka_'.$field_id]) ) {
+                        $errors[] = new WP_Error('leyka_donor_phone_is_incorrect', __('Phone number is incorrect.', 'leyka'));
+                    }
+                    break;
+
+                case 'date':
+                    if( !leyka_validate_donor_date($_POST['leyka_'.$field_id]) ) {
+                        $errors[] = new WP_Error('leyka_donor_date_is_incorrect', __('Date value is incorrect.', 'leyka'));
+                    }
+                    break;
+
+                default:
+                    $errors[] = new WP_Error('unknown_form_field_type', sprintf(__('Unknown field type (%s) for the field: %s', 'leyka'), $field['type'], $field['title']));
+            }
+
+        }
+
         $errors = apply_filters('leyka_validate_form_fields', $errors);
 
         return $errors ? $errors : true;

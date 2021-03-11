@@ -46,7 +46,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
             </div>
 
         </div>
-        
+
         <?php if(in_array('recurring', $campaign->donations_types_available)) {?>
         <div class="section section--description"><?php echo leyka_options()->opt_template('recurring_donation_benefits_text', 'star');?></div>
         <?php }?>
@@ -126,7 +126,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
             </div>
 
         </div>
-    
+
         <?php foreach($template_data['pm_list'] as $pm) { /** @var $pm Leyka_Payment_Method */
     
             if($pm->processing_type !== 'static') {
@@ -181,11 +181,43 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                     </div>
                 </div>
 
-                <?php // For now, we get field settings only for the Mixplat Mobile PM and only for it's Phone field:
+                <?php // Additional fields:
+
+                /** @todo Make it not just "common" additional fields, but common & campaign-based fields list */
+                $form_has_phone_field = false;
+                foreach($campaign->get_calculated_additional_fields_settings() as $field_slug => $field) {
+
+                    $field_id = 'leyka-'.wp_rand();
+                    $form_has_phone_field = $form_has_phone_field || $field['type'] === 'phone';
+
+                    switch($field['type']) {
+                        case 'phone': $text_input_type = 'tel'; break;
+                        case 'date': $text_input_type = 'text'; break; // type="date" is not universal yet
+                        default:
+                            $text_input_type = 'text';
+                    }?>
+
+                <div class="donor__textfield donor__textfield--<?php echo $field['type'];?> donor__textfield--<?php echo $field_slug;?> <?php echo empty($field['is_required']) ? '' : 'required';?>">
+                    <div class="leyka-star-field-frame">
+                        <label for="<?php echo $field_id;?>">
+                            <span class="donor__textfield-label donor__<?php echo $field['type'];?>_field-label leyka_<?php echo $field_slug;?>-label"><?php echo $field['title'];?></span>
+                        </label>
+                        <input type="<?php echo $text_input_type;?>" id="<?php echo $field_id;?>" name="leyka_<?php echo $field_slug;?>" value="" autocomplete="off" <?php echo $field['type'] === 'phone' ? 'data-inputmask="\'mask\': \''.apply_filters('leyka_front_forms_phone_fields_mask', '+9(999)999-99-99').'\'"' : '';?> <?php echo $field['type'] === 'date' ? 'data-inputmask="\'mask\': \''.apply_filters('leyka_front_forms_date_fields_mask', '99.99.9999').'\'"' : '';?>>
+                    </div>
+                    <div class="leyka-star-field-error-frame">
+                    <span class="donor__textfield-error donor__<?php echo $field['type'];?>_field-error leyka_<?php echo $field_slug;?>-error">
+                        <!-- Some error -->
+                    </span>
+                    </div>
+                </div>
+
+                <?php }
+
+                // For now, we get field settings only for the Mixplat Mobile PM and only for it's Phone field:
                 foreach(leyka_get_special_fields_settings() as $pm_full_id => $special_fields) {
 
-                    if($pm_full_id !== 'mixplat-mobile') {
-                        return;
+                    if($pm_full_id !== 'mixplat-mobile' || $form_has_phone_field) {
+                        continue;
                     }
 
                     foreach($special_fields as $field_settings) {
@@ -194,7 +226,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                             continue;
                         }
 
-                        /** @todo Something like such: $star_template->render_field($field_settings['type'], $field_settings);*/
+                        /** @todo Something like: $star_template->render_field($field_settings['type'], $field_settings);*/
 
                         $field_id = 'leyka-'.wp_rand();?>
                         <div class="donor__textfield donor__textfield--phone special-field <?php echo $pm_full_id;?> <?php echo empty($field_settings['required']) ? '' : 'required';?> <?php echo empty($field_settings['classes']) ? '' : implode(' ', $field_settings['classes']);?>" style="display: none;">

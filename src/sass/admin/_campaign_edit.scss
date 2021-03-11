@@ -5,7 +5,29 @@
         color: $color-metabox-title;
     }
 
+    .leyka-settings-page { // // For custom metaboxes with Leyka admin styling, like Campaign additional fields
+        margin: 0;
+    }
+
+    .campaign-additional-fields-wrapper {
+
+        max-width: 643px;
+
+        &.leyka-options-section { // For custom metaboxes with Leyka admin styling, like Campaign additional fields
+            margin-bottom: 0;
+        }
+
+        p {
+            margin-top: 0;
+        }
+
+    }
+
     .inside { // Metaboxes content
+
+        p:first-child { // If there is some comment on top of a metabox content
+            margin-top: 0;
+        }
 
         .metabox-field {
 

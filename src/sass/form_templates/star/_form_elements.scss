@@ -523,9 +523,9 @@
                 }
             }
             
-            &:not(.required) .leyka-star-field-frame {
-                background-image: none !important;
-            }
+            //&:not(.required) .leyka-star-field-frame {
+            //    background-image: none !important;
+            //}
             
             &.valid .leyka-star-field-frame {
                 //background-image: url(../../img/star-icon-ok.svg);

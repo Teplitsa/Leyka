@@ -445,7 +445,7 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
                 'name' => 'common_additional_fields_settings',
                 'title' => __('Additional form fields', 'leyka'),
                 'is_default_collapsed' => false,
-                'options' => array('common_additional_fields',),
+                'options' => array('additional_donation_form_fields',),
             ),),
             array('section' => array(
                 'name' => 'currency_options',

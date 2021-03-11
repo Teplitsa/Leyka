@@ -1419,7 +1419,7 @@ class Leyka extends Leyka_Singleton {
             || leyka_failure_widget_displayed()
         ) {
             wp_enqueue_script(
-                $this->_plugin_slug.'-revo-public',
+                $this->_plugin_slug.'-new-templates-public',
                 LEYKA_PLUGIN_BASE_URL.'assets/js/public.js',
                 array('jquery',),
                 LEYKA_VERSION,
@@ -1794,7 +1794,7 @@ class Leyka extends Leyka_Singleton {
 
         $form_errors = Leyka_Payment_Form::is_form_fields_valid();
 
-        if(is_array($form_errors) && count($form_errors) > 0) {
+        if(is_array($form_errors) && $form_errors) {
 
             foreach($form_errors as $error) { /** @var WP_Error $error */
                 $this->add_payment_form_error($error);
@@ -1865,10 +1865,15 @@ class Leyka extends Leyka_Singleton {
         ) {
 
             $ga_client_id = leyka_gua_get_client_id();
-            if(stristr($ga_client_id, '.')) { // A real GA client ID found, save it
+            if(mb_stristr($ga_client_id, '.')) { // A real GA client ID found, save it
                 $params['ga_client_id'] = $ga_client_id;
             }
 
+        }
+
+        // Saving values of Additional form fields:
+        foreach($campaign->get_calculated_additional_fields_settings() as $field_slug => $field) {
+            $params['additional_fields'][$field_slug] = $_POST['leyka_'.$field_slug];
         }
 
         $donation_id = Leyka_Donation::add(apply_filters('leyka_new_donation_data', $params));

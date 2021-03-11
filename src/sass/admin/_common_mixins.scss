@@ -249,22 +249,8 @@
     }
 
     input[type="checkbox"], input[type="radio"] {
-
         width: 18px;
         height: 18px;
-
-        //&:checked::before {
-        //    margin: 25%;
-        //}
-        //
-        //&::before {
-        //
-        //    width: 8px;
-        //    height: 8px;
-        //    line-height: 18px;
-        //
-        //}
-
     }
 
     input[type="checkbox"] {
@@ -982,8 +968,15 @@
     }
 
     .inside {
-        margin: 0 0 24px 0;
-        padding: 0 24px;
+
+        //margin: 0 0 24px 0;
+        padding: 24px 16px;
+        margin: 0;
+
+        #excerpt {
+            margin-top: 0;
+        }
+
     }
 
 }

@@ -1,5 +1,5 @@
 // Paths for source and bundled parts of app:
-var basePaths = {
+let basePaths = {
     src: 'src/',
     dest: 'assets/',
     npm: 'node_modules/',
@@ -7,7 +7,7 @@ var basePaths = {
 };
 
 // Require plugins:
-var gulp = require('gulp'),
+let gulp = require('gulp'),
     es = require('event-stream'),
     gutil = require('gulp-util'),
     bourbon = require('node-bourbon'),
@@ -15,15 +15,15 @@ var gulp = require('gulp'),
     del = require('del');
 
 // Plugins - load gulp-* plugins without direct calls:
-var plugins = require('gulp-load-plugins')({
+let plugins = require('gulp-load-plugins')({
     pattern: ['gulp-*', 'gulp.*'],
     replaceString: /\bgulp[\-.]/
 });
 
 // Env - call gulp --prod to go into production mode
-var sassStyle = 'expanded'; // SASS syntax
-var sourceMap = true; //wheter to build source maps
-var isProduction = false; //mode flag
+let sassStyle = 'expanded', // SASS syntax
+    sourceMap = true, //wheter to build source maps
+    isProduction = false; //mode flag
 
 if(gutil.env.prod === true) {
     isProduction = true;
@@ -34,8 +34,8 @@ if(gutil.env.prod === true) {
 // JS:
 gulp.task('build-front-js', async function(){
 
-    var vendorFiles = [basePaths.npm + 'jquery.cookie/jquery.cookie.js'],
-        appFiles = [basePaths.src + 'js/*.js', basePaths.src + 'js/front/*.js'];
+    let vendorFiles = [basePaths.npm + 'jquery.cookie/jquery.cookie.js'],
+        appFiles = [basePaths.src+'js/*.js', basePaths.src+'js/common/*.js', basePaths.src+'js/front/*.js'];
 
     return await gulp.src(vendorFiles.concat(appFiles))
         .pipe(plugins.concat('public.js'))
@@ -48,8 +48,8 @@ gulp.task('build-front-js', async function(){
 
 gulp.task('build-admin-js', function(){
 
-    var vendorFiles = [basePaths.npm+'jquery.cookie/jquery.cookie.js'],
-        appFiles = [basePaths.src+'js/admin/common/*.js', basePaths.src+'js/admin/*.js'];
+    let vendorFiles = [basePaths.npm+'jquery.cookie/jquery.cookie.js'],
+        appFiles = [basePaths.src+'js/common/*.js', basePaths.src+'js/admin/common/*.js', basePaths.src+'js/admin/*.js'];
 
     return gulp.src(vendorFiles.concat(appFiles))
         .pipe(plugins.concat('admin.js'))
@@ -61,6 +61,7 @@ gulp.task('build-admin-js', function(){
 });
 
 gulp.task('build-editor-js', function(){
+
     let vendorFiles = [/*basePaths.npm+'jquery.cookie/jquery.cookie.js'*/],
         appFiles = [basePaths.src+'js/editor/editor.js']; //our own JS files
 
@@ -71,12 +72,13 @@ gulp.task('build-editor-js', function(){
         .pipe(plugins.size()) //print size for log
         .on('error', console.log) //log
         .pipe(gulp.dest(basePaths.dest+'js')); //write results into file
+
 });
 
 // CSS:
 gulp.task('build-front-css', function(){
 
-    var paths = require('node-bourbon').includePaths,
+    let paths = require('node-bourbon').includePaths,
     // vendorFiles = gulp.src([]), //components
         gatewaysFiles = [basePaths.root+'gateways/*/css/*.public.scss'],
         appFiles = gulp.src([basePaths.src+'sass/front-main.scss'].concat(gatewaysFiles)) // our main file with @import-s
@@ -105,7 +107,7 @@ gulp.task('build-front-css', function(){
 
 gulp.task('build-admin-css', function() {
 
-    var paths = require('node-bourbon').includePaths,
+    let paths = require('node-bourbon').includePaths,
 		// vendorFiles = gulp.src([]),
         appFiles = gulp.src(basePaths.src+'sass/admin/admin.scss')
         .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.init())  // Process original sources for sourcemap
@@ -129,35 +131,9 @@ gulp.task('build-admin-css', function() {
 
 });
 
-// gulp.task('build-admin-common-css', function() {
-//
-//     var paths = require('node-bourbon').includePaths,
-// 		// vendorFiles = gulp.src([]),
-//         appFiles = gulp.src(basePaths.src+'sass/admin/admin.scss')
-//         .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.init())  //process the original sources for sourcemap
-//         .pipe(plugins.sass({
-//                 outputStyle: sassStyle, //SASS syntas
-//                 includePaths: paths //add bourbon + mdl
-//             }).on('error', plugins.sass.logError))//sass own error log
-//         .pipe(plugins.autoprefixer({ //autoprefixer
-//                 browsers: ['last 4 versions'],
-//                 cascade: false
-//             }))
-//         .pipe(!isProduction ? plugins.sourcemaps.write() : gutil.noop()) //add the map to modified source
-//         .on('error',build-admin-common-css console.log); //log
-//
-// 	return es.concat(appFiles /*, vendorFiles*/) //combine vendor CSS files and our files after-SASS
-//         .pipe(plugins.concat('admin-common.css')) //combine into file
-//         .pipe(isProduction ? plugins.cssmin() : gutil.noop()) //minification on production
-//         .pipe(plugins.size()) //display size
-//         .pipe(gulp.dest(basePaths.dest+'css')) //write file
-//         .on('error', console.log); //log
-//
-// });
-
 gulp.task('build-editor-css', function() {
 
-    var paths = require('node-bourbon').includePaths,
+    let paths = require('node-bourbon').includePaths,
 		// vendorFiles = gulp.src([]),
         appFiles = gulp.src(basePaths.src+'sass/admin/editor.scss')
         .pipe(!isProduction ? plugins.sourcemaps.init() : gutil.noop())  //process the original sources for sourcemap
@@ -181,20 +157,6 @@ gulp.task('build-editor-css', function() {
 
 });
 
-// Revision:
-// gulp.task('revision-clean', function(){
-//     return del([basePaths.dest+'rev/**/*']);
-// });
-//
-// gulp.task('revision', function(){
-//     return gulp.src([basePaths.dest+'css/*.css', basePaths.dest+'js/*.js'])
-//         .pipe(plugins.rev())
-//         .pipe(gulp.dest( basePaths.dest+'rev' ))
-//         .pipe(plugins.rev.manifest())
-//         .pipe(gulp.dest(basePaths.dest+'rev')) // write manifest to build dir
-//         .on('error', console.log); //log
-// });
-
 // Builds:
 gulp.task('full-build', async function(){
     await gulp.parallel('full-build-css', 'full-build-js', 'svg-opt');
@@ -211,7 +173,7 @@ gulp.task('full-build-js', async function(){
 // SVG - combine and clear svg assets:
 gulp.task('svg-opt', function(){
 
-    var icons = gulp.src([basePaths.src+'svg/icon-*.svg'])
+    let icons = gulp.src([basePaths.src+'svg/icon-*.svg'])
         .pipe(plugins.svgmin({
             plugins: [{
                 removeTitle: true,

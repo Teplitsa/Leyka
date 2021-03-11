@@ -1444,6 +1444,7 @@ class Leyka_Donation_Management {
         unset($unsort['date']);
 
 		$columns['donor'] = __('Donor', 'leyka');
+		$columns['additional_fields'] = __('Additional fields', 'leyka');
 		$columns['amount'] = __('Amount', 'leyka');
         if(leyka_options()->opt('admin_donations_list_display') == 'separate-column') {
             $columns['amount_total'] = __('Total amount', 'leyka');
@@ -1496,6 +1497,30 @@ class Leyka_Donation_Management {
             case 'donor_comment':
                 echo apply_filters('leyka_admin_donation_donor_comment_column_content', $donation->donor_comment, $donation);
                 break;
+
+            case 'additional_fields':
+
+                $fields_settings = Leyka_Campaign::get_additional_fields_settings($donation->campaign_id);
+                $html = '';
+
+                if($donation->additional_fields) {
+
+                    $html .= '<ul class="'.apply_filters('leyka_admin_donation_additional_fields_column_css', '').'">';
+                    foreach($donation->additional_fields as $field_id => $field_value) {
+
+                        $html .= '<li>'
+                            .(isset($fields_settings[$field_id]) ? $fields_settings[$field_id]['title'] : $field_id)
+                            .(empty($fields_settings[$field_id]['is_required']) ? '' : '<span class="required">*</span>')
+                            .': '.(esc_html($field_value))
+                            .'</li>';
+
+                    }
+                    $html .= '</ul>';
+
+                }
+                echo apply_filters('leyka_admin_donation_additional_fields_column_content', $html);
+                break;
+
             case 'method':
                 $gateway_label = $donation->gateway_id ? $donation->gateway_label : __('Custom payment info', 'leyka');
                 $pm_label = $donation->gateway_id ? $donation->pm_label : $donation->pm;
@@ -1906,6 +1931,15 @@ class Leyka_Donation {
             add_post_meta($id, 'leyka_donor_comment', sanitize_textarea_field($value));
         }
 
+        $value = empty($params['additional_fields']) || !is_array($params['additional_fields']) ?
+            array() : $params['additional_fields'];
+        if($value) {
+
+            array_walk($params['additional_fields'], function( &$value ){ $value = trim($value); });
+            add_post_meta($id, 'leyka_additional_fields', $params['additional_fields']);
+
+        }
+
         $pm_data = leyka_pf_get_payment_method_value();
         $pm_data = $pm_data ?
             $pm_data :
@@ -2149,6 +2183,8 @@ class Leyka_Donation {
                 'donor_name' => empty($meta['leyka_donor_name']) ? '' : $meta['leyka_donor_name'][0],
                 'donor_email' => empty($meta['leyka_donor_email']) ? '' : $meta['leyka_donor_email'][0],
                 'donor_comment' => empty($meta['leyka_donor_comment']) ? '' : $meta['leyka_donor_comment'][0],
+                'additional_fields' => empty($meta['leyka_additional_fields']) ?
+                    array() : maybe_unserialize($meta['leyka_additional_fields'][0]),
                 'donor_subscription_email' => empty($meta['leyka_donor_subscription_email']) ?
                     '' : $meta['leyka_donor_subscription_email'][0],
                 'donor_email_date' => empty($meta['_leyka_donor_email_date']) ?
@@ -2322,6 +2358,11 @@ class Leyka_Donation {
                 return $this->_donation_meta['donor_email_date'];
             case 'donor_comment':
                 return empty($this->_donation_meta['donor_comment']) ? '' : $this->_donation_meta['donor_comment'];
+
+            case 'additional_fields':
+            case 'donor_additional_fields':
+                return empty($this->_donation_meta['additional_fields']) ? '' : $this->_donation_meta['additional_fields'];
+
             case 'managers_emails_date':
                 return $this->_donation_meta['managers_emails_date'];
 
@@ -2458,6 +2499,13 @@ class Leyka_Donation {
                 $value = sanitize_textarea_field($value);
                 update_post_meta($this->_id, 'leyka_donor_comment', $value);
                 $this->_donation_meta['donor_comment'] = $value;
+                break;
+
+            case 'additional_fields':
+            case 'donor_additional_fields':
+                array_walk($value, function( &$value ){ $value = trim($value); });
+                update_post_meta($this->_id, 'leyka_additional_fields', $value);
+                $this->_donation_meta['additional_fields'] = $value;
                 break;
 
             case 'donor_id':
@@ -2631,6 +2679,7 @@ class Leyka_Donation {
             case 'recurring_cancel_reason':
                 $this->_donation_meta['recurring_cancel_reason'] = trim($value);
                 update_post_meta($this->_id, 'leyka_recurring_cancel_reason', trim($value));
+                break;
 								
             case 'cancel_recurring_requested':
                 update_post_meta($this->_id, 'leyka_cancel_recurring_requested', !!$value);

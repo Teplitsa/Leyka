@@ -112,26 +112,42 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
+        $donation = new Leyka_Donation($donation_id);
+
+        $phone = isset($form_data['leyka_donor_phone']) ? $form_data['leyka_donor_phone'] : false;
+        if( !$phone ) { // Check the phone field in the additional form fields list
+
+            foreach(Leyka_Campaign::get_additional_fields_settings($donation->campaign_id) as $field_slug => $field) {
+                if( !empty($field['type']) && $field['type'] === 'phone' ) {
+
+                    $phone = $form_data['leyka_'.$field_slug];
+                    break;
+
+                }
+            }
+
+        }
+        $phone = str_replace(array('+', '(', ')', '-'), '', trim($phone));
+
         $error = false;
-        if(empty($form_data['leyka_donor_phone'])) {
+        if(empty($phone)) {
             $error = new WP_Error('leyka_mixplat_phone_is_empty', __('Phone number is required.', 'leyka'));
-        } else if( !leyka_is_phone_number($form_data['leyka_donor_phone']) ) {
+        } else if( !leyka_validate_donor_phone($phone) ) {
             $error = new WP_Error('leyka_mixplat_phone_is_incorrect', __('Phone number is incorrect.', 'leyka'));
         }
 
         if($error) {
 
             leyka()->add_payment_form_error($error);
+            wp_delete_post($donation_id, true);
 
             return array('status' => 1, 'errors' => $error, 'message' => $error->get_error_message(),);
 
         }
 
-        $phone = '7'.substr(str_replace(array('+', ' ', '-', '.'), '', trim($form_data['leyka_donor_phone'])), -10);
+        $phone = '7'.substr(str_replace(array('+', ' ', '-', '.'), '', $phone), -10);
 
         $is_test = leyka_options()->opt('mixplat_test_mode') ? 1 : 0;
-
-        $donation = new Leyka_Donation($donation_id);
 
         $amount = (int)round((float)$donation->amount * 100);
         $donation->mixplat_phone = $phone;
@@ -573,13 +589,16 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
     public function get_specific_data_value($value, $field_name, Leyka_Donation $donation) {
         switch($field_name) {
-            case 'mixplat_phone': return get_post_meta($donation->id, '_leyka_mixplat_phone', true);
+            case 'donor_phone':
+            case 'mixplat_phone':
+                return get_post_meta($donation->id, '_leyka_mixplat_phone', true);
             default: return $value;
         }
     }
 
     public function set_specific_data_value($field_name, $value, Leyka_Donation $donation) {
         switch($field_name) {
+            case 'donor_phone':
             case 'mixplat_phone':
                 return update_post_meta($donation->id, '_leyka_mixplat_phone', $value);
             default: return false;

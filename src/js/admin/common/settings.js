@@ -559,6 +559,39 @@ jQuery(document).ready(function($){
             });
         }
 
+        $items_wrapper.sortable({
+            placeholder: 'ui-state-highlight', // A class for dropping item placeholder
+            update: function(event, ui){
+
+                let items_options = [];
+                $.each($items_wrapper.sortable('toArray'), function(key, item_id){ // Value is an item ID (generated randomly)
+
+                    let item_options = {'id': item_id}; // Assoc. array key should be initialized explicitly
+
+                    $.each($items_wrapper.find('#'+item_id).find(':input'), function(key, item_setting_input){
+
+                        let $input = $(item_setting_input),
+                            input_name = $input.prop('name').replace($items_wrapper.data('item-inputs-names-prefix'), '');
+
+                        if($input.prop('type') === 'checkbox') {
+                            item_options[input_name] = $input.prop('checked');
+                        } else {
+                            item_options[input_name] = $input.val();
+                        }
+
+                    });
+
+                    items_options.push(item_options);
+
+                });
+
+                $items_wrapper.siblings('input.leyka-items-options').val(
+                    encodeURIComponent(JSON.stringify(items_options))
+                );
+
+            }
+        });
+
         $items_wrapper.on('click.leyka', '.item-box-title .title', function(e){
 
             let $this = $(this),
@@ -641,39 +674,6 @@ jQuery(document).ready(function($){
         if( !$items_wrapper.find('.multi-valued-item-box').length ) { // No items added yet - add the first (empty) one
             $add_item_button.trigger('click.leyka');
         }
-
-        $items_wrapper.sortable({
-            placeholder: 'ui-state-highlight', // A class for dropping item placeholder
-            update: function(event, ui){
-
-                let items_options = [];
-                $.each($items_wrapper.sortable('toArray'), function(key, item_id){ // Value is an item ID (generated randomly)
-
-                    let item_options = {'id': item_id}; // Assoc. array key should be initialized explicitly
-
-                    $.each($items_wrapper.find('#'+item_id).find(':input'), function(key, item_setting_input){
-
-                        let $input = $(item_setting_input),
-                            input_name = $input.prop('name').replace($items_wrapper.data('item-inputs-names-prefix'), '');
-
-                        if($input.prop('type') === 'checkbox') {
-                            item_options[input_name] = $input.prop('checked');
-                        } else {
-                            item_options[input_name] = $input.val();
-                        }
-
-                    });
-
-                    items_options.push(item_options);
-
-                });
-
-                $items_wrapper.siblings('input.leyka-items-options').val(
-                    encodeURIComponent(JSON.stringify(items_options))
-                );
-
-            }
-        });
 
         // Refresh the main items option value before submit:
         $items_wrapper.parents('form:first').on('submit.leyka', function(e){

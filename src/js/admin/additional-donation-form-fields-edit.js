@@ -1,4 +1,4 @@
-/** Additional donation fields settings JS */
+/** Additional donation form fields settings JS */
 
 jQuery(document).ready(function($){
 
@@ -19,6 +19,20 @@ jQuery(document).ready(function($){
             $box_title.html($field_title.val());
         } else {
             $box_title.html($box_title.data('empty-box-title'));
+        }
+
+    });
+
+    // Display/hide the phone field note if field type is changed to/from "phone":
+    $items_wrapper.on('change.leyka', '[name="leyka_field_type"]', function(e){
+
+        let $type_field = $(this),
+            $phone_note = $type_field.parents('.box-content').find('.phone-field-note');
+
+        if($type_field.val() === 'phone') {
+            $phone_note.show();
+        } else {
+            $phone_note.hide();
         }
 
     });

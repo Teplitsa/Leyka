@@ -244,8 +244,9 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
         add_action('leyka_enqueue_scripts', array($this, 'enqueue_gateway_scripts'));
 
-        add_action('leyka_payment_form_submission-'.$this->id, array($this, 'process_form'), 10, 4);
-        add_action('leyka_payment_form_submission-'.$this->id, array($this, 'process_form_default'), 100, 4);
+        add_action('leyka_payment_form_submission-'.$this->id, array($this, 'process_form_default'), 10, 4);
+        add_action('leyka_payment_form_submission-'.$this->id, array($this, 'process_form'), 20, 4);
+
         add_action('leyka_log_donation-'.$this->id, array($this, 'log_gateway_fields'));
 
         add_filter('leyka_submission_redirect_url-'.$this->id, array($this, 'submission_redirect_url'), 10, 2);
@@ -472,58 +473,8 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
     static public function process_form_default($gateway_id, $pm_id, $donation_id, $form_data) {
 
-        if(empty($form_data['leyka_donation_amount']) || (float)$form_data['leyka_donation_amount'] <= 0) {
-
-            $error = new WP_Error(
-                'wrong_donation_amount',
-                __('Donation amount must be specified to submit the form', 'leyka')
-            );
-            leyka()->add_payment_form_error($error);
-
-        }
-
-        $currency = $form_data['leyka_donation_currency'];
-        if(empty($currency)) {
-
-            $error = new WP_Error(
-                'wrong_donation_currency',
-                __('Wrong donation currency in submitted form data', 'leyka')
-            );
-            leyka()->add_payment_form_error($error);
-
-        }
-
-        if( !empty($form_data['top_'.$currency]) && $form_data['leyka_donation_amount'] > $form_data['top_'.$currency] ) {
-
-            $error = new WP_Error(
-                'donation_amount_too_great',
-                sprintf(
-                    __('Donation amount you entered is too great (maximum %s allowed)', 'leyka'),
-                    leyka_amount_format($form_data['top_'.$currency]).' '.leyka_options()->opt("currency_{$currency}_label")
-                )
-            );
-            leyka()->add_payment_form_error($error);
-
-        }
-
-        if( !empty($form_data['bottom_'.$currency]) && $form_data['leyka_donation_amount'] < $form_data['bottom_'.$currency] ) {
-
-            $error = new WP_Error(
-                'donation_amount_too_small',
-                sprintf(
-                    __('Donation amount you entered is too small (minimum %s allowed)', 'leyka'),
-                    leyka_amount_format($form_data['bottom_'.$currency]).' '.leyka_options()->opt("currency_{$currency}_label")
-                )
-            );
-            leyka()->add_payment_form_error($error);
-
-        }
-
-        if(empty($form_data['leyka_agree']) && leyka_options()->opt('agree_to_terms_needed')) {
-
-            $error = new WP_Error('terms_not_agreed', __('You must agree to the terms of donation service', 'leyka'));
-            leyka()->add_payment_form_error($error);
-
+        if(leyka()->payment_form_has_errors()) {
+            wp_delete_post($donation_id, true);
         }
 
     }

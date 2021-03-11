@@ -336,6 +336,20 @@ jQuery(document).ready(function($){
 
     }).change();
 
+    // Change campaign additional fields:
+    $('#change-campaign-additional-fields').on('change.leyka', function(e){
+
+        let $checkbox = $(this),
+            $additional_fields_settings = $checkbox.parents('.inside').find('.campaign-additional-fields-wrapper');
+
+        if($checkbox.prop('checked')) {
+            $additional_fields_settings.show();
+        } else {
+            $additional_fields_settings.hide();
+        }
+
+    });
+
     /* Support packages Extension - available campaign existence check: */
 
     if(typeof($().dialog) === 'undefined') {

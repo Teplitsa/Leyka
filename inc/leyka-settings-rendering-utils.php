@@ -65,7 +65,7 @@ function leyka_render_text_field($option_id, $data){
 
             <span class="field-component field">
 
-                <input type="<?php echo empty($data['is_password']) ? 'text' : 'password';?>" <?php echo !empty($data['mask']) ?  'data-inputmask="'.$data['mask'].'"' : '';?> id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo empty($data['placeholder']) ? '' : esc_attr($data['placeholder']);?>" maxlength="<?php echo empty($data['length']) ? '' : (int)$data['length'];?>" class="<?php echo !empty($data['mask']) ?  'leyka-wizard-mask' : '';?>" <?php echo empty($data['is_read_only']) ? '' : 'readonly="readonly"';?>>
+                <input type="<?php echo empty($data['is_password']) ? 'text' : 'password';?>" <?php echo !empty($data['mask']) ?  'data-inputmask="'.$data['mask'].'"' : '';?> id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo empty($data['placeholder']) ? '' : esc_attr($data['placeholder']);?>" maxlength="<?php echo empty($data['length']) ? '' : (int)$data['length'];?>" class="<?php echo empty($data['mask']) ?  '' : 'leyka-wizard-mask';?>" <?php echo empty($data['is_read_only']) ? '' : 'readonly="readonly"';?>>
 
             </span>
 
@@ -102,7 +102,7 @@ function leyka_render_email_field($option_id, $data){
 
             </span>
             <span class="field-component field">
-                <input type="<?php echo empty($data['is_password']) ? 'text' : 'password';?>" <?php echo !empty($data['mask']) ?  'data-inputmask="'.$data['mask'].'"' : '';?> id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo empty($data['placeholder']) ? '' : esc_attr($data['placeholder']);?>" maxlength="<?php echo empty($data['length']) ? '' : (int)$data['length'];?>"  class="<?php echo !empty($data['mask']) ? 'leyka-wizard-mask' : '';?>">
+                <input type="<?php echo empty($data['is_password']) ? 'text' : 'password';?>" <?php echo !empty($data['mask']) ?  'data-inputmask="'.$data['mask'].'"' : '';?> id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo empty($data['placeholder']) ? '' : esc_attr($data['placeholder']);?>" maxlength="<?php echo empty($data['length']) ? '' : (int)$data['length'];?>" class="<?php echo empty($data['mask']) ? '' : 'leyka-wizard-mask';?>">
             </span>
 
             <?php if( !empty($data['description']) ) {?>
@@ -807,7 +807,7 @@ function leyka_render_tabbed_section_options_area($section) {
 
 // [Special field] Common additional donation form fields option:
 add_action('leyka_render_custom_additional_fields', 'leyka_render_additional_fields_settings', 10, 2);
-function leyka_render_additional_fields_settings($option_id, $data){
+function leyka_render_additional_fields_settings($option_id, $data = array()){
 
     function leyka_additional_form_field_html($is_template = false, $placeholders = array()) {
 
@@ -818,13 +818,12 @@ function leyka_render_additional_fields_settings($option_id, $data){
             'title' => '',
             'slug' => '',
             'is_required' => false,
-//            'for_to_all_campaigns' => false,
         ));
 
-        $_COOKIE['leyka-common-additional-fields-boxes-closed'] = empty($_COOKIE['leyka-common-additional-fields-boxes-closed']) ?
+        $_COOKIE['leyka-additional-fields-boxes-closed'] = empty($_COOKIE['leyka-additional-fields-boxes-closed']) ?
             array() : json_decode(stripslashes('[\"someline\"]'));?>
 
-        <div id="<?php echo $placeholders['id'] ? 'item-'.$placeholders['id'] : 'item-'.leyka_get_random_string(4);?>" class="multi-valued-item-box field-box <?php echo $is_template ? 'item-template' : '';?> <?php echo !$is_template && !empty($_COOKIE['leyka-additional-fields-boxes-closed']) && !empty($placeholders['id']) && in_array($placeholders['id'], $_COOKIE['leyka-additional-fields-boxes-closed']) ? 'closed' : '';?>" <?php echo $is_template ? 'style="display: none;"' : '';?>>
+        <div id="<?php echo $placeholders['id'] ? $placeholders['id'] : 'item-'.leyka_get_random_string(4);?>" class="multi-valued-item-box field-box <?php echo $is_template ? 'item-template' : '';?> <?php echo !$is_template && !empty($_COOKIE['leyka-additional-fields-boxes-closed']) && !empty($placeholders['id']) && in_array($placeholders['id'], $_COOKIE['leyka-additional-fields-boxes-closed']) ? 'closed' : '';?>" <?php echo $is_template ? 'style="display: none;"' : '';?>>
 
             <h3 class="item-box-title ui-sortable-handle">
                 <span class="draggable"></span>
@@ -888,7 +887,7 @@ function leyka_render_additional_fields_settings($option_id, $data){
                 </div>
 
                 <ul class="notes-and-errors">
-                    <li><?php _e("Don't forget to put a point for processing telephone numbers to your Personal data usage terms", 'leyka');?></li>
+                    <li class="phone-field-note" <?php echo $placeholders['type'] === 'phone' ? '' : 'style="display: none;"'?>><?php _e("Don't forget to put a point for processing telephone numbers to your Personal data usage terms", 'leyka');?></li>
                 </ul>
 
                 <div class="box-footer">
@@ -901,14 +900,15 @@ function leyka_render_additional_fields_settings($option_id, $data){
 
     <?php }
 
-    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;?>
+    $option_id = mb_stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
+    $data = $data ? $data : leyka_options()->get_info_of($option_id);?>
 
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-<?php echo $option_id;?>-field-wrapper multi-valued-items-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) ? '' : implode(' ', $data['field_classes']);?>">
 
-        <div class="leyka-main-multi-items leyka-main-additional-fields" data-max-items="<?php echo 5; //Leyka_Support_Packages_Extension::MAX_PACKAGES_NUMBER;?>" data-min-items="0" data-items-cookie-name="leyka-common-additional-fields-boxes-closed" data-item-inputs-names-prefix="leyka_field_">
+        <div class="leyka-main-multi-items leyka-main-additional-fields" data-max-items="<?php echo 5;?>" data-min-items="0" data-items-cookie-name="leyka-additional-fields-boxes-closed" data-item-inputs-names-prefix="leyka_field_">
 
             <?php $data['value'] = empty($data['value']) || !is_array($data['value']) ?
-                leyka_options()->opt('common_additional_fields') :
+                leyka_options()->opt('additional_donation_form_fields') :
                 $data['value'];
 
             // Display existing common fields (the assoc. array keys order is important):
@@ -930,22 +930,22 @@ function leyka_render_additional_fields_settings($option_id, $data){
 
         <div class="add-field add-item bottom"><?php _e('Add field', 'leyka');?></div>
 
-        <input type="hidden" class="leyka-items-options" name="leyka_common_additional_fields" value="">
+        <input type="hidden" class="leyka-items-options" name="leyka_additional_donation_form_fields" value="">
 
     </div>
 
 <?php
 }
 
-add_action('leyka_save_custom_option-common_additional_fields', 'leyka_save_common_additional_fields_settings');
-function leyka_save_common_additional_fields_settings() {
+add_action('leyka_save_custom_option-additional_donation_form_fields', 'leyka_save_additional_donation_form_fields_settings');
+function leyka_save_additional_donation_form_fields_settings() {
 
-    $_POST['leyka_common_additional_fields'] = json_decode(urldecode($_POST['leyka_common_additional_fields']));
+    $_POST['leyka_additional_donation_form_fields'] = json_decode(urldecode($_POST['leyka_additional_donation_form_fields']));
     $result = array();
 
-    foreach($_POST['leyka_common_additional_fields'] as $field) {
+    foreach($_POST['leyka_additional_donation_form_fields'] as $field) {
 
-        $field->id = mb_stristr($field->id, 'item-') === false || empty($field->title) ?
+        $field->id = mb_stripos($field->id, 'item-') === false || empty($field->title) ?
             $field->id :
             trim(preg_replace('~[^-a-z0-9_]+~u', '-', mb_strtolower(leyka_cyr2lat($field->title))), '-');
 
@@ -957,9 +957,7 @@ function leyka_save_common_additional_fields_settings() {
 
     }
 
-    leyka_options()->opt('common_additional_fields', $result);
-
-//    die('<pre>Result: '.print_r(leyka_options()->opt('common_additional_fields'), 1).'</pre>');
+    leyka_options()->opt('additional_donation_form_fields', $result);
 
 }
 // [Special field] Common additional donation form fields option - END

@@ -19,12 +19,14 @@ jQuery(document).ready(function($){
     leykaGUICard = new LeykaGUICard($);
     leykaGUICard.bindEvents();
 
-}); //jQuery
+});
 
 jQuery(document).ready(function($){
 	$('.inpage-card__toggle-excerpt-links').on('click', 'a', function(e){
+
         e.preventDefault();
-		//console.log($(this).closest('.inpage-card__excerpt'));
+
 		$(this).closest('.inpage-card__excerpt').toggleClass('expand');
+
 	});
 });
