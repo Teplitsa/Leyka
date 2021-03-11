@@ -1029,6 +1029,20 @@
 
 }
 
+// FOR OLD Donations admin list ONLY!
+.wp-list-table {
+
+    // Additional fields in the Donations admin list:
+    .column-additional_fields ul {
+        margin: 0;
+        font-size: 11px;
+        line-height: inherit;
+    }
+    // Additional fields in the Donations admin list - END
+
+}
+// FOR OLD Donations admin list ONLY - END
+
 // Markup for pages with info-sidebars (Dashboard, Help, ...):
 .leyka-info-sidebar-page {
 
