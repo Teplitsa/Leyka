@@ -154,10 +154,18 @@ function leyka_do_donations_export() {
 
             foreach($donation->additional_fields as $field_id => $field_value) {
 
-                if(isset($campaign_additional_fields_settings[$field_id])) {
+                if( // Add field to the campaign-specific column only if it isn't in common columns:
+                    isset($campaign_additional_fields_settings[$field_id])
+                    && !isset($common_additional_fields_settings[$field_id])
+                ) {
+
                     $campaign_additional_fields_column_value .=
                         '['.$field_id.'] '
-                        .(empty($campaign_additional_fields_settings[$field_id]['title']) ? '' : $campaign_additional_fields_settings[$field_id]['title']).': '.$field_value."\n";
+                        .(
+                            empty($campaign_additional_fields_settings[$field_id]['title']) ?
+                                '' : $campaign_additional_fields_settings[$field_id]['title']
+                        ).': '.$field_value."\n";
+
                 }
 
             }

@@ -964,11 +964,18 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             $meta['leyka_campaign_additional_fields_settings_changed'] = true;
             $meta['leyka_campaign_additional_fields_settings'] = array();
 
+            $common_fields_settings = leyka_options()->opt('additional_donation_form_fields');
+
             foreach($_REQUEST['leyka_additional_donation_form_fields'] as $field) {
 
-                $field->id = mb_stripos($field->id, 'item-') === false || empty($field->title) ?
-                    $field->id :
-                    trim(preg_replace('~[^-a-z0-9_]+~u', '-', mb_strtolower(leyka_cyr2lat($field->title))), '-');
+                if(
+                    !isset($common_fields_settings[$field->id])
+                    || $field->title !== $common_fields_settings[$field->id]['title']
+                ) {
+                    $field->id = mb_stripos($field->id, 'item-') === false || empty($field->title) ?
+                        $field->id :
+                        trim(preg_replace('~[^-a-z0-9_]+~u', '-', mb_strtolower(leyka_cyr2lat($field->title))), '-');
+                }
 
                 $meta['leyka_campaign_additional_fields_settings'][$field->id] = array(
                     'type' => $field->type,
