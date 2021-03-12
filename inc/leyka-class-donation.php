@@ -2361,7 +2361,8 @@ class Leyka_Donation {
 
             case 'additional_fields':
             case 'donor_additional_fields':
-                return empty($this->_donation_meta['additional_fields']) ? '' : $this->_donation_meta['additional_fields'];
+            case 'donation_additional_fields':
+                return empty($this->_donation_meta['additional_fields']) ? array() : $this->_donation_meta['additional_fields'];
 
             case 'managers_emails_date':
                 return $this->_donation_meta['managers_emails_date'];

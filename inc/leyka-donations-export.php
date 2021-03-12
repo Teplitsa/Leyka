@@ -40,7 +40,11 @@ function leyka_do_donations_export() {
     $meta_query = array('relation' => 'AND');
 
     if( !empty($_GET['campaign']) ) {
-        $meta_query[] = array('key' => 'leyka_campaign_id', 'value' => (int)$_GET['campaign']);
+
+        $_GET['campaign'] = absint($_GET['campaign']);
+
+        $meta_query[] = array('key' => 'leyka_campaign_id', 'value' => $_GET['campaign']);
+
     }
 
     if( !empty($_GET['payment_type']) ) {
@@ -48,6 +52,7 @@ function leyka_do_donations_export() {
     }
 
     if( !empty($_GET['gateway_pm']) ) {
+
         if(strpos($_GET['gateway_pm'], 'gateway__') !== false) {
             $meta_query[] = array('key' => 'leyka_gateway', 'value' => str_replace('gateway__', '', $_GET['gateway_pm']));
         } else if(strpos($_GET['gateway_pm'], 'pm__') !== false) {
@@ -58,6 +63,7 @@ function leyka_do_donations_export() {
             $meta_query[] = array('key' => 'leyka_payment_method', 'value' => $_GET['gateway_pm'][1]);
 
         }
+
     }
 
     $args = array(
@@ -86,12 +92,20 @@ function leyka_do_donations_export() {
     header('Pragma: no-cache');
     header('Content-Disposition: attachment; filename="donations-'.date('d.m.Y-H.i.s').'.csv"');
 
+    $table_headers = array(
+        'ID', 'Имя донора', 'Email', 'Тип платежа', 'Плат. оператор', 'Способ платежа', 'Полная сумма', 'Итоговая сумма', 'Валюта', 'Дата пожертвования', 'Статус', 'Кампания', 'Подписка на рассылку', 'Email подписки', 'Комментарий', 'Доп. поля кампании',
+    );
+
+    // Common additional donation form fields headers:
+    $common_additional_fields_settings = leyka_options()->opt('additional_donation_form_fields');
+    foreach($common_additional_fields_settings as $field_id => $field_settings) {
+        $table_headers[] = '[Общее доп. поле]['.$field_id.'] '.$field_settings['title'];
+    }
+
     echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
         'UTF-8',
         apply_filters('leyka_donations_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
-        "sep=;\n".implode(';', apply_filters('leyka_donations_export_headers', array(
-            'ID', 'Имя донора', 'Email', 'Тип платежа', 'Плат. оператор', 'Способ платежа', 'Полная сумма', 'Итоговая сумма', 'Валюта', 'Дата пожертвования', 'Статус', 'Кампания', 'Подписка на рассылку', 'Email подписки', 'Комментарий'
-        )))
+        "sep=;\n".implode(';', apply_filters('leyka_donations_export_headers', $table_headers))
     );
 
     foreach($donations as $donation) {
@@ -114,30 +128,53 @@ function leyka_do_donations_export() {
             $donor_subscription = 'О кампании «'.$campaign->title.'»';
         }
 
+        $line_values = array(
+            $donation->id,
+            $donation->donor_name,
+            $donation->donor_email,
+            $donation->payment_type_label,
+            $donation->gateway_label,
+            $donation->payment_method_label,
+            $donation->sum,
+            $donation->amount_total,
+            $currency,
+            $donation->date,
+            $donation->status_label,
+            $campaign->title,
+            $donor_subscription,
+            $donation->donor_subscription_email,
+            $donation->donor_comment,
+        );
+
+        if($donation->additional_fields && is_array($donation->additional_fields)) {
+
+            // Campaign-specific additional fields column:
+            $campaign_additional_fields_column_value = '';
+            $campaign_additional_fields_settings = Leyka_Campaign::get_additional_fields_settings($donation->campaign_id, false);
+
+            foreach($donation->additional_fields as $field_id => $field_value) {
+
+                if(isset($campaign_additional_fields_settings[$field_id])) {
+                    $campaign_additional_fields_column_value .=
+                        '['.$field_id.'] '
+                        .(empty($campaign_additional_fields_settings[$field_id]['title']) ? '' : $campaign_additional_fields_settings[$field_id]['title']).': '.$field_value."\n";
+                }
+
+            }
+
+            $line_values[] = rtrim($campaign_additional_fields_column_value, "\n");
+
+            // Common additional fields columns:
+            foreach($common_additional_fields_settings as $field_id => $field_settings) {
+                $line_values[] = isset($donation->additional_fields[$field_id]) ? $donation->additional_fields[$field_id] : '';
+            }
+
+        }
+
         echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
             'UTF-8',
             apply_filters('leyka_donations_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
-            "\r\n".implode(';', apply_filters(
-                'leyka_donations_export_line',
-                array(
-                    $donation->id,
-                    $donation->donor_name,
-                    $donation->donor_email,
-                    $donation->payment_type_label,
-                    $donation->gateway_label,
-                    $donation->payment_method_label,
-                    $donation->sum,
-                    $donation->amount_total,
-                    $currency,
-                    $donation->date,
-                    $donation->status_label,
-                    $campaign->title,
-                    $donor_subscription,
-                    $donation->donor_subscription_email,
-                    $donation->donor_comment,
-                ),
-                $donation
-            ))
+            "\r\n".implode(';', apply_filters('leyka_donations_export_line', $line_values, $donation))
         );
 
     }

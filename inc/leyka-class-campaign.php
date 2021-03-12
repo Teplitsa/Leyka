@@ -1278,15 +1278,20 @@ class Leyka_Campaign {
 
     /**
      * If Campaign has specific additional fields, return their settings; else return common additional fields settings.
+     *
+     * @param boolean $include_common_additional_fields_settings
      * @return array Additional form fields settings.
      */
-    public function get_calculated_additional_fields_settings() {
+    public function get_calculated_additional_fields_settings($include_common_additional_fields_settings = true) {
 	    return $this->additional_fields_settings_changed ?
-            $this->additional_fields_settings : leyka_options()->opt('additional_donation_form_fields');
+            $this->additional_fields_settings :
+            ($include_common_additional_fields_settings ? leyka_options()->opt('additional_donation_form_fields') : array());
     }
 
-    public static function get_additional_fields_settings($campaign_id) {
-        return (new Leyka_Campaign($campaign_id))->get_calculated_additional_fields_settings();
+    public static function get_additional_fields_settings($campaign_id, $include_common_additional_fields_settings = true) {
+        return (new Leyka_Campaign($campaign_id))->get_calculated_additional_fields_settings(
+            !!$include_common_additional_fields_settings
+        );
     }
 
     /**
