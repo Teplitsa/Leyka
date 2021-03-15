@@ -416,7 +416,7 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
 
         if($donation) { // Edit donation page displayed
 
-            $donation = Leyka_Donations::get_instance()->get_donation($donation); ?>
+            $donation = Leyka_Donations::get_instance()->get_donation($donation);?>
 
             <label><?php _e('Sberbank order ID', 'leyka');?>:</label>
 

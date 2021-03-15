@@ -28,7 +28,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         $this->_registration_link = '//www.paypal.com/bizsignup/';
 
         $this->_min_commission = 2.9;
-        $this->_receiver_types = array('legal', /*'physical'*/);
+        $this->_receiver_types = array('legal',);
         $this->_may_support_recurring = true;
 
     }
@@ -164,10 +164,10 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
     /**
      * A helper to create & return PayPal SDK Payer object.
      *
-     * @param $donation Leyka_Donation
+     * @param $donation Leyka_Donation_Base
      * @return PayPal\Api\Payer
      */
-    protected function _get_payer(Leyka_Donation $donation) {
+    protected function _get_payer(Leyka_Donation_Base $donation) {
         return new \PayPal\Api\Payer(array(
             'paymentMethod' => $this->_get_gateway_pm_id($donation->pm_id),
             'payerInfo' => new \PayPal\Api\PayerInfo(array(
@@ -257,7 +257,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
-        $donation = new Leyka_Donation($donation_id);
+        $donation = Leyka_Donations::get_instance()->get($donation_id);
 
         $payment_description = $donation->payment_title." (№ $donation_id)";
         if(mb_strlen($payment_description) > 127) { // 127 chars length is a PayPal restriction
@@ -619,10 +619,10 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
     /**
      * A technical helper method to manage donation status change according to given PayPal "payment state".
      *
-     * @param $donation Leyka_Donation
+     * @param $donation Leyka_Donation_Base
      * @param $paypal_payment_event string
      */
-    protected function _handle_webhook_donation(Leyka_Donation $donation, $paypal_payment_event) {
+    protected function _handle_webhook_donation(Leyka_Donation_Base $donation, $paypal_payment_event) {
 
         if($paypal_payment_event === 'completed') {
 
@@ -790,11 +790,13 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 case 'activated':
                 case 're-activated':
                 case 'renewed':
-                    $init_recurring_donation->recurring_is_active = true; break;
+                    $init_recurring_donation->recurring_is_active = true;
+                    break;
                 case 'cancelled':
                 case 'suspended':
                 case 'expired':
-                    $init_recurring_donation->recurring_is_active = false; break;
+                    $init_recurring_donation->recurring_is_active = false;
+                    break;
                 case 'updated':
                     if(isset($webhook_data['status'])) {
                         $init_recurring_donation->recurring_is_active = $webhook_data['status'] == 'active';
@@ -1147,25 +1149,26 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     $payment_description = sprintf(__('Donation № %d', 'leyka'), $donation->id);
                 }
 
-                $campaign_post = get_post($donation->campaign_id);
-
                 if($donation->payment_type === 'rebill') {
 
-                    $data = apply_filters('leyka_paypal_do_ec_payment_data', array(
-                        'USER' => leyka_options()->opt('paypal_api_username'),
-                        'PWD' => leyka_options()->opt('paypal_api_password'),
-                        'SIGNATURE' => leyka_options()->opt('paypal_api_signature'),
-                        'VERSION' => '204',
-                        'METHOD' => 'CreateRecurringPaymentsProfile',
-                        'TOKEN' => $_GET['token'],
-                        'PAYERID' => $_GET['PayerID'],
-                        'AMT' => $donation->amount,
-                        'CURRENCYCODE' => 'RUB',
-                        'DESC' => $payment_description,
-                        'BILLINGPERIOD' => 'Month',
-                        'BILLINGFREQUENCY' => '1',
-                        'PROFILESTARTDATE' => Date(DateTime::ISO8601, strtotime("+1 Month")),
-                    ), $donation);
+                    $data = apply_filters(
+                        'leyka_paypal_do_ec_payment_data', array(
+                            'USER' => leyka_options()->opt('paypal_api_username'),
+                            'PWD' => leyka_options()->opt('paypal_api_password'),
+                            'SIGNATURE' => leyka_options()->opt('paypal_api_signature'),
+                            'VERSION' => '204',
+                            'METHOD' => 'CreateRecurringPaymentsProfile',
+                            'TOKEN' => $_GET['token'],
+                            'PAYERID' => $_GET['PayerID'],
+                            'AMT' => $donation->amount,
+                            'CURRENCYCODE' => 'RUB',
+                            'DESC' => $payment_description,
+                            'BILLINGPERIOD' => 'Month',
+                            'BILLINGFREQUENCY' => '1',
+                            'PROFILESTARTDATE' => Date(DateTime::ISO8601, strtotime("+1 Month")),
+                        ),
+                        $donation
+                    );
 
                     $ch = curl_init();
                     curl_setopt_array($ch, array(
@@ -1212,28 +1215,33 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                 }
 
-                $data = apply_filters('leyka_paypal_do_ec_payment_data', array(
-                    'USER' => leyka_options()->opt('paypal_api_username'),
-                    'PWD' => leyka_options()->opt('paypal_api_password'),
-                    'SIGNATURE' => leyka_options()->opt('paypal_api_signature'),
-                    'VERSION' => 204,
-                    'METHOD' => 'DoExpressCheckoutPayment',
-                    'TOKEN' => $_GET['token'],
-                    'PAYERID' => $_GET['PayerID'],
-                    'PAYMENTREQUEST_0_NOTIFYURL' => home_url('?p=leyka/service/'.$this->_id.'/ipn/'),
-                    'PAYMENTREQUEST_0_INVNUM' => $donation->id,
-                    'PAYMENTREQUEST_0_PAYMENTACTION' => 'Sale',
-                    'PAYMENTREQUEST_0_AMT' => $donation->amount,
-                    'PAYMENTREQUEST_0_ITEMAMT' => $donation->amount,
-                    'PAYMENTREQUEST_0_CURRENCYCODE' => 'RUB',
-                    'PAYMENTREQUEST_0_DESC' => $payment_description,
-                    'L_PAYMENTREQUEST_0_NAME0' => $donation->payment_title,
-                    'L_PAYMENTREQUEST_0_ITEMURL0' => get_permalink($campaign_post),
-                    'L_PAYMENTREQUEST_0_DESC0' => $payment_description,
-                    'L_PAYMENTREQUEST_0_AMT0' => $donation->amount,
-                    'L_PAYMENTREQUEST_0_ITEMCATEGORY0' => 'Digital',
-                    'NOSHIPPING' => 1,
-                ), $donation);
+                $campaign_post = get_post($donation->campaign_id);
+
+                $data = apply_filters(
+                    'leyka_paypal_do_ec_payment_data', array(
+                        'USER' => leyka_options()->opt('paypal_api_username'),
+                        'PWD' => leyka_options()->opt('paypal_api_password'),
+                        'SIGNATURE' => leyka_options()->opt('paypal_api_signature'),
+                        'VERSION' => 204,
+                        'METHOD' => 'DoExpressCheckoutPayment',
+                        'TOKEN' => $_GET['token'],
+                        'PAYERID' => $_GET['PayerID'],
+                        'PAYMENTREQUEST_0_NOTIFYURL' => home_url('?p=leyka/service/'.$this->_id.'/ipn/'),
+                        'PAYMENTREQUEST_0_INVNUM' => $donation->id,
+                        'PAYMENTREQUEST_0_PAYMENTACTION' => 'Sale',
+                        'PAYMENTREQUEST_0_AMT' => $donation->amount,
+                        'PAYMENTREQUEST_0_ITEMAMT' => $donation->amount,
+                        'PAYMENTREQUEST_0_CURRENCYCODE' => 'RUB',
+                        'PAYMENTREQUEST_0_DESC' => $payment_description,
+                        'L_PAYMENTREQUEST_0_NAME0' => $donation->payment_title,
+                        'L_PAYMENTREQUEST_0_ITEMURL0' => get_permalink($campaign_post),
+                        'L_PAYMENTREQUEST_0_DESC0' => $payment_description,
+                        'L_PAYMENTREQUEST_0_AMT0' => $donation->amount,
+                        'L_PAYMENTREQUEST_0_ITEMCATEGORY0' => 'Digital',
+                        'NOSHIPPING' => 1,
+                    ),
+                    $donation
+                );
 
                 $ch = curl_init();
                 curl_setopt_array($ch, array(
@@ -1244,8 +1252,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_CONNECTTIMEOUT => 60,
                 ));
+                $result_str = curl_exec($ch);
 
-                if( !$result_str = curl_exec($ch) ) {
+                if( !$result_str ) {
                     $this->_donation_error(
                         __('PayPal - payment error occured', 'leyka'),
                         sprintf(__("DoExpressCheckoutPayment request to PayPal system couldn't be made due to some error.\n\nThe error: %s", 'leyka'), curl_error($ch).' ('.curl_errno($ch).')'),
@@ -1343,7 +1352,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     );
                 }
 
-                $donation = new Leyka_Donation((int)$_POST['invoice']);
+                $donation = Leyka_Donations::get_instance()->get(absint($_POST['invoice']));
                 $_POST['txn_id'] = (int)$_POST['txn_id'];
 
                 // This IPN was already processed:
@@ -1419,7 +1428,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     die(json_encode(array('status' => 1, 'message' => __('No donation ID found in the submitted data', 'leyka'),)));
                 }
 
-                $donation = new Leyka_Donation($_POST['donation_id']);
+                $donation = Leyka_Donations::get_instance()->get($_POST['donation_id']);
 
                 if( !$donation ) {
                     die(json_encode(array('status' => 1, 'message' => __('Wrong donation ID in submitted payment data', 'leyka'),)));
@@ -1462,7 +1471,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             return new WP_Error('paypal_wrong_api', __("Can't initialize the PayPal API context.", 'leyka'));
         } // return new WP_Error('paypal_', __('', 'leyka'));
 
-        $init_recurring_donation = Leyka_Donation::get_init_recurring_donation($donation);
+        $init_recurring_donation = $donation->init_recurring_donation;
 
         $recurring_manual_cancel_link = 'https://www.paypal.com/myaccount/autopay/';
 
@@ -1520,9 +1529,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             return;
         }
 
-//        wp_enqueue_script('leyka-paypal-api', 'https://www.paypalobjects.com/api/checkout.min.js');
-
-        $dependencies = array('jquery', /*'leyka-paypal-api',*/);
+        $dependencies = array('jquery',);
 
 	    // If Revo template is in use:
 	    if(leyka_revo_template_displayed() || leyka_success_widget_displayed() || leyka_failure_widget_displayed()) {
@@ -1626,7 +1633,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
         if($donation) { // Edit donation page displayed
 
-            $donation = leyka_get_validated_donation($donation);?>
+            $donation = Leyka_Donations::get_instance()->get($donation);?>
 
             <label><?php _e('PayPal token', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
@@ -1723,58 +1730,82 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
     }
 
     public function get_specific_data_value($value, $field_name, Leyka_Donation_Base $donation) {
+
         switch($field_name) {
             case 'paypal_token':
-            case 'pp_token': return get_post_meta($donation->id, '_paypal_token', true);
+            case 'pp_token':
+                return Leyka_Donations::get_instance()->get_donation_meta($donation->id, '_paypal_token');
             case 'paypal_correlation_id':
-            case 'pp_correlation_id': return get_post_meta($donation->id, '_paypal_correlation_id', true);
+            case 'pp_correlation_id':
+                return Leyka_Donations::get_instance()->get_donation_meta($donation->id, '_paypal_correlation_id');
             case 'paypal_payment_id':
-            case 'pp_payment_id': return get_post_meta($donation->id, '_paypal_payment_id', true);
+            case 'pp_payment_id':
+                return Leyka_Donations::get_instance()->get_donation_meta($donation->id, '_paypal_payment_id');
             case 'paypal_payer_id':
-            case 'pp_payer_id': return get_post_meta($donation->id, '_paypal_payer_id', true);
+            case 'pp_payer_id':
+                return Leyka_Donations::get_instance()->get_donation_meta($donation->id, '_paypal_payer_id');
             case 'paypal_payment_history':
             case 'paypal_history':
             case 'pp_history':
             case 'paypal_payment_log':
             case 'paypal_log':
-            case 'pp_log': return get_post_meta($donation->id, '_paypal_payment_log', true);
-            case 'last_ipn_transaction_id': return get_post_meta($donation->id, '_paypal_ipn_txn_id', true);
+            case 'pp_log':
+                return Leyka_Donations::get_instance()->get_donation_meta($donation->id, '_paypal_payment_log');
+            case 'last_ipn_transaction_id':
+                return Leyka_Donations::get_instance()->get_donation_meta($donation->id, '_paypal_ipn_txn_id');
 
             // Only for the REST API:
-            case 'paypal_sale_id': return get_post_meta($donation->id, '_paypal_sale_id', true); break;
-            case 'paypal_billing_plan_id': return get_post_meta($donation->id, '_paypal_billing_plan_id', true); break;
-            case 'paypal_billing_agreement_id': return get_post_meta($donation->id, '_paypal_billing_agreement_id', true); break;
+            case 'paypal_sale_id':
+                return Leyka_Donations::get_instance()->get_donation_meta($donation->id, '_paypal_sale_id');
+            case 'paypal_billing_plan_id':
+                return Leyka_Donations::get_instance()->get_donation_meta($donation->id, '_paypal_billing_plan_id');
+            case 'paypal_billing_agreement_id':
+                return Leyka_Donations::get_instance()->get_donation_meta($donation->id, '_paypal_billing_agreement_id');
 
-            default: return $value;
+            default:
+                return $value;
         }
+
     }
 
     public function set_specific_data_value($field_name, $value, Leyka_Donation_Base $donation) {
+
         switch($field_name) {
             case 'paypal_token':
             case 'paypal_payment_token':
             case 'pp_token':
-            case 'pp_payment_token': update_post_meta($donation->id, '_paypal_token', $value); break;
+            case 'pp_payment_token':
+                return Leyka_Donations::get_instance()->set_donation_meta($donation->id, '_paypal_token', $value);
             case 'paypal_correlation_id':
-            case 'pp_correlation_id': update_post_meta($donation->id, '_paypal_correlation_id', $value); break;
+            case 'pp_correlation_id':
+                return Leyka_Donations::get_instance()->set_donation_meta($donation->id, '_paypal_correlation_id', $value);
             case 'paypal_payment_id':
-            case 'pp_payment_id': update_post_meta($donation->id, '_paypal_payment_id', $value); break;
+            case 'pp_payment_id':
+                return Leyka_Donations::get_instance()->set_donation_meta($donation->id, '_paypal_payment_id', $value);
             case 'paypal_payer_id':
-            case 'pp_payer_id': update_post_meta($donation->id, '_paypal_payer_id', $value); break;
+            case 'pp_payer_id':
+                return Leyka_Donations::get_instance()->set_donation_meta($donation->id, '_paypal_payer_id', $value);
             case 'paypal_payment_history':
             case 'paypal_history':
             case 'pp_history':
             case 'paypal_payment_log':
             case 'paypal_log':
-            case 'pp_log': update_post_meta($donation->id, '_paypal_payment_log', $value); break;
-            case 'last_ipn_transaction_id': update_post_meta($donation->id, '_paypal_ipn_txn_id', !!$value); break;
+            case 'pp_log':
+                return Leyka_Donations::get_instance()->set_donation_meta($donation->id, '_paypal_payment_log', $value);
+            case 'last_ipn_transaction_id':
+                return Leyka_Donations::get_instance()->set_donation_meta($donation->id, '_paypal_ipn_txn_id', !!$value);
 
             // Only for the REST API:
-            case 'paypal_sale_id': update_post_meta($donation->id, '_paypal_sale_id', $value); break;
-            case 'paypal_billing_plan_id': update_post_meta($donation->id, '_paypal_billing_plan_id', $value); break;
-            case 'paypal_billing_agreement_id': update_post_meta($donation->id, '_paypal_billing_agreement_id', $value); break;
+            case 'paypal_sale_id':
+                return Leyka_Donations::get_instance()->set_donation_meta($donation->id, '_paypal_sale_id', $value);
+            case 'paypal_billing_plan_id':
+                return Leyka_Donations::get_instance()->set_donation_meta($donation->id, '_paypal_billing_plan_id', $value);
+            case 'paypal_billing_agreement_id':
+                return Leyka_Donations::get_instance()->set_donation_meta($donation->id, '_paypal_billing_agreement_id', $value);
             default:
+                return false;
         }
+
     }
 
     public function save_donation_specific_data(Leyka_Donation_Base $donation) {
@@ -1804,7 +1835,10 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             $donation->paypal_billing_plan_id = $_POST['paypal-billing-plan-id'];
         }
 
-        if(isset($_POST['paypal-billing-agreement-id']) && $donation->paypal_billing_agreement_id !== $_POST['paypal-billing-agreement-id']) {
+        if(
+            isset($_POST['paypal-billing-agreement-id'])
+            && $donation->paypal_billing_agreement_id !== $_POST['paypal-billing-agreement-id']
+        ) {
             $donation->paypal_billing_agreement_id = $_POST['paypal-billing-agreement-id'];
         }
 
@@ -1813,27 +1847,37 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
     public function add_donation_specific_data($donation_id, array $donation_params) {
 
         if( !empty($donation_params['paypal_payer_id']) ) {
-            update_post_meta($donation_id, '_paypal_payer_id', $donation_params['paypal_payer_id']);
+            Leyka_Donations::get_instance()->set_donation_meta(
+                $donation_id, '_paypal_payer_id', $donation_params['paypal_payer_id']
+            );
         }
 
         if( !empty($donation_params['paypal_payment_id']) ) {
-            update_post_meta($donation_id, '_paypal_payment_id', $donation_params['paypal_payment_id']);
+            Leyka_Donations::get_instance()->set_donation_meta(
+                $donation_id, '_paypal_payment_id', $donation_params['paypal_payment_id']
+            );
         }
 
         if( !empty($donation_params['paypal_sale_id']) ) {
-            update_post_meta($donation_id, '_paypal_sale_id', $donation_params['paypal_sale_id']);
+            Leyka_Donations::get_instance()->set_donation_meta(
+                $donation_id, '_paypal_sale_id', $donation_params['paypal_sale_id']
+            );
         }
 
         if( !empty($donation_params['paypal_billing_plan_id']) ) {
-            update_post_meta($donation_id, '_paypal_billing_plan_id', $donation_params['paypal_billing_plan_id']);
+            Leyka_Donations::get_instance()->set_donation_meta(
+                $donation_id, '_paypal_billing_plan_id', $donation_params['paypal_billing_plan_id']
+            );
         }
 
         if( !empty($donation_params['paypal_billing_agreement_id']) ) {
-            update_post_meta($donation_id, '_paypal_billing_agreement_id', $donation_params['paypal_billing_agreement_id']);
+            Leyka_Donations::get_instance()->set_donation_meta(
+                $donation_id, '_paypal_billing_agreement_id', $donation_params['paypal_billing_agreement_id']
+            );
         }
 
-        update_post_meta($donation_id, '_paypal_payment_log', array());
-        update_post_meta($donation_id, '_paypal_ipn_txn_id', 0);
+        Leyka_Donations::get_instance()->set_donation_meta($donation_id, '_paypal_payment_log', array());
+        Leyka_Donations::get_instance()->set_donation_meta($donation_id, '_paypal_ipn_txn_id', 0);
 
     }
 
@@ -1879,18 +1923,16 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             return false;
         }
 
-        $donation = get_posts(array(
-            'post_type' => Leyka_Donation_Management::$post_type,
-            'post_status' => 'any',
-            'nopaging' => true,
-            'meta_query' => array(array('key' => $paypal_field, 'value' => $value,),),
+        $donation = Leyka_Donations::get_instance()->get(array(
+            'get_single' => true,
+            'meta' => array(array('key' => $paypal_field, 'value' => $value,),),
         ));
 
-        return $donation ? new Leyka_Donation($donation[0]) : false;
+        return $donation ? $donation : false;
 
     }
 
-    protected function _donation_error($title, $text = '', Leyka_Donation $donation = NULL, $operation_type = '', $data = array(), $new_status = 'failed', $do_redirect = true) {
+    protected function _donation_error($title, $text = '', Leyka_Donation_Base $donation = NULL, $operation_type = '', $data = array(), $new_status = 'failed', $do_redirect = true) {
 
         if($donation) {
 
@@ -1922,7 +1964,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
     }
 
-    protected function _add_to_payment_log(Leyka_Donation $donation, $op_type, $data, $result = '') {
+    protected function _add_to_payment_log(Leyka_Donation_Base $donation, $op_type, $data, $result = '') {
 
         if( !leyka_options()->opt('paypal_keep_payment_logs') ) {
             return;
@@ -1936,7 +1978,6 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
     }
 
 }
-
 
 class Leyka_Paypal_All extends Leyka_Payment_Method {
 

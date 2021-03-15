@@ -46,7 +46,7 @@ abstract class Leyka_Donation_Base {
     }
 
     /** Donation metadata get & set methods are public to use them in the "gateway-specific data" hooks. */
-    abstract public function get_meta($meta_name);
+    abstract public function get_meta($meta_key);
     abstract public function set_meta($meta_name, $value);
     abstract public function delete_meta($meta_name);
 

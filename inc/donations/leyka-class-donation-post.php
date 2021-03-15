@@ -796,18 +796,18 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
     }
 
-    public function get_meta($meta_name) {
+    public function get_meta($meta_key) {
 
-        $meta_name = trim($meta_name);
-        if( !$meta_name ) { /** @todo Throw an Ex? */
+        $meta_key = trim($meta_key);
+        if( !$meta_key ) { /** @todo Throw an Ex? */
             return NULL;
         }
 
-        if( !isset($this->_donation_meta[$meta_name]) ) {
-            $this->_donation_meta[$meta_name] = get_post_meta($this->_id, $meta_name, true);
+        if( !isset($this->_donation_meta[$meta_key]) ) {
+            $this->_donation_meta[$meta_key] = get_post_meta($this->_id, $meta_key, true);
         }
 
-        return $this->_donation_meta[$meta_name];
+        return $this->_donation_meta[$meta_key];
 
     }
 

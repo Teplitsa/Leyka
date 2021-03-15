@@ -27,7 +27,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
         $params['campaign_id'] = empty($params['campaign_id']) ? leyka_pf_get_campaign_id_value() : (int)$params['campaign_id'];
 
         $params['payment_type'] =
-            empty($params['payment_type']) || !array_key_exists($params['payment_type'], leyka_get_payment_types_data()) ?
+            empty($params['payment_type']) || !leyka_get_payment_types_list($params['payment_type']) ?
                 'single' : $params['payment_type'];
 
         $params['donor_email'] = empty($params['donor_email']) ? leyka_pf_get_donor_email_value() : $params['donor_email'];
@@ -688,41 +688,42 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
     }
 
-    public function get_meta($meta_name) {
+    public function get_meta($meta_key) {
 
-        $meta_name = trim($meta_name);
-        if( !$meta_name ) { /** @todo Throw an Ex? */
+        $meta_key = trim($meta_key);
+        if( !$meta_key ) { /** @todo Throw an Ex? */
             return NULL;
         }
 
-        if( !array_key_exists($meta_name, $this->_donation_meta) ) { // May be NULL, so we can't use isset() or empty() here
+        if( !array_key_exists($meta_key, $this->_donation_meta) ) { // May be NULL, so we can't use isset() or empty() here
 
             global $wpdb;
-            $query = $wpdb->prepare("SELECT `meta_value` FROM `{$wpdb->prefix}leyka_donations_meta` WHERE `donation_id`=%d AND `meta_key`=%s LIMIT 0,1", $this->_id, $meta_name);
+
+            $query = $wpdb->prepare("SELECT `meta_value` FROM `{$wpdb->prefix}leyka_donations_meta` WHERE `donation_id`=%d AND `meta_key`=%s LIMIT 0,1", $this->_id, $meta_key);
             $result = $wpdb->get_var($query);
 
             // If there are no results for meta named with "_", try to find meta version without underscore
-            if( !$result && stripos($meta_name, '_') === 0 ) {
+            if( !$result && mb_stripos($meta_key, '_') === 0 ) {
 
-                $meta_name = mb_substr($meta_name, 1);
+                $meta_key = mb_substr($meta_key, 1);
 
-                $query = $wpdb->prepare("SELECT `meta_value` FROM `{$wpdb->prefix}leyka_donations_meta` WHERE `donation_id`=%d AND `meta_key`=%s LIMIT 0,1", $this->_id, $meta_name);
+                $query = $wpdb->prepare("SELECT `meta_value` FROM `{$wpdb->prefix}leyka_donations_meta` WHERE `donation_id`=%d AND `meta_key`=%s LIMIT 0,1", $this->_id, $meta_key);
                 $result = $wpdb->get_var($query);
 
                 if($result) { // Remove the old meta version (started with "_")
                     $wpdb->delete($wpdb->prefix.'leyka_donations_meta', array(
                         'donation_id' => $this->_id,
-                        'meta_key' => '_'.$meta_name,
+                        'meta_key' => '_'.$meta_key,
                     ));
                 }
 
             }
 
-            $this->_donation_meta[$meta_name] = maybe_unserialize($result);
+            $this->_donation_meta[$meta_key] = maybe_unserialize($result);
 
         }
 
-        return $this->_donation_meta[$meta_name];
+        return $this->_donation_meta[$meta_key];
 
     }
 
