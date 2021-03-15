@@ -456,7 +456,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
             case 'type_label':
             case 'payment_type_label':
-                return leyka_get_payment_types_data($this->payment_type);
+                return leyka_get_payment_types_list($this->payment_type);
 
             case 'type_desc':
             case 'payment_type_desc':

@@ -412,13 +412,15 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                     // PayPal redirect URL for the donor:
                     $redirect_link = $agreement->create($api_context)->getApprovalLink();
-                    $payment_token = end(explode('&token=', $redirect_link));
+                    $payment_token = explode('&token=', $redirect_link);
 
                     if( !$payment_token ) {
                         throw new Exception(
                             __("The needed payment parameter wasn't generated.", 'leyka').' '.
                             sprintf(__('Please contact the <a href="%s" target="_blank">website tech. support</a>', leyka_options()->opt('tech_support_email')), 'leyka')
                         );
+                    } else {
+                        $payment_token = end($payment_token);
                     }
 
                     $donation->paypal_billing_plan_id = $plan->getId(); // Save the donation plan ID to identify later
@@ -1493,7 +1495,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
     }
 
-    public function cancel_recurring_subscription_by_link(Leyka_Donation $donation) {
+    public function cancel_recurring_subscription_by_link(Leyka_Donation_Base $donation) {
 
         if($donation->type !== 'rebill') {
             die();

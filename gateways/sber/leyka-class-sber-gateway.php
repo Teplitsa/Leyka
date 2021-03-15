@@ -91,7 +91,7 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
-        $donation = new Leyka_Donation($donation_id);
+        $donation = Leyka_Donations::get_instance()->get($donation_id);
 
         if( !empty($form_data['leyka_recurring']) ) {
 
@@ -129,20 +129,26 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
 
             $donation->add_gateway_response($ex);
 
-            leyka()->add_payment_form_error( new WP_Error('leyka_donation_error', sprintf(__('Error while processing the payment: %s. Your money will remain intact. Please report to the <a href="mailto:%s" target="_blank">website tech support</a>.', 'leyka'), $ex->getMessage(), leyka_get_website_tech_support_email())) );
-            return;
+            leyka()->add_payment_form_error(new WP_Error(
+                'leyka_donation_error',
+                sprintf(
+                    __('Error while processing the payment: %s. Your money will remain intact. Please report to the <a href="mailto:%s" target="_blank">website tech support</a>.', 'leyka'),
+                    $ex->getMessage(),
+                    leyka_get_website_tech_support_email()
+                )
+            ));
 
         }
 
     }
 
-    public function do_recurring_donation(Leyka_Donation $init_recurring_donation) {
+    public function do_recurring_donation(Leyka_Donation_Base $init_recurring_donation) {
 
         if( !$init_recurring_donation->sber_binding_id) {
             return false;
         }
 
-        $new_recurring_donation = Leyka_Donation::add_clone(
+        $new_recurring_donation = Leyka_Donations::get_instance()->add_clone(
             $init_recurring_donation,
             array(
                 'status' => 'submitted',
@@ -241,7 +247,7 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
 
                 $donation = NULL;
                 if( !empty($_REQUEST['orderNumber']) ) {
-                    $donation = new Leyka_Donation(absint($_REQUEST['orderNumber']));
+                    $donation = Leyka_Donations::get_instance()->get(absint($_REQUEST['orderNumber']));
                 } else if( !empty($_REQUEST['mdOrder']) ) {
                     $donation = $this->get_donation_by_transaction_id(trim($_REQUEST['mdOrder']));
                 }
@@ -358,25 +364,23 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
      * This donation must be created only once and then updated. It can be identified with the Gateway inner order id.
      *
      * @param $sber_order_id mixed
-     * @return Leyka_Donation
+     * @return Leyka_Donation_Base
      */
     public function get_donation_by_transaction_id($sber_order_id) {
 
-        $donation = get_posts(array( // Get init recurrent payment with Sberbank order_id given
-            'posts_per_page' => 1,
-            'post_type' => Leyka_Donation_Management::$post_type,
-            'post_status' => 'any',
-            'meta_query' => array(
+        $donation = Leyka_Donations::get_instance()->get(array( // Get init recurrent payment with Sberbank order_id given
+            'get_single' => true,
+            'meta' => array(
                 'RELATION' => 'AND',
                 array(
-                    'key'     => '_leyka_sber_order_id',
-                    'value'   => $sber_order_id,
+                    'key' => '_leyka_sber_order_id',
+                    'value' => $sber_order_id,
                     'compare' => '=',
                 ),
             ),
         ));
 
-        return count($donation) ? new Leyka_Donation($donation[0]->ID) : null;
+        return $donation ? $donation : null;
 
     }
 
@@ -384,7 +388,7 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
         return empty($arr[$key]) ? '' : ($val ? $val : $arr[$key]);
     }
 
-    public function get_gateway_response_formatted(Leyka_Donation $donation) {
+    public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {
 
         if( !$donation->gateway_response ) {
             return array();
@@ -395,14 +399,16 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
             return array();
         }
 
-        $vars_final = array(
-            __('Sberbank Order number:', 'leyka') => $this->_get_value_if_any($vars, 'mdOrder'),
-            __('Leyka Order Number:', 'leyka') => $this->_get_value_if_any($vars, 'orderNumber'),
-            __('Last operation:', 'leyka') => $this->_get_value_if_any($vars, 'operation'),
-            __('Last operation status:', 'leyka') => $this->_get_value_if_any($vars, 'status'),
+        return apply_filters(
+            'leyka_donation_gateway_response',
+            array(
+                __('Sberbank Order number:', 'leyka') => $this->_get_value_if_any($vars, 'mdOrder'),
+                __('Leyka Order Number:', 'leyka') => $this->_get_value_if_any($vars, 'orderNumber'),
+                __('Last operation:', 'leyka') => $this->_get_value_if_any($vars, 'operation'),
+                __('Last operation status:', 'leyka') => $this->_get_value_if_any($vars, 'status'),
+            ),
+            $donation
         );
-
-        return $vars_final;
 
     }
 
@@ -410,7 +416,7 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
 
         if($donation) { // Edit donation page displayed
 
-            $donation = leyka_get_validated_donation($donation); ?>
+            $donation = Leyka_Donations::get_instance()->get_donation($donation); ?>
 
             <label><?php _e('Sberbank order ID', 'leyka');?>:</label>
 
@@ -453,47 +459,47 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
 
     }
 
-    public function get_specific_data_value($value, $field_name, Leyka_Donation $donation) {
+    public function get_specific_data_value($value, $field_name, Leyka_Donation_Base $donation) {
 
         switch($field_name) {
             case 'order_id':
             case 'sber_order_id':
             case 'sber_acquiring_order_id':
-                return get_post_meta($donation->id, '_leyka_sber_order_id', true);
+                return Leyka_Donations::get_instance()->get_donation_meta($donation->id, '_leyka_sber_order_id');
             case 'binding_id':
             case 'sber_binding_id':
             case 'sber_acquiring_binding_id':
-                return get_post_meta($donation->id, '_leyka_sber_binding_id', true);
+                return Leyka_Donations::get_instance()->get_donation_meta($donation->id, '_leyka_sber_binding_id');
             case 'client_id':
             case 'sber_client_id':
             case 'sber_acquiring_client_id':
-                return get_post_meta($donation->id, '_leyka_sber_client_id', true);
+                return Leyka_Donations::get_instance()->get_donation_meta($donation->id, '_leyka_sber_client_id');
             default: return $value;
         }
 
     }
 
-    public function set_specific_data_value($field_name, $value, Leyka_Donation $donation) {
+    public function set_specific_data_value($field_name, $value, Leyka_Donation_Base $donation) {
 
         switch($field_name) {
             case 'order_id':
             case 'sber_order_id':
             case 'sber_acquiring_order_id':
-                return update_post_meta($donation->id, '_leyka_sber_order_id', $value);
+                return Leyka_Donations::get_instance()->set_donation_meta($donation->id, '_leyka_sber_order_id', $value);
             case 'binding_id':
             case 'sber_binding_id':
             case 'sber_acquiring_binding_id':
-                return update_post_meta($donation->id, '_leyka_sber_binding_id', $value);
+                return Leyka_Donations::get_instance()->set_donation_meta($donation->id, '_leyka_sber_binding_id', $value);
             case 'client_id':
             case 'sber_client_id':
             case 'sber_acquiring_client_id':
-                return update_post_meta($donation->id, '_leyka_sber_client_id', $value);
+                return Leyka_Donations::get_instance()->set_donation_meta($donation->id, '_leyka_sber_client_id', $value);
             default: return false;
         }
 
     }
 
-    public function save_donation_specific_data(Leyka_Donation $donation) {
+    public function save_donation_specific_data(Leyka_Donation_Base $donation) {
 
         if(isset($_POST['sber-order-id']) && $donation->sber_order_id != $_POST['sber-order-id']) {
             $donation->sber_order_id = $_POST['sber-order-id'];
@@ -506,7 +512,11 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
     public function add_donation_specific_data($donation_id, array $donation_params) {
 
         if( !empty($donation_params['sber_order_id']) ) {
-            update_post_meta($donation_id, '_leyka_sber_order_id', $donation_params['sber_order_id']);
+            Leyka_Donations::get_instance()->set_donation_meta(
+                $donation_id,
+                '_leyka_sber_order_id',
+                $donation_params['sber_order_id']
+            );
         }
 
     }
