@@ -227,6 +227,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
     public function column_default($item, $column_name) {
         switch ($column_name) {
             case 'id':
+                return '<a href="'.admin_url('post.php?post='.$item[$column_name].'&action=edit').'">'.$item[$column_name].'</a>';
             case 'status':
             case 'donor':
             case 'campaign':
