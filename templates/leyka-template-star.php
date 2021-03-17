@@ -183,7 +183,6 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 
                 <?php // Additional fields:
 
-                /** @todo Make it not just "common" additional fields, but common & campaign-based fields list */
                 $form_has_phone_field = false;
                 foreach($campaign->get_calculated_additional_fields_settings() as $field_slug => $field) {
 
@@ -198,17 +197,18 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                     }?>
 
                 <div class="donor__textfield donor__textfield--<?php echo $field['type'];?> donor__textfield--<?php echo $field_slug;?> <?php echo empty($field['is_required']) ? '' : 'required';?>">
+
                     <div class="leyka-star-field-frame">
                         <label for="<?php echo $field_id;?>">
                             <span class="donor__textfield-label donor__<?php echo $field['type'];?>_field-label leyka_<?php echo $field_slug;?>-label"><?php echo $field['title'];?></span>
                         </label>
                         <input type="<?php echo $text_input_type;?>" id="<?php echo $field_id;?>" name="leyka_<?php echo $field_slug;?>" value="" autocomplete="off" <?php echo $field['type'] === 'phone' ? 'data-inputmask="\'mask\': \''.apply_filters('leyka_front_forms_phone_fields_mask', '+9(999)999-99-99').'\'"' : '';?> <?php echo $field['type'] === 'date' ? 'data-inputmask="\'mask\': \''.apply_filters('leyka_front_forms_date_fields_mask', '99.99.9999').'\'"' : '';?>>
                     </div>
+
                     <div class="leyka-star-field-error-frame">
-                    <span class="donor__textfield-error donor__<?php echo $field['type'];?>_field-error leyka_<?php echo $field_slug;?>-error">
-                        <!-- Some error -->
-                    </span>
+                        <span class="donor__textfield-error donor__<?php echo $field['type'];?>_field-error leyka_<?php echo $field_slug;?>-error"></span>
                     </div>
+
                 </div>
 
                 <?php }
@@ -253,7 +253,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 
                     <?php }
 
-                }
+                } // Additional fields - END
 
                 if(leyka_options()->opt_template('show_donation_comment_field', 'star')) {
 
