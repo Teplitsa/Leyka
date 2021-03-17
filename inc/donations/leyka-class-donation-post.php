@@ -570,7 +570,11 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                     return false;
                 }
 
+                $old_status = $this->_main_data->post_status;
                 $this->_main_data->post_status = $value;
+
+                do_action('leyka_donation_status_'.$old_status.'_to_'.$value);
+                Leyka_Donation_Management::get_instance()->donation_status_changed($value, $old_status, $this);
 
                 $status_log = get_post_meta($this->_id, '_status_log', true);
                 if($status_log && is_array($status_log)) {
@@ -579,16 +583,8 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                     $status_log = array(array('date' => current_time('timestamp'), 'status' => $value));
                 }
 
-                $res = update_post_meta($this->_id, '_status_log', $status_log);
-                if( !!$res ) {
-
-                    $this->_donation_meta['status_log'] = $status_log;
-                    return true;
-
-                } else {
-                    return false;
-                }
-
+                update_post_meta($this->_id, '_status_log', $status_log);
+                $this->_donation_meta['status_log'] = $status_log;
                 break;
 
             case 'date':

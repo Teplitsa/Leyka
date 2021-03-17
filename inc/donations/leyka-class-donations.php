@@ -190,6 +190,7 @@ abstract class Leyka_Donations extends Leyka_Singleton {
 
     abstract public function set_donation_meta($donation_id, $meta_key, $value);
     abstract public function get_donation_meta($donation_id, $meta_key);
+    abstract public function get_donation_id_by_meta_value($meta_key, $value);
 
 }
 
@@ -294,7 +295,7 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
         if( !empty($params['payment_type']) ) {
 
-            $values_list = $this->_get_multiple_filter_values($params['payment_type'], leyka_get_payment_types_data());
+            $values_list = $this->_get_multiple_filter_values($params['payment_type'], leyka_get_payment_types_list());
 
             if($values_list) {
                 $params['meta'][] = array('key' => 'leyka_payment_type', 'value' => (array)$values_list, 'compare' => 'IN');
@@ -424,6 +425,17 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
     public function set_donation_meta($donation_id, $meta_key, $value) {
         return !!update_post_meta($donation_id, trim($meta_key), $value);
+    }
+
+    public function get_donation_id_by_meta_value($meta_key, $value) {
+
+        global $wpdb;
+
+        return $wpdb->get_var($wpdb->prepare(
+            "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key='%s' AND meta_value='%s' LIMIT 1",
+            array($meta_key, $value)
+        ));
+
     }
 
 }
@@ -850,6 +862,17 @@ class Leyka_Donations_Separated extends Leyka_Donations {
         return $wpdb->get_var($wpdb->prepare(
             "SELECT meta_value FROM {$wpdb->prefix}leyka_donations_meta WHERE donation_id=%d AND meta_key=%s LIMIT 0,1",
             array($donation_id, $meta_key)
+        ));
+
+    }
+
+    public function get_donation_id_by_meta_value($meta_key, $value) {
+
+        global $wpdb;
+
+        return $wpdb->get_var($wpdb->prepare(
+            "SELECT donation_id FROM {$wpdb->prefix}leyka_donations_meta WHERE meta_key='%s' AND meta_value='%s' LIMIT 1",
+            array($meta_key, $value)
         ));
 
     }

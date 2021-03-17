@@ -721,14 +721,14 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
     }
 
-    public function add_donation_specific_data($donation_id, array $donation_params) {
+    public function add_donation_specific_data($donation_id, array $params) {
 
-        if( !empty($donation_params['cp_recurring_id']) ) {
-            Leyka_Donations::get_instance()->set_donation_meta($donation_id, 'cp_recurring_id', $donation_params['cp_recurring_id']);
+        if( !empty($params['cp_recurring_id']) ) {
+            Leyka_Donations::get_instance()->set_donation_meta($donation_id, 'cp_recurring_id', $params['cp_recurring_id']);
         }
 
-        if( !empty($donation_params['cp_transaction_id']) ) {
-            Leyka_Donations::get_instance()->set_donation_meta($donation_id, 'cp_transaction_id', $donation_params['cp_transaction_id']);
+        if( !empty($params['cp_transaction_id']) ) {
+            Leyka_Donations::get_instance()->set_donation_meta($donation_id, 'cp_transaction_id', $params['cp_transaction_id']);
         }
 
     }

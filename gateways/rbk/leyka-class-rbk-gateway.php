@@ -1,4 +1,4 @@
-<?php  if( !defined('WPINC') ) die;
+<?php if( !defined('WPINC') ) { die; }
 /**
  * Leyka_Rbk_Gateway class
  */
@@ -85,13 +85,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
         if(Leyka_Rbk_Card::get_instance()->active) {
 
-            wp_enqueue_script(
-                'leyka-rbk-checkout',
-                'https://checkout.rbk.money/checkout.js',
-                array(),
-                false,
-                true
-            );
+            wp_enqueue_script('leyka-rbk-checkout', 'https://checkout.rbk.money/checkout.js', array(), false, true);
             wp_enqueue_script(
                 'leyka-rbk',
                 LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_Rbk_Gateway::get_instance()->id.'/js/leyka.rbk.js',
@@ -104,29 +98,17 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
     }
 
-    public function get_donation_by_invoice_id($invoice_id) {
+    protected function _get_donation_by_invoice_id($invoice_id) {
 
-        global $wpdb;
+        $meta_key = leyka()->storage_type === 'sep' ? 'rbk_invoice_id' : '_leyka_rbk_invoice_id';
 
-        if(leyka()->storage_type === 'sep') {
-            $query = $wpdb->prepare(
-                "SELECT `donation_id` FROM {$wpdb->prefix}leyka_donations_meta WHERE `meta_key`=%s AND `meta_value`=%s LIMIT 1",
-                array('rbk_invoice_id', $invoice_id)
-            );
-        } else {
-            $query = $wpdb->prepare(
-                "SELECT `post_id` FROM {$wpdb->postmeta} WHERE `meta_key`=%s AND `meta_value`=%s LIMIT 1",
-                array('_leyka_rbk_invoice_id', $invoice_id)
-            );
-        }
-
-        return $wpdb->get_var($query);
+        return Leyka_Donations::get_instance()->get_donation_id_by_meta_value($meta_key, $invoice_id);
 
     }
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
-        $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
+        $donation = Leyka_Donations::get_instance()->get($donation_id);
 
         if( !empty($form_data['leyka_recurring']) ) {
 
@@ -184,12 +166,11 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
             return array('status' => 1, 'message' => __('The donation was not created due to error.', 'leyka'));
         }
 
-        $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
+        $donation = Leyka_Donations::get_instance()->get($donation_id);
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
-        $invoice_id = $this->_rbk_response['invoice']['id'];
         $invoice_access_token = $this->_rbk_response['invoiceAccessToken']['payload'];
-        $donation->rbk_invoice_id = $invoice_id;
+        $donation->rbk_invoice_id = $this->_rbk_response['invoice']['id'];
 
         if(leyka_options()->opt('rbk_keep_payment_logs')) {
 
@@ -201,7 +182,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
         }
 
         return array(
-            'invoice_id' => $invoice_id,
+            'invoice_id' => $this->_rbk_response['invoice']['id'],
             'invoice_access_token' => $invoice_access_token,
             'is_recurring' => !empty($form_data['leyka_recurring']),
             'amount' => $donation->amount, // For GA EEC, "eec.add" event
@@ -262,14 +243,14 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
             'InvoiceCancelled' => 'failed',
             'PaymentCancelled' => 'failed',
         );
-        $donation_id = $this->get_donation_by_invoice_id($data['invoice']['id']);
+        $donation_id = $this->_get_donation_by_invoice_id($data['invoice']['id']);
         $donation_status = empty($map_status[ $data['eventType'] ]) ? false : $map_status[ $data['eventType'] ];
 
         if( !$donation_status ) {
             return false; // Mb, return WP_Error?
         }
 
-        $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
+        $donation = Leyka_Donations::get_instance()->get($donation_id);
         $donation->status = $map_status[ $data['eventType'] ];
 
         if($donation->status === 'failed' && leyka_options()->opt('notify_tech_support_on_failed_donations')) {
@@ -330,8 +311,8 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
     protected function _handle_payment_processed($data) {
 
         // Log the webhook request content:
-        $donation_id = $this->get_donation_by_invoice_id($data['invoice']['id']);
-        $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
+        $donation_id = $this->_get_donation_by_invoice_id($data['invoice']['id']);
+        $donation = Leyka_Donations::get_instance()->get($donation_id);
 
         $data_to_log = $data;
         if(leyka_options()->opt('rbk_keep_payment_logs')) {
@@ -378,13 +359,17 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
         $vars = $vars[array_key_last($vars)];
 
-        return array(
-            __('Invoice ID:', 'leyka') => $vars['id'],
-            __('Operation date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($vars['createdAt'])),
-            __('Operation status:', 'leyka') => $vars['status'],
-            __('Full donation amount:', 'leyka') => $vars['amount'] / 100,
-            __('Donation currency:', 'leyka') => $vars['currency'],
-            __('Shop Account:', 'leyka') => $vars['shopID'],
+        return apply_filters(
+            'leyka_donation_gateway_response',
+            array(
+                __('Invoice ID:', 'leyka') => $vars['id'],
+                __('Operation date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($vars['createdAt'])),
+                __('Operation status:', 'leyka') => $vars['status'],
+                __('Full donation amount:', 'leyka') => $vars['amount'] / 100,
+                __('Donation currency:', 'leyka') => $vars['currency'],
+                __('Shop Account:', 'leyka') => $vars['shopID'],
+            ),
+            $donation
         );
 
     }
@@ -628,7 +613,8 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
             case 'payment_id':
             case 'rbk_payment_id':
                 return $donation->set_meta('rbk_payment_id', $value);
-            default: return false;
+            default:
+                return false;
         }
     }
 
@@ -637,6 +623,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
         if(isset($_POST['rbk-invoice-id']) && $donation->rbk_invoice_id != $_POST['rbk-invoice-id']) {
             $donation->rbk_invoice_id = $_POST['rbk-invoice-id'];
         }
+
         if(isset($_POST['rbk-payment-id']) && $donation->rbk_payment_id != $_POST['rbk-payment-id']) {
             $donation->rbk_payment_id = $_POST['rbk-payment-id'];
         }
@@ -645,15 +632,14 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
     }
 
-    public function add_donation_specific_data($donation_id, array $donation_params) {
+    public function add_donation_specific_data($donation_id, array $params) {
 
-        if( !empty($donation_params['rbk_invoice_id']) ) {
-            Leyka_Donations::get_instance()
-                ->set_donation_meta($donation_id, 'rbk_invoice_id', $donation_params['rbk_invoice_id']);
+        if( !empty($params['rbk_invoice_id']) ) {
+            Leyka_Donations::get_instance()->set_donation_meta($donation_id, 'rbk_invoice_id', $params['rbk_invoice_id']);
         }
-        if( !empty($donation_params['rbk_payment_id']) ) {
-            Leyka_Donations::get_instance()
-                ->set_donation_meta($donation_id, 'rbk_payment_id', $donation_params['rbk_payment_id']);
+
+        if( !empty($params['rbk_payment_id']) ) {
+            Leyka_Donations::get_instance()->set_donation_meta($donation_id, 'rbk_payment_id', $params['rbk_payment_id']);
         }
 
     }
@@ -671,13 +657,7 @@ class Leyka_Rbk_Card extends Leyka_Payment_Method {
         $this->_gateway_id = 'rbk';
         $this->_category = 'bank_cards';
 
-        $this->_description = apply_filters(
-            'leyka_pm_description',
-            __('RBK Money allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="https://rbkmoney.ru/">RBK Money</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
-            $this->_id,
-            $this->_gateway_id,
-            $this->_category
-        );
+        $this->_description = apply_filters('leyka_pm_description', '', $this->_id, $this->_gateway_id, $this->_category);
 
         $this->_label_backend = __('Bank card (RBK Money)', 'leyka');
         $this->_label = __('Bank card', 'leyka');

@@ -1844,35 +1844,35 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
     }
 
-    public function add_donation_specific_data($donation_id, array $donation_params) {
+    public function add_donation_specific_data($donation_id, array $params) {
 
-        if( !empty($donation_params['paypal_payer_id']) ) {
+        if( !empty($params['paypal_payer_id']) ) {
             Leyka_Donations::get_instance()->set_donation_meta(
-                $donation_id, '_paypal_payer_id', $donation_params['paypal_payer_id']
+                $donation_id, '_paypal_payer_id', $params['paypal_payer_id']
             );
         }
 
-        if( !empty($donation_params['paypal_payment_id']) ) {
+        if( !empty($params['paypal_payment_id']) ) {
             Leyka_Donations::get_instance()->set_donation_meta(
-                $donation_id, '_paypal_payment_id', $donation_params['paypal_payment_id']
+                $donation_id, '_paypal_payment_id', $params['paypal_payment_id']
             );
         }
 
-        if( !empty($donation_params['paypal_sale_id']) ) {
+        if( !empty($params['paypal_sale_id']) ) {
             Leyka_Donations::get_instance()->set_donation_meta(
-                $donation_id, '_paypal_sale_id', $donation_params['paypal_sale_id']
+                $donation_id, '_paypal_sale_id', $params['paypal_sale_id']
             );
         }
 
-        if( !empty($donation_params['paypal_billing_plan_id']) ) {
+        if( !empty($params['paypal_billing_plan_id']) ) {
             Leyka_Donations::get_instance()->set_donation_meta(
-                $donation_id, '_paypal_billing_plan_id', $donation_params['paypal_billing_plan_id']
+                $donation_id, '_paypal_billing_plan_id', $params['paypal_billing_plan_id']
             );
         }
 
-        if( !empty($donation_params['paypal_billing_agreement_id']) ) {
+        if( !empty($params['paypal_billing_agreement_id']) ) {
             Leyka_Donations::get_instance()->set_donation_meta(
-                $donation_id, '_paypal_billing_agreement_id', $donation_params['paypal_billing_agreement_id']
+                $donation_id, '_paypal_billing_agreement_id', $params['paypal_billing_agreement_id']
             );
         }
 

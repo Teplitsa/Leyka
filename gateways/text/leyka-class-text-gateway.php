@@ -47,7 +47,7 @@ class Leyka_Text_Gateway extends Leyka_Gateway {
     }
 
     public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {
-        return array();
+        return apply_filters('leyka_donation_gateway_response', array(), $donation);
     }
 
 }
@@ -63,13 +63,7 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
         $this->_gateway_id = 'text';
         $this->_category = 'misc';
 
-        $this->_description = apply_filters(
-            'leyka_pm_description',
-            __('You can set a custom text information to display as one of the payment methods for donors.', 'leyka'),
-            $this->_id,
-            $this->_gateway_id,
-            $this->_category
-        );
+        $this->_description = apply_filters('leyka_pm_description', '', $this->_id, $this->_gateway_id, $this->_category);
 
         $this->_label_backend = __('Additional ways to donate', 'leyka');
         $this->_label = __('Additional ways to donate', 'leyka');
@@ -136,7 +130,7 @@ function leyka_remove_text_pm_if_empty($pm_list) {
     }
 
     foreach($pm_list as $index => $pm) { /** @var $pm Leyka_Payment_Method */
-        if($pm->gateway_id == 'text' && empty($pm->custom_fields['box_details'])) {
+        if($pm->gateway_id === 'text' && empty($pm->custom_fields['box_details'])) {
             unset($pm_list[$index]);
         }
     }

@@ -12,7 +12,7 @@ class Leyka_Qiwi_Gateway_Web_Hook {
 
         $data_decode = json_decode(file_get_contents('php://input'), true);
 
-        $check = Leyka_Qiwi_Gateway_Web_Hook_Verification::checkNotificationSignature(
+        $check = Leyka_Qiwi_Gateway_Web_Hook_Verification::check_notification_signature(
             $_SERVER['HTTP_X_API_SIGNATURE_SHA256'],
             $data_decode,
             leyka_options()->opt('qiwi_secret_key')

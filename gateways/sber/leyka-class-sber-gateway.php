@@ -509,13 +509,13 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
 
     }
 
-    public function add_donation_specific_data($donation_id, array $donation_params) {
+    public function add_donation_specific_data($donation_id, array $params) {
 
-        if( !empty($donation_params['sber_order_id']) ) {
+        if( !empty($params['sber_order_id']) ) {
             Leyka_Donations::get_instance()->set_donation_meta(
                 $donation_id,
                 '_leyka_sber_order_id',
-                $donation_params['sber_order_id']
+                $params['sber_order_id']
             );
         }
 

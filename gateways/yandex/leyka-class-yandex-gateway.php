@@ -539,7 +539,9 @@ techMessage="'.$tech_message.'"/>');
 
         } else { // Old API
 
-            $response = maybe_unserialize($donation->gateway_response);
+            $response = is_array($donation->gateway_response) ?
+                $donation->gateway_response : maybe_unserialize($donation->gateway_response);
+
             if( !$response ) {
                 $response = array();
             } else if( !is_array($response) ) {
@@ -562,7 +564,7 @@ techMessage="'.$tech_message.'"/>');
 
         }
 
-        return $response;
+        return apply_filters('leyka_donation_gateway_response', $response, $donation);
 
     }
 
@@ -797,10 +799,10 @@ techMessage="'.$tech_message.'"/>');
 
     }
 
-    public function add_donation_specific_data($donation_id, array $donation_params) {
-        if( !empty($donation_params['recurring_id']) ) {
+    public function add_donation_specific_data($donation_id, array $params) {
+        if( !empty($params['recurring_id']) ) {
             Leyka_Donations::get_instance()
-                ->set_donation_meta($donation_id, 'yandex_invoice_id', $donation_params['recurring_id']);
+                ->set_donation_meta($donation_id, 'yandex_invoice_id', $params['recurring_id']);
         }
     }
 

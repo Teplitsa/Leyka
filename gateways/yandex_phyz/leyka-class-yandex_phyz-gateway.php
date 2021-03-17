@@ -26,26 +26,18 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
 
         $this->_options = array(
             'yandex_money_account' => array(
-                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox  
-                'value' => '',
-                'default' => '',
+                'type' => 'text',
                 'title' => __('YooMoney account ID', 'leyka'),
                 'comment' => __('Please, enter your YooMoney account ID here.', 'leyka'),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '4100111111111111'),
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
             ),
             'yandex_money_secret' => array(
-                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox  
-                'value' => '',
-                'default' => '',
+                'type' => 'text',
                 'title' => __('YooMoney account API secret', 'leyka'),
                 'comment' => __('Please, enter your YooMoney account API secret string here.', 'leyka'),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'QweR+1TYUIo/p2aS3DFgHJ4K5'),
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
             ),
         );
 
@@ -79,7 +71,7 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
 
     public function submission_form_data($form_data, $pm_id, $donation_id) {
 
-        $donation = new Leyka_Donation($donation_id);
+        $donation = Leyka_Donations::get_instance()->get($donation_id);
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
         switch($pm_id) {
@@ -89,7 +81,9 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
                 $payment_type = '';
         }
 
-		$name = apply_filters('leyka_yandex_phyz_custom_payment_comment', esc_attr(get_bloginfo('name').': '.__('donation', 'leyka')));
+		$name = apply_filters(
+		    'leyka_yandex_phyz_custom_payment_comment', esc_attr(get_bloginfo('name').': '.__('donation', 'leyka'))
+        );
 
         return array(
             'receiver' => leyka_options()->opt('yandex_money_account'),
@@ -134,7 +128,7 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
 
 		error_log_yandex_phyz("\n\n---- $call_type ----\n\n".print_r($_REQUEST, true));
 
-        $donation_id = empty($_POST['label']) ? 0 : (int)$_POST['label']; // Donation ID
+        $donation_id = empty($_POST['label']) ? 0 : absint($_POST['label']); // Donation ID
         $amount = empty($_POST['withdraw_amount']) ? 0.0 : (float)$_POST['withdraw_amount'];
 
         error_log_yandex_phyz("Label=$donation_id\n");
@@ -152,7 +146,7 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
 
         }
 
-        $donation = new Leyka_Donation($donation_id);
+        $donation = Leyka_Donations::get_instance()->get($donation_id);
 
         error_log_yandex_phyz("Donation initialized\n");
         error_log_yandex_phyz(print_r($donation, TRUE)."\n");
@@ -182,7 +176,7 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
             error_log_yandex_phyz('$donation->sum='.$donation->sum."\n");
             error_log_yandex_phyz('$donation->status='.$donation->status."\n");
 
-            if($donation->sum != $amount) {
+            if($donation->amount != $amount) {
 
                 error_log_yandex_phyz("Donation sum is unmatched\n");
                 $this->_check_order_answer(1, __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('Donation sum is unmatched', 'leyka'));
@@ -202,6 +196,7 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
 
                 $donation->add_gateway_response($_POST);
                 $donation->status = 'funded';
+
                 Leyka_Donation_Management::send_all_emails($donation->id);
 
                 if( // GUA direct integration - "purchase" event:
@@ -245,7 +240,9 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
         } else {
 
             error_log_yandex_phyz("There is no donation in Leyka DB\n");
+
             $this->_check_order_answer(1, __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('Unregistered donation ID', 'leyka'));
+
         }
     }
 
@@ -267,17 +264,21 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
 			$payment_type = __('Using Banking Card', 'leyka');
 		}
 
-        return array(
-            __('Last response operation:', 'leyka') => __('Donation confirmation', 'leyka'),
-            __('YooMoney payment type:', 'leyka') => $payment_type,
-            __('Gateway invoice ID:', 'leyka') => $response_vars['operation_id'],
-            __('Full donation amount:', 'leyka') =>
-                (float)$response_vars['withdraw_amount'].' '.$donation->currency_label,
-            __('Donation amount after gateway commission:', 'leyka') =>
-                (float)$response_vars['amount'].' '.$donation->currency_label,
-            __("Gateway's donor ID:", 'leyka') => $response_vars['sender'],
-            __('Response date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($response_vars['datetime'])),
+        return apply_filters(
+            'leyka_donation_gateway_response', array(
+                __('Last response operation:', 'leyka') => __('Donation confirmation', 'leyka'),
+                __('YooMoney payment type:', 'leyka') => $payment_type,
+                __('Gateway invoice ID:', 'leyka') => $response_vars['operation_id'],
+                __('Full donation amount:', 'leyka') =>
+                    (float)$response_vars['withdraw_amount'].' '.$donation->currency_label,
+                __('Donation amount after gateway commission:', 'leyka') =>
+                    (float)$response_vars['amount'].' '.$donation->currency_label,
+                __("Gateway's donor ID:", 'leyka') => $response_vars['sender'],
+                __('Response date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($response_vars['datetime'])),
+            ),
+            $donation
         );
+
     }
 
 }

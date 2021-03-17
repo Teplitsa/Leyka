@@ -670,7 +670,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     }
 
     /** Action called when new donation (Leyka_Donation::add()) is being created to add gateway-specific fields. */
-    public function add_donation_specific_data($donation_id, array $donation_params) {
+    public function add_donation_specific_data($donation_id, array $params) {
     }
 
     /** Filter called when new donation (Leyka_Donation::add()) is being created to add gateway-specific meta fields. */

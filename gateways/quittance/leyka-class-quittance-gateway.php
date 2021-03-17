@@ -1,4 +1,4 @@
-<?php if( !defined('WPINC') ) die;
+<?php if( !defined('WPINC') ) { die; }
 /**
  * Leyka_Quittance_Gateway class
  */
@@ -42,7 +42,7 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
         $this->_registration_link = '';
 
         $this->_min_commission = 2.1;
-        $this->_receiver_types = array('legal', /*'physical'*/);
+        $this->_receiver_types = array('legal',);
 
     }
 
@@ -61,8 +61,7 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
 
         $campaign = new Leyka_Campaign($form_data['leyka_campaign_id']);
         leyka_remembered_data('template_id', $campaign->template);
-        $leyka_success_url = get_permalink(leyka_options()->opt('quittance_redirect_page'));
-        
+
         $quittance_html = str_replace(
             apply_filters('leyka_quittance_placeholders_list', array(
                 '#BACK_TO_DONATION_FORM_TEXT#',
@@ -84,7 +83,7 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
                 '#BACK_TO_DONATION_FORM_TEXT#' => __('Return to the donation form', 'leyka'),
                 '#PRINT_THE_QUITTANCE_TEXT#' => __('Print the quittance', 'leyka'),
                 '#QUITTANCE_RECEIVED_TEXT#' => __("OK, I've received the quittance", 'leyka'),
-                '#SUCCESS_URL#' => $leyka_success_url,
+                '#SUCCESS_URL#' => get_permalink(leyka_options()->opt('quittance_redirect_page')),
                 '#PAYMENT_COMMENT#' => $campaign->payment_title." (№ $donation_id)",
                 '#PAYER_NAME#' => $form_data['leyka_donor_name'],
                 '#RECEIVER_NAME#' => leyka_options()->opt('org_full_name'),
@@ -100,39 +99,34 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
         );
 
         for($i=0; $i<10; $i++) {
-            $quittance_html = str_replace("#INN_$i#", substr(leyka_options()->opt('org_inn'), $i, 1), $quittance_html);
+            $quittance_html = str_replace("#INN_$i#", mb_substr(leyka_options()->opt('org_inn'), $i, 1), $quittance_html);
         }
         for($i=0; $i<20; $i++) {
             $quittance_html = str_replace(
-                "#ACC_$i#", substr(leyka_options()->opt('org_bank_account'), $i, 1), $quittance_html
+                "#ACC_$i#", mb_substr(leyka_options()->opt('org_bank_account'), $i, 1), $quittance_html
             );
         }
         for($i=0; $i<9; $i++) {
             $quittance_html = str_replace(
-                "#BIC_$i#", substr(leyka_options()->opt('org_bank_bic'), $i, 1), $quittance_html
+                "#BIC_$i#", mb_substr(leyka_options()->opt('org_bank_bic'), $i, 1), $quittance_html
             );
         }
         for($i=0; $i<20; $i++) {
             $quittance_html = str_replace(
-                "#CORR_$i#", substr(leyka_options()->opt('org_bank_corr_account'), $i, 1), $quittance_html
+                "#CORR_$i#", mb_substr(leyka_options()->opt('org_bank_corr_account'), $i, 1), $quittance_html
             );
         }
 
         do_action('leyka_before_quittance_output', $pm_id, $donation_id, $form_data);
 
-        echo $quittance_html;
-        die();
+        die($quittance_html);
 
     }
 
-    // Quittance don't use any specific redirects, so this method is empty:
     public function submission_redirect_url($current_url, $pm_id) {
-        return get_option('permalink_structure') ?
-            home_url('/leyka-process-donation') :
-            home_url('?page=leyka-process-donation');
+        return get_option('permalink_structure') ? home_url('/leyka-process-donation') : home_url('?page=leyka-process-donation');
     }
-    
-    // Quittance don't have some form data to send to the gateway site:
+
     public function submission_form_data($form_data, $pm_id, $donation_id) {
         return $form_data;
     }
@@ -145,13 +139,9 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
 
 class Leyka_Bank_Order extends Leyka_Payment_Method {
 
-    private $_quittance_html = '';
-
     protected static $_instance;
 
     protected function _set_attributes() {
-
-        $this->_quittance_html = file_get_contents(LEYKA_PLUGIN_DIR.'gateways/quittance/bank_order.html');
 
         $this->_id = 'bank_order';
         $this->_gateway_id = 'quittance';
@@ -182,7 +172,7 @@ class Leyka_Bank_Order extends Leyka_Payment_Method {
     }
 
     public function get_quittance_html() {
-        return $this->_quittance_html;
+        return file_get_contents(LEYKA_PLUGIN_DIR.'gateways/quittance/bank_order.html');
     }
 
 }
