@@ -142,8 +142,8 @@ class Leyka_Payment_Form {
                     }
                     break;
 
-                default:
-                    $errors[] = new WP_Error('unknown_form_field_type', sprintf(__('Unknown field type (%s) for the field: %s', 'leyka'), $field['type'], $field['title']));
+                default: // It's inflexible to have to explicitly add new switch clauses for each field type, so turn it off
+//                    $errors[] = new WP_Error('unknown_form_field_type', sprintf(__('Unknown field type (%s) for the field: %s', 'leyka'), $field['type'], $field['title']));
             }
 
         }

@@ -441,6 +441,31 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
     }
 
+    public function column_donor_additional_fields($item) {
+
+        $fields_settings = Leyka_Campaign::get_additional_fields_settings($donation->campaign_id);
+        $html = '';
+
+        if($donation->additional_fields) {
+
+            $html .= '<ul class="'.apply_filters('leyka_admin_donation_additional_fields_column_css', '').'">';
+            foreach($donation->additional_fields as $field_id => $field_value) {
+
+                $html .= '<li>'
+                    .(isset($fields_settings[$field_id]) ? $fields_settings[$field_id]['title'] : $field_id)
+                    .(empty($fields_settings[$field_id]['is_required']) ? '' : '<span class="required">*</span>')
+                    .': '.(esc_html($field_value))
+                    .'</li>';
+
+            }
+            $html .= '</ul>';
+
+        }
+
+        return apply_filters('leyka_admin_donor_additional_fields_column_content', $html);
+
+    }
+
     /**
      * @param array $item An array of DB data.
      * @return string
@@ -529,6 +554,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             #'donor_id' => __('ID'),
             'donor_type' => _x('Type', "Donor's type", 'leyka'),
             'donor_name' => __("Donor's name", 'leyka'),
+            'donor_additional_fields' => __("Donor's name", 'leyka'),
             'first_donation' => __('First donation', 'leyka'),
             'campaigns' => __('Campaigns list', 'leyka'),
             'donors_tags' => __("Donors' tags", 'leyka'),
