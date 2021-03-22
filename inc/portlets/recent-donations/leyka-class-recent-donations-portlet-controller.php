@@ -21,19 +21,15 @@ class Leyka_Recent_Donations_Portlet_Controller extends Leyka_Portlet_Controller
         }
 
         $result = array();
-        $donations = get_posts(array(
-            'post_type' => Leyka_Donation_Management::$post_type,
-            'post_status' => array('submitted', 'funded', 'failed',),
-            'posts_per_page' => $params['number'],
-            'date_query' => array(
-                'after' => $interval.' ago',
-                'inclusive' => true,
-            ),
+        $donations = Leyka_Donations::get_instance()->get(array(
+            'status' => array('submitted', 'funded', 'failed',),
+            'results_limit' => $params['number'],
+            'date_from' => date('Y-m-d', strtotime("-$interval")),
+            'orderby' => 'donation_id',
+            'order' => 'DESC',
         ));
 
         foreach($donations as $donation) {
-
-            $donation = new Leyka_Donation($donation);
             $result[] = array(
                 'id' => $donation->id,
                 'type' => $donation->type,

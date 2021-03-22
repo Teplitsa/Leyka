@@ -99,7 +99,7 @@ function leyka_do_donations_export() {
         'UTF-8',
         apply_filters('leyka_donations_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
         "sep=;\n".implode(';', apply_filters('leyka_donations_export_headers', array(
-            'ID', 'Имя донора', 'Email', 'Тип платежа', 'Плат. оператор', 'Способ платежа', 'Полная сумма', 'Итоговая сумма', 'Валюта', 'Дата пожертвования', 'Статус', 'Кампания', 'Подписка на рассылку', 'Email подписки', 'Комментарий'
+            'ID', 'Имя донора', 'Email', 'Тип платежа', 'Плат. оператор', 'Способ платежа', 'Полная сумма', 'Итоговая сумма', 'Валюта', 'Дата пожертвования', 'Статус', 'Кампания', 'Назначение', 'Подписка на рассылку', 'Email подписки', 'Комментарий'
         )))
     );
 
@@ -138,11 +138,16 @@ function leyka_do_donations_export() {
                     $donation->amount_total,
                     $currency,
                     $donation->date,
+                    str_replace('.', ',', $donation->amount_total),
+                    $donation->currency_label,
+                    date('d.m.Y H:i:s', $donation->date_timestamp),
                     $donation->status_label,
                     $campaign->title,
+                    $campaign->payment_title,
                     $donor_subscription,
                     $donation->donor_subscription_email,
                     $donation->donor_comment,
+//                    (get_post_meta($donation->campaign_id, 'campaign_format', true)),
                 ),
                 $donation
             ))
