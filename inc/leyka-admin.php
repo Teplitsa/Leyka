@@ -82,7 +82,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                     }
                 }
             }
+
             return $options_allocated;
+
         });
 
 		require_once LEYKA_PLUGIN_DIR.'/inc/leyka-class-portlet-controller.php'; // Portlet controller API
@@ -300,10 +302,10 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         // Fake pages:
 //        add_submenu_page(NULL, 'Donation info', 'Donation info', 'leyka_manage_donations', 'leyka_donation_info', array($this, 'donation_info_screen'));
 
+        add_submenu_page(NULL, 'Leyka Wizard', 'Leyka Wizard', 'leyka_manage_options', 'leyka_settings_new', array($this, 'settings_new_screen'));
+
         // ATM, Wizards, Donors & Extensions are untested with "sep" storage type:
         if(leyka_get_donations_storage_type() === 'post') {
-
-            add_submenu_page(NULL, 'Leyka Wizard', 'Leyka Wizard', 'leyka_manage_options', 'leyka_settings_new', array($this, 'settings_new_screen'));
 
             add_submenu_page(NULL, "Donor's info", "Donor's info", 'leyka_manage_options', 'leyka_donor_info', array($this, 'donor_info_screen'));
 
