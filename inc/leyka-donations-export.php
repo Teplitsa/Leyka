@@ -31,7 +31,7 @@ function leyka_render_export_button() {
     <?php }
 
 }
-add_action('admin_notices', 'leyka_render_export_button');
+//add_action('admin_notices', 'leyka_render_export_button');
 
 function leyka_do_donations_export() {
 

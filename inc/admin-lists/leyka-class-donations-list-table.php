@@ -37,7 +37,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
         if( !empty($_GET['date-to']) && strtotime($_GET['date-to']) ) {
             $donations_params['date_to'] = $_GET['date-to'];
         }
-        if( !empty($_GET['payment_type']) && in_array($_GET['payment_type'], array_keys(leyka_get_payment_types_data())) ) {
+        if( !empty($_GET['payment_type']) && in_array($_GET['payment_type'], array_keys(leyka_get_payment_types_list())) ) {
             $donations_params['payment_type'] = $_GET['payment_type'];
         }
         if( !empty($_GET['gateway_pm']) ) {
@@ -334,7 +334,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
                 <?php _e('Select a payment type', 'leyka');?>
             </option>
 
-            <?php foreach(leyka_get_payment_types_data() as $payment_type => $label) {?>
+            <?php foreach(leyka_get_payment_types_list() as $payment_type => $label) {?>
                 <option value="<?php echo $payment_type;?>" <?php echo !empty($_GET['payment_type']) && $_GET['payment_type'] == $payment_type ? 'selected="selected"' : '';?>><?php echo $label;?></option>
             <?php }?>
         </select>

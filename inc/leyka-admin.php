@@ -9,6 +9,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	protected static $_instance = null;
 
 	/** @var WP_List_Table */
+    protected $_donations_list_table = null;
+	/** @var WP_List_Table */
 	protected $_donors_list_table = null;
 	/** @var WP_List_Table */
 	protected $_recurring_subscriptions_list_table = null;
