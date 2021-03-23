@@ -924,7 +924,7 @@ class Leyka extends Leyka_Singleton {
 
         do_action('leyka_before_procedure', $procedure_id, $params);
 
-        $procedure_script = LEYKA_PLUGIN_DIR.'procedures/leyka-'.$procedure_id.'.php';
+        $procedure_script = apply_filters('leyka_procedure_address', LEYKA_PLUGIN_DIR.'procedures/leyka-'.$procedure_id.'.php');
         if(file_exists($procedure_script)) {
 
             $_POST['procedure_params'] = $params;
