@@ -80,7 +80,7 @@ if( !function_exists('leyka_show_extension_logo')) {
             <?php if( !!$show_info && ($use_paceholders || $extension->description || $extension->full_description) ) {?>
             <span class="field-q">
                 <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-info.svg" alt="">
-                <span class="field-q-tooltip"><?php echo $use_paceholders ? '#EXTENSION_DESCRIPTION#' : $extension->full_description ? $extension->full_description : $extension->description;?></span>
+                <span class="field-q-tooltip"><?php echo $use_paceholders ? '#EXTENSION_DESCRIPTION#' : ($extension->full_description ? $extension->full_description : $extension->description);?></span>
             </span>
             <?php }?>
         </div>

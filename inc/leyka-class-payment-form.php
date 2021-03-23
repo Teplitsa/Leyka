@@ -198,7 +198,8 @@ class Leyka_Payment_Form {
 
         }
 
-        $template = leyka_get_current_template_data();
+        $template = leyka_get_current_template_data($campaign);
+
         $hiddens = apply_filters('leyka_hidden_common_donation_form_fields', array(
             'leyka_template_id' => $template['id'],
             'leyka_campaign_id' => $campaign->id,
