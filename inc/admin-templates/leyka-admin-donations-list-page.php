@@ -11,9 +11,9 @@
     <div id="poststuff">
         <div>
 
-            <form class="donors-list-controls" action="#" method="get">
+            <form class="donations-list-controls" action="#" method="get">
 
-                <div class="donors-list-filters admin-list-filters">
+                <div class="donations-list-filters admin-list-filters">
 
                     <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']);?>">
 
@@ -21,24 +21,51 @@
 
                         <div class="filters-row">
 
-                            <?php $filter_value = isset($_GET['donor-type']) ? esc_attr($_GET['donor-type']) : false;?>
-                            <select name="donor-type" class="leyka-select-menu">
-                                <option value="" <?php echo !$filter_value ? 'selected="selected"' : '';?>>
-                                    <?php _e('All donor types', 'leyka');?>
+                            <?php $filter_value = isset($_GET['payment-type']) ? esc_attr($_GET['payment-type']) : false;?>
+                            <select id="payment-type-select" name="payment_type" class="leyka-select-menu">
+
+                                <option value="" <?php echo $filter_value ? '' : 'selected="selected"';?>>
+                                    <?php _e('Payment type', 'leyka');?>
                                 </option>
-                                <option value="single" <?php echo $filter_value == 'single' ? 'selected="selected"' : '';?>>
-                                    <?php _ex('Single', 'Donor type name', 'leyka');?>
+
+                                <?php foreach(leyka_get_payment_types_list() as $payment_type => $label) {?>
+
+                                <option value="<?php echo $payment_type;?>" <?php echo $filter_value && $filter_value == $payment_type ? 'selected="selected"' : '';?>>
+                                    <?php echo $label;?>
                                 </option>
-                                <option value="regular" <?php echo $filter_value == 'regular' ? 'selected="selected"' : '';?>>
-                                    <?php _ex('Regular', 'Donor type name', 'leyka');?>
-                                </option>
+
+                                <?php }?>
+
                             </select>
 
-                            <input type="text" name="donor-name-email" class="leyka-donor-name-email-selector leyka-selector" value="<?php echo isset($_GET['donor-name-email']) ? esc_attr($_GET['donor-name-email']) : '';?>" placeholder="<?php _e("Donor's name or email", 'leyka');?>">
+                            <?php $filter_value = isset($_GET['status']) ? esc_attr($_GET['status']) : false;?>
+                            <select id="donation-status-select" name="donation-status" class="leyka-select-menu">
 
-                            <input type="text" name="first-donation-date" autocomplete="off" class="leyka-first-donation-date-selector leyka-selector" value="<?php echo isset($_GET['first-donation-date']) ? esc_attr($_GET['first-donation-date']) : '';?>" placeholder="<?php _e('First payment dates', 'leyka');?>">
+                                <option value="" <?php echo $filter_value ? '' : 'selected="selected"';?>>
+                                    <?php _e('Donation status', 'leyka');?>
+                                </option>
 
-                            <input type="text" name="last-donation-date" autocomplete="off" class="leyka-last-donation-date-selector leyka-selector" value="<?php echo isset($_GET['last-donation-date']) ? esc_attr($_GET['last-donation-date']) : '';?>" placeholder="<?php _e('Last payment dates', 'leyka');?>">
+                                <?php foreach(leyka_get_donation_status_list() as $status => $label) {?>
+
+                                    <option value="<?php echo $status;?>" <?php echo $filter_value && $filter_value == $status ? 'selected="selected"' : '';?>>
+                                        <?php echo $label;?>
+                                    </option>
+
+                                <?php }?>
+
+                            </select>
+
+                            <label for="donation-datetime-from"><?php _e('From:', 'leyka');?></label>
+                            <input type="date" id="donation-datetime-from" name="date-from" value="<?php echo empty($_GET['date-from']) ? '' : $_GET['date-from'];?>">
+
+                            <label for="donation-datetime-to"><?php _e('To:', 'leyka');?></label>
+                            <input type="date" id="donation-datetime-to" name="date-to" value="<?php echo empty($_GET['date-to']) ? '' : $_GET['date-to'];?>">
+
+<!--                            <input type="text" name="donor-name-email" class="leyka-donor-name-email-selector leyka-selector" value="--><?php //echo isset($_GET['donor-name-email']) ? esc_attr($_GET['donor-name-email']) : '';?><!--" placeholder="--><?php //_e("Donor's name or email", 'leyka');?><!--">-->
+<!---->
+<!--                            <input type="text" name="first-donation-date" autocomplete="off" class="leyka-first-donation-date-selector leyka-selector" value="--><?php //echo isset($_GET['first-donation-date']) ? esc_attr($_GET['first-donation-date']) : '';?><!--" placeholder="--><?php //_e('First payment dates', 'leyka');?><!--">-->
+<!---->
+<!--                            <input type="text" name="last-donation-date" autocomplete="off" class="leyka-last-donation-date-selector leyka-selector" value="--><?php //echo isset($_GET['last-donation-date']) ? esc_attr($_GET['last-donation-date']) : '';?><!--" placeholder="--><?php //_e('Last payment dates', 'leyka');?><!--">-->
 
                         </div>
 
@@ -50,46 +77,13 @@
                             <select id="leyka-campaigns-select" class="autocomplete-select" name="campaigns[]" multiple="multiple">
                                 <?php $campaigns = $filter_value ? leyka_get_campaigns_list(array('include' => $filter_value)) : array();
                                 foreach($campaigns as $campaign_id => $campaign_title) {?>
+
                                     <option value="<?php echo $campaign_id;?>" <?php echo is_array($filter_value) && in_array($campaign_id, $filter_value) ? 'selected="selected"' : '';?>>
                                         <?php echo $campaign_title;?>
                                     </option>
-                                <?php }?>
-                            </select>
 
-                            <input type="text" name="leyka-payment-status" class="leyka-payment-status-selector leyka-selector autocomplete-input" value="" placeholder="<?php _e('Payment status', 'leyka');?>">
-
-                            <?php $filter_value = isset($_GET['payment-status']) ? (array)$_GET['payment-status'] : array();?>
-                            <select id="leyka-payment-status-select" class="autocomplete-select" name="payment-status[]" multiple="multiple">
-
-                                <?php $payment_status_list = leyka()->get_donation_statuses();
-
-                                foreach($payment_status_list as $status => $status_label) {?>
-                                    <option value="<?php echo $status;?>" <?php echo is_array($filter_value) && in_array($status, $filter_value) ? 'selected="selected"' : '';?>>
-                                        <?php echo $status_label;?>
-                                    </option>
                                 <?php }?>
 
-                            </select>
-
-                            <input type="text" name="donors-tags-input" class="leyka-donors-tags-selector leyka-selector autocomplete-input" value="" placeholder="<?php _e('Donors tags', 'leyka');?>">
-
-                            <?php $filter_value = isset($_GET['donors-tags']) ? (array)$_GET['donors-tags'] : array();?>
-                            <select class="leyka-donors-tags-select autocomplete-select" name="donors-tags[]" multiple="multiple">
-                                <?php $donors_tags = $filter_value ? get_terms(
-                                    Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME,
-                                    array(
-                                        'include' => $filter_value,
-                                        'hide_empty' => false,
-                                        'orderby' => 'name',
-                                        'order' => 'ASC',
-                                    )
-                                ) : array();
-
-                                foreach($donors_tags as $tag) {?>
-                                    <option value="<?php echo $tag->term_id;?>" <?php echo is_array($filter_value) && in_array($tag->term_id, $filter_value) ? 'selected="selected"' : '';?>>
-                                        <?php echo $tag->name;?>
-                                    </option>
-                                <?php }?>
                             </select>
 
                             <input type="text" name="leyka-gateways" class="leyka-gateways-selector leyka-selector autocomplete-input" value="" placeholder="<?php _e('Payment gateway', 'leyka');?>">
@@ -107,6 +101,36 @@
                                         <?php echo $gateway->name;?>
                                     </option>
                                 <?php }?>
+
+                            </select>
+
+                            <?php $filter_value = isset($_GET['gateway-pm']) ? (array)$_GET['gateway-pm'] : array();?>
+                            <select id="gateway-pm-select" name="gateway-pm" class="autocomplete-select">
+
+                                <option value="" <?php echo empty($_GET['gateway-pm']) ? '' : 'selected="selected"';?>>
+                                    <?php _e('Gateway or payment method', 'leyka');?>
+                                </option>
+
+                                <?php $gw_pm_list = array();
+                                foreach(leyka_get_gateways() as $gateway) {
+
+                                    /** @var Leyka_Gateway $gateway */
+                                    $pm_list = $gateway->get_payment_methods();
+                                    if($pm_list)
+                                        $gw_pm_list[] = array('gateway' => $gateway, 'pm_list' => $pm_list);
+                                }
+                                $gw_pm_list = apply_filters('leyka_donations_list_gw_pm_filter', $gw_pm_list);
+
+                                foreach($gw_pm_list as $element) {?>
+
+                                    <option value="<?php echo $element['gateway']->id;?>" <?php echo !empty($_GET['gateway_pm']) && $_GET['gateway_pm'] === $element['gateway']->id ? 'selected="selected"' : '';?>><?php echo $element['gateway']->name;?></option>
+
+                                    <?php foreach($element['pm_list'] as $pm) {?>
+
+                                        <option value="<?php echo $pm->full_id;?>" <?php echo !empty($_GET['gateway_pm']) && $_GET['gateway_pm'] === $pm->full_id ? 'selected="selected"' : '';?>><?php echo '&nbsp;&nbsp;&nbsp;&nbsp;'.$pm->name;?></option>
+                                    <?php }
+
+                                }?>
 
                             </select>
 

@@ -1142,6 +1142,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             || (isset($_GET['page']) && $_GET['page'] === 'leyka_settings')
             || ($screen->post_type === Leyka_Campaign_Management::$post_type && $screen->base === 'post')
             || (isset($_GET['page']) && ($_GET['page'] === 'leyka' || $_GET['page'] === 'leyka_donors'))
+            || (isset($_GET['page']) && ($_GET['page'] === 'leyka' || $_GET['page'] === 'leyka_donations'))
             || (isset($_GET['page']) && $_GET['page'] === 'leyka_donor_info' && !empty($_GET['donor']))
             || (isset($_GET['page']) && ($_GET['page'] === 'leyka' || $_GET['page'] === 'leyka_recurring_subscriptions'))
             || (isset($_GET['page']) && $_GET['page'] === 'leyka_extensions')
@@ -1226,7 +1227,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         if(isset($_GET['page']) && $_GET['page'] === 'leyka') {
 
-            $dependencies[] = 'jquery-ui-dialog'; // wp_enqueue_script('jquery-ui-dialog');
+            $dependencies[] = 'jquery-ui-dialog';
 
             wp_enqueue_script('leyka-admin', LEYKA_PLUGIN_BASE_URL.'assets/js/Chart.v2.8.0.min.js', $dependencies, LEYKA_VERSION, true);
 
