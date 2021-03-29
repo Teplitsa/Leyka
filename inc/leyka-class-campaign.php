@@ -994,6 +994,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                 $meta['leyka_campaign_additional_fields_settings'][$field->id] = array(
                     'type' => $field->type,
                     'title' => $field->title,
+                    'description' => $field->description,
                     'is_required' => !empty($field->is_required),
                 );
 
