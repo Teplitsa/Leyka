@@ -196,7 +196,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                             $text_input_type = 'text';
                     }?>
 
-                <div class="donor__textfield donor__textfield--<?php echo $field['type'];?> donor__textfield--<?php echo $field_slug;?> <?php echo empty($field['is_required']) ? '' : 'required';?>">
+                <div class="donor-additional-field donor__textfield donor__textfield--<?php echo $field['type'];?> donor__textfield--<?php echo $field_slug;?> <?php echo empty($field['is_required']) ? '' : 'required';?>">
 
                     <div class="leyka-star-field-frame">
                         <label for="<?php echo $field_id;?>">
