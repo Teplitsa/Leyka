@@ -255,6 +255,11 @@
 
 }
 
+/** @todo Remove this when all postboxes are converted into metaboxes (as metaboxes styling already has this class). */
+.leyka-field-wide {
+    width: 100%;
+}
+
 // Common multi-valued items fields settings:
 .multi-valued-items-field-wrapper {
 

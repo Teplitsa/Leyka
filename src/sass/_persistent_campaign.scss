@@ -6,7 +6,7 @@
     }
     
     .site-content.leyka-campaign-content {
-        margin-left: 0px;
+        margin-left: 0;
 
         // 2020 width fix
         &:not(.alignwide):not(.alignfull):not(.alignleft):not(.alignright):not(.is-style-wide) {
@@ -15,7 +15,7 @@
     }
     
     .site-footer {
-        margin-left: 0px;
+        margin-left: 0;
         width: 100%;
     }
 }

@@ -2036,18 +2036,32 @@ jQuery(document).ready(function($){
     }).change();
 
     // Change campaign additional fields:
-    $('#change-campaign-additional-fields').on('change.leyka', function(e){
+    let $campaign_additional_fields_changed_field = $('#change-campaign-additional-fields'),
+        $campaign_additional_fields_metabox_content = $campaign_additional_fields_changed_field.parents('.inside'),
+        $additional_fields_settings = $campaign_additional_fields_metabox_content.find('.campaign-additional-fields-wrapper');
 
-        let $checkbox = $(this),
-            $additional_fields_settings = $checkbox.parents('.inside').find('.campaign-additional-fields-wrapper');
+    $('#campaign-additional-fields-enable').on('click.leyka', function(e){
 
-        if($checkbox.prop('checked')) {
+        e.preventDefault();
+
+        $campaign_additional_fields_changed_field.prop('checked', 'checked');
+        $campaign_additional_fields_metabox_content.find('.leyka-settings-page').show();
+
+        $campaign_additional_fields_metabox_content.find('.leyka-campaign-additional-fields-settings-warning').hide();
+        $additional_fields_settings.show();
+
+    });
+
+    $campaign_additional_fields_changed_field.on('change.leyka', function(e){
+
+        if($campaign_additional_fields_changed_field.prop('checked')) {
             $additional_fields_settings.show();
         } else {
             $additional_fields_settings.hide();
         }
 
     });
+    // Change campaign additional fields - END
 
     /* Support packages Extension - available campaign existence check: */
 

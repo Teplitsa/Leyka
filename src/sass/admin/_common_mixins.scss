@@ -704,7 +704,7 @@
 
 }
 
-@mixin leyka-colored-icon($icon-url, $icon-size, $icon-color: default) {
+@mixin leyka-colored-icon($icon-url, $icon-size, $icon-color: default, $icon-height: default) {
 
     @if $icon-color != default {
 
@@ -717,7 +717,7 @@
         background-image: url($icon-url);
     }
 
-    @include leyka-admin-icon($icon-size);
+    @include leyka-admin-icon($icon-size, $icon-height);
     @include leyka-admin-clean-a;
 
 }
@@ -813,6 +813,7 @@
 }
 
 @mixin leyka-admin-icon($size-w: 24px, $size-h: default) {
+
     background-position: center;
     background-repeat: no-repeat;
     display: inline-block;

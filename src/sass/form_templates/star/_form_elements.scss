@@ -460,18 +460,30 @@
         }
         
         .donor__textfield {
+
             overflow-y: visible;
             margin-bottom: 3px;
             
             .leyka-star-field-frame {
+
                 @include star-control-frame();
-                padding: 0.4 * $leyka-star-base 1 * $leyka-star-base 0.75 * $leyka-star-base 1 * $leyka-star-base;
+
+                padding: 0.4*$leyka-star-base 1*$leyka-star-base 0.75*$leyka-star-base 1*$leyka-star-base;
                 background-image: none;
                 background-position: calc(100% - var(--leyka-star-base)) center;
                 background-repeat: no-repeat;
                 overflow: hidden;
+
             }
-            
+
+            .leyka-star-field-description-frame {
+                min-height: 20px;
+                height: auto;
+                margin-top: 6px;
+                font-size: 11px;
+                text-transform: uppercase;
+            }
+
             &.donor__textfield--comment {
                 .leyka-star-field-frame {
                     height: 114px;
@@ -482,7 +494,7 @@
                 label {
                     span.donor__textfield-label {
                         &:after {
-                            content: "*";
+                            content: '*';
                             display: inline-block;
                             color: $leyka-star-color-main;
                             margin-left: 3px;
@@ -544,6 +556,7 @@
             }
 
             &.invalid .leyka-star-field-frame {
+
                 background-image: url(../../img/star-icon-error.svg);
                 background-color: $leyka-star-color-white;
                 
@@ -563,9 +576,11 @@
                 input, textarea {
                     color: $leyka-star-color-error;
                 }
+
             }
             
             &.focus .leyka-star-field-frame {
+
                 background-color: $leyka-star-color-white;
                 // border-color: $leyka-star-color-main-second;
                 border-color: $leyka-star-color-main;

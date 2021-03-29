@@ -873,6 +873,19 @@ function leyka_render_additional_fields_settings($option_id, $data = array()){
                 </div>
 
                 <div class="single-line">
+                    <div class="leyka-text-field-wrapper leyka-field-wide">
+                        <?php leyka_render_text_field('field_description', array(
+                            'title' => __('Field description', 'leyka'),
+                            'hide_title' => true,
+                            'type' => 'text',
+                            'placeholder' => __('Field description', 'leyka'),
+                            'value' => empty($placeholders['description']) ? '' : $placeholders['description'],
+                        ));?>
+                    </div>
+                    <div class="field-errors"></div>
+                </div>
+
+                <div class="single-line">
                     <div class="option-block type-checkbox">
                         <div class="leyka-checkbox-field-wrapper">
                             <?php leyka_render_checkbox_field('field_is_required', array(
@@ -919,6 +932,7 @@ function leyka_render_additional_fields_settings($option_id, $data = array()){
                         'box_title' => $field_options['title'],
                         'type' => $field_options['type'],
                         'title' => $field_options['title'],
+                        'description' => empty($field_options['description']) ? '' : $field_options['description'],
                         'is_required' => $field_options['is_required'],
                     ));
                 }
@@ -952,6 +966,7 @@ function leyka_save_additional_donation_form_fields_settings() {
         $result[$field->id] = array(
             'type' => $field->type,
             'title' => $field->title,
+            'description' => $field->description,
             'is_required' => !empty($field->is_required),
         );
 

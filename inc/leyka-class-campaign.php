@@ -734,9 +734,23 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         $campaign = new Leyka_Campaign($campaign);?>
 
-        <p><?php echo sprintf(__('By default, the campaign form additional fields will use <a href="%s">common fields settings</a>. You may change it here - the new fields settings will be applied only for this campaign form.', 'leyka'), admin_url('admin.php?page=leyka_settings&stage=view#common_additional_fields_settings'));?></p>
+        <div class="leyka-campaign-additional-fields-settings-warning" style="<?php echo $campaign->additional_fields_settings_changed ? 'display:none;' : '';?>">
 
-        <div class="leyka-admin leyka-settings-page">
+            <div class="leyka-edit-warning-text">
+
+                <p>
+                    <?php echo sprintf(__('By default, the campaign form additional fields will use <a href="%s">common fields settings</a> - there fields settings are applied to all campaigns (including new). We would advise to use the common settings.', 'leyka'), admin_url('admin.php?page=leyka_settings&stage=view#common_additional_fields_settings'));?>
+                    <br>
+                    <?php _e('If you are sure to have specific additional fields just for this campaign, press the button below.', 'leyka');?>
+                </p>
+
+            </div>
+
+            <a href="#" id="campaign-additional-fields-enable" class="button button-primary"><?php _e('Unlock', 'leyka');?></a>
+
+        </div>
+
+        <div class="leyka-admin leyka-settings-page" style="<?php echo $campaign->additional_fields_settings_changed ? '' : 'display:none;'?>">
 
             <p>
                 <label for="change-campaign-additional-fields">

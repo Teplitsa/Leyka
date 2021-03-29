@@ -236,13 +236,57 @@
 
         @include leyka-loading-indicator();
 
-        .leyka-field-wide {
-            width: 100%;
-        }
-
         label[for="hide-cover-type-image"] {
             margin-right: 32px;
         }
+
+        // Additional donation fields settings:
+        .leyka-edit-warning-text {
+
+            &:before {
+
+                display: inline-block;
+                content: '';
+                margin-right: 30px;
+
+                @include leyka-colored-icon('../../img/icon-lock.svg', 30px, $color-orange, 40px);
+
+            }
+
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: flex-start;
+            align-items: flex-start;
+
+            margin-bottom: 11px;
+
+        }
+
+        #campaign-additional-fields-enable {
+
+            &:before {
+
+                display: inline-block;
+                content: '';
+                margin-right: 16px;
+
+                @include leyka-colored-icon('../../img/icon-lock-unlocked.svg', 30px, $color-white);
+
+            }
+
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: center;
+            align-items: center;
+            width: 200px;
+            padding: 16px;
+
+            @include leyka-admin-list-text();
+            font-size: 16px;
+            font-weight: 500;
+
+        }
+        // Additional donation fields settings - END
 
     }
 
