@@ -663,7 +663,10 @@ techMessage="'.$tech_message.'"/>');
                         'description' =>
                             ( !empty($form_data['leyka_recurring']) ? _x('[R]', 'For "rebill"', 'leyka').' ' : '' )
                             .$new_recurring_donation->payment_title." (№ {$new_recurring_donation->id})",
-                        'metadata' => array('donation_id' => $new_recurring_donation->id),
+                        'metadata' => array(
+                            'donation_id' => $new_recurring_donation->id,
+                            'email' => $new_recurring_donation->donor_email,
+                        ),
                     ),
                     uniqid('', true)
                 );
