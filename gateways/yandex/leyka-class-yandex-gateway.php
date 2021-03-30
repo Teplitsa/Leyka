@@ -177,7 +177,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                     'description' =>
                         ( !empty($form_data['leyka_recurring']) ? _x('[RS]', 'For "recurring subscription"', 'leyka').' ' : '' )
                         .$donation->payment_title." (№ $donation_id)",
-                    'metadata' => array('donation_id' => $donation_id,),
+                    'metadata' => array('donation_id' => $donation_id, 'email' => $donation->donor_email,),
                     'save_payment_method' => !empty($form_data['leyka_recurring']),
                 );
                 if($pm_id !== 'yandex_all') {
