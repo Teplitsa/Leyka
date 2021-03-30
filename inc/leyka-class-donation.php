@@ -1444,7 +1444,17 @@ class Leyka_Donation_Management {
         unset($unsort['date']);
 
 		$columns['donor'] = __('Donor', 'leyka');
-		$columns['additional_fields'] = __('Additional fields', 'leyka');
+
+		// Common additional fields columns:
+        $common_additional_fields_settings = leyka_options()->opt('additional_donation_form_fields');
+        foreach($common_additional_fields_settings as $field_id => $field_settings) {
+            $columns['common_additional_field-'.$field_id] = $field_settings['title'];
+        }
+
+        // Campaign-specific additional fields column:
+		$columns['campaign_additional_fields'] = __('Campaign additional fields', 'leyka');
+        // Additional fields columns - END
+
 		$columns['amount'] = __('Amount', 'leyka');
         if(leyka_options()->opt('admin_donations_list_display') == 'separate-column') {
             $columns['amount_total'] = __('Total amount', 'leyka');
@@ -1466,11 +1476,25 @@ class Leyka_Donation_Management {
 
 	}
 
-	function manage_columns_content($column_name, $donation_id) {
+	function manage_columns_content($column_id, $donation_id) {
 
 		$donation = new Leyka_Donation($donation_id);
 
-        switch($column_name) {
+		if(stristr($column_id, 'common_additional_field-') !== false) { // Common additional field column:
+
+		    $field_id = str_replace('common_additional_field-', '', $column_id);
+
+		    if(is_array($donation->additional_fields) && !empty($donation->additional_fields[$field_id])) {
+                echo apply_filters(
+                    'leyka_admin_donation_common_additional_field_column_content',
+                    $donation->additional_fields[$field_id]
+                );
+            }
+            return;
+
+        }
+
+        switch($column_id) {
             case 'ID': echo $donation_id; break;
             case 'amount':
                 if(leyka_options()->opt('admin_donations_list_display') == 'amount-column') {
@@ -1498,8 +1522,9 @@ class Leyka_Donation_Management {
                 echo apply_filters('leyka_admin_donation_donor_comment_column_content', $donation->donor_comment, $donation);
                 break;
 
-            case 'additional_fields':
+            case 'campaign_additional_fields':
 
+                $common_fields_settings = leyka_options()->opt('additional_donation_form_fields');
                 $fields_settings = Leyka_Campaign::get_additional_fields_settings($donation->campaign_id);
                 $html = '';
 
@@ -1507,6 +1532,10 @@ class Leyka_Donation_Management {
 
                     $html .= '<ul class="'.apply_filters('leyka_admin_donation_additional_fields_column_css', '').'">';
                     foreach($donation->additional_fields as $field_id => $field_value) {
+
+                        if(isset($common_fields_settings[$field_id])) {
+                            continue;
+                        }
 
                         $html .= '<li>'
                             .(isset($fields_settings[$field_id]) ? $fields_settings[$field_id]['title'] : $field_id)
