@@ -177,7 +177,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                     'description' =>
                         ( !empty($form_data['leyka_recurring']) ? _x('[RS]', 'For "recurring subscription"', 'leyka').' ' : '' )
                         .$donation->payment_title." (№ $donation_id)",
-                    'metadata' => array('donation_id' => $donation_id,),
+                    'metadata' => array('donation_id' => $donation_id, 'email' => $donation->donor_email,),
                     'save_payment_method' => !empty($form_data['leyka_recurring']),
                 );
                 if($pm_id !== 'yandex_all') {
@@ -629,7 +629,10 @@ techMessage="'.$tech_message.'"/>');
                         'description' =>
                             ( !empty($form_data['leyka_recurring']) ? _x('[R]', 'For "rebill"', 'leyka').' ' : '' )
                             .$new_recurring_donation->payment_title." (№ {$new_recurring_donation->id})",
-                        'metadata' => array('donation_id' => $new_recurring_donation->id),
+                        'metadata' => array(
+                            'donation_id' => $new_recurring_donation->id,
+                            'email' => $new_recurring_donation->donor_email,
+                        ),
                     ),
                     uniqid('', true)
                 );
