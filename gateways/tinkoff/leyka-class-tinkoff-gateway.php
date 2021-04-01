@@ -180,9 +180,15 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
         }
 
         return array(
+            __('Terminal key:', 'leyka') => $vars['TerminalKey'],
+            __('Payment succeeded:', 'leyka') => !empty($vars['Success']) ? __('yes', 'leyka') : __('no', 'leyka'),
+            __('Last payment status:', 'leyka') => $vars['Status'],
             __('Order ID:', 'leyka') => $vars['OrderId'],
             __('Payment ID:', 'leyka') => $vars['PaymentId'],
-            __('Error Code:', 'leyka') => $vars['ErrorCode'],
+            __('Bank card ID:', 'leyka') => $vars['CardId'],
+            __('Bank card number:', 'leyka') => $vars['Pan'],
+            __('Bank card expiring date:', 'leyka') => $vars['ExpDate'],
+            __('Payment error code:', 'leyka') => empty($vars['ErrorCode']) ? __('no', 'leyka') : $vars['ErrorCode'],
         );
 
     }
@@ -211,6 +217,7 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
             case 'tinkoff_payment_id':
                 return get_post_meta($donation->id, '_leyka_tinkoff_payment_id', true);
             case 'tinkoff_rebill_id':
+            case 'tinkoff_recurring_id':
                 return get_post_meta($donation->id, '_leyka_tinkoff_rebill_id', true);
             default: return $value;
         }
@@ -223,9 +230,74 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
             case 'tinkoff_payment_id':
                 return update_post_meta($donation->id, '_leyka_tinkoff_payment_id', $value);
             case 'tinkoff_rebill_id':
+            case 'tinkoff_recurring_id':
                 return update_post_meta($donation->id, '_leyka_tinkoff_rebill_id', $value);
             default: return false;
         }
+
+    }
+
+    public function display_donation_specific_data_fields($donation = false) {
+
+        if($donation) { // Edit donation page displayed
+
+            $donation = leyka_get_validated_donation($donation);?>
+
+            <label><?php _e('Tinkoff payment ID', 'leyka');?>:</label>
+            <div class="leyka-ddata-field">
+
+                <?php if($donation->type == 'correction') {?>
+                    <input type="text" id="tinkoff-payment-id" name="tinkoff-payment-id" value="<?php echo $donation->tinkoff_payment_id;?>">
+                <?php } else {?>
+                    <span class="fake-input"><?php echo $donation->tinkoff_payment_id;?></span>
+                <?php }?>
+            </div>
+
+            <?php if($donation->type !== 'rebill') {
+                return;
+            }?>
+
+            <label><?php _e('Tinkoff recurring subscription ID', 'leyka');?>:</label>
+            <div class="leyka-ddata-field">
+
+                <?php if($donation->type == 'correction') {?>
+                    <input type="text" id="tinkoff-recurring-id" name="tinkoff-recurring-id" value="<?php echo $donation->tinkoff_recurring_id;?>">
+                <?php } else {?>
+                    <span class="fake-input"><?php echo $donation->tinkoff_recurring_id;?></span>
+                <?php }?>
+            </div>
+
+            <?php $init_recurring_donation = $donation->init_recurring_donation;?>
+
+            <div class="recurring-is-active-field">
+                <label for="tinkoff-recurring-is-active"><?php _e('Recurring subscription is active', 'leyka');?>:</label>
+                <div class="leyka-ddata-field">
+                    <input type="checkbox" id="tinkoff-recurring-is-active" name="tinkoff-recurring-is-active" value="1" <?php echo $init_recurring_donation->recurring_is_active ? 'checked="checked"' : '';?>>
+                </div>
+            </div>
+
+        <?php } else { // New donation page displayed ?>
+
+            <label for="tinkoff-recurring-id"><?php _e('Tinkoff recurring subscription ID', 'leyka');?>:</label>
+            <div class="leyka-ddata-field">
+                <input type="text" id="tinkoff-recurring-id" name="tinkoff-recurring-id" placeholder="<?php _e('Enter Tinkoff recurring ID', 'leyka');?>" value="">
+            </div>
+
+            <?php }
+
+    }
+
+    public function save_donation_specific_data(Leyka_Donation $donation) {
+
+        if(isset($_POST['tinkoff-payment-id']) && $donation->tinkoff_payment_id != $_POST['tinkoff-payment-id']) {
+            $donation->tinkoff_payment_id = $_POST['tinkoff-payment-id'];
+        }
+
+        if(isset($_POST['tinkoff-recurring-id']) && $donation->tinkoff_recurring_id != $_POST['tinkoff-recurring-id']) {
+            $donation->tinkoff_recurring_id = $_POST['tinkoff-recurring-id'];
+        }
+
+        $donation->recurring_is_active = !empty($_POST['tinkoff-recurring-is-active']);
 
     }
 
