@@ -34,6 +34,7 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
             ),
             $this->_id.'_password' => array(
                 'type' => 'text',
+                'is_password' => true,
                 'title' => __('Password', 'leyka'),
                 'comment' => __('The value may be acquired from the bank when Tinkoff payment terminal is created.', 'leyka'),
                 'required' => true,
@@ -180,6 +181,8 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
 
         return array(
             __('Order ID:', 'leyka') => $vars['OrderId'],
+            __('Payment ID:', 'leyka') => $vars['PaymentId'],
+            __('Error Code:', 'leyka') => $vars['ErrorCode'],
         );
 
     }
@@ -205,6 +208,8 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
     public function get_specific_data_value($value, $field_name, Leyka_Donation $donation) {
 
         switch($field_name) {
+            case 'tinkoff_payment_id':
+                return get_post_meta($donation->id, '_leyka_tinkoff_payment_id', true);
             case 'tinkoff_rebill_id':
                 return get_post_meta($donation->id, '_leyka_tinkoff_rebill_id', true);
             default: return $value;
@@ -215,6 +220,8 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
     public function set_specific_data_value($field_name, $value, Leyka_Donation $donation) {
 
         switch($field_name) {
+            case 'tinkoff_payment_id':
+                return update_post_meta($donation->id, '_leyka_tinkoff_payment_id', $value);
             case 'tinkoff_rebill_id':
                 return update_post_meta($donation->id, '_leyka_tinkoff_rebill_id', $value);
             default: return false;
@@ -238,18 +245,35 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
                         $donation->status = 'funded';
                         Leyka_Donation_Management::send_all_emails($donation->id);
                         break;
+
                     case 'REJECTED':
+                    case 'AUTH_FAIL':
+                    case 'REVERSED':
                         $donation->status = 'failed';
                         break;
+
+                    case 'REFUNDED':
+                        $donation->status = 'refunded';
+                        break;
+
+                    default:
                 }
 
-                if (!empty($response['RebillId'])) {
+                if( !empty($response['PaymentId']) ) {
+                    $donation->tinkoff_payment_id = esc_sql($response['PaymentId']);
+                }
+
+                if( !empty($response['RebillId']) ) {
                     $donation->tinkoff_rebill_id = esc_sql($response['RebillId']);
                 }
+
+                $donation->add_gateway_response($response);
 
             }
 
         }
+
+        echo 'OK';
 
     }
 
@@ -257,23 +281,16 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
 
         $prev_token = $params['Token'];
 
-        $params['Success'] = (int)$params['Success'];
-        if ($params['Success'] > 0) {
-            $params['Success'] = (string) 'true';
-        } else {
-            $params['Success'] = (string) 'false';
-        }
+        $params['Success'] = (int)$params['Success'] > 0 ? (string)'true' : (string)'false';
 
-        unset($params['Token']);
-        unset($params['Receipt']);
-        unset($params['Data']);
+        unset($params['Token'], $params['Receipt'], $params['Data']);
 
         $params['TerminalKey'] = leyka_options()->opt($this->_id.'_terminal_key');
         $params['Password'] = leyka_options()->opt($this->_id.'_password');
 
         ksort($params);
 
-        return strcmp(strtolower($prev_token), strtolower(hash('sha256', implode('', $params)))) == 0;
+        return strcmp(mb_strtolower($prev_token), mb_strtolower(hash('sha256', implode('', $params)))) == 0;
 
     }
 
