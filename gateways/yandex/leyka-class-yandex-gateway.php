@@ -320,9 +320,18 @@ techMessage="'.$tech_message.'"/>');
                 }
 
                 try {
-                    $notification = ($notification['event'] === YooKassa\Model\NotificationEventType::PAYMENT_SUCCEEDED) ?
-                        new YooKassa\Model\Notification\NotificationSucceeded($notification) :
-                        new YooKassa\Model\Notification\NotificationWaitingForCapture($notification);
+
+                    switch($notification['event']) {
+                        case YooKassa\Model\NotificationEventType::PAYMENT_SUCCEEDED:
+                            $notification = new YooKassa\Model\Notification\NotificationSucceeded($notification);
+                            break;
+                        case YooKassa\Model\NotificationEventType::PAYMENT_CANCELED:
+                            $notification = new YooKassa\Model\Notification\NotificationCanceled($notification);
+                            break;
+                        default:
+                            $notification = new YooKassa\Model\Notification\NotificationWaitingForCapture($notification);
+                    }
+
                 } catch (Exception $e) {
                     /** @todo Process the error somehow */
                     exit(500);
@@ -377,7 +386,7 @@ techMessage="'.$tech_message.'"/>');
 
                         break;
                     case 'canceled':
-                        $this->_handle_donation_failure($donation, false);
+                        $this->_handle_donation_failure($donation);
                         break;
                     case 'refund.succeeded':
                         $donation->status = 'refunded';
