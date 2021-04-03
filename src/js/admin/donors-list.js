@@ -9,11 +9,6 @@ jQuery(document).ready(function($){
 	let selector_values = [],
 		selected_values = [];
 
-	$('input[name="donor-name-email"]').autocomplete({
-		source: leyka.ajaxurl+'?action=leyka_donors_autocomplete&type=users',
-		minLength: 2
-	});
-
 	$.leyka_init_filter_datepicker($('input[name="first-donation-date"]'), {
 	    warningMessage: leyka.first_donation_date_incomplete_message
 	});
@@ -22,6 +17,7 @@ jQuery(document).ready(function($){
 	});
 
 	// Campaigns:
+    /** @todo Remove when more common field handling code is ready (settings.js : 59+) */
 	selected_values = [];
 	$('#leyka-campaigns-select').find('option').each(function(){
 		selected_values.push({item: {label: $.trim($(this).text()), value: $(this).val()}});
@@ -33,19 +29,22 @@ jQuery(document).ready(function($){
         minLength: 0,
         search_on_focus: true,
         pre_selected_values: selected_values,
-		leyka_select_callback: function( selectedItems ) {
-			var $select = $('#leyka-campaigns-select');
+		leyka_select_callback: function(selected_items) {
+
+			let $select = $('#leyka-campaigns-select');
 			$select.html('');
-			for(var val in selectedItems) {
-				var $option = $('<option></option>')
+
+			for(let val in selected_items) {
+				$('<option></option>')
 					.val(val)
-					.prop('selected', true);
-				$select.append($option);
+					.prop('selected', true)
+                    .appendTo($select);
 			}
-		}        
+		}
     });
 
 	// Gateways:
+    /** @todo Don't use autocomplete widget for Gateways/PMs select - change to selectmenu */
 	selector_values = [];
 	selected_values = [];
 	$('#leyka-gateways-select').find('option').each(function(){

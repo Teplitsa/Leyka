@@ -481,6 +481,26 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         $params['strict'] = isset($params['strict']) ? !!$params['strict'] : true;
 
+        if( !empty($params['donor_name_email']) ) {
+
+            if(mb_stristr($params['donor_name_email'], '%') === false) {
+                $where['donor_name_email'] = $wpdb->prepare(
+                    "({$wpdb->prefix}leyka_donations.donor_name = %s OR {$wpdb->prefix}leyka_donations.donor_email = %s)",
+                    $params['donor_name_email'], $params['donor_name_email']
+                );
+            } else {
+
+                $params['donor_name_email'] = trim($params['donor_name_email'], '%');
+
+                $where['donor_name_email'] = $wpdb->prepare(
+                    "({$wpdb->prefix}leyka_donations.donor_name LIKE %s OR {$wpdb->prefix}leyka_donations.donor_email LIKE %s)",
+                    '%'.$params['donor_name_email'].'%', '%'.$params['donor_name_email'].'%'
+                );
+
+            }
+
+        }
+
         if( !empty($params['status']) ) {
 
             $values_list = $this->_get_multiple_filter_values($params['status'], leyka_get_donation_status_list());
@@ -758,7 +778,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
             return $this->get_donation($params);
         }
 
-        // Array fiven - return a Donations selection:
+        // Array given - return a Donations selection:
 
         global $wpdb;
 

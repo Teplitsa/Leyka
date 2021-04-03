@@ -799,26 +799,35 @@ function leyka_donors_autocomplete(){
         ));
 
         foreach($donors as $donor) {
-            $res[] = array('label' => sprintf('%s (%s)', $donor->display_name, $donor->user_email), 'value' => $donor->user_email);
+            $res[] = array(
+                'label' => sprintf('%s (%s)', $donor->display_name, $donor->user_email),
+                'value' => $donor->user_email
+            );
         }
 
     } else { // Search for donors in Donations fields values
 
-        $donations = get_posts(array(
-            'post_type' => Leyka_Donation_Management::$post_type,
-            'post_status' => 'funded',
-            'posts_per_page' => 10,
-            'meta_query' => array(
-                'relation' => 'OR',
-                array('key' => 'leyka_donor_name', 'value' => $search_query, 'compare' => 'LIKE',),
-                array('key' => 'leyka_donor_email', 'value' => $search_query, 'compare' => 'LIKE',),
-            )
+        $donations = Leyka_Donations::get_instance()->get(array(
+            'status' => 'funded',
+            'results_limit' => 10,
+            'donor_name_email' => '%'.$search_query,
         ));
 
-        $tmp_res = array();
+//        get_posts(array(
+//            'post_type' => Leyka_Donation_Management::$post_type,
+//            'post_status' => 'funded',
+//            'posts_per_page' => 10,
+//            'meta_query' => array(
+//                'relation' => 'OR',
+//                array('key' => 'leyka_donor_name', 'value' => $search_query, 'compare' => 'LIKE',),
+//                array('key' => 'leyka_donor_email', 'value' => $search_query, 'compare' => 'LIKE',),
+//            )
+//        ));
+
+        $tmp_res = array(); // Find unique emails
         foreach($donations as $donation) {
 
-            $donation = new Leyka_Donation($donation);
+            $donation = Leyka_Donations::get_instance()->get_donation($donation);
             if( !array_key_exists($donation->donor_email, $tmp_res) ) {
                 $tmp_res[$donation->donor_email] = $donation->donor_name;
             }

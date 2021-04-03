@@ -1,6 +1,64 @@
 /** Donations list page **/
 .leyka-admin-donations-list {
 
+    // Table filters:
+
+    .admin-list-filters {
+        padding-bottom: 0;
+    }
+
+    .leyka-admin-list-filter-wrapper {
+
+        width: 25%;
+
+        &:not(:last-child) {
+            margin-right: 16px;
+            margin-bottom: 16px;
+        }
+
+        &.leyka-donation-date-filter-wrapper {
+
+            position: relative;
+
+            label {
+                position: absolute;
+                top: 5px;
+                left: 10px;
+            }
+
+            input {
+                padding-left: 50px;
+                width: 100% !important;
+                color: $color-text-semi;
+            }
+
+        }
+
+    }
+
+    .col-1 {
+
+        .filters-row {
+
+            .ui-selectmenu-button, .ui-autocomplete-multiselect, .ui-autocomplete-input { // 4 fields in a row, + 16px margin
+                width: 100% !important;
+                border-radius: 4px;
+                margin: 0;
+            }
+
+            span.ui-selectmenu-text { // To set our margins for selectmenu fields, instead of default jQ UI value
+                padding-left: 0;
+            }
+
+        }
+    }
+
+    .col-2 {
+        margin-left: 50px;
+    }
+    // Table filters - END
+
+
     .column-status {
 
         .funded {

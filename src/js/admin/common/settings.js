@@ -55,6 +55,45 @@ jQuery(document).ready(function($){
     };
     // Datepicker fields for admin lists filters - END
 
+    // Campaign(s) select fields (for admin list filters mostly):
+    $('input.leyka-campaigns-selector').each(function(){
+
+        let $text_selector_field = $(this),
+            $list_select_field = $text_selector_field.siblings('.leyka-campaigns-select'),
+            selected_values = [];
+
+        $list_select_field.find('option').each(function(){
+            selected_values.push({item: {label: $.trim($(this).text()), value: $(this).val()}});
+        });
+
+        $text_selector_field.autocomplete({
+            source: leyka.ajaxurl+'?action=leyka_campaigns_autocomplete', /** @todo Add nonce to the query */
+            multiselect: !!$list_select_field.prop('multiple'),
+            minLength: 0,
+            search_on_focus: true,
+            pre_selected_values: selected_values,
+            leyka_select_callback: function(selected_items) {
+
+                let $select = $list_select_field;
+                $select.html('');
+
+                for(let value in selected_items) {
+                    $('<option></option>').val(value).prop('selected', true).appendTo($select);
+                }
+
+            }
+        });
+
+    });
+    // Campaign(s) select fields  - END
+
+    // Donor's name/email field:
+    $('input[name="donor-name-email"]').autocomplete({
+        source: leyka.ajaxurl+'?action=leyka_donors_autocomplete&type=donations',
+        minLength: 2
+    });
+    // Donor's name/email field - END
+
     if(leyka_ui_widget_available('accordion')) {
         $('.ui-accordion').each(function(){
 
