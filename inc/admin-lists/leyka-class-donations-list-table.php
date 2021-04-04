@@ -11,11 +11,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
     public function __construct() {
 
-        parent::__construct(array(
-            'singular' => 'donation',
-            'plural' => 'donations',
-            'ajax' => true,
-        ));
+        parent::__construct(array('singular' => __('Donation', 'leyka'), 'plural' => __('Donations', 'leyka'), 'ajax' => true,));
 
         add_filter('leyka_admin_donations_list_filter', array($this, 'filter_donations'), 10, 2);
 
@@ -28,6 +24,9 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
      */
     public function filter_donations(array $donations_params, $filter_type = '') {
 
+        if( !empty($_GET['type']) && in_array($_GET['type'], array_keys(leyka_get_payment_types_list())) ) {
+            $donations_params['payment_type'] = $_GET['type'];
+        }
         if( !empty($_GET['status']) && in_array($_GET['status'], array_keys(leyka_get_donation_status_list())) ) {
             $donations_params['status'] = $_GET['status'];
         }
@@ -37,14 +36,19 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
         if( !empty($_GET['date-to']) && strtotime($_GET['date-to']) ) {
             $donations_params['date_to'] = $_GET['date-to'];
         }
-        if( !empty($_GET['payment_type']) && in_array($_GET['payment_type'], array_keys(leyka_get_payment_types_list())) ) {
-            $donations_params['payment_type'] = $_GET['payment_type'];
+        if( !empty($_GET['campaigns']) ) {
+            if(is_array($_GET['campaigns'])) {
+                $donations_params['campaign_id'] = array_filter($_GET['campaigns'], function($value){ return absint($value); });
+            } else if(absint($_GET['campaigns'])) {
+                $donations_params['campaign_id'] = absint($_GET['campaigns']);
+            }
+
         }
-        if( !empty($_GET['gateway_pm']) ) {
-            $donations_params['gateway_pm'] = $_GET['gateway_pm'];
+        if( !empty($_GET['gateway-pm']) ) {
+            $donations_params['gateway_pm'] = $_GET['gateway-pm'];
         }
-        if( !empty($_GET['campaign']) && absint($_GET['campaign']) ) {
-            $donations_params['campaign_id'] = absint($_GET['campaign']);
+        if(isset($_GET['donor-name-email'])) {
+            $donations_params['donor_name_email'] = $_GET['donor-name-email'];
         }
         if(isset($_GET['donor_subscribed']) && $_GET['donor_subscribed'] != '-') {
             $donations_params['donor_subscribed'] = !!$_GET['donor_subscribed'];
@@ -131,15 +135,17 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
                 __('Amount / Without commission', 'leyka') : __('Amount', 'leyka'),
             'date' => __('Date', 'leyka'),
             'gateway_pm' => __('Payment method', 'leyka'),
-
-//            'status' => __('Status', 'leyka'),
             'emails' => __('Donor email', 'leyka'),
-//            'donor_subscription' => __('Donor subscription', 'leyka'),
         );
 
         if(leyka_options()->opt('admin_donations_list_display') === 'separate-column') {
             $columns['amount_total'] = __('Total amount', 'leyka');
         }
+        if(leyka_options()->opt('admin_donations_donors_subscription_display') === 'separate-column') {
+            $columns['donor_subscription'] = __('Donor subscription', 'leyka');
+        }
+        /** @todo Donors' comments column? Optionally? */
+
 
         return apply_filters('leyka_admin_donations_columns_names', $columns);
 
@@ -172,9 +178,11 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
         switch ($column_name) {
             case 'donation_id': return $donation->id;
             case 'payment_type':
-                $icon_html = apply_filters('leyka_admin_donation_type_column_content', '<i class="icon-payment-type icon-'.($donation->is_init_recurring_donation ? 'rebill-init' : $donation->payment_type).' has-tooltip" title="'.$donation->payment_type_label.'"></i>', $donation);
-
-                return $icon_html;
+                return apply_filters(
+                    'leyka_admin_donation_type_column_content',
+                    '<i class="icon-payment-type icon-'.($donation->is_init_recurring_donation ? 'rebill-init' : $donation->payment_type).' has-tooltip" title="'.$donation->payment_type_label.'"></i>',
+                    $donation
+                );
             case 'donor_comment':
                 return apply_filters('leyka_admin_donation_donor_comment_column_content', $donation->donor_comment, $donation);
             case 'date':
@@ -213,16 +221,24 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
         $donor_data_html = apply_filters(
             'leyka_admin_donation_donor_column_content',
             '<div class="donor-name">'
-            .(leyka_options()->opt('donor_management_available') && $donation->donor_id ? '<a href="'.admin_url('?page=leyka_donor_info&donor='.$donation->donor_id).'">' : '')
-            .$donation->donor_name
-            .(leyka_options()->opt('donor_management_available') ? '</a>' : '')
+                .(leyka_options()->opt('donor_management_available') && $donation->donor_id ? '<a href="'.admin_url('?page=leyka_donor_info&donor='.$donation->donor_id).'">' : '')
+                .$donation->donor_name
+                .(leyka_options()->opt('donor_management_available') ? '</a>' : '')
             .'</div>'
             .'<div class="donor-email">'.$donation->donor_email.'</div>',
             $donation
         );
 
-        $donor_additional_data_html = '<ul>
-    <li>
+        $donor_additional_data_html = '<ul>';
+
+        if($donation->payment_type === 'rebill') {
+            $donor_additional_data_html .= '<li>
+        <span class="leyka-li-title">'.__('Recurring is active', 'leyka').':</span>
+        <span class="leyka-li-value">'.mb_ucfirst($donation->recurring_active ? __('yes', 'leyka') : __('no', 'leyka')).'</span>
+    </li>';
+        }
+
+        $donor_additional_data_html .= '<li>
         <span class="leyka-li-title">'.__('Email', 'leyka').':</span>
         <span class="leyka-li-value">'.mb_ucfirst($donation->donor_email_date ? sprintf(__('Sent on %s', 'leyka'), date(get_option('date_format').', H:i</time>', $donation->donor_email_date)) : __('no', 'leyka')).'</span>
     </li>
@@ -235,8 +251,8 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
     <li>
         <span class="leyka-li-title">'._x('Comment', "[Donor's comment. Should be short]", 'leyka').':</span>
         <span class="leyka-li-value">'.mb_ucfirst($donation->donor_comment ? $donation->donor_comment : __('no', 'leyka')).'</span>
-    </li>
-</ul>';
+    </li>';
+        $donor_additional_data_html .= '</ul>';
 
         return '<div class="leyka-donor-data-main">'.$donor_data_html.'</div>'
             .'<div class="leyka-donor-data-additional">'
@@ -325,7 +341,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
             $column_content = '<div class="donor-subscription-status none">'.__('None', 'leyka').'</div>';
         }
 
-        return apply_filters('leyka_admin_donation_donor_subscribed_column_content', $column_content, $donation);
+        return apply_filters('leyka_admin_donation_donor_subscription_column_content', $column_content, $donation);
 
     }
 

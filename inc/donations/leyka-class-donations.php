@@ -172,7 +172,7 @@ abstract class Leyka_Donations extends Leyka_Singleton {
                 }
             }
 
-        } else if(stripos($values, ',') !== false) { // Comma-separated values list
+        } else if(mb_stripos($values, ',') !== false) { // Comma-separated values list
 
             foreach(explode(',', $values) as $value) {
                 if($value && array_key_exists(trim($value), $possible_values_list)) {
@@ -519,7 +519,36 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         }
 
+        if( !empty($params['recurring_only_init']) ) {
+
+            $params['payment_type'] = 'rebill';
+            $params['meta'][] = array('key' => 'init_recurring_donation_id', 'value' => 0,);
+
+        }
+
+        if( !empty($params['recurring_active']) ) {
+
+            $params['payment_type'] = 'rebill';
+            $params['meta'][] = array('key' => 'recurring_active', 'value' => 1,);
+
+        }
+
         if( !empty($params['payment_type']) ) {
+
+            if(is_array($params['payment_type']) && in_array('rebill-init', $params['payment_type'])) {
+
+                unset($params['payment_type'][ array_search('rebill-init', $params['payment_type']) ]);
+
+                if( !in_array('rebill', $params['payment_type']) ) {
+                    $params['payment_type'][] = 'rebill';
+                }
+
+            } else if($params['payment_type'] == 'rebill-init') {
+
+                $params['payment_type'] = 'rebill';
+                $params['meta'][] = array('key' => 'init_recurring_donation_id', 'value' => 0,);
+
+            }
 
             $values_list = $this->_get_multiple_filter_values($params['payment_type'], leyka_get_payment_types_list());
 
@@ -542,10 +571,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
         if($params['campaign_id']) {
 
             $params['campaign_id'] = is_array($params['campaign_id']) ? $params['campaign_id'] : array($params['campaign_id']);
-            $params['campaign_id'] = array_map(
-                function($campaign_id){ return absint($campaign_id); },
-                $params['campaign_id']
-            );
+            $params['campaign_id'] = array_filter($params['campaign_id'], function($campaign_id){ return absint($campaign_id); });
 
             $where['campaign_id'] = "{$wpdb->prefix}leyka_donations.campaign_id IN (".implode(',', $params['campaign_id']).")";
 
@@ -722,20 +748,6 @@ class Leyka_Donations_Separated extends Leyka_Donations {
             }
 
             $query['orderby'] = " ORDER BY {$params['orderby']} {$params['order']}";
-
-        }
-
-        if( !empty($params['recurring_only_init']) ) {
-
-            $params['payment_type'] = 'rebill';
-            $params['meta'][] = array('key' => 'init_recurring_donation_id', 'value' => 0,);
-
-        }
-
-        if( !empty($params['recurring_active']) ) {
-
-            $params['payment_type'] = 'rebill';
-            $params['meta'][] = array('key' => 'recurring_active', 'value' => 1,);
 
         }
 

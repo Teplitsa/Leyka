@@ -1091,7 +1091,17 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'list_entries' => array(
                     'none' => __('Do not display total amount', 'leyka'),
                     'amount-column' => __('Display total amount in the amount column, with original amount value', 'leyka'),
-                    'separate-column' => __('Display total amount in the separate column', 'leyka'),
+                    'separate-column' => __('Display total amount in a separate column', 'leyka'),
+                ),
+            ),
+            'admin_donations_donors_subscription_display' => array(
+                'type' => 'radio',
+                'default' => 'separate-column',
+                'title' => __('Donors email subscriptions display on the admin donations list page', 'leyka'),
+                'required' => true,
+                'list_entries' => array(
+                    'none' => __('Do not display Donors subscriptions info', 'leyka'),
+                    'separate-column' => __('Display Donor subscription in a separate column', 'leyka'),
                 ),
             ),
             'send_plugin_stats' => array(

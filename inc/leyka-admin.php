@@ -29,8 +29,19 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		if(leyka_options()->opt('donor_management_available')) { // Save Donors pages custom options
             add_filter('set-screen-option', function($status, $option, $value) {
 
-                if($option === 'donors_per_page' && (int)$value > 0) {
-                    update_user_option(get_current_user_id(), 'donors_per_page', $value);
+                if($option === 'donors_per_page' && absint($value)) {
+                    update_user_option(get_current_user_id(), 'donors_per_page', absint($value));
+                }
+
+                return $value;
+
+            }, 10, 3);
+        }
+		if(leyka_get_donations_storage_type() === 'sep') { // Items per page for Sep-stored Donations
+            add_filter('set-screen-option', function($status, $option, $value) {
+
+                if($option === 'donations_per_page' && absint($value)) {
+                    update_user_option(get_current_user_id(), 'donations_per_page', absint($value));
                 }
 
                 return $value;
@@ -159,6 +170,20 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
                 $admin_title = ($extension ? sprintf(__('Leyka: %s', 'leyka'), $extension->title) : __('Leyka: unknown extension', 'leyka'))
                     .' &lsaquo; '.get_bloginfo('name');
+
+            } else if(isset($_GET['page']) && $_GET['page'] == 'leyka_donation_info' && isset($_GET['donation'])) {
+
+                // Edit Donation page:
+                $donation = Leyka_Donations::get_instance()->get(absint($_GET['donation']));
+
+                if( !$donation ) {
+
+                    wp_redirect(admin_url('admin.php?page=leyka_donations'));
+                    exit;
+
+                }
+
+                $admin_title = sprintf(__('%s: donation #%s profile', 'leyka'), __('Leyka', 'leyka'), $donation->id).' &lsaquo; '.get_bloginfo('name');
 
             }
 
@@ -296,8 +321,6 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         add_submenu_page('leyka', __('Help', 'leyka'), __('Help', 'leyka'), 'leyka_manage_donations', 'leyka_help', array($this, 'help_screen'));
 
         // Fake pages:
-//        add_submenu_page(NULL, 'Donation info', 'Donation info', 'leyka_manage_donations', 'leyka_donation_info', array($this, 'donation_info_screen'));
-
         add_submenu_page(NULL, 'Leyka Wizard', 'Leyka Wizard', 'leyka_manage_options', 'leyka_settings_new', array($this, 'settings_new_screen'));
 
         // ATM, Wizards, Donors & Extensions are untested with "sep" storage type:
@@ -305,7 +328,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
             add_submenu_page(NULL, "Donor's info", "Donor's info", 'leyka_manage_options', 'leyka_donor_info', array($this, 'donor_info_screen'));
 
-            add_submenu_page(NULL, "Extension settings", "Extension settings", 'leyka_manage_options', 'leyka_extension_settings', array($this, 'leyka_extension_settings_screen'));
+            add_submenu_page(NULL, 'Extension settings', 'Extension settings', 'leyka_manage_options', 'leyka_extension_settings', array($this, 'leyka_extension_settings_screen'));
 
         }
         // Fake pages - END
@@ -498,7 +521,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 	    if( !empty($_GET['donation']) && absint($_GET['donation']) ) {
 
-            $donation = Leyka_Donations::get_instance()->get_donation(absint($_GET['donation']));
+            $donation = Leyka_Donations::get_instance()->get(absint($_GET['donation']));
             $this->_handle_donation_edit($donation);
 
         } else {
@@ -506,6 +529,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         }
 
     }
+
     protected function _handle_donation_edit(Leyka_Donation_Base $donation) {
 
         $campaign = new Leyka_Campaign($donation->campaign_id);
@@ -649,6 +673,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         do_action("leyka_{$donation->gateway_id}_save_donation_data", $donation);
 
     }
+
     protected function _handle_donation_add() {
 
         $gateway_pm = empty($_POST['donation-pm']) || $_POST['donation-pm'] === 'custom' ?

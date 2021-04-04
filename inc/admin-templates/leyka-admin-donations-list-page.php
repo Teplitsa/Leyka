@@ -21,11 +21,9 @@
 
                         <div class="filters-row">
 
-                            <?php $filter_value = isset($_GET['payment-type']) ?
-                                mb_strtolower(esc_attr($_GET['payment-type'])) : false;?>
-
+                            <?php $filter_value = isset($_GET['type']) ? mb_strtolower(esc_attr($_GET['type'])) : false;?>
                             <div class="leyka-admin-list-filter-wrapper">
-                                <select id="payment-type-select" name="payment_type" class="leyka-select-menu">
+                                <select id="payment-type-select" name="type" class="leyka-select-menu">
 
                                     <option value="" <?php echo $filter_value ? '' : 'selected="selected"';?>>
                                         <?php _e('Payment type', 'leyka');?>
@@ -37,12 +35,6 @@
                                         <?php echo $label;?>
                                     </option>
 
-                                        <?php /*if($payment_type === 'rebill') {?>
-                                    <option value="rebill-init" <?php echo $filter_value == 'rebill-init' ? 'selected="selected"' : '';?>>
-                                        <?php _e('Recurring - initial', 'leyka');?>
-                                    </option>
-                                        <?php }*/?>
-
                                     <?php }?>
 
                                 </select>
@@ -50,7 +42,7 @@
 
                             <?php $filter_value = isset($_GET['status']) ? esc_attr($_GET['status']) : false;?>
                             <div class="leyka-admin-list-filter-wrapper">
-                                <select id="donation-status-select" name="donation-status" class="leyka-select-menu">
+                                <select id="donation-status-select" name="status" class="leyka-select-menu">
 
                                     <option value="" <?php echo $filter_value ? '' : 'selected="selected"';?>>
                                         <?php _e('Donation status', 'leyka');?>
@@ -100,10 +92,10 @@
 
                             </div>
 
-                            <?php $filter_value = isset($_GET['gateway-pm']) ? (array)$_GET['gateway-pm'] : array();?>
+                            <?php $filter_value = isset($_GET['gateway-pm']) ? $_GET['gateway-pm'] : '';?>
 
                             <div class="leyka-admin-list-filter-wrapper">
-                                <select id="gateway-pm-select" name="gateway_pm" class="leyka-select-menu">
+                                <select id="gateway-pm-select" name="gateway-pm" class="leyka-select-menu">
 
                                     <option value="" <?php echo $filter_value ? '' : 'selected="selected"';?>>
                                         <?php _e('Payment method', 'leyka');?>
@@ -114,8 +106,10 @@
 
                                         /** @var Leyka_Gateway $gateway */
                                         $pm_list = $gateway->get_payment_methods();
-                                        if($pm_list)
+                                        if($pm_list) {
                                             $gw_pm_list[] = array('gateway' => $gateway, 'pm_list' => $pm_list);
+                                        }
+
                                     }
                                     $gw_pm_list = apply_filters('leyka_donations_list_gw_pm_filter', $gw_pm_list);
 
@@ -145,23 +139,12 @@
                             <div class="leyka-admin-list-filter-wrapper">
                                 <select id="donor-subscribed-select" name="donor_subscribed" class="leyka-select-menu">
                                     <option value="-" <?php echo !isset($_GET['donor_subscribed']) || $_GET['donor_subscribed'] == '-' ? 'selected="selected"' : '';?>><?php _e('Email subscription', 'leyka');?></option>
-                                    <option value="1" <?php echo isset($_GET['donor_subscribed']) && $_GET['donor_subscribed'] == 1 ? 'selected="selected"' : '';?>><?php _e('Subscribed donors', 'leyka');?></option>
-                                    <!--<option value="0" <?php echo isset($_GET['donor_subscribed']) && !$_GET['donor_subscribed'] ? 'selected="selected"' : '';?>><?php _e('Unsubscribed donors', 'leyka');?></option>--> <?php /** @todo Debugging needed: somehow site overloads when $params['donor_subscribed'] == false */?>
+                                    <option value="1" <?php echo isset($_GET['donor_subscribed']) && $_GET['donor_subscribed'] == 1 ? 'selected="selected"' : '';?>><?php _e('Subscription on', 'leyka');?></option>
+                                    <option value="0" <?php echo isset($_GET['donor_subscribed']) && !$_GET['donor_subscribed'] ? 'selected="selected"' : '';?>><?php _e('No subscription', 'leyka');?></option>
                                 </select>
                             </div>
 
                         </div>
-
-<!--                        <div class="filters-row">-->
-<!--                            <div class="option-block">-->
-<!--                            --><?php //leyka_render_checkbox_field('donors-mailout-subscribed', array(
-//                                'title' => __('Only donors subscribed to mailouts', 'leyka'),
-//                                'comment' => __('Check to select only donors who chose to subscribe to campaign news mailouts when they donated.', 'leyka'),
-//                                'short_format' => true,
-//                                'value' => !empty($_GET['leyka_donors-mailout-subscribed']),
-//                            ));?>
-<!--                            </div>-->
-<!--                        </div>-->
 
                         <div class="filters-row">
                             <div class="filter-warning" id="leyka-filter-warning"></div>
