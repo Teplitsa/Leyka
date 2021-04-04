@@ -106,7 +106,7 @@
     }
 }
 
-@mixin field-q {
+@mixin field-q { /** @todo Old tooltip styles - remove when jQ UI tooltips styling is finished */
 
     margin-left: 3px;
     vertical-align: baseline;
@@ -125,7 +125,7 @@
         background-color: $color-wizard-tooltip-bg;
         border-radius: 6px;
         border: none;
-        padding: 8px 8px 8px 8px;
+        padding: 8px;
         font-size: 12px;
         line-height: 17px;
         z-index: 11;
@@ -173,6 +173,20 @@
         }
     }
 
+}
+
+@mixin leyka-admin-tooltip-styles {
+    color: $color-white;
+    background-color: $color-wizard-tooltip-bg;
+
+    font-family: $font-body;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 17px;
+
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    text-align: center;
 }
 
 @mixin leyka-field-title {
@@ -718,6 +732,24 @@
 
 }
 
+@mixin leyka-colored-icon($icon-url, $icon-size, $icon-color: default, $icon-height: default) {
+
+    @if $icon-color != default {
+
+        mask: url($icon-url); // Instead of background-image: url(), so we can give colors to the icon
+        mask-size: cover;
+        background-color: $icon-color;
+
+    }
+    @else {
+        background-image: url($icon-url);
+    }
+
+    @include leyka-admin-icon($icon-size, $icon-height);
+    @include leyka-admin-clean-a;
+
+}
+
 @mixin leyka-admin-btn($mod: default) {
 
 	//@include leyka-adb-btn-caption();
@@ -808,13 +840,19 @@
 
 }
 
-@mixin leyka-admin-icon($size: 24px) {
+@mixin leyka-admin-icon($size-w: 24px, $size-h: default) {
+
     background-position: center;
     background-repeat: no-repeat;
     display: inline-block;
-    background-size: $size;
-    width: $size;
-    height: $size;
+    background-size: $size-w;
+
+    @if $size-h == default {
+        $size-h: $size-w;
+    }
+    width: $size-w;
+    height: $size-h;
+
 }
 
 @mixin leyka-admin-outer-link($icon-margin-left: default) {

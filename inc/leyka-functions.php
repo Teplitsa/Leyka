@@ -875,14 +875,13 @@ function leyka_fake_scale_ultra($campaign) {
 function leyka_get_payment_types_list($type_id = false) {
 
     $types = array(
-        'single' => __('Single', 'leyka'),
-        'rebill' => __('Recurrent (rebill)', 'leyka'),
-        'correction' => __('Correction', 'leyka'),
+        'single' => _x('Single', '[donation]', 'leyka'),
+        'rebill' => _x('Recurring', '[donation]', 'leyka'),
+        'rebill-init' => _x('Initial recurring', '[donation]', 'leyka'),
+        'correction' => _x('Correctional', '[donation]', 'leyka'),
     );
 
-    return $type_id ?
-        (in_array($type_id, array_keys($types)) ? $types[$type_id] : false) :
-        $types;
+    return $type_id ? (in_array($type_id, array_keys($types)) ? $types[$type_id] : false) : $types;
 
 }
 

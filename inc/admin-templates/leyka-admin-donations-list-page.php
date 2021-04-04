@@ -21,7 +21,9 @@
 
                         <div class="filters-row">
 
-                            <?php $filter_value = isset($_GET['payment-type']) ? esc_attr($_GET['payment-type']) : false;?>
+                            <?php $filter_value = isset($_GET['payment-type']) ?
+                                mb_strtolower(esc_attr($_GET['payment-type'])) : false;?>
+
                             <div class="leyka-admin-list-filter-wrapper">
                                 <select id="payment-type-select" name="payment_type" class="leyka-select-menu">
 
@@ -31,9 +33,15 @@
 
                                     <?php foreach(leyka_get_payment_types_list() as $payment_type => $label) {?>
 
-                                    <option value="<?php echo $payment_type;?>" <?php echo $filter_value && $filter_value == $payment_type ? 'selected="selected"' : '';?>>
+                                    <option value="<?php echo $payment_type;?>" <?php echo $filter_value == $payment_type ? 'selected="selected"' : '';?>>
                                         <?php echo $label;?>
                                     </option>
+
+                                        <?php /*if($payment_type === 'rebill') {?>
+                                    <option value="rebill-init" <?php echo $filter_value == 'rebill-init' ? 'selected="selected"' : '';?>>
+                                        <?php _e('Recurring - initial', 'leyka');?>
+                                    </option>
+                                        <?php }*/?>
 
                                     <?php }?>
 
@@ -195,39 +203,3 @@
     </div>
 </div>
 <div class="clear"></div>
-
-
-
-
-
-<div class="wrap" data-leyka-admin-page-type="donations-list-page">
-
-    <h1 class="wp-heading-inline"><?php _e('Donations', 'leyka');?></h1>
-    <a href="<?php echo admin_url('admin.php?page=leyka_donation_info');?>" class="page-title-action"><?php _e('Add correctional donation', 'leyka');?></a>
-
-    <div id="poststuff">
-        <div>
-
-            <form class="donations-list-filters" action="#" method="get">
-
-                <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']);?>">
-                <input type="hidden" name="status" value="<?php echo empty($_GET['status']) ? '' : esc_attr($_GET['status']);?>">
-
-                <div class="col-1">
-                    <div class="filters-row"><div class="filter-warning" id="leyka-filter-warning"></div></div>
-                </div>
-
-                <div id="post-body-content" class="<?php if($this->_donations_list_table->record_count() === 0) {?>empty-donations-list<?php }?>">
-                    <div>
-                        <?php $this->_donations_list_table->views();
-                        $this->_donations_list_table->prepare_items();
-                        $this->_donations_list_table->display();?>
-                    </div>
-                </div>
-
-            </form>
-
-        </div>
-
-    </div>
-</div>

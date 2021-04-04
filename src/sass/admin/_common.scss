@@ -160,6 +160,148 @@
 	display: none;
 }
 
+// Payment types icons:
+i.icon-payment-type {
+
+    display: inline-block;
+
+    &.icon-single {
+        @include leyka-colored-icon('../../img/icon-payment-type-single.svg', 20px);
+    }
+
+    &.icon-rebill {
+        @include leyka-colored-icon('../../img/icon-payment-type-rebill.svg', 20px);
+    }
+
+    &.icon-rebill-init {
+        @include leyka-colored-icon('../../img/icon-payment-type-rebill-init.svg', 20px);
+    }
+
+    &.icon-correction {
+        @include leyka-colored-icon('../../img/icon-payment-type-correction.svg', 20px);
+    }
+
+}
+// Payment types icons - END
+
+// Donation status icons:
+i.icon-leyka-donation-status {
+
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border: none;
+    border-radius: 50%;
+
+    &.icon-submitted {
+        background-color: $color-border-semidark;
+    }
+
+    &.icon-funded {
+        background-color: $color-ok-message;
+    }
+
+    &.icon-refunded {
+        background-color: $color-refunded-message;
+    }
+
+    &.icon-error {
+        background-color: $color-error-message;
+    }
+
+}
+// Donation status icons - END
+
+// Donation status labels:
+.leyka-donation-status-label {
+    
+    &.label-submitted {
+        color: $color-border-semidark;
+    }
+
+    &.label-funded {
+        color: $color-ok-message;
+    }
+
+    &.label-refunded {
+        color: $color-refunded-message;
+    }
+
+    &.label-error {
+        color: $color-error-message;
+    }
+
+}
+// Donation status labels - END
+
+// Backoffice tooltips (default):
+//.ui-tooltip, .arrow:after {
+//    background: black;
+//    border: 2px solid white;
+//}
+.ui-tooltip {
+
+    @include leyka-admin-tooltip-styles();
+
+    background: $color-wizard-tooltip-bg;
+
+    border-radius: 4px;
+    border: none;
+    padding: 8px;
+
+    &.leyka-tooltip-wide {
+        width: 300px;
+        max-width: 350px;
+    }
+
+    &.leyka-tooltip-white {
+        background-color: $color-white;
+        color: $leyka-admin-color-text;
+    }
+
+    &.leyka-tooltip-align-left {
+        text-align: left;
+    }
+
+}
+
+.leyka-tooltip-content {
+    display: none;
+}
+//.arrow {
+//    width: 70px;
+//    height: 16px;
+//    overflow: hidden;
+//    position: absolute;
+//    left: 50%;
+//    margin-left: -35px;
+//    bottom: -16px;
+//}
+//.arrow.top {
+//    top: -16px;
+//    bottom: auto;
+//}
+//.arrow.left {
+//    left: 20%;
+//}
+//.arrow:after {
+//    content: "";
+//    position: absolute;
+//    left: 20px;
+//    top: -20px;
+//    width: 25px;
+//    height: 25px;
+//    box-shadow: 6px 5px 9px -9px black;
+//    -webkit-transform: rotate(45deg);
+//    -ms-transform: rotate(45deg);
+//    transform: rotate(45deg);
+//}
+//.arrow.top:after {
+//    bottom: -20px;
+//    top: auto;
+//}
+// Backoffice tooltips - END
+
 .leyka-admin {
 
     @include body-text();
@@ -673,6 +815,7 @@
         }
 
     }
+
 }
 
 .init-wizard-tab {

@@ -246,8 +246,6 @@ jQuery(document).ready(function($){
             $main_field = $field_wrapper.find('input.leyka-upload-result'),
             data = new FormData(); // Need to use a FormData object here instead of a generic object
 
-    // console.log('File:', $file_input, 'Wrapper:', $field_wrapper);
-
         data.append('action', 'leyka_files_upload');
         data.append('option_id', option_id);
         data.append('nonce', $file_input.data('nonce'));
@@ -505,7 +503,7 @@ jQuery(document).ready(function($){
 
     $('[name*="show_donation_comment_field"]').on('change.leyka', function(){
 
-        var $this = $(this),
+        let $this = $(this),
             checkbox_id = $this.attr('id'),
             length_field_wrapper_id = checkbox_id.replace('_show_donation_comment_field-field', '_donation_comment_max_length-wrapper');
 
@@ -522,7 +520,7 @@ jQuery(document).ready(function($){
 
         e.preventDefault();
 
-        var $this = $(this),
+        let $this = $(this),
             $wrap = $this.parent(),
             donation_id = $wrap.data('donation-id');
 
@@ -539,17 +537,67 @@ jQuery(document).ready(function($){
     });
 
     // Exchange places of donations Export and Filter buttons:
-    $('.wrap a.page-title-action').after($('.donations-export-form').detach());
+    // $('.wrap a.page-title-action').after($('.donations-export-form').detach());
 
     // Tooltips:
-    var $tooltips = $('.has-tooltip');
+    let $tooltips = $body.find('.has-tooltip');
     if($tooltips.length && typeof $().tooltip !== 'undefined' ) {
-        $tooltips.tooltip();
+
+        $tooltips.each(function(i, element){
+
+            let $tooltip_element = $(element),
+                options = {
+                    classes: {
+                        'ui-tooltip':
+                            ($tooltip_element.hasClass('leyka-tooltip-wide') ? 'leyka-tooltip-wide' : '')+' '
+                            +($tooltip_element.hasClass('leyka-tooltip-white') ? 'leyka-tooltip-white' : '')+' '
+                            +($tooltip_element.hasClass('leyka-tooltip-align-left') ? 'leyka-tooltip-align-left' : '')+' '
+                            +$tooltip_element.data('tooltip-additional-classes')
+                    },
+                    content: function(){
+
+                        let $element = $(this),
+                            tooltip_content = $element.siblings('.leyka-tooltip-content').html();
+
+                        return tooltip_content ? tooltip_content : $element.prop('title');
+
+                    }
+                };
+
+            if($tooltip_element.hasClass('leyka-tooltip-on-click')) { // Tooltips on click
+                options.items = '.has-tooltip.tooltip-opened';
+            }
+
+            $tooltip_element.tooltip(options);
+
+        });
+
+        // Tooltips on click - open:
+        $tooltips.on('click.leyka', function(){
+
+            let $element = $(this);
+            if($element.hasClass('leyka-tooltip-on-click')) {
+
+                if($element.hasClass('tooltip-opened')) { // Tootips on click - hide
+                    $element.tooltip('close').removeClass('tooltip-opened');
+                } else {
+                    $element.addClass('tooltip-opened').tooltip('open'); //.mouseenter();
+                }
+            }
+
+        });
+
+        // Tooltips on click - prevent mouseout and other related events from firing their handlers:
+        $('.has-tooltip.leyka-tooltip-on-click').on('mouseout.leyka', function(e){
+            e.stopImmediatePropagation();
+        });
+
     }
+    // Tooltips - END
 
     // Campaign selection fields:
     /** @todo Change this old campaigns select field code (pure jq-ui-autocomplete-based) to the new code (select + autocomplete, like on the Donors list page filters). */
-    var $campaign_select = $('#campaign-select');
+    let $campaign_select = $('#campaign-select');
     if($campaign_select.length && typeof $().autocomplete !== 'undefined') {
 
         $campaign_select.keyup(function(){

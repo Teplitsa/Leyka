@@ -472,7 +472,7 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
                 'title' => __('Statistics connection', 'leyka'),
                 'description' => __('Connect to statistics to send plugin data to us, Teplitsa of Social technologies. It will allow us to consistently improve the plugin work as well as help you quickly resolve technical issues with it. These data will be used only by plugin developers and will not be shared with any third party.', 'leyka'),
                 'is_default_collapsed' => false,
-                'action_button' => array( 'title' => __('Connect statistics', 'leyka'), 'id' => 'connect-stats-button'),
+                'action_button' => array('title' => __('Connect statistics', 'leyka'), 'id' => 'connect-stats-button'),
                 'options' => array('send_plugin_stats',)
             ),),
             array('section' => array(
@@ -481,6 +481,12 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
                 'description' => __('<span class="attention">ATTENTION!</span> Action when removing a plugin', 'leyka'),
                 'is_default_collapsed' => false,
                 'options' => array('delete_plugin_options', 'delete_plugin_data',)
+            ),),
+            array('section'=> array(
+                'name' => 'admin_display',
+                'title' => __('Admin data display', 'leyka'),
+                'options' => array('admin_donations_list_display',),
+                'is_default_collapsed' => true,
             ),),
         );
     }

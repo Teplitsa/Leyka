@@ -475,7 +475,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             get_bloginfo('admin_email'),
             leyka_options()->opt('org_full_name'),
             $donation->id,
-            leyka_get_payment_types_data($donation->type),
+            $donation->type_label,
             $donation->donor_name ? $donation->donor_name : __('dear donor', 'leyka'),
             $donation->donor_email ? $donation->donor_email : __('unknown email', 'leyka'),
             $donation->payment_method_label,

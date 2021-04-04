@@ -362,7 +362,16 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                     date($date_format, $donation_timestamp),
                     $donation_timestamp, $date_format
                 );
+            case 'time':
+            case 'time_label':
+                $time_format = get_option('time_format');
+                $donation_timestamp = $this->date_timestamp;
 
+                return apply_filters(
+                    'leyka_admin_donation_time',
+                    date($time_format, $donation_timestamp),
+                    $donation_timestamp, $time_format
+                );
             case 'date_time':
             case 'date_time_label':
                 $date_format = get_option('date_format');
@@ -485,17 +494,22 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
             case 'type':
             case 'payment_type':
+            case 'donation_type':
                 return $this->_donation_meta['payment_type'];
 
             case 'type_label':
             case 'payment_type_label':
-                return leyka_get_payment_types_data($this->_donation_meta['payment_type']);
+            case 'donation_type_label':
+                return $this->is_init_recurring_donation ?
+                    leyka_get_payment_types_list('rebill-init') : leyka_get_payment_types_list($this->payment_type);
 
             case 'type_desc':
             case 'payment_type_desc':
+            case 'donation_type_desc':
             case 'type_description':
             case 'payment_type_description':
-                return leyka_get_donation_type_description($this->type);
+            case 'donation_type_description':
+                return leyka_get_donation_type_description($this->payment_type);
 
             case 'init_recurring_donation_id':
                 return $this->payment_type === 'rebill' ?
@@ -693,7 +707,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
             case 'type':
             case 'payment_type':
-                if( !leyka_get_payment_types_data($value) ) {
+                if( !leyka_get_payment_types_list($value) ) {
                     return false;
                 }
 

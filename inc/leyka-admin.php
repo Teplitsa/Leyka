@@ -266,23 +266,17 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         add_submenu_page('leyka', __('Campaigns', 'leyka'), __('Campaigns', 'leyka'), 'leyka_manage_donations', 'edit.php?post_type='.Leyka_Campaign_Management::$post_type);
 
-        /** @todo This IF() should be here only until we made a single Donations list & info page for both storage types: */
-        if(leyka_get_donations_storage_type() === 'post') { // Post-based donations storage
-            add_submenu_page('leyka', __('Donations', 'leyka'), __('Donations', 'leyka'), 'leyka_manage_donations', 'edit.php?post_type='.Leyka_Donation_Management::$post_type);
-        } else { // Separated donations storage
+        // Donations admin list page:
+        $hook = add_submenu_page('leyka', __('Donations', 'leyka'), __('Donations', 'leyka'), 'leyka_manage_donations', 'leyka_donations', array($this, 'donations_list_screen'));
+        add_action("load-$hook", array($this, 'donations_list_screen_options'));
 
-            $hook = add_submenu_page('leyka', __('Donations', 'leyka'), __('Donations', 'leyka'), 'leyka_manage_donations', 'leyka_donations', array($this, 'donations_list_screen'));
-            add_action("load-$hook", array($this, 'donations_list_screen_options'));
-
-            add_submenu_page('leyka', __('New correctional donation', 'leyka'), _x('Add new', 'donation', 'leyka'), 'leyka_manage_donations', 'leyka_donation_info', array($this, 'donation_info_screen'));
-
-        }
+        add_submenu_page('leyka', __('New correctional donation', 'leyka'), _x('Add new', '[donation]', 'leyka'), 'leyka_manage_donations', 'leyka_donation_info', array($this, 'donation_info_screen'));
 
         // Recurring subscriptions list page:
         $hook = add_submenu_page('leyka', __('Recurring subscriptions', 'leyka'), __('Recurring subscriptions', 'leyka'), 'leyka_manage_donations', 'leyka_recurring_subscriptions', array($this, 'recurring_subscriptions_list_screen'));
         add_action("load-$hook", array($this, 'recurring_subscriptions_list_screen_options'));
 
-        if(leyka()->opt('donor_management_available')) {
+        if(leyka_options()->opt('donor_management_available')) {
 
             // Donors list page:
             $hook = add_submenu_page('leyka', __('Donors', 'leyka'), __('Donors', 'leyka'), 'leyka_manage_donations', 'leyka_donors', array($this, 'donors_list_screen'));
@@ -1171,6 +1165,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 wp_enqueue_code_editor(array('type' => 'text/css')); // Add the code editor lib
             }
 
+            $dependencies[] = 'jquery-ui-tooltip'; // For elements tooltips everywhere
+
             // WP admin metaboxes support:
             $dependencies[] = 'postbox';
             $dependencies[] = 'jquery-ui-accordion';
@@ -1199,10 +1195,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         }
 
         if($current_screen->post_type === Leyka_Donation_Management::$post_type) {
-
             $dependencies[] = 'jquery-ui-autocomplete';
-            $dependencies[] = 'jquery-ui-tooltip';
-
         }
 
         $js_data = apply_filters('leyka_admin_js_localized_strings', array(

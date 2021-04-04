@@ -1,8 +1,7 @@
 /** Donations list page **/
-.leyka-admin-donations-list {
+.leyka-admin-list-page.leyka-admin-donations-list {
 
     // Table filters:
-
     .admin-list-filters {
         padding-bottom: 0;
     }
@@ -58,15 +57,181 @@
     }
     // Table filters - END
 
+    // List table (columns & content):
+    .wp-list-table.widefat {
 
-    .column-status {
+        // Columns width:
+        tr {
 
-        .funded {
-            color: $color-main-green;
+            .column-donation_id {
+                width: 100px;
+            }
+
+            .column-payment_type {
+                width: 40px;
+            }
+
+            .column-donor {
+                width: 250px;
+            }
+
+            .column-date {
+                width: 100px;
+            }
+
+            .column-emails {
+                width: 120px;
+            }
+
+        }
+        // Columns width - END
+
+        // Columns content settings:
+        td {
+
+            font-size: 13px;
+
+            &.column-donation_id {
+                font-size: 13px;
+            }
+
+            &.column-donation_id {
+                font-weight: 500;
+            }
+
+            &.column-campaign {
+
+                font-weight: 500;
+
+                .row-actions {
+                    font-size: 11px;
+                    font-weight: normal;
+                }
+
+            }
+
+            &.column-donor {
+
+                display: flex;
+                flex-flow: row nowrap;
+                justify-content: space-between;
+                align-items: center;
+
+                .leyka-donor-data-main {
+
+                    .donor-name {
+                        font-weight: 500;
+                    }
+
+                    .donor-email {
+                        font-size: 11px;
+                    }
+
+                }
+
+                .leyka-donor-data-additional {
+
+                    .icon-donor-more-data {
+
+                        @include leyka-colored-icon('../../img/icon-3-dots-vertical.svg', 3px, default, 10px);
+
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
+                        width: 21px;
+                        height: 22px; // WxH is calibrated so the icon would be in the middle of the circled span
+                        cursor: pointer;
+
+                        &:hover {
+                            background-color: $color-nav-area-bg;
+                            border-radius: 50%;
+                        }
+
+                    }
+
+                }
+
+            }
+
+            &.column-amount {
+
+                .leyka-amount {
+
+                    display: flex;
+                    flex-flow: row nowrap;
+                    align-items: flex-start;
+
+                    font-weight: 500;
+
+                    .amount-total {
+                        color: $color-text-light;
+                    }
+
+                }
+
+                .icon-leyka-donation-status {
+                    margin-top: 3px;
+                    margin-right: 12px;
+                }
+
+                .leyka-donation-status-label {
+                    font-size: 11px;
+                    font-weight: 400;
+                }
+
+            }
+
+            &.column-gateway_pm {
+                .leyka-gateway-name {
+
+                    display: flex;
+                    justify-content: flex-start;
+                    align-items: center;
+
+                    img {
+                        margin-right: 4px;
+                        width: 20px;
+                        height: 20px;
+                    }
+
+                }
+            }
+
+            &.column-emails {
+
+                font-size: 12px;
+
+                .send-donor-thanks {
+                    display: inline-block;
+                }
+
+                time {
+                    font-size: 11px;
+                }
+
+            }
+
+        }
+        // Columns content settings - END
+
+    }
+    // List table (columns & content) END
+
+    .leyka-admin-tooltip-donor-more-data { // Tooltip styles settings should be outside the table
+
+        font-weight: normal;
+        text-align: left;
+
+        .leyka-li-title {
+            display: inline-block;
+            width: 85px;
+            margin-right: 15px;
+            font-weight: 500;
         }
 
-        .failed {
-            color: $color-main-red;
+        .leyka-li-value {
+            color: $color-text-semi;
         }
 
     }
