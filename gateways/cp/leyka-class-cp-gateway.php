@@ -410,10 +410,14 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                     if($init_recurring_donation && $init_recurring_donation->recurring_is_active) {
 
-                        $init_recurring_donation->recurring_is_active = false;
+                        if(!empty($_POST['Status'])) {
 
-                        do_action('leyka_cp_cancel_recurring_subscription', $init_recurring_donation);
+                            if($_POST['Status'] == 'Cancelled' || $_POST['Status'] == 'Rejected' || $_POST['Status'] == 'Expired')  {
 
+                                $init_recurring_donation->recurring_is_active = false;
+                                do_action('leyka_cp_cancel_recurring_subscription', $init_recurring_donation);
+                            }
+                        }
                     }
 
                 }
