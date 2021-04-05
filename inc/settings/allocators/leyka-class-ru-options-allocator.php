@@ -485,7 +485,7 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
             array('section'=> array(
                 'name' => 'admin_display',
                 'title' => __('Admin data display', 'leyka'),
-                'options' => array('admin_donations_list_display', 'admin_donations_donors_subscription_display',),
+                'options' => array('admin_donations_list_amount_display',),
                 'is_default_collapsed' => true,
             ),),
         );

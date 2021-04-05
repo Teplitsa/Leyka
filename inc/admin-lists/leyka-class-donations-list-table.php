@@ -13,6 +13,8 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
         parent::__construct(array('singular' => __('Donation', 'leyka'), 'plural' => __('Donations', 'leyka'), 'ajax' => true,));
 
+        add_filter('default_hidden_columns', array($this, 'get_default_hidden_columns'), 10);
+
         add_filter('leyka_admin_donations_list_filter', array($this, 'filter_donations'), 10, 2);
 
         if( !empty($_REQUEST['donations-list-export']) ) {
@@ -147,6 +149,10 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
         return apply_filters('leyka_admin_donations_columns_names', $columns);
 
+    }
+
+    public function get_default_hidden_columns($hidden) {
+        return array_merge($hidden, array('donor_subscription', 'donor_comment',));
     }
 
     /**
