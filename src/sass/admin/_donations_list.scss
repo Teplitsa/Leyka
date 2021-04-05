@@ -64,23 +64,27 @@
         tr {
 
             .column-donation_id {
-                width: 100px;
+                width: 70px;
             }
 
             .column-payment_type {
                 width: 40px;
             }
 
-            .column-donor {
+            .column-campaign {
                 width: 250px;
             }
 
+            .column-donor {
+                width: 200px;
+            }
+
             .column-date {
-                width: 100px;
+                width: 90px;
             }
 
             .column-emails {
-                width: 120px;
+                width: 100px;
             }
 
         }

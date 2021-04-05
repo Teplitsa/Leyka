@@ -751,16 +751,10 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         }
 
-        if( !empty($params['donor_subscribed']) ) {
-            $params['meta'][] = array('key' => 'donor_subscribed', 'compare' => '>=', 'value' => 1);
-            /** @todo Debugging needed: somehow site overloads when $params['donor_subscribed'] == false */
-//            $params['meta'][] = $params['donor_subscribed'] ?
-//                array('key' => 'donor_subscribed', 'compare' => '>=', 'value' => 1) :
-//                array(
-//                    'relation' => 'OR',
-//                    array('key' => 'donor_subscribed', 'value' => 0),
-//                    array('key' => 'donor_subscribed', 'compare' => 'NOT EXISTS'),
-//                );
+        if(isset($params['donor_subscribed'])) {
+            $params['meta'][] = $params['donor_subscribed'] ?
+                array('key' => 'donor_subscribed', 'compare' => '>=', 'value' => 1) :
+                array('key' => 'donor_subscribed', 'compare' => 'NOT EXISTS');
         }
 
         if($params['meta']) {

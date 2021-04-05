@@ -587,10 +587,28 @@ jQuery(document).ready(function($){
 
         });
 
-        // Tooltips on click - prevent mouseout and other related events from firing their handlers:
-        $('.has-tooltip.leyka-tooltip-on-click').on('mouseout.leyka', function(e){
+        // Tooltips on click:
+        let $tooltips_on_click = $('.has-tooltip.leyka-tooltip-on-click');
+
+        // Prevent mouseout and other related events from firing their handlers:
+        $tooltips_on_click.on('mouseout.leyka', function(e){
             e.stopImmediatePropagation();
         });
+        // Close opened tooltip when clicked elsewhere:
+        $body.on('click.leyka', function(e){
+
+            if($tooltips_on_click.length) {
+
+                $tooltips_on_click.filter('.tooltip-opened').each(function(i, element){
+                    if(element !== e.target) {
+                        $(element).tooltip('close').removeClass('tooltip-opened');
+                    }
+                });
+
+            }
+
+        });
+        // Tooltips on click - END
 
     }
     // Tooltips - END

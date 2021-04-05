@@ -154,14 +154,14 @@
 
                     <div class="col-2">
                         <input type="submit" class="button" value="<?php _e('Filter the data', 'leyka');?>">
-                        <a href="<?php echo admin_url('/admin.php?page=leyka_donors');?>" class="reset-filters">
+                        <a href="<?php echo admin_url('/admin.php?page=leyka_donations');?>" class="reset-filters">
                             <?php _e('Reset the filter', 'leyka');?>
                         </a>
                     </div>
                 </div>
 
-                <div class="donors-list-export admin-list-export">
-                    <input type="submit" class="submit" name="donors-list-export" value="<?php _e('Export the list in CSV', 'leyka');?>">
+                <div class="donations-list-export admin-list-export">
+                    <input type="submit" class="submit" name="donations-list-export" value="<?php _e('Export the list in CSV', 'leyka');?>">
                 </div>
 
             </form>

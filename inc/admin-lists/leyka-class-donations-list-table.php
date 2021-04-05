@@ -15,6 +15,10 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
         add_filter('leyka_admin_donations_list_filter', array($this, 'filter_donations'), 10, 2);
 
+        if( !empty($_REQUEST['donations-list-export']) ) {
+            $this->_export_donations();
+        }
+
     }
 
     /**
@@ -74,18 +78,14 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
      */
     public static function get_donations($per_page, $page_number = 1) {
 
-        return Leyka_Donations::get_instance()->get(
-            apply_filters(
-                'leyka_admin_donations_list_filter',
-                array(
-                    'results_limit' => absint($per_page),
-                    'page' => absint($page_number),
-                    'orderby' => 'id',
-                    'order' => 'desc',
-                ),
-                'get_donations'
-            )
-        );
+        $params = array('orderby' => 'id', 'order' => 'desc',);
+        if(empty($per_page)) {
+            $params['get_all'] = true;
+        } else {
+            $params = $params + array('results_limit' => absint($per_page), 'page' => absint($page_number),);
+        }
+
+        return Leyka_Donations::get_instance()->get(apply_filters('leyka_admin_donations_list_filter', $params, 'get_donations'));
 
     }
 
@@ -302,10 +302,15 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
         $gateway_label = $donation->gateway_id == 'correction' ? __('Custom payment info', 'leyka') : $donation->gateway_label;
         $pm_label = $donation->gateway_id == 'correction' ? $donation->pm : $donation->pm_label;
+        $gateway = $donation->gateway_id == 'correction' ? false : leyka_get_gateway_by_id($donation->gateway_id);
 
         return apply_filters(
             'leyka_admin_donation_gateway_pm_column_content',
-            "<div class='leyka-gateway-name'><img src='".leyka_get_gateway_by_id($donation->gateway)->icon_url."' alt='$gateway_label'>$gateway_label,</div><div class='leyka-pm-name'>$pm_label</div>",
+            "<div class='leyka-gateway-name'>"
+                .($gateway ? "<img src='".$gateway->icon_url."' alt='$gateway_label'>" : '')
+                ."$gateway_label,
+            </div>
+            <div class='leyka-pm-name'>$pm_label</div>",
             $donation
         );
 
@@ -438,6 +443,86 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
             }
 
         }
+
+    }
+
+    protected function _export_donations() {
+
+        // Just in case that export will require some time:
+        ini_set('max_execution_time', 99999);
+        set_time_limit(99999);
+
+        ob_start();
+
+        $this->items = apply_filters('leyka_donations_pre_export', self::get_donations(false));
+
+        add_filter('leyka_donations_export_line', 'leyka_prepare_data_line_for_export', 10, 2);
+
+        ob_clean();
+
+        header('Content-type: application/vnd.ms-excel');
+        header('Content-Transfer-Encoding: binary');
+        header('Expires: 0');
+        header('Pragma: no-cache');
+        header('Content-Disposition: attachment; filename="donations-'.date('d.m.Y-H.i.s').'.csv"');
+
+        echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
+            'UTF-8',
+            apply_filters('leyka_donations_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
+            "sep=;\n".implode(';', apply_filters('leyka_donations_export_headers', array(
+                'ID', 'Имя донора', 'Email', 'Тип платежа', 'Плат. оператор', 'Способ платежа', 'Полная сумма', 'Итоговая сумма', 'Валюта', 'Дата пожертвования', 'Статус', 'Кампания', 'Назначение', 'Подписка на рассылку', 'Email подписки', 'Комментарий'
+            )))
+        );
+
+        foreach($this->items as $donation) { /** @var $donation Leyka_Donation_Base */
+
+            $campaign = $donation->campaign;
+
+            $currency = $donation->currency_label;
+            $currency_label_encoded = @iconv( // Sometimes currency sighs can't be encoded, so check for it
+                'UTF-8',
+                apply_filters('leyka_donations_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
+                $currency
+            );
+            $currency = $currency_label_encoded ? $currency : $donation->currency_id;
+
+            $donor_subscription = 'Нет';
+            if($donation->donor_subscribed === true) {
+                $donor_subscription = 'Полная';
+            } else if($donation->donor_subscribed > 0) {
+                $donor_subscription = 'О кампании «'.$campaign->title.'»';
+            }
+
+            echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
+                'UTF-8',
+                apply_filters('leyka_donations_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
+                "\r\n".implode(';', apply_filters(
+                    'leyka_donations_export_line',
+                    array(
+                        $donation->id,
+                        $donation->donor_name,
+                        $donation->donor_email,
+                        $donation->payment_type_label,
+                        $donation->gateway_label,
+                        $donation->payment_method_label,
+                        str_replace('.', ',', $donation->amount),
+                        str_replace('.', ',', $donation->amount_total),
+                        $currency,
+                        $donation->date_time_label,
+                        $donation->status_label,
+                        $campaign->title,
+                        $campaign->payment_title,
+                        $donor_subscription,
+                        $donation->donor_subscription_email,
+                        $donation->donor_comment,
+                    ),
+                    $donation
+                ))
+            );
+
+        }
+
+        die();
 
     }
 
