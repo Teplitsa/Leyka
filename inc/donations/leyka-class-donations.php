@@ -567,7 +567,9 @@ class Leyka_Donations_Separated extends Leyka_Donations {
         }
 
         $params['campaign_id'] = empty($params['campaigns_ids']) ?
-            (empty($params['campaign_id']) ? array() : $params['campaign_id']) : $params['campaigns_ids'];
+            (empty($params['campaign_id']) ? array() : $params['campaign_id']) :
+            $params['campaigns_ids'];
+
         if($params['campaign_id']) {
 
             $params['campaign_id'] = is_array($params['campaign_id']) ? $params['campaign_id'] : array($params['campaign_id']);

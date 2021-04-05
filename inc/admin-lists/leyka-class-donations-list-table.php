@@ -141,11 +141,9 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
         if(leyka_options()->opt('admin_donations_list_display') === 'separate-column') {
             $columns['amount_total'] = __('Total amount', 'leyka');
         }
-        if(leyka_options()->opt('admin_donations_donors_subscription_display') === 'separate-column') {
-            $columns['donor_subscription'] = __('Donor subscription', 'leyka');
-        }
-        /** @todo Donors' comments column? Optionally? */
 
+        $columns['donor_subscription'] = __('Donor subscription', 'leyka');
+        $columns['donor_comment'] = __('Donor comment', 'leyka');
 
         return apply_filters('leyka_admin_donations_columns_names', $columns);
 
@@ -175,8 +173,8 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
      * @return mixed
      */
     public function column_default($donation, $column_name) { /** @var $donation Leyka_Donation_Base */
-        switch ($column_name) {
-            case 'donation_id': return $donation->id;
+        switch($column_name) {
+            case 'donation_id': return apply_filters('leyka_admin_donation_id_column_content', $donation->id, $donation);
             case 'payment_type':
                 return apply_filters(
                     'leyka_admin_donation_type_column_content',
@@ -186,9 +184,15 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
             case 'donor_comment':
                 return apply_filters('leyka_admin_donation_donor_comment_column_content', $donation->donor_comment, $donation);
             case 'date':
-                return $donation->date_label.'<br>'.$donation->time_label;
+                return apply_filters(
+                    'leyka_admin_donation_date_column_content',
+                    $donation->date_label.'<br>'.$donation->time_label,
+                    $donation
+                );
             default:
-                return LEYKA_DEBUG ? print_r($donation, true) : ''; // Show the whole array for troubleshooting purposes
+                return LEYKA_DEBUG ?
+                    '<pre>'.print_r($donation, true).'</pre>' : // Show the whole array for troubleshooting purposes
+                    apply_filters("leyka_admin_donation_{$column_name}_column_content", '', $donation);
         }
     }
 

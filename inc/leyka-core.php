@@ -262,7 +262,6 @@ class Leyka extends Leyka_Singleton {
             require_once(LEYKA_PLUGIN_DIR.'inc/settings/allocators/leyka-class-options-allocator.php');
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-settings-rendering-utils.php');
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-admin.php');
-            require_once(LEYKA_PLUGIN_DIR.'inc/leyka-donations-export.php');
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-usage-stats-functions.php');
             require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-portlet-controller.php');
 
