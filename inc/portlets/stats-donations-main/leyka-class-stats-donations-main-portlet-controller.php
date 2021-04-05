@@ -23,6 +23,8 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
 
         global $wpdb;
 
+        $curr_interval_donations = $prev_interval_donations = array();
+
         if(leyka_get_donations_storage_type() === 'post') { // Post-based donations storage
 
             $donations_post_type = Leyka_Donation_Management::$post_type;
@@ -57,6 +59,8 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
             )) : 0;
 
         } else { // Separate donations storage
+
+            $donors_emails = array();
 
             $tmp = $wpdb->get_results(
                 "SELECT ID, donor_email
