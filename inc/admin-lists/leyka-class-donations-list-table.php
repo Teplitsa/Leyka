@@ -264,13 +264,13 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
     </li>';
         $donor_additional_data_html .= '</ul>';
 
-        return '<div class="leyka-donor-data-main">'.$donor_data_html.'</div>'
-            .'<div class="leyka-donor-data-additional">'
-            .'<i class="icon-donor-more-data has-tooltip leyka-tooltip-on-click leyka-tooltip-wide leyka-tooltip-white" data-tooltip-additional-classes="leyka-admin-tooltip-donor-more-data"></i>'
-                .'<span class="leyka-tooltip-content">'
-                    .apply_filters('leyka_admin_donation_donor_column_additional_data', $donor_additional_data_html, $donation)
-                .'</span>'
-            .'</div>';
+        return '<div class="leyka-donor-data-additional">'
+                .'<i class="icon-donor-more-data has-tooltip leyka-tooltip-on-click leyka-tooltip-wide leyka-tooltip-white" data-tooltip-additional-classes="leyka-admin-tooltip-donor-more-data"></i>'
+                    .'<span class="leyka-tooltip-content">'
+                        .apply_filters('leyka_admin_donation_donor_column_additional_data', $donor_additional_data_html, $donation)
+                    .'</span>'
+                .'</div>'
+            .'<div class="leyka-donor-data-main">'.$donor_data_html.'</div>';
 
     }
 
@@ -470,6 +470,14 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
         add_filter('leyka_donations_export_line', 'leyka_prepare_data_line_for_export', 10, 2);
 
         ob_clean();
+
+        die(@iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
+            'UTF-8',
+            apply_filters('leyka_donations_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
+            "sep=;\n".implode(';', apply_filters('leyka_donations_export_headers', array(
+                'ID', 'Имя донора', 'Email', 'Тип платежа', 'Плат. оператор', 'Способ платежа', 'Полная сумма', 'Итоговая сумма', 'Валюта', 'Дата пожертвования', 'Статус', 'Кампания', 'Назначение', 'Подписка на рассылку', 'Email подписки', 'Комментарий'
+            )))
+        ));
 
         header('Content-type: application/vnd.ms-excel');
         header('Content-Transfer-Encoding: binary');

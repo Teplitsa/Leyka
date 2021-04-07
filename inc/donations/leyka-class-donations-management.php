@@ -151,6 +151,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
     }
 
+    /** @todo Remove this method after the tests of Donations API for posts-typed storage. All filtering is managed in Donations admin-list table class */
     public function manage_filters() {
 
         if(get_current_screen()->id !== 'edit-'.self::$post_type || !current_user_can('leyka_manage_donations')) {
@@ -161,7 +162,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         <select id="payment-type-select" name="payment_type">
             <option value="" <?php echo empty($_GET['payment_type']) ? 'selected="selected"' : '';?>><?php _e('Select a payment type', 'leyka');?></option>
 
-            <?php foreach(leyka_get_payment_types_data() as $payment_type => $label) {?>
+            <?php foreach(leyka_get_payment_types_list() as $payment_type => $label) {?>
                 <option value="<?php echo $payment_type;?>" <?php echo !empty($_GET['payment_type']) && $_GET['payment_type'] == $payment_type ? 'selected="selected"' : '';?>><?php echo $label;?></option>
             <?php }?>
         </select>
@@ -215,6 +216,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
     <?php }
 
+    /** @todo Remove this method after the tests of Donations API for posts-typed storage. All filtering is managed in Donations admin-list table class */
     public function do_filtering(WP_Query $query) {
 
         if(

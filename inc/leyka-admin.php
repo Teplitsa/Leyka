@@ -168,22 +168,31 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
                 $extension = leyka_get_extension_by_id($_GET['extension']);
 
-                $admin_title = ($extension ? sprintf(__('Leyka: %s', 'leyka'), $extension->title) : __('Leyka: unknown extension', 'leyka'))
+                $admin_title = ($extension ?
+                        sprintf(__('Leyka: %s', 'leyka'), $extension->title) :
+                        __('Leyka: unknown extension', 'leyka')
+                    )
                     .' &lsaquo; '.get_bloginfo('name');
 
             } else if(isset($_GET['page']) && $_GET['page'] == 'leyka_donation_info' && isset($_GET['donation'])) {
 
-                // Edit Donation page:
-                $donation = Leyka_Donations::get_instance()->get(absint($_GET['donation']));
+                if( !absint($_GET['donation']) ) { // New Donation tmp page
+                    $admin_title = __('New correctional donation', 'leyka').' &lsaquo; '.get_bloginfo('name');
+                } else { // Edit Donation page:
 
-                if( !$donation ) {
+                    $donation = Leyka_Donations::get_instance()->get(absint($_GET['donation']));
 
-                    wp_redirect(admin_url('admin.php?page=leyka_donations'));
-                    exit;
+                    if( !$donation ) {
+
+                        wp_redirect(admin_url('admin.php?page=leyka_donations'));
+                        exit;
+
+                    }
+
+                    $admin_title = sprintf(__('%s: donation #%s profile', 'leyka'), __('Leyka', 'leyka'), $donation->id)
+                        .' &lsaquo; '.get_bloginfo('name');
 
                 }
-
-                $admin_title = sprintf(__('%s: donation #%s profile', 'leyka'), __('Leyka', 'leyka'), $donation->id).' &lsaquo; '.get_bloginfo('name');
 
             }
 

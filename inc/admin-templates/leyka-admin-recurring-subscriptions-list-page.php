@@ -19,9 +19,9 @@
 
                         <div class="filters-row">
 
-                            <?php $filter_value = isset($_GET['subscription-status']) ? esc_attr($_GET['subscription-status']) : false;?>
+                            <?php $filter_value = isset($_GET['status']) ? esc_attr($_GET['status']) : false;?>
                             <div class="leyka-admin-list-filter-wrapper">
-                                <select name="subscription-status" class="leyka-selector leyka-select-menu">
+                                <select name="status" class="leyka-selector leyka-select-menu">
                                     <option value="" <?php echo !$filter_value ? 'selected="selected"' : '';?>>
                                         <?php _e('All subscriptions', 'leyka');?>
                                     </option>

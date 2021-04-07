@@ -1231,7 +1231,7 @@ i.icon-leyka-recurring-subscription-status {
 
                 display: flex;
                 flex-flow: row nowrap;
-                justify-content: space-between;
+                justify-content: flex-start;
                 align-items: center;
 
                 .leyka-donor-data-main {
@@ -1248,6 +1248,8 @@ i.icon-leyka-recurring-subscription-status {
 
                 .leyka-donor-data-additional {
 
+                    margin-right: 6px;
+
                     .icon-donor-more-data {
 
                         @include leyka-colored-icon('../../img/icon-3-dots-vertical.svg', 3px, default, 10px);
@@ -1260,7 +1262,7 @@ i.icon-leyka-recurring-subscription-status {
                         height: 22px; // WxH is calibrated so the icon would be in the middle of the circled span
                         cursor: pointer;
 
-                        &:hover {
+                        &.tooltip-opened, &:hover {
                             background-color: $color-nav-area-bg;
                             border-radius: 50%;
                         }

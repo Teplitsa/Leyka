@@ -36,11 +36,15 @@
             }
 
             .column-campaign {
-                width: 350px;
+                //width: 350px;
+                min-width: 250px;
+                max-width: 350px;
             }
 
             .column-donor {
-                width: 250px;
+                //width: 250px;
+                min-width: 180px;
+                max-width: 250px;
             }
 
             .column-date {
@@ -48,11 +52,17 @@
             }
 
             .column-gateway_pm {
-                width: 230px;
+                //width: 230px;
+                min-width: 170px;
+                max-width: 230px;
             }
 
             .column-emails {
                 width: 100px;
+            }
+
+            .column-donor_subscription {
+                width: 78px;
             }
 
         }
@@ -75,6 +85,10 @@
                     font-size: 11px;
                 }
 
+            }
+
+            &.column-donor_comment {
+                font-size: 11px;
             }
 
         }

@@ -800,6 +800,9 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         // Array given - return a Donations selection:
 
+//        echo '<pre>'.print_r(debug_backtrace(), 1).'</pre>';
+//        die('<pre>'.print_r($params, 1).'</pre>');
+
         global $wpdb;
 
         $query = $this->_get_query_parts($params);

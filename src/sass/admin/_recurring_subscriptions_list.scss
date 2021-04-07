@@ -13,10 +13,14 @@
                 width: 60px;
             }
             .column-donor {
-                width: 250px;
+                //width: 250px;
+                min-width: 180px;
+                max-width: 250px;
             }
             .column-campaign {
-                width: 350px;
+                //width: 350px;
+                min-width: 250px;
+                max-width: 350px;
             }
             .column-first_donation {
                 width: 121px;
@@ -28,7 +32,9 @@
                 width: 100px;
             }
             .column-gateway_pm {
-                width: 230px;
+                //width: 230px;
+                min-width: 170px;
+                max-width: 230px;
             }
             .column-amount {
                 width: 150px;

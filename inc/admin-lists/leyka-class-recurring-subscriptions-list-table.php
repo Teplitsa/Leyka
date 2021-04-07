@@ -28,23 +28,23 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
     /**
      * Recurring subscriptions fields filtering.
      *
-     * @param $subscriptions_params array
+     * @param $params array
      * @param $filter_type string
      * @return array|false An array of params, or false if the $filter_type is wrong
      */
-    public function filter_recurring_subscriptions(array $subscriptions_params, $filter_type = '') {
+    public function filter_recurring_subscriptions(array $params, $filter_type = '') {
 
-        if( !empty($_GET['subscription-status']) ) { /** @todo subscription-status === 'non-active' doesn't work yet */
-            $subscriptions_params['recurring_active'] = $_GET['subscription-status'] === 'active';
+        if( !empty($_GET['status']) ) { /** @todo subscription-status === 'non-active' doesn't work yet */
+            $params['recurring_active'] = $_GET['status'] === 'active';
         }
         if(isset($_GET['donor-name-email'])) {
-            $subscriptions_params['donor_name_email'] = $_GET['donor-name-email'];
+            $params['donor_name_email'] = $_GET['donor-name-email'];
         }
         if( !empty($_GET['campaigns']) ) {
             if(is_array($_GET['campaigns'])) {
-                $subscriptions_params['campaign_id'] = array_filter($_GET['campaigns'], function($value){ return absint($value); });
+                $params['campaign_id'] = array_filter($_GET['campaigns'], function($value){ return absint($value); });
             } else if(absint($_GET['campaigns'])) {
-                $subscriptions_params['campaign_id'] = absint($_GET['campaigns']);
+                $params['campaign_id'] = absint($_GET['campaigns']);
             }
 
         }
@@ -57,32 +57,32 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
 
                 if(count($_GET['first-date']) === 2) { // The date is set as an interval
 
-                    $subscriptions_params['date_from'] = trim($_GET['first-date'][0]).' 00:00:00';
-                    $subscriptions_params['date_to'] = trim($_GET['first-date'][1]).' 23:59:59';
+                    $params['date_from'] = trim($_GET['first-date'][0]).' 00:00:00';
+                    $params['date_to'] = trim($_GET['first-date'][1]).' 23:59:59';
 
                 }
 
             } else { // Single date chosen
 
-                $subscriptions_params['date_from'] = trim($_GET['first-date']).' 00:00:00';
-                $subscriptions_params['date_to'] = trim($_GET['first-date']).' 23:59:59';
+                $params['date_from'] = trim($_GET['first-date']).' 00:00:00';
+                $params['date_to'] = trim($_GET['first-date']).' 23:59:59';
 
             }
 
         }
         if( !empty($_GET['gateway-pm']) ) {
-            $subscriptions_params['gateway_pm'] = $_GET['gateway-pm'];
+            $params['gateway_pm'] = $_GET['gateway-pm'];
         }
 
         if( !empty($_GET['orderby']) ) {
 
-            $subscriptions_params['orderby'] = $_GET['orderby'];
-            $subscriptions_params['order'] = empty($_GET['order']) || !in_array($_GET['order'], array('asc', 'desc')) ?
+            $params['orderby'] = $_GET['orderby'];
+            $params['order'] = empty($_GET['order']) || !in_array($_GET['order'], array('asc', 'desc')) ?
                 'DESC' : mb_strtoupper($_GET['order']);
 
         }
 
-        return $subscriptions_params;
+        return $params;
 
     }
 
@@ -186,7 +186,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
             'next_donation' => __('Next donation', 'leyka'),
             'donations_number' => __('Donations total', 'leyka'),
             'gateway_pm' => __('Gateway', 'leyka'),
-            'amount' => __('Donation amount', 'leyka'),
+            'amount' => __('Amount', 'leyka'),
         );
     }
 
@@ -279,13 +279,13 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
     </li>';
         $additional_data_html .= '</ul>';
 
-        return '<div class="leyka-donor-data-main">'.$donor_data_html.'</div>'
-            .'<div class="leyka-donor-data-additional">'
-            .'<i class="icon-donor-more-data has-tooltip leyka-tooltip-on-click leyka-tooltip-wide leyka-tooltip-white" data-tooltip-additional-classes="leyka-admin-tooltip-donor-more-data"></i>'
-            .'<span class="leyka-tooltip-content">'
-                .apply_filters('leyka_admin_recurring_subscription_donor_column_additional_data', $additional_data_html, $item)
-            .'</span>'
-            .'</div>';
+        return '<div class="leyka-donor-data-additional">'
+                .'<i class="icon-donor-more-data has-tooltip leyka-tooltip-on-click leyka-tooltip-wide leyka-tooltip-white" data-tooltip-additional-classes="leyka-admin-tooltip-donor-more-data"></i>'
+                .'<span class="leyka-tooltip-content">'
+                    .apply_filters('leyka_admin_recurring_subscription_donor_column_additional_data', $additional_data_html, $item)
+                .'</span>'
+            .'</div>'
+            .'<div class="leyka-donor-data-main">'.$donor_data_html.'</div>';
 
     }
 

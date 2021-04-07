@@ -228,7 +228,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
         }
 
-        Leyka_Donation_Management::get_instance()->donation_status_changed($params['status'], 'new', $donation_id);
+        Leyka_Donation_Management::get_instance()->donation_status_changed($params['status'], 'new', new self($donation_id));
 
         return $donation_id;
 
