@@ -405,7 +405,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                 return $this->_main_data->amount ? $this->_main_data->amount : 0.0;
             case 'sum_formatted':
             case 'amount_formatted':
-                return leyka_amount_format($this->amount);
+                return leyka_amount_format(round($this->amount, 2));
 
             case 'sum_total':
             case 'total_sum':
@@ -416,7 +416,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'total_amount_formatted':
             case 'sum_total_formatted':
             case 'amount_total_formatted':
-                return leyka_amount_format($this->amount_total);
+                return leyka_amount_format(round($this->amount_total, 2));
 
             case 'main_curr_amount':
             case 'main_currency_amount':

@@ -133,7 +133,7 @@
                             </div>
 
                             <div class="leyka-admin-list-filter-wrapper leyka-donation-donor-filter-wrapper">
-                                <input type="text" name="donor-name-email" class="leyka-donor-name-email-selector leyka-selector autocomplete-input" value="<?php echo isset($_GET['donor-name-email']) ? esc_attr($_GET['donor-name-email']) : '';?>" placeholder="<?php _e("Donor's email", 'leyka');?>">
+                                <input type="text" name="donor-name-email" class="leyka-donor-name-email-selector leyka-selector autocomplete-input" data-search-donors-in="donations" value="<?php echo isset($_GET['donor-name-email']) ? esc_attr($_GET['donor-name-email']) : '';?>" placeholder="<?php _e("Donor's name or email", 'leyka');?>">
                             </div>
 
                             <div class="leyka-admin-list-filter-wrapper">

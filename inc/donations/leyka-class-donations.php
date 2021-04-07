@@ -526,10 +526,22 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         }
 
-        if( !empty($params['recurring_active']) ) {
+        if(isset($params['recurring_active']) ) {
 
             $params['payment_type'] = 'rebill';
-            $params['meta'][] = array('key' => 'recurring_active', 'value' => 1,);
+
+            if($params['recurring_active']) { /** @todo Check if it's working for the case of "non-active only" */
+                $params['meta'][] = array('key' => 'recurring_active', 'value' => 1,);
+            } else {
+                $params['meta'][] = array('key' => 'recurring_active', 'value' => 0,);
+            }
+
+        }
+
+        if(isset($params['recurring_rebills_of']) && absint($params['recurring_rebills_of'])) {
+
+            $params['payment_type'] = 'rebill';
+            $params['meta'][] = array('key' => 'init_recurring_donation_id', 'value' => absint($params['recurring_rebills_of']),);
 
         }
 

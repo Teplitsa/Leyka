@@ -72,7 +72,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
     }
 
     /**
-     * Retrieve donor’s data from the DB.
+     * Retrieve items data from the DB. Items are Donations here.
      *
      * @param int $per_page
      * @param int $page_number
@@ -161,13 +161,13 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
     public function get_sortable_columns() {
         return array(
             'donation_id' => array('donation_id', true),
+            'payment_type' => array('payment_type', true),
             'campaign' => array('campaign_id', true),
             'donor' => array('donor_name'),
             'amount' => array('amount', true),
             'date' => array('date', true),
-            'payment_type' => array('payment_type', true),
 //            'gateway_pm' => array('gateway_pm', true),
-            'status' => array('status'),
+//            'status' => array('status'),
         );
     }
 
@@ -196,7 +196,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
                     $donation
                 );
             default:
-                return LEYKA_DEBUG ?
+                return leyka_options()->opt('plugin_debug_mode') ?
                     '<pre>'.print_r($donation, true).'</pre>' : // Show the whole array for troubleshooting purposes
                     apply_filters("leyka_admin_donation_{$column_name}_column_content", '', $donation);
         }
@@ -276,23 +276,24 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
     public function column_amount($donation) { /** @var $donation Leyka_Donation_Base */
 
-        if(leyka_options()->opt('admin_donations_list_display') === 'amount-column') {
+        if(leyka_options()->opt('admin_donations_list_amount_display') == 'amount-column') {
             $amount = $donation->amount == $donation->amount_total ?
-                $donation->amount.'&nbsp;'.$donation->currency_label :
-                $donation->amount.'&nbsp;'.$donation->currency_label
-                .'<span class="amount-total"> / '.$donation->amount_total.'&nbsp;'.$donation->currency_label.'</span>';
+                $donation->amount_formatted.'&nbsp;'.$donation->currency_label :
+                $donation->amount_formatted.'&nbsp;'.$donation->currency_label
+                    .'<span class="amount-total"> / '
+                        .$donation->amount_total_formatted.'&nbsp;'.$donation->currency_label
+                    .'</span>';
         } else {
-            $amount = $donation->amount.'&nbsp;'.$donation->currency_label;
+            $amount = $donation->amount_formatted.'&nbsp;'.$donation->currency_label;
         }
 
-        $column_content = '<span class="leyka-amount '.apply_filters('leyka_admin_donation_amount_column_css', ($donation->sum < 0 ? 'leyka-amount-negative' : '')).'">'
-
-                .'<i class="icon-leyka-donation-status icon-'.$donation->status.' has-tooltip leyka-tooltip-align-left" title="'.$donation->status_description.'"></i>'
-                .'<span class="leyka-amount-and-status">'
-                    .'<div class="leyka-amount-itself">'.$amount.'</div>'
-                    .'<div class="leyka-donation-status-label label-'.$donation->status.'">'.$donation->status_label.'</div>'
-                .'</span>'
-            .'</span>';
+        $column_content = '<span class="leyka-amount '.apply_filters('leyka_admin_donation_amount_column_css', ($donation->amount < 0.0 ? 'leyka-amount-negative' : '')).'">'
+            .'<i class="icon-leyka-donation-status icon-'.$donation->status.' has-tooltip leyka-tooltip-align-left" title="'.$donation->status_description.'"></i>'
+            .'<span class="leyka-amount-and-status">'
+                .'<div class="leyka-amount-itself">'.$amount.'</div>'
+                .'<div class="leyka-donation-status-label label-'.$donation->status.'">'.$donation->status_label.'</div>'
+            .'</span>
+        </span>';
 
         return apply_filters('leyka_admin_donation_amount_column_content', $column_content, $donation);
 

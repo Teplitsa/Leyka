@@ -234,11 +234,26 @@ i.icon-leyka-donation-status {
 }
 // Donation status labels - END
 
-// Backoffice tooltips (default):
-//.ui-tooltip, .arrow:after {
-//    background: black;
-//    border: 2px solid white;
-//}
+// Recurring subscription status icons:
+i.icon-leyka-recurring-subscription-status {
+
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border: none;
+    border-radius: 50%;
+
+    &.icon-recurring-subscription-active {
+        background-color: $color-ok-message;
+    }
+
+    &.icon-recurring-subscription-not-active {
+        background-color: $color-error-message;
+    }
+
+}
+// Recurring subscription status icons - END
+
 .ui-tooltip {
 
     @include leyka-admin-tooltip-styles();
@@ -251,7 +266,7 @@ i.icon-leyka-donation-status {
 
     &.leyka-tooltip-wide {
         width: 300px;
-        max-width: 350px;
+        max-width: 400px;
     }
 
     &.leyka-tooltip-white {
@@ -265,8 +280,34 @@ i.icon-leyka-donation-status {
 
 }
 
-.leyka-tooltip-content {
+.leyka-tooltip-content { // The tooltips content containers are always hidden
     display: none;
+}
+
+.ui-tooltip {
+
+    &.leyka-tooltip-wide {
+        font-weight: normal;
+        text-align: left;
+    }
+
+    // Common tooltips content styles:
+    &.leyka-admin-tooltip-donor-more-data { // Tooltip styles settings should be outside the table
+
+        .leyka-li-title {
+            display: inline-block;
+            width: 100px;
+            margin-right: 15px;
+            font-weight: 500;
+        }
+
+        .leyka-li-value {
+            color: $color-text-semi;
+        }
+
+    }
+    // Common tooltips content styles - END
+
 }
 //.arrow {
 //    width: 70px;
@@ -856,10 +897,23 @@ i.icon-leyka-donation-status {
     .admin-list-filters {
 
         box-sizing: border-box;
-        margin-top: 4px;
-        padding-bottom: 16px;
+        padding-bottom: 0;
         display: flex;
         border-bottom: 1px solid $color-border-semidark;
+
+        .leyka-admin-list-filter-wrapper { // Each field wrapper
+
+            width: 25%;
+
+            &:not(:last-child) {
+                margin-right: 16px;
+            }
+
+            &:first-child {
+                margin-bottom: 16px;
+            }
+
+        }
 
         .filters-row {
 
@@ -889,11 +943,28 @@ i.icon-leyka-donation-status {
         }
 
         .col-1 {
+
             width: 1000px;
+
+            .filters-row {
+
+                .leyka-selector, .ui-selectmenu-button, .ui-autocomplete-multiselect, .ui-autocomplete-input {
+                    width: 100% !important;
+                    border-radius: 4px;
+                    margin: 0;
+                }
+
+                span.ui-selectmenu-text { // Our margins value for selectmenu fields, instead of default jQ UI value
+                    padding-left: 0;
+                }
+
+            }
+
         }
 
         .col-2 {
 
+            margin-left: 50px;
             position: relative;
 
             .button {
@@ -926,8 +997,6 @@ i.icon-leyka-donation-status {
         }
 
         // Filter fields:
-        //input:not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"])  {
-        //}
 
         // Text & datepicker fields:
         input[type="text"], input[type="date"]  {
@@ -1153,6 +1222,111 @@ i.icon-leyka-donation-status {
 
             vertical-align: middle;
 
+            // Common admin lists columns styles:
+            &.column-donation_id {
+                font-weight: 500;
+            }
+
+            &.column-donor {
+
+                display: flex;
+                flex-flow: row nowrap;
+                justify-content: space-between;
+                align-items: center;
+
+                .leyka-donor-data-main {
+
+                    .donor-name {
+                        font-weight: 500;
+                    }
+
+                    .donor-email {
+                        font-size: 11px;
+                    }
+
+                }
+
+                .leyka-donor-data-additional {
+
+                    .icon-donor-more-data {
+
+                        @include leyka-colored-icon('../../img/icon-3-dots-vertical.svg', 3px, default, 10px);
+
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
+                        width: 21px;
+                        height: 22px; // WxH is calibrated so the icon would be in the middle of the circled span
+                        cursor: pointer;
+
+                        &:hover {
+                            background-color: $color-nav-area-bg;
+                            border-radius: 50%;
+                        }
+
+                    }
+
+                }
+
+            }
+
+            &.column-campaign {
+
+                font-weight: 500;
+
+                .row-actions {
+                    font-size: 11px;
+                    font-weight: normal;
+                }
+
+            }
+
+            &.column-gateway_pm {
+                .leyka-gateway-name {
+
+                    display: flex;
+                    justify-content: flex-start;
+                    align-items: center;
+
+                    img {
+                        margin-right: 4px;
+                        width: 20px;
+                        height: 20px;
+                    }
+
+                }
+            }
+
+            &.column-amount {
+
+                .leyka-amount {
+
+                    display: flex;
+                    flex-flow: row nowrap;
+                    align-items: flex-start;
+
+                    font-weight: 500;
+
+                    .amount-total {
+                        color: $color-text-light;
+                    }
+
+                }
+
+                .icon-leyka-donation-status {
+                    margin-top: 3px;
+                    margin-right: 12px;
+                }
+
+                .leyka-donation-status-label {
+                    font-size: 11px;
+                    font-weight: 400;
+                }
+
+            }
+            // Common admin lists columns styles - END
+
         }
 
         &.widefat td, &.widefat th {
@@ -1164,7 +1338,6 @@ i.icon-leyka-donation-status {
         }
 
     }
-
     // ---- Admin lists common styles - END ---- //
 
 }

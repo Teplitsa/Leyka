@@ -860,11 +860,10 @@ jQuery(document).ready(function($){
             pre_selected_values: selected_values,
             leyka_select_callback: function(selected_items) {
 
-                let $select = $list_select_field;
-                $select.html('');
+                $list_select_field.html('');
 
                 for(let value in selected_items) {
-                    $('<option></option>').val(value).prop('selected', true).appendTo($select);
+                    $('<option></option>').val(value).prop('selected', true).appendTo($list_select_field);
                 }
 
             }
@@ -873,10 +872,93 @@ jQuery(document).ready(function($){
     });
     // Campaign(s) select fields  - END
 
+    // Campaigns select comboboxes fields:
+    // $body.find('.leyka-campaign-select-field-wrapper').each(function(){
+    //
+    //     let $field_wrapper = $(this),
+    //         $text_search_sub_field = $field_wrapper.find('input.leyka-campaign-selector'),
+    //         $value_sub_vield = $field_wrapper.find('input.campaign-id');
+    //
+    //     $text_search_sub_field.autocomplete({
+    //         minLength: 0,
+    //         focus: function(event, ui){
+    //
+    //             $text_search_sub_field.val(ui.item.label);
+    //             return false;
+    //
+    //         },
+    //         change: function(event, ui){
+    //             if( !$text_search_sub_field.val() ) {
+    //                 $value_sub_vield.val('');
+    //             }
+    //         },
+    //         close: function(event, ui){
+    //             if( !$text_search_sub_field.val() ) {
+    //                 $value_sub_vield.val('');
+    //             }
+    //         },
+    //         select: function(event, ui){
+    //
+    //             $text_search_sub_field.val(ui.item.label);
+    //             $value_sub_vield.val(ui.item.value);
+    //
+    //             return false;
+    //
+    //         },
+    //         source: function(request, response) {
+    //
+    //             let term = request.term,
+    //                 cache = $text_search_sub_field.data('cache') ? $text_search_sub_field.data('cache') : [];
+    //
+    //             if(term in cache) {
+    //
+    //                 response(cache[term]);
+    //                 return;
+    //
+    //             }
+    //
+    //             request.action = 'leyka_get_campaigns_list';
+    //             request.nonce = $text_search_sub_field.data('nonce');
+    //
+    //             $.getJSON(leyka.ajaxurl, request, function(data){
+    //
+    //                 var cache = $text_search_sub_field.data('cache') ? $text_search_sub_field.data('cache') : [];
+    //
+    //                 cache[term] = data;
+    //                 response(data);
+    //
+    //             });
+    //
+    //         }
+    //     }).on('focus.leyka', function(e){
+    //         if($value_sub_vield.val() == 0) {
+    //             $(this).autocomplete('search', '');
+    //         }
+    //     });
+    //
+    //     $text_search_sub_field.data('ui-autocomplete')._renderItem = function(ul, item){
+    //         return $('<li>')
+    //             .append(
+    //                 '<a>'+item.label+(item.label === item.payment_title ? '' : '<div>'+item.payment_title+'</div></a>')
+    //             )
+    //             .appendTo(ul);
+    //     };
+    //
+    // });
+    // Campaigns select comboboxes fields - END
+
     // Donor's name/email field:
-    $('input[name="donor-name-email"]').autocomplete({
-        source: leyka.ajaxurl+'?action=leyka_donors_autocomplete&type=donations',
-        minLength: 2
+    $('input.leyka-donor-name-email-selector').each(function(){
+
+        let $field = $(this);
+
+        $field.autocomplete({ /** @todo Add nonce to the query */
+            source: leyka.ajaxurl+'?action=leyka_donors_autocomplete'
+                +($field.data('search-donors-in') ? '&type='+$field.data('search-donors-in') : ''),
+            minLength: 0,
+            search_on_focus: true
+        });
+
     });
     // Donor's name/email field - END
 
@@ -1099,81 +1181,6 @@ jQuery(document).ready(function($){
 
     });
     // Ajax file upload fields - END
-
-    // Campaigns select comboboxes fields:
-    $body.find('.leyka-campaign-select-field-wrapper').each(function(){
-
-        let $field_wrapper = $(this),
-            $text_search_sub_field = $field_wrapper.find('input.leyka-campaign-selector'),
-            $value_sub_vield = $field_wrapper.find('input.campaign-id');
-
-        $text_search_sub_field.autocomplete({
-            minLength: 0,
-            focus: function(event, ui){
-
-                $text_search_sub_field.val(ui.item.label);
-                return false;
-
-            },
-            change: function(event, ui){
-                if( !$text_search_sub_field.val() ) {
-                    $value_sub_vield.val('');
-                }
-            },
-            close: function(event, ui){
-                if( !$text_search_sub_field.val() ) {
-                    $value_sub_vield.val('');
-                }
-            },
-            select: function(event, ui){
-
-                $text_search_sub_field.val(ui.item.label);
-                $value_sub_vield.val(ui.item.value);
-
-                return false;
-
-            },
-            source: function(request, response) {
-
-                let term = request.term,
-                    cache = $text_search_sub_field.data('cache') ? $text_search_sub_field.data('cache') : [];
-
-                if(term in cache) {
-
-                    response(cache[term]);
-                    return;
-
-                }
-
-                request.action = 'leyka_get_campaigns_list';
-                request.nonce = $text_search_sub_field.data('nonce');
-
-                $.getJSON(leyka.ajaxurl, request, function(data){
-
-                    var cache = $text_search_sub_field.data('cache') ? $text_search_sub_field.data('cache') : [];
-
-                    cache[term] = data;
-                    response(data);
-
-                });
-
-            }
-        }).on('focus.leyka', function(e){
-            if($value_sub_vield.val() == 0) {
-                $(this).autocomplete('search', '');
-            }
-        });
-
-        $text_search_sub_field.data('ui-autocomplete')._renderItem = function(ul, item){
-            return $('<li>')
-                .append(
-                    '<a>'+item.label+(item.label === item.payment_title ? '' : '<div>'+item.payment_title+'</div></a>')
-                )
-                .appendTo(ul);
-        };
-
-    });
-    // Campaigns select comboboxes fields - END
 
     // Expandable options sections (portlets only):
     /** @todo Remove this completely when all portlets are converted to metaboxes */
@@ -1398,76 +1405,6 @@ jQuery(document).ready(function($){
 
     }
     // Tooltips - END
-
-    // Campaign selection fields:
-    /** @todo Change this old campaigns select field code (pure jq-ui-autocomplete-based) to the new code (select + autocomplete, like on the Donors list page filters). */
-    let $campaign_select = $('#campaign-select');
-    if($campaign_select.length && typeof $().autocomplete !== 'undefined') {
-
-        $campaign_select.keyup(function(){
-            if( !$(this).val() ) {
-                $('#campaign-id').val('');
-                $('#new-donation-purpose').html('');
-            }
-        });
-
-        $campaign_select.autocomplete({
-            minLength: 1,
-            focus: function(event, ui){
-                $campaign_select.val(ui.item.label);
-                $('#new-donation-purpose').html(ui.item.payment_title);
-
-                return false;
-            },
-            change: function(event, ui){
-                if( !$campaign_select.val() ) {
-                    $('#campaign-id').val('');
-                    $('#new-donation-purpose').html('');
-                }
-            },
-            close: function(event, ui){
-                if( !$campaign_select.val() ) {
-                    $('#campaign-id').val('');
-                    $('#new-donation-purpose').html('');
-                }
-            },
-            select: function(event, ui){
-                $campaign_select.val(ui.item.label);
-                $('#campaign-id').val(ui.item.value);
-                $('#new-donation-purpose').html(ui.item.payment_title);
-                return false;
-            },
-            source: function(request, response) {
-                var term = request.term,
-                    cache = $campaign_select.data('cache') ? $campaign_select.data('cache') : [];
-
-                if(term in cache) {
-                    response(cache[term]);
-                    return;
-                }
-
-                request.action = 'leyka_get_campaigns_list';
-                request.nonce = $campaign_select.data('nonce');
-
-                $.getJSON(leyka.ajaxurl, request, function(data, status, xhr){
-
-                    var cache = $campaign_select.data('cache') ? $campaign_select.data('cache') : [];
-
-                    cache[term] = data;
-                    response(data);
-                });
-            }
-        });
-
-        $campaign_select.data('ui-autocomplete')._renderItem = function(ul, item){
-            return $('<li>')
-                .append(
-                    '<a>'+item.label+(item.label == item.payment_title ? '' : '<div>'+item.payment_title+'</div></a>')
-                )
-                .appendTo(ul);
-        };
-
-    }
 
     // Donors management & Donors' accounts fields logical link:
     $('input[name="leyka_donor_accounts_available"]').change(function(){
@@ -2460,7 +2397,7 @@ jQuery(document).ready(function($){
         altFormat: 'yy-mm-dd'
     });
 
-    /** @todo Move to the /src/js/admin/common-settings.js */
+    /** @todo Delete in favor of the field version from /src/js/admin/common/settings.js. Combine with 'input.leyka-campaigns-selector' from there (take the campaign donations purpose from this code) */
     let $campaign_select = $('#campaign-select');
     if($campaign_select.length && typeof $().autocomplete !== 'undefined') {
 
@@ -2528,7 +2465,7 @@ jQuery(document).ready(function($){
         };
 
     }
-    /** Move to - END */
+    /** @todo Move to - END */
 
     // Validate add/edit donation form:
     $('form#post').submit(function(e){
@@ -4069,70 +4006,9 @@ jQuery(document).ready(function($){
         return;
     }
 
-	let selector_values = [],
-		selected_values = [];
-
-	$('input[name="donor-name-email"]').autocomplete({
-		source: leyka.ajaxurl+'?action=leyka_donors_autocomplete',
-		minLength: 2
-	});
-
 	$.leyka_init_filter_datepicker($('input[name="first-donation-date"]'), {
 	    warningMessage: leyka.first_donation_date_incomplete_message
 	});
-
-	// Campaigns:
-	selected_values = [];
-	$('#leyka-campaigns-select').find('option').each(function(){
-		selected_values.push({item: {label: $.trim($(this).text()), value: $(this).val()}});
-	});
-
-    $('input.leyka-campaigns-selector').autocomplete({
-        source: leyka.ajaxurl+'?action=leyka_campaigns_autocomplete',
-        multiselect: true,
-        minLength: 0,
-        search_on_focus: true,
-        pre_selected_values: selected_values,
-		leyka_select_callback: function(selected_items){
-
-			let $select = $('#leyka-campaigns-select');
-			$select.html('');
-			for(let val in selected_items) {
-
-				let $option = $('<option></option>').val(val).prop('selected', true);
-				$select.append($option);
-
-			}
-
-		}
-    });
-
-	// Gateways:
-	selector_values = [];
-	selected_values = [];
-	$('#leyka-gateways-select').find('option').each(function(){
-
-	    let $this = $(this);
-
-		selector_values.push({label: $.trim($this.text()), value: $this.val()});
-		if($this.prop('selected')) {
-			selected_values.push({item: {label: $.trim($this.text()), value: $this.val()}});
-		}
-
-	});
-
-    $('input.leyka-gateways-selector').autocomplete({
-        source: selector_values,
-        multiselect: true,
-        search_on_focus: true,
-        minLength: 0,
-        pre_selected_values: selected_values,
-		leyka_select_callback: function(selected_items){
-			$('#leyka-gateways-select').find('option').each(function(){
-				$(this).prop('selected', selected_items[$(this).val()] !== undefined);
-			});
-		}
-    });
 
 });
 /** Common wizards functions */

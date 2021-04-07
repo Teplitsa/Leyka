@@ -16,7 +16,7 @@ jQuery(document).ready(function($){
         altFormat: 'yy-mm-dd'
     });
 
-    /** @todo Move to the /src/js/admin/common-settings.js */
+    /** @todo Delete in favor of the field version from /src/js/admin/common/settings.js. Combine with 'input.leyka-campaigns-selector' from there (take the campaign donations purpose from this code) */
     let $campaign_select = $('#campaign-select');
     if($campaign_select.length && typeof $().autocomplete !== 'undefined') {
 
@@ -84,7 +84,7 @@ jQuery(document).ready(function($){
         };
 
     }
-    /** Move to - END */
+    /** @todo Move to - END */
 
     // Validate add/edit donation form:
     $('form#post').submit(function(e){
