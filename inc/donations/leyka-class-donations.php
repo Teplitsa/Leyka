@@ -530,10 +530,10 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
             $params['payment_type'] = 'rebill';
 
-            if($params['recurring_active']) { /** @todo Check if it's working for the case of "non-active only" */
+            if($params['recurring_active']) {
                 $params['meta'][] = array('key' => 'recurring_active', 'value' => 1,);
             } else {
-                $params['meta'][] = array('key' => 'recurring_active', 'value' => 0,);
+                $params['meta'][] = array('key' => 'recurring_active', 'compare' => 'NOT EXISTS',);
             }
 
         }
@@ -747,7 +747,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         }
 
-        $params['order'] = empty($params['order']) || !in_array($params['order'], array('asc', 'desc',)) ?
+        $params['order'] = empty($params['order']) || !in_array($params['order'], array('asc', 'ASC', 'desc', 'DESC',)) ?
             'DESC' : mb_strtoupper($params['order']);
 
         if(empty($params['orderby'])) {

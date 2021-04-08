@@ -89,7 +89,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             return array('status' => 1, 'message' => __('The donation was not created due to error.', 'leyka'));
         }
 
-        $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
+        $donation = Leyka_Donations::get_instance()->get($donation_id);
 
         if(empty($_POST['leyka_recurring'])) { // Single donation
 
@@ -193,7 +193,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         }
 
         $_POST['cs2'] = (int)$_POST['cs2'];
-        $donation = Leyka_Donations::get_instance()->get_donation($_POST['cs2']);
+        $donation = Leyka_Donations::get_instance()->get($_POST['cs2']);
 
         if( !$donation->id || !$donation->campaign_id ) {
 
@@ -387,7 +387,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         return Leyka_Donations::get_instance()->get_count(array(
             'meta' => array(array('key' => '_chronopay_transaction_id', 'value' => $chronopay_transaction_id,),),
             'get_single' => true,
-        )) > 0;
+        ));
 
     }
 

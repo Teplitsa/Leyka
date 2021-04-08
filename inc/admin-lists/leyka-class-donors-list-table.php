@@ -83,20 +83,20 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         }
 
-        if( !empty($_REQUEST['first-donation-date']) ) {
+        if( !empty($_GET['first-date']) ) {
 
-            if(stripos($_REQUEST['first-donation-date'], '-') !== false) { // Dates period chosen
+            if(stripos($_GET['first-date'], '-') !== false) { // Dates period chosen
 
-                $_REQUEST['first-donation-date'] = array_slice(explode('-', $_REQUEST['first-donation-date']), 0, 2);
+                $_GET['first-date'] = array_slice(explode('-', $_GET['first-date']), 0, 2);
 
-                if(count($_REQUEST['first-donation-date']) === 2) { // The date is set as an interval
+                if(count($_GET['first-donation-date']) === 2) { // The date is set as an interval
 
-                    $_REQUEST['first-donation-date'][0] = strtotime(trim($_REQUEST['first-donation-date'][0]).' 00:00:00');
-                    $_REQUEST['first-donation-date'][1] = strtotime(trim($_REQUEST['first-donation-date'][1]).' 23:59:59');
+                    $_GET['first-date'][0] = strtotime(trim($_GET['first-date'][0]).' 00:00:00');
+                    $_GET['first-date'][1] = strtotime(trim($_GET['first-date'][1]).' 23:59:59');
 
                     $donors_params['meta_query'][] = array(
                         'key' => 'leyka_donor_first_donation_date',
-                        'value' => $_REQUEST['first-donation-date'],
+                        'value' => $_GET['first-date'],
                         'compare' => 'BETWEEN',
                         'type' => 'NUMERIC',
                     );
@@ -107,8 +107,8 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
                 $donors_params['meta_query'][] = array(
                     'key' => 'leyka_donor_first_donation_date',
                     'value' => array(
-                        strtotime($_REQUEST['first-donation-date'].' 00:00:00'),
-                        strtotime($_REQUEST['first-donation-date'].' 23:59:59'),
+                        strtotime($_GET['first-date'].' 00:00:00'),
+                        strtotime($_GET['first-date'].' 23:59:59'),
                     ),
                     'compare' => 'BETWEEN',
                     'type' => 'NUMERIC',
@@ -117,20 +117,20 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         }
 
-        if( !empty($_REQUEST['last-donation-date']) ) {
+        if( !empty($_GET['last-date']) ) {
 
-            if(stripos($_REQUEST['last-donation-date'], ' - ') !== false) { // Dates period chosen
+            if(stripos($_GET['last-date'], ' - ') !== false) { // Dates period chosen
 
-                $_REQUEST['last-donation-date'] = array_slice(explode('-', $_REQUEST['last-donation-date']), 0, 2);
+                $_GET['last-date'] = array_slice(explode('-', $_GET['last-date']), 0, 2);
 
-                if(count($_REQUEST['last-donation-date']) === 2) { // The date is set as an interval
+                if(count($_GET['last-date']) === 2) { // The date is set as an interval
 
-                    $_REQUEST['last-donation-date'][0] = strtotime(trim($_REQUEST['last-donation-date'][0]).' 00:00:00');
-                    $_REQUEST['last-donation-date'][1] = strtotime(trim($_REQUEST['last-donation-date'][1]).' 23:59:59');
+                    $_GET['last-date'][0] = strtotime(trim($_GET['last-date'][0]).' 00:00:00');
+                    $_GET['last-date'][1] = strtotime(trim($_GET['last-date'][1]).' 23:59:59');
 
                     $donors_params['meta_query'][] = array(
                         'key' => 'leyka_donor_last_donation_date',
-                        'value' => $_REQUEST['last-donation-date'],
+                        'value' => $_GET['last-date'],
                         'compare' => 'BETWEEN',
                         'type' => 'NUMERIC',
                     );
@@ -141,8 +141,8 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
                 $donors_params['meta_query'][] = array(
                     'key' => 'leyka_donor_last_donation_date',
                     'value' => array(
-                        strtotime($_REQUEST['last-donation-date'].' 00:00:00'),
-                        strtotime($_REQUEST['last-donation-date'].' 23:59:59'),
+                        strtotime($_GET['last-date'].' 00:00:00'),
+                        strtotime($_GET['last-date'].' 23:59:59'),
                     ),
                     'compare' => 'BETWEEN',
                     'type' => 'NUMERIC',

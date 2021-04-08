@@ -9,13 +9,6 @@ jQuery(document).ready(function($){
 	let selector_values = [],
 		selected_values = [];
 
-	$.leyka_init_filter_datepicker($('input[name="first-donation-date"]'), {
-	    warningMessage: leyka.first_donation_date_incomplete_message
-	});
-	$.leyka_init_filter_datepicker($('input[name="last-donation-date"]'), {
-	    warningMessage: leyka.last_donation_date_incomplete_message
-	});
-
 	// Campaigns:
     /** @todo Remove when more common field handling code is ready (settings.js : 59+) */
 	selected_values = [];

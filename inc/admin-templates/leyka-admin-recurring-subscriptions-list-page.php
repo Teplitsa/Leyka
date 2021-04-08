@@ -44,12 +44,12 @@
                                 <?php $filter_value = isset($_GET['campaigns']) ? (array)$_GET['campaigns'] : array();?>
 
                                 <select class="leyka-campaigns-select autocomplete-select" name="campaigns[]" multiple="multiple">
-                                    <?php $campaigns = $filter_value ? leyka_get_campaigns_list(array('include' => $filter_value)) : array();
-                                    foreach($campaigns as $campaign_id => $campaign_title) {?>
-                                        <option value="<?php echo $campaign_id;?>" <?php echo is_array($filter_value) && in_array($campaign_id, $filter_value) ? 'selected="selected"' : '';?>>
-                                            <?php echo $campaign_title;?>
-                                        </option>
-                                    <?php }?>
+                                <?php $campaigns = $filter_value ? leyka_get_campaigns_list(array('include' => $filter_value)) : array();
+                                foreach($campaigns as $campaign_id => $campaign_title) {?>
+                                    <option value="<?php echo $campaign_id;?>" <?php echo is_array($filter_value) && in_array($campaign_id, $filter_value) ? 'selected="selected"' : '';?>>
+                                        <?php echo $campaign_title;?>
+                                    </option>
+                                <?php }?>
                                 </select>
 
                             </div>
@@ -59,7 +59,7 @@
                         <div class="filters-row">
 
                             <div class="leyka-admin-list-filter-wrapper">
-                                <input type="text" name="first-donation-date" autocomplete="off" class="leyka-first-donation-date-selector leyka-selector" value="<?php echo isset($_GET['first-donation-date']) ? esc_attr($_GET['first-donation-date']) : '';?>" placeholder="<?php _e('First payment dates', 'leyka');?>">
+                                <input type="text" name="first-date" autocomplete="off" class="leyka-first-donation-date-selector leyka-selector datepicker-ranged-selector" value="<?php echo isset($_GET['first-date']) ? esc_attr($_GET['first-date']) : '';?>" placeholder="<?php _e('First payment dates', 'leyka');?>">
                             </div>
 
                             <?php $filter_value = isset($_GET['gateway']) ? (array)$_GET['gateway'] : array();?>

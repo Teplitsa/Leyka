@@ -4,7 +4,7 @@ jQuery(document).ready(function($){
 
     const $body = $('body');
 
-    // Datepicker fields for admin lists filters:
+    // Ranged (optionally) datepicker fields for admin lists filters:
     jQuery.leyka_fill_datepicker_input_period = function leyka_fill_datepicker_input_period(inst, extension_range) {
 
         let input_text = extension_range.startDateText;
@@ -15,7 +15,7 @@ jQuery(document).ready(function($){
 
     };
 
-    jQuery.leyka_init_filter_datepicker = function leyka_init_filter_datepicker($input, options) {
+    jQuery.leyka_admin_filter_datepicker_ranged = function($input, options) {
 
         $input.datepicker({
             range: 'period',
@@ -23,37 +23,48 @@ jQuery(document).ready(function($){
                 $.leyka_fill_datepicker_input_period(inst, extensionRange);
             },
 
-            beforeShow: function(input, inst) {
+            beforeShow: function(input, instance) {
+
                 let selectedDatesStr = $(input).val(),
                     selectedDatesStrList = selectedDatesStr.split(' - '),
                     selectedDates = [];
 
                 for(let i in selectedDatesStrList) {
+
                     if(selectedDatesStrList[i]) {
 
                         let singleDate;
                         try {
-                            singleDate = $.datepicker.parseDate($(input).datepicker('option', 'dateFormat'), selectedDatesStrList[i]);
+                            singleDate = $.datepicker
+                                .parseDate($(input).datepicker('option', 'dateFormat'), selectedDatesStrList[i]);
                         } catch {
                             singleDate = new Date();
                         }
 
                         selectedDates.push(singleDate);
+
                     }
+
                 }
 
-                $(inst.input).val(selectedDates[0]);
-                $(inst.input).datepicker('setDate', selectedDates);
+                $(instance.input).val(selectedDates[0]);
+                $(instance.input).datepicker('setDate', selectedDates);
 
                 setTimeout(function(){
-                    $.leyka_fill_datepicker_input_period(inst, $(inst.dpDiv).data('datepickerExtensionRange'));
+                    $.leyka_fill_datepicker_input_period(instance, $(instance.dpDiv).data('datepickerExtensionRange'));
                 });
 
             }
         });
 
     };
-    // Datepicker fields for admin lists filters - END
+    // Ranged (optionally) datepicker fields for admin lists filters - END
+
+    // Ranged datepicker fields (for admin list filters mostly):
+    $.leyka_admin_filter_datepicker_ranged($('input.datepicker-ranged-selector'), {
+        warningMessage: leyka.first_donation_date_incomplete_message
+    });
+    // Ranged datepicker fields - END
 
     // Campaign(s) select fields (for admin list filters mostly):
     $('input.leyka-campaigns-selector').each(function(){

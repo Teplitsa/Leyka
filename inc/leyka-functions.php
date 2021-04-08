@@ -984,7 +984,7 @@ function leyka_get_main_currencies_full_info() {
     return apply_filters('leyka_main_currencies_list', array(
         'rur' => array(
             'title' => __('Russian Rouble', 'leyka'),
-            'label' => __('₽', 'leyka'),
+            'label' => '₽',
             'min_amount' => 10,
             'max_amount' => 30000,
             'flexible_default_amount' => 500,
@@ -1000,7 +1000,7 @@ function leyka_get_main_currencies_full_info() {
         ),
         'uah' => array(
             'title' => __('Ukraine Hryvnia', 'leyka'),
-            'label' => __('₴', 'leyka'),
+            'label' => '₴',
             'min_amount' => 10,
             'max_amount' => 30000,
             'flexible_default_amount' => 500,
@@ -1013,7 +1013,7 @@ function leyka_get_secondary_currencies_full_info($country_id = null) {
     return apply_filters('leyka_secondary_currencies_list', array(
         'usd' => array(
             'title' => __('US Dollar', 'leyka'),
-            'label' => __('$', 'leyka'),
+            'label' => '$',
             'min_amount' => 1,
             'max_amount' => 1000,
             'flexible_default_amount' => 10,
@@ -1021,7 +1021,7 @@ function leyka_get_secondary_currencies_full_info($country_id = null) {
         ),
         'eur' => array(
             'title' => __('Euro', 'leyka'),
-            'label' => __('€', 'leyka'),
+            'label' => '€',
             'min_amount' => 1,
             'max_amount' => 650,
             'flexible_default_amount' => 5,

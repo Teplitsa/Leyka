@@ -26,7 +26,7 @@
                                 <select id="payment-type-select" name="type" class="leyka-select-menu">
 
                                     <option value="" <?php echo $filter_value ? '' : 'selected="selected"';?>>
-                                        <?php _e('Payment type', 'leyka');?>
+                                        --- <?php _e('Payment type', 'leyka');?> ---
                                     </option>
 
                                     <?php foreach(leyka_get_payment_types_list() as $payment_type => $label) {?>
@@ -45,7 +45,7 @@
                                 <select id="donation-status-select" name="status" class="leyka-select-menu">
 
                                     <option value="" <?php echo $filter_value ? '' : 'selected="selected"';?>>
-                                        <?php _e('Donation status', 'leyka');?>
+                                        --- <?php _e('Donation status', 'leyka');?> ---
                                     </option>
 
                                     <?php foreach(leyka_get_donation_status_list() as $status => $label) {?>
@@ -98,7 +98,7 @@
                                 <select id="gateway-pm-select" name="gateway-pm" class="leyka-select-menu">
 
                                     <option value="" <?php echo $filter_value ? '' : 'selected="selected"';?>>
-                                        <?php _e('Payment method', 'leyka');?>
+                                        --- <?php _e('Payment method', 'leyka');?> ---
                                     </option>
 
                                     <?php $gw_pm_list = array();
@@ -138,7 +138,7 @@
 
                             <div class="leyka-admin-list-filter-wrapper">
                                 <select id="donor-subscribed-select" name="donor_subscribed" class="leyka-select-menu">
-                                    <option value="-" <?php echo !isset($_GET['donor_subscribed']) || $_GET['donor_subscribed'] == '-' ? 'selected="selected"' : '';?>><?php _e('Email subscription', 'leyka');?></option>
+                                    <option value="-" <?php echo !isset($_GET['donor_subscribed']) || $_GET['donor_subscribed'] == '-' ? 'selected="selected"' : '';?>>--- <?php _e('Email subscription', 'leyka');?> ---</option>
                                     <option value="1" <?php echo isset($_GET['donor_subscribed']) && $_GET['donor_subscribed'] == 1 ? 'selected="selected"' : '';?>><?php _e('Subscription on', 'leyka');?></option>
                                     <option value="0" <?php echo isset($_GET['donor_subscribed']) && !$_GET['donor_subscribed'] ? 'selected="selected"' : '';?>><?php _e('No subscription', 'leyka');?></option>
                                 </select>
