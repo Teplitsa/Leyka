@@ -60,20 +60,19 @@
 
             </div>
 
-            <div class="leyka-content-row">
-                <?php $this->show_admin_portlet('stats-donations-main', array('interval' => $_GET['interval']));
-                $this->show_admin_portlet('stats-recurring', array('interval' => $_GET['interval']));?>
+            <?php $row_id = 'donations-stats';?>
+            <div class="leyka-content-row leyka-<?php echo $row_id;?>">
+                <?php do_action('leyka_admin_dashboard_portlets_row', $row_id);?>
             </div>
 
-            <div class="leyka-content-row">
-                <?php $this->show_admin_portlet('donations-dynamics', array('interval' => $_GET['interval']));?>
+            <?php $row_id = 'donations-dynamics';?>
+            <div class="leyka-content-row leyka-<?php echo $row_id;?>">
+                <?php do_action('leyka_admin_dashboard_portlets_row', $row_id);?>
             </div>
 
-            <div class="leyka-content-row">
-                <?php $this->show_admin_portlet('recent-donations', array(
-                    'interval' => $_GET['interval'],
-                    'number' => 5,
-                ));?>
+            <?php $row_id = 'recent-donations';?>
+            <div class="leyka-content-row leyka-<?php echo $row_id;?>">
+                <?php do_action('leyka_admin_dashboard_portlets_row', $row_id);?>
             </div>
 
         </div>

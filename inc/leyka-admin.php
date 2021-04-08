@@ -373,6 +373,33 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         do_action('leyka_pre_dashboard_actions');
 
+		function leyka_dashboard_portlets_row_content($dashboard_row_id) {
+
+		    switch($dashboard_row_id) {
+                case 'donations-stats':
+                    Leyka_Admin_Setup::get_instance()->show_admin_portlet(
+                        'stats-donations-main', array('interval' => $_GET['interval'])
+                    );
+                    Leyka_Admin_Setup::get_instance()->show_admin_portlet(
+                        'stats-recurring', array('interval' => $_GET['interval'])
+                    );
+                    break;
+                case 'donations-dynamics':
+                    Leyka_Admin_Setup::get_instance()->show_admin_portlet(
+                        'donations-dynamics', array('interval' => $_GET['interval'])
+                    );
+                    break;
+                case 'recent-donations':
+                    Leyka_Admin_Setup::get_instance()->show_admin_portlet(
+                        'recent-donations', array('interval' => $_GET['interval'], 'number' => 5,)
+                    );
+                    break;
+                default:
+            }
+
+        }
+        add_action('leyka_admin_dashboard_portlets_row', 'leyka_dashboard_portlets_row_content', 10, 2);
+
 		$this->_show_admin_template('dashboard-page');
 
 		do_action('leyka_post_dashboard_actions');
