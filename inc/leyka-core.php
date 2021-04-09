@@ -113,7 +113,7 @@ class Leyka extends Leyka_Singleton {
 
         }
 
-        // Change the new non-init recurring Donation purpose if it's Campaign is closed:
+        // Change the new recurring Donation purpose if it's Campaign is closed:
         add_action('leyka_donation_funded_status_changed', function($donation_id){
 
             $donation = new Leyka_Donation($donation_id);

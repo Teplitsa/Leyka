@@ -176,8 +176,8 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                     'capture' => true, // Make payment at once, don't wait for shop confirmation
                     'description' =>
                         ( !empty($form_data['leyka_recurring']) ? _x('[RS]', 'For "recurring subscription"', 'leyka').' ' : '' )
-                        .$donation->payment_title." (№ $donation_id)",
-                    'metadata' => array('donation_id' => $donation_id,),
+                        .$donation->payment_title." (№ $donation_id); {$donation->donor_name}; {$donation->donor_email}",
+                    'metadata' => array('donation_id' => $donation_id, 'cms_name' => 'Leyka'),
                     'save_payment_method' => !empty($form_data['leyka_recurring']),
                 );
                 if($pm_id !== 'yandex_all') {
