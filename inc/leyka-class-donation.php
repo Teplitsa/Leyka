@@ -136,7 +136,7 @@ class Leyka_Donation_Management {
         $donation = new Leyka_Donation($donation);
 
         if($old === 'new' && $new !== 'trash') {
-            do_action('leyka_new_donation_added', $donation->id);
+            do_action('leyka_new_donation_added', $donation->id, $donation);
         } else if($new === 'funded' || $old === 'funded') {
 
             do_action('leyka_donation_funded_status_changed', $donation->id, $old, $new);
@@ -1840,7 +1840,8 @@ class Leyka_Donation {
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => array_key_exists($status, leyka_get_donation_status_list()) ? $status : 'submitted',
             'post_title' => empty($params['purpose_text']) ?
-                leyka_options()->opt('donation_purpose_text') : $params['purpose_text'],
+                apply_filters('leyka_donation_default_payment_purpose', __('Charity donation', 'leyka')) :
+                $params['purpose_text'],
             'post_name' => uniqid('donation-', true), // For fast WP_Post creation when DB already has lots of donations
             'post_parent' => empty($params['init_recurring_donation']) ? 0 : (int)$params['init_recurring_donation'],
         );
