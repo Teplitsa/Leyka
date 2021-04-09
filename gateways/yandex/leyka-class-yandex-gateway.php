@@ -280,7 +280,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             $data['rebillingOn'] = 'true';
         }
 
-        return apply_filters('leyka_yandex_custom_submission_data', $data, $pm_id);
+        return apply_filters('leyka_yandex_custom_submission_data', $data, $pm_id, $donation);
 
     }
 
