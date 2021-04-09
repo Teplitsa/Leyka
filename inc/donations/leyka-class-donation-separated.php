@@ -631,7 +631,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
             case 'type':
             case 'payment_type':
-                if( !leyka_get_payment_types_data($value) || $this->payment_type === $value ) {
+                if( !leyka_get_payment_types_list($value) || $this->payment_type === $value ) {
                     return false;
                 }
 

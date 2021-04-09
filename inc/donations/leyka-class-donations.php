@@ -794,7 +794,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
     public function get($params) {
 
-        if(is_int($params) && absint($params)) { // Int given - return the single Donation
+        if((is_int($params) || is_string($params)) && absint($params)) { // Int given - return the single Donation
             return $this->get_donation($params);
         }
 
@@ -805,6 +805,9 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         global $wpdb;
 
+//        if(is_string($params)) {
+//            die('<pre>'.print_r($params, 1).'</pre>');
+//        }
         $query = $this->_get_query_parts($params);
 
         $donations = array();
