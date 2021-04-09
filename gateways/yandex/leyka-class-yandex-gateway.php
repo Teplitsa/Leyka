@@ -252,14 +252,12 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
     public function submission_form_data($form_data, $pm_id, $donation_id) {
 
         // New (REST) API doesn't require the data to be sent with redirect:
-        if(leyka_options()->opt('yandex_new_api')) {
-            return apply_filters('leyka_yandex_custom_submission_data', array(), $pm_id);
-        }
+//        if(leyka_options()->opt('yandex_new_api')) {
+//            return apply_filters('leyka_yandex_custom_submission_data', array(), $pm_id);
+//        }
+        // ... but we'll send the data anyway - some Leyka installations are using the AJAX response to hook in the analytics
 
-        $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
-
-        $payment_type = $this->_get_gateway_pm_id($pm_id);
-        $payment_type = $payment_type ? $payment_type : apply_filters('leyka_yandex_custom_payment_type', '', $pm_id);
+        $donation = Leyka_Donations::get_instance()->get($donation_id);
 
         $data = array(
             'scid' => leyka_options()->opt('yandex_scid'),
@@ -269,7 +267,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             'orderNumber' => $donation_id,
             'orderDetails' => $donation->payment_title." (# $donation_id)",
             'orderDescription' => $donation->payment_title." (# $donation_id)",
-            'paymentType' => $payment_type,
+            'paymentType' => apply_filters('leyka_yandex_custom_payment_type', $this->_get_gateway_pm_id($pm_id), $pm_id),
             'shopSuccessURL' => leyka_get_success_page_url(),
             'shopFailURL' => leyka_get_failure_page_url(),
             'cps_email' => $donation->donor_email,
@@ -769,7 +767,6 @@ techMessage="'.$tech_message.'"/>');
             case 'yandex_recurring_id':
             case 'yandex_invoice_id':
             case 'yandex_payment_id':
-                /** @todo MERGE: check the names of gateway-specific metas in both storage modes for EACH gateway - whether each meta is "_something" or just "something" */
                 return $donation->get_meta('yandex_invoice_id');
             default:
                 return $value;
