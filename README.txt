@@ -93,9 +93,6 @@ PHP version required: 5.6+
 * Fix: Engagement Banner extension - now excluding posts/pages by ID works correctly for all post types.
 * Fix: Now correctional Donations don't validate a Donor's name field at all. So, any symbols allowed there.
 * Fix: Small fixes: l10n, CSS & others.
-
-+ N.
-* Now .
 * Fix for Donors admin list filtering on "single" Donor type.
 
 = 3.15 =
