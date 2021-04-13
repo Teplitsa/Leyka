@@ -235,13 +235,13 @@ function leyka_get_extension_activation_button_label(Leyka_Extension $extension)
     $activation_status = $extension->get_activation_status();
 
     $activation_status_labels = array(
-        'active' => esc_attr__('Deactivate'),
-        'inactive' => esc_attr__('Activate'),
-        'activating' => esc_attr_x('Continue the setup', '[the extension step-by-step setup]', 'leyka'),
+        'active' => __('Deactivate'),
+        'inactive' => __('Activate'),
+        'activating' => _x('Continue the setup', '[the extension step-by-step setup]', 'leyka'),
     );
 
     if($activation_status !== 'active' && !$extension->wizard_id) {
-        $label = esc_attr__('Activate');
+        $label = __('Activate');
     } else {
         $label = $activation_status && !empty($activation_status_labels[$activation_status]) ?
             $activation_status_labels[$activation_status] : false;

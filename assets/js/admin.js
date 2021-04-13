@@ -2128,7 +2128,6 @@ jQuery(document).ready(function($){
                             $button.prop('disabled', false);
                         }
                     }
-                    return;
                 }
             })
             .fail(function(){
@@ -2137,8 +2136,6 @@ jQuery(document).ready(function($){
             })
             .always(function(){
                 $loading.hide();
-                // $loading.css('display', 'none');
-                // $loading.find('.leyka-loader').css('display', 'none');
             });
     });
 
@@ -2147,15 +2144,22 @@ jQuery(document).ready(function($){
 // banner
 jQuery(document).ready(function($){
     $('.banner-wrapper .close').on('click.leyka', function(e){
+
         e.preventDefault();
 
-        $(this).closest('.banner-wrapper').remove();
+        let $this = $(this);
 
-        let ajax_params = {
-            action: 'leyka_close_dashboard_banner'
-        };
+        $this.closest('.banner-wrapper').remove();
 
-        $.post(leyka.ajaxurl, ajax_params, null, 'json');
+        $.post(
+            leyka.ajaxurl, {
+                action: 'leyka_close_dashboard_banner',
+                banner_id: $this.parents('.banner-inner').data('banner-id'),
+                /** @todo Add nonce */
+            },
+            null, 'json'
+        );
+
     });
 });
 

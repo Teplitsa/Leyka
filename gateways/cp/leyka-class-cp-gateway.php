@@ -540,7 +540,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
     public function get_init_recurrent_donation($recurring) {
 
         if(is_a($recurring, 'Leyka_Donation')) {
-            $recurring = $recurring->recurring_id;
+            $recurring = $recurring->cp_recurring_id;
         } else if(empty($recurring)) {
             return false;
         }

@@ -352,7 +352,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
     public function show_banner($page = false, $location = false) {?>
     
         <div class="banner-wrapper">
-        	<div class="banner-inner">
+        	<div class="banner-inner" data-banner-id="grade_plugin">
                 <a href="https://wordpress.org/support/plugin/leyka/reviews/#new-post" class="banner" target="_blank">
                     <div class="banner-text">
                         <div class="banner-subtitle"><?php _e('Like Leyka?', 'leyka');?></div>
