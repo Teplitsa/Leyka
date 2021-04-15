@@ -255,7 +255,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 //        if(leyka_options()->opt('yandex_new_api')) {
 //            return apply_filters('leyka_yandex_custom_submission_data', array(), $pm_id);
 //        }
-        // ... but we'll send the data anyway - some Leyka installations are using the AJAX response to hook in the analytics
+        // TODO ... but FOR NOW we'll send the data anyway - some Leyka sites are using the AJAX response for web-analytics
 
         $donation = Leyka_Donations::get_instance()->get($donation_id);
 
@@ -328,7 +328,7 @@ techMessage="'.$tech_message.'"/>');
                 }
 
                 $payment = $notification->getObject();
-                $donation = Leyka_Donations::get_instance()->get_donation($payment->metadata->donation_id);
+                $donation = Leyka_Donations::get_instance()->get($payment->metadata->donation_id);
 
                 if( !$donation ) {
                     /** @todo Process the error somehow */

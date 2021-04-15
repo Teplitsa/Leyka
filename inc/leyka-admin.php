@@ -488,13 +488,6 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             'option' => 'donations_per_page',
         ));
 
-        if(leyka_get_donations_storage_type() === 'post') {
-
-            wp_redirect(admin_url('edit.php?post_type='.Leyka_Donation_Management::$post_type));
-            exit;
-
-        }
-
         require_once(LEYKA_PLUGIN_DIR.'inc/admin-lists/leyka-class-donations-list-table.php');
 
         $this->_donations_list_table = new Leyka_Admin_Donations_List_Table();
