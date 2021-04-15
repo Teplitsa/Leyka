@@ -74,7 +74,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             foreach($_REQUEST['campaigns'] as $campaign_id) {
                 $campaigns_meta_query[] = array(
                     'key' => 'leyka_donor_campaigns',
-                    'value' => 'i:'.absint($campaign_id).';', // A little freaky, we know, but it's the best we could think of
+                    'value' => 'i:'.absint($campaign_id).';', // A little freaky, I know, but it's the best I could think of
                     'compare' => 'LIKE',
                 );
             }
@@ -393,9 +393,9 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             return '';
         }
 
-        $donation = new Leyka_Donation($item['first_donation']);
+        $donation = Leyka_Donations::get_instance()->get($item['first_donation']);
 
-        return $donation && is_a($donation, 'Leyka_Donation') ? $donation->date : '';
+        return $donation ? $donation->date : '';
 
     }
 
@@ -405,13 +405,13 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             return '';
         }
 
-        $donation = new Leyka_Donation($item['last_donation']);
+        $donation = Leyka_Donations::get_instance()->get($item['last_donation']);
 
         return '<div class="leyka-donation-info-wrapper">'
             .'<span class="donation-status '.$donation->status.' field-q"><span class="field-q-tooltip">'.__('Donation '.$donation->status, 'leyka').'</span></span>'
             .'<div class="first-sub-row">'.$donation->date.'</div>'
             .'<div class="second-sub-row">'.$donation->amount.'&nbsp;'.$donation->currency_label.',&nbsp;«'.$donation->campaign_title.'»</div>'
-            .'</div>';
+        .'</div>';
 
     }
 
@@ -454,7 +454,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         $campaigns_list = array();
         foreach($item['campaigns'] as $campaign_id => $campaign_title) {
             if($campaign_title) {
-                $campaigns_list[] = '«'.$campaign_title.'»';
+                $campaigns_list[] = '«'.ltrim(rtrim($campaign_title, '»'), '«').'»';
             }
         }
 
@@ -526,7 +526,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
     function get_columns() {
         return array(
             'cb' => '<input type="checkbox">',
-            #'donor_id' => __('ID'),
+            'donor_id' => __('ID', 'leyka'),
             'donor_type' => _x('Type', "Donor's type", 'leyka'),
             'donor_name' => __("Donor's name", 'leyka'),
             'first_donation' => __('First donation', 'leyka'),

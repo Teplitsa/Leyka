@@ -444,15 +444,16 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                     $this->get_meta('donor_subscription_email') :
                     ($this->donor_email ? $this->donor_email : '');
 
-//            case 'donor_user_id':
-//            case 'donor_account_id':
-//                return isset($this->_main_data->post_author) ? (int)$this->_main_data->post_author : false;
-//
-//            case 'donor_user_error':
-//            case 'donor_account_error':
-//                $donor_account_error = isset($this->_donation_meta['donor_account_error']) ?
-//                    maybe_unserialize($this->_donation_meta['donor_account_error']) : false;
-//                return $donor_account_error && is_wp_error($donor_account_error) ? $donor_account_error : false;
+            case 'donor_id':
+            case 'donor_user_id':
+            case 'donor_account_id':
+                return isset($this->_main_data->donor_user_id) ? absint($this->_main_data->donor_user_id) : false;
+
+            case 'donor_user_error':
+            case 'donor_account_error':
+                $donor_account_error = isset($this->_donation_meta['donor_account_error']) ?
+                    maybe_unserialize($this->_donation_meta['donor_account_error']) : false;
+                return $donor_account_error && is_wp_error($donor_account_error) ? $donor_account_error : false;
 
             case 'gateway_response':
                 return $this->get_meta('gateway_response');
@@ -584,17 +585,17 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'donor_comment':
                 return $this->_set_data($field, sanitize_textarea_field($value));
 
-//            case 'donor_user_id':
-//            case 'donor_account_id':
-//                return $this->_set_meta($field, absint($value));
+            case 'donor_id':
+            case 'donor_user_id':
+            case 'donor_account_id':
+                return $this->_set_data('donor_user_id', absint($value));
 
-//            case 'donor_account':
-//                if(is_wp_error($value)) {
-//                    return $this->_set_meta('donor_account_error', $value);
-//                } else if(absint($value)) {
-//                    return $this->donor_user_id = absint($value);
-//                }
-//                break;
+            case 'donor_account':
+                if(is_wp_error($value)) {
+                    return $this->set_meta('donor_account_error', $value);
+                } else {
+                    return $this->donor_user_id = absint($value);
+                }
 
             case 'sum':
             case 'amount':
@@ -718,7 +719,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             $query = $wpdb->prepare("SELECT `meta_value` FROM `{$wpdb->prefix}leyka_donations_meta` WHERE `donation_id`=%d AND `meta_key`=%s LIMIT 0,1", $this->_id, $meta_key);
             $result = $wpdb->get_var($query);
 
-            // If there are no results for meta named with "_", try to find meta version without underscore
+            // If there are no results for meta named with "_", try to find meta version without underscore:
             if( !$result && mb_stripos($meta_key, '_') === 0 ) {
 
                 $meta_key = mb_substr($meta_key, 1);

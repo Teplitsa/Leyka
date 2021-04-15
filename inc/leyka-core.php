@@ -830,7 +830,7 @@ class Leyka extends Leyka_Singleton {
                     empty($request[1]) ? array() : array((int)$request[1])
                 );
 
-            } else if(isset($request[0], $request[1]) && stristr($request[0], 'procedure') !== false) {
+            } else if(isset($request[0], $request[1]) && mb_stristr($request[0], 'procedure') !== false) {
 
                 // Common procedure call URL,
                 // like some-website.org/leyka/service/procedure/{procedure_name}[/{param_1}/{param_2}/...]
@@ -927,6 +927,8 @@ class Leyka extends Leyka_Singleton {
     }
 
     public function _do_procedure($procedure_id, $params = array()) {
+
+        $procedure_id = mb_stristr($procedure_id, 'leyka-') !== false ? str_replace('leyka-', '', $procedure_id) : $procedure_id;
 
         do_action('leyka_before_procedure', $procedure_id, $params);
 

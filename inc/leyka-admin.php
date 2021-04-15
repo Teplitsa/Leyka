@@ -333,13 +333,13 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         add_submenu_page(NULL, 'Leyka Wizard', 'Leyka Wizard', 'leyka_manage_options', 'leyka_settings_new', array($this, 'settings_new_screen'));
 
         // ATM, Wizards, Donors & Extensions are untested with "sep" storage type:
-        if(leyka_get_donations_storage_type() === 'post') {
+//        if(leyka_get_donations_storage_type() === 'post') {
 
             add_submenu_page(NULL, "Donor's info", "Donor's info", 'leyka_manage_options', 'leyka_donor_info', array($this, 'donor_info_screen'));
 
             add_submenu_page(NULL, 'Extension settings', 'Extension settings', 'leyka_manage_options', 'leyka_extension_settings', array($this, 'leyka_extension_settings_screen'));
 
-        }
+//        }
         // Fake pages - END
 
         do_action('leyka_admin_menu_setup');

@@ -824,17 +824,6 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
     }
 
-    public static function get_meta_singular($donation_id, $meta_name) {
-
-        $meta_name = trim($meta_name);
-        if( !absint($donation_id) || !$meta_name ) { /** @todo Throw an Ex? */
-            return NULL;
-        }
-
-        return get_post_meta($donation_id, $meta_name, true);
-
-    }
-
     public function set_meta($meta_name, $value) {
 
         $meta_name = trim($meta_name);

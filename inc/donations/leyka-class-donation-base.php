@@ -29,13 +29,13 @@ abstract class Leyka_Donation_Base {
     abstract public function get_funded_date();
 
     /**
-     * A wrapper to access gateway's method to get init recurrent donation.
-     * @param mixed $donation
-     * @return mixed Leyka_Donation or false if param is wrong or nothing foundd.
+     * A wrapper to access gateway's method to get init recurring donation.
+     * @param int|Leyka_Donation_Base $donation
+     * @return Leyka_Donation_Base|false Donation object or false if param is wrong or nothing found.
      */
     public static function get_init_recurring_donation($donation) {
 
-        $donation = leyka_get_validated_donation($donation);
+        $donation = Leyka_Donations::get_instance()->get_donation($donation);
 
         if($donation->type !== 'rebill') {
             return false;

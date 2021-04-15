@@ -9,7 +9,6 @@ if( !defined('WPINC') ) die;
 global $wpdb;
 
 $procedure_options = leyka_procedures_get_procedure_options(array(
-//    'migrate_donors' => false, /** @todo Migrate as donation_meta "donor_user_id" */
     'delete_old_donations' => false,
     'pre_clear_sep_storage' => false,
     'only_funded' => false,
@@ -187,7 +186,7 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
 
     // Donation metas: status_log, donor_email_date, donor_comment, donor_subscribed, donor_subscription_email, manangers_emails_date, gateway_response, init_recurring_donation_id, recurring_active, recurring_cancel_date, + ALL EXISTING CUSTOM METAS
 
-    $query = "INSERT INTO {$wpdb->prefix}leyka_donations (`ID`, `campaign_id`, `status`, `payment_type`, `date_created`, `gateway_id`, `pm_id`, `currency_id`, `amount`, `amount_total`, `amount_in_main_currency`, `amount_total_in_main_currency`,`donor_name`, `donor_email`) VALUES ";
+    $query = "INSERT INTO {$wpdb->prefix}leyka_donations (`ID`, `campaign_id`, `status`, `payment_type`, `date_created`, `gateway_id`, `pm_id`, `currency_id`, `amount`, `amount_total`, `amount_in_main_currency`, `amount_total_in_main_currency`,`donor_name`, `donor_email`, `donor_user_id`) VALUES ";
 
     $donation_post_meta = $wpdb->get_results($wpdb->prepare("SELECT `meta_key`,`meta_value` FROM {$wpdb->prefix}postmeta WHERE `post_id`=%d", $donation_post_data['ID']), ARRAY_A);
 
@@ -239,7 +238,7 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
     $donation_post_meta['main_curr_amount_total'] = empty($donation_post_meta['main_curr_amount_total']) ?
         $donation_post_meta['donation_amount_total'] : round($donation_post_meta['main_curr_amount_total'], 2);
 
-    $query_values = "\n({$donation_post_data['ID']},{$donation_post_meta['campaign_id']},'{$donation_post_data['post_status']}','{$donation_post_meta['payment_type']}','{$donation_post_data['post_date']}',{$donation_post_meta['gateway']},'{$donation_post_meta['payment_method']}','{$donation_post_meta['donation_currency']}',{$donation_post_meta['donation_amount']},{$donation_post_meta['donation_amount_total']},{$donation_post_meta['main_curr_amount']},{$donation_post_meta['main_curr_amount_total']},'{$donation_post_meta['donor_name']}','{$donation_post_meta['donor_email']}')";
+    $query_values = "\n({$donation_post_data['ID']},{$donation_post_meta['campaign_id']},'{$donation_post_data['post_status']}','{$donation_post_meta['payment_type']}','{$donation_post_data['post_date']}',{$donation_post_meta['gateway']},'{$donation_post_meta['payment_method']}','{$donation_post_meta['donation_currency']}',{$donation_post_meta['donation_amount']},{$donation_post_meta['donation_amount_total']},{$donation_post_meta['main_curr_amount']},{$donation_post_meta['main_curr_amount_total']},'{$donation_post_meta['donor_name']}','{$donation_post_meta['donor_email']}','{$donation_post_data['post_author']}')";
 
     $donation_post_data['payment_type'] = $donation_post_meta['payment_type']; // Save the payment type for further usage
 
