@@ -20,7 +20,7 @@ $data = Leyka_Donations_Main_Stats_Portlet_Controller::get_instance()->get_templ
         <div class="no-data"><?php _e('No data available', 'leyka');?></div>
         <?php } else {?>
 
-        <div class="main-number"><?php echo number_format($data['donations_amount'], 0, ".", " ") . '&nbsp;'.leyka()->opt('currency_'.leyka()->opt('currency_main').'_label');?></div>
+        <div class="main-number"><?php echo leyka_format_amount($data['donations_amount']).'&nbsp;'.leyka()->opt('currency_'.leyka()->opt('currency_main').'_label');?></div>
         <div class="percent <?php echo $data['donations_amount_delta_percent'] < 0 ? 'negative' : ($data['donations_amount_delta_percent'] > 0 ? 'positive' : '');?>"><?php echo str_replace(array('+', '-'), '', $data['donations_amount_delta_percent']);?></div>
 
         <?php }?>

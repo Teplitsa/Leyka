@@ -7,7 +7,7 @@ if( !class_exists('WP_List_Table') ) {
 
 class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
-    protected static $_records_count = NULL;
+    protected static $_items_count = NULL;
 
     public function __construct() {
 
@@ -103,15 +103,15 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
     /**
      * @return int
      */
-    public static function record_count() {
+    public static function get_items_count() {
 
-        if(self::$_records_count === NULL) {
-            self::$_records_count = Leyka_Donations::get_instance()->get_count(
+        if(self::$_items_count === NULL) {
+            self::$_items_count = Leyka_Donations::get_instance()->get_count(
                 apply_filters('leyka_admin_donations_list_filter', array(), 'get_donations_count')
             );
         }
 
-        return self::$_records_count;
+        return self::$_items_count;
 
     }
 
@@ -129,7 +129,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
         $columns = array(
             'cb' => '<input type="checkbox">',
-            'donation_id' => __('ID'),
+            'id' => __('ID'),
             'payment_type' => __('Type', 'leyka'),
             'campaign' => __('Campaign', 'leyka'),
             'donor' => __('Donor', 'leyka'),
@@ -160,7 +160,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
      */
     public function get_sortable_columns() {
         return array(
-            'donation_id' => array('donation_id', true),
+            'id' => array('id', true),
             'payment_type' => array('payment_type', true),
             'campaign' => array('campaign_id', true),
             'donor' => array('donor_name'),
@@ -180,7 +180,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
      */
     public function column_default($donation, $column_name) { /** @var $donation Leyka_Donation_Base */
         switch($column_name) {
-            case 'donation_id': return apply_filters('leyka_admin_donation_id_column_content', $donation->id, $donation);
+            case 'id': return apply_filters('leyka_admin_donation_id_column_content', $donation->id, $donation);
             case 'payment_type':
                 return apply_filters(
                     'leyka_admin_donation_type_column_content',
@@ -393,7 +393,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
         $per_page = $this->get_items_per_page('donations_per_page');
 
-        $this->set_pagination_args(array('total_items' => self::record_count(), 'per_page' => $per_page,));
+        $this->set_pagination_args(array('total_items' => self::get_items_count(), 'per_page' => $per_page,));
 
         $this->items = self::get_donations($per_page, $this->get_pagenum());
 
@@ -405,7 +405,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
             wp_nonce_field('bulk-'.$this->_args['plural'], '_wpnonce', false);
         }?>
 
-        <div class="tablenav <?php echo esc_attr( $which ); ?>">
+        <div class="tablenav <?php echo esc_attr($which); ?>">
 
         <?php if($this->has_items()) { ?>
             <div class="alignleft actions bulkactions">

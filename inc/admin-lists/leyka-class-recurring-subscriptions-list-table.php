@@ -7,7 +7,7 @@ if( !class_exists('WP_List_Table') ) {
 
 class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
 
-    protected static $_records_count = NULL;
+    protected static $_items_count = NULL;
 
     public function __construct() {
 
@@ -160,17 +160,17 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
     /**
      * @return null|string
      */
-    public static function record_count() {
+    public static function get_items_count() {
 
-        if(self::$_records_count === NULL) {
-            self::$_records_count = Leyka_Donations::get_instance()->get_count(apply_filters(
+        if(self::$_items_count === NULL) {
+            self::$_items_count = Leyka_Donations::get_instance()->get_count(apply_filters(
                 'leyka_admin_recurring_subscriptions_list_filter',
                 array(),
                 'get_recurring_subscriptions_total_count'
             ));
         }
 
-        return self::$_records_count;
+        return self::$_items_count;
 
     }
 
@@ -435,7 +435,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
 
         $per_page = $this->get_items_per_page('recurring_subscriptions_per_page');
 
-        $this->set_pagination_args(array('total_items' => self::record_count(), 'per_page' => $per_page,));
+        $this->set_pagination_args(array('total_items' => self::get_items_count(), 'per_page' => $per_page,));
         $this->items = $this->get_recurring_subscriptions($per_page, $this->get_pagenum());
 
     }

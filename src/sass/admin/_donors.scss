@@ -1,3 +1,4 @@
+// Donor admin pages common styles:
 .leyka-admin-donors-list, .dashboard_page_leyka_donor_info {
 
 	.update-nag {
@@ -15,154 +16,25 @@
     }
 
 	.leyka-dashboard-footer {
-		margin-left: 2 * $leyka-base;
+		margin-left: 2*$leyka-base;
 	}
 
-	.loading-indicator-wrap {
-
-	    .ok-icon {
-	        display: none;
-	        padding-top: 6px;
-	    }
-
-	    .loader-wrap {
-	    	display: none;
-			padding-top: 8px;
-	    }
-
-	}
+	//.loading-indicator-wrap {
+    //
+	//    .ok-icon {
+	//        display: none;
+	//        padding-top: 6px;
+	//    }
+    //
+	//    .loader-wrap {
+	//    	display: none;
+	//		padding-top: 8px;
+	//    }
+    //
+	//}
 
 }
-
-.leyka-admin-donors-list {
-	.empty-donors-list {
-		margin-top: $leyka-base;
-	}
-}
-
-// filter controls
-.donors-list-filters {
-
-    // Autocomplete - Donors filter specifics:
-    .ui-autocomplete-multiselect {
-        margin-right: $leyka-base;
-        padding-left: 8px;
-    }
-
-}
-
-// Donors inline edit fields layout:
-.leyka-donors-inline-edit-fields {
-
-    display: flex;
-
-    .inline-edit-field {
-
-        margin-right: 8px;
-
-        & select {
-            height: 33px;
-        }
-
-    }
-
-    .inline-edit-submits {
-
-        button {
-            margin-right: 8px;
-        }
-
-        .result {
-            display: flex;
-            align-items: center;
-        }
-
-    }
-
-}
-
-.leyka-admin-donors-list .wp-list-table {
-
-	.column-first_donation {
-		width: 121px;
-	}
-
-	.column-amount_donated {
-		width: 121px;
-	}
-
-	.column-donors_tags {
-		width: 121px;
-	}
-
-	.column-gateways {
-		width: 136px;
-	}
-
-	.column-donor_type {
-		width: 48px;
-		max-width: 48px;
-		padding-left: 2px;
-		padding-right: 6px;
-	}
-
-	th.column-donor_type {
-		padding-left: 12px;
-	}
-
-	th.column-donor_type {
-		padding-left: 12px;
-	}
-
-	thead tr td.check-column {
-		input {
-			margin-top: -2px;
-		}
-	}
-
-	#the-list {
-		td {
-            padding: 12px 8px;
-		}
-
-		th.check-column {
-			input {
-				margin-top: 5px;
-			}
-		}
-
-		td.column-donor_type {
-			@include leyka-donor-type-icon;
-		}
-
-		.donor-name {
-		}
-
-		.leyka-admin-shortened-text {
-			@include leyka-admin-triangle-list-marker($leyka-admin-color-link);
-		}
-
-		.leyka-donors-tags-list,
-		.leyka-gateways-list {
-			@include leyka-admin-triangle-list-marker($leyka-donors-color-selector-stroke);
-		}
-
-		.leyka-donation-info-wrapper {
-		    .donation-status {
-		        @include leyka-donation-status-marker();
-		    }
-
-		    .first-sub-row {
-		        display: inline-block;
-		    }
-
-		    .second-sub-row {
-		        @include leyka-admin-triangle-list-marker($leyka-admin-color-link);
-		        margin-top: -1px;
-		    }
-		}
-	}
-}
+// Donor admin pages common styles - END
 
 // Donor's info page:
 
@@ -232,11 +104,13 @@
 			}
 
 			.donor-description {
+
 				margin-top: 10px;
 				border-bottom: 1px solid $leyka-donors-stroke;
 				padding-bottom: $leyka-base;
 
 				.donor-view-description-wrapper {
+
 					display: flex;
 					justify-content: flex-start;
 
@@ -268,7 +142,9 @@
 						.ok-icon {
 							padding-top: 0;
 						}
+
 					}
+
 				}
 				
 				.donor-add-description-wrapper {
@@ -307,17 +183,18 @@
 					}
 				}
 
-				.donor-data-edit {
-				}
 			}
+
 		}
 
 		.donor-info-details {
+
 			a {
 				@include leyka-admin-a;
 			}
 
 			dl {
+
 				margin-top: 0.5 * $leyka-base;
 				margin-bottom: 0;
 
@@ -332,6 +209,7 @@
 				}
 
 				dd {
+
 					flex-basis: 70%;
 					margin-left: $leyka-base;
 					flex-grow: 1;
@@ -341,8 +219,11 @@
 					&:last {
 						margin-bottom: 0;
 					}
+
 				}
+
 			}
+
 		}
 	}
 }

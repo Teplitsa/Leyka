@@ -1039,7 +1039,7 @@ function leyka_get_secondary_currencies_full_info($country_id = null) {
  */
 function leyka_get_currencies_full_info($currency_id = null) {
 
-    $currencies = array_merge(leyka_get_main_currencies_full_info(), leyka_get_secondary_currencies_full_info());
+    $currencies = leyka_get_main_currencies_full_info() + leyka_get_secondary_currencies_full_info();
 
     if(empty($currency_id)) {
         return $currencies;
@@ -1468,18 +1468,6 @@ function leyka_success_widget_displayed() {
 
 function leyka_failure_widget_displayed() {
     return leyka_options()->opt_template('show_failure_widget_on_failure') && is_page(leyka_options()->opt('failure_page'));
-}
-
-function leyka_format_amount($amount) {
-
-    if((int)$amount >= 0) {
-        $amount_is_float = (float)$amount - (int)$amount > 0;
-    } else {
-        return false;
-    }
-
-    return number_format((float)$amount, $amount_is_float ? 2 : 0, '.', ' ');
-
 }
 
 function leyka_validate_donor_name($name, $is_correctional = false) {
@@ -1919,6 +1907,20 @@ if( !function_exists('leyka_amount_format') ) {
         // Display amount decimal part only if there is one:
         $amount = round((float)$amount, 2);
         return (abs($amount) - abs((int)$amount) > 0) ? number_format_i18n($amount, 2) : number_format_i18n($amount);
+
+    }
+}
+/** @todo Merge these 2 functions */
+if( !function_exists('leyka_format_amount') ) {
+    function leyka_format_amount($amount) {
+
+        if((int)$amount >= 0) {
+            $amount_is_float = (float)$amount - (int)$amount > 0;
+        } else {
+            return false;
+        }
+
+        return number_format((float)$amount, $amount_is_float ? 2 : 0, '.', ' ');
 
     }
 }

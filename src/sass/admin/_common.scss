@@ -160,6 +160,10 @@
 	display: none;
 }
 
+.leyka-admin-shortened-text {
+    @include leyka-admin-triangle-list-marker($leyka-admin-color-link);
+}
+
 // Payment types icons:
 i.icon-payment-type {
 
@@ -183,6 +187,22 @@ i.icon-payment-type {
 
 }
 // Payment types icons - END
+
+// Donor types icons:
+i.icon-donor-type {
+
+    display: inline-block;
+
+    &.icon-single {
+        @include leyka-colored-icon('../../img/icon-payment-type-single.svg', 20px);
+    }
+
+    &.icon-regular {
+        @include leyka-colored-icon('../../img/icon-payment-type-rebill.svg', 20px);
+    }
+
+}
+// Donor types icons - END
 
 // Donation status icons:
 i.icon-leyka-donation-status {
@@ -1175,6 +1195,16 @@ i.icon-leyka-recurring-subscription-status {
 
     .wp-list-table {
 
+        thead {
+
+            .check-column {
+                input {
+                    margin-top: -2px;
+                }
+            }
+
+        }
+
         a {
 
             color: $leyka-admin-color-link;
@@ -1200,14 +1230,8 @@ i.icon-leyka-recurring-subscription-status {
             }
 
             &.check-column {
-
                 padding-top: 0;
                 vertical-align: middle;
-
-                input[type="checkbox"] {
-                    margin-top: 0 !important;
-                }
-
             }
 
         }
@@ -1222,8 +1246,13 @@ i.icon-leyka-recurring-subscription-status {
 
             vertical-align: middle;
 
+            .row-actions {
+                font-size: 11px;
+                font-weight: normal;
+            }
+
             // Common admin lists columns styles:
-            &.column-donation_id {
+            &.column-id {
                 font-weight: 500;
             }
 
@@ -1274,30 +1303,7 @@ i.icon-leyka-recurring-subscription-status {
             }
 
             &.column-campaign {
-
                 font-weight: 500;
-
-                .row-actions {
-                    font-size: 11px;
-                    font-weight: normal;
-                }
-
-            }
-
-            &.column-gateway_pm {
-                .leyka-gateway-name {
-
-                    display: flex;
-                    justify-content: flex-start;
-                    align-items: center;
-
-                    img {
-                        margin-right: 4px;
-                        width: 20px;
-                        height: 20px;
-                    }
-
-                }
             }
 
             &.column-amount {
@@ -1324,6 +1330,20 @@ i.icon-leyka-recurring-subscription-status {
                 .leyka-donation-status-label {
                     font-size: 11px;
                     font-weight: 400;
+                }
+
+            }
+
+            .leyka-gateway-name {
+
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+
+                img {
+                    margin-right: 4px;
+                    width: 20px;
+                    height: 20px;
                 }
 
             }

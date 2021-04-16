@@ -1,0 +1,160 @@
+/** Donors list page **/
+.leyka-admin-list-page.leyka-admin-donors-list {
+
+    // Table filters:
+    //.leyka-admin-list-filter-wrapper .ui-autocomplete-multiselect { // Autocomplete - Donors filter specifics
+    //    margin-right: $leyka-base;
+    //    padding-left: 8px;
+    //}
+    // Table filters - END
+
+    .empty-donors-list {
+        margin-top: $leyka-base;
+    }
+
+    // Donors inline edit fields layout:
+    .leyka-donors-inline-edit-fields {
+
+        display: flex;
+
+        .inline-edit-field {
+
+            margin-right: 8px;
+
+            & select {
+                height: 33px;
+            }
+
+        }
+
+        .inline-edit-submits {
+
+            button {
+                margin-right: 8px;
+            }
+
+            .result {
+                display: flex;
+                align-items: center;
+            }
+
+        }
+
+    }
+    // Donors inline edit fields layout - END
+
+    // List table (columns & content):
+    .wp-list-table.widefat {
+
+        // Columns width:
+        tr {
+
+            .column-id {
+                width: 80px;
+            }
+
+            .column-donor_type {
+                width: 40px;
+            }
+
+            .column-donor {
+                width: 180px;
+                max-width: 250px;
+            }
+
+            .column-first_donation {
+                width: 90px;
+            }
+
+            .column-campaigns {
+                width: 250px;
+            }
+
+            .column-donors_tags {
+                width: 121px;
+            }
+
+            .column-gateways {
+                width: 136px;
+            }
+
+            .column-last_donation {
+                width: 250px;
+            }
+
+            .column-amount_donated {
+                width: 130px;
+            }
+
+        }
+        // Columns width - END
+
+        // Columns content settings:
+        td {
+
+            font-size: 13px;
+
+            &.column-campaigns {
+                .leyka-more-campaigns {
+                    font-weight: 500;
+                }
+            }
+
+            &.column-donors_tags {
+                .leyka-donors-tags-list {
+                    @include leyka-admin-triangle-list-marker($leyka-donors-color-selector-stroke);
+                }
+            }
+
+            &.column-gateways {
+                .leyka-gateways-list {
+
+                    margin: 0;
+
+                    li {
+
+                        list-style: none;
+                        margin: 0 0 6px 0;
+                        font-size: 13px;
+
+                        &:last-child {
+                            margin-bottom: 0;
+                        }
+
+                    }
+
+                }
+            }
+
+            &.column-last_donation {
+
+                .first-sub-row {
+
+                    display: inline-block;
+                    margin: 0 12px;
+
+                    .leyka-donation-amount {
+                        font-weight: 500;
+                        margin-right: 12px;
+                    }
+
+                }
+
+                .second-sub-row {
+                    @include leyka-admin-triangle-list-marker($leyka-admin-color-link);
+                    margin-top: -1px;
+                }
+
+            }
+
+            &.column-amount_donated {
+                font-weight: 500;
+            }
+
+        }
+        // Columns content settings - END
+
+    }
+    // List table (columns & content) END
+
+}
