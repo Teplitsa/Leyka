@@ -71,7 +71,7 @@ class Leyka_Donor {
             $donor_user->add_cap(self::DONOR_ACCOUNT_ACCESS_CAP);
 
             // If Donor user just acquired account access, make him set up a password:
-            update_user_meta($donor_user->id, 'leyka_account_activation_code', wp_generate_password(60, false, false));
+            update_user_meta($donor_user->ID, 'leyka_account_activation_code', wp_generate_password(60, false, false));
 
         } else {
             $donor_user->remove_cap(self::DONOR_ACCOUNT_ACCESS_CAP);
