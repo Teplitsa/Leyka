@@ -863,12 +863,10 @@ function leyka_campaigns_autocomplete(){
     $filter = isset($_GET['term']) ? sanitize_text_field($_GET['term']) : '';
     $res = array();
 
-    if($filter) {
-        $campaigns = leyka_get_campaigns_list(array('s' => $filter));
-    }
-    else {
-        $campaigns = leyka_get_campaigns_list(array());
-    }
+    $campaigns = leyka_get_campaigns_list(array(
+        's' => $filter,
+        'posts_per_page' => 20,
+    ));
 
     foreach($campaigns as $campaign_id => $campaign_title) {
         $res[] = array('label' => $campaign_title, 'value' => $campaign_id);

@@ -23,7 +23,7 @@
                             <div class="leyka-admin-list-filter-wrapper">
                                 <select name="status" class="leyka-selector leyka-select-menu">
                                     <option value="" <?php echo !$filter_value ? 'selected="selected"' : '';?>>
-                                        <?php _e('All subscriptions', 'leyka');?>
+                                        --- <?php _e('All subscriptions', 'leyka');?> ---
                                     </option>
                                     <option value="active" <?php echo $filter_value == 'active' ? 'selected="selected"' : '';?>>
                                         <?php _e('Only active', 'leyka');?>
@@ -40,7 +40,7 @@
 
                             <div class="leyka-admin-list-filter-wrapper">
 
-                                <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector leyka-autocomplete" value="" placeholder="<?php _e('Campaign', 'leyka');?>">
+                                <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector leyka-autocomplete" value="" placeholder="<?php _e('All campaigns', 'leyka');?>">
                                 <?php $filter_value = isset($_GET['campaigns']) ? (array)$_GET['campaigns'] : array();?>
 
                                 <select class="leyka-campaigns-select autocomplete-select" name="campaigns[]" multiple="multiple">
@@ -62,13 +62,14 @@
                                 <input type="text" name="first-date" autocomplete="off" class="leyka-first-donation-date-selector leyka-selector datepicker-ranged-selector" value="<?php echo isset($_GET['first-date']) ? esc_attr($_GET['first-date']) : '';?>" placeholder="<?php _e('First payment dates', 'leyka');?>">
                             </div>
 
-                            <?php $filter_value = isset($_GET['gateway']) ? (array)$_GET['gateway'] : array();?>
                             <div class="leyka-admin-list-filter-wrapper">
+
+                                <?php $filter_value = isset($_GET['gateway']) ? (array)$_GET['gateway'] : array();?>
 
                                 <select id="leyka-gateways-select" class="leyka-select-menu" name="gateway">
 
                                     <option value="" <?php echo $filter_value ? '' : 'selected="selected"';?>>
-                                        <?php _e('Gateway', 'leyka');?>
+                                        --- <?php _e('All gateways', 'leyka');?> ---
                                     </option>
 
                                     <?php $gateways = leyka_get_gateways();

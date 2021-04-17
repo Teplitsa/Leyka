@@ -6,65 +6,9 @@ jQuery(document).ready(function($){
         return;
     }
 
-	let selector_values = [],
-		selected_values = [];
+	let selected_values = [];
 
-	// Campaigns:
-    /** @todo Remove when more common field handling code is ready (settings.js : 59+) */
-	selected_values = [];
-	$('#leyka-campaigns-select').find('option').each(function(){
-		selected_values.push({item: {label: $.trim($(this).text()), value: $(this).val()}});
-	});
-
-    $('input.leyka-campaigns-selector').autocomplete({
-        source: leyka.ajaxurl+'?action=leyka_campaigns_autocomplete',
-        multiselect: true,
-        minLength: 0,
-        search_on_focus: true,
-        pre_selected_values: selected_values,
-		leyka_select_callback: function(selected_items) {
-
-			let $select = $('#leyka-campaigns-select');
-			$select.html('');
-
-			for(let val in selected_items) {
-				$('<option></option>')
-					.val(val)
-					.prop('selected', true)
-                    .appendTo($select);
-			}
-		}
-    });
-
-	// Gateways:
-    /** @todo Don't use autocomplete widget for Gateways/PMs select - change to selectmenu */
-	selector_values = [];
-	selected_values = [];
-	$('#leyka-gateways-select').find('option').each(function(){
-
-	    let $this = $(this);
-
-		selector_values.push({label: $.trim($this.text()), value: $this.val()});
-		if($this.prop('selected')) {
-			selected_values.push({item: {label: $.trim($this.text()), value: $this.val()}});
-		}
-
-	});
-
-    $('input.leyka-gateways-selector').autocomplete({
-        source: selector_values,
-        multiselect: true,
-        search_on_focus: true,
-        minLength: 0,
-        pre_selected_values: selected_values,
-		leyka_select_callback: function( selectedItems ) {
-			$('#leyka-gateways-select').find('option').each(function(){
-				$(this).prop('selected', selectedItems[$(this).val()] !== undefined);
-			});
-		}        
-    });
-
-	// Tags:
+	// Tags autocomplete:
 	$('.leyka-donors-tags-select').each(function(){
 
 	    let $select_field = $(this);
@@ -91,50 +35,6 @@ jQuery(document).ready(function($){
         });
 
     });
-
-	// Payment status:
-	selector_values = [];
-	selected_values = [];
-	$('#leyka-payment-status-select').find('option').each(function(){
-		selector_values.push({label: $.trim($(this).text()), value: $(this).val()});
-		if($(this).prop('selected')) {
-			selected_values.push({item: {label: $.trim($(this).text()), value: $(this).val()}});
-		}
-	});
-
-	let $leyka_payment_status_autocomplete = $('input.leyka-payment-status-selector').autocomplete({
-        source: selector_values,
-        multiselect: true,
-        search_on_focus: true,
-        minLength: 0,
-        pre_selected_values: selected_values,
-		leyka_select_callback: function( selectedItems ) {
-			$('#leyka-payment-status-select').find('option').each(function(){
-				$(this).prop('selected', selectedItems[$(this).val()] !== undefined);
-			});
-		}        
-    });
-
-	$('.reset-filters').click(function(e){
-
-		e.preventDefault();
-
-		$('input.leyka-payment-status-selector').autocomplete('reset');
-		$('input.leyka-donors-tags-selector').autocomplete('reset');
-		$('input.leyka-gateways-selector').autocomplete('reset');
-		$('input.leyka-campaigns-selector').autocomplete('reset');
-
-		$('input[name="donor-name-email"]').val('');
-
-        if(typeof $().selectmenu !== 'undefined') {
-            $('select[name="donor-type"]').prop('selectedIndex', 0).selectmenu('refresh');
-        }
-
-		$('input[name="first-donation-date"]').val('');
-		$('input[name="last-donation-date"]').val('');
-        $(this).closest('form.donors-list-controls').submit();
-
-	});
 
 	// Donors inline edit:
     let $donors_table_body = $('#the-list'),
@@ -218,3 +118,4 @@ jQuery(document).ready(function($){
     })
 
 });
+/** Donors list page - END */

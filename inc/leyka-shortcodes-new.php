@@ -557,7 +557,7 @@ function leyka_shortcode_campaign_card($atts) {
 
                 <?php if($atts['show_collected_amount']) {?>
                 <div class="funded" style="<?php echo $atts['color_fulfilled'] ? 'color:'.$atts['color_fulfilled'] : '';?>">
-                    <?php echo leyka_amount_format($funded).' '.leyka_get_currency_label()
+                    <?php echo leyka_format_amount($funded).' '.leyka_get_currency_label()
                         .($atts['recurring'] ? ' / '._x('month', '"Month" shortened, like "mon" maybe', 'leyka') : '');?>
                 </div>
                 <?php }?>
@@ -566,8 +566,8 @@ function leyka_shortcode_campaign_card($atts) {
 
                 <div class="target">
                 <?php echo $atts['recurring'] ?
-                    sprintf(__('We need to raise monthly: %s %s', 'leyka'), leyka_amount_format($campaign->target), leyka_get_currency_label()) :
-                    sprintf(__('We need to raise: %s %s', 'leyka'), leyka_amount_format($campaign->target), leyka_get_currency_label());?>
+                    sprintf(__('We need to raise monthly: %s %s', 'leyka'), leyka_format_amount($campaign->target), leyka_get_currency_label()) :
+                    sprintf(__('We need to raise: %s %s', 'leyka'), leyka_format_amount($campaign->target), leyka_get_currency_label());?>
                 </div>
 
                 <?php }?>

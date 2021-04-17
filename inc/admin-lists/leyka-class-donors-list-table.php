@@ -13,11 +13,11 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         parent::__construct(array('singular' => __('Donor', 'leyka'), 'plural' => __('Donors', 'leyka'), 'ajax' => true,));
 
-        add_filter('leyka_admin_donors_list_filter', array($this, 'filter_donors'), 10, 2);
+        add_filter('leyka_admin_donors_list_filter', array($this, 'filter_items'), 10, 2);
         add_action('pre_user_query', array($this, 'filter_donors_pre_user_query'));
 
         if( !empty($_REQUEST['donors-list-export']) ) {
-            $this->_export_donors();
+            $this->_export();
         }
 
     }
@@ -29,15 +29,22 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      * @param $filter_type string
      * @return array|false An array of get_users() params, or false if the $filter_type is wrong
      */
-    public function filter_donors(array $donors_params, $filter_type = '') {
-
-//        if($filter_type !== 'get_donors') {
-//            return false;
-//        }
+    public function filter_items(array $donors_params, $filter_type = '') {
 
         $donors_params['meta_query'] = array();
+
         if( !empty($_GET['donor-type']) ) {
-            $donors_params['meta_query'][] = array('key' => 'leyka_donor_type', 'value' => esc_sql($_GET['donor-type']),);
+            if($_GET['donor-type'] == 'regular') {
+                $donors_params['meta_query'][] = array('key' => 'leyka_donor_type', 'value' => esc_sql($_GET['donor-type']),);
+            } else {
+                // If Donor user is of single type, he hasn't any "leyka_donor_type" usermeta.
+                // So if this filter clause will slow down the query, comment out the line of comparation with "single":
+                $donors_params['meta_query'][] = array(
+                    'relation' => 'OR',
+                    array('key' => 'leyka_donor_type', 'value' => 'single',),
+                    array('key' => 'leyka_donor_type', 'compare' => 'NOT EXISTS',)
+                );
+            }
         }
 
         if( !empty($_GET['donor-name-email']) ) {
@@ -53,19 +60,73 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         }
 
-        if( !empty($_GET['gateways']) ) {
+        if( !empty($_GET['first-date']) ) {
 
-            $gateways_meta_query = array('relation' => 'OR',);
-            
-            foreach($_GET['gateways'] as $pm_full_id) {
-                $gateways_meta_query[] = array(
-                    'key' => 'leyka_donor_gateways',
-                    'value' => esc_sql($pm_full_id),
-                    'compare' => 'LIKE',
-                );
+            if(is_string($_GET['first-date']) && mb_stripos($_GET['first-date'], '-') !== false) { // Dates period chosen as a str
+
+                $filter_date = array_slice(explode('-', $_GET['first-date']), 0, 2);
+
+                if(count($filter_date) === 2) { // The date is set as an interval
+
+                    $filter_date[0] = strtotime(trim($filter_date[0]).' 00:00:00');
+                    $filter_date[1] = strtotime(trim($filter_date[1]).' 23:59:59');
+
+                }
+
+            } else if(is_array($_GET['first-date']) && count($_GET['first-date']) === 2) { // Dates period chosen as an array
+
+                $filter_date = $_GET['first-date'];
+
+                $filter_date[0] = strtotime(trim($filter_date[0]).' 00:00:00');
+                $filter_date[1] = strtotime(trim($filter_date[1]).' 23:59:59');
+
+            } else {
+                $filter_date = trim($_GET['first-date']);
             }
 
-            $donors_params['meta_query'][] = $gateways_meta_query;
+            $donors_params['meta_query'][] = array(
+                'key' => 'leyka_donor_first_donation_date',
+                'value' => is_array($filter_date) ?
+                    $filter_date : // Date interval
+                    array(strtotime($filter_date.' 00:00:00'), strtotime($filter_date.' 23:59:59')), // Single date
+                'compare' => 'BETWEEN',
+                'type' => 'NUMERIC',
+            );
+
+        }
+
+        if( !empty($_GET['last-date']) ) {
+
+            if(is_string($_GET['last-date']) && mb_stripos($_GET['last-date'], '-') !== false) { // Dates period chosen as a str
+
+                $filter_date = array_slice(explode('-', $_GET['last-date']), 0, 2);
+
+                if(count($filter_date) === 2) { // The date is set as an interval
+
+                    $filter_date[0] = strtotime(trim($filter_date[0]).' 00:00:00');
+                    $filter_date[1] = strtotime(trim($filter_date[1]).' 23:59:59');
+
+                }
+
+            } else if(is_array($_GET['last-date']) && count($_GET['last-date']) === 2) { // Dates period chosen as an array
+
+                $filter_date = $_GET['last-date'];
+
+                $filter_date[0] = strtotime(trim($filter_date[0]).' 00:00:00');
+                $filter_date[1] = strtotime(trim($filter_date[1]).' 23:59:59');
+
+            } else {
+                $filter_date = trim($_GET['last-date']);
+            }
+
+            $donors_params['meta_query'][] = array(
+                'key' => 'leyka_donor_last_donation_date',
+                'value' => is_array($filter_date) ?
+                    $filter_date : // Date interval
+                    array(strtotime($filter_date.' 00:00:00'), strtotime($filter_date.' 23:59:59')), // Single date
+                'compare' => 'BETWEEN',
+                'type' => 'NUMERIC',
+            );
 
         }
 
@@ -85,76 +146,22 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         }
 
-        if( !empty($_GET['first-date']) ) {
+        if( !empty($_GET['gateway']) && leyka_get_gateway_by_id($_GET['gateway']) ) {
 
-            if(mb_stripos($_GET['first-date'], '-') !== false) { // Dates period chosen
-
-                $_GET['first-date'] = array_slice(explode('-', $_GET['first-date']), 0, 2);
-
-                if(count($_GET['first-donation-date']) === 2) { // The date is set as an interval
-
-                    $_GET['first-date'][0] = strtotime(trim($_GET['first-date'][0]).' 00:00:00');
-                    $_GET['first-date'][1] = strtotime(trim($_GET['first-date'][1]).' 23:59:59');
-
-                    $donors_params['meta_query'][] = array(
-                        'key' => 'leyka_donor_first_donation_date',
-                        'value' => $_GET['first-date'],
-                        'compare' => 'BETWEEN',
-                        'type' => 'NUMERIC',
-                    );
-
-                }
-
-            } else { // Single date chosen
-                $donors_params['meta_query'][] = array(
-                    'key' => 'leyka_donor_first_donation_date',
-                    'value' => array(
-                        strtotime($_GET['first-date'].' 00:00:00'),
-                        strtotime($_GET['first-date'].' 23:59:59'),
-                    ),
-                    'compare' => 'BETWEEN',
-                    'type' => 'NUMERIC',
-                );
-            }
-
-        }
-
-        if( !empty($_GET['last-date']) ) {
-
-            if(stripos($_GET['last-date'], ' - ') !== false) { // Dates period chosen
-
-                $_GET['last-date'] = array_slice(explode('-', $_GET['last-date']), 0, 2);
-
-                if(count($_GET['last-date']) === 2) { // The date is set as an interval
-
-                    $_GET['last-date'][0] = strtotime(trim($_GET['last-date'][0]).' 00:00:00');
-                    $_GET['last-date'][1] = strtotime(trim($_GET['last-date'][1]).' 23:59:59');
-
-                    $donors_params['meta_query'][] = array(
-                        'key' => 'leyka_donor_last_donation_date',
-                        'value' => $_GET['last-date'],
-                        'compare' => 'BETWEEN',
-                        'type' => 'NUMERIC',
-                    );
-
-                }
-
-            } else { // Single date chosen
-                $donors_params['meta_query'][] = array(
-                    'key' => 'leyka_donor_last_donation_date',
-                    'value' => array(
-                        strtotime($_GET['last-date'].' 00:00:00'),
-                        strtotime($_GET['last-date'].' 23:59:59'),
-                    ),
-                    'compare' => 'BETWEEN',
-                    'type' => 'NUMERIC',
-                );
-            }
+            $donors_params['meta_query'][] = array(
+                'key' => 'leyka_donor_gateways',
+                'value' => esc_sql($_GET['gateway']),
+                'compare' => 'LIKE',
+            );
 
         }
 
         if(count($donors_params['meta_query']) > 1) {
             $donors_params['meta_query']['relation'] = 'AND';
+        }
+
+        if($filter_type) { // If filter type is set, the filtering is not just to get items from DB - so ordering won't be needed
+            return $donors_params;
         }
 
         // Ordering:
@@ -269,17 +276,13 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      *
      * @return mixed
      */
-    public static function get_donors($per_page = false, $page_number = 1) {
+    protected static function _get_items($per_page = false, $page_number = 1) {
 
-        $donors_params = apply_filters(
-            'leyka_admin_donors_list_filter', array(
-                'role__in' => array(Leyka_Donor::DONOR_USER_ROLE,),
-                'number' => $per_page ? absint($per_page) : -1,
-                'paged' => $page_number ? absint($page_number) : false,
-                'fields' => 'id',
-            ),
-            'get_donors'
-        );
+        $donors_params = apply_filters('leyka_admin_donors_list_filter', array(
+            'role__in' => array(Leyka_Donor::DONOR_USER_ROLE,),
+            'number' => $per_page ? absint($per_page) : -1,
+            'paged' => $page_number ? absint($page_number) : false,
+        ));
 
         $donors = array();
         foreach(get_users($donors_params) as $donor_user) {
@@ -317,7 +320,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      *
      * @param int $donor_user_id Donor ID
      */
-    public static function delete_donor($donor_user_id) {
+    protected static function _delete_item($donor_user_id) {
 
         if(leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, true, $donor_user_id)) {
             wp_delete_user(absint($donor_user_id));
@@ -338,16 +341,16 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         if(self::$_items_count === NULL) {
 
-//            self::$_records_count = Leyka_Donations::get_instance()->get_count(
-//                apply_filters('leyka_admin_donations_list_filter', array(), 'get_donations_count')
-//            );
-
-            $donors = new WP_User_Query(apply_filters('leyka_admin_donors_list_filter', array(
-                'role__in' => array(Leyka_Donor::DONOR_USER_ROLE,),
-                'number' => -1,
-                'count_total' => true,
-                'fields' => array('id',),
-            ), 'get_donors_total_count'));
+            $donors = new WP_User_Query(apply_filters(
+                'leyka_admin_donors_list_filter',
+                array(
+                    'role__in' => array(Leyka_Donor::DONOR_USER_ROLE,),
+                    'number' => -1,
+                    'count_total' => true,
+                    'fields' => array('id',),
+                ),
+                'get_donors_total_count'
+            ));
 
             self::$_items_count = $donors->get_total();
 
@@ -654,7 +657,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         $this->set_pagination_args(array('total_items' => self::get_items_count(), 'per_page' => $per_page,));
 
-        $this->items = self::get_donors($per_page, $this->get_pagenum());
+        $this->items = self::_get_items($per_page, $this->get_pagenum());
 
     }
 
@@ -688,7 +691,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             if( !wp_verify_nonce(esc_attr($_REQUEST['_wpnonce']), 'leyka_delete_donor') ) {
                 die(__("You don't have permissions for this operation.", 'leyka'));
             } else {
-                self::delete_donor(absint($_GET['donor']));
+                self::_delete_item(absint($_GET['donor']));
             }
 
         }
@@ -700,7 +703,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         ) {
 
             foreach(esc_sql($_POST['bulk']) as $donor_id) {
-                self::delete_donor($donor_id);
+                self::_delete_item($donor_id);
             }
 
         }
@@ -735,7 +738,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
     <?php }
 
-    protected function _export_donors() {
+    protected function _export() {
 
         // Just in case that export will require some time:
         ini_set('max_execution_time', 99999);
@@ -743,7 +746,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         ob_start();
 
-        $this->items = self::get_donors(false);
+        $this->items = self::_get_items();
 
         add_filter('leyka_donors_export_line', 'leyka_prepare_data_line_for_export', 10, 2);
 
@@ -758,7 +761,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
             'UTF-8',
-            apply_filters('leyka_donors_export_content_charset', 'windows-1251'),
+            apply_filters('leyka_donors_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
             "sep=;\n".implode(';', apply_filters('leyka_donors_export_headers', array(
                 'ID', 'Тип донора', 'Имя', 'Email', 'Дата первого пожертвования', 'Сумма первого пожертвования', 'Кампания первого пожертвования', 'Метки донора', 'Кампании', 'Платёжные операторы', 'Дата последнего пожертвования', 'Сумма последнего пожертвования', 'Кампания последнего пожертвования', 'Общая сумма пожертвований', 'Валюта',
             )))
@@ -766,8 +769,10 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         foreach($this->items as $donor_data) {
 
-            $first_donation = $donor_data['first_donation'] ? new Leyka_Donation($donor_data['first_donation']) : false;
-            $last_donation = $donor_data['last_donation'] ? new Leyka_Donation($donor_data['last_donation']) : false;
+            $first_donation = $donor_data['first_donation'] ?
+                Leyka_Donations::get_instance()->get($donor_data['first_donation']) : false;
+            $last_donation = $donor_data['last_donation'] ?
+                Leyka_Donations::get_instance()->get($donor_data['last_donation']) : false;
 
             $donor_tags_list = array();
             if( !empty($donor_data['donors_tags']) ) {
@@ -818,14 +823,14 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
                         _x(mb_ucfirst($donor_data['donor_type']), 'Donor type', 'leyka'),
                         $donor_data['donor_name'],
                         $donor_data['donor_email'],
-                        ($first_donation ? $first_donation->date : ''),
-                        ($first_donation ? $first_donation->amount : ''),
+                        ($first_donation ? $first_donation->date_time_label : ''),
+                        ($first_donation ? str_replace('.', ',', $first_donation->amount) : ''),
                         ($first_donation ? $first_donation->campaign_title : ''),
                         $donor_tags_list,
                         $donor_campaigns_list,
                         $donor_gateways_list,
-                        ($last_donation ? $last_donation->date : ''),
-                        ($last_donation ? $last_donation->amount : ''),
+                        ($last_donation ? $last_donation->date_time_label : ''),
+                        ($last_donation ? str_replace('.', ',', $last_donation->amount) : ''),
                         ($last_donation ? $last_donation->campaign_title : ''),
                         $donor_data['amount_donated'],
                         $currency,

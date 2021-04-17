@@ -17,10 +17,10 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
             'ajax' => true,
         ));
 
-        add_filter('leyka_admin_recurring_subscriptions_list_filter', array($this, 'filter_recurring_subscriptions'), 10, 2);
+        add_filter('leyka_admin_recurring_subscriptions_list_filter', array($this, 'filter_items'), 10, 2);
 
         if( !empty($_GET['subscriptions-list-export']) ) {
-            $this->_export_recurring_subscriptions();
+            $this->_export();
         }
 
     }
@@ -32,7 +32,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
      * @param $filter_type string
      * @return array|false An array of params, or false if the $filter_type is wrong
      */
-    public function filter_recurring_subscriptions(array $params, $filter_type = '') {
+    public function filter_items(array $params, $filter_type = '') {
 
         $params['recurring_only_init'] = true;
 
@@ -53,7 +53,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
 
         if( !empty($_GET['first-date']) ) {
 
-            if(is_string($_GET['first-date']) && mb_stripos($_GET['first-date'], '-') !== false) { // Dates period chosen as str
+            if(is_string($_GET['first-date']) && mb_stripos($_GET['first-date'], '-') !== false) { // Dates period chosen as a str
 
                 $_GET['first-date'] = array_slice(explode('-', $_GET['first-date']), 0, 2);
 
@@ -82,6 +82,10 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
             $params['gateway_id'] = $_GET['gateway'];
         }
 
+        if($filter_type) { // If filter type is set, the filtering is not just to get items from DB - so ordering won't be needed
+            return $params;
+        }
+
         if( !empty($_GET['orderby']) ) {
 
             $params['orderby'] = $_GET['orderby'];
@@ -102,7 +106,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
      *
      * @return mixed
      */
-    public function get_recurring_subscriptions($per_page = false, $page_number = 1) {
+    protected function _get_items($per_page = false, $page_number = 1) {
 
         $params = array('orderby' => 'id', 'order' => 'desc',);
         if(empty($per_page)) {
@@ -436,7 +440,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
         $per_page = $this->get_items_per_page('recurring_subscriptions_per_page');
 
         $this->set_pagination_args(array('total_items' => self::get_items_count(), 'per_page' => $per_page,));
-        $this->items = $this->get_recurring_subscriptions($per_page, $this->get_pagenum());
+        $this->items = $this->_get_items($per_page, $this->get_pagenum());
 
     }
 
@@ -446,7 +450,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
 //    public function bulk_edit_fields() {
 //    }
 
-    protected function _export_recurring_subscriptions() {
+    protected function _export() {
 
         // Just in case that export will require some time:
         ini_set('max_execution_time', 99999);
@@ -454,7 +458,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
 
         ob_start();
 
-        $this->items = $this->get_recurring_subscriptions();
+        $this->items = $this->_get_items();
 
         add_filter('leyka_recurring_subscriptions_export_line', 'leyka_prepare_data_line_for_export', 10, 2);
 

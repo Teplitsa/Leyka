@@ -72,7 +72,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                         <?php foreach($template_data['amount_variants'] as $i => $amount) {?>
                             <div class="swiper-item <?php echo $i ? '' : 'selected';?>" data-value="<?php echo absint($amount);?>" style="">
                                 <div class="swiper-item-inner">
-                                    <span class="amount"><?php echo leyka_amount_format(absint($amount));?></span>
+                                    <span class="amount"><?php echo leyka_format_amount(absint($amount));?></span>
                                     <span class="currency"><?php echo $template_data['currency_label'];?></span>
                                 </div>
                             </div>

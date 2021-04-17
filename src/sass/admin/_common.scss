@@ -923,7 +923,7 @@ i.icon-leyka-recurring-subscription-status {
 
         .leyka-admin-list-filter-wrapper { // Each field wrapper
 
-            width: 25%;
+            width: calc(25% - 16px); // 16px is the filter container right margin
 
             &:not(:last-child) {
                 margin-right: 16px;

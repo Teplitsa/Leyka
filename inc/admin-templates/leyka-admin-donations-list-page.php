@@ -76,7 +76,7 @@
                             <?php $filter_value = isset($_GET['campaigns']) ? (array)$_GET['campaigns'] : array();?>
                             <div class="leyka-admin-list-filter-wrapper">
 
-                                <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector autocomplete-input" value="" placeholder="<?php _e('Campaign', 'leyka');?>">
+                                <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector autocomplete-input" value="" placeholder="<?php _e('All campaigns', 'leyka');?>">
 
                                 <select class="leyka-campaigns-select autocomplete-select" name="campaigns[]" multiple="multiple">
                                     <?php $campaigns = $filter_value ? leyka_get_campaigns_list(array('include' => $filter_value)) : array();

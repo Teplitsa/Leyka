@@ -1902,25 +1902,24 @@ if( !function_exists('leyka_get_delta_percent') ) {
 }
 
 if( !function_exists('leyka_amount_format') ) {
+    /** @depracated Use leyka_format_amount() instead. */
     function leyka_amount_format($amount) {
-
-        // Display amount decimal part only if there is one:
-        $amount = round((float)$amount, 2);
-        return (abs($amount) - abs((int)$amount) > 0) ? number_format_i18n($amount, 2) : number_format_i18n($amount);
-
+        return leyka_format_amount($amount);
     }
 }
-/** @todo Merge these 2 functions */
+
 if( !function_exists('leyka_format_amount') ) {
-    function leyka_format_amount($amount) {
+    function leyka_format_amount($amount, $use_number_format_l10n = false) {
 
-        if((int)$amount >= 0) {
-            $amount_is_float = (float)$amount - (int)$amount > 0;
-        } else {
-            return false;
-        }
+//        if((int)$amount >= 0) {
+        $amount_is_float = (float)$amount - (int)$amount > 0;
+//        } else {
+//            return false;
+//        }
 
-        return number_format((float)$amount, $amount_is_float ? 2 : 0, '.', ' ');
+        return !!$use_number_format_l10n ?
+            ($amount_is_float ? number_format_i18n($amount, 2) : number_format_i18n($amount)) :
+            number_format((float)$amount, $amount_is_float ? 2 : 0, '.', ' ');
 
     }
 }

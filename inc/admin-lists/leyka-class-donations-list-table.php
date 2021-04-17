@@ -15,10 +15,10 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
         add_filter('default_hidden_columns', array($this, 'get_default_hidden_columns'), 10);
 
-        add_filter('leyka_admin_donations_list_filter', array($this, 'filter_donations'), 10, 2);
+        add_filter('leyka_admin_donations_list_filter', array($this, 'filter_items'), 10, 2);
 
         if( !empty($_REQUEST['donations-list-export']) ) {
-            $this->_export_donations();
+            $this->_export();
         }
 
     }
@@ -28,7 +28,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
      * @param $filter_type string
      * @return array|false An array of get_users() params, or false if the $filter_type is wrong
      */
-    public function filter_donations(array $donations_params, $filter_type = '') {
+    public function filter_items(array $donations_params, $filter_type = '') {
 
         if( !empty($_GET['type']) && in_array($_GET['type'], array_keys(leyka_get_payment_types_list())) ) {
             $donations_params['payment_type'] = $_GET['type'];
@@ -78,7 +78,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
      * @param int $page_number
      * @return mixed
      */
-    public static function get_donations($per_page, $page_number = 1) {
+    protected static function _get_items($per_page, $page_number = 1) {
 
         $params = array('orderby' => 'id', 'order' => 'desc',);
         if(empty($per_page)) {
@@ -96,7 +96,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
      *
      * @param int $donation_id Donation ID
      */
-    public static function delete_donation($donation_id) {
+    protected static function _delete_item($donation_id) {
         Leyka_Donations::get_instance()->delete_donation(absint($donation_id));
     }
 
@@ -374,7 +374,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
         $base_page_url = admin_url('admin.php?page=leyka_donations');
         $links = array('all' => '<a href="'.$base_page_url.'">'.__('All').'</a>');
 
-        foreach(leyka_get_donation_status_list(false) as $status => $label) { /** @todo Remove "false" when "trash" status is in use */
+        foreach(leyka_get_donation_status_list(false) as $status => $label) { /** @todo Remove "false" when "trash" Donation status will be in use */
             $links[$status] = '<a href="'.$base_page_url.'&status='.$status.'" class="'.(isset($_GET['status']) && $_GET['status'] === $status ? 'current' : '').'">'.$label.'</a>';
         }
 
@@ -395,7 +395,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
         $this->set_pagination_args(array('total_items' => self::get_items_count(), 'per_page' => $per_page,));
 
-        $this->items = self::get_donations($per_page, $this->get_pagenum());
+        $this->items = self::_get_items($per_page, $this->get_pagenum());
 
     }
 
@@ -435,7 +435,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
             if( !wp_verify_nonce(esc_attr($_REQUEST['_wpnonce']), 'leyka_delete_donation') ) {
                 die(__("You don't have permissions for this operation.", 'leyka'));
             } else {
-                self::delete_donation(absint($_GET['donation']));
+                self::_delete_item(absint($_GET['donation']));
             }
 
         }
@@ -450,14 +450,14 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
             }
 
             foreach(esc_sql($_REQUEST['bulk-delete']) as $donation_id) {
-                self::delete_donation($donation_id);
+                self::_delete_item($donation_id);
             }
 
         }
 
     }
 
-    protected function _export_donations() {
+    protected function _export() {
 
         // Just in case that export will require some time:
         ini_set('max_execution_time', 99999);
@@ -465,19 +465,11 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
         ob_start();
 
-        $this->items = apply_filters('leyka_donations_pre_export', self::get_donations(false));
+        $this->items = apply_filters('leyka_donations_pre_export', self::_get_items(false));
 
         add_filter('leyka_donations_export_line', 'leyka_prepare_data_line_for_export', 10, 2);
 
         ob_clean();
-
-        die(@iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
-            'UTF-8',
-            apply_filters('leyka_donations_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
-            "sep=;\n".implode(';', apply_filters('leyka_donations_export_headers', array(
-                'ID', 'Имя донора', 'Email', 'Тип платежа', 'Плат. оператор', 'Способ платежа', 'Полная сумма', 'Итоговая сумма', 'Валюта', 'Дата пожертвования', 'Статус', 'Кампания', 'Назначение', 'Подписка на рассылку', 'Email подписки', 'Комментарий'
-            )))
-        ));
 
         header('Content-type: application/vnd.ms-excel');
         header('Content-Transfer-Encoding: binary');

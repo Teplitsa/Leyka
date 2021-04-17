@@ -548,7 +548,7 @@ function leyka_inline_campaign(array $atts = array()) {
 
                         <div class="target">
                         <?php if($ready > 0) {?>
-                            <?php echo leyka_amount_format($collected['amount']);?>
+                            <?php echo leyka_format_amount($collected['amount']);?>
                             <span class="curr-mark">
                                 <?php echo leyka_options()->opt("currency_{$collected['currency']}_label");?>
                             </span>
@@ -559,7 +559,7 @@ function leyka_inline_campaign(array $atts = array()) {
 
                         <div class="info">
                             <?php echo $atts['show_preview'] ? __('Amount needed', 'leyka') : __('collected of ', 'leyka')?>
-                            <?php echo leyka_amount_format($target['amount']);?>
+                            <?php echo leyka_format_amount($target['amount']);?>
                             <span class="curr-mark">
                                 <?php echo leyka_options()->opt("currency_{$target['currency']}_label");?>
                             </span>
@@ -569,7 +569,7 @@ function leyka_inline_campaign(array $atts = array()) {
 						<div class="scale hide-scale"></div>
                         
                         <div class="target">
-                            <?php echo leyka_amount_format($collected['amount']);?>
+                            <?php echo leyka_format_amount($collected['amount']);?>
                             <span class="curr-mark">
                                 <?php echo leyka_options()->opt("currency_{$collected['currency']}_label");?>
                             </span>
@@ -644,13 +644,13 @@ function leyka_inline_campaign(array $atts = array()) {
                                 <div class="history__cell h-amount">
                                     <?php if(leyka_options()->opt('widgets_total_amount_usage') == 'display-total') {
                                          echo $donation->amount == $donation->amount_total ?
-                                             leyka_amount_format($donation->amount) :
-                                             leyka_amount_format($donation->amount).'<span class="amount-total"> / '.leyka_amount_format($donation->amount_total).'</span>';
+                                             leyka_format_amount($donation->amount) :
+                                             leyka_format_amount($donation->amount).'<span class="amount-total"> / '.leyka_format_amount($donation->amount_total).'</span>';
 
                                     } else if(leyka_options()->opt('widgets_total_amount_usage') == 'display-total-only') {
-                                        echo leyka_amount_format($donation->amount_total);
+                                        echo leyka_format_amount($donation->amount_total);
                                     } else {
-                                        echo leyka_amount_format($donation->amount);
+                                        echo leyka_format_amount($donation->amount);
                                     }?>
                                     <span class="curr-mark">
                                         <?php echo leyka_options()->opt("currency_{$target['currency']}_label");?>
@@ -797,13 +797,13 @@ function leyka_inline_campaign_small($atts) {
                         <div class="history__cell h-amount">
                             <?php if(leyka_options()->opt('widgets_total_amount_usage') == 'display-total') {
                                 echo $donation->amount == $donation->amount_total ?
-                                    leyka_amount_format($donation->amount) :
-                                    leyka_amount_format($donation->amount).'<span class="amount-total"> / '.leyka_amount_format($donation->amount_total).'</span>';
+                                    leyka_format_amount($donation->amount) :
+                                    leyka_format_amount($donation->amount).'<span class="amount-total"> / '.leyka_format_amount($donation->amount_total).'</span>';
 
                             } else if(leyka_options()->opt('widgets_total_amount_usage') == 'display-total-only') {
-                                echo leyka_amount_format($donation->amount_total);
+                                echo leyka_format_amount($donation->amount_total);
                             } else {
-                                echo leyka_amount_format($donation->amount);
+                                echo leyka_format_amount($donation->amount);
                             }?>
                             <span class="curr-mark"><?php echo $currency_data['label'];?></span>
                         </div>

@@ -74,7 +74,10 @@ jQuery(document).ready(function($){
             selected_values = [];
 
         $list_select_field.find('option').each(function(){
-            selected_values.push({item: {label: $.trim($(this).text()), value: $(this).val()}});
+
+            let $this = $(this);
+            selected_values.push({item: {label: $.trim($this.text()), value: $this.val()}});
+
         });
 
         $text_selector_field.autocomplete({
@@ -133,74 +136,6 @@ jQuery(document).ready(function($){
 
     if(leyka_ui_widget_available('selectmenu')) {
         $('.leyka-select-menu').selectmenu();
-    }
-
-    if(leyka_ui_widget_available('autocomplete')) {
-
-        // $body.find('.leyka-autocomplete').each(function(){
-
-        //     let $field = $(this),
-        //         source_type = $field.data('leyka-autocomplete-source-type'),
-        //         pre_selected_values = $field.data('leyka-autocomplete-pre-selected-values'),
-        //         params = {source: false};
-        //
-        //     if(source_type === 'url') { // data-leyka-autocomplete-source is an URL for values ajax requests
-        //
-        //         params.source = $field.data('leyka-autocomplete-source');
-        //
-        //         if( !params.source || !params.source.length ) {
-        //             return;
-        //         }
-        //
-        //     } else if(source_type === 'select-field') { // data-leyka-autocomplete-source is an ID for select field with values
-        //
-        //         let $source_select = $($field.data('leyka-autocomplete-source')).hide(); // Hide the select field just in case
-        //
-        //         if( !$source_select.length ) {
-        //             return;
-        //         }
-        //
-        //         params.source = [];
-        //
-        //         $source_select.find('option').each(function(){
-        //
-        //             let $option = $(this);
-        //
-        //             params.source.push({label: $.trim($option.text()), value: $option.val()});
-        //
-        //         });
-        //
-        //         if( !params.source.length ) {
-        //             return;
-        //         }
-        //
-        //     }
-        //
-        //     if(pre_selected_values && pre_selected_values === 'from-source-field' && source_type === 'select-field') {
-        //
-        //     } else if(pre_selected_values) {
-        //
-        //         let $values_select = $(pre_selected_values);
-        //     }
-        //
-        //
-        //
-        //     if( !!$field.data('leyka-autocomplete-multiselect') ) {
-        //         params.multiselect = true;
-        //     }
-        //     if( !!$field.data('leyka-autocomplete-min-length') ) {
-        //         params.minLength = $field.data('leyka-autocomplete-min-length');
-        //     }
-        //     if( !!$field.data('leyka-autocomplete-search-on-focus') ) {
-        //         params.search_on_focus = true;
-        //     }
-        //
-            /** @todo Finish the universalization for autocomplete fields. We need an API for params: source, pre_selected_values, leyka_select_callback */
-        //
-        //     $field.autocomplete(params);
-        //
-        // });
-
     }
 
     // Support metaboxes ONLY where needed (else there are metabox handling errors on the wrong pages):

@@ -526,7 +526,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
                 'donation_amount_too_great',
                 sprintf(
                     __('Donation amount you entered is too great (maximum %s allowed)', 'leyka'),
-                    leyka_amount_format($form_data['top_'.$currency]).' '.leyka_options()->opt("currency_{$currency}_label")
+                    leyka_format_amount($form_data['top_'.$currency]).' '.leyka_options()->opt("currency_{$currency}_label")
                 )
             );
             leyka()->add_payment_form_error($error);
@@ -539,7 +539,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
                 'donation_amount_too_small',
                 sprintf(
                     __('Donation amount you entered is too small (minimum %s allowed)', 'leyka'),
-                    leyka_amount_format($form_data['bottom_'.$currency]).' '.leyka_options()->opt("currency_{$currency}_label")
+                    leyka_format_amount($form_data['bottom_'.$currency]).' '.leyka_get_currency_label()
                 )
             );
             leyka()->add_payment_form_error($error);
