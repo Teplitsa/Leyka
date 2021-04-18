@@ -149,7 +149,7 @@ class Leyka_Donor {
         );
 
         $donations = Leyka_Donations::get_instance()->get(array( // Get Donations by Donor's email
-            'status' => 'funded',
+            'status' => array('submitted', 'funded', 'failed', 'refunded',),
             'get_all' => true,
             'donor_email' => $donor->email,
             'orderby' => 'date',

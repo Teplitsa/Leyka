@@ -168,12 +168,12 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         if(isset($_GET['orderby']) && array_key_exists($_GET['orderby'], $this->get_sortable_columns())) {
 
             switch($_GET['orderby']) {
-                case 'donor_id': $donors_params['orderby'] = 'ID'; break;
-                case 'donor_type':
-                    $donors_params['meta_key'] = 'leyka_donor_type';
-                    $donors_params['orderby'] = 'meta_value';
-                    break;
-                case 'donor_name':
+                case 'id': $donors_params['orderby'] = 'ID'; break;
+//                case 'donor_type': /** @todo ATM, there are no meta value for "single" Donor type. It messes up the ordering. */
+//                    $donors_params['meta_key'] = 'leyka_donor_type';
+//                    $donors_params['orderby'] = 'meta_value';
+//                    break;
+                case 'donor':
                     $donors_params['orderby'] = 'display_name'; break;
                 case 'first_donation':
                     $donors_params['meta_key'] = 'leyka_donor_first_donation_date';
@@ -392,7 +392,8 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
     public function get_sortable_columns() {
         return array(
             'id' => array('id', true),
-            'donor_type' => array('donor_type', true),
+            /** @todo ATM, there are no meta value for "single" Donor type. It messes up the ordering. */
+//            'donor_type' => array('donor_type', true),
             'donor' => array('donor', false),
             'first_donation' => array('first_donation', true),
             'last_donation' => array('last_donation', true),
