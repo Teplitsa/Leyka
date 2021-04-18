@@ -1010,23 +1010,54 @@ function leyka_save_editable_comment(){
 add_action('wp_ajax_leyka_save_editable_comment', 'leyka_save_editable_comment');
 
 // Donor's Donations data table AJAX data source:
-function leyka_get_donor_donations(){
+function leyka_admin_get_donor_donations(){
 
-    $donor = new Leyka_Donor(absint($_POST['donor_id']));
+    try {
+        $donor = new Leyka_Donor(absint($_POST['donor_id']));
+    } catch(Exception $e) {
+        die( json_encode(array('draw' => (int)$_POST['draw'], 'error' => $e->getMessage())) );
+    }
+
+    $_POST['start'] = empty($_POST['start']) ? 0 : absint($_POST['start']); // Result record number to start from
+    $_POST['length'] = empty($_POST['length']) ? 10 : absint($_POST['length']); // Donations per table "page"
+
     $total_donor_donations = $donor->get_donations_count();
-    $page_number = 1; // ceil($total_donor_donations / $_POST['length']); /** @todo Find the current "page" number by $_POST['start'] and $_POST['length'] */
+    $page_number = ($_POST['start']/$_POST['length']) + 1;
 
-    $result = array('recordsTotal' => $total_donor_donations, 'recordsFiltered' => $total_donor_donations, 'data' => array(),);
+    $result = array(
+        'draw' => (int)$_POST['draw'],
+        'recordsTotal' => $total_donor_donations,
+        'recordsFiltered' => $total_donor_donations,
+        'data' => array(),
+    );
 
     foreach($donor->get_donations($page_number, $_POST['length']) as $donation) {
 
+        $gateway = leyka_get_gateway_by_id($donation->gateway_id);
+
         $result['data'][] = array(
-            'id' => $donation->id,
-            'type' => '<i class="icon-payment-type icon-'.($donation->is_init_recurring_donation ? 'rebill-init' : $donation->payment_type).' has-tooltip" title="'.$donation->payment_type_label.'"></i>',
+            'donation_id' => $donation->id,
+            'payment_type' => array(
+                'id' => $donation->is_init_recurring_donation ? 'rebill-init' : $donation->payment_type,
+                'label' => $donation->payment_type_label,
+            ),
             'date' => $donation->date_time_label,
-            'campaign' => $donation->campaign_title, /** @todo Change to the column HTML when the rest is debugged */
-            'amount' => $donation->amount_formatted.'&nbsp;'.$donation->currency_label
-                .'<span class="amount-total"> / '.$donation->amount_total_formatted.'&nbsp;'.$donation->currency_label.'</span>'
+            'status' => array(
+                'id' => $donation->status,
+                'label' => $donation->status_label,
+                'description' => $donation->status_description,
+            ),
+            'campaign_title' => $donation->campaign_title,
+            'gateway_pm' => array(
+                'gateway_icon_url' => $gateway ? $gateway->icon_url : '',
+                'gateway_label' => $donation->gateway_label,
+                'pm_label' => $donation->pm_label,
+            ),
+            'amount' => array(
+                'amount_formatted' => $donation->amount_formatted,
+                'amount_total_formatted' => $donation->amount_total_formatted,
+                'currency_label' => $donation->currency_label,
+            ),
         );
 
     }
@@ -1034,8 +1065,81 @@ function leyka_get_donor_donations(){
     die(json_encode($result));
 
 }
-add_action('wp_ajax_leyka_get_donor_donations', 'leyka_get_donor_donations');
+add_action('wp_ajax_leyka_get_donor_donations', 'leyka_admin_get_donor_donations');
 // Donor's Donations data table AJAX data source - END
+
+// Campaign Donations data table AJAX data source:
+function leyka_admin_get_campaign_donations(){
+
+    $campaign = new Leyka_Campaign($_POST['campaign_id']);
+
+//    die( json_encode(array('draw' => (int)$_POST['draw'], 'error' => $e->getMessage())) );
+
+    $_POST['start'] = empty($_POST['start']) ? 0 : absint($_POST['start']); // Result record number to start from
+    $_POST['length'] = empty($_POST['length']) ? 10 : absint($_POST['length']); // Donations per table "page"
+
+    $total_campaign_donations = $campaign->get_donations_count();
+    $page_number = ($_POST['start'] / $_POST['length']) + 1;
+
+    $result = array(
+        'draw' => (int)$_POST['draw'],
+        'recordsTotal' => $total_campaign_donations,
+        'recordsFiltered' => $total_campaign_donations,
+        'data' => array(),
+    );
+
+    $campaign_donations = Leyka_Donations::get_instance()->get(array(
+        'status' => array('submitted', 'funded', 'refunded', 'failed',),
+        'campaign_id' => $campaign->id,
+        'results_limit' => $_POST['length'],
+        'page' => $page_number,
+        'orderby' => 'ID',
+        'order' => 'DESC',
+    ));
+
+    foreach($campaign_donations as $donation) {
+
+        $gateway = leyka_get_gateway_by_id($donation->gateway_id);
+
+        $result['data'][] = array(
+            'donation_id' => $donation->id,
+            'payment_type' => array(
+                'id' => $donation->is_init_recurring_donation ? 'rebill-init' : $donation->payment_type,
+                'label' => $donation->payment_type_label,
+            ),
+            'donor' => array(
+                'name' => $donation->donor_name,
+                'email' => $donation->donor_email,
+                'id' => leyka_options()->opt('donor_management_available') && $donation->donor_id ? $donation->donor_id : 0,
+            ),
+            'amount' => array(
+                'amount' => $donation->amount,
+                'formatted' => $donation->amount_formatted,
+                'total' => $donation->amount_total,
+                'total_formatted' => $donation->amount_total_formatted,
+                'currency_label' => $donation->currency_label,
+            ),
+            'status' => array(
+                'id' => $donation->status,
+                'label' => $donation->status_label,
+                'description' => $donation->status_description,
+            ),
+            'date' => $donation->date_time_label,
+            'gateway_pm' => array(
+                'gateway_icon_url' => $gateway ? $gateway->icon_url : '',
+                'gateway_label' => $donation->gateway_id == 'correction' ?
+                    __('Custom payment info', 'leyka') : $donation->gateway_label,
+                'pm_label' => $donation->pm_label,
+            ),
+        );
+
+    }
+
+    die(json_encode($result));
+
+}
+add_action('wp_ajax_leyka_get_campaign_donations', 'leyka_admin_get_campaign_donations');
+// Campaign Donations data table AJAX data source - END
 
 function leyka_save_donor_description(){
 

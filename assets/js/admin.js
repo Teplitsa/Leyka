@@ -1202,11 +1202,13 @@ jQuery(document).ready(function($){
 
     // Tooltips:
     let $tooltips = $body.find('.has-tooltip');
-    if($tooltips.length && typeof $().tooltip !== 'undefined' ) {
 
-        $tooltips.each(function(i, element){
+    $.widget('custom.leyka_admin_tooltip', $.ui.tooltip, {
+        _init: function(){ // Try also '_create' - true constructor
 
-            let $tooltip_element = $(element),
+            this._super(); // Parent _init() method call, just in case
+
+            let $tooltip_element = $(this.element),
                 options = {
                     classes: {
                         'ui-tooltip':
@@ -1231,32 +1233,37 @@ jQuery(document).ready(function($){
                 options.items = '.has-tooltip.tooltip-opened';
             }
 
-            $tooltip_element.tooltip(options);
+            this.option(options); // Redefine options, set them to Leyka setup
 
-        });
+        }
+    });
 
-        // Tooltips on click - open:
-        $tooltips.on('click.leyka', function(){
+    if($tooltips.length && typeof $().tooltip !== 'undefined' ) {
 
-            let $element = $(this);
-            if($element.hasClass('leyka-tooltip-on-click')) {
-
-                if($element.hasClass('tooltip-opened')) { // Tootips on click - hide
-                    $element.tooltip('close').removeClass('tooltip-opened');
-                } else {
-                    $element.addClass('tooltip-opened').tooltip('open'); //.mouseenter();
-                }
-            }
-
+        // Init all tooltips on initial page rendering:
+        $tooltips.each(function(i, element){
+            $(element).leyka_admin_tooltip();
         });
 
         // Tooltips on click:
         let $tooltips_on_click = $('.has-tooltip.leyka-tooltip-on-click');
 
-        // Prevent mouseout and other related events from firing their handlers:
-        $tooltips_on_click.on('mouseout.leyka', function(e){
+        $tooltips_on_click.on('click.leyka', function(){ // Tooltips on click - open
+
+            let $element = $(this);
+            if($element.hasClass('leyka-tooltip-on-click')) {
+
+                if($element.hasClass('tooltip-opened')) { // Tootips on click - hide
+                    $element.leyka_admin_tooltip('close').removeClass('tooltip-opened');
+                } else {
+                    $element.addClass('tooltip-opened').leyka_admin_tooltip('open'); //.mouseenter();
+                }
+            }
+
+        }).on('mouseout.leyka', function(e){ // Prevent mouseout and other related events from firing their handlers
             e.stopImmediatePropagation();
         });
+
         // Close opened tooltip when clicked elsewhere:
         $body.on('click.leyka', function(e){
 
@@ -1264,7 +1271,7 @@ jQuery(document).ready(function($){
 
                 $tooltips_on_click.filter('.tooltip-opened').each(function(i, element){
                     if(element !== e.target) {
-                        $(element).tooltip('close').removeClass('tooltip-opened');
+                        $(element).leyka_admin_tooltip('close').removeClass('tooltip-opened');
                     }
                 });
 
@@ -1675,8 +1682,95 @@ jQuery(document).ready(function($){
 
     // Donations list data table:
     if(typeof $().DataTable !== 'undefined' && typeof leyka_dt !== 'undefined') {
-        $('.leyka-data-table').DataTable({
-            'lengthMenu': [[25, 50, 100, 200], [25, 50, 100, 200]],
+
+        let $data_table = $('.leyka-data-table.campaign-donations-table');
+        $data_table.DataTable({
+            ordering:  false, /** @todo Add ordering to the table & it's AJAX query */
+            searching: false,
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: leyka.ajaxurl,
+                type: 'POST',
+                data: function(data){
+                    data.action = 'leyka_get_campaign_donations';
+                    data.campaign_id = $data_table.data('campaign-id');
+                }
+            },
+            columns: [
+                {
+                    data: 'donation_id',
+                    className: 'column-id column-donation_id',
+                    render: function(donation_id){
+                        return '<a href="'+leyka.admin_url+'admin.php?page=leyka_donation_info&donation='+donation_id+'" target="_blank">'
+                            +donation_id
+                            +'</a>';
+                    },
+                },
+                {
+                    data: 'payment_type',
+                    className: 'column-donation_type',
+                    render: function(payment_type){
+                        return '<i class="icon-payment-type icon-'+payment_type.id+' has-tooltip" title="'+payment_type.label+'"></i>';
+                    },
+                },
+                {
+                    data: 'donor',
+                    className: 'column-donor',
+                    render: function(donor, type, row_data){
+                        return '<div class="donor-name">'
+                            +(donor.id ? '<a href="'+leyka.admin_url+'?page=leyka_donor_info&donor='+donor.id+'">' : '')
+                            +donor.name
+                            +(donor.id ? '</a>' : '')
+                        +'</div>'
+                        +'<div class="donor-email">'+donor.email+'</div>';
+                    }
+                },
+                {
+                    data: 'amount',
+                    className: 'column-amount data-amount',
+                    render: function(data_amount, type, row_data){
+
+                        let amount_html = data_amount.amount == data_amount.total ?
+                            data_amount.formatted+'&nbsp;'+data_amount.currency_label :
+                            data_amount.formatted+'&nbsp;'+data_amount.currency_label
+                            +'<span class="amount-total"> / '
+                                +data_amount.total_formatted+'&nbsp;'+data_amount.currency_label
+                            +'</span>';
+
+                        return '<span class="leyka-amount '+(data_amount.amount < 0.0 ? 'leyka-amount-negative' : '')+'">'
+                                +'<i class="icon-leyka-donation-status icon-'+row_data.status.id+' has-tooltip leyka-tooltip-align-left" title="'+row_data.status.description+'"></i>'
+                                +'<span class="leyka-amount-and-status">'
+                                    +'<div class="leyka-amount-itself">'+amount_html+'</div>'
+                                    +'<div class="leyka-donation-status-label label-'+row_data.status.id+'">'+row_data.status.label+'</div>'
+                                +'</span>'
+                            +'</span>';
+
+                    }
+                },
+                {data: 'date', className: 'column-date',},
+                {
+                    data: 'gateway_pm',
+                    className: 'column-gateway_pm data-gateway_pm',
+                    render: function(gateway_pm, type, row_data){
+
+                        return '<div class="leyka-gateway-name">'
+                                +'<img src="'+gateway_pm.gateway_icon_url+'" alt="'+gateway_pm.gateway_label+'">'
+                                +gateway_pm.gateway_label+','
+                            +'</div>'
+                            +'<div class="leyka-pm-name">'+gateway_pm.pm_label+'</div>';
+
+                    }
+                },
+            ],
+            rowCallback: function(row, data){ // After the data loaded from server, but before row is rendered in the table
+                $(row)
+                    .addClass('leyka-donations-table-row')
+                    .addClass(data.payment_type.type_id === 'correction' ? 'leyka-donation-row-correction' : '')
+                    .find('.has-tooltip').leyka_admin_tooltip();
+            },
+
+            lengthMenu: [[10, 25, 50, 100, 200], [10, 25, 50, 100, 200]],
             language: {
                 processing:     leyka_dt.processing,
                 search:         leyka_dt.search,
@@ -1700,9 +1794,10 @@ jQuery(document).ready(function($){
                 }
             }
         });
+
     }
 
-    // campaign template change
+    // Campaign template change:
     $campaign_template_field.on('change.leyka', function(e){
 
         e.preventDefault();
@@ -2508,23 +2603,65 @@ jQuery(document).ready(function($){
 
         let $data_table = $('.leyka-data-table');
         $data_table.DataTable({
-            // 'processing': true,
-            // 'serverSide': true,
-            // ajax: {
-            //     url: leyka.ajaxurl,
-            //     type: 'POST',
-            //     data: function(data){
-            //         data.action = 'leyka_get_donor_donations';
-            //         data.donor_id = $data_table.data('donor-id');
-            //     }
-            // },
-            // columns: [
-            //     {data: 'id'},
-            //     {data: 'type'},
-            //     {data: 'date'},
-            //     {data: 'campaign'},
-            //     {data: 'amount'},
-            // ],
+            'processing': true,
+            'serverSide': true,
+            ajax: {
+                url: leyka.ajaxurl,
+                type: 'POST',
+                data: function(data){
+                    data.action = 'leyka_get_donor_donations';
+                    data.donor_id = $data_table.data('donor-id');
+                }
+            },
+            columns: [
+                {
+                    data: 'donation_id',
+                    className: 'column-id column-donation_id',
+                    render: function(donation_id){
+                        return '<a href="'+leyka.admin_url+'admin.php?page=leyka_donation_info&donation='+donation_id+'" target="_blank">'
+                                +donation_id
+                            +'</a>';
+                    },
+                },
+                {
+                    data: 'payment_type',
+                    className: 'column-donation_type',
+                    render: function(data){
+                        return '<i class="icon-payment-type icon-'+data.id+' has-tooltip" title="'+data.label+'"></i>';
+                    },
+                },
+                {data: 'date', className: 'column-date',},
+                {
+                    data: 'campaign',
+                    className: 'column-campaign data-campaign leyka-donation-info-wrapper',
+                    render: function(data, type, row_data){
+
+                        return '<i class="icon-leyka-donation-status icon-'+row_data.status.id+' has-tooltip leyka-tooltip-align-left" title="'+row_data.status.description+'"></i>'
+                        +'<div class="leyka-donation-additional-data">'
+                            +'<div class="first-sub-row">'+row_data.campaign_title+'</div>'
+                            +'<div class="second-sub-row">'
+                                +'<img src="'+row_data.gateway_pm.gateway_icon_url+'" alt="'+row_data.gateway_pm.gateway_label+'">'
+                                +row_data.gateway_pm.gateway_label+', '+row_data.gateway_pm.pm_label
+                            +'</div>'
+                        +'</div>';
+
+                    }
+                },
+                {
+                    data: 'amount',
+                    className: 'column-amount data-amount',
+                    render: function(data, type, row_data){
+                        return data.amount_formatted+'&nbsp;'+data.currency_label
+                            +'<span class="amount-total"> / '+data.amount_total_formatted+'&nbsp;'+data.currency_label+'</span>';
+                    }
+                },
+            ],
+            rowCallback: function(row, data){ // After the data loaded from server, but before row is rendered in the table
+                $(row)
+                    .addClass('leyka-donations-table-row')
+                    .addClass(data.payment_type.type_id === 'correction' ? 'leyka-donation-row-correction' : '')
+                    .find('.has-tooltip').leyka_admin_tooltip();
+            },
 
             pageLength: 10,
             lengthChange: false,

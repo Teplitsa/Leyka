@@ -550,7 +550,7 @@
 
                 padding-top: 10px;
 
-                .leyka-donation-info-wrapper {
+                &.leyka-donation-info-wrapper {
 
                     display: flex;
                     flex-flow: row nowrap;
@@ -566,7 +566,17 @@
                     .second-sub-row {
 
                         @include leyka-admin-list-text-small;
+
                         margin-top: 3px;
+                        display: flex;
+                        flex-flow: row nowrap;
+                        justify-content: flex-start;
+                        align-items: center;
+
+                        img {
+                            width: 20px;
+                            height: 20px;
+                        }
 
                     }
                 }

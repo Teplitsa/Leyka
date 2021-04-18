@@ -650,7 +650,7 @@ class Leyka_Donor {
             'results_limit' => $donations_per_page <= 0 ? false : $donations_per_page,
             'get_all' => $donations_per_page <= 0,
             'page' => $page_number,
-            'orderby' => 'ID', // 'date ID',
+            'orderby' => 'ID',
             'order' => 'DESC',
         ));
 

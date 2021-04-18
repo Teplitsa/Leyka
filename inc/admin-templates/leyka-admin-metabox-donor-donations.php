@@ -39,47 +39,6 @@ try {
         </tr>
     </tfoot>
 
-    <tbody>
-    <?php foreach($donor->get_donations(false, -1) as $donation) {
-
-        $gateway_label = $donation->gateway_id ? $donation->gateway_label : __('Custom payment info', 'leyka');
-        $pm_label = $donation->gateway_id ? $donation->pm_label : $donation->pm;?>
-
-        <tr <?php echo $donation->type == 'correction' ? 'class="leyka-donation-row-correction"' : '';?>>
-
-            <td>
-                <a href="<?php echo admin_url("/post.php?post={$donation->id}&action=edit");?>" target="_blank">
-                    <?php echo $donation->id;?>
-                </a>
-            </td>
-
-            <td class="column-donation_type">
-                <i class="icon-payment-type icon-<?php echo $donation->is_init_recurring_donation ? 'rebill-init' : $donation->payment_type;?> has-tooltip" title="<?php echo $donation->payment_type_label;?>"></i>
-            </td>
-
-            <td><?php echo $donation->date_time_label;?></td>
-
-            <td class="data-campaign">
-                <div class="leyka-donation-info-wrapper">
-
-                    <i class="icon-leyka-donation-status icon-<?php echo $donation->status;?> has-tooltip leyka-tooltip-align-left" title="<?php echo $donation->status_description;?>"></i>
-
-                    <div class="leyka-donation-additional-data">
-                        <div class="first-sub-row"><?php echo $donation->campaign_title;?></div>
-                        <div class="second-sub-row"><?php echo $gateway_label.', '.$pm_label;?></div>
-                    </div>
-
-                </div>
-            </td>
-
-            <td class="data-amount">
-                <?php echo $donation->amount_formatted.'&nbsp;'.$donation->currency_label
-                    .'<span class="amount-total"> / '.$donation->amount_total_formatted.'&nbsp;'.$donation->currency_label.'</span>';?>
-            </td>
-
-        </tr>
-
-    <?php }?>
-    </tbody>
+    <tbody><?php // All table data will be received via AJAX ?></tbody>
 
 </table>

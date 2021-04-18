@@ -733,58 +733,37 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
     /**
      * @param $campaign WP_Post
      */
-    public function donations_meta_box(WP_Post $campaign) { $campaign = new Leyka_Campaign($campaign);?>
+    public function donations_meta_box(WP_Post $campaign) {
+
+        $campaign = new Leyka_Campaign($campaign);?>
 
         <div>
             <a class="button" href="<?php echo admin_url('/post-new.php?post_type=leyka_donation&campaign_id='.$campaign->id);?>"><?php _e('Add correctional donation', 'leyka');?></a>
         </div>
 
-        <table id="donations-data-table" class="leyka-data-table">
+        <table id="donations-data-table" class="leyka-data-table campaign-donations-table" data-campaign-id="<?php echo $campaign->id;?>">
             <thead>
                 <tr>
                     <td><?php _e('ID', 'leyka');?></td>
-                    <td><?php _e('Amount', 'leyka');?></td>
-                    <td><?php _e('Donor', 'leyka');?></td>
-                    <td><?php _e('Method', 'leyka');?></td>
-                    <td><?php _e('Date', 'leyka');?></td>
-                    <td><?php _e('Status', 'leyka');?></td>
                     <td><?php _e('Payment type', 'leyka');?></td>
-                    <td><?php _e('Actions', 'leyka');?></td>
+                    <td><?php _e('Donor', 'leyka');?></td>
+                    <td><?php _e('Amount', 'leyka');?></td>
+                    <td><?php _e('Date', 'leyka');?></td>
+                    <td><?php _e('Payment method', 'leyka');?></td>
                 </tr>
             </thead>
             <tfoot>
                 <tr>
                     <td><?php _e('ID', 'leyka');?></td>
-                    <td><?php _e('Amount', 'leyka');?></td>
-                    <td><?php _e('Donor', 'leyka');?></td>
-                    <td><?php _e('Method', 'leyka');?></td>
-                    <td><?php _e('Date', 'leyka');?></td>
-                    <td><?php _e('Status', 'leyka');?></td>
                     <td><?php _e('Payment type', 'leyka');?></td>
-                    <td><?php _e('Actions', 'leyka');?></td>
-            </tr>
+                    <td><?php _e('Donor', 'leyka');?></td>
+                    <td><?php _e('Amount', 'leyka');?></td>
+                    <td><?php _e('Date', 'leyka');?></td>
+                    <td><?php _e('Payment method', 'leyka');?></td>
+                </tr>
             </tfoot>
 
-            <tbody>
-            <?php foreach($campaign->get_donations(array('submitted', 'funded', 'refunded', 'failed')) as $donation) {
-
-                $gateway_label = $donation->gateway_id ? $donation->gateway_label : __('Custom payment info', 'leyka');
-                $pm_label = $donation->gateway_id ? $donation->pm_label : $donation->pm;
-				$amount_css = $donation->sum < 0 ? 'amount-negative' : 'amount';?>
-
-                <tr <?php echo $donation->type == 'correction' ? 'class="leyka-donation-row-correction"' : '';?>>
-                    <td><?php echo $donation->id;?></td>
-                    <td><?php echo '<span class="'.$amount_css.'">'.$donation->sum.'&nbsp;'.$donation->currency_label.'</span>';?></td>
-                    <td><?php echo $donation->donor_name ? $donation->donor_name : __('Anonymous', 'leyka');?></td>
-                    <td><?php echo $pm_label.' ('.mb_strtolower($gateway_label).')';?></td>
-                    <td><?php echo $donation->date;?></td>
-                    <td><?php echo '<i class="'.esc_attr($donation->status).'">'.mb_ucfirst($donation->status_label).'</i>';?></td>
-                    <td><?php echo mb_ucfirst($donation->payment_type_label);?></td>
-                    <td><a href="<?php echo admin_url("/post.php?post={$donation->id}&action=edit");?>"><?php echo __('Edit', 'leyka');?></a></td>
-                </tr>
-
-            <?php }?>
-            </tbody>
+            <tbody><?php // All table data will be received via AJAX ?></tbody>
         </table>
     <?php
     }
@@ -1405,11 +1384,11 @@ class Leyka_Campaign {
     }
 
     /**
-     * Get all donations of the campaign with given statuses.
+     * Get all Donations of the Campaign with given statuses.
      * NOTE: This method is to be called after init (1), or else it will return an empty array.
      *
-     * @param $status array Of leyka donation statuses.
-     * @return array Of Leyka_Donation objects.
+     * @param $status array Of Leyka Donation statuses.
+     * @return array Of Leyka_Donation_Base objects.
      */
     public function get_donations(array $status = array()) {
 
@@ -1417,20 +1396,26 @@ class Leyka_Campaign {
             return array();
         }
 
-        $donations = get_posts(array(
-            'post_type' => Leyka_Donation_Management::$post_type,
-            'post_status' => $status ? $status : array('submitted', 'funded', 'refunded', 'failed', 'trash',),
-            'nopaging' => true,
-            'meta_key' => 'leyka_campaign_id',
-            'meta_value' => $this->_id,
+        return Leyka_Donations::get_instance()->get(array(
+            'status' => $status ? $status : array('submitted', 'funded', 'refunded', 'failed',),
+            'get_all' => true,
+            'campaign_id' => $this->_id,
         ));
 
-        $count = count($donations);
-        for($i = 0; $i < $count; $i++) {
-            $donations[$i] = new Leyka_Donation($donations[$i]->ID);
+    }
+
+    /** @todo Make the result a campaign meta instead of a method & refresh the meta like "total_amount" */
+    public function get_donations_count() {
+
+        if( !$this->_id ) {
+            return false;
         }
 
-        return $donations;
+        return Leyka_Donations::get_instance()->get_count(array(
+            'status' => array('submitted', 'funded', 'refunded', 'failed',),
+            'get_all' => true,
+            'campaign_id' => $this->_id,
+        ));
 
     }
 

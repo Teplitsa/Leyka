@@ -416,11 +416,13 @@ jQuery(document).ready(function($){
 
     // Tooltips:
     let $tooltips = $body.find('.has-tooltip');
-    if($tooltips.length && typeof $().tooltip !== 'undefined' ) {
 
-        $tooltips.each(function(i, element){
+    $.widget('custom.leyka_admin_tooltip', $.ui.tooltip, {
+        _init: function(){ // Try also '_create' - true constructor
 
-            let $tooltip_element = $(element),
+            this._super(); // Parent _init() method call, just in case
+
+            let $tooltip_element = $(this.element),
                 options = {
                     classes: {
                         'ui-tooltip':
@@ -445,32 +447,37 @@ jQuery(document).ready(function($){
                 options.items = '.has-tooltip.tooltip-opened';
             }
 
-            $tooltip_element.tooltip(options);
+            this.option(options); // Redefine options, set them to Leyka setup
 
-        });
+        }
+    });
 
-        // Tooltips on click - open:
-        $tooltips.on('click.leyka', function(){
+    if($tooltips.length && typeof $().tooltip !== 'undefined' ) {
 
-            let $element = $(this);
-            if($element.hasClass('leyka-tooltip-on-click')) {
-
-                if($element.hasClass('tooltip-opened')) { // Tootips on click - hide
-                    $element.tooltip('close').removeClass('tooltip-opened');
-                } else {
-                    $element.addClass('tooltip-opened').tooltip('open'); //.mouseenter();
-                }
-            }
-
+        // Init all tooltips on initial page rendering:
+        $tooltips.each(function(i, element){
+            $(element).leyka_admin_tooltip();
         });
 
         // Tooltips on click:
         let $tooltips_on_click = $('.has-tooltip.leyka-tooltip-on-click');
 
-        // Prevent mouseout and other related events from firing their handlers:
-        $tooltips_on_click.on('mouseout.leyka', function(e){
+        $tooltips_on_click.on('click.leyka', function(){ // Tooltips on click - open
+
+            let $element = $(this);
+            if($element.hasClass('leyka-tooltip-on-click')) {
+
+                if($element.hasClass('tooltip-opened')) { // Tootips on click - hide
+                    $element.leyka_admin_tooltip('close').removeClass('tooltip-opened');
+                } else {
+                    $element.addClass('tooltip-opened').leyka_admin_tooltip('open'); //.mouseenter();
+                }
+            }
+
+        }).on('mouseout.leyka', function(e){ // Prevent mouseout and other related events from firing their handlers
             e.stopImmediatePropagation();
         });
+
         // Close opened tooltip when clicked elsewhere:
         $body.on('click.leyka', function(e){
 
@@ -478,7 +485,7 @@ jQuery(document).ready(function($){
 
                 $tooltips_on_click.filter('.tooltip-opened').each(function(i, element){
                     if(element !== e.target) {
-                        $(element).tooltip('close').removeClass('tooltip-opened');
+                        $(element).leyka_admin_tooltip('close').removeClass('tooltip-opened');
                     }
                 });
 

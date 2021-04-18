@@ -1256,6 +1256,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             'ajaxurl' => admin_url('admin-ajax.php'),
             'ajax_loader_url' => LEYKA_PLUGIN_BASE_URL.'img/ajax-loader.gif',
             'homeurl' => home_url('/'),
+            'admin_url' => admin_url(),
             'plugin_url' => LEYKA_PLUGIN_BASE_URL,
             'field_required' => __('This field is required to be filled', 'leyka'),
             'email_invalid_msg' => __('You have entered an invalid email', 'leyka'),

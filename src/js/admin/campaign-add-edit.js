@@ -255,8 +255,95 @@ jQuery(document).ready(function($){
 
     // Donations list data table:
     if(typeof $().DataTable !== 'undefined' && typeof leyka_dt !== 'undefined') {
-        $('.leyka-data-table').DataTable({
-            'lengthMenu': [[25, 50, 100, 200], [25, 50, 100, 200]],
+
+        let $data_table = $('.leyka-data-table.campaign-donations-table');
+        $data_table.DataTable({
+            ordering:  false, /** @todo Add ordering to the table & it's AJAX query */
+            searching: false,
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: leyka.ajaxurl,
+                type: 'POST',
+                data: function(data){
+                    data.action = 'leyka_get_campaign_donations';
+                    data.campaign_id = $data_table.data('campaign-id');
+                }
+            },
+            columns: [
+                {
+                    data: 'donation_id',
+                    className: 'column-id column-donation_id',
+                    render: function(donation_id){
+                        return '<a href="'+leyka.admin_url+'admin.php?page=leyka_donation_info&donation='+donation_id+'" target="_blank">'
+                            +donation_id
+                            +'</a>';
+                    },
+                },
+                {
+                    data: 'payment_type',
+                    className: 'column-donation_type',
+                    render: function(payment_type){
+                        return '<i class="icon-payment-type icon-'+payment_type.id+' has-tooltip" title="'+payment_type.label+'"></i>';
+                    },
+                },
+                {
+                    data: 'donor',
+                    className: 'column-donor',
+                    render: function(donor, type, row_data){
+                        return '<div class="donor-name">'
+                            +(donor.id ? '<a href="'+leyka.admin_url+'?page=leyka_donor_info&donor='+donor.id+'">' : '')
+                            +donor.name
+                            +(donor.id ? '</a>' : '')
+                        +'</div>'
+                        +'<div class="donor-email">'+donor.email+'</div>';
+                    }
+                },
+                {
+                    data: 'amount',
+                    className: 'column-amount data-amount',
+                    render: function(data_amount, type, row_data){
+
+                        let amount_html = data_amount.amount == data_amount.total ?
+                            data_amount.formatted+'&nbsp;'+data_amount.currency_label :
+                            data_amount.formatted+'&nbsp;'+data_amount.currency_label
+                            +'<span class="amount-total"> / '
+                                +data_amount.total_formatted+'&nbsp;'+data_amount.currency_label
+                            +'</span>';
+
+                        return '<span class="leyka-amount '+(data_amount.amount < 0.0 ? 'leyka-amount-negative' : '')+'">'
+                                +'<i class="icon-leyka-donation-status icon-'+row_data.status.id+' has-tooltip leyka-tooltip-align-left" title="'+row_data.status.description+'"></i>'
+                                +'<span class="leyka-amount-and-status">'
+                                    +'<div class="leyka-amount-itself">'+amount_html+'</div>'
+                                    +'<div class="leyka-donation-status-label label-'+row_data.status.id+'">'+row_data.status.label+'</div>'
+                                +'</span>'
+                            +'</span>';
+
+                    }
+                },
+                {data: 'date', className: 'column-date',},
+                {
+                    data: 'gateway_pm',
+                    className: 'column-gateway_pm data-gateway_pm',
+                    render: function(gateway_pm, type, row_data){
+
+                        return '<div class="leyka-gateway-name">'
+                                +'<img src="'+gateway_pm.gateway_icon_url+'" alt="'+gateway_pm.gateway_label+'">'
+                                +gateway_pm.gateway_label+','
+                            +'</div>'
+                            +'<div class="leyka-pm-name">'+gateway_pm.pm_label+'</div>';
+
+                    }
+                },
+            ],
+            rowCallback: function(row, data){ // After the data loaded from server, but before row is rendered in the table
+                $(row)
+                    .addClass('leyka-donations-table-row')
+                    .addClass(data.payment_type.type_id === 'correction' ? 'leyka-donation-row-correction' : '')
+                    .find('.has-tooltip').leyka_admin_tooltip();
+            },
+
+            lengthMenu: [[10, 25, 50, 100, 200], [10, 25, 50, 100, 200]],
             language: {
                 processing:     leyka_dt.processing,
                 search:         leyka_dt.search,
@@ -280,9 +367,10 @@ jQuery(document).ready(function($){
                 }
             }
         });
+
     }
 
-    // campaign template change
+    // Campaign template change:
     $campaign_template_field.on('change.leyka', function(e){
 
         e.preventDefault();
