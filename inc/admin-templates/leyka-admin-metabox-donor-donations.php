@@ -19,30 +19,28 @@ try {
     </dl>
 </div>
 
-<table id="donations-data-table" class="leyka-data-table donor-info-table">
+<table id="donations-data-table" class="leyka-data-table donor-info-table" data-donor-id="<?php echo $donor->id;?>">
     <thead>
         <tr>
-             <td><?php _e('ID', 'leyka');?></td>
+            <td><?php _e('ID', 'leyka');?></td>
             <td><?php _e('Type', 'leyka');?></td>
             <td><?php _e('Date', 'leyka');?></td>
             <td><?php _e('Campaign', 'leyka');?></td>
             <td><?php _e('Amount', 'leyka');?></td>
-<!--            <td>--><?php //_e('Actions', 'leyka');?><!--</td>-->
         </tr>
     </thead>
     <tfoot>
         <tr>
-             <td><?php _e('ID', 'leyka');?></td>
+            <td><?php _e('ID', 'leyka');?></td>
             <td><?php _e('Type', 'leyka');?></td>
             <td><?php _e('Date', 'leyka');?></td>
             <td><?php _e('Campaign', 'leyka');?></td>
             <td><?php _e('Amount', 'leyka');?></td>
-<!--            <td>--><?php //_e('Actions', 'leyka');?><!--</td>-->
         </tr>
     </tfoot>
 
     <tbody>
-    <?php foreach($donor->get_donations(false, -1) as $donation) { /** @var $donation Leyka_Donation */
+    <?php foreach($donor->get_donations(false, -1) as $donation) {
 
         $gateway_label = $donation->gateway_id ? $donation->gateway_label : __('Custom payment info', 'leyka');
         $pm_label = $donation->gateway_id ? $donation->pm_label : $donation->pm;?>
@@ -77,10 +75,8 @@ try {
             <td class="data-amount">
                 <?php echo $donation->amount_formatted.'&nbsp;'.$donation->currency_label
                     .'<span class="amount-total"> / '.$donation->amount_total_formatted.'&nbsp;'.$donation->currency_label.'</span>';?>
-                <?php // echo '<span class="amount">'.$donation->amount_formatted.'&nbsp;'.$donation->currency_label.'</span>';?>
             </td>
 
-<!--            <td><a href="--><?php //echo admin_url("/post.php?post={$donation->id}&action=edit");?><!--">--><?php //echo __('Edit', 'leyka');?><!--</a></td>-->
         </tr>
 
     <?php }?>

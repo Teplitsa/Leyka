@@ -646,8 +646,9 @@ class Leyka_Donor {
 
         return Leyka_Donations::get_instance()->get(array(
             'status' => array('funded', 'refunded', 'failed'),
-            'donor_user_id' => $this->_id,
-            'results_limit' => $donations_per_page,
+            'donor_id' => $this->_id,
+            'results_limit' => $donations_per_page <= 0 ? false : $donations_per_page,
+            'get_all' => $donations_per_page <= 0,
             'page' => $page_number,
             'orderby' => 'ID', // 'date ID',
             'order' => 'DESC',
@@ -658,13 +659,13 @@ class Leyka_Donor {
     function get_donations_count() {
 
         if( !$this->_id || !$this->email ) {
-            return array();
+            return 0;
         }
 
         return Leyka_Donations::get_instance()->get_count(array(
             'status' => array('funded', 'refunded', 'failed'),
             'payment_type' => array('single', 'rebill'),
-            'donor_user_id' => $this->_id,
+            'donor_id' => $this->_id,
             'get_all' => true,
         ));
 

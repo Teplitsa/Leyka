@@ -1009,6 +1009,33 @@ function leyka_save_editable_comment(){
 }
 add_action('wp_ajax_leyka_save_editable_comment', 'leyka_save_editable_comment');
 
+// Donor's Donations data table AJAX data source:
+function leyka_get_donor_donations(){
+
+    $donor = new Leyka_Donor(absint($_POST['donor_id']));
+    $total_donor_donations = $donor->get_donations_count();
+    $page_number = 1; // ceil($total_donor_donations / $_POST['length']); /** @todo Find the current "page" number by $_POST['start'] and $_POST['length'] */
+
+    $result = array('recordsTotal' => $total_donor_donations, 'recordsFiltered' => $total_donor_donations, 'data' => array(),);
+
+    foreach($donor->get_donations($page_number, $_POST['length']) as $donation) {
+
+        $result['data'][] = array(
+            'id' => $donation->id,
+            'type' => '<i class="icon-payment-type icon-'.($donation->is_init_recurring_donation ? 'rebill-init' : $donation->payment_type).' has-tooltip" title="'.$donation->payment_type_label.'"></i>',
+            'date' => $donation->date_time_label,
+            'campaign' => $donation->campaign_title, /** @todo Change to the column HTML when the rest is debugged */
+            'amount' => $donation->amount_formatted.'&nbsp;'.$donation->currency_label
+                .'<span class="amount-total"> / '.$donation->amount_total_formatted.'&nbsp;'.$donation->currency_label.'</span>'
+        );
+
+    }
+
+    die(json_encode($result));
+
+}
+add_action('wp_ajax_leyka_get_donor_donations', 'leyka_get_donor_donations');
+// Donor's Donations data table AJAX data source - END
 
 function leyka_save_donor_description(){
 

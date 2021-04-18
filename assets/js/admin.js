@@ -2498,14 +2498,34 @@ jQuery(document).ready(function($){
 /** Donor's info page */
 jQuery(document).ready(function($){
 
-    var $page_wrapper = $('.wrap');
+    let $page_wrapper = $('.wrap');
     if( !$page_wrapper.length || $page_wrapper.data('leyka-admin-page-type') !== 'donor-info-page' ) {
         return;
     }
 
     // Donations list data table:
     if(typeof $().DataTable !== 'undefined' && typeof leyka_dt !== 'undefined') {
-        $('.leyka-data-table').DataTable({
+
+        let $data_table = $('.leyka-data-table');
+        $data_table.DataTable({
+            // 'processing': true,
+            // 'serverSide': true,
+            // ajax: {
+            //     url: leyka.ajaxurl,
+            //     type: 'POST',
+            //     data: function(data){
+            //         data.action = 'leyka_get_donor_donations';
+            //         data.donor_id = $data_table.data('donor-id');
+            //     }
+            // },
+            // columns: [
+            //     {data: 'id'},
+            //     {data: 'type'},
+            //     {data: 'date'},
+            //     {data: 'campaign'},
+            //     {data: 'amount'},
+            // ],
+
             pageLength: 10,
             lengthChange: false,
             ordering:  false,
@@ -2533,12 +2553,15 @@ jQuery(document).ready(function($){
                 }
             }
         });
+
     }
+    // Donations list data table - END
 
 });
 
-// donor info
+// Donor info
 jQuery(document).ready(function($){
+
     $('.donor-add-description-link').click(function(e){
         e.preventDefault();
         $('.add-donor-description-form').toggle();
@@ -2951,8 +2974,6 @@ jQuery(document).ready(function($){
     });
 
 });
-
-
 /** Donors list page */
 jQuery(document).ready(function($){
 
