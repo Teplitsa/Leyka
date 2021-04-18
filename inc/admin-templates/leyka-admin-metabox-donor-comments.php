@@ -44,11 +44,10 @@ try {
         </tr>
     </thead>
     <tbody>
-    <?php 
-        $comments = array(0 => array('date' => '', 'text' => '', 'author_name' => ''));
-        $comments = array_merge($comments, $donor->get_comments());
-    ?>
-    <?php foreach($comments as $comment_id => $comment) {
+
+    <?php $comments = array_merge(array(0 => array('date' => '', 'text' => '', 'author_name' => '')), $donor->get_comments());
+
+    foreach($comments as $comment_id => $comment) {
         echo leyka_admin_get_donor_comment_table_row($comment_id, $comment);
     }?>
     </tbody>

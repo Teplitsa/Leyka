@@ -297,6 +297,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
                 'donor_id' => $donor->id,
                 'donor_name' => $donor->name,
                 'donor_email' => $donor->email,
+                'donor' => $donor,
                 'first_donation' => $donor->first_donation_id,
                 'last_donation' => $donor->last_donation_id,
                 'donors_tags' => $donor->get_tags(),
@@ -459,12 +460,22 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             $item
         );
 
-        $donor_additional_data_html = ''; // = '<ul>';
-//        $donor_additional_data_html .= '<li>
-//        <span class="leyka-li-title">'._x('Comment', "[Donor's comment. Should be short]", 'leyka').':</span>
-//        <span class="leyka-li-value">'.mb_ucfirst($donation->donor_comment ? $donation->donor_comment : __('no', 'leyka')).'</span>
-//    </li>';
-//        $donor_additional_data_html .= '</ul>';
+        $donor_description = $item['donor']->description ? $item['donor']->description : __('no', 'leyka');
+        $donor_last_comment = $item['donor']->get_comments();
+        $donor_last_comment = $donor_last_comment ? array_pop($donor_last_comment)['text'] : __('no', 'leyka');
+
+//        echo '<pre>'.print_r($donor_last_comment, 1).'</pre>';
+
+        $donor_additional_data_html = '<ul>
+        <li>
+            <span class="leyka-li-title">'.__('Description', 'leyka').':</span>
+            <span class="leyka-li-value">'.mb_ucfirst($donor_description).'</span>
+        </li>
+        <li>
+            <span class="leyka-li-title">'.__('Last comment', 'leyka').':</span>
+            <span class="leyka-li-value">'.esc_html($donor_last_comment).'</span>
+        </li>';
+        $donor_additional_data_html .= '</ul>';
 
         $column_content = (
             $donor_additional_data_html ?

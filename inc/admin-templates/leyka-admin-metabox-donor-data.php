@@ -21,28 +21,18 @@ try {
 
         <div class="donor-name leyka-editable-str-wrapper">
 
-            <h2 class="leyka-editable-str-result"
-        		id="editable-donor-name-str-result" 
-        		str-field="editable-donor-name-str-field">
+            <h2 class="leyka-editable-str-result" id="editable-donor-name-str-result" str-field="editable-donor-name-str-field">
                 <?php echo esc_html($donor->name);?>
             </h2>
 
-        	<input class="leyka-editable-str-field" type="text" value="<?php echo esc_html($donor->name);?>" style="display: none;" 
-        		id="editable-donor-name-str-field" 
-        		str-btn="editable-donor-name-str-btn" 
-        		str-result="editable-donor-name-str-result"
-        		save-action="leyka_save_donor_name"
-        		text-item-id="">
+        	<input class="leyka-editable-str-field" type="text" value="<?php echo esc_html($donor->name);?>" style="display: none;" id="editable-donor-name-str-field" str-btn="editable-donor-name-str-btn" str-result="editable-donor-name-str-result" save-action="leyka_save_donor_name" text-item-id="">
 
             <div class="loading-indicator-wrap" style="display: none;">
                 <div class="loader-wrap"><span class="leyka-loader xxs"></span></div>
                 <img class="ok-icon" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/icon-check.svg" alt="">
             </div>
 
-            <a href="#" class="donor-data-edit leyka-editable-str-btn"
-            	id="editable-donor-name-str-btn" 
-            	str-field="editable-donor-name-str-field" 
-            	title="<?php _e('Edit');?>"> </a>
+            <a href="#" class="donor-data-edit leyka-editable-str-btn" id="editable-donor-name-str-btn" str-field="editable-donor-name-str-field" title="<?php _e('Edit');?>"> </a>
 
         </div>
 
