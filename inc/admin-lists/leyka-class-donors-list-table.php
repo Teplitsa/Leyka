@@ -465,8 +465,6 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         $donor_last_comment = $item['donor']->get_comments();
         $donor_last_comment = $donor_last_comment ? array_pop($donor_last_comment)['text'] : __('no', 'leyka');
 
-//        echo '<pre>'.print_r($donor_last_comment, 1).'</pre>';
-
         $donor_additional_data_html = '<ul>
         <li>
             <span class="leyka-li-title">'.__('Description', 'leyka').':</span>
