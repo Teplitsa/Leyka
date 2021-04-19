@@ -33,12 +33,13 @@ class Leyka_Recent_Donations_Portlet_Controller extends Leyka_Portlet_Controller
             $result[] = array(
                 'id' => $donation->id,
                 'type' => $donation->type,
+                'donor_id' => $donation->donor_id ? $donation->donor_id : 0,
                 'donor_name' => $donation->donor_name,
                 'donor_email' => $donation->donor_email,
                 'date_time' => $donation->date_time_label,
                 'campaign_title' => $donation->campaign_title,
                 'campaign_id' => $donation->campaign_id,
-                'status' => $donation->status,
+                'status' => array('id' => $donation->status, 'label' => $donation->status_label,),
                 'amount' => $donation->amount,
                 'currency' => $donation->currency_label,
             );
