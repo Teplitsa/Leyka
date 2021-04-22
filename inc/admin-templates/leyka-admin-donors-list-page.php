@@ -50,11 +50,11 @@
                                 <input type="text" name="donor-name-email" class="leyka-donor-name-email-selector leyka-selector" value="<?php echo isset($_GET['donor-name-email']) ? esc_attr($_GET['donor-name-email']) : '';?>" placeholder="<?php _e("Donor's name or email", 'leyka');?>">
                             </div>
 
-                            <div class="leyka-admin-list-filter-wrapper">
+                            <div class="leyka-admin-list-filter-wrapper leyka-donation-date-filter-wrapper">
                                 <input type="text" name="first-date" autocomplete="off" class="leyka-first-donation-date-selector leyka-selector datepicker-ranged-selector" value="<?php echo isset($_GET['first-date']) ? esc_attr($_GET['first-date']) : '';?>" placeholder="<?php _e('First payment dates', 'leyka');?>">
                             </div>
 
-                            <div class="leyka-admin-list-filter-wrapper">
+                            <div class="leyka-admin-list-filter-wrapper leyka-donation-date-filter-wrapper">
                                 <input type="text" name="last-date" autocomplete="off" class="leyka-last-donation-date-selector leyka-selector datepicker-ranged-selector" value="<?php echo isset($_GET['last-date']) ? esc_attr($_GET['last-date']) : '';?>" placeholder="<?php _e('Last payment dates', 'leyka');?>">
                             </div>
 

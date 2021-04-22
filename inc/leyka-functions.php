@@ -1155,24 +1155,22 @@ function leyka_get_campaigns_list($params = array(), $simple_format = true) {
 
     $campaigns = get_posts(array_merge(array(
         'post_type' => Leyka_Campaign_Management::$post_type,
-        'posts_per_page' => -1,
+        'posts_per_page' => 20,
     ), $params));
 
-    if( !!$simple_format ) { // Simple assoc. array of ID => title
 
-        $list = array();
-        foreach($campaigns as $campaign) {
 
-            $campaign = new Leyka_Campaign($campaign);
-            $list[$campaign->id] = $campaign->title;
+    $list = array();
+    foreach($campaigns as $campaign) {
 
-        }
+        $campaign = new Leyka_Campaign($campaign);
 
-        return $list;
+        // "Simple format" results in simple assoc. array of ID => title
+        $list[$campaign->id] = !!$simple_format ? $campaign->title : $campaign;
 
-    } else { // Array of WP_Post objects
-        return $campaigns;
     }
+
+    return $list;
 
 }
 

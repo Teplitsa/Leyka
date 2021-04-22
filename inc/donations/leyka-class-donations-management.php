@@ -1,9 +1,8 @@
 <?php if( !defined('WPINC') ) die;
 
 /**
- * Leyka Donation History
+ * Leyka Donations Management class - admin elements.
  **/
-/** @todo Make this class ADMIN ONLY! Transfer all common elements outside. */
 
 class Leyka_Donation_Management extends Leyka_Singleton {
 
@@ -1068,8 +1067,12 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             <label for="campaign-select"><?php echo _x('Campaign', 'In subjective case', 'leyka');?>:</label>
 			<div class="leyka-ddata-field">
 
-				<input id="campaign-select" type="text" value="<?php echo $campaign_id ? $campaign->title : '';?>" data-nonce="<?php echo wp_create_nonce('leyka_get_campaigns_list_nonce');?>" placeholder="<?php _e('Select a campaign', 'leyka');?>">
-				<input id="campaign-id" type="hidden" name="campaign-id" value="<?php echo $campaign_id;?>">
+<!--				<input id="campaign-select" type="text" value="--><?php //echo $campaign_id ? $campaign->title : '';?><!--" data-nonce="--><?php //echo wp_create_nonce('leyka_get_campaigns_list_nonce');?><!--" placeholder="--><?php //_e('Select a campaign', 'leyka');?><!--">-->
+<!--				<input id="campaign-id" type="hidden" name="campaign-id" value="--><?php //echo $campaign_id;?><!--">-->
+
+                <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector autocomplete-input" value="" placeholder="<?php _e('Select a campaign', 'leyka');?>">
+                <input type="hidden" id="campaign-id" class="leyka-campaigns-select autocomplete-select" name="campaign-id" value="<?php echo $campaign_id;?>" data-campaign-payment-title-selector="#new-donation-purpose">
+
 				<div id="campaign_id-error" class="field-error"></div>
 
 			</div>
@@ -1177,8 +1180,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         <input type="hidden" id="payment-type-hidden" name="payment-type" value="correction">
 
-        <?php /** @todo Maybe, display divs only for "active" gateways? I.e. those with currently active PMs. */
-        foreach(leyka_get_gateways() as $gateway) {?>
+        <?php foreach(leyka_get_gateways() as $gateway) {?>
             <div id="<?php echo $gateway->id;?>-fields" class="leyka-ddata-string gateway-fields" style="display: none;">
                 <?php $gateway->display_donation_specific_data_fields();?>
             </div>
@@ -1188,8 +1190,10 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             <label for="donation-date-view"><?php _e('Donation date', 'leyka');?>:</label>
 
             <div class="leyka-ddata-field">
-                <input type="text" id="donation-date-view" value="<?php echo date(get_option('date_format'));?>" />
-                <input type="hidden" id="donation-date" name="donation_date" value="<?php echo date('Y-m-d');?>" />
+
+                <input type="text" id="donation-date-view" class="leyka-datepicker" value="<?php echo date(get_option('date_format'));?>" data-min-date="-5Y" data-max-date="+1Y" data-alt-field-selector="#donation-date" data-alt-format="yy-mm-dd">
+                <input type="hidden" id="donation-date" name="donation_date" value="<?php echo date('Y-m-d');?>">
+
             </div>
         </div>
 
@@ -1209,40 +1213,53 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 		<legend><?php _e('Campaign Data', 'leyka');?></legend>
 
         <div class="leyka-ddata-string">
+
 			<label><?php echo _x('Campaign', 'In subjective case', 'leyka');?>:</label>
 			<div class="leyka-ddata-field">
+
 			<?php if($campaign->id && $campaign->status == 'publish') {?>
+
 			<span class="text-line">
-            <span class="campaign-name"><?php echo htmlentities($campaign->title, ENT_QUOTES, 'UTF-8');?></span> <span class="campaign-actions"><a href="<?php echo admin_url('/post.php?action=edit&post='.$campaign->id);?>"><?php _e('Edit campaign', 'leyka');?></a> <a href="<?php echo $campaign->url;?>" target="_blank" rel="noopener noreferrer"><?php _e('Preview campaign', 'leyka');?></a></span></span>
+                <span class="campaign-name"><?php echo htmlentities($campaign->title, ENT_QUOTES, 'UTF-8');?></span>
+                <span class="campaign-actions">
+                    <a href="<?php echo admin_url('/post.php?action=edit&post='.$campaign->id);?>"><?php _e('Edit campaign', 'leyka');?></a>
+                    <a href="<?php echo $campaign->url;?>" target="_blank" rel="noopener noreferrer"><?php _e('Preview campaign', 'leyka');?></a>
+                </span>
+            </span>
 
 			<?php } else {
 				echo '<span class="text-line">'.__('the campaign has been removed or drafted', 'leyka').'</span>';
 			}?>
+
 			</div>
 		</div>
 
 		<div class="leyka-ddata-string">
+
 			<label><?php _e('Donation purpose', 'leyka');?>:</label>
-			<div class="leyka-ddata-field"><span class="text-line">
-			<?php echo $campaign->id ? $campaign->payment_title : $donation->title;?>
-			</span></div>
+
+			<div class="leyka-ddata-field">
+                <span id="campaign-payment-title" class="text-line">
+                    <?php echo $campaign->id ? $campaign->payment_title : $donation->title;?>
+                </span>
+            </div>
+
         </div>
 
 		<div class="set-action">
+
             <div id="campaign-select-trigger" class="button"><?php _e('Connect this donation to another campaign', 'leyka');?></div>
 
             <div id="campaign-select-fields" style="display: none;">
-                <label for="campaign-select"></label>
 
-                <input id="campaign-select"
-                       type="text"
-                       data-nonce="<?php echo wp_create_nonce('leyka_get_campaigns_list_nonce');?>"
-                       placeholder="<?php _e('Select a campaign', 'leyka');?>"
-                       value="<?php echo htmlentities($campaign->title, ENT_QUOTES, 'UTF-8');?>">
-                <input id="campaign-id" type="hidden" name="campaign-id" value="<?php echo $campaign->id;?>">
+                <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector autocomplete-input" value="<?php echo $campaign->title;?>" placeholder="<?php _e('Select a campaign', 'leyka');?>">
+                <input type="hidden" id="campaign-id" class="leyka-campaigns-select autocomplete-select" name="campaign-id" value="<?php echo $campaign->id;?>" data-campaign-payment-title-selector="#campaign-payment-title">
 
                 <div id="cancel-campaign-select" class="button"><?php _e('Cancel', 'leyka');?></div>
             </div>
+
+            <div id="campaign_id-error" class="field-error"></div>
+
 		</div>
 
 	</fieldset>
@@ -1430,8 +1447,9 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 			<div class="leyka-ddata-field">
             <?php if($donation->type === 'correction') {?>
 
-                <input type="text" id="donation-date-view" value="<?php echo $donation->date_label;?>">
+                <input type="text" id="donation-date-view" class="leyka-datepicker" value="<?php echo $donation->date_label;?>" data-min-date="-5Y" data-max-date="+1Y" data-alt-field="#donation-date" data-alt-format="yy-mm-dd">
                 <input type="hidden" id="donation-date" name="donation_date" value="<?php echo date('Y-m-d', $donation->date_timestamp);?>">
+
             <?php } else {?>
                 <span class="fake-input"><?php echo $donation->date_time_label;?></span>
             <?php }?>

@@ -14,28 +14,32 @@ function leyka_ajax_get_campaigns_list() {
         'meta_query' => array(array(
             'key' => 'payment_title', 'value' => $_REQUEST['term'], 'compare' => 'LIKE', 'type' => 'CHAR',
         )),
-    ), 0);
+    ), false);
 
     $ids_found = array();
     $count = count($campaigns);
-    for($i=0; $i<$count; $i++) {
+    for($i = 0; $i < $count; $i++) {
 
-        $ids_found[] = $campaigns[$i]->ID;
+        $ids_found[] = $campaigns[$i]->id;
         $campaigns[$i] = array(
-            'value' => $campaigns[$i]->ID,
-            'label' => $campaigns[$i]->post_title,
-            'payment_title' => get_post_meta($campaigns[$i]->ID, 'payment_title', true),
+            'value' => $campaigns[$i]->id,
+            'label' => $campaigns[$i]->title,
+            'payment_title' => $campaigns[$i]->payment_title,
         );
     }
 
-    $campaigns_tmp = leyka_get_campaigns_list(array('s' => $_REQUEST['term'], 'posts_per_page' => 10,), 0);
+    $campaigns_tmp = leyka_get_campaigns_list(array(
+        's' => $_REQUEST['term'],
+        'posts_per_page' => 10,
+        'post__not_in' => $ids_found,
+    ), false);
 
     foreach($campaigns_tmp as $campaign) { // Any criteria search - low priority
-        if( !in_array($campaign->ID, $ids_found) ) {
+        if( !in_array($campaign->id, $ids_found) ) {
             $campaigns[] = array(
-                'value' => $campaign->ID,
-                'label' => $campaign->post_title,
-                'payment_title' => get_post_meta($campaign->ID, 'payment_title', true),
+                'value' => $campaign->id,
+                'label' => $campaign->title,
+                'payment_title' => $campaign->payment_title,
             );
         }
     }
@@ -863,13 +867,10 @@ function leyka_campaigns_autocomplete(){
     $filter = isset($_GET['term']) ? sanitize_text_field($_GET['term']) : '';
     $res = array();
 
-    $campaigns = leyka_get_campaigns_list(array(
-        's' => $filter,
-        'posts_per_page' => 20,
-    ));
+    $campaigns = leyka_get_campaigns_list(array('s' => $filter,), false);
 
-    foreach($campaigns as $campaign_id => $campaign_title) {
-        $res[] = array('label' => $campaign_title, 'value' => $campaign_id);
+    foreach($campaigns as $campaign) {
+        $res[] = array('value' => $campaign->id, 'label' => $campaign->title, 'payment_title' => $campaign->payment_title,);
     }
 
     die(json_encode($res));

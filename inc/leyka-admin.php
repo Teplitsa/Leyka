@@ -1189,8 +1189,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         $leyka_admin_new = (isset($_GET['screen']) && count(explode('-', $_GET['screen'])) >= 2) // New settings pages (from v3.0)
             || (isset($_GET['page']) && $_GET['page'] === 'leyka_settings')
             || ($screen->post_type === Leyka_Campaign_Management::$post_type && $screen->base === 'post')
-            || (isset($_GET['page']) && ($_GET['page'] === 'leyka' || $_GET['page'] === 'leyka_donors'))
-            || (isset($_GET['page']) && ($_GET['page'] === 'leyka' || $_GET['page'] === 'leyka_donations'))
+            || (isset($_GET['page']) && in_array($_GET['page'], array(
+                'leyka', 'leyka_donors', 'leyka_donations', 'leyka_donation_info',
+            )))
             || (isset($_GET['page']) && $_GET['page'] === 'leyka_donor_info' && !empty($_GET['donor']))
             || (isset($_GET['page']) && ($_GET['page'] === 'leyka' || $_GET['page'] === 'leyka_recurring_subscriptions'))
             || (isset($_GET['page']) && $_GET['page'] === 'leyka_extensions')
@@ -1307,8 +1308,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             array('jquery-ui-datepicker'), LEYKA_VERSION, true
         );
 
-        // Donation edit page:
-        if($screen->post_type === Leyka_Donation_Management::$post_type && $screen->base === 'post') {
+        // Donation info/edit page:
+        if(
+            ($screen->post_type === Leyka_Donation_Management::$post_type && $screen->base === 'post') // Post-based Donations
+            || (isset($_GET['page']) && $_GET['page'] == 'leyka_donation_info') // Sep-based Donations
+        ) {
 
             $dependencies[] = 'jquery-ui-datepicker-locale';
 

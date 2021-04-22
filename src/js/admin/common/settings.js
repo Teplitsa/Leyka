@@ -4,6 +4,24 @@ jQuery(document).ready(function($){
 
     const $body = $('body');
 
+    // Normal datepicker fields:
+    $('input.leyka-datepicker').each(function(){
+
+        let $date_field = $(this);
+
+        $date_field.datepicker({
+            changeMonth: true,
+            changeYear: true,
+            minDate: $date_field.data('min-date') ? $date_field.data('min-date') : '',
+            maxDate: $date_field.data('max-date') ? $date_field.data('max-date') : '',
+            dateFormat: $date_field.data('date-format') ? $date_field.data('date-format') : 'dd.mm.yy',
+            altField: $date_field.data('alt-field-selector') ? $($date_field.data('alt-field-selector')) : '',
+            altFormat: $date_field.data('date-alt-format') ? $date_field.data('date-alt-format') : 'yy-mm-dd',
+        });
+
+    });
+    // Normal datepicker fields - END
+
     // Ranged (optionally) datepicker fields for admin lists filters:
     jQuery.leyka_fill_datepicker_input_period = function leyka_fill_datepicker_input_period(inst, extension_range) {
 
@@ -15,7 +33,7 @@ jQuery(document).ready(function($){
 
     };
 
-    jQuery.leyka_admin_filter_datepicker_ranged = function($input, options) {
+    jQuery.leyka_admin_filter_datepicker_ranged = function($input, options){
 
         $input.datepicker({
             range: 'period',
@@ -71,22 +89,29 @@ jQuery(document).ready(function($){
 
         let $text_selector_field = $(this),
             $list_select_field = $text_selector_field.siblings('.leyka-campaigns-select'),
+            is_multiple_values = !!$list_select_field.prop('multiple'),
             selected_values = [];
 
-        $list_select_field.find('option').each(function(){
+        if(is_multiple_values) {
+            $list_select_field.find('option').each(function(){
 
-            let $this = $(this);
-            selected_values.push({item: {label: $.trim($this.text()), value: $this.val()}});
+                let $this = $(this);
+                selected_values.push({item: {label: $.trim($this.text()), value: $this.val()}});
 
-        });
+            });
+        }
 
-        $text_selector_field.autocomplete({
-            source: leyka.ajaxurl+'?action=leyka_campaigns_autocomplete', /** @todo Add nonce to the query */
-            multiselect: !!$list_select_field.prop('multiple'),
+        let autocomplete_settings = {
+            source: leyka.ajaxurl+'?action=leyka_campaigns_autocomplete',
+            multiselect: is_multiple_values,
             minLength: 0,
             search_on_focus: true,
-            pre_selected_values: selected_values,
-            leyka_select_callback: function(selected_items) {
+        };
+
+        if(is_multiple_values) {
+
+            autocomplete_settings.pre_selected_values = selected_values;
+            autocomplete_settings.leyka_select_callback = function(selected_items){
 
                 $list_select_field.html('');
 
@@ -95,7 +120,23 @@ jQuery(document).ready(function($){
                 }
 
             }
-        });
+
+        } else {
+            autocomplete_settings.select = function(e, ui){
+
+                this.value = ui.item.label;
+                $list_select_field.val(ui.item.value);
+
+                if($list_select_field.data('campaign-payment-title-selector')) {
+                    $($list_select_field.data('campaign-payment-title-selector')).html(ui.item.payment_title);
+                }
+
+                return false;
+
+            };
+        }
+
+        $text_selector_field.autocomplete(autocomplete_settings);
 
     });
     // Campaign(s) select fields  - END
@@ -418,7 +459,7 @@ jQuery(document).ready(function($){
     let $tooltips = $body.find('.has-tooltip');
 
     $.widget('custom.leyka_admin_tooltip', $.ui.tooltip, {
-        _init: function(){ // Try also '_create' - true constructor
+        _init: function(){
 
             this._super(); // Parent _init() method call, just in case
 

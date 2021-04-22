@@ -234,11 +234,33 @@
 
     @include leyka-field-multiselect();
 
-    &~ select.autocomplete-select { // Hide select fields
+    &~ select.autocomplete-select { // Hide select fields for multiselect Campaign autocomplete fields
         display: none;
     }
 
 }
+
+// Datepicker fields:
+.leyka-donation-date-filter-wrapper {
+
+    position: relative;
+
+    &:after { // Datepicker icon
+
+        @include leyka-colored-icon('../../img/icon-datepicker.svg', 16px, $color-text-light);
+        content: '';
+        display: inline-block;
+        position: absolute;
+        top: 8px;
+        right: 8px;
+    }
+
+    input {
+        padding-top: 3px; // Input value vertical aligning
+    }
+
+}
+// Datepicker fields - END
 
 .fields .field {
     margin-bottom: 16px;

@@ -58,7 +58,7 @@
 
                         <div class="filters-row">
 
-                            <div class="leyka-admin-list-filter-wrapper">
+                            <div class="leyka-admin-list-filter-wrapper leyka-donation-date-filter-wrapper">
                                 <input type="text" name="first-date" autocomplete="off" class="leyka-first-donation-date-selector leyka-selector datepicker-ranged-selector" value="<?php echo isset($_GET['first-date']) ? esc_attr($_GET['first-date']) : '';?>" placeholder="<?php _e('First payment dates', 'leyka');?>">
                             </div>
 

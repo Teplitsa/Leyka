@@ -6,86 +6,6 @@ jQuery(document).ready(function($){
         return;
     }
 
-    let $donation_date = $('#donation-date-view').datepicker({
-        changeMonth: true,
-        changeYear: true,
-        minDate: '-5Y',
-        maxDate: '+1Y',
-        dateFormat: 'dd.mm.yy',
-        altField: '#donation-date',
-        altFormat: 'yy-mm-dd'
-    });
-
-    /** @todo Delete in favor of the field version from /src/js/admin/common/settings.js. Combine with 'input.leyka-campaigns-selector' from there (take the campaign donations purpose from this code) */
-    let $campaign_select = $('#campaign-select');
-    if($campaign_select.length && typeof $().autocomplete !== 'undefined') {
-
-        $campaign_select.keyup(function(){
-            if( !$(this).val() ) {
-                $('#campaign-id').val('');
-                $('#new-donation-purpose').html('');
-            }
-        });
-
-        $campaign_select.autocomplete({
-            minLength: 1,
-            focus: function(event, ui){
-                $campaign_select.val(ui.item.label);
-                $('#new-donation-purpose').html(ui.item.payment_title);
-
-                return false;
-            },
-            change: function(event, ui){
-                if( !$campaign_select.val() ) {
-                    $('#campaign-id').val('');
-                    $('#new-donation-purpose').html('');
-                }
-            },
-            close: function(event, ui){
-                if( !$campaign_select.val() ) {
-                    $('#campaign-id').val('');
-                    $('#new-donation-purpose').html('');
-                }
-            },
-            select: function(event, ui){
-                $campaign_select.val(ui.item.label);
-                $('#campaign-id').val(ui.item.value);
-                $('#new-donation-purpose').html(ui.item.payment_title);
-                return false;
-            },
-            source: function(request, response) {
-                let term = request.term,
-                    cache = $campaign_select.data('cache') ? $campaign_select.data('cache') : [];
-
-                if(term in cache) {
-                    response(cache[term]);
-                    return;
-                }
-
-                request.action = 'leyka_get_campaigns_list';
-                request.nonce = $campaign_select.data('nonce');
-
-                $.getJSON(leyka.ajaxurl, request, function(data, status, xhr){
-
-                    var cache = $campaign_select.data('cache') ? $campaign_select.data('cache') : [];
-
-                    cache[term] = data;
-                    response(data);
-                });
-            }
-        });
-
-        $campaign_select.data('ui-autocomplete')._renderItem = function(ul, item){
-            return $('<li>')
-                .append(
-                    '<a>'+item.label+(item.label === item.payment_title ? '' : '<div>'+item.payment_title+'</div></a>')
-                )
-                .appendTo(ul);
-        };
-
-    }
-    /** @todo Move to - END */
-
     // Validate add/edit donation form:
     $('form#post').submit(function(e){
 
@@ -113,10 +33,8 @@ jQuery(document).ready(function($){
         }
 
         $field = $('#donation-amount');
-        var amount_clear = parseFloat($field.val().replace(',', '.'));
-        if( !$field.val() || amount_clear == 0 || isNaN(amount_clear) ) {
-
-            console.log( !$field.val(), parseFloat($field.val().replace(',', '.')), isNaN($field.val()))
+        let amount_clear = parseFloat($field.val().replace(',', '.'));
+        if( !$field.val() || amount_clear === 0.0 || isNaN(amount_clear) ) {
 
             is_valid = false;
             $form.find('#donation_amount-error').html(leyka.amount_incorrect_msg).show();
@@ -126,23 +44,24 @@ jQuery(document).ready(function($){
         }
 
         $field = $('#donation-pm');
-        if($field.val() === 'custom')
+        if($field.val() === 'custom') {
             $field = $('#custom-payment-info');
+        }
         if( !$field.val() ) {
 
             is_valid = false;
             $form.find('#donation_pm-error').html(leyka.donation_source_required).show();
-        } else
+        } else {
             $form.find('#donation_pm-error').html('').hide();
+        }
 
-        $('#donation-date-field').val($.datepicker.formatDate('yy-mm-dd', $donation_date.datepicker('getDate')));
-
-        if( !is_valid )
+        if( !is_valid ) {
             e.preventDefault();
+        }
+
     });
 
     /** New donation page: */
-
     $('#donation-pm').change(function(){
 
         var $this = $(this);
@@ -163,7 +82,6 @@ jQuery(document).ready(function($){
     });
 
     /** Edit donation page: */
-
     $('#donation-status-log-toggle').click(function(e){
         e.preventDefault();
 
@@ -190,6 +108,9 @@ jQuery(document).ready(function($){
 
         e.preventDefault();
 
+        let $campaign_payment_title = $('#campaign-payment-title');
+        $campaign_payment_title.data('campaign-payment-title-previous', $campaign_payment_title.text());
+
         $(this).slideUp(100);
         $('#campaign-select-fields').slideDown(100);
         $('#campaign-field').removeAttr('disabled');
@@ -204,14 +125,20 @@ jQuery(document).ready(function($){
         $('#campaign-field').attr('disabled', 'disabled');
         $('#campaign-select-trigger').slideDown(100);
 
+        let $campaign_payment_title = $('#campaign-payment-title');
+        $campaign_payment_title
+            .text($campaign_payment_title.data('campaign-payment-title-previous'))
+            .removeData('campaign-payment-title-previous');
+
     });
 
     $('.recurrent-cancel').click(function(e){
+
         e.preventDefault();
 
-        var $this = $(this);
-
         $('#ajax-processing').fadeIn(100);
+
+        let $this = $(this);
         $this.fadeOut(100);
 
         // Do a recurrent donations cancelling procedure:
@@ -235,12 +162,15 @@ jQuery(document).ready(function($){
 
             }
         });
+
     });
 
     $('#recurrent-cancel-retry').click(function(e){
+
         e.preventDefault();
 
         $('.recurrent-cancel').click();
+
     });
 
 });

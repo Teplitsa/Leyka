@@ -61,12 +61,12 @@
 
                             <div class="leyka-admin-list-filter-wrapper leyka-donation-date-filter-wrapper">
                                 <label for="donation-datetime-from"><?php _e('From:', 'leyka');?></label>
-                                <input type="date" id="donation-datetime-from" class="leyka-date-from-field" name="date-from" value="<?php echo empty($_GET['date-from']) ? '' : $_GET['date-from'];?>">
+                                <input type="text" id="donation-datetime-from" name="date-from" autocomplete="off" class="leyka-datepicker leyka-selector" data-min-date="-5Y" data-max-date="+0D" value="<?php echo isset($_GET['date-from']) ? esc_attr($_GET['date-from']) : '';?>" placeholder="<?php _e('dd.mm.yyyy', 'leyka');?>">
                             </div>
 
                             <div class="leyka-admin-list-filter-wrapper leyka-donation-date-filter-wrapper">
                                 <label for="donation-datetime-to"><?php _e('To:', 'leyka');?></label>
-                                <input type="date" id="donation-datetime-to" class="leyka-date-to-field" name="date-to" value="<?php echo empty($_GET['date-to']) ? '' : $_GET['date-to'];?>">
+                                <input type="text" id="donation-datetime-to" name="date-to" autocomplete="off" class="leyka-datepicker leyka-selector" data-min-date="-5Y" data-max-date="+0D" value="<?php echo isset($_GET['date-to']) ? esc_attr($_GET['date-to']) : '';?>" placeholder="<?php _e('dd.mm.yyyy', 'leyka');?>">
                             </div>
 
                         </div>
