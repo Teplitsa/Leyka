@@ -17,18 +17,25 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             'submitted' : $params['status'];
 
         $params['donor_name'] = empty($params['donor_name']) ? leyka_pf_get_donor_name_value() : $params['donor_name'];
-        if($params['donor_name'] && !leyka_validate_donor_name($params['donor_name']) && !$params['force_insert']) {
+        if(
+            $params['donor_name']
+            && !leyka_validate_donor_name($params['donor_name'])
+            && !$params['force_insert']
+            && $params['payment_type'] != 'correction'
+        ) {
             return new WP_Error('incorrect_donor_name', __('Incorrect donor name given while adding a donation', 'leyka'));
         } else if(is_email($params['donor_name'])) {
             $params['donor_name'] = apply_filters('leyka_donor_name_email_given', __('Anonymous', 'leyka'));
+        } else if( !$params['donor_name'] ) {
+            $params['donor_name'] = apply_filters('leyka_donor_name_none_given', __('Anonymous', 'leyka'));
         }
+
         $params['donor_name'] = htmlentities($params['donor_name'], ENT_QUOTES, 'UTF-8');
 
-        $params['campaign_id'] = empty($params['campaign_id']) ? leyka_pf_get_campaign_id_value() : (int)$params['campaign_id'];
+        $params['campaign_id'] = empty($params['campaign_id']) ? leyka_pf_get_campaign_id_value() : absint($params['campaign_id']);
 
-        $params['payment_type'] =
-            empty($params['payment_type']) || !leyka_get_payment_types_list($params['payment_type']) ?
-                'single' : $params['payment_type'];
+        $params['payment_type'] = empty($params['payment_type']) || !leyka_get_payment_types_list($params['payment_type']) ?
+            'single' : $params['payment_type'];
 
         $params['donor_email'] = empty($params['donor_email']) ? leyka_pf_get_donor_email_value() : $params['donor_email'];
 
@@ -424,7 +431,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                 return $this->_main_data->amount_in_main_currency ? $this->_main_data->amount_in_main_currency : $this->amount;
 
             case 'donor_name':
-                return $this->_main_data->donor_name;
+                return stripslashes($this->_main_data->donor_name);
             case 'donor_email':
                 return $this->_main_data->donor_email;
             case 'donor_comment':

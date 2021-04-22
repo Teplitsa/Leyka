@@ -64,13 +64,15 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
         $value = empty($params['donor_name']) ? leyka_pf_get_donor_name_value() : $params['donor_name'];
         $value = trim($value);
-        if($value && !leyka_validate_donor_name($value) && !$params['force_insert']) { // Validate donor's name
+        if($value && !leyka_validate_donor_name($value) && !$params['force_insert'] && $params['payment_type'] != 'correction') {
 
             wp_delete_post($donation_id, true);
             return new WP_Error('incorrect_donor_name', __('Incorrect donor name given while adding a donation', 'leyka'));
 
         } else if(is_email($value)) {
             $value = apply_filters('leyka_donor_name_email_given', __('Anonymous', 'leyka'));
+        } else if( !$value ) {
+            $value = apply_filters('leyka_donor_name_none_given', __('Anonymous', 'leyka'));
         }
 
         add_post_meta($donation_id, 'leyka_donor_name', htmlentities($value, ENT_QUOTES, 'UTF-8'));
@@ -459,7 +461,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 return $this->_donation_meta['main_curr_amount'];
 
             case 'donor_name':
-                return $this->_donation_meta['donor_name'];
+                return stripslashes($this->_donation_meta['donor_name']);
             case 'donor_email':
                 return $this->_donation_meta['donor_email'];
             case 'donor_comment':
