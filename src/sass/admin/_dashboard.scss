@@ -34,6 +34,7 @@
     }
     // Stats invite - END
 
+    /** Dynamic wrapper (above stats portlets): */
     .banner-wrapper {
 
         display: flex;
@@ -42,34 +43,61 @@
         margin-bottom: 20px;
 
         .banner-inner {
+
             position: relative;
-        }
+            flex: 100% 1 0;
 
-        a.banner {
-            @include leyka-admin-clean-a;
-            display: block;
-            width: auto;
+            display: flex;
+            flex-flow: row nowrap;
 
-            &:hover {
+            .banner {
+
+                padding: 0 40px;
+
+                flex: 100% 0 1;
+
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                height: 168px;
+                border-radius: 6px;
+                background: linear-gradient(180deg, #5AC147 0%, #39A94E 100%);
+
+                color: $color-white;
+                font-weight: 400;
+
+                .banner-subtitle {
+                    font-size: 24px;
+                    line-height: 28px;
+                }
+
+                .banner-title {
+                    font-size: 40px;
+                    line-height: 47px;
+                }
+
             }
 
-            img {
-                width: auto;
+            .close {
+
+                background-image: url(../../img/dashboard/icon-close.svg);
+                @include leyka-admin-icon(24px);
+                @include leyka-admin-clean-a;
                 display: block;
-            }
-        }
+                position: absolute;
+                top: 0.5*$leyka-base;
+                right: 0.5*$leyka-base;
 
-        a.close {
-            background-image: url(../../img/dashboard/icon-close.svg);
-            @include leyka-admin-icon(24px);
-            @include leyka-admin-clean-a;
-            display: block;
-            position: absolute;
-            top: 0.5*$leyka-base;
-            right: 0.5*$leyka-base;
+                background-color: $color-white;
+                border-radius: 50%;
+
+            }
+
         }
 
     }
+    /** Dynamic wrapper - END */
 
     /** Main part: */
     .leyka-page-content {

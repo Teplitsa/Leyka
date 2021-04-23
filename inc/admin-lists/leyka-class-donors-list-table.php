@@ -34,28 +34,30 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         }
 
         $donors_params['meta_query'] = array();
-        if( !empty($_REQUEST['donor-type']) ) {
-            $donors_params['meta_query'][] = array('key' => 'leyka_donor_type', 'value' => esc_sql($_REQUEST['donor-type']),);
+        if( !empty($_GET['donor-type']) ) {
+            $donors_params['meta_query'][] = $_GET['donor-type'] == 'regular' ?
+                array('key' => 'leyka_donor_type', 'value' => esc_sql($_GET['donor-type']),) :
+                array('key' => 'leyka_donor_type', 'compare' => 'NOT EXISTS',);
         }
 
-        if( !empty($_REQUEST['donor-name-email']) ) {
+        if( !empty($_GET['donor-name-email']) ) {
 
-            $_REQUEST['donor-name-email'] = trim($_REQUEST['donor-name-email']);
+            $_GET['donor-name-email'] = trim($_GET['donor-name-email']);
 
-            if($_REQUEST['donor-name-email']) {
+            if($_GET['donor-name-email']) {
 
-                $donors_params['search'] = '*'.esc_sql($_REQUEST['donor-name-email']).'*';
+                $donors_params['search'] = '*'.esc_sql($_GET['donor-name-email']).'*';
                 $donors_params['search_columns'] = array('ID', 'display_name', 'user_email',);
 
             }
 
         }
 
-        if( !empty($_REQUEST['gateways']) ) {
+        if( !empty($_GET['gateways']) ) {
 
             $gateways_meta_query = array('relation' => 'OR',);
             
-            foreach($_REQUEST['gateways'] as $pm_full_id) {
+            foreach($_GET['gateways'] as $pm_full_id) {
                 $gateways_meta_query[] = array(
                     'key' => 'leyka_donor_gateways',
                     'value' => esc_sql($pm_full_id),
@@ -67,11 +69,11 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         }
 
-        if( !empty($_REQUEST['campaigns']) && !empty($_REQUEST['campaigns'][0]) ) {
+        if( !empty($_GET['campaigns']) && !empty($_GET['campaigns'][0]) ) {
 
             $campaigns_meta_query = array('relation' => 'OR',);
 
-            foreach($_REQUEST['campaigns'] as $campaign_id) {
+            foreach($_GET['campaigns'] as $campaign_id) {
                 $campaigns_meta_query[] = array(
                     'key' => 'leyka_donor_campaigns',
                     'value' => 'i:'.absint($campaign_id).';', // A little freaky, we know, but it's the best we could think of
@@ -83,20 +85,20 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         }
 
-        if( !empty($_REQUEST['first-donation-date']) ) {
+        if( !empty($_GET['first-donation-date']) ) {
 
-            if(stripos($_REQUEST['first-donation-date'], '-') !== false) { // Dates period chosen
+            if(stripos($_GET['first-donation-date'], '-') !== false) { // Dates period chosen
 
-                $_REQUEST['first-donation-date'] = array_slice(explode('-', $_REQUEST['first-donation-date']), 0, 2);
+                $_GET['first-donation-date'] = array_slice(explode('-', $_GET['first-donation-date']), 0, 2);
 
-                if(count($_REQUEST['first-donation-date']) === 2) { // The date is set as an interval
+                if(count($_GET['first-donation-date']) === 2) { // The date is set as an interval
 
-                    $_REQUEST['first-donation-date'][0] = strtotime(trim($_REQUEST['first-donation-date'][0]).' 00:00:00');
-                    $_REQUEST['first-donation-date'][1] = strtotime(trim($_REQUEST['first-donation-date'][1]).' 23:59:59');
+                    $_GET['first-donation-date'][0] = strtotime(trim($_GET['first-donation-date'][0]).' 00:00:00');
+                    $_GET['first-donation-date'][1] = strtotime(trim($_GET['first-donation-date'][1]).' 23:59:59');
 
                     $donors_params['meta_query'][] = array(
                         'key' => 'leyka_donor_first_donation_date',
-                        'value' => $_REQUEST['first-donation-date'],
+                        'value' => $_GET['first-donation-date'],
                         'compare' => 'BETWEEN',
                         'type' => 'NUMERIC',
                     );
@@ -107,8 +109,8 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
                 $donors_params['meta_query'][] = array(
                     'key' => 'leyka_donor_first_donation_date',
                     'value' => array(
-                        strtotime($_REQUEST['first-donation-date'].' 00:00:00'),
-                        strtotime($_REQUEST['first-donation-date'].' 23:59:59'),
+                        strtotime($_GET['first-donation-date'].' 00:00:00'),
+                        strtotime($_GET['first-donation-date'].' 23:59:59'),
                     ),
                     'compare' => 'BETWEEN',
                     'type' => 'NUMERIC',
@@ -117,20 +119,20 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         }
 
-        if( !empty($_REQUEST['last-donation-date']) ) {
+        if( !empty($_GET['last-donation-date']) ) {
 
-            if(stripos($_REQUEST['last-donation-date'], ' - ') !== false) { // Dates period chosen
+            if(stripos($_GET['last-donation-date'], ' - ') !== false) { // Dates period chosen
 
-                $_REQUEST['last-donation-date'] = array_slice(explode('-', $_REQUEST['last-donation-date']), 0, 2);
+                $_GET['last-donation-date'] = array_slice(explode('-', $_GET['last-donation-date']), 0, 2);
 
-                if(count($_REQUEST['last-donation-date']) === 2) { // The date is set as an interval
+                if(count($_GET['last-donation-date']) === 2) { // The date is set as an interval
 
-                    $_REQUEST['last-donation-date'][0] = strtotime(trim($_REQUEST['last-donation-date'][0]).' 00:00:00');
-                    $_REQUEST['last-donation-date'][1] = strtotime(trim($_REQUEST['last-donation-date'][1]).' 23:59:59');
+                    $_GET['last-donation-date'][0] = strtotime(trim($_GET['last-donation-date'][0]).' 00:00:00');
+                    $_GET['last-donation-date'][1] = strtotime(trim($_GET['last-donation-date'][1]).' 23:59:59');
 
                     $donors_params['meta_query'][] = array(
                         'key' => 'leyka_donor_last_donation_date',
-                        'value' => $_REQUEST['last-donation-date'],
+                        'value' => $_GET['last-donation-date'],
                         'compare' => 'BETWEEN',
                         'type' => 'NUMERIC',
                     );
@@ -141,8 +143,8 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
                 $donors_params['meta_query'][] = array(
                     'key' => 'leyka_donor_last_donation_date',
                     'value' => array(
-                        strtotime($_REQUEST['last-donation-date'].' 00:00:00'),
-                        strtotime($_REQUEST['last-donation-date'].' 23:59:59'),
+                        strtotime($_GET['last-donation-date'].' 00:00:00'),
+                        strtotime($_GET['last-donation-date'].' 23:59:59'),
                     ),
                     'compare' => 'BETWEEN',
                     'type' => 'NUMERIC',
@@ -156,9 +158,9 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         }
 
         // Ordering:
-        if(isset($_REQUEST['orderby']) && array_key_exists($_REQUEST['orderby'], $this->get_sortable_columns())) {
+        if(isset($_GET['orderby']) && array_key_exists($_GET['orderby'], $this->get_sortable_columns())) {
 
-            switch($_REQUEST['orderby']) {
+            switch($_GET['orderby']) {
                 case 'donor_id': $donors_params['orderby'] = 'ID'; break;
                 case 'donor_type':
                     $donors_params['meta_key'] = 'leyka_donor_type';
@@ -182,7 +184,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             }
 
             if($donors_params['orderby']) {
-                $donors_params['order'] = isset($_REQUEST['order']) && $_REQUEST['order'] == 'asc' ? 'ASC' : 'DESC';
+                $donors_params['order'] = isset($_GET['order']) && $_GET['order'] == 'asc' ? 'ASC' : 'DESC';
             }
 
         }

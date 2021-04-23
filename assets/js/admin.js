@@ -1745,28 +1745,28 @@ jQuery(document).ready(function($){
         }
 
         let $persistent_campaign_fields = $('.persistent-campaign-field'),
-            $temp_campaign_fields = $('.temporary-campaign-fields'),
-            $form_template_field = $(':input[name="campaign_template"]');
+            $temp_campaign_fields = $('.temporary-campaign-fields');
+            // $form_template_field = $(':input[name="campaign_template"]');
 
         if($this.val() === 'persistent') {
 
             $persistent_campaign_fields.show();
             $temp_campaign_fields.hide();
 
-            $form_template_field
-                .data('prev-value', $form_template_field.val())
-                .val('star')
-                .prop('disabled', 'disabled');
+            // $form_template_field
+            //     .data('prev-value', $form_template_field.val())
+            //     .val('star')
+            //     .prop('disabled', 'disabled');
 
         } else {
 
             $persistent_campaign_fields.hide();
             $temp_campaign_fields.show();
 
-            if($form_template_field.data('prev-value')) {
-                $form_template_field.val($form_template_field.data('prev-value'));
-            }
-            $form_template_field.removeProp('disabled');
+            // if($form_template_field.data('prev-value')) {
+            //     $form_template_field.val($form_template_field.data('prev-value'));
+            // }
+            // $form_template_field.removeProp('disabled');
 
         }
 
@@ -2347,7 +2347,6 @@ jQuery(document).ready(function($){
                             $button.prop('disabled', false);
                         }
                     }
-                    return;
                 }
             })
             .fail(function(){
@@ -2356,8 +2355,6 @@ jQuery(document).ready(function($){
             })
             .always(function(){
                 $loading.hide();
-                // $loading.css('display', 'none');
-                // $loading.find('.leyka-loader').css('display', 'none');
             });
     });
 
@@ -2366,15 +2363,22 @@ jQuery(document).ready(function($){
 // banner
 jQuery(document).ready(function($){
     $('.banner-wrapper .close').on('click.leyka', function(e){
+
         e.preventDefault();
 
-        $(this).closest('.banner-wrapper').remove();
+        let $this = $(this);
 
-        let ajax_params = {
-            action: 'leyka_close_dashboard_banner'
-        };
+        $this.closest('.banner-wrapper').remove();
 
-        $.post(leyka.ajaxurl, ajax_params, null, 'json');
+        $.post(
+            leyka.ajaxurl, {
+                action: 'leyka_close_dashboard_banner',
+                banner_id: $this.parents('.banner-inner').data('banner-id'),
+                /** @todo Add nonce */
+            },
+            null, 'json'
+        );
+
     });
 });
 

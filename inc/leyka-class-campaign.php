@@ -214,7 +214,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
 		$cur_template = $campaign->template ? $campaign->template : 'default';?>
 
-        <fieldset id="campaign-form-template" class="metabox-field campaign-field campaign-template">
+        <fieldset id="campaign-form-template" class="metabox-field campaign-field campaign-template temporary-campaign-fields">
 
             <h3 class="field-title">
                 <label for="campaign-form-template-field"><?php _e('Template for payment form', 'leyka');?></label>

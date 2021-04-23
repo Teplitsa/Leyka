@@ -29,7 +29,7 @@ $campaign = leyka_get_validated_campaign($campaign);?>
 <div id="leyka-payment-form" class="leyka-tpl-radio" data-template="radio" data-leyka-ver="<?php echo Leyka_Payment_Form::get_plugin_ver_for_atts();?>">
 
 <div class="leyka-payment-option">
-<!-- <?php echo __("This donation form is created by Leyka WordPress plugin, created by Teplitsa of Social Technologies. If you are interested in some way, don't hesitate to write to us: support@te-st.ru", 'leyka');?> -->
+
     <form class="leyka-pm-form" action="<?php echo leyka_pf_get_form_action();?>" method="post" id="leyka-form-common">
 
         <div class="form-part freeze-fields">

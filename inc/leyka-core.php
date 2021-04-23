@@ -75,19 +75,6 @@ class Leyka extends Leyka_Singleton {
                 (defined('LEYKA_DEBUG') && LEYKA_DEBUG !== 'inherit' ? !!LEYKA_DEBUG : $value) : $value;
         }, 10, 2);
 
-        // If the default template is disabled, don't use it as a default:
-//        add_filter('leyka_option_value', function($value, $option_id){
-//
-//            if($option_id !== 'donation_form_template') {
-//                return $value;
-//            }
-//
-//            $default_template_data = $this->_get_template_data($value);
-//
-//            return empty($default_template_data['disabled']) || $default_template_data['disabled'] === false ? $value : 'star';
-//
-//        }, 10, 2);
-
         // By default, we'll assume some errors in the payment form, so redirect will get us back to it:
         $this->_payment_url = wp_get_referer();
 
@@ -108,13 +95,6 @@ class Leyka extends Leyka_Singleton {
 
         add_action('parse_request', array($this, 'parse_request')); // Service URLs handlers
 
-//        function leyka_session_start() {
-//            if( !session_id() ) {
-//                session_start();
-//            }
-//        }
-//        add_action('init', 'leyka_session_start', -2);
-
         if(get_option('leyka_plugin_stats_option_needs_sync')) {
 
             function leyka_sync_stats_option() {
@@ -132,6 +112,26 @@ class Leyka extends Leyka_Singleton {
             add_action('admin_init', 'leyka_sync_stats_option');
 
         }
+
+        // Change the new recurring Donation purpose if it's Campaign is closed:
+        add_action('leyka_donation_funded_status_changed', function($donation_id){
+
+            $donation = new Leyka_Donation($donation_id);
+            if($donation->payment_type !== 'rebill') {
+                return;
+            }
+
+            $campaign = new Leyka_Campaign($donation->campaign_id);
+            if($campaign->is_finished) {
+                $donation->payment_title = apply_filters(
+                    'leyka_finished_campaign_new_recurring_donation_purpose',
+                    __('Charity donation', 'leyka'),
+                    $donation,
+                    $campaign
+                );
+            }
+
+        }, 10);
 
         add_action('admin_bar_menu', array($this, 'add_toolbar_menu'), 999);
 
@@ -323,8 +323,6 @@ class Leyka extends Leyka_Singleton {
                 ) {
 
                     $donation_id = leyka_remembered_data('donation_id');
-                    $campaign = null;
-                    $campaign_id = null;
 
                     if( !$donation_id ) {
                         return '';
@@ -379,37 +377,6 @@ class Leyka extends Leyka_Singleton {
 
             }
             add_filter('the_content', 'leyka_failure_page_widget_template', 1);
-
-            function reinstall_cssjs_in_giger() {
-
-                $theme = wp_get_theme();
-                if(
-                    $theme
-                    && in_array($theme->template, array('giger', 'giger-kms'))
-                    && !is_singular(Leyka_Campaign_Management::$post_type)
-                ) {
-
-                    $is_cssjs_reqiured = false;
-
-                    if(in_array(get_the_ID(), array(leyka_options()->opt('failure_page'), leyka_options()->opt('success_page')))) {
-                        $is_cssjs_reqiured = true;
-                    } else if(leyka_form_is_screening()) {
-                        $is_cssjs_reqiured = true;
-                    }
-
-                    if($is_cssjs_reqiured) {
-
-                        $leyka_template_data = leyka_get_current_template_data();
-
-                        if($leyka_template_data['id'] == 'revo') {
-                            leyka()->load_public_cssjs(); // Forcibly add Leyka cssjs in giger for Revo templates
-                        }
-
-                    }
-
-                }
-            }
-            add_action('template_redirect', 'reinstall_cssjs_in_giger', 90); // 90 is important (Giger priority is 80)
 
             add_action('wp_head', 'leyka_inline_scripts');
             function leyka_inline_scripts(){
@@ -924,7 +891,7 @@ class Leyka extends Leyka_Singleton {
 
         do_action('leyka_before_procedure', $procedure_id, $params);
 
-        $procedure_script = LEYKA_PLUGIN_DIR.'procedures/leyka-'.$procedure_id.'.php';
+        $procedure_script = apply_filters('leyka_procedure_address', LEYKA_PLUGIN_DIR.'procedures/leyka-'.$procedure_id.'.php');
         if(file_exists($procedure_script)) {
 
             $_POST['procedure_params'] = $params;
