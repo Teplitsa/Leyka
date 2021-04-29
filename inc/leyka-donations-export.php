@@ -96,10 +96,15 @@ function leyka_do_donations_export() {
         'ID', 'Имя донора', 'Email', 'Тип платежа', 'Плат. оператор', 'Способ платежа', 'Полная сумма', 'Итоговая сумма', 'Валюта', 'Дата пожертвования', 'Статус', 'Кампания', 'Подписка на рассылку', 'Email подписки', 'Комментарий', 'Доп. поля кампании',
     );
 
-    // Common additional donation form fields headers:
-    $common_additional_fields_settings = leyka_options()->opt('additional_donation_form_fields');
-    foreach($common_additional_fields_settings as $field_id => $field_settings) {
-        $table_headers[] = '[Общее доп. поле]['.$field_id.'] '.$field_settings['title'];
+    // "All Campaigns" additional donation form fields headers:
+    $all_campaigns_additional_fields_settings = array();
+    foreach(leyka_options()->opt('additional_donation_form_fields_library') as $field_id => $field_settings) {
+        if($field_settings['for_all_campaigns']) {
+
+            $all_campaigns_additional_fields_settings[$field_id] = $field_settings;
+            $table_headers[] = '[Общее доп. поле]['.$field_id.'] '.$field_settings['title'];
+
+        }
     }
 
     echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
@@ -150,13 +155,13 @@ function leyka_do_donations_export() {
 
             // Campaign-specific additional fields column:
             $campaign_additional_fields_column_value = '';
-            $campaign_additional_fields_settings = Leyka_Campaign::get_additional_fields_settings($donation->campaign_id, false);
+            $campaign_additional_fields_settings = Leyka_Campaign::get_additional_fields_settings($donation->campaign_id);
 
             foreach($donation->additional_fields as $field_id => $field_value) {
 
                 if( // Add field to the campaign-specific column only if it isn't in common columns:
                     isset($campaign_additional_fields_settings[$field_id])
-                    && !isset($common_additional_fields_settings[$field_id])
+                    && !isset($all_campaigns_additional_fields_settings[$field_id])
                 ) {
 
                     $campaign_additional_fields_column_value .=
@@ -173,7 +178,7 @@ function leyka_do_donations_export() {
             $line_values[] = rtrim($campaign_additional_fields_column_value, "\n");
 
             // Common additional fields columns:
-            foreach($common_additional_fields_settings as $field_id => $field_settings) {
+            foreach($all_campaigns_additional_fields_settings as $field_id => $field_settings) {
                 $line_values[] = isset($donation->additional_fields[$field_id]) ? $donation->additional_fields[$field_id] : '';
             }
 

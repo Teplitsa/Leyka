@@ -7,7 +7,56 @@ jQuery(document).ready(function($){
         return;
     }
 
-    let $items_wrapper = $additional_fields_settings_wrapper.find('.leyka-main-multi-items');
+    let $items_wrapper = $additional_fields_settings_wrapper.find('.leyka-main-multi-items'),
+        $add_item_button = $items_wrapper.siblings('.add-item');
+
+    // Campaigns select fields:
+
+    // Init campaign list autocomplete for a field:
+    function leyka_additional_fields_init_campaigns_autocomplete($campaigns_select_field) {
+
+        let selected_values = [];
+
+        $campaigns_select_field = $($campaigns_select_field);
+
+        $campaigns_select_field.find('option').each(function(){
+            selected_values.push({item: {label: $.trim($(this).text()), value: $(this).val()}});
+        });
+
+        $campaigns_select_field.siblings('input.leyka-campaigns-selector').autocomplete({
+            source: leyka.ajaxurl+'?action=leyka_campaigns_autocomplete',
+            multiselect: true,
+            minLength: 0,
+            search_on_focus: true,
+            pre_selected_values: selected_values,
+            leyka_select_callback: function(selectedItems) {
+
+                $campaigns_select_field.html('');
+                for(let val in selectedItems) {
+
+                    let $option = $('<option></option>')
+                        .val(val)
+                        .prop('selected', true);
+
+                    $campaigns_select_field.append($option);
+
+                }
+
+            }
+        });
+
+    }
+
+    // Init all existing campaigns list fields on page load:
+    $items_wrapper.find('.autocomplete-select').each(function(){
+        leyka_additional_fields_init_campaigns_autocomplete(this);
+    });
+
+    // Init campaign list for a new additional field:
+    $add_item_button.on('click.leyka', function(){
+        leyka_additional_fields_init_campaigns_autocomplete($items_wrapper.find('.field-box:last-child .autocomplete-select'));
+    });
+    // Campaigns select fields - END
 
     // Change field box title when field title value changes:
     $items_wrapper.on('keyup.leyka change.leyka click.leyka', '[name="leyka_field_title"]', function(){
@@ -36,6 +85,21 @@ jQuery(document).ready(function($){
         }
 
     });
+
+    // Hide/show the campaigns list field when "for all campaigns" checkbox is checked/unchecked:
+    $items_wrapper.on('change.leyka', '.field-for-all-campaigns input:checkbox', function(){
+
+        let $checkbox = $(this),
+            $campaigns_list_field_wrapper = $checkbox.parents('.single-line').siblings('.single-line.campaigns-list-select');
+
+        if($checkbox.prop('checked')) {
+            $campaigns_list_field_wrapper.hide();
+        } else {
+            $campaigns_list_field_wrapper.show();
+        }
+
+    });
+    // Hide/show the campaigns list field - END
 
     // Pre-submit actions:
     $items_wrapper.parents('form:first').on('submit.leyka', function(e){

@@ -1278,16 +1278,16 @@ function leyka_is_min_payment_settings_complete() {
 
 }
 
-function leyka_is_campaign_published() {
-
-    global $wpdb;
-
-    return $wpdb->get_var("SELECT COUNT(*)
-      FROM $wpdb->posts
-      WHERE post_type='".Leyka_Campaign_Management::$post_type."' AND post_status = 'publish' LIMIT 0,1"
-    ) > 0;
-
-}
+//function leyka_is_campaign_published() {
+//
+//    global $wpdb;
+//
+//    return $wpdb->get_var("SELECT COUNT(*)
+//      FROM $wpdb->posts
+//      WHERE post_type='".Leyka_Campaign_Management::$post_type."' AND post_status = 'publish' LIMIT 0,1"
+//    ) > 0;
+//
+//}
 
 function leyka_get_campaigns_list($params = array(), $simple_format = true) {
 
@@ -2153,7 +2153,7 @@ if( !function_exists('leyka_save_option') ) {
                 leyka_options()->opt($setting_id, esc_attr(stripslashes($_POST["leyka_$setting_id"])));
             }
 
-        } else if(stristr($option_type, 'custom_') !== false && isset($_POST["leyka_$setting_id"])) { // Custom field types
+        } else if(mb_stristr($option_type, 'custom_') !== false && isset($_POST["leyka_$setting_id"])) { // Custom field types
             do_action("leyka_save_custom_option-$setting_id", $_POST["leyka_$setting_id"]);
         } else if(isset($_POST["leyka_$setting_id"])) { // Simple field types
 

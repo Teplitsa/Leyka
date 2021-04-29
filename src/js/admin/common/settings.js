@@ -571,7 +571,9 @@ jQuery(document).ready(function($){
                     $.each($items_wrapper.find('#'+item_id).find(':input'), function(key, item_setting_input){
 
                         let $input = $(item_setting_input),
-                            input_name = $input.prop('name').replace($items_wrapper.data('item-inputs-names-prefix'), '');
+                            input_name = $input.prop('name')
+                                .replace($items_wrapper.data('item-inputs-names-prefix'), '')
+                                .replace('[]', '');
 
                         if($input.prop('type') === 'checkbox') {
                             item_options[input_name] = $input.prop('checked');
@@ -625,12 +627,14 @@ jQuery(document).ready(function($){
             }
 
             let items_current_count = $items_wrapper.find('.multi-valued-item-box').length;
-            if(items_current_count <= $items_wrapper.data('min-items')) {
+            if($items_wrapper.data('min-items') && items_current_count <= $items_wrapper.data('min-items')) {
                 $items_wrapper.find('.delete-item').addClass('inactive');
             }
             if(items_current_count < $items_wrapper.data('max-items')) {
                 $add_item_button.removeClass('inactive');
             }
+
+            console.log('Common JS')
 
         });
 
@@ -659,7 +663,7 @@ jQuery(document).ready(function($){
 
             let items_current_count = $items_wrapper.find('.multi-valued-item-box').length;
 
-            if(items_current_count >= $items_wrapper.data('max-items')) {
+            if($items_wrapper.data('max-items') && items_current_count >= $items_wrapper.data('max-items')) {
                 $add_item_button.addClass('inactive');
             }
 
@@ -671,7 +675,8 @@ jQuery(document).ready(function($){
 
         });
 
-        if( !$items_wrapper.find('.multi-valued-item-box').length ) { // No items added yet - add the first (empty) one
+        // No items added yet - add the first (empty) one:
+        if($items_wrapper.data('show-new-item-if-empty') && !$items_wrapper.find('.multi-valued-item-box').length) {
             $add_item_button.trigger('click.leyka');
         }
 

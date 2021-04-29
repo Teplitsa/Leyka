@@ -115,9 +115,7 @@ function leyka_get_gateway_by_id($gateway_id) {
 
 function leyka_get_special_fields_settings(array $params = array()) {
 
-    $params = $params + array(
-        'field_types' => array(),
-    );
+    $params = $params + array('field_types' => array(),);
 
     $pm_fields = array();
     foreach(leyka_get_pm_list() as $pm) {

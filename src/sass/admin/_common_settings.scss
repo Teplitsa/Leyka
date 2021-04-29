@@ -391,8 +391,27 @@
             .option-block {
 
                 flex: 50% 0 1;
-
                 margin-bottom: 0;
+
+                &.type-multiselect {
+
+                    flex: 100% 1 1;
+
+                    .ui-autocomplete-multiselect {
+
+                        width: 100% !important;
+                        padding-bottom: 2px;
+                        box-shadow: none;
+                        border: 1px solid $color-border-semilight;
+                        border-radius: 4px;
+
+                        .ui-autocomplete-multiselect-item {
+                            max-width: 100% !important;
+                        }
+
+                    }
+
+                }
 
                 &:not(:first-child) {
                     margin-left: 10px;
@@ -410,6 +429,10 @@
 
                 }
 
+            }
+
+            &.campaigns-list-select {
+                margin-bottom: 0;
             }
 
         }

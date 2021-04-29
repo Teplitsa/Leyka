@@ -33,6 +33,7 @@ jQuery(document).ready(function($){
         }
 
     }).change();
+    // "Daily rouble mode" change - END
 
     // Campaign type change:
     $(':input[name="campaign_type"]').on('change.leyka', function(e){
@@ -114,7 +115,7 @@ jQuery(document).ready(function($){
             .trigger('openModal');
 
     });
-    // Form templates screens demo - end
+    // Form templates screens demo - END
 
     // Campaign cover upload field:
     $('.upload-photo', '.upload-attachment-field').on('click.leyka', function(e){
@@ -189,7 +190,7 @@ jQuery(document).ready(function($){
     		}
     	}
     });
-    $('#campaign-cover-type input[type=radio]:checked').change();
+    $('#campaign-cover-type input[type="radio"]:checked').change();
     
     // Reset uploaded image to default:
     $('.set-page-img-control .reset-to-default').on('click.leyka', function(e){
@@ -282,7 +283,7 @@ jQuery(document).ready(function($){
         });
     }
 
-    // campaign template change
+    // Campaign template change:
     $campaign_template_field.on('change.leyka', function(e){
 
         e.preventDefault();
@@ -336,33 +337,86 @@ jQuery(document).ready(function($){
 
     }).change();
 
-    // Change campaign additional fields:
-    let $campaign_additional_fields_changed_field = $('#change-campaign-additional-fields'),
-        $campaign_additional_fields_metabox_content = $campaign_additional_fields_changed_field.parents('.inside'),
-        $additional_fields_settings = $campaign_additional_fields_metabox_content.find('.campaign-additional-fields-wrapper');
+    // Campaign additional fields:
+    // let $campaign_additional_fields_changed_field = $('#change-campaign-additional-fields'),
+    //     $campaign_additional_fields_metabox_content = $campaign_additional_fields_changed_field.parents('.inside'),
+    //     $additional_fields_settings = $campaign_additional_fields_metabox_content.find('.leyka-campaign-additional-fields-wrapper');
 
-    $('#campaign-additional-fields-enable').on('click.leyka', function(e){
+    // $('#campaign-additional-fields-enable').on('click.leyka', function(e){
+    //
+    //     e.preventDefault();
+    //
+    //     $campaign_additional_fields_changed_field.prop('checked', 'checked');
+    //     $campaign_additional_fields_metabox_content.find('.leyka-settings-page').show();
+    //
+    //     $campaign_additional_fields_metabox_content.find('.leyka-campaign-additional-fields-settings-warning').hide();
+    //     $additional_fields_settings.show();
+    //
+    // });
+    //
+    // $campaign_additional_fields_changed_field.on('change.leyka', function(e){
+    //
+    //     if($campaign_additional_fields_changed_field.prop('checked')) {
+    //         $additional_fields_settings.show();
+    //     } else {
+    //         $additional_fields_settings.hide();
+    //     }
+    //
+    // });
+
+    let $additional_fields_settings = $('#leyka_campaign_additional_fields .inside'),
+        $add_field_button = $additional_fields_settings.find('.add-field');
+
+    // Each additional field should be added to the Campaign form only once.
+    // So if it's already added, hide it from the field variants for a new Campaign field:
+    function leyka_refresh_new_campaign_additional_fields_variants() {
+
+        let $new_field_selects = $additional_fields_settings.find('select[name="leyka_campaign_field_add"]')
+            added_fields_ids = [];
+
+        $additional_fields_settings.find('.field-box:not([id*="item-"])').each(function(){
+            added_fields_ids.push($(this).prop('id'));
+        });
+        $new_field_selects.each(function(){
+
+            let selected_id = $(this).val();
+
+            if(selected_id !== '-') {
+                added_fields_ids.push(selected_id);
+            }
+
+        });
+
+        $new_field_selects.find('option').show(); // First, show all options (new additional field variants)...
+
+        $(added_fields_ids).each(function(){
+            // ...Then hide options for fields that are already added to Campaign
+            $new_field_selects.find('option[value="'+this+'"]').hide();
+        });
+
+    }
+
+    $add_field_button.on('click.leyka', function(e){
 
         e.preventDefault();
 
-        $campaign_additional_fields_changed_field.prop('checked', 'checked');
-        $campaign_additional_fields_metabox_content.find('.leyka-settings-page').show();
-
-        $campaign_additional_fields_metabox_content.find('.leyka-campaign-additional-fields-settings-warning').hide();
-        $additional_fields_settings.show();
-
-    });
-
-    $campaign_additional_fields_changed_field.on('change.leyka', function(e){
-
-        if($campaign_additional_fields_changed_field.prop('checked')) {
-            $additional_fields_settings.show();
-        } else {
-            $additional_fields_settings.hide();
+        if ($add_field_button.hasClass('inactive')) {
+            return;
         }
 
+        leyka_refresh_new_campaign_additional_fields_variants();
+
     });
-    // Change campaign additional fields - END
+
+    $additional_fields_settings.find('.leyka-main-multi-items').on('click.leyka', '.delete-item', function(){
+        leyka_refresh_new_campaign_additional_fields_variants();
+    });
+
+    $additional_fields_settings.on('change.leyka', 'select[name="leyka_campaign_field_add"]', function(){
+        leyka_refresh_new_campaign_additional_fields_variants();
+    });
+
+    // Campaign additional fields - END
 
     /* Support packages Extension - available campaign existence check: */
 

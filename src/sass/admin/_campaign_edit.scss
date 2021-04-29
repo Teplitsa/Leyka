@@ -241,49 +241,28 @@
         }
 
         // Additional donation fields settings:
-        .leyka-edit-warning-text {
+        .leyka-campaign-additional-fields-wrapper .multi-valued-item-box {
 
-            &:before {
+            &:hover {
 
-                display: inline-block;
-                content: '';
-                margin-right: 30px;
+                border: 2px solid #78b6d5;
+                //margin-bottom: 14px;
 
-                @include leyka-colored-icon('../../img/icon-lock.svg', 30px, $color-orange, 40px);
+                .item-box-title {
+                    margin: 7px 15px !important;
+                }
+                //
+                .box-content {
 
-            }
+                    padding: 0 9px 9px 9px;
 
-            display: flex;
-            flex-flow: row nowrap;
-            justify-content: flex-start;
-            align-items: flex-start;
+                    //.notes-and-errors li {
+                    //    margin-top: 15px;
+                    //}
 
-            margin-bottom: 11px;
-
-        }
-
-        #campaign-additional-fields-enable {
-
-            &:before {
-
-                display: inline-block;
-                content: '';
-                margin-right: 16px;
-
-                @include leyka-colored-icon('../../img/icon-lock-unlocked.svg', 30px, $color-white);
+                }
 
             }
-
-            display: flex;
-            flex-flow: row nowrap;
-            justify-content: center;
-            align-items: center;
-            width: 200px;
-            padding: 16px;
-
-            @include leyka-admin-list-text();
-            font-size: 16px;
-            font-weight: 500;
 
         }
         // Additional donation fields settings - END

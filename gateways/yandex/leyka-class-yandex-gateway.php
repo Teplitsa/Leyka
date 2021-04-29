@@ -671,10 +671,12 @@ techMessage="'.$tech_message.'"/>');
                         'capture' => true,
                         'description' =>
                             ( !empty($form_data['leyka_recurring']) ? _x('[R]', 'For "rebill"', 'leyka').' ' : '' )
-                            .$new_recurring_donation->payment_title." (№ {$new_recurring_donation->id})",
+                            .$new_recurring_donation->payment_title." (№ {$new_recurring_donation->id}); "
+                            ."{$new_recurring_donation->donor_name}; {$new_recurring_donation->donor_email}",
                         'metadata' => array(
                             'donation_id' => $new_recurring_donation->id,
                             'email' => $new_recurring_donation->donor_email,
+                            'cms_name' => 'Leyka',
                         ),
                     ),
                     uniqid('', true)
