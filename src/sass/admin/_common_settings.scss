@@ -314,8 +314,66 @@
         }
 
         .box-content {
+
             padding: 0 10px 10px 10px;
             margin-bottom: 0;
+
+            .single-line {
+
+                display: flex;
+                flex-flow: row nowrap;
+
+                margin-bottom: 10px;
+
+                .option-block {
+
+                    flex: 100% 1 1;
+                    margin-bottom: 0;
+
+                    &.type-multiselect {
+
+                        flex: 100% 1 1;
+
+                        .ui-autocomplete-multiselect {
+
+                            width: 100% !important;
+                            padding-bottom: 2px;
+                            box-shadow: none;
+                            border: 1px solid $color-border-semilight;
+                            border-radius: 4px;
+
+                            .ui-autocomplete-multiselect-item {
+                                max-width: 100% !important;
+                            }
+
+                        }
+
+                    }
+
+                    &:not(:first-child) {
+                        margin-left: 10px;
+                    }
+
+                    input,select,textarea {
+
+                        border: 1px solid #828991; /** @todo Check with @nylebedev if this color is for ALL Leyka inputs or just this ones */
+
+                        //&:focus {
+                        //    border: 2px solid #D43C57; /** @todo It's for invalid fields, not for focused ones */
+                        //    box-shadow: none;
+                        //    padding: 0 5px 2px 5px;
+                        //}
+
+                    }
+
+                }
+
+                &.campaigns-list-select {
+                    margin-bottom: 0;
+                }
+
+            }
+
         }
 
         &.closed {
@@ -380,62 +438,6 @@
     max-width: 100% !important;
 
     .box-content {
-
-        .single-line {
-
-            display: flex;
-            flex-flow: row nowrap;
-
-            margin-bottom: 10px;
-
-            .option-block {
-
-                flex: 50% 0 1;
-                margin-bottom: 0;
-
-                &.type-multiselect {
-
-                    flex: 100% 1 1;
-
-                    .ui-autocomplete-multiselect {
-
-                        width: 100% !important;
-                        padding-bottom: 2px;
-                        box-shadow: none;
-                        border: 1px solid $color-border-semilight;
-                        border-radius: 4px;
-
-                        .ui-autocomplete-multiselect-item {
-                            max-width: 100% !important;
-                        }
-
-                    }
-
-                }
-
-                &:not(:first-child) {
-                    margin-left: 10px;
-                }
-
-                input,select,textarea {
-
-                    border: 1px solid #828991; /** @todo Check with @nylebedev if this color is for ALL Leyka inputs or just this ones */
-
-                    //&:focus {
-                    //    border: 2px solid #D43C57; /** @todo It's for invalid fields, not for focused ones */
-                    //    box-shadow: none;
-                    //    padding: 0 5px 2px 5px;
-                    //}
-
-                }
-
-            }
-
-            &.campaigns-list-select {
-                margin-bottom: 0;
-            }
-
-        }
 
         .notes-and-errors {
 

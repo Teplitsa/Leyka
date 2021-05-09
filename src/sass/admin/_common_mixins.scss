@@ -351,6 +351,7 @@
 
         input.ui-autocomplete-input {
             display: none;
+            width: calc(100% - 2px) !important; /** @todo This line is to widen the search field on all available width - test it */
         }
 
     }
