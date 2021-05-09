@@ -746,7 +746,6 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                         'type' => '-',
                         'title' => '',
                         'is_required' => false,
-//                        'field_campaigns' => array(),
                         'for_all_campaigns' => false,
                     ));
 
@@ -870,6 +869,15 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
 //                            echo '<pre>HERE: '.$field_id.' - '.print_r($additional_fields_library[$field_id], 1).'</pre>';
 
+                            if(
+                                $additional_fields_library[$field_id]['for_all_campaigns']
+                                && $additional_fields_library[$field_id]['campaigns_exceptions']
+                                && is_array($additional_fields_library[$field_id]['campaigns_exceptions'])
+                                && in_array($campaign->id, $additional_fields_library[$field_id]['campaigns_exceptions'])
+                            ) {
+                                continue;
+                            }
+
                             leyka_campaign_additional_field_html(false, array(
                                 'id' => $field_id,
                                 'box_title' => $additional_fields_library[$field_id]['title'],
@@ -882,10 +890,15 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                         }
 
                         // Display the fields "for all Campaigns", if they aren't already in the Campaign fields settings:
-                        foreach($additional_fields_library as $field_id => $field_setitngs) {
+                        foreach($additional_fields_library as $field_id => $field_settings) {
 
                             if(
-                                empty($field_setitngs['for_all_campaigns'])
+                                empty($field_settings['for_all_campaigns'])
+                                || (
+                                    $field_settings['campaigns_exceptions']
+                                    && is_array($field_settings['campaigns_exceptions'])
+                                    && in_array($campaign->id, $field_settings['campaigns_exceptions'])
+                                )
                                 || in_array($field_id, $campaign->additional_fields_settings)
                             ) {
                                 continue;
@@ -893,11 +906,11 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
                             leyka_campaign_additional_field_html(false, array(
                                 'id' => $field_id,
-                                'box_title' => $field_setitngs['title'],
-                                'type' => $field_setitngs['type'],
-                                'title' => $field_setitngs['title'],
-                                'is_required' => $field_setitngs['is_required'],
-                                'for_all_campaigns' => $field_setitngs['for_all_campaigns'],
+                                'box_title' => $field_settings['title'],
+                                'type' => $field_settings['type'],
+                                'title' => $field_settings['title'],
+                                'is_required' => $field_settings['is_required'],
+                                'for_all_campaigns' => $field_settings['for_all_campaigns'],
                             ));
 
                         }?>
@@ -1456,8 +1469,6 @@ class Leyka_Campaign {
                     empty($meta['_leyka_daily_rouble_amount_variants']) ? '' : $meta['_leyka_daily_rouble_amount_variants'][0],
                 'daily_rouble_pm_id' => empty($meta['_leyka_daily_rouble_pm_id']) ?
                     false : $meta['_leyka_daily_rouble_pm_id'][0],
-//                'additional_fields_settings_changed' => empty($meta['leyka_campaign_additional_fields_settings_changed']) ?
-//                    0 : $meta['leyka_campaign_additional_fields_settings_changed'][0] > 0,
                 'additional_fields_settings' => empty($meta['leyka_campaign_additional_fields_settings']) ?
                     array() : maybe_unserialize($meta['leyka_campaign_additional_fields_settings'][0]),
             );
@@ -1481,18 +1492,53 @@ class Leyka_Campaign {
 
         $additional_fields_library = leyka_options()->opt('additional_donation_form_fields_library');
         $campaign_additional_fields = array();
+
         foreach($this->additional_fields_settings as $field_id) {
 
             if( !is_string($field_id) || empty($additional_fields_library[$field_id]) ) {
                 continue;
             }
 
-            unset(
-                $additional_fields_library[$field_id]['campaigns'],
+            // The field is still in the Campaign fields settings,
+            // but in the Library (global) settings the current Campaign is already excluded for it:
+            if(
                 $additional_fields_library[$field_id]['for_all_campaigns']
-            );
+                && $additional_fields_library[$field_id]['campaigns_exceptions']
+                && is_array($additional_fields_library[$field_id]['campaigns_exceptions'])
+                && in_array($this->id, $additional_fields_library[$field_id]['campaigns_exceptions'])
+            ) {
+                continue;
+            }
 
             $campaign_additional_fields[$field_id] = $additional_fields_library[$field_id];
+
+            unset(
+                $campaign_additional_fields[$field_id]['campaigns'],
+                $campaign_additional_fields[$field_id]['for_all_campaigns'],
+                $campaign_additional_fields[$field_id]['campaigns_exceptions']
+            );
+
+        }
+
+        // Include the fields "for all Campaigns", if they aren't already in the Campaign fields settings
+        // (and they aren't excluded for the current Campaign in their field settings):
+        foreach($additional_fields_library as $field_id => $field_settings) {
+
+            if(
+                empty($field_settings['for_all_campaigns'])
+                || (
+                    $field_settings['campaigns_exceptions']
+                    && is_array($field_settings['campaigns_exceptions'])
+                    && in_array($this->id, $field_settings['campaigns_exceptions'])
+                )
+                || !empty($campaign_additional_fields[$field_id])
+            ) {
+                continue;
+            }
+
+            $campaign_additional_fields[$field_id] = $field_settings;
+
+            unset($field_settings['campaigns'], $field_settings['for_all_campaigns'], $field_settings['campaigns_exceptions']);
 
         }
 

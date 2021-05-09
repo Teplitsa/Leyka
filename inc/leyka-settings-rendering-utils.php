@@ -907,6 +907,7 @@ function leyka_render_additional_fields_library_settings($option_id, $data = arr
             'is_required' => false,
             'field_campaigns' => array(),
             'field_for_all_campaigns' => false,
+            'field_campaigns_exceptions' => array(),
         ));
 
         $_COOKIE['leyka-additional-fields-boxes-closed'] = empty($_COOKIE['leyka-additional-fields-boxes-closed']) ?
@@ -970,6 +971,37 @@ function leyka_render_additional_fields_library_settings($option_id, $data = arr
                     </div>
                 </div>
 
+                <div class="single-line campaigns-exceptions-list-select" <?php echo !!$placeholders['field_for_all_campaigns'] ? '' : 'style="display:none;"';?>>
+                    <div class="option-block type-multiselect">
+                        <div class="leyka-multiselect-field-wrapper">
+
+                            <label>
+                                <span class="field-component title"><?php _e('Campaigns that will NOT use the field', 'leyka');?></span>
+                            </label>
+
+                            <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector autocomplete-input" value="" placeholder="<?php _e('Campaigns list', 'leyka');?>">
+
+                            <select class="autocomplete-select" name="campaigns_exceptions[]" multiple="multiple">
+
+                                <?php $campaigns = $placeholders['field_campaigns_exceptions'] ?
+                                    leyka_get_campaigns_list(array(
+                                        'include' => $placeholders['field_campaigns_exceptions'], 'posts_per_page' => 20,
+                                    )) :
+                                    array();
+
+                                foreach($campaigns as $campaign_id => $campaign_title) {?>
+                                    <option value="<?php echo $campaign_id;?>" <?php echo is_array($placeholders['field_campaigns']) && in_array($campaign_id, $placeholders['field_campaigns']) ? 'selected="selected"' : '';?>>
+                                        <?php echo $campaign_title;?>
+                                    </option>
+                                <?php }?>
+
+                            </select>
+
+                        </div>
+                        <div class="field-errors"></div>
+                    </div>
+                </div>
+
                 <ul class="notes-and-errors">
                     <li class="any-field-note"><?php _e('When you edit a field, you will change it for all campaigns that use it', 'leyka');?></li>
                     <li class="phone-field-note" <?php echo $placeholders['type'] === 'phone' ? '' : 'style="display: none;"'?>><?php _e("Don't forget to put a point for processing telephone numbers to your Personal data usage terms", 'leyka');?></li>
@@ -1008,6 +1040,8 @@ function leyka_render_additional_fields_library_settings($option_id, $data = arr
                         'is_required' => $field_options['is_required'],
                         'field_campaigns' => empty($field_options['campaigns']) ? array() : $field_options['campaigns'],
                         'field_for_all_campaigns' => !empty($field_options['for_all_campaigns']),
+                        'field_campaigns_exceptions' => empty($field_options['campaigns_exceptions']) ?
+                            array() : $field_options['campaigns_exceptions'],
                     ));
                 }
             }?>
@@ -1046,6 +1080,7 @@ function leyka_save_additional_fields_library_settings() {
             'is_required' => !empty($field->is_required),
             'campaigns' => $field->campaigns,
             'for_all_campaigns' => $field->for_all_campaigns,
+            'campaigns_exceptions' => $field->campaigns_exceptions,
         );
 
         if($field->campaigns && !$field->for_all_campaigns) {

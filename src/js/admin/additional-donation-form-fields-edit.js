@@ -90,12 +90,19 @@ jQuery(document).ready(function($){
     $items_wrapper.on('change.leyka', '.field-for-all-campaigns input:checkbox', function(){
 
         let $checkbox = $(this),
-            $campaigns_list_field_wrapper = $checkbox.parents('.single-line').siblings('.single-line.campaigns-list-select');
+            $campaigns_list_field_wrapper = $checkbox.parents('.single-line').siblings('.single-line.campaigns-list-select'),
+            $campaigns_exceptions_list_field_wrapper = $checkbox.parents('.single-line').siblings('.single-line.campaigns-exceptions-list-select');
 
         if($checkbox.prop('checked')) {
+
             $campaigns_list_field_wrapper.hide();
+            $campaigns_exceptions_list_field_wrapper.show();
+
         } else {
+
             $campaigns_list_field_wrapper.show();
+            $campaigns_exceptions_list_field_wrapper.hide();
+
         }
 
     });
