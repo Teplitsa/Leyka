@@ -1339,6 +1339,7 @@ class Leyka_Campaign {
         if($this->_id && !$this->_campaign_meta) {
 
             $meta = get_post_meta($this->_id, '', true);
+            $meta = is_array($meta) ? $meta : array();
 
             if(empty($meta['target_state'])) {
 
