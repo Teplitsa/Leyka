@@ -81,6 +81,14 @@ PHP version required: 5.6+
 5. The plugin start page (a console)
 
 == Changelog ==
+= 3.17 =
+* New:
+* New:
+* Change:
+* Change:
+* Fix:
+* Fix:
+
 = 3.16 =
 * New: Tinkoff gateway added.
 * New: additional payment metadata pass to the YooKassa on donation.
