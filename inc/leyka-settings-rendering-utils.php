@@ -1103,8 +1103,6 @@ function leyka_save_additional_fields_library_settings() {
 
     leyka_options()->opt('additional_donation_form_fields_library', $result);
 
-//    die('<pre>'.print_r($_POST['leyka_additional_donation_form_fields_library'], 1).'</pre>');
-
 }
 // [Special field] Common additional donation form fields option - END
 

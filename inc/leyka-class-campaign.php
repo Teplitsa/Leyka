@@ -858,8 +858,6 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
                     <?php $additional_fields_library = leyka_options()->opt('additional_donation_form_fields_library');
 
-//                    echo '<pre>'.print_r($campaign->additional_fields_settings, 1).'</pre>';
-
                     if($additional_fields_library) {?>
 
                     <div class="leyka-main-multi-items leyka-main-additional-fields" data-max-items="<?php echo 10;?>" data-min-items="0" data-item-inputs-names-prefix="leyka_campaign_field_">
@@ -867,9 +865,12 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                         <?php // Display existing campaign additional fields (the assoc. array keys order is important):
                         foreach($campaign->additional_fields_settings as $field_id) {
 
-//                            echo '<pre>HERE: '.$field_id.' - '.print_r($additional_fields_library[$field_id], 1).'</pre>';
+                            // Field is in Campaign settings, but not in the Library - mb, it was deleted from there:
+                            if(empty($additional_fields_library[$field_id])) {
+                                continue;
+                            }
 
-                            if(
+                            if( // Field is "for all Campaigns", but the current Campaign has been excluded for it
                                 $additional_fields_library[$field_id]['for_all_campaigns']
                                 && $additional_fields_library[$field_id]['campaigns_exceptions']
                                 && is_array($additional_fields_library[$field_id]['campaigns_exceptions'])
@@ -1708,11 +1709,6 @@ class Leyka_Campaign {
 
                 return $pm && $pm->has_recurring_support() && $pm->is_active && $variants;
 
-//            case 'additional_fields_settings_changed':
-//                if(is_null($this->_campaign_meta['additional_fields_settings_changed'])) {
-//                    echo '<pre>'.print_r(debug_backtrace(), 1).'</pre>';
-//                }
-//                return $this->_campaign_meta['additional_fields_settings_changed'];
             case 'additional_fields_settings':
                 return $this->_campaign_meta['additional_fields_settings'];
 

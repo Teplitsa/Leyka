@@ -1639,10 +1639,10 @@ jQuery(document).ready(function($){
             minLength: 0,
             search_on_focus: true,
             pre_selected_values: selected_values,
-            leyka_select_callback: function(selectedItems) {
+            leyka_select_callback: function(selected_items) {
 
                 $campaigns_select_field.html('');
-                for(let val in selectedItems) {
+                for(let val in selected_items) {
 
                     let $option = $('<option></option>')
                         .val(val)
@@ -1664,7 +1664,15 @@ jQuery(document).ready(function($){
 
     // Init campaign list for a new additional field:
     $add_item_button.on('click.leyka', function(){
-        leyka_additional_fields_init_campaigns_autocomplete($items_wrapper.find('.field-box:last-child .autocomplete-select'));
+
+        leyka_additional_fields_init_campaigns_autocomplete(
+            $items_wrapper.find('.field-box:last-child .autocomplete-select[name="campaigns\[\]"]')
+        );
+
+        leyka_additional_fields_init_campaigns_autocomplete(
+            $items_wrapper.find('.field-box:last-child .autocomplete-select[name="campaigns_exceptions\[\]"]')
+        );
+
     });
     // Campaigns select fields - END
 
@@ -1701,7 +1709,9 @@ jQuery(document).ready(function($){
 
         let $checkbox = $(this),
             $campaigns_list_field_wrapper = $checkbox.parents('.single-line').siblings('.single-line.campaigns-list-select'),
-            $campaigns_exceptions_list_field_wrapper = $checkbox.parents('.single-line').siblings('.single-line.campaigns-exceptions-list-select');
+            $campaigns_exceptions_list_field_wrapper = $checkbox
+                .parents('.single-line')
+                .siblings('.single-line.campaigns-exceptions-list-select');
 
         if($checkbox.prop('checked')) {
 
