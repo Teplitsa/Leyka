@@ -354,7 +354,7 @@ jQuery(document).ready(function($){
 
             let selected_id = $(this).val();
 
-            if(selected_id !== '-') {
+            if(selected_id !== '-' && selected_id !== '+') {
                 added_fields_ids.push(selected_id);
             }
 
@@ -373,7 +373,7 @@ jQuery(document).ready(function($){
 
         e.preventDefault();
 
-        if ($add_field_button.hasClass('inactive')) {
+        if($add_field_button.hasClass('inactive')) {
             return;
         }
 
@@ -397,6 +397,16 @@ jQuery(document).ready(function($){
         }
 
         leyka_refresh_new_campaign_additional_fields_variants();
+
+    }).find('select[name="leyka_campaign_field_add"]:visible').each(function(){
+
+        // For the case when there are no fields in the Library, display the new field subfields right from the start:
+
+        let $this = $(this);
+
+        if($this.val() === '+') {
+            $this.trigger('change.leyka');
+        }
 
     });
 

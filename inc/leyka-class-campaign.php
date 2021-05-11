@@ -751,12 +751,20 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
                     if($is_template) {
 
-                        $fields_select_values = array('-' => __('Select the field', 'leyka'),);
-                        foreach(leyka_options()->opt('additional_donation_form_fields_library') as $field_id => $settings) {
-                            $fields_select_values[$field_id] = '['.__($settings['type'], 'leyka').'] '
-                                .$settings['title']
-                                .($settings['is_required'] ? '<span class="field-required">*</span>' : '');
+                        $additional_fields_library = leyka_options()->opt('additional_donation_form_fields_library');
+
+                        if($additional_fields_library) {
+
+                            $fields_select_values = array('-' => __('Select the field', 'leyka'),);
+
+                            foreach($additional_fields_library as $field_id => $settings) {
+                                $fields_select_values[$field_id] = '['.__($settings['type'], 'leyka').'] '
+                                    .$settings['title']
+                                    .($settings['is_required'] ? '<span class="field-required">*</span>' : '');
+                            }
+
                         }
+
                         $fields_select_values['+'] = __('+ Create and add a new field', 'leyka');?>
 
                         <div id="item-<?php echo leyka_get_random_string(4);?>" class="multi-valued-item-box field-box <?php echo $is_template ? 'item-template' : '';?>" <?php echo $is_template ? 'style="display: none;"' : '';?>>
@@ -777,7 +785,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                                             <?php leyka_render_select_field('campaign_field_add', array(
                                                 'title' => __('Additional fields list', 'leyka'),
                                                 'type' => 'select',
-                                                'value' => '-',
+                                                'value' => count($fields_select_values) > 1 ? '-' : '+',
                                                 'required' => true,
                                                 'list_entries' => $fields_select_values,
                                             ));?>
@@ -792,9 +800,6 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                                 </div>
 
                                 <ul class="notes-and-errors">
-                                    <li class="no-fields-note" <?php echo count($fields_select_values) > 1 ? 'style="display:none;"' : ''?>>
-                                        <?php echo sprintf(__('No additional fields available yet! First create them in the <a href="%s">fields library</a>.', 'leyka'), admin_url('admin.php?page=leyka_settings&stage=view#additional_fields_library_settings'));?>
-                                    </li>
                                     <li class="phone-field-note" <?php echo $placeholders['type'] === 'phone' ? '' : 'style="display: none;"'?>>
                                         <?php _e("Don't forget to put a point for processing telephone numbers to your Personal data usage terms", 'leyka');?>
                                     </li>
@@ -818,7 +823,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                                 <span class="draggable"></span>
                                 <span class="title">
 
-                                    <?php echo '['.__($placeholders['type'], 'leyka').'] '.esc_html($placeholders['box_title']);
+                                    <?php echo '['._x($placeholders['type'], 'Field type title', 'leyka').'] '.esc_html($placeholders['box_title']);
 
                                     if($placeholders['is_required']) {?>
                                         <span class="field-required">*</span>
@@ -830,12 +835,17 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                             <div class="box-content">
 
                                 <ul class="notes-and-errors">
+
                                     <li class="edit-field-note">
                                         <?php echo sprintf(__('If you wish to edit the field settings, you may do it in <a href="%s" target="_blank">fields library</a>.', 'leyka'), admin_url('admin.php?page=leyka_settings&stage=view#'.$placeholders['id']));?>
                                     </li>
+
+                                <?php if($placeholders['for_all_campaigns']) {?>
                                     <li class="no-delete-for-all-campaigns-field-note">
-                                        <?php echo sprintf(__('The field cannot  be removed from the campaign - it is marked "for all campaigns" in the <a href="%s" target="_blank">fields library</a>.', 'leyka'), admin_url('admin.php?page=leyka_settings&stage=view#'.$placeholders['id']));?>
+                                        <?php echo sprintf(__('The field cannot be removed from the campaign - it is marked "for all campaigns" in the <a href="%s" target="_blank">fields library</a>.', 'leyka'), admin_url('admin.php?page=leyka_settings&stage=view#'.$placeholders['id']));?>
                                     </li>
+                                <?php }?>
+
                                 </ul>
 
                                 <?php if( !$placeholders['for_all_campaigns']) {?>
@@ -856,17 +866,24 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
                 <div class="leyka-campaign-additional-fields-wrapper multi-valued-items-field-wrapper">
 
-                    <?php $additional_fields_library = leyka_options()->opt('additional_donation_form_fields_library');
+                    <?php $additional_fields_library = leyka_options()->opt('additional_donation_form_fields_library');?>
 
-                    if($additional_fields_library) {?>
-
-                    <div class="leyka-main-multi-items leyka-main-additional-fields" data-max-items="<?php echo 10;?>" data-min-items="0" data-item-inputs-names-prefix="leyka_campaign_field_">
+                    <div class="leyka-main-multi-items leyka-main-additional-fields" data-min-items="0" data-max-items="<?php echo 10;?>" data-item-inputs-names-prefix="leyka_campaign_field_" data-show-new-item-if-empty="1">
 
                         <?php // Display existing campaign additional fields (the assoc. array keys order is important):
                         foreach($campaign->additional_fields_settings as $field_id) {
 
                             // Field is in Campaign settings, but not in the Library - mb, it was deleted from there:
                             if(empty($additional_fields_library[$field_id])) {
+                                continue;
+                            }
+
+                            // Field in in Campaign settings & in the Library,
+                            // but the Library doesn't have the current Campaign set for it:
+                            if(
+                                !is_array($additional_fields_library[$field_id]['campaigns'])
+                                || !in_array($campaign->id, $additional_fields_library[$field_id]['campaigns'])
+                            ) {
                                 continue;
                             }
 
@@ -923,14 +940,6 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                     <div class="add-field add-item bottom"><?php _e('Add field', 'leyka');?></div>
 
                     <input type="hidden" class="leyka-items-options" name="leyka_campaign_additional_fields" value="">
-
-                    <?php } else {?>
-
-                    <p class="no-additional-fields-message">
-                        <?php echo sprintf(__('No additional fields available yet! First create them in the <a href="%s">fields library</a>.', 'leyka'), admin_url('admin.php?page=leyka_settings&stage=view#additional_fields_library_settings'));?>
-                    </p>
-
-                    <?php }?>
 
                 </div>
 
@@ -1142,9 +1151,13 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             if( !empty($field->add) && $field->add === '+' ) { // Totally new additional field - first add it in the Library
 
-                $field->id = mb_stripos($field->id, 'item-') === false || empty($field->title) ?
+                if(empty($field->leyka_field_type) || $field->leyka_field_type === '-' || empty($field->leyka_field_title)) {
+                    continue;
+                }
+
+                $field->id = mb_stripos($field->id, 'item-') === false || empty($field->leyka_field_title) ?
                     $field->id :
-                    trim(preg_replace('~[^-a-z0-9_]+~u', '-', mb_strtolower(leyka_cyr2lat($field->title))), '-');
+                    trim(preg_replace('~[^-a-z0-9_]+~u', '-', mb_strtolower(leyka_cyr2lat($field->leyka_field_title))), '-');
 
                 $fields_library = leyka_options()->opt('additional_donation_form_fields_library');
                 $fields_library[$field->id] = array(

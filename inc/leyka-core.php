@@ -2236,3 +2236,6 @@ __('Star', 'leyka');
 __('Need Help', 'leyka');
 __('A modern and lightweight form template', 'leyka');
 __('Another modern and lightweight form template', 'leyka');
+_x('phone', 'Field type title', 'leyka');
+_x('date', 'Field type title', 'leyka');
+_x('text', 'Field type title', 'leyka');
