@@ -82,12 +82,9 @@ PHP version required: 5.6+
 
 == Changelog ==
 = 3.17 =
-* New:
-* New:
-* Change:
-* Change:
-* Fix:
-* Fix:
+* New: the Additional fields feature added.
+* Fix: Tinkoff gateway - fix for recurring rebills.
+* Fix: small fixes.
 
 = 3.16 =
 * New: Tinkoff gateway added.
