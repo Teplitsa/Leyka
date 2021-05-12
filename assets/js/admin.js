@@ -2122,6 +2122,8 @@ jQuery(document).ready(function($){
 
     }).change();
 
+    // Campaign additional fields:
+
     let $additional_fields_settings = $('#leyka_campaign_additional_fields .inside'),
         $add_field_button = $additional_fields_settings.find('.add-field');
 
