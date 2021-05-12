@@ -646,6 +646,8 @@ class Leyka_Mixplat_Mobile extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-megafon.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-mts.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-tele2.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-yota.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-tinkoff.svg',
         ));
 
         $this->_specific_fields = array(array( // For the new templates - from Star & further
@@ -714,6 +716,8 @@ class Leyka_Mixplat_Text extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-megafon.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-mts.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-tele2.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-yota.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-tinkoff.svg',
         ));
 
         $this->_supported_currencies[] = 'rur';
