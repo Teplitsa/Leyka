@@ -763,7 +763,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                     $_SERVER['SERVER_SOFTWARE'], $_SERVER['HTTP_USER_AGENT'],
 					$site_env
                 ),
-                array('From: '.get_bloginfo('name').' <no_reply@leyka.te-st.ru>', 'Return-path: '.$email,)
+                array('From: '.$_POST['name'].' <'.$_POST['email'].'>', 'Return-path: '.$_POST['email'],)
             );
         }
 

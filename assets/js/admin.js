@@ -2166,6 +2166,16 @@ jQuery(document).ready(function($){
 
         leyka_refresh_new_campaign_additional_fields_variants();
 
+        let $new_additional_field_box_wrapper = $additional_fields_settings.find('.multi-valued-item-box:visible:last'),
+            $new_additional_field_wrapper = $new_additional_field_box_wrapper.find('.campaign-new-additional-field'),
+            $add_campaign_field = $new_additional_field_box_wrapper.find('select[name="leyka_campaign_field_add"]');
+
+        if($add_campaign_field.val() === '+') {
+            $new_additional_field_wrapper.show();
+        } else {
+            $new_additional_field_wrapper.hide();
+        }
+
     });
 
     $additional_fields_settings.find('.leyka-main-multi-items').on('click.leyka', '.delete-item', function(){
