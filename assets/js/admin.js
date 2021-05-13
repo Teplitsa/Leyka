@@ -1412,8 +1412,6 @@ jQuery(document).ready(function($){
                 $add_item_button.removeClass('inactive');
             }
 
-            console.log('Common JS')
-
         });
 
         $add_item_button.on('click.leyka', function(e){

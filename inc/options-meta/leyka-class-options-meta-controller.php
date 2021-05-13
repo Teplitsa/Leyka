@@ -156,6 +156,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'custom_additional_fields_library', // Special option type
                 'title' => __('Additional fields library', 'leyka'),
                 'field_classes' => array('additional-fields-settings'),
+                'default' => array(),
             ),
             'extensions_available' => array(
                 'type' => 'custom_extensions', // Special option type

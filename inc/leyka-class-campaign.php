@@ -1151,6 +1151,9 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             $_REQUEST['leyka_campaign_additional_fields'] = json_decode(urldecode($_REQUEST['leyka_campaign_additional_fields']));
             $updated_additional_fields_settings = array();
+            $fields_library = leyka_options()->opt('additional_donation_form_fields_library');
+
+//            echo '<pre>Lib before: '.print_r($fields_library, 1).'</pre>';
 
             foreach($_REQUEST['leyka_campaign_additional_fields'] as $field) {
 
@@ -1164,17 +1167,16 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                         $field->id :
                         trim(preg_replace('~[^-a-z0-9_]+~u', '-', mb_strtolower(leyka_cyr2lat($field->leyka_field_title))), '-');
 
-                    $fields_library = leyka_options()->opt('additional_donation_form_fields_library');
-                    $fields_library[$field->id] = array(
-                        'type' => $field->leyka_field_type,
-                        'title' => $field->leyka_field_title,
-                        'description' => $field->leyka_field_description,
-                        'is_required' => !empty($field->leyka_field_is_required),
-                        'campaigns' => array($campaign_id), // By default, new field is just for the currectly edited Campaign
-                        'for_all_campaigns' => false,
-                    );
-
-                    leyka_options()->opt('additional_donation_form_fields_library', $fields_library);
+                    if( !isset($fields_library[$field->id]) ) {
+                        $fields_library[$field->id] = array(
+                            'type' => $field->leyka_field_type,
+                            'title' => $field->leyka_field_title,
+                            'description' => $field->leyka_field_description,
+                            'is_required' => !empty($field->leyka_field_is_required),
+                            'campaigns' => array($campaign_id), // By default, new field is just for the currectly edited Campaign
+                            'for_all_campaigns' => false,
+                        );
+                    }
 
                     $field->add = $field->id;
 
@@ -1185,27 +1187,31 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             }
 
+            if(leyka_options()->opt('additional_donation_form_fields_library') != $fields_library) {
+                leyka_options()->opt('additional_donation_form_fields_library', $fields_library);
+            }
+
             if($updated_additional_fields_settings != $campaign->additional_fields_settings) {
 
-                $additional_fields_library = leyka_options()->opt('additional_donation_form_fields_library');
-
-                // If some additional fields are removed from Campaign, remove the Campaign ID from their settings in the Library:
+                // If some Additional fields are removed from Campaign, remove the Campaign ID from their settings in the Library:
                 $fields_removed = false;
                 foreach($campaign->additional_fields_settings as $field_id) {
+
                     if( !in_array($field_id, $updated_additional_fields_settings) ) { // The field is removed
 
                         $fields_removed = true;
-                        $campaign_key_in_array = array_search($campaign_id, $additional_fields_library[$field_id]['campaigns']);
+                        $campaign_key_in_array = array_search($campaign_id, $fields_library[$field_id]['campaigns']);
 
-                        if( !empty($additional_fields_library[$field_id]['campaigns'][$campaign_key_in_array]) ) {
-                            unset($additional_fields_library[ $field_id ]['campaigns'][$campaign_key_in_array]);
+                        if( !empty($fields_library[$field_id]['campaigns'][$campaign_key_in_array]) ) {
+                            unset($fields_library[$field_id]['campaigns'][$campaign_key_in_array]);
                         }
 
                     }
+
                 }
 
                 if($fields_removed) {
-                    leyka_options()->opt('additional_donation_form_fields_library', $additional_fields_library);
+                    leyka_options()->opt('additional_donation_form_fields_library', $fields_library);
                 }
 
                 $meta['leyka_campaign_additional_fields_settings'] = $updated_additional_fields_settings;
