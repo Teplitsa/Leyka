@@ -833,7 +833,6 @@ function leyka_additional_form_field_main_subfields_html(array $placeholders = a
             <div class="leyka-select-field-wrapper">
                 <?php leyka_render_select_field('field_type', array(
                     'title' => __('Field type', 'leyka'),
-//                    'type' => 'select',
                     'value' => $placeholders['type'] ? $placeholders['type'] : '-',
                     'required' => true,
                     'list_entries' => array(
@@ -854,9 +853,8 @@ function leyka_additional_form_field_main_subfields_html(array $placeholders = a
             <div class="leyka-text-field-wrapper">
                 <?php leyka_render_text_field('field_title', array(
                     'title' => __('Field title', 'leyka'),
-//                    'type' => 'text',
                     'required' => true,
-                    'placeholder' => __('Field title', 'leyka'),
+                    'placeholder' => __('E.g., "Your mobile phone"', 'leyka'),
                     'value' => $placeholders['title'],
                 ));?>
             </div>
@@ -869,7 +867,6 @@ function leyka_additional_form_field_main_subfields_html(array $placeholders = a
         <div class="leyka-text-field-wrapper leyka-field-wide">
             <?php leyka_render_text_field('field_description', array(
                 'title' => __('Description text', 'leyka'),
-//                'type' => 'text',
                 'placeholder' => __('E.g., "We are going to send you an SMS"', 'leyka'),
                 'value' => empty($placeholders['description']) ? '' : $placeholders['description'],
             ));?>
@@ -882,7 +879,6 @@ function leyka_additional_form_field_main_subfields_html(array $placeholders = a
             <div class="leyka-checkbox-field-wrapper">
                 <?php leyka_render_checkbox_field('field_is_required', array(
                     'title' => __('The field is required on donation form', 'leyka'),
-//                    'type' => 'checkbox',
                     'value' => !!$placeholders['is_required'],
                     'short_format' => true,
                 ));?>
