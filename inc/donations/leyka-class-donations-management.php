@@ -267,7 +267,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             return false;
         }
 
-        if($donation->type === 'single' && $donation->type === 'correction') {
+        if($donation->type === 'single' || $donation->type === 'correction') {
             Leyka_Donation_Management::send_donor_thanking_email_on_single($donation);
         } else if($donation->is_init_recurring_donation) { // Init recurring
             Leyka_Donation_Management::send_donor_thanking_email_on_recurring_init($donation);
