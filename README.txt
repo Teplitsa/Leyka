@@ -83,6 +83,7 @@ PHP version required: 5.6+
 == Changelog ==
 = 3.17 =
 * New: the Additional fields feature added.
+* New: Robokassa recurring support added.
 * Fix: Tinkoff gateway - fix for recurring rebills.
 * Fix: small fixes.
 
