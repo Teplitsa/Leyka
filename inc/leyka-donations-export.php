@@ -53,9 +53,9 @@ function leyka_do_donations_export() {
 
     if( !empty($_GET['gateway_pm']) ) {
 
-        if(strpos($_GET['gateway_pm'], 'gateway__') !== false) {
+        if(mb_stripos($_GET['gateway_pm'], 'gateway__') !== false) {
             $meta_query[] = array('key' => 'leyka_gateway', 'value' => str_replace('gateway__', '', $_GET['gateway_pm']));
-        } else if(strpos($_GET['gateway_pm'], 'pm__') !== false) {
+        } else if(mb_stripos($_GET['gateway_pm'], 'pm__') !== false) {
 
             $_GET['gateway_pm'] = explode('-', str_replace('pm__', '', $_GET['gateway_pm']));
 
@@ -93,18 +93,12 @@ function leyka_do_donations_export() {
     header('Content-Disposition: attachment; filename="donations-'.date('d.m.Y-H.i.s').'.csv"');
 
     $table_headers = array(
-        'ID', 'Имя донора', 'Email', 'Тип платежа', 'Плат. оператор', 'Способ платежа', 'Полная сумма', 'Итоговая сумма', 'Валюта', 'Дата пожертвования', 'Статус', 'Кампания', 'Подписка на рассылку', 'Email подписки', 'Комментарий', 'Доп. поля кампании',
+        'ID', 'Имя донора', 'Email', 'Тип платежа', 'Плат. оператор', 'Способ платежа', 'Полная сумма', 'Итоговая сумма', 'Валюта', 'Дата пожертвования', 'Статус', 'Кампания', 'Подписка на рассылку', 'Email подписки', 'Комментарий',
     );
 
-    // "All Campaigns" additional donation form fields headers:
-    $all_campaigns_additional_fields_settings = array();
+    // Additional donation form fields headers:
     foreach(leyka_options()->opt('additional_donation_form_fields_library') as $field_id => $field_settings) {
-        if($field_settings['for_all_campaigns']) {
-
-            $all_campaigns_additional_fields_settings[$field_id] = $field_settings;
-            $table_headers[] = '[Общее доп. поле]['.$field_id.'] '.$field_settings['title'];
-
-        }
+        $table_headers[] = '['.$field_id.'] '.$field_settings['title'];
     }
 
     echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
@@ -151,36 +145,10 @@ function leyka_do_donations_export() {
             $donation->donor_comment,
         );
 
-        if($donation->additional_fields && is_array($donation->additional_fields)) {
+        foreach(leyka_options()->opt('additional_donation_form_fields_library') as $field_id => $field_settings) {
 
-            // Campaign-specific additional fields column:
-            $campaign_additional_fields_column_value = '';
-            $campaign_additional_fields_settings = Leyka_Campaign::get_additional_fields_settings($donation->campaign_id);
-
-            foreach($donation->additional_fields as $field_id => $field_value) {
-
-                if( // Add field to the campaign-specific column only if it isn't in common columns:
-                    isset($campaign_additional_fields_settings[$field_id])
-                    && !isset($all_campaigns_additional_fields_settings[$field_id])
-                ) {
-
-                    $campaign_additional_fields_column_value .=
-                        '['.$field_id.'] '
-                        .(
-                            empty($campaign_additional_fields_settings[$field_id]['title']) ?
-                                '' : $campaign_additional_fields_settings[$field_id]['title']
-                        ).': '.$field_value."\n";
-
-                }
-
-            }
-
-            $line_values[] = rtrim($campaign_additional_fields_column_value, "\n");
-
-            // Common additional fields columns:
-            foreach($all_campaigns_additional_fields_settings as $field_id => $field_settings) {
-                $line_values[] = isset($donation->additional_fields[$field_id]) ? $donation->additional_fields[$field_id] : '';
-            }
+            $line_values[] = is_array($donation->additional_fields) && isset($donation->additional_fields[$field_id]) ?
+                $donation->additional_fields[$field_id] : '';
 
         }
 

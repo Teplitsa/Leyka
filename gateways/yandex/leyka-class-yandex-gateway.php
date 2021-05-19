@@ -545,9 +545,13 @@ techMessage="'.$tech_message.'"/>');
         $response = is_object($donation->gateway_response) || is_array($donation->gateway_response) ?
             serialize($donation->gateway_response) : $donation->gateway_response;
 
-        if(stristr($response, 'YandexCheckout') || stristr($response, 'YooKassa')) { // New API
+        if(mb_stristr($response, 'YandexCheckout') || mb_stristr($response, 'YooKassa')) { // New API
 
             $response = maybe_unserialize($response);
+
+            if(is_a($response, '__PHP_Incomplete_Class')) { // Normally it doesn't happen - just in case
+                return array();
+            }
 
             if(
                 is_a($response, 'YooKassa\Request\Payments\PaymentResponse')

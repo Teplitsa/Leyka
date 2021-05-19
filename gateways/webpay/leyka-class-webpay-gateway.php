@@ -127,11 +127,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
         $data = $data + array(
             '*scart' => '',
             'wsb_storeid' => leyka_options()->opt($this->_id.'_store_id'),
-            'wsb_store' => __('Leyka', 'leyka').' - '.(
-                leyka_options()->opt('webpay_test_mode') ?
-                    _x('test', 'like in "test donation"', 'leyka') :
-                    ($donation->type === 'rebill' ? mb_strtolower(__('Recurring subscription', 'leyka')) : mb_strtolower(__('Donation', 'leyka')))
-                ),
+            'wsb_store' => get_bloginfo('name'),
             'wsb_order_num' => $donation->id,
             'wsb_currency_id' => $currency_id,
             'wsb_version' => '2',

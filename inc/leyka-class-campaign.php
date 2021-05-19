@@ -1530,6 +1530,10 @@ class Leyka_Campaign {
         $additional_fields_library = leyka_options()->opt('additional_donation_form_fields_library');
         $campaign_additional_fields = array();
 
+//        if( !is_array($this->additional_fields_settings) ) {
+//            echo '<pre>HERE: '.print_r($this->additional_fields_settings, 1).'</pre>';
+//        }
+
         foreach($this->additional_fields_settings as $field_id) {
 
             if( !is_string($field_id) || empty($additional_fields_library[$field_id]) ) {
@@ -1745,7 +1749,8 @@ class Leyka_Campaign {
                 return $pm && $pm->has_recurring_support() && $pm->is_active && $variants;
 
             case 'additional_fields_settings':
-                return $this->_campaign_meta['additional_fields_settings'];
+                return empty($this->_campaign_meta['additional_fields_settings']) ?
+                    array() : $this->_campaign_meta['additional_fields_settings'];
 
             default:
                 return apply_filters('leyka_get_unknown_campaign_field', null, $field, $this);
