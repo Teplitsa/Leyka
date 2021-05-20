@@ -21,8 +21,9 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
         $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-robokassa/#robokassa-settings';
         $this->_registration_link = 'https://partner.robokassa.ru/reg/register';
 
-        $this->_min_commission = 3.7;
+        $this->_min_commission = 2.7;
         $this->_receiver_types = array('legal');
+        $this->_may_support_recurring = true;
 
     }
 
