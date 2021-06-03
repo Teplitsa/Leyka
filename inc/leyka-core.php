@@ -1589,7 +1589,7 @@ class Leyka extends Leyka_Singleton {
             'capability_type' => array('campaign', 'campaigns'),
             'map_meta_cap' => true,
             'rewrite' => array('slug' => 'campaign', 'with_front' => false),
-            'show_in_rest' => false, // True to use Gutenberg editor, false otherwise
+            'show_in_rest' => true, // True to use Gutenberg editor, false otherwise
         );
 
         register_post_type(Leyka_Campaign_Management::$post_type, $args);
