@@ -21,7 +21,11 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
         $country_id = $country_id && mb_strlen($country_id) > 1 ? $country_id : 'ru'; // Default country
 
         // Specific Options Meta Controller class:
-        $file_path = LEYKA_PLUGIN_DIR.'inc/options-meta/leyka-class-'.$country_id.'-options-meta-controller.php';
+        $file_path = apply_filters(
+            'leyka_options_meta_controller_class_file_address',
+            LEYKA_PLUGIN_DIR.'inc/options-meta/leyka-class-'.$country_id.'-options-meta-controller.php',
+            $country_id
+        );
 
         if(file_exists($file_path)) {
             require_once($file_path);
@@ -151,6 +155,12 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
             'commission' => array(
                 'type' => 'custom_gateways_commission', // Special option type
                 'title' => __('Payment operators commission', 'leyka'),
+            ),
+            'additional_donation_form_fields_library' => array(
+                'type' => 'custom_additional_fields_library', // Special option type
+                'title' => __('Additional fields library', 'leyka'),
+                'field_classes' => array('additional-fields-settings'),
+                'default' => array(),
             ),
             'extensions_available' => array(
                 'type' => 'custom_extensions', // Special option type

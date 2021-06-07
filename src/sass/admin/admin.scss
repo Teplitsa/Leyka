@@ -846,6 +846,7 @@
                 }
 
                 .pm-icons-scroll {
+
                     overflow: hidden;
                     position: relative;
                     width: 100%;
@@ -858,6 +859,7 @@
                         width: max-content;
                         min-width: 100%;
                     }
+
                 }
 
                 .scroll-arrow {
@@ -906,14 +908,13 @@
                 padding: 0 16px;
 
                 .button-primary {
-
                     width: 100%;
                     margin-right: 0;
-                    
                 }
 
                 .extension-settings, 
                 .activation-button {
+
                     display: flex;
                     justify-content: center;
                     padding-right: 18px;
@@ -926,6 +927,7 @@
                         left: 2px;
                         top: 3px;
                     }
+
                 }
 
             }

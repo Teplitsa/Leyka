@@ -149,13 +149,32 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
     public function set_metaboxes() {
 
         add_meta_box(
-            self::$post_type.'_excerpt', __('Annotation', 'leyka'),
-            array($this, 'annotation_meta_box'), self::$post_type, 'normal', 'high'
+            self::$post_type.'_excerpt',
+            __('Annotation', 'leyka'),
+            array($this, 'annotation_meta_box'),
+            self::$post_type,
+            'normal',
+            'high'
         );
 
-        add_meta_box(self::$post_type.'_data', __('Campaign settings', 'leyka'), array($this, 'data_meta_box'), self::$post_type, 'normal', 'high');
+        add_meta_box(self::$post_type.'_data',
+            __('Campaign settings', 'leyka'),
+            array($this, 'data_meta_box'),
+            self::$post_type,
+            'normal',
+            'high'
+        );
 
-        // Metaboxes are only for campaign editing page:
+        add_meta_box(
+            self::$post_type.'_additional_fields',
+            __('Additional campaign form fields', 'leyka'),
+            array($this, 'additional_fields_meta_box'),
+            self::$post_type,
+            'normal',
+            'high'
+        );
+
+        // Metaboxes are only for campaign editing page (not for new campaign page):
         $screen = get_current_screen();
         if($screen->post_type == self::$post_type && $screen->base === 'post' && !$screen->action) {
 
@@ -165,13 +184,21 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 //            );
 
 		    add_meta_box(
-                self::$post_type.'_donations', __('Donations history', 'leyka'),
-                array($this, 'donations_meta_box'), self::$post_type, 'normal', 'high'
+                self::$post_type.'_donations',
+                __('Donations history', 'leyka'),
+                array($this, 'donations_meta_box'),
+                self::$post_type,
+                'normal',
+                'high'
             );
 
             add_meta_box(
-                self::$post_type.'_statistics', __('Campaign statistics', 'leyka'),
-                array($this, 'statistics_meta_box'), self::$post_type, 'side', 'low'
+                self::$post_type.'_statistics',
+                __('Campaign statistics', 'leyka'),
+                array($this, 'statistics_meta_box'),
+                self::$post_type,
+                'side',
+                'low'
             );
 
         }
@@ -187,7 +214,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
 		$cur_template = $campaign->template ? $campaign->template : 'default';?>
 
-        <fieldset id="campaign-form-template" class="metabox-field campaign-field campaign-template">
+        <fieldset id="campaign-form-template" class="metabox-field campaign-field campaign-template temporary-campaign-fields">
 
             <h3 class="field-title">
                 <label for="campaign-form-template-field"><?php _e('Template for payment form', 'leyka');?></label>
@@ -498,6 +525,8 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
                 <div class="css-editor-reset-value"><?php _e('Return original styles', 'leyka');?></div>
 
+                <input type="hidden" class="css-editor-default-original-value" value="<?php echo esc_attr(trim($campaign_css_original[leyka_options()->opt('donation_form_template')]));?>">
+
                 <?php foreach($campaign_css_original as $template_id => $template_css) {?>
                 <input type="hidden" class="css-editor-<?php echo $template_id;?>-original-value" value="<?php echo esc_attr(trim($template_css));?>">
                 <?php }?>
@@ -703,6 +732,230 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
     /**
      * @param $campaign WP_Post
      */
+    public function additional_fields_meta_box(WP_Post $campaign) {
+
+        $campaign = new Leyka_Campaign($campaign);?>
+
+        <div class="leyka-admin leyka-settings-page">
+
+            <div class="leyka-options-section">
+
+                <?php function leyka_campaign_additional_field_html($is_template = false, $placeholders = array()) {
+
+                    $placeholders = wp_parse_args($placeholders, array(
+                        'id' => '',
+                        'box_title' => __('New field', 'leyka'),
+                        'type' => '-',
+                        'title' => '',
+                        'is_required' => false,
+                        'for_all_campaigns' => false,
+                    ));
+
+                    if($is_template) {
+
+                        $additional_fields_library = leyka_options()->opt('additional_donation_form_fields_library');
+
+                        if($additional_fields_library) {
+
+                            $fields_select_values = array('-' => __('Select the field', 'leyka'),);
+
+                            foreach($additional_fields_library as $field_id => $settings) {
+                                $fields_select_values[$field_id] = '['.__($settings['type'], 'leyka').'] '
+                                    .$settings['title']
+                                    .($settings['is_required'] ? '<span class="field-required">*</span>' : '');
+                            }
+
+                        }
+
+                        $fields_select_values['+'] = __('+ Create a new field', 'leyka');?>
+
+                        <div id="item-<?php echo leyka_get_random_string(4);?>" class="multi-valued-item-box field-box <?php echo $is_template ? 'item-template' : '';?>" <?php echo $is_template ? 'style="display: none;"' : '';?>>
+
+                            <h3 class="item-box-title ui-sortable-handle">
+                                <span class="draggable"></span>
+                                <span class="title" data-empty-box-title="<?php _e('New field', 'leyka');?>">
+                                    <?php echo esc_html($placeholders['box_title']);?>
+                                </span>
+                            </h3>
+
+                            <div class="box-content">
+
+                                <div class="single-line">
+
+                                    <div class="option-block type-select">
+                                        <div class="leyka-select-field-wrapper">
+                                            <?php leyka_render_select_field('campaign_field_add', array(
+                                                'title' => __('Fields available', 'leyka'),
+                                                'type' => 'select',
+                                                'value' => count($fields_select_values) > 1 ? '-' : '+',
+                                                'required' => true,
+                                                'list_entries' => $fields_select_values,
+                                                'hide_title' => true,
+                                            ));?>
+                                        </div>
+                                        <div class="field-errors"></div>
+                                    </div>
+
+                                </div>
+
+                                <div class="campaign-new-additional-field" style="display: none;">
+                                    <?php leyka_additional_form_field_main_subfields_html(array());?>
+                                </div>
+
+                                <ul class="notes-and-errors">
+                                    <li class="phone-field-note" <?php echo $placeholders['type'] === 'phone' ? '' : 'style="display: none;"'?>>
+                                        <?php _e("Don't forget to put a point for processing telephone numbers to your Personal data usage terms", 'leyka');?>
+                                    </li>
+                                </ul>
+
+                                <div class="box-footer">
+                                    <div class="remove-campaign-additional-field delete-item">
+                                        <?php _e('Remove the field from this campaign', 'leyka');?>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    <?php } else { // An existing field ?>
+
+                        <div id="<?php echo $placeholders['id'] ? $placeholders['id'] : 'item-'.leyka_get_random_string(4);?>" class="multi-valued-item-box field-box closed">
+
+                            <h3 class="item-box-title ui-sortable-handle">
+                                <span class="draggable"></span>
+                                <span class="title">
+
+                                    <?php echo '['._x($placeholders['type'], 'Field type title', 'leyka').'] '.esc_html($placeholders['box_title']);
+
+                                    if($placeholders['is_required']) {?>
+                                        <span class="field-required">*</span>
+                                    <?php }?>
+
+                                </span>
+                            </h3>
+
+                            <div class="box-content">
+
+                                <ul class="notes-and-errors">
+
+                                    <li class="edit-field-note">
+                                        <?php echo sprintf(__('If you wish to edit the field settings, you may do it in <a href="%s" target="_blank">fields library</a>.', 'leyka'), admin_url('admin.php?page=leyka_settings&stage=view#'.$placeholders['id']));?>
+                                    </li>
+
+                                <?php if($placeholders['for_all_campaigns']) {?>
+                                    <li class="no-delete-for-all-campaigns-field-note">
+                                        <?php echo sprintf(__('The field cannot be removed from the campaign - it is marked "for all campaigns" in the <a href="%s" target="_blank">fields library</a>.', 'leyka'), admin_url('admin.php?page=leyka_settings&stage=view#'.$placeholders['id']));?>
+                                    </li>
+                                <?php }?>
+
+                                </ul>
+
+                                <?php if( !$placeholders['for_all_campaigns']) {?>
+                                <div class="box-footer">
+                                    <div class="remove-campaign-additional-field delete-item">
+                                        <?php _e('Remove the field from this campaign', 'leyka');?>
+                                    </div>
+                                </div>
+                                <?php }?>
+
+                            </div>
+
+                        </div>
+
+                    <?php }
+
+                }?>
+
+                <div class="leyka-campaign-additional-fields-wrapper multi-valued-items-field-wrapper">
+
+                    <?php $fields_library = leyka_options()->opt('additional_donation_form_fields_library');?>
+
+                    <div class="leyka-main-multi-items leyka-main-additional-fields" data-min-items="0" data-max-items="<?php echo 10;?>" data-item-inputs-names-prefix="leyka_campaign_field_" data-show-new-item-if-empty="0">
+
+                        <?php // Display existing campaign additional fields (the assoc. array keys order is important):
+                        foreach($campaign->additional_fields_settings as $field_id) {
+
+                            // Field is in Campaign settings, but not in the Library - mb, it was deleted from there:
+                            if(empty($fields_library[$field_id])) {
+                                continue;
+                            }
+
+                            // Field is in Campaign settings & in the Library,
+                            // but the Library doesn't have the current Campaign set for it:
+                            if(
+                                !$fields_library[$field_id]['for_all_campaigns']
+                                && (
+                                    !is_array($fields_library[$field_id]['campaigns'])
+                                    || !in_array($campaign->id, $fields_library[$field_id]['campaigns'])
+                            )) {
+                                continue;
+                            }
+
+                            if( // Field is "for all Campaigns", but the current Campaign has been excluded for it
+                                $fields_library[$field_id]['for_all_campaigns']
+                                && $fields_library[$field_id]['campaigns_exceptions']
+                                && is_array($fields_library[$field_id]['campaigns_exceptions'])
+                                && in_array($campaign->id, $fields_library[$field_id]['campaigns_exceptions'])
+                            ) {
+                                continue;
+                            }
+
+                            leyka_campaign_additional_field_html(false, array(
+                                'id' => $field_id,
+                                'box_title' => $fields_library[$field_id]['title'],
+                                'type' => $fields_library[$field_id]['type'],
+                                'title' => $fields_library[$field_id]['title'],
+                                'is_required' => $fields_library[$field_id]['is_required'],
+                                'for_all_campaigns' => $fields_library[$field_id]['for_all_campaigns'],
+                            ));
+
+                        }
+
+                        // Display the fields "for all Campaigns", if they aren't already in the Campaign fields settings:
+                        foreach($fields_library as $field_id => $field_settings) {
+
+                            if(
+                                empty($field_settings['for_all_campaigns'])
+                                || (
+                                    $field_settings['campaigns_exceptions']
+                                    && is_array($field_settings['campaigns_exceptions'])
+                                    && in_array($campaign->id, $field_settings['campaigns_exceptions'])
+                                )
+                                || in_array($field_id, $campaign->additional_fields_settings)
+                            ) {
+                                continue;
+                            }
+
+                            leyka_campaign_additional_field_html(false, array(
+                                'id' => $field_id,
+                                'box_title' => $field_settings['title'],
+                                'type' => $field_settings['type'],
+                                'title' => $field_settings['title'],
+                                'is_required' => $field_settings['is_required'],
+                                'for_all_campaigns' => $field_settings['for_all_campaigns'],
+                            ));
+
+                        }?>
+
+                    </div>
+
+                    <?php leyka_campaign_additional_field_html(true); // Additional field box template ?>
+
+                    <div class="add-field add-item bottom"><?php _e('Add field', 'leyka');?></div>
+
+                    <input type="hidden" class="leyka-items-options" name="leyka_campaign_additional_fields" value="">
+
+                </div>
+
+            </div>
+        </div>
+
+    <?php }
+
+    /**
+     * @param $campaign WP_Post
+     */
     public function statistics_meta_box(WP_Post $campaign) {
 
         $campaign = new Leyka_Campaign($campaign);?>
@@ -875,8 +1128,90 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         }
 
-        foreach($meta as $key => $value) {
-            update_post_meta($campaign->id, $key, $value);
+        // Campaign additional form fields settings:
+        if(isset($_REQUEST['leyka_campaign_additional_fields'])) {
+
+            $_REQUEST['leyka_campaign_additional_fields'] = json_decode(urldecode($_REQUEST['leyka_campaign_additional_fields']));
+            $updated_additional_fields_settings = array();
+            $fields_library = leyka_options()->opt('additional_donation_form_fields_library');
+
+            foreach($_REQUEST['leyka_campaign_additional_fields'] as $field) {
+
+                if( !empty($field->add) && $field->add === '+' ) { // Totally new additional field - first add it in the Library
+
+                    if(empty($field->leyka_field_type) || $field->leyka_field_type === '-' || empty($field->leyka_field_title)) {
+                        continue;
+                    }
+
+                    $field->id = mb_stripos($field->id, 'item-') === false || empty($field->leyka_field_title) ?
+                        $field->id :
+                        trim(preg_replace('~[^-a-z0-9_]+~u', '-', mb_strtolower(leyka_cyr2lat($field->leyka_field_title))), '-');
+
+                    if( !isset($fields_library[$field->id]) ) {
+                        $fields_library[$field->id] = array(
+                            'type' => $field->leyka_field_type,
+                            'title' => $field->leyka_field_title,
+                            'description' => $field->leyka_field_description,
+                            'is_required' => !empty($field->leyka_field_is_required),
+                            'campaigns' => array($campaign_id), // By default, new field is just for the currectly edited Campaign
+                            'for_all_campaigns' => false,
+                        );
+                    }
+
+                    $field->add = $field->id;
+
+                } else if( // Extisting (in the Library) field is added to the Campaign settings
+                    mb_stristr($field->id, 'item-') !== false
+                    && $field->add
+                    && isset($fields_library[$field->add])
+                    && !in_array($campaign_id, $fields_library[$field->add]['campaigns'])
+                ) {
+                    $fields_library[$field->add]['campaigns'][] = $campaign_id;
+                }
+
+                // $field->add or $field->id is a field ID/slug:
+                $updated_additional_fields_settings[] = $field->add ? $field->add : $field->id;
+
+            }
+
+            if(leyka_options()->opt('additional_donation_form_fields_library') != $fields_library) {
+                leyka_options()->opt('additional_donation_form_fields_library', $fields_library);
+            }
+
+            if($updated_additional_fields_settings != $campaign->additional_fields_settings) {
+
+                // If some Additional fields are removed from Campaign, remove the Campaign ID from their settings in the Library:
+                $fields_removed = false;
+                foreach($campaign->additional_fields_settings as $field_id) {
+
+                    if( !in_array($field_id, $updated_additional_fields_settings) ) { // The field is removed
+
+                        $fields_removed = true;
+                        $campaign_key_in_array = array_search($campaign_id, $fields_library[$field_id]['campaigns']);
+
+                        if( !empty($fields_library[$field_id]['campaigns'][$campaign_key_in_array]) ) {
+                            unset($fields_library[$field_id]['campaigns'][$campaign_key_in_array]);
+                        }
+
+                    }
+
+                }
+
+                if($fields_removed) {
+                    leyka_options()->opt('additional_donation_form_fields_library', $fields_library);
+                }
+
+                $meta['leyka_campaign_additional_fields_settings'] = $updated_additional_fields_settings;
+
+            }
+
+//            die();
+
+        }
+        // Campaign additional form fields settings - END
+
+        foreach($meta as $campaign_key_in_array => $value) {
+            update_post_meta($campaign->id, $campaign_key_in_array, $value);
         }
 
         /* Support packages - the case of "single available campaign ceased to be available" */
@@ -1019,6 +1354,7 @@ class Leyka_Campaign {
         if($this->_id && !$this->_campaign_meta) {
 
             $meta = get_post_meta($this->_id, '', true);
+            $meta = is_array($meta) ? $meta : array();
 
             if(empty($meta['target_state'])) {
 
@@ -1149,6 +1485,8 @@ class Leyka_Campaign {
                     empty($meta['_leyka_daily_rouble_amount_variants']) ? '' : $meta['_leyka_daily_rouble_amount_variants'][0],
                 'daily_rouble_pm_id' => empty($meta['_leyka_daily_rouble_pm_id']) ?
                     false : $meta['_leyka_daily_rouble_pm_id'][0],
+                'additional_fields_settings' => empty($meta['leyka_campaign_additional_fields_settings']) ?
+                    array() : maybe_unserialize($meta['leyka_campaign_additional_fields_settings'][0]),
             );
 
         }
@@ -1158,10 +1496,78 @@ class Leyka_Campaign {
 	}
 
     protected function _get_calculated_target_state() {
+        return empty($this->target) ? 'no_target' : ($this->total_funded >= $this->target ? 'is_reached' : 'in_progress');
+    }
 
-        $target = get_post_meta($this->_id, 'campaign_target', true);
-        return empty($target) ? 'no_target' : ($this->total_funded >= $target ? 'is_reached' : 'in_progress');
+    /**
+     * Get all Campaign additional fields with their settings.
+     *
+     * @return array Assoc. array of Campaign additional fields (in correct order) in the form of field_id => field_settings.
+     */
+    public function get_calculated_additional_fields_settings() {
 
+        $additional_fields_library = leyka_options()->opt('additional_donation_form_fields_library');
+        $campaign_additional_fields = array();
+
+//        if( !is_array($this->additional_fields_settings) ) {
+//            echo '<pre>HERE: '.print_r($this->additional_fields_settings, 1).'</pre>';
+//        }
+
+        foreach($this->additional_fields_settings as $field_id) {
+
+            if( !is_string($field_id) || empty($additional_fields_library[$field_id]) ) {
+                continue;
+            }
+
+            // The field is still in the Campaign fields settings,
+            // but in the Library (global) settings the current Campaign is already excluded for it:
+            if(
+                $additional_fields_library[$field_id]['for_all_campaigns']
+                && $additional_fields_library[$field_id]['campaigns_exceptions']
+                && is_array($additional_fields_library[$field_id]['campaigns_exceptions'])
+                && in_array($this->id, $additional_fields_library[$field_id]['campaigns_exceptions'])
+            ) {
+                continue;
+            }
+
+            $campaign_additional_fields[$field_id] = $additional_fields_library[$field_id];
+
+            unset(
+                $campaign_additional_fields[$field_id]['campaigns'],
+                $campaign_additional_fields[$field_id]['for_all_campaigns'],
+                $campaign_additional_fields[$field_id]['campaigns_exceptions']
+            );
+
+        }
+
+        // Include the fields "for all Campaigns", if they aren't already in the Campaign fields settings
+        // (and they aren't excluded for the current Campaign in their field settings):
+        foreach($additional_fields_library as $field_id => $field_settings) {
+
+            if(
+                empty($field_settings['for_all_campaigns'])
+                || (
+                    $field_settings['campaigns_exceptions']
+                    && is_array($field_settings['campaigns_exceptions'])
+                    && in_array($this->id, $field_settings['campaigns_exceptions'])
+                )
+                || !empty($campaign_additional_fields[$field_id])
+            ) {
+                continue;
+            }
+
+            $campaign_additional_fields[$field_id] = $field_settings;
+
+            unset($field_settings['campaigns'], $field_settings['for_all_campaigns'], $field_settings['campaigns_exceptions']);
+
+        }
+
+	    return $campaign_additional_fields;
+
+    }
+
+    public static function get_additional_fields_settings($campaign_id) {
+        return (new Leyka_Campaign($campaign_id))->get_calculated_additional_fields_settings();
     }
 
     /**
@@ -1244,7 +1650,8 @@ class Leyka_Campaign {
                 return isset($this->_campaign_meta['campaign_target']) ? $this->_campaign_meta['campaign_target'] : 0;
 
             case 'content':
-            case 'description': return $this->_post_object ? $this->_post_object->post_content : '';
+            case 'description':
+                return $this->_post_object ? $this->_post_object->post_content : '';
 
             case 'excerpt':
             case 'post_excerpt':
@@ -1253,8 +1660,10 @@ class Leyka_Campaign {
 
             case 'post_name': return $this->_post_object ? $this->_post_object->post_name : '';
             case 'status': return $this->_post_object ? $this->_post_object->post_status : '';
+
             case 'permalink':
-            case 'url': return get_permalink($this->_id);
+            case 'url':
+                return get_permalink($this->_id);
 
 			case 'is_finished':
 			case 'is_closed':
@@ -1318,6 +1727,10 @@ class Leyka_Campaign {
 
                 return $pm && $pm->has_recurring_support() && $pm->is_active && $variants;
 
+            case 'additional_fields_settings':
+                return empty($this->_campaign_meta['additional_fields_settings']) ?
+                    array() : $this->_campaign_meta['additional_fields_settings'];
+
             default:
                 return apply_filters('leyka_get_unknown_campaign_field', null, $field, $this);
         }
@@ -1377,6 +1790,11 @@ class Leyka_Campaign {
                     update_post_meta($this->_id, '_leyka_daily_rouble_pm_id', $value);
 
                 }
+                break;
+
+            case 'additional_fields_settings':
+                $this->_campaign_meta['additional_fields_settings'] = $value;
+                update_post_meta($this->_id, 'leyka_campaign_additional_fields_settings', $value);
                 break;
             default:
         }

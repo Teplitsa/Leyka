@@ -49,6 +49,16 @@ class Leyka_Options_Controller extends Leyka_Singleton {
             return $value ? $value : array();
         });
 
+        // Additional Donation form fields Library:
+        add_filter('leyka_option_value-additional_donation_form_fields_library', function($value){
+            return is_array($value) ? $value : array();
+        });
+
+        add_filter('leyka_new_option_value-additional_donation_form_fields_library', function($option_value){
+            return is_array($option_value) ? $option_value : array();
+        });
+        // Additional Donation form fields Library - END
+
         // If Country option value changes, clear active PM lists:
         add_action('leyka_set_receiver_country_option_value', function($option_value){
 
@@ -98,8 +108,10 @@ class Leyka_Options_Controller extends Leyka_Singleton {
      */
     public static function set_option_value($option_id, $value) {
 
-        $option_id = stristr($option_id, 'leyka_') !== false ? $option_id : 'leyka_'.$option_id;
+        $option_id = mb_stristr($option_id, 'leyka_') !== false ? $option_id : 'leyka_'.$option_id;
+
         $value = apply_filters('leyka_new_option_value', $value, $option_id);
+        $value = apply_filters('leyka_new_option_value-'.str_replace('leyka_', '', $option_id), $value);
 
         $updated = update_option($option_id, $value);
 

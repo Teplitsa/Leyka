@@ -75,19 +75,6 @@ class Leyka extends Leyka_Singleton {
                 (defined('LEYKA_DEBUG') && LEYKA_DEBUG !== 'inherit' ? !!LEYKA_DEBUG : $value) : $value;
         }, 10, 2);
 
-        // If the default template is disabled, don't use it as a default:
-//        add_filter('leyka_option_value', function($value, $option_id){
-//
-//            if($option_id !== 'donation_form_template') {
-//                return $value;
-//            }
-//
-//            $default_template_data = $this->_get_template_data($value);
-//
-//            return empty($default_template_data['disabled']) || $default_template_data['disabled'] === false ? $value : 'star';
-//
-//        }, 10, 2);
-
         // By default, we'll assume some errors in the payment form, so redirect will get us back to it:
         $this->_payment_url = wp_get_referer();
 
@@ -108,13 +95,6 @@ class Leyka extends Leyka_Singleton {
 
         add_action('parse_request', array($this, 'parse_request')); // Service URLs handlers
 
-//        function leyka_session_start() {
-//            if( !session_id() && !headers_sent() ) {
-//                session_start();
-//            }
-//        }
-//        add_action('init', 'leyka_session_start', -2);
-
         if(get_option('leyka_plugin_stats_option_needs_sync')) {
 
             function leyka_sync_stats_option() {
@@ -132,6 +112,26 @@ class Leyka extends Leyka_Singleton {
             add_action('admin_init', 'leyka_sync_stats_option');
 
         }
+
+        // Change the new recurring Donation purpose if it's Campaign is closed:
+        add_action('leyka_donation_funded_status_changed', function($donation_id){
+
+            $donation = Leyka_Donations::get_instance()->get($donation_id);
+            if($donation->type !== 'rebill') {
+                return;
+            }
+
+            $campaign = new Leyka_Campaign($donation->campaign_id);
+            if($campaign->is_finished) {
+                $donation->payment_title = apply_filters(
+                    'leyka_finished_campaign_new_recurring_donation_purpose',
+                    __('Charity donation', 'leyka'),
+                    $donation,
+                    $campaign
+                );
+            }
+
+        }, 10);
 
         add_action('admin_bar_menu', array($this, 'add_toolbar_menu'), 999);
 
@@ -322,8 +322,6 @@ class Leyka extends Leyka_Singleton {
                 ) {
 
                     $donation_id = leyka_remembered_data('donation_id');
-                    $campaign = null;
-                    $campaign_id = null;
 
                     if( !$donation_id ) {
                         return '';
@@ -377,37 +375,6 @@ class Leyka extends Leyka_Singleton {
 
             }
             add_filter('the_content', 'leyka_failure_page_widget_template', 1);
-
-            function reinstall_cssjs_in_giger() {
-
-                $theme = wp_get_theme();
-                if(
-                    $theme
-                    && in_array($theme->template, array('giger', 'giger-kms'))
-                    && !is_singular(Leyka_Campaign_Management::$post_type)
-                ) {
-
-                    $is_cssjs_reqiured = false;
-
-                    if(in_array(get_the_ID(), array(leyka_options()->opt('failure_page'), leyka_options()->opt('success_page')))) {
-                        $is_cssjs_reqiured = true;
-                    } else if(leyka_form_is_displayed()) {
-                        $is_cssjs_reqiured = true;
-                    }
-
-                    if($is_cssjs_reqiured) {
-
-                        $leyka_template_data = leyka_get_current_template_data();
-
-                        if($leyka_template_data['id'] == 'revo') {
-                            leyka()->load_public_cssjs(); // Forcibly add Leyka cssjs in giger for Revo templates
-                        }
-
-                    }
-
-                }
-            }
-            add_action('template_redirect', 'reinstall_cssjs_in_giger', 90); // 90 is important (Giger priority is 80)
 
             add_action('wp_head', 'leyka_inline_scripts');
             function leyka_inline_scripts(){
@@ -932,7 +899,7 @@ class Leyka extends Leyka_Singleton {
 
         do_action('leyka_before_procedure', $procedure_id, $params);
 
-        $procedure_script = LEYKA_PLUGIN_DIR.'procedures/leyka-'.$procedure_id.'.php';
+        $procedure_script = apply_filters('leyka_procedure_address', LEYKA_PLUGIN_DIR.'procedures/leyka-'.$procedure_id.'.php');
         if(file_exists($procedure_script)) {
 
             $_POST['procedure_params'] = $params;
@@ -1463,7 +1430,7 @@ class Leyka extends Leyka_Singleton {
             || leyka_failure_widget_displayed()
         ) {
             wp_enqueue_script(
-                $this->_plugin_slug.'-revo-public',
+                $this->_plugin_slug.'-new-templates-public',
                 LEYKA_PLUGIN_BASE_URL.'assets/js/public.js',
                 array('jquery',),
                 LEYKA_VERSION,
@@ -1669,7 +1636,7 @@ class Leyka extends Leyka_Singleton {
             'capability_type' => array('campaign', 'campaigns'),
             'map_meta_cap' => true,
             'rewrite' => array('slug' => 'campaign', 'with_front' => false),
-            'show_in_rest' => false, // True to use Gutenberg editor, false otherwise
+            'show_in_rest' => true, // True to use Gutenberg editor, false otherwise
         );
 
         register_post_type(Leyka_Campaign_Management::$post_type, $args);
@@ -1862,7 +1829,7 @@ class Leyka extends Leyka_Singleton {
 
         $form_errors = Leyka_Payment_Form::is_form_fields_valid();
 
-        if(is_array($form_errors) && count($form_errors) > 0) {
+        if(is_array($form_errors) && $form_errors) {
 
             foreach($form_errors as $error) { /** @var WP_Error $error */
                 $this->add_payment_form_error($error);
@@ -1946,10 +1913,15 @@ class Leyka extends Leyka_Singleton {
         ) {
 
             $ga_client_id = leyka_gua_get_client_id();
-            if(stristr($ga_client_id, '.')) { // A real GA client ID found, save it
+            if(mb_stristr($ga_client_id, '.')) { // A real GA client ID found, save it
                 $params['ga_client_id'] = $ga_client_id;
             } /** @todo MERGE: check that 'ga_client_id' field is supported by both Donation classes */
 
+        }
+
+        // Saving values of Additional form fields:
+        foreach($campaign->get_calculated_additional_fields_settings() as $field_slug => $field) {
+            $params['additional_fields'][$field_slug] = $_POST['leyka_'.$field_slug];
         }
 
         $donation_id = Leyka_Donations::get_instance()->add(apply_filters('leyka_new_donation_data', $params));
@@ -2345,3 +2317,6 @@ __('Star', 'leyka');
 __('Need Help', 'leyka');
 __('A modern and lightweight form template', 'leyka');
 __('Another modern and lightweight form template', 'leyka');
+_x('phone', 'Field type title', 'leyka');
+_x('date', 'Field type title', 'leyka');
+_x('text', 'Field type title', 'leyka');

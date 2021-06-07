@@ -220,32 +220,25 @@ class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
 
     public function load_admin_cssjs() {
 
-        $sel2_css = self::get_base_url() . '/assets/css/select2.min.css';
-        $css_url = self::get_base_url() . '/assets/css/engb-admin.css';
-        $css_stamp = ( defined('WP_DEBUG') && WP_DEBUG ) ? uniqid() : null;
+        if( !Leyka_Extension::is_admin_settings_page($this->_id) ) { // Extension CSS & JS is only for admin settings page
+            return;
+        }
 
         wp_enqueue_style(
             $this->_id.'-select2',
-            $sel2_css, 
-            array(), 
-            null
+            self::get_base_url().'/assets/css/select2.min.css'
         );
 
         wp_enqueue_style(
             $this->_id.'-admin',
-            $css_url, 
-            array($this->_id.'-select2'), 
-            $css_stamp
+            self::get_base_url().'/assets/css/engb-admin.css',
+            array($this->_id.'-select2'),
+            defined('WP_DEBUG') && WP_DEBUG ? uniqid() : null
         );
-
-        $sel2_js = self::get_base_url() . '/assets/js/select2.min.js';
-        $js_url = self::get_base_url() . '/assets/js/engb-admin.js';
-        $js_stamp = ( defined('WP_DEBUG') && WP_DEBUG ) ? uniqid() : null;
-
 
         wp_enqueue_script(
             $this->_id.'-select2',
-            $sel2_js,
+            self::get_base_url().'/assets/js/select2.min.js',
             array('jquery'), 
             null, 
             true
@@ -253,25 +246,24 @@ class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
 
         wp_enqueue_script(
             $this->_id.'-admin',
-            $js_url,
-            array('jquery', $this->_id.'-select2'), 
-            $js_stamp, 
+            self::get_base_url().'/assets/js/engb-admin.js',
+            array('jquery', $this->_id.'-select2'),
+            defined('WP_DEBUG') && WP_DEBUG ? uniqid() : null,
             true
         );
 
-        $js_strings = array(
+        wp_localize_script($this->_id.'-admin', 'engb', array(
             'placeholder' => __('Select user role', 'leyka'),
-        );
+        ));
 
-        wp_localize_script($this->_id.'-admin', 'engb', $js_strings);
     }
 
     protected function _build_colors_css() {
 
-        $button_bg      = $this->get_option('main_color');
-        $button_text    = $this->get_option('caption_color');
-        $body_bg        = $this->get_option('background_color');
-        $body_text      = $this->get_option('text_color');
+        $button_bg = $this->get_option('main_color');
+        $button_text = $this->get_option('caption_color');
+        $body_bg = $this->get_option('background_color');
+        $body_text = $this->get_option('text_color');
 
         return "
         :root {
@@ -280,6 +272,7 @@ class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
             --engb-color-body-bg: {$body_bg};
             --engb-color-body-text: {$body_text};
         }";
+
     }
 
 
@@ -289,28 +282,29 @@ class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
 		try {
 			$controller = new Leyka_Engagement_Banner_Controller();
 			$controller->display();
-		}
-		catch ( Exception $ex ) {
+		} catch (Exception $ex) {
 
 			$err = $ex->getMessage();
 
-			if( defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY ) {
-				echo  $err;
+			if(defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY) {
+				echo $err;
 			}
 
-			error_log( $err );
+			error_log($err);
+
 		}
+
 	}
 
 
 	/** Shortcodes **/
-    public function shortcode_scale_screen( $atts ) {
+    public function shortcode_scale_screen($atts) {
 
         $atts = shortcode_atts( array(
             'id' => 0
         ), $atts );
 
-        $campaign = get_post( $atts['id'] );
+        $campaign = get_post($atts['id']);
 
         if( !class_exists('Leyka_Campaign_Management') ) {
             return '';

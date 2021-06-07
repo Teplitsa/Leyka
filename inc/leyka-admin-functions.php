@@ -182,6 +182,8 @@ if( !function_exists('leyka_admin_body_class') ) {
             $leyka_page_class .= 'leyka-admin-list-page leyka-admin-donors-list';
         } else if( !empty($_GET['page']) && $_GET['page'] === 'leyka_recurring_subscriptions' && empty($_GET['screen']) ) {
             $leyka_page_class .= 'leyka-admin-list-page leyka-admin-recurring-subscriptions-list';
+        } else if( !empty($_GET['post']) && !empty($_GET['action']) && $_GET['action'] === 'edit' ) {
+            $leyka_page_class .= 'leyka-campaign-edit';
         } else if(
             ( !empty($_GET['post_type']) && in_array($_GET['post_type'], array('leyka_donation', 'leyka_campaign')) )
             || ( !empty($_GET['page']) && $_GET['page'] === 'leyka_feedback' && empty($_GET['screen']) )

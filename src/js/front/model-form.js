@@ -248,7 +248,17 @@ var leykaValidateForm,
 
             } else if($field_wrapper.hasClass('donor__textfield--phone')) {
 
+                test_val = $this.inputmask.length ? $this.inputmask('unmaskedvalue') : test_val;
+
                 if(test_val.length > 0 && is_phone_number(test_val)){
+                    $field_wrapper.addClass('valid');
+                } else {
+                    $field_wrapper.addClass('invalid');
+                }
+
+            } else if($field_wrapper.hasClass('donor__textfield--date')) {
+
+                if(test_val.length > 0 && is_date(test_val)){
                     $field_wrapper.addClass('valid');
                 } else {
                     $field_wrapper.addClass('invalid');

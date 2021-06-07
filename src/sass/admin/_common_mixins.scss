@@ -263,22 +263,8 @@
     }
 
     input[type="checkbox"], input[type="radio"] {
-
         width: 18px;
         height: 18px;
-
-        //&:checked::before {
-        //    margin: 25%;
-        //}
-        //
-        //&::before {
-        //
-        //    width: 8px;
-        //    height: 8px;
-        //    line-height: 18px;
-        //
-        //}
-
     }
 
     input[type="checkbox"] {
@@ -379,6 +365,7 @@
 
         input.ui-autocomplete-input {
             display: none;
+            width: calc(100% - 2px) !important; /** @todo This line is to widen the search field on all available width - test it */
         }
 
     }
@@ -575,7 +562,7 @@
         // PM icons SVGs are all different! RAAAGE
         &.sber,
         &.card-visa,&.card-mastercard,&.card-maestro,&.card-mir,
-        &.mobile-beeline,&.mobile-megafon,&.mobile-mts,&.mobile-tele2 {
+        &.mobile-beeline,&.mobile-megafon,&.mobile-mts,&.mobile-tele2,&.mobile-yota,&.mobile-tinkoff {
             height: 16px;
             margin-right: 12px;
         }
@@ -653,7 +640,7 @@
 
     .screen-wrapper {
         position: relative;
-        line-height: 0px;
+        line-height: 0;
     }
 
     img.zoom-screen {
@@ -951,8 +938,8 @@
 
     border: 1px solid $color-border-semilight;
     border-radius: 6px;
-    background-color: $color-metaboxes-background;
     box-shadow: 0 2px 2px $color-border-semilight;
+    background-color: $color-metaboxes-background-white;
 
     color: $leyka-admin-color-text;
 
@@ -982,7 +969,7 @@
         &:after { // Restyled metabox/portlet open/close handle
             content: ' ';
             display: inline-block;
-            background-image: url(../../img/icon-arrow-expanded.svg);
+            background-image: url(../../img/icon-arrow-expanded-circled.svg); /** @todo Refactor to the icon-arrow-expanded.svg, then remove the "-circled" SVGs */
             cursor: pointer;
             pointer-events: all;
             width: 24px;
@@ -993,12 +980,19 @@
     }
 
     &.closed h2.hndle:after {
-        background-image: url(../../img/icon-arrow-collapsed.svg) !important;
+        background-image: url(../../img/icon-arrow-collapsed-circled.svg) !important; /** @todo Refactor to the icon-arrow-collapsed.svg, then remove the "-circled" SVGs */
     }
 
     .inside {
-        margin: 0 0 24px 0;
-        padding: 0 24px;
+
+        //margin: 0 0 24px 0;
+        padding: 24px 16px;
+        margin: 0;
+
+        #excerpt {
+            margin-top: 0;
+        }
+
     }
 
 }

@@ -131,9 +131,7 @@ function leyka_get_gateway_by_id($gateway_id) {
 
 function leyka_get_special_fields_settings(array $params = array()) {
 
-    $params = $params + array(
-        'field_types' => array(),
-    );
+    $params = $params + array('field_types' => array(),);
 
     $pm_fields = array();
     foreach(leyka_get_pm_list() as $pm) {
@@ -258,8 +256,9 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
         add_action('leyka_enqueue_scripts', array($this, 'enqueue_gateway_scripts'));
 
-        add_action('leyka_payment_form_submission-'.$this->id, array($this, 'process_form'), 10, 4);
-        add_action('leyka_payment_form_submission-'.$this->id, array($this, 'process_form_default'), 100, 4);
+        add_action('leyka_payment_form_submission-'.$this->id, array($this, 'process_form_default'), 10, 4);
+        add_action('leyka_payment_form_submission-'.$this->id, array($this, 'process_form'), 20, 4);
+
         add_action('leyka_log_donation-'.$this->id, array($this, 'log_gateway_fields'));
 
         add_filter('leyka_submission_redirect_url-'.$this->id, array($this, 'submission_redirect_url'), 10, 2);

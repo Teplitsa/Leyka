@@ -192,11 +192,54 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                         </div>
                     </div>
 
-                    <?php // For now, we get field settings only for the Mixplat Mobile PM and only for it's Phone field:
+                    <?php // Additional fields:
+
+                    $form_has_phone_field = false;
+                    foreach($campaign->get_calculated_additional_fields_settings() as $field_slug => $field) {
+
+                        $field_id = 'leyka-'.wp_rand();
+                        $form_has_phone_field = $form_has_phone_field || $field['type'] === 'phone';
+
+                        switch($field['type']) {
+                            case 'phone': $text_input_type = 'tel'; break;
+                            case 'date': $text_input_type = 'text'; break; // type="date" is not browser-universal ATM
+                            default:
+                                $text_input_type = 'text';
+                        }?>
+
+                        <div class="donor-field donor-additional-field donor__textfield donor__textfield--<?php echo $field['type'];?> donor__textfield--<?php echo $field_slug;?> <?php echo empty($field['is_required']) ? '' : 'required';?>">
+
+                            <div class="leyka-star-field-frame">
+
+                                <label for="<?php echo $field_id;?>">
+<!--                                    <span class="donor__textfield-label donor__--><?php //echo $field['type'];?><!--_field-label leyka_--><?php //echo $field_slug;?><!---label">--><?php //echo $field['title'];?><!--</span>-->
+                                </label>
+
+                                <input type="<?php echo $text_input_type;?>" id="<?php echo $field_id;?>" name="leyka_<?php echo $field_slug;?>" value="" autocomplete="off" <?php echo $field['type'] === 'phone' ? 'data-inputmask="\'mask\': \''.apply_filters('leyka_front_forms_phone_fields_mask', '+9(999)999-99-99').'\'"' : '';?> <?php echo $field['type'] === 'date' ? 'data-inputmask="\'mask\': \''.apply_filters('leyka_front_forms_date_fields_mask', '99.99.9999').'\'"' : '';?> placeholder="<?php echo $field['title'];?>">
+
+                            </div>
+
+                            <?php if($field['description']) {?>
+                            <div class="leyka-star-field-description-frame donor__<?php echo $field['type'];?>_field-description leyka_<?php echo $field_slug;?>-description">
+                                <?php echo $field['description'];?>
+                            </div>
+                            <?php }?>
+
+                            <div class="leyka-star-field-error-frame">
+                                <span class="donor__textfield-error donor__<?php echo $field['type'];?>_field-error leyka_<?php echo $field_slug;?>-error">
+                                    <?php _e('Please, enter correct value', 'leyka');?>
+                                </span>
+                            </div>
+
+                        </div>
+
+                    <?php }
+
+                    // For now, we get field settings only for the Mixplat Mobile PM and only for it's Phone field:
                     foreach(leyka_get_special_fields_settings() as $pm_full_id => $special_fields) {
 
-                        if($pm_full_id !== 'mixplat-mobile') {
-                            return;
+                        if($pm_full_id !== 'mixplat-mobile' || $form_has_phone_field) {
+                            continue;
                         }
 
                         foreach($special_fields as $field_settings) {
@@ -205,14 +248,22 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                                 continue;
                             }
 
-                            // @todo Something like such: $star_template->render_field($field_settings['type'], $field_settings);
+                            /** @todo Something like: $star_template->render_field($field_settings['type'], $field_settings);*/
 
                             $field_id = 'leyka-'.wp_rand();?>
                             <div class="donor-field donor__textfield donor__textfield--phone special-field <?php echo $pm_full_id;?> <?php echo empty($field_settings['required']) ? '' : 'required';?> <?php echo empty($field_settings['classes']) ? '' : implode(' ', $field_settings['classes']);?>" style="display: none;">
 
-                                <label class="leyka-star-field-frame">
-                                    <input id="<?php echo $field_id;?>" type="text" name="<?php echo empty($field_settings['name']) ? 'leyka_donor_phone' : $field_settings['name'];?>" value="" maxlength="20" autocomplete="off" placeholder="<?php echo empty($field_settings['placeholder']) ? __('Your phone number', 'leyka') : $field_settings['placeholder'];?>">
-                                </label>
+                                <div class="leyka-star-field-frame">
+
+                                    <label for="<?php echo $field_id;?>">
+                                        <span class="donor__textfield-label leyka_donor_phone-label">
+                                            <?php echo empty($field_settings['title']) ? __('Your phone number in the 7xxxxxxxxxx format', 'leyka') : $field_settings['title'];?>
+                                        </span>
+                                    </label>
+
+                                    <input id="<?php echo $field_id;?>" type="text" name="<?php echo empty($field_settings['name']) ? 'leyka_donor_phone' : $field_settings['name'];?>" value="" maxlength="20" autocomplete="off" placeholder="<?php echo empty($field_settings['placeholder']) ? '' : $field_settings['placeholder'];?>">
+
+                                </div>
 
                                 <div class="leyka-star-field-error-frame">
                                     <span class="donor__textfield-error leyka_donor_phone-error">
@@ -224,19 +275,23 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 
                         <?php }
 
-                    }
+                    } // Additional fields - END
 
                     if(leyka_options()->opt_template('show_donation_comment_field', 'need-help')) {
 
                         $field_id = 'leyka-'.wp_rand();?>
 
                     <div class="donor-field donor__textfield donor__textfield--comment leyka-field">
+
                         <label class="leyka-star-field-frame">
                             <textarea id="<?php echo $field_id;?>" class="leyka-donor-comment" name="leyka_donor_comment" data-max-length="<?php echo leyka_options()->opt_template('donation_comment_max_length', 'need-help');?>" placeholder="<?php _e('Your comment', 'leyka');?>"></textarea>
                         </label>
+
                         <div class="leyka-star-field-error-frame">
                             <span class="donor__textfield-error leyka_donor_comment-error"><?php _e('Entered value is too long', 'leyka');?></span>
+
                         </div>
+
                     </div>
 
                     <?php }?>
@@ -252,6 +307,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                     <?php if(leyka_options()->opt('agree_to_terms_needed') || leyka_options()->opt('agree_to_pd_terms_needed')) {?>
 
                     <div class="donor__oferta">
+
                         <span>
 
                         <?php if(leyka_options()->opt('agree_to_terms_needed')) {
@@ -261,6 +317,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                             <input type="checkbox" name="leyka_agree" id="<?php echo $field_id;?>" class="required" value="1" <?php echo leyka_options()->opt('terms_agreed_by_default') ? 'checked="checked"' : '';?>>
 
                             <label for="<?php echo $field_id;?>">
+
                                 <svg class="svg-icon icon-checkbox-check"><use xlink:href="#icon-checkbox-check"></use></svg>
 
                             <?php echo apply_filters('agree_to_terms_text_text_part', leyka_options()->opt('agree_to_terms_text_text_part')).' ';
@@ -272,6 +329,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                             <?php }?>
                                     <?php echo apply_filters('agree_to_terms_text_link_part', leyka_options()->opt('agree_to_terms_text_link_part'));?>
                                 </a>
+
                             </label>
 
                         <?php }?>

@@ -359,6 +359,10 @@
                 margin-left: 10px;
             }
 
+            &.donor-additional-field { // All additional form fields should be in separate lines
+                flex-basis: calc(100% - 20px);
+            }
+
         }
 
         .donor__textfield {
@@ -387,10 +391,6 @@
 
                 padding: 0 0 0 20px;
 
-            }
-
-            &.donor__textfield--phone {
-                flex-basis: calc(100% - 20px);
             }
 
             &.donor__textfield--comment {

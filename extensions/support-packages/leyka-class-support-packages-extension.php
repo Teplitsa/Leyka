@@ -201,6 +201,22 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
 
     }
 
+    public function load_admin_scripts() {
+
+        if( !Leyka_Extension::is_admin_settings_page($this->_id) ) { // Extension CSS & JS is only for admin settings page
+            return;
+        }
+
+        wp_enqueue_script(
+            $this->_id.'-admin',
+            LEYKA_PLUGIN_BASE_URL.'extensions/support-packages/assets/js/admin.js',
+            array('jquery',),
+            defined('WP_DEBUG') && WP_DEBUG ? uniqid() : null,
+            true
+        );
+
+    }
+
     protected function _initialize_active() {
 
         add_filter('post_class', array($this, 'add_post_class'), 10, 3);
@@ -217,9 +233,13 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
     }
 
     protected function _initialize_always() {
+
+        add_action('admin_enqueue_scripts', array($this, 'load_admin_scripts'));
+
         add_action('leyka_set_support_packages_campaign_option_value', function($option_value){
             delete_option('leyka_support_packages_no_campaign_behavior');
         });
+
     }
 
     protected function _is_package_active($package, $recurring_subscriptions) {

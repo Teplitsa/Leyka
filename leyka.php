@@ -68,7 +68,7 @@ if( !defined('LEYKA_PLUGIN_INNER_SHORT_NAME') ) { // 'leyka/leyka.php'
 
 // Plugin support email:
 if( !defined('LEYKA_SUPPORT_EMAIL') ) {
-    define('LEYKA_SUPPORT_EMAIL', 'support@te-st.ru,sidorenko.a@gmail.com');
+    define('LEYKA_SUPPORT_EMAIL', 'help@te-st.ru,sidorenko.a@gmail.com');
 }
 
 if( !defined('LEYKA_DEBUG') ) {

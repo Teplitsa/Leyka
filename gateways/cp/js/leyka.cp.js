@@ -120,6 +120,7 @@ jQuery(document).ready(function($){
                 currency: response.currency,
                 invoiceId: parseInt(response.donation_id),
                 accountId: response.donor_email,
+                email: response.donor_email,
                 data: data
             }, function(options){ // success callback
 
