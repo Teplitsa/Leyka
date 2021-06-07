@@ -257,7 +257,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 //        }
         // ... but we'll send the data anyway - some Leyka installations are using the AJAX response to hook in the analytics
 
-        $donation = Leyka_Donations::get_instance()->get($donation_id);
+        $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
 
         $data = array(
             'scid' => leyka_options()->opt('yandex_scid'),
