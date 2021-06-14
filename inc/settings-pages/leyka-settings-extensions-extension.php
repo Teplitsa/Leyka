@@ -1,9 +1,7 @@
 <?php if( !defined('WPINC') ) die;
-/** Admin Donor's info page template */
+/** Admin Extension settings page template */
 
 /** @var $this Leyka_Admin_Setup */
-
-//leyka_options()->opt('extensions_active', array('support_packages')); // 4 TEST
 
 try {
     $extension = Leyka_Extension::get_by_id($_GET['extension']);
@@ -17,7 +15,7 @@ if( !$extension ) {
 
 <div class="leyka-admin wrap single-settings extension-settings" data-leyka-admin-page-type="extension-settings-page" data-leyka-extension-id="<?php echo $extension->id;?>">
 
-    <a href="<?php echo admin_url('/admin.php?page=leyka_extensions');?>" class="back-to-list-link">
+    <a href="<?php echo admin_url('/admin.php?page=leyka_settings&stage=extensions');?>" class="settings-return-link">
         <?php _e('Back to the list', 'leyka');?>
     </a>
 

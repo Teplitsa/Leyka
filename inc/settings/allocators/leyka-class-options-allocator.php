@@ -14,6 +14,7 @@ abstract class Leyka_Options_Allocator extends Leyka_Singleton {
             'email' => __('Notifications', 'leyka'),
             'technical' => __('Tech settings', 'leyka'),
             'additional' => __('For developers', 'leyka'),
+            'extensions' => __('Extensions', 'leyka'),
         ));
     }
 

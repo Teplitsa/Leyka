@@ -24,7 +24,7 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
 
                 <div class="header-left">
 
-                    <h1 class="wp-heading-inline"><?php echo $extension->title;?></h1>
+                    <h2 class="wp-heading-inline"><?php echo $extension->title;?></h2>
 
                     <div class="meta-data">
 

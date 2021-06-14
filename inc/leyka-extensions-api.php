@@ -330,7 +330,7 @@ abstract class Leyka_Extension extends Leyka_Singleton {
 
         return $wizard_id && $this->get_activation_status() !== 'active' ?
             admin_url('/admin.php?page=leyka_settings_new&screen=wizard-'.$wizard_id) :
-            admin_url('/admin.php?page=leyka_extension_settings&extension='.$this->id);
+            admin_url('/admin.php?page=leyka_settings&stage=extensions&extension='.$this->id);
 
     }
 
