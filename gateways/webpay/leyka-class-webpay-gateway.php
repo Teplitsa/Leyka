@@ -695,7 +695,6 @@ class Leyka_Webpay_Card extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
         ));
 
         $this->_supported_currencies[] = 'byn';
