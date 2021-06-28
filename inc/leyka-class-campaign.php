@@ -1957,7 +1957,7 @@ class Leyka_Campaign {
     }
 
     /**
-     * @param $donation Leyka_Donation|integer|false
+     * @param $donation Leyka_Donation_Base|integer|false
      * @param $action string
      * @param $old_sum float|false
      * @return $this|false

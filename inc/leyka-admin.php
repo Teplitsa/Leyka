@@ -1264,7 +1264,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         }
 
         // Settings pages:
-        if(stristr($current_screen->id, '_page_leyka_settings') !== false) {
+        if(mb_stristr($current_screen->id, '_page_leyka_settings') !== false) {
 
             $dependencies[] = 'jquery-ui-sortable';
 

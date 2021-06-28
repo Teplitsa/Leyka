@@ -278,7 +278,7 @@ i.icon-leyka-recurring-subscription-status {
 
     @include leyka-admin-tooltip-styles();
 
-    background: $color-wizard-tooltip-bg;
+    //background: $color-wizard-tooltip-bg;
 
     border-radius: 4px;
     border: none;
@@ -290,8 +290,8 @@ i.icon-leyka-recurring-subscription-status {
     }
 
     &.leyka-tooltip-white {
-        background-color: $color-white;
-        color: $leyka-admin-color-text;
+        background-color: $color-white !important;
+        color: $leyka-admin-color-text !important;
     }
 
     &.leyka-tooltip-align-left {
@@ -978,6 +978,8 @@ i.icon-leyka-recurring-subscription-status {
 
                 span.ui-selectmenu-text { // Our margins value for selectmenu fields, instead of default jQ UI value
                     padding-left: 0;
+                    width: 100%;
+                    line-height: inherit;
                 }
 
             }
@@ -1021,13 +1023,17 @@ i.icon-leyka-recurring-subscription-status {
         // Filter fields:
 
         // Text & datepicker fields:
-        input[type="text"], input[type="date"]  {
+        input[type="text"], input[type="date"] {
             @include leyka-admin-list-filter-selector();
         }
 
         .ui-selectmenu-button {
+
+            @include leyka-admin-list-filter-selector();
+
             margin-right: $leyka-base;
             margin-bottom: $leyka-base;
+
         }
 
         .leyka-selector {

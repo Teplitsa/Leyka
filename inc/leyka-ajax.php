@@ -200,7 +200,7 @@ function leyka_process_success_form(){
         die(json_encode(array('status' => 1, 'message' => __('No donation ID found in the submitted data', 'leyka'),)));
     }
 
-    $donation = new Leyka_Donation(absint($_POST['leyka_donation_id']));
+    $donation = Leyka_Donations::get_instance()->get($_POST['leyka_donation_id']);
     if( !$donation ) {
         die(json_encode(array('status' => 1, 'message' => __('Wrong donation ID in the submitted data', 'leyka'),)));
     }
@@ -621,7 +621,7 @@ function leyka_cancel_recurring_subscription(){
     }
 
     $campaign = new Leyka_Campaign($campaign_id);
-    $init_recurring_donation = new Leyka_Donation($donation_id);
+    $init_recurring_donation = Leyka_Donations::get_instance()->get($donation_id);
 
     $cancel_reasons = is_array($_POST['leyka_cancel_subscription_reason']) ?
         $_POST['leyka_cancel_subscription_reason'] : array($_POST['leyka_cancel_subscription_reason']);

@@ -176,11 +176,11 @@
 }
 
 @mixin leyka-admin-tooltip-styles {
-    color: $color-white;
-    background-color: $color-wizard-tooltip-bg;
+    color: $color-white !important;
+    background-color: $color-wizard-tooltip-bg !important;
 
-    font-family: $font-body;
-    font-size: 11px;
+    font-family: $font-body !important;
+    font-size: 11px !important;
     font-weight: 500;
     line-height: 17px;
 
@@ -365,7 +365,7 @@
 
         input.ui-autocomplete-input {
             display: none;
-            width: calc(100% - 2px) !important; /** @todo This line is to widen the search field on all available width - test it */
+            width: calc(100% - 2px) !important;
         }
 
     }
@@ -1007,6 +1007,7 @@
     box-sizing: border-box;
     border: none;
     background-color: $color-white;
+    background-image: none;
     box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.4);
     width: 176px;
     height: 32px;

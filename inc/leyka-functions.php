@@ -1442,7 +1442,7 @@ function leyka_persistent_campaign_donated() {
     if($result) {
 
         $donation_id = leyka_remembered_data('donation_id');
-        $donation = $donation_id ? new Leyka_Donation($donation_id) : null;
+        $donation = $donation_id ? Leyka_Donations::get_instance()->get($donation_id) : null;
         $campaign_id = $donation ? $donation->campaign_id : null;
         $campaign = $campaign_id ? new Leyka_Campaign($campaign_id) : null;
         
@@ -1590,33 +1590,31 @@ if( !function_exists('leyka_clear_server_data') ) {
 /**
  * @param $campaign_id int
  * @param $limit int|false False to get all donations (unlimited number).
- * @return array|false An array of Leyka_Donation objects, or false if wrong campaign ID given.
+ * @return array|false An array of Leyka_Donation_Base objects, or false if wrong campaign ID given.
  */
 function leyka_get_campaign_donations($campaign_id = false, $limit = false) {
 
     $campaign_id = $campaign_id ? absint($campaign_id) : false;
     $limit = (int)$limit > 0 ? (int)$limit : false;
 
-    $params = array('post_type' => Leyka_Donation_Management::$post_type, 'post_status' => 'funded', 'meta_query' => array(),);
+    $params = array('status' => 'funded',);
     if($campaign_id) {
-        $params['meta_query'][] = array('key' => 'leyka_campaign_id', 'value' => $campaign_id, 'compare' => '=',);
+        $params['campaign_id'] = $campaign_id;
     }
 
     if($limit) {
-        $params['posts_per_page'] = $limit;
+        $params['results_limit'] = $limit;
     } else {
-
-        $params['posts_per_page'] = -1;
+//        $params['posts_per_page'] = -1;
         $params['nopaging'] = true;
-
     }
 
-    $donations = array();
-    foreach(get_posts($params) as $donation) {
-        $donations[] = new Leyka_Donation($donation);
-    }
+    return Leyka_Donations::get_instance()->get($params);
+//    foreach(get_posts($params) as $donation) {
+//        $donations[] = new Leyka_Donation($donation);
+//    }
 
-    return $donations;
+//    return $donations;
 
 }
 
@@ -2143,7 +2141,7 @@ function leyka_use_leyka_campaign_template($template) {
     } else if(is_page(leyka_options()->opt('success_page')) || is_page(leyka_options()->opt('failure_page'))) {
 
         $donation_id = leyka_remembered_data('donation_id');
-        $donation = $donation_id ? new Leyka_Donation($donation_id) : null;
+        $donation = $donation_id ? Leyka_Donations::get_instance()->get($donation_id) : null;
         $campaign_id = $donation ? $donation->campaign_id : null;
 
     }
@@ -2203,6 +2201,7 @@ function leyka_get_cancel_subscription_reasons() {
     );
 }
 
+/** @todo ATM the function doesn't support sep-Ds. Refactor it */
 function get_donor_init_recurring_donation_for_campaign($donor_user, $campaign_id) {
 
     $donations = new WP_Query(array(

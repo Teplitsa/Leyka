@@ -200,7 +200,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
             $this->_handle_callback_error(__('No donation ID given', 'leyka'));
         }
 
-        $donation = new Leyka_Donation($_POST['site_order_id']);
+        $donation = Leyka_Donations::get_instance()->get($_POST['site_order_id']);
         if( !$donation ) {
             $this->_handle_callback_error(sprintf(__('Unknown donation ID given: %s', 'leyka'), $_POST['site_order_id']));
         }

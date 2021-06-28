@@ -146,41 +146,13 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
 
     }
 
-    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation_Base $donation) {
-
-        $init_recurring_donation = Leyka_Donation::get_init_recurring_donation($donation);
-        $cancelling_url = (get_option('permalink_structure') ?
-                home_url("leyka/service/cancel_recurring/{$donation->id}") :
-                home_url("?page=leyka/service/cancel_recurring/{$donation->id}"))
-            .'/'.md5($donation->id.'_'.$init_recurring_donation->id.'_leyka_cancel_recurring_subscription');
-
-        return sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">click here</a>', 'leyka'), $cancelling_url);
-
-    }
-
-    public function cancel_recurring_subscription_by_link(Leyka_Donation_Base $donation) {
-
-        if($donation->type !== 'rebill') {
-            die();
-        }
-
-        header('Content-type: text/html; charset=utf-8');
-
-        $recurring_cancelling_result = $this->cancel_recurring_subscription($donation);
-
-        if($recurring_cancelling_result === true) {
-            die(__('Recurring subscription cancelled successfully.', 'leyka'));
-        } else if(is_wp_error($recurring_cancelling_result)) {
-            die($recurring_cancelling_result->get_error_message());
-        } else {
-            die( sprintf(__('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email()) );
-        }
-
-    }
+    // The default implementations are in use:
+//    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation_Base $donation) { }
+//    public function cancel_recurring_subscription_by_link(Leyka_Donation_Base $donation) { }
 
     public function do_recurring_donation(Leyka_Donation_Base $init_recurring_donation) {
 
-        $new_recurring_donation = Leyka_Donation::add_clone(
+        $new_recurring_donation = Leyka_Donations::get_instance()->add_clone(
             $init_recurring_donation,
             array(
                 'status' => 'submitted',
@@ -250,7 +222,7 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
 
         if($donation) { // Edit donation page displayed
 
-            $donation = leyka_get_validated_donation($donation);
+            $donation = Leyka_Donations::get_instance()->get($donation);
 
             if($donation->type !== 'rebill') {
                 return;
@@ -269,7 +241,7 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
 
     }
 
-    public function save_donation_specific_data(Leyka_Donation $donation) {
+    public function save_donation_specific_data(Leyka_Donation_Base $donation) {
         $donation->recurring_is_active = !empty($_POST['robokasssa-recurring-is-active']);
     }
 

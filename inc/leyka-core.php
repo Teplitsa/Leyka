@@ -326,7 +326,7 @@ class Leyka extends Leyka_Singleton {
                     if( !$donation_id ) {
                         return '';
                     }
-                    $donation = new Leyka_Donation($donation_id);
+                    $donation = Leyka_Donations::get_instance()->get($donation_id);
                     $campaign_id = $donation ? $donation->campaign_id : null;
                     $campaign = new Leyka_Campaign($campaign_id);
                     
@@ -551,7 +551,7 @@ class Leyka extends Leyka_Singleton {
 
             foreach($donations_ordered as $donation_id) {
 
-                $donation = new Leyka_Donation($donation_id);
+                $donation = Leyka_Donations::get_instance()->get($donation_id);
                 if( !$donation ) {
                     return;
                 }
@@ -580,14 +580,12 @@ class Leyka extends Leyka_Singleton {
         }
 
         $donation_id = leyka_remembered_data('donation_id');
-        $campaign = null;
-        $campaign_id = null;
 
         if( !$donation_id ) {
             return;
         }
 
-        $donation = new Leyka_Donation($donation_id);
+        $donation = Leyka_Donations::get_instance()->get($donation_id);
         $campaign_id = $donation ? $donation->campaign_id : null;
         $campaign = new Leyka_Campaign($campaign_id);
 
@@ -667,14 +665,12 @@ class Leyka extends Leyka_Singleton {
             // Success page display - use "purchase" e-commerce measurement:
 
             $donation_id = leyka_remembered_data('donation_id');
-            $campaign = null;
-            $campaign_id = null;
 
             if( !$donation_id ) {
                 return;
             }
 
-            $donation = new Leyka_Donation($donation_id);
+            $donation = Leyka_Donations::get_instance()->get($donation_id);
             $campaign_id = $donation ? $donation->campaign_id : null;
             $campaign = new Leyka_Campaign($campaign_id);
 
@@ -923,42 +919,42 @@ class Leyka extends Leyka_Singleton {
 
     protected function _get_usage_stats(array $params = array()) {
 
-        /** @todo Use Donations_Factory here */
-        $query_params = array(
-            'post_type' => Leyka_Donation_Management::$post_type,
-            'post_status' => 'any',
-            'meta_query' => array(
-                'relation' => 'AND',
-                array('key' => 'leyka_payment_type', 'value' => 'correction', 'compare' => '!='),
-            ),
+        $donations_params = array(
+//            'post_status' => 'any',
+//            'meta_query' => array(
+//                'relation' => 'AND',
+//                array('key' => 'leyka_payment_type', 'value' => 'correction', 'compare' => '!='),
+//            ),
+            'payment_type' => array('single', 'rebill',),
             'nopaging' => true,
         );
         if( !empty($params['timestamp_from']) && (int)$params['timestamp_from'] > 0 ) { // 'date_from' must be a timestamp
 
-            $query_params['date_query']['after'] = date('Y-m-d H:i:s', (int)$params['timestamp_from']);
-            $query_params['date_query']['inclusive'] = true;
+//            $query_params['date_query']['after'] = date('Y-m-d H:i:s', (int)$params['timestamp_from']);
+//            $query_params['date_query']['inclusive'] = true;
+            $donations_params['date_from'] = date('Y-m-d H:i:s', (int)$params['timestamp_from']);
 
             if( !empty($params['period']) ) { // Must be strtotime()-compatible string w/o sign (1 hour, 2 weeks, 3 months, ...)
 
                 $params['period'] = str_replace(array('+', '-'), '', $params['period']);
 
-                $query_params['date_query']['before'] = date(
-                    'Y-m-d H:i:s', strtotime($query_params['date_query']['after'].' +'.$params['period'])
+                $donations_params['date_to'] = date(
+                    'Y-m-d H:i:s', strtotime($donations_params['date_from'].' +'.$params['period'])
                 );
 
             }
 
         }
 
-        if( !empty($query_params['date_query']) ) {
-            $query_params['date_query'] = array($query_params['date_query']);
-        }
+//        if( !empty($donations_params['date_query']) ) {
+//            $donations_params['date_query'] = array($donations_params['date_query']);
+//        }
 
         $stats = array('donations' => array(),) + leyka_get_env_and_options();
 
-        foreach(get_posts($query_params) as $donation) {
+        foreach(Leyka_Donations::get_instance()->get($donations_params) as $donation) {
 
-            $donation = new Leyka_Donation($donation);
+//            $donation = new Leyka_Donation($donation);
 
             $donations_by_status = array();
             foreach(leyka_get_donation_status_list() as $status => $label) {
@@ -1409,7 +1405,7 @@ class Leyka extends Leyka_Singleton {
             $campaign_id = get_the_ID();
         } else if(is_page(leyka()->opt('success_page')) || is_page(leyka()->opt('failure_page'))) {
             $donation_id = leyka_remembered_data('donation_id');
-            $donation = $donation_id ? new Leyka_Donation($donation_id) : null;
+            $donation = $donation_id ? Leyka_Donations::get_instance()->get($donation_id) : null;
             $campaign_id = $donation ? $donation->campaign_id : null;
         }
 
@@ -1940,7 +1936,7 @@ class Leyka extends Leyka_Singleton {
     }
 
     /** @todo Move the method to the special class for the emails management / logging */
-    public function handle_non_init_recurring_donor_registration($donor_user_id, Leyka_Donation $donation) {
+    public function handle_non_init_recurring_donor_registration($donor_user_id, Leyka_Donation_Base $donation) {
 
         // This handler is only for non-init recurring donations:
         if(
@@ -2070,7 +2066,7 @@ class Leyka extends Leyka_Singleton {
      * @todo Move the method to the special class for the emails management / logging
      *
      * @param $donor_account_error WP_Error
-     * @param $donation int|WP_Post|Leyka_Donation
+     * @param $donation int|WP_Post|Leyka_Donation_Base
      */
     public function handle_donor_account_creation_error(WP_Error $donor_account_error, $donation) {
 

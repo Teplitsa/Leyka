@@ -429,25 +429,8 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
     }
 
-    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation_Base $donation) {
-
-        $init_recurring_donation = $this->get_init_recurring_donation($donation);
-
-        if($init_recurring_donation) {
-
-            $cancelling_url = (
-                get_option('permalink_structure') ?
-                    home_url("leyka/service/cancel_recurring/{$donation->id}") :
-                    home_url("?page=leyka/service/cancel_recurring/{$donation->id}")
-                ).'/'.md5($donation->id.'_'.$init_recurring_donation->id.'_leyka_cancel_recurring_subscription');
-
-            return sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">click here</a>', 'leyka'), $cancelling_url);
-
-        } else {
-            return sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">email abount this to the website tech. support</a>', 'leyka'), leyka_get_website_tech_support_email());
-        }
-
-    }
+    // The default implementation is in use:
+//    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation_Base $donation) { }
 
     public function cancel_recurring_subscription(Leyka_Donation_Base $donation) {
 
