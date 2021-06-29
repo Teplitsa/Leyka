@@ -81,6 +81,11 @@ PHP version required: 5.6+
 5. The plugin start page (a console)
 
 == Changelog ==
+= 3.17.1 =
+* New: now Extensions settings don't block the main settings areas menu.
+* Fix: now YooKassa payment descriptions are forcibly trimmed if they are longer than 128 chars.
+* Fix: small fixes.
+
 = 3.17 =
 * New: the Additional fields feature added.
 * New: Robokassa recurring support added.
