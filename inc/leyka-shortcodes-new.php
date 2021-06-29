@@ -499,7 +499,7 @@ function leyka_shortcode_campaign_card($atts) {
         'show_collected_amount' => 1,
         'button_text' => leyka_options()->opt_template('donation_submit_text'), // leyka_get_scale_button_label(),
         'show_if_finished' => isset($atts['show_finished']) ? !!$atts['show_finished'] : 1,
-        'link_leads_to_form' => false,
+        'link_right_to_form' => false,
         'link_to_form' => '',
 
         'color_title' => false, // Card title color
