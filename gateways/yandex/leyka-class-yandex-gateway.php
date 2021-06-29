@@ -161,6 +161,11 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             $client = new YooKassa\Client();
             $client->setAuth(leyka_options()->opt('yandex_shop_id'), leyka_options()->opt('yandex_secret_key'));
 
+            $description = (
+                    !empty($form_data['leyka_recurring']) ? _x('[RS]', 'For "recurring subscription"', 'leyka').' ' : ''
+                )
+                .$donation->payment_title." (№ $donation_id); {$donation->donor_name}; {$donation->donor_email}";
+
             try {
 
                 $payment_data = array(
@@ -174,9 +179,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                             leyka_get_success_page_url() : $form_data['leyka_success_page_url'],
                     ),
                     'capture' => true, // Make payment at once, don't wait for shop confirmation
-                    'description' =>
-                        ( !empty($form_data['leyka_recurring']) ? _x('[RS]', 'For "recurring subscription"', 'leyka').' ' : '' )
-                        .$donation->payment_title." (№ $donation_id); {$donation->donor_name}; {$donation->donor_email}",
+                    'description' => mb_strlen($description) >= 128 ? mb_substr($description, 0, 124).' ...' : $description,
                     'metadata' => array(
                         'donation_id' => $donation_id,
                         'donor_name' => $donation->donor_name,
