@@ -7,6 +7,9 @@
         justify-content: space-between;
 
         .leyka-add-new {
+
+            padding-left: 6px;
+
             &:before {
                 content: '\f502';
                 display: inline-block;
@@ -14,6 +17,7 @@
                 pointer-events: all;
                 font-size: 16px;
             }
+
         }
 
     }
