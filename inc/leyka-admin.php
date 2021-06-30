@@ -298,13 +298,26 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         add_submenu_page('leyka', __('Leyka Dashboard', 'leyka'), __('Dashboard', 'leyka'), 'leyka_manage_donations', 'leyka', array($this, 'dashboard_screen'));
 
-        add_submenu_page('leyka', __('Campaigns', 'leyka'), __('Campaigns', 'leyka'), 'leyka_manage_donations', 'edit.php?post_type='.Leyka_Campaign_Management::$post_type);
+        add_submenu_page(
+            'leyka',
+            __('Campaigns', 'leyka'),
+            __('Campaigns', 'leyka').'<a class="leyka-add-new dashicons dashicons-plus-alt" href="'.admin_url('/post-new.php?post_type='.Leyka_Campaign_Management::$post_type).'"></a>',
+            'leyka_manage_donations',
+            'edit.php?post_type='.Leyka_Campaign_Management::$post_type
+        );
 
         // Donations admin list page:
-        $hook = add_submenu_page('leyka', __('Donations', 'leyka'), __('Donations', 'leyka'), 'leyka_manage_donations', 'leyka_donations', array($this, 'donations_list_screen'));
+        $hook = add_submenu_page(
+            'leyka',
+            __('Donations', 'leyka'),
+            __('Donations', 'leyka').'<a class="leyka-add-new dashicons dashicons-plus-alt" href="'.admin_url('/admin.php?page=leyka_donation_info').'"></a>',
+            'leyka_manage_donations',
+            'leyka_donations',
+            array($this, 'donations_list_screen')
+        );
         add_action("load-$hook", array($this, 'donations_list_screen_options'));
 
-        add_submenu_page('leyka', __('New correctional donation', 'leyka'), _x('Add new', '[donation]', 'leyka'), 'leyka_manage_donations', 'leyka_donation_info', array($this, 'donation_info_screen'));
+//        add_submenu_page('leyka', __('New correctional donation', 'leyka'), _x('Add new', '[donation]', 'leyka'), 'leyka_manage_donations', 'leyka_donation_info', array($this, 'donation_info_screen'));
 
         // Recurring subscriptions list page:
         $hook = add_submenu_page('leyka', __('Recurring subscriptions', 'leyka'), __('Recurring subscriptions', 'leyka'), 'leyka_manage_donations', 'leyka_recurring_subscriptions', array($this, 'recurring_subscriptions_list_screen'));
@@ -330,16 +343,14 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         add_submenu_page('leyka', __('Help', 'leyka'), __('Help', 'leyka'), 'leyka_manage_donations', 'leyka_help', array($this, 'help_screen'));
 
         // Fake pages:
+        add_submenu_page(NULL, __('New correctional donation', 'leyka'), _x('Add new', '[donation]', 'leyka'), 'leyka_manage_donations', 'leyka_donation_info', array($this, 'donation_info_screen'));
+
         add_submenu_page(NULL, 'Leyka Wizard', 'Leyka Wizard', 'leyka_manage_options', 'leyka_settings_new', array($this, 'settings_new_screen'));
 
-        // ATM, Wizards, Donors & Extensions are untested with "sep" storage type:
-//        if(leyka_get_donations_storage_type() === 'post') {
+        add_submenu_page(NULL, "Donor's info", "Donor's info", 'leyka_manage_options', 'leyka_donor_info', array($this, 'donor_info_screen'));
 
-            add_submenu_page(NULL, "Donor's info", "Donor's info", 'leyka_manage_options', 'leyka_donor_info', array($this, 'donor_info_screen'));
+        add_submenu_page(NULL, 'Extension settings', 'Extension settings', 'leyka_manage_options', 'leyka_extension_settings', array($this, 'leyka_extension_settings_screen'));
 
-            add_submenu_page(NULL, 'Extension settings', 'Extension settings', 'leyka_manage_options', 'leyka_extension_settings', array($this, 'leyka_extension_settings_screen'));
-
-//        }
         // Fake pages - END
 
         do_action('leyka_admin_menu_setup');
@@ -1262,6 +1273,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             'field_required' => __('This field is required to be filled', 'leyka'),
             'email_invalid_msg' => __('You have entered an invalid email', 'leyka'),
             'common_error_message' => __('Error while saving the data', 'leyka'),
+            'no_filters_while_exporting_warning_message' => __('Choose some filters values before exporting, please!', 'leyka'),
 			'error_message' => __('Error!', 'leyka'),
             'default_image_message' => __('Default', 'leyka'),
 			'disconnect_stats' => __('Disconnect statistics', 'leyka'),

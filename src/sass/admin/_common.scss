@@ -1,3 +1,26 @@
+/** Main plugin admin menu tweaks: */
+#adminmenu .toplevel_page_leyka {
+
+    li:not(.wp-submenu-head) {
+
+        display: flex;
+        justify-content: space-between;
+
+        .leyka-add-new {
+            &:before {
+                content: '\f502';
+                display: inline-block;
+                cursor: pointer;
+                pointer-events: all;
+                font-size: 16px;
+            }
+        }
+
+    }
+
+}
+/** Main plugin admin menu tweaks - END */
+
 .leyka-admin-wizard {
 
     .leyka-wizard {
@@ -653,6 +676,7 @@ i.icon-leyka-recurring-subscription-status {
         .header {
 
             h3 {
+
                 font-style: normal;
                 font-weight: normal;
                 line-height: 34px;
@@ -677,6 +701,7 @@ i.icon-leyka-recurring-subscription-status {
                     pointer-events: all;
                     flex-shrink: 0;
                 }
+
             }
 
         }

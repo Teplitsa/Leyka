@@ -1642,6 +1642,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 </div>
 
             <?php }
+
             }?>
         </div>
 
