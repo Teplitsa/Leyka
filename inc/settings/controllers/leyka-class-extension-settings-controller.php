@@ -33,11 +33,15 @@ class Leyka_Extension_Settings_Controller extends Leyka_Settings_Controller {
         $this->_set_attributes();
         $this->_set_stages();
 
+        // Triggered on any try to activate/deactivate an Extension:
         add_action('leyka_settings_submit_'.$this->_id, array($this, 'handle_submit'));
         add_action('leyka_activate_extension_'.$this->_extension->id, array($this, 'handle_activation'));
         add_action('leyka_deactivate_extension_'.$this->_extension->id, array($this, 'handle_deactivation'));
-
         add_filter('leyka_extension_validate_activation', array($this->_extension, 'validate_activation'));
+
+        // Triggered if Extension is really activated/deactivated (all checks are passed):
+        add_action('leyka_extension_activation', array($this->_extension, 'activate'));
+        add_action('leyka_extension_deactivation', array($this->_extension, 'deactivate'));
 
         $this->_handle_settings_submit();
 
@@ -274,6 +278,8 @@ class Leyka_Extension_Settings_Controller extends Leyka_Settings_Controller {
             $extensions_active[] = $this->_extension->id;
             leyka_options()->opt('extensions_active', $extensions_active);
 
+            do_action('leyka_extension_activation');
+
         }
 
         return NULL;
@@ -292,6 +298,8 @@ class Leyka_Extension_Settings_Controller extends Leyka_Settings_Controller {
         }
 
         leyka_options()->opt('extensions_active', $extensions_active);
+
+        do_action('leyka_extension_deactivation');
 
     }
 
