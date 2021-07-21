@@ -29,6 +29,12 @@ require_once LEYKA_PLUGIN_DIR.'/procedures/procedures-common.php';
 
 if( !defined('WPINC') ) die;
 
+global $wpdb;
+
+if( !$wpdb->get_row("SHOW TABLES LIKE '{$wpdb->prefix}leyka_gds_integration_donations_data'") ) {
+    die; // Mb, create the Extensiton-specific DB table instead?
+}
+
 set_transient('leyka_gds_integration_last_data_preparing_date', date('Y-m-d H:i:s'));
 
 ini_set('max_execution_time', apply_filters('leyka_procedure_php_execution_time', 0, 'gds-integration-procedure'));
@@ -55,8 +61,6 @@ $params = apply_filters('leyka_gds_integration_donation_query_params', array(
     'post_status' => 'any',
     'date_query' => $date_query,
 ));
-
-global $wpdb;
 
 $wpdb->query("TRUNCATE `{$wpdb->prefix}leyka_gds_integration_donations_data`");
 

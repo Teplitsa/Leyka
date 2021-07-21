@@ -21,11 +21,36 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
         // A human-readable full description (for backoffice extensions list page):
         $this->_full_description = ''; // 150-300 chars
 
+        $extension_file_path = realpath(__FILE__);
+        $path_to_cron_procedure = str_replace(basename(__FILE__), 'leyka-gds-data-preparation.php', $extension_file_path);
+
+        $timestamp = get_transient('leyka_gds_integration_last_data_preparing_date');
+        $timestamp = $timestamp ? strtotime($timestamp) : false;
+        $last_procedure_run_date = $timestamp ?
+            date(get_option('date_format'), $timestamp).', '.date(get_option('time_format'), $timestamp) :
+            __('no', 'leyka');
+
+        global $wpdb;
+
         // A human-readable description (for backoffice extension settings page):
-        $this->_settings_description = '';
+        $this->_settings_description = '<p>Некий супер-длинный текст о том, как подключить и настроить интеграцию Лейки с GDS. Некий супер-длинный текст о том, как подключить и настроить интеграцию Лейки с GDS. Некий супер-длинный текст о том, как подключить и настроить интеграцию Лейки с GDS. Некий супер-длинный текст о том, как подключить и настроить интеграцию Лейки с GDS. Некий супер-длинный текст о том, как подключить и настроить интеграцию Лейки с GDS. Некий супер-длинный текст о том, как подключить и настроить интеграцию Лейки с GDS.</p>
+
+<p>Это, по идее Наташи, должен быть текст про то, что надо настроить крон, что надо в ПУ GDS сделать дата-коннектор через MySQL, и т.д. Это, по идее Наташи, должен быть текст про то, что надо настроить крон, что надо в ПУ GDS сделать дата-коннектор через MySQL, и т.д. Это, по идее Наташи, должен быть текст про то, что надо настроить крон, что надо в ПУ GDS сделать дата-коннектор через MySQL, и т.д.</p>
+
+<p>А ещё это тест для того, работает ли в этом описании HTML, и как будет выглядеть текст в несколько абзацев. Например, высотой пикселей в 500-1000. Что-то мне подсказывает, что стрёмно будет выглядеть. Наташа и Николай, как обычно, амбизиозны.</p>
+Можно дать ещё <a href="" target="_blank">ссылку на полный ман</a></p>
+
+<p>Для примера выввода параметров:</p>
+<ul>
+    <li><strong>Путь до скрипта процедуры:</strong> '.$path_to_cron_procedure.'</li>
+    <li><strong>Хост для подключения к БД:</strong> '.DB_HOST.'</li>
+    <li><strong>Юзер для подключения к БД:</strong> '.DB_USER.'</li>
+    <li><strong>Таблица для экспорта данных в GDS:</strong> '.$wpdb->prefix.'leyka_gds_integration_donations_data</li>
+    <li><strong>Дата последней подготовки данных для экспорта в GDS:</strong> '.$last_procedure_run_date.'</li>
+</ul>';
 
         // A human-readable description of how to enable the main feature (for backoffice extension settings page):
-        $this->_connection_description = '<p>Подробнее о подключении сайта с Лейкой к Google Data Studio <a href="" target="_blank">читайте здесь</a></p>';
+        $this->_connection_description = '<p>Здесь можно дать какой-то чуть выделенный кусочек о подключении. Например, так: "подробнее о подключении сайта с Лейкой к Google Data Studio <a href="" target="_blank">читайте здесь</a>."</p>';
 
 //        $this->_user_docs_link = '//your-site.org/extension-manual'; // Extension user manual page URL
         $this->_has_wizard = false;
