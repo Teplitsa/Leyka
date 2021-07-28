@@ -3,6 +3,15 @@
 
     max-width: 750px;
 
+    /** @todo Remove when Extensions options will fully support settings containers */
+    .leyka-option-field-width-half { // Very little cases overall (e.g., in the GDS Exension option).
+        .field-component.field {
+            display: inline-block;
+            min-width: 45%;
+            max-width: 50%;
+        }
+    }
+
     &.option-block {
 
         &.type-rich_html {

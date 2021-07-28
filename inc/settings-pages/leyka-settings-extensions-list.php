@@ -50,7 +50,7 @@ $extensions_categories = Leyka_Extension::get_filter_categories_list();?>
 
                     <div>
                         <div class="module-card-title">
-                            <a class="module-settings-link" href="<?php echo admin_url('admin.php?page=leyka_extension_settings&extension='.$extension->id);?>">
+                            <a class="module-settings-link" href="<?php echo admin_url('admin.php?page=leyka_settings&stage=extensions&extension='.$extension->id);?>">
                                 <?php echo $extension->title;?>
                             </a>
                         </div>
