@@ -143,7 +143,7 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
           `campaign_title` text COLLATE utf8mb4_unicode_ci NOT NULL,
           `donor_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
           `donor_email` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-          `donor_has_account` BOOLEAN NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+          `donor_has_account` BOOLEAN) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
 
     }
 
@@ -166,7 +166,7 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
                 'campaign_title' => $donation->campaign_title,
                 'donor_name' => $donation->donor_name,
                 'donor_email' => $donation->donor_email,
-                'donor_has_account' => absint($donation->donor_id) ? 1 : 0,
+                'donor_has_account' => absint($donation->donor_id) ? 1 : null,
             ),
             array('%d', '%s', '%s', '%s', '%s', '%s', '%f', '%f', '%s', '%s', '%s', '%s', '%d',)
         );
@@ -189,25 +189,11 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
 
     public function get_donations_to_convert() {
 
-        switch(leyka_options()->opt($this->_id.'_donations_date_period')) {
-            case '2_months':
-                $date_query = date('Y-m-d 00:00:00', strtotime('-2 month')); break;
-            case '6_months':
-                $date_query = date('Y-m-d 00:00:00', strtotime('-6 month')); break;
-            case '1_year':
-                $date_query = date('Y-m-d 00:00:00', strtotime('-1 year')); break;
-            case 'all':
-                $date_query = ''; break;
-            case '2_years':
-            default:
-                $date_query = date('Y-m-d 00:00:00', strtotime('-2 year')); break;
-        }
-
         $params = apply_filters('leyka_gds_integration_donation_query_params', array(
             'post_type' => Leyka_Donation_Management::$post_type,
             'nopaging' => true,
             'post_status' => 'any',
-            'date_query' => $date_query,
+            'date_query' => array($this->_get_date_query()),
         ));
 
         $result = array();
@@ -221,30 +207,34 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
 
     public function get_donations_to_convert_count() {
 
-        switch(leyka_options()->opt($this->_id.'_donations_date_period')) {
-            case '2_months':
-                $date_query = date('Y-m-d 00:00:00', strtotime('-2 month')); break;
-            case '6_months':
-                $date_query = date('Y-m-d 00:00:00', strtotime('-6 month')); break;
-            case '1_year':
-                $date_query = date('Y-m-d 00:00:00', strtotime('-1 year')); break;
-            case 'all':
-                $date_query = ''; break;
-            case '2_years':
-            default:
-                $date_query = date('Y-m-d 00:00:00', strtotime('-2 year')); break;
-        }
-
         $params = apply_filters('leyka_gds_integration_donation_query_params', array(
             'post_type' => Leyka_Donation_Management::$post_type,
             'nopaging' => true,
             'post_status' => 'any',
-            'date_query' => $date_query,
+            'date_query' => array($this->_get_date_query()),
         ));
 
         $query = new WP_Query($params);
 
         return $query->found_posts;
+
+    }
+
+    protected function _get_date_query() {
+
+        switch(leyka_options()->opt($this->_id.'_donations_date_period')) {
+            case '2_months':
+                return array('after' => '-2 month', 'inclusive' => true,);
+            case '6_months':
+                return array('after' => '-6 month', 'inclusive' => true,);
+            case '1_year':
+                return array('after' => '-1 year', 'inclusive' => true,);
+            case 'all':
+                return array();
+            case '2_years':
+            default:
+                return array('after' => '-2 year', 'inclusive' => true,);
+        }
 
     }
 
