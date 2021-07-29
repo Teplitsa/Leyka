@@ -374,28 +374,9 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
     }
 
-    public function cancel_recurring_subscription_by_link(Leyka_Donation_Base $donation) {
-
-        if($donation->type !== 'rebill') {
-            die();
-        }
-
-        $init_recurring_donation = $this->get_init_recurring_donation($donation);
-        $init_recurring_donation->recurring_is_active = false;
-
-        header('Content-type: text/html; charset=utf-8');
-
-        $recurring_cancelling_result = $this->cancel_recurring_subscription($donation);
-
-        if($recurring_cancelling_result === true) {
-            die(__('Recurring subscription cancelled successfully.', 'leyka'));
-        } else if(is_wp_error($recurring_cancelling_result)) {
-            die($recurring_cancelling_result->get_error_message());
-        } else {
-            die( sprintf(__('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email()) );
-        }
-
-    }
+    // The default implementations are in use:
+//    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation_Base $donation) { }
+//    public function cancel_recurring_subscription_by_link(Leyka_Donation_Base $donation) { }
 
     public function do_recurring_donation(Leyka_Donation_Base $init_recurring_donation) {
 

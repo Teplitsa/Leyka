@@ -7,6 +7,11 @@ function is_phone_number(value) {
     return /^[0-9\+\-\. ]{10,}$/.test(value);
 }
 
+/** Validate the date string in DD.MM.YYYY format */
+function is_date(value) {
+    return /^[0-9]{2}\.[0-9]{2}\.[0-9]{4}$/.test(value);
+}
+
 function leyka_get_ajax_url() {
     return typeof leyka != 'undefined' ? leyka.ajaxurl : typeof frontend != 'undefined' ? frontend.ajaxurl : '/';
 }

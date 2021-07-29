@@ -448,6 +448,7 @@
             
             .donor__textfield {
                 @include for(medium-screens) {
+
                     float: left;
                     width: 48.5%;
                     margin-right: 3%;
@@ -455,23 +456,37 @@
                     &:last-child {
                         margin-right: 0;
                     }
+
                 }
             }
+
         }
         
         .donor__textfield {
+
             overflow-y: visible;
             margin-bottom: 3px;
             
             .leyka-star-field-frame {
+
                 @include star-control-frame();
-                padding: 0.4 * $leyka-star-base 1 * $leyka-star-base 0.75 * $leyka-star-base 1 * $leyka-star-base;
+
+                padding: 0.4*$leyka-star-base 1*$leyka-star-base 0.75*$leyka-star-base 1*$leyka-star-base;
                 background-image: none;
                 background-position: calc(100% - var(--leyka-star-base)) center;
                 background-repeat: no-repeat;
                 overflow: hidden;
+
             }
-            
+
+            .leyka-star-field-description-frame {
+                min-height: 20px;
+                height: auto;
+                margin-top: 6px;
+                font-size: 11px;
+                text-transform: uppercase;
+            }
+
             &.donor__textfield--comment {
                 .leyka-star-field-frame {
                     height: 114px;
@@ -482,7 +497,7 @@
                 label {
                     span.donor__textfield-label {
                         &:after {
-                            content: "*";
+                            content: '*';
                             display: inline-block;
                             color: $leyka-star-color-main;
                             margin-left: 3px;
@@ -523,9 +538,9 @@
                 }
             }
             
-            &:not(.required) .leyka-star-field-frame {
-                background-image: none !important;
-            }
+            //&:not(.required) .leyka-star-field-frame {
+            //    background-image: none !important;
+            //}
             
             &.valid .leyka-star-field-frame {
                 //background-image: url(../../img/star-icon-ok.svg);
@@ -544,10 +559,12 @@
             }
 
             &.invalid .leyka-star-field-frame {
+
                 background-image: url(../../img/star-icon-error.svg);
                 background-color: $leyka-star-color-white;
-                
+
                 label {
+
                     color: $leyka-star-color-error;
                     
                     span.donor__textfield-label {
@@ -558,47 +575,55 @@
                             color: $leyka-star-color-error;
                         }
                     }
+
                 }
-                
+
                 input, textarea {
                     color: $leyka-star-color-error;
                 }
+
             }
-            
+
             &.focus .leyka-star-field-frame {
+
                 background-color: $leyka-star-color-white;
                 // border-color: $leyka-star-color-main-second;
                 border-color: $leyka-star-color-main;
-                
+
                 label {
                     span.donor__textfield-label {
                         color: $leyka-star-color-gray;
                     }
                 }
-                
+
             }
-            
+
             input, textarea {
+
                 @include star-clean-input();
                 @include star-text-input();
+
                 color: $leyka-star-color-gray-dark;
                 border-bottom: none;
                 width: calc(100% - 1 * $leyka-star-base - 24px);
+
             }
-            
+
             input {
                 height: 20px;
                 padding: 0;
             }
-            
+
             textarea {
                 height: 66px;
                 padding: 0;
             }
+
         }
+
     }
-    
-    // oferta checkboxes
+
+    // Oferta checkboxes:
 	.donor__oferta {
 		z-index: 1;
 		text-align: left; // center

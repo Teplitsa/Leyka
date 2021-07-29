@@ -131,9 +131,7 @@ function leyka_get_gateway_by_id($gateway_id) {
 
 function leyka_get_special_fields_settings(array $params = array()) {
 
-    $params = $params + array(
-        'field_types' => array(),
-    );
+    $params = $params + array('field_types' => array(),);
 
     $pm_fields = array();
     foreach(leyka_get_pm_list() as $pm) {
@@ -258,8 +256,9 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
         add_action('leyka_enqueue_scripts', array($this, 'enqueue_gateway_scripts'));
 
-        add_action('leyka_payment_form_submission-'.$this->id, array($this, 'process_form'), 10, 4);
-        add_action('leyka_payment_form_submission-'.$this->id, array($this, 'process_form_default'), 100, 4);
+        add_action('leyka_payment_form_submission-'.$this->id, array($this, 'process_form_default'), 10, 4);
+        add_action('leyka_payment_form_submission-'.$this->id, array($this, 'process_form'), 20, 4);
+
         add_action('leyka_log_donation-'.$this->id, array($this, 'log_gateway_fields'));
 
         add_filter('leyka_submission_redirect_url-'.$this->id, array($this, 'submission_redirect_url'), 10, 2);
@@ -395,10 +394,51 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
     }
 
+    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation_Base $donation) {
+
+        $init_recurring_donation = $this->get_init_recurring_donation($donation);
+
+        if($init_recurring_donation) {
+
+            $cancelling_url = (
+                get_option('permalink_structure') ?
+                    home_url("leyka/service/cancel_recurring/{$donation->id}") :
+                    home_url("?page=leyka/service/cancel_recurring/{$donation->id}")
+                ).'/'.md5($donation->id.'_'.$init_recurring_donation->id.'_leyka_cancel_recurring_subscription');
+
+            return sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">click here</a>', 'leyka'), $cancelling_url);
+
+        } else {
+            return sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">email abount this to the website tech. support</a>', 'leyka'), leyka_get_website_tech_support_email());
+        }
+
+    }
+
+    /** A wrapper to fire when recurring subscription is cancelled via link. Should use the cancel_recurring_subscription(). */
+    public function cancel_recurring_subscription_by_link(Leyka_Donation_Base $donation) {
+
+        if($donation->type !== 'rebill') {
+            die();
+        }
+
+        header('Content-type: text/html; charset=utf-8');
+
+        $recurring_cancelling_result = $this->cancel_recurring_subscription($donation);
+
+        if($recurring_cancelling_result === true) {
+            die(__('Recurring subscription cancelled successfully.', 'leyka'));
+        } else if(is_wp_error($recurring_cancelling_result)) {
+            die($recurring_cancelling_result->get_error_message());
+        } else {
+            die( sprintf(__('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email()) );
+        }
+
+    }
+
     /**
      * The main recurring subsciption auto-cancelling method.
      *
-     * @param $donation Leyka_Donation
+     * @param $donation Leyka_Donation_Base
      * @return bool|WP_Error True if cancelling request succeeded, false otherwise, WP_Error if request error can be verbal.
      */
     public function cancel_recurring_subscription(Leyka_Donation_Base $donation) {
@@ -420,22 +460,6 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
         } else {
             return false;
         }
-
-    }
-
-    /** A wrapper to fire when recurring subscription is cancelled via link. Should use the cancel_recurring_subscription(). */
-    public function cancel_recurring_subscription_by_link(Leyka_Donation_Base $donation) {
-    }
-
-    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation_Base $donation) {
-
-        $init_recurring_donation = $this->get_init_recurring_donation($donation);
-        $cancelling_url = (get_option('permalink_structure') ?
-                home_url("leyka/service/cancel_recurring/{$donation->id}") :
-                home_url("?page=leyka/service/cancel_recurring/{$donation->id}"))
-            .'/'.md5($donation->id.'_'.$init_recurring_donation->id.'_leyka_cancel_recurring_subscription');
-
-        return sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">click here</a>', 'leyka'), $cancelling_url);
 
     }
 
@@ -669,11 +693,11 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     public function save_donation_specific_data(Leyka_Donation_Base $donation) {
     }
 
-    /** Action called when new donation (Leyka_Donation::add()) is being created to add gateway-specific fields. */
+    /** Action called when new donation (Leyka_Donation_Base::add()) is being created to add gateway-specific fields. */
     public function add_donation_specific_data($donation_id, array $params) {
     }
 
-    /** Filter called when new donation (Leyka_Donation::add()) is being created to add gateway-specific meta fields. */
+    /** Filter called when new donation (Leyka_Donation_Base::add()) is being created to add gateway-specific meta fields. */
     public function new_donation_specific_data(array $meta_fields, $donation_id, array $donation_params) {
         return $meta_fields;
     }

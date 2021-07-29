@@ -112,10 +112,27 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
+        $donation = Leyka_Donations::get_instance()->get($donation_id);
+
+        $phone = isset($form_data['leyka_donor_phone']) ? $form_data['leyka_donor_phone'] : false;
+        if( !$phone ) { // Check the phone field in the additional form fields list
+
+            foreach(Leyka_Campaign::get_additional_fields_settings($donation->campaign_id) as $field_slug => $field) {
+                if( !empty($field['type']) && $field['type'] === 'phone' ) {
+
+                    $phone = $form_data['leyka_'.$field_slug];
+                    break;
+
+                }
+            }
+
+        }
+        $phone = str_replace(array('+', '(', ')', '-'), '', trim($phone));
+
         $error = false;
-        if(empty($form_data['leyka_donor_phone'])) {
+        if(empty($phone)) {
             $error = new WP_Error('leyka_mixplat_phone_is_empty', __('Phone number is required.', 'leyka'));
-        } else if( !leyka_is_phone_number($form_data['leyka_donor_phone']) ) {
+        } else if( !leyka_is_phone_number($phone) ) {
             $error = new WP_Error('leyka_mixplat_phone_is_incorrect', __('Phone number is incorrect.', 'leyka'));
         }
 
@@ -127,11 +144,9 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
         }
 
-        $phone = '7'.mb_substr(str_replace(array('+', ' ', '-', '.'), '', trim($form_data['leyka_donor_phone'])), -10);
+        $phone = '7'.mb_substr(str_replace(array('+', ' ', '-', '.'), '', $phone), -10);
 
         $is_test = leyka_options()->opt('mixplat_test_mode') ? 1 : 0;
-
-        $donation = Leyka_Donations::get_instance()->get($donation_id);
 
         $amount = (int)round((float)$donation->amount * 100);
         $donation->mixplat_phone = $phone;
@@ -577,6 +592,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
     public function get_specific_data_value($value, $field_name, Leyka_Donation_Base $donation) {
         switch($field_name) {
+            case 'donor_phone':
             case 'mixplat_phone':
                 return Leyka_Donations::get_instance()->get_donation_meta($donation->id, '_leyka_mixplat_phone');
             default: return $value;
@@ -585,6 +601,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
     public function set_specific_data_value($field_name, $value, Leyka_Donation_Base $donation) {
         switch($field_name) {
+            case 'donor_phone':
             case 'mixplat_phone':
                 return Leyka_Donations::get_instance()->set_donation_meta($donation->id, '_leyka_mixplat_phone', $value);
             default: return false;
@@ -638,6 +655,8 @@ class Leyka_Mixplat_Mobile extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-megafon.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-mts.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-tele2.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-yota.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-tinkoff.svg',
         ));
 
         $this->_specific_fields = array(array( // For the new templates - from Star & further
@@ -698,6 +717,8 @@ class Leyka_Mixplat_Text extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-megafon.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-mts.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-tele2.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-yota.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-tinkoff.svg',
         ));
 
         $this->_supported_currencies[] = 'rur';

@@ -9,6 +9,10 @@
 
     @include leyka-metabox-styling();
 
+    &.leyka-metabox-dark {
+        background-color: $color-metaboxes-background-dark;
+    }
+
 } // Metabox restyling - END
 
 /** "Help" admin page: */

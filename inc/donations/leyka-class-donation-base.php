@@ -8,9 +8,9 @@ abstract class Leyka_Donation_Base {
 
     abstract public function __construct($donation);
 
-    /** @todo Add an list of possible $field values */
+    /** @todo Add the list of possible $field values */
     abstract public function __get($field);
-    /** @todo Add an list of possible $field & $value values */
+    /** @todo Add the list of possible $field & $value values */
     abstract public function __set($field, $value);
 
     /**

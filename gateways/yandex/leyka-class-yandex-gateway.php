@@ -176,8 +176,14 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                     'capture' => true, // Make payment at once, don't wait for shop confirmation
                     'description' =>
                         ( !empty($form_data['leyka_recurring']) ? _x('[RS]', 'For "recurring subscription"', 'leyka').' ' : '' )
-                        .$donation->payment_title." (№ $donation_id)",
-                    'metadata' => array('donation_id' => $donation_id, 'email' => $donation->donor_email,),
+                        .$donation->payment_title." (№ $donation_id); {$donation->donor_name}; {$donation->donor_email}",
+                    'metadata' => array(
+                        'donation_id' => $donation_id,
+                        'donor_name' => $donation->donor_name,
+                        'payment_title' => $donation->payment_title,
+                        'email' => $donation->donor_email,
+                        'cms_name' => 'Leyka',
+                    ),
                     'save_payment_method' => !empty($form_data['leyka_recurring']),
                 );
                 if($pm_id !== 'yandex_all') {
@@ -319,9 +325,18 @@ techMessage="'.$tech_message.'"/>');
                 }
 
                 try {
-                    $notification = ($notification['event'] === YooKassa\Model\NotificationEventType::PAYMENT_SUCCEEDED) ?
-                        new YooKassa\Model\Notification\NotificationSucceeded($notification) :
-                        new YooKassa\Model\Notification\NotificationWaitingForCapture($notification);
+
+                    switch($notification['event']) {
+                        case YooKassa\Model\NotificationEventType::PAYMENT_SUCCEEDED:
+                            $notification = new YooKassa\Model\Notification\NotificationSucceeded($notification);
+                            break;
+                        case YooKassa\Model\NotificationEventType::PAYMENT_CANCELED:
+                            $notification = new YooKassa\Model\Notification\NotificationCanceled($notification);
+                            break;
+                        default:
+                            $notification = new YooKassa\Model\Notification\NotificationWaitingForCapture($notification);
+                    }
+
                 } catch (Exception $e) {
                     /** @todo Process the error somehow */
                     exit(500);
@@ -376,7 +391,7 @@ techMessage="'.$tech_message.'"/>');
 
                         break;
                     case 'canceled':
-                        $this->_handle_donation_failure($donation, false);
+                        $this->_handle_donation_failure($donation);
                         break;
                     case 'refund.succeeded':
                         $donation->status = 'refunded';
@@ -508,6 +523,10 @@ techMessage="'.$tech_message.'"/>');
 
             $response = maybe_unserialize($response);
 
+            if(is_a($response, '__PHP_Incomplete_Class')) { // Normally it doesn't happen - just in case
+                return array();
+            }
+
             if(
                 is_a($response, 'YooKassa\Request\Payments\PaymentResponse')
                 || is_a($response, 'YooKassa\Request\Payments\CreatePaymentResponse')
@@ -568,25 +587,9 @@ techMessage="'.$tech_message.'"/>');
 
     }
 
-    public function cancel_recurring_subscription_by_link(Leyka_Donation_Base $donation) {
-
-        if($donation->type !== 'rebill') {
-            die();
-        }
-
-        header('Content-type: text/html; charset=utf-8');
-
-        $recurring_cancelling_result = $this->cancel_recurring_subscription($donation);
-
-        if($recurring_cancelling_result === true) {
-            die(__('Recurring subscription cancelled successfully.', 'leyka'));
-        } else if(is_wp_error($recurring_cancelling_result)) {
-            die($recurring_cancelling_result->get_error_message());
-        } else {
-            die( sprintf(__('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email()) );
-        }
-
-    }
+    // The default implementations are in use:
+//    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation_Base $donation) { }
+//    public function cancel_recurring_subscription_by_link(Leyka_Donation_Base $donation) { }
 
     public function do_recurring_donation(Leyka_Donation_Base $init_recurring_donation) {
 
@@ -628,10 +631,14 @@ techMessage="'.$tech_message.'"/>');
                         'capture' => true,
                         'description' =>
                             ( !empty($form_data['leyka_recurring']) ? _x('[R]', 'For "rebill"', 'leyka').' ' : '' )
-                            .$new_recurring_donation->payment_title." (№ {$new_recurring_donation->id})",
+                            .$new_recurring_donation->payment_title." (№ {$new_recurring_donation->id}); "
+                            ."{$new_recurring_donation->donor_name}; {$new_recurring_donation->donor_email}",
                         'metadata' => array(
                             'donation_id' => $new_recurring_donation->id,
+                            'donor_name' => $new_recurring_donation->donor_name,
+                            'payment_title' => $new_recurring_donation->payment_title,
                             'email' => $new_recurring_donation->donor_email,
+                            'cms_name' => 'Leyka',
                         ),
                     ),
                     uniqid('', true)

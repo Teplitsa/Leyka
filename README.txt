@@ -5,7 +5,7 @@ Plugin URI: http://leyka.te-st.ru
 Tags: crowdfunding, fundraising, donations, recurring donations, charity, leyka, recurring, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, yandexmoney, yandex.money, яндекс.деньги, chronopay, sms, яндекс.касса, yandex.kassa, миксплат, mixplat, paypal, paymaster, qiwi, киви
 Requires at least: 3.6.1
 Tested up to: 5.6.1
-Stable tag: 3.14
+Stable tag: 3.17
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -81,6 +81,26 @@ PHP version required: 5.6+
 5. The plugin start page (a console)
 
 == Changelog ==
+= 3.17 =
+* New: the Additional fields feature added.
+* New: Robokassa recurring support added.
+* Fix: Tinkoff gateway - fix for recurring rebills.
+* Fix: small fixes.
+
+= 3.16 =
+* New: Tinkoff gateway added.
+* New: additional payment metadata pass to the YooKassa on donation.
+* New: new recurring Donation purpose automatically changes to "Charity donation" constant string if it's Campaign is finished.
+* New: now Sber Acquiring pass payment description on donation.
+* New: now YooKassa gateway handles "canceled" payment status.
+* New: now there are links to Donations details pages in Donations list metabox on the Donor details page.
+* Change: the main Dashboard banner changed (to the "please grade the plugin" one).
+* Fix: Yandex.Money PM label renamed to "YooMoney" on the plugin update to v.3.15+.
+* Fix: Engagement Banner extension - now excluding posts/pages by ID works correctly for all post types.
+* Fix: Now correctional Donations don't validate a Donor's name field at all. So, any symbols allowed there.
+* Fix: Small fixes: l10n, CSS & others.
+* Fix for Donors admin list filtering on "single" Donor type.
+
 = 3.15 =
 * New: admin menu refactored (shortened).
 * New: now Star template text styles are irrelevant of current website theme.

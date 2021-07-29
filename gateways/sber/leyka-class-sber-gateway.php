@@ -118,6 +118,9 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
             $result = $client->registerOrder($donation->id, 100*$donation->amount, leyka_get_success_page_url(), array(
                 'failUrl' => leyka_get_failure_page_url(),
                 'clientId' => $donation->type === 'rebill' ? $donation->donor_email : '',
+                'description' => (
+                        !empty($form_data['leyka_recurring']) ? _x('[RS]', 'For "recurring subscription"', 'leyka').' ' : ''
+                    ).$donation->payment_title." (№ $donation_id)",
             ));
 
             $donation->sber_order_id = empty($result['orderId']) ? '' : esc_sql($result['orderId']);

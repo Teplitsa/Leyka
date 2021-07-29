@@ -305,7 +305,7 @@ i.icon-leyka-recurring-subscription-status {
 
     @include leyka-admin-tooltip-styles();
 
-    background: $color-wizard-tooltip-bg;
+    //background: $color-wizard-tooltip-bg;
 
     border-radius: 4px;
     border: none;
@@ -317,8 +317,8 @@ i.icon-leyka-recurring-subscription-status {
     }
 
     &.leyka-tooltip-white {
-        background-color: $color-white;
-        color: $leyka-admin-color-text;
+        background-color: $color-white !important;
+        color: $leyka-admin-color-text !important;
     }
 
     &.leyka-tooltip-align-left {
@@ -522,9 +522,7 @@ i.icon-leyka-recurring-subscription-status {
         }
 
         &.type-rich_html {
-
             @include leyka-rich-html();
-
         }
 
         .field-component {
@@ -651,7 +649,7 @@ i.icon-leyka-recurring-subscription-status {
         background-color: $color-white;
         border-radius: 6px;
         margin-bottom: 2rem;
-        padding: 24px 24px 32px 24px;
+        //padding: 24px 24px 32px 24px;
         width: 675px;
 
         &.no-background {
@@ -659,17 +657,18 @@ i.icon-leyka-recurring-subscription-status {
         }
 
         &.collapsed {
-            padding-bottom: 24px;
 
-            .header {
-                h3 {
-                    margin-bottom: 0;
+            //padding-bottom: 24px;
 
-                    &:before {
-                        background-image: url(../../img/icon-accord-collapsed.svg);
-                        cursor: pointer;
-                    }
+            .header h3 {
+
+                margin-bottom: 0;
+
+                &:after {
+                    @include leyka-colored-icon('../../img/icon-arrow-collapsed.svg', 22px);
+                    cursor: pointer;
                 }
+
             }
 
             .content {
@@ -683,24 +682,22 @@ i.icon-leyka-recurring-subscription-status {
 
                 font-style: normal;
                 font-weight: normal;
-                line-height: 34px;
-                font-size: 23px;
+                line-height: 20px;
+                font-size: 16px;
                 color: $color-wizard-text;
-                margin-top: 0;
+                margin: 0;
                 pointer-events: none;
                 display: flex;
 
-                &:before {
-                    width: 22px;
-                    height: 22px;
-                    margin-right: 8px;
-                    margin-top: 5px;
-                    content: " ";
-                    display: block;
-                    background-image: url(../../img/icon-accord-expanded.svg);
-                    background-position: left center;
-                    background-repeat: no-repeat;
-                    background-size: auto;
+                padding: 16px;
+
+                &:after {
+                    content: ' ';
+                    display: inline-block;
+
+                    @include leyka-colored-icon('../../img/icon-arrow-expanded.svg', 20px);
+                    margin-left: auto; // Align the open/close control to the right
+
                     cursor: pointer;
                     pointer-events: all;
                     flex-shrink: 0;
@@ -711,6 +708,9 @@ i.icon-leyka-recurring-subscription-status {
         }
 
         .content {
+
+            padding: 24px 16px;
+            border-top: 1px solid #E5E5E5;
 
             .section-description {
 
@@ -739,7 +739,7 @@ i.icon-leyka-recurring-subscription-status {
 
             & > div {
                 max-width: 544px;
-                margin-top: 1rem;
+                //margin-top: 1rem;
             }
 
             .submit {
@@ -1005,6 +1005,8 @@ i.icon-leyka-recurring-subscription-status {
 
                 span.ui-selectmenu-text { // Our margins value for selectmenu fields, instead of default jQ UI value
                     padding-left: 0;
+                    width: 100%;
+                    line-height: inherit;
                 }
 
             }
@@ -1048,13 +1050,17 @@ i.icon-leyka-recurring-subscription-status {
         // Filter fields:
 
         // Text & datepicker fields:
-        input[type="text"], input[type="date"]  {
+        input[type="text"], input[type="date"] {
             @include leyka-admin-list-filter-selector();
         }
 
         .ui-selectmenu-button {
+
+            @include leyka-admin-list-filter-selector();
+
             margin-right: $leyka-base;
             margin-bottom: $leyka-base;
+
         }
 
         .leyka-selector {
@@ -1392,6 +1398,20 @@ i.icon-leyka-recurring-subscription-status {
     // ---- Admin lists common styles - END ---- //
 
 }
+
+// FOR OLD Donations admin list ONLY!
+.wp-list-table {
+
+    // Additional fields in the Donations admin list:
+    .column-additional_fields ul {
+        margin: 0;
+        font-size: 11px;
+        line-height: inherit;
+    }
+    // Additional fields in the Donations admin list - END
+
+}
+// FOR OLD Donations admin list ONLY - END
 
 // Markup for pages with info-sidebars (Dashboard, Help, ...):
 .leyka-info-sidebar-page {

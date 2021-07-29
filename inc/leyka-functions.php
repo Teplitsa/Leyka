@@ -45,12 +45,6 @@ if( !function_exists('array_key_last') ) {
     }
 }
 
-if( !function_exists('leyka_is_phone_number') ) {
-    function leyka_is_phone_number($value) {
-        return preg_match('/^[0-9\+\-\. ]{10,}$/i', $value);
-    }
-}
-
 if( !function_exists('leyka_strip_string_by_words') ) {
     function leyka_strip_string_by_words($string, $length = 350, $strip_tags_shortcodes = true) {
 
@@ -162,7 +156,7 @@ function leyka_user_has_role($role, $is_only_role = false, $user = false) {
 
 /**
  * @param $donation mixed
- * @return Leyka_Donation|false A donation object, if parameter is valid in one way or another; false otherwise.
+ * @return Leyka_Donation_Base|false A donation object, if parameter is valid in one way or another; false otherwise.
  *
  * @deprecated Just use Leyka_Donations::get_instance()->get_donation($donation);
  */
@@ -812,7 +806,7 @@ function leyka_scale_compact($campaign) {
 }
 
 function leyka_scale_ultra($campaign) {
-    
+
     if( !is_a($campaign, 'Leyka_Campaign') ) {
         $campaign = new Leyka_Campaign($campaign);
     }
@@ -823,7 +817,7 @@ function leyka_scale_ultra($campaign) {
     if($target == 0) {
         return;
     }
-    
+
     $percentage = round(($campaign->total_funded/$target)*100);
 	$percentage = $percentage > 100 ? 100 : $percentage;?>
 
@@ -984,7 +978,7 @@ function leyka_get_main_currencies_full_info() {
     return apply_filters('leyka_main_currencies_list', array(
         'rur' => array(
             'title' => __('Russian Rouble', 'leyka'),
-            'label' => '₽',
+            'label' => __('₽', 'leyka'),
             'min_amount' => 10,
             'max_amount' => 30000,
             'flexible_default_amount' => 500,
@@ -1000,7 +994,7 @@ function leyka_get_main_currencies_full_info() {
         ),
         'uah' => array(
             'title' => __('Ukraine Hryvnia', 'leyka'),
-            'label' => '₴',
+            'label' => __('₴', 'leyka'),
             'min_amount' => 10,
             'max_amount' => 30000,
             'flexible_default_amount' => 500,
@@ -1013,7 +1007,7 @@ function leyka_get_secondary_currencies_full_info($country_id = null) {
     return apply_filters('leyka_secondary_currencies_list', array(
         'usd' => array(
             'title' => __('US Dollar', 'leyka'),
-            'label' => '$',
+            'label' => __('$', 'leyka'),
             'min_amount' => 1,
             'max_amount' => 1000,
             'flexible_default_amount' => 10,
@@ -1021,7 +1015,7 @@ function leyka_get_secondary_currencies_full_info($country_id = null) {
         ),
         'eur' => array(
             'title' => __('Euro', 'leyka'),
-            'label' => '€',
+            'label' => __('€', 'leyka'),
             'min_amount' => 1,
             'max_amount' => 650,
             'flexible_default_amount' => 5,
@@ -1448,7 +1442,7 @@ function leyka_persistent_campaign_donated() {
     if($result) {
 
         $donation_id = leyka_remembered_data('donation_id');
-        $donation = $donation_id ? new Leyka_Donation($donation_id) : null;
+        $donation = $donation_id ? Leyka_Donations::get_instance()->get($donation_id) : null;
         $campaign_id = $donation ? $donation->campaign_id : null;
         $campaign = $campaign_id ? new Leyka_Campaign($campaign_id) : null;
         
@@ -1474,6 +1468,43 @@ function leyka_validate_donor_name($name, $is_correctional = false) {
 
 function leyka_validate_email($email) {
     return $email ? preg_match("/^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|expert|[a-z]+)|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i", $email) : true;
+}
+
+if( !function_exists('leyka_is_phone_number') ) {
+    /**
+     * @param string $phone A phone number to validate. If empty, will always return true.
+     * @return boolean True if given phone is valid (or empty), false otherwise.
+     * @deprecated Please use leyka_validate_donor_phone($phone) instead.
+     */
+    function leyka_is_phone_number($phone) {
+        return leyka_validate_donor_phone($phone);
+    }
+}
+
+if( !function_exists('leyka_validate_donor_phone') ) {
+    /**
+     * @param string $phone A phone number to validate. If empty, will always return true.
+     * @return boolean True if given phone is valid (or empty), false otherwise.
+     */
+    function leyka_validate_donor_phone($phone) {
+
+        $phone = trim($phone);
+        return $phone ? preg_match('/^[0-9\+\-\. ]{10,}$/i', $phone) : true;
+
+    }
+}
+
+if( !function_exists('leyka_validate_donor_date') ) {
+    /**
+     * @param string $date A date to validate (format: DD.MM.YYYY). If empty, will always return true.
+     * @return boolean True if given date is valid (or empty), false otherwise.
+     */
+    function leyka_validate_donor_date($date) {
+
+        $date = trim($date);
+        return $date ? preg_match('/^[0-9]{2}\.[0-9]{2}\.[0-9]{4}$/i', $date) : true;
+
+    }
 }
 
 /** @return string URL of a current page, according to permalinks stucture setting. */
@@ -1559,33 +1590,31 @@ if( !function_exists('leyka_clear_server_data') ) {
 /**
  * @param $campaign_id int
  * @param $limit int|false False to get all donations (unlimited number).
- * @return array|false An array of Leyka_Donation objects, or false if wrong campaign ID given.
+ * @return array|false An array of Leyka_Donation_Base objects, or false if wrong campaign ID given.
  */
 function leyka_get_campaign_donations($campaign_id = false, $limit = false) {
 
     $campaign_id = $campaign_id ? absint($campaign_id) : false;
     $limit = (int)$limit > 0 ? (int)$limit : false;
 
-    $params = array('post_type' => Leyka_Donation_Management::$post_type, 'post_status' => 'funded', 'meta_query' => array(),);
+    $params = array('status' => 'funded',);
     if($campaign_id) {
-        $params['meta_query'][] = array('key' => 'leyka_campaign_id', 'value' => $campaign_id, 'compare' => '=',);
+        $params['campaign_id'] = $campaign_id;
     }
 
     if($limit) {
-        $params['posts_per_page'] = $limit;
+        $params['results_limit'] = $limit;
     } else {
-
-        $params['posts_per_page'] = -1;
+//        $params['posts_per_page'] = -1;
         $params['nopaging'] = true;
-
     }
 
-    $donations = array();
-    foreach(get_posts($params) as $donation) {
-        $donations[] = new Leyka_Donation($donation);
-    }
+    return Leyka_Donations::get_instance()->get($params);
+//    foreach(get_posts($params) as $donation) {
+//        $donations[] = new Leyka_Donation($donation);
+//    }
 
-    return $donations;
+//    return $donations;
 
 }
 
@@ -1909,11 +1938,7 @@ if( !function_exists('leyka_amount_format') ) {
 if( !function_exists('leyka_format_amount') ) {
     function leyka_format_amount($amount, $use_number_format_l10n = false) {
 
-//        if((int)$amount >= 0) {
         $amount_is_float = (float)$amount - (int)$amount > 0;
-//        } else {
-//            return false;
-//        }
 
         return !!$use_number_format_l10n ?
             ($amount_is_float ? number_format_i18n($amount, 2) : number_format_i18n($amount)) :
@@ -1966,7 +1991,7 @@ if( !function_exists('leyka_save_option') ) {
                 leyka_options()->opt($setting_id, esc_attr(stripslashes($_POST["leyka_$setting_id"])));
             }
 
-        } else if(stristr($option_type, 'custom_') !== false && isset($_POST["leyka_$setting_id"])) { // Custom field types
+        } else if(mb_stristr($option_type, 'custom_') !== false && isset($_POST["leyka_$setting_id"])) { // Custom field types
             do_action("leyka_save_custom_option-$setting_id", $_POST["leyka_$setting_id"]);
         } else if(isset($_POST["leyka_$setting_id"])) { // Simple field types
 
@@ -2116,7 +2141,7 @@ function leyka_use_leyka_campaign_template($template) {
     } else if(is_page(leyka_options()->opt('success_page')) || is_page(leyka_options()->opt('failure_page'))) {
 
         $donation_id = leyka_remembered_data('donation_id');
-        $donation = $donation_id ? new Leyka_Donation($donation_id) : null;
+        $donation = $donation_id ? Leyka_Donations::get_instance()->get($donation_id) : null;
         $campaign_id = $donation ? $donation->campaign_id : null;
 
     }
@@ -2176,6 +2201,7 @@ function leyka_get_cancel_subscription_reasons() {
     );
 }
 
+/** @todo ATM the function doesn't support sep-Ds. Refactor it */
 function get_donor_init_recurring_donation_for_campaign($donor_user, $campaign_id) {
 
     $donations = new WP_Query(array(

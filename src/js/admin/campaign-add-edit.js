@@ -33,6 +33,7 @@ jQuery(document).ready(function($){
         }
 
     }).change();
+    // "Daily rouble mode" change - END
 
     // Campaign type change:
     $(':input[name="campaign_type"]').on('change.leyka', function(e){
@@ -46,28 +47,28 @@ jQuery(document).ready(function($){
         }
 
         let $persistent_campaign_fields = $('.persistent-campaign-field'),
-            $temp_campaign_fields = $('.temporary-campaign-fields'),
-            $form_template_field = $(':input[name="campaign_template"]');
+            $temp_campaign_fields = $('.temporary-campaign-fields');
+            // $form_template_field = $(':input[name="campaign_template"]');
 
         if($this.val() === 'persistent') {
 
             $persistent_campaign_fields.show();
             $temp_campaign_fields.hide();
 
-            $form_template_field
-                .data('prev-value', $form_template_field.val())
-                .val('star')
-                .prop('disabled', 'disabled');
+            // $form_template_field
+            //     .data('prev-value', $form_template_field.val())
+            //     .val('star')
+            //     .prop('disabled', 'disabled');
 
         } else {
 
             $persistent_campaign_fields.hide();
             $temp_campaign_fields.show();
 
-            if($form_template_field.data('prev-value')) {
-                $form_template_field.val($form_template_field.data('prev-value'));
-            }
-            $form_template_field.removeProp('disabled');
+            // if($form_template_field.data('prev-value')) {
+            //     $form_template_field.val($form_template_field.data('prev-value'));
+            // }
+            // $form_template_field.removeProp('disabled');
 
         }
 
@@ -114,7 +115,7 @@ jQuery(document).ready(function($){
             .trigger('openModal');
 
     });
-    // Form templates screens demo - end
+    // Form templates screens demo - END
 
     // Campaign cover upload field:
     $('.upload-photo', '.upload-attachment-field').on('click.leyka', function(e){
@@ -153,7 +154,7 @@ jQuery(document).ready(function($){
                         alert('Ошибка!');
                     } else {
 
-                    	$img_wrapper.find('.img-value').html('<img src="'+json.img_url+'" />');
+                    	$img_wrapper.find('.img-value').html('<img src="'+json.img_url+'" alt="">');
                     	$img_wrapper.find('.reset-to-default').show();
 
                     }
@@ -189,7 +190,7 @@ jQuery(document).ready(function($){
     		}
     	}
     });
-    $('#campaign-cover-type input[type=radio]:checked').change();
+    $('#campaign-cover-type input[type="radio"]:checked').change();
     
     // Reset uploaded image to default:
     $('.set-page-img-control .reset-to-default').on('click.leyka', function(e){
@@ -423,6 +424,93 @@ jQuery(document).ready(function($){
         }
 
     }).change();
+
+    // Campaign additional fields:
+
+    let $additional_fields_settings = $('#leyka_campaign_additional_fields .inside'),
+        $add_field_button = $additional_fields_settings.find('.add-field');
+
+    // Each additional field should be added to the Campaign form only once.
+    // So if it's already added, hide it from the field variants for a new Campaign field:
+    function leyka_refresh_new_campaign_additional_fields_variants() {
+
+        let $new_field_selects = $additional_fields_settings.find('select[name="leyka_campaign_field_add"]'),
+            added_fields_ids = [];
+
+        $additional_fields_settings.find('.field-box:not([id*="item-"])').each(function(){
+            added_fields_ids.push($(this).prop('id'));
+        });
+        $new_field_selects.each(function(){
+
+            let selected_id = $(this).val();
+
+            if(selected_id !== '-' && selected_id !== '+') {
+                added_fields_ids.push(selected_id);
+            }
+
+        });
+
+        $new_field_selects.find('option').show(); // First, show all options (new additional field variants)...
+
+        $(added_fields_ids).each(function(){
+            // ...Then hide options for fields that are already added to Campaign
+            $new_field_selects.find('option[value="'+this+'"]').hide();
+        });
+
+    }
+
+    $add_field_button.on('click.leyka', function(e){
+
+        e.preventDefault();
+
+        if($add_field_button.hasClass('inactive')) {
+            return;
+        }
+
+        leyka_refresh_new_campaign_additional_fields_variants();
+
+        let $new_additional_field_box_wrapper = $additional_fields_settings.find('.multi-valued-item-box:visible:last'),
+            $new_additional_field_wrapper = $new_additional_field_box_wrapper.find('.campaign-new-additional-field'),
+            $add_campaign_field = $new_additional_field_box_wrapper.find('select[name="leyka_campaign_field_add"]');
+
+        if($add_campaign_field.val() === '+') {
+            $new_additional_field_wrapper.show();
+        } else {
+            $new_additional_field_wrapper.hide();
+        }
+
+    });
+
+    $additional_fields_settings.find('.leyka-main-multi-items').on('click.leyka', '.delete-item', function(){
+        leyka_refresh_new_campaign_additional_fields_variants();
+    });
+
+    $additional_fields_settings.on('change.leyka', 'select[name="leyka_campaign_field_add"]', function(){
+
+        let $add_campaign_field = $(this),
+            $new_additional_field_wrapper = $add_campaign_field.parents('.box-content').find('.campaign-new-additional-field');
+
+        if($add_campaign_field.val() === '+') {
+            $new_additional_field_wrapper.show();
+        } else {
+            $new_additional_field_wrapper.hide();
+        }
+
+        leyka_refresh_new_campaign_additional_fields_variants();
+
+    }).find('select[name="leyka_campaign_field_add"]:visible').each(function(){
+
+        // For the case when there are no fields in the Library, display the new field subfields right from the start:
+
+        let $this = $(this);
+
+        if($this.val() === '+') {
+            $this.trigger('change.leyka');
+        }
+
+    });
+
+    // Campaign additional fields - END
 
     /* Support packages Extension - available campaign existence check: */
 

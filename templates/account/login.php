@@ -116,7 +116,7 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php'); ?>
 
                                     </div>
 
-                                <?php } else if($donor_account && count($donor_account) > 1) {?>
+                                <?php } else if(count($donor_account) > 1) {?>
 
                                     <div class="section__fields error">
 
