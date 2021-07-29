@@ -501,6 +501,8 @@ function leyka_shortcode_campaign_card($atts) {
         'show_collected_amount' => 1,
         'button_text' => leyka_options()->opt_template('donation_submit_text'), // leyka_get_scale_button_label(),
         'show_if_finished' => isset($atts['show_finished']) ? !!$atts['show_finished'] : 1,
+        'link_right_to_form' => false,
+        'link_to_form' => '',
 
         'color_title' => false, // Card title color
         'color_background' => false, // Card background color
@@ -582,7 +584,7 @@ function leyka_shortcode_campaign_card($atts) {
                 'background-color:'.$atts['color_button'] :
                 ($atts['color_fulfilled'] ? 'background-color:'.$atts['color_fulfilled'] : '');?>
 
-            <a class="bottom-line-item leyka-button-wrapper" href="<?php echo get_permalink($campaign->id);?>" style="<?php echo $button_color;?>">
+            <a class="bottom-line-item leyka-button-wrapper" href="<?php echo get_permalink($campaign->id).($atts['link_right_to_form'] ? ($atts['link_to_form'] ? str_replace('CAMPAIGN_ID', $campaign->id, $atts['link_to_form']) : '#leyka-pf-'.$campaign->id) : '');?>" style="<?php echo $button_color;?>">
                 <?php echo esc_html($atts['button_text']);?>
             </a>
 

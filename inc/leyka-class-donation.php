@@ -15,7 +15,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         add_filter('post_row_actions', array($this, 'row_actions'), 10, 2);
 
         add_action('restrict_manage_posts', array($this, 'manage_filters'));
-        add_action('pre_get_posts', array($this, 'do_filtering'));
+        add_action('pre_get_posts', array($this, 'do_filtering'), 100, 1);
 
         add_action('add_meta_boxes', array($this, 'add_metaboxes')); // Add Donation PT metaboxes
         add_action('add_meta_boxes', array($this, 'remove_metaboxes'), 100); // Remove unneeded metaboxes

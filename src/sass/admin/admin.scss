@@ -113,6 +113,25 @@
         @include leyka-button-primary();
     }
 
+    .main-area-wrapper {
+
+        .main-area-top {
+            margin-bottom: 1rem;
+        }
+
+        .settings-return-link {
+
+            font-size: 14px;
+            text-decoration: none;
+
+            &:before {
+                @include arrow-left-icon();
+            }
+
+        }
+
+    }
+
     #payment-settings-area-new {
 
         display: flex;
@@ -123,22 +142,22 @@
             border-right: 1px solid $color-border-normal;
             flex: 1 1 auto; // 640px of the main area + 32px of the it's right margin
 
-            .main-area-top {
-
-                margin-bottom: 1rem;
-
-                .settings-return-link {
-
-                    font-size: 14px;
-                    text-decoration: none;
-
-                    &:before {
-                        @include arrow-left-icon();
-                    }
-
-                }
-
-            }
+            //.main-area-top {
+            //
+            //    margin-bottom: 1rem;
+            //
+            //    .settings-return-link {
+            //
+            //        font-size: 14px;
+            //        text-decoration: none;
+            //
+            //        &:before {
+            //            @include arrow-left-icon();
+            //        }
+            //
+            //    }
+            //
+            //}
 
             .main-area.single-gateway-settings {
 

@@ -9,6 +9,30 @@
 
     }
 
+    .extension-description {
+
+        h3 {
+            font-size: 14px;
+            font-weight: 500;
+            margin: 0 0 6px 0;
+        }
+
+        ul {
+
+            margin-bottom: 10px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+            li {
+                margin-top: 6px;
+            }
+
+        }
+
+    }
+
     &.extension-settings {
 
         width: 1050px;
@@ -220,6 +244,22 @@
 
     }
     // Support packages admin page - END
+
+    // GDS Integration admin page
+    .leyka-gds-data-error {
+
+        color: $color-error-message;
+
+        &:before {
+            @include error-icon();
+        }
+
+    }
+
+    .leyka-gds-data-info {
+        margin-top: 8px;
+    }
+    // GDS Integration admin page - END
 
 }
 

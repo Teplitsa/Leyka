@@ -7,6 +7,8 @@ $current_stage = $this->get_current_settings_tab();
 $is_separate_sections_forms = $this->is_separate_forms_stage($current_stage);?>
 
 <div class="wrap leyka-admin leyka-settings-page">
+    <!-- data-leyka-admin-page-type="extensions-list-page" -->
+    <!-- <div class="leyka-admin wrap single-settings extension-settings" data-leyka-admin-page-type="extension-settings-page" data-leyka-extension-id="<?php // echo $extension->id;?>">  -->
 
     <h1 class="with-country">
 

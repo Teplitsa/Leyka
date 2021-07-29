@@ -316,6 +316,8 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             && leyka_options()->opt('use_gtm_ua_integration') === 'enchanced_ua_only'
             && leyka_options()->opt('gtm_ua_tracking_id')
             && in_array('purchase', leyka_options()->opt('gtm_ua_enchanced_events'))
+            // We should send data to GA only for single or init recurring donations:
+            && ($donation->type === 'single' || $donation->is_init_recurring_donation)
         ) {
 
             require_once LEYKA_PLUGIN_DIR.'vendor/autoload.php';

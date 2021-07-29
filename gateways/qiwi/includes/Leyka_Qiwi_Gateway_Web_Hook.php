@@ -12,29 +12,64 @@ class Leyka_Qiwi_Gateway_Web_Hook {
 
         $data_decode = json_decode(file_get_contents('php://input'), true);
 
-        $check = Leyka_Qiwi_Gateway_Web_Hook_Verification::check_notification_signature(
+        $signature_correct = Leyka_Qiwi_Gateway_Web_Hook_Verification::check_notification_signature(
             $_SERVER['HTTP_X_API_SIGNATURE_SHA256'],
             $data_decode,
             leyka_options()->opt('qiwi_secret_key')
         );
 
-        if ($check) {
+        if($signature_correct) {
 
-            $billId = $data_decode['bill']['billId'];
+            $bill_id = $data_decode['bill']['billId'];
             $status = $data_decode['bill']['status']['value'];
 
-            $donation_id = Leyka_Qiwi_Gateway_Helper::get_payment_id_by_response_data($billId);
+            $donation_id = Leyka_Qiwi_Gateway_Helper::get_payment_id_by_response_data($bill_id);
+            $donation = new Leyka_Donation($donation_id);
 
-            $out = wp_update_post(array(
-                'ID' => $donation_id,
-                'post_status' => Leyka_Qiwi_Gateway_Helper::$map_status[$status]
-            ));
+            $donation->status = Leyka_Qiwi_Gateway_Helper::$map_status[$status];
 
             header('Content-Type: application/json');
             status_header(200);
 
-            if($out && !is_wp_error($out)) {
+            if($donation->status == Leyka_Qiwi_Gateway_Helper::$map_status[$status]) {
+
+                if( // GUA direct integration - "purchase" event:
+                    $donation->status === 'funded'
+                    && leyka_options()->opt('use_gtm_ua_integration') === 'enchanced_ua_only'
+                    && leyka_options()->opt('gtm_ua_tracking_id')
+                    && in_array('purchase', leyka_options()->opt('gtm_ua_enchanced_events'))
+                    // We should send data to GA only for single or init recurring donations:
+                    && ($donation->type === 'single' || $donation->is_init_recurring_donation)
+                ) {
+
+                    require_once LEYKA_PLUGIN_DIR.'vendor/autoload.php';
+
+                    $analytics = new TheIconic\Tracking\GoogleAnalytics\Analytics(true);
+                    $analytics // Main params:
+                    ->setProtocolVersion('1')
+                        ->setTrackingId(leyka_options()->opt('gtm_ua_tracking_id'))
+                        ->setClientId($donation->ga_client_id ? $donation->ga_client_id : leyka_gua_get_client_id())
+                        // Transaction params:
+                        ->setTransactionId($donation->id)
+                        ->setAffiliation(get_bloginfo('name'))
+                        ->setRevenue($donation->amount)
+                        ->addProduct(array( // Donation params
+                            'name' => $donation->payment_title,
+                            'price' => $donation->amount,
+                            'brand' => get_bloginfo('name'), // Mb, it won't work with it
+                            'category' => $donation->type_label, // Mb, it won't work with it
+                            'quantity' => 1,
+                        ))
+                        ->setProductActionToPurchase()
+                        ->setEventCategory('Checkout')
+                        ->setEventAction('Purchase')
+                        ->sendEvent();
+
+                }
+                // GUA direct integration - "purchase" event END
+
                 echo wp_json_encode(array('error' => 0), JSON_FORCE_OBJECT);
+
             } else {
                 echo wp_json_encode(array('error' => 1), JSON_FORCE_OBJECT);
             }

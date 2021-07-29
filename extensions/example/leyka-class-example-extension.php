@@ -13,7 +13,7 @@ class Leyka_Example_Extension extends Leyka_Extension {
 
     protected function _set_attributes() {
 
-        $this->_id = 'example'; // Must be a unique string, like "example-ext"
+        $this->_id = 'example'; // Must be a unique string, like "example_ext". Use "_" to separate words, not "-"
         $this->_title = 'Пример расширения'; // A human-readable title, like "Extension Example"
 
         // A human-readable short description (for backoffice extensions list page):

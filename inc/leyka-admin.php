@@ -338,7 +338,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         add_submenu_page('leyka', __('Leyka Settings', 'leyka'), __('Settings', 'leyka'), 'leyka_manage_options', 'leyka_settings', array($this, 'settings_screen'));
 
-        add_submenu_page('', __('Extensions', 'leyka'), __('Extensions', 'leyka'), 'leyka_manage_options', 'leyka_extensions', array($this, 'extensions_screen'));
+//        add_submenu_page('', __('Extensions', 'leyka'), __('Extensions', 'leyka'), 'leyka_manage_options', 'leyka_extensions', array($this, 'extensions_screen'));
 
         add_submenu_page('leyka', __('Help', 'leyka'), __('Help', 'leyka'), 'leyka_manage_donations', 'leyka_help', array($this, 'help_screen'));
 
@@ -493,7 +493,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
     /** @todo Check if it's needed */
 	public function is_separate_forms_stage($stage) {
-		return in_array($stage, array('email', 'beneficiary', 'technical', 'view', 'additional'));
+		return in_array($stage, array('email', 'beneficiary', 'technical', 'view', 'additional', , 'extensions',));
 	}
 
 	/** (Separate stored) Donations related methods: */
@@ -896,7 +896,6 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         ));
 
     }
-    /** Donors related methods - END */
 
     public function recurring_subscriptions_list_screen_options() {
 
@@ -934,13 +933,14 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             wp_die(__('You do not have permissions to access this page.', 'leyka'));
         }
 
-		add_filter('leyka_admin_settings_tabs_menu', function($settings_tabs_html){
-
-		    $settings_tabs_html .= '<a href="'.admin_url('admin.php?page=leyka_extensions').'" class="nav-tab">'.__('Extensions', 'leyka').'</a>';
-
-		    return $settings_tabs_html;
-
-        });
+		// Now "Extensions" is a full settings tab, so remove it from here:
+//		add_filter('leyka_admin_settings_tabs_menu', function($settings_tabs_html){
+//
+//		    $settings_tabs_html .= '<a href="'.admin_url('admin.php?page=leyka_extensions').'" class="nav-tab">'.__('Extensions', 'leyka').'</a>';
+//
+//		    return $settings_tabs_html;
+//
+//        });
 
         $current_stage = $this->get_current_settings_tab();
 
@@ -1042,20 +1042,20 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         $this->_show_admin_template('metabox-donor-donations');
     }
 
-    public function extensions_screen() {
-
-        if( !current_user_can('leyka_manage_options') ) {
-            wp_die(__('You do not have permissions to access this page.', 'leyka'));
-		}
-
-        do_action('leyka_pre_extensions_actions');
-
-        $this->_show_admin_template('extensions-list-page');
-
-        do_action('leyka_post_extensions_actions');
-        do_action('leyka_post_admin_actions');
-
-    }
+//    public function extensions_screen() {
+//
+//        if( !current_user_can('leyka_manage_options') ) {
+//            wp_die(__('You do not have permissions to access this page.', 'leyka'));
+//		}
+//
+//        do_action('leyka_pre_extensions_actions');
+//
+//        $this->_show_admin_template('extensions-list-page');
+//
+//        do_action('leyka_post_extensions_actions');
+//        do_action('leyka_post_admin_actions');
+//
+//    }
 
     public function leyka_extension_settings_screen() {
 

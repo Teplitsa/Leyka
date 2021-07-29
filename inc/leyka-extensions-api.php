@@ -311,6 +311,11 @@ abstract class Leyka_Extension extends Leyka_Singleton {
     protected function _initialize_inactive() {
     }
 
+    public function activate() {
+    }
+    public function deactivate() {
+    }
+
     /**
      * The method allows to check if Extension setup is complete enough for it to activate.
      *
@@ -321,7 +326,7 @@ abstract class Leyka_Extension extends Leyka_Singleton {
     }
     
     public function get_color($color_name) {
-        return leyka()->opt($this->id . '_' . $color_name);
+        return leyka()->opt($this->id.'_'.$color_name);
     }
     
     public function get_settings_url() {
@@ -330,7 +335,7 @@ abstract class Leyka_Extension extends Leyka_Singleton {
 
         return $wizard_id && $this->get_activation_status() !== 'active' ?
             admin_url('/admin.php?page=leyka_settings_new&screen=wizard-'.$wizard_id) :
-            admin_url('/admin.php?page=leyka_extension_settings&extension='.$this->id);
+            admin_url('/admin.php?page=leyka_settings&stage=extensions&extension='.$this->id);
 
     }
 
@@ -395,8 +400,9 @@ abstract class Leyka_Extension extends Leyka_Singleton {
     }
     
     public function add_inline_style_colors() {
-        ob_start();
-        ?>
+
+        ob_start();?>
+
 :root {
 	--leyka-ext-<?php echo $this->id_dash;?>-color-main: <?php echo $this->main_color?>;
 	--leyka-ext-<?php echo $this->id_dash;?>-color-main-op10: <?php echo $this->main_color?>1A;
@@ -404,10 +410,8 @@ abstract class Leyka_Extension extends Leyka_Singleton {
 	--leyka-ext-<?php echo $this->id_dash;?>-color-caption: <?php echo $this->caption_color?>;
 	--leyka-ext-<?php echo $this->id_dash;?>-color-text: <?php echo $this->text_color?>;
 }
-        <?php        
-        $custom_css = ob_get_clean();
-        
-        wp_add_inline_style(leyka()->plugin_slug . '-revo-plugin-styles', $custom_css);
+        <?php wp_add_inline_style(leyka()->plugin_slug.'-revo-plugin-styles', ob_get_clean());
+
     }
 
     abstract protected function _set_attributes(); // Attributes are constant, like id, title, etc.

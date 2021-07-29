@@ -92,8 +92,8 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
                         'type' => 'text',
                         'title' => __('5. Account link label', 'leyka'),
                         'required' => true,
-                        'placeholder' => esc_html__('I am already subscribed', 'leyka'), //__('I already subscribed', 'leyka'),
-                        'default' => esc_html__('I am already subscribed', 'leyka'), //__('I already subscribed', 'leyka'),
+                        'placeholder' => esc_html__('I am already subscribed', 'leyka'),
+                        'default' => esc_html__('I am already subscribed', 'leyka'),
                         'width' => 0.5,
                     ),
                     $this->_id.'_closed_content_icon' => array(
@@ -112,7 +112,6 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
                     $this->_id.'_campaign' => array(
                         'type' => 'campaign_select',
                         'title' => __('Campaign for recurring subscriptions', 'leyka'),
-//                        'placeholder' => __('', 'leyka'),
                         'required' => true,
                     ),
                 )
