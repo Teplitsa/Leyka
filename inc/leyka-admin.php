@@ -493,7 +493,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
     /** @todo Check if it's needed */
 	public function is_separate_forms_stage($stage) {
-		return in_array($stage, array('email', 'beneficiary', 'technical', 'view', 'additional', , 'extensions',));
+		return in_array($stage, array('email', 'beneficiary', 'technical', 'view', 'additional', 'extensions',));
 	}
 
 	/** (Separate stored) Donations related methods: */
