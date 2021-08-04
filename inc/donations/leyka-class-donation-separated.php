@@ -5,111 +5,13 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
     public static function add(array $params = array()) {
 
-        $params['force_insert'] = !empty($params['force_insert']);
+        $params = self::_handle_new_donation_params($params); // New Donation params pre-handling
 
-        $params['amount'] = empty($params['amount']) ? leyka_pf_get_amount_value() : round((float)$params['amount'], 2);
-        $params['amount'] = $params['amount'] ? $params['amount'] : 0.0;
-        if( !$params['amount'] && !$params['force_insert'] ) {
-            return new WP_Error('incorrect_amount_given', __('Incorrect amount given while adding a donation', 'leyka'));
+        if(is_wp_error($params)) {
+            return $params;
         }
 
-        $params['status'] = empty($params['status']) || !array_key_exists($params['status'], leyka_get_donation_status_list()) ?
-            'submitted' : $params['status'];
-
-        $params['donor_name'] = empty($params['donor_name']) ? leyka_pf_get_donor_name_value() : $params['donor_name'];
-        if(
-            $params['donor_name']
-            && !leyka_validate_donor_name($params['donor_name'])
-            && !$params['force_insert']
-            && $params['payment_type'] != 'correction'
-        ) {
-            return new WP_Error('incorrect_donor_name', __('Incorrect donor name given while adding a donation', 'leyka'));
-        } else if(is_email($params['donor_name'])) {
-            $params['donor_name'] = apply_filters('leyka_donor_name_email_given', __('Anonymous', 'leyka'));
-        } else if( !$params['donor_name'] ) {
-            $params['donor_name'] = apply_filters('leyka_donor_name_none_given', __('Anonymous', 'leyka'));
-        }
-
-        $params['donor_name'] = htmlentities($params['donor_name'], ENT_QUOTES, 'UTF-8');
-
-        $params['campaign_id'] = empty($params['campaign_id']) ? leyka_pf_get_campaign_id_value() : absint($params['campaign_id']);
-
-        $params['payment_type'] = empty($params['payment_type']) || !leyka_get_payment_types_list($params['payment_type']) ?
-            'single' : $params['payment_type'];
-
-        $params['donor_email'] = empty($params['donor_email']) ? leyka_pf_get_donor_email_value() : $params['donor_email'];
-
-        if(
-            !$params['force_insert']
-            && $params['payment_type'] != 'correction'
-            && ( !$params['donor_email'] || !is_email($params['donor_email']) )
-        ) {
-            return new WP_Error('incorrect_donor_email', __('Incorrect donor email given while adding a donation', 'leyka'));
-        }
-
-        $params['date_created'] = empty($params['date_created']) ?
-            date('Y-m-d H:i:s', current_time('timestamp')) : $params['date_created'];
-
-        if(empty($params['pm_id']) && empty($params['gateway_id'])) { // Try to get Gateway & PM from $_POST
-
-            $pm_data = leyka_pf_get_payment_method_value();
-            $params['pm_id'] = $pm_data['payment_method_id'];
-            $params['gateway_id'] = $pm_data['gateway_id'];
-
-        } else { // Get Gateway & PM data from $params
-
-            $params['gateway_id'] = empty($params['gateway_id']) ? '' : $params['gateway_id'];
-            if( !$params['gateway_id'] || !leyka_get_gateway_by_id($params['gateway_id']) ) {
-                $params['gateway_id'] = 'correction';
-            }
-
-            $params['pm_id'] = empty($params['pm_id']) ?
-                (empty($params['payment_method_id']) ? '' : $params['payment_method_id']) :
-                $params['pm_id'];
-
-        }
-
-        $pm_data = leyka_pf_get_payment_method_value();
-        $pm_data = $pm_data ?
-            $pm_data :
-            array(
-                'payment_method_id' => empty($params['pm_id']) ?
-                    (empty($params['payment_method_id']) ? '' : $params['payment_method_id']) :
-                    $params['pm_id'],
-                'gateway_id' => empty($params['gateway_id']) ? '' : $params['gateway_id'],
-            );
-
-        $pm_full_id = $pm_data['gateway_id'].'-'.$pm_data['payment_method_id'];
-
-        // Gateway ID may be empty (for custom payment info cases):
-        if( !$params['force_insert'] && empty($pm_data['payment_method_id']) ) {
-            return new WP_Error('donation_addition_error', __('Gateway or PM ID is missing while adding a donation', 'leyka'));
-        }
-
-        if( !$params['force_insert'] && $params['gateway_id'] !== 'correction' && !leyka_get_pm_by_id($pm_full_id, true)) {
-            return new WP_Error('donation_addition_error', __('Incorrect gateway or PM ID given while adding a donation', 'leyka'));
-        }
-
-        $params['currency_id'] = empty($params['currency_id']) ?
-            (empty($params['currency']) ? '' : mb_strtolower($params['currency'])) : mb_strtolower($params['currency_id']);
-        $params['currency_id'] = $params['currency_id'] ? $params['currency_id'] : leyka_pf_get_currency_value();
-
-        $params['currency_id'] = empty($params['currency_id']) || !leyka_get_currencies_data($params['currency_id']) ?
-            'RUB' : mb_strtoupper($params['currency_id']);
-
-        $params['amount_total'] = empty($params['amount_total']) ? 'auto' : round((float)$params['amount_total'], 2);
-
-        if(
-            (empty($params['amount_total']) || $params['amount_total'] == 'auto')
-            && ( !empty($pm_data['payment_method_id']) && !empty($pm_data['gateway_id']) )
-        ) {
-            $params['amount_total'] = leyka_calculate_donation_total_amount(false, $params['amount'], $pm_full_id);
-        }
-
-        $params['amount_in_main_currency'] = empty($params['amount_in_main_currency']) ? $params['amount'] : round((float)$params['amount_in_main_currency'], 2);
-        $params['amount_total_in_main_currency'] = empty($params['amount_total_in_main_currency']) ? $params['amount_total'] : round((float)$params['amount_total_in_main_currency'], 2);
-
-        global $wpdb;
+        $params['date_created'] = $params['date_created'] ? $params['date_created'] : date('Y-m-d H:i:s');
 
         $new_donation_data = array(
             'status' => $params['status'],
@@ -134,52 +36,42 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
         }
 
+        global $wpdb;
+
         $res = $wpdb->insert($wpdb->prefix.'leyka_donations', $new_donation_data, $new_donation_data_placeholders);
 
-        if( !$res ) {
-            return new WP_Error('donation_addition_error', __('Error while adding a donation', 'leyka'));
-        } else {
+        if($res) {
             $donation_id = $wpdb->insert_id;
+        } else {
+            return new WP_Error(
+                'donation_addition_error',
+                __('Error while adding a donation', 'leyka'),
+                array('error_details' => $wpdb->last_error)
+            );
         }
 
-        if( !empty($params['gateway_id']) ) {
+        if($params['gateway_id']) {
             do_action("leyka_{$params['gateway_id']}_add_donation_specific_data", $donation_id, $params);
         }
 
-        $donation_meta_fields = apply_filters(
-            "leyka_{$params['gateway_id']}_new_donation_specific_data",
-            array(),
-            $donation_id,
-            $params
+        $donation_meta_fields = array(
+            'payment_title' => $params['payment_title'],
+            '_status_log' => array(array('date' => current_time('timestamp'), 'status' => $params['status'])),
         );
 
-        $params['payment_title'] = empty($params['purpose_text']) ?
-            (empty($params['payment_title']) ? leyka_options()->opt('donation_purpose_text') : $params['payment_title']) :
-            $params['purpose_text'];
-        if($params['payment_title']) {
-            $donation_meta_fields['payment_title'] = esc_attr($params['payment_title']);
-        }
-
-        /** @todo Add the donor_user_id meta, if Donors management is on */
-//        if(leyka_options()->opt('donors_management_available')) { // Use $params['donor_user_id'] }
-
-        $params['donor_comment'] = empty($params['donor_comment']) ?
-            leyka_pf_get_donor_comment_value() : $params['donor_comment'];
         if($params['donor_comment']) {
-            $donation_meta_fields['donor_comment'] = sanitize_textarea_field($params['donor_comment']);
+            $donation_meta_fields['donor_comment'] = $params['donor_comment'];
         }
 
-        $params['init_recurring_donation'] = empty($params['init_recurring_donation']) ?
-            (empty($params['init_recurring_donation_id']) ? 0 : absint($params['init_recurring_donation_id'])) :
-            absint($params['init_recurring_donation']);
+        if(leyka_options()->opt('donors_management_available') || leyka_options()->opt('donor_accounts_available')) {
+            $donation_meta_fields['donor_user_id'] = $params['donor_user_id'];
+        }
 
         if($params['payment_type'] === 'rebill') {
             $donation_meta_fields['init_recurring_donation_id'] = $params['init_recurring_donation'];
         }
 
-        $donation_meta_fields['_status_log'] = array(array('date' => current_time('timestamp'), 'status' => $params['status']));
-
-        if($params['payment_type'] === 'rebill' && !$donation_meta_fields['init_recurring_donation_id']) {
+        if($params['payment_type'] === 'rebill' && !$params['init_recurring_donation']) { // Init recurring donations only
 
             $donation_meta_fields['recurring_active'] =
                 !empty($params['rebilling_is_active']) ||
@@ -188,34 +80,30 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                 !empty($params['recurring_is_active']) ||
                 !empty($params['recurring_on']);
 
+            if($params['recurring_cancelled']) {
+                $donation_meta_fields['recurring_active'] = 0;
+            }
+
             if($donation_meta_fields['recurring_active']) {
                 do_action('leyka_donation_recurring_activity_changed', $donation_id, $donation_meta_fields['recurring_active']);
             }
 
         }
 
-        if( !empty($params['recurring_cancelled']) ) {
-
-            $params['recurring_cancelled'] = !empty($params['recurring_cancelled']);
-            $donation_meta_fields['recurring_active'] = $params['recurring_cancelled'] ?
-                0 : (int)!empty($donation_meta_fields['recurring_active']);
-
+        if($params['payment_type'] === 'rebill' && $params['recurring_cancel_date']) {
+            $donation_meta_fields['recurring_cancel_date'] = $params['recurrents_cancel_date'];
         }
 
-        $params['recurring_cancel_date'] = empty($params['recurring_cancel_date']) ? 0 : $params['recurring_cancel_date'];
-        if($params['payment_type'] === 'rebill') {
-            if($params['recurring_cancel_date']) {
-                $donation_meta_fields['recurring_cancel_date'] = $params['recurrents_cancel_date'];
-            } /*else if(empty($params['recurring_cancel_date'])) { // Don't know why it should be here, but let's left it ATM
-                $donation_meta_fields['recurring_cancel_date'] = current_time('timestamp');
-            }*/
-        }
-
-        $params['donor_subscribed'] = isset($params['donor_subscribed']) ?
-            $params['donor_subscribed'] : leyka_pf_get_donor_subscribed_value();
         if($params['donor_subscribed']) {
             $donation_meta_fields['donor_subscribed'] = $params['donor_subscribed'];
         }
+
+        $donation_meta_fields = apply_filters(
+            "leyka_{$params['gateway_id']}_new_donation_specific_data",
+            $donation_meta_fields,
+            $donation_id,
+            $params
+        );
 
         foreach($donation_meta_fields as $key => $value) {
 
@@ -229,7 +117,11 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
                 $wpdb->delete($wpdb->prefix.'leyka_donations', array('ID' => $donation_id), array('%d'));
 
-                return new WP_Error('donation_addition_error', __('Error while adding a donation', 'leyka'));
+                return new WP_Error(
+                    'donation_addition_error',
+                    __('Error while adding a donation', 'leyka'),
+                    array('donation_meta_not_inserted' => array('key' => $key, 'value' => $value))
+                );
 
             }
 
@@ -247,7 +139,6 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             $this->_id = absint($donation);
         } else if(is_a($donation, 'WP_Post')) {
 
-            /** @var $donation WP_Post */
             if($donation->post_type !== Leyka_Donation_Management::$post_type) {
                 throw new Exception(sprintf(__('Wrong post type for donation ("%s" given)', 'leyka'), $donation->post_type));
             }
@@ -265,7 +156,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             return;
 
         } else {
-            throw new Exception(sprintf(__('Incorrect argument for donation initialization in the DB', 'leyka')));
+            throw new Exception(__('Incorrect argument for donation initialization in the DB', 'leyka'));
         }
 
         global $wpdb;
