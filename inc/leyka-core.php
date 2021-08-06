@@ -1331,6 +1331,10 @@ class Leyka extends Leyka_Singleton {
             update_option('leyka_yandex-yandex_money_label', __('YooMoney', 'leyka'));
         }
 
+        if($leyka_last_ver && $leyka_last_ver <= '3.18') {
+            /** @todo Rename "rur" in "RUB" everywhere in postmeta */
+        }
+
         // Set a flag to flush permalinks (needs to be done a bit later, than this activation itself):
         update_option('leyka_permalinks_flushed', 0);
 
