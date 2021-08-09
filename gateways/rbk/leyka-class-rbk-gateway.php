@@ -99,11 +99,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
     }
 
     protected function _get_donation_by_invoice_id($invoice_id) {
-
-        $meta_key = leyka()->storage_type === 'sep' ? 'rbk_invoice_id' : '_leyka_rbk_invoice_id';
-
-        return Leyka_Donations::get_instance()->get_donation_id_by_meta_value($meta_key, $invoice_id);
-
+        return Leyka_Donations::get_instance()->get_donation_id_by_meta_value('rbk_invoice_id', $invoice_id);
     }
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {

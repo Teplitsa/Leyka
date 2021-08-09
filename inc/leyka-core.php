@@ -1236,11 +1236,11 @@ class Leyka extends Leyka_Singleton {
 
         $leyka_last_ver = get_option('leyka_last_ver');
 
-        leyka_create_separate_donations_db_tables(); // Create plugin-specific DB tables if needed
-
-        if($leyka_last_ver && $leyka_last_ver == LEYKA_VERSION) { // Already at last version
-            return;
-        }
+        // TODO Uncomment this after the last activate() changes are finished & debugged.
+//        if($leyka_last_ver && $leyka_last_ver == LEYKA_VERSION) { // Already at last version
+//            return;
+//        }
+        // TODO Uncomment this - END
 
         if( !$leyka_last_ver ) {
             update_option('leyka_init_wizard_redirect', true);
@@ -1332,7 +1332,68 @@ class Leyka extends Leyka_Singleton {
         }
 
         if($leyka_last_ver && $leyka_last_ver <= '3.18') {
-            /** @todo Rename "rur" in "RUB" everywhere in postmeta */
+
+            leyka_create_separate_donations_db_tables(); // Create plugin-specific DB tables if needed
+
+            /** @todo MUST MAKE THE FOLLOWING UPDATES IN THE DB BEFORE THE 3.18 RELEASE:
+             * - .
+             */
+
+            global $wpdb;
+
+            // Rename "rur" postmeta value to "RUB", if needed:
+            $update_needed = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}postmeta WHERE meta_key = 'leyka_donation_currency' AND meta_value = 'rur'");
+            if($update_needed) {
+                $wpdb->update(
+                    $wpdb->prefix.'postmeta',
+                    array('meta_value' => 'RUB'),
+                    array('meta_key' => 'leyka_donation_currency', 'meta_value' => 'rur')
+                );
+            }
+
+            // Rename CloudPayments donations postmeta keys, if needed:
+            $update_needed = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}postmeta WHERE meta_key = '_cp_recurring_id'");
+            if($update_needed) {
+                $wpdb->update($wpdb->prefix.'postmeta',
+                    array('meta_key' => 'cp_recurring_id'),
+                    array('meta_key' => '_cp_recurring_id')
+                );
+            }
+
+            $update_needed = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}postmeta WHERE meta_key = '_cp_transaction_id'");
+            if($update_needed) {
+                $wpdb->update($wpdb->prefix.'postmeta',
+                    array('meta_key' => 'cp_transaction_id'),
+                    array('meta_key' => '_cp_transaction_id')
+                );
+            }
+
+            // Rename RBK Money donations postmeta keys, if needed:
+            $update_needed = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}postmeta WHERE meta_key = '_leyka_rbk_invoice_id'");
+            if($update_needed) {
+                $wpdb->update($wpdb->prefix.'postmeta',
+                    array('meta_key' => 'rbk_invoice_id'),
+                    array('meta_key' => '_leyka_rbk_invoice_id')
+                );
+            }
+
+            $update_needed = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}postmeta WHERE meta_key = '_leyka_rbk_payment_id'");
+            if($update_needed) {
+                $wpdb->update($wpdb->prefix.'postmeta',
+                    array('meta_key' => 'rbk_payment_id'),
+                    array('meta_key' => '_leyka_rbk_payment_id')
+                );
+            }
+
+            // Rename YooKassa donations postmeta keys, if needed:
+            $update_needed = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}postmeta WHERE meta_key = '_yandex_invoice_id'");
+            if($update_needed) {
+                $wpdb->update($wpdb->prefix.'postmeta',
+                    array('meta_key' => 'yandex_invoice_id'),
+                    array('meta_key' => '_yandex_invoice_id')
+                );
+            }
+
         }
 
         // Set a flag to flush permalinks (needs to be done a bit later, than this activation itself):

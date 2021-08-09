@@ -976,7 +976,7 @@ function leyka_get_currencies_list() {
 
 function leyka_get_main_currencies_full_info() {
     return apply_filters('leyka_main_currencies_list', array(
-        'rur' => array(
+        'rub' => array(
             'title' => __('Russian Rouble', 'leyka'),
             'label' => __('₽', 'leyka'),
             'min_amount' => 10,

@@ -172,13 +172,13 @@ class Leyka_Donor {
                 $donor_data['last_donation'] = $donations[$i];
             }
 
-            if(empty($donor_data['campaigns']) || empty($donor_data['campaigns'][$donation->campaign_id])) {
+            if(empty($donor_data['campaigns']) || empty($donor_data['campaigns'][$donations[$i]->campaign_id])) {
                 $donor_data['campaigns'][$donations[$i]->campaign_id] = $donations[$i]->campaign_title;
             }
             if($donations[$i]->donor_subscribed) {
                 if(
                     empty($donor_data['campaigns_news_subscriptions'])
-                    || empty($donor_data['campaigns_news_subscriptions'][$donation->campaign_id])
+                    || empty($donor_data['campaigns_news_subscriptions'][$donations[$i]->campaign_id])
                 ) {
                     $donor_data['campaigns_news_subscriptions'][$donations[$i]->campaign_id] = $donations[$i]->campaign_title;
                 }

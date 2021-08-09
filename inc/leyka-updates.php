@@ -6,12 +6,10 @@ function leyka_create_separate_donations_db_tables() {
 
     global $wpdb;
 
-    // TMP:
-//    $leyka_last_ver = get_option('leyka_last_ver');
-//    if($leyka_last_ver && version_compare($leyka_last_ver, '4.0') >= 0) {
-//        return;
-//    }
-    // TMP - END
+    $leyka_last_ver = get_option('leyka_last_ver');
+    if($leyka_last_ver && version_compare($leyka_last_ver, '3.18') >= 0) {
+        return;
+    }
 
     $charset_collate = $wpdb->get_charset_collate();
 

@@ -1202,9 +1202,10 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
     public static function donation_data_metabox() {
 
-        $donation_id = leyka_get_donations_storage_type() === 'post' ?
+        $donation_id = empty($_GET['donation']) ? false : absint($_GET['donation']);
+        /* = leyka_get_donations_storage_type() === 'post' ?
             (empty($_GET['post']) ? false : absint($_GET['post'])) :
-            (empty($_GET['donation']) ? false : absint($_GET['donation']));
+            (empty($_GET['donation']) ? false : absint($_GET['donation'])); */
 
         $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
         $campaign = new Leyka_Campaign($donation->campaign_id);?>
@@ -1484,9 +1485,10 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
     public static function donation_status_metabox() {
 
-        $donation_id = leyka_get_donations_storage_type() === 'post' ?
+        $donation_id = empty($_GET['donation']) ? false : absint($_GET['donation']);
+        /* = leyka_get_donations_storage_type() === 'post' ?
             (empty($_GET['post']) ? false : absint($_GET['post'])) :
-            (empty($_GET['donation']) ? false : absint($_GET['donation']));
+            (empty($_GET['donation']) ? false : absint($_GET['donation'])); */
 
         $donation = $donation_id ? Leyka_Donations::get_instance()->get_donation($donation_id) : false;
 
@@ -1572,9 +1574,10 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
     public static function emails_status_metabox() {
 
-        $donation_id = leyka_get_donations_storage_type() === 'post' ?
+        $donation_id = empty($_GET['donation']) ? false : absint($_GET['donation']);
+        /* = leyka_get_donations_storage_type() === 'post' ?
             (empty($_GET['post']) ? false : absint($_GET['post'])) :
-            (empty($_GET['donation']) ? false : absint($_GET['donation']));
+            (empty($_GET['donation']) ? false : absint($_GET['donation']));*/
 
         $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
 
@@ -1609,9 +1612,10 @@ class Leyka_Donation_Management extends Leyka_Singleton {
      */
     public static function gateway_response_metabox() {
 
-        $donation_id = leyka_get_donations_storage_type() === 'post' ?
+        $donation_id = empty($_GET['donation']) ? false : absint($_GET['donation']);
+        /* = leyka_get_donations_storage_type() === 'post' ?
             (empty($_GET['post']) ? false : absint($_GET['post'])) :
-            (empty($_GET['donation']) ? false : absint($_GET['donation']));
+            (empty($_GET['donation']) ? false : absint($_GET['donation']));*/
 
         $donation = Leyka_Donations::get_instance()->get_donation($donation_id);?>
 
@@ -2032,9 +2036,10 @@ class Leyka_Donation_Management extends Leyka_Singleton {
     }
 
     public static function get_donation_edit_link(Leyka_Donation_Base $donation) {
-        return leyka_get_donations_storage_type() === 'post' ?
+        return admin_url('admin.php?page=leyka_donation_info&donation='.$donation->id);
+        /* = leyka_get_donations_storage_type() === 'post' ?
             admin_url('post.php?post='.$donation->id.'&action=edit') :
-            admin_url('admin.php?page=leyka_donation_info&donation='.$donation->id);
+            admin_url('admin.php?page=leyka_donation_info&donation='.$donation->id);*/
     }
 
 }

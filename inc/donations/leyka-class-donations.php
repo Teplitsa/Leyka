@@ -219,6 +219,8 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
         $params['meta'] = empty($params['meta']) || !is_array($params['meta']) ? array() : $params['meta'];
 
+        $params['strict'] = isset($params['strict']) ? !!$params['strict'] : true;
+
         // Status filtering:
         if( !empty($params['status']) ) {
 
@@ -233,20 +235,50 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
         // Donor user ID filtering:
         $params['donor_id'] = empty($params['donors_ids']) ?
-            (empty($params['donor_id']) ? array() : $params['donor_id']) :
+            (empty($params['donor_id']) ? [] : $params['donor_id']) :
             $params['donors_ids'];
 
         if($params['donor_id']) {
 
-            $params['donor_id'] = is_array($params['donor_id']) ? $params['donor_id'] : array($params['donor_id']);
+            $params['donor_id'] = is_array($params['donor_id']) ? $params['donor_id'] : [$params['donor_id']];
 
             $query_params['author__in'] = array_filter($params['donor_id'], function($donor_id){ return absint($donor_id); });
 
         }
         // Donor user ID filtering - END
 
+        // Donor name & email filtering:
+        if( !empty($params['donor_name_email']) ) {
+
+            if(mb_stristr($params['donor_name_email'], '%') === false) {
+
+                $params['meta'][] = [
+                    'relation' => 'OR',
+                    ['key' => 'leyka_donor_name', 'value' => $params['donor_name_email'],],
+                    ['key' => 'leyka_donor_email', 'value' => $params['donor_name_email'],],
+                ];
+
+            } else {
+
+                $params['donor_name_email'] = trim($params['donor_name_email'], '%');
+
+                $params['meta'][] = [
+                    'relation' => 'OR',
+                    ['key' => 'leyka_donor_name', 'value' => $params['donor_name_email'], 'compare' => 'LIKE',],
+                    ['key' => 'leyka_donor_email', 'value' => $params['donor_name_email'], 'compare' => 'LIKE',],
+                ];
+
+            }
+
+        }
+
+        if( !empty($params['donor_email']) && mb_stristr($params['donor_email'], '@') ) {
+            $params['meta'][] = ['key' => 'leyka_donor_email', 'value' => $params['donor_email']];
+        }
+        // Donor name & email filtering - END
+
         // Results limiting:
-        if( !empty($params['results_limit']) && (int)$params['results_limit'] > 0 ) {
+        if( !empty($params['results_limit']) && absint($params['results_limit']) ) {
             $query_params['posts_per_page'] = absint($params['results_limit']);
         }
 
@@ -264,6 +296,29 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
         if(isset($params['day']) && (int)$params['day'] >= 1 && (int)$params['day'] <= 31) {
             $query_params['day'] = (int)$params['day'];
+        }
+
+        $query_params['date_query'] = array();
+
+        if(isset($params['date_from'])) {
+
+            $date = DateTime::createFromFormat('d.m.Y', $params['date_from']);
+            $date = $date ? $date : DateTime::createFromFormat('Y-m-d', $params['date_from']);
+
+            if($date) {
+                $query_params['date_query'][] = array('after' => $date->format('Y-m-d 00:00:00'), 'inclusive' => true,);
+            }
+
+        }
+        if(isset($params['date_to'])) {
+
+            $date = DateTime::createFromFormat('d.m.Y', $params['date_to']);
+            $date = $date ? $date : DateTime::createFromFormat('Y-m-d', $params['date_to']);
+
+            if($date) {
+                $query_params['date_query'][] = array('before' => $date->format('Y-m-d 23:59:59'), 'inclusive' => true,);
+            }
+
         }
         // Donation date filtering - END
 
@@ -299,7 +354,7 @@ class Leyka_Donations_Posts extends Leyka_Donations {
                     'value' => (int)str_replace('>=', '', $params['amount_filter']),
                     'compare' => '>=',
                 );
-            } else if(stripos($params['amount_filter'], '<=') !== false) {
+            } else if(mb_stripos($params['amount_filter'], '<=') !== false) {
                 $params['meta'][] = array(
                     'key' => 'leyka_donation_amount',
                     'value' => (int)str_replace('<=', '', $params['amount_filter']),
@@ -309,59 +364,155 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
         }
 
-        if( !empty($params['campaign_id']) ) {
-            $params['meta'][] = array('key' => 'leyka_campaign_id', 'value' => (int)$params['campaign_id']);
+        // Campaign ID filtering:
+        $params['campaign_id'] = empty($params['campaigns_ids']) ?
+            (empty($params['campaign_id']) ? array() : $params['campaign_id']) :
+            $params['campaigns_ids'];
+
+        if($params['campaign_id']) {
+
+            $params['campaign_id'] = is_array($params['campaign_id']) ? $params['campaign_id'] : array($params['campaign_id']);
+            $params['campaign_id'] = array_filter($params['campaign_id'], function($campaign_id){ return absint($campaign_id); });
+
+            if($params['campaign_id']) {
+                $params['meta'][] = ['key' => 'leyka_campaign_id', 'value' => $params['campaign_id'], 'compare' => 'IN',];
+            }
+
         }
+        // Campaign ID filtering - END
 
         if( !empty($params['payment_type']) ) {
+
+            if(is_array($params['payment_type']) && in_array('rebill-init', $params['payment_type'])) {
+
+                unset($params['payment_type'][ array_search('rebill-init', $params['payment_type']) ]);
+
+                if( !in_array('rebill', $params['payment_type']) ) {
+                    $params['payment_type'][] = 'rebill';
+                }
+
+            } else if($params['payment_type'] == 'rebill-init') {
+
+                $query_params['post_parent'] = 0;
+                $params['payment_type'] = 'rebill';
+
+            }
 
             $values_list = $this->_get_multiple_filter_values($params['payment_type'], leyka_get_payment_types_list());
 
             if($values_list) {
-                $params['meta'][] = array('key' => 'leyka_payment_type', 'value' => (array)$values_list, 'compare' => 'IN');
+                $params['meta'][] = ['key' => 'leyka_payment_type', 'value' => (array)$values_list, 'compare' => 'IN'];
             }
 
         }
 
+        // Gateway & PM filtering:
         if( !empty($params['gateway_pm']) ) {
 
-            if(strpos($params['gateway_pm'], 'gateway__') !== false) {
-                $params['meta'][] = array(
-                    'key' => 'leyka_gateway',
-                    'value' => str_replace('gateway__', '', $params['gateway_pm'])
-                );
-            } else if(strpos($params['gateway_pm'], 'pm__') !== false) {
-                $params['meta'][] = array(
-                    'key' => 'leyka_payment_method',
-                    'value' => str_replace('pm__', '', $params['gateway_pm'])
-                );
+            if(mb_stripos($params['gateway_pm'], 'gateway__') !== false) {
+
+                $params['gateway_pm'] = str_replace('gateway__', '', $params['gateway_pm']);
+                if( ($params['strict'] && leyka_get_gateway_by_id($params['gateway_pm'])) || !$params['strict'] ) {
+                    $params['gateway_id'] = $params['gateway_pm'];
+                }
+
+            } else if(mb_stripos($params['gateway_pm'], 'pm__') !== false) {
+
+                $params['gateway_pm'] = str_replace('pm__', '', $params['gateway_pm']);
+                if( ($params['strict'] && leyka_get_pm_by_id($params['gateway_pm'])) || !$params['strict'] ) {
+                    $params['pm_id'] = $params['gateway_pm'];
+                }
+
+            } else if(mb_stripos($params['gateway_pm'], '-') !== false) { // PM full ID given
+                $params['pm_full_id'] = $params['gateway_pm'];
+            } else {
+                $params['gateway_id'] = $params['gateway_pm'];
             }
 
         }
 
-        if( !empty($params['gateway_id']) && leyka_get_gateway_by_id($params['gateway_id']) ) {
-            $params['meta'][] = array('key' => 'leyka_gateway', 'value' => $params['gateway_id']);
+        if( !empty($params['gateway_id']) ) {
+
+            $params['gateway_id'] = is_array($params['gateway_id']) ? $params['gateway_id'] : [$params['gateway_id']];
+            $values_list = [];
+
+            foreach($params['gateway_id'] as $gateway_id) {
+                if(($params['strict'] && leyka_get_gateway_by_id($gateway_id)) || !$params['strict']) {
+                    $values_list[] = $gateway_id;
+                }
+            }
+
+            if($values_list) {
+                $params['meta'][] = ['key' => 'leyka_gateway', 'value' => (array)$values_list, 'compare' => 'IN'];
+            }
+
         }
 
-        if( !empty($params['pm_id']) && leyka_get_pm_by_id($params['pm_id']) ) {
-            $params['meta'][] = array('key' => 'leyka_payment_method', 'value' => $params['pm_id']);
+        if( !empty($params['pm_id']) ) {
+
+            $params['pm_id'] = is_array($params['pm_id']) ? $params['pm_id'] : [$params['pm_id']];
+            $values_list = [];
+
+            foreach($params['pm_id'] as $pm_id) {
+                if(($params['strict'] && leyka_get_pm_by_id($pm_id)) || !$params['strict']) {
+                    $values_list[] = $pm_id;
+                }
+            }
+
+            if($values_list) {
+                $params['meta'][] = ['key' => 'leyka_payment_method', 'value' => $values_list, 'compare' => 'IN'];
+            }
+
         }
 
-        if( !empty($params['pm_full_id']) && leyka_get_pm_by_id($params['pm_full_id'], true) ) {
+        if(empty($params['gateway_id']) && empty($params['pm_id']) && !empty($params['pm_full_id']) ) {
 
-            $params['pm_full_id'] = explode('-', $params['pm_full_id']);
-            $params['meta'][] = array('key' => 'leyka_gateway', 'value' => $params['pm_full_id'][0]);
-            $params['meta'][] = array('key' => 'leyka_payment_method', 'value' => $params['pm_full_id'][1]);
+            $params['pm_full_id'] = is_array($params['pm_full_id']) ? $params['pm_full_id'] : array($params['pm_full_id']);
+            $values_list = ['relation' => 'OR',];
+
+            foreach($params['pm_full_id'] as $pm_full_id) {
+
+                if(($params['strict'] && leyka_get_pm_by_id($pm_full_id, true)) || !$params['strict']) {
+
+                    $pm_full_id = explode('-', $pm_full_id);
+                    if(count($pm_full_id) !== 2) {
+                        continue;
+                    }
+
+                    $values_list[] = [
+                        'relation' => 'AND',
+                        ['key' => 'leyka_gateway', 'value' => $pm_full_id[0],],
+                        ['key' => 'leyka_payment_method', 'value' => $pm_full_id[1],],
+                    ];
+
+                }
+
+                if(count($values_list) > 1) {
+                    $params['meta'][] = $values_list;
+                }
+
+            }
 
         }
+        // Gateway & PM filtering - END
 
-        if(count($params['meta']) > 1) {
+        if(isset($params['donor_subscribed'])) {
+            $params['meta'][] = $params['donor_subscribed'] ?
+                ['key' => 'leyka_donor_subscribed', 'compare' => '>=', 'value' => 1,] :
+                ['key' => 'leyka_donor_subscribed', 'compare' => 'NOT EXISTS'];
+        }
+
+        if(count($params['meta'])) {
 
             if( empty($params['meta']['relation']) || !in_array($params['meta']['relation'], array('AND', 'OR')) ) {
                 $params['meta']['relation'] = 'AND';
             }
 
             $query_params['meta_query'] = $params['meta'];
+
+//            if($query_params['meta_query']) {
+//                echo '<pre>'.print_r($query_params, 1).'</pre>';
+//            }
 
         }
 
@@ -392,7 +543,7 @@ class Leyka_Donations_Posts extends Leyka_Donations {
             return $this->get_donation($params);
         }
 
-        // Array fiven - return a Donations selection:
+        // Array given - return a Donations selection:
 
         $donations_query = $this->_get_query($params);
 
@@ -452,7 +603,7 @@ class Leyka_Donations_Posts extends Leyka_Donations {
         global $wpdb;
 
         return $wpdb->get_var($wpdb->prepare(
-            "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key='%s' AND meta_value='%s' LIMIT 1",
+            "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key=%s AND meta_value=%s LIMIT 1",
             array($meta_key, $value)
         ));
 
@@ -700,6 +851,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
             $where['day_created'] = $wpdb->prepare("DAYOFMONTH({$wpdb->prefix}leyka_donations.date_created) = %d", absint($params['day']));
         }
 
+        // Gateway & PM filtering:
         if( !empty($params['gateway_pm']) ) {
 
             if(mb_stripos($params['gateway_pm'], 'gateway__') !== false) {
@@ -781,6 +933,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
             }
 
         }
+        // Gateway & PM filtering - END
 
         if( !empty($params['amount_filter']) ) {
 
@@ -967,7 +1120,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
         global $wpdb;
 
         return $wpdb->get_var($wpdb->prepare(
-            "SELECT donation_id FROM {$wpdb->prefix}leyka_donations_meta WHERE meta_key='%s' AND meta_value='%s' LIMIT 1",
+            "SELECT donation_id FROM {$wpdb->prefix}leyka_donations_meta WHERE meta_key=%s AND meta_value=%s LIMIT 1",
             array($meta_key, $value)
         ));
 

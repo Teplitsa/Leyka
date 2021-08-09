@@ -67,6 +67,8 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
         }
 
+//        echo '<pre>'.print_r($donations_params, 1).'</pre>';
+
         return $donations_params;
 
     }
