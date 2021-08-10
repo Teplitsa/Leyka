@@ -68,6 +68,10 @@ class Leyka_Qiwi_Gateway_Web_Hook {
                 }
                 // GUA direct integration - "purchase" event END
 
+                if($donation->status === 'funded') {
+                    Leyka_Donation_Management::send_all_emails($donation);
+                }
+
                 echo wp_json_encode(array('error' => 0), JSON_FORCE_OBJECT);
 
             } else {
