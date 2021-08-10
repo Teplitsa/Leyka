@@ -332,7 +332,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                     }
 
                 } else { // Single or init recurring donation
-                    $donation = Leyka_Donations::get_instance()->get_donation(absint($_POST['InvoiceId']));
+                    $donation = Leyka_Donations::get_instance()->get(absint($_POST['InvoiceId']));
                 }
 
                 if( !empty($_POST['SubscriptionId']) ) {

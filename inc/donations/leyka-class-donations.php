@@ -510,10 +510,6 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
             $query_params['meta_query'] = $params['meta'];
 
-//            if($query_params['meta_query']) {
-//                echo '<pre>'.print_r($query_params, 1).'</pre>';
-//            }
-
         }
 
         if( !empty($params['order']) && in_array($params['order'], array('asc', 'desc',)) ) {

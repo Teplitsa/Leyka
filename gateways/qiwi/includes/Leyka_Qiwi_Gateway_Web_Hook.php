@@ -24,7 +24,7 @@ class Leyka_Qiwi_Gateway_Web_Hook {
             $status = $data_decode['bill']['status']['value'];
 
             $donation_id = Leyka_Qiwi_Gateway_Helper::get_payment_id_by_response_data($bill_id);
-            $donation = new Leyka_Donation($donation_id);
+            $donation = Leyka_Donations::get_instance()->get($donation_id);
 
             $donation->status = Leyka_Qiwi_Gateway_Helper::$map_status[$status];
 
@@ -67,6 +67,10 @@ class Leyka_Qiwi_Gateway_Web_Hook {
 
                 }
                 // GUA direct integration - "purchase" event END
+
+                if($donation->status === 'funded') {
+                    Leyka_Donation_Management::send_all_emails($donation);
+                }
 
                 echo wp_json_encode(array('error' => 0), JSON_FORCE_OBJECT);
 
