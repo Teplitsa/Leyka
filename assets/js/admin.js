@@ -1344,8 +1344,6 @@ jQuery(document).ready(function($){
                 let items_options = [];
                 $.each($items_wrapper.sortable('toArray'), function(key, item_id){ // Value is an item ID (generated randomly)
 
-                    // console.log(key, item_id, this)
-
                     let item_options = {'id': item_id}; // Assoc. array key should be initialized explicitly
 
                     $.each($items_wrapper.find('#'+item_id).find(':input'), function(key, item_setting_input){

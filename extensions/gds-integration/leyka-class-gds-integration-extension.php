@@ -156,7 +156,7 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
             array(
                 'ID' => $donation->ID,
                 'donation_date' => date('Y-m-d H:i:s', $donation->date_timestamp),
-                'payment_type' => $donation->type_label,
+                'payment_type' => $donation->type,
                 'gateway_title' => $donation->gateway_label,
                 'pm_title' => $donation->pm_label,
                 'currency_label' => $donation->currency_label,
