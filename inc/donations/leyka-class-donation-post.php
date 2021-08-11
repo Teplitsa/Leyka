@@ -31,11 +31,12 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
         $donation_meta_fields = array(
             'leyka_donation_amount' => $params['amount'],
+            'leyka_donation_currency' => $params['amount'],
             'leyka_payment_type' => $params['payment_type'],
             'leyka_donor_name' => $params['donor_name'],
             'leyka_donor_email' => $params['donor_email'],
+            'leyka_gateway' => $params['gateway_id'],
             'leyka_payment_method' => $params['pm_id'],
-            'gateway_id' => $params['gateway_id'],
             'leyka_campaign_id' => $params['campaign_id'],
 //            '_leyka_donor_email_date' => 0, /** @todo Check if this lines are needed at all */
 //            '_leyka_managers_emails_date' => 0,

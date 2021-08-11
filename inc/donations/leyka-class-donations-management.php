@@ -126,7 +126,8 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
     }
 
-    public function donation_status_changed($new, $old, Leyka_Donation_Base $donation) {
+    public function donation_status_changed($new, $old, $donation) {
+        // WARNING: don't use type hinting for $donation argument here (it may be WP_Post or Leyka_Donation_Base)
 
         if($new === $old) {
             return;
@@ -1117,13 +1118,17 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 	</fieldset>
 
 	<fieldset class="leyka-set donation">
+
 		<legend><?php _e('Donation Data', 'leyka');?></legend>
+
+        <?php $main_currency_id = leyka_get_country_currency();?>
 
         <div class="leyka-ddata-string">
             <label for="donation-amount"><?php _e('Amount', 'leyka');?>:</label>
 
 			<div class="leyka-ddata-field">
-				<input type="text" id="donation-amount" name="donation-amount" placeholder="<?php _e('Enter the donation amount', 'leyka');?>" value=""> <?php echo leyka_options()->opt_safe('currency_rur_label');?><br>
+
+				<input type="text" id="donation-amount" name="donation-amount" placeholder="<?php _e('Enter the donation amount', 'leyka');?>" value=""> <?php echo leyka_options()->opt_safe("currency_{$main_currency_id}_label");?><br>
 				<small class="field-help howto">
                     <?php _e('Amount may be negative for correctional donations.', 'leyka');?>
                 </small>
@@ -1134,7 +1139,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             <label for="donation-amount"><?php _e('Total amount', 'leyka');?>:</label>
 
             <div class="leyka-ddata-field">
-                <input type="text" id="donation-amount-total" name="donation-amount-total" placeholder="<?php _e('Enter the donation total amount', 'leyka');?>" value=""> <?php echo leyka_options()->opt_safe('currency_rur_label');?><br>
+                <input type="text" id="donation-amount-total" name="donation-amount-total" placeholder="<?php _e('Enter the donation total amount', 'leyka');?>" value=""> <?php echo leyka_options()->opt_safe("currency_{$main_currency_id}_label");?><br>
                 <small class="field-help howto">
                     <?php
                     /** @todo Add a checkbox here (unckecked by default) to calculate total amount
@@ -1345,16 +1350,20 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             <label for="donation-amount"><?php _e('Total amount', 'leyka');?>:</label>
 
             <div class="leyka-ddata-field">
-            <?php if($donation->type === 'correction') {?>
-                <input type="text" id="donation-amount-total" name="donation-amount-total" placeholder="<?php _e('Enter the donation total amount', 'leyka');?>" value="<?php echo $donation->amount_total;?>"> <?php echo leyka_options()->opt_safe('currency_rur_label');?><br>
+            <?php if($donation->type === 'correction') {
+
+                $main_currency_id = leyka_get_country_currency();?>
+
+                <input type="text" id="donation-amount-total" name="donation-amount-total" placeholder="<?php _e('Enter the donation total amount', 'leyka');?>" value="<?php echo $donation->amount_total;?>"> <?php echo leyka_options()->opt_safe("currency_{$main_currency_id}_label");?><br>
+
                 <small class="field-help howto">
                     <?php
-                    /** @todo Add a checkbox here (unckecked by default) to calculate total amount
-                     * based on current commission setting.
-                     */
+                    /** @todo Add a checkbox here (unckecked by default) to calculate total amount based on current commission. */
                     _e('Leave empty to make the total amount value equal to the amount value.', 'leyka');?>
                 </small>
+
                 <div id="donation_amount_total-error" class="field-error"></div>
+
             <?php } else {?>
 
                 <span class="fake-input">
@@ -1820,10 +1829,10 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         return $vars;
     }
 
-    /** Donation data editing.
+    /**
+     * @deprecated Now all Donation data handling is on the Leyka_Admin.
      * @param $donation_id int
      * @return int|false Edited donation ID or false (if editing is failed or impossible).
-     * @deprecated Now all Donation data handling is on the Leyka_Admin
      */
     public function save_donation_data($donation_id) {
 
@@ -1893,7 +1902,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         }
 
         if( !$donation->currency ) {
-            $donation->currency = 'rur';
+            $donation->currency = 'rub';
         }
 
         if(isset($_POST['campaign-id']) && $donation->campaign_id != (int)$_POST['campaign-id']) {

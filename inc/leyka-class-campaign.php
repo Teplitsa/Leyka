@@ -1975,7 +1975,7 @@ class Leyka_Campaign {
             $this->_campaign_meta['total_funded'] = $sum;
             update_post_meta($this->_id, 'total_funded', $this->_campaign_meta['total_funded']);
 
-        } else { // Add/subtract a sum of a donation from it's campaign metadata
+        } else { // Add/subtract a sum of a donation from its campaign metadata
 
             $donation = Leyka_Donations::get_instance()->get_donation($donation);
             if( !$donation ) {
@@ -1984,7 +1984,7 @@ class Leyka_Campaign {
 
             if($action === 'remove') { // Subtract given donation's sum from campaign's total_funded
                 $sum = -$donation->sum_total;
-            } else { // Add given donation's sum to campaign's total_funded
+            } else { // Add given donation sum to campaign's total_funded
 
                 $old_sum = $old_sum && (float)$old_sum ? round($old_sum, 2) : 0.0;
                 if($action == 'update_sum' && $old_sum) { // If donation sum was changed, subtract it from total_funded first

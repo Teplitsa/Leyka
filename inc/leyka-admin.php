@@ -728,9 +728,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         $pm_id = $gateway_pm === 'custom' ? mb_substr(esc_html($_POST['custom-payment-info']), 0, 255) : $gateway_pm->id;
         $campaign = new Leyka_Campaign(absint($_POST['campaign-id']));
 
+        die('<pre>'.print_r($_POST, 1).'</pre>');
+
         $new_donation_params = array(
             'payment_type' => empty($_POST['payment-type']) ? 'correction' : $_POST['payment-type'],
-            'campaign_id' => absint($_POST['campaign-id']),
+            'campaign_id' => $campaign->id,
             'payment_title' => $campaign->payment_title,
             'status' => $_POST['donation_status'],
             'amount' => round($_POST['donation-amount'], 2),
@@ -745,7 +747,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             $new_donation_params['amount_total'] = round($_POST['donation-amount-total'], 2);
         }
 
-        $donation_id = Leyka_Donations::get_instance()->add(array_merge($new_donation_params, $_POST));
+        $donation_id = Leyka_Donations::get_instance()->add($new_donation_params + $_POST);
         if(is_wp_error($donation_id)) {
 
             $_SESSION['leyka_new_donation_error'] = $donation_id; /** @todo Change it when using Donation Add/Edit Controller */

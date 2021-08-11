@@ -1341,6 +1341,44 @@ class Leyka extends Leyka_Singleton {
 
             global $wpdb;
 
+            // Old (rur) to new (rub) currency ID transition:
+            if(Leyka_Options_Controller::get_option_value('currency_main') == 'rur') {
+
+                Leyka_Options_Controller::set_option_value('currency_main', 'rub'); // Rename the main currency option value
+
+                // Migrate the old (RUR) currency options to the new (RUB) ones:
+                $tmp_value = Leyka_Options_Controller::get_option_value('currency_rur_label');
+                if($tmp_value) {
+                    Leyka_Options_Controller::set_option_value('currency_rub_label', $tmp_value);
+                }
+                delete_option('leyka_currency_rur_label');
+
+                $tmp_value = Leyka_Options_Controller::get_option_value('currency_rur_min_sum');
+                if($tmp_value) {
+                    Leyka_Options_Controller::set_option_value('currency_rub_min_sum', $tmp_value);
+                }
+                delete_option('leyka_currency_rur_min_sum');
+
+                $tmp_value = Leyka_Options_Controller::get_option_value('currency_rur_max_sum');
+                if($tmp_value) {
+                    Leyka_Options_Controller::set_option_value('currency_rub_max_sum', $tmp_value);
+                }
+                delete_option('leyka_currency_rur_max_sum');
+
+                $tmp_value = Leyka_Options_Controller::get_option_value('currency_rur_flexible_default_amount');
+                if($tmp_value) {
+                    Leyka_Options_Controller::set_option_value('currency_rub_flexible_default_amount', $tmp_value);
+                }
+                delete_option('leyka_currency_rur_fixed_amounts');
+
+                $tmp_value = Leyka_Options_Controller::get_option_value('currency_rur_fixed_amounts');
+                if($tmp_value) {
+                    Leyka_Options_Controller::set_option_value('currency_rub_fixed_amounts', $tmp_value);
+                }
+                delete_option('leyka_currency_rur_fixed_amounts');
+
+            }
+
             // Rename "rur" postmeta value to "RUB", if needed:
             $update_needed = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}postmeta WHERE meta_key = 'leyka_donation_currency' AND meta_value = 'rur'");
             if($update_needed) {

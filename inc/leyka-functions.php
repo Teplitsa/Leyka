@@ -897,7 +897,7 @@ function leyka_get_payment_type_label($type_id) {
 function leyka_get_countries_full_info($country_id = null) {
 
     $countries = apply_filters('leyka_supported_countries_full_info', array(
-        'ru' => array('title' => __('Russia', 'leyka'), 'currency' => 'rur',),
+        'ru' => array('title' => __('Russia', 'leyka'), 'currency' => 'rub',),
         'by' => array('title' => __('Belarus Republic', 'leyka'), 'currency' => 'byn'),
         'ua' => array('title' => __('Ukraine', 'leyka'), 'currency' => 'uah'),
     ));

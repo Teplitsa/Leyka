@@ -352,10 +352,10 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
 //            ),
         );
 
-        $currencies_defaults = array_merge(leyka_get_main_currencies_full_info(), leyka_get_secondary_currencies_full_info());
+        $currencies_defaults = leyka_get_main_currencies_full_info() + leyka_get_secondary_currencies_full_info();
         foreach($currencies_defaults as $currency_id => $data) {
 
-            $currencies_options_meta = array_merge($currencies_options_meta, array(
+            $currencies_options_meta = $currencies_options_meta + array(
                 "currency_{$currency_id}_label" => array(
                     'type' => 'text',
                     'default' => $data['label'],
@@ -401,7 +401,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                     'placeholder' => sprintf(__('E.g., %s', 'leyka'), $data['fixed_amounts']),
                     'length' => 25,
                 ),
-            ));
+            );
 
         }
 
