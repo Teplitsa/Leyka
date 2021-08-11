@@ -15,8 +15,8 @@ jQuery(document).ready(function($){
             minDate: $date_field.data('min-date') ? $date_field.data('min-date') : '',
             maxDate: $date_field.data('max-date') ? $date_field.data('max-date') : '',
             dateFormat: $date_field.data('date-format') ? $date_field.data('date-format') : 'dd.mm.yy',
-            altField: $date_field.data('alt-field-selector') ? $($date_field.data('alt-field-selector')) : '',
-            altFormat: $date_field.data('date-alt-format') ? $date_field.data('date-alt-format') : 'yy-mm-dd',
+            altField: $date_field.data('alt-field') ? $date_field.data('alt-field') : '', // Alt field jQuery selector here
+            altFormat: $date_field.data('alt-format') ? $date_field.data('alt-format') : 'yy-mm-dd',
         });
 
     });

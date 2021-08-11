@@ -13,6 +13,11 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
         $params['date_created'] = $params['date_created'] ? $params['date_created'] : date('Y-m-d H:i:s');
 
+        $params['currency_id'] = empty($params['currency_id']) ?
+            (empty($params['currency']) ? $params['currency'] : false) : $params['currency_id'];
+        $params['currency_id'] = $params['currency_id'] && leyka_get_currencies_full_info($params['currency_id']) ?
+            $params['currency_id'] : leyka_get_country_currency();
+
         $new_donation_data = array(
             'status' => $params['status'],
             'payment_type' => $params['payment_type'],
@@ -528,13 +533,16 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
             case 'gw_id':
             case 'gateway_id':
-                return $this->gateway_id !== $value && leyka_get_gateway_by_id($value) && $this->_set_data('gateway_id', $value);
+                if($value && ($this->gateway_id === $value || !leyka_get_gateway_by_id($value))) {
+                    return false;
+                }
+                return $this->_set_data('gateway_id', $value);
 
             case 'pm':
             case 'pm_id':
             case 'payment_method_id':
 
-                if($this->pm_id === $value || !leyka_get_pm_by_id($value)) {
+                if($this->pm_id === $value) { // Don't check for leyka_get_pm_by_id() here, as pm_id may be custom payment info
                     return false;
                 }
 

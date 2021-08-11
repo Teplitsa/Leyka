@@ -285,7 +285,7 @@ class Leyka_Donations_Posts extends Leyka_Donations {
         if( !empty($params['get_single']) ) {
             $query_params['posts_per_page'] = 1;
         } else if( !empty($params['page']) && absint($params['results_limit']) > 1 ) {
-            $query_params['page'] = absint($params['page']);
+            $query_params['paged'] = absint($params['page']);
         }
         // Results limiting - END
 
@@ -512,21 +512,54 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
         }
 
-        if( !empty($params['order']) && in_array($params['order'], array('asc', 'desc',)) ) {
-            $query_params['order'] = mb_strtoupper($params['order']);
-        }
+        $query_params['order'] = empty($params['order']) || !in_array($params['order'], array('asc', 'ASC', 'desc', 'DESC',)) ?
+            'DESC' : mb_strtoupper($params['order']);
 
-        if( !empty($params['orderby']) ) {
-            switch($params['orderby']) {
-                case 'ID': $query_params['orderby'] = 'ID'; break;
-                case 'date': $query_params['orderby'] = 'date'; break;
-                case 'amount':
-                    $query_params['meta_key'] = 'leyka_donation_amount';
-                    $query_params['orderby'] = 'meta_value_num';
-                    break;
-                case 'status': // Post status ordering is handled manually in the get() method.
-                default:
-            }
+        $params['orderby'] = empty($params['orderby']) ? 'date' : $params['orderby'];
+
+        switch($params['orderby']) {
+            case 'id':
+            case 'ID':
+            case 'donation_id':
+                $query_params['orderby'] = 'ID'; break;
+            case 'campaign_id':
+                $query_params['meta_key'] = 'leyka_campaign_id';
+                $query_params['orderby'] = 'meta_value_num';
+                break;
+            case 'status': break; // Post status ordering is handled manually in the get() method.
+            case 'date':
+            case 'date_created':
+                $query_params['orderby'] = 'date'; break;
+            case 'gateway':
+            case 'gateway_id':
+                $query_params['meta_key'] = 'leyka_gateway';
+                $query_params['orderby'] = 'meta_value';
+                break;
+            case 'pm':
+            case 'pm_id':
+            case 'payment_method':
+                $query_params['meta_key'] = 'leyka_payment_method';
+                $query_params['orderby'] = 'meta_value';
+                break;
+            case 'amount':
+                $query_params['meta_key'] = 'leyka_donation_amount';
+                $query_params['orderby'] = 'meta_value_num';
+                break;
+            case 'donor_name':
+                $query_params['meta_key'] = 'leyka_donor_name';
+                $query_params['orderby'] = 'meta_value';
+                break;
+            case 'donor_email':
+                $query_params['meta_key'] = 'leyka_donor_email';
+                $query_params['orderby'] = 'meta_value';
+                break;
+            case 'type':
+            case 'payment_type':
+                $query_params['meta_key'] = 'leyka_payment_type';
+                $query_params['orderby'] = 'meta_value';
+                break;
+
+            default:
         }
 
         return new WP_Query($query_params);
@@ -957,7 +990,12 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
             switch($params['orderby']) {
                 case 'donation_id': $params['orderby'] = "{$wpdb->prefix}leyka_donations.ID"; break;
+                case 'gateway': $params['orderby'] = "{$wpdb->prefix}leyka_donations.gateway_id"; break;
+                case 'pm':
+                case 'payment_method':
+                    $params['orderby'] = "{$wpdb->prefix}leyka_donations.pm_id"; break;
                 case 'date': $params['orderby'] = "{$wpdb->prefix}leyka_donations.date_created"; break;
+                case 'type': $params['orderby'] = "{$wpdb->prefix}leyka_donations.payment_type"; break;
                 default: $params['orderby'] = "{$wpdb->prefix}leyka_donations.".$params['orderby']; break;
             }
 
@@ -1032,7 +1070,10 @@ class Leyka_Donations_Separated extends Leyka_Donations {
     }
 
     protected function _is_orderable_by($param_name) {
-        return in_array(mb_strtolower($param_name), array('id', 'donation_id', 'campaign_id', 'status', 'date', 'date_created', 'gateway_id', 'pm_id', 'amount', 'donor_name', 'donor_email', 'payment_type',));
+        return in_array(
+            mb_strtolower($param_name),
+            ['id', 'donation_id', 'campaign_id', 'status', 'date', 'date_created', 'gateway', 'gateway_id', 'pm', 'pm_id', 'payment_method', 'amount', 'donor_name', 'donor_email', 'type', 'payment_type',]
+        );
     }
 
     public function add(array $params = array(), $return_object = false) {

@@ -735,11 +735,7 @@ techMessage="'.$tech_message.'"/>');
 
         if($donation) { // Edit donation page displayed
 
-            $donation = Leyka_Donations::get_instance()->get_donation($donation);
-
-            if($donation->type !== 'rebill') {
-                return;
-            }?>
+            $donation = Leyka_Donations::get_instance()->get_donation($donation);?>
 
             <label><?php _e('YooKassa recurring subscription ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
@@ -751,7 +747,11 @@ techMessage="'.$tech_message.'"/>');
                 <?php }?>
             </div>
 
-        <?php $init_recurring_donation = $donation->init_recurring_donation;?>
+        <?php if($donation->type !== 'rebill') {
+                return;
+            }
+
+            $init_recurring_donation = $donation->init_recurring_donation;?>
 
             <div class="recurring-is-active-field">
                 <label for="yandex-recurring-is-active"><?php _e('Recurring subscription is active', 'leyka');?>:</label>

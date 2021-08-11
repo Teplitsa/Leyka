@@ -1128,18 +1128,22 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
 			<div class="leyka-ddata-field">
 
-				<input type="text" id="donation-amount" name="donation-amount" placeholder="<?php _e('Enter the donation amount', 'leyka');?>" value=""> <?php echo leyka_options()->opt_safe("currency_{$main_currency_id}_label");?><br>
+				<input type="text" id="donation-amount" name="donation-amount" placeholder="<?php _e('Enter the donation amount', 'leyka');?>" value=""> <?php echo leyka_get_currency_label();?><br>
+                <input type="hidden" id="donation-currency" name="donation-currency" value="<?php echo $main_currency_id;?>">
+
 				<small class="field-help howto">
                     <?php _e('Amount may be negative for correctional donations.', 'leyka');?>
                 </small>
+
 				<div id="donation_amount-error" class="field-error"></div>
+
 			</div>
         </div>
         <div class="leyka-ddata-string">
             <label for="donation-amount"><?php _e('Total amount', 'leyka');?>:</label>
 
             <div class="leyka-ddata-field">
-                <input type="text" id="donation-amount-total" name="donation-amount-total" placeholder="<?php _e('Enter the donation total amount', 'leyka');?>" value=""> <?php echo leyka_options()->opt_safe("currency_{$main_currency_id}_label");?><br>
+                <input type="text" id="donation-amount-total" name="donation-amount-total" placeholder="<?php _e('Enter the donation total amount', 'leyka');?>" value=""> <?php echo leyka_get_currency_label();?><br>
                 <small class="field-help howto">
                     <?php
                     /** @todo Add a checkbox here (unckecked by default) to calculate total amount
@@ -1196,13 +1200,14 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
             <div class="leyka-ddata-field">
 
-                <input type="text" id="donation-date-view" class="leyka-datepicker" value="<?php echo date(get_option('date_format'));?>" data-min-date="-5Y" data-max-date="+1Y" data-alt-field-selector="#donation-date" data-alt-format="yy-mm-dd">
+                <input type="text" id="donation-date-view" class="leyka-datepicker" value="<?php echo date(get_option('date_format'));?>" data-min-date="-5Y" data-max-date="+1Y" data-alt-field="#donation-date" data-alt-format="yy-mm-dd">
                 <input type="hidden" id="donation-date" name="donation_date" value="<?php echo date('Y-m-d');?>">
 
             </div>
         </div>
 
 	</fieldset>
+
     <?php }
 
     public static function donation_data_metabox() {
@@ -1350,11 +1355,9 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             <label for="donation-amount"><?php _e('Total amount', 'leyka');?>:</label>
 
             <div class="leyka-ddata-field">
-            <?php if($donation->type === 'correction') {
+            <?php if($donation->type === 'correction') {?>
 
-                $main_currency_id = leyka_get_country_currency();?>
-
-                <input type="text" id="donation-amount-total" name="donation-amount-total" placeholder="<?php _e('Enter the donation total amount', 'leyka');?>" value="<?php echo $donation->amount_total;?>"> <?php echo leyka_options()->opt_safe("currency_{$main_currency_id}_label");?><br>
+                <input type="text" id="donation-amount-total" name="donation-amount-total" placeholder="<?php _e('Enter the donation total amount', 'leyka');?>" value="<?php echo $donation->amount_total;?>"> <?php echo leyka_get_currency_label();?><br>
 
                 <small class="field-help howto">
                     <?php
@@ -1375,12 +1378,16 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         </div>
 
         <div class="leyka-ddata-string">
+
             <label><?php _e('Payment method', 'leyka');?>:</label>
+
 			<div class="leyka-ddata-field">
             <?php if($donation->type === 'correction') {?>
 
                 <select id="donation-pm" name="donation-pm">
+
                     <option value="" selected="selected"><?php _e('Select a payment method', 'leyka');?></option>
+
                     <?php foreach(leyka_get_gateways() as $gateway) {
 
                         /** @var Leyka_Gateway $gateway */
@@ -1396,7 +1403,9 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                         <?php }?>
 
                     <?php }?>
+
                     <option value="custom" <?php echo ($donation->gw_id == 'correction' || !$donation->gw_id) && $donation->pm_id ? 'selected="selected"' : '';?>><?php _e('Custom payment info', 'leyka');?></option>
+
                 </select>
 
                 <input type="text" id="custom-payment-info" name="custom-payment-info" placeholder="<?php _e('Enter the donation source info', 'leyka');?>" <?php echo ($donation->gw_id == 'correction' || !$donation->gw_id) && $donation->pm_id ? '' : 'style="display: none;"';?> value="<?php echo $donation->gw_id == 'correction' || !$donation->gw_id ? $donation->pm_id : '';?>">
@@ -1412,6 +1421,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 			    </span>
             <?php }?>
             </div>
+
         </div>
 
         <div class="leyka-ddata-string">
@@ -1455,7 +1465,9 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         <div class="leyka-ddata-string">
             <label for="donation-date-view"><?php _e('Donation date', 'leyka');?>:</label>
 			<div class="leyka-ddata-field">
-            <?php if($donation->type === 'correction') {?>
+            <?php if($donation->type === 'correction') {
+
+//                echo '<pre>'.print_r($donation->date_label, 1).'</pre>';?>
 
                 <input type="text" id="donation-date-view" class="leyka-datepicker" value="<?php echo $donation->date_label;?>" data-min-date="-5Y" data-max-date="+1Y" data-alt-field="#donation-date" data-alt-format="yy-mm-dd">
                 <input type="hidden" id="donation-date" name="donation_date" value="<?php echo date('Y-m-d', $donation->date_timestamp);?>">
@@ -2039,9 +2051,10 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 	}
 
     public static function get_donation_delete_link(Leyka_Donation_Base $donation) {
-        return leyka_get_donations_storage_type() === 'post' ?
+        return admin_url('admin.php?page=leyka_donations&action=delete&donation='.$donation->id.'&_wpnonce='.wp_create_nonce('leyka_delete_donation'));
+        /* = leyka_get_donations_storage_type() === 'post' ?
             get_delete_post_link($donation->id) :
-            admin_url('admin.php?page=leyka_donations&action=delete&donation='.$donation->id.'&_wpnonce='.wp_create_nonce('leyka_delete_donation'));
+            admin_url('admin.php?page=leyka_donations&action=delete&donation='.$donation->id.'&_wpnonce='.wp_create_nonce('leyka_delete_donation'));*/
     }
 
     public static function get_donation_edit_link(Leyka_Donation_Base $donation) {

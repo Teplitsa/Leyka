@@ -623,20 +623,20 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         }
 
         if( !$donation->currency ) {
-            $donation->currency = leyka_options()->opt('main_currency');
+            $donation->currency = leyka_options()->opt('currency_main');
         }
 
-        if(isset($_POST['campaign-id']) && $donation->campaign_id != (int)$_POST['campaign-id']) {
+        if(isset($_POST['campaign-id']) && $donation->campaign_id != absint($_POST['campaign-id'])) {
 
             // If we're adding a correctional donation, $donation->campaign_id == 0:
             if($donation->campaign_id && $donation->status == 'funded') {
                 $campaign->update_total_funded_amount($donation, 'remove'); // Old campaign
             }
 
-            $donation->campaign_id = (int)$_POST['campaign-id'];
+            $donation->campaign_id = absint($_POST['campaign-id']);
             $campaign = new Leyka_Campaign($donation->campaign_id); // New campaign
 
-            if($donation->status == 'funded') {
+            if($donation->status === 'funded') {
                 $campaign->update_total_funded_amount($donation);
             }
 
@@ -671,7 +671,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         }
 
         if(isset($_POST['donation_date']) && $donation->date_timestamp != strtotime($_POST['donation_date'])) {
-            $donation->date = $_POST['donation_date'];
+            $donation->date_timestamp = strtotime($_POST['donation_date']);
         }
 
         if(isset($_POST['payment-type']) && $donation->payment_type != $_POST['payment-type']) {
@@ -695,25 +695,25 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         }
 
         // Add donor ID for correction-typed donation:
-//        if(
-//            leyka_options()->opt('donor_management_available')
-//            && $donation->status === 'funded'
-//            && !$donation->donor_user_id
-//            && $donation->donor_email
-//        ) {
-//
-//            try {
-//
-//                $donor = new Leyka_Donor($donation->donor_email);
-//
-//                $donation->donor_user_id = $donor->id;
-//                Leyka_Donor::calculate_donor_metadata($donor);
-//
-//            } catch(Exception $e) {
-//                // ...
-//            }
-//
-//        }
+        if(
+            leyka_options()->opt('donor_management_available')
+            && $donation->status === 'funded'
+            && !$donation->donor_user_id
+            && $donation->donor_email
+        ) {
+
+            try {
+
+                $donor = new Leyka_Donor($donation->donor_email);
+
+                $donation->donor_user_id = $donor->id;
+                Leyka_Donor::calculate_donor_metadata($donor);
+
+            } catch(Exception $e) {
+                // ...
+            }
+
+        }
 
         do_action("leyka_{$donation->gateway_id}_edit_donation_data", $donation);
         do_action("leyka_{$donation->gateway_id}_save_donation_data", $donation);
@@ -728,14 +728,14 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         $pm_id = $gateway_pm === 'custom' ? mb_substr(esc_html($_POST['custom-payment-info']), 0, 255) : $gateway_pm->id;
         $campaign = new Leyka_Campaign(absint($_POST['campaign-id']));
 
-        die('<pre>'.print_r($_POST, 1).'</pre>');
-
         $new_donation_params = array(
             'payment_type' => empty($_POST['payment-type']) ? 'correction' : $_POST['payment-type'],
             'campaign_id' => $campaign->id,
             'payment_title' => $campaign->payment_title,
             'status' => $_POST['donation_status'],
             'amount' => round($_POST['donation-amount'], 2),
+            'currency_id' => empty($_POST['donation-currency']) || !leyka_get_currencies_full_info($_POST['donation-currency']) ?
+                leyka_get_country_currency() : $_POST['donation-currency'],
             'gateway_id' => $gateway_id,
             'pm_id' => $pm_id,
             'donor_name' => $_POST['donor-name'],
@@ -755,7 +755,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         } else {
 
-            $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
+            $donation = Leyka_Donations::get_instance()->get_donation($donation_id, true);
 
             do_action("leyka_{$donation->gateway_id}_add_donation_data", $donation);
             do_action("leyka_{$donation->gateway_id}_save_donation_data", $donation);
