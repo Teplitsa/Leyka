@@ -1270,7 +1270,7 @@ function leyka_render_custom_gds_integration_data_info($option_id, $data){
 
         <div class="leyka-gds-data-info">
             <?php echo sprintf(
-                __('Total donations to convert: <strong>%s / %s</strong>'),
+                __('Total donations to convert: <strong>%s / %s</strong>', 'leyka'),
                 leyka_amount_format($data_lines_count),
                 leyka_amount_format(Leyka_Gds_Integration_Extension::get_instance()->get_max_gds_allowed_lines())
             );?>
@@ -1284,7 +1284,7 @@ function leyka_render_custom_gds_integration_data_info($option_id, $data){
         date(get_option('date_format'), $timestamp).', '.date(get_option('time_format'), $timestamp) : __('no', 'leyka');?>
 
         <div class="leyka-gds-data-info">
-            <?php echo sprintf(__('Last successful data preparation date: <strong>%s</strong>'), $last_procedure_run_date);?>
+            <?php echo sprintf(__('Last successful data preparation date: <strong>%s</strong>', 'leyka'), $last_procedure_run_date);?>
         </div>
 
     </div>
