@@ -33,24 +33,14 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
                 .__('Copy your procedure absolute address:', 'leyka')
                 .'<br><code>'.str_replace(basename(__FILE__), 'leyka-gds-data-preparation.php', realpath(__FILE__)).'</code>'
             .'</li>'
-            .'<li>'.sprintf(__('Set the Cron job to call the procedure nightly (<a href="%s" target="_blank" class="leyka-outer-link">user manual for setting up Cron jobs</a>)', 'leyka'), 'https://leyka.te-st.ru/docs/cronjob/').'</li>'
+            .'<li>'.sprintf(__('Set the Cron job to call the procedure nightly (<a href="%s" target="_blank" class="leyka-outer-link">user manual for setting up Cron jobs</a>, chapter 2)', 'leyka'), 'https://leyka.te-st.ru/docs/gds/').'</li>'
         .'</ul>'
         .'<h3>'.__('When the Cron job is done at least one time, there will be a new data table in your website database', 'leyka').'</h3>'
         .'<ul>'
             .'<li>'.__('The GDS data table name:', 'leyka').'<br><code>'.$wpdb->prefix.'leyka_gds_integration_donations_data</code></li>'
-            .'<li>'.sprintf(__('Connect the table and GDS using a MySQL data connector (<a href="%s" target="_blank" class="leyka-outer-link">user manual for creating a GDS data connection</a>)', 'leyka'), 'https://leyka.te-st.ru/docs/gds/#gds-donations-data-connector').'</li>'
-            .'<li>'.sprintf(__('Set up the data visualization in GDS (<a href="%s" target="_blank" class="leyka-outer-link">dashboards & charts setup examples</a>)', 'leyka'), 'https://leyka.te-st.ru/docs/gds/#gds-donations-visualizations').'</li>'
+            .'<li>'.sprintf(__('Connect the table and GDS using a MySQL data connector (<a href="%s" target="_blank" class="leyka-outer-link">user manual for creating a GDS data connection</a>, chapter 4)', 'leyka'), 'https://leyka.te-st.ru/docs/gds/').'</li>'
+            .'<li>'.sprintf(__('Set up the data visualization in GDS (<a href="%s" target="_blank" class="leyka-outer-link">dashboards & charts setup examples</a>, chapter 5)', 'leyka'), 'https://leyka.te-st.ru/docs/gds/').'</li>'
         .'</ul>';
-
-//            '<p>Это приложение поможет вам выгрузить данные из Лейки в нужно формате.
-//После выгрузки данные можно использовать для построения дашбордов, графиков, отчетных таблиц.</p>
-//<ul>
-//    <li><strong>Путь до скрипта процедуры:</strong> '.$path_to_cron_procedure.'</li>
-//    <li><strong>Хост для подключения к БД:</strong> '.DB_HOST.'</li>
-//    <li><strong>Юзер для подключения к БД:</strong> '.DB_USER.'</li>
-//    <li><strong>Таблица для экспорта данных в GDS:</strong> '.$wpdb->prefix.'leyka_gds_integration_donations_data</li>
-//    <li><strong>Дата последней подготовки данных для экспорта в GDS:</strong> '.$last_procedure_run_date.'</li>
-//</ul>';
 
         // A human-readable description of how to enable the main feature (for backoffice extension settings page):
         $this->_connection_description = '';
@@ -67,7 +57,7 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
             $this->_id.'_donations_date_period' => array(
                 'type' => 'select',
                 'title' => __('Donations dates period', 'leyka'),
-                'description' => '', //__('Choose a donations dates period from which your donations will be prepared to export to Google Data Studio. WARNING: the donations data to export will be refreshed only at the closest call of your special data preparing procedure.', 'leyka'),
+                'description' => __('Choose a donations dates period from which your donations will be prepared to export to Google Data Studio. WARNING: donations data to export will be refreshed only at the closest call of your special data preparing procedure.', 'leyka'),
                 'field_classes' => array('leyka-option-field-width-half'),
                 'default' => '2_years',
                 'list_entries' => array(
@@ -80,7 +70,6 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
             ),
             $this->_id.'_data_info' => array(
                 'type' => 'custom_gds_integration_data_info', // Special option type
-//                'title' => __('Extensions available', 'leyka'),
             ),
         ));
 
