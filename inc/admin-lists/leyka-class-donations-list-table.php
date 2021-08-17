@@ -244,23 +244,23 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
         if($donation->payment_type === 'rebill') {
             $donor_additional_data_html .= '<li>
         <span class="leyka-li-title">'.__('Recurring is active', 'leyka').':</span>
-        <span class="leyka-li-value">'.mb_ucfirst($donation->recurring_active ? __('yes', 'leyka') : __('no', 'leyka')).'</span>
+        <span class="leyka-li-value">'.($donation->recurring_active ? __('yes', 'leyka') : __('no', 'leyka')).'</span>
     </li>';
         }
 
         $donor_additional_data_html .= '<li>
         <span class="leyka-li-title">'.__('Email', 'leyka').':</span>
-        <span class="leyka-li-value">'.mb_ucfirst($donation->donor_email_date ? sprintf(__('Sent on %s', 'leyka'), date(get_option('date_format').', H:i</time>', $donation->donor_email_date)) : __('no', 'leyka')).'</span>
+        <span class="leyka-li-value">'.($donation->donor_email_date ? sprintf(__('Sent on %s', 'leyka'), date(get_option('date_format').', H:i</time>', $donation->donor_email_date)) : __('no', 'leyka')).'</span>
     </li>
 
     <li>
         <span class="leyka-li-title">'._x('Subscription', "[Donor's email subscription. Should be short]", 'leyka').':</span>
-        <span class="leyka-li-value">'.mb_ucfirst($donation->donor_subscribed ? __('yes', 'leyka') : __('no', 'leyka')).'</span>
+        <span class="leyka-li-value">'.($donation->donor_subscribed ? __('yes', 'leyka') : __('no', 'leyka')).'</span>
     </li>
 
     <li>
         <span class="leyka-li-title">'._x('Comment', "[Donor's comment. Should be short]", 'leyka').':</span>
-        <span class="leyka-li-value">'.mb_ucfirst($donation->donor_comment ? $donation->donor_comment : __('no', 'leyka')).'</span>
+        <span class="leyka-li-value">'.($donation->donor_comment ? mb_ucfirst($donation->donor_comment) : __('no', 'leyka')).'</span>
     </li>';
         $donor_additional_data_html .= '</ul>';
 

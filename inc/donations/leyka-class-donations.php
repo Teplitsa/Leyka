@@ -335,8 +335,8 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
         if(isset($params['recurring_active'])) {
 
-            $params['meta'][] = array('key' => '_rebilling_is_active', 'value' => !!$params['recurring_active'] ? '1' : '0');
             $params['payment_type'] = 'rebill';
+            $params['meta'][] = ['key' => '_rebilling_is_active', 'value' => !!$params['recurring_active']];
 
         }
 

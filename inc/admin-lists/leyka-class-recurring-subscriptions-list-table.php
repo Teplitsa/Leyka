@@ -277,17 +277,17 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
         $additional_data_html = '<ul>'
             .'<li>
         <span class="leyka-li-title">'.__('Recurring is active', 'leyka').':</span>
-        <span class="leyka-li-value">'.mb_ucfirst($item['first_donation']->recurring_active ? __('yes', 'leyka') : __('no', 'leyka')).'</span>
+        <span class="leyka-li-value">'.($item['first_donation']->recurring_active ? __('yes', 'leyka') : __('no', 'leyka')).'</span>
     </li>';
 
         $additional_data_html .= '<li>
         <span class="leyka-li-title">'._x('Subscription', "[Donor's email subscription. Should be short]", 'leyka').':</span>
-        <span class="leyka-li-value">'.mb_ucfirst($item['first_donation']->donor_subscribed ? __('yes', 'leyka') : __('no', 'leyka')).'</span>
+        <span class="leyka-li-value">'.($item['first_donation']->donor_subscribed ? __('yes', 'leyka') : __('no', 'leyka')).'</span>
     </li>
 
     <li>
         <span class="leyka-li-title">'._x('Comment', "[Donor's comment. Should be short]", 'leyka').':</span>
-        <span class="leyka-li-value">'.mb_ucfirst($item['first_donation']->donor_comment ? $item['first_donation']->donor_comment : __('no', 'leyka')).'</span>
+        <span class="leyka-li-value">'.($item['first_donation']->donor_comment ? $item['first_donation']->donor_comment : __('no', 'leyka')).'</span>
     </li>';
         $additional_data_html .= '</ul>';
 
