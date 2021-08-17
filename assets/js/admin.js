@@ -862,6 +862,7 @@ jQuery(document).ready(function($){
     });
     // Ranged datepicker fields - END
 
+    // Campaigns autocomplete select:
     jQuery.leyka_admin_campaigns_select = function($text_selector_field, options){
 
         $text_selector_field = $($text_selector_field);
@@ -1223,7 +1224,7 @@ jQuery(document).ready(function($){
                     content: function(){
 
                         let $element = $(this),
-                            tooltip_content = $element.siblings('.leyka-tooltip-content').html();
+                            tooltip_content = $element.siblings('.leyka-tooltip-content:first').html();
 
                         return tooltip_content ? tooltip_content : $element.prop('title');
 
@@ -1569,6 +1570,26 @@ function leyka_ui_widget_available(widget = '', object = null) {
     }
 
     return widget.length ? typeof object[widget] !== 'undefined' : typeof object !== 'undefined';
+
+}
+
+function ucfirst(str) {
+
+    if( !str || !str.length ) {
+        return '';
+    }
+
+    return str.slice(0, 1).toUpperCase() + str.substring(1);
+
+}
+
+function lcfirst(str) {
+
+    if( !str || !str.length ) {
+        return '';
+    }
+
+    return str.slice(0, 1).toLowerCase() + str.substring(1);
 
 }
 /** Additional donation form fields settings JS */
@@ -2987,14 +3008,17 @@ jQuery(document).ready(function($){
                     className: 'column-campaign data-campaign leyka-donation-info-wrapper',
                     render: function(data, type, row_data){
 
-                        return '<i class="icon-leyka-donation-status icon-'+row_data.status.id+' has-tooltip leyka-tooltip-align-left" title="'+row_data.status.description+'"></i>'
-                        +'<div class="leyka-donation-additional-data">'
-                            +'<div class="first-sub-row">'+row_data.campaign_title+'</div>'
-                            +'<div class="second-sub-row">'
-                                +'<img src="'+row_data.gateway_pm.gateway_icon_url+'" alt="'+row_data.gateway_pm.gateway_label+'">'
-                                +row_data.gateway_pm.gateway_label+', '+row_data.gateway_pm.pm_label
-                            +'</div>'
-                        +'</div>';
+                        return '<i class="icon-leyka-donation-status icon-'+row_data.status.id+' has-tooltip leyka-tooltip-align-left" title=""></i>'
+                            +'<span class="leyka-tooltip-content">'
+                                +'<strong>'+row_data.status.label+':</strong> '+lcfirst(row_data.status.description)
+                            +'</span>'
+                            +'<div class="leyka-donation-additional-data">'
+                                +'<div class="first-sub-row">'+row_data.campaign_title+'</div>'
+                                +'<div class="second-sub-row">'
+                                    +(row_data.gateway_pm.gateway_icon_url ? '<img src="'+row_data.gateway_pm.gateway_icon_url+'" alt="'+row_data.gateway_pm.gateway_label+'">' : '')
+                                    +row_data.gateway_pm.gateway_label+', '+row_data.gateway_pm.pm_label
+                                +'</div>'
+                            +'</div>';
 
                     }
                 },

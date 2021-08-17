@@ -16,6 +16,12 @@ if( !function_exists('mb_ucfirst') ) {
     }
 }
 
+if( !function_exists('mb_lcfirst') ) {
+    function mb_lcfirst($str) {
+        return mb_strtolower(mb_substr($str, 0, 1)).mb_substr($str, 1);
+    }
+}
+
 if( !function_exists('mb_strtolower') ) {
     function mb_strtolower($str) {
         return strtolower($str);

@@ -177,7 +177,9 @@
 
 @mixin leyka-admin-tooltip-styles {
     color: $color-white !important;
-    background-color: $color-wizard-tooltip-bg !important;
+
+    //background-color: $color-wizard-tooltip-bg !important;
+    background: $color-wizard-tooltip-bg;
 
     font-family: $font-body !important;
     font-size: 11px !important;

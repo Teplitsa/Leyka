@@ -120,3 +120,23 @@ function leyka_ui_widget_available(widget = '', object = null) {
     return widget.length ? typeof object[widget] !== 'undefined' : typeof object !== 'undefined';
 
 }
+
+function ucfirst(str) {
+
+    if( !str || !str.length ) {
+        return '';
+    }
+
+    return str.slice(0, 1).toUpperCase() + str.substring(1);
+
+}
+
+function lcfirst(str) {
+
+    if( !str || !str.length ) {
+        return '';
+    }
+
+    return str.slice(0, 1).toLowerCase() + str.substring(1);
+
+}

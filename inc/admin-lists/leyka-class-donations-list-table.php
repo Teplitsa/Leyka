@@ -288,7 +288,14 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
         }
 
         $column_content = '<span class="leyka-amount '.apply_filters('leyka_admin_donation_amount_column_css', ($donation->amount < 0.0 ? 'leyka-amount-negative' : '')).'">'
-            .'<i class="icon-leyka-donation-status icon-'.$donation->status.' has-tooltip leyka-tooltip-align-left" title="'.$donation->status_description.'"></i>'
+            .'<i class="icon-leyka-donation-status icon-'.$donation->status.' has-tooltip leyka-tooltip-align-left" title=""></i>'
+            .'<span class="leyka-tooltip-content">'
+                .apply_filters(
+                    'leyka_admin_donations_list_donation_status_tooltip_content',
+                    '<strong>'.$donation->status_label.':</strong> '.mb_lcfirst($donation->status_description),
+                    $donation
+                )
+            .'</span>'
             .'<span class="leyka-amount-and-status">'
                 .'<div class="leyka-amount-itself">'.$amount.'</div>'
                 .'<div class="leyka-donation-status-label label-'.$donation->status.'">'.$donation->status_label.'</div>'

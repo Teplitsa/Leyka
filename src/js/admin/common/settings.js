@@ -84,6 +84,7 @@ jQuery(document).ready(function($){
     });
     // Ranged datepicker fields - END
 
+    // Campaigns autocomplete select:
     jQuery.leyka_admin_campaigns_select = function($text_selector_field, options){
 
         $text_selector_field = $($text_selector_field);
@@ -445,7 +446,7 @@ jQuery(document).ready(function($){
                     content: function(){
 
                         let $element = $(this),
-                            tooltip_content = $element.siblings('.leyka-tooltip-content').html();
+                            tooltip_content = $element.siblings('.leyka-tooltip-content:first').html();
 
                         return tooltip_content ? tooltip_content : $element.prop('title');
 

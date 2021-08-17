@@ -461,14 +461,14 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             $item
         );
 
-        $donor_description = $item['donor']->description ? $item['donor']->description : __('no', 'leyka');
+        $donor_description = $item['donor']->description ? mb_ucfirst($item['donor']->description) : __('no', 'leyka');
         $donor_last_comment = $item['donor']->get_comments();
         $donor_last_comment = $donor_last_comment ? array_pop($donor_last_comment)['text'] : __('no', 'leyka');
 
         $donor_additional_data_html = '<ul>
         <li>
             <span class="leyka-li-title">'.__('Description', 'leyka').':</span>
-            <span class="leyka-li-value">'.mb_ucfirst($donor_description).'</span>
+            <span class="leyka-li-value">'.$donor_description.'</span>
         </li>
         <li>
             <span class="leyka-li-title">'.__('Last comment', 'leyka').':</span>
@@ -648,7 +648,14 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         $donation = Leyka_Donations::get_instance()->get($item['last_donation']);
 
-        $column_content = '<i class="icon-leyka-donation-status icon-'.$donation->status.' has-tooltip leyka-tooltip-align-left" title="'.$donation->status_description.'"></i>'
+        $column_content = '<i class="icon-leyka-donation-status icon-'.$donation->status.' has-tooltip leyka-tooltip-align-left" title=""></i>'
+            .'<span class="leyka-tooltip-content">'
+                .apply_filters(
+                    'leyka_admin_donors_list_donation_status_tooltip_content',
+                    '<strong>'.$donation->status_label.':</strong> '.mb_lcfirst($donation->status_description),
+                    $donation
+                )
+            .'</span>'
             .'<div class="first-sub-row">'
                 .'<span class="leyka-donation-amount">'.leyka_format_amount($donation->amount).'&nbsp;'.$donation->currency_label.',</span>'
                 .'<span class="leyka-donation-date">'.$donation->date_time_label.'</span>'
