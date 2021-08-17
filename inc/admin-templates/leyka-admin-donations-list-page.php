@@ -79,7 +79,10 @@
                                 <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector autocomplete-input" value="" placeholder="<?php _e('All campaigns', 'leyka');?>">
 
                                 <select class="leyka-campaigns-select autocomplete-select" name="campaigns[]" multiple="multiple">
-                                    <?php $campaigns = $filter_value ? leyka_get_campaigns_list(array('include' => $filter_value)) : array();
+
+                                    <?php $campaigns = $filter_value ?
+                                        leyka_get_campaigns_list(['include' => $filter_value]) : [];
+
                                     foreach($campaigns as $campaign_id => $campaign_title) {?>
 
                                         <option value="<?php echo $campaign_id;?>" <?php echo is_array($filter_value) && in_array($campaign_id, $filter_value) ? 'selected="selected"' : '';?>>

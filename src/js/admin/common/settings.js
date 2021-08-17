@@ -85,7 +85,7 @@ jQuery(document).ready(function($){
     // Ranged datepicker fields - END
 
     // Campaign(s) select fields (for admin list filters mostly):
-    $('input.leyka-campaigns-selector').each(function(){
+    $('input.leyka-campaigns-selector:not(.leyka-js-dont-initialize-common-widget)').each(function(){
 
         let $text_selector_field = $(this),
             $list_select_field = $text_selector_field.siblings('.leyka-campaigns-select'),
