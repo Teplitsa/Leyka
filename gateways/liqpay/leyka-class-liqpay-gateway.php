@@ -130,9 +130,6 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
 
         $donation = Leyka_Donations::get_instance()->get($donation_id);
 
-        $amount = number_format((float)$donation->amount, 2, '.', '');
-        $currency = $donation->currency == 'rur' ? 'RUB' : mb_strtoupper($donation->currency);
-
         if( !empty($form_data['leyka_recurring']) ) {
             $donation->payment_type = 'rebill';
         }
@@ -147,8 +144,8 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
             'version' 					=> 3,
             'public_key' 				=> leyka_options()->opt('liqpay_public_key'),
             'action'                    => empty($form_data_vars['leyka_recurring']) ? 'paydonate' : 'subscribe',
-            'amount' 					=> $amount,
-            'currency' 					=> $currency,
+            'amount' 					=> number_format((float)$donation->amount, 2, '.', ''),
+            'currency' 					=> $donation->currency_id == 'rur' ? 'RUB' : mb_strtoupper($donation->currency_id),
             'description' 				=> $donation->payment_title,
             'order_id' 					=> $donation_id,
             'subscribe'                 => empty($form_data_vars['leyka_recurring']) ? 0 : 1,
@@ -431,7 +428,7 @@ class Leyka_Liqpay extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'gateways/liqpay/icons/Liqpay_logo_full.svg',
         ));
 
-        $this->_supported_currencies = array('rur', 'uah', 'usd', 'eur',);
+        $this->_supported_currencies = array('rub', 'uah', 'usd', 'eur',);
         $this->_default_currency = 'uah';
 
     }
@@ -465,7 +462,7 @@ class Leyka_Liqpay_Card extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
         ));
 
-        $this->_supported_currencies = array('rur', 'uah', 'usd', 'eur',);
+        $this->_supported_currencies = array('rub', 'uah', 'usd', 'eur',);
         $this->_default_currency = 'uah';
 
     }
@@ -501,7 +498,7 @@ class Leyka_Liqpay_Privat24 extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'gateways/liqpay/icons/privat_logo_short.svg',
         ));
 
-        $this->_supported_currencies = array('rur', 'uah', 'usd', 'eur',);
+        $this->_supported_currencies = array('rub', 'uah', 'usd', 'eur',);
         $this->_default_currency = 'uah';
 
     }

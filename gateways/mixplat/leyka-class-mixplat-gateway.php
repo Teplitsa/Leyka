@@ -468,7 +468,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
     protected function _handle_sms_donation_callback($response) {
 
-        $response['currency'] = empty($response['currency']) ? 'rur' : trim($response['currency']);
+        $response['currency'] = empty($response['currency']) ? 'rub' : trim($response['currency']);
 
         $donation_id = Leyka_Donations::get_instance()->add(array(
             'gateway_id' => $this->_id,
@@ -478,7 +478,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             'payment_type' => 'single',
             'amount' => $response['amount']/100.0,
             'currency' => empty($response['currency']) ?
-                'rur' : ($response['currency'] == 'RUB' ? 'rur' : strtolower($response['currency'])),
+                leyka_options()->opt('currency_main') : mb_strtolower($response['currency']),
             'mixplat_phone' => $response['phone'],
         ));
 
@@ -683,8 +683,8 @@ class Leyka_Mixplat_Mobile extends Leyka_Payment_Method {
 <p class="leyka_donor_phone-error field-error"></p>', $this),
         );
 
-        $this->_supported_currencies[] = 'rur';
-        $this->_default_currency = 'rur';
+        $this->_supported_currencies[] = 'rub';
+        $this->_default_currency = 'rub';
 
     }
 
@@ -723,8 +723,8 @@ class Leyka_Mixplat_Text extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-tinkoff.svg',
         ));
 
-        $this->_supported_currencies[] = 'rur';
-        $this->_default_currency = 'rur';
+        $this->_supported_currencies[] = 'rub';
+        $this->_default_currency = 'rub';
 
         $this->_processing_type = 'static';
 

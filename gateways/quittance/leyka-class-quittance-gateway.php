@@ -168,8 +168,8 @@ class Leyka_Bank_Order extends Leyka_Payment_Method {
 
         $this->_submit_label = __('Get bank order quittance', 'leyka');
 
-        $this->_supported_currencies = array('rur');
-        $this->_default_currency = 'rur';
+        $this->_supported_currencies = array('rub');
+        $this->_default_currency = 'rub';
 
         $this->_ajax_without_form_submission = true;
 

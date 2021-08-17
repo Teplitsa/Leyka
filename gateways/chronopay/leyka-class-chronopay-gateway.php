@@ -596,14 +596,14 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
         ));
 
         $this->_submit_label = __('Donate', 'leyka');
-        $this->_default_currency = 'rur';
+        $this->_default_currency = 'rub';
 
     }
 
     protected function _set_dynamic_attributes() {
 
         if(leyka_options()->opt('chronopay_card_product_id_rur')) {
-            $this->_supported_currencies[] = 'rur';
+            $this->_supported_currencies[] = 'rub';
         }
         if(leyka_options()->opt('chronopay_card_product_id_usd')) {
             $this->_supported_currencies[] = 'usd';
@@ -623,38 +623,32 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
         $this->_options = array(
             'chronopay_card_product_id_rur' => array(
                 'type' => 'text',
-                'title' => __('Chronopay product_id for RUR', 'leyka'),
-                'comment' => __('Please, enter Chronopay product_id for RUR currency.', 'leyka'),
+                'title' => sprintf(__('Chronopay product_id for %s', 'leyka'), leyka_options()->opt('currency_rub_label')),
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '012345-0001-0001'),
             ),
             'chronopay_card_product_id_usd' => array(
                 'type' => 'text',
-                'title' => __('Chronopay product_id for USD', 'leyka'),
-                'comment' => __('Please, enter Chronopay product_id for USD currency.', 'leyka'),
+                'title' => sprintf(__('Chronopay product_id for %s', 'leyka'), leyka_options()->opt('currency_usd_label')),
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '012345-0001-0002'),
             ),
             'chronopay_card_product_id_eur' => array(
                 'type' => 'text',
-                'title' => __('Chronopay product_id for EUR', 'leyka'),
-                'comment' => __('Please, enter Chronopay product_id for EUR currency.', 'leyka'),
+                'title' => sprintf(__('Chronopay product_id for %s', 'leyka'), leyka_options()->opt('currency_eur_label')),
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '012345-0001-0003'),
             ),
             'chronopay_card_rebill_product_id_rur' => array(
                 'type' => 'text',
-                'title' => __('Chronopay product_id for rebills in RUR', 'leyka'),
-                'comment' => __('Please, enter Chronopay product_id for rebills in RUR currency.', 'leyka'),
+                'title' => sprintf(__('Chronopay product_id for rebills in %s', 'leyka'), leyka_options()->opt('currency_rub_label')),
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '012345-0001-0011'),
             ),
             'chronopay_card_rebill_product_id_usd' => array(
                 'type' => 'text',
-                'title' => __('Chronopay product_id for rebills in USD', 'leyka'),
-                'comment' => __('Please, enter Chronopay product_id for rebills in USD currency.', 'leyka'),
+                'title' => sprintf(__('Chronopay product_id for rebills in %s', 'leyka'), leyka_options()->opt('currency_usd_label')),
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '012345-0001-0012'),
             ),
             'chronopay_card_rebill_product_id_eur' => array(
                 'type' => 'text',
-                'title' => __('Chronopay product_id for rebills in EUR', 'leyka'),
-                'comment' => __('Please, enter Chronopay product_id for rebills in EUR currency.', 'leyka'),
+                'title' => sprintf(__('Chronopay product_id for rebills in %s', 'leyka'), leyka_options()->opt('currency_eur_label')),
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '012345-0001-0013'),
             ),
         );

@@ -2009,8 +2009,8 @@ class Leyka_Paypal_All extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'gateways/paypal/icons/paypal-frontend.svg',
         ));
 
-        $this->_supported_currencies[] = 'rur';
-        $this->_default_currency = 'rur';
+        $this->_supported_currencies[] = 'rub';
+        $this->_default_currency = 'rub';
 
     }
 

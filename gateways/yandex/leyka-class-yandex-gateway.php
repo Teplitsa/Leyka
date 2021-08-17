@@ -171,7 +171,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 $payment_data = array(
                     'amount' => array(
                         'value' => round($form_data['leyka_donation_amount'], 2),
-                        'currency' => 'RUB', /** @todo Change to $form_data[leyka_donation_currency], but fix "rur" -> "RUB" */
+                        'currency' => $form_data['leyka_donation_currency'],
                     ),
                     'confirmation' => array(
                         'type' => 'redirect',
@@ -218,7 +218,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
             if(
                 $pm_id === 'yandex_sb'
-                && $form_data['leyka_donation_currency'] == 'rur'
+                && $form_data['leyka_donation_currency'] == 'rub'
                 && $form_data['leyka_donation_amount'] < 10.0
             ) {
 
@@ -630,7 +630,7 @@ techMessage="'.$tech_message.'"/>');
                     array(
                         'amount' => array(
                             'value' => round($new_recurring_donation->amount, 2),
-                            'currency' => 'RUB', /** @todo Change to $new_recurring_donation->currency_id, but fix "rur" -> "RUB" */
+                            'currency' => $new_recurring_donation->currency_id,
                         ),
                         'payment_method_id' => $init_recurring_donation->yandex_recurring_id,
                         'capture' => true,
@@ -908,8 +908,8 @@ class Leyka_Yandex_All extends Leyka_Payment_Method {
 
         $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
 
-        $this->_supported_currencies[] = 'rur';
-        $this->_default_currency = 'rur';
+        $this->_supported_currencies[] = 'rub';
+        $this->_default_currency = 'rub';
 
     }
 
@@ -937,8 +937,8 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
         ));
 
-        $this->_supported_currencies[] = 'rur';
-        $this->_default_currency = 'rur';
+        $this->_supported_currencies[] = 'rub';
+        $this->_default_currency = 'rub';
 
     }
 
@@ -1012,8 +1012,8 @@ class Leyka_Yandex_Money extends Leyka_Payment_Method {
 
         $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
 
-        $this->_supported_currencies[] = 'rur';
-        $this->_default_currency = 'rur';
+        $this->_supported_currencies[] = 'rub';
+        $this->_default_currency = 'rub';
 
     }
 
@@ -1046,8 +1046,8 @@ class Leyka_Yandex_Webmoney extends Leyka_Payment_Method {
 
         $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
 
-        $this->_supported_currencies[] = 'rur';
-        $this->_default_currency = 'rur';
+        $this->_supported_currencies[] = 'rub';
+        $this->_default_currency = 'rub';
 
     }
 
@@ -1080,8 +1080,8 @@ class Leyka_Yandex_Sberbank_Online extends Leyka_Payment_Method {
 
         $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
 
-        $this->_supported_currencies[] = 'rur';
-        $this->_default_currency = 'rur';
+        $this->_supported_currencies[] = 'rub';
+        $this->_default_currency = 'rub';
 
     }
 
@@ -1114,8 +1114,8 @@ class Leyka_Yandex_Alpha_Click extends Leyka_Payment_Method {
 
         $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
 
-        $this->_supported_currencies[] = 'rur';
-        $this->_default_currency = 'rur';
+        $this->_supported_currencies[] = 'rub';
+        $this->_default_currency = 'rub';
 
     }
 
@@ -1148,8 +1148,8 @@ class Leyka_Yandex_Promvzyazbank extends Leyka_Payment_Method {
 
         $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
 
-        $this->_supported_currencies[] = 'rur';
-        $this->_default_currency = 'rur';
+        $this->_supported_currencies[] = 'rub';
+        $this->_default_currency = 'rub';
 
     }
 

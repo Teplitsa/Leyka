@@ -74,8 +74,8 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'gateways/text/icons/pm-text.svg',
         ));
 
-        $this->_supported_currencies = array('rur', 'uah', 'byn',);
-        $this->_default_currency = 'rur';
+        $this->_supported_currencies = array('rub', 'uah', 'byn',);
+        $this->_default_currency = 'rub';
 
         $this->_processing_type = 'static'; // We should display custom data instead of the donors data & submit step
 

@@ -31,7 +31,6 @@ class Leyka_Star_Template_Controller extends Leyka_Template_Controller {
             'amount_max' => $currencies[$main_currency_id]['top'],
             'amount_max_total' => leyka_options()->opt('leyka_currency_'.$main_currency_id.'_max_sum'),
             'pm_list' => leyka_get_pm_list(true, $main_currency_id),
-            
             'amount_mode' => $amount_mode,
             'amount_variants' => $amount_variants,
         );

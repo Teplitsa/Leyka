@@ -253,7 +253,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                     $donation->add_gateway_response($_POST);
 
                     switch($_POST['Currency']) {
-                        case 'RUB': $_POST['Currency'] = 'RUR'; break;
+                        case 'RUB': $_POST['Currency'] = 'RUB'; break;
                         case 'USD': $_POST['Currency'] = 'USD'; break;
                         case 'EUR': $_POST['Currency'] = 'EUR'; break;
                         default:
@@ -752,8 +752,8 @@ class Leyka_CP_Card extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
         ));
 
-        $this->_supported_currencies[] = 'rur';
-        $this->_default_currency = 'rur';
+        $this->_supported_currencies[] = 'rub';
+        $this->_default_currency = 'rub';
 
         $this->_processing_type = 'custom-process-submit-event';
 

@@ -130,7 +130,7 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
             'Desc' => $donation->payment_title,
             'SignatureValue' => $hash,
             'Shp_item' => 1, // Maybe, not needed
-            'IncCurrLabel' => $pm_curr, // Default PM + Currency. "R" for "RUR", as we'll always use RUR for now
+            'IncCurrLabel' => $pm_curr, // Default PM + Currency. "R" for "RUB", as we'll always use RUB for now
             'Culture' => get_locale() == 'ru_RU' ? 'ru' : 'en',
         );
 
@@ -405,8 +405,8 @@ class Leyka_Robokassa_Card extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
         ));
 
-        $this->_supported_currencies[] = 'rur';
-        $this->_default_currency = 'rur';
+        $this->_supported_currencies[] = 'rub';
+        $this->_default_currency = 'rub';
 
     }
 
@@ -456,8 +456,8 @@ class Leyka_Robokassa_Yandex_Money extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
         ));
 
-        $this->_supported_currencies[] = 'rur';
-        $this->_default_currency = 'rur';
+        $this->_supported_currencies[] = 'rub';
+        $this->_default_currency = 'rub';
 
     }
 
@@ -486,8 +486,8 @@ class Leyka_Robokassa_Webmoney extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/webmoney.svg',
         ));
 
-        $this->_supported_currencies[] = 'rur';
-        $this->_default_currency = 'rur';
+        $this->_supported_currencies[] = 'rub';
+        $this->_default_currency = 'rub';
 
     }
 
@@ -516,8 +516,8 @@ class Leyka_Robokassa_Qiwi extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/qiwi.svg',
         ));
 
-        $this->_supported_currencies[] = 'rur';
-        $this->_default_currency = 'rur';
+        $this->_supported_currencies[] = 'rub';
+        $this->_default_currency = 'rub';
 
     }
 
@@ -545,8 +545,8 @@ class Leyka_Robokassa_All extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
         ));
 
-        $this->_supported_currencies[] = 'rur';
-        $this->_default_currency = 'rur';
+        $this->_supported_currencies[] = 'rub';
+        $this->_default_currency = 'rub';
 
     }
 
