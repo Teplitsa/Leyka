@@ -185,7 +185,8 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 'payment_type' => empty($meta['leyka_payment_type']) ? 'single' : $meta['leyka_payment_type'][0],
                 'payment_method' => empty($meta['leyka_payment_method']) ? '' : $meta['leyka_payment_method'][0],
                 'gateway' => empty($meta['leyka_gateway']) ? '' : $meta['leyka_gateway'][0],
-                'currency' => empty($meta['leyka_donation_currency']) ? 'rur' : $meta['leyka_donation_currency'][0],
+                'currency' => empty($meta['leyka_donation_currency']) ?
+                    leyka_options()->opt('currency_main') : $meta['leyka_donation_currency'][0],
                 'amount' => $donation_amount,
                 'amount_total' => $donation_amount_total,
                 'main_curr_amount' => !empty($meta['leyka_main_curr_amount'][0]) ?
