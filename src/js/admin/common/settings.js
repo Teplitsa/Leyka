@@ -84,11 +84,11 @@ jQuery(document).ready(function($){
     });
     // Ranged datepicker fields - END
 
-    // Campaign(s) select fields (for admin list filters mostly):
-    $('input.leyka-campaigns-selector:not(.leyka-js-dont-initialize-common-widget)').each(function(){
+    jQuery.leyka_admin_campaigns_select = function($text_selector_field, options){
 
-        let $text_selector_field = $(this),
-            $list_select_field = $text_selector_field.siblings('.leyka-campaigns-select'),
+        $text_selector_field = $($text_selector_field);
+
+        let $list_select_field = $text_selector_field.siblings('.leyka-campaigns-select'),
             is_multiple_values = !!$list_select_field.prop('multiple'),
             selected_values = [];
 
@@ -138,6 +138,11 @@ jQuery(document).ready(function($){
 
         $text_selector_field.autocomplete(autocomplete_settings);
 
+    };
+
+    // Campaign(s) select fields (for admin list filters mostly):
+    $('input.leyka-campaigns-selector:not(.leyka-js-dont-initialize-common-widget)').each(function(){
+        $.leyka_admin_campaigns_select($(this));
     });
     // Campaign(s) select fields  - END
 

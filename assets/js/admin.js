@@ -862,11 +862,11 @@ jQuery(document).ready(function($){
     });
     // Ranged datepicker fields - END
 
-    // Campaign(s) select fields (for admin list filters mostly):
-    $('input.leyka-campaigns-selector:not(.leyka-js-dont-initialize-common-widget)').each(function(){
+    jQuery.leyka_admin_campaigns_select = function($text_selector_field, options){
 
-        let $text_selector_field = $(this),
-            $list_select_field = $text_selector_field.siblings('.leyka-campaigns-select'),
+        $text_selector_field = $($text_selector_field);
+
+        let $list_select_field = $text_selector_field.siblings('.leyka-campaigns-select'),
             is_multiple_values = !!$list_select_field.prop('multiple'),
             selected_values = [];
 
@@ -916,6 +916,11 @@ jQuery(document).ready(function($){
 
         $text_selector_field.autocomplete(autocomplete_settings);
 
+    };
+
+    // Campaign(s) select fields (for admin list filters mostly):
+    $('input.leyka-campaigns-selector:not(.leyka-js-dont-initialize-common-widget)').each(function(){
+        $.leyka_admin_campaigns_select($(this));
     });
     // Campaign(s) select fields  - END
 
@@ -1580,55 +1585,24 @@ jQuery(document).ready(function($){
 
     // Campaigns select fields:
 
-    // Init campaign list autocomplete for a field:
-    function leyka_additional_fields_init_campaigns_autocomplete($campaigns_select_field) {
-
-        let selected_values = [];
-
-        $campaigns_select_field = $($campaigns_select_field);
-
-        $campaigns_select_field.find('option').each(function(){
-            selected_values.push({item: {label: $.trim($(this).text()), value: $(this).val()}});
-        });
-
-        $campaigns_select_field.siblings('input.leyka-campaigns-selector').autocomplete({
-            source: leyka.ajaxurl+'?action=leyka_campaigns_autocomplete',
-            multiselect: true,
-            minLength: 0,
-            search_on_focus: true,
-            pre_selected_values: selected_values,
-            leyka_select_callback: function(selected_items) {
-
-                $campaigns_select_field.html('');
-                for(let val in selected_items) {
-
-                    let $option = $('<option></option>')
-                        .val(val)
-                        .prop('selected', true);
-
-                    $campaigns_select_field.append($option);
-
-                }
-
-            }
-        });
-
-    }
-
     // Init all existing campaigns list fields on page load:
-    $items_wrapper.find('.autocomplete-select').each(function(){
-        leyka_additional_fields_init_campaigns_autocomplete(this);
+    $items_wrapper.find('input.leyka-campaigns-selector').each(function(){
+        $.leyka_admin_campaigns_select($(this));
     });
 
     // Init campaign list for a new additional field:
     $add_item_button.on('click.leyka', function(){
 
-        leyka_additional_fields_init_campaigns_autocomplete(
-            $items_wrapper.find('.field-box:last-child .autocomplete-select[name="campaigns\[\]"]')
+        $.leyka_admin_campaigns_select(
+            $items_wrapper
+                .find('.field-box:last-child .autocomplete-select[name="campaigns\[\]"]')
+                .siblings('input.leyka-campaigns-selector')
         );
 
-        leyka_additional_fields_init_campaigns_autocomplete(
-            $items_wrapper.find('.field-box:last-child .autocomplete-select[name="campaigns_exceptions\[\]"]')
+        $.leyka_admin_campaigns_select(
+            $items_wrapper
+                .find('.field-box:last-child .autocomplete-select[name="campaigns_exceptions\[\]"]')
+                .siblings('input.leyka-campaigns-selector')
         );
 
     });
