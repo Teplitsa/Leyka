@@ -106,6 +106,10 @@ require_once(LEYKA_PLUGIN_DIR.'inc/leyka-widgets.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-hooks.php');
 //require_once(ABSPATH.'wp-admin/includes/meta-boxes.php');
 
+if ( version_compare( $GLOBALS['wp_version'], '5.8', '>=' ) ) {
+    require_once(LEYKA_PLUGIN_DIR.'editor/leyka-editor.php');
+}
+
 // Automatically include all sub-dirs of /leyka/gateways/ :
 $gateways_dir = dir(LEYKA_PLUGIN_DIR.'gateways/');
 if($gateways_dir) {
