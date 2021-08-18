@@ -896,16 +896,12 @@ class Leyka extends Leyka_Singleton {
         // Via URL: some-website.org/leyka/service/procedure/campaigns-targets-reaching-mailout/123
         // Via PHP CLI: php [-f] /absolute/address/to/leyka/procedures/leyka-campaigns-target-reaching-mailout.php -- 123
 
-//        echo '<pre>'.print_r('HERE BEFORE ADDR HOOK FOR: '.$procedure_id, 1).'</pre>';
-
         $procedure_script = apply_filters(
             'leyka_procedure_address',
             LEYKA_PLUGIN_DIR.'procedures/leyka-'.$procedure_id.'.php',
             $procedure_id,
             $params
         );
-
-//        echo '<pre>AFTER HOOK: '.print_r($procedure_script, 1).'</pre>';
 
         if(file_exists($procedure_script)) {
 

@@ -24,6 +24,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
         );
 
         $donation_id = wp_insert_post($donation_params, true);
+        Leyka_Donations::remove_from_cache($donation_id); // It's nessesary to cleat the inner Donations object cache here
 
         if(is_wp_error($donation_id)) {
             return $donation_id;

@@ -1213,9 +1213,6 @@ class Leyka_Donation_Management extends Leyka_Singleton {
     public static function donation_data_metabox() {
 
         $donation_id = empty($_GET['donation']) ? false : absint($_GET['donation']);
-        /* = leyka_get_donations_storage_type() === 'post' ?
-            (empty($_GET['post']) ? false : absint($_GET['post'])) :
-            (empty($_GET['donation']) ? false : absint($_GET['donation'])); */
 
         $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
         $campaign = new Leyka_Campaign($donation->campaign_id);?>
@@ -1413,7 +1410,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             <?php } else {?>
 
                 <span class="fake-input">
-                <?php $pm = leyka_get_pm_by_id($donation->payment_method);
+                <?php $pm = leyka_get_pm_by_id($donation->pm_full_id, true);
                 $gateway = leyka_get_gateway_by_id($donation->gateway_id);
 
                 echo ($pm ? $pm->label : __('Unknown payment method', 'leyka'))

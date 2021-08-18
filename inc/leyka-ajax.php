@@ -131,7 +131,7 @@ function leyka_get_gateway_redirect_data(){
         } else { // Donation created successfully
 
             $payment_vars['donation_id'] = $donation_id;
-            $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
+            $donation = Leyka_Donations::get_instance()->get($donation_id);
 
             if( // Direct integration with GUA - checkout event:
                 leyka_options()->opt('use_gtm_ua_integration') === 'enchanced_ua_only'

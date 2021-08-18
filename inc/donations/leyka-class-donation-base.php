@@ -156,7 +156,7 @@ abstract class Leyka_Donation_Base {
         $params['currency_id'] = empty($params['currency_id']) || !leyka_get_currencies_data($params['currency_id']) ?
             'RUB' : mb_strtoupper($params['currency_id']);
 
-        $currency_rate = $params['currency'] == 'RUB' ?
+        $currency_rate = $params['currency_id'] == 'RUB' ?
             1.0 : (float)leyka_options()->opt('currency_rur2'.mb_strtolower($params['currency']));
         if( !$currency_rate || $currency_rate <= 0.0 ) {
             $currency_rate = 1.0;

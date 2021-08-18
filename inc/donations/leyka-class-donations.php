@@ -58,6 +58,28 @@ abstract class Leyka_Donations extends Leyka_Singleton {
     }
 
     /**
+     * @param $donation_id int|string
+     * @return boolean True if Donations object cache is off or if given Donation was removed from it, false otherwise.
+     */
+    public static function remove_from_cache($donation_id) {
+
+        if( !self::$use_leyka_object_cache ) {
+            return true;
+        }
+
+        $donation_id = absint($donation_id);
+        if( !empty(self::$_objects[$donation_id]) ) {
+
+            unset(self::$_objects[$donation_id]);
+            return true;
+
+        } else {
+            return false;
+        }
+
+    }
+
+    /**
      * @param int|WP_Post|Leyka_Donation_Base|object $donation
      * @return int|false
      */
