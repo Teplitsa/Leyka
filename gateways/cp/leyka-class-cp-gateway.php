@@ -131,7 +131,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             );
         }
 
-        $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
+        $donation = Leyka_Donations::get_instance()->get($donation_id);
 
         $cp_currency = 'RUB';
         switch($_POST['leyka_donation_currency']) {

@@ -568,8 +568,8 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
     public function get($params) {
 
-        if(is_int($params) && absint($params)) { // Int given - return the single Donation
-            return $this->get_donation($params);
+        if((is_int($params) || is_string($params)) && absint($params)) { // Int given - return the single Donation
+            return $this->get_donation(absint($params));
         }
 
         // Array given - return a Donations selection:
@@ -1034,7 +1034,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
     public function get($params) {
 
         if((is_int($params) || is_string($params)) && absint($params)) { // Int given - return the single Donation
-            return $this->get_donation($params);
+            return $this->get_donation(absint($params));
         }
 
         // Array given - return a Donations selection:

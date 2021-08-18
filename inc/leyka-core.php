@@ -860,9 +860,7 @@ class Leyka extends Leyka_Singleton {
             'id' => 'leyka-toolbar-donations',
             'title' => __('Donations', 'leyka'),
             'parent' => 'leyka-toolbar-menu',
-            'href' => leyka()->donations_storage_type == 'sep' ?
-                admin_url('admin.php?page=leyka_donations') :
-                admin_url('edit.php?post_type='.Leyka_Donation_Management::$post_type),
+            'href' => admin_url('admin.php?page=leyka_donations'),
         ));
         $wp_admin_bar->add_node(array(
             'id' => 'leyka-toolbar-campaigns',
