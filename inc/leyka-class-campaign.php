@@ -378,7 +378,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <h3 class="field-title">
                 <label for="campaign-target">
-                    <?php echo sprintf(__('Target (%s)', 'leyka'), leyka_options()->opt('currency_rur_label'));?>
+                    <?php echo sprintf(__('Target (%s)', 'leyka'), leyka_get_currency_label());?>
                 </label>
             </h3>
 
@@ -1659,7 +1659,9 @@ class Leyka_Campaign {
                 return $this->_post_object ? $this->_post_object->post_excerpt : '';
 
             case 'post_name': return $this->_post_object ? $this->_post_object->post_name : '';
-            case 'status': return $this->_post_object ? $this->_post_object->post_status : '';
+            case 'status':
+            case 'post_status':
+                return $this->_post_object ? $this->_post_object->post_status : '';
 
             case 'permalink':
             case 'url':
@@ -1705,7 +1707,7 @@ class Leyka_Campaign {
 
             case 'daily_rouble_mode':
             case 'daily_rouble_mode_on':
-                return $this->_campaign_meta['daily_rouble_mode'];
+                return $this->template_id === 'need-help' ? $this->_campaign_meta['daily_rouble_mode'] : false;
             case 'daily_rouble_amounts':
             case 'daily_rouble_amount_variants':
                 return $this->_campaign_meta['daily_rouble_amount_variants'];

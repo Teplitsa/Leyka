@@ -147,6 +147,11 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
         $columns['donor_subscription'] = __('Donor subscription', 'leyka');
         $columns['donor_comment'] = __('Donor comment', 'leyka');
 
+        // Additional fields columns:
+        foreach(leyka_options()->opt('additional_donation_form_fields_library') as $field_id => $field_settings) {
+            $columns['additional_field-'.$field_id] = $field_settings['title'];
+        }
+
         return apply_filters('leyka_admin_donations_columns_names', $columns);
 
     }
@@ -174,13 +179,15 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
     /**
      * Render a column when no column specific method exists.
      *
-     * @param array $donation
-     * @param string $column_name
+     * @param Leyka_Donation_Base $donation
+     * @param string $column_id
      * @return mixed
      */
-    public function column_default($donation, $column_name) { /** @var $donation Leyka_Donation_Base */
-        switch($column_name) {
-            case 'id': return apply_filters('leyka_admin_donation_id_column_content', $donation->id, $donation);
+    public function column_default($donation, $column_id) {
+
+        switch($column_id) {
+            case 'id':
+                return apply_filters('leyka_admin_donation_id_column_content', $donation->id, $donation);
             case 'payment_type':
                 return apply_filters(
                     'leyka_admin_donation_type_column_content',
@@ -196,10 +203,26 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
                     $donation
                 );
             default:
-                return leyka_options()->opt('plugin_debug_mode') ?
+
+                if(mb_stristr($column_id, 'additional_field-') !== false) { // "For all campaigns" additional field column
+
+                    $field_id = str_replace('additional_field-', '', $column_id);
+
+                    if(is_array($donation->additional_fields) && !empty($donation->additional_fields[$field_id])) {
+                        return apply_filters(
+                            'leyka_admin_donation_additional_field_column_content',
+                            $donation->additional_fields[$field_id],
+                            $donation
+                        );
+                    }
+
+                }
+
+                return ''; /*leyka_options()->opt('plugin_debug_mode') ?
                     '<pre>'.print_r($donation, true).'</pre>' : // Show the whole array for troubleshooting purposes
-                    apply_filters("leyka_admin_donation_{$column_name}_column_content", '', $donation);
+                    apply_filters("leyka_admin_donation_{$column_id}_column_content", '', $donation);*/
         }
+
     }
 
     /**
@@ -318,9 +341,10 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
     public function column_gateway_pm($donation) { /** @var $donation Leyka_Donation_Base */
 
-        $gateway_label = $donation->gateway_id == 'correction' ? __('Custom payment info', 'leyka') : $donation->gateway_label;
-        $pm_label = $donation->gateway_id == 'correction' ? $donation->pm : $donation->pm_label;
-        $gateway = $donation->gateway_id == 'correction' ? false : leyka_get_gateway_by_id($donation->gateway_id);
+        $gateway_label = $donation->gateway_id && $donation->gateway_id !== 'correction' ?
+            $donation->gateway_label : __('Custom payment info', 'leyka');
+        $pm_label = $donation->gateway_id && $donation->gateway_id !== 'correction' ? $donation->pm_label : $donation->pm;
+        $gateway = $donation->gateway_id ? leyka_get_gateway_by_id($donation->gateway_id) : false;
 
         return apply_filters(
             'leyka_admin_donation_gateway_pm_column_content',

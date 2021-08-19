@@ -1214,8 +1214,12 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         $donation_id = empty($_GET['donation']) ? false : absint($_GET['donation']);
 
-        $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
-        $campaign = new Leyka_Campaign($donation->campaign_id);?>
+        $donation = Leyka_Donations::get_instance()->get($donation_id);
+        $campaign = new Leyka_Campaign($donation->campaign_id);
+
+        if($donation->id == 451) {
+            echo '<pre>HERE: '.print_r(get_post_meta($donation->id, 'leyka_gateway', true), 1).'</pre>';
+        }?>
 
 	<fieldset class="leyka-set campaign">
 		<legend><?php _e('Campaign Data', 'leyka');?></legend>
@@ -1306,6 +1310,10 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             <?php }?>
             </div>
         </div>
+
+        <?php if($donation->type !== 'correction') {
+
+        }?>
 
         <?php if(leyka_options()->opt_template('show_donation_comment_field') || $donation->donor_comment) {?>
         <div class="leyka-ddata-string">

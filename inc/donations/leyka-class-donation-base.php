@@ -178,6 +178,14 @@ abstract class Leyka_Donation_Base {
             $params['amount_total']*$currency_rate : round((float)$params['amount_total_in_main_currency'], 2);
         // Donation total amount - END
 
+        // Additional fields:
+        $params['additional_fields'] = empty($params['additional_fields']) || !is_array($params['additional_fields']) ?
+            array() : $params['additional_fields'];
+        if($params['additional_fields']) {
+            array_walk($params['additional_fields'], function( &$value ){ $value = trim($value); });
+        }
+        // Additional fields - END
+
         // Donor user ID:
         $params['donor_user_id'] = empty($params['donor_user_id']) ? 0 : absint($params['donor_user_id']);
 
