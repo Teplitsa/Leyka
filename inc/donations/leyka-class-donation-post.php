@@ -346,7 +346,6 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
             case 'pm_label':
             case 'payment_method_label':
-//                echo '<pre>HERE: '.print_r($this->pm_full_id, 1).'</pre>';
                 $pm = leyka_get_pm_by_id($this->pm_full_id, true);
                 return $pm ? $pm->label : __('Unknown payment method', 'leyka');
 
@@ -394,7 +393,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'donor_additional_fields':
             case 'donation_additional_fields':
                 return empty($this->_donation_meta['leyka_additional_fields']) ?
-                    array() : $this->_donation_meta['leyka_additional_fields'];
+                    [] : $this->_donation_meta['leyka_additional_fields'];
 
             case 'donor_email_date':
                 return $this->_donation_meta['_leyka_donor_email_date'];

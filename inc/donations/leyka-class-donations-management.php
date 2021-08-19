@@ -1215,11 +1215,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         $donation_id = empty($_GET['donation']) ? false : absint($_GET['donation']);
 
         $donation = Leyka_Donations::get_instance()->get($donation_id);
-        $campaign = new Leyka_Campaign($donation->campaign_id);
-
-        if($donation->id == 451) {
-            echo '<pre>HERE: '.print_r(get_post_meta($donation->id, 'leyka_gateway', true), 1).'</pre>';
-        }?>
+        $campaign = new Leyka_Campaign($donation->campaign_id);?>
 
 	<fieldset class="leyka-set campaign">
 		<legend><?php _e('Campaign Data', 'leyka');?></legend>
@@ -1311,7 +1307,30 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             </div>
         </div>
 
-        <?php if($donation->type !== 'correction') {
+        <?php if($donation->type !== 'correction') { // Additional fields
+
+            foreach(leyka_options()->opt('additional_donation_form_fields_library') as $field_id => $field_settings) {
+
+                if(is_array($donation->additional_fields) && !empty($donation->additional_fields[$field_id])) {?>
+
+                    <div class="leyka-ddata-string">
+
+                        <label for="donor-<?php echo $field_id;?>"><?php echo $field_settings['title'];?>:</label>
+
+                        <div class="leyka-ddata-field"><span class="fake-input">
+                            <?php echo apply_filters(
+                                'leyka_admin_donation_info_additional_field_content',
+                                $donation->additional_fields[$field_id],
+                                $field_id,
+                                $donation
+                            );?>
+                        </span></div>
+
+                    </div>
+
+                <?php }?>
+
+            <?php }
 
         }?>
 
@@ -1470,9 +1489,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         <div class="leyka-ddata-string">
             <label for="donation-date-view"><?php _e('Donation date', 'leyka');?>:</label>
 			<div class="leyka-ddata-field">
-            <?php if($donation->type === 'correction') {
-
-//                echo '<pre>'.print_r($donation->date_label, 1).'</pre>';?>
+            <?php if($donation->type === 'correction') {?>
 
                 <input type="text" id="donation-date-view" class="leyka-datepicker" value="<?php echo $donation->date_label;?>" data-min-date="-5Y" data-max-date="+1Y" data-alt-field="#donation-date" data-alt-format="yy-mm-dd">
                 <input type="hidden" id="donation-date" name="donation_date" value="<?php echo date('Y-m-d', $donation->date_timestamp);?>">

@@ -335,6 +335,13 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                 return $this->_main_data->donor_email;
             case 'donor_comment':
                 return $this->get_meta('donor_comment');
+
+            case 'additional_fields':
+            case 'donor_additional_fields':
+            case 'donation_additional_fields':
+                $donation_additional_fields = $this->get_meta('additional_fields');
+                return $donation_additional_fields && is_array($donation_additional_fields) ? $donation_additional_fields : [];
+
             case 'donor_email_date':
                 return $this->get_meta('donor_email_date');
             case 'managers_emails_date':
@@ -491,6 +498,15 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                 return $this->_set_data($field, $value);
             case 'donor_comment':
                 return $this->_set_data($field, sanitize_textarea_field($value));
+
+            case 'additional_fields':
+            case 'donor_additional_fields':
+            case 'donation_additional_fields':
+                if($value == $this->additional_fields || !is_array($value)) {
+                    return false;
+                }
+                array_walk($value, function( &$value ){ $value = trim($value); });
+                return $this->set_meta('additional_fields', $value);
 
             case 'donor_id':
             case 'donor_user_id':

@@ -216,11 +216,9 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
                         );
                     }
 
+                } else {
+                    return apply_filters("leyka_admin_donation_{$column_id}_column_content", '', $donation);
                 }
-
-                return ''; /*leyka_options()->opt('plugin_debug_mode') ?
-                    '<pre>'.print_r($donation, true).'</pre>' : // Show the whole array for troubleshooting purposes
-                    apply_filters("leyka_admin_donation_{$column_id}_column_content", '', $donation);*/
         }
 
     }
@@ -285,12 +283,21 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
         <span class="leyka-li-title">'._x('Comment', "[Donor's comment. Should be short]", 'leyka').':</span>
         <span class="leyka-li-value">'.($donation->donor_comment ? mb_ucfirst($donation->donor_comment) : __('no', 'leyka')).'</span>
     </li>';
+        $donor_additional_data_html = apply_filters(
+            'leyka_admin_donation_donor_column_additional_data_list_content_html',
+            $donor_additional_data_html,
+            $donation
+        );
         $donor_additional_data_html .= '</ul>';
 
         return '<div class="leyka-donor-data-additional">'
                 .'<i class="icon-donor-more-data has-tooltip leyka-tooltip-on-click leyka-tooltip-wide leyka-tooltip-white" data-tooltip-additional-classes="leyka-admin-tooltip-donor-more-data"></i>'
                     .'<span class="leyka-tooltip-content">'
-                        .apply_filters('leyka_admin_donation_donor_column_additional_data', $donor_additional_data_html, $donation)
+                        .apply_filters(
+                            'leyka_admin_donation_donor_column_additional_data_full_html',
+                            $donor_additional_data_html,
+                            $donation
+                        )
                     .'</span>'
                 .'</div>'
             .'<div class="leyka-donor-data-main">'.$donor_data_html.'</div>';
