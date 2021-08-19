@@ -352,8 +352,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'currency':
             case 'currency_id':
             case 'currency_code':
-                return $this->_donation_meta['leyka_donation_currency'];
-
+                return mb_strtoupper($this->_donation_meta['leyka_donation_currency']);
             case 'currency_label':
                 return leyka_get_currency_label($this->currency_id);
 

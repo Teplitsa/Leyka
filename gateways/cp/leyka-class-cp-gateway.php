@@ -252,14 +252,9 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                     $donation = Leyka_Donations::get_instance()->get_donation(absint($_POST['InvoiceId']));
                     $donation->add_gateway_response($_POST);
 
-                    switch($_POST['Currency']) {
-                        case 'RUB': $_POST['Currency'] = 'RUB'; break;
-                        case 'USD': $_POST['Currency'] = 'USD'; break;
-                        case 'EUR': $_POST['Currency'] = 'EUR'; break;
-                        default:
-                    }
+                    $_POST['Currency'] = mb_strtoupper($_POST['Currency']);
 
-                    if($donation->sum != $_POST['Amount'] || $donation->currency != $_POST['Currency']) {
+                    if($donation->sum != $_POST['Amount'] || $donation->currency_id != $_POST['Currency']) {
                         die(json_encode(array(
                             'code' => '11',
                             'reason' => sprintf(
