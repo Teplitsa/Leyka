@@ -621,7 +621,7 @@ class Leyka_Donations_Posts extends Leyka_Donations {
             }
         }
 
-        return empty($params['get_single']) ? $res : reset($res);
+        return $res;
 
     }
 

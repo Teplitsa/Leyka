@@ -305,6 +305,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                     }
 
+                    $donation->payment_type = 'rebill';
                     $donation->init_recurring_donation_id = $init_recurring_donation->id;
                     $donation->payment_title = $init_recurring_donation->title;
                     $donation->campaign_id = $init_recurring_donation->campaign_id;
@@ -314,8 +315,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                     $donation->donor_email = $init_recurring_donation->donor_email;
                     $donation->donor_user_id = $init_recurring_donation->donor_user_id;
                     $donation->amount = $init_recurring_donation->amount;
-                    $donation->currency = $init_recurring_donation->currency;
-                    $donation->payment_type = 'rebill';
+                    $donation->currency_id = $init_recurring_donation->currency_id;
 
                     // If init donation was made before the commission was set, apply a commission to the recurring one:
                     if(
@@ -407,12 +407,13 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                     if($init_recurring_donation && $init_recurring_donation->recurring_is_active) {
 
-                        if(!empty($_POST['Status'])) {
+                        if( !empty($_POST['Status']) ) {
 
-                            if($_POST['Status'] == 'Cancelled' || $_POST['Status'] == 'Rejected' || $_POST['Status'] == 'Expired')  {
+                            if(in_array($_POST['Status'], ['Cancelled', 'Rejected', 'Expired']))  {
 
                                 $init_recurring_donation->recurring_is_active = false;
-                                do_action('leyka_cp_cancel_recurring_subscription', $init_recurring_donation);
+//                                do_action('leyka_cp_cancel_recurring_subscription', $init_recurring_donation);
+
                             }
                         }
                     }
@@ -534,7 +535,8 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
         if(is_a($recurring, 'Leyka_Donation_Base')) {
             $recurring = $recurring->cp_recurring_id;
-        } else if( !$recurring ) {
+        }
+        if( !$recurring ) {
             return false;
         }
 

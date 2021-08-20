@@ -481,7 +481,8 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
             case 'recurrents_cancel_date':
             case 'recurring_cancel_date':
-                return $this->payment_type == 'rebill' ? !empty($this->_donation_meta['leyka_recurrents_cancel_date']) : NULL;
+                return $this->payment_type == 'rebill' && !empty($this->_donation_meta['leyka_recurrents_cancel_date']) ?
+                    $this->_donation_meta['leyka_recurrents_cancel_date'] : NULL;
 
             default:
                 return apply_filters('leyka_'.$this->gateway_id.'_get_unknown_donation_field', null, $field, $this);
