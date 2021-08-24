@@ -317,12 +317,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                     $donation->amount = $init_recurring_donation->amount;
                     $donation->currency_id = $init_recurring_donation->currency_id;
 
-                    // If init donation was made before the commission was set, apply a commission to the recurring one:
-                    if(
-                        $init_recurring_donation->amount == $init_recurring_donation->amount_total &&
-                        $donation->amount == $donation->amount_total &&
-                        leyka_get_pm_commission($donation->pm_full_id) > 0.0
-                    ) {
+                    if(leyka_get_pm_commission($donation->pm_full_id) > 0.0) {
                         $donation->amount_total = leyka_calculate_donation_total_amount($donation);
                     }
 

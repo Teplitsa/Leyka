@@ -620,6 +620,10 @@ techMessage="'.$tech_message.'"/>');
             return false;
         }
 
+        if(leyka_get_pm_commission($new_recurring_donation->pm_full_id) > 0.0) {
+            $new_recurring_donation->amount_total = leyka_calculate_donation_total_amount($new_recurring_donation);
+        }
+
         if(leyka_options()->opt('yandex_new_api')) {
 
             require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
