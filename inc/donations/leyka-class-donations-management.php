@@ -39,9 +39,8 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         /**
          * Donors data refresh actions.
-         * @todo ATM, these actions dont' work in SEP-storage mode (as Donors management is not supported yet).
          */
-        // If some funded donation data are changed, order it's donor's data cache refreshing:
+        // If some funded donation data are changed, order its donor's data cache refreshing:
         function leyka_order_donation_to_refresh($donation_id) {
 
             $donation = Leyka_DonationS::get_instance()->get_donation($donation_id);
@@ -147,115 +146,6 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             $campaign = new Leyka_Campaign($donation->campaign_id);
             $campaign->update_total_funded_amount($donation, $old === 'funded' ? 'remove' : 'add');
 
-        }
-
-    }
-
-    /** @todo Remove this method after the tests of Donations API for posts-typed storage. All filtering is managed in Donations admin-list table class */
-    public function manage_filters() {
-
-        if(get_current_screen()->id !== 'edit-'.self::$post_type || !current_user_can('leyka_manage_donations')) {
-            return;
-        }?>
-
-        <label for="payment-type-select"></label>
-        <select id="payment-type-select" name="payment_type">
-            <option value="" <?php echo empty($_GET['payment_type']) ? 'selected="selected"' : '';?>><?php _e('Select a payment type', 'leyka');?></option>
-
-            <?php foreach(leyka_get_payment_types_list() as $payment_type => $label) {?>
-                <option value="<?php echo $payment_type;?>" <?php echo !empty($_GET['payment_type']) && $_GET['payment_type'] == $payment_type ? 'selected="selected"' : '';?>><?php echo $label;?></option>
-            <?php }?>
-        </select>
-
-        <label for="gateway-pm-select"></label>
-        <select id="gateway-pm-select" name="gateway_pm">
-            <option value="" <?php echo empty($_GET['gateway_pm']) ? '' : 'selected="selected"';?>><?php _e('Select a gateway or a payment method', 'leyka');?></option>
-
-        <?php $gw_pm_list = array();
-        foreach(leyka_get_gateways() as $gateway) {
-
-            /** @var Leyka_Gateway $gateway */
-            $pm_list = $gateway->get_payment_methods();
-            if($pm_list)
-                $gw_pm_list[] = array('gateway' => $gateway, 'pm_list' => $pm_list);
-        }
-        $gw_pm_list = apply_filters('leyka_donations_list_gw_pm_filter', $gw_pm_list);
-
-        foreach($gw_pm_list as $element) {?>
-
-            <option value="<?php echo 'gateway__'.$element['gateway']->id;?>" <?php echo !empty($_GET['gateway_pm']) && $_GET['gateway_pm'] == 'gateway__'.$element['gateway']->id ? 'selected="selected"' : '';?>><?php echo $element['gateway']->name;?></option>
-
-            <?php foreach($element['pm_list'] as $pm) {?>
-                <option value="<?php echo 'pm__'.$pm->id;?>" <?php echo !empty($_GET['gateway_pm']) && $_GET['gateway_pm'] == 'pm__'.$pm->id ? 'selected="selected"' : '';?>><?php echo '&nbsp;&nbsp;&nbsp;&nbsp;'.$pm->name;?></option>
-            <?php }
-
-        }?>
-
-        </select>
-
-        <?php $campaign_title = '';
-        if( !empty($_GET['campaign']) && (int)$_GET['campaign'] > 0) {
-
-            $campaign = get_post((int)$_GET['campaign']);
-            if($campaign) {
-                $campaign_title = $campaign->post_title;
-            }
-
-        }?>
-
-        <label for="campaign-select"></label>
-        <input id="campaign-select" type="text" data-nonce="<?php echo wp_create_nonce('leyka_get_campaigns_list_nonce');?>" placeholder="<?php _e('Select a campaign', 'leyka');?>" value="<?php echo $campaign_title;?>">
-        <input id="campaign-id" type="hidden" name="campaign" value="<?php echo !empty($_GET['campaign']) ? (int)$_GET['campaign'] : '';?>">
-
-        <label for="donor-subscribed-select"></label>
-        <select id="donor-subscribed-select" name="donor_subscribed">
-            <option value="-" <?php echo !isset($_GET['donor_subscribed']) ? 'selected="selected"' : '';?>><?php _e('Donors subscription', 'leyka');?></option>
-            <option value="1" <?php echo isset($_GET['donor_subscribed']) && $_GET['donor_subscribed'] ? 'selected="selected"' : '';?>><?php _e('Subscribed donors', 'leyka');?></option>
-            <option value="0" <?php echo isset($_GET['donor_subscribed']) && !$_GET['donor_subscribed'] ? 'selected="selected"' : '';?>><?php _e('Unsubscribed donors', 'leyka');?></option>
-        </select>
-
-    <?php }
-
-    /** @todo Remove this method after the tests of Donations API for posts-typed storage. All filtering is managed in Donations admin-list table class */
-    public function do_filtering(WP_Query $query) {
-
-        if(
-            !is_admin()
-            || !$query->is_main_query()
-            || !get_current_screen()
-            || get_current_screen()->id !== 'edit-'.self::$post_type
-        ) {
-            return;
-        }
-
-        $meta_query = array('relation' => 'AND');
-
-        if( !empty($_REQUEST['campaign']) ) {
-            $meta_query[] = array('key' => 'leyka_campaign_id', 'value' => (int)$_REQUEST['campaign']);
-        }
-
-        if( !empty($_REQUEST['payment_type']) ) {
-            $meta_query[] = array('key' => 'leyka_payment_type', 'value' => $_REQUEST['payment_type']);
-        }
-
-        if( !empty($_REQUEST['gateway_pm']) ) {
-            if(strpos($_REQUEST['gateway_pm'], 'gateway__') !== false) {
-                $meta_query[] = array(
-                    'key' => 'leyka_gateway', 'value' => str_replace('gateway__', '', $_REQUEST['gateway_pm'])
-                );
-            } else if(strpos($_REQUEST['gateway_pm'], 'pm__') !== false) {
-                $meta_query[] = array(
-                    'key' => 'leyka_payment_method', 'value' => str_replace('pm__', '', $_REQUEST['gateway_pm'])
-                );
-            }
-        }
-
-        if( isset($_REQUEST['donor_subscribed']) && $_REQUEST['donor_subscribed'] !== '-' ) {
-            $meta_query[] = array('key' => 'leyka_donor_subscribed', 'value' => !!$_REQUEST['donor_subscribed']);
-        }
-
-        if(count($meta_query) > 1) {
-            $query->set('meta_query', $meta_query);
         }
 
     }
@@ -701,14 +591,13 @@ class Leyka_Donation_Management extends Leyka_Singleton {
     }
 
     /** Send all emails in case of a recurring auto-payment */
-    /** @todo Fix the merge bugs */
     public static function send_all_recurring_emails($donation) {
 
         if( !leyka_options()->opt('send_donor_thanking_emails_on_recurring_ongoing') ) {
             return false;
         }
 
-        $donation = leyka_get_validated_donation($donation);
+        $donation = Leyka_Donations::get_instance()->get_donation($donation);
 
         $donor_email = $donation->donor_email;
         if( !$donor_email ) {
@@ -753,7 +642,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             leyka_options()->opt('org_full_name'),
             leyka_options()->opt('org_short_name'),
             $donation->id,
-            leyka_get_payment_type_label($donation->type),
+            $donation->type_label,
             $donation->donor_name ? $donation->donor_name : __('dear donor', 'leyka'),
             $donation->donor_email ? $donation->donor_email : __('unknown email', 'leyka'),
             $donation->donor_comment,
@@ -1146,9 +1035,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 <input type="text" id="donation-amount-total" name="donation-amount-total" placeholder="<?php _e('Enter the donation total amount', 'leyka');?>" value=""> <?php echo leyka_get_currency_label();?><br>
                 <small class="field-help howto">
                     <?php
-                    /** @todo Add a checkbox here (unckecked by default) to calculate total amount
-                     * based on current commission setting.
-                     */
+                    /** @todo Add a checkbox here (unckecked by default) to calculate total amount based on current commission. */
                     _e('Leave empty to make the total amount value equal to the amount value.', 'leyka');?>
                 </small>
                 <div id="donation_amount_total-error" class="field-error"></div>
