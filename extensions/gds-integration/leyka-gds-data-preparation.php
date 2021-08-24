@@ -1,4 +1,4 @@
-<?php /** The procedure to prepare the Donations data to be read by Google Data Studio (via MySQL data connector). */
+<?php /** The procedure to prepare Donations data to be read by Google Data Studio (via MySQL data connector). */
 
 if( !function_exists('leyka_get_wp_core_path') ) {
     function leyka_get_wp_core_path() {
