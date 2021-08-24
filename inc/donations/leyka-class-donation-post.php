@@ -89,9 +89,6 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             $donation_meta_fields['donor_subscribed'] = $params['donor_subscribed'];
         }
 
-        /** @todo Check if it's needed (if there are other post_status changing based handlers, it won't) */
-//        Leyka_Donation_Management::get_instance()->donation_status_changed($params['status'], 'new', new self($donation_id));
-
         if($params['gateway_id']) {
             do_action("leyka_{$params['gateway_id']}_add_donation_specific_data", $donation_id, $params);
         }
