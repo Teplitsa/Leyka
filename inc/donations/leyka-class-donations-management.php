@@ -12,11 +12,6 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
     protected function __construct() {
 
-        add_filter('post_row_actions', array($this, 'row_actions'), 10, 2);
-
-        add_action('restrict_manage_posts', array($this, 'manage_filters'));
-        add_action('pre_get_posts', array($this, 'do_filtering'));
-
         if(leyka_get_donations_storage_type() === 'post') {
 
             add_action('add_meta_boxes', array($this, 'add_metaboxes')); // Add Donation PT metaboxes
@@ -37,9 +32,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         add_action('wp_ajax_leyka_send_donor_email', array($this, 'ajax_send_donor_email'));
 
-        /**
-         * Donors data refresh actions.
-         */
+        /** Donors data refresh actions */
         // If some funded donation data are changed, order its donor's data cache refreshing:
         function leyka_order_donation_to_refresh($donation_id) {
 
@@ -104,24 +97,6 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         );
 
         return $messages;
-
-    }
-
-    public function row_actions($actions, $donation) {
-
-        $current_screen = get_current_screen();
-
-        if( !$current_screen || !is_object($current_screen) || $current_screen->post_type != self::$post_type ) {
-            return $actions;
-        }
-
-		if(current_user_can('edit_donation', $donation->ID)) {
-			$actions['edit'] = '<a href="'.get_edit_post_link($donation->ID, 1).'">'.__('Edit').'</a>';
-		}
-
-        unset($actions['view'], $actions['inline hide-if-no-js']);
-
-        return $actions;
 
     }
 
