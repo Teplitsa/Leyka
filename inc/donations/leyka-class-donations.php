@@ -4,8 +4,6 @@ abstract class Leyka_Donations extends Leyka_Singleton {
 
     protected static $_instance = null;
 
-    public static $use_leyka_object_cache = true; // A flag to turn on/off the Leyka donations object cache
-
     /** @var array An array of Leyka_Donation_Base objects cache */
     protected static $_objects = array();
 
@@ -40,43 +38,8 @@ abstract class Leyka_Donations extends Leyka_Singleton {
      * @param bool $update_cache
      * @return Leyka_Donation_Base|null
      */
-    public function get_donation($donation, $update_cache = false) {
-
-        $donation_id = $this->_get_donation_id($donation);
-        if(self::$use_leyka_object_cache) {
-
-            if(empty(self::$_objects[$donation_id]) || !!$update_cache) {
-                self::$_objects[$donation_id] = $this->_get_donation($donation);
-            }
-
-            return self::$_objects[$donation_id];
-
-        } else {
-            return $this->_get_donation($donation);
-        }
-
-    }
-
-    /**
-     * @param $donation_id int|string
-     * @return boolean True if Donations object cache is off or if given Donation was removed from it, false otherwise.
-     */
-    public static function remove_from_cache($donation_id) {
-
-        if( !self::$use_leyka_object_cache ) {
-            return true;
-        }
-
-        $donation_id = absint($donation_id);
-        if( !empty(self::$_objects[$donation_id]) ) {
-
-            unset(self::$_objects[$donation_id]);
-            return true;
-
-        } else {
-            return false;
-        }
-
+    public function get_donation($donation) {
+        return $this->_get_donation($donation);
     }
 
     /**

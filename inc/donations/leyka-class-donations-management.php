@@ -262,7 +262,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
     public static function send_all_emails($donation, $send_to_managers = true) {
 
-        $donation = Leyka_Donations::get_instance()->get_donation($donation, true);
+        $donation = Leyka_Donations::get_instance()->get_donation($donation);
 
         if( !$donation ) {
             return false;

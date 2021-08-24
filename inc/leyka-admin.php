@@ -755,7 +755,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         } else {
 
-            $donation = Leyka_Donations::get_instance()->get_donation($donation_id, true);
+            $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
 
             do_action("leyka_{$donation->gateway_id}_add_donation_data", $donation);
             do_action("leyka_{$donation->gateway_id}_save_donation_data", $donation);
