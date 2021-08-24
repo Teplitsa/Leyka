@@ -123,7 +123,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
     /**
      * @deprecated Use self::get_init_recurring_donation($donation) instead.
      * @param mixed $donation
-     * @return mixed Leyka_Donation or false if param is wrong or nothing found.
+     * @return Leyka_Donation_Post|boolean A Donation object found, or false if param is wrong or nothing found.
      */
     public static function get_init_recurrent_donation($donation) {
         return self::get_init_recurring_donation($donation);

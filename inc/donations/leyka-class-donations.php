@@ -283,7 +283,8 @@ class Leyka_Donations_Posts extends Leyka_Donations {
             $query_params['day'] = (int)$params['day'];
         }
 
-        $query_params['date_query'] = array();
+        $query_params['date_query'] = isset($params['date_query']) && is_array($params['date_query']) ?
+            $params['date_query'] : [];
 
         if(isset($params['date_from'])) {
 
@@ -306,10 +307,6 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
         }
         // Donation date filtering - END
-
-//        if( !empty(trim($params['search_string'])) ) {
-//            $query_params['s'] = trim($params['search_string']);
-//        }
 
         if( !empty($params['recurring_only_init']) ) {
 
@@ -818,6 +815,8 @@ class Leyka_Donations_Separated extends Leyka_Donations {
         } else {
             $limit = ' LIMIT 0,'.$params['results_limit'];
         }
+
+        /** @todo Make it compatible with WP_Query 'date_query' param! Kinda like with $this->_get_meta_query_parts() for metas */
 
         if( !empty($params['date']) && strtotime($params['date']) ) {
             $where['date_created'] = $wpdb->prepare(

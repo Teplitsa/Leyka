@@ -32,7 +32,7 @@ if( !defined('WPINC') ) die;
 global $wpdb;
 
 if( !Leyka_Gds_Integration_Extension::get_instance()->_gds_data_table_exists() ) {
-    die; // Mb, create the Extensiton-specific DB table instead?
+    Leyka_Gds_Integration_Extension::get_instance()->_gds_data_table_create();
 }
 
 if( // GDS data lines limit is exceeded, abort

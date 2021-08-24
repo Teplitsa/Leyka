@@ -274,7 +274,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      * @param int|false $per_page A number of lines per page, or false to not use pagination.
      * @param int $page_number A page number. Will not be in use if $per_page === false.
      *
-     * @return mixed
+     * @return array
      */
     protected static function _get_items($per_page = false, $page_number = 1) {
 

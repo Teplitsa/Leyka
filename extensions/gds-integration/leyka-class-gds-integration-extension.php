@@ -1,7 +1,7 @@
 <?php if( !defined('WPINC') ) die;
 /**
  * Leyka Extension: Google Data Studio extension
- * Version: 1.0
+ * Version: 1.1
  * Author: Teplitsa of social technologies
  * Author URI: https://te-st.ru
  **/
@@ -136,16 +136,16 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
 
     }
 
-    public function _gds_data_table_insert(Leyka_Donation $donation) {
+    public function _gds_data_table_insert(Leyka_Donation_Base $donation) {
 
         global $wpdb;
 
         return $wpdb->insert(
             "{$wpdb->prefix}leyka_gds_integration_donations_data",
             array(
-                'ID' => $donation->ID,
+                'ID' => $donation->id,
                 'donation_date' => date('Y-m-d H:i:s', $donation->date_timestamp),
-                'payment_type' => $donation->type,
+                'payment_type' => $donation->payment_type,
                 'gateway_title' => $donation->gateway_label,
                 'pm_title' => $donation->pm_label,
                 'currency_label' => $donation->currency_label,
@@ -178,34 +178,17 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
 
     public function get_donations_to_convert() {
 
-        $params = apply_filters('leyka_gds_integration_donation_query_params', array(
-            'post_type' => Leyka_Donation_Management::$post_type,
-            'nopaging' => true,
-            'post_status' => 'any',
+        return Leyka_Donations::get_instance()->get(apply_filters('leyka_gds_integration_donation_query_params', [
             'date_query' => array($this->_get_date_query()),
-        ));
-
-        $result = array();
-        foreach(get_posts($params) as $donation) {
-            $result[] = new Leyka_Donation($donation);
-        }
-
-        return $result;
+        ]));
 
     }
 
     public function get_donations_to_convert_count() {
 
-        $params = apply_filters('leyka_gds_integration_donation_query_params', array(
-            'post_type' => Leyka_Donation_Management::$post_type,
-            'nopaging' => true,
-            'post_status' => 'any',
+        return Leyka_Donations::get_instance()->get_count(apply_filters('leyka_gds_integration_donation_query_params', [
             'date_query' => array($this->_get_date_query()),
-        ));
-
-        $query = new WP_Query($params);
-
-        return $query->found_posts;
+        ]));
 
     }
 

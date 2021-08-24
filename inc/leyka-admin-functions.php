@@ -150,11 +150,11 @@ if( !function_exists('leyka_show_admin_footer_on_default_pages') ) {
 
         $screen = get_current_screen();
 
-        if(stripos($screen->base, 'leyka') !== false && stripos($screen->id, 'leyka') !== false) {
+        if(mb_stripos($screen->base, 'leyka') !== false && mb_stripos($screen->id, 'leyka') !== false) {
             return $old_footer_html;
-        } else if( !empty($_GET['post_type']) && in_array($_GET['post_type'], array('leyka_donation', 'leyka_campaign')) ) {
+        } else if( !empty($_GET['post_type']) && $_GET['post_type'] == 'leyka_campaign' ) {
             return leyka_get_admin_footer('', $old_footer_html);
-        } else if( !empty($_GET['action']) && in_array($_GET['action'], array('edit')) && in_array($screen->post_type, array('leyka_donation', 'leyka_campaign')) ) {
+        } else if( !empty($_GET['action']) && $_GET['action'] == 'edit' && $screen->post_type == 'leyka_campaign' ) {
             return leyka_get_admin_footer('', $old_footer_html);
         } else {
             return $old_footer_html;

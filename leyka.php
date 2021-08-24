@@ -4,7 +4,7 @@
  * Plugin Name: Leyka
  * Plugin URI:  https://leyka.te-st.ru/
  * Description: The donations management system for your WP site
- * Version:     3.18
+ * Version:     3.19
  * Author:      Teplitsa of social technologies
  * Author URI:  https://te-st.ru
  * Text Domain: leyka
@@ -38,7 +38,7 @@
 
 // Leyka plugin version:
 if( !defined('LEYKA_VERSION') ) {
-    define('LEYKA_VERSION', '3.18');
+    define('LEYKA_VERSION', '3.19');
 }
 
 // Plugin base file:
@@ -97,9 +97,7 @@ require_once(LEYKA_PLUGIN_DIR.'inc/leyka-core.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-gateways-api.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-extensions-api.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-campaign.php');
-//require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-donation.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donation-base.php');
-require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donation-post.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donations-management.php'); /** @todo Make this class ADMIN ONLY. */
 require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donations.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-donor.php');

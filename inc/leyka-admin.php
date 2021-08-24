@@ -280,7 +280,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         } else if( !empty($_GET['page']) && $_GET['page'] == 'leyka_donors' && empty($_GET['screen']) ) {
             $leyka_page_class .= 'leyka-admin-donors-list';
         } else if(
-            ( !empty($_GET['post_type']) && in_array($_GET['post_type'], array('leyka_donation', 'leyka_campaign')) )
+            ( !empty($_GET['post_type']) && $_GET['post_type'] == 'leyka_campaign' )
             || ( !empty($_GET['page']) && $_GET['page'] === 'leyka_feedback' && empty($_GET['screen']))
             || ( !empty($_GET['page']) && $_GET['page'] === 'leyka_donors' && empty($_GET['screen']) )
         ) {

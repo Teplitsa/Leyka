@@ -166,7 +166,7 @@ class Leyka_Engagement_Banner_Controller  {
 			return false; // date does not matter
 		}
 
-		$donation = new Leyka_Donation($donation_id);
+		$donation = Leyka_Donations::get_instance()->get_donation($donation_id);
 		if( !$donation ) {
 			return true; // invalid donation info
 		}

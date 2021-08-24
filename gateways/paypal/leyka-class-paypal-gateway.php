@@ -211,7 +211,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
         $presentation = new \PayPal\Api\Presentation();
         $presentation
-//            ->setLogoImage(leyka_options()->opt('receiver_logo')) /** @todo A receiver logo field needed. */
+//            ->setLogoImage(leyka_options()->opt('receiver_logo'))
             ->setBrandName(get_bloginfo('name')) // For now. There can also be a campaign title
             ->setReturnUrlLabel(__('Return', 'leyka'))
             ->setNoteToSellerLabel(__('Thanks!', 'leyka'));
@@ -221,7 +221,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
         $web_experience_profile = new \PayPal\Api\WebProfile();
         $web_experience_profile
-            ->setName(__('Leyka Donation', 'leyka')) // ->setId('leyka_donation') isn't gonna work here :'\
+            ->setName(__('Leyka Donation', 'leyka'))
             ->setFlowConfig($flow_config)
             ->setPresentation($presentation)
             ->setTemporary(false)

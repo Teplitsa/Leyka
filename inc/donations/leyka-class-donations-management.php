@@ -15,17 +15,6 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         if(leyka_get_donations_storage_type() === 'post') {
 
             add_action('add_meta_boxes', array($this, 'add_metaboxes')); // Add Donation PT metaboxes
-            add_action('add_meta_boxes', array($this, 'remove_metaboxes'), 100); // Remove unneeded metaboxes
-
-            add_action('save_post_'.self::$post_type, array($this, 'save_donation_data'));
-
-            add_filter('manage_'.self::$post_type.'_posts_columns', array($this, 'manage_columns_names'));
-            add_action('manage_'.self::$post_type.'_posts_custom_column', array($this, 'manage_columns_content'), 2, 2);
-            add_filter('manage_edit-'.self::$post_type.'_columns', array($this, 'remove_columns')); // Remove unneeded columns
-
-            add_filter('manage_edit-'.self::$post_type.'_sortable_columns', array($this, 'manage_sortable_columns'));
-            add_filter('request', array($this, 'do_column_sorting'));
-
             add_action('transition_post_status',  array($this, 'donation_status_changed'), 10, 3);
 
         }
@@ -881,23 +870,6 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
     }
 
-    public function remove_metaboxes() {
-        if(get_post_type() === Leyka_Donation_Management::$post_type) {
-            remove_meta_box('wpseo_meta', Leyka_Donation_Management::$post_type, 'normal');
-        }
-    }
-
-    public function remove_columns($columns) {
-
-        unset(
-            $columns['wpseo-score'], $columns['wpseo-score-readability'], $columns['wpseo-title'], $columns['wpseo-metadesc'],
-            $columns['wpseo-focuskw'], $columns['wpseo-links'], $columns['wpseo-linked']
-        );
-
-        return $columns;
-
-    }
-
     public function add_metaboxes() {
 
 		remove_meta_box('submitdiv', self::$post_type, 'side'); // Remove default status/publish metabox
@@ -931,9 +903,6 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         <div class="leyka-ddata-string">
             <label for="campaign-select"><?php echo _x('Campaign', 'In subjective case', 'leyka');?>:</label>
 			<div class="leyka-ddata-field">
-
-<!--				<input id="campaign-select" type="text" value="--><?php //echo $campaign_id ? $campaign->title : '';?><!--" data-nonce="--><?php //echo wp_create_nonce('leyka_get_campaigns_list_nonce');?><!--" placeholder="--><?php //_e('Select a campaign', 'leyka');?><!--">-->
-<!--				<input id="campaign-id" type="hidden" name="campaign-id" value="--><?php //echo $campaign_id;?><!--">-->
 
                 <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector autocomplete-input" value="" placeholder="<?php _e('Select a campaign', 'leyka');?>">
                 <input type="hidden" id="campaign-id" class="leyka-campaigns-select autocomplete-select" name="campaign-id" value="<?php echo $campaign_id;?>" data-campaign-payment-title-selector="#new-donation-purpose">
@@ -1075,8 +1044,8 @@ class Leyka_Donation_Management extends Leyka_Singleton {
     public static function donation_data_metabox() {
 
         $donation_id = empty($_GET['donation']) ? false : absint($_GET['donation']);
-
         $donation = Leyka_Donations::get_instance()->get($donation_id);
+
         $campaign = new Leyka_Campaign($donation->campaign_id);?>
 
 	<fieldset class="leyka-set campaign">
@@ -1387,10 +1356,6 @@ class Leyka_Donation_Management extends Leyka_Singleton {
     public static function donation_status_metabox() {
 
         $donation_id = empty($_GET['donation']) ? false : absint($_GET['donation']);
-        /* = leyka_get_donations_storage_type() === 'post' ?
-            (empty($_GET['post']) ? false : absint($_GET['post'])) :
-            (empty($_GET['donation']) ? false : absint($_GET['donation'])); */
-
         $donation = $donation_id ? Leyka_Donations::get_instance()->get_donation($donation_id) : false;
 
         wp_nonce_field('donation_status_metabox', '_donation_edit_nonce');
@@ -1476,10 +1441,6 @@ class Leyka_Donation_Management extends Leyka_Singleton {
     public static function emails_status_metabox() {
 
         $donation_id = empty($_GET['donation']) ? false : absint($_GET['donation']);
-        /* = leyka_get_donations_storage_type() === 'post' ?
-            (empty($_GET['post']) ? false : absint($_GET['post'])) :
-            (empty($_GET['donation']) ? false : absint($_GET['donation']));*/
-
         $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
 
         $donor_thanks_date = $donation->get_meta('donor_email_date');
@@ -1514,10 +1475,6 @@ class Leyka_Donation_Management extends Leyka_Singleton {
     public static function gateway_response_metabox() {
 
         $donation_id = empty($_GET['donation']) ? false : absint($_GET['donation']);
-        /* = leyka_get_donations_storage_type() === 'post' ?
-            (empty($_GET['post']) ? false : absint($_GET['post'])) :
-            (empty($_GET['donation']) ? false : absint($_GET['donation']));*/
-
         $donation = Leyka_Donations::get_instance()->get_donation($donation_id);?>
 
         <div>
@@ -1552,353 +1509,6 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         </div>
 
     <?php }
-
-	/**
-     * Donations table columns.
-     * @param array $columns An array of id => name pairs.
-     * @return array
-     */
-	public function manage_columns_names($columns) {
-
-		$unsort = $columns;
-		$columns = array();
-
-		if(isset($unsort['cb'])){
-
-			$columns['cb'] = $unsort['cb'];
-			unset($unsort['cb']);
-
-		}
-
-		$columns['ID'] = 'ID';
-
-		if(isset($unsort['title'])) {
-
-			$columns['title'] = _x('Campaign', 'In subjective case', 'leyka');
-			unset($unsort['title']);
-
-		}
-
-        unset($unsort['date']);
-
-		$columns['donor'] = __('Donor', 'leyka');
-        if(leyka_options()->opt_template('show_donation_comment_field')) {
-            $columns['donor_comment'] = __("Donor's comment", 'leyka');
-        }
-
-		$columns['amount'] = __('Amount', 'leyka');
-        if(leyka_options()->opt('admin_donations_list_display') == 'separate-column') {
-            $columns['amount_total'] = __('Total amount', 'leyka');
-        }
-
-		$columns['method'] = __('Method', 'leyka');
-        $columns['donation_date'] = __('Donation date', 'leyka');
-		$columns['status'] = __('Status', 'leyka');
-		$columns['type'] = __('Payment type', 'leyka');
-		$columns['emails'] = __('Letter', 'leyka');
-		$columns['donor_subscribed'] = __('Donor subscription', 'leyka');
-
-		if($unsort) {
-			$columns = array_merge($columns, $unsort);
-        }
-
-		return apply_filters('leyka_admin_donations_columns_names', $columns);
-
-	}
-
-	public function manage_columns_content($column_name, $donation_id) {
-
-		$donation = new Leyka_Donation($donation_id);
-
-        switch($column_name) {
-            case 'ID': echo $donation_id; break;
-            case 'amount':
-                if(leyka_options()->opt('admin_donations_list_display') == 'amount-column') {
-                    $amount = $donation->amount == $donation->amount_total ?
-                        $donation->amount :
-                        $donation->amount
-                        .'<span class="amount-total"> / '.$donation->amount_total.'</span>';
-                } else {
-                    $amount = $donation->amount;
-                }
-
-				echo '<span class="'.apply_filters('leyka_admin_donation_amount_column_css', ($donation->sum < 0 ? 'amount-negative' : 'amount')).'">'.
-                    apply_filters('leyka_admin_donation_amount_column_content', $amount.'&nbsp;'.$donation->currency_label, $donation).
-                '</span>';
-                break;
-            case 'amount_total':
-                echo '<span class="'.apply_filters('leyka_admin_donation_amount_total_column_css', $donation->amount_total < 0 ? 'amount-negative' : 'amount').'">'.
-                    apply_filters('leyka_admin_donation_amount_total_column_content', $donation->amount_total.'&nbsp;'.$donation->currency_label, $donation).
-                    '</span>';
-                break;
-            case 'donor':
-                echo apply_filters('leyka_admin_donation_donor_name_column_content', $donation->donor_name, $donation);
-                break;
-            case 'donor_comment':
-                echo apply_filters('leyka_admin_donation_donor_comment_column_content', $donation->donor_comment, $donation);
-                break;
-            case 'method':
-                $gateway_label = $donation->gateway_id && $donation->gateway_id != 'correction' ?
-                    $donation->gateway_label : __('Custom payment info', 'leyka');
-                $pm_label = $donation->gateway_id == 'correction' ? $donation->pm_id : $donation->pm_label;
-                echo "<b>{$donation->payment_type_label}:</b> $pm_label <small>/ $gateway_label</small>";
-                break;
-            case 'donation_date':
-                echo $donation->date_time;
-                break;
-            case 'status':
-                echo '<i class="'.esc_attr($donation->status).'">'
-                    .$this->get_status_labels($donation->status).'</i>&nbsp;<span class="dashicons dashicons-editor-help has-tooltip" title="'.$this->get_status_descriptions($donation->status).'"></span>';
-                break;
-            case 'type':
-                echo '<i class="'.esc_attr($donation->payment_type).'">'.$donation->payment_type_label.'</i>';
-                break;
-            case 'emails':
-				if($donation->donor_email_date){
-					echo str_replace(
-						'%s',
-						'<time>'.date(get_option('date_format').', H:i</time>', $donation->donor_email_date).'</time>',
-						__('Sent at %s', 'leyka')
-					);
-				} else {?>
-
-                <div class="leyka-no-donor-thanks" data-donation-id="<?php echo $donation_id;?>" data-nonce="<?php echo wp_create_nonce('leyka_donor_email');?>">
-                    <?php echo sprintf(__("Not sent %s", 'leyka'), "<div class='send-donor-thanks'>".__('(send it now)', 'leyka')."</div>");?>
-                </div>
-
-				<?php }
-
-                break;
-            case 'donor_subscribed':
-                if($donation->donor_subscribed === true) {?>
-
-                <div class="donor-subscription-status total"><?php _e('Full subscription', 'leyka');?></div>
-
-                <?php } else if($donation->donor_subscribed > 0) {?>
-
-                <div class="donor-subscription-status on-campaign">
-                    <?php printf(__('On <a href="%s">campaign</a> news', 'leyka'), admin_url('post.php?post='.$donation->campaign_id.'&action=edit'));?>
-                </div>
-
-                <?php } else {?>
-
-                <div class="donor-subscription-status none"><?php _e('None', 'leyka');?></div>
-
-                <?php }
-
-                break;
-            default:
-        }
-
-	}
-
-    public function manage_sortable_columns($sortable_columns) {
-
-        $sortable_columns['ID'] = 'ID';
-        $sortable_columns['donation_date'] = 'donation_date';
-        $sortable_columns['donor'] = 'donor_name';
-        $sortable_columns['type'] = 'payment_type';
-        $sortable_columns['method'] = 'leyka_payment_method';
-//        $sortable_columns['status'] = 'donation_status'; // Apparently, WP can't sort posts by status
-
-        return $sortable_columns;
-    }
-
-    public function do_column_sorting($vars) {
-
-        if(empty($vars['orderby'])) {
-            return $vars;
-        }
-
-        if($vars['orderby'] == 'donation_date') {
-            $vars = array_merge($vars, array('orderby' => 'date',));
-        } elseif($vars['orderby'] == 'donor_name') {
-            $vars = array_merge($vars, array('meta_key' => 'leyka_donor_name', 'orderby' => 'meta_value',));
-        } elseif($vars['orderby'] == 'payment_type') {
-            $vars = array_merge($vars, array('meta_key' => 'leyka_payment_type', 'orderby' => 'meta_value',));
-        }
-
-        return $vars;
-    }
-
-    /**
-     * @deprecated Now all Donation data handling is on the Leyka_Admin.
-     * @param $donation_id int
-     * @return int|false Edited donation ID or false (if editing is failed or impossible).
-     */
-    public function save_donation_data($donation_id) {
-
-        // Maybe donation is being inserted trough API:
-        if(empty($_POST['post_type']) || $_POST['post_type'] != Leyka_Donation_Management::$post_type) {
-            return false;
-        }
-
-        if(
-            empty($_POST['_donation_edit_nonce']) ||
-            !wp_verify_nonce($_POST['_donation_edit_nonce'], 'donation_status_metabox')
-        ) {
-            return $donation_id;
-        }
-
-        if(defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
-            return $donation_id;
-        }
-
-        if( !current_user_can('edit_donation', $donation_id) ) {
-            return $donation_id;
-        }
-
-        remove_action('save_post_'.self::$post_type, array($this, 'save_donation_data'));
-
-        $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
-        $campaign = new Leyka_Campaign($donation->campaign_id);
-
-        $donation->donor_user_id = 0; // Or current user (admin) will become donation post_author
-
-        if($donation->status != $_POST['donation_status']) {
-            $donation->status = $_POST['donation_status'];
-        }
-
-        if(isset($_POST['donation-amount'])) {
-
-            $_POST['donation-amount'] = round((float)str_replace(',', '.', $_POST['donation-amount']), 2);
-            if((float)$donation->amount != $_POST['donation-amount']) {
-                $donation->amount = $_POST['donation-amount'];
-            }
-
-        }
-
-        if(isset($_POST['donation-amount-total'])) {
-
-            $_POST['donation-amount-total'] = round((float)str_replace(
-                array(',', ' '), array('.', ''),
-                $_POST['donation-amount-total']
-            ), 2);
-
-            if((float)$donation->amount_total != $_POST['donation-amount-total']) {
-
-                if($_POST['donation-amount-total'] <= 0.0 && $donation->amount > 0.0) {
-                    $_POST['donation-amount-total'] = $donation->amount;
-                }
-
-                $old_amount = $donation->amount_total ? $donation->amount_total : $donation->amount;
-                $donation->amount_total = $_POST['donation-amount-total'];
-
-                // If we're adding a correctional donation, $donation->campaign_id == 0:
-                if($donation->campaign_id && $donation->status == 'funded') {
-                    $campaign->update_total_funded_amount($donation, 'update_sum', $old_amount);
-                }
-
-            }
-
-        }
-
-        if( !$donation->currency ) {
-            $donation->currency = 'rub';
-        }
-
-        if(isset($_POST['campaign-id']) && $donation->campaign_id != (int)$_POST['campaign-id']) {
-
-            // If we're adding a correctional donation, $donation->campaign_id == 0:
-            if($donation->campaign_id && $donation->status == 'funded') {
-                $campaign->update_total_funded_amount($donation, 'remove'); // Old campaign
-            }
-
-            $donation->campaign_id = (int)$_POST['campaign-id'];
-            $campaign = new Leyka_Campaign($donation->campaign_id); // New campaign
-
-            if($donation->status == 'funded') {
-                $campaign->update_total_funded_amount($donation);
-            }
-
-        }
-
-        // It's a new correction donation, set a title from it's campaign:
-        $donation_title = $campaign->payment_title ?
-            $campaign->payment_title :
-            ($campaign->title ? $campaign->title : sprintf(__('Donation #%s', 'leyka'), $donation_id));
-
-        if($donation->title !== $donation_title) {
-            $donation->title = $donation_title;
-        }
-
-        if(
-            isset($_POST['donor-name'])
-            && $donation->donor_name != $_POST['donor-name']
-            && leyka_validate_donor_name($_POST['donor-name'])
-        ) {
-            $donation->donor_name = sanitize_text_field($_POST['donor-name']);
-        }
-
-        if(
-            isset($_POST['donor-email'])
-            && $donation->donor_email !== $_POST['donor-email']
-            && filter_var($_POST['donor-email'], FILTER_VALIDATE_EMAIL)
-        ) {
-            $donation->donor_email = sanitize_email($_POST['donor-email']);
-        }
-
-        if(isset($_POST['donor-comment']) && $donation->donor_comment != $_POST['donor-comment']) {
-            $donation->donor_comment = sanitize_textarea_field($_POST['donor-comment']);
-        }
-
-        if(
-            isset($_POST['donation-pm']) &&
-            ($donation->pm != $_POST['donation-pm'] || $_POST['donation-pm'] == 'custom')
-        ) {
-
-            if($_POST['donation-pm'] === 'custom') {
-
-                $donation->gateway_id = '';
-                if($donation->pm_id !== $_POST['custom-payment-info']) {
-                    $donation->pm_id = $_POST['custom-payment-info'];
-                }
-
-            } else {
-
-                $parts = explode('-', $_POST['donation-pm']);
-                $donation->gateway_id = $parts[0];
-                $donation->pm = $parts[1];
-
-            }
-        }
-
-        if(isset($_POST['donation_date']) && $donation->date_timestamp != strtotime($_POST['donation_date'])) {
-            $donation->date = $_POST['donation_date'];
-        }
-
-        if(isset($_POST['payment-type']) && $donation->payment_type != $_POST['payment-type']) {
-            $donation->payment_type = $_POST['payment-type'];
-        }
-
-        // Add donor ID for correction-typed donation:
-        if(
-            leyka_options()->opt('donor_management_available')
-            && $donation->status === 'funded'
-            && !$donation->donor_user_id
-            && $donation->donor_email
-        ) {
-
-            try {
-
-            	$donor = new Leyka_Donor($donation->donor_email);
-
-                $donation->donor_user_id = $donor->id;
-                Leyka_Donor::calculate_donor_metadata($donor);
-
-            } catch(Exception $e) {
-            	// ...
-            }
-
-        }
-
-        do_action("leyka_{$donation->gateway_id}_save_donation_data", $donation);
-
-        add_action('save_post_'.self::$post_type, array($this, 'save_donation_data'));
-
-        return true;
-
-    }
 
 	/** Helpers **/
 

@@ -568,7 +568,7 @@ function leyka_get_form_templates_list() {
 
 
 /**
- * Get possible leyka_donation post type's status list as an array.
+ * Get possible Donation status list as an array.
  *
  * @param $with_hidden boolean
  * @return array
@@ -1611,16 +1611,10 @@ function leyka_get_campaign_donations($campaign_id = false, $limit = false) {
     if($limit) {
         $params['results_limit'] = $limit;
     } else {
-//        $params['posts_per_page'] = -1;
         $params['nopaging'] = true;
     }
 
     return Leyka_Donations::get_instance()->get($params);
-//    foreach(get_posts($params) as $donation) {
-//        $donations[] = new Leyka_Donation($donation);
-//    }
-
-//    return $donations;
 
 }
 

@@ -24,7 +24,6 @@ function leyka_shortcode_amount_collected($atts) {
     $donation_params = array(
         'nopaging' => true,
         'status' => 'funded',
-//        'meta_query' => array(),
     );
 
     if($atts['campaign_id']) {
@@ -34,28 +33,21 @@ function leyka_shortcode_amount_collected($atts) {
             ($atts['campaign_id'] === 'all' ? false : absint($atts['campaign_id']));
 
         if($atts['campaign_id']) {
-//            $donation_params['meta_query'][] = array('key' => 'leyka_campaign_id', 'value' => esc_sql($atts['campaign_id']));
             $donation_params['campaign_id'] = esc_sql($atts['campaign_id']);
         }
 
     }
     if($atts['recurring']) {
-//        $donation_params['post_parent'] = 0;
-//        $donation_params['meta_query'][] = array('key' => 'leyka_payment_type', 'value' => 'rebill',);
         $donation_params['payment_type'] = 'rebill-init';
     }
     if($atts['date_from']) {
-//        $donation_params['date_query'][] = array('after' => $atts['date_from'],);
         $donation_params['date_from'] = $atts['date_from'];
     }
     if($atts['date_to']) {
-//        $donation_params['date_query'][] = array('before' => esc_sql($atts['date_to']),);
         $donation_params['date_to'] = $atts['date_to'];
     }
 
-//    foreach(get_posts($donation_params) as $donation) {
     foreach(Leyka_Donations::get_instance()->get($donation_params) as $donation) {
-//        $donation = new Leyka_Donation($donation);
         $amount_collected += $atts['total_funded'] ? $donation->amount_total : $donation->amount;
     }
 
@@ -239,8 +231,6 @@ function leyka_shortcode_donations_list($atts) {
 
     $table_lines = array();
     foreach(Leyka_Donations::get_instance()->get($donations_params) as $donation) {
-
-//        $donation = new Leyka_Donation($donation);
 
         $line = array('donation_id' => $donation->id);
 

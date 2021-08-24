@@ -10,7 +10,7 @@ $campaign_id = null;
 
 if($donation_id) {
 
-    $donation = new Leyka_Donation($donation_id);
+    $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
     $campaign_id = $donation ? $donation->campaign_id : null;
     $campaign = new Leyka_Campaign($campaign_id);
 

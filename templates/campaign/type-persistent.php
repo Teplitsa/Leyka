@@ -14,7 +14,7 @@ if(is_singular(Leyka_Campaign_Management::$post_type)) {
 } else if(is_page(leyka()->opt('success_page')) || is_page(leyka()->opt('failure_page'))) {
 
     $donation_id = leyka_remembered_data('donation_id');
-    $donation = $donation_id ? new Leyka_Donation($donation_id) : null;
+    $donation = $donation_id ? Leyka_Donations::get_instance()->get_donation($donation_id) : null;
     $campaign_id = $donation ? $donation->campaign_id : null;
 
 }
