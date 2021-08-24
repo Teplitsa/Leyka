@@ -317,8 +317,6 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         );
         add_action("load-$hook", array($this, 'donations_list_screen_options'));
 
-//        add_submenu_page('leyka', __('New correctional donation', 'leyka'), _x('Add new', '[donation]', 'leyka'), 'leyka_manage_donations', 'leyka_donation_info', array($this, 'donation_info_screen'));
-
         // Recurring subscriptions list page:
         $hook = add_submenu_page('leyka', __('Recurring subscriptions', 'leyka'), __('Recurring subscriptions', 'leyka'), 'leyka_manage_donations', 'leyka_recurring_subscriptions', array($this, 'recurring_subscriptions_list_screen'));
         add_action("load-$hook", array($this, 'recurring_subscriptions_list_screen_options'));
@@ -337,8 +335,6 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         }
 
         add_submenu_page('leyka', __('Leyka Settings', 'leyka'), __('Settings', 'leyka'), 'leyka_manage_options', 'leyka_settings', array($this, 'settings_screen'));
-
-//        add_submenu_page('', __('Extensions', 'leyka'), __('Extensions', 'leyka'), 'leyka_manage_options', 'leyka_extensions', array($this, 'extensions_screen'));
 
         add_submenu_page('leyka', __('Help', 'leyka'), __('Help', 'leyka'), 'leyka_manage_donations', 'leyka_help', array($this, 'help_screen'));
 

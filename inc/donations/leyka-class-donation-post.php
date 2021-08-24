@@ -24,7 +24,6 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
         );
 
         $donation_id = wp_insert_post($donation_params, true);
-        Leyka_Donations::remove_from_cache($donation_id); // It's nessesary to cleat the inner Donations object cache here
 
         if(is_wp_error($donation_id)) {
             return $donation_id;
@@ -48,6 +47,10 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 //            '_leyka_managers_emails_date' => 0,
             '_status_log' => array(array('date' => current_time('timestamp'), 'status' => $params['status'])),
         );
+
+        if($params['amount_total'] && $params['amount_total'] != $params['amount']) {
+            $donation_meta_fields['leyka_donation_amount_total'] = $params['amount_total'];
+        }
 
         if($params['additional_fields']) {
             $donation_meta_fields['leyka_additional_fields'] = $params['additional_fields'];
@@ -138,26 +141,33 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             global $wpdb;
             $this->_main_data = $wpdb->get_row($wpdb->prepare("SELECT * FROM $wpdb->posts WHERE ID = %d LIMIT 1", $donation));
 
-            if( !$this->_main_data || $this->_main_data->post_type !== Leyka_Donation_Management::$post_type ) {
-                return false;
+            if( !$this->_main_data) {
+                throw new Exception(sprintf(__('No post found by ID while constructing a donation ("%s" given)', 'leyka'), $donation));
+            } else if($this->_main_data->post_type !== Leyka_Donation_Management::$post_type) {
+                throw new Exception(sprintf(__('Wrong post type for donation ("%s" given)', 'leyka'), $donation->post_type));
             }
 
             $this->_id = $donation;
 
         } else if(is_a($donation, 'WP_Post')) {
 
-            /** @var $donation WP_Post */
             if($donation->post_type !== Leyka_Donation_Management::$post_type) {
-                return false;
+                throw new Exception(sprintf(__('Wrong post type for donation ("%s" given)', 'leyka'), $donation->post_type));
             }
 
             $this->_id = $donation->ID;
             $this->_main_data = $donation;
 
+        } else if(is_a($donation, 'Leyka_Donation_Post')) {
+
+            $this->_id = $donation->_id;
+            $this->_main_data = $donation->_main_data;
+            $this->_donation_meta = $donation->_donation_meta;
+
         } else if(is_a($donation, 'Leyka_Donation_Base')) {
             $this->_id = $donation->id;
         } else {
-            return false;
+            throw new Exception(sprintf(__('Unknown donation given: %s', 'leyka'), $donation));
         }
 
         if( !$this->_donation_meta ) {

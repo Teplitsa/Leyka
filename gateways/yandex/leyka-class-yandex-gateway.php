@@ -199,8 +199,8 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
                 $donation->add_gateway_response($payment); // On callback the response will be re-written
 
-                if( !empty($form_data['leyka_recurring']) ) {
-                    $donation->yandex_recurring_id = $payment->id;
+                if(is_object($payment) && !empty($payment->id)) {
+                    $donation->yandex_invoice_id = $payment->id;
                 }
 
                 $this->_new_api_redirect_url = $payment->confirmation->confirmation_url;
@@ -353,6 +353,9 @@ techMessage="'.$tech_message.'"/>');
                     exit(500);
                 }
 
+                if(is_object($payment) && !empty($payment->id)) {
+                    $donation->yandex_invoice_id = $payment->id;
+                }
                 $donation->add_gateway_response($payment);
 
                 switch($payment->status) {
@@ -737,13 +740,13 @@ techMessage="'.$tech_message.'"/>');
 
             $donation = Leyka_Donations::get_instance()->get_donation($donation);?>
 
-            <label><?php _e('YooKassa recurring subscription ID', 'leyka');?>:</label>
+            <label><?php _e('YooKassa invoice ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') {?>
-                <input type="text" id="yandex-recurring-id" name="yandex-recurring-id" placeholder="<?php _e('Enter YooKassa invoice ID', 'leyka');?>" value="<?php echo $donation->yandex_recurring_id;?>">
+                <input type="text" id="yandex-invoice-id" name="yandex-invoice-id" placeholder="<?php _e('Enter YooKassa invoice ID', 'leyka');?>" value="<?php echo $donation->yandex_invoice_id;?>">
                 <?php } else {?>
-                <span class="fake-input"><?php echo $donation->yandex_recurring_id;?></span>
+                <span class="fake-input"><?php echo $donation->yandex_invoice_id;?></span>
                 <?php }?>
             </div>
 
@@ -762,9 +765,9 @@ techMessage="'.$tech_message.'"/>');
 
         <?php } else { // New donation page displayed ?>
 
-            <label for="yandex-recurring-id"><?php _e('YooKassa recurring subscription ID', 'leyka');?>:</label>
+            <label for="yandex-invoice-id"><?php _e('YooKassa invoice ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <input type="text" id="yandex-recurring-id" name="yandex-recurring-id" placeholder="<?php _e('Enter YooKassa invoice ID', 'leyka');?>" value="">
+                <input type="text" id="yandex-invoice-id" name="yandex-invoice-id" placeholder="<?php _e('Enter YooKassa invoice ID', 'leyka');?>" value="">
             </div>
             <?php
         }
@@ -805,8 +808,8 @@ techMessage="'.$tech_message.'"/>');
 
     public function save_donation_specific_data(Leyka_Donation_Base $donation) {
 
-        if(isset($_POST['yandex-recurring-id']) && $donation->yandex_recurring_id != $_POST['yandex-recurring-id']) {
-            $donation->yandex_recurring_id = $_POST['yandex-recurring-id'];
+        if(isset($_POST['yandex-invoice-id']) && $donation->yandex_invoice_id != $_POST['yandex-invoice-id']) {
+            $donation->yandex_invoice_id = $_POST['yandex-invoice-id'];
         }
 
         $donation->recurring_is_active = !empty($_POST['yandex-recurring-is-active']);
@@ -814,9 +817,8 @@ techMessage="'.$tech_message.'"/>');
     }
 
     public function add_donation_specific_data($donation_id, array $params) {
-        if( !empty($params['recurring_id']) ) {
-            Leyka_Donations::get_instance()
-                ->set_donation_meta($donation_id, 'yandex_invoice_id', $params['recurring_id']);
+        if( !empty($params['yandex_invoice_id']) ) {
+            Leyka_Donations::get_instance()->set_donation_meta($donation_id, 'yandex_invoice_id', $params['yandex_invoice_id']);
         }
     }
 

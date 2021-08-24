@@ -236,7 +236,6 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                 if(empty($_POST['InvoiceId'])) { // Non-init recurring donation
 
                     $init_recurring_donation = $this->get_init_recurring_donation($_POST['SubscriptionId']);
-                    echo '<pre>HERE: '.print_r($init_recurring_donation, 1).'</pre>';
 
                     if( !$init_recurring_donation || !$init_recurring_donation->id || is_wp_error($init_recurring_donation) ) {
                         die(json_encode(array(

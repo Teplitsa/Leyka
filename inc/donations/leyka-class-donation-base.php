@@ -164,9 +164,10 @@ abstract class Leyka_Donation_Base {
         // Currency - END
 
         // Donation total amount (with commission subtracted):
-        $params['amount_total'] = empty($params['amount_total']) ? 'auto' : round((float)$params['amount_total'], 2);
+        $params['amount_total'] = empty($params['amount_total']) || !is_numeric($params['amount_total']) ?
+            'auto' : round((float)$params['amount_total'], 2);
         if(
-            (empty($params['amount_total']) || $params['amount_total'] == 'auto')
+            (empty($params['amount_total']) || $params['amount_total'] === 'auto')
             && ( !empty($pm_data['payment_method_id']) && !empty($pm_data['gateway_id']) )
         ) {
             $params['amount_total'] = leyka_calculate_donation_total_amount(false, $params['amount'], $pm_full_id);

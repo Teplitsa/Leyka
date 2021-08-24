@@ -1376,7 +1376,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             </div>
         </div>
         <div class="leyka-ddata-string">
-            <label for="donation-amount"><?php _e('Total amount', 'leyka');?>:</label>
+            <label for="donation-amount-total"><?php _e('Total amount', 'leyka');?>:</label>
 
             <div class="leyka-ddata-field">
             <?php if($donation->type === 'correction') {?>
@@ -1473,13 +1473,9 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
                 <label><?php _e('Initial donation of the recurring subscription', 'leyka');?>:</label>
                 <div class="leyka-ddata-field">
-
-                    <?php $url = leyka()->storage_type == 'sep' ?
-                        admin_url('admin.php?page=leyka_donation_info&donation='.$donation->init_recurring_donation_id) :
-                        admin_url('post.php?post='.$donation->init_recurring_donation_id.'&action=edit');?>
-
-                    <a href="<?php echo $url;?>">#<?php echo $donation->init_recurring_donation_id;?></a>
-
+                    <a href="<?php echo admin_url('admin.php?page=leyka_donation_info&donation='.$donation->init_recurring_donation_id);?>">
+                        #<?php echo $donation->init_recurring_donation_id;?>
+                    </a>
                 </div>
 
             <?php }?>
