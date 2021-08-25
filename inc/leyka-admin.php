@@ -21,6 +21,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	    require_once LEYKA_PLUGIN_DIR.'inc/leyka-admin-functions.php';
         require_once LEYKA_PLUGIN_DIR.'inc/settings/leyka-admin-template-tags.php';
         require_once LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php';
+        require_once LEYKA_PLUGIN_DIR.'inc/gutenberg-blocks/test.php';
 
         add_filter('admin_body_class', array($this, 'leyka_admin_body_class_setup'), 1000); // To apply CSS in needed places
 
