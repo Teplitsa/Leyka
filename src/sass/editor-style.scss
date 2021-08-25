@@ -1,0 +1,30 @@
+/**
+ * Editor Style
+ */
+.editor-styles-wrapper {
+	.wp-block {
+
+		&.is-template-star {
+			max-width: 600px;
+			width: auto;
+		}
+
+		&.is-template-need-help {
+			max-width: 1200px !important;
+		}
+	}
+}
+
+/* Controls */
+.leyka-components-base-control {
+
+	&__label {
+		display: block;
+		margin-bottom: 8px;
+	}
+
+	.components-font-size-picker__controls .components-color-palette__clear {
+		margin-top: 0;
+	}
+
+}
