@@ -3,38 +3,40 @@
  * Gutenberg Block - Form
  */
 
+function leyka_block_form_attributes(){
+
+    $attributes = [
+        'campaign' => ['type' => 'string', 'default' => '',],
+        'template' => ['type' => 'string', 'default' => 'star',],
+        'className' => ['type' => 'string', 'default' => '',],
+        'preview' => ['type' => 'boolean', 'default' => false,],
+    ];
+
+    // Set color attributes for the Star template:
+    foreach(leyka_block_color_vars('leyka/form', 'star') as $slug => $label) {
+        $attributes[$slug] = ['type' => 'string', 'default' => '',];
+    }
+
+    // Set color attributes for the Need Help template:
+    foreach (leyka_block_color_vars('leyka/form', 'need-help') as $slug => $label) {
+        $attributes[$slug] = ['type' => 'string', 'default' => '',];
+    }
+
+    // Set font size attributes:
+    foreach(leyka_block_font_size_vars('leyka/form', 'default') as $slug => $value) {
+        $attributes[$slug] = ['type' => 'string', 'default' => $value['default'],];
+    }
+
+    return $attributes;
+
+}
+
 /**
  * Register Block Type Leyka Form
  */
 register_block_type('leyka/form', [
 	'render_callback' => 'leyka_block_form_render_callback',
-	'attributes' => function(){
-
-        $attributes = [
-            'campaign' => ['type' => 'string', 'default' => '',],
-            'template' => ['type' => 'string', 'default' => 'star',],
-            'className' => ['type' => 'string', 'default' => '',],
-            'preview' => ['type' => 'boolean', 'default' => false,],
-        ];
-
-        // Set color attributes for the Star template:
-        foreach(leyka_block_color_vars('leyka/form', 'star') as $slug => $label) {
-            $attributes[$slug] = ['type' => 'string', 'default' => '',];
-        }
-
-        // Set color attributes for the Need Help template:
-        foreach (leyka_block_color_vars('leyka/form', 'need-help') as $slug => $label) {
-            $attributes[$slug] = ['type' => 'string', 'default' => '',];
-        }
-
-        // Set font size attributes:
-        foreach(leyka_block_font_size_vars('leyka/form', 'default') as $slug => $value) {
-            $attributes[$slug] = ['type' => 'string', 'default' => $value['default'],];
-        }
-
-        return $attributes;
-
-    },
+	'attributes' => leyka_block_form_attributes(),
 ]);
 
 /**

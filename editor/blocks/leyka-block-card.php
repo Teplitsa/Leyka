@@ -3,34 +3,36 @@
  * Gutenberg Block - Card
  */
 
+function leyka_block_card_attributes(){
+
+    $attributes = [
+        'campaign' => ['type' => 'string',],
+        'template' => ['type' => 'string', 'default' => 'star',],
+        'className' => ['type' => 'string', 'default' => '',],
+        'preview' => ['type' => 'boolean', 'default' => false,],
+        'buttonText' => ['type' => 'string', 'default' => leyka_options()->opt_template('donation_submit_text'),],
+        'showTitle' => ['type' => 'boolean', 'default' => true,],
+        'showImage' => ['type' => 'boolean', 'default' => true,],
+        'showButton' => ['type' => 'boolean', 'default' => true,],
+        'showProgressbar' => ['type' => 'boolean', 'default' => true,],
+        'showTargetAmount' => ['type' => 'boolean', 'default' => true,],
+        'showCollectedAmount' => ['type' => 'boolean', 'default' => true,],
+    ];
+
+    foreach(leyka_block_color_vars('leyka/card') as $slug => $label) {
+        $attributes[$slug] = ['type' => 'string', 'default' => '',];
+    }
+
+    return $attributes;
+
+}
+
 /**
  * Register Block Type Leyka Card
  */
 register_block_type('leyka/card', [
 	'render_callback' => 'leyka_block_card_render_callback',
-	'attributes'  => function(){
-
-        $attributes = [
-            'campaign' => ['type' => 'string',],
-            'template' => ['type' => 'string', 'default' => 'star',],
-            'className' => ['type' => 'string', 'default' => '',],
-            'preview' => ['type' => 'boolean', 'default' => false,],
-            'buttonText' => ['type' => 'string', 'default' => leyka_options()->opt_template('donation_submit_text'),],
-            'showTitle' => ['type' => 'boolean', 'default' => true,],
-            'showImage' => ['type' => 'boolean', 'default' => true,],
-            'showButton' => ['type' => 'boolean', 'default' => true,],
-            'showProgressbar' => ['type' => 'boolean', 'default' => true,],
-            'showTargetAmount' => ['type' => 'boolean', 'default' => true,],
-            'showCollectedAmount' => ['type' => 'boolean', 'default' => true,],
-        ];
-
-        foreach(leyka_block_color_vars('leyka/card') as $slug => $label) {
-            $attributes[$slug] = ['type' => 'string', 'default' => '',];
-        }
-
-        return $attributes;
-
-    },
+	'attributes' => leyka_block_card_attributes(),
 ]);
 
 /**
