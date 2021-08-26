@@ -2156,8 +2156,12 @@ function leyka_use_leyka_campaign_template($template) {
     if($campaign_id) {
 
         $campaign = leyka_get_validated_campaign($campaign_id);
+
         if($campaign && $campaign->campaign_type === 'persistent' && $campaign->template === 'star') {
-            $template = LEYKA_PLUGIN_DIR.'templates/campaign/type-persistent.php';
+            $template = apply_filters(
+                'leyka_persistent_campaign_template_address',
+                LEYKA_PLUGIN_DIR.'templates/campaign/type-persistent.php'
+            );
         }
 
     }
@@ -2168,37 +2172,11 @@ function leyka_use_leyka_campaign_template($template) {
 add_filter('single_template', 'leyka_use_leyka_campaign_template', 10, 1);
 add_filter('page_template', 'leyka_use_leyka_campaign_template', 10, 1);
 
-//function leyka_use_leyka_donations_list_template($archive_template) {
-//
-//    $leyka_screen = get_query_var('leyka-screen');
-//    if(is_post_type_archive(Leyka_Donation_Management::$post_type)) {
-//        switch($leyka_screen) {
-//            case 'account':
-//                $archive_template = LEYKA_PLUGIN_DIR.'templates/account/account.php';
-//                break;
-//            case 'login':
-//                $archive_template = LEYKA_PLUGIN_DIR.'templates/account/login.php';
-//                break;
-//            case 'reset-password':
-//                $archive_template = LEYKA_PLUGIN_DIR.'templates/account/reset-password.php';
-//                break;
-//            case 'cancel-subscription':
-//                $archive_template = LEYKA_PLUGIN_DIR.'templates/account/cancel-subscription.php';
-//                break;
-//            default:
-//        }
-//    }
-//
-//    return $archive_template;
-//
-//}
-//add_filter('archive_template', 'leyka_use_leyka_donations_list_template');
-
 function leyka_get_website_tech_support_email() {
     return leyka()->opt('tech_support_email') ? leyka()->opt('tech_support_email') : get_option('admin_email');
 }
 
-function leyka_get_cancel_subscription_reasons() {
+function leyka_get_recurring_subscription_cancelling_reasons() {
     return array(
         'uncomfortable_pm' => __('Unconfortable payment method', 'leyka'),
         'too_much' => __('Too much donation', 'leyka'),

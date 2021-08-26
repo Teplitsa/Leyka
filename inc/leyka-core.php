@@ -89,9 +89,12 @@ class Leyka extends Leyka_Singleton {
         add_action('init', array($this, 'register_user_capabilities'), 1);
         add_action('init', array($this, 'register_taxonomies'), 1);
 
+        // Leyka rewrite rules - Donor's account pages endpoint:
         add_action('init', function(){
+
             add_rewrite_endpoint('donor-account', EP_ROOT, 'leyka-screen');
             add_rewrite_endpoint('donor_account', EP_ROOT, 'leyka-screen');
+
         });
 
         add_filter('request', function($query_vars){
@@ -104,20 +107,11 @@ class Leyka extends Leyka_Singleton {
 
         });
 
-        /** @todo Tmp */
-//        add_action('parse_request', function($request){
-//
-//            echo '<pre>Request query vars: '.print_r($request->query_vars, 1).'</pre>';
-//            echo '<pre>Request: '.print_r($request->request, 1).'</pre>';
-//            echo '<pre>Request matched query: '.print_r($request->matched_query, 1).'</pre>';
-//
-//        });
-        /** @todo Tmp - END */
-
-        // Add/modify the rewrite rules:
+        // Leyka rewrite rules - Campaigns & Donations archives:
         add_filter('rewrite_rules_array', array($this, 'insert_rewrite_rules'));
         add_filter('query_vars', array($this, 'insert_rewrite_query_vars'));
 
+        /** @todo Try to make all service URLs via "leyka/service" endpoint */
         add_action('parse_request', array($this, 'parse_request')); // Service URLs handlers
 
         if(get_option('leyka_plugin_stats_option_needs_sync')) {
@@ -439,9 +433,10 @@ class Leyka extends Leyka_Singleton {
             }
             add_action('wp_head', 'leyka_template_init_include');
 
-            // Embed campaign URL handler:
-            function leyka_template_include($template) {
+            add_filter('template_include', function($template){
 
+                // Embed campaign URL handler:
+                /** @todo Check if it's still needed feature, or it may be removed. */
                 if(is_main_query() && is_singular(Leyka_Campaign_Management::$post_type) && !empty($_GET['embed_object'])) {
 
                     $new_template = leyka_get_current_template_data(false, 'embed_'.$_GET['embed_object'], true);
@@ -449,42 +444,35 @@ class Leyka extends Leyka_Singleton {
                         $template = $new_template['file'];
                     }
 
+                } else {
+
+                    // Donor's account templates:
+                    $leyka_screen = get_query_var('leyka-screen');
+                    if( !$leyka_screen ) {
+                        return $template;
+                    }
+
+                    switch($leyka_screen) {
+                        case 'account':
+                            $template = LEYKA_PLUGIN_DIR.'templates/account/account.php';
+                            break;
+                        case 'login':
+                            $template = LEYKA_PLUGIN_DIR.'templates/account/login.php';
+                            break;
+                        case 'reset-password':
+                            $template = LEYKA_PLUGIN_DIR.'templates/account/reset-password.php';
+                            break;
+                        case 'cancel-subscription':
+                            $template = LEYKA_PLUGIN_DIR.'templates/account/cancel-subscription.php';
+                            break;
+                        default:
+                    }
+
                 }
 
                 return $template;
 
-            }
-            add_filter('template_include', 'leyka_template_include', 100);
-
-            /** @todo Tmp */
-            add_filter('template_include', function($template){
-
-                $leyka_screen = get_query_var('leyka-screen');
-//                echo '<pre>HERE: '.print_r($leyka_screen, 1).'</pre>';
-                if( !$leyka_screen ) {
-                    return $template;
-                }
-
-                switch($leyka_screen) {
-                    case 'account':
-                        $template = LEYKA_PLUGIN_DIR.'templates/account/account.php';
-                        break;
-                    case 'login':
-                        $template = LEYKA_PLUGIN_DIR.'templates/account/login.php';
-                        break;
-                    case 'reset-password':
-                        $template = LEYKA_PLUGIN_DIR.'templates/account/reset-password.php';
-                        break;
-                    case 'cancel-subscription':
-                        $template = LEYKA_PLUGIN_DIR.'templates/account/cancel-subscription.php';
-                        break;
-                    default:
-                }
-
-                return $template;
-
-            }, 1000);
-            /** @todo Tmp - END */
+            }, 100);
 
             add_action('template_redirect', array($this, 'gateway_redirect_page'), 1, 1);
 
@@ -568,7 +556,7 @@ class Leyka extends Leyka_Singleton {
         if( !$activation_status ) {
             return $this->_extensions;
         } else if( !in_array($activation_status, array('active', 'inactive', 'activating')) ) {
-            return array(); /** @todo Throw some Leyka_Exception */
+            return array();
         } else {
 
             $extensions = array();
@@ -1285,11 +1273,9 @@ class Leyka extends Leyka_Singleton {
 
         $leyka_last_ver = get_option('leyka_last_ver');
 
-        // TODO Uncomment this after the last activate() changes are finished & debugged.
         if($leyka_last_ver && $leyka_last_ver == LEYKA_VERSION) { // Already at last version
             return;
         }
-        // TODO Uncomment this - END
 
         if( !$leyka_last_ver ) {
             update_option('leyka_init_wizard_redirect', true);
@@ -1383,10 +1369,6 @@ class Leyka extends Leyka_Singleton {
         if($leyka_last_ver && $leyka_last_ver <= '3.18') {
 
             leyka_create_separate_donations_db_tables(); // Create plugin-specific DB tables if needed
-
-            /** @todo MUST MAKE THE FOLLOWING UPDATES IN THE DB BEFORE THE 3.18 RELEASE:
-             * - .
-             */
 
             global $wpdb;
 
@@ -1483,7 +1465,7 @@ class Leyka extends Leyka_Singleton {
 
         }
 
-        // Set a flag to flush permalinks (needs to be done a bit later, than this activation itself):
+        // Set a flag to flush permalinks (needs to be done a bit later than this activation itself):
         update_option('leyka_permalinks_flushed', 0);
 
         update_option('leyka_last_ver', LEYKA_VERSION);
@@ -1869,8 +1851,7 @@ class Leyka extends Leyka_Singleton {
                     'add_new_item' => __('Add new donors tag', 'leyka'),
                     'new_item_name'	=> __('New donors tag name', 'leyka'),
                 ),
-                /** @todo Add a custom function for it */
-//                'update_count_callback' => function() {
+//                'update_count_callback' => function() { // We may have to add a custom function for it
 //                    return; // Important
 //                }
             )
@@ -1886,10 +1867,6 @@ class Leyka extends Leyka_Singleton {
     public function insert_rewrite_rules(array $rules) {
 
         $leyka_rewrite_rules = array(
-//            'donor-account/?$' => 'index.php?leyka-screen=account',
-//            'donor-account/login/?$' => 'index.php?leyka-screen=login',
-//            'donor-account/reset-password/?$' => 'index.php?leyka-screen=reset-password',
-//            'donor-account/cancel-subscription/?$' => 'index.php?leyka-screen=cancel-subscription',
             'campaign/([^/]+)/donations/?$' => 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter=$matches[1]',
             'campaign/([^/]+)/donations/page/([1-9]{1,})/?$' =>
                 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter=$matches[1]&paged=$matches[2]',

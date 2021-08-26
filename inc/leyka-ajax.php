@@ -628,7 +628,7 @@ function leyka_cancel_recurring_subscription(){
 
     if($cancel_reasons) {
 
-        $leyka_possible_reasons = leyka_get_cancel_subscription_reasons();
+        $leyka_possible_reasons = leyka_get_recurring_subscription_cancelling_reasons();
         $reason_text_lines = array();
 
         foreach($cancel_reasons as $reason) {
