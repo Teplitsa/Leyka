@@ -481,7 +481,12 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'recurring_is_on':
             case 'rebilling_is_active':
             case 'recurring_is_active':
-                return $this->payment_type === 'rebill' ? !empty($this->_donation_meta['_rebilling_is_active']) : NULL;
+                if($this->payment_type !== 'rebill') {
+                    return false;
+                }
+
+                $init_recurring_donation = $this->init_recurring_donation;
+                return $init_recurring_donation ? $init_recurring_donation->get_meta('_rebilling_is_active') : NULL;
 
             case 'recurring_canceled':
                 return $this->payment_type === 'rebill' ? !empty($this->_donation_meta['leyka_recurrents_cancelled']) : NULL;

@@ -252,7 +252,10 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
             array($this, 'get_recurring_subscription_cancelling_link'),
             10, 2
         );
-        add_action("leyka_{$this->_id}_cancel_recurring_subscription", array($this, 'cancel_recurring_subscription'));
+        add_action(
+            "leyka_{$this->_id}_cancel_recurring_subscription_by_link",
+            array($this, 'cancel_recurring_subscription_by_link')
+        );
 
         $this->_initialize_options();
 

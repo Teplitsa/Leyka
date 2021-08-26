@@ -781,7 +781,7 @@ class Leyka extends Leyka_Singleton {
                 $hash = md5($donation->id.'_'.$donation->init_recurring_donation_id.'_leyka_cancel_recurring_subscription');
 
                 if($donation && $hash === $request[2]) {
-                    do_action("leyka_{$donation->gateway_id}_cancel_recurring_subscription", $donation);
+                    do_action("leyka_{$donation->gateway_id}_cancel_recurring_subscription_by_link", $donation);
                 }
 
             } else if($request[0] === 'do_campaigns_targets_reaching_mailout') {
@@ -1231,9 +1231,9 @@ class Leyka extends Leyka_Singleton {
         $leyka_last_ver = get_option('leyka_last_ver');
 
         // TODO Uncomment this after the last activate() changes are finished & debugged.
-//        if($leyka_last_ver && $leyka_last_ver == LEYKA_VERSION) { // Already at last version
-//            return;
-//        }
+        if($leyka_last_ver && $leyka_last_ver == LEYKA_VERSION) { // Already at last version
+            return;
+        }
         // TODO Uncomment this - END
 
         if( !$leyka_last_ver ) {

@@ -422,9 +422,6 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
     }
 
-    // The default implementation is in use:
-//    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation_Base $donation) { }
-
     public function cancel_recurring_subscription(Leyka_Donation_Base $donation) {
 
         if( !$donation->recurring_is_active ) {
