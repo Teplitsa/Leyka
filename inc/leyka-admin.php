@@ -832,6 +832,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         }?>
 
         <table class="form-table">
+
             <tr>
                 <th>
                     <label for="leyka-donors-tags-field"><?php _e('Donor tags', 'leyka');?></label>
@@ -864,6 +865,20 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                     }?>
                 </td>
             </tr>
+
+            <?php if(leyka_options()->opt('donor_accounts_available')) {?>
+
+            <tr>
+                <th>
+                    <label for="leyka-donor-account-access"><?php _e('Donor account available', 'leyka');?></label>
+                </th>
+                <td>
+                    <input type="checkbox" id="leyka-donor-account-access" name="leyka_donor_account_available" value="1" <?php echo $donor_user->has_cap(Leyka_Donor::DONOR_ACCOUNT_ACCESS_CAP) ? 'checked="checked"' : '';?>>
+                </td>
+            </tr>
+
+            <?php }?>
+
         </table>
         <?php
 
@@ -877,8 +892,20 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
      */
     public function save_user_profile_donor_fields($donor_user_id) {
 
-        if( !current_user_can('administrator') || empty($_POST['leyka_donor_tags']) || !is_array($_POST['leyka_donor_tags']) ) {
+        if( !current_user_can('administrator') || !is_array($_POST['leyka_donor_tags']) ) {
             return false;
+        }
+
+        $donor_user = new WP_User($donor_user_id);
+
+        if(leyka_options()->opt('donor_accounts_available')) {
+
+            if($_POST['leyka_donor_account_available']) {
+                $donor_user->add_cap(Leyka_Donor::DONOR_ACCOUNT_ACCESS_CAP);
+            } else {
+                $donor_user->remove_cap(Leyka_Donor::DONOR_ACCOUNT_ACCESS_CAP);
+            }
+
         }
 
         $_POST['leyka_donor_tags'] = empty($_POST['leyka_donor_tags']) ? array() : $_POST['leyka_donor_tags'];
@@ -887,7 +914,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             $value = (int)$value;
         });
 
-        return !is_wp_error(wp_set_object_terms(
+        $result = !is_wp_error(wp_set_object_terms(
             $donor_user_id,
             $_POST['leyka_donor_tags'],
             Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME

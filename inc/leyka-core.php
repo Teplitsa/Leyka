@@ -89,6 +89,31 @@ class Leyka extends Leyka_Singleton {
         add_action('init', array($this, 'register_user_capabilities'), 1);
         add_action('init', array($this, 'register_taxonomies'), 1);
 
+        add_action('init', function(){
+            add_rewrite_endpoint('donor-account', EP_ROOT, 'leyka-screen');
+            add_rewrite_endpoint('donor_account', EP_ROOT, 'leyka-screen');
+        });
+
+        add_filter('request', function($query_vars){
+
+            if(isset($query_vars['leyka-screen']) && empty($query_vars['leyka-screen'])) {
+                $query_vars['leyka-screen'] = 'account';
+            }
+
+            return $query_vars;
+
+        });
+
+        /** @todo Tmp */
+//        add_action('parse_request', function($request){
+//
+//            echo '<pre>Request query vars: '.print_r($request->query_vars, 1).'</pre>';
+//            echo '<pre>Request: '.print_r($request->request, 1).'</pre>';
+//            echo '<pre>Request matched query: '.print_r($request->matched_query, 1).'</pre>';
+//
+//        });
+        /** @todo Tmp - END */
+
         // Add/modify the rewrite rules:
         add_filter('rewrite_rules_array', array($this, 'insert_rewrite_rules'));
         add_filter('query_vars', array($this, 'insert_rewrite_query_vars'));
@@ -335,7 +360,7 @@ class Leyka extends Leyka_Singleton {
                     } else {
                         $form_template = '';
                     }
-                    
+
                     if( !$form_template ) {
                         $form_template = leyka_remembered_data('template_id');
                     }
@@ -430,6 +455,36 @@ class Leyka extends Leyka_Singleton {
 
             }
             add_filter('template_include', 'leyka_template_include', 100);
+
+            /** @todo Tmp */
+            add_filter('template_include', function($template){
+
+                $leyka_screen = get_query_var('leyka-screen');
+//                echo '<pre>HERE: '.print_r($leyka_screen, 1).'</pre>';
+                if( !$leyka_screen ) {
+                    return $template;
+                }
+
+                switch($leyka_screen) {
+                    case 'account':
+                        $template = LEYKA_PLUGIN_DIR.'templates/account/account.php';
+                        break;
+                    case 'login':
+                        $template = LEYKA_PLUGIN_DIR.'templates/account/login.php';
+                        break;
+                    case 'reset-password':
+                        $template = LEYKA_PLUGIN_DIR.'templates/account/reset-password.php';
+                        break;
+                    case 'cancel-subscription':
+                        $template = LEYKA_PLUGIN_DIR.'templates/account/cancel-subscription.php';
+                        break;
+                    default:
+                }
+
+                return $template;
+
+            }, 1000);
+            /** @todo Tmp - END */
 
             add_action('template_redirect', array($this, 'gateway_redirect_page'), 1, 1);
 
@@ -1491,7 +1546,6 @@ class Leyka extends Leyka_Singleton {
             );
         }
 
-        /** @todo MERGE: check that leyka_form_is_displayed() has a deprecated pseudonym for leyka_form_is_screening() */
         if( !leyka_form_is_displayed() ) {
             return;
         }
@@ -1511,17 +1565,19 @@ class Leyka extends Leyka_Singleton {
     protected function add_inline_custom_css() {
 
         $campaign_id = null;
+
         if(is_singular(Leyka_Campaign_Management::$post_type)) {
             $campaign_id = get_the_ID();
         } else if(is_page(leyka()->opt('success_page')) || is_page(leyka()->opt('failure_page'))) {
+
             $donation_id = leyka_remembered_data('donation_id');
             $donation = $donation_id ? Leyka_Donations::get_instance()->get($donation_id) : null;
             $campaign_id = $donation ? $donation->campaign_id : null;
+
         }
 
         if($campaign_id) {
-            $custom_css = get_post_meta($campaign_id, 'campaign_css', true);
-            wp_add_inline_style($this->_plugin_slug.'-revo-plugin-styles', $custom_css);
+            wp_add_inline_style($this->_plugin_slug.'-revo-plugin-styles', get_post_meta($campaign_id, 'campaign_css', true));
         }
 
     }
@@ -1830,10 +1886,10 @@ class Leyka extends Leyka_Singleton {
     public function insert_rewrite_rules(array $rules) {
 
         $leyka_rewrite_rules = array(
-            'donor-account/?$' => 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka-screen=account',
-            'donor-account/login/?$' => 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka-screen=login',
-            'donor-account/reset-password/?$' => 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka-screen=reset-password',
-            'donor-account/cancel-subscription/?$' => 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka-screen=cancel-subscription',
+//            'donor-account/?$' => 'index.php?leyka-screen=account',
+//            'donor-account/login/?$' => 'index.php?leyka-screen=login',
+//            'donor-account/reset-password/?$' => 'index.php?leyka-screen=reset-password',
+//            'donor-account/cancel-subscription/?$' => 'index.php?leyka-screen=cancel-subscription',
             'campaign/([^/]+)/donations/?$' => 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter=$matches[1]',
             'campaign/([^/]+)/donations/page/([1-9]{1,})/?$' =>
                 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter=$matches[1]&paged=$matches[2]',

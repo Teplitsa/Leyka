@@ -19,8 +19,8 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php'); ?>
         
                         <?php if(empty($_GET['activate'])) { // Normal login ?>
         
-                        <form class="leyka-screen-form leyka-account-login" action="<?php echo home_url('/donor_account/login/');?>" method="post">
-        
+                        <form class="leyka-screen-form leyka-account-login" action="<?php echo home_url('/donor-account/login/');?>" method="post">
+
                             <h2><?php _e('Personal account login', 'leyka');?></h2>
         
                             <div class="section">
@@ -87,7 +87,7 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php'); ?>
 
                         <?php } else { // Account activation/password setting ?>
 
-                        <form class="leyka-screen-form leyka-account-pass-setup" action="<?php echo home_url('/donor_account/login/');?>" method="post" data-account-activation="1">
+                        <form class="leyka-screen-form leyka-account-pass-setup" action="<?php echo home_url('/donor-account/login/');?>" method="post" data-account-activation="1">
 
                             <h2><?php _e('Set up your password', 'leyka');?></h2>
         

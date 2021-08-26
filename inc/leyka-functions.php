@@ -1337,6 +1337,13 @@ function leyka_form_is_displayed($widgets_also = true) {
 
 }
 
+/**
+ * @depracated Use leyka_form_is_displayed() instead.
+ */
+function leyka_form_is_screening($widgets_also = true) {
+    return leyka_form_is_displayed( !!$widgets_also );
+}
+
 function leyka_revo_template_displayed() {
 
     $revo_displayed = false;
@@ -1407,7 +1414,7 @@ function leyka_modern_template_displayed($template_id = false) {
                 foreach($matches[2] as $key => $value) {
                     if(in_array($value, array('leyka_campaign_form', 'leyka_payment_form'))) {
 
-                        $get = str_replace(" ", "&" , $matches[3][$key] );
+                        $get = str_replace(" ", "&" , $matches[3][$key]);
                         parse_str($get, $atts);
                         
                         if(array_key_exists('id', $atts)) {
@@ -1420,7 +1427,7 @@ function leyka_modern_template_displayed($template_id = false) {
                             }
                             
                             $campaign = new Leyka_Campaign($campaign_id);
-                            if($campaign && in_array($campaign->template, $modern_templates)) {
+                            if(in_array($campaign->template, $modern_templates)) {
 
                                 $modern_template_displayed = true;
                                 break;
@@ -2161,31 +2168,31 @@ function leyka_use_leyka_campaign_template($template) {
 add_filter('single_template', 'leyka_use_leyka_campaign_template', 10, 1);
 add_filter('page_template', 'leyka_use_leyka_campaign_template', 10, 1);
 
-function leyka_use_leyka_donations_list_template($archive_template) {
-
-    $leyka_screen = get_query_var('leyka-screen');
-    if(is_post_type_archive(Leyka_Donation_Management::$post_type)) {
-        switch($leyka_screen) {
-            case 'account':
-                $archive_template = LEYKA_PLUGIN_DIR.'templates/account/account.php';
-                break;
-            case 'login':
-                $archive_template = LEYKA_PLUGIN_DIR.'templates/account/login.php';
-                break;
-            case 'reset-password':
-                $archive_template = LEYKA_PLUGIN_DIR.'templates/account/reset-password.php';
-                break;
-            case 'cancel-subscription':
-                $archive_template = LEYKA_PLUGIN_DIR.'templates/account/cancel-subscription.php';
-                break;
-            default:
-        }
-    }
-
-    return $archive_template;
-
-}
-add_filter('archive_template', 'leyka_use_leyka_donations_list_template');
+//function leyka_use_leyka_donations_list_template($archive_template) {
+//
+//    $leyka_screen = get_query_var('leyka-screen');
+//    if(is_post_type_archive(Leyka_Donation_Management::$post_type)) {
+//        switch($leyka_screen) {
+//            case 'account':
+//                $archive_template = LEYKA_PLUGIN_DIR.'templates/account/account.php';
+//                break;
+//            case 'login':
+//                $archive_template = LEYKA_PLUGIN_DIR.'templates/account/login.php';
+//                break;
+//            case 'reset-password':
+//                $archive_template = LEYKA_PLUGIN_DIR.'templates/account/reset-password.php';
+//                break;
+//            case 'cancel-subscription':
+//                $archive_template = LEYKA_PLUGIN_DIR.'templates/account/cancel-subscription.php';
+//                break;
+//            default:
+//        }
+//    }
+//
+//    return $archive_template;
+//
+//}
+//add_filter('archive_template', 'leyka_use_leyka_donations_list_template');
 
 function leyka_get_website_tech_support_email() {
     return leyka()->opt('tech_support_email') ? leyka()->opt('tech_support_email') : get_option('admin_email');
@@ -2233,7 +2240,7 @@ function get_donor_init_recurring_donation_for_campaign($donor_user, $campaign_i
         'order'   => 'ASC',
     ));
 
-    return $donations->have_posts() ? new Leyka_Donation($donations->posts[0]) : null;
+    return $donations->have_posts() ? Leyka_Donations::get_instance()->get_donation($donations->posts[0]) : null;
 
 }
 

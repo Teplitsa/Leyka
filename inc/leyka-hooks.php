@@ -158,10 +158,11 @@ function leyka_donor_account_redirects() {
         return;
     }
 
-    if($donor_account_page === 'login' && is_user_logged_in()) { /** @todo $donor_account_page === 'reset-password' also? */
+    if($donor_account_page === 'login' && is_user_logged_in()) {
         wp_redirect(home_url('/donor-account/')); exit;
     } else if($donor_account_page !== 'login' && $donor_account_page !== 'reset-password' && !is_user_logged_in()) {
         wp_redirect(home_url('/donor-account/login/')); exit;
+//        echo '<pre>Donor account page: '.print_r($donor_account_page, 1).'</pre>';
     }
 
 }
