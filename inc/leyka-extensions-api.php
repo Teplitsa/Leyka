@@ -410,7 +410,7 @@ abstract class Leyka_Extension extends Leyka_Singleton {
 	--leyka-ext-<?php echo $this->id_dash;?>-color-caption: <?php echo $this->caption_color?>;
 	--leyka-ext-<?php echo $this->id_dash;?>-color-text: <?php echo $this->text_color?>;
 }
-        <?php wp_add_inline_style(leyka()->plugin_slug.'-revo-plugin-styles', ob_get_clean());
+        <?php wp_add_inline_style('leyka-new-templates-styles', ob_get_clean());
 
     }
 

@@ -28,14 +28,14 @@ function leyka_enqueue_block_editor_assets() {
 	    'leyka-blocks',
         LEYKA_PLUGIN_BASE_URL.'assets/js/blocks.js',
         $dependencies,
-        filemtime(LEYKA_PLUGIN_DIR . 'assets/js/blocks.js')
+        filemtime(LEYKA_PLUGIN_DIR.'assets/js/blocks.js')
     );
 
-	wp_register_style('leyka-revo-plugin-styles', LEYKA_PLUGIN_BASE_URL . 'assets/css/public.css', [], LEYKA_VERSION);
+	wp_register_style('leyka-new-templates-styles', LEYKA_PLUGIN_BASE_URL.'assets/css/public.css', [], LEYKA_VERSION);
 	wp_enqueue_style(
 	    'leyka-editor-styles',
         LEYKA_PLUGIN_BASE_URL.'assets/css/editor-style.css',
-        ['leyka-revo-plugin-styles'],
+        ['leyka-new-templates-styles'],
         LEYKA_VERSION
     );
 
