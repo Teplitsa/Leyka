@@ -1238,7 +1238,13 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
 	public function load_frontend_scripts() {
 
-		wp_enqueue_style('leyka-icon', LEYKA_PLUGIN_BASE_URL.'css/admin-icon.css', array(), LEYKA_VERSION);
+		wp_enqueue_style('leyka-icon', LEYKA_PLUGIN_BASE_URL.'css/admin-icon.css', [], LEYKA_VERSION);
+		wp_enqueue_style(
+		    'leyka-admin-everywhere',
+            LEYKA_PLUGIN_BASE_URL.'assets/css/admin-everywhere.css',
+            [],
+            LEYKA_VERSION
+        );
 
 		$screen = get_current_screen();
 		if(false === stripos($screen->base, 'leyka') && false === stripos($screen->id, 'leyka')) {
@@ -1246,56 +1252,36 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         }
 
         // Base admin area js/css:
-        $leyka_admin_new = (isset($_GET['screen']) && count(explode('-', $_GET['screen'])) >= 2) // New settings pages (from v3.0)
-            || (isset($_GET['page']) && $_GET['page'] === 'leyka_settings')
-            || ($screen->post_type === Leyka_Campaign_Management::$post_type && $screen->base === 'post')
-            || (isset($_GET['page']) && in_array($_GET['page'], array(
-                'leyka', 'leyka_donors', 'leyka_donations', 'leyka_donation_info',
-            )))
-            || (isset($_GET['page']) && $_GET['page'] === 'leyka_donor_info' && !empty($_GET['donor']))
-            || (isset($_GET['page']) && ($_GET['page'] === 'leyka' || $_GET['page'] === 'leyka_recurring_subscriptions'))
-            || (isset($_GET['page']) && $_GET['page'] === 'leyka_extensions')
-            || (isset($_GET['page']) && $_GET['page'] === 'leyka_extension_settings' && !empty($_GET['extension']))
-            || (isset($_GET['page']) && $_GET['page'] === 'leyka_help');
-
         $current_screen = get_current_screen();
-        $dependencies = array('jquery',);
+        $dependencies = ['jquery',];
 
-        if($leyka_admin_new) {
+        wp_enqueue_style(
+            'jqueryui',
+            'https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css',
+            false,
+            null
+        );
 
-            wp_enqueue_style(
-                'jqueryui',
-                'https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css',
-                false,
-                null
-            );
+        wp_enqueue_style('leyka-settings', LEYKA_PLUGIN_BASE_URL.'assets/css/admin.css', ['jqueryui'], LEYKA_VERSION);
 
-            wp_enqueue_style('leyka-settings', LEYKA_PLUGIN_BASE_URL.'assets/css/admin.css', array('jqueryui'), LEYKA_VERSION);
+        // Colorpicker fields support:
+        wp_enqueue_script('wp-color-picker');
+        wp_enqueue_style('wp-color-picker');
 
-            // Colorpicker fields support:
-            wp_enqueue_script('wp-color-picker');
-            wp_enqueue_style('wp-color-picker');
+        if(function_exists('wp_enqueue_code_editor')) { // The function is available in WP v4.9.0+
+            wp_enqueue_code_editor(['type' => 'text/css']); // Add the code editor lib
+        }
 
-            if(function_exists('wp_enqueue_code_editor')) { // The function is available in WP v4.9.0+
-                wp_enqueue_code_editor(array('type' => 'text/css')); // Add the code editor lib
-            }
+        $dependencies[] = 'jquery-ui-tooltip'; // For elements tooltips everywhere
 
-            $dependencies[] = 'jquery-ui-tooltip'; // For elements tooltips everywhere
+        // WP admin metaboxes support:
+        $dependencies[] = 'postbox';
+        $dependencies[] = 'jquery-ui-accordion';
+        $dependencies[] = 'jquery-ui-sortable';
+        $dependencies[] = 'jquery-ui-selectmenu';
+        $dependencies[] = 'tags-box';
 
-            // WP admin metaboxes support:
-            $dependencies[] = 'postbox';
-            $dependencies[] = 'jquery-ui-accordion';
-            $dependencies[] = 'jquery-ui-sortable';
-            $dependencies[] = 'jquery-ui-selectmenu';
-            $dependencies[] = 'tags-box';
-
-        } else { // Old admin pages (before v3.0)
-            /** @todo ATM, the old admin.css is used only for New & Edit Donation pages (/css/admin.css, lines 502-730). Move their code to the /src/ , then remove the /css/admin.css */
-	        wp_enqueue_style('leyka-admin', LEYKA_PLUGIN_BASE_URL.'css/admin.css', array(), LEYKA_VERSION);
-            wp_enqueue_style('leyka-settings', LEYKA_PLUGIN_BASE_URL.'assets/css/admin.css', array(), LEYKA_VERSION);
-	    }
-
-        if(in_array($current_screen->id, array('dashboard_page_leyka_donation_info', 'dashboard_page_leyka_donor_info'))) {
+        if(in_array($current_screen->id, ['dashboard_page_leyka_donation_info', 'dashboard_page_leyka_donor_info',])) {
             $dependencies[] = $this->_load_data_tables();
         }
 
@@ -1313,7 +1299,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             $dependencies[] = 'jquery-ui-autocomplete';
         }
 
-        $js_data = apply_filters('leyka_admin_js_localized_strings', array(
+        $js_data = apply_filters('leyka_admin_js_localized_strings', [
             'ajaxurl' => admin_url('admin-ajax.php'),
             'ajax_loader_url' => LEYKA_PLUGIN_BASE_URL.'img/ajax-loader.gif',
             'homeurl' => home_url('/'),
@@ -1334,13 +1320,19 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             'extensions_list_page_url' => admin_url('admin.php?page=leyka_extensions'),
             'extension_colors_reset' => __('Reset settings', 'leyka'),
             'extension_colors_make_change' => __('Make changes', 'leyka'),
-        ));
+        ]);
 
         if(isset($_GET['page']) && $_GET['page'] === 'leyka') {
 
             $dependencies[] = 'jquery-ui-dialog';
 
-            wp_enqueue_script('leyka-admin', LEYKA_PLUGIN_BASE_URL.'assets/js/Chart.v2.8.0.min.js', $dependencies, LEYKA_VERSION, true);
+            wp_enqueue_script(
+                'leyka-admin',
+                LEYKA_PLUGIN_BASE_URL.'assets/js/Chart.v2.8.0.min.js',
+                $dependencies,
+                LEYKA_VERSION,
+                true
+            );
 
         }
 
@@ -1356,7 +1348,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             $dependencies[] = $this->_load_data_tables();
 
             if(function_exists('wp_enqueue_code_editor')) { // The function is available in WP v4.9.0+
-                wp_enqueue_code_editor(array('type' => 'text/css')); // Add the code editor lib
+                wp_enqueue_code_editor(['type' => 'text/css']); // Add the code editor lib
             }
 
             wp_enqueue_script('jquery-ui-dialog');
@@ -1367,7 +1359,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         wp_enqueue_script(
             'jquery-ui-datepicker-locale',
             LEYKA_PLUGIN_BASE_URL."js/jq-datepicker-locales/$locale.js",
-            array('jquery-ui-datepicker'), LEYKA_VERSION, true
+            ['jquery-ui-datepicker'], LEYKA_VERSION, true
         );
 
         // Donation info/edit page:
@@ -1378,20 +1370,20 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
             $dependencies[] = 'jquery-ui-datepicker-locale';
 
-            $js_data = $js_data + array(
+            $js_data = $js_data + [
                 'add_donation_button_text' => __('Add the donation', 'leyka'),
                 'field_required' => __('This field is required to be filled', 'leyka'),
                 'campaign_required' => __('Selecting a campaign is required', 'leyka'),
                 'email_invalid_msg' => __('You have entered an invalid email', 'leyka'),
                 'amount_incorrect_msg' => __('The amount must be filled with non-zero, non-negative number', 'leyka'),
                 'donation_source_required' => __('Please, set one of a payment methods or just type a few words to describe a source for this donation', 'leyka'),
-            );
+            ];
 
         }
 
         $dependencies[] = 'jquery-ui-autocomplete';
 
-        wp_enqueue_script('leyka-easy-modal', LEYKA_PLUGIN_BASE_URL.'js/jquery.easyModal.min.js', array(), false, true);
+        wp_enqueue_script('leyka-easy-modal', LEYKA_PLUGIN_BASE_URL.'js/jquery.easyModal.min.js', [], false, true);
 
         wp_enqueue_script(
             'leyka-settings',
