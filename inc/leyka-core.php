@@ -1633,8 +1633,7 @@ class Leyka extends Leyka_Singleton {
         ));
 
         $leyka_js_handle = wp_script_is($this->_plugin_slug.'-public') ?
-            $this->_plugin_slug.'-public' :
-            (wp_script_is($this->_plugin_slug.'-revo-public') ? $this->_plugin_slug.'-revo-public' : '');
+            $this->_plugin_slug.'-public' : $this->_plugin_slug.'-new-templates-public';
 
         wp_localize_script(apply_filters('leyka_js_localized_script_id', $leyka_js_handle), 'leyka', $js_data);
 
@@ -1643,7 +1642,7 @@ class Leyka extends Leyka_Singleton {
     /** Register leyka user roles and caps. */
     public function register_user_capabilities() {
 
-        $role = get_role('administrator'); // Just in case. There were some exotic cases..
+        $role = get_role('administrator'); // Just in case. There were some exotic cases
         if( !$role ) {
             return;
         }
