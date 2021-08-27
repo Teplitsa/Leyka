@@ -1348,7 +1348,7 @@ class Leyka extends Leyka_Singleton {
             || leyka_is_widget_active()
         ) {
             wp_enqueue_style(
-                $this->_plugin_slug.'-revo-plugin-styles',
+                $this->_plugin_slug.'-new-templates-styles',
                 LEYKA_PLUGIN_BASE_URL.'assets/css/public.css',
                 array(),
                 LEYKA_VERSION
@@ -1384,7 +1384,7 @@ class Leyka extends Leyka_Singleton {
 
         if($campaign_id) {
             $custom_css = get_post_meta($campaign_id, 'campaign_css', true);
-            wp_add_inline_style($this->_plugin_slug.'-revo-plugin-styles', $custom_css);
+            wp_add_inline_style($this->_plugin_slug.'-new-templates-styles', $custom_css);
         }
 
     }
@@ -1459,7 +1459,7 @@ class Leyka extends Leyka_Singleton {
 
         $leyka_js_handle = wp_script_is($this->_plugin_slug.'-public') ?
             $this->_plugin_slug.'-public' :
-            (wp_script_is($this->_plugin_slug.'-revo-public') ? $this->_plugin_slug.'-revo-public' : '');
+            $this->_plugin_slug.'-new-templates-public';
 
         wp_localize_script(apply_filters('leyka_js_localized_script_id', $leyka_js_handle), 'leyka', $js_data);
 
