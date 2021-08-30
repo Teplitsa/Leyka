@@ -36,13 +36,15 @@
 
 @mixin star-clean-input() {
     text-decoration: none;
-    border: none;
+    border: none !important;
+    border-radius: 0 !important;
     box-shadow: none;
     outline: none;
     
     &:active, &:focus, &:hover {
         text-decoration: none;
-        border: none;
+        border: none !important;
+        border-radius: 0 !important;
         box-shadow: none;
         outline: none;
     }
