@@ -7,6 +7,8 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
     protected static $_instance;
 
+    protected $_api_redirect_url;
+
     protected function _set_attributes() {
 
         $this->_id = 'stripe';
@@ -72,6 +74,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
     public function enqueue_gateway_scripts() {
 
+        /*
         if(Leyka_Stripe_Card::get_instance()->active) {
 
             wp_enqueue_script(
@@ -83,7 +86,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             );
 
         }
-
+*/
         add_filter('leyka_js_localized_strings', array($this, 'localize_js_strings'));
     }
 
@@ -108,14 +111,14 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             'cancel_url' => leyka_get_failure_page_url(),
         ]);
 
-        $this->api_redirect_url = $checkout_session->url;
+        $this->_api_redirect_url = $checkout_session->url;
 
         return [];
 
     }
 
     public function submission_redirect_url($current_url, $pm_id) {
-        return $this->api_redirect_url;
+        return $this->_api_redirect_url;
     }
 
     public function submission_form_data($form_data, $pm_id, $donation_id) {

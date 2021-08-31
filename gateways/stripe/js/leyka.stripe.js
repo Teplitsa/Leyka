@@ -18,7 +18,7 @@ jQuery(document).ready(function($){
 
         var $pm_field = $form.find('input[name="leyka_payment_method"][value*="stripe-"]'),
             gateway_is_chosen = $pm_field.prop('type') === 'hidden' ?
-                $pm_field.val().indexOf('cp') >= 0 : !!$pm_field.prop('checked');
+                $pm_field.val().indexOf('stripe') >= 0 : !!$pm_field.prop('checked');
 
         if($pm_field.length <= 0 || !gateway_is_chosen) {
             return;
