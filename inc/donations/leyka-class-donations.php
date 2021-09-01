@@ -322,6 +322,13 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
         }
 
+        if(isset($params['recurring_rebills_of']) && absint($params['recurring_rebills_of'])) {
+
+            $params['payment_type'] = 'rebill';
+            $query_params['post_parent'] = absint($params['recurring_rebills_of']);
+
+        }
+
         if( !empty($params['amount_filter']) ) {
 
             $params['amount_filter'] = trim($params['amount_filter']);
