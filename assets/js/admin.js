@@ -1310,6 +1310,10 @@ jQuery(document).ready(function($){
                 let items_options = [];
                 $.each($items_wrapper.sortable('toArray'), function(key, item_id){ // Value is an item ID (generated randomly)
 
+                    if( !item_id.length ) {
+                        return;
+                    }
+
                     let item_options = {'id': item_id}; // Assoc. array key should be initialized explicitly
 
                     $.each($items_wrapper.find('#'+item_id).find(':input'), function(key, item_setting_input){
@@ -1423,9 +1427,32 @@ jQuery(document).ready(function($){
         }
 
         // Refresh the main items option value before submit:
-        $items_wrapper.parents('form:first').on('submit.leyka', function(e){
+        function leyka_pre_submit_multi_items(e) {
             $items_wrapper.sortable('option', 'update')();
-        });
+        }
+
+        if(leyka_is_gutenberg_active()) { // Post edit page - Gutenberg mode
+
+            // Trigger the final multi-items values updating ONLY before main saving submit:
+            // (Note: in Gutenberg there are also non-main saves - each metabox is also saved individually, via AJAX)
+            const unsubscribe = wp.data.subscribe(function(){
+
+                let code_editor = wp.data.select('core/editor');
+
+                if (code_editor.isSavingPost() && !code_editor.isAutosavingPost() && code_editor.didPostSaveRequestSucceed()) {
+
+                    unsubscribe(); // To avoid muliple calls on ajax savings
+
+                    leyka_pre_submit_multi_items();
+
+                }
+
+            });
+
+        } else { // Post edit page (classic editor), general admin pages
+            $items_wrapper.parents('form:first').on('submit.leyka', leyka_pre_submit_multi_items);
+        }
+        // Refresh the main items option value before submit - END
 
     });
     // Multi-valued item complex fields - END
@@ -1591,6 +1618,11 @@ function lcfirst(str) {
 
     return str.slice(0, 1).toLowerCase() + str.substring(1);
 
+}
+
+/** * @return boolean True if current page is in Gutenberg mode, false otherwise */
+function leyka_is_gutenberg_active() {
+    return document.body.classList.contains('block-editor-page');
 }
 /** Additional donation form fields settings JS */
 

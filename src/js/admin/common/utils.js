@@ -140,3 +140,8 @@ function lcfirst(str) {
     return str.slice(0, 1).toLowerCase() + str.substring(1);
 
 }
+
+/** * @return boolean True if current page is in Gutenberg mode, false otherwise */
+function leyka_is_gutenberg_active() {
+    return document.body.classList.contains('block-editor-page');
+}
