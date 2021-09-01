@@ -4,7 +4,7 @@ abstract class Leyka_Donation_Base {
 
     protected $_id;
     protected $_main_data;
-    protected $_donation_meta = array();
+    protected $_donation_meta = [];
 
     abstract public function __construct($donation);
 
@@ -17,7 +17,7 @@ abstract class Leyka_Donation_Base {
      * @param $params array
      * @return int|WP_Error A new Donation ID or WP_Error.
      */
-    public static function add(array $params = array()) { // Static method can't be abstract, so it's just empty
+    public static function add(array $params = []) { // Static method can't be abstract, so it's just empty
         return 0;
     }
 
@@ -27,7 +27,7 @@ abstract class Leyka_Donation_Base {
      * @param array $params
      * @return array|WP_Error
      */
-    protected static function _handle_new_donation_params(array $params = array()) {
+    protected static function _handle_new_donation_params(array $params = []) {
 
         $params['force_insert'] = !empty($params['force_insert']);
 
@@ -129,12 +129,12 @@ abstract class Leyka_Donation_Base {
         $pm_data = leyka_pf_get_payment_method_value();
         $pm_data = $pm_data ?
             $pm_data :
-            array(
+            [
                 'payment_method_id' => empty($params['pm_id']) ?
                     (empty($params['payment_method_id']) ? '' : $params['payment_method_id']) :
                     $params['pm_id'],
                 'gateway_id' => empty($params['gateway_id']) ? '' : $params['gateway_id'],
-            );
+            ];
 
         $pm_full_id = $pm_data['gateway_id'].'-'.$pm_data['payment_method_id'];
 
@@ -181,7 +181,7 @@ abstract class Leyka_Donation_Base {
 
         // Additional fields:
         $params['additional_fields'] = empty($params['additional_fields']) || !is_array($params['additional_fields']) ?
-            array() : $params['additional_fields'];
+            [] : $params['additional_fields'];
         if($params['additional_fields']) {
             array_walk($params['additional_fields'], function( &$value ){ $value = trim($value); });
         }

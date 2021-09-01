@@ -7,9 +7,9 @@ abstract class Leyka_Template_Controller extends Leyka_Singleton {
 
     protected static $_instance;
 
-    protected $_global_template_data = array();
-    protected $_template_data = array();
-    protected $_campaigns = array();
+    protected $_global_template_data = [];
+    protected $_template_data = [];
+    protected $_campaigns = [];
 
     public function __get($name) {
         return empty($this->_global_template_data[$name]) ? null : $this->_global_template_data[$name];
@@ -58,7 +58,7 @@ abstract class Leyka_Template_Controller extends Leyka_Singleton {
         }
 
         if( !$campaign ) {
-            return array(); /** @todo There is no such campaign. Mb, throw some exception here. */
+            return []; /** @todo There is no such campaign. Mb, throw some exception here. */
         }
 
         if(empty($this->_campaigns[$campaign->id])) {
@@ -68,7 +68,7 @@ abstract class Leyka_Template_Controller extends Leyka_Singleton {
             $this->_generate_template_data($campaign);
         }
 
-        return empty($this->_template_data[$campaign->id]) ? array() : $this->_template_data[$campaign->id];
+        return empty($this->_template_data[$campaign->id]) ? [] : $this->_template_data[$campaign->id];
 
     }
     

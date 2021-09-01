@@ -984,6 +984,14 @@ jQuery(document).ready(function($){
             });
         editor = wp.codeEditor.initialize($css_editor, editor_settings);
 
+        if(leyka_is_gutenberg_active()) {
+
+            wp.data.subscribe(function(){ // Obtain the CodeMirror instance, then manually copy editor content into it's textarea
+                $css_editor.next('.CodeMirror').get(0).CodeMirror.save();
+            });
+
+        }
+
         $css_editor.data('code-editor-object', editor);
 
         $('.css-editor-reset-value').on('click.leyka', function(e){ // Additional CSS value reset

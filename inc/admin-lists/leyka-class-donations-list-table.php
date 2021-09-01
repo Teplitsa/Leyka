@@ -11,11 +11,11 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
     public function __construct() {
 
-        parent::__construct(array('singular' => __('Donation', 'leyka'), 'plural' => __('Donations', 'leyka'), 'ajax' => true,));
+        parent::__construct(['singular' => __('Donation', 'leyka'), 'plural' => __('Donations', 'leyka'), 'ajax' => true,]);
 
-        add_filter('default_hidden_columns', array($this, 'get_default_hidden_columns'), 10);
+        add_filter('default_hidden_columns', [$this, 'get_default_hidden_columns'], 10);
 
-        add_filter('leyka_admin_donations_list_filter', array($this, 'filter_items'), 10, 2);
+        add_filter('leyka_admin_donations_list_filter', [$this, 'filter_items'], 10, 2);
 
         if( !empty($_REQUEST['donations-list-export']) ) {
             $this->_export();
@@ -62,7 +62,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
         if( !empty($_GET['orderby']) ) {
 
             $donations_params['orderby'] = $_GET['orderby'];
-            $donations_params['order'] = empty($_GET['order']) || !in_array($_GET['order'], array('asc', 'desc')) ?
+            $donations_params['order'] = empty($_GET['order']) || !in_array($_GET['order'], ['asc', 'desc']) ?
                 'DESC' : mb_strtoupper($_GET['order']);
 
         }
@@ -80,11 +80,11 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
      */
     protected static function _get_items($per_page, $page_number = 1) {
 
-        $params = array('orderby' => 'id', 'order' => 'desc',);
+        $params = ['orderby' => 'id', 'order' => 'desc',];
         if(empty($per_page)) {
             $params['get_all'] = true;
         } else {
-            $params = $params + array('results_limit' => absint($per_page), 'page' => absint($page_number),);
+            $params = $params + ['results_limit' => absint($per_page), 'page' => absint($page_number),];
         }
 
         return Leyka_Donations::get_instance()->get(apply_filters('leyka_admin_donations_list_filter', $params, 'get_donations'));
@@ -107,7 +107,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
         if(self::$_items_count === NULL) {
             self::$_items_count = Leyka_Donations::get_instance()->get_count(
-                apply_filters('leyka_admin_donations_list_filter', array(), 'get_donations_count')
+                apply_filters('leyka_admin_donations_list_filter', [], 'get_donations_count')
             );
         }
 
@@ -127,7 +127,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
      */
     public function get_columns() {
 
-        $columns = array(
+        $columns = [
             'cb' => '<input type="checkbox">',
             'id' => __('ID'),
             'payment_type' => __('Type', 'leyka'),
@@ -138,7 +138,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
             'date' => __('Date', 'leyka'),
             'gateway_pm' => __('Payment method', 'leyka'),
             'emails' => __('Donor email', 'leyka'),
-        );
+        ];
 
         if(leyka_options()->opt('admin_donations_list_display') === 'separate-column') {
             $columns['amount_total'] = __('Total amount', 'leyka');
@@ -157,23 +157,23 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
     }
 
     public function get_default_hidden_columns($hidden) {
-        return array_merge($hidden, array('donor_subscription', 'donor_comment',));
+        return array_merge($hidden, ['donor_subscription', 'donor_comment',]);
     }
 
     /**
      * @return array
      */
     public function get_sortable_columns() {
-        return array(
-            'id' => array('id', true),
-            'payment_type' => array('payment_type', true),
-            'campaign' => array('campaign_id', true),
-            'donor' => array('donor_name'),
-            'amount' => array('amount', true),
-            'date' => array('date', true),
-//            'gateway_pm' => array('gateway_pm', true),
-//            'status' => array('status'),
-        );
+        return [
+            'id' => ['id', true],
+            'payment_type' => ['payment_type', true],
+            'campaign' => ['campaign_id', true],
+            'donor' => ['donor_name'],
+            'amount' => ['amount', true],
+            'date' => ['date', true],
+//            'gateway_pm' => ['gateway_pm', true],
+//            'status' => ['status'],
+        ];
     }
 
     /**
@@ -238,10 +238,10 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
         $column_content = '<div class="donation-campaign"><a href="'.Leyka_Donation_Management::get_donation_edit_link($donation).'">'.$campaign->title.'</a></div>'
-            .$this->row_actions(array(
+            .$this->row_actions([
                 'donation_page' => '<a href="'.Leyka_Donation_Management::get_donation_edit_link($donation).'">'.__('Edit').'</a>',
                 'delete' => '<a href="'.Leyka_Donation_Management::get_donation_delete_link($donation).'">'.__('Delete').'</a>',
-            ));
+            ]);
 
         return apply_filters('leyka_admin_donation_campaign_column_content', $column_content, $donation);
 
@@ -410,7 +410,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
     protected function get_views() {
 
         $base_page_url = admin_url('admin.php?page=leyka_donations');
-        $links = array('all' => '<a href="'.$base_page_url.'">'.__('All').'</a>');
+        $links = ['all' => '<a href="'.$base_page_url.'">'.__('All').'</a>',];
 
         foreach(leyka_get_donation_status_list(false) as $status => $label) { /** @todo Remove "false" when "trash" Donation status will be in use */
             $links[$status] = '<a href="'.$base_page_url.'&status='.$status.'" class="'.(isset($_GET['status']) && $_GET['status'] === $status ? 'current' : '').'">'.$label.'</a>';
@@ -431,7 +431,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
         $per_page = $this->get_items_per_page('donations_per_page');
 
-        $this->set_pagination_args(array('total_items' => self::get_items_count(), 'per_page' => $per_page,));
+        $this->set_pagination_args(['total_items' => self::get_items_count(), 'per_page' => $per_page,]);
 
         $this->items = self::_get_items($per_page, $this->get_pagenum());
 
@@ -463,7 +463,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
      * @return array
      */
     public function get_bulk_actions() {
-        return array('bulk-delete' => __('Delete'));
+        return ['bulk-delete' => __('Delete'),];
     }
 
     public function process_bulk_action() {
@@ -518,9 +518,9 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
         echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
             'UTF-8',
             apply_filters('leyka_donations_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
-            "sep=;\n".implode(';', apply_filters('leyka_donations_export_headers', array(
+            "sep=;\n".implode(';', apply_filters('leyka_donations_export_headers', [
                 'ID', 'Имя донора', 'Email', 'Тип платежа', 'Плат. оператор', 'Способ платежа', 'Полная сумма', 'Итоговая сумма', 'Валюта', 'Дата пожертвования', 'Статус', 'Кампания', 'Назначение', 'Подписка на рассылку', 'Email подписки', 'Комментарий'
-            )))
+            ]))
         );
 
         foreach($this->items as $donation) { /** @var $donation Leyka_Donation_Base */
@@ -547,7 +547,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
                 apply_filters('leyka_donations_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
                 "\r\n".implode(';', apply_filters(
                     'leyka_donations_export_line',
-                    array(
+                    [
                         $donation->id,
                         $donation->donor_name,
                         $donation->donor_email,
@@ -564,7 +564,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
                         $donor_subscription,
                         $donation->donor_subscription_email,
                         $donation->donor_comment,
-                    ),
+                    ],
                     $donation
                 ))
             );

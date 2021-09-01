@@ -11,10 +11,10 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
     public function __construct() {
 
-        parent::__construct(array('singular' => __('Donor', 'leyka'), 'plural' => __('Donors', 'leyka'), 'ajax' => true,));
+        parent::__construct(['singular' => __('Donor', 'leyka'), 'plural' => __('Donors', 'leyka'), 'ajax' => true,]);
 
-        add_filter('leyka_admin_donors_list_filter', array($this, 'filter_items'), 10, 2);
-        add_action('pre_user_query', array($this, 'filter_donors_pre_user_query'));
+        add_filter('leyka_admin_donors_list_filter', [$this, 'filter_items'], 10, 2);
+        add_action('pre_user_query', [$this, 'filter_donors_pre_user_query']);
 
         if( !empty($_REQUEST['donors-list-export']) ) {
             $this->_export();
@@ -31,19 +31,21 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      */
     public function filter_items(array $donors_params, $filter_type = '') {
 
-        $donors_params['meta_query'] = array();
+        $donors_params['meta_query'] = [];
 
         if( !empty($_GET['donor-type']) ) {
             if($_GET['donor-type'] == 'regular') {
-                $donors_params['meta_query'][] = array('key' => 'leyka_donor_type', 'value' => esc_sql($_GET['donor-type']),);
+                $donors_params['meta_query'][] = ['key' => 'leyka_donor_type', 'value' => esc_sql($_GET['donor-type']),];
             } else {
+
                 // If Donor user is of single type, he hasn't any "leyka_donor_type" usermeta.
                 // So if this filter clause will slow down the query, comment out the line of comparation with "single":
-                $donors_params['meta_query'][] = array(
+                $donors_params['meta_query'][] = [
                     'relation' => 'OR',
-                    array('key' => 'leyka_donor_type', 'value' => 'single',),
-                    array('key' => 'leyka_donor_type', 'compare' => 'NOT EXISTS',)
-                );
+                    ['key' => 'leyka_donor_type', 'value' => 'single',],
+                    ['key' => 'leyka_donor_type', 'compare' => 'NOT EXISTS',]
+                ];
+
             }
         }
 
@@ -54,7 +56,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             if($_GET['donor-name-email']) {
 
                 $donors_params['search'] = '*'.esc_sql($_GET['donor-name-email']).'*';
-                $donors_params['search_columns'] = array('ID', 'display_name', 'user_email',);
+                $donors_params['search_columns'] = ['ID', 'display_name', 'user_email',];
 
             }
 
@@ -84,14 +86,14 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
                 $filter_date = trim($_GET['first-date']);
             }
 
-            $donors_params['meta_query'][] = array(
+            $donors_params['meta_query'][] = [
                 'key' => 'leyka_donor_first_donation_date',
                 'value' => is_array($filter_date) ?
                     $filter_date : // Date interval
-                    array(strtotime($filter_date.' 00:00:00'), strtotime($filter_date.' 23:59:59')), // Single date
+                    [strtotime($filter_date.' 00:00:00'), strtotime($filter_date.' 23:59:59')], // Single date
                 'compare' => 'BETWEEN',
                 'type' => 'NUMERIC',
-            );
+            ];
 
         }
 
@@ -119,27 +121,27 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
                 $filter_date = trim($_GET['last-date']);
             }
 
-            $donors_params['meta_query'][] = array(
+            $donors_params['meta_query'][] = [
                 'key' => 'leyka_donor_last_donation_date',
                 'value' => is_array($filter_date) ?
                     $filter_date : // Date interval
-                    array(strtotime($filter_date.' 00:00:00'), strtotime($filter_date.' 23:59:59')), // Single date
+                    [strtotime($filter_date.' 00:00:00'), strtotime($filter_date.' 23:59:59')], // Single date
                 'compare' => 'BETWEEN',
                 'type' => 'NUMERIC',
-            );
+            ];
 
         }
 
         if( !empty($_GET['campaigns']) && !empty($_GET['campaigns'][0]) ) {
 
-            $campaigns_meta_query = array('relation' => 'OR',);
+            $campaigns_meta_query = ['relation' => 'OR',];
 
             foreach($_GET['campaigns'] as $campaign_id) {
-                $campaigns_meta_query[] = array(
+                $campaigns_meta_query[] = [
                     'key' => 'leyka_donor_campaigns',
                     'value' => 'i:'.absint($campaign_id).';', // A little freaky, I know, but it's the best I could think of
                     'compare' => 'LIKE',
-                );
+                ];
             }
 
             $donors_params['meta_query'][] = $campaigns_meta_query;
@@ -148,11 +150,11 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         if( !empty($_GET['gateway']) && leyka_get_gateway_by_id($_GET['gateway']) ) {
 
-            $donors_params['meta_query'][] = array(
+            $donors_params['meta_query'][] = [
                 'key' => 'leyka_donor_gateways',
                 'value' => esc_sql($_GET['gateway']),
                 'compare' => 'LIKE',
-            );
+            ];
 
         }
 
@@ -237,19 +239,19 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         // "Only Donors with cancelled recurring subscriptions" filter:
 //        if( !empty($_REQUEST['leyka_donors-cancelled']) ) {
 //
-//            $cancelled_recurring_subscriptions = get_posts(array(
+//            $cancelled_recurring_subscriptions = get_posts([
 //                'post_type' => Leyka_Donation_Management::$post_type,
 //                'post_status' => 'funded',
 //                'posts_per_page' => -1,
 //                'post_parent' => 0,
-//                'meta_query' => array(
+//                'meta_query' => [
 //                    'relation' => 'AND',
-//                    array('key' => 'leyka_payment_type', 'value' => 'rebill',),
-//                    array('key' => '_rebilling_is_active', 'value' => 1, 'compare' => '!='),
-//                ),
-//            ));
+//                    ['key' => 'leyka_payment_type', 'value' => 'rebill',],
+//                    ['key' => '_rebilling_is_active', 'value' => 1, 'compare' => '!='],
+//                ],
+//            ]);
 //
-//            $cancelled_donors_ids = array();
+//            $cancelled_donors_ids = [];
 //            foreach($cancelled_recurring_subscriptions as $donation) {
 //
 //                $donation = new Leyka_Donation($donation);
@@ -278,13 +280,13 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      */
     protected static function _get_items($per_page = false, $page_number = 1) {
 
-        $donors_params = apply_filters('leyka_admin_donors_list_filter', array(
-            'role__in' => array(Leyka_Donor::DONOR_USER_ROLE,),
+        $donors_params = apply_filters('leyka_admin_donors_list_filter', [
+            'role__in' => [Leyka_Donor::DONOR_USER_ROLE,],
             'number' => $per_page ? absint($per_page) : -1,
             'paged' => $page_number ? absint($page_number) : false,
-        ));
+        ]);
 
-        $donors = array();
+        $donors = [];
         foreach(get_users($donors_params) as $donor_user) {
 
             try {
@@ -293,7 +295,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             	continue;
             }
 
-            $donor_data = array(
+            $donor_data = [
                 'donor_id' => $donor->id,
                 'donor_name' => $donor->name,
                 'donor_email' => $donor->email,
@@ -301,7 +303,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
                 'first_donation' => $donor->first_donation_id,
                 'last_donation' => $donor->last_donation_id,
                 'donors_tags' => $donor->get_tags(),
-            );
+            ];
 
             $donor_data['donor_type'] = $donor->type;
             $donor_data['campaigns'] = $donor->campaigns;
@@ -335,21 +337,19 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
     }
 
-    /**
-     * @return null|string
-     */
+    /** * @return integer */
     public static function get_items_count() {
 
         if(self::$_items_count === NULL) {
 
             $donors = new WP_User_Query(apply_filters(
                 'leyka_admin_donors_list_filter',
-                array(
-                    'role__in' => array(Leyka_Donor::DONOR_USER_ROLE,),
+                [
+                    'role__in' => [Leyka_Donor::DONOR_USER_ROLE,],
                     'number' => -1,
                     'count_total' => true,
-                    'fields' => array('id',),
-                ),
+                    'fields' => ['id',],
+                ],
                 'get_donors_total_count'
             ));
 
@@ -372,7 +372,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      * @return array
      */
     function get_columns() {
-        return array(
+        return [
             'cb' => '<input type="checkbox">',
             'id' => __('ID', 'leyka'),
             'donor_type' => _x('Type', "Donor's type", 'leyka'),
@@ -383,22 +383,22 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             'gateways' => __('Gateway', 'leyka'),
             'last_donation' => __('Last donation', 'leyka'),
             'amount_donated' => __('Amount donated', 'leyka'),
-        );
+        ];
     }
 
     /**
      * @return array
      */
     public function get_sortable_columns() {
-        return array(
-            'id' => array('id', true),
+        return [
+            'id' => ['id', true],
             /** @todo ATM, there are no meta value for "single" Donor type. It messes up the ordering. */
-//            'donor_type' => array('donor_type', true),
-            'donor' => array('donor', false),
-            'first_donation' => array('first_donation', true),
-            'last_donation' => array('last_donation', true),
-            'amount_donated' => array('amount_donated', true),
-        );
+//            'donor_type' => ['donor_type', true],
+            'donor' => ['donor', false],
+            'first_donation' => ['first_donation', true],
+            'last_donation' => ['last_donation', true],
+            'amount_donated' => ['amount_donated', true],
+        ];
     }
 
     /**
@@ -487,7 +487,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             )
             .'<div class="leyka-donor-data-main">'
                 .$donor_data_html
-                .$this->row_actions(array(
+                .$this->row_actions([
                     'donor_page' => '<a href="'.$admin_donor_page.'">'.__('Edit').'</a>',
                     'delete' => sprintf(
                         '<a href="?page=%s&action=%s&donor=%s&_wpnonce=%s">'.__('Delete', 'leyka').'</a>',
@@ -496,7 +496,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
                         $item['donor_id'],
                         wp_create_nonce('leyka_delete_donor')
                     ),
-                ))
+                ])
             .'</div>';
 
         return apply_filters('leyka_admin_donor_data_column_content', $column_content, $item);
@@ -555,7 +555,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             return '';
         }
 
-        $campaigns_list = array();
+        $campaigns_list = [];
         foreach($item['campaigns'] as $campaign_id => $campaign_title) {
             if($campaign_title) {
                 $campaigns_list[] = '«'.ltrim(rtrim($campaign_title, '»'), '«').'»';
@@ -564,7 +564,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         sort($campaigns_list);
 
-        $first_campaigns_for_list = array_splice($campaigns_list, 0, 3, array());
+        $first_campaigns_for_list = array_splice($campaigns_list, 0, 3, []);
 
         $column_content = '<div class="leyka-admin-shortened-text">'
             .implode(', ', $first_campaigns_for_list)
@@ -586,7 +586,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             return '';
         }
 
-        $tags_list = array();
+        $tags_list = [];
         foreach($item['donors_tags'] as $term) { /** @var $term WP_Term */
             $tags_list[] = '#<a href="?page='.esc_attr($_REQUEST['page']).'&donors-tags[0]='.$term->term_id.'">'.esc_html($term->name).'</a>';
         }
@@ -610,7 +610,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             return '';
         }
 
-        $gateways_list = array();
+        $gateways_list = [];
         foreach($item['gateways'] as $gateway_id) {
 
             $gateway = leyka_get_gateway_by_id($gateway_id);
@@ -683,7 +683,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      * @return array
      */
     public function get_bulk_actions() {
-        return array('bulk-edit' => __('Edit'), 'bulk-delete' => __('Delete'),);
+        return ['bulk-edit' => __('Edit'), 'bulk-delete' => __('Delete'),];
     }
 
     /**
@@ -697,7 +697,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         $per_page = $this->get_items_per_page('donors_per_page');
 
-        $this->set_pagination_args(array('total_items' => self::get_items_count(), 'per_page' => $per_page,));
+        $this->set_pagination_args(['total_items' => self::get_items_count(), 'per_page' => $per_page,]);
 
         $this->items = self::_get_items($per_page, $this->get_pagenum());
 
@@ -804,9 +804,9 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
             'UTF-8',
             apply_filters('leyka_donors_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
-            "sep=;\n".implode(';', apply_filters('leyka_donors_export_headers', array(
+            "sep=;\n".implode(';', apply_filters('leyka_donors_export_headers', [
                 'ID', 'Тип донора', 'Имя', 'Email', 'Дата первого пожертвования', 'Сумма первого пожертвования', 'Кампания первого пожертвования', 'Метки донора', 'Кампании', 'Платёжные операторы', 'Дата последнего пожертвования', 'Сумма последнего пожертвования', 'Кампания последнего пожертвования', 'Общая сумма пожертвований', 'Валюта',
-            )))
+            ]))
         );
 
         foreach($this->items as $donor_data) {
@@ -816,7 +816,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             $last_donation = $donor_data['last_donation'] ?
                 Leyka_Donations::get_instance()->get($donor_data['last_donation']) : false;
 
-            $donor_tags_list = array();
+            $donor_tags_list = [];
             if( !empty($donor_data['donors_tags']) ) {
                 foreach($donor_data['donors_tags'] as $term) { /** @var $term WP_Term */
                     $donor_tags_list[] = esc_attr($term->name);
@@ -824,7 +824,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             }
             $donor_tags_list = implode(', ', $donor_tags_list);
 
-            $donor_campaigns_list = array();
+            $donor_campaigns_list = [];
             if( !empty($donor_data['campaigns']) ) {
                 foreach($donor_data['campaigns'] as $campaign_id => $campaign_title) {
                     if($campaign_title) {
@@ -835,7 +835,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             sort($donor_campaigns_list);
             $donor_campaigns_list = implode(', ', $donor_campaigns_list);
 
-            $donor_gateways_list = array();
+            $donor_gateways_list = [];
             if( !empty($donor_data['gateways']) ) {
                 foreach($donor_data['gateways'] as $gateway_id) {
 
@@ -860,7 +860,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
                 'UTF-8',
                 apply_filters('leyka_donations_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
-                "\r\n".implode(';', apply_filters('leyka_donations_export_line', array(
+                "\r\n".implode(';', apply_filters('leyka_donations_export_line', [
                         $donor_data['donor_id'],
                         _x(mb_ucfirst($donor_data['donor_type']), 'Donor type', 'leyka'),
                         $donor_data['donor_name'],
@@ -876,7 +876,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
                         ($last_donation ? $last_donation->campaign_title : ''),
                         $donor_data['amount_donated'],
                         $currency,
-                    ), $donor_data)
+                    ], $donor_data)
                 )
             );
 

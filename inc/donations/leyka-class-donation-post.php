@@ -3,7 +3,7 @@
 /** Default donation class - WP_Post-based */
 class Leyka_Donation_Post extends Leyka_Donation_Base {
 
-    public static function add(array $params = array()) {
+    public static function add(array $params = []) {
 
         $params = self::_handle_new_donation_params($params); // New Donation params pre-handling
 
@@ -13,7 +13,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
         remove_all_actions('save_post_'.Leyka_Donation_Management::$post_type);
 
-        $donation_params = array(
+        $donation_params = [
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => $params['status'],
             'post_title' => $params['payment_title'],
@@ -21,7 +21,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             'post_name' => uniqid('donation-', true), // For fast WP_Post creation when DB already has lots of donations
             'post_parent' => $params['init_recurring_donation'],
             'post_author' => $params['donor_user_id'],
-        );
+        ];
 
         $donation_id = wp_insert_post($donation_params, true);
 
@@ -34,7 +34,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
         $params['currency_id'] = $params['currency_id'] && leyka_get_currencies_full_info($params['currency_id']) ?
             $params['currency_id'] : leyka_get_country_currency();
 
-        $donation_meta_fields = array(
+        $donation_meta_fields = [
             'leyka_donation_amount' => $params['amount'],
             'leyka_donation_currency' => $params['currency_id'],
             'leyka_payment_type' => $params['payment_type'],
@@ -45,8 +45,8 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             'leyka_campaign_id' => $params['campaign_id'],
 //            '_leyka_donor_email_date' => 0, /** @todo Check if this lines are needed at all */
 //            '_leyka_managers_emails_date' => 0,
-            '_status_log' => array(array('date' => current_time('timestamp'), 'status' => $params['status'])),
-        );
+            '_status_log' => [['date' => current_time('timestamp'), 'status' => $params['status']]],
+        ];
 
         if($params['amount_total'] && $params['amount_total'] != $params['amount']) {
             $donation_meta_fields['leyka_donation_amount_total'] = $params['amount_total'];
@@ -109,7 +109,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 return new WP_Error(
                     'donation_addition_error',
                     __('Error while adding a donation', 'leyka'),
-                    array('donation_meta_not_inserted' => array('key' => $key, 'value' => $value))
+                    ['donation_meta_not_inserted' => ['key' => $key, 'value' => $value,]]
                 );
 
             }
@@ -192,7 +192,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             $donation_amount_total = empty($meta['leyka_donation_amount_total']) ?
                 $donation_amount : (float)$meta['leyka_donation_amount_total'][0];
 
-            $this->_donation_meta = array(
+            $this->_donation_meta = [
                 'payment_title' => empty($payment_title) ? $this->_main_data->post_title : $payment_title,
                 'leyka_payment_type' => empty($meta['leyka_payment_type']) ? 'single' : $meta['leyka_payment_type'][0],
                 'leyka_payment_method' => empty($meta['leyka_payment_method']) ? '' : $meta['leyka_payment_method'][0],
@@ -231,7 +231,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 '_rebilling_is_active' => !empty($meta['_rebilling_is_active'][0]),
                 'leyka_cancel_recurring_requested' => isset($meta['leyka_cancel_recurring_requested']) ?
                     $meta['leyka_cancel_recurring_requested'][0] : false,
-            );
+            ];
         }
 
         return $this;
@@ -431,7 +431,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 return $this->_donation_meta['leyka_gateway_response'];
             case 'gateway_response_formatted':
                 return $this->gateway_id && $this->gateway_id !== 'correction' ?
-                    leyka_get_gateway_by_id($this->gateway_id)->get_gateway_response_formatted($this) : array();
+                    leyka_get_gateway_by_id($this->gateway_id)->get_gateway_response_formatted($this) : [];
 
             case 'type':
             case 'payment_type':
@@ -521,7 +521,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                     return false;
                 }
 
-                $res = wp_update_post(array('ID' => $this->_id, 'post_title' => $value));
+                $res = wp_update_post(['ID' => $this->_id, 'post_title' => $value,]);
                 if( !$res || is_wp_error($res) ) {
                     return false;
                 }
@@ -536,7 +536,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                     return false;
                 }
 
-                $res = wp_update_post(array('ID' => $this->_id, 'post_status' => $value));
+                $res = wp_update_post(['ID' => $this->_id, 'post_status' => $value,]);
                 if( !$res || is_wp_error($res) ) {
                     return false;
                 }
@@ -549,16 +549,16 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
                 $status_log = $this->get_meta('_status_log');
                 if($status_log && is_array($status_log)) {
-                    $status_log[] = array('date' => current_time('timestamp'), 'status' => $value);
+                    $status_log[] = ['date' => current_time('timestamp'), 'status' => $value,];
                 } else {
-                    $status_log = array(array('date' => current_time('timestamp'), 'status' => $value));
+                    $status_log = [['date' => current_time('timestamp'), 'status' => $value,]];
                 }
 
                 $this->set_meta('_status_log', $status_log);
                 break;
 
             case 'date':
-                $res = wp_update_post(array('ID' => $this->_id, 'post_date' => $value));
+                $res = wp_update_post(['ID' => $this->_id, 'post_date' => $value,]);
 
                 if( !$res || is_wp_error($res) ) {
                     return false;
@@ -568,7 +568,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 break;
             case 'date_timestamp':
                 $new_date = date('Y-m-d H:i:s', $value);
-                $res = wp_update_post(array('ID' => $this->_id, 'post_date' => $new_date));
+                $res = wp_update_post(['ID' => $this->_id, 'post_date' => $new_date,]);
 
                 if( !$res || is_wp_error($res) ) {
                     return false;
@@ -600,7 +600,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
                 $value = absint($value);
 
-                $res = wp_update_post(array('ID' => $this->id, 'post_author' => $value));
+                $res = wp_update_post(['ID' => $this->id, 'post_author' => $value,]);
                 if( !$res || is_wp_error($res) ) {
                     return false;
                 }
@@ -618,7 +618,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
                     $value = absint($value);
 
-                    $res = wp_update_post(array('ID' => $this->id, 'post_author' => $value));
+                    $res = wp_update_post(['ID' => $this->id, 'post_author' => $value,]);
                     if( !$res || is_wp_error($res) ) {
                         return false;
                     }
@@ -740,7 +740,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 $value = absint($value);
                 if($value != $this->_main_data->post_parent && $this->payment_type === 'rebill') {
 
-                    wp_update_post(array('ID' => $this->_id, 'post_parent' => $value));
+                    wp_update_post(['ID' => $this->_id, 'post_parent' => $value,]);
                     $this->_main_data->post_parent = $value;
 
                 }

@@ -5,17 +5,17 @@ abstract class Leyka_Donations extends Leyka_Singleton {
     protected static $_instance = null;
 
     /** @var array An array of Leyka_Donation_Base objects cache */
-    protected static $_objects = array();
+    protected static $_objects = [];
 
     /**
      * @param $params array Isn't in use.
      * @return static
      */
-    public static function get_instance(array $params = array()) {
+    public static function get_instance(array $params = []) {
 
         if(null === static::$_instance) {
 
-            if(in_array(get_option('leyka_donations_storage_type'), array('sep', 'sep-incompleted'))) {
+            if(in_array(get_option('leyka_donations_storage_type'), ['sep', 'sep-incompleted'])) {
 
                 require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donation-separated.php');
                 static::$_instance = new Leyka_Donations_Separated();
@@ -85,14 +85,14 @@ abstract class Leyka_Donations extends Leyka_Singleton {
      * @param $params array
      * @return integer.
      */
-    abstract public function get_count(array $params = array());
+    abstract public function get_count(array $params = []);
 
     /**
      * @param $params array
      * @param $return_object boolean True to return a Leyka_Donation_Base object, false to return just a new donation ID.
      * @return integer|WP_Error An ID of the new donation, WP_Error object if there was an error in the process
      */
-    abstract public function add(array $params = array(), $return_object = false);
+    abstract public function add(array $params = [], $return_object = false);
 
     /**
      * Helper to add a copy of given Donation.
@@ -102,11 +102,11 @@ abstract class Leyka_Donations extends Leyka_Singleton {
      * @param $settings array Cloning operation settings array.
      * @return Leyka_Donation_Base|WP_Error A new Donation object or WP_Error object if there were some errors while adding it.
      */
-    public function add_clone(Leyka_Donation_Base $original, array $params = array(), array $settings = array()) {
+    public function add_clone(Leyka_Donation_Base $original, array $params = [], array $settings = []) {
 
-        $settings = array_merge(array('recalculate_total_amount' => false,), $settings);
+        $settings = array_merge(['recalculate_total_amount' => false,], $settings);
 
-        $new_donation_id = $this->add(array_merge(array(
+        $new_donation_id = $this->add(array_merge([
             'date' => $original->date,
             'status' => $original->status,
             'payment_type' => $original->payment_type,
@@ -120,7 +120,7 @@ abstract class Leyka_Donations extends Leyka_Singleton {
             'amount' => $original->amount,
             'amount_total' => $original->amount_total,
             'currency' => $original->currency,
-        ), $params));
+        ], $params));
 
         if(is_wp_error($new_donation_id)) {
             return $new_donation_id;
@@ -148,7 +148,7 @@ abstract class Leyka_Donations extends Leyka_Singleton {
             return null;
         }
 
-        $values_to_filter = array();
+        $values_to_filter = [];
         if(is_array($values)) { // Values as an array
 
             foreach($values as $value) {
@@ -166,7 +166,7 @@ abstract class Leyka_Donations extends Leyka_Singleton {
             }
 
         } else if(array_key_exists(trim($values), $possible_values_list)) { // A single value
-            $values_to_filter = array(trim($values));
+            $values_to_filter = [trim($values)];
         }
 
         return $values_to_filter;
@@ -191,18 +191,18 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
     }
 
-    protected function _get_query(array $params = array()) {
+    protected function _get_query(array $params = []) {
 
-        $query_params = array(
+        $query_params = [
             'post_type' => Leyka_Donation_Management::$post_type,
             'posts_per_page' => -1,
             'post_status' => 'any',
             'cache_results' => defined('WP_CACHE') ? WP_CACHE : true,
             'update_post_meta_cache' => defined('WP_CACHE') ? WP_CACHE : true,
             'update_post_term_cache' => defined('WP_CACHE') ? WP_CACHE : true,
-        );
+        ];
 
-        $params['meta'] = empty($params['meta']) || !is_array($params['meta']) ? array() : $params['meta'];
+        $params['meta'] = empty($params['meta']) || !is_array($params['meta']) ? [] : $params['meta'];
 
         $params['strict'] = isset($params['strict']) ? !!$params['strict'] : true;
 
@@ -292,7 +292,7 @@ class Leyka_Donations_Posts extends Leyka_Donations {
             $date = $date ? $date : DateTime::createFromFormat('Y-m-d', $params['date_from']);
 
             if($date) {
-                $query_params['date_query'][] = array('after' => $date->format('Y-m-d 00:00:00'), 'inclusive' => true,);
+                $query_params['date_query'][] = ['after' => $date->format('Y-m-d 00:00:00'), 'inclusive' => true,];
             }
 
         }
@@ -302,7 +302,7 @@ class Leyka_Donations_Posts extends Leyka_Donations {
             $date = $date ? $date : DateTime::createFromFormat('Y-m-d', $params['date_to']);
 
             if($date) {
-                $query_params['date_query'][] = array('before' => $date->format('Y-m-d 23:59:59'), 'inclusive' => true,);
+                $query_params['date_query'][] = ['before' => $date->format('Y-m-d 23:59:59'), 'inclusive' => true,];
             }
 
         }
@@ -334,33 +334,33 @@ class Leyka_Donations_Posts extends Leyka_Donations {
             $params['amount_filter'] = trim($params['amount_filter']);
 
             if($params['amount_filter'] === 'only+') {
-                $params['meta'][] = array('key' => 'leyka_donation_amount', 'value' => 0, 'compare' => '>');
+                $params['meta'][] = ['key' => 'leyka_donation_amount', 'value' => 0, 'compare' => '>'];
             } else if($params['amount_filter'] === 'only-') {
-                $params['meta'][] = array('key' => 'leyka_donation_amount', 'value' => 0, 'compare' => '<');
-            } else if(stripos($params['amount_filter'], '>=') !== false) {
-                $params['meta'][] = array(
+                $params['meta'][] = ['key' => 'leyka_donation_amount', 'value' => 0, 'compare' => '<'];
+            } else if(mb_stripos($params['amount_filter'], '>=') !== false) {
+                $params['meta'][] = [
                     'key' => 'leyka_donation_amount',
                     'value' => (int)str_replace('>=', '', $params['amount_filter']),
                     'compare' => '>=',
-                );
+                ];
             } else if(mb_stripos($params['amount_filter'], '<=') !== false) {
-                $params['meta'][] = array(
+                $params['meta'][] = [
                     'key' => 'leyka_donation_amount',
                     'value' => (int)str_replace('<=', '', $params['amount_filter']),
                     'compare' => '<=',
-                );
+                ];
             }
 
         }
 
         // Campaign ID filtering:
         $params['campaign_id'] = empty($params['campaigns_ids']) ?
-            (empty($params['campaign_id']) ? array() : $params['campaign_id']) :
+            (empty($params['campaign_id']) ? [] : $params['campaign_id']) :
             $params['campaigns_ids'];
 
         if($params['campaign_id']) {
 
-            $params['campaign_id'] = is_array($params['campaign_id']) ? $params['campaign_id'] : array($params['campaign_id']);
+            $params['campaign_id'] = is_array($params['campaign_id']) ? $params['campaign_id'] : [$params['campaign_id']];
             $params['campaign_id'] = array_filter($params['campaign_id'], function($campaign_id){ return absint($campaign_id); });
 
             if($params['campaign_id']) {
@@ -456,7 +456,7 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
         if(empty($params['gateway_id']) && empty($params['pm_id']) && !empty($params['pm_full_id']) ) {
 
-            $params['pm_full_id'] = is_array($params['pm_full_id']) ? $params['pm_full_id'] : array($params['pm_full_id']);
+            $params['pm_full_id'] = is_array($params['pm_full_id']) ? $params['pm_full_id'] : [$params['pm_full_id']];
             $values_list = ['relation' => 'OR',];
 
             foreach($params['pm_full_id'] as $pm_full_id) {
@@ -493,7 +493,7 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
         if(count($params['meta'])) {
 
-            if( empty($params['meta']['relation']) || !in_array($params['meta']['relation'], array('AND', 'OR')) ) {
+            if( empty($params['meta']['relation']) || !in_array($params['meta']['relation'], ['AND', 'OR']) ) {
                 $params['meta']['relation'] = 'AND';
             }
 
@@ -501,7 +501,7 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
         }
 
-        $query_params['order'] = empty($params['order']) || !in_array($params['order'], array('asc', 'ASC', 'desc', 'DESC',)) ?
+        $query_params['order'] = empty($params['order']) || !in_array($params['order'], ['asc', 'ASC', 'desc', 'DESC',]) ?
             'DESC' : mb_strtoupper($params['order']);
 
         $params['orderby'] = empty($params['orderby']) ? 'date' : $params['orderby'];
@@ -592,11 +592,11 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
     }
 
-    public function get_count(array $params = array()) {
+    public function get_count(array $params = []) {
         return $this->_get_query($params)->found_posts;
     }
 
-    public function add(array $params = array(), $return_object = false) {
+    public function add(array $params = [], $return_object = false) {
 
         $donation = Leyka_Donation_Post::add($params);
 
@@ -622,7 +622,7 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
         return $wpdb->get_var($wpdb->prepare(
             "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key=%s AND meta_value=%s LIMIT 1",
-            array($meta_key, $value)
+            [$meta_key, $value]
         ));
 
     }
@@ -655,16 +655,16 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
     }
 
-    protected function _get_query_parts(array $params = array()) {
+    protected function _get_query_parts(array $params = []) {
 
         global $wpdb;
 
-        $query = array('fields' => '', 'from' => '', 'joins' => '', 'where' => '', 'orderby' => '', 'limit' => '',);
+        $query = ['fields' => '', 'from' => '', 'joins' => '', 'where' => '', 'orderby' => '', 'limit' => '',];
 
-        $joins = array();
-        $where = array();
+        $joins = [];
+        $where = [];
 
-        $params['meta'] = empty($params['meta']) || !is_array($params['meta']) ? array() : $params['meta'];
+        $params['meta'] = empty($params['meta']) || !is_array($params['meta']) ? [] : $params['meta'];
 
         $params['strict'] = isset($params['strict']) ? !!$params['strict'] : true;
 
@@ -705,7 +705,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         if($params['donor_id'] !== false) {
 
-            $params['donor_id'] = is_array($params['donor_id']) ? $params['donor_id'] : array($params['donor_id']);
+            $params['donor_id'] = is_array($params['donor_id']) ? $params['donor_id'] : [$params['donor_id']];
             $params['donor_id'] = array_filter($params['donor_id'], function($donor_id){
                 return $donor_id === 0 ? true : absint($donor_id); // donor_id === 0 is possible (for Donations w/o Donors)
             });
@@ -737,7 +737,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
         if( !empty($params['recurring_only_init']) ) {
 
             $params['payment_type'] = 'rebill';
-            $params['meta'][] = array('key' => 'init_recurring_donation_id', 'value' => 0,);
+            $params['meta'][] = ['key' => 'init_recurring_donation_id', 'value' => 0,];
 
         }
 
@@ -746,9 +746,9 @@ class Leyka_Donations_Separated extends Leyka_Donations {
             $params['payment_type'] = 'rebill';
 
             if($params['recurring_active']) {
-                $params['meta'][] = array('key' => 'recurring_active', 'value' => 1,);
+                $params['meta'][] = ['key' => 'recurring_active', 'value' => 1,];
             } else {
-                $params['meta'][] = array('key' => 'recurring_active', 'compare' => 'NOT EXISTS',);
+                $params['meta'][] = ['key' => 'recurring_active', 'compare' => 'NOT EXISTS',];
             }
 
         }
@@ -756,7 +756,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
         if(isset($params['recurring_rebills_of']) && absint($params['recurring_rebills_of'])) {
 
             $params['payment_type'] = 'rebill';
-            $params['meta'][] = array('key' => 'init_recurring_donation_id', 'value' => absint($params['recurring_rebills_of']),);
+            $params['meta'][] = ['key' => 'init_recurring_donation_id', 'value' => absint($params['recurring_rebills_of']),];
 
         }
         // Recurring Donations filtering - END
@@ -775,7 +775,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
             } else if($params['payment_type'] == 'rebill-init') {
 
                 $params['payment_type'] = 'rebill';
-                $params['meta'][] = array('key' => 'init_recurring_donation_id', 'value' => 0,);
+                $params['meta'][] = ['key' => 'init_recurring_donation_id', 'value' => 0,];
 
             }
 
@@ -797,12 +797,12 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         // Campaign ID filtering:
         $params['campaign_id'] = empty($params['campaigns_ids']) ?
-            (empty($params['campaign_id']) ? array() : $params['campaign_id']) :
+            (empty($params['campaign_id']) ? [] : $params['campaign_id']) :
             $params['campaigns_ids'];
 
         if($params['campaign_id']) {
 
-            $params['campaign_id'] = is_array($params['campaign_id']) ? $params['campaign_id'] : array($params['campaign_id']);
+            $params['campaign_id'] = is_array($params['campaign_id']) ? $params['campaign_id'] : [$params['campaign_id']];
             $params['campaign_id'] = array_filter($params['campaign_id'], function($campaign_id){ return absint($campaign_id); });
 
             $where['campaign_id'] = "{$wpdb->prefix}leyka_donations.campaign_id IN (".implode(',', $params['campaign_id']).")";
@@ -898,8 +898,8 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         if( !empty($params['gateway_id']) ) {
 
-            $params['gateway_id'] = is_array($params['gateway_id']) ? $params['gateway_id'] : array($params['gateway_id']);
-            $query_params = array();
+            $params['gateway_id'] = is_array($params['gateway_id']) ? $params['gateway_id'] : [$params['gateway_id']];
+            $query_params = [];
 
             foreach($params['gateway_id'] as $gateway_id) {
                 if(($params['strict'] && leyka_get_gateway_by_id($gateway_id)) || !$params['strict']) {
@@ -915,8 +915,8 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         if( !empty($params['pm_id']) ) {
 
-            $params['pm_id'] = is_array($params['pm_id']) ? $params['pm_id'] : array($params['pm_id']);
-            $query_params = array();
+            $params['pm_id'] = is_array($params['pm_id']) ? $params['pm_id'] : [$params['pm_id']];
+            $query_params = [];
 
             foreach($params['pm_id'] as $pm_id) {
                 if(($params['strict'] && leyka_get_pm_by_id($pm_id)) || !$params['strict']) {
@@ -932,8 +932,8 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         if(empty($params['gateway_id']) && empty($params['pm_id']) && !empty($params['pm_full_id']) ) {
 
-            $params['pm_full_id'] = is_array($params['pm_full_id']) ? $params['pm_full_id'] : array($params['pm_full_id']);
-            $query_params = array();
+            $params['pm_full_id'] = is_array($params['pm_full_id']) ? $params['pm_full_id'] : [$params['pm_full_id']];
+            $query_params = [];
 
             foreach($params['pm_full_id'] as $pm_full_id) {
                 if(($params['strict'] && leyka_get_pm_by_id($pm_full_id, true)) || !$params['strict']) {
@@ -971,7 +971,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         }
 
-        $params['order'] = empty($params['order']) || !in_array($params['order'], array('asc', 'ASC', 'desc', 'DESC',)) ?
+        $params['order'] = empty($params['order']) || !in_array($params['order'], ['asc', 'ASC', 'desc', 'DESC',]) ?
             'DESC' : mb_strtoupper($params['order']);
 
         if(empty($params['orderby'])) {
@@ -996,8 +996,8 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         if(isset($params['donor_subscribed'])) {
             $params['meta'][] = $params['donor_subscribed'] ?
-                array('key' => 'donor_subscribed', 'compare' => '>=', 'value' => 1) :
-                array('key' => 'donor_subscribed', 'compare' => 'NOT EXISTS');
+                ['key' => 'donor_subscribed', 'compare' => '>=', 'value' => 1] :
+                ['key' => 'donor_subscribed', 'compare' => 'NOT EXISTS'];
         }
 
         if($params['meta']) {
@@ -1034,7 +1034,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         $query = $this->_get_query_parts($params);
 
-        $donations = array();
+        $donations = [];
         $query = "SELECT {$query['fields']} FROM {$wpdb->prefix}leyka_donations {$query['joins']} {$query['where']} {$query['orderby']} {$query['limit']}";
 
         if(empty($params['get_ids_only'])) {
@@ -1049,7 +1049,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
     }
 
-    public function get_count(array $params = array()) {
+    public function get_count(array $params = []) {
 
         global $wpdb;
 
@@ -1067,7 +1067,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
         );
     }
 
-    public function add(array $params = array(), $return_object = false) {
+    public function add(array $params = [], $return_object = false) {
 
         $donation = Leyka_Donation_Separated::add($params);
 
@@ -1096,8 +1096,8 @@ class Leyka_Donations_Separated extends Leyka_Donations {
         /** @todo Implement $force_delete == false. Keep the original donation status in meta, then update the donation status to "trash" */
 //        if( !!$force_delete ) {
         $res = !(
-            $wpdb->delete($wpdb->prefix.'leyka_donations_meta', array('donation_id' => $donation_id), array('%d')) === false
-            || $wpdb->delete($wpdb->prefix.'leyka_donations', array('ID' => $donation_id), array('%d')) === false
+            $wpdb->delete($wpdb->prefix.'leyka_donations_meta', ['donation_id' => $donation_id], ['%d']) === false
+            || $wpdb->delete($wpdb->prefix.'leyka_donations', ['ID' => $donation_id], ['%d']) === false
         );
 //        } else {
 //            $wpdb->update();
@@ -1113,20 +1113,20 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         $meta_id = $wpdb->get_var($wpdb->prepare(
             "SELECT meta_id FROM {$wpdb->prefix}leyka_donations_meta WHERE donation_id=%d AND meta_key=%s LIMIT 0,1",
-            array($donation_id, $meta_key)
+            [$donation_id, $meta_key]
         ));
 
         if($meta_id) { // Meta exists
             return !!$wpdb->update(
-                $wpdb->prefix.'leyka_donations_meta', array('meta_value' => trim($value)),
-                array('meta_id' => $meta_id),
-                array('%s'), array('%d')
+                $wpdb->prefix.'leyka_donations_meta', ['meta_value' => trim($value)],
+                ['meta_id' => $meta_id],
+                ['%s'], ['%d']
             );
         } else {
             return !!$wpdb->insert(
                 $wpdb->prefix.'leyka_donations_meta',
-                array('donation_id' => $donation_id, 'meta_key' => $meta_key, 'meta_value' => $value),
-                array('%d', '%s', '%s')
+                ['donation_id' => $donation_id, 'meta_key' => $meta_key, 'meta_value' => $value],
+                ['%d', '%s', '%s']
             );
         }
 
@@ -1138,7 +1138,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         return $wpdb->get_var($wpdb->prepare(
             "SELECT meta_value FROM {$wpdb->prefix}leyka_donations_meta WHERE donation_id=%d AND meta_key=%s LIMIT 0,1",
-            array($donation_id, $meta_key)
+            [$donation_id, $meta_key]
         ));
 
     }
@@ -1149,7 +1149,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         return $wpdb->get_var($wpdb->prepare(
             "SELECT donation_id FROM {$wpdb->prefix}leyka_donations_meta WHERE meta_key=%s AND meta_value=%s LIMIT 1",
-            array($meta_key, $value)
+            [$meta_key, $value]
         ));
 
     }

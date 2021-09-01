@@ -8,18 +8,18 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
     protected static $_instance;
 
-    public static $post_type = 'leyka_donation';
+    public static $post_type = 'leyka_donation'; // For "post" Donations storage type only
 
     protected function __construct() {
 
         if(leyka_get_donations_storage_type() === 'post') {
 
-            add_action('add_meta_boxes', array($this, 'add_metaboxes')); // Add Donation PT metaboxes
-            add_action('transition_post_status',  array($this, 'donation_status_changed'), 10, 3);
+            add_action('add_meta_boxes', [$this, 'add_metaboxes']); // Add Donation PT metaboxes
+            add_action('transition_post_status',  [$this, 'donation_status_changed'], 10, 3);
 
         }
 
-        add_action('wp_ajax_leyka_send_donor_email', array($this, 'ajax_send_donor_email'));
+        add_action('wp_ajax_leyka_send_donor_email', [$this, 'ajax_send_donor_email']);
 
         /** Donors data refresh actions */
         // If some funded donation data are changed, order its donor's data cache refreshing:
@@ -62,7 +62,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
     public function set_admin_messages($messages) {
 
-        $messages[self::$post_type] = array(
+        $messages[self::$post_type] = [
             0 => '', // Unused. Messages start at index 1.
             1 => __('Donation updated.', 'leyka'),
             2 => __('Field updated.', 'leyka'),
@@ -83,7 +83,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 date_i18n(__( 'M j, Y @ G:i'), strtotime(get_post()->post_date))
             ),
             10 => __('Donation draft updated.', 'leyka'),
-        );
+        ];
 
         return $messages;
 
@@ -189,7 +189,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
-        $email_placeholders = array(
+        $email_placeholders = [
             '#SITE_NAME#',
             '#SITE_EMAIL#',
             '#ORG_NAME#',
@@ -205,8 +205,8 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             '#DATE#',
             '#RECURRING_SUBSCRIPTION_CANCELLING_LINK#',
             '#DONOR_ACCOUNT_LOGIN_LINK#',
-        );
-        $email_placeholder_values = array(
+        ];
+        $email_placeholder_values = [
             get_bloginfo('name'),
             get_bloginfo('admin_email'),
             leyka_options()->opt('org_full_name'),
@@ -225,7 +225,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 sprintf(__('<a href="mailto:%s">write us a letter about it</a>', 'leyka'), leyka_get_website_tech_support_email()),
                 $donation
             ),
-        );
+        ];
 
         // Donor account login link:
         if(leyka_options()->opt('donor_accounts_available')) {
@@ -269,12 +269,14 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 $email_placeholder_values,
                 apply_filters('leyka_email_thanks_text', leyka_options()->opt('email_thanks_text'), $donation, $campaign)
             )),
-            array('From: '.apply_filters(
-                'leyka_email_from_name',
-                leyka_options()->opt_safe('email_from_name'),
-                $donation,
-                $campaign
-            ).' <'.leyka_options()->opt_safe('email_from').'>',)
+            [
+                'From: '.apply_filters(
+                    'leyka_email_from_name',
+                    leyka_options()->opt_safe('email_from_name'),
+                    $donation,
+                    $campaign
+                ).' <'.leyka_options()->opt_safe('email_from').'>',
+            ]
         );
 
         // Reset content-type to avoid conflicts (http://core.trac.wordpress.org/ticket/23578):
@@ -309,7 +311,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
-        $email_placeholders = array(
+        $email_placeholders = [
             '#SITE_NAME#',
             '#SITE_EMAIL#',
             '#ORG_NAME#',
@@ -325,8 +327,8 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             '#DATE#',
             '#RECURRING_SUBSCRIPTION_CANCELLING_LINK#',
             '#DONOR_ACCOUNT_LOGIN_LINK#',
-        );
-        $email_placeholder_values = array(
+        ];
+        $email_placeholder_values = [
             get_bloginfo('name'),
             get_bloginfo('admin_email'),
             leyka_options()->opt('org_full_name'),
@@ -345,7 +347,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 sprintf(__('<a href="mailto:%s">write us a letter about it</a>', 'leyka'), leyka_get_website_tech_support_email()),
                 $donation
             ),
-        );
+        ];
 
         // Donor account login link:
         if(leyka_options()->opt('donor_accounts_available')) {
@@ -399,12 +401,14 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                     $campaign
                 )
             )),
-            array('From: '.apply_filters(
+            [
+                'From: '.apply_filters(
                     'leyka_email_from_name',
                     leyka_options()->opt_safe('email_from_name'),
                     $donation,
                     $campaign
-                ).' <'.leyka_options()->opt_safe('email_from').'>',)
+                ).' <'.leyka_options()->opt_safe('email_from').'>',
+            ]
         );
 
         // Reset content-type to avoid conflicts (http://core.trac.wordpress.org/ticket/23578):
@@ -443,7 +447,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
-        $email_placeholders = array(
+        $email_placeholders = [
             '#SITE_NAME#',
             '#SITE_EMAIL#',
             '#ORG_NAME#',
@@ -459,8 +463,8 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             '#DATE#',
             '#RECURRING_SUBSCRIPTION_CANCELLING_LINK#',
             '#DONOR_ACCOUNT_LOGIN_LINK#',
-        );
-        $email_placeholder_values = array(
+        ];
+        $email_placeholder_values = [
             get_bloginfo('name'),
             get_bloginfo('admin_email'),
             leyka_options()->opt('org_full_name'),
@@ -479,7 +483,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 sprintf(__('<a href="mailto:%s">write us a letter about it</a>', 'leyka'), leyka_get_website_tech_support_email()),
                 $donation
             ),
-        );
+        ];
 
         // Donor account login link:
         if(leyka_options()->opt('donor_accounts_available')) {
@@ -533,12 +537,14 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                     $campaign
                 )
             )),
-            array('From: '.apply_filters(
+            [
+                'From: '.apply_filters(
                     'leyka_email_from_name',
                     leyka_options()->opt_safe('email_from_name'),
                     $donation,
                     $campaign
-                ).' <'.leyka_options()->opt_safe('email_from').'>',)
+                ).' <'.leyka_options()->opt_safe('email_from').'>',
+            ]
         );
 
         // Reset content-type to avoid conflicts (http://core.trac.wordpress.org/ticket/23578):
@@ -576,7 +582,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
-        $email_placeholders = array(
+        $email_placeholders = [
             '#SITE_NAME#',
             '#SITE_EMAIL#',
             '#SITE_URL#',
@@ -597,8 +603,8 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             '#DATE#',
             '#RECURRING_SUBSCRIPTION_CANCELLING_LINK#',
             '#DONOR_ACCOUNT_LOGIN_LINK#',
-        );
-        $email_placeholder_values = array(
+        ];
+        $email_placeholder_values = [
             get_bloginfo('name'),
             get_bloginfo('admin_email'),
             home_url(),
@@ -622,7 +628,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 sprintf(__('<a href="mailto:%s">write us a letter about it</a>', 'leyka'), leyka_options()->opt('tech_support_email')),
                 $donation
             ),
-        );
+        ];
 
         // Donor account login link:
         if(leyka_options()->opt('donor_accounts_available')) {
@@ -673,12 +679,14 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                     $donation, $campaign
                 )
             )),
-            array('From: '.apply_filters(
+            [
+                'From: '.apply_filters(
                     'leyka_email_from_name',
                     leyka_options()->opt_safe('email_from_name'),
                     $donation,
                     $campaign
-                ).' <'.leyka_options()->opt_safe('email_from').'>',)
+                ).' <'.leyka_options()->opt_safe('email_from').'>',
+            ]
         );
 
         if($res) {
@@ -734,7 +742,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                     $donation, $campaign
                 ),
                 wpautop(str_replace(
-                    array(
+                    [
                         '#SITE_NAME#',
                         '#ORG_NAME#',
                         '#DONATION_ID#',
@@ -747,8 +755,8 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                         '#CAMPAIGN_TARGET#',
                         '#SUM#',
                         '#DATE#',
-                    ),
-                    array(
+                    ],
+                    [
                         get_bloginfo('name'),
                         leyka_options()->opt('org_full_name'),
                         $donation->id,
@@ -761,19 +769,21 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                         $campaign->target,
                         $donation->amount.' '.$donation->currency_label,
                         $donation->date,
-                    ),
+                    ],
                     apply_filters(
                         'leyka_email_notification_text',
                         leyka_options()->opt('email_notification_text'),
                         $donation, $campaign
                     )
                 )),
-                array('From: '.apply_filters(
-                    'leyka_email_from_name',
-                    leyka_options()->opt_safe('email_from_name'),
-                    $donation,
-                    $campaign
-                ).' <'.leyka_options()->opt_safe('email_from').'>',)
+                [
+                    'From: '.apply_filters(
+                        'leyka_email_from_name',
+                        leyka_options()->opt_safe('email_from_name'),
+                        $donation,
+                        $campaign
+                    ).' <'.leyka_options()->opt_safe('email_from').'>',
+                ]
             ) ) {
                 $res &= false;
             }
@@ -812,7 +822,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 $donation, $campaign
             ),
             wpautop(str_replace(
-                array(
+                [
                     '#SITE_NAME#',
                     '#SITE_URL#',
                     '#ORG_NAME#',
@@ -829,8 +839,8 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                     '#CAMPAIGN_TARGET#',
                     '#SUM#',
                     '#DATE#',
-                ),
-                array(
+                ],
+                [
                     get_bloginfo('name'),
                     home_url(),
                     leyka_options()->opt('org_full_name'),
@@ -847,21 +857,21 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                     $campaign->target,
                     $donation->amount.' '.$donation->currency_label,
                     $donation->date,
-                ),
+                ],
                 apply_filters(
                     'leyka_error_email_notification_text',
                     sprintf(__("Hello!\n\nDonation failure detected on the #SITE_NAME# website.\n\nCampaign: #CAMPAIGN_NAME#\nAmount: #SUM#\nPayment method: #PAYMENT_METHOD_NAME#\nType: #DONATION_TYPE#\n\nYou may revise the donation <a href='%s' target='_blank'>here</a>.\n\nYour Leyka", 'leyka'), admin_url('post.php?post='.$donation->id.'&action=edit')),
                     $donation, $campaign
                 )
             )),
-            array(
+            [
                 'From: '.apply_filters(
                     'leyka_email_from_name',
                     leyka_options()->opt_safe('email_from_name'),
                     $donation,
                     $campaign
                 ).' <'.leyka_options()->opt_safe('email_from').'>',
-            )
+            ]
         );
 
         remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
@@ -878,15 +888,15 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         if($curr_page->action === 'add') { // New donation page
 
-            add_meta_box(self::$post_type.'_new_data', __('New donation data', 'leyka'), array(__CLASS__, 'new_donation_data_metabox'), self::$post_type, 'normal', 'high');
-            add_meta_box(self::$post_type.'_status', __('Donation status', 'leyka'), array(__CLASS__, 'donation_status_metabox'), self::$post_type, 'side', 'high');
+            add_meta_box(self::$post_type.'_new_data', __('New donation data', 'leyka'), [__CLASS__, 'new_donation_data_metabox'], self::$post_type, 'normal', 'high');
+            add_meta_box(self::$post_type.'_status', __('Donation status', 'leyka'), [__CLASS__, 'donation_status_metabox'], self::$post_type, 'side', 'high');
 
         } else { // View/edit donation page
 
-            add_meta_box(self::$post_type.'_data', __('Donation data', 'leyka'), array(__CLASS__, 'donation_data_metabox'), self::$post_type, 'normal', 'high');
-            add_meta_box(self::$post_type.'_status', __('Donation status', 'leyka'), array(__CLASS__, 'donation_status_metabox'), self::$post_type, 'side', 'high');
-            add_meta_box(self::$post_type.'_emails_status', __('Emails status', 'leyka'), array(__CLASS__, 'emails_status_metabox'), self::$post_type, 'normal', 'high');
-            add_meta_box(self::$post_type.'_gateway_response', __('Gateway responses text', 'leyka'), array(__CLASS__, 'gateway_response_metabox'), self::$post_type, 'normal', 'low');
+            add_meta_box(self::$post_type.'_data', __('Donation data', 'leyka'), [__CLASS__, 'donation_data_metabox'], self::$post_type, 'normal', 'high');
+            add_meta_box(self::$post_type.'_status', __('Donation status', 'leyka'), [__CLASS__, 'donation_status_metabox'], self::$post_type, 'side', 'high');
+            add_meta_box(self::$post_type.'_emails_status', __('Emails status', 'leyka'), [__CLASS__, 'emails_status_metabox'], self::$post_type, 'normal', 'high');
+            add_meta_box(self::$post_type.'_gateway_response', __('Gateway responses text', 'leyka'), [__CLASS__, 'gateway_response_metabox'], self::$post_type, 'normal', 'low');
 
         }
 
@@ -1393,7 +1403,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                     <?php submit_button(
                         $is_adding_page ? __('Add the donation', 'leyka') : __('Update', 'leyka'),
                         'primary button-large', 'funded', false,
-                        array('accesskey' => 'p', 'data-is-new-donation' => $is_adding_page ? 1 : 0)
+                        ['accesskey' => 'p', 'data-is-new-donation' => $is_adding_page ? 1 : 0]
                     );?>
 				</div>
 
@@ -1402,13 +1412,13 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         </div>
 
         <div class="leyka-status-section log">
-            <?php $status_log = $donation ? $donation->status_log : array();
+            <?php $status_log = $donation ? $donation->status_log : [];
             if($status_log) {?>
 
                 <?php $last_status = end($status_log);
                 echo str_replace(
-                    array('%status', '%date'),
-                    array('<i>'.self::get_status_labels($last_status['status']).'</i>', '<time>'.date(get_option('date_format').', H:i', $last_status['date']).'</time>'),
+                    ['%status', '%date'],
+                    ['<i>'.self::get_status_labels($last_status['status']).'</i>', '<time>'.date(get_option('date_format').', H:i', $last_status['date']).'</time>'],
                     '<div class="leyka-ddata-string last-log">'.__('Last status change: to&nbsp;%status (at&nbsp;%date)', 'leyka').'</div>'
                 );?>
 
@@ -1418,11 +1428,11 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
                     <li>
                         <?php echo str_replace(
-                            array('%status', '%date'),
-                            array(
+                            ['%status', '%date'],
+                            [
                                 '<i>'.self::get_status_labels($status_log[$i]['status']).'</i>','<time>'.date(get_option('date_format').', '.get_option('time_format'),
                                     $status_log[$i]['date']).'</time>'
-                            ),
+                            ],
                             __('%date - %status', 'leyka')
                         );?>
                     </li>

@@ -11,13 +11,13 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
 
     public function __construct() {
 
-        parent::__construct(array(
+        parent::__construct([
             'singular' => __('Subscription', 'leyka'),
             'plural' => __('Subscriptions', 'leyka'),
             'ajax' => true,
-        ));
+        ]);
 
-        add_filter('leyka_admin_recurring_subscriptions_list_filter', array($this, 'filter_items'), 10, 2);
+        add_filter('leyka_admin_recurring_subscriptions_list_filter', [$this, 'filter_items'], 10, 2);
 
         if( !empty($_GET['subscriptions-list-export']) ) {
             $this->_export();
@@ -89,7 +89,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
         if( !empty($_GET['orderby']) ) {
 
             $params['orderby'] = $_GET['orderby'];
-            $params['order'] = empty($_GET['order']) || !in_array($_GET['order'], array('asc', 'desc')) ?
+            $params['order'] = empty($_GET['order']) || !in_array($_GET['order'], ['asc', 'desc']) ?
                 'DESC' : mb_strtoupper($_GET['order']);
 
         }
@@ -108,18 +108,18 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
      */
     protected function _get_items($per_page = false, $page_number = 1) {
 
-        $params = array('orderby' => 'id', 'order' => 'desc',);
+        $params = ['orderby' => 'id', 'order' => 'desc',];
         if(empty($per_page)) {
             $params['get_all'] = true;
         } else {
-            $params = $params + array('results_limit' => absint($per_page), 'page' => absint($page_number),);
+            $params = $params + ['results_limit' => absint($per_page), 'page' => absint($page_number),];
         }
 
         $init_recurring_donations = Leyka_Donations::get_instance()->get(
             apply_filters('leyka_admin_recurring_subscriptions_list_filter', $params)
         );
 
-        $items_data = array();
+        $items_data = [];
         foreach($init_recurring_donations as $init_donation) {
 
             $subscription_day_num = (int)date('j', $init_donation->date_timestamp);
@@ -128,30 +128,30 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
                 strtotime('+1 month', $init_donation->date_timestamp); // Next month
 
             /** @todo Add funded rebills number caching to the init recurring Donations! This query is in DIRE need of optimization. */
-            $donations_number = Leyka_Donations::get_instance()->get_count(array(
+            $donations_number = Leyka_Donations::get_instance()->get_count([
                 'status' => 'funded',
                 'recurring_rebills_of' => $init_donation->id,
-            ));
+            ]);
 
-            $item = array(
+            $item = [
                 'id' => $init_donation->id,
                 'status' => $init_donation->recurring_on,
-                'donor' => array(
+                'donor' => [
                     'id' => $init_donation->donor_id,
                     'name' => $init_donation->donor_name,
                     'email' => $init_donation->donor_email,
-                ),
-                'campaign' => array(
+                ],
+                'campaign' => [
                     'id' => $init_donation->campaign_id,
                     'title' => $init_donation->campaign_title,
-                ),
+                ],
                 'first_donation' => $init_donation,
                 'next_donation' => $next_donation_timestamp,
                 'donations_number' => $donations_number + 1, // Init donation included
                 'gateway_pm' => $init_donation->pm_full_id,
                 'amount' => $init_donation->amount,
                 'amount_formatted' => $init_donation->amount_formatted,
-            );
+            ];
 
             $items_data[] = $item;
 
@@ -169,7 +169,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
         if(self::$_items_count === NULL) {
             self::$_items_count = Leyka_Donations::get_instance()->get_count(apply_filters(
                 'leyka_admin_recurring_subscriptions_list_filter',
-                array(),
+                [],
                 'get_recurring_subscriptions_total_count'
             ));
         }
@@ -189,7 +189,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
      * @return array
      */
     function get_columns() {
-        return array(
+        return [
             'donation_id' => __('ID'),
             'status' => __('Status', 'leyka'),
             'donor' => __('Donor', 'leyka'),
@@ -199,20 +199,20 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
             'donations_number' => __('Donations total', 'leyka'),
             'gateway_pm' => __('Gateway', 'leyka'),
             'amount' => __('Amount', 'leyka'),
-        );
+        ];
     }
 
     /**
      * @return array
      */
     public function get_sortable_columns() {
-        return array(
-            'donation_id' => array('donation_id', true),
-            'status' => array('status', true),
-            'donor' => array('donor', false),
-            'first_donation' => array('first_donation', true),
-            'amount' => array('amount', true),
-        );
+        return [
+            'donation_id' => ['donation_id', true],
+            'status' => ['status', true],
+            'donor' => ['donor', false],
+            'first_donation' => ['first_donation', true],
+            'amount' => ['amount', true],
+        ];
     }
 
     /**
@@ -306,11 +306,11 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
         $column_content = '<div class="donation-campaign">
         <a href="'.Leyka_Donation_Management::get_donation_edit_link($item['first_donation']).'">'.$item['campaign']['title'].'</a>
     </div>'
-            .$this->row_actions(array(
+            .$this->row_actions([
                 'donation_page' => '<a href="'.Leyka_Donation_Management::get_donation_edit_link($item['first_donation']).'">'.__('Edit the recurring subscription', 'leyka').'</a>',
                 'campaign_page' => '<a href="'.admin_url('post.php?post='.$item['campaign']['id'].'&action=edit').'">'.__('Edit the campaign', 'leyka').'</a>',
 //                'delete' => '<a href="'.Leyka_Donation_Management::get_donation_delete_link($donation).'">'.__('Delete').'</a>',
-            ));
+            ]);
 
         return apply_filters('leyka_admin_recurring_subscription_campaign_column_content', $column_content, $item);
 
@@ -425,7 +425,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
      * @return array
      */
     public function get_bulk_actions() {
-        return array(/*'bulk-edit' => __('Edit'), 'bulk-delete' => __('Delete'),*/);
+        return [/*'bulk-edit' => __('Edit'), 'bulk-delete' => __('Delete'),*/];
     }
 
     /**
@@ -439,7 +439,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
 
         $per_page = $this->get_items_per_page('recurring_subscriptions_per_page');
 
-        $this->set_pagination_args(array('total_items' => self::get_items_count(), 'per_page' => $per_page,));
+        $this->set_pagination_args(['total_items' => self::get_items_count(), 'per_page' => $per_page,]);
         $this->items = $this->_get_items($per_page, $this->get_pagenum());
 
     }
@@ -474,9 +474,9 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
         echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
             'UTF-8',
             apply_filters('leyka_recurring_subscriptions_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
-            "sep=;\n".implode(';', apply_filters('leyka_recurring_subscriptions_export_headers', array(
+            "sep=;\n".implode(';', apply_filters('leyka_recurring_subscriptions_export_headers', [
                 'ID', 'Статус подписки', 'Имя донора', 'Email', 'Кампания', 'Дата первого пожертвования', 'Дата следующего пожертвования', 'Всего пожертвований', 'Платёжный оператор', 'Сумма подписки', 'Валюта',
-            )))
+            ]))
         );
 
         $date_format = get_option('date_format');
@@ -499,7 +499,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
                 apply_filters('leyka_recurring_subscriptions_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
                 "\r\n".implode(';', apply_filters(
                     'leyka_recurring_subscriptions_export_line',
-                    array(
+                    [
                         $item['id'],
                         empty($item['status']) ?
                             __('not active', '[about recurring subscription]', 'leyka') :
@@ -517,7 +517,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
                         $gateway->label.', '.$pm->label,
                         str_replace('.', ',', $item['first_donation']->amount),
                         $currency,
-                    ),
+                    ],
                     $item
                 ))
             );

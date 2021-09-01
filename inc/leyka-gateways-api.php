@@ -29,7 +29,7 @@ function leyka_get_gateways() {
  */
 function leyka_get_pm_list($activity = null, $currency = false, $sorted = true) {
 
-    $pm_list = array();
+    $pm_list = [];
 
     if($sorted) {
 
@@ -63,7 +63,7 @@ function leyka_get_pm_list($activity = null, $currency = false, $sorted = true) 
 
 function leyka_get_active_recurring_pm_list() {
 
-    $result = array();
+    $result = [];
     foreach(leyka_get_pm_list(true) as $pm) {
         if($pm->has_recurring_support() === 'active') {
             $result[$pm->full_id] = $pm;
@@ -126,16 +126,16 @@ function leyka_get_pm_by_id($pm_id, $is_full_id = false) {
  */
 function leyka_get_gateway_by_id($gateway_id) {
 
-    $gateways = leyka()->get_gateways(array('country_id' => NULL,));
+    $gateways = leyka()->get_gateways(['country_id' => NULL,]);
     return empty($gateways[$gateway_id]) ? false : $gateways[$gateway_id];
 
 }
 
-function leyka_get_special_fields_settings(array $params = array()) {
+function leyka_get_special_fields_settings(array $params = []) {
 
-    $params = $params + array('field_types' => array(),);
+    $params = $params + ['field_types' => [],];
 
-    $pm_fields = array();
+    $pm_fields = [];
     foreach(leyka_get_pm_list() as $pm) {
         foreach($pm->specific_fields as $field_settings) {
 
@@ -159,7 +159,7 @@ function leyka_get_special_fields_settings(array $params = array()) {
 function leyka_get_gateway_icons_list($gateway) {
 
     $pm_list = $gateway->get_payment_methods();
-    $icons = array();
+    $icons = [];
     
     foreach($pm_list as $pm) {
         if($pm->icons) {
@@ -207,16 +207,16 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     protected $_docs_link = ''; // Gateways user manual page URL
     protected $_registration_link = ''; // Gateway registration page URL
     protected $_has_wizard = false;
-    protected $_countries = array('ru',);
+    protected $_countries = ['ru',];
 
     protected $_min_commission = 0.0;
-    protected $_receiver_types = array('legal'); // legal|physical
+    protected $_receiver_types = ['legal']; // legal|physical
 
     protected $_may_support_recurring = false; // Are recurring payments possible via gateway at all
     protected $_recurring_auto_cancelling_supported = true; // Is it possible to cancel recurring payments via Gateway API
 
-    protected $_payment_methods = array(); // Supported PMs array
-    protected $_options = array(); // Gateway configs
+    protected $_payment_methods = []; // Supported PMs array
+    protected $_options = []; // Gateway configs
 
     protected function __construct() {
 
@@ -237,39 +237,39 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
         do_action('leyka_initialize_gateway', $this, $this->_id); // So one could change some of gateway's attributes
 
         // Set a gateway class method to process a service calls from gateway:
-        add_action('leyka_service_call-'.$this->_id, array($this, '_handle_service_calls'));
+        add_action('leyka_service_call-'.$this->_id, [$this, '_handle_service_calls']);
 
-        add_action("leyka_{$this->_id}_save_donation_data", array($this, 'save_donation_specific_data'));
-        add_action("leyka_{$this->_id}_add_donation_specific_data", array($this, 'add_donation_specific_data'), 10, 2);
-        add_filter("leyka_{$this->_id}_new_donation_specific_data", array($this, 'new_donation_specific_data'), 10, 3);
+        add_action("leyka_{$this->_id}_save_donation_data", [$this, 'save_donation_specific_data']);
+        add_action("leyka_{$this->_id}_add_donation_specific_data", [$this, 'add_donation_specific_data'], 10, 2);
+        add_filter("leyka_{$this->_id}_new_donation_specific_data", [$this, 'new_donation_specific_data'], 10, 3);
 
-        add_filter('leyka_'.$this->_id.'_get_unknown_donation_field', array($this, 'get_specific_data_value'), 10, 3);
-        add_action('leyka_'.$this->_id.'_set_unknown_donation_field', array($this, 'set_specific_data_value'), 10, 3);
+        add_filter('leyka_'.$this->_id.'_get_unknown_donation_field', [$this, 'get_specific_data_value'], 10, 3);
+        add_action('leyka_'.$this->_id.'_set_unknown_donation_field', [$this, 'set_specific_data_value'], 10, 3);
 
-        add_action('leyka_do_recurring_donation-'.$this->_id, array($this, 'do_recurring_donation'));
+        add_action('leyka_do_recurring_donation-'.$this->_id, [$this, 'do_recurring_donation']);
         add_filter(
             "leyka_{$this->_id}_recurring_subscription_cancelling_link",
-            array($this, 'get_recurring_subscription_cancelling_link'),
+            [$this, 'get_recurring_subscription_cancelling_link'],
             10, 2
         );
         add_action(
             "leyka_{$this->_id}_cancel_recurring_subscription_by_link",
-            array($this, 'cancel_recurring_subscription_by_link')
+            [$this, 'cancel_recurring_subscription_by_link']
         );
 
         $this->_initialize_options();
 
-        add_action('leyka_enqueue_scripts', array($this, 'enqueue_gateway_scripts'));
+        add_action('leyka_enqueue_scripts', [$this, 'enqueue_gateway_scripts']);
 
-        add_action('leyka_payment_form_submission-'.$this->id, array($this, 'process_form_default'), 10, 4);
-        add_action('leyka_payment_form_submission-'.$this->id, array($this, 'process_form'), 20, 4);
+        add_action('leyka_payment_form_submission-'.$this->id, [$this, 'process_form_default'], 10, 4);
+        add_action('leyka_payment_form_submission-'.$this->id, [$this, 'process_form'], 20, 4);
 
-        add_action('leyka_log_donation-'.$this->id, array($this, 'log_gateway_fields'));
+        add_action('leyka_log_donation-'.$this->id, [$this, 'log_gateway_fields']);
 
-        add_filter('leyka_submission_redirect_url-'.$this->id, array($this, 'submission_redirect_url'), 10, 2);
-        add_filter('leyka_submission_redirect_type-'.$this->id, array($this, 'submission_redirect_type'), 10, 3);
-        add_filter('leyka_submission_form_data-'.$this->id, array($this, 'submission_form_data'), 10, 3);
-        add_action('leyka_'.$this->id.'_redirect_page_content', array($this, 'gateway_redirect_page_content'), 10, 2);
+        add_filter('leyka_submission_redirect_url-'.$this->id, [$this, 'submission_redirect_url'], 10, 2);
+        add_filter('leyka_submission_redirect_type-'.$this->id, [$this, 'submission_redirect_type'], 10, 3);
+        add_filter('leyka_submission_form_data-'.$this->id, [$this, 'submission_form_data'], 10, 3);
+        add_action('leyka_'.$this->id.'_redirect_page_content', [$this, 'gateway_redirect_page_content'], 10, 2);
 
     }
 
@@ -301,7 +301,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
                 return $this->_may_support_recurring && !!$this->_recurring_auto_cancelling_supported;
 
             case 'min_commission': return $this->_min_commission ? round((float)$this->_min_commission, 2) : 0.0;
-            case 'receiver_types': return $this->_receiver_types ? (array)$this->_receiver_types : array('legal');
+            case 'receiver_types': return $this->_receiver_types ? (array)$this->_receiver_types : ['legal'];
 
             case 'docs':
             case 'docs_url':
@@ -322,7 +322,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
     public function get_options_names() {
 
-        $option_names = array();
+        $option_names = [];
         foreach($this->_options as $option_name => $params) {
             $option_names[] = $option_name;
         }
@@ -344,12 +344,12 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
         $gateway_options_names = $this->get_options_names();
         if($gateway_section_index < 0) {
-            $options[] = array('section' => array(
+            $options[] = ['section' => [
                 'name' => $this->_id,
                 'title' => $this->_title,
                 'is_default_collapsed' => false,
                 'options' => $gateway_options_names
-            ));
+            ]];
         } else {
             $options[$gateway_section_index]['section']['options'] = array_unique(array_merge(
                 $gateway_options_names,
@@ -495,7 +495,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
             }
         }
 
-        add_filter('leyka_payment_options_allocation', array($this, 'allocate_gateway_options'), 1, 1);
+        add_filter('leyka_payment_options_allocation', [$this, 'allocate_gateway_options'], 1, 1);
 
     }
 
@@ -623,7 +623,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
      */
     public function get_payment_methods($activity = null, $currency = false, $by_categories = false) {
 
-        $pm_list = array();
+        $pm_list = [];
         foreach($this->_payment_methods as $pm_name => $pm) {
 
             /** @var $pm Leyka_Payment_Method */
@@ -642,7 +642,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
         if( !!$by_categories ) {
 
             // Get the PM categories in the right order:
-            $tmp = array_map(function($value){ return array(); }, leyka_get_pm_categories_list());
+            $tmp = array_map(function($value){ return []; }, leyka_get_pm_categories_list());
 
             foreach($pm_list as $pm) { /** @var $pm Leyka_Payment_Method */
                 if($pm->category) {
@@ -775,17 +775,17 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
     protected $_label = '';
     protected $_label_backend = '';
     protected $_description = '';
-    protected $_icons = array();
+    protected $_icons = [];
     protected $_main_icon = '';
     protected $_submit_label = '';
 
-    protected $_global_fields = array();
+    protected $_global_fields = [];
     protected $_support_global_fields = true;
-    protected $_specific_fields = array();
-    protected $_custom_fields = array();
-    protected $_supported_currencies = array();
+    protected $_specific_fields = [];
+    protected $_custom_fields = [];
+    protected $_supported_currencies = [];
     protected $_default_currency = '';
-    protected $_options = array();
+    protected $_options = [];
 
     protected $_processing_type = 'default';
     protected $_ajax_without_form_submission = false;
@@ -829,8 +829,8 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
             case 'desc':
             case 'description': $param = html_entity_decode($this->_description); break;
             case 'has_global_fields': $param = $this->_support_global_fields; break;
-            case 'specific_fields': $param = $this->_specific_fields ? $this->_specific_fields : array(); break;
-            case 'custom_fields': $param = $this->_custom_fields ? $this->_custom_fields : array(); break;
+            case 'specific_fields': $param = $this->_specific_fields ? $this->_specific_fields : []; break;
+            case 'custom_fields': $param = $this->_custom_fields ? $this->_custom_fields : []; break;
             case 'icons': $param = $this->_icons; break;
             case 'main_icon':
                 $param = $this->_main_icon ? $this->_main_icon : 'pic-main-'.$this->full_id;
@@ -902,15 +902,15 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
 
         /** PM frontend label is a special persistent option, universal for each PM */
         if( !leyka_options()->option_exists($this->full_id.'_label') ) {
-            leyka_options()->add_option($this->full_id.'_label', 'text', array(
+            leyka_options()->add_option($this->full_id.'_label', 'text', [
                 'value' => '',
                 'default' => $this->_label,
                 'title' => __('Payment method custom label', 'leyka'),
                 'description' => __('A label for this payment method that will appear on all donation forms.', 'leyka'),
                 'required' => false,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), $this->_label),
-                'validation_rules' => array(), // List of regexp?..
-            ));
+                'validation_rules' => [], // List of regexp?..
+            ]);
         }
 
         $custom_label = leyka_options()->opt_safe($this->full_id.'_label');
@@ -918,15 +918,15 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
             $custom_label : apply_filters('leyka_get_pm_label_original', $this->_label, $this);
 
         $this->_active = $this->_active = is_array(leyka_options()->opt('pm_available')) ?
-            in_array($this->full_id, leyka_options()->opt('pm_available')) : array();
+            in_array($this->full_id, leyka_options()->opt('pm_available')) : [];
 
-        add_filter('leyka_payment_options_allocation', array($this, 'allocate_pm_options'), 10, 1);
+        add_filter('leyka_payment_options_allocation', [$this, 'allocate_pm_options'], 10, 1);
 
     }
 
     public function get_pm_options_names() {
 
-        $option_names = array();
+        $option_names = [];
         foreach($this->_options as $option_name => $params) {
             $option_names[] = $option_name;
         }
@@ -954,12 +954,12 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
         $pm_options_names[] = $this->full_id.'_label';
 
         if($gateway_section_index < 0) {
-            $options[] = array('section' => array(
+            $options[] = ['section' => [
                 'name' => $gateway->id,
                 'title' => $gateway->title,
                 'is_default_collapsed' => false,
                 'options' => $pm_options_names,
-            ));
+            ]];
         } else {
             $options[$gateway_section_index]['section']['options'] = array_unique(array_merge(
                 $pm_options_names,

@@ -3,7 +3,7 @@
 /** Separately stored donation class - the donation data is kept in the separated DB tables */
 class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
-    public static function add(array $params = array()) {
+    public static function add(array $params = []) {
 
         $params = self::_handle_new_donation_params($params); // New Donation params pre-handling
 
@@ -18,7 +18,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
         $params['currency_id'] = $params['currency_id'] && leyka_get_currencies_full_info($params['currency_id']) ?
             $params['currency_id'] : leyka_get_country_currency();
 
-        $new_donation_data = array(
+        $new_donation_data = [
             'status' => $params['status'],
             'payment_type' => $params['payment_type'],
             'date_created' => $params['date_created'],
@@ -31,8 +31,8 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             'amount_total_in_main_currency' => $params['amount_total_in_main_currency'],
             'donor_name' => $params['donor_name'] ? $params['donor_name'] : '',
             'donor_email' => $params['donor_email'] ? $params['donor_email'] : '',
-        );
-        $new_donation_data_placeholders = array('%s', '%s', '%s', '%s', '%s', '%s', '%f', '%f', '%f', '%f', '%s', '%s',);
+        ];
+        $new_donation_data_placeholders = ['%s', '%s', '%s', '%s', '%s', '%s', '%f', '%f', '%f', '%f', '%s', '%s',];
 
         if($params['campaign_id']) { // Due to campaign_id field foreign key constraint
 
@@ -51,7 +51,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             return new WP_Error(
                 'donation_addition_error',
                 __('Error while adding a donation', 'leyka'),
-                array('error_details' => $wpdb->last_error)
+                ['error_details' => $wpdb->last_error]
             );
         }
 
@@ -59,10 +59,10 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             do_action("leyka_{$params['gateway_id']}_add_donation_specific_data", $donation_id, $params);
         }
 
-        $donation_meta_fields = array(
+        $donation_meta_fields = [
             'payment_title' => $params['payment_title'],
-            '_status_log' => array(array('date' => current_time('timestamp'), 'status' => $params['status'])),
-        );
+            '_status_log' => [['date' => current_time('timestamp'), 'status' => $params['status']]],
+        ];
 
         if($params['donor_comment']) {
             $donation_meta_fields['donor_comment'] = $params['donor_comment'];
@@ -112,20 +112,20 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
         foreach($donation_meta_fields as $key => $value) {
 
-            $res = $wpdb->insert($wpdb->prefix.'leyka_donations_meta', array(
+            $res = $wpdb->insert($wpdb->prefix.'leyka_donations_meta', [
                 'donation_id' => $donation_id,
                 'meta_key' => $key,
                 'meta_value' => is_object($value) || is_array($value) ? serialize($value) : $value,
-            ), array('%d', '%s', '%s',));
+            ], ['%d', '%s', '%s',]);
 
             if( !$res ) {
 
-                $wpdb->delete($wpdb->prefix.'leyka_donations', array('ID' => $donation_id), array('%d'));
+                $wpdb->delete($wpdb->prefix.'leyka_donations', ['ID' => $donation_id], ['%d']);
 
                 return new WP_Error(
                     'donation_addition_error',
                     __('Error while adding a donation', 'leyka'),
-                    array('donation_meta_not_inserted' => array('key' => $key, 'value' => $value))
+                    ['donation_meta_not_inserted' => ['key' => $key, 'value' => $value]]
                 );
 
             }
@@ -372,7 +372,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                 return $this->get_meta('gateway_response');
             case 'gateway_response_formatted':
                 return $this->gateway_id && $this->gateway_id !== 'correction' ?
-                    leyka_get_gateway_by_id($this->gateway_id)->get_gateway_response_formatted($this) : array();
+                    leyka_get_gateway_by_id($this->gateway_id)->get_gateway_response_formatted($this) : [];
 
             case 'type':
             case 'payment_type':
@@ -481,9 +481,9 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
                 $status_log = $this->get_meta('_status_log');
                 if($status_log && is_array($status_log)) {
-                    $status_log[] = array('date' => current_time('timestamp'), 'status' => $value);
+                    $status_log[] = ['date' => current_time('timestamp'), 'status' => $value];
                 } else {
-                    $status_log = array(array('date' => current_time('timestamp'), 'status' => $value));
+                    $status_log = [['date' => current_time('timestamp'), 'status' => $value]];
                 }
 
                 return $this->set_meta('_status_log', $status_log);
@@ -667,7 +667,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
     public function get_meta($meta_key) {
 
         $meta_key = trim($meta_key);
-        if( !$meta_key ) { /** @todo Throw an Ex? */
+        if( !$meta_key ) {
             return NULL;
         }
 
@@ -689,7 +689,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
     public function set_meta($meta_name, $value) {
 
         $meta_name = trim($meta_name);
-        if( !$meta_name ) { /** @todo Throw an Ex? */
+        if( !$meta_name ) {
             return false;
         }
 
@@ -712,18 +712,18 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
             $res = $wpdb->update(
                 $wpdb->prefix.'leyka_donations_meta',
-                array('meta_value' => $value),
-                array('donation_id' => $this->_id, 'meta_key' => $meta_name),
-                array('%s'),
-                array('%d', '%s')
+                ['meta_value' => $value],
+                ['donation_id' => $this->_id, 'meta_key' => $meta_name],
+                ['%s'],
+                ['%d', '%s']
             );
 
         } else { // Meta is not inserted yet
 
             $res = $wpdb->insert(
                 $wpdb->prefix.'leyka_donations_meta',
-                array('donation_id' => $this->_id, 'meta_key' => $meta_name, 'meta_value' => $value),
-                array('%d', '%s', '%s')
+                ['donation_id' => $this->_id, 'meta_key' => $meta_name, 'meta_value' => $value],
+                ['%d', '%s', '%s']
             );
 
         }
@@ -741,15 +741,15 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
     public function delete_meta($meta_name) {
 
         $meta_name = trim($meta_name);
-        if( !$meta_name ) { /** @todo Throw an Ex? */
+        if( !$meta_name ) {
             return false;
         }
 
         global $wpdb;
         return $wpdb->delete(
             $wpdb->prefix.'leyka_donations_meta',
-            array('donation_id' => $this->_id, 'meta_key' => $meta_name),
-            array('%d', '%s')
+            ['donation_id' => $this->_id, 'meta_key' => $meta_name],
+            ['%d', '%s']
         ) !== false;
 
     }
@@ -757,7 +757,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
     protected function _set_data($data_name, $value) {
 
         $data_name = trim($data_name);
-        if( !$data_name ) { /** @todo Throw an Ex? */
+        if( !$data_name ) {
             return false;
         }
 
@@ -772,10 +772,10 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                 global $wpdb;
                 $res = $wpdb->update(
                     $wpdb->prefix.'leyka_donations',
-                    array($data_name => $value),
-                    array('ID' => $this->_id),
-                    array('%s'),
-                    array('%d')
+                    [$data_name => $value],
+                    ['ID' => $this->_id],
+                    ['%s'],
+                    ['%d']
                 );
 
                 if($res) {
@@ -803,7 +803,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
     public function delete($force = false) {
 
         if( !$this->_id ) {
-            return false; /** @todo Throw an Ex? */
+            return false;
         }
 
         Leyka_Donation_Management::get_instance()->donation_status_changed('trash', $this->status, $this);
@@ -812,8 +812,8 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
 //        if( !!$force ) {
         $res = !(
-            $wpdb->delete($wpdb->prefix.'leyka_donations_meta', array('donation_id' => $this->_id), array('%d')) === false
-            || $wpdb->delete($wpdb->prefix.'leyka_donations', array('ID' => $this->_id), array('%d')) === false
+            $wpdb->delete($wpdb->prefix.'leyka_donations_meta', ['donation_id' => $this->_id], ['%d']) === false
+            || $wpdb->delete($wpdb->prefix.'leyka_donations', ['ID' => $this->_id], ['%d']) === false
         );
 //        } else { } /** @todo Implement $force == false */
 
