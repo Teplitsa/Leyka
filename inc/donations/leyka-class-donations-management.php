@@ -904,7 +904,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
     public static function new_donation_data_metabox() {
 
-        $campaign_id = empty($_GET['campaign_id']) ? '' : (int)$_GET['campaign_id'];
+        $campaign_id = empty($_GET['campaign_id']) ? '' : absint($_GET['campaign_id']);
         $campaign = new Leyka_Campaign($campaign_id);?>
 
 	<fieldset class="leyka-set campaign">
@@ -914,7 +914,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             <label for="campaign-select"><?php echo _x('Campaign', 'In subjective case', 'leyka');?>:</label>
 			<div class="leyka-ddata-field">
 
-                <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector autocomplete-input" value="" placeholder="<?php _e('Select a campaign', 'leyka');?>">
+                <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector autocomplete-input" value="<?php echo $campaign_id ? $campaign->title : '';?>" placeholder="<?php _e('Select a campaign', 'leyka');?>">
                 <input type="hidden" id="campaign-id" class="leyka-campaigns-select autocomplete-select" name="campaign-id" value="<?php echo $campaign_id;?>" data-campaign-payment-title-selector="#new-donation-purpose">
 
 				<div id="campaign_id-error" class="field-error"></div>
