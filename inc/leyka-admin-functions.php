@@ -258,3 +258,17 @@ if( !function_exists('leyka_get_random_string') ) {
 
     }
 }
+
+/**
+ * Updates 'donation-service-terms' page content upon 'terms of service' option change
+ */
+add_action('leyka_set_terms_of_service_text_option_value', function($value){
+
+    $donation_service_terms_page = get_page_by_path('donation-service-terms', ARRAY_A);
+
+    if ($donation_service_terms_page) {
+        $donation_service_terms_page['post_content'] = $value;
+        wp_update_post($donation_service_terms_page);
+    }
+
+});
