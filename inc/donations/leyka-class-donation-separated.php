@@ -86,21 +86,37 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                 !empty($params['recurring_on']);
 
             if($params['recurring_cancelled']) {
+
                 $donation_meta_fields['recurring_active'] = 0;
+                $donation_meta_fields['recurring_cancel_date'] = $params['recurring_cancel_date'] ?
+                    : current_time('timestamp');
+
             }
 
             if($donation_meta_fields['recurring_active']) {
                 do_action('leyka_donation_recurring_activity_changed', $donation_id, $donation_meta_fields['recurring_active']);
             }
 
-        }
+            if($params['recurring_cancel_date'] && empty($donation_meta_fields['recurring_cancel_date'])) {
+                $donation_meta_fields['recurring_cancel_date'] = $params['recurring_cancel_date'];
+            }
 
-        if($params['payment_type'] === 'rebill' && $params['recurring_cancel_date']) {
-            $donation_meta_fields['recurring_cancel_date'] = $params['recurrents_cancel_date'];
+            if($params['recurring_cancel_requested']) {
+                $donation_meta_fields['cancel_recurring_requested'] = $params['recurring_cancel_requested'];
+            }
+
+            if($params['recurring_cancel_reason']) {
+                $donation_meta_fields['recurring_cancel_reason'] = $params['recurring_cancel_reason'];
+            }
+
         }
 
         if($params['donor_subscribed']) {
             $donation_meta_fields['donor_subscribed'] = $params['donor_subscribed'];
+        }
+
+        if($params['ga_client_id']) {
+            $donation_meta_fields['ga_client_id'] = $params['ga_client_id'];
         }
 
         $donation_meta_fields = apply_filters(
@@ -414,10 +430,6 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'is_init_recurring_donation':
                 return $this->type === 'rebill' && $this->init_recurring_donation_id === $this->id;
 
-            case 'cancel_recurring_requested':
-            case 'recurring_cancelling_requested':
-                return $this->payment_type === 'rebill' ? $this->get_meta('cancel_recurring_requested') : false;
-
             case 'recurring_active':
             case 'recurring_subscription_is_active':
             case 'rebilling_on':
@@ -435,11 +447,26 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                 return $init_recurring_donation ? $init_recurring_donation->get_meta('recurring_active') : NULL;
 
             case 'recurring_canceled':
+            case 'recurrents_canceled':
                 return !$this->recurring_active;
 
-            case 'recurrents_cancel_date':
             case 'recurring_cancel_date':
+            case 'recurrents_cancel_date':
                 return $this->payment_type === 'rebill' ? $this->get_meta('recurring_cancel_date') : NULL;
+
+            case 'cancel_recurring_requested':
+            case 'cancelling_recurring_requested':
+            case 'recurring_cancel_requested':
+            case 'recurring_cancelling_requested':
+                return $this->payment_type === 'rebill' ? $this->get_meta('cancel_recurring_requested') : false;
+
+            case 'recurring_cancel_reason':
+            case 'recurring_cancelling_reason':
+                return $this->payment_type === 'rebill' ? $this->get_meta('recurring_cancel_reason') : false;
+
+            case 'ga_client_id':
+            case 'gua_client_id':
+                return $this->get_meta('ga_client_id');
 
             default:
                 return apply_filters('leyka_'.$this->gateway_id.'_get_unknown_donation_field', null, $field, $this);
@@ -653,7 +680,18 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                     && $this->set_meta('recurring_cancel_date', $value ? 0 : $curr_time);
 
             case 'cancel_recurring_requested':
+            case 'cancelling_recurring_requested':
+            case 'recurring_cancel_requested':
+            case 'recurring_cancelling_requested':
                 $this->set_meta('cancel_recurring_requested', !!$value);
+                break;
+            case 'cancel_recurring_reason':
+                $this->set_meta('recurring_cancel_reason', trim($value));
+                break;
+
+            case 'ga_client_id':
+            case 'gua_client_id':
+                $this->set_meta('ga_client_id', trim($value));
                 break;
 
             default:

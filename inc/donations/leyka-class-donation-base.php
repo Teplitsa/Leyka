@@ -104,6 +104,14 @@ abstract class Leyka_Donation_Base {
         $params['recurring_cancel_date'] = empty($params['recurring_cancel_date']) ?
             (empty($params['recurrents_cancel_date']) ? 0 : $params['recurrents_cancel_date']) :
             $params['recurring_cancel_date'];
+
+        $params['recurring_cancel_requested'] = isset($params['recurring_cancel_requested']) ?
+            !!$params['recurring_cancel_requested'] :
+            (isset($params['cancel_recurring_requested']) ? !!$params['cancel_recurring_requested'] : NULL);
+
+        $params['recurring_cancel_reason'] = empty($params['recurring_cancel_reason']) ?
+            (empty($params['recurrents_cancel_reason']) ? '' : trim($params['recurrents_cancel_reason'])) :
+            trim($params['recurring_cancel_reason']);
         // Recurring-only params - END
 
         // Gateway & PM IDs:
@@ -212,6 +220,9 @@ abstract class Leyka_Donation_Base {
             (empty($params['payment_title']) ? leyka_options()->opt('donation_purpose_text') : $params['payment_title']) :
             $params['purpose_text'];
         $params['payment_title'] = esc_attr($params['payment_title']);
+
+        // Web analytics - GA:
+        $params['ga_client_id'] = empty($params['ga_client_id']) ? '' : trim($params['ga_client_id']);
 
         return $params;
 

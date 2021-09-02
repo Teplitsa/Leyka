@@ -75,12 +75,24 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 $donation_meta_fields['leyka_recurrents_cancelled'] = 1;
 
                 $donation_meta_fields['leyka_recurrents_cancel_date'] = $params['recurring_cancel_date'] ?
-                    $params['recurring_cancel_date'] : current_time('timestamp');
+                    : current_time('timestamp');
 
             }
 
             if($donation_meta_fields['_rebilling_is_active']) {
                 do_action('leyka_donation_recurring_activity_changed', $donation_id, $donation_meta_fields['recurring_active']);
+            }
+
+            if($params['recurring_cancel_date'] && empty($donation_meta_fields['leyka_recurrents_cancel_date'])) {
+                $donation_meta_fields['leyka_recurrents_cancel_date'] = $params['recurring_cancel_date'];
+            }
+
+            if($params['recurring_cancel_requested']) {
+                $donation_meta_fields['cancel_recurring_requested'] = $params['recurring_cancel_requested'];
+            }
+
+            if( !empty($params['recurring_cancel_reason']) ) {
+                $donation_meta_fields['leyka_recurring_cancel_reason'] = $params['recurring_cancel_reason'];
             }
 
         }
@@ -91,6 +103,10 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
         if($params['gateway_id']) {
             do_action("leyka_{$params['gateway_id']}_add_donation_specific_data", $donation_id, $params);
+        }
+
+        if($params['ga_client_id']) {
+            $donation_meta_fields['leyka_ga_client_id'] = $params['ga_client_id'];
         }
 
         $donation_meta_fields = apply_filters(
@@ -231,6 +247,11 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 '_rebilling_is_active' => !empty($meta['_rebilling_is_active'][0]),
                 'leyka_cancel_recurring_requested' => isset($meta['leyka_cancel_recurring_requested']) ?
                     $meta['leyka_cancel_recurring_requested'][0] : false,
+                'leyka_recurring_cancel_reason' => isset($meta['leyka_recurring_cancel_reason']) ?
+                    $meta['leyka_recurring_cancel_reason'][0] : '',
+
+                // For web-analytics services:
+                'leyka_ga_client_id' => empty($meta['leyka_ga_client_id'][0]) ? false : $meta['leyka_ga_client_id'][0],
             ];
         }
 
@@ -469,10 +490,6 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'is_init_recurring_donation':
                 return $this->type === 'rebill' && $this->init_recurring_donation_id === $this->id;
 
-            case 'cancel_recurring_requested':
-            case 'recurring_cancelling_requested':
-                return $this->payment_type === 'rebill' ? $this->_donation_meta['leyka_cancel_recurring_requested'] : false;
-
             case 'recurring_active':
             case 'recurring_subscription_is_active':
             case 'rebilling_on':
@@ -489,12 +506,27 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 return $init_recurring_donation ? $init_recurring_donation->get_meta('_rebilling_is_active') : NULL;
 
             case 'recurring_canceled':
+            case 'recurrents_canceled':
                 return $this->payment_type === 'rebill' ? !empty($this->_donation_meta['leyka_recurrents_cancelled']) : NULL;
 
             case 'recurrents_cancel_date':
             case 'recurring_cancel_date':
                 return $this->payment_type == 'rebill' && !empty($this->_donation_meta['leyka_recurrents_cancel_date']) ?
                     $this->_donation_meta['leyka_recurrents_cancel_date'] : NULL;
+
+            case 'cancel_recurring_requested':
+            case 'cancelling_recurring_requested':
+            case 'recurring_cancel_requested':
+            case 'recurring_cancelling_requested':
+                return $this->payment_type === 'rebill' && !!$this->_donation_meta['leyka_cancel_recurring_requested'];
+
+            case 'recurring_cancel_reason':
+            case 'recurring_cancelling_reason':
+                return $this->payment_type === 'rebill' ? $this->_donation_meta['leyka_recurring_cancel_reason'] : false;
+
+            case 'ga_client_id':
+            case 'gua_client_id':
+                return empty($this->_donation_meta['leyka_ga_client_id']) ? NULL : $this->_donation_meta['leyka_ga_client_id'];
 
             default:
                 return apply_filters('leyka_'.$this->gateway_id.'_get_unknown_donation_field', null, $field, $this);
@@ -790,7 +822,19 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 break;
 
             case 'cancel_recurring_requested':
+            case 'cancelling_recurring_requested':
+            case 'recurring_cancel_requested':
+            case 'recurring_cancelling_requested':
                 $this->set_meta('leyka_cancel_recurring_requested', !!$value);
+                break;
+            case 'recurring_cancel_reason':
+            case 'recurring_cancelling_reason':
+                $this->set_meta('leyka_recurring_cancel_reason', trim($value));
+                break;
+
+            case 'ga_client_id':
+            case 'gua_client_id':
+                $this->set_meta('leyka_ga_client_id', trim($value));
                 break;
 
             default:
@@ -821,6 +865,10 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
         $meta_name = trim($meta_name);
         if( !$meta_name ) {
             return false;
+        }
+
+        if( !empty($this->_donation_meta[$meta_name]) && $this->_donation_meta[$meta_name] === $value ) {
+            return true;
         }
 
         if(update_post_meta($this->_id, $meta_name, $value)) {
