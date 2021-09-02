@@ -147,7 +147,7 @@ if($extensions_dir) {
 
         $file_addr = LEYKA_PLUGIN_DIR."extensions/$extension_id/leyka-class-{$extension_id}-extension.php";
 
-        if($extension_id !== '.' && $extension_id !== '..' && file_exists($file_addr)) {
+        if(file_exists($file_addr)) {
             require_once($file_addr);
         }
 
