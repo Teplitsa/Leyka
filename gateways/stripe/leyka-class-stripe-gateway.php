@@ -20,7 +20,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             $this->_id
         );
 
-        $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-cloudpayments/';
+        $this->_docs_link = 'https://stripe.com/docs';
         $this->_registration_link = '//dashboard.stripe.com/register';
         $this->_has_wizard = false;
 
@@ -51,6 +51,13 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                 'is_password' => true,
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'sk_test_51IybR4JyYVP3cRIf5zbSzovieA...'),
+            ),
+            'stripe_product_id' => array(
+                'type' => 'text',
+                'title' => __('Product ID', 'leyka'),
+                'comment' => __('Please, enter your Stripe "Donation" product ID here. It can be found in your Stripe personal account ("Products" section).', 'leyka'),
+                'required' => true,
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'prod_K8PufqAVP7Z2SG'),
             )
         );
 
@@ -74,19 +81,6 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
     public function enqueue_gateway_scripts() {
 
-        /*
-        if(Leyka_Stripe_Card::get_instance()->active) {
-
-            wp_enqueue_script(
-                'leyka-stripe',
-                LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_Stripe_Gateway::get_instance()->id.'/js/leyka.stripe.js',
-                array('jquery', 'leyka-public'),
-                LEYKA_VERSION.'.001',
-                true
-            );
-
-        }
-*/
         add_filter('leyka_js_localized_strings', array($this, 'localize_js_strings'));
     }
 
@@ -95,12 +89,19 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
         require_once LEYKA_PLUGIN_DIR.'gateways/stripe/lib/init.php';
 
         $secret_key = leyka_options()->opt('stripe_key_secret');
+        $donation_amount = $form_data['leyka_donation_amount']*100;
+        $donation_currency = $form_data['leyka_donation_currency'] === 'rur' ? 'rub' : $form_data['leyka_donation_currency'];
+        $product_id = leyka_options()->opt('stripe_product_id');
 
         \Stripe\Stripe::setApiKey($secret_key);
 
         $checkout_session = \Stripe\Checkout\Session::create([
             'line_items' => [[
-                'price' => 'price_1JU94LJyYVP3cRIfzx2gXIl8',
+                'price_data' => [
+                    'unit_amount' => $donation_amount,
+                    'currency' => $donation_currency,
+                    'product' => $product_id
+                ],
                 'quantity' => 1,
             ]],
             'payment_method_types' => [
@@ -109,12 +110,20 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             'mode' => 'payment',
             'success_url' => leyka_get_success_page_url(),
             'cancel_url' => leyka_get_failure_page_url(),
+            'payment_intent_data' => [
+                'description' => 'test description 321',
+                'metadata' => [
+                    'description' => 'test metadata 123'
+                ]
+            ]
         ]);
 
         $this->_api_redirect_url = $checkout_session->url;
 
-        return [];
+    }
 
+    public function submission_redirect_type($redirect_type, $pm_id, $donation_id) {
+        return 'redirect';
     }
 
     public function submission_redirect_url($current_url, $pm_id) {
@@ -160,8 +169,6 @@ class Leyka_Stripe_Card extends Leyka_Payment_Method {
 
         $this->_supported_currencies[] = 'rur';
         $this->_default_currency = 'rur';
-
-        $this->_processing_type = 'custom-process-submit-event';
 
     }
 

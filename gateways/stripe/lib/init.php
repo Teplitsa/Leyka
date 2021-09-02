@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * !NB - Links in this file were updated to suit this file new location (it was one level above).
+ */
+
 // File generated from our OpenAPI spec
 
 // Stripe singleton
