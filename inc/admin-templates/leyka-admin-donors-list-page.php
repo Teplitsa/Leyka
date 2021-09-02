@@ -62,13 +62,13 @@
 
                         <div class="filters-row">
 
-                            <?php $filter_value = isset($_GET['campaigns']) ? (array)$_GET['campaigns'] : array();?>
+                            <?php $filter_value = isset($_GET['campaigns']) ? (array)$_GET['campaigns'] : [];?>
                             <div class="leyka-admin-list-filter-wrapper">
 
                                 <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector autocomplete-input" value="" placeholder="<?php _e('All campaigns', 'leyka');?>">
 
                                 <select class="leyka-campaigns-select autocomplete-select" name="campaigns[]" multiple="multiple">
-                                    <?php $campaigns = $filter_value ? leyka_get_campaigns_list(array('include' => $filter_value)) : array();
+                                    <?php $campaigns = $filter_value ? leyka_get_campaigns_list(['include' => $filter_value]) : [];
                                     foreach($campaigns as $campaign_id => $campaign_title) {?>
 
                                         <option value="<?php echo $campaign_id;?>" <?php echo is_array($filter_value) && in_array($campaign_id, $filter_value) ? 'selected="selected"' : '';?>>
@@ -85,17 +85,17 @@
 
                                 <input type="text" name="donors-tags-input" class="leyka-donors-tags-selector leyka-selector autocomplete-input" value="" placeholder="<?php _e('Donors tags', 'leyka');?>">
 
-                                <?php $filter_value = isset($_GET['donors-tags']) ? (array)$_GET['donors-tags'] : array();?>
+                                <?php $filter_value = isset($_GET['donors-tags']) ? (array)$_GET['donors-tags'] : [];?>
                                 <select class="leyka-donors-tags-select autocomplete-select" name="donors-tags[]" multiple="multiple">
                                     <?php $donors_tags = $filter_value ? get_terms(
                                         Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME,
-                                        array(
+                                        [
                                             'include' => $filter_value,
                                             'hide_empty' => false,
                                             'orderby' => 'name',
                                             'order' => 'ASC',
-                                        )
-                                    ) : array();
+                                        ]
+                                    ) : [];
 
                                     foreach($donors_tags as $tag) {?>
                                         <option value="<?php echo $tag->term_id;?>" <?php echo is_array($filter_value) && in_array($tag->term_id, $filter_value) ? 'selected="selected"' : '';?>>
@@ -108,7 +108,7 @@
 
                             <div class="leyka-admin-list-filter-wrapper">
 
-                                <?php $filter_value = isset($_GET['gateway']) ? (array)$_GET['gateway'] : array();?>
+                                <?php $filter_value = isset($_GET['gateway']) ? (array)$_GET['gateway'] : [];?>
 
                                 <select id="leyka-gateways-select" class="leyka-select-menu" name="gateway">
 

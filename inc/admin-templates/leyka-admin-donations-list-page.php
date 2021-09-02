@@ -73,7 +73,7 @@
 
                         <div class="filters-row">
 
-                            <?php $filter_value = isset($_GET['campaigns']) ? (array)$_GET['campaigns'] : array();?>
+                            <?php $filter_value = isset($_GET['campaigns']) ? (array)$_GET['campaigns'] : [];?>
                             <div class="leyka-admin-list-filter-wrapper">
 
                                 <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector autocomplete-input" value="" placeholder="<?php _e('All campaigns', 'leyka');?>">
@@ -104,13 +104,13 @@
                                         --- <?php _e('Payment method', 'leyka');?> ---
                                     </option>
 
-                                    <?php $gw_pm_list = array();
+                                    <?php $gw_pm_list = [];
                                     foreach(leyka_get_gateways() as $gateway) {
 
                                         /** @var Leyka_Gateway $gateway */
                                         $pm_list = $gateway->get_payment_methods();
                                         if($pm_list) {
-                                            $gw_pm_list[] = array('gateway' => $gateway, 'pm_list' => $pm_list);
+                                            $gw_pm_list[] = ['gateway' => $gateway, 'pm_list' => $pm_list,];
                                         }
 
                                     }

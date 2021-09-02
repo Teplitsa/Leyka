@@ -11,26 +11,26 @@ $user = wp_get_current_user();?>
 
     <form id="feedback" action="#" method="post">
 
-        <?php leyka_render_text_field('feedback_name', array(
+        <?php leyka_render_text_field('feedback_name', [
             'title' => __('Your name (we are going to use it only to address you)', 'leyka'),
             'required' => true,
             'value' => $user->display_name,
             'placeholder' => __('For ex., Leo', 'leyka'),
-        ));?>
+        ]);?>
         <div id="leyka_feedback_name-field-error" class="error-message" style="display: none;"></div>
 
-        <?php leyka_render_email_field('feedback_email', array(
+        <?php leyka_render_email_field('feedback_email', [
             'title' => __('Your email', 'leyka'),
             'required' => true,
             'value' => $user->user_email,
             'placeholder' => __('your@mailbox.com', 'leyka'),
-        ));?>
+        ]);?>
         <div id="leyka_feedback_email-field-error" class="error-message" style="display: none;"></div>
 
-        <?php leyka_render_textarea_field('feedback_text', array(
+        <?php leyka_render_textarea_field('feedback_text', [
             'title' => __('Describe a question', 'leyka'),
             'required' => true,
-        ));?>
+        ]);?>
         <div id="leyka_feedback_text-field-error" class="error-message" style="display: none;"></div>
 
         <input type="hidden" name="leyka_feedback_topic" value="<?php _e('A message from Leyka help admin page', 'leyka');?>">

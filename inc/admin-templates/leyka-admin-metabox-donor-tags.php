@@ -12,4 +12,4 @@ try {
 wp_nonce_field('leyka_save_donor_tags', 'leyka_save_donor_tags_nonce');
 
 // Normally this function accepts WP_Post as a first arg, but it's OK to give any object with ->ID public attribute:
-post_tags_meta_box($donor, array('args' => array('taxonomy' => Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME,),));
+post_tags_meta_box($donor, ['args' => ['taxonomy' => Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME,],]);

@@ -39,13 +39,13 @@
                 $this->show_banner('admin-dashboard', 'main');
             }
 
-            $dashboard_stats_intervals = apply_filters('leyka_admin_dashboard_intervals', array(
+            $dashboard_stats_intervals = apply_filters('leyka_admin_dashboard_intervals', [
                 'year' => __('Year', 'leyka'),
                 'half-year' => __('Half-year', 'leyka'),
                 'quarter' => __('Quarter', 'leyka'),
                 'month' => __('Month', 'leyka'),
                 'week' => __('Week', 'leyka'),
-            ));
+            ]);
             $_GET['interval'] = empty($_GET['interval']) ?
                 apply_filters('leyka_admin_dashboard_interval_default', 'year') : esc_attr($_GET['interval']);
             $current_url = admin_url('admin.php?page=leyka');?>

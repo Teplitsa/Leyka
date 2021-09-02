@@ -45,7 +45,7 @@ try {
     </thead>
     <tbody>
 
-    <?php $comments = array_merge(array(0 => array('date' => '', 'text' => '', 'author_name' => '')), $donor->get_comments());
+    <?php $comments = array_merge([0 => ['date' => '', 'text' => '', 'author_name' => '']], $donor->get_comments());
 
     foreach($comments as $comment_id => $comment) {
         echo leyka_admin_get_donor_comment_table_row($comment_id, $comment);

@@ -13,7 +13,7 @@ try {
 <?php wp_nonce_field('leyka_save_donor_description', 'leyka_save_donor_description_nonce');?>
 
 <div class="donor-col-1">
-    <div class="donor-photo"><img src="<?php echo get_avatar_url($donor->id, array('size' => 96));?>" alt=""></div>
+    <div class="donor-photo"><img src="<?php echo get_avatar_url($donor->id, ['size' => 96,]);?>" alt=""></div>
 </div>
 
 <div class="donor-col-2">
@@ -108,7 +108,7 @@ try {
             <dt><?php _e('Subscribed to news', 'leyka');?></dt>
             <dd>
 
-            <?php $campaigns = array();
+            <?php $campaigns = [];
             foreach($donor->campaigns_news_subscriptions as $campaign_id => $title) {
                 $campaigns[] = '«<a href="'.get_edit_post_link($campaign_id).'">'.$title.'</a>»';
             }
@@ -119,7 +119,7 @@ try {
             <dt><?php _e('Campaigns', 'leyka');?></dt>
             <dd>
 
-            <?php $campaigns = array();
+            <?php $campaigns = [];
             foreach($donor->campaigns as $campaign_id => $title) {
                 $campaigns[] = '«<a href="'.get_edit_post_link($campaign_id).'">'.$title.'</a>»';
             }
