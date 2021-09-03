@@ -58,7 +58,23 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                 'comment' => __('Please, enter your Stripe "Donation" product ID here. It can be found in your Stripe personal account ("Products" section).', 'leyka'),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'prod_K8PufqAVP7Z2SG'),
-            )
+            ),
+            'stripe_webhooks_key' => array(
+                'type' => 'text',
+                'title' => __('Webhooks secret key', 'leyka'),
+                'comment' => __('Please, enter your Stripe webhooks signing secret key here. It can be found in your Stripe control panel ("Webhooks" section).', 'leyka'),
+                'is_password' => true,
+                'required' => true,
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'whsec_f0ZTQyaYaSpWMK3npRxAfLP2MAgkWifl'),
+            ),
+            'stripe_webhooks_ips' => array(
+                'type' => 'text',
+                'title' => __('Webhooks IPs', 'leyka'),
+                'comment' => __('Comma-separated callback requests IP list. Leave empty to disable the check.', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), '3.18.12.63, 3.130.192.231, 13.235.14.237'),
+                'default' => '3.18.12.63, 3.130.192.231, 13.235.14.237, 13.235.122.149, 18.211.135.69, 35.154.171.200, 
+                            52.15.183.38, 54.88.130.119, 54.88.130.237, 54.187.174.169, 54.187.205.235, 54.187.216.72',
+            ),
         );
 
     }
@@ -111,9 +127,9 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             'success_url' => leyka_get_success_page_url(),
             'cancel_url' => leyka_get_failure_page_url(),
             'payment_intent_data' => [
-                'description' => 'test description 321',
+                'description' => 'Donation '.$donation_id,
                 'metadata' => [
-                    'description' => 'test metadata 123'
+                    'donation_id' => $donation_id
                 ]
             ]
         ]);
@@ -137,6 +153,113 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
     public function get_gateway_response_formatted(Leyka_Donation $donation) {
         return [];
     }
+
+    /* Check if callback is sent from correct IP. */
+    protected function _is_callback_caller_correct() {
+
+        if( !leyka_options()->opt('stripe_webhooks_ips') ) { // The caller IP check is off
+            return true;
+        }
+
+        $stripe_ips_allowed = array_map(
+            function($ip) { return trim(stripslashes($ip)); },
+            explode(',', leyka_options()->opt('stripe_webhooks_ips'))
+        );
+
+        if(!$stripe_ips_allowed) {
+            return true;
+        }
+
+        $client_ip = leyka_get_client_ip();
+
+        foreach($stripe_ips_allowed as $ip_or_cidr) {
+
+            if( // Check if caller IP is in CIDR range
+                strpos($ip_or_cidr, '/')
+                && (is_ip_in_range($_SERVER['REMOTE_ADDR'], $ip_or_cidr) || is_ip_in_range($client_ip, $ip_or_cidr))
+            ) {
+                return true;
+            } else if($client_ip == $ip_or_cidr) { // Simple IP check
+                return true;
+            }
+
+        }
+
+        return false;
+
+    }
+
+    public function _handle_service_calls($call_type = '') {
+        // Test for gateway's IP:
+        if( !$this->_is_callback_caller_correct() ) {
+
+            $client_ip = leyka_get_client_ip();
+
+            $message = __("This message has been sent because a call to your Stripe function was made from an IP that did not match with the one in your Stripe gateway setting. This could mean someone is trying to hack your payment website. The details of the call are below.", 'leyka')."\n\r\n\r".
+                "POST:\n\r".print_r($_POST, true)."\n\r\n\r".
+                "GET:\n\r".print_r($_GET, true)."\n\r\n\r".
+                "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r".
+                "IP:\n\r".print_r($client_ip, true)."\n\r\n\r".
+                "Stripe IP setting value:\n\r".print_r(leyka_options()->opt('stripe_webhooks_ips'),true)."\n\r\n\r";
+
+            wp_mail(get_option('admin_email'), __('Stripe IP check failed!', 'leyka'), $message);
+            status_header(200);
+            die(json_encode(array(
+                'code' => '13',
+                'reason' => sprintf(
+                    'Unknown callback sender IP: %s (IPs permitted: %s)',
+                    $client_ip, str_replace(',', ', ', leyka_options()->opt('stripe_webhooks_ips'))
+                )
+            )));
+
+        }
+
+        require_once LEYKA_PLUGIN_DIR.'gateways/stripe/lib/init.php';
+
+        $endpoint_secret = leyka_options()->opt('stripe_webhooks_key') ;
+        $payload = @file_get_contents('php://input');
+        $sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'];
+        $event = null;
+
+        try {
+            $event = \Stripe\Webhook::constructEvent(
+                $payload, $sig_header, $endpoint_secret
+            );
+        } catch(\UnexpectedValueException $e) {
+            // Invalid payload
+            exit();
+        } catch(\Stripe\Exception\SignatureVerificationException $e) {
+            // Invalid signature
+            exit();
+        }
+
+        file_put_contents('stripe_gateway_callback_test.txt', $event->data->jsonSerialize());
+
+        // Handle the event
+        switch ($event->type) {
+
+            case 'payment_intent.canceled':
+                $paymentIntent = $event->data->object;
+                break;
+
+            case 'payment_intent.payment_failed':
+                $paymentIntent = $event->data->object;
+                break;
+
+            case 'payment_intent.succeeded':
+                $paymentIntent = $event->data->object;
+                $donation = new Leyka_Donation((int)$event->data->object->metadata->donation_id);
+                $donation->add_gateway_response($event->data->jsonSerialize());
+
+            default:
+                exit();
+
+        }
+
+    }
+
+
+
 }
 
 class Leyka_Stripe_Card extends Leyka_Payment_Method {
