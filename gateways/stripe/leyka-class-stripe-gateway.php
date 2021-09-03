@@ -151,7 +151,38 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
     }
 
     public function get_gateway_response_formatted(Leyka_Donation $donation) {
-        return [];
+
+        if( !$donation->gateway_response ) {
+            return array();
+        }
+
+        $vars = json_decode($donation->gateway_response, true);
+        if( !$vars || !is_array($vars) ) {
+            return array();
+        }
+
+        $vars_final = array(
+            __('PaymentIntent ID:', 'leyka') => $vars['id'],
+            __('Amount:', 'leyka') => $vars['amount']/100,
+            __('Currency:', 'leyka') => $vars['currency'],
+            __('Amount received:', 'leyka') => $vars['amount_received']/100,
+            __('Donor name:', 'leyka') => $vars['charges']['data'][0]['billing_details']['name'],
+            __('Donor email:', 'leyka') => $vars['charges']['data'][0]['billing_details']['email'],
+            __('Donation description:', 'leyka') => $vars['charges']['data'][0]['description'],
+            __('Invoice status code:', 'leyka') => $vars['status']
+        );
+
+        /*
+        if( !empty($vars['reason']) ) {
+            $vars_final[__('Donation failure reason:', 'leyka')] = $vars['reason'];
+        }
+        if( !empty($vars['SubscriptionId']) ) {
+            $vars_final[__('Recurrent subscription ID:', 'leyka')] = $this->_get_value_if_any($vars, 'SubscriptionId');
+        }
+        */
+
+        $vars_final;
+
     }
 
     /* Check if callback is sent from correct IP. */
@@ -233,23 +264,20 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             exit();
         }
 
-        file_put_contents('stripe_gateway_callback_test.txt', $event->data->jsonSerialize());
+        $paymentIntent = $event->data->object;
 
         // Handle the event
         switch ($event->type) {
 
             case 'payment_intent.canceled':
-                $paymentIntent = $event->data->object;
                 break;
 
             case 'payment_intent.payment_failed':
-                $paymentIntent = $event->data->object;
                 break;
 
             case 'payment_intent.succeeded':
-                $paymentIntent = $event->data->object;
-                $donation = new Leyka_Donation((int)$event->data->object->metadata->donation_id);
-                $donation->add_gateway_response($event->data->jsonSerialize());
+                $donation = new Leyka_Donation((int)$paymentIntent->metadata->donation_id);
+                $donation->add_gateway_response($paymentIntent->toJSON());
 
             default:
                 exit();
@@ -257,8 +285,6 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
         }
 
     }
-
-
 
 }
 
