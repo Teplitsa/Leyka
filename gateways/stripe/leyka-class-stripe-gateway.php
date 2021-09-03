@@ -181,7 +181,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
         }
         */
 
-        $vars_final;
+        return $vars_final;
 
     }
 
@@ -265,30 +265,33 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
         }
 
         $paymentIntent = $event->data->object;
+        $donation = new Leyka_Donation((int)$paymentIntent->metadata->donation_id);
+        $donation->add_gateway_response($paymentIntent->toJSON());
 
         // Handle the event
         switch ($event->type) {
 
             case 'payment_intent.canceled':
-                break;
-
             case 'payment_intent.payment_failed':
+
+                $donation->status = 'failed';
+
+                if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
+                    Leyka_Donation_Management::send_error_notifications($donation);
+                }
+
                 break;
 
             case 'payment_intent.succeeded':
 
-                $donation = new Leyka_Donation((int)$paymentIntent->metadata->donation_id);
-                $donation->add_gateway_response($paymentIntent->toJSON());
                 $donation->status = 'funded';
 
                 Leyka_Donation_Management::send_all_emails($donation->id);
 
-                exit(200);
-
-            default:
-                exit();
-
+                break;
         }
+
+        exit(200);
 
     }
 
