@@ -276,8 +276,14 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                 break;
 
             case 'payment_intent.succeeded':
+
                 $donation = new Leyka_Donation((int)$paymentIntent->metadata->donation_id);
                 $donation->add_gateway_response($paymentIntent->toJSON());
+                $donation->status = 'funded';
+
+                Leyka_Donation_Management::send_all_emails($donation->id);
+
+                exit(200);
 
             default:
                 exit();
