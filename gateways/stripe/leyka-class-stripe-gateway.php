@@ -268,11 +268,15 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
         $paymentIntent = $event->data->object;
         $donation = new Leyka_Donation((int)$paymentIntent->metadata->donation_id);
         $donation->add_gateway_response($paymentIntent->toJSON());
-
-        // Handle the event
+        
         switch ($event->type) {
 
-            case 'payment_intent.canceled':
+            case 'charge.refunded':
+
+                $donation->status = 'refunded';
+
+                break;
+
             case 'payment_intent.payment_failed':
 
                 $donation->status = 'failed';
