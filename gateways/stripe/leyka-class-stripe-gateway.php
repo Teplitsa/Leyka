@@ -169,13 +169,14 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             __('Donor name:', 'leyka') => $vars['charges']['data'][0]['billing_details']['name'],
             __('Donor email:', 'leyka') => $vars['charges']['data'][0]['billing_details']['email'],
             __('Donation description:', 'leyka') => $vars['charges']['data'][0]['description'],
-            __('Invoice status code:', 'leyka') => $vars['status']
+            __('Status code:', 'leyka') => $vars['status']
         );
 
-        /*
-        if( !empty($vars['reason']) ) {
-            $vars_final[__('Donation failure reason:', 'leyka')] = $vars['reason'];
+        if( $vars['status'] === 'requires_payment_method' ) {
+            $vars_final[__('Donation failure reason:', 'leyka')] = $vars['charges']['data'][0]['failure_message'];
         }
+
+        /*
         if( !empty($vars['SubscriptionId']) ) {
             $vars_final[__('Recurrent subscription ID:', 'leyka')] = $this->_get_value_if_any($vars, 'SubscriptionId');
         }
