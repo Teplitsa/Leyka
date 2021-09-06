@@ -152,12 +152,12 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
     public function get_gateway_response_formatted(Leyka_Donation $donation) {
 
-        if( !$donation->gateway_response ) {
+        if(!$donation->gateway_response) {
             return array();
         }
 
         $vars = json_decode($donation->gateway_response, true);
-        if( !$vars || !is_array($vars) ) {
+        if(!$vars || !is_array($vars)) {
             return array();
         }
 
@@ -172,15 +172,13 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             __('Status code:', 'leyka') => $vars['status']
         );
 
-        if( $vars['status'] === 'requires_payment_method' ) {
+        if($vars['status'] === 'requires_payment_method') {
             $vars_final[__('Donation failure reason:', 'leyka')] = $vars['charges']['data'][0]['failure_message'];
         }
 
-        /*
-        if( !empty($vars['SubscriptionId']) ) {
-            $vars_final[__('Recurrent subscription ID:', 'leyka')] = $this->_get_value_if_any($vars, 'SubscriptionId');
+        if($vars['refunded'] === true){
+            $vars_final[__('Refund reason:', 'leyka')] = $vars['refunds']['data'][0]['reason'];
         }
-        */
 
         return $vars_final;
 
@@ -268,7 +266,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
         $paymentIntent = $event->data->object;
         $donation = new Leyka_Donation((int)$paymentIntent->metadata->donation_id);
         $donation->add_gateway_response($paymentIntent->toJSON());
-        
+
         switch ($event->type) {
 
             case 'charge.refunded':
