@@ -12,15 +12,15 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
 	protected function __construct() {
 
-		add_action('add_meta_boxes', array($this, 'set_metaboxes'));
-		add_filter('manage_'.self::$post_type.'_posts_columns', array($this, 'manage_columns_names'));
-		add_action('manage_'.self::$post_type.'_posts_custom_column', array($this, 'manage_columns_content'), 2, 2);
-		add_action('save_post', array($this, 'save_data'), 2, 2);
+		add_action('add_meta_boxes', [$this, 'set_metaboxes']);
+		add_filter('manage_'.self::$post_type.'_posts_columns', [$this, 'manage_columns_names']);
+		add_action('manage_'.self::$post_type.'_posts_custom_column', [$this, 'manage_columns_content'], 2, 2);
+		add_action('save_post', [$this, 'save_data'], 2, 2);
 
-        add_action('restrict_manage_posts', array($this, 'manage_filters'));
-        add_action('pre_get_posts', array($this, 'do_filtering'));
+        add_action('restrict_manage_posts', [$this, 'manage_filters']);
+        add_action('pre_get_posts', [$this, 'do_filtering']);
 
-		add_filter('post_row_actions', array($this, 'row_actions'), 10, 2);
+		add_filter('post_row_actions', [$this, 'row_actions'], 10, 2);
 
 	}
 
@@ -32,7 +32,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         $current_post = get_post();
 
-        $messages[Leyka_Campaign_Management::$post_type] = array(
+        $messages[Leyka_Campaign_Management::$post_type] = [
             0 => '', // Unused. Messages start at index 1.
             1 => sprintf(
                 __('Campaign updated. <a href="%s">View it</a>', 'leyka'),
@@ -62,7 +62,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                 __('Campaign draft updated. <a target="_blank" href="%s">Preview it</a>', 'leyka'),
                 esc_url(add_query_arg('preview', 'true', home_url('?p='.$current_post->ID)))
             ),
-        );
+        ];
 
         return $messages;
 
@@ -130,14 +130,14 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             return;
         }
 
-        $meta_query = array('relation' => 'AND');
+        $meta_query = ['relation' => 'AND'];
 
         if( !empty($_REQUEST['campaign_state']) && $_REQUEST['campaign_state'] !== 'all' ) {
-            $meta_query[] = array('key' => 'is_finished', 'value' => $_REQUEST['campaign_state'] == 'is_finished' ? 1 : 0);
+            $meta_query[] = ['key' => 'is_finished', 'value' => $_REQUEST['campaign_state'] == 'is_finished' ? 1 : 0];
         }
 
         if( !empty($_REQUEST['target_state']) ) {
-            $meta_query[] = array('key' => 'target_state', 'value' => $_REQUEST['target_state']);
+            $meta_query[] = ['key' => 'target_state', 'value' => $_REQUEST['target_state']];
         }
 
         if(count($meta_query) > 1) {
@@ -151,7 +151,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         add_meta_box(
             self::$post_type.'_excerpt',
             __('Annotation', 'leyka'),
-            array($this, 'annotation_meta_box'),
+            [$this, 'annotation_metabox'],
             self::$post_type,
             'normal',
             'high'
@@ -159,7 +159,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         add_meta_box(self::$post_type.'_data',
             __('Campaign settings', 'leyka'),
-            array($this, 'data_meta_box'),
+            [$this, 'data_metabox'],
             self::$post_type,
             'normal',
             'high'
@@ -168,25 +168,20 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         add_meta_box(
             self::$post_type.'_additional_fields',
             __('Additional campaign form fields', 'leyka'),
-            array($this, 'additional_fields_meta_box'),
+            [$this, 'additional_fields_metabox'],
             self::$post_type,
             'normal',
             'high'
         );
 
-        // Metaboxes are only for campaign editing page (not for new campaign page):
+        // Metaboxes are only for campaign editing page (but not for "new campaign" page):
         $screen = get_current_screen();
         if($screen->post_type == self::$post_type && $screen->base === 'post' && !$screen->action) {
-
-//            add_meta_box(
-//                self::$post_type.'_embed', __('Campaign embedding', 'leyka'),
-//                array($this, 'embedding_meta_box'), self::$post_type, 'normal', 'high'
-//            );
 
 		    add_meta_box(
                 self::$post_type.'_donations',
                 __('Donations history', 'leyka'),
-                array($this, 'donations_meta_box'),
+                [$this, 'donations_metabox'],
                 self::$post_type,
                 'normal',
                 'high'
@@ -195,7 +190,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             add_meta_box(
                 self::$post_type.'_statistics',
                 __('Campaign statistics', 'leyka'),
-                array($this, 'statistics_meta_box'),
+                [$this, 'statistics_metabox'],
                 self::$post_type,
                 'side',
                 'low'
@@ -208,7 +203,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
     /**
      * @param $campaign WP_Post
      */
-    public function data_meta_box(WP_Post $campaign) {
+    public function data_metabox(WP_Post $campaign) {
 
         $campaign = new Leyka_Campaign($campaign);
 
@@ -431,7 +426,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <div class="field-wrapper css-editor">
 
-                <?php $campaign_css_original = array(
+                <?php $campaign_css_original = [
                      'star' => '/* :root { --leyka-color-main: #ff510d; } */ '.
                         '/* '.__('Active buttons & switches background color', 'leyka' ).' */'."\n".
                         '/* :root { --leyka-color-main-second: #ffc29f; } */ '.
@@ -507,7 +502,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                         '/* '.__( 'Form submit text size', 'leyka' ).' */'."\n".
                         '/* :root { --leyka-need-help-font-size-section-titles: 18px; } */ '.
                         '/* '.__( 'Form sections titles text size', 'leyka' ).' */'."\n"
-                );
+                ];
 
                 $additional_css_used = $campaign->additional_css && !in_array(
                     preg_replace('/\s+/u', '', html_entity_decode($campaign->additional_css, ENT_QUOTES)),
@@ -515,8 +510,8 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                     return preg_replace('/\s+/u', '', $value);
                 }, $campaign_css_original));
 
-                $campaign_template_id = $campaign->template_id ? // The new campaigns don't have even the "default" template yet
-                    $campaign->template_id : leyka_options()->opt('donation_form_template');?>
+                // The new campaigns don't have even the "default" template yet:
+                $campaign_template_id = $campaign->template_id ? : leyka_options()->opt('donation_form_template');?>
 
                 <textarea id="campaign-css-field" name="campaign_css" class="css-editor-field" data-additional-css-used="<?php echo $additional_css_used;?>"><?php echo $campaign->additional_css ?
                     trim($campaign->additional_css) :
@@ -687,16 +682,16 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
                     <li><label><input type="radio" name="support-packages-campaign-changed" value="content-closed" <?php echo $support_packages_no_campaign_behavior === 'content-closed' ? 'checked="checked"' : '';?>>&nbsp;<?php _e('Leave content closed', 'leyka');?></label></li>
 
-                <?php $campaigns_available = get_posts(array(
+                <?php $campaigns_available = get_posts([
                     'post_type' => Leyka_Campaign_Management::$post_type,
                     'post_status' => 'publish',
-                    'meta_query' => array(
+                    'meta_query' => [
                         // Here user may choose from all campaigns, nor just persistent ones:
-                        array('key' => 'is_finished', 'value' => 1, 'compare' => '!=', 'type' => 'NUMERIC',),
-                    ),
-                    'post__not_in' => array($campaign->ID),
+                        ['key' => 'is_finished', 'value' => 1, 'compare' => '!=', 'type' => 'NUMERIC',],
+                    ],
+                    'post__not_in' => [$campaign->ID],
                     'posts_per_page' => 10,
-                ));
+                ]);
 
                 if($campaigns_available) {?>
                     <li><label><input type="radio" name="support-packages-campaign-changed" value="another-campaign">&nbsp<?php _e('Select another campaign', 'leyka');?></label></li>
@@ -707,15 +702,15 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                 <?php if($campaigns_available) {?>
 
                 <div class="new-campaign" style="display: none;">
-                    <?php $list_entries = array();
+                    <?php $list_entries = [];
                     foreach($campaigns_available as $campaign) {
                         $list_entries[$campaign->ID] = $campaign->post_title;
                     }
 
-                    leyka_render_select_field('support_packages_campaign', array(
+                    leyka_render_select_field('support_packages_campaign', [
                         'value' => $campaign->id,
                         'list_entries' => $list_entries,
-                    ));?>
+                    ]);?>
                 </div>
 
             </div>
@@ -733,7 +728,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
     /**
      * @param $campaign WP_Post
      */
-    public function additional_fields_meta_box(WP_Post $campaign) {
+    public function additional_fields_metabox(WP_Post $campaign) {
 
         $campaign = new Leyka_Campaign($campaign);?>
 
@@ -741,16 +736,16 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <div class="leyka-options-section">
 
-                <?php function leyka_campaign_additional_field_html($is_template = false, $placeholders = array()) {
+                <?php function leyka_campaign_additional_field_html($is_template = false, $placeholders = []) {
 
-                    $placeholders = wp_parse_args($placeholders, array(
+                    $placeholders = wp_parse_args($placeholders, [
                         'id' => '',
                         'box_title' => __('New field', 'leyka'),
                         'type' => '-',
                         'title' => '',
                         'is_required' => false,
                         'for_all_campaigns' => false,
-                    ));
+                    ]);
 
                     if($is_template) {
 
@@ -758,7 +753,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
                         if($additional_fields_library) {
 
-                            $fields_select_values = array('-' => __('Select the field', 'leyka'),);
+                            $fields_select_values = ['-' => __('Select the field', 'leyka'),];
 
                             foreach($additional_fields_library as $field_id => $settings) {
                                 $fields_select_values[$field_id] = '['.__($settings['type'], 'leyka').'] '
@@ -785,14 +780,14 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
                                     <div class="option-block type-select">
                                         <div class="leyka-select-field-wrapper">
-                                            <?php leyka_render_select_field('campaign_field_add', array(
+                                            <?php leyka_render_select_field('campaign_field_add', [
                                                 'title' => __('Fields available', 'leyka'),
                                                 'type' => 'select',
                                                 'value' => count($fields_select_values) > 1 ? '-' : '+',
                                                 'required' => true,
                                                 'list_entries' => $fields_select_values,
                                                 'hide_title' => true,
-                                            ));?>
+                                            ]);?>
                                         </div>
                                         <div class="field-errors"></div>
                                     </div>
@@ -800,7 +795,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                                 </div>
 
                                 <div class="campaign-new-additional-field" style="display: none;">
-                                    <?php leyka_additional_form_field_main_subfields_html(array());?>
+                                    <?php leyka_additional_form_field_main_subfields_html([]);?>
                                 </div>
 
                                 <ul class="notes-and-errors">
@@ -889,7 +884,8 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                                 && (
                                     !is_array($fields_library[$field_id]['campaigns'])
                                     || !in_array($campaign->id, $fields_library[$field_id]['campaigns'])
-                            )) {
+                                )
+                            ) {
                                 continue;
                             }
 
@@ -902,14 +898,14 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                                 continue;
                             }
 
-                            leyka_campaign_additional_field_html(false, array(
+                            leyka_campaign_additional_field_html(false, [
                                 'id' => $field_id,
                                 'box_title' => $fields_library[$field_id]['title'],
                                 'type' => $fields_library[$field_id]['type'],
                                 'title' => $fields_library[$field_id]['title'],
                                 'is_required' => $fields_library[$field_id]['is_required'],
                                 'for_all_campaigns' => $fields_library[$field_id]['for_all_campaigns'],
-                            ));
+                            ]);
 
                         }
 
@@ -928,14 +924,14 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                                 continue;
                             }
 
-                            leyka_campaign_additional_field_html(false, array(
+                            leyka_campaign_additional_field_html(false, [
                                 'id' => $field_id,
                                 'box_title' => $field_settings['title'],
                                 'type' => $field_settings['type'],
                                 'title' => $field_settings['title'],
                                 'is_required' => $field_settings['is_required'],
                                 'for_all_campaigns' => $field_settings['for_all_campaigns'],
-                            ));
+                            ]);
 
                         }?>
 
@@ -957,7 +953,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
     /**
      * @param $campaign WP_Post
      */
-    public function statistics_meta_box(WP_Post $campaign) {
+    public function statistics_metabox(WP_Post $campaign) {
 
         $campaign = new Leyka_Campaign($campaign);?>
 
@@ -976,7 +972,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
     /**
      * @param $campaign WP_Post
      */
-    public function annotation_meta_box(WP_Post $campaign) {?>
+    public function annotation_metabox(WP_Post $campaign) {?>
 
         <label for="excerpt"></label>
         <textarea id="excerpt" name="excerpt" cols="40" rows="1"><?php echo $campaign->post_excerpt;?></textarea>
@@ -987,7 +983,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
     /**
      * @param $campaign WP_Post
      */
-    public function donations_meta_box(WP_Post $campaign) {
+    public function donations_metabox(WP_Post $campaign) {
 
         $campaign = new Leyka_Campaign($campaign);?>
 
@@ -1048,7 +1044,11 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
 		$campaign = new Leyka_Campaign($campaign);
 
-        $meta = array();
+        // Plugin extensions & mods can add/modify Campaign data just before they are saved:
+        $_REQUEST = apply_filters('leyka_campaign_data_before_saving', $_REQUEST, $campaign);
+        do_action('leyka_campaign_data_before_saving', $_REQUEST, $campaign);
+
+        $meta = [];
 
         $_REQUEST['daily_rouble_mode_on'] = empty($_REQUEST['daily_rouble_mode_on']) ? 0 : 1;
         if($campaign->daily_rouble_mode != $_REQUEST['daily_rouble_mode_on']) {
@@ -1070,7 +1070,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         if(isset($_REQUEST['donations_type']) && $campaign->donations_types_available != $_REQUEST['donations_type']) {
             $meta['donations_type'] = (array)$_REQUEST['donations_type'];
         } else if( !isset($_REQUEST['donations_type']) && !$campaign->donations_types_available ) {
-            $meta['donations_type'] = array('single', 'recurring');
+            $meta['donations_type'] = ['single', 'recurring',];
         }
 
         if(
@@ -1133,7 +1133,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         if(isset($_REQUEST['leyka_campaign_additional_fields'])) {
 
             $_REQUEST['leyka_campaign_additional_fields'] = json_decode(urldecode($_REQUEST['leyka_campaign_additional_fields']));
-            $updated_additional_fields_settings = array();
+            $updated_additional_fields_settings = [];
             $fields_library = leyka_options()->opt('additional_donation_form_fields_library');
 
             foreach($_REQUEST['leyka_campaign_additional_fields'] as $field) {
@@ -1149,14 +1149,14 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                         trim(preg_replace('~[^-a-z0-9_]+~u', '-', mb_strtolower(leyka_cyr2lat($field->leyka_field_title))), '-');
 
                     if( !isset($fields_library[$field->id]) ) {
-                        $fields_library[$field->id] = array(
+                        $fields_library[$field->id] = [
                             'type' => $field->leyka_field_type,
                             'title' => $field->leyka_field_title,
                             'description' => $field->leyka_field_description,
                             'is_required' => !empty($field->leyka_field_is_required),
-                            'campaigns' => array($campaign_id), // By default, new field is just for the currectly edited Campaign
+                            'campaigns' => [$campaign_id], // By default, new field is just for the currectly edited Campaign
                             'for_all_campaigns' => false,
-                        );
+                        ];
                     }
 
                     $field->add = $field->id;
@@ -1171,7 +1171,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                 }
 
                 // $field->add or $field->id is a field ID/slug:
-                $updated_additional_fields_settings[] = $field->add ? $field->add : $field->id;
+                $updated_additional_fields_settings[] = $field->add ? : $field->id;
 
             }
 
@@ -1206,8 +1206,6 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             }
 
-//            die();
-
         }
         // Campaign additional form fields settings - END
 
@@ -1215,26 +1213,9 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             update_post_meta($campaign->id, $campaign_key_in_array, $value);
         }
 
-        /* Support packages - the case of "single available campaign ceased to be available" */
-        if( !leyka()->extension_is_active('support_packages') ) {
-            return;
-        }
-
-        // The case when Packages campaign is reactivated, or there is another campaign available for the extension:
-        if(
-            (
-                $campaign_id == leyka_options()->opt('support_packages_campaign')
-                && ($_REQUEST['post_status'] === 'publish' || !empty($_REQUEST['publish']))
-                && empty($_REQUEST['is_finished'])
-                && get_option('leyka_support_packages_no_campaign_behavior')
-            ) || leyka_get_extension_by_id('support_packages')->get_available_campaigns_count()
-        ) {
-
-            delete_option('leyka_support_packages_no_campaign_behavior');
-            return;
-
-        }
-        /* Support packages - END */
+        // Plugin extensions & mods can add/modify Campaign data just saved:
+        $_REQUEST = apply_filters('leyka_campaign_data_after_saving', $_REQUEST, $campaign);
+        do_action('leyka_campaign_data_after_saving', $_REQUEST, $campaign);
 
 	}
 
@@ -1245,7 +1226,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
     public function manage_columns_names($columns) {
 
 		$unsort = $columns;
-		$columns = array();
+		$columns = [];
 
 		if( !empty($unsort['cb']) ) {
 
@@ -1355,47 +1336,47 @@ class Leyka_Campaign {
         if($this->_id && !$this->_campaign_meta) {
 
             $meta = get_post_meta($this->_id, '', true);
-            $meta = is_array($meta) ? $meta : array();
+            $meta = is_array($meta) ? $meta : [];
 
             if(empty($meta['target_state'])) {
 
                 $this->target_state = $this->_get_calculated_target_state();
-                $meta['target_state'] = array($this->target_state);
+                $meta['target_state'] = [$this->target_state,];
 
             }
 
             if(empty($meta['_leyka_target_reaching_mailout_sent'])) {
 
                 $this->target_reaching_mailout_sent = false;
-                $meta['_leyka_target_reaching_mailout_sent'] = array(false);
+                $meta['_leyka_target_reaching_mailout_sent'] = [false];
 
             }
 
             if(empty($meta['_leyka_target_reaching_mailout_errors'])) {
 
                 $this->target_reaching_mailout_errors = false;
-                $meta['_leyka_target_reaching_mailout_errors'] = array(false);
+                $meta['_leyka_target_reaching_mailout_errors'] = [false];
 
             }
 
             if( !isset($meta['is_finished']) ) {
 
                 update_post_meta($this->_id, 'is_finished', 0);
-                $meta['is_finished'] = array(0);
+                $meta['is_finished'] = [0];
 
             }
 
             if( !isset($meta['hide_cover_tint']) ) {
                 
                 update_post_meta($this->_id, 'hide_cover_tint', 0);
-                $meta['hide_cover_tint'] = array(0);
+                $meta['hide_cover_tint'] = [0];
                 
             }
             
             if( !isset($meta['total_funded']) ) { // If campaign total collected amount is not saved, save it
 
                 $sum = 0.0;
-                foreach($this->get_donations(array('funded')) as $donation) {
+                foreach($this->get_donations(['funded']) as $donation) {
 
                     $donation_amount = $donation->main_curr_amount ? $donation->main_curr_amount : $donation->amount;
                     if(is_array($donation_amount) && !empty($donation_amount[0]) && (float)$donation_amount[0] >= 0.0) {
@@ -1414,42 +1395,41 @@ class Leyka_Campaign {
             if( !isset($meta['campaign_type']) ) {
 
                 update_post_meta($this->_id, 'campaign_type', 'temporary');
-                $meta['campaign_type'] = array('temporary');
+                $meta['campaign_type'] = ['temporary'];
 
             }
             if( !isset($meta['donations_type']) ) {
 
-                update_post_meta($this->_id, 'donations_type', array());
-                $meta['donations_type'] = array();
+                update_post_meta($this->_id, 'donations_type', []);
+                $meta['donations_type'] = [];
 
             }
             if( !isset($meta['donations_type_default']) ) {
 
                 update_post_meta($this->_id, 'donations_type_default', 'single');
-                $meta['donations_type_default'] = array('single');
+                $meta['donations_type_default'] = ['single'];
 
             }
             if( !isset($meta['campaign_css']) ) {
 
                 update_post_meta($this->_id, 'campaign_css', '');
-                $meta['campaign_css'] = array('');
+                $meta['campaign_css'] = [''];
 
             }
             if( !isset($meta['campaign_cover']) ) {
 
                 update_post_meta($this->_id, 'campaign_cover', '');
-                $meta['campaign_cover'] = array();
+                $meta['campaign_cover'] = [];
 
             }
             if( !isset($meta['campaign_logo']) ) {
 
                 update_post_meta($this->_id, 'campaign_logo', '');
-                $meta['campaign_logo'] = array();
+                $meta['campaign_logo'] = [];
 
             }
 
-            $ignore_view_settings = empty($meta['ignore_global_template']) ?
-                false : $meta['ignore_global_template'][0] > 0;
+            $ignore_view_settings = empty($meta['ignore_global_template']) || !$meta['ignore_global_template'][0];
             $ignore_view_settings = apply_filters(
                 'leyka_campaign_ignore_view_settings',
                 $ignore_view_settings,
@@ -1457,11 +1437,13 @@ class Leyka_Campaign {
                 $this->_post_object
             );
 
-            $this->_campaign_meta = array(
+            do_action('leyka_campaign_constructor_meta', $meta, $this->_id);
+
+            $this->_campaign_meta = apply_filters('leyka_campaign_constructor_meta', [
                 'payment_title' => empty($meta['payment_title']) ?
                     (empty($this->_post_object) ? '' : $this->_post_object->post_title) : $meta['payment_title'][0],
                 'campaign_type' => empty($meta['campaign_type']) ? '-' : $meta['campaign_type'][0],
-                'donations_type' => empty($meta['donations_type']) ? array() : $meta['donations_type'][0],
+                'donations_type' => empty($meta['donations_type']) ? [] : $meta['donations_type'][0],
                 'donations_type_default' => empty($meta['donations_type_default']) ? false : $meta['donations_type_default'][0],
                 'campaign_template' => empty($meta['campaign_template']) ? '' : $meta['campaign_template'][0],
                 'campaign_css' => empty($meta['campaign_css']) ? '' : $meta['campaign_css'][0],
@@ -1487,8 +1469,8 @@ class Leyka_Campaign {
                 'daily_rouble_pm_id' => empty($meta['_leyka_daily_rouble_pm_id']) ?
                     false : $meta['_leyka_daily_rouble_pm_id'][0],
                 'additional_fields_settings' => empty($meta['leyka_campaign_additional_fields_settings']) ?
-                    array() : maybe_unserialize($meta['leyka_campaign_additional_fields_settings'][0]),
-            );
+                    [] : maybe_unserialize($meta['leyka_campaign_additional_fields_settings'][0]),
+            ], $this->_id);
 
         }
 
@@ -1508,7 +1490,7 @@ class Leyka_Campaign {
     public function get_calculated_additional_fields_settings() {
 
         $additional_fields_library = leyka_options()->opt('additional_donation_form_fields_library');
-        $campaign_additional_fields = array();
+        $campaign_additional_fields = [];
 
         foreach($this->additional_fields_settings as $field_id) {
 
@@ -1578,7 +1560,7 @@ class Leyka_Campaign {
             unset( $types_available[array_search('recurring', $types_available)] );
         }
 
-        return $types_available && is_array($types_available) ? $types_available : array();
+        return $types_available && is_array($types_available) ? $types_available : [];
 
     }
 
@@ -1602,7 +1584,7 @@ class Leyka_Campaign {
             case 'donations_type': // Donation types checked in campaign settings
             case 'donations_types':
                 return $this->_campaign_meta['donations_type'] ?
-                    maybe_unserialize($this->_campaign_meta['donations_type']) : array('single', 'recurring');
+                    maybe_unserialize($this->_campaign_meta['donations_type']) : ['single', 'recurring',];
 
             case 'donations_type_available': // Donation types really available for campaign
             case 'donations_types_available':
@@ -1728,7 +1710,7 @@ class Leyka_Campaign {
 
             case 'additional_fields_settings':
                 return empty($this->_campaign_meta['additional_fields_settings']) ?
-                    array() : $this->_campaign_meta['additional_fields_settings'];
+                    [] : $this->_campaign_meta['additional_fields_settings'];
 
             default:
                 return apply_filters('leyka_get_unknown_campaign_field', null, $field, $this);
@@ -1758,7 +1740,7 @@ class Leyka_Campaign {
 
             case 'template':
             case 'template_id':
-                if( array_key_exists($value, leyka()->get_templates(array('include_deprecated' => true))) ) {
+                if( array_key_exists($value, leyka()->get_templates(['include_deprecated' => true,])) ) {
 
                     $this->_campaign_meta['campaign_template'] = $value;
                     update_post_meta($this->_id, 'campaign_template', $value);
@@ -1795,7 +1777,9 @@ class Leyka_Campaign {
                 $this->_campaign_meta['additional_fields_settings'] = $value;
                 update_post_meta($this->_id, 'leyka_campaign_additional_fields_settings', $value);
                 break;
+
             default:
+                do_action('leyka_set_unknown_campaign_field', $field, $value, $this);
         }
 
     }
@@ -1807,17 +1791,17 @@ class Leyka_Campaign {
      * @param $status array Of Leyka Donation statuses.
      * @return array Of Leyka_Donation_Base objects.
      */
-    public function get_donations(array $status = array()) {
+    public function get_donations(array $status = []) {
 
         if( !did_action('leyka_cpt_registered') || !$this->_id ) { // Leyka PT statuses isn't there yet
-            return array();
+            return [];
         }
 
-        return Leyka_Donations::get_instance()->get(array(
-            'status' => $status ? $status : array('submitted', 'funded', 'refunded', 'failed',),
+        return Leyka_Donations::get_instance()->get([
+            'status' => $status ? $status : ['submitted', 'funded', 'refunded', 'failed',],
             'get_all' => true,
             'campaign_id' => $this->_id,
-        ));
+        ]);
 
     }
 
@@ -1828,11 +1812,11 @@ class Leyka_Campaign {
             return false;
         }
 
-        return Leyka_Donations::get_instance()->get_count(array(
-            'status' => array('submitted', 'funded', 'refunded', 'failed',),
+        return Leyka_Donations::get_instance()->get_count([
+            'status' => ['submitted', 'funded', 'refunded', 'failed',],
             'get_all' => true,
             'campaign_id' => $this->_id,
-        ));
+        ]);
 
     }
 
@@ -1865,12 +1849,12 @@ class Leyka_Campaign {
             return false;
         }
 
-        $recurring_subscriptions = Leyka_Donations::get_instance()->get(array(
+        $recurring_subscriptions = Leyka_Donations::get_instance()->get([
             'campaign_id' => $this->_id,
             'status' => 'funded',
             'recurring_only_init' => true,
             'recurring_active' => true,
-        ));
+        ]);
 
         $monthly_incoming_amount = 0.0;
         foreach($recurring_subscriptions as $init_donation) {
@@ -1891,7 +1875,7 @@ class Leyka_Campaign {
         }
 
         $new_target_state = $this->_get_calculated_target_state();
-        $meta = array();
+        $meta = [];
 
         if($new_target_state !== $this->target_state) {
 
@@ -1967,7 +1951,7 @@ class Leyka_Campaign {
 
             /** @todo Optimize it for the case of MANY donations here! Make a sep method to get an amount_total metas sum() with one query. */
             $sum = 0.0;
-            foreach($this->get_donations(array('funded')) as $donation) {
+            foreach($this->get_donations(['funded']) as $donation) {
                 $sum += $donation->sum_total;
             }
 

@@ -529,7 +529,8 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 return empty($this->_donation_meta['leyka_ga_client_id']) ? NULL : $this->_donation_meta['leyka_ga_client_id'];
 
             default:
-                return apply_filters('leyka_'.$this->gateway_id.'_get_unknown_donation_field', null, $field, $this);
+                $value = apply_filters('leyka_get_unknown_donation_field', null, $field, $this);
+                return apply_filters('leyka_'.$this->gateway_id.'_get_unknown_donation_field', $value, $field, $this);
         }
 
     }
@@ -838,6 +839,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 break;
 
             default:
+                do_action('leyka_set_unknown_donation_field', $field, $value, $this);
                 do_action('leyka_'.$this->gateway_id.'_set_unknown_donation_field', $field, $value, $this);
         }
 

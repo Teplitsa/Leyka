@@ -104,6 +104,7 @@
         }
         
         .settings-block.text-block .custom-block-cp-prepare-documents {
+
             padding-bottom: 4px;
             
             .fields {
@@ -111,6 +112,7 @@
                 margin-top: 1rem;
                 
                 .field {
+
                     margin-bottom: 12px;
                     
                     label {
@@ -119,13 +121,17 @@
                     }
                     
                     .field-errors {
+
                         display: none;
+
                         span {
                             font-size: inherit;
                         }
+
                     }
                     
                     .field-text {
+
                         margin-bottom: 0;
                         
                         &:empty {
@@ -136,7 +142,9 @@
                             display: block;
                             line-height: 21px;
                         }
+
                     }
+
                 }
                 
                 .inline-container {

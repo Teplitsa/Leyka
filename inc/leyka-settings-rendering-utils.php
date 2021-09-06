@@ -120,7 +120,11 @@ function leyka_render_file_field($option_id, $data){
 
     $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
     $data['value'] = isset($data['value']) ? $data['value'] : '';
-    $file_data = $data['value'] ? wp_get_attachment_metadata($data['value']) : array();?>
+    $file_data = $data['value'] ? wp_get_attachment_metadata($data['value']) : [];
+
+    $upload_dir = wp_upload_dir();
+    $file_exists = ( $data['value'] && file_exists($upload_dir['basedir'].'/'.ltrim($data['value'], '/')) )
+        || ($file_data && !empty($file_data['file']));?>
 
     <div class="leyka-file-field-wrapper <?php echo $option_id;?>-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>" id="<?php echo $option_id;?>-upload">
 
@@ -146,9 +150,7 @@ function leyka_render_file_field($option_id, $data){
                 <?php _e('Uploaded:', 'leyka');?>
 
                 <span class="file-preview">
-                <?php $upload_dir = wp_upload_dir();
-
-                if( $data['value'] && file_exists($upload_dir['basedir'].'/'.ltrim($data['value'], '/')) ) {?>
+                <?php if( $data['value'] && file_exists($upload_dir['basedir'].'/'.ltrim($data['value'], '/')) ) {?>
                     <img src="<?php echo $upload_dir['baseurl'].'/'.ltrim($data['value'], '/');?>" alt="" class="leyka-upload-image-preview">
                 <?php } else if($file_data && !empty($file_data['file'])) {
                     echo wp_basename($file_data['file']);
@@ -164,7 +166,7 @@ function leyka_render_file_field($option_id, $data){
 
         </div>
 
-        <label class="upload-field field-wrapper flex" data-upload-title="<?php echo empty($data['upload_title']) ? __('Select a file', 'leyka') : $data['upload_title'];?>" data-option-id="<?php echo $option_id;?>">
+        <label class="upload-field field-wrapper flex" data-upload-title="<?php echo empty($data['upload_title']) ? __('Select a file', 'leyka') : $data['upload_title'];?>" data-option-id="<?php echo $option_id;?>" <?php echo $file_exists ? 'style="display:none;"' : '';?>>
 
             <span class="field-component field">
                 <input type="file" value="" <?php // echo empty($data['is_multiple']) ? '' : 'multiple';?> data-nonce="<?php echo wp_create_nonce('leyka-upload-'.$option_id);?>">
@@ -554,7 +556,7 @@ function leyka_render_textarea_field($option_id, $data){
 add_action('leyka_render_html', 'leyka_render_html_field', 10, 2);
 function leyka_render_html_field($option_id, $data){
 
-    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
+    $option_id = mb_stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
     $data['value'] = isset($data['value']) ? $data['value'] : '';?>
 
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-html-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">
@@ -572,14 +574,14 @@ function leyka_render_html_field($option_id, $data){
                 <?php }?>
             </span>
 
-            <?php wp_editor(html_entity_decode(stripslashes($data['value'])), $option_id.'-field', array(
+            <?php wp_editor(html_entity_decode(stripslashes($data['value'])), $option_id.'-field-'.leyka_get_random_string(4), [
                 'media_buttons' => false,
                 'textarea_name' => $option_id,
                 'tinymce' => false,
                 'textarea_rows' => 3,
                 'teeny' => true, // For little-functioned HTML editor
 //                'dfw' => true,
-            ));?>
+            ]);?>
             <?php if( !empty($data['description']) ) {?>
             <span class="field-component help"><?php echo $data['description'];?></span>
             <?php }?>
@@ -594,7 +596,7 @@ function leyka_render_html_field($option_id, $data){
 add_action('leyka_render_rich_html', 'leyka_render_rich_html_field', 10, 2);
 function leyka_render_rich_html_field($option_id, $data){
 
-    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
+    $option_id = mb_stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
     $data['value'] = isset($data['value']) ? $data['value'] : '';?>
 
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-rich-html-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">

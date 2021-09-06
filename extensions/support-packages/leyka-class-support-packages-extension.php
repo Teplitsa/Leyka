@@ -221,8 +221,9 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
         add_filter('post_class', array($this, 'add_post_class'), 10, 3);
         add_filter('leyka_js_localized_strings', array($this, 'add_js_localized_strings'));
         add_action('admin_notices', array($this, 'admin_notices'));
+        add_action('leyka_campaign_data_after_saving', [$this, '_packages_campaign_data_saving'], 10, 2);
 
-        // Setup the Extension shortcodes:
+        // Set up the Extension shortcodes:
         foreach(Leyka_Support_Packages_Extension::$_features as $feature_name => $feature_config) {
             if( !empty($feature_config['is_shortcode']) && $feature_config['is_shortcode'] ) {
                 add_shortcode($feature_name, array($this, 'handle_shortcode'));
@@ -238,6 +239,27 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
         add_action('leyka_set_support_packages_campaign_option_value', function($option_value){
             delete_option('leyka_support_packages_no_campaign_behavior');
         });
+
+    }
+
+    /* Campaign data saving - handling for the case of "single available campaign ceased to be available" */
+    public function _packages_campaign_data_saving($campaign_data, Leyka_Campaign $campaign) {
+
+        if( !is_array($campaign_data) ) {
+            return;
+        }
+
+        if( // The case when Packages campaign is reactivated, or there is another campaign available for the extension
+            (
+                $campaign->id == leyka_options()->opt('support_packages_campaign')
+                && ($campaign_data['post_status'] === 'publish' || !empty($campaign_data['publish']))
+                && empty($campaign_data['is_finished'])
+                && get_option('leyka_support_packages_no_campaign_behavior')
+            )
+            || $this->get_available_campaigns_count()
+        ) {
+            delete_option('leyka_support_packages_no_campaign_behavior');
+        }
 
     }
 
