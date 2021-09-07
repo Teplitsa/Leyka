@@ -93,9 +93,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
     }
 
     public function localize_js_strings(array $js_data) {
-        return array_merge($js_data, array( // TODO Эта строчка точно нужна? Гейт не использует собственный JS
-            'ajax_wrong_server_response' => __('Error in server response. Please report to the website tech support.', 'leyka')
-        ));
+        return $js_data;
     }
 
     public function enqueue_gateway_scripts() {
