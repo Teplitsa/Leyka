@@ -108,9 +108,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
         $donation_amount = $form_data['leyka_donation_amount']*100;
         $donation_currency = $form_data['leyka_donation_currency'] === 'rur' ? 'rub' : $form_data['leyka_donation_currency'];
         $product_id = leyka_options()->opt('stripe_product_id');
-        $donation = new Leyka_Donation($donation_id);
-        /** @var Leyka_Campaign $compaign */
-        $compaign = $donation->compaign;
+        $compaign = new Leyka_Campaign($form_data['leyka_campaign_id']);
         $compaign_url = $compaign->url;
 
         \Stripe\Stripe::setApiKey($secret_key);
