@@ -125,7 +125,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             ],
             'mode' => 'payment',
             'success_url' => leyka_get_success_page_url(),
-            'cancel_url' => leyka_get_failure_page_url(),
+            'cancel_url' => leyka_get_current_url(),
             'payment_intent_data' => [
                 'description' => 'Donation '.$donation_id,
                 'metadata' => [
