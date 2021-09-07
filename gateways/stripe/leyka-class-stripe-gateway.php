@@ -3,8 +3,6 @@
  * Leyka_CP_Gateway class
  */
 
-// TODO Общий вопрос: папка data в гейте используется? Если нет, нужно её убрать.
-
 class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
     protected static $_instance;
@@ -14,7 +12,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
     protected function _set_attributes() {
 
         $this->_id = 'stripe';
-        $this->_title = 'Stripe'; // TODO Нужна локализация строки (__('Some string', 'leyka'))
+        $this->_title = __('Stripe', 'leyka');
 
         $this->_description = apply_filters(
             'leyka_gateway_description',
@@ -26,7 +24,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
         $this->_registration_link = '//dashboard.stripe.com/register';
         $this->_has_wizard = false;
 
-        $this->_min_commission = 2.8; // TODO Проверить, какая у гейта на самом деле мин. комиссия, и указать значение
+        $this->_min_commission = '2.2% + $0.30';
         $this->_receiver_types = array('legal');
         $this->_may_support_recurring = false;
 
@@ -82,7 +80,10 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
     }
 
     public function is_setup_complete($pm_id = false) {
-        return leyka_options()->opt('stripe_key_public') && leyka_options()->opt('stripe_key_secret'); // TODO Здесь должны проверяться все настройки, необходимые для работы гейта. Сейчас необходимые (required => true) почти все, но проверяются только 2 параметра
+        return leyka_options()->opt('stripe_key_public')
+            && leyka_options()->opt('stripe_key_secret')
+            && leyka_options()->opt('stripe_product_id')
+            && leyka_options()->opt('stripe_webhooks_key');
     }
 
     protected function _initialize_pm_list() {
@@ -91,14 +92,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
         }
     }
 
-    public function localize_js_strings(array $js_data) {
-        return array_merge($js_data, array( // TODO Эта строчка точно нужна? Гейт не использует собственный JS
-            'ajax_wrong_server_response' => __('Error in server response. Please report to the website tech support.', 'leyka')
-        ));
-    }
-
     public function enqueue_gateway_scripts() {
-        // TODO Лишний пропуск строки
         add_filter('leyka_js_localized_strings', array($this, 'localize_js_strings'));
     }
 
@@ -106,22 +100,21 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
         require_once LEYKA_PLUGIN_DIR.'gateways/stripe/lib/init.php';
 
-        // TODO Лишние переменные - каждая используется по 1 разу. Вводить переменную стоит либо для её повторного использования, либо если это повысит читаемость кода. Здесь ни один из таких случаев не актуален.
-        $secret_key = leyka_options()->opt('stripe_key_secret');
-        $donation_amount = $form_data['leyka_donation_amount']*100;
-        $donation_currency = $form_data['leyka_donation_currency'] === 'rur' ? 'rub' : $form_data['leyka_donation_currency'];
-        $product_id = leyka_options()->opt('stripe_product_id');
         $compaign = new Leyka_Campaign($form_data['leyka_campaign_id']);
-        $compaign_url = $compaign->url;
+        $donation = new Leyka_Donation($donation_id);
+        $description = (
+            !empty($form_data['leyka_recurring']) ? _x('[RS]', 'For "recurring subscription"', 'leyka').' ' : ''
+            )
+            .$donation->payment_title." (№ $donation_id); {$donation->donor_name}; {$donation->donor_email}";
 
-        \Stripe\Stripe::setApiKey($secret_key);
+        \Stripe\Stripe::setApiKey(leyka_options()->opt('stripe_key_secret'));
 
         $checkout_session = \Stripe\Checkout\Session::create([
             'line_items' => [[
                 'price_data' => [
-                    'unit_amount' => $donation_amount,
-                    'currency' => $donation_currency,
-                    'product' => $product_id
+                    'unit_amount' => $form_data['leyka_donation_amount']*100,
+                    'currency' => $form_data['leyka_donation_currency'] === 'rur' ? 'rub' : $form_data['leyka_donation_currency'],
+                    'product' => leyka_options()->opt('stripe_product_id')
                 ],
                 'quantity' => 1,
             ]],
@@ -130,9 +123,9 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             ],
             'mode' => 'payment',
             'success_url' => leyka_get_success_page_url(),
-            'cancel_url' => $compaign_url,
+            'cancel_url' => $compaign->url,
             'payment_intent_data' => [
-                'description' => 'Donation '.$donation_id,
+                'description' => $description,
                 'metadata' => [
                     'donation_id' => $donation_id
                 ]
@@ -225,7 +218,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
     }
 
     public function _handle_service_calls($call_type = '') {
-        // TODO Добавить пропуск строки - начинается длинный блок кода
+
         // Test for gateway's IP:
         if( !$this->_is_callback_caller_correct() ) {
 
@@ -252,14 +245,11 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
         require_once LEYKA_PLUGIN_DIR.'gateways/stripe/lib/init.php';
 
-        $endpoint_secret = leyka_options()->opt('stripe_webhooks_key'); // TODO Снова лишние переменные (кроме, может, $payload)
         $payload = @file_get_contents('php://input');
-        $sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'];
-        $event = null; // TODO Переменная инициализируется ниже - здесь её можно не писать
 
         try {
             $event = \Stripe\Webhook::constructEvent(
-                $payload, $sig_header, $endpoint_secret
+                $payload, $_SERVER['HTTP_STRIPE_SIGNATURE'], leyka_options()->opt('stripe_webhooks_key')
             );
         } catch(\UnexpectedValueException $e) {
             // Invalid payload
@@ -269,20 +259,16 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             exit();
         }
 
-        $paymentIntent = $event->data->object; // TODO $paymentIntent - название переменной не в нашем стиле кода
-        $donation = new Leyka_Donation((int)$paymentIntent->metadata->donation_id);
-        $donation->add_gateway_response($paymentIntent->toJSON());
+        $payment_intent = $event->data->object;
+        $donation = new Leyka_Donation((int)$payment_intent->metadata->donation_id);
+        $donation->add_gateway_response($payment_intent->toJSON());
 
-        switch ($event->type) { // TODO Лишние пробелы и пропуски строк - посмотри, как оформлены switch в других местах
-
+        switch($event->type) {
             case 'charge.refunded':
-
                 $donation->status = 'refunded';
-
                 break;
 
             case 'payment_intent.payment_failed':
-
                 $donation->status = 'failed';
 
                 if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
@@ -292,7 +278,6 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                 break;
 
             case 'payment_intent.succeeded':
-
                 $donation->status = 'funded';
 
                 Leyka_Donation_Management::send_all_emails($donation->id);
@@ -349,4 +334,3 @@ function leyka_add_gateway_stripe() { // Use named function to leave a possibili
     leyka_add_gateway(Leyka_Stripe_Gateway::get_instance());
 }
 add_action('leyka_init_actions', 'leyka_add_gateway_stripe');
-// TODO В конце любого файла не должно быть лишнего пропуска строки
