@@ -24,7 +24,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
         $this->_registration_link = '//dashboard.stripe.com/register';
         $this->_has_wizard = false;
 
-        $this->_min_commission = '2.2% + $0.30';
+        $this->_min_commission = '2.2%';
         $this->_receiver_types = array('legal');
         $this->_may_support_recurring = false;
 
@@ -105,7 +105,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
         require_once LEYKA_PLUGIN_DIR.'gateways/stripe/lib/init.php';
 
         $compaign = new Leyka_Campaign($form_data['leyka_campaign_id']);
-        $donation = new Leyka_Donation($donation_id);
+        $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
         $description = (
             !empty($form_data['leyka_recurring']) ? _x('[RS]', 'For "recurring subscription"', 'leyka').' ' : ''
             )
@@ -264,7 +264,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
         }
 
         $payment_intent = $event->data->object;
-        $donation = new Leyka_Donation((int)$payment_intent->metadata->donation_id);
+        $donation = Leyka_Donations::get_instance()->get_donation((int)$payment_intent->metadata->donation_id);
         $donation->add_gateway_response($payment_intent->toJSON());
 
         switch($event->type) {
