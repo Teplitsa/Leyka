@@ -1,0 +1,337 @@
+/** Donation Info/Edit page **/
+.leyka-admin-donation-info {
+
+    .leyka-set {
+
+        margin: 20px 0 8px;
+
+        legend {
+            display: block;
+            width: 98%;
+            color: #666;
+            font-size: 1em;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 0.5em;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 2px;
+        }
+
+        .leyka-ddata-string {
+
+            margin: 5px 0;
+
+            &:after {
+                clear: both;
+                content: '';
+                display: table;
+            }
+
+        }
+
+        .leyka-ddata-field {
+
+            float: left;
+            width: 78%;
+            margin-left: 2%;
+
+            input, textarea {
+                width: 98%;
+                max-width: 700px;
+            }
+
+            input[type="checkbox"], input[type="radio"] {
+                width: unset;
+                max-width: 700px;
+            }
+
+            .fake-input {
+                display: inline-block;
+                box-sizing: border-box;
+                width: 98%;
+                max-width: 700px;
+                border: 1px solid #ddd;
+                padding: 3px 5px;
+                line-height: 20px;
+                min-height: 27px;
+            }
+
+            .text-line {
+                display: inline-block;
+                box-sizing: border-box;
+                width: 98%;
+                max-width: 700px;
+                border-bottom: 1px dashed #ddd;
+                padding: 3px 5px;
+                line-height: 20px;
+                min-height: 27px;
+            }
+
+            .field-help {
+                display: inline-block;
+                padding: 2px 0 0 4px;
+            }
+
+            .campaign-actions {
+
+                margin-left: 20px;
+
+                a {
+                    text-transform: uppercase;
+                    font-size: 10px;
+                    margin-right: 5px;
+                }
+
+            }
+
+            #donation-amount, #donation-amount-total, #new-donation-amount {
+                max-width: 320px;
+            }
+
+            #custom-payment-info {
+                margin-top: 10px;
+            }
+
+        }
+
+        label {
+            font-weight: bold;
+            float: left;
+            width: 20%;
+            text-align: right;
+            line-height: 27px;
+        }
+
+        .recurring-is-active-field {
+
+            width: 100%;
+            float: none;
+            clear: both;
+
+            .leyka-ddata-field {
+                padding-top: 10px;
+            }
+
+        }
+
+        .field-error {
+
+            display: none;
+            background: #FFE9E9;
+            border: 1px solid #FBC4C4;
+            color: #DE5959;
+            padding: 2px 10px;
+            margin-top: 5px;
+            font-size: 12px;
+            border-radius: 3px;
+
+            a {
+
+                color: #fc001e;
+
+                a:hover, a:focus, a:active {
+                    color: #aa363a;
+                }
+
+            }
+
+        }
+
+        .set-action {
+
+            margin: 15px 0 15px 22%;
+
+            #campaign-select {
+                width: 70%;
+                max-width: 700px;
+            }
+
+        }
+
+    }
+
+    #leyka_donation_emails_status {
+
+        .leyka-ddata-string {
+            margin: 7px 0;
+        }
+
+        .send-donor-thanks {
+
+            display: inline;
+            cursor: pointer;
+            font-weight: bold;
+
+            &:hover {
+                color: #ff0000;
+            }
+
+        }
+
+    }
+
+    /* datepicker */
+    #ui-datepicker-div {
+
+        background: #fff;
+        border: 4px solid #dfdfdf;
+        box-shadow: 1px 1px 3px rgba(10, 10, 10, 0.65);
+
+        .ui-datepicker-header {
+
+            padding: 4px 0;
+            position: relative;
+
+            .ui-datepicker-prev, .ui-datepicker-next {
+                font-size: 12px;
+                line-height: 28px;
+                cursor: pointer;
+                width: 38px;
+                letter-spacing: -0.5px;
+                position: absolute;
+                top: 4px;
+            }
+
+            .ui-datepicker-prev {
+                text-align: right;
+                left: 0;
+            }
+            .ui-datepicker-next {
+                text-align: left;
+                right: 0;
+            }
+            .ui-datepicker-title {
+                -moz-box-sizing: border-box;
+                -webkit-box-sizing: border-box;
+                box-sizing: border-box;
+                width: 100%;
+                text-align: center;
+                padding: 0 38px;
+            }
+
+        }
+
+        table {
+            font-size: 12px;
+            border-collapse: collapse;
+
+            thead {
+
+                th {
+                    background: #f9f9f9;
+                    text-align: center;
+
+                    span {
+                        padding: 4px 0;
+                    }
+                }
+
+            }
+
+            tbody {
+                td {
+                    text-align: right;
+                    border: 1px solid #dfdfdf;
+
+                    &:hover {
+                        background: #f5f5f5;
+                    }
+
+                    &.ui-datepicker-current-day {
+                        background: #eaf9ff;
+                        font-weight: bold;
+
+                        a {
+                            color: #0074a2;
+                        }
+
+                    }
+
+                }
+            }
+
+            a {
+                color: #333;
+                text-decoration: none !important;
+                display: inline-block;
+                padding: 4px 8px;
+                background: transparent;
+            }
+
+        }
+    }
+
+    /* sidebar */
+    .leyka-status-section {
+
+        padding: 10px 0;
+
+        &.select {
+            text-align: right;
+
+            label {
+                display: inline-block;
+                width: 20%;
+                text-align: left;
+            }
+
+            select {
+                width: 77%;
+                text-align: left;
+            }
+        }
+
+        &.actions {
+            overflow: hidden;
+            background: #f5f5f5;
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            margin: 0 -12px;
+            padding: 5px 12px;
+
+            div {
+                float: left;
+                width: 50%;
+                padding: 5px 0;
+            }
+
+            .delete-action {
+                text-align: left;
+                line-height: 30px;
+            }
+
+            a {
+                color: $color-main-red;
+
+                &:hover {
+                    color: #ff0000;
+                }
+            }
+
+            .save-action {
+                text-align: right;
+                height: 30px;
+            }
+
+        }
+
+    }
+
+    #donation-status-log-toggle {
+        text-align: right;
+        padding: 5px 0;
+        color: #0074A2;
+        text-decoration: underline;
+        cursor: pointer;
+        font-size: 11px;
+
+        &:hover {
+            color: #2ea2cc;
+        }
+    }
+
+    #donation-status-log {
+        font-size: 12px;
+    }
+
+}

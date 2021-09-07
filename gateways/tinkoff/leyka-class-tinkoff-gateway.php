@@ -53,7 +53,7 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
         }
     }
 
-    protected function _handle_donation_failure(Leyka_Donation $donation, $gateway_response = false) {
+    protected function _handle_donation_failure(Leyka_Donation_Base $donation, $gateway_response = false) {
 
         $donation->status = 'failed';
 
@@ -67,13 +67,13 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
 
     }
 
-    public function do_recurring_donation(Leyka_Donation $init_recurring_donation) {
+    public function do_recurring_donation(Leyka_Donation_Base $init_recurring_donation) {
 
         if( !$init_recurring_donation->tinkoff_rebill_id) {
             return false;
         }
 
-        $new_recurring_donation = Leyka_Donation::add_clone(
+        $new_recurring_donation = Leyka_Donations::get_instance()->add_clone(
             $init_recurring_donation,
             array(
                 'status' => 'submitted',
@@ -124,9 +124,13 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
 
     }
 
+    // The default implementations are in use:
+//    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation_Base $donation) { }
+//    public function cancel_recurring_subscription_by_link(Leyka_Donation_Base $donation) { }
+
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
-        $donation = new Leyka_Donation($donation_id);
+        $donation = Leyka_Donations::get_instance()->get($donation_id);
 
         if( !empty($form_data['leyka_recurring']) ) {
 
@@ -168,7 +172,7 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
 
     }
 
-    public function get_gateway_response_formatted(Leyka_Donation $donation) {
+    public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {
 
         if( !$donation->gateway_response ) {
             return array();
@@ -211,27 +215,27 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
 
     }
 
-    public function get_specific_data_value($value, $field_name, Leyka_Donation $donation) {
+    public function get_specific_data_value($value, $field_name, Leyka_Donation_Base $donation) {
 
         switch($field_name) {
             case 'tinkoff_payment_id':
-                return get_post_meta($donation->id, '_leyka_tinkoff_payment_id', true);
+                return $donation->get_meta('_leyka_tinkoff_payment_id');
             case 'tinkoff_rebill_id':
             case 'tinkoff_recurring_id':
-                return get_post_meta($donation->id, '_leyka_tinkoff_rebill_id', true);
+                return $donation->get_meta('_leyka_tinkoff_rebill_id');
             default: return $value;
         }
 
     }
 
-    public function set_specific_data_value($field_name, $value, Leyka_Donation $donation) {
+    public function set_specific_data_value($field_name, $value, Leyka_Donation_Base $donation) {
 
         switch($field_name) {
             case 'tinkoff_payment_id':
-                return update_post_meta($donation->id, '_leyka_tinkoff_payment_id', $value);
+                return $donation->set_meta('_leyka_tinkoff_payment_id', $value);
             case 'tinkoff_rebill_id':
             case 'tinkoff_recurring_id':
-                return update_post_meta($donation->id, '_leyka_tinkoff_rebill_id', $value);
+                return $donation->set_meta('_leyka_tinkoff_rebill_id', $value);
             default: return false;
         }
 
@@ -241,7 +245,7 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
 
         if($donation) { // Edit donation page displayed
 
-            $donation = leyka_get_validated_donation($donation);?>
+            $donation = Leyka_Donations::get_instance()->get($donation);?>
 
             <label><?php _e('Tinkoff payment ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
@@ -287,7 +291,7 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
 
     }
 
-    public function save_donation_specific_data(Leyka_Donation $donation) {
+    public function save_donation_specific_data(Leyka_Donation_Base $donation) {
 
         if(isset($_POST['tinkoff-payment-id']) && $donation->tinkoff_payment_id != $_POST['tinkoff-payment-id']) {
             $donation->tinkoff_payment_id = $_POST['tinkoff-payment-id'];
@@ -310,7 +314,7 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
 
             if($this->_check_result_response($response)) {
 
-                $donation = new Leyka_Donation($response['OrderId']);
+                $donation = Leyka_Donations::get_instance()->get_donation($response['OrderId']);
 
                 switch($response['Status']) {
                     case 'CONFIRMED':
@@ -427,8 +431,8 @@ class Leyka_Tinkoff_Card extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
         ));
 
-        $this->_supported_currencies[] = 'rur';
-        $this->_default_currency = 'rur';
+        $this->_supported_currencies[] = 'rub';
+        $this->_default_currency = 'rub';
 
     }
 

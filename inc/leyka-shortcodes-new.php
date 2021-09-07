@@ -22,10 +22,8 @@ function leyka_shortcode_amount_collected($atts) {
 
     $amount_collected = 0.0;
     $donation_params = array(
-        'post_type' => Leyka_Donation_Management::$post_type,
         'nopaging' => true,
-        'post_status' => 'funded',
-        'meta_query' => array(),
+        'status' => 'funded',
     );
 
     if($atts['campaign_id']) {
@@ -35,29 +33,22 @@ function leyka_shortcode_amount_collected($atts) {
             ($atts['campaign_id'] === 'all' ? false : absint($atts['campaign_id']));
 
         if($atts['campaign_id']) {
-            $donation_params['meta_query'][] = array('key' => 'leyka_campaign_id', 'value' => esc_sql($atts['campaign_id']));
+            $donation_params['campaign_id'] = esc_sql($atts['campaign_id']);
         }
 
     }
     if($atts['recurring']) {
-
-        $donation_params['post_parent'] = 0;
-        $donation_params['meta_query'][] = array('key' => 'leyka_payment_type', 'value' => 'rebill',);
-
+        $donation_params['payment_type'] = 'rebill-init';
     }
     if($atts['date_from']) {
-        $donation_params['date_query'][] = array('after' => $atts['date_from'],);
+        $donation_params['date_from'] = $atts['date_from'];
     }
     if($atts['date_to']) {
-        $donation_params['date_query'][] = array('before' => esc_sql($atts['date_to']),);
+        $donation_params['date_to'] = $atts['date_to'];
     }
 
-    foreach(get_posts($donation_params) as $donation) {
-
-        $donation = new Leyka_Donation($donation);
-
+    foreach(Leyka_Donations::get_instance()->get($donation_params) as $donation) {
         $amount_collected += $atts['total_funded'] ? $donation->amount_total : $donation->amount;
-
     }
 
     return apply_filters(
@@ -84,9 +75,9 @@ function leyka_shortcode_donations_count($atts) {
     ), $atts);
 
     $donation_params = array(
-        'post_type' => Leyka_Donation_Management::$post_type,
+//        'post_type' => Leyka_Donation_Management::$post_type,
         'nopaging' => true,
-        'post_status' => 'funded',
+        'status' => 'funded',
     );
 
     if($atts['campaign_id']) {
@@ -96,24 +87,25 @@ function leyka_shortcode_donations_count($atts) {
             ($atts['campaign_id'] === 'all' ? false : absint($atts['campaign_id']));
 
         if($atts['campaign_id']) {
-            $donation_params['meta_query'][] = array('key' => 'leyka_campaign_id', 'value' => esc_sql($atts['campaign_id']));
+//            $donation_params['meta_query'][] = array('key' => 'leyka_campaign_id', 'value' => esc_sql($atts['campaign_id']));
+            $donation_params['campaign_id'] = esc_sql($atts['campaign_id']);
         }
 
     }
     if($atts['recurring']) {
-
-        $donation_params['post_parent'] = 0;
-        $donation_params['meta_query'][] = array('key' => 'leyka_payment_type', 'value' => 'rebill',);
-
+//        $donation_params['post_parent'] = 0;
+//        $donation_params['meta_query'][] = array('key' => 'leyka_payment_type', 'value' => 'rebill',);
+        $donation_params['payment_type'] = 'rebill-init';
     }
 
-    $query = new WP_Query($donation_params);
+//    $query = new WP_Query($donation_params); // $query->found_posts
+    $count = Leyka_Donations::get_instance()->get_count($donation_params);
 
     return apply_filters(
         'leyka_shortcode_donations_count',
-        '<span class="'.($atts['unstyled'] ? 'leyka-shortcode-custom-styling' : 'leyka-shortcode').' donations-count '.($atts['classes'] ? esc_attr($atts['classes']) : '').'">'.$query->found_posts.'</span>',
+        '<span class="'.($atts['unstyled'] ? 'leyka-shortcode-custom-styling' : 'leyka-shortcode').' donations-count '.($atts['classes'] ? esc_attr($atts['classes']) : '').'">'.$count.'</span>',
         $atts,
-        $query->found_posts
+        $count
     );
 
 }
@@ -198,10 +190,10 @@ function leyka_shortcode_donations_list($atts) {
     ), $atts);
 
     $donations_params = array(
-        'post_type' => Leyka_Donation_Management::$post_type,
-        'post_status' => 'funded',
-        'posts_per_page' => absint($atts['length']),
-        'meta_query' => array(),
+//        'post_type' => Leyka_Donation_Management::$post_type,
+        'status' => 'funded',
+        'results_limit' => absint($atts['length']),
+//        'meta_query' => array(),
     );
 
     if($atts['campaign_id']) {
@@ -211,15 +203,15 @@ function leyka_shortcode_donations_list($atts) {
             ($atts['campaign_id'] === 'all' ? false : absint($atts['campaign_id']));
 
         if($atts['campaign_id']) {
-            $donations_params['meta_query'][] = array('key' => 'leyka_campaign_id', 'value' => absint($atts['campaign_id']),);
+//            $donation_params['meta_query'][] = array('key' => 'leyka_campaign_id', 'value' => esc_sql($atts['campaign_id']));
+            $donations_params['campaign_id'] = esc_sql($atts['campaign_id']);
         }
 
     }
     if($atts['recurring']) {
-
-        $donations_params['post_parent'] = 0;
-        $donations_params['meta_query'][] = array('key' => 'leyka_payment_type', 'value' => 'rebill',);
-
+//        $donation_params['post_parent'] = 0;
+//        $donation_params['meta_query'][] = array('key' => 'leyka_payment_type', 'value' => 'rebill',);
+        $donation_params['payment_type'] = 'rebill-init';
     }
 
     $table_columns = array();
@@ -238,9 +230,7 @@ function leyka_shortcode_donations_list($atts) {
 //    $atts['show_total_amount_as'] = $atts['show_total_amount_as'] === 'none' ? false : $atts['show_total_amount_as'];
 
     $table_lines = array();
-    foreach(get_posts($donations_params) as $donation) {
-
-        $donation = new Leyka_Donation($donation);
+    foreach(Leyka_Donations::get_instance()->get($donations_params) as $donation) {
 
         $line = array('donation_id' => $donation->id);
 
@@ -340,6 +330,7 @@ function leyka_shortcode_donations_comments_list($atts) {
         'unstyled' => 0, // True/1 to use Leyka styling for the output, false/0 otherwise
     ), $atts);
 
+    /** @todo Can't refactor to the Leyka_Donations() - get() doesn't support 'comment' => true/'exists' yet. */
     $donations_params = array(
         'post_type' => Leyka_Donation_Management::$post_type,
         'post_status' => 'funded',
@@ -425,6 +416,7 @@ function leyka_shortcode_supporters_list($atts) {
     }
     $atts['length'] = absint($atts['length']) ? absint($atts['length']) : 5;
 
+    /** @todo leyka_get_campaign_supporters_names() uses OLD Donations (posts-based). Refactor it. */
     $supporters = leyka_get_campaign_supporters_names($atts['campaign_id'], $atts['length']);
     /**
      * @var $supporters array
@@ -559,7 +551,7 @@ function leyka_shortcode_campaign_card($atts) {
 
                 <?php if($atts['show_collected_amount']) {?>
                 <div class="funded" style="<?php echo $atts['color_fulfilled'] ? 'color:'.$atts['color_fulfilled'] : '';?>">
-                    <?php echo leyka_amount_format($funded).' '.leyka_get_currency_label()
+                    <?php echo leyka_format_amount($funded).' '.leyka_get_currency_label()
                         .($atts['recurring'] ? ' / '._x('month', '"Month" shortened, like "mon" maybe', 'leyka') : '');?>
                 </div>
                 <?php }?>
@@ -568,8 +560,8 @@ function leyka_shortcode_campaign_card($atts) {
 
                 <div class="target">
                 <?php echo $atts['recurring'] ?
-                    sprintf(__('We need to raise monthly: %s %s', 'leyka'), leyka_amount_format($campaign->target), leyka_get_currency_label()) :
-                    sprintf(__('We need to raise: %s %s', 'leyka'), leyka_amount_format($campaign->target), leyka_get_currency_label());?>
+                    sprintf(__('We need to raise monthly: %s %s', 'leyka'), leyka_format_amount($campaign->target), leyka_get_currency_label()) :
+                    sprintf(__('We need to raise: %s %s', 'leyka'), leyka_format_amount($campaign->target), leyka_get_currency_label());?>
                 </div>
 
                 <?php }?>

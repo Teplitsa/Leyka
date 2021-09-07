@@ -1,8 +1,6 @@
 <?php if (!defined('WPINC')) die;
 
-/**
- * Leyka_Robokassa_Gateway class
- */
+/** Leyka_Paymaster_Gateway class */
 class Leyka_Paymaster_Gateway extends Leyka_Gateway {
 
     protected static $_instance;
@@ -78,11 +76,11 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
             return $form_data;
         }
 
-        $donation = new Leyka_Donation($donation_id);
+        $donation = Leyka_Donations::get_instance()->get($donation_id);
         $amount = number_format((float)$donation->amount, 2, '.', '');
 
         $pm_curr = $pm_id;
-        switch ($pm_id) {
+        switch($pm_id) {
             case 'paymaster_all':
                 $pm_curr = 'RUB';
                 break;
@@ -113,7 +111,7 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
 
             $message .= "THEIR_POST:\n\r" . print_r($_POST, true) . "\n\r\n\r";
             $message .= "GET:\n\r" . print_r($_GET, true) . "\n\r\n\r";
-            $message .= "SERVER:\n\r" . print_r($_SERVER, true) . "\n\r\n\r";
+            $message .= "SERVER:\n\r" . print_r(apply_filters('leyka_notification_server_data', $_SERVER), true) . "\n\r\n\r";
 
             wp_mail(get_option('admin_email'), __('Paymaster callback error - missing LMI_PAYMENT_NO value', 'leyka'), $message);
             status_header(200);
@@ -121,9 +119,9 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
 
         }
 
-        $donation = new Leyka_Donation(absint($_REQUEST['LMI_PAYMENT_NO']));
+        $donation = Leyka_Donations::get_instance()->get(absint($_REQUEST['LMI_PAYMENT_NO']));
 
-        if(empty($donation) || empty($donation->id) || is_wp_error($donation)) {
+        if( !$donation || empty($donation->id) || is_wp_error($donation) ) {
 
             $message = __('This message has been sent because a call to your Paymaster callback was made with unknown LMI_PAYMENT_NO parameter value given. The details of the call are below:', 'leyka') . "\n\r\n\r";
 
@@ -148,13 +146,12 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
             || $_REQUEST['LMI_HASH'] !== $hash
         ) {
 
-            $message = __('This message has been sent because a call to your Paymaster callback was called with wrong digital signature. It may mean that someone is trying to hack your payment website. The details of the call are below:', 'leyka') . "\n\r\n\r";
-
-            $message .= "POST:\n\r" . print_r($_POST, true) . "\n\r\n\r";
-            $message .= "GET:\n\r" . print_r($_GET, true) . "\n\r\n\r";
-            $message .= "SERVER:\n\r" . print_r($_SERVER, true) . "\n\r\n\r";
-            $message .= "Signature from request:\n\r" . print_r($_REQUEST['SignatureValue'], true) . "\n\r\n\r";
-            $message .= "Signature calculated:\n\r" . print_r($sign, true) . "\n\r\n\r";
+            $message = __('This message has been sent because a call to your Paymaster callback was called with wrong digital signature. It may mean that someone is trying to hack your payment website. The details of the call are below:', 'leyka') . "\n\r\n\r"
+                ."POST:\n\r" . print_r($_POST, true)."\n\r\n\r"
+                ."GET:\n\r" . print_r($_GET, true)."\n\r\n\r"
+                ."SERVER:\n\r" . print_r(apply_filters('leyka_notification_server_data', $_SERVER), true)."\n\r\n\r"
+                ."Signature from request:\n\r" . print_r($_REQUEST['SignatureValue'], true)."\n\r\n\r"
+                ."Signature calculated:\n\r" . print_r($sign, true)."\n\r\n\r";
 
             $donation->add_gateway_response($_REQUEST);
             $donation->status = 'failed';
@@ -251,7 +248,7 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
         return empty($arr[$key]) ? '' : ($val ? $val : $arr[$key]);
     }
 
-    public function get_gateway_response_formatted(Leyka_Donation $donation) {
+    public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {
 
         if( !$donation->gateway_response ) {
             return array();
@@ -262,13 +259,17 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
             return array();
         }
 
-        return array(
-            __('Outcoming sum:', 'leyka') => $this->_get_value_if_any($vars, 'OutSum', !empty($vars['OutSum']) ? round($vars['OutSum'], 2) : false),
-            __('Incoming sum:', 'leyka') => $this->_get_value_if_any($vars, 'IncSum', !empty($vars['IncSum']) ? round($vars['IncSum'], 2) : false),
-            __('Invoice ID:', 'leyka') => $this->_get_value_if_any($vars, 'InvId'),
-            __('Signature value (sent from Paymaster):', 'leyka') => $this->_get_value_if_any($vars, 'SignatureValue'),
-            __('Payment method:', 'leyka') => $this->_get_value_if_any($vars, 'PaymentMethod'),
-            __('Paymaster currency label:', 'leyka') => $this->_get_value_if_any($vars, 'IncCurrLabel'),
+        return apply_filters(
+            'leyka_donation_gateway_response',
+            array(
+                __('Outcoming sum:', 'leyka') => $this->_get_value_if_any($vars, 'OutSum', !empty($vars['OutSum']) ? round($vars['OutSum'], 2) : false),
+                __('Incoming sum:', 'leyka') => $this->_get_value_if_any($vars, 'IncSum', !empty($vars['IncSum']) ? round($vars['IncSum'], 2) : false),
+                __('Invoice ID:', 'leyka') => $this->_get_value_if_any($vars, 'InvId'),
+                __('Signature value (sent from Paymaster):', 'leyka') => $this->_get_value_if_any($vars, 'SignatureValue'),
+                __('Payment method:', 'leyka') => $this->_get_value_if_any($vars, 'PaymentMethod'),
+                __('Paymaster currency label:', 'leyka') => $this->_get_value_if_any($vars, 'IncCurrLabel'),
+            ),
+            $donation
         );
 
     }
@@ -304,8 +305,8 @@ class Leyka_Paymaster_All extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
         ));
 
-        $this->_supported_currencies[] = 'rur';
-        $this->_default_currency = 'rur';
+        $this->_supported_currencies[] = 'rub';
+        $this->_default_currency = 'rub';
 
     }
 

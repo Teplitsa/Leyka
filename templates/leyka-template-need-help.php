@@ -30,11 +30,11 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 	</symbol>
 </svg>
 
-<div id="leyka-pf-<?php echo $campaign->id;?>" class="leyka-pf leyka-pf-star leyka-pf-<?php echo $campaign->template_id;?>" data-form-id="leyka-pf-<?php echo $campaign->id;?>-<?php echo $campaign->template_id;?>-form" data-leyka-ver="<?php echo Leyka_Payment_Form::get_plugin_ver_for_atts();?>" data-card-2column-breakpoint-width="1160">
+<div id="leyka-pf-<?php echo $campaign->id;?>" class="leyka-pf leyka-pf-star leyka-pf-need-help" data-form-id="leyka-pf-<?php echo $campaign->id;?>-need-help-form" data-leyka-ver="<?php echo Leyka_Payment_Form::get_plugin_ver_for_atts();?>" data-card-2column-breakpoint-width="1160">
 
-    <div class="leyka-payment-form leyka-tpl-<?php echo $campaign->template_id;?>-form leyka-tpl-star-form" data-template="<?php echo $campaign->template_id;?>">
+    <div class="leyka-payment-form leyka-tpl-need-help-form leyka-tpl-star-form" data-template="need-help">
 
-        <form id="<?php echo leyka_pf_get_form_id($campaign->id).'-'.$campaign->template_id.'-form';?>" class="leyka-pm-form leyka-no-validation" action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate">
+        <form id="<?php echo leyka_pf_get_form_id($campaign->id).'-need-help-form';?>" class="leyka-pm-form leyka-no-validation" action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate">
 
             <div class="section section--periodicity <?php echo in_array('recurring', $campaign->donations_types_available) ? '' : 'hidden';?>" style="<?php echo $campaign->daily_rouble_mode_on_and_valid ? 'display: none;' : '';?>">
 
@@ -72,7 +72,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                         <?php foreach($template_data['amount_variants'] as $i => $amount) {?>
                             <div class="swiper-item <?php echo $i ? '' : 'selected';?>" data-value="<?php echo absint($amount);?>" style="">
                                 <div class="swiper-item-inner">
-                                    <span class="amount"><?php echo leyka_amount_format(absint($amount));?></span>
+                                    <span class="amount"><?php echo leyka_format_amount(absint($amount));?></span>
                                     <span class="currency"><?php echo $template_data['currency_label'];?></span>
                                 </div>
                             </div>

@@ -35,7 +35,6 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
 
         global $wpdb;
 
-        $donations_post_type = Leyka_Donation_Management::$post_type;
         $result = array();
         $labels = array();
 
@@ -44,16 +43,24 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
             $sub_interval_begin_date = date('Y-m-d 23:59:59', strtotime(' -'.($sub_interval_index + 1).' '.$sub_interval));
             $sub_interval_end_date = date('Y-m-d 23:59:59', strtotime(' -'.$sub_interval_index.' '.$sub_interval));
 
-            $amount = $wpdb->get_var(
+            $query = leyka_get_donations_storage_type() === 'post' ?
+                // Post-based donations storage:
                 "SELECT SUM({$wpdb->prefix}postmeta.meta_value)
-                FROM {$wpdb->prefix}postmeta
-                WHERE {$wpdb->prefix}postmeta.meta_key='leyka_donation_amount'
-                AND {$wpdb->prefix}postmeta.post_id IN (
-                    SELECT {$wpdb->prefix}posts.ID FROM {$wpdb->posts} WHERE post_type='$donations_post_type'
-                    AND post_status='funded'
-                    AND post_date BETWEEN '$sub_interval_begin_date' AND '$sub_interval_end_date'
-                )"
-            );
+                    FROM {$wpdb->prefix}postmeta
+                    WHERE {$wpdb->prefix}postmeta.meta_key='leyka_donation_amount'
+                    AND {$wpdb->prefix}postmeta.post_id IN (
+                        SELECT {$wpdb->prefix}posts.ID 
+                            FROM {$wpdb->posts} WHERE post_type='".Leyka_Donation_Management::$post_type."'
+                            AND post_status='funded'
+                            AND post_date BETWEEN '$sub_interval_begin_date' AND '$sub_interval_end_date'
+                    )" :
+                // Separate donations storage:
+                "SELECT SUM(amount)
+                FROM {$wpdb->prefix}leyka_donations
+                WHERE status='funded'
+                    AND date_created BETWEEN '$sub_interval_begin_date' AND '$sub_interval_end_date'";
+
+            $amount = $wpdb->get_var($query);
 
             $result[] = array('x' => date('d.m.Y', strtotime($sub_interval_end_date)), 'y' => $amount,);
             if($sub_interval === 'month') {

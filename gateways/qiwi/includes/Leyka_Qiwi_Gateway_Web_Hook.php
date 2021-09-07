@@ -12,7 +12,7 @@ class Leyka_Qiwi_Gateway_Web_Hook {
 
         $data_decode = json_decode(file_get_contents('php://input'), true);
 
-        $signature_correct = Leyka_Qiwi_Gateway_Web_Hook_Verification::checkNotificationSignature(
+        $signature_correct = Leyka_Qiwi_Gateway_Web_Hook_Verification::check_notification_signature(
             $_SERVER['HTTP_X_API_SIGNATURE_SHA256'],
             $data_decode,
             leyka_options()->opt('qiwi_secret_key')
@@ -24,7 +24,7 @@ class Leyka_Qiwi_Gateway_Web_Hook {
             $status = $data_decode['bill']['status']['value'];
 
             $donation_id = Leyka_Qiwi_Gateway_Helper::get_payment_id_by_response_data($bill_id);
-            $donation = new Leyka_Donation($donation_id);
+            $donation = Leyka_Donations::get_instance()->get($donation_id);
 
             $donation->status = Leyka_Qiwi_Gateway_Helper::$map_status[$status];
 

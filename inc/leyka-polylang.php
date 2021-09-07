@@ -30,7 +30,7 @@ if(defined('POLYLANG_VERSION')) {
         add_filter('leyka_option_value', 'leyka_localize_option_value', 10, 2);
 
         // Now donations can return their language (a language of their respective campaigns):
-        function leyka_localize_unknown_donation_field($value, $field, Leyka_Donation $donation) {
+        function leyka_localize_unknown_donation_field($value, $field, Leyka_Donation_Base $donation) {
 
             if($field == 'lang' || $field == 'campaign_lang') {
 

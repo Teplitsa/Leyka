@@ -106,7 +106,7 @@
     }
 }
 
-@mixin field-q {
+@mixin field-q { /** @todo Old tooltip styles - remove when jQ UI tooltips styling is finished */
 
     margin-left: 3px;
     vertical-align: baseline;
@@ -125,7 +125,7 @@
         background-color: $color-wizard-tooltip-bg;
         border-radius: 6px;
         border: none;
-        padding: 8px 8px 8px 8px;
+        padding: 8px;
         font-size: 12px;
         line-height: 17px;
         z-index: 11;
@@ -173,6 +173,22 @@
         }
     }
 
+}
+
+@mixin leyka-admin-tooltip-styles {
+    color: $color-white !important;
+
+    //background-color: $color-wizard-tooltip-bg !important;
+    background: $color-wizard-tooltip-bg;
+
+    font-family: $font-body !important;
+    font-size: 11px !important;
+    font-weight: 500;
+    line-height: 17px;
+
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    text-align: center;
 }
 
 @mixin leyka-field-title {
@@ -351,7 +367,7 @@
 
         input.ui-autocomplete-input {
             display: none;
-            width: calc(100% - 2px) !important; /** @todo This line is to widen the search field on all available width - test it */
+            width: calc(100% - 2px) !important;
         }
 
     }
@@ -993,6 +1009,7 @@
     box-sizing: border-box;
     border: none;
     background-color: $color-white;
+    background-image: none;
     box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.4);
     width: 176px;
     height: 32px;

@@ -1,4 +1,4 @@
-<?php  if( !defined('WPINC') ) die;
+<?php if( !defined('WPINC') ) { die; }
 /**
  * Leyka_Rbk_Gateway class
  */
@@ -85,13 +85,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
         if(Leyka_Rbk_Card::get_instance()->active) {
 
-            wp_enqueue_script(
-                'leyka-rbk-checkout',
-                'https://checkout.rbk.money/checkout.js',
-                array(),
-                false,
-                true
-            );
+            wp_enqueue_script('leyka-rbk-checkout', 'https://checkout.rbk.money/checkout.js', array(), false, true);
             wp_enqueue_script(
                 'leyka-rbk',
                 LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_Rbk_Gateway::get_instance()->id.'/js/leyka.rbk.js',
@@ -104,25 +98,19 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
     }
 
-    public function get_donation_by_invoice_id($invoice_id) {
-
-        global $wpdb;
-        return $wpdb->get_var(
-            "SELECT `post_id` FROM 
-			{$wpdb->postmeta}
-			WHERE `meta_key` = '_leyka_rbk_invoice_id'
-			AND `meta_value`  = '$invoice_id'
-			LIMIT 1"
-        );
-
+    protected function _get_donation_by_invoice_id($invoice_id) {
+        return Leyka_Donations::get_instance()->get_donation_id_by_meta_value('rbk_invoice_id', $invoice_id);
     }
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
-        $donation = new Leyka_Donation($donation_id);
+        $donation = Leyka_Donations::get_instance()->get($donation_id);
 
         if( !empty($form_data['leyka_recurring']) ) {
+
             $donation->payment_type = 'rebill';
+            $donation->recurring_active = true;
+
         }
 
         // 1. Create an invoice:
@@ -152,7 +140,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
             $this->_rbk_log['RBK_Request'] = array('url' => $api_request_url, 'params' => $args,);
         }
 
-        $this->_rbk_response = json_decode(wp_remote_retrieve_body(wp_remote_post($api_request_url, $args)), true);
+        $this->_rbk_response = json_decode(wp_remote_retrieve_body(wp_remote_post($api_request_url, $args)));
 
         // 2. Create a payment for the invoice - will be done on the frontend, by the RBK Checkout widget
 
@@ -174,12 +162,11 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
             return array('status' => 1, 'message' => __('The donation was not created due to error.', 'leyka'));
         }
 
-        $donation = new Leyka_Donation($donation_id);
+        $donation = Leyka_Donations::get_instance()->get($donation_id);
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
-        $invoice_id = $this->_rbk_response['invoice']['id'];
         $invoice_access_token = $this->_rbk_response['invoiceAccessToken']['payload'];
-        $donation->rbk_invoice_id = $invoice_id;
+        $donation->rbk_invoice_id = $this->_rbk_response['invoice']['id'];
 
         if(leyka_options()->opt('rbk_keep_payment_logs')) {
 
@@ -191,7 +178,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
         }
 
         return array(
-            'invoice_id' => $invoice_id,
+            'invoice_id' => $this->_rbk_response['invoice']['id'],
             'invoice_access_token' => $invoice_access_token,
             'is_recurring' => !empty($form_data['leyka_recurring']),
             'amount' => $donation->amount, // For GA EEC, "eec.add" event
@@ -252,14 +239,14 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
             'InvoiceCancelled' => 'failed',
             'PaymentCancelled' => 'failed',
         );
-        $donation_id = $this->get_donation_by_invoice_id($data['invoice']['id']);
+        $donation_id = $this->_get_donation_by_invoice_id($data['invoice']['id']);
         $donation_status = empty($map_status[ $data['eventType'] ]) ? false : $map_status[ $data['eventType'] ];
 
         if( !$donation_status ) {
             return false; // Mb, return WP_Error?
         }
 
-        $donation = new Leyka_Donation($donation_id);
+        $donation = Leyka_Donations::get_instance()->get($donation_id);
         $donation->status = $map_status[ $data['eventType'] ];
 
         if($donation->status === 'failed' && leyka_options()->opt('notify_tech_support_on_failed_donations')) {
@@ -273,6 +260,11 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
             $data_to_log = $donation->gateway_response;
             $data_to_log['RBK_Hook_data'] = $data;
 
+        }
+
+        // No emails for non-init recurring donations - the active recurring procedure do mailouts for them:
+        if($donation->status === 'funded' && ($donation->type === 'single' || $donation->is_init_recurring_donation)) {
+            Leyka_Donation_Management::send_all_emails($donation);
         }
 
         if( // GUA direct integration - "purchase" event:
@@ -317,8 +309,8 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
     protected function _handle_payment_processed($data) {
 
         // Log the webhook request content:
-        $donation_id = self::get_donation_by_invoice_id($data['invoice']['id']);
-        $donation = new Leyka_Donation($donation_id);
+        $donation_id = $this->_get_donation_by_invoice_id($data['invoice']['id']);
+        $donation = Leyka_Donations::get_instance()->get($donation_id);
 
         $data_to_log = $data;
         if(leyka_options()->opt('rbk_keep_payment_logs')) {
@@ -352,7 +344,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
     }
 
-    public function get_gateway_response_formatted(Leyka_Donation $donation) {
+    public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {
 
         if( !$donation->gateway_response ) {
             return array();
@@ -365,56 +357,32 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
         $vars = $vars[array_key_last($vars)];
 
-        return array(
-            __('Invoice ID:', 'leyka') => $vars['id'],
-            __('Operation date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($vars['createdAt'])),
-            __('Operation status:', 'leyka') => $vars['status'],
-            __('Full donation amount:', 'leyka') => $vars['amount'] / 100,
-            __('Donation currency:', 'leyka') => $vars['currency'],
-            __('Shop Account:', 'leyka') => $vars['shopID'],
+        return apply_filters(
+            'leyka_donation_gateway_response',
+            array(
+                __('Invoice ID:', 'leyka') => $vars['id'],
+                __('Operation date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($vars['createdAt'])),
+                __('Operation status:', 'leyka') => $vars['status'],
+                __('Full donation amount:', 'leyka') => $vars['amount'] / 100,
+                __('Donation currency:', 'leyka') => $vars['currency'],
+                __('Shop Account:', 'leyka') => $vars['shopID'],
+            ),
+            $donation
         );
 
     }
 
-    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation $donation) {
+    // The default implementations are in use:
+//    public function get_recurring_subscription_cancelling_link($link_text, Leyka_Donation_Base $donation) { }
+//    public function cancel_recurring_subscription_by_link(Leyka_Donation_Base $donation) { }
 
-        $init_recurring_donation = Leyka_Donation::get_init_recurring_donation($donation);
-        $cancelling_url = (get_option('permalink_structure') ?
-                home_url("leyka/service/cancel_recurring/{$donation->id}") :
-                home_url("?page=leyka/service/cancel_recurring/{$donation->id}"))
-            .'/'.md5($donation->id.'_'.$init_recurring_donation->id.'_leyka_cancel_recurring_subscription');
-
-        return sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">click here</a>', 'leyka'), $cancelling_url);
-
-    }
-
-    public function cancel_recurring_subscription_by_link(Leyka_Donation $donation) {
-
-        if($donation->type !== 'rebill') {
-            die();
-        }
-
-        header('Content-type: text/html; charset=utf-8');
-
-        $recurring_cancelling_result = $this->cancel_recurring_subscription($donation);
-
-        if($recurring_cancelling_result === true) {
-            die(__('Recurring subscription cancelled successfully.', 'leyka'));
-        } else if(is_wp_error($recurring_cancelling_result)) {
-            die($recurring_cancelling_result->get_error_message());
-        } else {
-            die( sprintf(__('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email()) );
-        }
-
-    }
-
-    public function do_recurring_donation(Leyka_Donation $init_recurring_donation) {
+    public function do_recurring_donation(Leyka_Donation_Base $init_recurring_donation) {
 
         if( !$init_recurring_donation->rbk_invoice_id || !$init_recurring_donation->rbk_payment_id ) {
             return false;
         }
 
-        $new_recurring_donation = Leyka_Donation::add_clone(
+        $new_recurring_donation = Leyka_Donations::get_instance()->add_clone(
             $init_recurring_donation,
             array(
                 'status' => 'submitted',
@@ -526,7 +494,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
         if($donation) { // Edit donation page displayed
 
-            $donation = leyka_get_validated_donation($donation);?>
+            $donation = Leyka_Donations::get_instance()->get_donation($donation);?>
 
             <label><?php _e('RBK Money invoice ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
@@ -553,8 +521,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 <div class="recurring-is-active-field">
                     <label for="rbk-recurring-is-active"><?php _e('Recurring subscription is active', 'leyka'); ?>:</label>
                     <div class="leyka-ddata-field">
-                        <input type="checkbox" id="rbk-recurring-is-active" name="rbk-recurring-is-active"
-                               value="1" <?php echo $init_recurring_donation->recurring_is_active ? 'checked="checked"' : ''; ?>>
+                        <input type="checkbox" id="rbk-recurring-is-active" name="rbk-recurring-is-active" value="1" <?php echo $init_recurring_donation->recurring_is_active ? 'checked="checked"' : ''; ?>>
                     </div>
                 </div>
 
@@ -562,12 +529,12 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
                 <label><?php _e('Initial recurring invoice ID', 'leyka');?>:</label>
                 <div class="leyka-ddata-field">
-                    <?php if($donation->type === 'correction') { ?>
+                    <?php if($donation->type === 'correction') {?>
                     <input type="text" id="rbk-init-invoice-id" name="rbk-init-invoice-id"
-                           placeholder="<?php _e('Enter RBK Money initial recurring invoice ID', 'leyka'); ?>"
+                           placeholder="<?php _e('Enter RBK Money initial recurring invoice ID', 'leyka');?>"
                            value="<?php echo $init_recurring_donation->rbk_invoice_id; ?>">
                     <?php } else {?>
-                    <span class="fake-input"><?php echo $init_recurring_donation->rbk_invoice_id; ?></span>
+                    <span class="fake-input"><?php echo $init_recurring_donation->rbk_invoice_id;?></span>
                     <?php }?>
                 </div>
 
@@ -604,36 +571,38 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
     }
 
-    public function get_specific_data_value($value, $field_name, Leyka_Donation $donation) {
+    public function get_specific_data_value($value, $field_name, Leyka_Donation_Base $donation) {
         switch($field_name) {
             case 'invoice_id':
             case 'rbk_invoice_id':
-                return get_post_meta($donation->id, '_leyka_rbk_invoice_id', true);
+                return $donation->get_meta('rbk_invoice_id');
             case 'payment_id':
             case 'rbk_payment_id':
-                return get_post_meta($donation->id, '_leyka_rbk_payment_id', true);
+                return $donation->get_meta('rbk_payment_id');
             default:
                 return $value;
         }
     }
 
-    public function set_specific_data_value($field_name, $value, Leyka_Donation $donation) {
+    public function set_specific_data_value($field_name, $value, Leyka_Donation_Base $donation) {
         switch($field_name) {
             case 'invoice_id':
             case 'rbk_invoice_id':
-                return update_post_meta($donation->id, '_leyka_rbk_invoice_id', $value);
+                return $donation->set_meta('rbk_invoice_id', $value);
             case 'payment_id':
             case 'rbk_payment_id':
-                return update_post_meta($donation->id, '_leyka_rbk_payment_id', $value);
-            default: return false;
+                return $donation->set_meta('rbk_payment_id', $value);
+            default:
+                return false;
         }
     }
 
-    public function save_donation_specific_data(Leyka_Donation $donation) {
+    public function save_donation_specific_data(Leyka_Donation_Base $donation) {
 
         if(isset($_POST['rbk-invoice-id']) && $donation->rbk_invoice_id != $_POST['rbk-invoice-id']) {
             $donation->rbk_invoice_id = $_POST['rbk-invoice-id'];
         }
+
         if(isset($_POST['rbk-payment-id']) && $donation->rbk_payment_id != $_POST['rbk-payment-id']) {
             $donation->rbk_payment_id = $_POST['rbk-payment-id'];
         }
@@ -642,13 +611,14 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
     }
 
-    public function add_donation_specific_data($donation_id, array $donation_params) {
+    public function add_donation_specific_data($donation_id, array $params) {
 
-        if( !empty($donation_params['rbk_invoice_id']) ) {
-            update_post_meta($donation_id, '_leyka_rbk_invoice_id', $donation_params['rbk_invoice_id']);
+        if( !empty($params['rbk_invoice_id']) ) {
+            Leyka_Donations::get_instance()->set_donation_meta($donation_id, 'rbk_invoice_id', $params['rbk_invoice_id']);
         }
-        if( !empty($donation_params['rbk_payment_id']) ) {
-            update_post_meta($donation_id, '_leyka_rbk_payment_id', $donation_params['rbk_payment_id']);
+
+        if( !empty($params['rbk_payment_id']) ) {
+            Leyka_Donations::get_instance()->set_donation_meta($donation_id, 'rbk_payment_id', $params['rbk_payment_id']);
         }
 
     }
@@ -666,13 +636,7 @@ class Leyka_Rbk_Card extends Leyka_Payment_Method {
         $this->_gateway_id = 'rbk';
         $this->_category = 'bank_cards';
 
-        $this->_description = apply_filters(
-            'leyka_pm_description',
-            __('RBK Money allows a simple and safe way to pay for goods and services with bank cards and other means through internet. You will have to fill a payment form, and then you will be redirected to the <a href="https://rbkmoney.ru/">RBK Money</a> secure payment page to enter your bank card data and to confirm your payment.', 'leyka'),
-            $this->_id,
-            $this->_gateway_id,
-            $this->_category
-        );
+        $this->_description = apply_filters('leyka_pm_description', '', $this->_id, $this->_gateway_id, $this->_category);
 
         $this->_label_backend = __('Bank card (RBK Money)', 'leyka');
         $this->_label = __('Bank card', 'leyka');
@@ -684,15 +648,15 @@ class Leyka_Rbk_Card extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
         ));
 
-        $this->_supported_currencies[] = 'rur';
-        $this->_default_currency = 'rur';
+        $this->_supported_currencies[] = 'rub';
+        $this->_default_currency = 'rub';
 
         $this->_processing_type = 'custom-process-submit-event';
 
     }
 
     public function has_recurring_support() {
-        return true;
+        return 'active';
     }
 
 }

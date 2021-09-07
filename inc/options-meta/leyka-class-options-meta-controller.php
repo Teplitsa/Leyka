@@ -352,10 +352,10 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
 //            ),
         );
 
-        $currencies_defaults = array_merge(leyka_get_main_currencies_full_info(), leyka_get_secondary_currencies_full_info());
+        $currencies_defaults = leyka_get_main_currencies_full_info() + leyka_get_secondary_currencies_full_info();
         foreach($currencies_defaults as $currency_id => $data) {
 
-            $currencies_options_meta = array_merge($currencies_options_meta, array(
+            $currencies_options_meta = $currencies_options_meta + array(
                 "currency_{$currency_id}_label" => array(
                     'type' => 'text',
                     'default' => $data['label'],
@@ -401,7 +401,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                     'placeholder' => sprintf(__('E.g., %s', 'leyka'), $data['fixed_amounts']),
                     'length' => 25,
                 ),
-            ));
+            );
 
         }
 
@@ -1093,7 +1093,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
 
     protected function _get_meta_admin() { // Keywords: admin, plugin
         return array(
-            'admin_donations_list_display' => array(
+            'admin_donations_list_amount_display' => array(
                 'type' => 'radio',
                 'default' => 'amount-column',
                 'title' => __('Total amount display on the admin donations list page', 'leyka'),
@@ -1101,7 +1101,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'list_entries' => array(
                     'none' => __('Do not display total amount', 'leyka'),
                     'amount-column' => __('Display total amount in the amount column, with original amount value', 'leyka'),
-                    'separate-column' => __('Display total amount in the separate column', 'leyka'),
+                    'separate-column' => __('Display total amount in a separate column', 'leyka'),
                 ),
             ),
             'send_plugin_stats' => array(

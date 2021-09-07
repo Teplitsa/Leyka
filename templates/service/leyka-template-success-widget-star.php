@@ -14,7 +14,7 @@ if( !$donation_id ) {
     return;
 }
 
-$donation = new Leyka_Donation($donation_id);
+$donation = Leyka_Donations::get_instance()->get_donation($donation_id);
 $campaign = $donation->campaign;
 
 $template_id = $campaign ? $campaign->template_id : leyka_remembered_data('template_id');?>

@@ -98,7 +98,7 @@ if(leyka_options()->opt('send_recurring_canceling_donor_notification_email')) {
             leyka_options()->opt('tech_support_email'),
             leyka_options()->opt('org_full_name'),
             $recurring_subscription->id,
-            leyka_get_payment_type_label($recurring_subscription->type),
+            leyka_get_payment_types_list($recurring_subscription->type),
             $recurring_subscription->donor_name ? $recurring_subscription->donor_name : __('dear donor', 'leyka'),
             $recurring_subscription->donor_email ? $recurring_subscription->donor_email : __('unknown email', 'leyka'),
             $recurring_subscription->donor_comment,

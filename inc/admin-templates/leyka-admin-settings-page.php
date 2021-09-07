@@ -26,7 +26,7 @@ $is_separate_sections_forms = $this->is_separate_forms_stage($current_stage);?>
 
     <div id="tab-container">
 
-        <?php $admin_page_args = array('stage' => $current_stage, 'gateway' => empty($_GET['gateway']) ? '' : $_GET['gateway']);
+        <?php $admin_page_args = ['stage' => $current_stage, 'gateway' => empty($_GET['gateway']) ? '' : $_GET['gateway']];
 
         $admin_page = 'admin.php?page=leyka_settings';
         foreach($admin_page_args as $arg_name => $value) {

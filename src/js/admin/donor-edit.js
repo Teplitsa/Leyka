@@ -1,14 +1,79 @@
 /** Donor's info page */
 jQuery(document).ready(function($){
 
-    var $page_wrapper = $('.wrap');
+    let $page_wrapper = $('.wrap');
     if( !$page_wrapper.length || $page_wrapper.data('leyka-admin-page-type') !== 'donor-info-page' ) {
         return;
     }
 
     // Donations list data table:
     if(typeof $().DataTable !== 'undefined' && typeof leyka_dt !== 'undefined') {
-        $('.leyka-data-table').DataTable({
+
+        let $data_table = $('.leyka-data-table');
+        $data_table.DataTable({
+            'processing': true,
+            'serverSide': true,
+            ajax: {
+                url: leyka.ajaxurl,
+                type: 'POST',
+                data: function(data){
+                    data.action = 'leyka_get_donor_donations';
+                    data.donor_id = $data_table.data('donor-id');
+                }
+            },
+            columns: [
+                {
+                    data: 'donation_id',
+                    className: 'column-id column-donation_id',
+                    render: function(donation_id){
+                        return '<a href="'+leyka.admin_url+'admin.php?page=leyka_donation_info&donation='+donation_id+'" target="_blank">'
+                                +donation_id
+                            +'</a>';
+                    },
+                },
+                {
+                    data: 'payment_type',
+                    className: 'column-donation_type',
+                    render: function(data){
+                        return '<i class="icon-payment-type icon-'+data.id+' has-tooltip" title="'+data.label+'"></i>';
+                    },
+                },
+                {data: 'date', className: 'column-date',},
+                {
+                    data: 'campaign',
+                    className: 'column-campaign data-campaign leyka-donation-info-wrapper',
+                    render: function(data, type, row_data){
+
+                        return '<i class="icon-leyka-donation-status icon-'+row_data.status.id+' has-tooltip leyka-tooltip-align-left" title=""></i>'
+                            +'<span class="leyka-tooltip-content">'
+                                +'<strong>'+row_data.status.label+':</strong> '+lcfirst(row_data.status.description)
+                            +'</span>'
+                            +'<div class="leyka-donation-additional-data">'
+                                +'<div class="first-sub-row">'+row_data.campaign_title+'</div>'
+                                +'<div class="second-sub-row">'
+                                    +(row_data.gateway_pm.gateway_icon_url ? '<img src="'+row_data.gateway_pm.gateway_icon_url+'" alt="'+row_data.gateway_pm.gateway_label+'">' : '')
+                                    +row_data.gateway_pm.gateway_label+', '+row_data.gateway_pm.pm_label
+                                +'</div>'
+                            +'</div>';
+
+                    }
+                },
+                {
+                    data: 'amount',
+                    className: 'column-amount data-amount',
+                    render: function(data, type, row_data){
+                        return data.amount_formatted+'&nbsp;'+data.currency_label
+                            +'<span class="amount-total"> / '+data.amount_total_formatted+'&nbsp;'+data.currency_label+'</span>';
+                    }
+                },
+            ],
+            rowCallback: function(row, data){ // After the data loaded from server, but before row is rendered in the table
+                $(row)
+                    .addClass('leyka-donations-table-row')
+                    .addClass(data.payment_type.type_id === 'correction' ? 'leyka-donation-row-correction' : '')
+                    .find('.has-tooltip').leyka_admin_tooltip();
+            },
+
             pageLength: 10,
             lengthChange: false,
             ordering:  false,
@@ -36,12 +101,15 @@ jQuery(document).ready(function($){
                 }
             }
         });
+
     }
+    // Donations list data table - END
 
 });
 
-// donor info
+// Donor info
 jQuery(document).ready(function($){
+
     $('.donor-add-description-link').click(function(e){
         e.preventDefault();
         $('.add-donor-description-form').toggle();
@@ -454,4 +522,3 @@ jQuery(document).ready(function($){
     });
 
 });
-

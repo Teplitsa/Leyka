@@ -4,7 +4,25 @@ jQuery(document).ready(function($){
 
     const $body = $('body');
 
-    // Datepicker fields for admin lists filters:
+    // Normal datepicker fields:
+    $('input.leyka-datepicker').each(function(){
+
+        let $date_field = $(this);
+
+        $date_field.datepicker({
+            changeMonth: true,
+            changeYear: true,
+            minDate: $date_field.data('min-date') ? $date_field.data('min-date') : '',
+            maxDate: $date_field.data('max-date') ? $date_field.data('max-date') : '',
+            dateFormat: $date_field.data('date-format') ? $date_field.data('date-format') : 'dd.mm.yy',
+            altField: $date_field.data('alt-field') ? $date_field.data('alt-field') : '', // Alt field jQuery selector here
+            altFormat: $date_field.data('alt-format') ? $date_field.data('alt-format') : 'yy-mm-dd',
+        });
+
+    });
+    // Normal datepicker fields - END
+
+    // Ranged (optionally) datepicker fields for admin lists filters:
     jQuery.leyka_fill_datepicker_input_period = function leyka_fill_datepicker_input_period(inst, extension_range) {
 
         let input_text = extension_range.startDateText;
@@ -15,7 +33,7 @@ jQuery(document).ready(function($){
 
     };
 
-    jQuery.leyka_init_filter_datepicker = function leyka_init_filter_datepicker($input, options) {
+    jQuery.leyka_admin_filter_datepicker_ranged = function($input, options){
 
         $input.datepicker({
             range: 'period',
@@ -23,37 +41,126 @@ jQuery(document).ready(function($){
                 $.leyka_fill_datepicker_input_period(inst, extensionRange);
             },
 
-            beforeShow: function(input, inst) {
+            beforeShow: function(input, instance) {
+
                 let selectedDatesStr = $(input).val(),
                     selectedDatesStrList = selectedDatesStr.split(' - '),
                     selectedDates = [];
 
                 for(let i in selectedDatesStrList) {
+
                     if(selectedDatesStrList[i]) {
 
                         let singleDate;
                         try {
-                            singleDate = $.datepicker.parseDate($(input).datepicker('option', 'dateFormat'), selectedDatesStrList[i]);
+                            singleDate = $.datepicker
+                                .parseDate($(input).datepicker('option', 'dateFormat'), selectedDatesStrList[i]);
                         } catch {
                             singleDate = new Date();
                         }
 
                         selectedDates.push(singleDate);
+
                     }
+
                 }
 
-                $(inst.input).val(selectedDates[0]);
-                $(inst.input).datepicker('setDate', selectedDates);
+                $(instance.input).val(selectedDates[0]);
+                $(instance.input).datepicker('setDate', selectedDates);
 
                 setTimeout(function(){
-                    $.leyka_fill_datepicker_input_period(inst, $(inst.dpDiv).data('datepickerExtensionRange'));
+                    $.leyka_fill_datepicker_input_period(instance, $(instance.dpDiv).data('datepickerExtensionRange'));
                 });
 
             }
         });
 
     };
-    // Datepicker fields for admin lists filters - END
+    // Ranged (optionally) datepicker fields for admin lists filters - END
+
+    // Ranged datepicker fields (for admin list filters mostly):
+    $.leyka_admin_filter_datepicker_ranged($('input.datepicker-ranged-selector'), {
+        warningMessage: leyka.first_donation_date_incomplete_message
+    });
+    // Ranged datepicker fields - END
+
+    // Campaigns autocomplete select:
+    jQuery.leyka_admin_campaigns_select = function($text_selector_field, options){
+
+        $text_selector_field = $($text_selector_field);
+
+        let $list_select_field = $text_selector_field.siblings('.leyka-campaigns-select'),
+            is_multiple_values = !!$list_select_field.prop('multiple'),
+            selected_values = [];
+
+        if(is_multiple_values) {
+            $list_select_field.find('option').each(function(){
+
+                let $this = $(this);
+                selected_values.push({item: {label: $.trim($this.text()), value: $this.val()}});
+
+            });
+        }
+
+        let autocomplete_settings = {
+            source: leyka.ajaxurl+'?action=leyka_campaigns_autocomplete',
+            multiselect: is_multiple_values,
+            minLength: 0,
+            search_on_focus: true,
+        };
+
+        if(is_multiple_values) {
+
+            autocomplete_settings.pre_selected_values = selected_values;
+            autocomplete_settings.leyka_select_callback = function(selected_items){
+
+                $list_select_field.html('');
+
+                for(let value in selected_items) {
+                    $('<option></option>').val(value).prop('selected', true).appendTo($list_select_field);
+                }
+
+            }
+
+        } else {
+            autocomplete_settings.select = function(e, ui){
+
+                this.value = ui.item.label;
+                $list_select_field.val(ui.item.value);
+
+                if($list_select_field.data('campaign-payment-title-selector')) {
+                    $($list_select_field.data('campaign-payment-title-selector')).html(ui.item.payment_title);
+                }
+
+                return false;
+
+            };
+        }
+
+        $text_selector_field.autocomplete(autocomplete_settings);
+
+    };
+
+    // Campaign(s) select fields (for admin list filters mostly):
+    $('input.leyka-campaigns-selector:not(.leyka-js-dont-initialize-common-widget)').each(function(){
+        $.leyka_admin_campaigns_select($(this));
+    });
+    // Campaign(s) select fields  - END
+
+    // Donor's name/email field:
+    $('input.leyka-donor-name-email-selector').each(function(){
+
+        let $field = $(this);
+
+        $field.autocomplete({ /** @todo Add nonce to the query */
+            source: leyka.ajaxurl+'?action=leyka_donors_autocomplete'
+                +($field.data('search-donors-in') ? '&type='+$field.data('search-donors-in') : ''),
+            minLength: 0,
+            search_on_focus: true
+        });
+
+    });
+    // Donor's name/email field - END
 
     if(leyka_ui_widget_available('accordion')) {
         $('.ui-accordion').each(function(){
@@ -78,74 +185,6 @@ jQuery(document).ready(function($){
         $('.leyka-select-menu').selectmenu();
     }
 
-    if(leyka_ui_widget_available('autocomplete')) {
-
-        // $body.find('.leyka-autocomplete').each(function(){
-
-        //     let $field = $(this),
-        //         source_type = $field.data('leyka-autocomplete-source-type'),
-        //         pre_selected_values = $field.data('leyka-autocomplete-pre-selected-values'),
-        //         params = {source: false};
-        //
-        //     if(source_type === 'url') { // data-leyka-autocomplete-source is an URL for values ajax requests
-        //
-        //         params.source = $field.data('leyka-autocomplete-source');
-        //
-        //         if( !params.source || !params.source.length ) {
-        //             return;
-        //         }
-        //
-        //     } else if(source_type === 'select-field') { // data-leyka-autocomplete-source is an ID for select field with values
-        //
-        //         let $source_select = $($field.data('leyka-autocomplete-source')).hide(); // Hide the select field just in case
-        //
-        //         if( !$source_select.length ) {
-        //             return;
-        //         }
-        //
-        //         params.source = [];
-        //
-        //         $source_select.find('option').each(function(){
-        //
-        //             let $option = $(this);
-        //
-        //             params.source.push({label: $.trim($option.text()), value: $option.val()});
-        //
-        //         });
-        //
-        //         if( !params.source.length ) {
-        //             return;
-        //         }
-        //
-        //     }
-        //
-        //     if(pre_selected_values && pre_selected_values === 'from-source-field' && source_type === 'select-field') {
-        //
-        //     } else if(pre_selected_values) {
-        //
-        //         let $values_select = $(pre_selected_values);
-        //     }
-        //
-        //
-        //
-        //     if( !!$field.data('leyka-autocomplete-multiselect') ) {
-        //         params.multiselect = true;
-        //     }
-        //     if( !!$field.data('leyka-autocomplete-min-length') ) {
-        //         params.minLength = $field.data('leyka-autocomplete-min-length');
-        //     }
-        //     if( !!$field.data('leyka-autocomplete-search-on-focus') ) {
-        //         params.search_on_focus = true;
-        //     }
-        //
-            /** @todo Finish the universalization for autocomplete fields. We need an API for params: source, pre_selected_values, leyka_select_callback */
-        //
-        //     $field.autocomplete(params);
-        //
-        // });
-
-    }
-
     // Support metaboxes ONLY where needed (else there are metabox handling errors on the wrong pages):
     $('input.leyka-support-metabox-area').each(function(){
         leyka_support_metaboxes($(this).val());
@@ -166,6 +205,14 @@ jQuery(document).ready(function($){
                 mode: 'css',
             });
         editor = wp.codeEditor.initialize($css_editor, editor_settings);
+
+        if(leyka_is_gutenberg_active()) {
+
+            wp.data.subscribe(function(){ // Obtain the CodeMirror instance, then manually copy editor content into it's textarea
+                $css_editor.next('.CodeMirror').get(0).CodeMirror.save();
+            });
+
+        }
 
         $css_editor.data('code-editor-object', editor);
 
@@ -206,8 +253,6 @@ jQuery(document).ready(function($){
             $error = $field_wrapper.siblings('.field-errors'),
             $main_field = $field_wrapper.find('input.leyka-upload-result'),
             data = new FormData(); // Need to use a FormData object here instead of a generic object
-
-    // console.log('File:', $file_input, 'Wrapper:', $field_wrapper);
 
         data.append('action', 'leyka_files_upload');
         data.append('option_id', option_id);
@@ -276,81 +321,6 @@ jQuery(document).ready(function($){
 
     });
     // Ajax file upload fields - END
-
-    // Campaigns select comboboxes fields:
-    $body.find('.leyka-campaign-select-field-wrapper').each(function(){
-
-        let $field_wrapper = $(this),
-            $text_search_sub_field = $field_wrapper.find('input.leyka-campaign-selector'),
-            $value_sub_vield = $field_wrapper.find('input.campaign-id');
-
-        $text_search_sub_field.autocomplete({
-            minLength: 0,
-            focus: function(event, ui){
-
-                $text_search_sub_field.val(ui.item.label);
-                return false;
-
-            },
-            change: function(event, ui){
-                if( !$text_search_sub_field.val() ) {
-                    $value_sub_vield.val('');
-                }
-            },
-            close: function(event, ui){
-                if( !$text_search_sub_field.val() ) {
-                    $value_sub_vield.val('');
-                }
-            },
-            select: function(event, ui){
-
-                $text_search_sub_field.val(ui.item.label);
-                $value_sub_vield.val(ui.item.value);
-
-                return false;
-
-            },
-            source: function(request, response) {
-
-                let term = request.term,
-                    cache = $text_search_sub_field.data('cache') ? $text_search_sub_field.data('cache') : [];
-
-                if(term in cache) {
-
-                    response(cache[term]);
-                    return;
-
-                }
-
-                request.action = 'leyka_get_campaigns_list';
-                request.nonce = $text_search_sub_field.data('nonce');
-
-                $.getJSON(leyka.ajaxurl, request, function(data){
-
-                    var cache = $text_search_sub_field.data('cache') ? $text_search_sub_field.data('cache') : [];
-
-                    cache[term] = data;
-                    response(data);
-
-                });
-
-            }
-        }).on('focus.leyka', function(e){
-            if($value_sub_vield.val() == 0) {
-                $(this).autocomplete('search', '');
-            }
-        });
-
-        $text_search_sub_field.data('ui-autocomplete')._renderItem = function(ul, item){
-            return $('<li>')
-                .append(
-                    '<a>'+item.label+(item.label === item.payment_title ? '' : '<div>'+item.payment_title+'</div></a>')
-                )
-                .appendTo(ul);
-        };
-
-    });
-    // Campaigns select comboboxes fields - END
 
     // Expandable options sections (portlets only):
     /** @todo Remove this completely when all portlets are converted to metaboxes */
@@ -431,7 +401,7 @@ jQuery(document).ready(function($){
 
     $('[name*="show_donation_comment_field"]').on('change.leyka', function(){
 
-        var $this = $(this),
+        let $this = $(this),
             checkbox_id = $this.attr('id'),
             length_field_wrapper_id = checkbox_id.replace('_show_donation_comment_field-field', '_donation_comment_max_length-wrapper');
 
@@ -448,7 +418,7 @@ jQuery(document).ready(function($){
 
         e.preventDefault();
 
-        var $this = $(this),
+        let $this = $(this),
             $wrap = $this.parent(),
             donation_id = $wrap.data('donation-id');
 
@@ -458,90 +428,94 @@ jQuery(document).ready(function($){
 
         $wrap.load(leyka.ajaxurl, {
             action: 'leyka_send_donor_email',
-            nonce: $wrap.find('#_leyka_donor_email_nonce').val(),
+            nonce: $wrap.data('nonce'),
             donation_id: donation_id
         });
 
     });
 
-    // Exchange places of donations Export and Filter buttons:
-    $('.wrap a.page-title-action').after($('.donations-export-form').detach());
-
     // Tooltips:
-    var $tooltips = $('.has-tooltip');
+    let $tooltips = $body.find('.has-tooltip');
+
+    $.widget('custom.leyka_admin_tooltip', $.ui.tooltip, {
+        _init: function(){
+
+            this._super(); // Parent _init() method call, just in case
+
+            let $tooltip_element = $(this.element),
+                options = {
+                    classes: {
+                        'ui-tooltip':
+                            ($tooltip_element.hasClass('leyka-tooltip-wide') ? 'leyka-tooltip-wide' : '')+' '
+                            +($tooltip_element.hasClass('leyka-tooltip-white') ? 'leyka-tooltip-white' : '')+' '
+                            +($tooltip_element.hasClass('leyka-tooltip-align-left') ? 'leyka-tooltip-align-left' : '')+' '
+                            +$tooltip_element.data('tooltip-additional-classes')
+                    },
+                    content: function(){
+
+                        let $element = $(this),
+                            tooltip_content = $element.siblings('.leyka-tooltip-content:first').html();
+
+                        return tooltip_content ? tooltip_content : $element.prop('title');
+
+                    },
+                    // position: {my: 'left top + 15', at: 'left bottom', collision: 'flipfit'} // Default position settings
+                    position: {my: 'left top + 0', at: 'center', collision: 'flipfit'}
+                };
+
+            if($tooltip_element.hasClass('leyka-tooltip-on-click')) { // Tooltips on click
+                options.items = '.has-tooltip.tooltip-opened';
+            }
+
+            this.option(options); // Redefine options, set them to Leyka setup
+
+        }
+    });
+
     if($tooltips.length && typeof $().tooltip !== 'undefined' ) {
-        $tooltips.tooltip();
-    }
 
-    // Campaign selection fields:
-    /** @todo Change this old campaigns select field code (pure jq-ui-autocomplete-based) to the new code (select + autocomplete, like on the Donors list page filters). */
-    var $campaign_select = $('#campaign-select');
-    if($campaign_select.length && typeof $().autocomplete !== 'undefined') {
-
-        $campaign_select.keyup(function(){
-            if( !$(this).val() ) {
-                $('#campaign-id').val('');
-                $('#new-donation-purpose').html('');
-            }
+        // Init all tooltips on initial page rendering:
+        $tooltips.each(function(i, element){
+            $(element).leyka_admin_tooltip();
         });
 
-        $campaign_select.autocomplete({
-            minLength: 1,
-            focus: function(event, ui){
-                $campaign_select.val(ui.item.label);
-                $('#new-donation-purpose').html(ui.item.payment_title);
+        // Tooltips on click:
+        let $tooltips_on_click = $('.has-tooltip.leyka-tooltip-on-click');
 
-                return false;
-            },
-            change: function(event, ui){
-                if( !$campaign_select.val() ) {
-                    $('#campaign-id').val('');
-                    $('#new-donation-purpose').html('');
+        $tooltips_on_click.on('click.leyka', function(){ // Tooltips on click - open
+
+            let $element = $(this);
+            if($element.hasClass('leyka-tooltip-on-click')) {
+
+                if($element.hasClass('tooltip-opened')) { // Tootips on click - hide
+                    $element.leyka_admin_tooltip('close').removeClass('tooltip-opened');
+                } else {
+                    $element.addClass('tooltip-opened').leyka_admin_tooltip('open'); //.mouseenter();
                 }
-            },
-            close: function(event, ui){
-                if( !$campaign_select.val() ) {
-                    $('#campaign-id').val('');
-                    $('#new-donation-purpose').html('');
-                }
-            },
-            select: function(event, ui){
-                $campaign_select.val(ui.item.label);
-                $('#campaign-id').val(ui.item.value);
-                $('#new-donation-purpose').html(ui.item.payment_title);
-                return false;
-            },
-            source: function(request, response) {
-                var term = request.term,
-                    cache = $campaign_select.data('cache') ? $campaign_select.data('cache') : [];
+            }
 
-                if(term in cache) {
-                    response(cache[term]);
-                    return;
-                }
+        }).on('mouseout.leyka', function(e){ // Prevent mouseout and other related events from firing their handlers
+            e.stopImmediatePropagation();
+        });
 
-                request.action = 'leyka_get_campaigns_list';
-                request.nonce = $campaign_select.data('nonce');
+        // Close opened tooltip when clicked elsewhere:
+        $body.on('click.leyka', function(e){
 
-                $.getJSON(leyka.ajaxurl, request, function(data, status, xhr){
+            if($tooltips_on_click.length) {
 
-                    var cache = $campaign_select.data('cache') ? $campaign_select.data('cache') : [];
-
-                    cache[term] = data;
-                    response(data);
+                $tooltips_on_click.filter('.tooltip-opened').each(function(i, element){
+                    if(element !== e.target) {
+                        $(element).leyka_admin_tooltip('close').removeClass('tooltip-opened');
+                    }
                 });
-            }
-        });
 
-        $campaign_select.data('ui-autocomplete')._renderItem = function(ul, item){
-            return $('<li>')
-                .append(
-                    '<a>'+item.label+(item.label == item.payment_title ? '' : '<div>'+item.payment_title+'</div></a>')
-                )
-                .appendTo(ul);
-        };
+            }
+
+        });
+        // Tooltips on click - END
 
     }
+    // Tooltips - END
 
     // Multi-valued item complex fields:
     $('.leyka-main-multi-items').each(function(index, outer_items_wrapper){
@@ -565,6 +539,10 @@ jQuery(document).ready(function($){
 
                 let items_options = [];
                 $.each($items_wrapper.sortable('toArray'), function(key, item_id){ // Value is an item ID (generated randomly)
+
+                    if( !item_id.length ) {
+                        return;
+                    }
 
                     let item_options = {'id': item_id}; // Assoc. array key should be initialized explicitly
 
@@ -679,9 +657,32 @@ jQuery(document).ready(function($){
         }
 
         // Refresh the main items option value before submit:
-        $items_wrapper.parents('form:first').on('submit.leyka', function(e){
+        function leyka_pre_submit_multi_items(e) {
             $items_wrapper.sortable('option', 'update')();
-        });
+        }
+
+        if(leyka_is_gutenberg_active()) { // Post edit page - Gutenberg mode
+
+            // Trigger the final multi-items values updating ONLY before main saving submit:
+            // (Note: in Gutenberg there are also non-main saves - each metabox is also saved individually, via AJAX)
+            const unsubscribe = wp.data.subscribe(function(){
+
+                let code_editor = wp.data.select('core/editor');
+
+                if (code_editor.isSavingPost() && !code_editor.isAutosavingPost() && code_editor.didPostSaveRequestSucceed()) {
+
+                    unsubscribe(); // To avoid muliple calls on ajax savings
+
+                    leyka_pre_submit_multi_items();
+
+                }
+
+            });
+
+        } else { // Post edit page (classic editor), general admin pages
+            $items_wrapper.parents('form:first').on('submit.leyka', leyka_pre_submit_multi_items);
+        }
+        // Refresh the main items option value before submit - END
 
     });
     // Multi-valued item complex fields - END

@@ -160,6 +160,314 @@
 	display: none;
 }
 
+.leyka-admin-shortened-text {
+    @include leyka-admin-triangle-list-marker($leyka-admin-color-link);
+}
+
+// Payment types icons:
+i.icon-payment-type {
+
+    display: inline-block;
+
+    &.icon-single {
+        @include leyka-colored-icon('../../img/icon-payment-type-single.svg', 20px);
+    }
+
+    &.icon-rebill {
+        @include leyka-colored-icon('../../img/icon-payment-type-rebill.svg', 20px);
+    }
+
+    &.icon-rebill-init {
+        @include leyka-colored-icon('../../img/icon-payment-type-rebill-init.svg', 20px);
+    }
+
+    &.icon-correction {
+        @include leyka-colored-icon('../../img/icon-payment-type-correction.svg', 20px);
+    }
+
+}
+// Payment types icons - END
+
+// Donor types icons:
+i.icon-donor-type {
+
+    display: inline-block;
+
+    &.icon-single {
+        @include leyka-colored-icon('../../img/icon-payment-type-single.svg', 20px);
+    }
+
+    &.icon-regular {
+        @include leyka-colored-icon('../../img/icon-payment-type-rebill.svg', 20px);
+    }
+
+}
+// Donor types icons - END
+
+// Donation status icons:
+i.icon-leyka-donation-status {
+
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border: none;
+    border-radius: 50%;
+
+    &.icon-submitted {
+        background-color: $color-border-semidark;
+    }
+
+    &.icon-funded {
+        background-color: $color-ok-message;
+    }
+
+    &.icon-refunded {
+        background-color: $color-refunded-message;
+    }
+
+    &.icon-failed {
+        background-color: $color-error-message;
+    }
+
+}
+// Donation status icons - END
+
+// Donation status labels:
+.leyka-donation-status-label {
+    
+    &.label-submitted {
+        color: $color-border-semidark;
+    }
+
+    &.label-funded {
+        color: $color-ok-message;
+    }
+
+    &.label-refunded {
+        color: $color-refunded-message;
+    }
+
+    &.label-failed {
+        color: $color-error-message;
+    }
+
+}
+// Donation status labels - END
+
+// Recurring subscription status icons:
+i.icon-leyka-recurring-subscription-status {
+
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border: none;
+    border-radius: 50%;
+
+    &.icon-recurring-subscription-active {
+        background-color: $color-ok-message;
+    }
+
+    &.icon-recurring-subscription-not-active {
+        background-color: $color-error-message;
+    }
+
+}
+// Recurring subscription status icons - END
+
+// Tooltips:
+i.has-tooltip {
+    cursor: pointer;
+}
+
+.ui-tooltip {
+
+    //@include leyka-admin-tooltip-styles();
+
+    &.ui-widget-content {
+        @include leyka-admin-tooltip-styles();
+    }
+
+    border-radius: 4px;
+    border: none;
+    padding: 8px;
+
+    &.leyka-tooltip-wide {
+        width: 300px;
+        max-width: 400px;
+        font-weight: normal;
+        text-align: left;
+    }
+
+    &.leyka-tooltip-white {
+        background-color: $color-white !important;
+        color: $leyka-admin-color-text !important;
+    }
+
+    &.leyka-tooltip-align-left {
+        text-align: left;
+    }
+
+    // Common tooltips content styles:
+    &.leyka-admin-tooltip-donor-more-data { // Tooltip styles settings should be outside the table
+
+        .leyka-li-title {
+            display: inline-block;
+            width: 100px;
+            margin-right: 15px;
+            font-weight: 500;
+        }
+
+        .leyka-li-value {
+            color: $color-text-semi;
+        }
+
+    }
+    // Common tooltips content styles - END
+
+}
+
+.leyka-tooltip-content { // The tooltips content containers are always hidden
+    display: none;
+}
+// Tooltips - END
+
+// Datepicker fields:
+.ui-datepicker.ui-widget.ui-widget-content {
+
+    padding: 0;
+
+    @include leyka-admin-list-text();
+    font-weight: normal;
+
+    th {
+        font-weight: normal;
+    }
+
+    .ui-datepicker-calendar {
+        thead {
+            color: $color-border-semidark;
+        }
+    }
+
+    .ui-datepicker-header {
+
+        background-image: none;
+        background-color: transparent;
+        border: none;
+
+        .ui-datepicker-title {
+
+            font-weight: normal;
+
+            &:hover {
+                background-color: $color-border-semilight;
+                border-radius: 3px;
+            }
+
+        }
+
+        .ui-datepicker-prev {
+
+            &.ui-datepicker-prev-hover {
+                background-image: none;
+                background-color: $color-border-semilight;
+                border: none;
+                top: 2px;
+                left: 2px;
+            }
+
+            .ui-icon {
+            }
+
+            .ui-icon.ui-icon-circle-triangle-w {
+                background-image: url(../../img/icon-datepicker-arrow-left.svg);
+                background-repeat: no-repeat;
+                background-size: 32px 32px;
+                background-position: -8px -9px;
+            }
+
+        }
+
+        .ui-datepicker-next {
+
+            &.ui-datepicker-next-hover {
+                background-image: none;
+                background-color: $color-border-semilight;
+                border: none;
+                top: 2px;
+                right: 2px;
+            }
+
+            .ui-icon.ui-icon-circle-triangle-e {
+                background-image: url(../../img/icon-datepicker-arrow-right.svg);
+                background-repeat: no-repeat;
+                background-size: 32px 32px;
+                background-position: -8px -9px;
+            }
+
+        }
+
+    }
+
+    .ui-state-default {
+
+        background-image: none;
+        background-color: transparent;
+        text-align: center;
+        border-color: transparent;
+
+        &.ui-state-highlight {
+            border-color: $color-border-semilight;
+        }
+
+        &.ui-state-hover {
+            background-color: $color-border-semilight;
+        }
+
+        &.ui-state-active {
+            &:not(.ui-state-hover) {
+                background-color: $leyka-admin-color-link;
+                color: $color-white;
+            }
+        }
+
+    }
+
+}
+// Datepicker fields - END
+
+// Autocomplete fields:
+ul.ui-autocomplete {
+
+    border-top: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+
+    &.ui-menu {
+        li.ui-menu-item {
+
+            @include leyka-admin-list-text();
+
+            max-width: 320px;
+            max-height: 56px;
+            padding-bottom: 8px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal;
+
+            &:hover {
+                background-image: none;
+                background-color: $leyka-admin-color-link;
+                color: $color-white;
+                border: 1px solid $leyka-admin-color-link;
+            }
+
+        }
+    }
+
+}
+// Autocomplete fields - END
+
 .leyka-admin {
 
     @include body-text();
@@ -675,6 +983,7 @@
         }
 
     }
+
 }
 
 .init-wizard-tab {
@@ -715,10 +1024,23 @@
     .admin-list-filters {
 
         box-sizing: border-box;
-        margin-top: 4px;
-        padding-bottom: 16px;
+        padding-bottom: 0;
         display: flex;
         border-bottom: 1px solid $color-border-semidark;
+
+        .leyka-admin-list-filter-wrapper { // Each field wrapper
+
+            width: calc(25% - 16px); // 16px is the filter container right margin
+
+            &:not(:last-child) {
+                margin-right: 16px;
+            }
+
+            &:first-child {
+                margin-bottom: 16px;
+            }
+
+        }
 
         .filters-row {
 
@@ -748,12 +1070,30 @@
         }
 
         .col-1 {
-            width: 790px;
+
+            width: 1000px;
+
+            .filters-row {
+
+                .leyka-selector, .ui-selectmenu-button, .ui-autocomplete-multiselect, .ui-autocomplete-input {
+                    width: 100% !important;
+                    border-radius: 4px;
+                    margin: 0;
+                }
+
+                span.ui-selectmenu-text { // Our margins value for selectmenu fields, instead of default jQ UI value
+                    padding-left: 0;
+                    width: 100%;
+                    line-height: inherit;
+                }
+
+            }
+
         }
 
         .col-2 {
 
-            width: 25%;
+            margin-left: 50px;
             position: relative;
 
             .button {
@@ -786,17 +1126,19 @@
         }
 
         // Filter fields:
-        //input:not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"])  {
-        //}
 
         // Text & datepicker fields:
-        input[type="text"], input[type="date"]  {
+        input[type="text"], input[type="date"] {
             @include leyka-admin-list-filter-selector();
         }
 
         .ui-selectmenu-button {
+
+            @include leyka-admin-list-filter-selector();
+
             margin-right: $leyka-base;
             margin-bottom: $leyka-base;
+
         }
 
         .leyka-selector {
@@ -828,143 +1170,17 @@
 
     }
 
-    // Datepicker fields:
-    .ui-datepicker.ui-widget.ui-widget-content {
-
-        padding: 0;
-
-        @include leyka-admin-list-text();
-        font-weight: normal;
-
-        th {
-            font-weight: normal;
-        }
-
-        .ui-datepicker-calendar {
-            thead {
-                color: $color-border-semidark;
-            }
-        }
-
-        .ui-datepicker-header {
-
-            background-image: none;
-            background-color: transparent;
-            border: none;
-
-            .ui-datepicker-title {
-
-                font-weight: normal;
-
-                &:hover {
-                    background-color: $color-border-semilight;
-                    border-radius: 3px;
-                }
-
-            }
-
-            .ui-datepicker-prev {
-
-                &.ui-datepicker-prev-hover {
-                    background-image: none;
-                    background-color: $color-border-semilight;
-                    border: none;
-                    top: 2px;
-                    left: 2px;
-                }
-
-                .ui-icon {
-                }
-
-                .ui-icon.ui-icon-circle-triangle-w {
-                    background-image: url(../../img/icon-datepicker-arrow-left.svg);
-                    background-repeat: no-repeat;
-                    background-size: 32px 32px;
-                    background-position: -8px -9px;
-                }
-
-            }
-
-            .ui-datepicker-next {
-
-                &.ui-datepicker-next-hover {
-                    background-image: none;
-                    background-color: $color-border-semilight;
-                    border: none;
-                    top: 2px;
-                    right: 2px;
-                }
-
-                .ui-icon.ui-icon-circle-triangle-e {
-                    background-image: url(../../img/icon-datepicker-arrow-right.svg);
-                    background-repeat: no-repeat;
-                    background-size: 32px 32px;
-                    background-position: -8px -9px;
-                }
-
-            }
-
-        }
-
-        .ui-state-default {
-
-            background-image: none;
-            background-color: transparent;
-            text-align: center;
-            border-color: transparent;
-
-            &.ui-state-highlight {
-                border-color: $color-border-semilight;
-            }
-
-            &.ui-state-hover {
-                background-color: $color-border-semilight;
-            }
-
-            &.ui-state-active {
-                &:not(.ui-state-hover) {
-                    background-color: $leyka-admin-color-link;
-                    color: $color-white;
-                }
-            }
-
-        }
-
-    } // Datepicker fields - END
-
-    // Autocomplete fields:
-    ul.ui-autocomplete {
-
-        border-top: 0;
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
-
-        &.ui-menu {
-            li.ui-menu-item {
-
-                @include leyka-admin-list-text();
-
-                max-width: 320px;
-                max-height: 56px;
-                padding-bottom: 8px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: normal;
-
-                &:hover {
-                    background-image: none;
-                    background-color: $leyka-admin-color-link;
-                    color: $color-white;
-                    border: 1px solid $leyka-admin-color-link;
-                }
-
-            }
-        }
-
-    }
-    // Autocomplete fields - END
-
     .wp-list-table {
+
+        thead {
+
+            .check-column {
+                input {
+                    margin-top: -2px;
+                }
+            }
+
+        }
 
         a {
 
@@ -991,14 +1207,8 @@
             }
 
             &.check-column {
-
                 padding-top: 0;
                 vertical-align: middle;
-
-                input[type="checkbox"] {
-                    margin-top: 0 !important;
-                }
-
             }
 
         }
@@ -1013,6 +1223,109 @@
 
             vertical-align: middle;
 
+            .row-actions {
+                font-size: 11px;
+                font-weight: normal;
+            }
+
+            // Common admin lists columns styles:
+            &.column-id {
+                font-weight: 500;
+            }
+
+            &.column-donor {
+
+                display: flex;
+                flex-flow: row nowrap;
+                justify-content: flex-start;
+                align-items: center;
+
+                .leyka-donor-data-main {
+
+                    .donor-name {
+                        font-weight: 500;
+                    }
+
+                    .donor-email {
+                        font-size: 11px;
+                    }
+
+                }
+
+                .leyka-donor-data-additional {
+
+                    margin-right: 6px;
+
+                    .icon-donor-more-data {
+
+                        @include leyka-colored-icon('../../img/icon-3-dots-vertical.svg', 3px, default, 10px);
+
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
+                        width: 21px;
+                        height: 22px; // WxH is calibrated so the icon would be in the middle of the circled span
+                        cursor: pointer;
+
+                        &.tooltip-opened, &:hover {
+                            background-color: $color-nav-area-bg;
+                            border-radius: 50%;
+                        }
+
+                    }
+
+                }
+
+            }
+
+            &.column-campaign {
+                font-weight: 500;
+            }
+
+            &.column-amount {
+
+                .leyka-amount {
+
+                    display: flex;
+                    flex-flow: row nowrap;
+                    align-items: flex-start;
+
+                    font-weight: 500;
+
+                    .amount-total {
+                        color: $color-text-light;
+                    }
+
+                }
+
+                .icon-leyka-donation-status {
+                    margin-top: 3px;
+                    margin-right: 12px;
+                }
+
+                .leyka-donation-status-label {
+                    font-size: 11px;
+                    font-weight: 400;
+                }
+
+            }
+
+            .leyka-gateway-name {
+
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+
+                img {
+                    margin-right: 4px;
+                    width: 20px;
+                    height: 20px;
+                }
+
+            }
+            // Common admin lists columns styles - END
+
         }
 
         &.widefat td, &.widefat th {
@@ -1024,7 +1337,6 @@
         }
 
     }
-
     // ---- Admin lists common styles - END ---- //
 
 }

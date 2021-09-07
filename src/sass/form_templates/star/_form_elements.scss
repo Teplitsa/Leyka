@@ -234,11 +234,13 @@
                     @include star-clean-input();
                     @include star-text-input();
                     color: $leyka-star-color-gray-dark;
-                    border-bottom: none;
+                    background: transparent !important;
                     width: 100%;
+                    height: 20px !important;
+                    margin: 0 !important;
                     text-align: left;
-                    height: 20px;
-                    padding: 0;
+                    padding: 0 !important;
+
                 }
             }
         }
@@ -610,13 +612,14 @@
             }
 
             input {
-                height: 20px;
-                padding: 0;
+                height: 20px !important;
+                padding: 0 !important;
+                margin: 0 !important;
             }
 
             textarea {
                 height: 66px;
-                padding: 0;
+                padding: 0 !important;
             }
 
         }

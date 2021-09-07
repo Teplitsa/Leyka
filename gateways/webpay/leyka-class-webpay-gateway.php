@@ -1,4 +1,4 @@
-<?php if( !defined('WPINC') ) die;
+<?php if( !defined('WPINC') ) { die; }
 /**
  * Leyka_Webpay_Gateway class
  */
@@ -82,7 +82,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
-        $donation = new Leyka_Donation($donation_id);
+        $donation = Leyka_Donations::get_instance()->get($donation_id);
 
         if( !empty($form_data['leyka_recurring']) ) {
 
@@ -99,7 +99,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
 
     public function submission_form_data($form_data, $pm_id, $donation_id) {
 
-        $donation = new Leyka_Donation($donation_id);
+        $donation = Leyka_Donations::get_instance()->get($donation_id);
 
         $seed = time();
         $is_test_mode = leyka_options()->opt('webpay_test_mode') ? '1' : '0';
@@ -152,7 +152,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
 
     }
 
-    protected function _handle_callback_error($error_message = '', Leyka_Donation $donation = null) {
+    protected function _handle_callback_error($error_message = '', Leyka_Donation_Base $donation = null) {
 
         echo sprintf(__('%s callback error: %s', 'leyka'), $this->_title, trim(esc_attr($error_message)));
 
@@ -200,7 +200,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
             $this->_handle_callback_error(__('No donation ID given', 'leyka'));
         }
 
-        $donation = new Leyka_Donation($_POST['site_order_id']);
+        $donation = Leyka_Donations::get_instance()->get($_POST['site_order_id']);
         if( !$donation ) {
             $this->_handle_callback_error(sprintf(__('Unknown donation ID given: %s', 'leyka'), $_POST['site_order_id']));
         }
@@ -267,14 +267,13 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
 
         }
 
-        $donation_status = $this->_get_donation_status(absint($_POST['payment_type']));
-        $donation->status = $donation_status;
+        $donation->status = $this->_get_donation_status(absint($_POST['payment_type']));
 
         $donation->add_gateway_response($_POST);
 
-        if($donation_status === 'funded') {
+        if($donation->status === 'funded') {
             Leyka_Donation_Management::send_all_emails($donation->id);
-        } else if($donation_status === 'failed' && leyka_options()->opt('notify_tech_support_on_failed_donations')) {
+        } else if($donation->status === 'failed' && leyka_options()->opt('notify_tech_support_on_failed_donations')) {
             Leyka_Donation_Management::send_error_notifications($donation);
         }
 
@@ -315,7 +314,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
 
     }
 
-    public function get_gateway_response_formatted(Leyka_Donation $donation) {
+    public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {
 
         if( !$donation->gateway_response ) {
             return array();
@@ -330,9 +329,6 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
             .$response['site_order_id'].$response['transaction_id'].$response['payment_type'].$response['rrn']
             .leyka_options()->opt($this->_id.'_secret_key');
 
-        echo '<pre>'.print_r($response, 1).'</pre>';
-        echo '<pre>'.print_r($calculated.' - '.md5($calculated), 1).'</pre>';
-
         $response = array(
             __('Callback received at:', 'leyka') => empty($response['batch_timestamp']) ?
                 '-' : date_i18n(get_option('date_format').' '.get_option('time_format'), $response['batch_timestamp']),
@@ -345,11 +341,11 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
             __('Payment type:', 'leyka') => empty($response['payment_type']) ? '-' : $response['payment_type'],
             __('RRN:', 'leyka') => empty($response['rrn']) ? '-' : $response['rrn'],
             __('Digital signature:', 'leyka') => empty($response['wsb_signature']) ? '-' : $response['wsb_signature'],
-//            __('Calculated signature:', 'leyka') => md5(
-//                $response['batch_timestamp'].$response['currency_id'].$response['amount'].$response['payment_method'].$response['order_id']
-//                .$response['site_order_id'].$response['transaction_id'].$response['payment_type'].$response['rrn']
-//                .leyka_options()->opt($this->_id.'_secret_key')
-//            ),
+            __('Calculated signature:', 'leyka') => md5(
+                $response['batch_timestamp'].$response['currency_id'].$response['amount'].$response['payment_method'].$response['order_id']
+                .$response['site_order_id'].$response['transaction_id'].$response['payment_type'].$response['rrn']
+                .leyka_options()->opt($this->_id.'_secret_key')
+            ),
             __('Action:', 'leyka') => isset($response['action']) ? $response['action'] : '-',
             __('RC', 'leyka') => empty($response['rc']) ? '-' : $response['rc'],
             __('Approval:', 'leyka') => empty($response['approval']) ? '-' : $response['approval'],
@@ -369,7 +365,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
 
         }
 
-        return $response;
+        return apply_filters('leyka_donation_gateway_response', $response, $donation);
 
     }
 
@@ -377,7 +373,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
 
         if($donation) { // Edit donation page displayed
 
-            $donation = leyka_get_validated_donation($donation);?>
+            $donation = Leyka_Donations::get_instance()->get_donation($donation);?>
 
             <label><?php _e('WebPay order ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
@@ -473,47 +469,47 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
 
     }
 
-    public function get_specific_data_value($value, $field_name, Leyka_Donation $donation) {
+    public function get_specific_data_value($value, $field_name, Leyka_Donation_Base $donation) {
         switch($field_name) {
             case 'webpay_order_id':
-                return get_post_meta($donation->id, '_webpay_order_id', true);
+                return Leyka_Donations::get_instance()->get_donation_meta($donation->id, '_webpay_order_id');
             case 'webpay_transaction_id':
-                return get_post_meta($donation->id, '_webpay_transaction_id', true);
+                return Leyka_Donations::get_instance()->get_donation_meta($donation->id, '_webpay_transaction_id');
             case 'webpay_rrn':
-                return get_post_meta($donation->id, '_webpay_rrn', true);
+                return Leyka_Donations::get_instance()->get_donation_meta($donation->id, '_webpay_rrn');
             case 'webpay_approval':
-                return get_post_meta($donation->id, '_webpay_approval', true);
+                return Leyka_Donations::get_instance()->get_donation_meta($donation->id, '_webpay_approval');
             case 'webpay_customer_id':
-                return get_post_meta($donation->id, '_webpay_customer_id', true);
+                return Leyka_Donations::get_instance()->get_donation_meta($donation->id, '_webpay_customer_id');
             case 'webpay_recurring_token':
-                return get_post_meta($donation->id, '_webpay_recurring_token', true);
+                return Leyka_Donations::get_instance()->get_donation_meta($donation->id, '_webpay_recurring_token');
             case 'webpay_card_expiring_date':
-                return get_post_meta($donation->id, '_webpay_card_expiring_date', true);
+                return Leyka_Donations::get_instance()->get_donation_meta($donation->id, '_webpay_card_expiring_date');
             default: return $value;
         }
     }
 
-    public function set_specific_data_value($field_name, $value, Leyka_Donation $donation) {
+    public function set_specific_data_value($field_name, $value, Leyka_Donation_Base $donation) {
         switch($field_name) {
             case 'webpay_order_id':
-                return update_post_meta($donation->id, '_webpay_order_id', $value);
+                return Leyka_Donations::get_instance()->set_donation_meta($donation->id, '_webpay_order_id', $value);
             case 'webpay_transaction_id':
-                return update_post_meta($donation->id, '_webpay_transaction_id', $value);
+                return Leyka_Donations::get_instance()->set_donation_meta($donation->id, '_webpay_transaction_id', $value);
             case 'webpay_rrn':
-                return update_post_meta($donation->id, '_webpay_rrn', $value);
+                return Leyka_Donations::get_instance()->set_donation_meta($donation->id, '_webpay_rrn', $value);
             case 'webpay_approval':
-                return update_post_meta($donation->id, '_webpay_approval', $value);
+                return Leyka_Donations::get_instance()->set_donation_meta($donation->id, '_webpay_approval', $value);
             case 'webpay_customer_id':
-                return update_post_meta($donation->id, '_webpay_customer_id', $value);
+                return Leyka_Donations::get_instance()->set_donation_meta($donation->id, '_webpay_customer_id', $value);
             case 'webpay_recurring_token':
-                return update_post_meta($donation->id, '_webpay_recurring_token', $value);
+                return Leyka_Donations::get_instance()->set_donation_meta($donation->id, '_webpay_recurring_token', $value);
             case 'webpay_card_expiring_date':
-                return update_post_meta($donation->id, '_webpay_card_expiring_date', $value);
+                return Leyka_Donations::get_instance()->set_donation_meta($donation->id, '_webpay_card_expiring_date', $value);
             default: return false;
         }
     }
 
-    public function save_donation_specific_data(Leyka_Donation $donation) {
+    public function save_donation_specific_data(Leyka_Donation_Base $donation) {
 
         if(isset($_POST['webpay-order-id']) && $donation->webpay_order_id != $_POST['webpay-order-id']) {
             $donation->webpay_order_id = $_POST['webpay-order-id'];
@@ -538,33 +534,41 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
 
     }
 
-    public function add_donation_specific_data($donation_id, array $donation_params) {
+    public function add_donation_specific_data($donation_id, array $params) {
 
-        if( !empty($donation_params['webpay_order_id']) ) {
-            update_post_meta($donation_id, '_webpay_order_id', $donation_params['webpay_order_id']);
+        if( !empty($params['webpay_order_id']) ) {
+            Leyka_Donations::get_instance()->set_donation_meta($donation_id, '_webpay_order_id', $params['webpay_order_id']);
         }
-        if( !empty($donation_params['webpay_transaction_id']) ) {
-            update_post_meta($donation_id, '_webpay_transaction_id', $donation_params['webpay_transaction_id']);
+        if( !empty($params['webpay_transaction_id']) ) {
+            Leyka_Donations::get_instance()->set_donation_meta(
+                $donation_id, '_webpay_transaction_id', $params['webpay_transaction_id']
+            );
         }
-        if( !empty($donation_params['webpay_rrn']) ) {
-            update_post_meta($donation_id, '_webpay_rrn', $donation_params['webpay_rrn']);
+        if( !empty($params['webpay_rrn']) ) {
+            Leyka_Donations::get_instance()->set_donation_meta($donation_id, '_webpay_rrn', $params['webpay_rrn']);
         }
-        if( !empty($donation_params['webpay_approval']) ) {
-            update_post_meta($donation_id, '_webpay_approval', $donation_params['webpay_approval']);
+        if( !empty($params['webpay_approval']) ) {
+            Leyka_Donations::get_instance()->set_donation_meta($donation_id, '_webpay_approval', $params['webpay_approval']);
         }
-        if( !empty($donation_params['webpay_customer_id']) ) {
-            update_post_meta($donation_id, '_webpay_customer_id', $donation_params['webpay_customer_id']);
+        if( !empty($params['webpay_customer_id']) ) {
+            Leyka_Donations::get_instance()->set_donation_meta(
+                $donation_id, '_webpay_customer_id', $params['webpay_customer_id']
+            );
         }
-        if( !empty($donation_params['webpay_recurring_token']) ) {
-            update_post_meta($donation_id, '_webpay_recurring_token', $donation_params['webpay_recurring_token']);
+        if( !empty($params['webpay_recurring_token']) ) {
+            Leyka_Donations::get_instance()->set_donation_meta(
+                $donation_id, '_webpay_recurring_token', $params['webpay_recurring_token']
+            );
         }
-        if( !empty($donation_params['webpay_card_expiring_date']) ) {
-            update_post_meta($donation_id, '_webpay_card_expiring_date', $donation_params['webpay_card_expiring_date']);
+        if( !empty($params['webpay_card_expiring_date']) ) {
+            Leyka_Donations::get_instance()->set_donation_meta(
+                $donation_id, '_webpay_card_expiring_date', $params['webpay_card_expiring_date']
+            );
         }
 
     }
 
-    public function do_recurring_donation(Leyka_Donation $init_recurring_donation) {
+    public function do_recurring_donation(Leyka_Donation_Base $init_recurring_donation) {
 
         if( !$init_recurring_donation->webpay_customer_id) {
             return false;
@@ -577,7 +581,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
 
         }
 
-        $new_recurring_donation = Leyka_Donation::add_clone(
+        $new_recurring_donation = Leyka_Donations::get_instance()->add_clone(
             $init_recurring_donation,
             array(
                 'status' => 'submitted',

@@ -14,30 +14,30 @@
             <?php $metaboxes_area_id = 'dashboard_page_leyka_help';?>
             <input type="hidden" class="leyka-support-metabox-area" value="<?php echo $metaboxes_area_id;?>">
 
-            <?php do_meta_boxes($metaboxes_area_id, 'normal', null);?>
+            <?php do_meta_boxes($metaboxes_area_id, 'normal', NULL);?>
 
             <div class="leyka-content-row wizards-row">
 
-                <?php $this->show_admin_portlet('wizard-inner-ad', array(
+                <?php $this->show_admin_portlet('wizard-inner-ad', [
                     'title' => __('Base setup', 'leyka'),
                     'subtitle' => __('Setup Wizard', 'leyka'),
                     'text' => __("You installed the Leyka plugin, all that's left is to set it up. We will guide you through all the steps and help with tips.", 'leyka'),
                     'wizard_link' => admin_url('admin.php?page=leyka_settings_new&screen=wizard-init'),
-                ));
+                ]);
 
-                $this->show_admin_portlet('wizard-inner-ad', array(
+                $this->show_admin_portlet('wizard-inner-ad', [
                     'title' => __('YooKassa', 'leyka'),
                     'subtitle' => __('Setup Wizard', 'leyka'),
                     'text' => leyka_get_gateway_by_id('yandex')->description,
                     'wizard_link' => admin_url('admin.php?page=leyka_settings_new&screen=wizard-yandex'),
-                ));
+                ]);
 
-                $this->show_admin_portlet('wizard-inner-ad', array(
+                $this->show_admin_portlet('wizard-inner-ad', [
                     'title' => __('CloudPayments', 'leyka'),
                     'subtitle' => __('Setup Wizard', 'leyka'),
                     'text' => leyka_get_gateway_by_id('cp')->description,
                     'wizard_link' => admin_url('admin.php?page=leyka_settings_new&screen=wizard-cp'),
-                ));?>
+                ]);?>
 
             </div>
 

@@ -10,7 +10,9 @@
 @import 'wizard_yandex';
 @import 'loader';
 @import 'settings_sections';
+@import 'donations_list';
 @import 'campaign_edit';
+@import 'donation_edit';
 
 @import 'dashboard_presets';
 @import 'dashboard_typo';
@@ -26,8 +28,10 @@
 @import 'donors_typo';
 @import 'donors_mixins';
 @import 'donors';
+@import 'donors_list';
+@import 'donor_edit';
 
-@import 'recurring_subscriptions';
+@import 'recurring_subscriptions_list';
 
 @import 'extensions';
 

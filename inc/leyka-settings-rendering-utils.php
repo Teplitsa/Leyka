@@ -912,10 +912,13 @@ function leyka_render_additional_fields_library_settings($option_id, $data = arr
         <div id="<?php echo $placeholders['id'] ? $placeholders['id'] : 'item-'.leyka_get_random_string(4);?>" class="multi-valued-item-box field-box <?php echo $is_template ? 'item-template' : '';?> <?php echo !$is_template && !empty($_COOKIE['leyka-additional-fields-boxes-closed']) && !empty($placeholders['id']) && in_array($placeholders['id'], $_COOKIE['leyka-additional-fields-boxes-closed']) ? 'closed' : '';?>" <?php echo $is_template ? 'style="display: none;"' : '';?>>
 
             <h3 class="item-box-title ui-sortable-handle">
+
                 <span class="draggable"></span>
+
                 <span class="title" data-empty-box-title="<?php _e('New field', 'leyka');?>">
                     <?php echo esc_html($placeholders['box_title']);?>
                 </span>
+
             </h3>
 
             <div class="box-content">
@@ -923,34 +926,40 @@ function leyka_render_additional_fields_library_settings($option_id, $data = arr
                 <?php leyka_additional_form_field_main_subfields_html($placeholders);?>
 
                 <div class="single-line campaigns-list-select" <?php echo !!$placeholders['field_for_all_campaigns'] ? 'style="display:none;"' : '';?>>
+
                     <div class="option-block type-multiselect">
+
                         <div class="leyka-multiselect-field-wrapper">
 
                             <label>
                                 <span class="field-component title"><?php _e('Campaigns that will use the field', 'leyka');?></span>
                             </label>
 
-                            <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector autocomplete-input" value="" placeholder="<?php _e('Campaigns list', 'leyka');?>">
+                            <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector autocomplete-input leyka-js-dont-initialize-common-widget" value="" placeholder="<?php _e('Campaigns list', 'leyka');?>">
 
-                            <select class="autocomplete-select" name="campaigns[]" multiple="multiple">
+                            <select class="leyka-campaigns-select autocomplete-select" name="campaigns[]" multiple="multiple">
 
                                 <?php $campaigns = $placeholders['field_campaigns'] ?
-                                    leyka_get_campaigns_list(array(
+                                    leyka_get_campaigns_list([
                                         'include' => $placeholders['field_campaigns'], 'posts_per_page' => 20,
-                                    )) :
-                                    array();
+                                    ]) : [];
 
                                 foreach($campaigns as $campaign_id => $campaign_title) {?>
+
                                     <option value="<?php echo $campaign_id;?>" <?php echo is_array($placeholders['field_campaigns']) && in_array($campaign_id, $placeholders['field_campaigns']) ? 'selected="selected"' : '';?>>
                                         <?php echo $campaign_title;?>
                                     </option>
+
                                 <?php }?>
 
                             </select>
 
                         </div>
+
                         <div class="field-errors"></div>
+
                     </div>
+
                 </div>
 
                 <div class="single-line">
@@ -969,32 +978,36 @@ function leyka_render_additional_fields_library_settings($option_id, $data = arr
 
                 <div class="single-line campaigns-exceptions-list-select" <?php echo !!$placeholders['field_for_all_campaigns'] ? '' : 'style="display:none;"';?>>
                     <div class="option-block type-multiselect">
+
                         <div class="leyka-multiselect-field-wrapper">
 
                             <label>
                                 <span class="field-component title"><?php _e('Campaigns that will NOT use the field', 'leyka');?></span>
                             </label>
 
-                            <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector autocomplete-input" value="" placeholder="<?php _e('Campaigns list', 'leyka');?>">
+                            <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector autocomplete-input leyka-js-dont-initialize-common-widget" value="" placeholder="<?php _e('Campaigns list', 'leyka');?>">
 
-                            <select class="autocomplete-select" name="campaigns_exceptions[]" multiple="multiple">
+                            <select class="leyka-campaigns-select autocomplete-select" name="campaigns_exceptions[]" multiple="multiple">
 
                                 <?php $campaigns = $placeholders['field_campaigns_exceptions'] ?
-                                    leyka_get_campaigns_list(array(
+                                    leyka_get_campaigns_list([
                                         'include' => $placeholders['field_campaigns_exceptions'], 'posts_per_page' => 20,
-                                    )) :
-                                    array();
+                                    ]) : [];
 
                                 foreach($campaigns as $campaign_id => $campaign_title) {?>
+
                                     <option value="<?php echo $campaign_id;?>" <?php echo is_array($placeholders['field_campaigns']) && in_array($campaign_id, $placeholders['field_campaigns']) ? 'selected="selected"' : '';?>>
                                         <?php echo $campaign_title;?>
                                     </option>
+
                                 <?php }?>
 
                             </select>
 
                         </div>
+
                         <div class="field-errors"></div>
+
                     </div>
                 </div>
 

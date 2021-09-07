@@ -85,10 +85,10 @@ $font-body: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, 
 }
 
 @mixin multiselect-input-typo() {
-    font-family: $font-body;
+    font-family: $font-body !important;
     font-weight: normal;
     font-style: normal;
-    font-size: 13px;
+    font-size: 13px !important;
     line-height: 16px;
 }
 

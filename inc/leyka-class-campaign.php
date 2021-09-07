@@ -378,7 +378,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <h3 class="field-title">
                 <label for="campaign-target">
-                    <?php echo sprintf(__('Target (%s)', 'leyka'), leyka_options()->opt('currency_rur_label'));?>
+                    <?php echo sprintf(__('Target (%s)', 'leyka'), leyka_get_currency_label());?>
                 </label>
             </h3>
 
@@ -414,6 +414,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                 <input type="checkbox" id="is-finished" name="is_finished" value="1" <?php echo $campaign->is_finished ? 'checked' : '';?>> <?php _e('Donations collection stopped', 'leyka');?>
             </label>
         </fieldset>
+
 	    <?php }?>
 
         <fieldset id="campaign-css" class="metabox-field campaign-field campaign-css">
@@ -431,81 +432,81 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             <div class="field-wrapper css-editor">
 
                 <?php $campaign_css_original = array(
-                     'star' => '/* :root { --leyka-color-main: #ff510d; } */ ' .
-                        '/* ' . __('Active buttons & switches background color', 'leyka' ) . ' */' . "\n" .
-                        '/* :root { --leyka-color-main-second: #ffc29f; } */ ' .
-                        '/* ' . __( 'Controls borders color', 'leyka' ) . ' */' . "\n" .
-                        '/* :root { --leyka-color-text-light: #ffffff; } */ ' .
-                        '/* ' . __( 'Active buttons & switches text color', 'leyka' ) . ' */' . "\n" .
-                        '/* :root { --leyka-color-main-third: #fef5f1; } */ ' .
-                        '/* ' . __( 'Selected payment method background color', 'leyka' ) . ' */' . "\n" .
-                        '/* :root { --leyka-color-main-inactive: rgba(255,81,13, 0.5); } */ ' .
-                        '/* ' . __( 'Inactive main submit background color', 'leyka' ) . ' */' . "\n" .
-                        '/* :root { --leyka-color-error: #d43c57; } */ ' .
-                        '/* ' . __( 'Error messages text color', 'leyka' ) . ' */' . "\n" .
-                        '/* :root { --leyka-color-gray-dark: #474747; } */ ' .
-                        '/* ' . __( 'The main text color (controls & content)', 'leyka' ) . ' */' . "\n" .
-                        '/* :root { --leyka-color-gray-semi-dark: #656565; } */ ' .
-                        '/* ' . __( 'Single/recurring switch inactive variant text color', 'leyka' ) . ' */' . "\n" .
-                        '/* :root { --leyka-color-gray: #666666; } */ ' .
-                        '/* ' . __( 'Form fields labels color', 'leyka' ) . ' */' . "\n" .
-                        '/* :root { --leyka-color-gray-superlight: #ededed; } */ ' .
-                        '/* ' . __( 'Checkboxes & other fields borders color', 'leyka' ) . ' */' . "\n" .
-                        '/* :root { --leyka-color-white: #ffffff; } */ ' .
-                        '/* ' . __( 'The main form background color', 'leyka' ) . ' */' . "\n" .
-                        '/* :root { --leyka-font-main: unset; } */ ' .
-                        '/* ' . __( 'The main form font family', 'leyka' ) . ' */' . "\n" .
-                        '/* :root { --leyka-color-gradient: #ffffff; } */ ' .
-                        '/* ' . __( 'Payment methods selector gradient color', 'leyka' ) . ' */' . "\n",
+                     'star' => '/* :root { --leyka-color-main: #ff510d; } */ '.
+                        '/* '.__('Active buttons & switches background color', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-color-main-second: #ffc29f; } */ '.
+                        '/* '.__( 'Controls borders color', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-color-text-light: #ffffff; } */ '.
+                        '/* '.__( 'Active buttons & switches text color', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-color-main-third: #fef5f1; } */ '.
+                        '/* '.__( 'Selected payment method background color', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-color-main-inactive: rgba(255,81,13, 0.5); } */ '.
+                        '/* '.__( 'Inactive main submit background color', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-color-error: #d43c57; } */ '.
+                        '/* '.__( 'Error messages text color', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-color-gray-dark: #474747; } */ '.
+                        '/* '.__( 'The main text color (controls & content)', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-color-gray-semi-dark: #656565; } */ '.
+                        '/* '.__( 'Single/recurring switch inactive variant text color', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-color-gray: #666666; } */ '.
+                        '/* '.__( 'Form fields labels color', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-color-gray-superlight: #ededed; } */ '.
+                        '/* '.__( 'Checkboxes & other fields borders color', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-color-white: #ffffff; } */ '.
+                        '/* '.__( 'The main form background color', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-font-main: unset; } */ '.
+                        '/* '.__( 'The main form font family', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-color-gradient: #ffffff; } */ '.
+                        '/* '.__( 'Payment methods selector gradient color', 'leyka' ).' */'."\n",
 
-                    'need-help' => '/* :root { --leyka-need-help-color-main: #000000; } */ ' .
-                        '/* ' . __( 'Active buttons & switches highlight color', 'leyka' ) . ' */' . "\n".
-                        '/* :root { --leyka-need-help-color-main-second: #000000; } */ ' .
-                        '/* ' . __( 'Secondary elements color', 'leyka' ) . ' */' . "\n".
-                        '/* :root { --leyka-need-help-color-main-inactive: #CCCCCC; } */ ' .
-                        '/* ' . __( 'The inactive elements color. Most of the times, the main color with lighter shade', 'leyka' ) . ' */' . "\n".
-                        '/* :root { --leyka-need-help-color-form-background: #FAFAFA; } */ ' .
-                        '/* ' . __( 'Form background color', 'leyka' ) . ' */' . "\n".
-                        '/* :root { --leyka-need-help-color-blocks-border: #E6E6E6; } */ ' .
-                        '/* ' . __( 'Form blocks border color', 'leyka' ) . ' */' . "\n".
-                        '/* :root { --leyka-need-help-color-blocks-background: #FFFFFF; } */ ' .
-                        '/* ' . __( 'Form blocks background color', 'leyka' ) . ' */' . "\n".
-                        '/* :root { --leyka-need-help-color-blocks-active-border: var(--leyka-need-help-color-main); } */ ' .
-                        '/* ' . __( 'Form active blocks border color', 'leyka' ) . ' */' . "\n".
-                        '/* :root { --leyka-need-help-color-blocks-active-background: var(--leyka-need-help-color-blocks-background); } */ ' .
-                        '/* ' . __( 'Form active blocks background color', 'leyka' ) . ' */' . "\n".
-                        '/* :root { --leyka-need-help-color-error: var(--leyka-need-help-color-error); } */ ' .
-                        '/* ' . __( 'Form error messages color', 'leyka' ) . ' */' . "\n".
-                        '/* :root { --leyka-need-help-color-text: #2A2A2A; } */ ' .
-                        '/* ' . __( 'Form text color', 'leyka' ) . ' */' . "\n".
-                        '/* :root { --leyka-need-help-color-text-light: #666666; } */ ' .
-                        '/* ' . __( 'Form text color, lighter shade', 'leyka' ) . ' */' . "\n".
-                        '/* :root { --leyka-need-help-color-text-superlight: #999999; } */ ' .
-                        '/* ' . __( 'Form text color, the most light shade', 'leyka' ) . ' */' . "\n".
-                        '/* :root { --leyka-need-help-color-text-dark-bg: #FFFFFF; } */ ' .
-                        '/* ' . __( 'Form text color, for elements with dark background', 'leyka' ) . ' */' . "\n".
-                        '/* :root { --leyka-need-help-font-family-main: Inter, sans-serif; } */ ' .
-                        '/* ' . __( 'Form text font', 'leyka' ) . ' */' . "\n".
-                        '/* :root { --leyka-need-help-font-family-blocks: Inter, sans-serif; } */ ' .
-                        '/* ' . __( 'Form blocks text font', 'leyka' ) . ' */' . "\n".
-                        '/* :root { --leyka-need-help-font-family-submit: Inter, sans-serif; } */ ' .
-                        '/* ' . __( 'Form submit text font', 'leyka' ) . ' */' . "\n".
-                        '/* :root { --leyka-need-help-font-family-section-titles: Inter, sans-serif; } */ ' .
-                        '/* ' . __( 'Form sections titles text font', 'leyka' ) . ' */' . "\n".
-                        '/* :root { --leyka-need-help-font-size-main: 16px; } */ ' .
-                        '/* ' . __( 'Form text size', 'leyka' ) . ' */' . "\n".
-                        '/* :root { --leyka-need-help-font-size-blocks-default: 16px; } */ ' .
-                        '/* ' . __( 'Form blocks text size', 'leyka' ) . ' */' . "\n".
-                        '/* :root { --leyka-need-help-font-size-amounts: 16px; } */ ' .
-                        '/* ' . __( 'Donation amount blocks text size', 'leyka' ) . ' */' . "\n".
-                        '/* :root { --leyka-need-help-font-size-pm-options: 12px; } */ ' .
-                        '/* ' . __( 'Payment method blocks text size', 'leyka' ) . ' */' . "\n".
-                        '/* :root { --leyka-need-help-font-size-donor-fields: 16px; } */ ' .
-                        '/* ' . __( 'Donor data fields text size', 'leyka' ) . ' */' . "\n".
-                        '/* :root { --leyka-need-help-font-size-submit: 16px; } */ ' .
-                        '/* ' . __( 'Form submit text size', 'leyka' ) . ' */' . "\n".
-                        '/* :root { --leyka-need-help-font-size-section-titles: 18px; } */ ' .
-                        '/* ' . __( 'Form sections titles text size', 'leyka' ) . ' */' . "\n"
+                    'need-help' => '/* :root { --leyka-need-help-color-main: #000000; } */ '.
+                        '/* '.__( 'Active buttons & switches highlight color', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-need-help-color-main-second: #000000; } */ '.
+                        '/* '.__( 'Secondary elements color', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-need-help-color-main-inactive: #CCCCCC; } */ '.
+                        '/* '.__( 'The inactive elements color. Most of the times, the main color with lighter shade', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-need-help-color-form-background: #FAFAFA; } */ '.
+                        '/* '.__( 'Form background color', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-need-help-color-blocks-border: #E6E6E6; } */ '.
+                        '/* '.__( 'Form blocks border color', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-need-help-color-blocks-background: #FFFFFF; } */ '.
+                        '/* '.__( 'Form blocks background color', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-need-help-color-blocks-active-border: var(--leyka-need-help-color-main); } */ '.
+                        '/* '.__( 'Form active blocks border color', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-need-help-color-blocks-active-background: var(--leyka-need-help-color-blocks-background); } */ '.
+                        '/* '.__( 'Form active blocks background color', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-need-help-color-error: var(--leyka-need-help-color-error); } */ '.
+                        '/* '.__( 'Form error messages color', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-need-help-color-text: #2A2A2A; } */ '.
+                        '/* '.__( 'Form text color', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-need-help-color-text-light: #666666; } */ '.
+                        '/* '.__( 'Form text color, lighter shade', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-need-help-color-text-superlight: #999999; } */ '.
+                        '/* '.__( 'Form text color, the most light shade', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-need-help-color-text-dark-bg: #FFFFFF; } */ '.
+                        '/* '.__( 'Form text color, for elements with dark background', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-need-help-font-family-main: Inter, sans-serif; } */ '.
+                        '/* '.__( 'Form text font', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-need-help-font-family-blocks: Inter, sans-serif; } */ '.
+                        '/* '.__( 'Form blocks text font', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-need-help-font-family-submit: Inter, sans-serif; } */ '.
+                        '/* '.__( 'Form submit text font', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-need-help-font-family-section-titles: Inter, sans-serif; } */ '.
+                        '/* '.__( 'Form sections titles text font', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-need-help-font-size-main: 16px; } */ '.
+                        '/* '.__( 'Form text size', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-need-help-font-size-blocks-default: 16px; } */ '.
+                        '/* '.__( 'Form blocks text size', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-need-help-font-size-amounts: 16px; } */ '.
+                        '/* '.__( 'Donation amount blocks text size', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-need-help-font-size-pm-options: 12px; } */ '.
+                        '/* '.__( 'Payment method blocks text size', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-need-help-font-size-donor-fields: 16px; } */ '.
+                        '/* '.__( 'Donor data fields text size', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-need-help-font-size-submit: 16px; } */ '.
+                        '/* '.__( 'Form submit text size', 'leyka' ).' */'."\n".
+                        '/* :root { --leyka-need-help-font-size-section-titles: 18px; } */ '.
+                        '/* '.__( 'Form sections titles text size', 'leyka' ).' */'."\n"
                 );
 
                 $additional_css_used = $campaign->additional_css && !in_array(
@@ -986,58 +987,37 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
     /**
      * @param $campaign WP_Post
      */
-    public function donations_meta_box(WP_Post $campaign) { $campaign = new Leyka_Campaign($campaign);?>
+    public function donations_meta_box(WP_Post $campaign) {
+
+        $campaign = new Leyka_Campaign($campaign);?>
 
         <div>
-            <a class="button" href="<?php echo admin_url('/post-new.php?post_type=leyka_donation&campaign_id='.$campaign->id);?>"><?php _e('Add correctional donation', 'leyka');?></a>
+            <a class="button" href="<?php echo admin_url('admin.php?page=leyka_donation_info&campaign_id='.$campaign->id);?>"><?php _e('Add correctional donation', 'leyka');?></a>
         </div>
 
-        <table id="donations-data-table" class="leyka-data-table">
+        <table id="donations-data-table" class="leyka-data-table campaign-donations-table" data-campaign-id="<?php echo $campaign->id;?>">
             <thead>
                 <tr>
                     <td><?php _e('ID', 'leyka');?></td>
-                    <td><?php _e('Amount', 'leyka');?></td>
-                    <td><?php _e('Donor', 'leyka');?></td>
-                    <td><?php _e('Method', 'leyka');?></td>
-                    <td><?php _e('Date', 'leyka');?></td>
-                    <td><?php _e('Status', 'leyka');?></td>
                     <td><?php _e('Payment type', 'leyka');?></td>
-                    <td><?php _e('Actions', 'leyka');?></td>
+                    <td><?php _e('Donor', 'leyka');?></td>
+                    <td><?php _e('Amount', 'leyka');?></td>
+                    <td><?php _e('Date', 'leyka');?></td>
+                    <td><?php _e('Payment method', 'leyka');?></td>
                 </tr>
             </thead>
             <tfoot>
                 <tr>
                     <td><?php _e('ID', 'leyka');?></td>
-                    <td><?php _e('Amount', 'leyka');?></td>
-                    <td><?php _e('Donor', 'leyka');?></td>
-                    <td><?php _e('Method', 'leyka');?></td>
-                    <td><?php _e('Date', 'leyka');?></td>
-                    <td><?php _e('Status', 'leyka');?></td>
                     <td><?php _e('Payment type', 'leyka');?></td>
-                    <td><?php _e('Actions', 'leyka');?></td>
-            </tr>
+                    <td><?php _e('Donor', 'leyka');?></td>
+                    <td><?php _e('Amount', 'leyka');?></td>
+                    <td><?php _e('Date', 'leyka');?></td>
+                    <td><?php _e('Payment method', 'leyka');?></td>
+                </tr>
             </tfoot>
 
-            <tbody>
-            <?php foreach($campaign->get_donations(array('submitted', 'funded', 'refunded', 'failed')) as $donation) {
-
-                $gateway_label = $donation->gateway_id ? $donation->gateway_label : __('Custom payment info', 'leyka');
-                $pm_label = $donation->gateway_id ? $donation->pm_label : $donation->pm;
-				$amount_css = $donation->sum < 0 ? 'amount-negative' : 'amount';?>
-
-                <tr <?php echo $donation->type == 'correction' ? 'class="leyka-donation-row-correction"' : '';?>>
-                    <td><?php echo $donation->id;?></td>
-                    <td><?php echo '<span class="'.$amount_css.'">'.$donation->sum.'&nbsp;'.$donation->currency_label.'</span>';?></td>
-                    <td><?php echo $donation->donor_name ? $donation->donor_name : __('Anonymous', 'leyka');?></td>
-                    <td><?php echo $pm_label.' ('.mb_strtolower($gateway_label).')';?></td>
-                    <td><?php echo $donation->date;?></td>
-                    <td><?php echo '<i class="'.esc_attr($donation->status).'">'.mb_ucfirst($donation->status_label).'</i>';?></td>
-                    <td><?php echo mb_ucfirst($donation->payment_type_label);?></td>
-                    <td><a href="<?php echo admin_url("/post.php?post={$donation->id}&action=edit");?>"><?php echo __('Edit', 'leyka');?></a></td>
-                </tr>
-
-            <?php }?>
-            </tbody>
+            <tbody><?php // All table data will be received via AJAX ?></tbody>
         </table>
     <?php
     }
@@ -1530,10 +1510,6 @@ class Leyka_Campaign {
         $additional_fields_library = leyka_options()->opt('additional_donation_form_fields_library');
         $campaign_additional_fields = array();
 
-//        if( !is_array($this->additional_fields_settings) ) {
-//            echo '<pre>HERE: '.print_r($this->additional_fields_settings, 1).'</pre>';
-//        }
-
         foreach($this->additional_fields_settings as $field_id) {
 
             if( !is_string($field_id) || empty($additional_fields_library[$field_id]) ) {
@@ -1680,7 +1656,9 @@ class Leyka_Campaign {
                 return $this->_post_object ? $this->_post_object->post_excerpt : '';
 
             case 'post_name': return $this->_post_object ? $this->_post_object->post_name : '';
-            case 'status': return $this->_post_object ? $this->_post_object->post_status : '';
+            case 'status':
+            case 'post_status':
+                return $this->_post_object ? $this->_post_object->post_status : '';
 
             case 'permalink':
             case 'url':
@@ -1726,7 +1704,7 @@ class Leyka_Campaign {
 
             case 'daily_rouble_mode':
             case 'daily_rouble_mode_on':
-                return $this->_campaign_meta['daily_rouble_mode'];
+                return $this->template_id === 'need-help' ? $this->_campaign_meta['daily_rouble_mode'] : false;
             case 'daily_rouble_amounts':
             case 'daily_rouble_amount_variants':
                 return $this->_campaign_meta['daily_rouble_amount_variants'];
@@ -1823,11 +1801,11 @@ class Leyka_Campaign {
     }
 
     /**
-     * Get all donations of the campaign with given statuses.
+     * Get all Donations of the Campaign with given statuses.
      * NOTE: This method is to be called after init (1), or else it will return an empty array.
      *
-     * @param $status array Of leyka donation statuses.
-     * @return array Of Leyka_Donation objects.
+     * @param $status array Of Leyka Donation statuses.
+     * @return array Of Leyka_Donation_Base objects.
      */
     public function get_donations(array $status = array()) {
 
@@ -1835,20 +1813,26 @@ class Leyka_Campaign {
             return array();
         }
 
-        $donations = get_posts(array(
-            'post_type' => Leyka_Donation_Management::$post_type,
-            'post_status' => $status ? $status : array('submitted', 'funded', 'refunded', 'failed', 'trash',),
-            'nopaging' => true,
-            'meta_key' => 'leyka_campaign_id',
-            'meta_value' => $this->_id,
+        return Leyka_Donations::get_instance()->get(array(
+            'status' => $status ? $status : array('submitted', 'funded', 'refunded', 'failed',),
+            'get_all' => true,
+            'campaign_id' => $this->_id,
         ));
 
-        $count = count($donations);
-        for($i = 0; $i < $count; $i++) {
-            $donations[$i] = new Leyka_Donation($donations[$i]->ID);
+    }
+
+    /** @todo Make the result a campaign meta instead of a method & refresh the meta like "total_amount" */
+    public function get_donations_count() {
+
+        if( !$this->_id ) {
+            return false;
         }
 
-        return $donations;
+        return Leyka_Donations::get_instance()->get_count(array(
+            'status' => array('submitted', 'funded', 'refunded', 'failed',),
+            'get_all' => true,
+            'campaign_id' => $this->_id,
+        ));
 
     }
 
@@ -1881,23 +1865,18 @@ class Leyka_Campaign {
             return false;
         }
 
-        $recurring_subscriptions = get_posts(array(
-            'post_type' => Leyka_Donation_Management::$post_type,
-            'post_status' => 'funded',
-            'meta_query' => array(
-                array('key' => 'leyka_campaign_id', 'value' => $this->_id,),
-                array('key' => 'leyka_payment_type', 'value' => 'rebill',),
-                array('key' => '_rebilling_is_active', 'value' => 0, 'compare' => '!='),
-            ),
-            'post_parent' => 0,
-            'nopaging' => true,
+        $recurring_subscriptions = Leyka_Donations::get_instance()->get(array(
+            'campaign_id' => $this->_id,
+            'status' => 'funded',
+            'recurring_only_init' => true,
+            'recurring_active' => true,
         ));
 
         $monthly_incoming_amount = 0.0;
-        foreach($recurring_subscriptions as $subscription) {
+        foreach($recurring_subscriptions as $init_donation) {
 
-            $subscription = new Leyka_Donation($subscription);
-            $monthly_incoming_amount += $subscription->amount;
+            $init_donation = Leyka_Donations::get_instance()->get_donation($init_donation);
+            $monthly_incoming_amount += $init_donation->amount;
 
         }
 
@@ -1977,7 +1956,7 @@ class Leyka_Campaign {
     }
 
     /**
-     * @param $donation Leyka_Donation|integer|false
+     * @param $donation Leyka_Donation_Base|integer|false
      * @param $action string
      * @param $old_sum float|false
      * @return $this|false
@@ -1986,6 +1965,7 @@ class Leyka_Campaign {
 
         if( !$donation ) { // Recalculate total collected amount for a campaign and recache it
 
+            /** @todo Optimize it for the case of MANY donations here! Make a sep method to get an amount_total metas sum() with one query. */
             $sum = 0.0;
             foreach($this->get_donations(array('funded')) as $donation) {
                 $sum += $donation->sum_total;
@@ -1994,16 +1974,16 @@ class Leyka_Campaign {
             $this->_campaign_meta['total_funded'] = $sum;
             update_post_meta($this->_id, 'total_funded', $this->_campaign_meta['total_funded']);
 
-        } else { // Add/subtract a sum of a donation from it's campaign metadata
+        } else { // Add/subtract a sum of a donation from its campaign metadata
 
-            $donation = leyka_get_validated_donation($donation);
+            $donation = Leyka_Donations::get_instance()->get_donation($donation);
             if( !$donation ) {
                 return false;
             }
 
-            if($action == 'remove') { // Subtract given donation's sum from campaign's total_funded
+            if($action === 'remove') { // Subtract given donation's sum from campaign's total_funded
                 $sum = -$donation->sum_total;
-            } else { // Add given donation's sum to campaign's total_funded
+            } else { // Add given donation sum to campaign's total_funded
 
                 $old_sum = $old_sum && (float)$old_sum ? round($old_sum, 2) : 0.0;
                 if($action == 'update_sum' && $old_sum) { // If donation sum was changed, subtract it from total_funded first

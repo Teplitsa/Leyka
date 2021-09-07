@@ -6,16 +6,14 @@
 class Leyka_Rbk_Gateway_Helper {
 
     public function __construct() {
-        add_action('funded_to_refunded', array($this, 'status_watcher'), 10, 1);
+        add_action('leyka_donation_status_funded_to_refunded', array($this, 'status_watcher'), 10);
     }
 
-    public function status_watcher($post) {
-        if($post->post_type == 'leyka_donation') {
-            $this->create_refund(new Leyka_Donation($post));
-        }
+    public function status_watcher(Leyka_Donation_Base $donation) {
+        $this->create_refund($donation);
     }
 
-    public function create_refund(Leyka_Donation $donation) {
+    public function create_refund(Leyka_Donation_Base $donation) {
 
         $log = maybe_unserialize($donation->gateway_response);
 
@@ -46,7 +44,6 @@ class Leyka_Rbk_Gateway_Helper {
         );
 
     }
-
 
 }
 

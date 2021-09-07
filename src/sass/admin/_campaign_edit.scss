@@ -270,3 +270,34 @@
     }
 
 }
+
+// Donations list metabox:
+#leyka_campaign_donations {
+
+    .column-amount .leyka-amount {
+
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: flex-start;
+
+        .icon-leyka-donation-status {
+            margin: 6px 12px 0 0;
+        }
+
+    }
+
+    .column-gateway_pm .leyka-gateway-name {
+
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+
+        img {
+            width: 20px;
+            height: 20px;
+        }
+
+    }
+
+}
+// Donations list metabox - END

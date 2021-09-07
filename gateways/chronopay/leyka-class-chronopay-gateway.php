@@ -79,8 +79,8 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
     public function submission_form_data($form_data, $pm_id, $donation_id) {
 
-        if(false === strpos($pm_id, 'chronopay')) {
-            return $form_data; // It's not our PM
+        if(mb_stripos($pm_id, 'chronopay') === false) {
+            return $form_data;
         }
 
         if(is_wp_error($donation_id)) { /** @var WP_Error $donation_id */
@@ -89,27 +89,26 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             return array('status' => 1, 'message' => __('The donation was not created due to error.', 'leyka'));
         }
 
-        $donation = new Leyka_Donation($donation_id);
+        $donation = Leyka_Donations::get_instance()->get($donation_id);
 
         if(empty($_POST['leyka_recurring'])) { // Single donation
 
-            $donation->payment_type = 'single';
-            $chronopay_product_id = leyka_options()->opt($pm_id.'_product_id_'.$donation->currency);
+            $donation->type = 'single';
+            $chronopay_product_id = leyka_options()->opt($pm_id.'_product_id_'.$donation->currency_id);
 
         } else { // Recurring donation
 
-            $donation->payment_type = 'rebill';
-            $chronopay_product_id = leyka_options()->opt($pm_id.'_rebill_product_id_'.$donation->currency);
+            $donation->type = 'rebill';
+            $chronopay_product_id = leyka_options()->opt($pm_id.'_rebill_product_id_'.$donation->currency_id);
 
         }
 
-        $price = number_format((float)$donation->amount, 2, '.', '');
+        $amount = number_format((float)$donation->amount, 2, '.', '');
+        $country = leyka_options()->opt_safe('receiver_country') === 'ru' ? 'RUS' : '';
 
-        $country = $donation->currency == 'rur' ? 'RUS' : '';
-
-        $form_data =  array(
+        $form_data = array(
             'product_id' => $chronopay_product_id,
-            'product_price' => $price,
+            'product_price' => $amount,
             'product_price_currency' => $this->_get_currency_id($donation->currency),
             'cs1' => esc_attr($donation->title), // Purpose of the donation
             'cs2' => $donation_id,
@@ -118,7 +117,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             'success_url' => leyka_maybe_encode_hostname_to_punycode(leyka_get_success_page_url()),
             'decline_url' => leyka_maybe_encode_hostname_to_punycode(leyka_get_failure_page_url()),
             'sign' => md5(
-                $chronopay_product_id.'-'.$price
+                $chronopay_product_id.'-'.$amount
                 .(leyka_options()->opt('chronopay_use_payment_uniqueness_control') ? '-'.$donation_id : '')
                 .'-'.leyka_options()->opt('chronopay_shared_sec')
             ),
@@ -152,15 +151,15 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
         // Test for gateway's IP:
         if(
-            leyka_options()->opt('chronopay_ip') &&
-            !in_array($client_ip, explode(',', leyka_options()->opt('chronopay_ip')))
+            leyka_options()->opt('chronopay_ip')
+            && !in_array($client_ip, explode(',', leyka_options()->opt('chronopay_ip')))
         ) { // Security fail
 
             $message = __("This message has been sent because a call to your ChronoPay function was made from an IP that did not match with the one in your Chronopay gateway setting. This could mean someone is trying to hack your payment website. The details of the call are below.", 'leyka')."\n\r\n\r";
 
             $message .= "POST:\n\r".print_r($_POST, true)."\n\r\n\r";
             $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
-            $message .= "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
+            $message .= "SERVER:\n\r".print_r(apply_filters('leyka_notification_server_data', $_SERVER), true)."\n\r\n\r";
             $message .= "IP: ".print_r($client_ip, true)."\n\r\n\r";
             $message .= "Chronopay IP setting value: ".print_r(leyka_options()->opt('chronopay_ip'),true)."\n\r\n\r";
 
@@ -184,7 +183,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
             $message .= "POST:\n\r".print_r($_POST, true)."\n\r\n\r";
             $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
-            $message .= "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
+            $message .= "SERVER:\n\r".print_r(apply_filters('leyka_notification_server_data', $_SERVER), true)."\n\r\n\r";
 
             wp_mail(get_option('admin_email'), __('Chronopay security key check failed!', 'leyka'), $message);
 
@@ -194,15 +193,15 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         }
 
         $_POST['cs2'] = (int)$_POST['cs2'];
-        $donation = new Leyka_Donation($_POST['cs2']);
+        $donation = Leyka_Donations::get_instance()->get($_POST['cs2']);
 
         if( !$donation->id || !$donation->campaign_id ) {
 
-            $message = __("This message has been sent because a call to your ChronoPay callbacks URL was made with a donation ID parameter (POST['order_id']) that Leyka is unknown of. The details of the call are below.", 'leyka')."\n\r\n\r";
+            $message = __("This message has been sent because a call to your ChronoPay callbacks URL was made with a donation ID parameter (POST['cs2']) that Leyka is unknown of. The details of the call are below.", 'leyka')."\n\r\n\r";
 
             $message .= "POST:\n\r".print_r($_POST, true)."\n\r\n\r";
             $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
-            $message .= "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
+            $message .= "SERVER:\n\r".print_r(apply_filters('leyka_notification_server_data', $_SERVER), true)."\n\r\n\r";
             $message .= "Donation ID: ".$_POST['cs2']."\n\r\n\r";
 
             wp_mail(get_option('admin_email'), __('Chronopay gives unknown donation ID parameter!', 'leyka'), $message);
@@ -212,20 +211,16 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
         }
 
-        $_POST['currency'] = strtolower($_POST['currency']);
-        if($_POST['currency'] == 'rub') {
-            $currency_string = 'rur';
-        } else if($_POST['currency'] == 'usd') {
-            $currency_string = 'usd';
-        } else if($_POST['currency'] == 'eur') {
-            $currency_string = 'eur';
+        $_POST['currency'] = mb_strtolower($_POST['currency']);
+        if(in_array($_POST['currency'], ['rub', 'usd', 'eur'])) {
+            $currency_id = mb_strtoupper($_POST['currency']);
         } else {
 
             $message = __("This message has been sent because a call to your ChronoPay callbacks URL was made with a currency parameter (POST['currency']) that Leyka is unknown of. The details of the call are below.", 'leyka')."\n\r\n\r";
 
             $message .= "POST:\n\r".print_r($_POST, true)."\n\r\n\r";
             $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
-            $message .= "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
+            $message .= "SERVER:\n\r".print_r(apply_filters('leyka_notification_server_data', $_SERVER), true)."\n\r\n\r";
 
             wp_mail(get_option('admin_email'), __('Chronopay gives unknown currency parameter!', 'leyka'), $message);
             status_header(200);
@@ -236,10 +231,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         // Store donation data - rebill payment:
         if(apply_filters(
             'leyka_chronopay_callback_is_recurring',
-            (
-                leyka_options()->opt('chronopay_card_rebill_product_id_'.$currency_string) &&
-                $_POST['product_id'] == leyka_options()->opt('chronopay_card_rebill_product_id_'.$currency_string)
-            ),
+            $_POST['product_id'] == leyka_options()->opt('chronopay_card_rebill_product_id_'.$currency_id),
             $_POST['product_id']
         )) {
 
@@ -272,9 +264,9 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
                 }
 
-                $init_recurring_donation = $this->get_init_recurrent_donation($customer_id);
+                $init_recurring_donation = $this->get_init_recurring_donation($customer_id);
 
-                $new_recurring_donation = Leyka_Donation::add_clone(
+                $new_recurring_donation = Leyka_Donations::get_instance()->add_clone(
                     $init_recurring_donation,
                     array(
                         'status' => 'funded',
@@ -295,8 +287,8 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             }
 
         } else if( // Single payment. For now, processing is just like initial rebills
-            leyka_options()->opt('chronopay_card_product_id_'.$currency_string) &&
-            $_POST['product_id'] == leyka_options()->opt('chronopay_card_product_id_'.$currency_string)
+            leyka_options()->opt('chronopay_card_product_id_'.$currency_id)
+            && $_POST['product_id'] == leyka_options()->opt('chronopay_card_product_id_'.$currency_id)
         ) {
             if($donation->status != 'funded') {
 
@@ -355,70 +347,49 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
     }
 
-    public function get_init_recurrent_donation($recurring) {
+    public function get_init_recurring_donation($recurring) {
 
-        if(is_a($recurring, 'Leyka_Donation')) {
+        if(is_a($recurring, 'Leyka_Donation_Base')) {
             $recurring = $recurring->chronopay_customer_id;
-        } elseif(empty($recurring)) {
+        } else if(empty($recurring)) {
             return false;
         }
 
-        $init_donation_post = get_posts(array( // Get init recurrent payment with customer_id given
-            'posts_per_page' => 1,
-            'post_type' => Leyka_Donation_Management::$post_type,
-            'post_status' => 'funded',
-//            'post_parent' => 0, /** @todo Until Chronopay recurring posts structure will be refactored */
-            'meta_query' => array(
-                'RELATION' => 'AND',
-                array(
-                    'key' => '_chronopay_customer_id',
-                    'value' => $recurring,
-                    'compare' => '=',
-                ),
-                array(
-                    'key' => 'leyka_payment_type',
-                    'value' => 'rebill',
-                    'compare' => '=',
-                ),
-            ),
-            'orderby' => 'date',
+        $init_recurring_donation = Leyka_Donations::get_instance()->get(array(
+            'meta' => array(array('key' => '_chronopay_customer_id', 'value' => $recurring,),),
+            'type' => 'rebill',
+            'status' => 'funded',
+//            'orderby' => 'date',
             'order' => 'ASC',
+            'get_single' => true,
         ));
 
-        return count($init_donation_post) ? new Leyka_Donation($init_donation_post[0]->ID) : false;
+        return $init_recurring_donation ? $init_recurring_donation : false;
 
     }
 
     /**
      * Check if there is already a donation with transaction ID given.
      *
-     * @param $transaction_id string Chronopay transaction ID value.
+     * @param $chronopay_transaction_id string Chronopay transaction ID value.
      * @return boolean
      */
-    protected function _donation_exists($transaction_id) {
+    protected function _donation_exists($chronopay_transaction_id) {
 
-        $transaction_id = trim($transaction_id);
+        $chronopay_transaction_id = trim($chronopay_transaction_id);
 
-        if(empty($transaction_id)) {
+        if(empty($chronopay_transaction_id)) {
             return false;
         }
 
-        return count(get_posts(array( // Get init recurrent payment with customer_id given
-            'posts_per_page' => 1,
-            'post_type' => Leyka_Donation_Management::$post_type,
-            'post_status' => 'any',
-            'meta_query' => array(
-                array(
-                    'key' => '_chronopay_transaction_id',
-                    'value' => $transaction_id,
-                    'compare' => '=',
-                ),
-            ),
-        ))) > 0;
+        return Leyka_Donations::get_instance()->get_count(array(
+            'meta' => array(array('key' => '_chronopay_transaction_id', 'value' => $chronopay_transaction_id,),),
+            'get_single' => true,
+        ));
 
     }
 
-    public function cancel_recurring_subscription_by_link(Leyka_Donation $donation) {
+    public function cancel_recurring_subscription_by_link(Leyka_Donation_Base $donation) {
 
         $ch = curl_init();
 
@@ -477,8 +448,8 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             if($response_ok) {
 
                 // Save the fact that recurrents has been cancelled:
-                $init_recurrent_donation = $this->get_init_recurrent_donation($donation);
-                $init_recurrent_donation->recurrents_cancelled = true;
+                $init_recurring_donation = $this->get_init_recurring_donation($donation);
+                $init_recurring_donation->recurrents_cancelled = true;
 
                 die(json_encode(array('status' => 1, 'message' => __('Recurring subscription cancelled.', 'leyka'))));
 
@@ -490,7 +461,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
     }
 
-    public function get_gateway_response_formatted(Leyka_Donation $donation) {
+    public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {
 
         if( !$donation->gateway_response ) {
             return array();
@@ -515,12 +486,12 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
         if($donation) { // Edit donation page displayed
 
-            $donation = leyka_get_validated_donation($donation);?>
+            $donation = Leyka_Donations::get_instance()->get_donation($donation);?>
 
             <label><?php _e('Chronopay customer ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
 
-                <?php if($donation->type == 'correction') {?>
+                <?php if($donation->type === 'correction') {?>
                     <input type="text" id="chronopay-customer-id" name="chronopay-customer-id" placeholder="<?php _e('Enter Chronopay Customer ID', 'leyka');?>" value="<?php echo $donation->chronopay_customer_id;?>">
                 <?php } else {?>
                     <span class="fake-input"><?php echo $donation->chronopay_customer_id;?></span>
@@ -530,7 +501,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             <label><?php _e('Chronopay transaction ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
 
-                <?php if($donation->type == 'correction') {?>
+                <?php if($donation->type === 'correction') {?>
                     <input type="text" id="chronopay-transaction-id" name="chronopay-transaction-id" placeholder="<?php _e('Enter Chronopay Transaction ID', 'leyka');?>" value="<?php echo $donation->chronopay_transaction_id;?>">
                 <?php } else {?>
                     <span class="fake-input"><?php echo $donation->chronopay_transaction_id;?></span>
@@ -541,59 +512,54 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
             <label for="chronopay-customer-id"><?php _e('Chronopay customer ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <input type="text" id="chronopay-customer-id" name="chronopay-customer-id" placeholder="<?php _e('Enter Chronopay Customer ID', 'leyka');?>" value="" />
+                <input type="text" id="chronopay-customer-id" name="chronopay-customer-id" placeholder="<?php _e('Enter Chronopay Customer ID', 'leyka');?>" value="">
             </div>
-            <?php
-        }
+
+            <?php }
 
     }
 
-    public function get_specific_data_value($value, $field_name, Leyka_Donation $donation) {
+    public function get_specific_data_value($value, $field_name, Leyka_Donation_Base $donation) {
         switch($field_name) {
-            case 'chronopay_customer_id': return get_post_meta($donation->id, '_chronopay_customer_id', true);
-            case 'chronopay_transaction_id': return get_post_meta($donation->id, '_chronopay_transaction_id', true);
+            case 'chronopay_customer_id': return $donation->get_meta('_chronopay_customer_id');
+            case 'chronopay_transaction_id': return $donation->get_meta('_chronopay_transaction_id');
             default: return $value;
         }
     }
 
-    public function set_specific_data_value($field_name, $value, Leyka_Donation $donation) {
-
+    public function set_specific_data_value($field_name, $value, Leyka_Donation_Base $donation) {
         switch($field_name) {
-            case 'chronopay_customer_id':
-                return update_post_meta($donation->id, '_chronopay_customer_id', $value);
-            case 'chronopay_transaction_id':
-                return update_post_meta($donation->id, '_chronopay_transaction_id', $value);
+            case 'chronopay_customer_id': return $donation->set_meta('_chronopay_customer_id', $value);
+            case 'chronopay_transaction_id': return $donation->set_meta('_chronopay_transaction_id', $value);
             default: return false;
         }
-
     }
 
-    public function save_donation_specific_data(Leyka_Donation $donation) {
+    public function save_donation_specific_data(Leyka_Donation_Base $donation) {
 
-        if(
-            isset($_POST['chronopay-customer-id']) &&
-            $donation->chronopay_customer_id != $_POST['chronopay-customer-id']
-        ) {
+        if(isset($_POST['chronopay-customer-id']) && $donation->chronopay_customer_id != $_POST['chronopay-customer-id']) {
             $donation->chronopay_customer_id = $_POST['chronopay-customer-id'];
         }
 
         if(
-            isset($_POST['chronopay-transaction-id']) &&
-            $donation->chronopay_transaction_id != $_POST['chronopay-transaction-id']
+            isset($_POST['chronopay-transaction-id'])
+            && $donation->chronopay_transaction_id != $_POST['chronopay-transaction-id']
         ) {
             $donation->chronopay_transaction_id = $_POST['chronopay-transaction-id'];
         }
 
     }
 
-    public function add_donation_specific_data($donation_id, array $donation_params) {
+    public function add_donation_specific_data($donation_id, array $params) {
 
-        if( !empty($donation_params['chronopay_customer_id']) ) {
-            update_post_meta($donation_id, '_chronopay_customer_id', $donation_params['chronopay_customer_id']);
+        if( !empty($params['chronopay_customer_id']) ) {
+            Leyka_Donations::get_instance()
+                ->set_donation_meta($donation_id, '_chronopay_customer_id', $params['chronopay_customer_id']);
         }
 
-        if( !empty($donation_params['chronopay_transaction_id']) ) {
-            update_post_meta($donation_id, '_chronopay_transaction_id', $donation_params['chronopay_transaction_id']);
+        if( !empty($params['chronopay_transaction_id']) ) {
+            Leyka_Donations::get_instance()
+                ->set_donation_meta($donation_id, '_chronopay_transaction_id', $params['chronopay_transaction_id']);
         }
 
     }
@@ -630,14 +596,14 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
         ));
 
         $this->_submit_label = __('Donate', 'leyka');
-        $this->_default_currency = 'rur';
+        $this->_default_currency = 'rub';
 
     }
 
     protected function _set_dynamic_attributes() {
 
         if(leyka_options()->opt('chronopay_card_product_id_rur')) {
-            $this->_supported_currencies[] = 'rur';
+            $this->_supported_currencies[] = 'rub';
         }
         if(leyka_options()->opt('chronopay_card_product_id_usd')) {
             $this->_supported_currencies[] = 'usd';
@@ -657,38 +623,32 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
         $this->_options = array(
             'chronopay_card_product_id_rur' => array(
                 'type' => 'text',
-                'title' => __('Chronopay product_id for RUR', 'leyka'),
-                'comment' => __('Please, enter Chronopay product_id for RUR currency.', 'leyka'),
+                'title' => sprintf(__('Chronopay product_id for %s', 'leyka'), leyka_options()->opt('currency_rub_label')),
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '012345-0001-0001'),
             ),
             'chronopay_card_product_id_usd' => array(
                 'type' => 'text',
-                'title' => __('Chronopay product_id for USD', 'leyka'),
-                'comment' => __('Please, enter Chronopay product_id for USD currency.', 'leyka'),
+                'title' => sprintf(__('Chronopay product_id for %s', 'leyka'), leyka_options()->opt('currency_usd_label')),
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '012345-0001-0002'),
             ),
             'chronopay_card_product_id_eur' => array(
                 'type' => 'text',
-                'title' => __('Chronopay product_id for EUR', 'leyka'),
-                'comment' => __('Please, enter Chronopay product_id for EUR currency.', 'leyka'),
+                'title' => sprintf(__('Chronopay product_id for %s', 'leyka'), leyka_options()->opt('currency_eur_label')),
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '012345-0001-0003'),
             ),
             'chronopay_card_rebill_product_id_rur' => array(
                 'type' => 'text',
-                'title' => __('Chronopay product_id for rebills in RUR', 'leyka'),
-                'comment' => __('Please, enter Chronopay product_id for rebills in RUR currency.', 'leyka'),
+                'title' => sprintf(__('Chronopay product_id for rebills in %s', 'leyka'), leyka_options()->opt('currency_rub_label')),
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '012345-0001-0011'),
             ),
             'chronopay_card_rebill_product_id_usd' => array(
                 'type' => 'text',
-                'title' => __('Chronopay product_id for rebills in USD', 'leyka'),
-                'comment' => __('Please, enter Chronopay product_id for rebills in USD currency.', 'leyka'),
+                'title' => sprintf(__('Chronopay product_id for rebills in %s', 'leyka'), leyka_options()->opt('currency_usd_label')),
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '012345-0001-0012'),
             ),
             'chronopay_card_rebill_product_id_eur' => array(
                 'type' => 'text',
-                'title' => __('Chronopay product_id for rebills in EUR', 'leyka'),
-                'comment' => __('Please, enter Chronopay product_id for rebills in EUR currency.', 'leyka'),
+                'title' => sprintf(__('Chronopay product_id for rebills in %s', 'leyka'), leyka_options()->opt('currency_eur_label')),
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '012345-0001-0013'),
             ),
         );
@@ -696,9 +656,10 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
     }
 
     public function has_recurring_support() { // Support recurring donations only if both single & recurring options set
-        return ( !!leyka_options()->opt('chronopay_card_rebill_product_id_rur') && !!leyka_options()->opt('chronopay_card_product_id_rur') ) ||
-            ( !!leyka_options()->opt('chronopay_card_rebill_product_id_usd') && !!leyka_options()->opt('chronopay_card_product_id_usd') ) ||
-            ( !!leyka_options()->opt('chronopay_card_rebill_product_id_eur') && !!leyka_options()->opt('chronopay_card_product_id_eur') );
+        return ( !!leyka_options()->opt('chronopay_card_rebill_product_id_rur') && !!leyka_options()->opt('chronopay_card_product_id_rur') )
+        || ( !!leyka_options()->opt('chronopay_card_rebill_product_id_usd') && !!leyka_options()->opt('chronopay_card_product_id_usd') )
+        || ( !!leyka_options()->opt('chronopay_card_rebill_product_id_eur') && !!leyka_options()->opt('chronopay_card_product_id_eur') ) ?
+            'passive' : false;
     }
 
 }

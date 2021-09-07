@@ -11,6 +11,13 @@
 $leyka_account_page_title = __('Personal account', 'leyka');
 $current_user = wp_get_current_user();
 
+if( !$current_user->ID ) {
+    wp_die(
+        __('Error: cannot display a page for a given donor.', 'leyka')
+        .' '.sprintf(__('Try <a href="%s">logging into the account</a> anew.', 'leyka'), site_url('donor-account/login'))
+    );
+}
+
 // Support packages:
 $leyka_ext_sp = Leyka_Support_Packages_Extension::get_instance();
 $leyka_ext_sp_template_tags = new Leyka_Support_Packages_Template_Tags();
@@ -22,7 +29,7 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php');
 try {
 	$donor = new Leyka_Donor(wp_get_current_user());
 } catch(Exception $e) {
-    wp_die(__("Error: cannot display a page for a given donor.", 'leyka'));
+    wp_die(__('Error: cannot display a page for a given donor.', 'leyka'));
 }?>
 
 <div id="content" class="site-content leyka-campaign-content">

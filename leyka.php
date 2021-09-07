@@ -4,7 +4,7 @@
  * Plugin Name: Leyka
  * Plugin URI:  https://leyka.te-st.ru/
  * Description: The donations management system for your WP site
- * Version:     3.18
+ * Version:     3.19
  * Author:      Teplitsa of social technologies
  * Author URI:  https://te-st.ru
  * Text Domain: leyka
@@ -38,7 +38,7 @@
 
 // Leyka plugin version:
 if( !defined('LEYKA_VERSION') ) {
-    define('LEYKA_VERSION', '3.18');
+    define('LEYKA_VERSION', '3.19');
 }
 
 // Plugin base file:
@@ -91,12 +91,15 @@ load_plugin_textdomain('leyka', false, basename(dirname(__FILE__)).'/languages/'
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-tmp-translations.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-functions.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-options-controller.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/leyka-updates.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-polylang.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-core.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-gateways-api.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-extensions-api.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-campaign.php');
-require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-donation.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donation-base.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donations-management.php'); /** @todo Make this class ADMIN ONLY. */
+require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donations.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-donor.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-payment-form.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-template-controller.php');
@@ -158,8 +161,10 @@ if(leyka_options()->opt('donor_accounts_available')) {
     require_once(LEYKA_PLUGIN_DIR.'templates/account/template-tags.php');
 }
 
-function leyka_load_plugin_textdomain() {
-    load_plugin_textdomain('leyka', false, basename(dirname(__FILE__)).'/languages/');
+if( !function_exists('leyka_load_plugin_textdomain') ) {
+    function leyka_load_plugin_textdomain() {
+        load_plugin_textdomain('leyka', false, basename(dirname(__FILE__)).'/languages/');
+    }
 }
 add_action('plugins_loaded', 'leyka_load_plugin_textdomain');
 

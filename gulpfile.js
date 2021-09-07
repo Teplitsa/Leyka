@@ -13,6 +13,7 @@ let gulp = require('gulp'),
     bourbon = require('node-bourbon'),
     path = require('relative-path'),
     del = require('del');
+const {includePaths: paths} = require("node-bourbon");
     jsImport = require('gulp-js-import');
 
 // Plugins - load gulp-* plugins without direct calls:
@@ -40,7 +41,7 @@ gulp.task('build-front-js', async function(){
 
     return await gulp.src(vendorFiles.concat(appFiles))
         .pipe(plugins.concat('public.js'))
-        .pipe(isProduction ? plugins.uglify() : gutil.noop()) // Minification
+        .pipe(isProduction ? plugins.uglify() : gutil.noop()) // Minification on production
         .pipe(plugins.size()) // Print size for log
         .on('error', console.log)
         .pipe(gulp.dest(basePaths.dest + 'js'));
@@ -54,7 +55,7 @@ gulp.task('build-admin-js', function(){
 
     return gulp.src(vendorFiles.concat(appFiles))
         .pipe(plugins.concat('admin.js'))
-        .pipe(isProduction ? plugins.uglify() : gutil.noop()) // Minification
+        .pipe(isProduction ? plugins.uglify() : gutil.noop()) // Minification on production
         .pipe(plugins.size())
         .on('error', console.log)
         .pipe(gulp.dest(basePaths.dest + 'js'));
@@ -63,42 +64,42 @@ gulp.task('build-admin-js', function(){
 
 gulp.task('build-editor-js', function(){
 
-    let vendorFiles = [/*basePaths.npm+'jquery.cookie/jquery.cookie.js'*/],
-        appFiles = [basePaths.src+'js/editor/editor.js']; //our own JS files
+    let vendorFiles = [],
+        appFiles = [basePaths.src+'js/editor/editor.js']; // Our own JS files
 
-    return gulp.src(vendorFiles.concat(appFiles)) //join them
-        .pipe(plugins.filter('*.js'))//select only .js ones
-        .pipe(plugins.concat('editor.js'))//combine them into bundle.js
-        .pipe(isProduction ? plugins.uglify() : gutil.noop()) //minification
-        .pipe(plugins.size()) //print size for log
-        .on('error', console.log) //log
-        .pipe(gulp.dest(basePaths.dest+'js')); //write results into file
+    return gulp.src(vendorFiles.concat(appFiles)) // Join them
+        .pipe(plugins.filter('*.js')) // Select only .js ones
+        .pipe(plugins.concat('editor.js')) // Combine them into bundle.js
+        .pipe(isProduction ? plugins.uglify() : gutil.noop()) // Minification on production
+        .pipe(plugins.size()) // Print size for log
+        .on('error', console.log)
+        .pipe(gulp.dest(basePaths.dest+'js')); // Write results into file
 
 });
 
 gulp.task('build-blocks-js', function() {
-   let vendorFiles = [/*basePaths.npm+'jquery.cookie/jquery.cookie.js'*/],
-        appFiles = [basePaths.src+'js/blocks/*.js']; //our own JS files
+   let vendorFiles = [],
+        appFiles = [basePaths.src+'js/blocks/*.js']; // Our own JS files
 
-    return gulp.src(vendorFiles.concat(appFiles)) //join them
-        .pipe(plugins.concat('blocks.js'))//combine them into bundle.js
+    return gulp.src(vendorFiles.concat(appFiles)) // Join them
+        .pipe(plugins.concat('blocks.js')) // Combine them into bundle.js
         .pipe(jsImport({
             hideConsole: false,
             importStack: false
         }))
-        .pipe(plugins.size()) //print size for log
-        .on('error', console.log) //log
-        .pipe(gulp.dest(basePaths.dest+'js')); //write results into file
+        .pipe(plugins.size()) // Print size for log
+        .on('error', console.log)
+        .pipe(gulp.dest(basePaths.dest+'js')); // Write results into file
 });
 
 // CSS:
 gulp.task('build-front-css', function(){
 
     let paths = require('node-bourbon').includePaths,
-    // vendorFiles = gulp.src([]), //components
+        // vendorFiles = gulp.src([]), // Components
         gatewaysFiles = [basePaths.root+'gateways/*/css/*.public.scss'],
-        appFiles = gulp.src([basePaths.src+'sass/front-main.scss'].concat(gatewaysFiles)) // our main file with @import-s
-            .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.init()) // process the original sources for sourcemap
+        appFiles = gulp.src([basePaths.src+'sass/front-main.scss'].concat(gatewaysFiles)) // The main file with @import-s
+            .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.init()) // Process the original sources for sourcemap
             .pipe(
                 plugins.sass({
                     outputStyle: sassStyle, // SASS syntax
@@ -109,7 +110,7 @@ gulp.task('build-front-css', function(){
                 browsers: ['last 4 versions'],
                 cascade: false
             }))
-            .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.write()) //add the map to modified source
+            .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.write()) // Add the map to modified source
             .on('error', console.log);
 
     return es.concat(appFiles /*, vendorFiles*/)
@@ -128,22 +129,48 @@ gulp.task('build-admin-css', function() {
         appFiles = gulp.src(basePaths.src+'sass/admin/admin.scss')
         .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.init())  // Process original sources for sourcemap
         .pipe(plugins.sass({
-            outputStyle: sassStyle, //SASS syntas
-            includePaths: paths //add bourbon + mdl
-        }).on('error', plugins.sass.logError))//sass own error log
-        .pipe(plugins.autoprefixer({ //autoprefixer
+            outputStyle: sassStyle, // SASS syntax
+            includePaths: paths // Add bourbon + mdl
+        }).on('error', plugins.sass.logError))// SASS own error log
+        .pipe(plugins.autoprefixer({
             browsers: ['last 4 versions'],
             cascade: false
         }))
         .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.write()) // Add the map to modified source
-        .on('error', console.log); //log
+        .on('error', console.log);
 
-	return es.concat(appFiles /*, vendorFiles*/) //combine vendor CSS files and our files after-SASS
-        .pipe(plugins.concat('admin.css')) //combine into file
-        .pipe(isProduction ? plugins.cssmin() : gutil.noop()) //minification on production
-        .pipe(plugins.size()) //display size
-        .pipe(gulp.dest(basePaths.dest+'css')) //write file
-        .on('error', console.log); //log
+	return es.concat(appFiles /*, vendorFiles*/) // Combine vendor CSS files and our files after-SASS
+        .pipe(plugins.concat('admin.css')) // Combine into file
+        .pipe(isProduction ? plugins.cssmin() : gutil.noop()) // Minification on production
+        .pipe(plugins.size()) // Display size
+        .pipe(gulp.dest(basePaths.dest+'css')) // Write the file
+        .on('error', console.log);
+
+});
+
+gulp.task('build-admin-everywhere-css', function() {
+
+    let paths = require('node-bourbon').includePaths,
+        // vendorFiles = gulp.src([]),
+        appFiles = gulp.src(basePaths.src+'sass/admin/admin-everywhere.scss')
+            .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.init())  // Process original sources for sourcemap
+            .pipe(plugins.sass({
+                outputStyle: sassStyle, // SASS syntax
+                includePaths: paths // Add bourbon + mdl
+            }).on('error', plugins.sass.logError)) // SASS own error log
+            .pipe(plugins.autoprefixer({
+                browsers: ['last 4 versions'],
+                cascade: false
+            }))
+            .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.write()) // Add the map to modified source
+            .on('error', console.log);
+
+    return es.concat(appFiles /*, vendorFiles*/) // Combine vendor CSS files and our files after-SASS
+        .pipe(plugins.concat('admin-everywhere.css')) // Combine into file
+        .pipe(isProduction ? plugins.cssmin() : gutil.noop()) // Minification on production
+        // .pipe(plugins.size()) // Display size
+        .pipe(gulp.dest(basePaths.dest+'css')) // Write file
+        .on('error', console.log);
 
 });
 
@@ -152,24 +179,24 @@ gulp.task('build-editor-css', function() {
     let paths = require('node-bourbon').includePaths,
 		// vendorFiles = gulp.src([]),
         appFiles = gulp.src(basePaths.src+'sass/admin/editor.scss')
-        .pipe(!isProduction ? plugins.sourcemaps.init() : gutil.noop())  //process the original sources for sourcemap
+        .pipe(!isProduction ? plugins.sourcemaps.init() : gutil.noop())  // Process the original sources for sourcemap
         .pipe(plugins.sass({
-                outputStyle: sassStyle, //SASS syntas
-                includePaths: paths //add bourbon + mdl
-            }).on('error', plugins.sass.logError))//sass own error log
-        .pipe(plugins.autoprefixer({ //autoprefixer
+                outputStyle: sassStyle, // SASS syntax
+                includePaths: paths // Add bourbon + mdl
+            }).on('error', plugins.sass.logError)) // SASS own error log
+        .pipe(plugins.autoprefixer({
                 browsers: ['last 4 versions'],
                 cascade: false
             }))
-        .pipe(!isProduction ? plugins.sourcemaps.write() : gutil.noop()) //add the map to modified source
-        .on('error', console.log); //log
+        .pipe(!isProduction ? plugins.sourcemaps.write() : gutil.noop()) // Add the map to modified source
+        .on('error', console.log);
 
-	return es.concat(appFiles /*, vendorFiles*/) //combine vendor CSS files and our files after-SASS
-        .pipe(plugins.concat('editor.css')) //combine into file
-        .pipe(isProduction ? plugins.cssmin() : gutil.noop()) //minification on production
-        .pipe(plugins.size()) //display size
-        .pipe(gulp.dest(basePaths.dest+'css')) //write file
-        .on('error', console.log); //log
+	return es.concat(appFiles /*, vendorFiles*/) // Combine vendor CSS files and our files after-SASS
+        .pipe(plugins.concat('editor.css')) // Combine into file
+        .pipe(isProduction ? plugins.cssmin() : gutil.noop()) // Minification on production
+        .pipe(plugins.size()) // Display size
+        .pipe(gulp.dest(basePaths.dest+'css')) // Write file
+        .on('error', console.log);
 
 });
 
@@ -178,24 +205,24 @@ gulp.task('build-editor-style-css', function() {
     let paths = require('node-bourbon').includePaths,
         // vendorFiles = gulp.src([]),
         appFiles = gulp.src(basePaths.src+'sass/editor-style.scss')
-        .pipe(!isProduction ? plugins.sourcemaps.init() : gutil.noop())  //process the original sources for sourcemap
+        .pipe(!isProduction ? plugins.sourcemaps.init() : gutil.noop())  // Process the original sources for sourcemap
         .pipe(plugins.sass({
-                outputStyle: sassStyle, //SASS syntas
-                includePaths: paths //add bourbon + mdl
-            }).on('error', plugins.sass.logError))//sass own error log
-        .pipe(plugins.autoprefixer({ //autoprefixer
+                outputStyle: sassStyle, // SASS syntax
+                includePaths: paths // Add bourbon + mdl
+            }).on('error', plugins.sass.logError)) // SASS own error log
+        .pipe(plugins.autoprefixer({
                 browsers: ['last 4 versions'],
                 cascade: false
             }))
-        .pipe(!isProduction ? plugins.sourcemaps.write() : gutil.noop()) //add the map to modified source
-        .on('error', console.log); //log
+        .pipe(!isProduction ? plugins.sourcemaps.write() : gutil.noop()) // Add the map to modified source
+        .on('error', console.log);
 
-    return es.concat(appFiles /*, vendorFiles*/) //combine vendor CSS files and our files after-SASS
-        .pipe(plugins.concat('editor-style.css')) //combine into file
-        .pipe(isProduction ? plugins.cssmin() : gutil.noop()) //minification on production
-        .pipe(plugins.size()) //display size
-        .pipe(gulp.dest(basePaths.dest+'css')) //write file
-        .on('error', console.log); //log
+    return es.concat(appFiles /*, vendorFiles*/) // Combine vendor CSS files and our files after-SASS
+        .pipe(plugins.concat('editor-style.css')) // Combine into file
+        .pipe(isProduction ? plugins.cssmin() : gutil.noop()) // Minification on production
+        .pipe(plugins.size()) // Display size
+        .pipe(gulp.dest(basePaths.dest+'css')) // Write file
+        .on('error', console.log);
 
 });
 
@@ -225,7 +252,7 @@ gulp.task('svg-opt', function(){
             }]
         }))
         .pipe(plugins.cheerio({
-            run: function ($) { //remove fill from icons
+            run: function ($) { // Remove fill from icons
                 $('[fill]').removeAttr('fill');
                 $('[fill-rule]').removeAttr('fill-rule');
             },
@@ -239,10 +266,10 @@ gulp.task('svg-opt', function(){
                 removeEditorsNSData: true,
                 removeComments: true
             }]
-        })); // minification
+        })); // Minification
 
     return es.concat(icons, pics)
-        .pipe(plugins.svgstore({ inlineSvg: true })) //combine for inline usage
+        .pipe(plugins.svgstore({ inlineSvg: true })) // Combine for inline usage
         .pipe(gulp.dest(basePaths.dest+'svg'));
 
 });
@@ -257,7 +284,7 @@ gulp.task('watch', function(done){
     // Backend:
     gulp.watch(
         [basePaths.src+'sass/admin/*.scss', basePaths.src+'sass/admin/**/*.scss'],
-        gulp.series(/*'build-admin-common-css',*/ 'build-admin-css', 'build-editor-css')
+        gulp.series('build-admin-everywhere-css', 'build-admin-css', 'build-editor-css')
     );
 
     gulp.watch(

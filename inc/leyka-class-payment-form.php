@@ -46,7 +46,7 @@ class Leyka_Payment_Form {
      */
 	public static function is_form_fields_valid() {
 
-	    $errors = array();
+	    $errors = [];
 
         if(leyka_pf_get_honeypot_value()) {
             $errors[] = new WP_Error('auto_submit_detected', __('Sorry, donations auto-submitting is prohibited', 'leyka'));
@@ -129,7 +129,7 @@ class Leyka_Payment_Form {
 
             switch($field['type']) {
                 case 'phone':
-                    $_POST['leyka_'.$field_id] = str_replace(array('+', '(', ')', '-'), '', $_POST['leyka_'.$field_id]);
+                    $_POST['leyka_'.$field_id] = str_replace(['+', '(', ')', '-'], '', $_POST['leyka_'.$field_id]);
 
                     if( !leyka_validate_donor_phone($_POST['leyka_'.$field_id]) ) {
                         $errors[] = new WP_Error('leyka_donor_phone_is_incorrect', __('Phone number is incorrect.', 'leyka'));
@@ -244,7 +244,7 @@ class Leyka_Payment_Form {
 
 	}
 
-    public static function get_common_hidden_fields($campaign = null, array $rewrite = array()) {
+    public static function get_common_hidden_fields($campaign = null, array $rewrite = []) {
 
         if($campaign) {
             $campaign = leyka_get_validated_campaign($campaign);
@@ -259,13 +259,14 @@ class Leyka_Payment_Form {
         }
 
         $template = leyka_get_current_template_data($campaign);
-        $hiddens = apply_filters('leyka_hidden_common_donation_form_fields', array(
+
+        $hiddens = apply_filters('leyka_hidden_common_donation_form_fields', [
             'leyka_template_id' => $template['id'],
             'leyka_campaign_id' => $campaign->id,
             'leyka_ga_campaign_title' => esc_attr($campaign->payment_title),
             'leyka_amount_field_type' => leyka_options()->opt_template('donation_sum_field_type'),
             'leyka_honeypot' => '',
-        ));
+        ]);
         $hiddens = $rewrite + $hiddens;
 
         $out = wp_nonce_field('leyka_payment_form', '_wpnonce', true, false);
@@ -291,7 +292,7 @@ class Leyka_Payment_Form {
 		}
 
 		$out = '';
-		foreach(apply_filters('leyka_hidden_donation_form_fields', array(), $this, $campaign) as $field_name => $value) {
+		foreach(apply_filters('leyka_hidden_donation_form_fields', [], $this, $campaign) as $field_name => $value) {
 			$out .= "<input type='hidden' name='".esc_attr($field_name)."' value='".esc_attr($value)."'>";
 		}
 
@@ -330,7 +331,7 @@ class Leyka_Payment_Form {
 
 	public function get_hidden_amount_fields() {
 
-        $hiddens = array();
+        $hiddens = [];
         foreach($this->get_supported_currencies() as $currency_id => $data) {
             $hiddens[] = '<input type="hidden" name="top_'.esc_attr($currency_id).'" value="'.esc_attr($data['top']).'">
 			              <input type="hidden" name="bottom_'.esc_attr($currency_id).'" value="'.esc_attr($data['bottom']).'">';
@@ -526,9 +527,9 @@ class Leyka_Payment_Form {
 
     public function get_supported_currencies() {
 
-		$supported_curr = $this->_pm ? $this->_pm->currencies : array(leyka_options()->opt('currency_main'));
+		$supported_curr = $this->_pm ? $this->_pm->currencies : [leyka_options()->opt('currency_main')];
 		$active_curr = leyka_get_currencies_data();
-		$curr = array();
+		$curr = [];
 
 		foreach($active_curr as $cid => $obj) {
 			if(in_array($cid, $supported_curr)) {
@@ -553,7 +554,7 @@ class Leyka_Payment_Form {
     public function get_supported_global_fields() {
 
         $global_fields = $this->_pm && $this->_pm->has_global_fields ?
-            array('amount', 'name', 'email', 'comment', 'agree', 'submit') : array('');
+            ['amount', 'name', 'email', 'comment', 'agree', 'submit',] : [''];
 
         if($global_fields && $this->_pm->has_recurring_support()) {
             $global_fields[] = 'recurring';
@@ -566,13 +567,13 @@ class Leyka_Payment_Form {
     public function is_field_supported($field) {
 		return in_array($field, array_merge(
             $this->get_supported_global_fields(),
-            $this->_pm ? $this->_pm->custom_fields : array()
+            $this->_pm ? $this->_pm->custom_fields : []
         ));
 	}
 
     public function get_pm_fields() {
 
-		$res = $this->_pm ? $this->_pm->custom_fields : array(); // Array of custom fields' HTMLs
+		$res = $this->_pm ? $this->_pm->custom_fields : []; // Array of custom fields' HTMLs
 
 		if($res) {
             foreach($res as $key => $field) {
@@ -590,7 +591,7 @@ class Leyka_Payment_Form {
 
     public function get_pm_icons() {
 
-		$res = $list = array(); // Array of icons urls
+		$res = $list = []; // Array of icons urls
 		if($this->_pm->icons) {
             $res = $this->_pm->icons;
         }
@@ -770,8 +771,12 @@ function leyka_pf_get_payment_method_value() {
 
     $pm = empty($_POST['leyka_payment_method']) ? '' : explode('-', $_POST['leyka_payment_method']);
 
-    return $pm ? array( 'gateway_id' => $pm[0], 'payment_method_id' => implode('-', array_slice($pm, 1)) ) : array();
+    return $pm ? ['gateway_id' => $pm[0], 'payment_method_id' => implode('-', array_slice($pm, 1))] : [];
 
+}
+
+function leyka_pf_get_donor_subscribed_value() {
+    return !empty($_POST['leyka_donor_subscribed']);
 }
 
 function leyka_pf_get_name_field($value = '') {
@@ -988,7 +993,7 @@ function leyka_get_current_template_data($campaign = null, $template = null, $is
     } else if( !$campaign ) {
 
         $donation_id = leyka_remembered_data('donation_id');
-        $donation = $donation_id ? new Leyka_Donation($donation_id) : null;
+        $donation = $donation_id ? Leyka_Donations::get_instance()->get($donation_id) : null;
 
         $campaign_id = $donation ? $donation->campaign_id : null;
         $campaign = $campaign_id ? new Leyka_Campaign($campaign_id) : null;
@@ -1081,7 +1086,7 @@ function get_leyka_payment_form_template_html($campaign = null, $template = null
                 }
 
                 if($template['id'] === 'revo') {
-                    echo leyka_inline_campaign(array('id' => $campaign->id, 'template' => 'revo'));
+                    echo leyka_inline_campaign(['id' => $campaign->id, 'template' => 'revo']);
                 } else {
                     require $template['file'];
                 }
@@ -1138,9 +1143,9 @@ function leyka_get_ajax_indicator($echo = false, $css_classes = '') {
 
 }
 
-function leyka_remember_donation_data(array $additional_data = array()) {
+function leyka_remember_donation_data(array $additional_data = []) {
 
-    $to_remember = array('donor_name' => leyka_pf_get_donor_name_value(), 'donor_email' => leyka_pf_get_donor_email_value());
+    $to_remember = ['donor_name' => leyka_pf_get_donor_name_value(), 'donor_email' => leyka_pf_get_donor_email_value()];
 
     foreach(array_merge($to_remember, $additional_data) as $key => $value) {
         leyka_remembered_data($key, $value);

@@ -3,27 +3,27 @@
 class Leyka_Options_Controller extends Leyka_Singleton {
 
     protected static $_instance = null;
-    protected static $_options_meta = array();
+    protected static $_options_meta = [];
 
-    protected $_options = array();
-    protected static $_field_types = array(
+    protected $_options = [];
+    protected static $_field_types = [
         'text', 'textarea', 'number', 'html', 'rich_html', 'select', 'radio', 'checkbox', 'multi_checkbox', 'legend', 'file',
         'colorpicker', 'campaign_select',
-    );
+    ];
 
-    protected $_templates_common_options = array(
+    protected $_templates_common_options = [
         'donation_sum_field_type', 'recurring_donation_benefits_text', 'scale_widget_place', 'donation_submit_text',
         'donations_history_under_forms', 'show_success_widget_on_success', 'show_donation_comment_field',
         'donation_comment_max_length', 'show_campaign_sharing', 'show_failure_widget_on_failure', 'do_not_display_donation_form',
-    );
+    ];
 
-    protected $_template_options = array();
+    protected $_template_options = [];
 
     protected function __construct() {
 
         require_once(LEYKA_PLUGIN_DIR.'inc/options-meta/leyka-class-options-meta-controller.php');
 
-        $init_options_group = apply_filters('leyka_init_options_meta_group', array('main', 'templates'));
+        $init_options_group = apply_filters('leyka_init_options_meta_group', ['main', 'templates',]);
         self::$_options_meta = apply_filters('leyka_init_options_meta',
             Leyka_Options_Meta_Controller::get_instance()->get_options_meta($init_options_group),
             $init_options_group
@@ -46,16 +46,16 @@ class Leyka_Options_Controller extends Leyka_Singleton {
     protected function _modify_options_values() {
 
         add_filter('leyka_option_value-commission', function($value){
-            return $value ? $value : array();
+            return $value ? $value : [];
         });
 
         // Additional Donation form fields Library:
         add_filter('leyka_option_value-additional_donation_form_fields_library', function($value){
-            return is_array($value) ? $value : array();
+            return is_array($value) ? $value : [];
         });
 
         add_filter('leyka_new_option_value-additional_donation_form_fields_library', function($option_value){
-            return is_array($option_value) ? $option_value : array();
+            return is_array($option_value) ? $option_value : [];
         });
         // Additional Donation form fields Library - END
 
@@ -129,7 +129,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
      */
     protected function _initialize_options_group_meta($option_id) {
 
-        $new_options_group_meta = array();
+        $new_options_group_meta = [];
 
         if(stristr($option_id, 'org_') !== false) {
             $new_options_group_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta('org'); 
@@ -253,14 +253,14 @@ class Leyka_Options_Controller extends Leyka_Singleton {
             return null;
         }
 
-        if(in_array($this->_options[$option_id]['type'], array('text', 'html', 'rich_html'))) {
+        if(in_array($this->_options[$option_id]['type'], ['text', 'html', 'rich_html'])) {
 
             $this->_options[$option_id]['value'] = is_array($this->_options[$option_id]['value']) ?
                 $this->_options[$option_id]['value'] :
                 trim($this->_options[$option_id]['value']);
 
         } else if(stristr($this->_options[$option_id]['type'], 'multi_') !== false && !$this->_options[$option_id]['value']) {
-            $this->_options[$option_id]['value'] = array();
+            $this->_options[$option_id]['value'] = [];
         }
 
         $this->_options[$option_id]['value'] = apply_filters(
@@ -292,7 +292,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         }
 
         /** @var $params array Full option format description in the beginning of leyka-options-meta.php */
-        $params = array_merge(array(
+        $params = array_merge([
             'type' => $type,
             'value' => '',
             'default' => '',
@@ -302,9 +302,9 @@ class Leyka_Options_Controller extends Leyka_Singleton {
             'placeholder' => '',
             'comment' => '',
             'length' => '',
-            'list_entries' => array(),
-            'validation_rules' => array(),
-        ), $params);
+            'list_entries' => [],
+            'validation_rules' => [],
+        ], $params);
 
         $option_added = $value_saved !== false ? true : add_option($option_id, $params['value']);
 
@@ -353,7 +353,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
         $this->_intialize_option($option_id, true);
 
-        if(in_array($this->_options[$option_id]['type'], array('text', 'html', 'rich_html'))) {
+        if(in_array($this->_options[$option_id]['type'], ['text', 'html', 'rich_html'])) {
             $this->_options[$option_id]['value'] = trim($this->_options[$option_id]['value']);
         }
 
@@ -453,7 +453,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         $this->_intialize_option($option_id, true);
 
         $validation_rules = empty($this->_options[$option_id]['validation_rules']) ?
-            array() : $this->_options[$option_id]['validation_rules'];
+            [] : $this->_options[$option_id]['validation_rules'];
 
         return apply_filters('leyka_option_validation_rules-'.$option_id, $validation_rules);
 
@@ -470,10 +470,10 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         $value = $value === false ? $this->opt_safe($option_id) : $value;
 
         if( !$this->option_exists($option_id)) {
-            return array();
+            return [];
         }
 
-        $errors = array();
+        $errors = [];
 
         if($this->is_required($option_id) && !$value) {
             $errors[] = __('The field value is required', 'leyka');
@@ -494,8 +494,8 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         $option_id = $this->_get_filtered_option_id($option_id);
 
         $this->_intialize_option($option_id, true);
-        
-        $filtered_options = array(
+
+        $filtered_options = [
             'title' => apply_filters('leyka_option_title-'.$option_id, $this->_options[$option_id]['title']),
             'type' => apply_filters('leyka_option_type-'.$option_id, $this->_options[$option_id]['type']),
             'required' => apply_filters(
@@ -506,7 +506,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
                 'leyka_option_default-'.$option_id,
                 empty($option_data['default']) ? '' : $option_data['default']
             ),
-        );
+        ];
         $this->_options[$option_id] = array_merge($filtered_options, $this->_options[$option_id]);
 
         return apply_filters('leyka_option_info-'.$option_id, $this->_options[$option_id]);
@@ -613,9 +613,9 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
     public function add_template_options() {
 
-        // Initialize the template options array (must be [template_id] => array() for each template ):
+        // Initialize the template options array (must be [template_id] => [] for each template ):
         $custom_templates = glob(get_template_directory().'/leyka-template-*.php');
-        $custom_templates = $custom_templates ? $custom_templates : array();
+        $custom_templates = $custom_templates ? $custom_templates : [];
 
         $this->_template_options = apply_filters(
             'leyka_templates_list',
@@ -623,13 +623,13 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         );
 
         if( !$this->_template_options ) {
-            $this->_template_options = array();
+            $this->_template_options = [];
         }
 
         foreach($this->_template_options as $key => $template_file_addr) {
 
-            $template_id = str_replace(array('leyka-template-', '.php'), '', basename($template_file_addr));
-            $this->_template_options[$template_id] = array();
+            $template_id = str_replace(['leyka-template-', '.php'], '', basename($template_file_addr));
+            $this->_template_options[$template_id] = [];
 
             unset($this->_template_options[$key]);
 
