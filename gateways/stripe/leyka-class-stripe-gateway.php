@@ -265,7 +265,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
         $payment_intent = $event->data->object;
         $donation = Leyka_Donations::get_instance()->get_donation((int)$payment_intent->metadata->donation_id);
-        $donation->add_gateway_response($payment_intent->toJSON());
+        $donation->add_gateway_response(json_encode($payment_intent, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
 
         switch($event->type) {
             case 'charge.refunded':
