@@ -207,7 +207,14 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             $vars_final[__('Donation failure reason:', 'leyka')] = $vars['charges']['data'][0]['failure_message'];
         }
 
-        if($vars['refunded'] === true){
+        if ( !empty($vars['object'])
+            && $vars['object'] === 'checkout.session'
+            && !empty($vars['mode'])
+            && $vars['mode'] === 'subscription'){
+            $vars_final[__('Subscription ID:', 'leyka')] = $vars['subscription'];
+        }
+
+        if(!empty($vars['refunded']) && $vars['refunded'] === true){
             $vars_final[__('Refund reason:', 'leyka')] = $vars['refunds']['data'][0]['reason'];
         }
 
