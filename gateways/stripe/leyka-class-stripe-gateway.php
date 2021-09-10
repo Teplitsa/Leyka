@@ -296,10 +296,9 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
         if ($event->type !== 'invoice.paid'){
             $donation_id = $response_data->metadata->donation_id;
+            $donation = Leyka_Donations::get_instance()->get_donation((int)$donation_id);
+            $donation->add_gateway_response(json_encode($response_data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
         }
-
-        $donation = Leyka_Donations::get_instance()->get_donation((int)$donation_id);
-        $donation->add_gateway_response(json_encode($response_data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
 
         switch($event->type) {
             case 'checkout.session.completed':
