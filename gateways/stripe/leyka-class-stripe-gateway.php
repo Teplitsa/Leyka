@@ -130,7 +130,10 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             ],
             'mode' => empty($form_data['leyka_recurring']) ? 'payment' : 'subscription',
             'success_url' => leyka_get_success_page_url(),
-            'cancel_url' => $compaign->url
+            'cancel_url' => $compaign->url,
+            'metadata' => [
+                'donation_id' => $donation_id
+            ]
         ];
 
         if (!empty($form_data['leyka_donor_email'])){
