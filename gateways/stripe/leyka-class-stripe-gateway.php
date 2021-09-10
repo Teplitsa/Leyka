@@ -316,7 +316,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                 break;
 
             case 'invoice.paid':
-                if ($response_data->billing_reason !== 'subscription_threshold'){
+                if ($response_data->billing_reason === 'subscription_threshold'){
 
                     $init_donation_id = $response_data->lines->data[0]->metadata->donation_id;
                     $init_recurring_donation = Leyka_Donations::get_instance()->get_donation((int)$init_donation_id);
