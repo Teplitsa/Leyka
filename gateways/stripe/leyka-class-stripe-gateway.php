@@ -26,7 +26,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
         $this->_min_commission = '2.2%';
         $this->_receiver_types = array('legal');
-        $this->_may_support_recurring = false;
+        $this->_may_support_recurring = true;
 
     }
 
@@ -106,6 +106,9 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
         $compaign = new Leyka_Campaign($form_data['leyka_campaign_id']);
         $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
+        if( !empty($form_data['leyka_recurring']) ) {
+            $donation->payment_type = 'rebill';
+        }
         $description = (
             !empty($form_data['leyka_recurring']) ? _x('[RS]', 'For "recurring subscription"', 'leyka').' ' : ''
             )
@@ -113,28 +116,51 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
         \Stripe\Stripe::setApiKey(leyka_options()->opt('stripe_key_secret'));
 
-        $checkout_session = \Stripe\Checkout\Session::create([
+        $checkout_session_data = [
             'line_items' => [[
                 'price_data' => [
                     'unit_amount' => $form_data['leyka_donation_amount']*100,
                     'currency' => $form_data['leyka_donation_currency'] === 'rur' ? 'rub' : $form_data['leyka_donation_currency'],
                     'product' => leyka_options()->opt('stripe_product_id')
                 ],
-                'quantity' => 1,
+                'quantity' => 1
             ]],
             'payment_method_types' => [
                 'card',
             ],
-            'mode' => 'payment',
+            'mode' => empty($form_data['leyka_recurring']) ? 'payment' : 'subscription',
             'success_url' => leyka_get_success_page_url(),
-            'cancel_url' => $compaign->url,
-            'payment_intent_data' => [
+            'cancel_url' => $compaign->url
+        ];
+
+        if (!empty($form_data['leyka_donor_email'])){
+            $checkout_session_data['customer_email'] = $form_data['leyka_donor_email'];
+        }
+
+        if (empty($form_data['leyka_recurring'])) {
+            $checkout_session_data['payment_intent_data'] = [
                 'description' => $description,
                 'metadata' => [
                     'donation_id' => $donation_id
                 ]
-            ]
-        ]);
+            ];
+        }
+        else {
+
+            $checkout_session_data['line_items'][0]['price_data']['recurring'] = [
+                //'interval' => 'month'
+                'interval' => 'day'
+            ];
+            $checkout_session_data['subscription_data'] = [
+                'metadata' => [
+                    'description' => $description,
+                    'donation_id' => $donation_id
+                ]
+            ];
+
+        }
+
+        $checkout_session = \Stripe\Checkout\Session::create($checkout_session_data);
 
         $this->_api_redirect_url = $checkout_session->url;
 
@@ -263,11 +289,37 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             exit();
         }
 
-        $payment_intent = $event->data->object;
-        $donation = Leyka_Donations::get_instance()->get_donation((int)$payment_intent->metadata->donation_id);
-        $donation->add_gateway_response(json_encode($payment_intent, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+        $response_data = $event->data->object;
+
+        if ($event->type !== 'invoice.paid'){
+            $donation_id = $response_data->metadata->donation_id;
+        }
+
+        $donation = Leyka_Donations::get_instance()->get_donation((int)$donation_id);
+        $donation->add_gateway_response(json_encode($response_data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
 
         switch($event->type) {
+            case 'checkout.session.completed':
+                $donation->status = 'funded';
+
+                Leyka_Donation_Management::send_all_emails($donation->id);
+
+                break;
+
+            case 'invoice.paid':
+                if ($response_data->billing_reason !== 'subscription_threshold'){
+
+                    $init_donation_id = $response_data->lines->data[0]->metadata->donation_id;
+                    $init_recurring_donation = Leyka_Donations::get_instance()->get_donation((int)$init_donation_id);
+                    $this->do_recurring_donation($init_recurring_donation);
+
+                }
+                
+                break;
+
+            case 'invoice.payment_failed':
+                break;
+
             case 'charge.refunded':
                 $donation->status = 'refunded';
                 break;
@@ -280,16 +332,33 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                 }
 
                 break;
-
-            case 'payment_intent.succeeded':
-                $donation->status = 'funded';
-
-                Leyka_Donation_Management::send_all_emails($donation->id);
-
-                break;
         }
 
         exit(200);
+
+    }
+
+    public function do_recurring_donation(Leyka_Donation_Base $init_recurring_donation) {
+
+        $new_recurring_donation = Leyka_Donations::get_instance()->add_clone(
+            $init_recurring_donation,
+            array(
+                'status' => 'submitted',
+                'payment_type' => 'rebill',
+                'init_recurring_donation' => $init_recurring_donation->id
+            ),
+            array('recalculate_total_amount' => true)
+        );
+
+        if(is_wp_error($new_recurring_donation)) {
+            return false;
+        }
+
+        if(leyka_get_pm_commission($new_recurring_donation->pm_full_id) > 0.0) {
+            $new_recurring_donation->amount_total = leyka_calculate_donation_total_amount($new_recurring_donation);
+        }
+
+        return $new_recurring_donation;
 
     }
 
@@ -329,7 +398,7 @@ class Leyka_Stripe_Card extends Leyka_Payment_Method {
     }
 
     public function has_recurring_support() {
-        return false;
+        return 'passive';
     }
 
 }
