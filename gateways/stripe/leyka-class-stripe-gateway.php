@@ -301,18 +301,9 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
         $response_data = $event->data->object;
 
-        if ($event->type !== 'invoice.paid'){
+        if ( !in_array($event->type, ['invoice.paid', 'customer.subscription.deleted']) ){
 
-            if ($event->type === 'customer.subscription.deleted'){
-                $donation_id = Leyka_Donations::get_instance()->get_donation_id_by_meta_value(
-                    'stripe-subscription-id',
-                    $response_data->id
-                );
-            }
-            else {
-                $donation_id = $response_data->metadata->donation_id;
-            }
-
+            $donation_id = $response_data->metadata->donation_id;
             $donation = Leyka_Donations::get_instance()->get_donation((int)$donation_id);
             $donation->add_gateway_response(json_encode($response_data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
 
@@ -338,7 +329,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                 if ($response_data->billing_reason === 'subscription_cycle'){
 
                     $donation_id = Leyka_Donations::get_instance()->get_donation_id_by_meta_value(
-                        'stripe-invoice-id',
+                        'stripe_invoice_id',
                         $response_data->id
                     );
 
@@ -374,12 +365,12 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                         );
 
                     }
-                    
+
                 }
                 elseif ($response_data->billing_reason === 'subscription_create') {
 
                     $donation_id = Leyka_Donations::get_instance()->get_donation_id_by_meta_value(
-                        'stripe-subscription-id',
+                        'stripe_subscription_id',
                         $response_data->subscription
                     );
                     $donation = Leyka_Donations::get_instance()->get_donation((int)$donation_id);
@@ -409,7 +400,15 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                 break;
 
             case 'customer.subscription.deleted':
-                $donation->recurring_is_active = false;
+                $donation_id = Leyka_Donations::get_instance()->get_donation_id_by_meta_value(
+                    'stripe_subscription_id',
+                    $response_data->id
+                );
+                $donation = Leyka_Donations::get_instance()->get_donation((int)$donation_id);
+                $init_donation_id = $donation->init_recurring_donation;
+                $init_recurring_donation = Leyka_Donations::get_instance()->get_donation((int)$init_donation_id);
+                $init_recurring_donation->recurring_is_active = false;
+
                 break;
         }
 
