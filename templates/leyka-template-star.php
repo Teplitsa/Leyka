@@ -91,37 +91,50 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                 <input type="hidden" class="leyka_donation_currency" name="leyka_donation_currency" data-currency-label="<?php echo $template_data['currency_label'];?>" value="<?php echo leyka_options()->opt('currency_main');?>">
                 <input type="hidden" name="leyka_recurring" class="is-recurring-chosen" value="<?php echo $is_recurring_campaign ? "1" : "0";?>">
             </div>
-    
+
         </div>
 
+        <?php do_action('leyka_template_after_amount', 'star', $template_data, $campaign);
+        do_action('leyka_template_star_after_amount', $template_data, $campaign);?>
+
         <div class="section section--cards">
-        	<div class="section-title-container"><div class="section-title-line"></div><div class="section-title-text"><?php esc_html_e('Payment method', 'leyka');?></div></div>
+
+        	<div class="section-title-container"><div class="section-title-line"></div><div class="section-title-text"><?php _e('Payment method', 'leyka');?></div></div>
     
             <div class="section__fields payments-grid">
-                <div class="star-swiper  <?php if(!$is_swipe_pm_list){?>no-swipe<?php }?>">
+                <div class="star-swiper <?php echo $is_swipe_pm_list ? '' : 'no-swipe';?>">
+
                     <div class="arrow-gradient left"></div><a class="swiper-arrow swipe-left" href="#"></a>
                     <div class="arrow-gradient right"></div><a class="swiper-arrow swipe-right" href="#"></a>
 
-                	<div class="<?php if($is_swipe_pm_list){?>swiper-list<?php }else{?>full-list<?php }?>">
+                	<div class="<?php echo $is_swipe_pm_list ? 'swiper-list' : 'full-list';?>">
     
                     <?php foreach($template_data['pm_list'] as $number => $pm) { /** @var $pm Leyka_Payment_Method */?>
             
-                        <div class="payment-opt swiper-item <?php echo $number ? "" : "selected";?>">
-                        <div class="swiper-item-inner">
-                            <label class="payment-opt__button">
-                                <input class="payment-opt__radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="radio" data-processing="<?php echo $pm->processing_type;?>" data-has-recurring="<?php echo $pm->has_recurring_support() ? '1' : '0';?>" data-ajax-without-form-submission="<?php echo $pm->ajax_without_form_submission ? '1' : '0';?>">
-                                <span class="payment-opt__icon">
-                                    <?php foreach($pm->icons ? $pm->icons : [$pm->main_icon_url] as $icon_url) {?>
-                                        <img class="pm-icon <?php echo $pm->full_id.' '.basename($icon_url, '.svg');?>" src="<?php echo $icon_url;?>" alt="">
-                                    <?php }?>
-                                </span>
-                            </label>
-                            <span class="payment-opt__label"><?php echo $pm->label;?></span>
-                        </div>
+                        <div class="payment-opt swiper-item <?php echo $number ? '' : 'selected';?>">
+
+                            <div class="swiper-item-inner">
+
+                                <label class="payment-opt__button">
+
+                                    <input class="payment-opt__radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="radio" data-processing="<?php echo $pm->processing_type;?>" data-has-recurring="<?php echo $pm->has_recurring_support() ? '1' : '0';?>" data-ajax-without-form-submission="<?php echo $pm->ajax_without_form_submission ? '1' : '0';?>">
+                                    <span class="payment-opt__icon">
+                                        <?php foreach($pm->icons ? $pm->icons : [$pm->main_icon_url] as $icon_url) {?>
+                                            <img class="pm-icon <?php echo $pm->full_id.' '.basename($icon_url, '.svg');?>" src="<?php echo $icon_url;?>" alt="">
+                                        <?php }?>
+                                    </span>
+
+                                </label>
+
+                                <span class="payment-opt__label"><?php echo $pm->label;?></span>
+
+                            </div>
+
                         </div>
                     <?php }?>
             
                     </div>
+
                 </div>
             </div>
 

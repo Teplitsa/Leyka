@@ -71,10 +71,27 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
         // To save merchandise data on Campaign saving:
         add_action('leyka_campaign_data_after_saving', [$this, '_merchandise_campaign_data_saving'], 10, 2);
 
+        add_action('wp_enqueue_scripts', [$this, 'load_public_scripts']);
+
+        // Add the merchandise block to public Donation forms:
+        add_action('leyka_template_star_after_amount', [$this, 'display_merchandise_field_star'], 2, 10);
+        add_action('leyka_template_need_help_after_amount', [$this, 'display_merchandise_field_need_help'], 2, 10);
+
     }
 
     /** Will be called everytime the Extension is loading into the plugin (i.e. always). */
     protected function _initialize_always() {
+    }
+
+    public function load_public_scripts() {
+
+        wp_enqueue_style(
+            $this->_id.'-front',
+            self::get_base_url().'/assets/css/public.css',
+            [],
+            defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY ? uniqid() : null
+        );
+
     }
 
     public function merchandise_metabox(WP_Post $campaign) {
@@ -92,7 +109,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
                         'box_title' => __('New merchandise', 'leyka'),
                         'title' => '',
                         'description' => false,
-                        'min_donation_amount' => 0,
+                        'donation_amount_needed' => 0,
                         'thumbnail' => false,
                     ]);?>
 
@@ -127,13 +144,13 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
                                 <div class="option-block type-number">
                                     <div class="leyka-number-field-wrapper">
-                                        <?php leyka_render_number_field('merchandise_min_donation_amount', [
+                                        <?php leyka_render_number_field('merchandise_donation_amount_needed', [
                                             'title' => sprintf(
-                                                __('Min. donations amount needed for the gift, %s', 'leyka'),
+                                                __('Donations amount needed for the gift, %s', 'leyka'),
                                                 leyka_get_currency_label()
                                             ),
                                             'required' => true,
-                                            'value' => absint($placeholders['min_donation_amount']) ? : 2000,
+                                            'value' => absint($placeholders['donation_amount_needed']) ? : 2000,
                                             'length' => 6,
                                             'min' => 1,
                                             'max' => 9999999,
@@ -188,13 +205,13 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
                 <div class="leyka-campaign-merchandise-wrapper multi-valued-items-field-wrapper">
 
-                    <div class="leyka-main-multi-items leyka-main-merchandise" data-min-items="0" data-max-items="<?php echo 10;?>" data-item-inputs-names-prefix="leyka_campaign_merchandise_" data-show-new-item-if-empty="0">
+                    <div class="leyka-main-multi-items leyka-main-merchandise" data-min-items="0" data-max-items="<?php echo 20;?>" data-item-inputs-names-prefix="leyka_campaign_merchandise_" data-show-new-item-if-empty="0">
 
                         <?php // Display existing campaign merchandise (the assoc. array keys order is important):
                         foreach($campaign->merchandise_settings as $item_id => $item) {
 
                             // Field is in Campaign settings, but not in the Library - mb, it was deleted from there:
-                            if(empty($item_id)) {
+                            if( !$item_id ) {
                                 continue;
                             }
 
@@ -203,7 +220,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
                                 'box_title' => $item['title'],
                                 'title' => $item['title'],
                                 'description' => $item['description'],
-                                'min_donation_amount' => $item['min_donation_amount'],
+                                'donation_amount_needed' => $item['donation_amount_needed'],
                                 'thumbnail' => $item['thumbnail'],
                             ]);
 
@@ -234,20 +251,21 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
         $campaign_data['leyka_campaign_merchandise'] = json_decode(urldecode($campaign_data['leyka_campaign_merchandise']));
 
+        $merchandise_data = [];
         foreach($campaign_data['leyka_campaign_merchandise'] as $item) {
 
             $item->id = mb_stripos($item->id, 'item-') === false || empty($item->leyka_merchandise_title) ?
                 $item->id :
                 trim(preg_replace('~[^-a-z0-9_]+~u', '-', mb_strtolower(leyka_cyr2lat($item->leyka_merchandise_title))), '-');
 
-            if( !$item->leyka_merchandise_title || !$item->leyka_merchandise_min_donation_amount ) {
+            if( !$item->leyka_merchandise_title || !$item->leyka_merchandise_donation_amount_needed ) {
                 continue;
             }
 
             $merchandise_data[$item->id] = [
                 'title' => $item->leyka_merchandise_title,
                 'description' => $item->leyka_merchandise_description,
-                'min_donation_amount' => $item->leyka_merchandise_min_donation_amount,
+                'donation_amount_needed' => $item->leyka_merchandise_donation_amount_needed,
                 'thumbnail' => $item->leyka_merchandise_thumbnail,
             ];
 
@@ -277,20 +295,81 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
             return $value;
         }
 
-        return get_post_meta($campaign->id, 'leyka_campaign_merchandise_settings', true);
+        $res = get_post_meta($campaign->id, 'leyka_campaign_merchandise_settings', true);
+
+        return $res ? : [];
 
     }
 
     public function _merchandise_campaign_data_set($field_name, $value, Leyka_Campaign $campaign) {
 
         if( !in_array($field_name, ['merchandise', 'merchandise_settings']) || !$campaign->id ) {
-            return $value;
+            return;
         }
 
-//        $campaign->_campaign_meta['merchandise_settings'] = $value;
+        // Can't set $campaign->_campaign_meta['merchandise_settings'] here - it's a protected attribute.
+        /** @todo Make a method like $campaign->refresh_meta($meta_name), to load a meta value from DB anew, and call it here. */
         update_post_meta($campaign->id, 'leyka_campaign_merchandise_settings', $value);
 
     }
+
+    public function display_merchandise_field_star(array $template_data, Leyka_Campaign $campaign) {
+
+        $uploads_dir_url = wp_get_upload_dir();
+        $uploads_dir_url = $uploads_dir_url['baseurl'];?>
+
+        <div class="section section--cards">
+
+            <div class="section-title-container">
+                <div class="section-title-line"></div>
+                <div class="section-title-text"><?php _e('Merchandise for donation', 'leyka');?></div>
+            </div>
+
+            <div class="section__fields merchandise-grid">
+                <div class="star-swiper">
+
+                    <div class="arrow-gradient left"></div><a class="swiper-arrow swipe-left" href="#"></a>
+                    <div class="arrow-gradient right"></div><a class="swiper-arrow swipe-right" href="#"></a>
+
+                    <div class="swiper-list">
+
+                        <?php foreach($campaign->merchandise_settings as $merchandise_id => $settings) {
+
+//                            echo '<pre>'.$merchandise_id.' - '.print_r($settings, 1).'</pre>';?>
+
+                            <div class="merchandise swiper-item"> <!-- class="selected" -->
+
+                                <div class="swiper-item-inner">
+
+                                    <label class="merchandise__button">
+
+                                        <span class="merchandise__label"><?php echo esc_html($settings['title']);?></span>
+
+                                        <span class="merchandise__icon">
+                                            <img class="merchandise-icon" src="<?php echo $uploads_dir_url.$settings['thumbnail'];?>" alt="<?php echo esc_attr($settings['title']);?>">
+                                        </span>
+
+                                        <span class="merchandise__description">
+                                            <?php echo $settings['description'];?>
+                                        </span>
+
+<!--                                        <input class="payment-opt__merchandise" name="leyka_payment_method" value="--><?php //echo esc_attr($pm->full_id);?><!--" type="radio" data-processing="--><?php //echo $pm->processing_type;?><!--" data-has-recurring="--><?php //echo $pm->has_recurring_support() ? '1' : '0';?><!--" data-ajax-without-form-submission="--><?php //echo $pm->ajax_without_form_submission ? '1' : '0';?><!--">-->
+
+                                    </label>
+
+                                </div>
+
+                            </div>
+                        <?php }?>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    <?php }
 
 }
 
