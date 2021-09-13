@@ -302,25 +302,62 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
         $response_data = $event->data->object;
 
         if ($event->type !== 'invoice.paid'){
-            $donation_id = $response_data->metadata->donation_id;
+
+            if ($event->type === 'customer.subscription.deleted'){
+                $donation_id = Leyka_Donations::get_instance()->get_donation_id_by_meta_value(
+                    'stripe-subscription-id',
+                    $response_data->id
+                );
+            }
+            else {
+                $donation_id = $response_data->metadata->donation_id;
+            }
+
             $donation = Leyka_Donations::get_instance()->get_donation((int)$donation_id);
             $donation->add_gateway_response(json_encode($response_data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+
         }
 
         switch($event->type) {
             case 'checkout.session.completed':
                 $donation->status = 'funded';
 
+                if ($response_data->mode === 'subscription'){
+                    $donation->recurring_is_active = true;
+                }
+
                 Leyka_Donation_Management::send_all_emails($donation->id);
 
                 break;
 
             case 'invoice.paid':
-                if ($response_data->billing_reason === 'subscription_threshold'){
+                if ($response_data->billing_reason === 'subscription_cycle'){
 
                     $init_donation_id = $response_data->lines->data[0]->metadata->donation_id;
                     $init_recurring_donation = Leyka_Donations::get_instance()->get_donation((int)$init_donation_id);
                     $this->do_recurring_donation($init_recurring_donation);
+
+                    $new_recurring_donation = Leyka_Donations::get_instance()->add_clone(
+                        $init_recurring_donation,
+                        array(
+                            'status' => 'submitted',
+                            'payment_type' => 'rebill',
+                            'init_recurring_donation' => $init_recurring_donation->id
+                        ),
+                        array('recalculate_total_amount' => true)
+                    );
+
+                    if(is_wp_error($new_recurring_donation)) {
+                        return false;
+                    }
+
+                    if(leyka_get_pm_commission($new_recurring_donation->pm_full_id) > 0.0) {
+                        $new_recurring_donation->amount_total = leyka_calculate_donation_total_amount($new_recurring_donation);
+                    }
+
+                    $new_recurring_donation->add_gateway_response(
+                        json_encode($response_data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+                    );
 
                 }
                 
@@ -341,33 +378,152 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                 }
 
                 break;
+
+            case 'customer.subscription.deleted':
+                $donation->recurring_is_active = false;
+                break;
         }
 
         exit(200);
 
     }
 
-    public function do_recurring_donation(Leyka_Donation_Base $init_recurring_donation) {
+    public function display_donation_specific_data_fields($donation = false) {
 
-        $new_recurring_donation = Leyka_Donations::get_instance()->add_clone(
-            $init_recurring_donation,
-            array(
-                'status' => 'submitted',
-                'payment_type' => 'rebill',
-                'init_recurring_donation' => $init_recurring_donation->id
-            ),
-            array('recalculate_total_amount' => true)
-        );
+        if($donation) { // Edit donation page displayed
 
-        if(is_wp_error($new_recurring_donation)) {
-            return false;
+            $donation = Leyka_Donations::get_instance()->get_donation($donation);?>
+
+            <label><?php _e('Stripe payment intent ID', 'leyka');?>:</label>
+
+            <div class="leyka-ddata-field">
+
+                <?php if($donation->type === 'correction') {?>
+                    <input type="text" id="stripe-paymentintent-id" name="stripe-paymentintent-id" placeholder="<?php _e('Enter Stripe payment intent ID', 'leyka');?>" value="<?php echo $donation->stripe_paymentintent_id;?>">
+                <?php } else {?>
+                    <span class="fake-input"><?php echo $donation->stripe_paymentintent_id;?></span>
+                <?php }?>
+            </div>
+
+            <?php if($donation->type !== 'rebill') {
+                return;
+            }?>
+
+            <label><?php _e('Stripe subscription ID', 'leyka');?>:</label>
+
+            <div class="leyka-ddata-field">
+                <?php if($donation->type === 'correction') {?>
+                    <input type="text" id="stripe-subscription-id" name="stripe-subscription-id" placeholder="<?php _e('Enter Stripe subscription ID', 'leyka');?>" value="<?php echo $donation->stripe_subscription_id;?>">
+                <?php } else {?>
+                    <span class="fake-input"><?php echo $donation->stripe_subscription_id;?></span>
+                <?php }?>
+            </div>
+
+            <label><?php _e('Stripe invoice ID', 'leyka');?>:</label>
+
+            <div class="leyka-ddata-field">
+                <?php if($donation->type === 'correction') {?>
+                    <input type="text" id="stripe-invoice-id" name="stripe-invoice-id" placeholder="<?php _e('Enter Stripe invoice ID', 'leyka');?>" value="<?php echo $donation->stripe_invoice_id;?>">
+                <?php } else {?>
+                    <span class="fake-input"><?php echo $donation->stripe_invoice_id;?></span>
+                <?php }?>
+            </div>
+
+            <?php $init_recurring_donation = $donation->init_recurring_donation;?>
+
+            <div class="recurring-is-active-field">
+
+                <label><?php _e('Recurring subscription is active', 'leyka');?>:</label>
+                <div class="leyka-ddata-field">
+                    <?php echo $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka');
+
+                    if( !$init_recurring_donation->recurring_is_active && $init_recurring_donation->recurring_cancel_date ) {
+                        echo ' ('.sprintf(__('canceled on %s', 'leyka'), date(get_option('date_format').', '.get_option('time_format'), $init_recurring_donation->recurring_cancel_date)).')';
+                    }?>
+                </div>
+
+            </div>
+
+        <?php } else { // New donation page displayed ?>
+
+            <label for="stripe-paymentintent-id"><?php _e('Stripe payment intent ID', 'leyka');?>:</label>
+            <div class="leyka-ddata-field">
+                <input type="text" id="stripe-paymentintent-id" name="stripe-paymentintent-id" placeholder="<?php _e('Enter Stripe payment intent ID', 'leyka');?>" value="">
+            </div>
+
+            <label for="stripe-subscription-id"><?php _e('Stripe subscription ID', 'leyka');?>:</label>
+            <div class="leyka-ddata-field">
+                <input type="text" id="stripe-subscription-id" name="stripe-subscription-id" placeholder="<?php _e('Enter Stripe subscription ID', 'leyka');?>" value="">
+            </div>
+
+            <label for="stripe-invoice-id"><?php _e('Stripe invoice ID', 'leyka');?>:</label>
+            <div class="leyka-ddata-field">
+                <input type="text" id="stripe-invoice-id" name="stripe-invoice-id" placeholder="<?php _e('Enter Stripe invoice ID', 'leyka');?>" value="">
+            </div>
+
+        <?php }
+
+    }
+
+    public function get_specific_data_value($value, $field_name, Leyka_Donation_Base $donation) {
+
+        switch($field_name) {
+            case 'stripe_subscription_id':
+                return $donation->get_meta('stripe_subscription_id');
+            case 'stripe_paymentintent_id':
+                return $donation->get_meta('stripe_paymentintent_id');
+            case 'stripe_invoice_id':
+                return $donation->get_meta('stripe_invoice_id');
+            default:
+                return $value;
         }
 
-        if(leyka_get_pm_commission($new_recurring_donation->pm_full_id) > 0.0) {
-            $new_recurring_donation->amount_total = leyka_calculate_donation_total_amount($new_recurring_donation);
+    }
+
+    public function set_specific_data_value($field_name, $value, Leyka_Donation_Base $donation) {
+
+        switch($field_name) {
+            case 'stripe_subscription_id':
+                return $donation->set_meta('stripe_subscription_id', $value);
+            case 'stripe_paymentintent_id':
+                return $donation->set_meta('stripe_paymentintent_id', $value);
+            case 'stripe_invoice_id':
+                return $donation->set_meta('stripe_invoice_id', $value);
+            default:
+                return false;
         }
 
-        return $new_recurring_donation;
+    }
+
+    public function save_donation_specific_data(Leyka_Donation_Base $donation) {
+
+        if(isset($_POST['stripe-subscription-id']) && $donation->stripe_subscription_id != $_POST['stripe-subscription-id']) {
+            $donation->stripe_subscription_id = $_POST['stripe-subscription-id'];
+        }
+
+        if(isset($_POST['stripe-paymentintent-id']) && $donation->stripe_paymentintent_id != $_POST['stripe-paymentintent-id']) {
+            $donation->stripe_paymentintent_id = $_POST['stripe-paymentintent-id'];
+        }
+
+        if(isset($_POST['stripe-invoice-id']) && $donation->stripe_invoice_id != $_POST['stripe-invoice-id']) {
+            $donation->stripe_invoice_id = $_POST['stripe-invoice-id'];
+        }
+
+    }
+
+    public function add_donation_specific_data($donation_id, array $params) {
+
+        if( !empty($params['stripe_subscription_id']) ) {
+            Leyka_Donations::get_instance()->set_donation_meta($donation_id, 'stripe_subscription_id', $params['stripe_subscription_id']);
+        }
+
+        if( !empty($params['stripe_paymentintent_id']) ) {
+            Leyka_Donations::get_instance()->set_donation_meta($donation_id, 'stripe_paymentintent_id', $params['stripe_paymentintent_id']);
+        }
+
+        if( !empty($params['stripe_invoice_id']) ) {
+            Leyka_Donations::get_instance()->set_donation_meta($donation_id, 'stripe_invoice_id', $params['stripe_invoice_id']);
+        }
 
     }
 
