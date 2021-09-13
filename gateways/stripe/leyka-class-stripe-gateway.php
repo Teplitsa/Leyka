@@ -324,6 +324,10 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
                 if ($response_data->mode === 'subscription'){
                     $donation->recurring_is_active = true;
+                    $donation->stripe_subscription_id = $response_data->subscription;
+                }
+                else {
+                    $donation->stripe_paymentintent_id = $response_data->payment_intent;
                 }
 
                 Leyka_Donation_Management::send_all_emails($donation->id);
@@ -340,9 +344,12 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                     $new_recurring_donation = Leyka_Donations::get_instance()->add_clone(
                         $init_recurring_donation,
                         array(
-                            'status' => 'submitted',
+                            'status' => 'funded',
                             'payment_type' => 'rebill',
-                            'init_recurring_donation' => $init_recurring_donation->id
+                            'init_recurring_donation' => $init_recurring_donation->id,
+                            'stripe_invoice_id' => $response_data->id,
+                            'stripe_paymentintent_id' => $response_data->payment_intent,
+                            'stripe_subscription_id' => $response_data->subscription
                         ),
                         array('recalculate_total_amount' => true)
                     );
@@ -358,6 +365,19 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                     $new_recurring_donation->add_gateway_response(
                         json_encode($response_data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
                     );
+
+                }
+                elseif ($response_data->billing_reason === 'subscription_create') {
+
+                    $donation_id = Leyka_Donations::get_instance()->get_donation_id_by_meta_value(
+                        'stripe-subscription-id',
+                        $response_data->subscription
+                    );
+                    $donation = Leyka_Donations::get_instance()->get_donation((int)$donation_id);
+                    $donation->add_gateway_response(json_encode($response_data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+                    $donation->stripe_invoice_id = $response_data->id;
+                    $donation->stripe_paymentintent_id = $response_data->payment_intent;
+                    $donation->stripe_subscription_id = $response_data->subscription;
 
                 }
                 
