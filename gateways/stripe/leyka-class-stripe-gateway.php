@@ -337,35 +337,44 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             case 'invoice.paid':
                 if ($response_data->billing_reason === 'subscription_cycle'){
 
-                    $init_donation_id = $response_data->lines->data[0]->metadata->donation_id;
-                    $init_recurring_donation = Leyka_Donations::get_instance()->get_donation((int)$init_donation_id);
-                    $this->do_recurring_donation($init_recurring_donation);
-
-                    $new_recurring_donation = Leyka_Donations::get_instance()->add_clone(
-                        $init_recurring_donation,
-                        array(
-                            'status' => 'funded',
-                            'payment_type' => 'rebill',
-                            'init_recurring_donation' => $init_recurring_donation->id,
-                            'stripe_invoice_id' => $response_data->id,
-                            'stripe_paymentintent_id' => $response_data->payment_intent,
-                            'stripe_subscription_id' => $response_data->subscription
-                        ),
-                        array('recalculate_total_amount' => true)
+                    $donation_id = Leyka_Donations::get_instance()->get_donation_id_by_meta_value(
+                        'stripe-invoice-id',
+                        $response_data->id
                     );
 
-                    if(is_wp_error($new_recurring_donation)) {
-                        return false;
+                    if (!$donation_id) {
+
+                        $init_donation_id = $response_data->lines->data[0]->metadata->donation_id;
+                        $init_recurring_donation = Leyka_Donations::get_instance()->get_donation((int)$init_donation_id);
+                        $this->do_recurring_donation($init_recurring_donation);
+
+                        $new_recurring_donation = Leyka_Donations::get_instance()->add_clone(
+                            $init_recurring_donation,
+                            array(
+                                'status' => 'funded',
+                                'payment_type' => 'rebill',
+                                'init_recurring_donation' => $init_recurring_donation->id,
+                                'stripe_invoice_id' => $response_data->id,
+                                'stripe_paymentintent_id' => $response_data->payment_intent,
+                                'stripe_subscription_id' => $response_data->subscription
+                            ),
+                            array('recalculate_total_amount' => true)
+                        );
+
+                        if(is_wp_error($new_recurring_donation)) {
+                            return false;
+                        }
+
+                        if(leyka_get_pm_commission($new_recurring_donation->pm_full_id) > 0.0) {
+                            $new_recurring_donation->amount_total = leyka_calculate_donation_total_amount($new_recurring_donation);
+                        }
+
+                        $new_recurring_donation->add_gateway_response(
+                            json_encode($response_data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+                        );
+
                     }
-
-                    if(leyka_get_pm_commission($new_recurring_donation->pm_full_id) > 0.0) {
-                        $new_recurring_donation->amount_total = leyka_calculate_donation_total_amount($new_recurring_donation);
-                    }
-
-                    $new_recurring_donation->add_gateway_response(
-                        json_encode($response_data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
-                    );
-
+                    
                 }
                 elseif ($response_data->billing_reason === 'subscription_create') {
 
