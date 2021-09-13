@@ -310,6 +310,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                     }
 
+                    $donation->payment_type = 'rebill';
                     $donation->init_recurring_donation_id = $init_recurring_donation->id;
                     $donation->payment_title = $init_recurring_donation->title;
                     $donation->campaign_id = $init_recurring_donation->campaign_id;
@@ -320,14 +321,8 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                     $donation->donor_user_id = $init_recurring_donation->donor_user_id;
                     $donation->amount = $init_recurring_donation->amount;
                     $donation->currency = $init_recurring_donation->currency;
-                    $donation->payment_type = 'rebill';
 
-                    // If init donation was made before the commission was set, apply a commission to the recurring one:
-                    if(
-                        $init_recurring_donation->amount == $init_recurring_donation->amount_total &&
-                        $donation->amount == $donation->amount_total &&
-                        leyka_get_pm_commission($donation->pm_full_id) > 0.0
-                    ) {
+                    if(leyka_get_pm_commission($donation->pm_full_id) > 0.0) {
                         $donation->amount_total = leyka_calculate_donation_total_amount($donation);
                     }
 

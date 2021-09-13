@@ -4,11 +4,6 @@ abstract class Leyka_Donations extends Leyka_Singleton {
 
     protected static $_instance = null;
 
-    public static $use_leyka_object_cache = true; // A flag to turn on/off the Leyka donations object cache
-
-    /** @var array An array of Leyka_Donation_Base objects cache */
-    protected static $_objects = array();
-
     /**
      * @param $params array Isn't in use.
      * @return static
@@ -37,24 +32,10 @@ abstract class Leyka_Donations extends Leyka_Singleton {
 
     /**
      * @param int|WP_Post|Leyka_Donation_Base $donation
-     * @param bool $update_cache
      * @return Leyka_Donation_Base|null
      */
-    public function get_donation($donation, $update_cache = false) {
-
-        $donation_id = $this->_get_donation_id($donation);
-        if(self::$use_leyka_object_cache) {
-
-            if(empty(self::$_objects[$donation_id]) || !!$update_cache) {
-                self::$_objects[$donation_id] = $this->_get_donation($donation);
-            }
-
-            return self::$_objects[$donation_id];
-
-        } else {
-            return $this->_get_donation($donation);
-        }
-
+    public function get_donation($donation) {
+        return $this->_get_donation($donation);
     }
 
     /**
