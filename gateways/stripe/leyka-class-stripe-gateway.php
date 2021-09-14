@@ -344,8 +344,6 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                             $new_recurring_donation->amount_total = leyka_calculate_donation_total_amount($new_recurring_donation);
                         }
 
-                        Leyka_Donation_Management::send_all_emails($new_recurring_donation);
-
                     }
 
                 }
@@ -358,7 +356,6 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                     $init_recurring_donation->stripe_subscription_id = $response_data->subscription;
                     $init_recurring_donation->stripe_invoice_id = $response_data->id;
                     $init_recurring_donation->stripe_paymentintent_id = $response_data->payment_intent;
-                    Leyka_Donation_Management::send_all_emails($init_recurring_donation);
 
                 }
                 
@@ -378,9 +375,13 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                     $donation->status = 'funded';
                     $donation->stripe_paymentintent_id = $response_data->id;
                     $donation->add_gateway_response(json_encode($response_data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-                    Leyka_Donation_Management::send_all_emails($donation);
 
                 }
+                else {
+                    $donation->add_gateway_response(json_encode($response_data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+                }
+
+                Leyka_Donation_Management::send_all_emails($donation);
 
                 break;
 
