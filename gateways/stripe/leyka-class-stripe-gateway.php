@@ -20,12 +20,12 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             $this->_id
         );
 
-        $this->_docs_link = 'https://stripe.com/docs';
+        $this->_docs_link = 'https://stripe.com/docs'; /** @todo Здесь должен быть URL не на ман самого гейта, а на наш ман по его подключению / настройке. Его пишет либо Наталья, либо кто-то из наших сотрудников техн. поддержки, в момент, когда гейт начинает тестироваться/готовиться к релизу. Сейчас как раз такой момент - я напишу коллегам, что можно писать ман. Скорее всего, они будут обращаться к тебе с вопросами по ЛК Страйпа. Плюс, не забудь заменить здесь URL, когда ман будет готов. */
         $this->_registration_link = '//dashboard.stripe.com/register';
         $this->_has_wizard = false;
 
-        $this->_min_commission = '2.2%';
-        $this->_receiver_types = array('legal');
+        $this->_min_commission = '2.2%'; /** @todo В этом атрибуте не нужен символ "%" - просто кол-во процентов как число. */
+        $this->_receiver_types = array('legal'); /** @todo Мы постепенно меняем стиль кода - вместо array() для инициализации массивов используем []. Используй эту нотацию здесь и далее, пжлст. */
         $this->_may_support_recurring = true;
         $this->_countries = array('eu');
 
@@ -105,12 +105,14 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
         require_once LEYKA_PLUGIN_DIR.'gateways/stripe/lib/init.php';
 
-        $compaign = new Leyka_Campaign($form_data['leyka_campaign_id']);
-        $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
+        $compaign = new Leyka_Campaign($form_data['leyka_campaign_id']); /** @todo Пишется "cAmpaign", не "cOmpaign" :) */
+        $donation = Leyka_Donations::get_instance()->get_donation($donation_id); /** @todo Это не ошибка, но здесь и далее если ты запрашиваешь объект пож-я по ID, можно использовать метод get() вместо get_donation(). Он умеет понимать аргумент-число (возвращается пож-е) и отдельно аргумент-массив (возвращается массив пож-й). */
+
         if( !empty($form_data['leyka_recurring']) ) {
             $donation->payment_type = 'rebill';
         }
-        $description = (
+
+        $description = ( /** @todo По стилю кода: тернарный оператор (X ? Y : Z) стоит разносить на разные строки только если он не укладывается по длине в одну строку (120 симв. шириной). Здесь он укладывается. */
             !empty($form_data['leyka_recurring']) ? _x('[RS]', 'For "recurring subscription"', 'leyka').' ' : ''
             )
             .$donation->payment_title." (№ $donation_id); {$donation->donor_name}; {$donation->donor_email}";
@@ -137,7 +139,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             ]
         ];
 
-        if (!empty($form_data['leyka_donor_email'])){
+        if (!empty($form_data['leyka_donor_email'])){ /** @todo По стилю кода: здесь и далее в if() поправь пробелы, пжлст. */
             $checkout_session_data['customer_email'] = $form_data['leyka_donor_email'];
         }
 
@@ -148,23 +150,20 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                     'donation_id' => $donation_id
                 ]
             ];
-        }
+        } /** @todo По стилю кода: "else {" должно быть на той же строке, что и предшествующая закрывающая "}". Пример: "} else {" */
         else {
 
-            $checkout_session_data['line_items'][0]['price_data']['recurring'] = [
+            $checkout_session_data['line_items'][0]['price_data']['recurring'] = [ /** @todo Здесь и далее массивы можно писать в одной строке, если они влезают в 120 симв. и это не вредит читаемости кода. Пример - как в следующей инструкции. */
                 //'interval' => 'month'
-                'interval' => 'day'
+                'interval' => 'day' /** @todo ВАЖНО! Не забудь поправить здесь на "month" после завершения тестинга. */
             ];
             $checkout_session_data['subscription_data'] = [
-                'metadata' => [
-                    'description' => $description,
-                    'donation_id' => $donation_id
-                ]
+                'metadata' => ['description' => $description, 'donation_id' => $donation_id,]
             ];
 
         }
 
-        $checkout_session = \Stripe\Checkout\Session::create($checkout_session_data);
+        $checkout_session = \Stripe\Checkout\Session::create($checkout_session_data); /** @todo Здесь стоит ловить исключение от Страйпа (сессия, теоретически, может не создаться) и возвращать ошибку на форму пож-я. */
 
         $this->_api_redirect_url = $checkout_session->url;
 
@@ -184,7 +183,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
     public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {
 
-        if(!$donation->gateway_response) {
+        if(!$donation->gateway_response) { /** @todo По стилю кода: здесь и далее если в if() первый элемент начинается с "!", нужны пробелы до/после скобок. Пример: if($some) , но if( !$some ). */
             return [];
         }
 
@@ -284,17 +283,17 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             $event = \Stripe\Webhook::constructEvent(
                 $payload, $_SERVER['HTTP_STRIPE_SIGNATURE'], leyka_options()->opt('stripe_webhooks_key')
             );
-        } catch(\UnexpectedValueException $e) {
+        } catch(\UnexpectedValueException $e) { /** @todo При известных проблемах с коллбэками (как здесь) стоит не просто прерывать обработку, но и писать админу сайта письмо-уведомление об ошибке с примерной причиной. Пример: как выше, при ошибке проверки на IP. */
             // Invalid payload
             exit();
-        } catch(\Stripe\Exception\SignatureVerificationException $e) {
+        } catch(\Stripe\Exception\SignatureVerificationException $e) { /** @todo Аналогично - здесь ошибка проверки подписи, нужно писать админу сайта. */
             // Invalid signature
             exit();
         }
 
         $response_data = $event->data->object;
 
-        if ( !empty($response_data->metadata->donation_id) ){
+        if ( !empty($response_data->metadata->donation_id) ){ /** @todo По стилю кода: после закрывающей ")" и открывающей "{" пробела нет только если это анонимная лямбда-функция. Во всех других случаях пробел должен быть. */
 
             $donation_id = $response_data->metadata->donation_id;
             $donation = Leyka_Donations::get_instance()->get_donation((int)$donation_id);
@@ -306,9 +305,10 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                 $init_donation_id = $response_data->lines->data[0]->metadata->donation_id;
                 $init_recurring_donation = Leyka_Donations::get_instance()->get_donation((int)$init_donation_id);
 
-                // Rebill
-                if ($response_data->billing_reason === 'subscription_cycle'){
-                    //Check if donation was already created for this invoice
+                // Non-init recurring donation (rebill):
+                if($response_data->billing_reason === 'subscription_cycle') {
+
+                    // Check if donation was already created for this invoice:
                     $donation_id = Leyka_Donations::get_instance()->get_donation_id_by_meta_value(
                         'stripe_invoice_id',
                         $response_data->id
@@ -339,30 +339,33 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
                     }
 
-                }
-                //Init payment
-                elseif ($response_data->billing_reason === 'subscription_create') {
+                } /** @todo По стилю кода: пжлст, поправь пробелы и перенос строки перед "else". Кроме того, "elseif" всегда пишем как 2 слова - "else if" */
+                elseif ($response_data->billing_reason === 'subscription_create') { // Init recurring donation
 
                     $init_recurring_donation->type = 'rebill';
                     $init_recurring_donation->status = 'funded';
                     $init_recurring_donation->recurring_is_active = true;
                     $init_recurring_donation->stripe_subscription_id = $response_data->subscription;
                     $init_recurring_donation->stripe_invoice_id = $response_data->id;
-                    $init_recurring_donation->stripe_paymentintent_id = $response_data->payment_intent;
+                    $init_recurring_donation->stripe_paymentintent_id = $response_data->payment_intent; /** @todo Здесь и далее: если в названии переменной 2+ слов, они не склеиваются, а разделяются подчёркиваниями. Это касается и названий метаданных. Например, здесь нужно не "stripe_paymentintent_id", а "stripe_payment_intent_id". */
 
                 }
+
+                /** @todo Здесь и далее: $donation->add_gateway_response() желательно вызывать при каждой обработке коллбэка (не только при успешных платежах). */
                 
                 break;
 
             case 'invoice.payment_failed':
+                /** @todo В этом случае обработки для статуса пож-я не нужно (это вопрос без иронии)? */
                 break;
 
             case 'charge.refunded':
                 $donation->status = 'refunded';
                 break;
 
-            case 'payment_intent.succeeded':
-                //Single payment
+            case 'payment_intent.succeeded': /** @todo По стилю кода: если коммент короткий и влезает в длину строки, его можно писать в этой самой строке, а не переносить на предшествующую или следующую строку. Здесь как раз такой случай: можно "case 'payment_intent.succeeded': // Single donation". */
+
+                //Single payment /** @todo По стилю кода: здесь и далее перед началом коммента в коде (напр., "//") и собственно текстом коммента нужен пробел. Например: "// Your comment text". */
                 if (!$response_data->invoice){
 
                     $donation->status = 'funded';
@@ -407,6 +410,8 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                 $init_recurring_donation->recurring_is_active = false;
 
                 break;
+
+            /** @todo Важно: здесь и далее если в коде есть switch(), в нём должен быть "default" (даже если он будет пустым). */
         }
 
         exit(200);
@@ -439,7 +444,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             $subscription = \Stripe\Subscription::retrieve($donation->stripe_subscription_id);
             $subscription->cancel();
 
-        }
+        } /** @todo По стилю кода: "}" и "catch" должны быть на одной строке (аналогично "} else {"). */
         catch (\Stripe\Exception\ApiErrorException $e){
             return new WP_Error('stripe_wrong_request_answer', sprintf(__('<strong>Error:</strong> the recurring subsciption cancelling request returned unexpected result. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="mailto:%s" target="_blank">website tech. support</a>.<br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email()));
         }
@@ -480,7 +485,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
             <div class="leyka-ddata-field">
 
-                <?php if($donation->type === 'correction') {?>
+                <?php if($donation->type === 'correction') { /** @todo Замечание выше по поводу разделения слов в названиях переменных касается в т.ч. значений атрибутов в HTML/CSS. Здесь нужно не "stripe-paymentintent-id", а "stripe-payment-intent-id". */?>
                     <input type="text" id="stripe-paymentintent-id" name="stripe-paymentintent-id" placeholder="<?php _e('Enter Stripe payment intent ID', 'leyka');?>" value="<?php echo $donation->stripe_paymentintent_id;?>">
                 <?php } else {?>
                     <span class="fake-input"><?php echo $donation->stripe_paymentintent_id;?></span>
@@ -623,7 +628,7 @@ class Leyka_Stripe_Card extends Leyka_Payment_Method {
 
         $this->_description = apply_filters(
             'leyka_pm_description',
-            'Stripe Credit Card',
+            'Stripe Credit Card', /** @todo Здесь явно строка для локализации, т.е. нужно использовать __('Your string', 'leyka') */
             $this->_id,
             $this->_gateway_id,
             $this->_category
