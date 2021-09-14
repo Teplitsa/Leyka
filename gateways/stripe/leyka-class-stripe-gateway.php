@@ -401,9 +401,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
             case 'customer.subscription.deleted':
 
-                $donation_id = $response_data->metadata->donation_id;
-                $donation = Leyka_Donations::get_instance()->get_donation((int)$donation_id);
-                $init_donation_id = $donation->init_recurring_donation;
+                $init_donation_id = $response_data->metadata->donation_id;
                 $init_recurring_donation = Leyka_Donations::get_instance()->get_donation((int)$init_donation_id);
                 $init_recurring_donation->recurring_is_active = false;
 
