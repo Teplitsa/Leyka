@@ -193,25 +193,17 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
         }
 
         $vars_final = [
-            __('PaymentIntent ID:', 'leyka') => $vars['id'],
             __('Amount:', 'leyka') => $vars['amount']/100,
             __('Currency:', 'leyka') => $vars['currency'],
             __('Amount received:', 'leyka') => $vars['amount_received']/100,
             __('Donor name:', 'leyka') => $vars['charges']['data'][0]['billing_details']['name'],
             __('Donor email:', 'leyka') => $vars['charges']['data'][0]['billing_details']['email'],
-            __('Donation description:', 'leyka') => $vars['charges']['data'][0]['description'],
-            __('Status code:', 'leyka') => $vars['status']
+            __('Note:', 'leyka') => $vars['charges']['data'][0]['description'],
+            __('Status:', 'leyka') => $vars['status']
         ];
 
-        if($vars['status'] === 'requires_payment_method') {
+        if(!empty($vars['status']) && $vars['status'] === 'requires_payment_method') {
             $vars_final[__('Donation failure reason:', 'leyka')] = $vars['charges']['data'][0]['failure_message'];
-        }
-
-        if ( !empty($vars['object'])
-            && $vars['object'] === 'checkout.session'
-            && !empty($vars['mode'])
-            && $vars['mode'] === 'subscription'){
-            $vars_final[__('Subscription ID:', 'leyka')] = $vars['subscription'];
         }
 
         if(!empty($vars['refunded']) && $vars['refunded'] === true){
@@ -384,7 +376,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                         $response_data->id
                     );
                     $donation = Leyka_Donations::get_instance()->get_donation((int)$donation_id);
-                    
+
                 }
 
                 $donation->add_gateway_response(json_encode($response_data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
