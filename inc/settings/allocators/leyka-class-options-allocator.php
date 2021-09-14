@@ -44,7 +44,7 @@ abstract class Leyka_Options_Allocator extends Leyka_Singleton {
             $country_id
         );
 
-        if(in_array($country_id, array('by', 'ua',))) { // Some countries allocators are descendants of the Ru allocator
+        if(in_array($country_id, array('by', 'ua', 'eu'))) { // Some countries allocators are descendants of the Ru allocator
             require_once LEYKA_PLUGIN_DIR.'inc/settings/allocators/leyka-class-ru-options-allocator.php';
         }
 
