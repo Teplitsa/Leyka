@@ -416,6 +416,63 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
     }
 
+    public function cancel_recurring_subscription(Leyka_Donation_Base $donation) {
+
+        if( !$donation->recurring_is_active ) {
+            return true;
+        }
+
+        if($donation->type !== 'rebill') {
+            return new WP_Error(
+                'wrong_recurring_donation_to_cancel',
+                __('Wrong donation given to cancel a recurring subscription.', 'leyka')
+            );
+        }
+
+        if( !$donation->stripe_subscription_id ) {
+            return new WP_Error('stripe_no_subscription_id', sprintf(__('<strong>Error:</strong> unknown Subscription ID for donation #%d. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email()));
+        }
+
+        require_once LEYKA_PLUGIN_DIR.'gateways/stripe/lib/init.php';
+
+        \Stripe\Stripe::setApiKey(leyka_options()->opt('stripe_key_secret'));
+
+        try {
+
+            $subscription = \Stripe\Subscription::retrieve($donation->stripe_subscription_id);
+            $subscription->cancel();
+
+        }
+        catch (\Stripe\Exception\ApiErrorException $e){
+            return new WP_Error('stripe_wrong_request_answer', sprintf(__('<strong>Error:</strong> the recurring subsciption cancelling request returned unexpected result. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="mailto:%s" target="_blank">website tech. support</a>.<br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email()));
+        }
+
+        $donation->recurring_is_active = false;
+
+        return true;
+
+    }
+
+    public function cancel_recurring_subscription_by_link(Leyka_Donation_Base $donation) {
+
+        if($donation->type !== 'rebill' || !$donation->recurring_is_active) {
+            die();
+        }
+
+        header('Content-type: text/html; charset=utf-8');
+
+        $recurring_cancelling_result = $this->cancel_recurring_subscription($donation);
+
+        if($recurring_cancelling_result === true) {
+            die(__('Recurring subscription cancelled successfully.', 'leyka'));
+        } else if(is_wp_error($recurring_cancelling_result)) {
+            die($recurring_cancelling_result->get_error_message());
+        } else {
+            die( sprintf(__('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email()) );
+        }
+
+    }
+
     public function display_donation_specific_data_fields($donation = false) {
 
         if($donation) { // Edit donation page displayed
