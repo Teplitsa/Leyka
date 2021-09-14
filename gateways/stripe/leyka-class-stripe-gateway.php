@@ -27,6 +27,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
         $this->_min_commission = '2.2%';
         $this->_receiver_types = array('legal');
         $this->_may_support_recurring = true;
+        $this->_countries = array('eu');
 
     }
 
@@ -638,8 +639,8 @@ class Leyka_Stripe_Card extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
         ));
 
-        $this->_supported_currencies[] = 'rub';
-        $this->_default_currency = 'rub';
+        $this->_supported_currencies[] = 'eur';
+        $this->_default_currency = 'eur';
 
     }
 

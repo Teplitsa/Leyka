@@ -906,6 +906,7 @@ function leyka_get_countries_full_info($country_id = null) {
         'ru' => array('title' => __('Russia', 'leyka'), 'currency' => 'rub',),
         'by' => array('title' => __('Belarus Republic', 'leyka'), 'currency' => 'byn'),
         'ua' => array('title' => __('Ukraine', 'leyka'), 'currency' => 'uah'),
+        'eu' => array('title' => __('European Union ', 'leyka'), 'currency' => 'eur')
     ));
 
     if(empty($country_id)) {
@@ -1006,6 +1007,14 @@ function leyka_get_main_currencies_full_info() {
             'flexible_default_amount' => 500,
             'fixed_amounts' => '100,300,500,1000',
         ),
+        'eur' => array(
+            'title' => __('Euro', 'leyka'),
+            'label' => __('€', 'leyka'),
+            'min_amount' => 1,
+            'max_amount' => 650,
+            'flexible_default_amount' => 5,
+            'fixed_amounts' => '1,3,5,10,100',
+        )
     ));
 }
 
@@ -1018,15 +1027,7 @@ function leyka_get_secondary_currencies_full_info($country_id = null) {
             'max_amount' => 1000,
             'flexible_default_amount' => 10,
             'fixed_amounts' => '1,3,5,10,15,50',
-        ),
-        'eur' => array(
-            'title' => __('Euro', 'leyka'),
-            'label' => __('€', 'leyka'),
-            'min_amount' => 1,
-            'max_amount' => 650,
-            'flexible_default_amount' => 5,
-            'fixed_amounts' => '1,3,5,10,100',
-        ),
+        )
     ), $country_id);
 }
 
