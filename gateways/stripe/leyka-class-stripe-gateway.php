@@ -374,13 +374,20 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
                     $donation->status = 'funded';
                     $donation->stripe_paymentintent_id = $response_data->id;
-                    $donation->add_gateway_response(json_encode($response_data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
 
                 }
+                //Rebill
                 else {
-                    $donation->add_gateway_response(json_encode($response_data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+
+                    $donation_id = Leyka_Donations::get_instance()->get_donation_id_by_meta_value(
+                        'stripe_paymentintent_id',
+                        $response_data->id
+                    );
+                    $donation = Leyka_Donations::get_instance()->get_donation((int)$donation_id);
+                    
                 }
 
+                $donation->add_gateway_response(json_encode($response_data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
                 Leyka_Donation_Management::send_all_emails($donation);
 
                 break;
