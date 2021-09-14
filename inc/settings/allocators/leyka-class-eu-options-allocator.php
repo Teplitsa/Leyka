@@ -26,7 +26,7 @@ class Leyka_Eu_Options_Allocator extends Leyka_Ru_Options_Allocator {
         );
     }
 
-    public function get_beneficiary_options() {
+    public function get_beneficiary_options() { /** @todo Сейчас класс нового аллокатора в точности повторяет украинский - это намеренно? Мы пока не знаем, какие опции банк. данных должны быть при выбранной стране "Евросоюз" - я бы вообще убрал оттуда всё, кроме названия банка. */
         return array(
             array('section' => array(
                 'name' => 'receiver_country',
