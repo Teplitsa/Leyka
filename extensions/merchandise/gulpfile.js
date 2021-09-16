@@ -61,11 +61,29 @@ gulp.task('build-css', function(){
 
 });
 
+gulp.task('build-js', function(){
+
+    var appFiles  = gulp.src([basePaths.src+'js/public.js']);
+
+    console.log(basePaths.dest+'js', basePaths.src+'js/public.js')
+
+    return es.concat(appFiles) // Join all scripts
+        .pipe(plugins.concat('public.js')) // Combine them into a "public.js" bundle
+        .pipe(isProduction ? plugins.uglify() : through.obj()) // Minification
+        .pipe(plugins.size()) // Print total size for log
+        .pipe(gulp.dest(basePaths.dest+'js')) // Write results into file
+        .on('error', log.error);
+
+});
+
 //builds
-gulp.task('full-build', gulp.series('build-css',));
+gulp.task('full-build', gulp.series('build-css', 'build-js',));
 
 gulp.task('watch', function(){
+
     gulp.watch([basePaths.src+'sass/*.scss', basePaths.src+'sass/**/*.scss'], gulp.series('build-css',));
+    gulp.watch(basePaths.src+'js/*.js', gulp.series('build-js',));
+
 });
 
 gulp.task('default', gulp.series('full-build', 'watch'));

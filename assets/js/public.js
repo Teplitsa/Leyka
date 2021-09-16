@@ -2232,26 +2232,32 @@ jQuery(document).ready(function($){
 	function bindAmountEvents() {
 		
 		function resizable(el, factor) {
-			var k = Number(factor) || 7.7;
-			var e = 'keyup,keypress,focus,blur,change'.split(',');
-			for(var i in e) {
+
+			let k = Number(factor) || 7.7,
+                e = 'keyup,keypress,focus,blur,change'.split(',');
+
+			for(let i in e) {
 				el.addEventListener(e[i], function(e){resize(e, el, k);}, false);
 			}
+
 			resize(null, el, k);
+
 		}
 
-		$('.donate_amount_flex').each(function(i, el) {
+		$('.donate_amount_flex').each(function(i, element) {
+
             if(parseInt($(this).css('font-size')) <= 16) {
-                resizable(el, 7);
+                resizable(element, 7);
+            } else {
+                resizable(element, 11.1);
             }
-            else {
-                resizable(el, 11.1);
-            }
-            setAmountPlaceholder(el);
+
+            setAmountPlaceholder(element);
+
 		});
         
-        $('.leyka-tpl-star-form .amount__figure .swiper-item.selected').each(function(i, el){
-            setAmountInputValue($(el).closest('.leyka-tpl-star-form'), getAmountValueFromControl($(el)));
+        $('.leyka-tpl-star-form .amount__figure .swiper-item.selected').each(function(i, element){
+            setAmountInputValue($(element).closest('.leyka-tpl-star-form'), getAmountValueFromControl($(element)));
         });
         
         $('.leyka-tpl-star-form .flex-amount-item').on('blur', 'input', function(){
@@ -2309,7 +2315,12 @@ jQuery(document).ready(function($){
 
         amount = typeof amount === 'string' ? parseFloat(amount.replace(/[^0-9]+/g, '')) : amount;
 
-        $form.find('input.leyka_donation_amount').val(amount);
+        let $amount_field = $form.find('input.leyka_donation_amount'),
+            previous_value = parseFloat($amount_field.val());
+
+        if(amount !== previous_value) {
+            $amount_field.val(amount).trigger('change');
+        }
 
     }
 
@@ -2342,14 +2353,15 @@ jQuery(document).ready(function($){
     }
 
     function setupSwiperWidth($_form) {
-        // amount swiper setup
+
+        // Amount swiper setup:
         $('.amount__figure.star-swiper .swiper-list .swiper-item').last().css('margin-right', '0px');
 
-        // pm swiper setup
+        // PM swiper setup:
         let $swiper = $_form.find('.payments-grid .star-swiper'),
-            $list = $swiper.find('.swiper-list'); // $list is empty in full-list width mode
+            $list = $swiper.find('.swiper-list'), // $list is empty in full-list width mode
+            $active_item = $swiper.find('.swiper-item.selected:not(.disabled)').first();
 
-        var $active_item = $swiper.find('.swiper-item.selected:not(.disabled)').first();
         if( !$active_item.length ) {
 
             $swiper.find('.swiper-item:not(.disabled)').first().addClass('selected');
@@ -2362,8 +2374,8 @@ jQuery(document).ready(function($){
         $list.find('.swiper-item:not(.disabled)').last().css('margin-right', '0px');        
         $list.css('width', '100%');
 
-        // fix max width must work in swiper and full width mode, so use $swiper insted $list
-        var max_width = $swiper.closest('.leyka-payment-form').width();
+        // Fixed max width must work both in swiper and full width mode, so use $swiper instead of $list:
+        let max_width = $swiper.closest('.leyka-payment-form').width();
 
         if($swiper.find('.full-list').length) {
 
@@ -2378,12 +2390,18 @@ jQuery(document).ready(function($){
             $swiper.find('.payment-opt__icon').css('max-width', max_width);
 
             $swiper.find('.swiper-item').each(function(i, item){
-                var w1 = $(item).find('.payment-opt__label').width();
-                var w2 = $(item).find('.pm-icon').length * 40; // max width of pm icon
-                $(item).css('min-width', Math.min(max_width, Math.max(w1, w2)) + 64);
+
+                $(item).css(
+                    'min-width',
+                    Math.min(max_width, Math.max(
+                        $(item).find('.payment-opt__label').width(),
+                        $(item).find('.pm-icon').length * 40) // Max width of PM icon
+                    ) + 64
+                );
+
             });
 
-            // fix for FF and Safari
+            // Fix for FF and Safari:
             let $active_pm_item = $swiper.find('.swiper-item:not(.disabled)');
             if($active_pm_item.length <= 1) {
                 $active_pm_item.css('width', '100%');
@@ -2395,6 +2413,7 @@ jQuery(document).ready(function($){
         
         toggleSwiperArrows($swiper);
         swipeList($swiper, $active_item);
+
     }
 
     function setupPeriodicity($_form) {
@@ -2415,13 +2434,17 @@ jQuery(document).ready(function($){
             $_form.find('.section__fields.periodicity a[data-periodicity="monthly"]').addClass('active');
             $_form.find('input.is-recurring-chosen').val('1');
             $_form.find('.payments-grid .swiper-item').each(function(i, element){
-                if($(element).find('input[data-has-recurring="0"]').length > 0) {
-                    $(element)
+
+                let $swiper_item = $(element);
+
+                if($swiper_item.find('input[data-has-recurring="0"]').length > 0) {
+                    $swiper_item
                         .addClass('disabled')
                         .removeClass('selected')
                         .find('input[type="radio"]')
                             .prop('checked', false);
                 }
+
             });
 
         } else {
@@ -2568,15 +2591,16 @@ jQuery(document).ready(function($){
     }
     
     function swipeList($swiper, $activeItem) {
-        var $list = $swiper.find('.swiper-list');
+
+        let $list = $swiper.find('.swiper-list');
 
         if( !$list.length ) {
             return;
         }
 
-        $list.stop( true, true );
+        $list.stop(true, true);
 
-        var dif = $list.width() - $swiper.width();
+        let dif = $list.width() - $swiper.width();
         if(dif <= 0) {
             $list.width($swiper.width());
             $list.css('left', 0);
@@ -2586,18 +2610,15 @@ jQuery(document).ready(function($){
         var left = parseInt($list.css('left'));
         if($swiper.find('.swiper-item:not(.disabled)').first().hasClass('selected')) {
             left = 0;
-        }
-        else if($swiper.find('.swiper-item:not(.disabled)').last().hasClass('selected')) {
+        } else if($swiper.find('.swiper-item:not(.disabled)').last().hasClass('selected')) {
             left = -dif;
-        }
-        else {
+        } else {
             left = $swiper.width() / 2 - ($activeItem.offset().left - $list.offset().left) - $activeItem.width() / 2;
             left -= 24; // minus margin * 1.5
         }
         
-        $list.animate({
-            'left': left
-        });
+        $list.animate({'left': left});
+
     }
     
     function toggleSwiperArrows($swiper) {

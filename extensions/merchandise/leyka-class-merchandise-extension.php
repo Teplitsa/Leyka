@@ -92,6 +92,13 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
             defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY ? uniqid() : null
         );
 
+        wp_enqueue_script(
+            $this->_id.'-front',
+            self::get_base_url().'/assets/js/public.js',
+            ['jquery'],
+            defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY ? uniqid() : null
+        );
+
     }
 
     public function merchandise_metabox(WP_Post $campaign) {
@@ -316,9 +323,11 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
     public function display_merchandise_field_star(array $template_data, Leyka_Campaign $campaign) {
 
         $uploads_dir_url = wp_get_upload_dir();
-        $uploads_dir_url = $uploads_dir_url['baseurl'];?>
+        $uploads_dir_url = $uploads_dir_url['baseurl'];
 
-        <div class="section section--cards">
+//        $template_data['amount_default'];?>
+
+        <div class="section section--cards section--merchandise">
 
             <div class="section-title-container">
                 <div class="section-title-line"></div>
@@ -326,46 +335,31 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
             </div>
 
             <div class="section__fields merchandise-grid">
-                <div class="star-swiper">
+            <?php foreach($campaign->merchandise_settings as $merchandise_id => $settings) {?>
 
-                    <div class="arrow-gradient left"></div><a class="swiper-arrow swipe-left" href="#"></a>
-                    <div class="arrow-gradient right"></div><a class="swiper-arrow swipe-right" href="#"></a>
+                <div class="merchandise-item" data-merchandise-id="<?php echo esc_attr($merchandise_id);?>" data-donation-amount-needed="<?php echo absint($settings['donation_amount_needed']);?>">
 
-                    <div class="swiper-list">
+                    <label class="merchandise__button">
 
-                        <?php foreach($campaign->merchandise_settings as $merchandise_id => $settings) {
+                        <span class="merchandise__label"><?php echo esc_html($settings['title']);?></span>
 
-//                            echo '<pre>'.$merchandise_id.' - '.print_r($settings, 1).'</pre>';?>
+                        <?php if($settings['thumbnail']) {?>
 
-                            <div class="merchandise swiper-item"> <!-- class="selected" -->
+                            <span class="merchandise__icon">
+                                    <img class="merchandise-icon" src="<?php echo $uploads_dir_url.$settings['thumbnail'];?>" alt="<?php echo esc_attr($settings['title']);?>">
+                                </span>
 
-                                <div class="swiper-item-inner">
-
-                                    <label class="merchandise__button">
-
-                                        <span class="merchandise__label"><?php echo esc_html($settings['title']);?></span>
-
-                                        <span class="merchandise__icon">
-                                            <img class="merchandise-icon" src="<?php echo $uploads_dir_url.$settings['thumbnail'];?>" alt="<?php echo esc_attr($settings['title']);?>">
-                                        </span>
-
-                                        <span class="merchandise__description">
-                                            <?php echo $settings['description'];?>
-                                        </span>
-
-<!--                                        <input class="payment-opt__merchandise" name="leyka_payment_method" value="--><?php //echo esc_attr($pm->full_id);?><!--" type="radio" data-processing="--><?php //echo $pm->processing_type;?><!--" data-has-recurring="--><?php //echo $pm->has_recurring_support() ? '1' : '0';?><!--" data-ajax-without-form-submission="--><?php //echo $pm->ajax_without_form_submission ? '1' : '0';?><!--">-->
-
-                                    </label>
-
-                                </div>
-
-                            </div>
                         <?php }?>
 
-                    </div>
+                        <span class="merchandise__description"><?php echo $settings['description'];?></span>
+
+                    </label>
 
                 </div>
+            <?php }?>
             </div>
+
+            <input type="hidden" name="leyka_donation_merchandise_id" value="">
 
         </div>
 
