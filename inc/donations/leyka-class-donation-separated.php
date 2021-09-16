@@ -125,6 +125,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             $donation_id,
             $params
         );
+        $donation_meta_fields = apply_filters('leyka_new_donation_specific_data', $donation_meta_fields, $donation_id, $params);
 
         foreach($donation_meta_fields as $key => $value) {
 
@@ -188,6 +189,10 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
         if( !$this->_main_data ) {
             throw new Exception(sprintf(__('No donation #%s in the DB', 'leyka'), $this->_id));
         }
+
+        do_action('leyka_donation_constructor_meta', [], $this->_id);
+
+        $this->_donation_meta = apply_filters('leyka_donation_constructor_meta', [], $this->_id);
 
     }
 

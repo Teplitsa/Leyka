@@ -48,18 +48,73 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
     /** Will be called only if the Extension is active. */
     protected function _initialize_active() {
 
-        add_action('add_meta_boxes', function(){
+        if(is_admin()) {
 
-            add_meta_box(
-                Leyka_Campaign_Management::$post_type.'_merchandise',
-                __('Campaign merchandise / gifts for donors', 'leyka'),
-                [$this, 'merchandise_metabox'],
-                Leyka_Campaign_Management::$post_type,
-                'normal',
-                'low'
+            // Campaign metabox:
+            add_action('add_meta_boxes', function(){
+
+                add_meta_box(
+                    Leyka_Campaign_Management::$post_type.'_merchandise',
+                    __('Campaign merchandise / gifts for donors', 'leyka'),
+                    [$this, 'merchandise_campaign_metabox'],
+                    Leyka_Campaign_Management::$post_type,
+                    'normal',
+                    'low'
+                );
+
+            });
+
+            // Donations admin list column:
+            add_filter('leyka_admin_donations_columns_names', function($columns){
+
+                $columns['merchandise'] = __('Merchandise', 'leyka');
+
+                return $columns;
+
+            });
+
+            add_filter(
+                'leyka_admin_donation_merchandise_column_content',
+                function($content, Leyka_Donation_Base $donation){
+
+                    $campaign = $donation->campaign; /** @var $campaign Leyka_Campaign */
+                    $campaign_merchandise_settings = $campaign->merchandise_settings;
+
+                    if($donation->merchandise && !empty($campaign_merchandise_settings[$donation->merchandise])) {
+                        $content = $campaign_merchandise_settings[$donation->merchandise]['title'];
+                    }
+
+                    return $content;
+
+                },
+                10, 2
             );
 
-        });
+            // Donation edit page:
+            add_action('leyka_donation_info_data_post_content', function(Leyka_Donation_Base $donation){
+
+                $campaign = $donation->campaign; /** @var $campaign Leyka_Campaign */
+                $campaign_merchandise_settings = $campaign->merchandise_settings;
+
+                if($donation->merchandise && !empty($campaign_merchandise_settings[$donation->merchandise])) {
+                    $content = $campaign_merchandise_settings[$donation->merchandise]['title'];
+                } else {
+                    $content = __('none', 'leyka');
+                }?>
+
+                <div class="leyka-ddata-string">
+                    <label><?php _e('Donor merchandise / award', 'leyka');?>:</label>
+                    <div class="leyka-ddata-field">
+                        <span class="fake-input"><?php echo $content;?></span>
+                    </div>
+                </div>
+
+            <?php
+            });
+
+        }
+
+        // Campaign merchandise data:
 
         // To initialize merchandise data as Campaign meta on object construction:
         add_filter('leyka_campaign_constructor_meta', [$this, '_merchandise_campaign_data_initializing'], 10, 2);
@@ -71,11 +126,27 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
         // To save merchandise data on Campaign saving:
         add_action('leyka_campaign_data_after_saving', [$this, '_merchandise_campaign_data_saving'], 10, 2);
 
+        // Campaign merchandise data - END
+
+        // Donation merchandise data:
+
+        // To initialize merchandise data as Donation meta on object construction:
+        add_filter('leyka_donation_constructor_meta', [$this, '_merchandise_donation_data_initializing'], 10, 2);
+
+        // To get/set merchandise data from Donation object:
+        add_filter('leyka_get_unknown_donation_field', [$this, '_merchandise_donation_data_get'], 10, 3);
+        add_action('leyka_set_unknown_donation_field', [$this, '_merchandise_donation_data_set'], 10, 3);
+
+        // To add merchandise data for new Donations:
+        add_filter('leyka_new_donation_specific_data', [$this, '_merchandise_new_donation_data'], 10, 3);
+
+        // Donation merchandise data - END
+
         add_action('wp_enqueue_scripts', [$this, 'load_public_scripts']);
 
         // Add the merchandise block to public Donation forms:
         add_action('leyka_template_star_after_amount', [$this, 'display_merchandise_field_star'], 2, 10);
-        add_action('leyka_template_need_help_after_amount', [$this, 'display_merchandise_field_need_help'], 2, 10);
+//        add_action('leyka_template_need_help_after_amount', [$this, 'display_merchandise_field_need_help'], 2, 10);
 
     }
 
@@ -101,7 +172,8 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
     }
 
-    public function merchandise_metabox(WP_Post $campaign) {
+    // Admin functions:
+    public function merchandise_campaign_metabox(WP_Post $campaign) {
 
         $campaign = new Leyka_Campaign($campaign);?>
 
@@ -247,7 +319,6 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
         </div>
 
         <?php
-
     }
 
     public function _merchandise_campaign_data_saving($campaign_data, Leyka_Campaign $campaign) {
@@ -281,7 +352,9 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
         $campaign->merchandise_settings = $merchandise_data;
 
     }
+    // Admin functions - END
 
+    // Campaign merchandise data handling methods:
     public function _merchandise_campaign_data_initializing(array $campaign_meta, $campaign_id) {
 
         if( !$campaign_id ) {
@@ -319,13 +392,63 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
         update_post_meta($campaign->id, 'leyka_campaign_merchandise_settings', $value);
 
     }
+    // Campaign merchandise data handling methods - END
+
+    // Donation merchandise data handling methods:
+    public function _merchandise_donation_data_initializing(array $donation_meta, $donation_id) {
+
+        if( !$donation_id ) {
+            return $donation_meta;
+        }
+
+        $donation_meta['merchandise_id'] = Leyka_Donations::get_instance()->get_donation_meta($donation_id, 'merchandise_id');
+
+        return $donation_meta;
+
+    }
+
+    public function _merchandise_donation_data_get($value, $field_name, Leyka_Donation_Base $donation) {
+
+        if( !in_array($field_name, ['merchandise', 'merchandise_id']) || !$donation->id ) {
+            return $value;
+        }
+
+        return Leyka_Donations::get_instance()->get_donation_meta($donation->id, 'merchandise_id');
+
+    }
+
+    public function _merchandise_donation_data_set($field_name, $value, Leyka_Donation_Base $donation) {
+
+        if( !in_array($field_name, ['merchandise', 'merchandise_id']) || !$donation->id ) {
+            return;
+        }
+
+        // Can't set $donation->_donation_meta['merchandise_id'] here - it's a protected attribute.
+        /** @todo Make a method like $donation->refresh_meta($meta_name), to load a meta value from DB anew, and call it here. */
+        Leyka_Donations::get_instance()->set_donation_meta($donation->id, 'merchandise_id', $value);
+
+    }
+
+    public function _merchandise_new_donation_data($donation_meta_fields, $donation_id, $params) {
+
+        $campaign = new Leyka_Campaign($params['campaign_id']);
+
+        if(
+            isset($_POST['leyka_donation_merchandise_id'])
+            && !empty($campaign->merchandise_settings[$_POST['leyka_donation_merchandise_id']])
+        ) {
+            $donation_meta_fields['merchandise_id'] = $_POST['leyka_donation_merchandise_id'];
+        }
+
+        return $donation_meta_fields;
+
+    }
+    // Donation merchandise data handling methods - END
 
     public function display_merchandise_field_star(array $template_data, Leyka_Campaign $campaign) {
 
         $uploads_dir_url = wp_get_upload_dir();
-        $uploads_dir_url = $uploads_dir_url['baseurl'];
-
-//        $template_data['amount_default'];?>
+        $uploads_dir_url = $uploads_dir_url['baseurl'];?>
 
         <div class="section section--cards section--merchandise">
 

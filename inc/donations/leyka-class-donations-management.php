@@ -1196,7 +1196,10 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 	</fieldset>
 
 	<fieldset class="leyka-set donation">
+
 		<legend><?php _e('Donation Data', 'leyka');?></legend>
+
+        <?php do_action('leyka_donation_info_data_pre_content', $donation);?>
 
         <div class="leyka-ddata-string">
             <label><?php _e('Amount', 'leyka');?>:</label>
@@ -1359,6 +1362,9 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 <span class="fake-input"><?php echo $donation->donor_subscription_email ? $donation->donor_subscription_email : __('none');?></span>
             </div>
         </div>
+
+        <?php do_action('leyka_donation_info_data_post_content', $donation);?>
+
 	</fieldset>
 
 	<?php }
