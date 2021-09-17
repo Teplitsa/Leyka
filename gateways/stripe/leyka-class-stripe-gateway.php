@@ -37,46 +37,46 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             return;
         }
 
-        $this->_options = array(
-            'stripe_key_public' => array(
+        $this->_options = [
+            'stripe_key_public' => [
                 'type' => 'text',
                 'title' => __('Public key', 'leyka'),
                 'comment' => __('Please, enter your Stripe public key here. It can be found in your Stripe control panel ("API keys" section).', 'leyka'),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'pk_test_51IybR4JyYVP3cRIfBBSIGvoolI...'),
-            ),
-            'stripe_key_secret' => array(
+            ],
+            'stripe_key_secret' => [
                 'type' => 'text',
                 'title' => __('Secret key', 'leyka'),
                 'comment' => __('Please, enter your Stripe secret key here. It can be found in your Stripe control panel ("API keys" section).', 'leyka'),
                 'is_password' => true,
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'sk_test_51IybR4JyYVP3cRIf5zbSzovieA...'),
-            ),
-            'stripe_product_id' => array(
+            ],
+            'stripe_product_id' => [
                 'type' => 'text',
                 'title' => __('Product ID', 'leyka'),
                 'comment' => __('Please, enter your Stripe "Donation" product ID here. It can be found in your Stripe personal account ("Products" section).', 'leyka'),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'prod_K8PufqAVP7Z2SG'),
-            ),
-            'stripe_webhooks_key' => array(
+            ],
+            'stripe_webhooks_key' => [
                 'type' => 'text',
                 'title' => __('Webhooks secret key', 'leyka'),
                 'comment' => __('Please, enter your Stripe webhooks signing secret key here. It can be found in your Stripe control panel ("Webhooks" section).', 'leyka'),
                 'is_password' => true,
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'whsec_f0ZTQyaYaSpWMK3npRxAfLP2MAgkWifl'),
-            ),
-            'stripe_webhooks_ips' => array(
+            ],
+            'stripe_webhooks_ips' => [
                 'type' => 'text',
                 'title' => __('Webhooks IPs', 'leyka'),
                 'comment' => __('Comma-separated callback requests IP list. Leave empty to disable the check.', 'leyka'),
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '3.18.12.63, 3.130.192.231, 13.235.14.237'),
                 'default' => '3.18.12.63, 3.130.192.231, 13.235.14.237, 13.235.122.149, 18.211.135.69, 35.154.171.200, 
                             52.15.183.38, 54.88.130.119, 54.88.130.237, 54.187.174.169, 54.187.205.235, 54.187.216.72',
-            ),
-        );
+            ]
+        ];
 
     }
 
@@ -93,14 +93,6 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
         }
     }
 
-    public function localize_js_strings(array $js_data) { /** @todo Если гейт в итоге не использует свой собственный JS, этот метод не нужен - его можно удалить. */
-        return $js_data;
-    }
-
-    public function enqueue_gateway_scripts() { /** @todo Аналогично предыдущему - если гейт в итоге не использует свой собственный JS, этот метод не нужен, его можно удалить. */
-        add_filter('leyka_js_localized_strings', array($this, 'localize_js_strings'));
-    }
-
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
         require_once LEYKA_PLUGIN_DIR.'gateways/stripe/lib/init.php';
@@ -112,8 +104,8 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             $donation->payment_type = 'rebill';
         }
 
-        $description = /** @todo По стилю кода: если после "(" первый символ - "!", нужно добавить пробел после открывающей и перед закрывающей круглой скобкой. Например: if($x && $y) - без пробелов, но if( !$x && $y ) - пробелы нужны. */
-            (!empty($form_data['leyka_recurring']) ? _x('[RS]', 'For "recurring subscription"', 'leyka').' ' : '')
+        $description =
+            ( !empty($form_data['leyka_recurring'] ) ? _x('[RS]', 'For "recurring subscription"', 'leyka').' ' : '')
             .$donation->payment_title." (№ $donation_id); {$donation->donor_name}; {$donation->donor_email}";
 
         \Stripe\Stripe::setApiKey(leyka_options()->opt('stripe_key_secret'));
@@ -161,9 +153,9 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
         try {
             $checkout_session = \Stripe\Checkout\Session::create($checkout_session_data);
         } catch (\Stripe\Exception\ApiErrorException $e) {
-
-            /** @todo Если ошибка встречается внутри метода process_form(), её нужно не возвращать через return, а добавлять на форму пожертвования. Пример: leyka()->add_payment_form_error(new WP_Error('leyka_error_id', __('Error description for user', 'leyka')));  */
-            return new WP_Error('stripe_wrong_request_answer', sprintf(__('<strong>Error:</strong> the checkout session creation request returned an unexpected result. <br><br>Please, email about this to the <a href="mailto:%s" target="_blank">website tech. support</a>.<br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email()));
+            leyka()->add_payment_form_error(
+                new WP_Error('stripe_wrong_request_answer', sprintf(__('<strong>Error:</strong> the checkout session creation request returned an unexpected result. <br><br>Please, email about this to the <a href="mailto:%s" target="_blank">website tech. support</a>.<br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email()))
+            );
         }
 
         $this->_api_redirect_url = $checkout_session->url;
@@ -287,20 +279,22 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                 $payload, $_SERVER['HTTP_STRIPE_SIGNATURE'], leyka_options()->opt('stripe_webhooks_key')
             );
         } catch(\UnexpectedValueException $e) { // Invalid payload
-            $message = __('This message has been sent because a "replay attack" attempt on Stripe callback was detected. This could mean someone is trying to hack your payment website. The error message is listed below.', 'leyka')."\n\r\n\r".
-                "Stripe error message:\n\r".print_r($e->getMessage(), true)."\n\r\n\r"; /** @todo Здесь и далее: при таком построении строки текст "Stripe error message:" останется без локализации. Правильный подход - использовать sprintf(__('Your line with %s placeholders', 'leyka'), $e->getMessage()) */
+
+            $message = sprintf(__('This message has been sent because a "replay attack" attempt on Stripe callback was detected. This could mean someone is trying to hack your payment website. The error message is listed below.\n\r\n\r. Stripe error message:\n\r%s\n\r\n\r', 'leyka'), $e->getMessage());
 
             wp_mail(get_option('admin_email'), __('The "replay attack" attempt on Stripe callback was detected!', 'leyka'), $message);
 
             exit();
 
         } catch(\Stripe\Exception\SignatureVerificationException $e) { // Invalid signature
+
             $message = __('This message has been sent because a "downgrade attack" attempt on Stripe callback was detected. This could mean someone is trying to hack your payment website. The error message is listed below.', 'leyka')."\n\r\n\r".
                 "Stripe error message:\n\r".print_r($e->getMessage(), true)."\n\r\n\r";
 
             wp_mail(get_option('admin_email'), __('The "downgrade attack" attempt on Stripe callback was detected!', 'leyka'), $message);
 
-            exit(); /** @todo По стилю кода: внутри блока кода ("{ ... }") несколько строк - при этом нужны пропуски строк после "{" и перед "}" */
+            exit();
+
         }
 
         $response_data = $event->data->object;
@@ -331,15 +325,15 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
                         $new_recurring_donation = Leyka_Donations::get_instance()->add_clone(
                             $init_recurring_donation,
-                            array( /** @todo По стилю кода: array() -> "[]" */
+                            [
                                 'status' => $event->type === 'invoice.paid' ? 'funded' : 'failed',
                                 'payment_type' => 'rebill',
                                 'init_recurring_donation' => $init_recurring_donation->id,
                                 'stripe_invoice_id' => $response_data->id,
                                 'stripe_payment_intent_id' => $response_data->payment_intent,
                                 'stripe_subscription_id' => $response_data->subscription
-                            ),
-                            array('recalculate_total_amount' => true)
+                            ],
+                            ['recalculate_total_amount' => true]
                         );
 
                         if(is_wp_error($new_recurring_donation)) {
