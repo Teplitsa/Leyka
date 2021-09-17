@@ -197,7 +197,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
         if( !empty($vars['type']) ) {
 
-            if($vars['type'] === 'payment_intent.succeeded' || $vars['type'] === 'payment_intent.failed') {
+            if($vars['type'] === 'payment_intent.succeeded' || $vars['type'] === 'payment_intent.payment_failed') {
 
                 $vars_final[__('Amount:', 'leyka')] = $vars['data']['object']['amount']/100;
                 $vars_final[__('Currency:', 'leyka')] = $vars['data']['object']['currency'];
@@ -206,7 +206,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                 $vars_final[__('Donor email:', 'leyka')] =
                         $vars['data']['object']['charges']['data'][0]['billing_details']['email'];
 
-                if($vars['type'] === 'payment_intent.failed') {
+                if($vars['type'] === 'payment_intent.payment_failed') {
                     $vars_final[__('Donation failure reason:', 'leyka')] =
                         $vars['data']['object']['charges']['data'][0]['failure_message'];
                 }
