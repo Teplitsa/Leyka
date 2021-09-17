@@ -298,7 +298,7 @@ jQuery(document).ready(function($){
         if(is_recurring) {
 
             $_form.find('.section__fields.periodicity a[data-periodicity="monthly"]').addClass('active');
-            $_form.find('input.is-recurring-chosen').val('1');
+            $_form.find('input.is-recurring-chosen').val('1').trigger('change');
             $_form.find('.payments-grid .swiper-item').each(function(i, element){
 
                 let $swiper_item = $(element);
@@ -316,7 +316,7 @@ jQuery(document).ready(function($){
         } else {
 
             $_form.find('.section__fields.periodicity a[data-periodicity="once"]').addClass('active');
-            $_form.find('input.is-recurring-chosen').val('0');
+            $_form.find('input.is-recurring-chosen').val('0').trigger('change');
             $_form.find('.payments-grid .swiper-item').each(function(i, element){
                 if($(element).find('input[data-has-recurring="0"]').length > 0) {
                     $(element).removeClass('disabled');

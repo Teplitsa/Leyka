@@ -65,52 +65,16 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
             });
 
             // Donations admin list column:
-            add_filter('leyka_admin_donations_columns_names', function($columns){
-
-                $columns['merchandise'] = __('Merchandise', 'leyka');
-
-                return $columns;
-
-            });
+            add_filter('leyka_admin_donations_columns_names', [$this, '_merchandise_admin_donations_list_column_name']);
 
             add_filter(
                 'leyka_admin_donation_merchandise_column_content',
-                function($content, Leyka_Donation_Base $donation){
-
-                    $campaign = $donation->campaign; /** @var $campaign Leyka_Campaign */
-                    $campaign_merchandise_settings = $campaign->merchandise_settings;
-
-                    if($donation->merchandise && !empty($campaign_merchandise_settings[$donation->merchandise])) {
-                        $content = $campaign_merchandise_settings[$donation->merchandise]['title'];
-                    }
-
-                    return $content;
-
-                },
+                [$this, '_merchandise_admin_donations_list_column_content'],
                 10, 2
             );
 
             // Donation edit page:
-            add_action('leyka_donation_info_data_post_content', function(Leyka_Donation_Base $donation){
-
-                $campaign = $donation->campaign; /** @var $campaign Leyka_Campaign */
-                $campaign_merchandise_settings = $campaign->merchandise_settings;
-
-                if($donation->merchandise && !empty($campaign_merchandise_settings[$donation->merchandise])) {
-                    $content = $campaign_merchandise_settings[$donation->merchandise]['title'];
-                } else {
-                    $content = __('none', 'leyka');
-                }?>
-
-                <div class="leyka-ddata-string">
-                    <label><?php _e('Donor merchandise / award', 'leyka');?>:</label>
-                    <div class="leyka-ddata-field">
-                        <span class="fake-input"><?php echo $content;?></span>
-                    </div>
-                </div>
-
-            <?php
-            });
+            add_action('leyka_donation_info_data_post_content', [$this, '_merchandise_admin_donation_info']);
 
         }
 
@@ -139,6 +103,14 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
         // To add merchandise data for new Donations:
         add_filter('leyka_new_donation_specific_data', [$this, '_merchandise_new_donation_data'], 10, 3);
+
+        // To add merchandise-related placeholders to admin notifications emails:
+        add_filter('leyka_email_manager_notification_placeholders', [$this, '_merchandise_manager_emails_placeholders'], 10, 1);
+        add_filter(
+            'leyka_email_manager_notification_placeholders_values',
+            [$this, '_merchandise_manager_emails_placeholders_values'],
+            10, 3
+        );
 
         // Donation merchandise data - END
 
@@ -352,6 +324,48 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
         $campaign->merchandise_settings = $merchandise_data;
 
     }
+
+    public function _merchandise_admin_donations_list_column_name($columns){
+
+        $columns['merchandise'] = __('Merchandise', 'leyka');
+
+        return $columns;
+
+    }
+
+    public function _merchandise_admin_donations_list_column_content($content, Leyka_Donation_Base $donation){
+
+        $campaign = $donation->campaign; /** @var $campaign Leyka_Campaign */
+        $campaign_merchandise_settings = $campaign->merchandise_settings;
+
+        if($donation->merchandise && !empty($campaign_merchandise_settings[$donation->merchandise])) {
+            $content = $campaign_merchandise_settings[$donation->merchandise]['title'];
+        }
+
+        return $content;
+
+    }
+
+    public function _merchandise_admin_donation_info(Leyka_Donation_Base $donation){
+
+        $campaign = $donation->campaign; /** @var $campaign Leyka_Campaign */
+        $campaign_merchandise_settings = $campaign->merchandise_settings;
+
+        if($donation->merchandise && !empty($campaign_merchandise_settings[$donation->merchandise])) {
+            $content = $campaign_merchandise_settings[$donation->merchandise]['title'];
+        } else {
+            $content = __('none', 'leyka');
+        }?>
+
+        <div class="leyka-ddata-string">
+            <label><?php _e('Donor merchandise / award', 'leyka');?>:</label>
+            <div class="leyka-ddata-field">
+                <span class="fake-input"><?php echo $content;?></span>
+            </div>
+        </div>
+
+        <?php
+    }
     // Admin functions - END
 
     // Campaign merchandise data handling methods:
@@ -445,12 +459,37 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
     }
     // Donation merchandise data handling methods - END
 
+    // Emails placeholders:
+    public function _merchandise_manager_emails_placeholders(array $placeholders){
+
+        array_push($placeholders, '#DONATION_MERCHANDISE_TITLE#', '#DONATION_MERCHANDISE_AMOUNT#');
+
+        return $placeholders;
+
+    }
+
+    public function _merchandise_manager_emails_placeholders_values(array $placeholders_values, array $placeholders, Leyka_Donation_Base $donation) {
+
+        $campaign = $donation->campaign;
+
+        array_push(
+            $placeholders_values,
+            isset($donation->merchandise_id) && !empty($campaign->merchandise_settings[$donation->merchandise_id]) ?
+                $campaign->merchandise_settings[$donation->merchandise_id]['title'] : '',
+            isset($donation->merchandise_id) && !empty($campaign->merchandise_settings[$donation->merchandise_id]) ?
+                $campaign->merchandise_settings[$donation->merchandise_id]['donation_amount_needed'] : ''
+        );
+
+        return $placeholders_values;
+
+    }
+
     public function display_merchandise_field_star(array $template_data, Leyka_Campaign $campaign) {
 
         $uploads_dir_url = wp_get_upload_dir();
         $uploads_dir_url = $uploads_dir_url['baseurl'];?>
 
-        <div class="section section--cards section--merchandise">
+        <div class="section section--merchandise">
 
             <div class="section-title-container">
                 <div class="section-title-line"></div>

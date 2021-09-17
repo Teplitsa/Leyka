@@ -4,7 +4,6 @@ jQuery(document).ready(function($){
         return;
     }
 
-
     $('input.leyka_donation_amount').on('change.leyka', function(){
         leyka_setup_merchandise($(this).closest('form.leyka-pm-form'));
     });
@@ -47,9 +46,11 @@ jQuery(document).ready(function($){
         }
 
         if($merchandise_form_section.find('.merchandise-item:not(.disabled)').length) {
+            console.log('Showing:', $merchandise_form_section)
             $merchandise_form_section.show();
             // leyka_setup_merchandise_swiper_width($_form);
         } else {
+            console.log('Hiding:', $merchandise_form_section)
             $merchandise_form_section.hide();
         }
 

@@ -722,6 +722,67 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             return false;
         }
 
+        $campaign = new Leyka_Campaign($donation->campaign_id);
+
+        $placeholders = apply_filters(
+            'leyka_email_manager_notification_placeholders', [
+                '#SITE_NAME#',
+                '#ORG_NAME#',
+                '#DONATION_ID#',
+                '#DONATION_TYPE#',
+                '#DONOR_NAME#',
+                '#DONOR_EMAIL#',
+                '#PAYMENT_METHOD_NAME#',
+                '#CAMPAIGN_NAME#',
+                '#PURPOSE#',
+                '#CAMPAIGN_TARGET#',
+                '#SUM#',
+                '#DATE#',
+            ],
+            $donation
+        );
+        $placeholders_values = apply_filters(
+            'leyka_email_manager_notification_placeholders_values', [
+                get_bloginfo('name'),
+                leyka_options()->opt('org_full_name'),
+                $donation->id,
+                leyka_get_payment_types_list($donation->type),
+                $donation->donor_name ? $donation->donor_name : __('anonymous', 'leyka'),
+                $donation->donor_email ? $donation->donor_email : __('unknown email', 'leyka'),
+                $donation->payment_method_label,
+                $campaign->title,
+                $campaign->payment_title,
+                $campaign->target,
+                $donation->amount.' '.$donation->currency_label,
+                $donation->date,
+            ],
+            $placeholders,
+            $donation
+        );
+
+        $email_title = apply_filters(
+            'leyka_email_notification_title',
+            leyka_options()->opt('email_notification_title'),
+            $donation, $campaign
+        );
+        $email_content = wpautop(str_replace(
+            $placeholders,
+            $placeholders_values,
+            apply_filters(
+                'leyka_email_notification_text',
+                leyka_options()->opt('email_notification_text'),
+                $donation, $campaign
+            )
+        ));
+        $email_headers = [
+            'From: '.apply_filters(
+                'leyka_email_from_name',
+                leyka_options()->opt_safe('email_from_name'),
+                $donation,
+                $campaign
+            ).' <'.leyka_options()->opt_safe('email_from').'>',
+        ];
+
         add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
         $res = true;
@@ -733,60 +794,10 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 continue;
             }
 
-            $campaign = new Leyka_Campaign($donation->campaign_id);
-            if( !wp_mail(
-                $email,
-                apply_filters(
-                    'leyka_email_notification_title',
-                    leyka_options()->opt('email_notification_title'),
-                    $donation, $campaign
-                ),
-                wpautop(str_replace(
-                    [
-                        '#SITE_NAME#',
-                        '#ORG_NAME#',
-                        '#DONATION_ID#',
-                        '#DONATION_TYPE#',
-                        '#DONOR_NAME#',
-                        '#DONOR_EMAIL#',
-                        '#PAYMENT_METHOD_NAME#',
-                        '#CAMPAIGN_NAME#',
-                        '#PURPOSE#',
-                        '#CAMPAIGN_TARGET#',
-                        '#SUM#',
-                        '#DATE#',
-                    ],
-                    [
-                        get_bloginfo('name'),
-                        leyka_options()->opt('org_full_name'),
-                        $donation->id,
-                        leyka_get_payment_types_list($donation->type),
-                        $donation->donor_name ? $donation->donor_name : __('anonymous', 'leyka'),
-                        $donation->donor_email ? $donation->donor_email : __('unknown email', 'leyka'),
-                        $donation->payment_method_label,
-                        $campaign->title,
-                        $campaign->payment_title,
-                        $campaign->target,
-                        $donation->amount.' '.$donation->currency_label,
-                        $donation->date,
-                    ],
-                    apply_filters(
-                        'leyka_email_notification_text',
-                        leyka_options()->opt('email_notification_text'),
-                        $donation, $campaign
-                    )
-                )),
-                [
-                    'From: '.apply_filters(
-                        'leyka_email_from_name',
-                        leyka_options()->opt_safe('email_from_name'),
-                        $donation,
-                        $campaign
-                    ).' <'.leyka_options()->opt_safe('email_from').'>',
-                ]
-            ) ) {
+            if( !wp_mail($email, $email_title, $email_content, $email_headers) ) {
                 $res &= false;
             }
+
         }
 
         if($res) {
