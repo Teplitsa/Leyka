@@ -388,6 +388,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                         $response_data->id
                     );
                     $donation = Leyka_Donations::get_instance()->get_donation((int)$donation_id);
+                    $donation->status = 'funded';
                     $init_recurring_donation = $donation->init_recurring_donation;
                     $init_recurring_donation->recurring_is_active = true;
 
