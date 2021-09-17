@@ -195,7 +195,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
         $vars_final[__('Last event type:', 'leyka')] = $vars['type'];
         $vars_final[__('Last event date:', 'leyka')] = date('d.m.Y H:i', $vars['created']);
 
-        if ( !empty($vars['type']) ) {
+        if( !empty($vars['type']) ) {
 
             if($vars['type'] === 'payment_intent.succeeded' || $vars['type'] === 'payment_intent.failed') {
 
@@ -205,13 +205,13 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                     $vars['data']['object']['charges']['data'][0]['billing_details']['name'];
                 $vars_final[__('Donor email:', 'leyka')] =
                         $vars['data']['object']['charges']['data'][0]['billing_details']['email'];
-                
-                if ($vars['type'] === 'payment_intent.failed') {
+
+                if($vars['type'] === 'payment_intent.failed') {
                     $vars_final[__('Donation failure reason:', 'leyka')] =
                         $vars['data']['object']['charges']['data'][0]['failure_message'];
                 }
 
-            } else if ($vars['type'] === 'charge.refunded') {
+            } else if($vars['type'] === 'charge.refunded') {
 
                 $vars_final[__('Refunded amount:', 'leyka')] = $vars['data']['object']['amount_refunded']/100;
                 $vars_final[__('Refund reason:', 'leyka')] = $vars['data']['object']['refunds']['data'][0]['reason'];
@@ -388,6 +388,8 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                         $response_data->id
                     );
                     $donation = Leyka_Donations::get_instance()->get_donation((int)$donation_id);
+                    $init_recurring_donation = $donation->init_recurring_donation;
+                    $init_recurring_donation->recurring_is_active = true;
 
                 }
 
@@ -397,16 +399,22 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                 break;
 
             case 'payment_intent.payment_failed':
-                $donation->status = 'failed';
+                if($response_data->invoice) { // Rebill
 
-                if ( !empty($donation->init_recurring_donation) ) {
-                    $init_donation_id = $donation->init_recurring_donation;
-                    $init_recurring_donation = Leyka_Donations::get_instance()->get_donation((int)$init_donation_id);
+                    $donation_id = Leyka_Donations::get_instance()->get_donation_id_by_meta_value(
+                        'stripe_payment_intent_id',
+                        $response_data->id
+                    );
+                    $donation = Leyka_Donations::get_instance()->get_donation((int)$donation_id);
+                    $init_recurring_donation = $donation->init_recurring_donation;
                     $init_recurring_donation->recurring_is_active = false;
+
                 }
 
+                $donation->status = 'failed';
+
                 if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
-                    Leyka_Donation_Management::send_error_notifications($donation);
+                    Leyka_Donation_Management::send_error_notifications($donation_id);
                 }
 
                 $donation->add_gateway_response(json_encode($event, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
