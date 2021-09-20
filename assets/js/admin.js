@@ -1025,7 +1025,8 @@ jQuery(document).ready(function($){
 
         let $file_input = $(this),
             $field_wrapper = $file_input.parents('.leyka-file-field-wrapper'),
-            option_id = $field_wrapper.find('.upload-field').data('option-id'),
+            $upload_button_wrapper = $field_wrapper.find('.upload-field'),
+            option_id = $upload_button_wrapper.data('option-id'),
             $file_preview = $field_wrapper.find('.uploaded-file-preview'),
             $ajax_loading = $field_wrapper.find('.loading-indicator-wrap'),
             $error = $field_wrapper.siblings('.field-errors'),
@@ -1070,6 +1071,7 @@ jQuery(document).ready(function($){
                     '<img class="leyka-upload-image-preview" src="'+response.url+'" alt="">' : response.filename;
 
                 $file_preview.show().find('.file-preview').html(preview_html);
+                $upload_button_wrapper.hide(); // Hide the "upload" button when picture is uploaded
 
                 $main_field.val(response.path); // Option value will keep the file relative path in WP uploads dir
 
@@ -1095,6 +1097,7 @@ jQuery(document).ready(function($){
             $main_field = $field_wrapper.find('input.leyka-upload-result');
 
         $file_preview.hide().find('.file-preview').html('');
+        $field_wrapper.find('.upload-field').show(); // Show the "upload" button when uploaded picture is deleted
         $main_field.val('');
 
     });

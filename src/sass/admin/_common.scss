@@ -588,6 +588,7 @@ ul.ui-autocomplete {
 
 
     // forms
+    /** @todo Move this code block to the _common-settings.scss */
     .option-block, .leyka-options-section {
 
         margin-bottom: 16px;
@@ -601,6 +602,17 @@ ul.ui-autocomplete {
 
         &.type-rich_html {
             @include leyka-rich-html();
+        }
+
+        &.type-file {
+
+            @include leyka-field-file();
+
+            .field-errors {
+                display: none;
+                margin-top: 2px;
+            }
+
         }
 
         .field-component {
@@ -627,6 +639,10 @@ ul.ui-autocomplete {
                 }
             }
 
+            .field-errors {
+                display: block;
+            }
+
         }
 
         .field-radio {
@@ -645,16 +661,6 @@ ul.ui-autocomplete {
 
             .field-component {
                 @include leyka-field-checkbox();
-            }
-
-        }
-
-        &.file {
-
-            @include leyka-field-file();
-
-            .field-errors {
-                margin-top: 2px;
             }
 
         }

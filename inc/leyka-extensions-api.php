@@ -62,6 +62,15 @@ abstract class Leyka_Extension extends Leyka_Singleton {
 
     }
 
+    public static function get_base_path() {
+        return str_replace( '_', '-', dirname((new ReflectionClass(static::class))->getFileName()) );
+    }
+
+    public static function get_base_url() {
+        return LEYKA_PLUGIN_BASE_URL.'extensions/'
+            .str_replace( '_', '-', basename(dirname((new ReflectionClass(static::class))->getFileName())) );
+    }
+
 
     /**
      * Extensions filter categories main source.
@@ -161,36 +170,38 @@ abstract class Leyka_Extension extends Leyka_Singleton {
     }
     
     protected function get_color_options() {
+
         return [
             'type' => 'container',
             'classes' => 'extension-color-options',
             'entries' => [
                 $this->_id.'_main_color' => [
                     'type' => 'colorpicker',
-                    'title' => 'Главный цвет', // __('', 'leyka'),
-                    'description' => 'Рекомендуем яркий цвет', // __('', 'leyka'),
+                    'title' => 'Главный цвет',
+                    'description' => 'Рекомендуем яркий цвет',
                     'default' => '#F38D04',
                 ],
                 $this->_id.'_background_color' => [
                     'type' => 'colorpicker',
-                    'title' => 'Цвет фона', // __('', 'leyka'),
-                    'description' => 'Контрастный основному цвету', // __('', 'leyka'),
+                    'title' => 'Цвет фона',
+                    'description' => 'Контрастный основному цвету',
                     'default' => '#FDD39B',
                 ],
                 $this->_id.'_caption_color' => [
                     'type' => 'colorpicker',
-                    'title' => 'Цвет надписей', // __('', 'leyka'),
-                    'description' => 'Контрастный основному цвету', // __('', 'leyka'),
+                    'title' => 'Цвет надписей',
+                    'description' => 'Контрастный основному цвету',
                     'default' => '#FDD39B',
                 ],
                 $this->_id.'_text_color' => [
                     'type' => 'colorpicker',
-                    'title' => 'Цвет текста', // __('', 'leyka'),
-                    'description' => 'Рекомендуем контрастный фону', // __('', 'leyka'),
+                    'title' => 'Цвет текста',
+                    'description' => 'Рекомендуем контрастный фону',
                     'default' => '#1B1A18',
                 ],
             ]
         ];
+
     }
 
     public function __get($param) {
