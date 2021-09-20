@@ -1364,6 +1364,108 @@ class Leyka extends Leyka_Singleton {
             update_option('leyka_yandex-yandex_money_label', __('YooMoney', 'leyka'));
         }
 
+        if($leyka_last_ver && $leyka_last_ver >= '3.19' && LEYKA_VERSION <= '3.19') { // Backwards complatibility for v.3.19+
+
+            global $wpdb;
+
+            // New (rub) to new (rur) currency ID transition:
+            if(Leyka_Options_Controller::get_option_value('currency_main') == 'rub') {
+
+                Leyka_Options_Controller::set_option_value('currency_main', 'rur'); // Rename the main currency option value
+
+                // Migrate the new (RUB) currency options to the new (RUR) ones:
+                $tmp_value = Leyka_Options_Controller::get_option_value('currency_rub_label');
+                if($tmp_value) {
+                    Leyka_Options_Controller::set_option_value('currency_rur_label', $tmp_value);
+                }
+                delete_option('leyka_currency_rub_label');
+
+                $tmp_value = Leyka_Options_Controller::get_option_value('currency_rub_min_sum');
+                if($tmp_value) {
+                    Leyka_Options_Controller::set_option_value('currency_rur_min_sum', $tmp_value);
+                }
+                delete_option('leyka_currency_rub_min_sum');
+
+                $tmp_value = Leyka_Options_Controller::get_option_value('currency_rub_max_sum');
+                if($tmp_value) {
+                    Leyka_Options_Controller::set_option_value('currency_rur_max_sum', $tmp_value);
+                }
+                delete_option('leyka_currency_rub_max_sum');
+
+                $tmp_value = Leyka_Options_Controller::get_option_value('currency_rub_flexible_default_amount');
+                if($tmp_value) {
+                    Leyka_Options_Controller::set_option_value('currency_rur_flexible_default_amount', $tmp_value);
+                }
+                delete_option('leyka_currency_rub_fixed_amounts');
+
+                $tmp_value = Leyka_Options_Controller::get_option_value('currency_rub_fixed_amounts');
+                if($tmp_value) {
+                    Leyka_Options_Controller::set_option_value('currency_rur_fixed_amounts', $tmp_value);
+                }
+                delete_option('leyka_currency_rub_fixed_amounts');
+
+            }
+
+            // Rename "rub" postmeta value to "RUR", if needed:
+            $update_needed = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}postmeta WHERE meta_key = 'leyka_donation_currency' AND meta_value = 'rub'");
+            if($update_needed) {
+                $wpdb->update(
+                    $wpdb->prefix.'postmeta',
+                    ['meta_value' => 'rur'],
+                    ['meta_key' => 'leyka_donation_currency', 'meta_value' => 'rub']
+                );
+            }
+
+            // Rename CloudPayments donations postmeta keys, if needed:
+            $update_needed = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}postmeta WHERE meta_key = 'cp_recurring_id'");
+            if($update_needed) {
+                $wpdb->update(
+                    $wpdb->prefix.'postmeta',
+                    ['meta_key' => '_cp_recurring_id'],
+                    ['meta_key' => 'cp_recurring_id']
+                );
+            }
+
+            $update_needed = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}postmeta WHERE meta_key = 'cp_transaction_id'");
+            if($update_needed) {
+                $wpdb->update(
+                    $wpdb->prefix.'postmeta',
+                    ['meta_key' => '_cp_transaction_id'],
+                    ['meta_key' => 'cp_transaction_id']
+                );
+            }
+
+            // Rename RBK Money donations postmeta keys, if needed:
+            $update_needed = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}postmeta WHERE meta_key = 'rbk_invoice_id'");
+            if($update_needed) {
+                $wpdb->update(
+                    $wpdb->prefix.'postmeta',
+                    ['meta_key' => '_leyka_rbk_invoice_id'],
+                    ['meta_key' => 'rbk_invoice_id']
+                );
+            }
+
+            $update_needed = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}postmeta WHERE meta_key = 'rbk_payment_id'");
+            if($update_needed) {
+                $wpdb->update(
+                    $wpdb->prefix.'postmeta',
+                    ['meta_key' => '_leyka_rbk_payment_id'],
+                    ['meta_key' => 'rbk_payment_id']
+                );
+            }
+
+            // Rename YooKassa donations postmeta keys, if needed:
+            $update_needed = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}postmeta WHERE meta_key = 'yandex_invoice_id'");
+            if($update_needed) {
+                $wpdb->update(
+                    $wpdb->prefix.'postmeta',
+                    ['meta_key' => '_yandex_invoice_id'],
+                    ['meta_key' => 'yandex_invoice_id']
+                );
+            }
+
+        } // v.3.19+ backwards complatibility - END
+
         if($leyka_last_ver && $leyka_last_ver <= '3.18') {
 
             leyka_create_separate_donations_db_tables(); // Create plugin-specific DB tables if needed
