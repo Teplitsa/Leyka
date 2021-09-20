@@ -833,7 +833,7 @@ ul.ui-autocomplete {
             }
 
             .leyka-rich-html-field-wrapper {
-                //margin-bottom: 2rem;
+
                 max-width: unset;
 
                 .wp-editor-tools {
@@ -844,9 +844,11 @@ ul.ui-autocomplete {
                     font-size: 16px;
                     margin-bottom: 1rem;
                 }
+
             }
 
             .leyka-radio-field-wrapper {
+
                 .field-component.title {
                     font-size: 14px;
                     margin-bottom: 1.5rem;
@@ -861,6 +863,25 @@ ul.ui-autocomplete {
                         }
                     }
                 }
+
+            }
+
+            .leyka-multi-select-field-wrapper {
+
+                select {
+
+                    height: 90px;
+
+                    option {
+                        display: flex;
+                        flex-flow: row wrap;
+                        align-items: center;
+                        padding: 2px 6px;
+                        height: 25px;
+                    }
+
+                }
+
             }
 
             .field-component.help {
