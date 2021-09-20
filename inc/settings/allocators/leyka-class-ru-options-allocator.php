@@ -10,7 +10,7 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
             return false;
         }
 
-        $options_allocated = array();
+        $options_allocated = [];
         switch($tab_id) {
             case 'beneficiary':
                 $options_allocated = $this->get_beneficiary_options();
@@ -40,46 +40,46 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
         $main_currencies = leyka_get_main_currencies_full_info();
 
         if(empty($main_currencies[$main_currency_id])) {
-            return array();
+            return [];
         }
 
-        return array(
-            $main_currency_id.'_currency' => array(
+        return [
+            $main_currency_id.'_currency' => [
                 'title' => $main_currencies[$main_currency_id]['title'],
-                'sections' => array(
-                    array(
+                'sections' => [
+                    [
                         'title' => '',
-                        'options' => array(
+                        'options' => [
                             "currency_{$main_currency_id}_label", "currency_{$main_currency_id}_min_sum",
                             "currency_{$main_currency_id}_max_sum", "currency_{$main_currency_id}_flexible_default_amount",
                             "currency_{$main_currency_id}_fixed_amounts",
-                        ),
-                    ),
-                ),
-            ),
-        );
+                        ],
+                    ],
+                ],
+            ],
+        ];
 
     }
 
     protected function _get_secondary_currencies_options_tabs() {
 
-        $secondary_currencies_tabs = array();
+        $secondary_currencies_tabs = [];
 
         foreach(leyka_get_secondary_currencies_full_info() as $currency_id => $data) {
 
-            $secondary_currencies_tabs[$currency_id.'_currency'] = array(
+            $secondary_currencies_tabs[$currency_id.'_currency'] = [
                 'title' => $data['title'],
-                'sections' => array(
-                    array(
+                'sections' => [
+                    [
                         'title' => '',
-                        'options' => array(
+                        'options' => [
                             "currency_{$currency_id}_label", "currency_{$currency_id}_min_sum",
                             "currency_{$currency_id}_max_sum", "currency_{$currency_id}_flexible_default_amount",
                             "currency_{$currency_id}_fixed_amounts",
-                        ),
-                    ),
-                ),
-            );
+                        ],
+                    ],
+                ],
+            ];
 
         }
 
@@ -89,42 +89,42 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
 
     public function get_beneficiary_options() {
 
-        $options = array(
-            array('section' => array(
+        $options = [
+            ['section' => [
                 'name' => 'receiver_country',
                 'title' => __('Country', 'leyka'),
                 'is_default_collapsed' => false,
-                'options' => array('receiver_country', 'currency_main',),
-            ),),
-        );
+                'options' => ['receiver_country', 'currency_main',],
+            ],],
+        ];
 
         if(leyka_options()->opt_safe('receiver_legal_type') === 'legal') {
 
-            $options[] = array('section' => array(
+            $options[] = ['section' => [
                 'name' => 'beneficiary_org_name',
                 'title' => __("Organization's official name and contacts", 'leyka'),
                 'description' => __('These data we will use for reporting documents to your donors. All data can be found in documents', 'leyka'),
                 'is_default_collapsed' => false,
-                'options' => array(
+                'options' => [
                     'org_full_name', 'org_short_name', 'org_face_fio_ip', 'org_face_position', 'org_address',
                     'org_state_reg_number', 'org_kpp', 'org_inn',
-                )
-            ));
-            $options[] = array('section' => array(
+                ]
+            ]];
+            $options[] = ['section' => [
                 'name' => 'org_bank_essentials',
                 'title' => __("Organization's bank essentials", 'leyka'),
                 'description' => __('Data needed for accounting documents, as well as to connect the payment with receipt', 'leyka'),
                 'is_default_collapsed' => false,
-                'options' => array('org_bank_name', 'org_bank_account', 'org_bank_corr_account', 'org_bank_bic',)
-            ));
-            $options[] = array('section' => array(
+                'options' => ['org_bank_name', 'org_bank_account', 'org_bank_corr_account', 'org_bank_bic',]
+            ]];
+            $options[] = ['section' => [
                 'name' => 'terms_of_service',
                 'title' => __('Offer', 'leyka'),
                 'description' => __('To comply with all the formalities, you need to provide an offer to conclude a donation agreement. We have prepared a template option. Please check.', 'leyka'),
                 'is_default_collapsed' => false,
-                'options' => array('terms_of_service_text', 'agree_to_terms_link_action',)
-            ),);
-            $options[] = array('section' => array(
+                'options' => ['terms_of_service_text', 'agree_to_terms_link_action',]
+            ],];
+            $options[] = ['section' => [
                 'name' => 'terms_of_pd',
                 'title' => __('Agreement on personal data', 'leyka'),
                 'description' => __('<ul><li>In the framework of fundraising you will collect the personal data of recipients of donations.</li>
@@ -132,34 +132,32 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
 <li>We have prepared the text of the agreement template, but you can edit it to your needs.</li>
 <li>All personal data is stored on your site and will not be sent.</li></ul>', 'leyka'),
                 'is_default_collapsed' => false,
-                'options' => array('pd_terms_text', 'agree_to_pd_terms_link_action',)
-            ));
+                'options' => ['pd_terms_text', 'agree_to_pd_terms_link_action',]
+            ]];
 
         } else {
 
-            $options[] = array('section' => array(
+            $options[] = ['section' => [
                 'name' => 'beneficiary_person_name',
                 'title' => __("Your data", 'leyka'),
                 'is_default_collapsed' => false,
-                'options' => array('person_full_name', 'person_address', 'person_inn',)
-            ));
-            $options[] = array('section' => array(
+                'options' => ['person_full_name', 'person_address', 'person_inn',]
+            ]];
+            $options[] = ['section' => [
                 'name' => 'person_bank_essentials',
                 'title' => __("Person bank essentials", 'leyka'),
                 'description' => __('Data needed for accounting documents, as well as to connect the payment with receipt', 'leyka'),
                 'is_default_collapsed' => false,
-                'options' => array(
-                    'person_bank_name', 'person_bank_account', 'person_bank_corr_account', 'person_bank_bic',
-                )
-            ));
-            $options[] = array('section' => array(
+                'options' => ['person_bank_name', 'person_bank_account', 'person_bank_corr_account', 'person_bank_bic',]
+            ]];
+            $options[] = ['section' => [
                 'name' => 'person_terms_of_service',
                 'title' => __('Offer', 'leyka'),
                 'description' => __('To comply with all the formalities, you need to provide an offer to conclude a donation agreement. We have prepared a template option. Please check.', 'leyka'),
                 'is_default_collapsed' => false,
-                'options' => array('person_terms_of_service_text', 'agree_to_terms_link_action',)
-            ),);
-            $options[] = array('section' => array(
+                'options' => ['person_terms_of_service_text', 'agree_to_terms_link_action',]
+            ],];
+            $options[] = ['section' => [
                 'name' => 'person_terms_of_pd',
                 'title' => __('Agreement on personal data', 'leyka'),
                 'description' => __('<ul><li>In the framework of fundraising you will collect the personal data of recipients of donations.</li>
@@ -167,102 +165,102 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
 <li>We have prepared the text of the agreement template, but you can edit it to your needs.</li>
 <li>All personal data is stored on your site and will not be sent.</li></ul>', 'leyka'),
                 'is_default_collapsed' => false,
-                'options' => array('person_pd_terms_text', 'agree_to_pd_terms_link_action',)
-            ));
+                'options' => ['person_pd_terms_text', 'agree_to_pd_terms_link_action',]
+            ]];
 
         }
 
-        $options[] = array('section' => array(
+        $options[] = ['section' => [
             'name' => 'change_receiver_legal_type',
             'title' => __('Change of ownership form', 'leyka'),
             'description' => __('<span class="attention">WARNING!</span> These actions may affect the performance of the plugin.', 'leyka'),
             'is_default_collapsed' => false,
-            'options' => array('receiver_legal_type',)
-        ));
+            'options' => ['receiver_legal_type',]
+        ]];
 
         return $options;
 
     }
 
     public function get_email_options() {
-        return array(
-            array('section' => array(
+        return [
+            ['section' => [
                 'name' => 'email_from',
                 'title' => __('All emails options', 'leyka'),
                 'description' => __('After the donor has made his donation, it is considered good form to show him the page with Gratitude and send a letter', 'leyka'),
                 'is_default_collapsed' => false,
-                'options' => array('email_from_name', 'email_from',)
-            ),),
-            array('section' => array(
+                'options' => ['email_from_name', 'email_from',]
+            ],],
+            ['section' => [
                 'name' => 'email_thanks',
                 'title' => __('Grateful emails options', 'leyka'),
                 'description' => __('Dispatched after making a one-time donation.', 'leyka'),
                 'is_default_collapsed' => false,
-                'options' => array('email_thanks_title', 'email_thanks_text', 'send_donor_thanking_emails',)
-            ),),
-            array('section' => array(
+                'options' => ['email_thanks_title', 'email_thanks_text', 'send_donor_thanking_emails',]
+            ],],
+            ['section' => [
                 'name' => 'email_recurring_init_thanks',
                 'title' => __('Recurring init grateful emails options', 'leyka'),
                 'description' => __('Dispatched after the activation of the recurrent subscriptions', 'leyka'),
                 'is_default_collapsed' => false,
-                'options' => array(
+                'options' => [
                     'email_recurring_init_thanks_title', 'email_recurring_init_thanks_text',
                     'send_donor_thanking_emails_on_recurring_init',
-                )
-            ),),
-            array('section' => array(
+                ]
+            ],],
+            ['section' => [
                 'name' => 'email_recurring_payment_thanks',
                 'title' => __('Recurring payment grateful emails options', 'leyka'),
                 'description' => __('Dispatched after each recurrent payment', 'leyka'),
                 'is_default_collapsed' => false,
-                'options' => array(
+                'options' => [
                     'email_recurring_ongoing_thanks_title', 'email_recurring_ongoing_thanks_text',
                     'send_donor_thanking_emails_on_recurring_ongoing',
-                )
-            ),),
-            array('section' => array(
+                ]
+            ],],
+            ['section' => [
                 'name' => 'email_campaign_target_reaching',
                 'title' => __('Campaign target reaching emails options', 'leyka'),
                 'description' => __('After the completion of the campaign, sent to all donors', 'leyka'),
                 'is_default_collapsed' => false,
-                'options' => array(
+                'options' => [
                     'email_campaign_target_reaching_title', 'email_campaign_target_reaching_text',
                     'send_donor_emails_on_campaign_target_reaching',
-                )
-            ),),
-            array('section' => array(
+                ]
+            ],],
+            ['section' => [
                 'name' => 'notify_staff',
                 'title' => __('Staff notifications options', 'leyka'),
                 'description' => __('Once a donor has made his donation, considered good form to show him a page of thanks and send a letter', 'leyka'),
                 'is_default_collapsed' => false,
-                'options' => array(
+                'options' => [
                     'notify_donations_managers', 'notify_managers_on_recurrents', 'donations_managers_emails',
                     'email_notification_title', 'email_notification_text', 'notify_tech_support_on_failed_donations',
-                )
-            ),),
-            array('section' => array(
+                ]
+            ],],
+            ['section' => [
                 'name' => 'notify_old_recurring_donors',
                 'title' => __('Old recurring donors notifications options', 'leyka'),
                 'description' => __("Settings for the email notification sent to each donor when personal accounts feature are on, but donor's recurring donations started before that", 'leyka'),
                 'is_default_collapsed' => true,
-                'options' => array(
+                'options' => [
                     'non_init_recurring_donor_registration_emails_title',
                     'non_init_recurring_donor_registration_emails_text',
-                )
-            ),),
-            array('section' => array(
+                ]
+            ],],
+            ['section' => [
                 'name' => 'email_recurring_canceled_donor',
                 'title' => __('Recurring canceling emails options', 'leyka'),
                 'description' => __('You may send a special email to your recurring donors when they cancel their recurring subscription. This email will be sent to a donor in 7 days after their recurring stopped.', 'leyka'),
                 'is_default_collapsed' => false,
-                'options' => array(
+                'options' => [
                     'recurring_canceling_donor_notification_emails_title',
                     'recurring_canceling_donor_notification_emails_text',
                     'recurring_canceling_donor_notification_emails_defer_by',
                     'send_recurring_canceling_donor_notification_email',
-                )
-            ),),
-        );
+                ]
+            ],],
+        ];
     }
 
     public function get_view_options() {
