@@ -486,9 +486,10 @@ function leyka_render_multi_select_field($option_id, $data){
 
                 $data['value'] = empty($data['value']) ? // 'value' should be an array of 'list_entry' items values
                     (empty($data['default']) ? array() : maybe_unserialize($data['default'])) :
-                    maybe_unserialize($data['value']);?>
+                    is_array(maybe_unserialize($data['value'])) ? maybe_unserialize($data['value']) : [$data['value']];
+                ?>
 
-                <select id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" size="<?php echo empty($data['length']) ? 5 : absint($data['length']);?>">
+                <select id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" size="<?php echo empty($data['length']) ? 5 : absint($data['length']);?>" multiple>
                 <?php foreach((array)$data['list_entries'] as $value => $label) {?>
                     <option value="<?php echo $value;?>" <?php echo in_array($value, $data['value']) ? 'selected="selected"' : '';?>>
                         <?php echo esc_attr($label);?>
