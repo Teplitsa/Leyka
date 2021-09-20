@@ -322,6 +322,18 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'currency':
             case 'currency_id':
             case 'currency_code':
+                if($this->_main_data->currency_id == 'rur') { // Update the old RUR currency ID
+
+                    global $wpdb;
+                    $wpdb->update(
+                        $wpdb->prefix.'leyka_donations',
+                        ['currency_id' => 'rub',],
+                        ['ID' => $this->_id, 'currency_id' => 'rur',]
+                    );
+
+                    $this->_main_data->currency_id = 'rub';
+
+                }
                 return $this->_main_data->currency_id;
 
             case 'currency_label':

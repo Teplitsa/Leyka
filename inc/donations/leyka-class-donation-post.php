@@ -383,7 +383,20 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'currency':
             case 'currency_id':
             case 'currency_code':
+                if($this->_donation_meta['leyka_donation_currency'] == 'rur') { // Update the old RUR currency ID
+
+                    global $wpdb;
+                    $wpdb->update(
+                        $wpdb->prefix.'postmeta',
+                        ['meta_value' => 'rub'],
+                        ['post_id' => $this->_id, 'meta_key' => 'leyka_donation_currency', 'meta_value' => 'rur',]
+                    );
+
+                    $this->_donation_meta['leyka_donation_currency'] = 'rub';
+
+                }
                 return mb_strtoupper($this->_donation_meta['leyka_donation_currency']);
+
             case 'currency_label':
                 return leyka_get_currency_label($this->currency_id);
 
