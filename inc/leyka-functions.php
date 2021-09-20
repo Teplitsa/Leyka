@@ -1987,10 +1987,12 @@ if( !function_exists('leyka_save_option') ) {
 
         if($option_type === 'checkbox') {
             leyka_options()->opt($setting_id, isset($_POST["leyka_$setting_id"]) ? 1 : 0);
-        } elseif($option_type == 'multi_checkbox') {
+        } else if($option_type == 'multi_checkbox' || $option_type == 'multi_select') {
 
             if(isset($_POST["leyka_$setting_id"]) && leyka_options()->opt($setting_id) !== $_POST["leyka_$setting_id"]) {
                 leyka_options()->opt($setting_id, (array)$_POST["leyka_$setting_id"]);
+            } else if(empty($_POST["leyka_$setting_id"])) {
+                leyka_options()->opt($setting_id, []);
             }
 
         } else if($option_type === 'html' || $option_type === 'rich_html') {

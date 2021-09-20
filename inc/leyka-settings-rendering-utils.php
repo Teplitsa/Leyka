@@ -307,7 +307,7 @@ function leyka_render_checkbox_field($option_id, $data){
 add_action('leyka_render_multi_checkbox', 'leyka_render_multi_checkboxes_fields', 10, 2);
 function leyka_render_multi_checkboxes_fields($option_id, $data){
 
-    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;?>
+    $option_id = mb_stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;?>
 
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-multi-checkboxes-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">
 
@@ -472,7 +472,7 @@ function leyka_render_multi_select_field($option_id, $data){
                 <?php if( !empty($data['comment'])) {?>
                 <span class="field-q">
                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
-                    <span class="field-q-tooltip"><?php echo $data['comment']?></span>
+                    <span class="field-q-tooltip"><?php echo $data['comment'];?></span>
                 </span>
                 <?php }?>
 
@@ -481,15 +481,14 @@ function leyka_render_multi_select_field($option_id, $data){
             <span class="field-component field">
 
                 <?php if(is_string($data['list_entries'])) {
-                    $data['list_entries'] = $data['list_entries'](); // Call the callback to create select's options
+                    $data['list_entries'] = $data['list_entries'](); // Call the callback to create select options
                 }
 
                 $data['value'] = empty($data['value']) ? // 'value' should be an array of 'list_entry' items values
-                    (empty($data['default']) ? array() : maybe_unserialize($data['default'])) :
-                    is_array(maybe_unserialize($data['value'])) ? maybe_unserialize($data['value']) : [$data['value']];
-                ?>
+                    (empty($data['default']) ? [] : maybe_unserialize($data['default'])) :
+                    (is_array(maybe_unserialize($data['value'])) ? maybe_unserialize($data['value']) : [$data['value']]);?>
 
-                <select id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" size="<?php echo empty($data['length']) ? 5 : absint($data['length']);?>" multiple>
+                <select id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>[]" size="<?php echo empty($data['length']) ? 5 : absint($data['length']);?>" multiple="multiple">
                 <?php foreach((array)$data['list_entries'] as $value => $label) {?>
                     <option value="<?php echo $value;?>" <?php echo in_array($value, $data['value']) ? 'selected="selected"' : '';?>>
                         <?php echo esc_attr($label);?>
