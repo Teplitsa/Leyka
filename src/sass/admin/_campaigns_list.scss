@@ -1,0 +1,41 @@
+/** Campaigns list page **/
+.leyka-admin-default {
+
+    // Table filters:
+    //.leyka-admin-list-filter-wrapper .ui-autocomplete-multiselect { // Autocomplete - Donors filter specifics
+    //    margin-right: $leyka-base;
+    //    padding-left: 8px;
+    //}
+    // Table filters - END
+
+    // List table (columns & content):
+    .wp-list-table.widefat {
+
+        // Columns width:
+        tr {
+
+            //.column-id {
+            //    width: 80px;
+            //}
+
+        }
+        // Columns width - END
+
+        // Columns content settings:
+        td {
+
+            //font-size: 13px;
+
+            &.column-shortcode {
+                input.campaign-shortcode {
+                    width: 100%;
+                }
+            }
+
+        }
+        // Columns content settings - END
+
+    }
+    // List table (columns & content) END
+
+}
