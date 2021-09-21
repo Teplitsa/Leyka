@@ -144,7 +144,7 @@ function leyka_block_get_campaigns() {
 /**
  * Get The last Campaigns.
  *
- * @return last campaign ID.
+ * @return integer Last Campaign ID.
  */
 function leyka_block_get_recent_campaign($output = 'object') {
 
@@ -153,7 +153,7 @@ function leyka_block_get_recent_campaign($output = 'object') {
 	if($campaigns) {
         $recent_campaign = $output === 'id' ? $campaigns[0]->ID : $campaigns[0];
 	} else {
-        $recent_campaign = ''
+        $recent_campaign = '';
     }
 
 	return $recent_campaign;
