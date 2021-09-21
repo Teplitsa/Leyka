@@ -1418,6 +1418,23 @@ class Leyka extends Leyka_Singleton {
                 );
             }
 
+            // Rename "donor email date" postmeta value to a new value, if needed:
+            $update_needed = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}postmeta WHERE meta_key = '_leyka_donor_email_date' OR meta_key = 'donor_email_date'");
+            if($update_needed) {
+
+                $wpdb->update(
+                    $wpdb->prefix.'postmeta',
+                    ['meta_key' => 'leyka_donor_email_date'],
+                    ['meta_key' => '_leyka_donor_email_date']
+                );
+                $wpdb->update(
+                    $wpdb->prefix.'postmeta',
+                    ['meta_key' => 'leyka_donor_email_date'],
+                    ['meta_key' => 'donor_email_date']
+                );
+
+            }
+
             // Rename CloudPayments donations postmeta keys, if needed:
             $update_needed = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}postmeta WHERE meta_key = '_cp_recurring_id'");
             if($update_needed) {

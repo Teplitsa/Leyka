@@ -231,8 +231,8 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                     false : $meta['leyka_donor_subscribed'][0],
                 'leyka_donor_subscription_email' => empty($meta['leyka_donor_subscription_email']) ?
                     '' : $meta['leyka_donor_subscription_email'][0],
-                '_leyka_donor_email_date' => empty($meta['_leyka_donor_email_date']) ?
-                    '' : $meta['_leyka_donor_email_date'][0],
+                'leyka_donor_email_date' => empty($meta['leyka_donor_email_date']) ?
+                    '' : $meta['leyka_donor_email_date'][0],
                 '_leyka_managers_emails_date' => empty($meta['_leyka_managers_emails_date']) ?
                     '' : $meta['_leyka_managers_emails_date'][0],
                 'leyka_campaign_id' => empty($meta['leyka_campaign_id']) ? 0 : $meta['leyka_campaign_id'][0],
@@ -439,7 +439,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                     [] : $this->_donation_meta['leyka_additional_fields'];
 
             case 'donor_email_date':
-                return $this->_donation_meta['_leyka_donor_email_date'];
+                return $this->_donation_meta['leyka_donor_email_date'];
             case 'managers_emails_date':
                 return $this->_donation_meta['_leyka_managers_emails_date'];
 
@@ -641,6 +641,10 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'donation_additional_fields':
                 array_walk($value, function( &$value ){ $value = trim($value); });
                 $this->set_meta('leyka_additional_fields', $value);
+                break;
+
+            case 'donor_email_date':
+                $this->set_meta('leyka_donor_email_date', absint($value));
                 break;
 
             case 'donor_id':
