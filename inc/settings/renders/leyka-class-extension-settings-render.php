@@ -186,7 +186,11 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
             <div class="delete-extension-error error" style="display: none;"></div>
 
             <span class="buttons">
+
+                <?php if($this->_controller->extension->get_options_data()) { // Show "Save" submit only if there are options ?>
                 <input type="submit" class="button button-primary button-small save-settings" name="leyka_settings_submit_<?php echo $this->_controller->id;?>" value="<?php _e('Save', 'leyka');?>">
+                <?php }?>
+
                 <input type="submit" class="button <?php echo $submit_data['activation_status'] === 'active' ? 'button-secondary' : 'button-primary';?> activation-button <?php echo $submit_data['activation_status'];?>" name="<?php echo $submit_data['activation_status'] === 'active' ? 'leyka_deactivate_'.$this->_controller->id : 'leyka_activate_'.$this->_controller->id;?>" value="<?php echo $submit_data['activation_button_label'];?>">
             </span>
 

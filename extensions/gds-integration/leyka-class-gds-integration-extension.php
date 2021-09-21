@@ -132,7 +132,8 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
           `campaign_title` text COLLATE utf8mb4_unicode_ci NOT NULL,
           `donor_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
           `donor_email` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-          `donor_has_account` BOOLEAN) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+          `donor_has_account` BOOLEAN,
+          `donor_has_recurring_subscriptions` BOOLEAN) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
 
     }
 
@@ -140,9 +141,16 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
 
         global $wpdb;
 
+        $donor_has_recurring_subscriptions = $donation->donor_id ? Leyka_Donations::get_instance()->get_count([
+            'donor_id' => $donation->donor_id,
+            'status' => 'funded',
+            'recurring_only_init' => true,
+            'recurring_active' => true,
+        ]) : false;
+
         return $wpdb->insert(
             "{$wpdb->prefix}leyka_gds_integration_donations_data",
-            array(
+            [
                 'ID' => $donation->id,
                 'donation_date' => date('Y-m-d H:i:s', $donation->date_timestamp),
                 'payment_type' => $donation->payment_type,
@@ -156,8 +164,9 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
                 'donor_name' => $donation->donor_name,
                 'donor_email' => $donation->donor_email,
                 'donor_has_account' => absint($donation->donor_id) ? 1 : null,
-            ),
-            array('%d', '%s', '%s', '%s', '%s', '%s', '%f', '%f', '%s', '%s', '%s', '%s', '%d',)
+                'donor_has_recurring_subscriptions' => $donor_has_recurring_subscriptions > 0 ? 1 : null,
+            ],
+            ['%d', '%s', '%s', '%s', '%s', '%s', '%f', '%f', '%s', '%s', '%s', '%s', '%d', '%d',]
         );
 
     }

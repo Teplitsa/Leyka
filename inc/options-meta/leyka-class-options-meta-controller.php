@@ -4,10 +4,10 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
 
     protected static $_instance;
 
-    protected $_options_meta = array();
+    protected $_options_meta = [];
 
     /** Can't make instance of the root/factory class, so overload the get_instance() */
-    public static function get_instance(array $params = array()) {
+    public static function get_instance(array $params = []) {
         return self::get_controller();
     }
 
@@ -26,6 +26,10 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
             LEYKA_PLUGIN_DIR.'inc/options-meta/leyka-class-'.$country_id.'-options-meta-controller.php',
             $country_id
         );
+
+        if($country_id === 'eu') { // Some countries options meta controllers are descendants of the Ru controller
+            require_once LEYKA_PLUGIN_DIR.'inc/options-meta/leyka-class-ru-options-meta-controller.php';
+        }
 
         if(file_exists($file_path)) {
             require_once($file_path);
@@ -63,7 +67,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
             );
         } else if(is_array($options_group)) {
 
-            $options_meta = array();
+            $options_meta = [];
             foreach($options_group as $group) {
                 $options_meta = array_merge($options_meta, $this->_get_options_meta($group));
             }
@@ -160,7 +164,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'custom_additional_fields_library', // Special option type
                 'title' => __('Additional fields library', 'leyka'),
                 'field_classes' => array('additional-fields-settings'),
-                'default' => array(),
+                'default' => [],
             ),
             'extensions_available' => array(
                 'type' => 'custom_extensions', // Special option type
@@ -168,7 +172,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
             ),
             'extensions_active' => array( // The option is never displayed in UI via standard means
                 'type' => 'multi_checkbox',
-                'default' => array(),
+                'default' => [],
                 'title' => __('Extensions', 'leyka'),
             ),
             'success_page' => array(
@@ -1156,7 +1160,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
 
     // The default implementation to get some country-specific options group:
     protected function _get_unknown_group_options_meta($options_group) {
-        return array();
+        return [];
     }
 
     /** @todo */
