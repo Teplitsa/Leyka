@@ -10,6 +10,7 @@ function leyka_block_card_attributes(){
 	$attributes = array(
 		'campaign'         => array(
 			'type'    => 'string',
+			'default' => leyka_block_get_recent_campaign( 'id' ),
 		),
 		'template'         => array(
 			'type'    => 'string',

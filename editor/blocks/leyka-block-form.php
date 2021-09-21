@@ -10,22 +10,10 @@
  */
 function leyka_block_form_attributes(){
 
-	// Get campaigns.
-	$campaign_args = array(
-		'post_type'      => 'leyka_campaign',
-		'posts_per_page' => -1,
-	);
-	$campaigns = get_posts( $campaign_args );
-
-	$campaign_id = '';
-	if ( $campaigns ) {
-		$campaign_id = $campaigns[0]->ID;
-	}
-
 	$attributes = array(
 		'campaign'         => array(
 			'type'    => 'string',
-			'default' => $campaign_id,
+			'default' => leyka_block_get_recent_campaign( 'id' ),
 		),
 		'template'         => array(
 			'type'    => 'string',
