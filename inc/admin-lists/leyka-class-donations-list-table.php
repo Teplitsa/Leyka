@@ -280,7 +280,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
     </li>
 
     <li>
-        <span class="leyka-li-title">'._x('Comment', "Donor's comment. Keep it short.", 'leyka').':</span>
+        <span class="leyka-li-title">'._x('Comment', "Donor's comment. Should be short.", 'leyka').':</span>
         <span class="leyka-li-value">'.($donation->donor_comment ? mb_ucfirst($donation->donor_comment) : __('no', 'leyka')).'</span>
     </li>';
         $donor_additional_data_html = apply_filters(

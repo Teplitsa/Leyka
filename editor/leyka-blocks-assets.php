@@ -46,7 +46,7 @@ function leyka_enqueue_block_editor_assets() {
 
 		$leyka_block['campaigns'][] = [
 			'value' => '',
-			'label' => __('Select campaing', 'leyka'),
+			'label' => __('Select campaign', 'leyka'),
 			'disabled' => true,
 		];
 
