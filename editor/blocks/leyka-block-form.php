@@ -9,10 +9,11 @@
  * Block Type Leyka Form Attributes
  */
 function leyka_block_form_attributes(){
+
 	$attributes = array(
 		'campaign'         => array(
 			'type'    => 'string',
-			'default' => '',
+			'default' => leyka_block_get_recent_campaign( 'id' ),
 		),
 		'template'         => array(
 			'type'    => 'string',

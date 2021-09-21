@@ -165,3 +165,40 @@ function leyka_block_font_size_vars( $block_name = 'leyka/form', $template = 'de
 
 	return $vars;
 }
+
+/**
+ * Get All Campaigns.
+ */
+function leyka_block_get_campaigns() {
+	// Get campaigns.
+	$campaign_args = array(
+		'post_type'      => 'leyka_campaign',
+		'posts_per_page' => -1,
+	);
+	$campaigns = get_posts( $campaign_args );
+	return $campaigns;
+}
+
+/**
+ * Get The Last Campaigns.
+ * 
+ * @return last campaign id.
+ */
+function leyka_block_get_recent_campaign( $output = 'object' ) {
+	// Get campaigns.
+	$campaign_args = array(
+		'post_type'      => 'leyka_campaign',
+		'posts_per_page' => -1,
+	);
+	$campaigns   = leyka_block_get_campaigns();
+	$recent_campaign = '';
+	if ( $campaigns ) {
+		if ( 'id' === $output ) {
+			$recent_campaign = $campaigns[0]->ID;
+		} else {
+			$recent_campaign = $campaigns[0];
+		}
+		
+	}
+	return $recent_campaign;
+}
