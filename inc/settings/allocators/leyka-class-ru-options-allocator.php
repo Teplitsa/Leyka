@@ -183,6 +183,7 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
     }
 
     public function get_email_options() {
+
         return [
             ['section' => [
                 'name' => 'email_from',
@@ -235,7 +236,7 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
                 'is_default_collapsed' => false,
                 'options' => [
                     'notify_donations_managers', 'notify_managers_on_recurrents', 'donations_managers_emails',
-                    'email_notification_title', 'email_notification_text', 'notify_tech_support_on_failed_donations',
+                    'email_notification_title', 'email_notification_text',
                 ]
             ],],
             ['section' => [
@@ -260,7 +261,17 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
                     'send_recurring_canceling_donor_notification_email',
                 ]
             ],],
+            ['section' => [
+                'name' => 'notify_donors_of_donations_errors',
+                'title' => __('Donation errors notifications for donors', 'leyka'),
+                'is_default_collapsed' => true,
+                'options' => [
+                    'notify_donors_on_failed_donations', 'donation_error_donor_notification_title',
+                    'donation_error_donor_notification_text',
+                ]
+            ],],
         ];
+
     }
 
     public function get_view_options() {

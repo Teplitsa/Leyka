@@ -696,6 +696,26 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'description' => $email_placeholders,
                 'field_classes' => array('type-rich_html'),
             ),
+            'notify_donors_on_failed_donations' => array(
+                'type' => 'checkbox',
+                'default' => false,
+                'title' => __('Send emails to donors on failed donations', 'leyka'),
+                'short_format' => true,
+            ),
+            'donation_error_donor_notification_title' => array(
+                'type' => 'text',
+                'default' => __('Your donation failed', 'leyka'),
+                'title' => __('A title of a failed donation notification email', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('Your donation failed', 'leyka')),
+            ),
+            'donation_error_donor_notification_text' => array(
+                'type' => 'rich_html',
+                'default' => __('Hello!<br><br>You just made a donation on #SITE_NAME# website, and it failed for some reason.<br><br>Campaign: #CAMPAIGN_NAME#.<br>Donation purpose: #PURPOSE#<br>Amount: #SUM#.<br>Payment method: #PAYMENT_METHOD_NAME#.<br>Date: #DATE#<br><br>Please, report this to website tech. support and try donating again later.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
+                'title' => __('A text of after-donation notification sended to a website personnel', 'leyka'),
+                'comment' => __('A text of the notification email that would be sended to each email stated before right after donation is made.', 'leyka'),
+                'description' => $email_placeholders,
+                'field_classes' => array('type-rich_html'),
+            ),
         );
 
     }
