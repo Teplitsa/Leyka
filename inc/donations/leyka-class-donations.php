@@ -16,15 +16,9 @@ abstract class Leyka_Donations extends Leyka_Singleton {
         if(null === static::$_instance) {
 
             if(in_array(get_option('leyka_donations_storage_type'), ['sep', 'sep-incompleted'])) {
-
-                require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donation-separated.php');
                 static::$_instance = new Leyka_Donations_Separated();
-
             } else {
-
-                require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donation-post.php');
                 static::$_instance = new Leyka_Donations_Posts();
-
             }
 
         }

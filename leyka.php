@@ -97,9 +97,18 @@ require_once(LEYKA_PLUGIN_DIR.'inc/leyka-core.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-gateways-api.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-extensions-api.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-campaign.php');
+
 require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donation-base.php');
+// For old Leyka custom code that uses direct Leyka_Donation class instancing,
+// we should require the class code here, right in the beginning:
+if(in_array(get_option('leyka_donations_storage_type'), ['sep', 'sep-incompleted'])) {
+    require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donation-separated.php');
+} else {
+    require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donation-post.php');
+}
 require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donations-management.php'); /** @todo Make this class ADMIN ONLY. */
 require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donations.php');
+
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-donor.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-payment-form.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-template-controller.php');
