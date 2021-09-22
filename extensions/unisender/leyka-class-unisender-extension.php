@@ -62,7 +62,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
                 'required' => true,
                 'comment' => __('Donor fields which will be transferred to "Unisender"', 'leyka'),
                 'list_entries' => $this->_get_donor_fields(),
-                'default' => 1
+                'default' => ['name'], // 'default' should be an array of values (even if it's single value there)
             ],
             $this->_id.'_donor_confirmation' => [
                 'type' => 'checkbox',
@@ -130,6 +130,4 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
 function leyka_add_extension_unisender() {
     leyka()->add_extension(Leyka_Unisender_Extension::get_instance());
 }
-
 add_action('leyka_init_actions', 'leyka_add_extension_unisender');
-

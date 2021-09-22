@@ -179,6 +179,12 @@
 
         } // Campaign select comboboxes - END
 
+        &.type-multi_select { // Simple select[multiple] fields
+
+            @include leyka-field-miltiselect-simple();
+
+        }
+
     } // Option blocks - END
 
     &.container-block {
