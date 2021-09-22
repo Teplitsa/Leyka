@@ -553,6 +553,10 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                 array_walk($value, function( &$value ){ $value = trim($value); });
                 return $this->set_meta('additional_fields', $value);
 
+            case 'donor_email_date':
+                $this->set_meta('donor_email_date', absint($value));
+                break;
+
             case 'donor_id':
             case 'donor_user_id':
             case 'donor_account_id':

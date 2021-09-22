@@ -63,7 +63,7 @@ abstract class Leyka_Extension extends Leyka_Singleton {
     }
 
     public static function get_base_path() {
-        return str_replace( '_', '-', dirname((new ReflectionClass(static::class))->getFileName()) );
+        return dirname((new ReflectionClass(static::class))->getFileName());
     }
 
     public static function get_base_url() {

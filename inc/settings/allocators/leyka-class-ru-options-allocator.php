@@ -183,6 +183,7 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
     }
 
     public function get_email_options() {
+
         return [
             ['section' => [
                 'name' => 'email_from',
@@ -235,7 +236,7 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
                 'is_default_collapsed' => false,
                 'options' => [
                     'notify_donations_managers', 'notify_managers_on_recurrents', 'donations_managers_emails',
-                    'email_notification_title', 'email_notification_text', 'notify_tech_support_on_failed_donations',
+                    'email_notification_title', 'email_notification_text',
                 ]
             ],],
             ['section' => [
@@ -260,292 +261,294 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
                     'send_recurring_canceling_donor_notification_email',
                 ]
             ],],
+            ['section' => [
+                'name' => 'notify_donors_of_donations_errors',
+                'title' => __('Donation errors notifications for donors', 'leyka'),
+                'is_default_collapsed' => true,
+                'options' => [
+                    'notify_donors_on_failed_donations', 'donation_error_donor_notification_title',
+                    'donation_error_donor_notification_text',
+                ]
+            ],],
         ];
+
     }
 
     public function get_view_options() {
 
-        $templates_options = array(
-            'template_options_revo' => array(
-                'screenshots' => array(
+        $templates_options = [
+            'template_options_revo' => [
+                'screenshots' => [
                     'screen-revo-001.png', 'screen-revo-002.png', 'screen-revo-003.png', 'screen-revo-004.png',
-                ),
+                ],
                 'title' => __('Revo', 'leyka'),
-                'sections' => array(
-                    array(
-                        'options' => array(
+                'sections' => [
+                    [
+                        'options' => [
                             'revo_template_slider_max_sum', 'donation_submit_text',
                             'revo_donation_complete_button_text',
-                        ),
-                    ),
-                    array(
+                        ],
+                    ],
+                    [
                         'title' => __('Additional settings', 'leyka'),
-                        'options' => array(
+                        'options' => [
                             'revo_template_show_donors_list', 'revo_template_show_thumbnail',
                             'show_donation_comment_field', 'donation_comment_max_length',
                             'do_not_display_donation_form',
-                        ),
-                    ),
-                ),
-            ),
-            'template_options_neo' => array(
+                        ],
+                    ],
+                ],
+            ],
+            'template_options_neo' => [
                 'title' => __('Neo', 'leyka'),
-                'screenshots' => array('screen-neo-001.png', 'screen-neo-002.png'),
-                'sections' => array(
-                    array(
-                        'title' => __('Donation sum field type', 'leyka'),
-                        'options' => array('donation_sum_field_type'),
-                    ),
-                    array(
+                'screenshots' => ['screen-neo-001.png', 'screen-neo-002.png'],
+                'sections' => [
+                    ['title' => __('Donation sum field type', 'leyka'), 'options' => ['donation_sum_field_type'],],
+                    [
                         'title' => __('Progress scale location', 'leyka'),
-                        'options' => array('scale_widget_place', 'donation_submit_text',),
-                    ),
-                    array(
+                        'options' => ['scale_widget_place', 'donation_submit_text',],
+                    ],
+                    [
                         'title' => __('Additional settings', 'leyka'),
-                        'options' => array(
+                        'options' => [
                             'donations_history_under_forms', 'show_success_widget_on_success',
                             'show_donation_comment_field', 'donation_comment_max_length',
                             'show_campaign_sharing', 'show_failure_widget_on_failure',
                             'do_not_display_donation_form',
-                        ),
-                    ),
-                ),
+                        ],
+                    ],
+                ],
 
-            ),
-            'template_options_toggles' => array(
+            ],
+            'template_options_toggles' => [
                 'title' => __('Toggles', 'leyka'),
-                'screenshots' => array('screen-toggles-001.png', 'screen-toggles-002.png'),
-                'sections' => array(
-                    array(
+                'screenshots' => ['screen-toggles-001.png', 'screen-toggles-002.png'],
+                'sections' => [
+                    [
                         'title' => __('Donation sum field type', 'leyka'),
-                        'options' => array('donation_sum_field_type'),
-                    ),
-                    array(
+                        'options' => ['donation_sum_field_type'],
+                    ],
+                    [
                         'title' => __('Progress scale location', 'leyka'),
-                        'options' => array('scale_widget_place', 'donation_submit_text',),
-                    ),
-                    array(
+                        'options' => ['scale_widget_place', 'donation_submit_text',],
+                    ],
+                    [
                         'title' => __('Additional settings', 'leyka'),
-                        'options' => array(
+                        'options' => [
                             'donations_history_under_forms', 'show_success_widget_on_success',
                             'show_donation_comment_field', 'donation_comment_max_length',
                             'show_campaign_sharing', 'show_failure_widget_on_failure',
                             'do_not_display_donation_form',
-                        ),
-                    ),
-                ),
-            ),
-            'template_options_radios' => array(
+                        ],
+                    ],
+                ],
+            ],
+            'template_options_radios' => [
                 'title' => __('Radios', 'leyka'),
-                'screenshots' => array('screen-radios-001.png'),//, 'screen-radios-002.png'
-                'sections' => array(
-                    array(
-                        'title' => __('Donation sum field type', 'leyka'),
-                        'options' => array('donation_sum_field_type'),
-                    ),
-                    array(
+                'screenshots' => ['screen-radios-001.png'],
+                'sections' => [
+                    ['title' => __('Donation sum field type', 'leyka'), 'options' => ['donation_sum_field_type'],],
+                    [
                         'title' => __('Progress scale location', 'leyka'),
-                        'options' => array('scale_widget_place', 'donation_submit_text',),
-                    ),
-                    array(
+                        'options' => ['scale_widget_place', 'donation_submit_text',],
+                    ],
+                    [
                         'title' => __('Additional settings', 'leyka'),
-                        'options' => array(
+                        'options' => [
                             'donations_history_under_forms', 'show_success_widget_on_success',
                             'show_donation_comment_field', 'donation_comment_max_length',
                             'show_campaign_sharing', 'show_failure_widget_on_failure',
                             'do_not_display_donation_form',
-                        ),
-                    ),
-                ),
-            ),
-            'template_options_star' => array(
+                        ],
+                    ],
+                ],
+            ],
+            'template_options_star' => [
                 'title' => __('Star', 'leyka'),
-                'screenshots' => array('screen-star-001.png'),
-                'sections' => array(
-                    array(
-                        'title' => __('Donation sum field type', 'leyka'),
-                        'options' => array('donation_sum_field_type',),
-                    ),
-                    array(
+                'screenshots' => ['screen-star-001.png'],
+                'sections' => [
+                    ['title' => __('Donation sum field type', 'leyka'), 'options' => ['donation_sum_field_type',],],
+                    [
                         'title' => __('Explanation of benefits of regular donations', 'leyka'),
-                        'options' => array('recurring_donation_benefits_text',),
-                    ),
-                    array(
+                        'options' => ['recurring_donation_benefits_text',],
+                    ],
+                    [
                         'title' => __('Label of the button to submit a donation form', 'leyka'),
-                        'options' => array('donation_submit_text',),
-                    ),
-                    array(
+                        'options' => ['donation_submit_text',],
+                    ],
+                    [
                         'title' => __('Additional settings', 'leyka'),
-                        'options' => array(
+                        'options' => [
                             'show_success_widget_on_success',
                             'show_donation_comment_field', 'donation_comment_max_length',
                             'show_failure_widget_on_failure',
                             'do_not_display_donation_form',
-                        ),
-                    ),
-                ),
-            ),
-            'template_options_need-help' => array(
+                        ],
+                    ],
+                ],
+            ],
+            'template_options_need-help' => [
                 'title' => __('Need help', 'leyka'),
-                'screenshots' => array('screen-need-help-001.png'),
-                'sections' => array(
-                    array(
+                'screenshots' => ['screen-need-help-001.png'],
+                'sections' => [
+                    [
                         'title' => __('Donation sum field type', 'leyka'),
-                        'options' => array('donation_sum_field_type',),
-                    ),
-                    array(
+                        'options' => ['donation_sum_field_type',],
+                    ],
+                    [
                         'title' => __('Label of the button to submit a donation form', 'leyka'),
-                        'options' => array('donation_submit_text',),
-                    ),
-                    array(
+                        'options' => ['donation_submit_text',],
+                    ],
+                    [
                         'title' => __('Additional settings', 'leyka'),
-                        'options' => array(
+                        'options' => [
                             'show_success_widget_on_success',
                             'show_donation_comment_field', 'donation_comment_max_length',
                             'show_failure_widget_on_failure',
                             'do_not_display_donation_form',
-                        ),
-                    ),
-                ),
-            ),
-        );
+                        ],
+                    ],
+                ],
+            ],
+        ];
 
         if( !leyka_options()->opt('allow_deprecated_form_templates') ) {
-            foreach(leyka()->get_templates(array('include_deprecated' => true)) as $template_id => $template_data) {
+            foreach(leyka()->get_templates(['include_deprecated' => true]) as $template_id => $template_data) {
                 if( !empty($template_data['deprecated']) ) {
                     unset($templates_options['template_options_'.$template_id]);
                 }
             }
         }
 
-        $main_form_template_select_options = array(
-            'main_template' => array(
+        $main_form_template_select_options = [
+            'main_template' => [
                 'title' => __('Main template', 'leyka'),
-                'sections' => array(
-                    array(
-                        'title' => __('Which campaign template is default?', 'leyka'),
-                        'options' => array('donation_form_template'),
-                    ),
-                ),
-            ),
-        );
+                'sections' => [
+                    ['title' => __('Which campaign template is default?', 'leyka'), 'options' => ['donation_form_template'],],
+                ],
+            ],
+        ];
 
-        return array(
-            array('section' => array(
+        return [
+            ['section' => [
                 'name' => 'campaign_templates_options',
                 'content_area_render' => 'leyka_render_tabbed_section_options_area',
                 'title' => __('Campaign templates', 'leyka'),
                 'description' => __('Here you can change donation forms view', 'leyka'),
                 'is_default_collapsed' => false,
                 'tabs' => array_merge($main_form_template_select_options, $templates_options),
-            ),),
-            array('section' => array(
+            ],],
+            ['section' => [
                 'name' => 'additional_fields_library_settings',
                 'title' => __('Additional fields library', 'leyka'),
                 'is_default_collapsed' => false,
-                'options' => array('additional_donation_form_fields_library',),
-            ),),
-            array('section' => array(
+                'options' => ['additional_donation_form_fields_library',],
+            ],],
+            ['section' => [
                 'name' => 'currency_options',
                 'content_area_render' => 'leyka_render_tabbed_section_options_area',
                 'title' => __('Currency settings', 'leyka'),
                 'description' => __('Here you can change currency options', 'leyka'),
                 'is_default_collapsed' => false,
                 'tabs' => $this->_get_main_currency_options_tabs(),
-            ),),
-            array('section' => array(
+            ],],
+            ['section' => [
                 'name' => 'misc_view_settings',
                 'title' => __('Miscellaneous', 'leyka'),
                 'is_default_collapsed' => true,
-                'options' => array('widgets_total_amount_usage',),
-            ),),
-        );
+                'options' => ['widgets_total_amount_usage',],
+            ],],
+        ];
 
     }
 
     public function get_technical_options() {
-        return array(
-            array('section' => array(
+
+        return [
+            ['section' => [
                 'name' => 'technical_support',
                 'title' => __('Technical support', 'leyka'),
                 'is_default_collapsed' => false,
-                'options' => array('org_contact_person_name', 'tech_support_email',)
-            ),),
-            array('section' => array(
+                'options' => ['org_contact_person_name', 'tech_support_email',],
+            ],],
+            ['section' => [
                 'name' => 'stats_connections',
                 'title' => __('Statistics connection', 'leyka'),
                 'description' => __('Connect to statistics to send plugin data to us, Teplitsa of Social technologies. It will allow us to consistently improve the plugin work as well as help you quickly resolve technical issues with it. These data will be used only by plugin developers and will not be shared with any third party.', 'leyka'),
                 'is_default_collapsed' => false,
-                'action_button' => array('title' => __('Connect statistics', 'leyka'), 'id' => 'connect-stats-button'),
-                'options' => array('send_plugin_stats',)
-            ),),
-            array('section' => array(
+                'action_button' => ['title' => __('Connect statistics', 'leyka'), 'id' => 'connect-stats-button'],
+                'options' => ['send_plugin_stats',]
+            ],],
+            ['section' => [
                 'name' => 'plugin_deletion',
                 'title' => __('Deleting pluging data', 'leyka'),
                 'description' => __('<span class="attention">ATTENTION!</span> Action when removing a plugin', 'leyka'),
                 'is_default_collapsed' => false,
-                'options' => array('delete_plugin_options', 'delete_plugin_data',)
-            ),),
-            array('section'=> array(
+                'options' => ['delete_plugin_options', 'delete_plugin_data',]
+            ],],
+            ['section'=> [
                 'name' => 'admin_display',
                 'title' => __('Admin data display', 'leyka'),
-                'options' => array('admin_donations_list_amount_display',),
+                'options' => ['admin_donations_list_amount_display',],
                 'is_default_collapsed' => true,
-            ),),
-        );
+            ],],
+        ];
+
     }
 
     public function get_additional_options() {
-        return array(
-            array('section' => array(
+
+        return [
+            ['section' => [
                 'name' => 'terms_of_service',
                 'title' => __('Terms of donation service options', 'leyka'),
                 'is_default_collapsed' => false,
-                'options' => array(
+                'options' => [
                     'agree_to_terms_needed', 'agree_to_terms_text_text_part', 'agree_to_terms_text_link_part',
                     'terms_agreed_by_default', 'terms_of_service_page',
-                )
-            ),),
-            array('section' => array(
+                ]
+            ],],
+            ['section' => [
                 'name' => 'terms_of_pd',
                 'title' => __('Terms of personal data usage options', 'leyka'),
                 'is_default_collapsed' => false,
-                'options' => array(
+                'options' => [
                     'agree_to_pd_terms_needed', 'agree_to_pd_terms_text_text_part',
                     'agree_to_pd_terms_text_link_part', 'pd_terms_agreed_by_default', 'pd_terms_page',
-                )
-            ),),
-            array('section' => array(
+                ]
+            ],],
+            ['section' => [
                 'name' => 'web_analytics_integrations',
                 'title' => __('Web analysis services integration options', 'leyka'),
                 'is_default_collapsed' => true,
-                'options' => array('use_gtm_ua_integration', 'gtm_ua_enchanced_events', 'gtm_ua_tracking_id',)
-            ),),
-            array('section' => array(
+                'options' => ['use_gtm_ua_integration', 'gtm_ua_enchanced_events', 'gtm_ua_tracking_id',]
+            ],],
+            ['section' => [
                 'name' => 'donor_accounts',
                 'title' => __('Donors & accounts options', 'leyka'),
                 'is_default_collapsed' => true,
-                'options' => array('donor_management_available', 'donor_accounts_available',)
-            ),),
-            array('section' => array(
+                'options' => ['donor_management_available', 'donor_accounts_available',]
+            ],],
+            ['section' => [
                 'name' => 'misc',
                 'title' => __('Additional', 'leyka'),
                 'is_default_collapsed' => true,
-                'options' => array(
+                'options' => [
                     'show_donation_comments_in_frontend', 'success_page', 'failure_page', 'load_scripts_if_need',
                     'donors_data_editable', 'allow_deprecated_form_templates', 'plugin_demo_mode', 'plugin_debug_mode',
                     'plugin_stats_sync_enabled',
-                )
-            ),),
-            array('section' => array(
+                ]
+            ],],
+            ['section' => [
                 'name' => 'secondary_currency_options',
                 'content_area_render' => 'leyka_render_tabbed_section_options_area',
                 'title' => __('Secondary currency settings', 'leyka'),
                 'description' => __('Here you can change secondary currencies options', 'leyka'),
                 'is_default_collapsed' => true,
                 'tabs' => $this->_get_secondary_currencies_options_tabs(),
-            ),),
-        );
+            ],],
+        ];
+
     }
 
 }

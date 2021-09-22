@@ -13,25 +13,21 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
     protected function _set_attributes() {
 
         $this->_id = 'merchandise';
-        $this->_title = __('Merchandise/gifts for donors', 'leyka');
+        $this->_title = __('Donation rewards', 'leyka');
 
         // A human-readable short description (for backoffice extensions list page):
-        $this->_description = 'Добавьте варианты подарков за пожертвования на ваши Лейко-формы, чтобы донор мог получать подарки от вас в зависимости от размера его пожертвования.';
+        $this->_description = __('The extension allows you to add photos and descriptions of donation rewards to the Leyka form.', 'leyka');
 
         // A human-readable full description (for backoffice extensions list page):
-        $this->_full_description = 'Это более подробное описание расширения, символов на 150-300. Например, вот такое длинное, как эта строка.';
+        $this->_full_description = '';
 
         // A human-readable description (for backoffice extension settings page):
-        $this->_settings_description = 'Это текст с описанием или комментарием работы расширения, который выводится на странице настроек расширения в административном разделе Лейки. Текст может быть довольно длинным, но мы рекомендуем помнить, что молчание - золото. А лаконичность - так вообще платина; лучше только телепатия.';
+        $this->_settings_description = __('After activating the extension, an additional section appears in the campaign settings - "Rewards for donations". In it, you can specify the name and description of the reward, as well as add a photo. The reward is related to the size of the donation. The data about the selected reward is saved in the donations table.', 'leyka');
 
         // A human-readable description of how to enable the main feature (for backoffice extension settings page):
-        $this->_connection_description = '<p><strong>В этом месте можно вывести краткое описание использования некоторой функции</strong></p>
-<p>Например, вы можете использовать функцию «раз-два-три» так:</p>
-<code>[some_shortcode param1="Какая-то надпись"]</code>
-<br>Ваш текст<br>
-<code>[/some_shortcode]</code>';
+        $this->_connection_description = '';
 
-        $this->_user_docs_link = '//leyka.te-st.ru/docs/merch-manual';
+        $this->_user_docs_link = '//leyka.te-st.ru/docs/merchandise-manual';
         $this->_has_wizard = false;
         $this->_has_color_options = false;
 
@@ -55,7 +51,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
                 add_meta_box(
                     Leyka_Campaign_Management::$post_type.'_merchandise',
-                    __('Campaign merchandise / gifts for donors', 'leyka'),
+                    __('Rewards for donations', 'leyka'),
                     [$this, 'merchandise_campaign_metabox'],
                     Leyka_Campaign_Management::$post_type,
                     'normal',
@@ -157,7 +153,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
                     $placeholders = wp_parse_args($placeholders, [
                         'id' => '',
-                        'box_title' => __('New merchandise', 'leyka'),
+                        'box_title' => __('New reward', 'leyka'),
                         'title' => '',
                         'description' => false,
                         'donation_amount_needed' => 0,
@@ -168,7 +164,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
                         <h3 class="item-box-title ui-sortable-handle">
                             <span class="draggable"></span>
-                            <span class="title" data-empty-box-title="<?php _e('New merchandise', 'leyka');?>">
+                            <span class="title" data-empty-box-title="<?php _e('New reward', 'leyka');?>">
                                 <?php echo esc_html($placeholders['box_title']);?>
                             </span>
                         </h3>
@@ -180,7 +176,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
                                 <div class="option-block type-text">
                                     <div class="leyka-select-field-wrapper">
                                         <?php leyka_render_text_field('merchandise_title', [
-                                            'title' => __('Merchandise title', 'leyka'),
+                                            'title' => __('Reward title', 'leyka'),
                                             'placeholder' => sprintf(__('E.g., %s'), __('A cool hat with our logo', 'leyka')),
                                             'value' => $placeholders['title'],
                                             'required' => true,
@@ -197,11 +193,11 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
                                     <div class="leyka-number-field-wrapper">
                                         <?php leyka_render_number_field('merchandise_donation_amount_needed', [
                                             'title' => sprintf(
-                                                __('Donations amount needed for the gift, %s', 'leyka'),
+                                                __('Donations amount needed for the reward, %s', 'leyka'),
                                                 leyka_get_currency_label()
                                             ),
                                             'required' => true,
-                                            'value' => absint($placeholders['donation_amount_needed']) ? : 2000,
+                                            'value' => absint($placeholders['donation_amount_needed']) ? : 1000,
                                             'length' => 6,
                                             'min' => 1,
                                             'max' => 9999999,
@@ -213,13 +209,8 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
                                 <div class="settings-block option-block type-file">
                                     <?php leyka_render_file_field('merchandise_thumbnail', [
                                         'upload_label' => __('Load picture', 'leyka'),
-//                                            'description' => sprintf(
-//                                                __('A *.png or *.jpg file. The size is no more than %s Mb', 'leyka'),
-//                                                (int)ini_get('upload_max_filesize')
-//                                            ),
                                         'required' => false,
                                         'value' => $placeholders['thumbnail'],
-//                                            'field_classes' => 'leyka-upload-field-merchandise',
                                     ]);?>
                                     <div class="field-errors"></div>
                                 </div>
@@ -244,7 +235,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
                             <div class="box-footer">
                                 <div class="remove-campaign-merchandise delete-item">
-                                    <?php _e('Remove the merchandise from this campaign', 'leyka');?>
+                                    <?php _e('Remove the reward from this campaign', 'leyka');?>
                                 </div>
                             </div>
 
@@ -281,7 +272,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
                     <?php leyka_campaign_merchandise_field_html(true); // Merchandise box template ?>
 
-                    <div class="add-field add-item bottom"><?php _e('Add merchandise', 'leyka');?></div>
+                    <div class="add-field add-item bottom"><?php _e('Add reward', 'leyka');?></div>
 
                     <input type="hidden" class="leyka-items-options" name="leyka_campaign_merchandise" value="">
 
@@ -327,7 +318,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
     public function _merchandise_admin_donations_list_column_name($columns){
 
-        $columns['merchandise'] = __('Merchandise', 'leyka');
+        $columns['merchandise'] = __('Donation reward', 'leyka');
 
         return $columns;
 
@@ -358,7 +349,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
         }?>
 
         <div class="leyka-ddata-string">
-            <label><?php _e('Donor merchandise / award', 'leyka');?>:</label>
+            <label><?php _e('Donation reward', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
                 <span class="fake-input"><?php echo $content;?></span>
             </div>
@@ -493,7 +484,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
             <div class="section-title-container">
                 <div class="section-title-line"></div>
-                <div class="section-title-text"><?php _e('Merchandise for donation', 'leyka');?></div>
+                <div class="section-title-text"><?php _e('Donation reward', 'leyka');?></div>
             </div>
 
             <div class="section__fields merchandise-grid">

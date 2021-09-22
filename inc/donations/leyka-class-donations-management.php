@@ -282,13 +282,11 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         // Reset content-type to avoid conflicts (http://core.trac.wordpress.org/ticket/23578):
         remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
-        $res &= $donation->set_meta('donor_email_date', current_time('timestamp'));
-
-        if( !$res ) {
-            $res = $donation->get_meta('donor_email_date') > 0;
+        if($res) {
+            $donation->donor_email_date = current_time('timestamp');
         }
 
-        return $res;
+        return $res && $donation->donor_email_date;
 
     }
 
@@ -414,13 +412,11 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         // Reset content-type to avoid conflicts (http://core.trac.wordpress.org/ticket/23578):
         remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
-        $res &= $donation->set_meta('donor_email_date', current_time('timestamp'));
-
-        if( !$res ) {
-            $res = $donation->get_meta('donor_email_date') > 0;
+        if($res) {
+            $donation->donor_email_date = current_time('timestamp');
         }
 
-        return $res;
+        return $res && $donation->donor_email_date;
 
     }
 
@@ -550,13 +546,11 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         // Reset content-type to avoid conflicts (http://core.trac.wordpress.org/ticket/23578):
         remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
-        $res &= $donation->set_meta('donor_email_date', current_time('timestamp'));
-
-        if( !$res ) {
-            $res = $donation->get_meta('donor_email_date') > 0;
+        if($res) {
+            $donation->donor_email_date = current_time('timestamp');
         }
 
-        return $res;
+        return $res && $donation->donor_email_date;
 
     }
 
@@ -690,7 +684,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         );
 
         if($res) {
-            update_post_meta($donation->id, '_leyka_donor_email_date', current_time('timestamp'));
+            $donation->donor_email_date = current_time('timestamp');
         }
 
         // Donations managers notifying emails:
@@ -812,82 +806,157 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
     public static function send_error_notifications($donation) {
 
-        if( !leyka_options()->opt('notify_tech_support_on_failed_donations') ) {
-            return false;
-        }
-
         $donation = Leyka_Donations::get_instance()->get($donation);
 
-        if( !$donation || $donation->managers_emails_date) {
+        if( !$donation ) {
             return false;
         }
 
-        add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
+        if(leyka_options()->opt('notify_tech_support_on_failed_donations')) { // Notification to Donations managers, if needed
 
-        $campaign = new Leyka_Campaign($donation->campaign_id);
-        $res = wp_mail(
-            leyka_get_website_tech_support_email(),
-            apply_filters(
-                'leyka_error_email_notification_title',
-                __('Donation error occured', 'leyka'),
-                $donation, $campaign
-            ),
-            wpautop(str_replace(
-                [
-                    '#SITE_NAME#',
-                    '#SITE_URL#',
-                    '#ORG_NAME#',
-                    '#ORG_SHORT_NAME#',
-                    '#DONATION_ID#',
-                    '#DONATION_TYPE#',
-                    '#DONOR_NAME#',
-                    '#DONOR_EMAIL#',
-                    '#DONOR_COMMENT#',
-                    '#PAYMENT_METHOD_NAME#',
-                    '#CAMPAIGN_NAME#',
-                    '#CAMPAIGN_URL#',
-                    '#PURPOSE#',
-                    '#CAMPAIGN_TARGET#',
-                    '#SUM#',
-                    '#DATE#',
-                ],
-                [
-                    get_bloginfo('name'),
-                    home_url(),
-                    leyka_options()->opt('org_full_name'),
-                    leyka_options()->opt('org_short_name'),
-                    $donation->id,
-                    leyka_get_payment_types_list($donation->type),
-                    $donation->donor_name ? $donation->donor_name : __('anonymous', 'leyka'),
-                    $donation->donor_email ? $donation->donor_email : __('unknown email', 'leyka'),
-                    $donation->donor_comment,
-                    $donation->payment_method_label,
-                    $campaign->title,
-                    $campaign->url,
-                    $campaign->payment_title,
-                    $campaign->target,
-                    $donation->amount.' '.$donation->currency_label,
-                    $donation->date,
-                ],
+            if($donation->managers_emails_date) {
+                return false;
+            }
+
+            add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
+
+            $campaign = new Leyka_Campaign($donation->campaign_id);
+            $res = wp_mail(
+                leyka_get_website_tech_support_email(),
                 apply_filters(
-                    'leyka_error_email_notification_text',
-                    sprintf(__("Hello!\n\nDonation failure detected on the #SITE_NAME# website.\n\nCampaign: #CAMPAIGN_NAME#\nAmount: #SUM#\nPayment method: #PAYMENT_METHOD_NAME#\nType: #DONATION_TYPE#\n\nYou may revise the donation <a href='%s' target='_blank'>here</a>.\n\nYour Leyka", 'leyka'), admin_url('post.php?post='.$donation->id.'&action=edit')),
+                    'leyka_error_email_notification_title',
+                    __('Donation error occured', 'leyka'),
                     $donation, $campaign
-                )
-            )),
-            [
-                'From: '.apply_filters(
-                    'leyka_email_from_name',
-                    leyka_options()->opt_safe('email_from_name'),
-                    $donation,
-                    $campaign
-                ).' <'.leyka_options()->opt_safe('email_from').'>',
-            ]
-        );
+                ),
+                wpautop(str_replace(
+                    [
+                        '#SITE_NAME#',
+                        '#SITE_URL#',
+                        '#ORG_NAME#',
+                        '#ORG_SHORT_NAME#',
+                        '#DONATION_ID#',
+                        '#DONATION_TYPE#',
+                        '#DONOR_NAME#',
+                        '#DONOR_EMAIL#',
+                        '#DONOR_COMMENT#',
+                        '#PAYMENT_METHOD_NAME#',
+                        '#CAMPAIGN_NAME#',
+                        '#CAMPAIGN_URL#',
+                        '#PURPOSE#',
+                        '#CAMPAIGN_TARGET#',
+                        '#SUM#',
+                        '#DATE#',
+                    ],
+                    [
+                        get_bloginfo('name'),
+                        home_url(),
+                        leyka_options()->opt('org_full_name'),
+                        leyka_options()->opt('org_short_name'),
+                        $donation->id,
+                        leyka_get_payment_types_list($donation->type),
+                        $donation->donor_name ? : __('anonymous', 'leyka'),
+                        $donation->donor_email ? : __('unknown email', 'leyka'),
+                        $donation->donor_comment,
+                        $donation->payment_method_label,
+                        $campaign->title,
+                        $campaign->url,
+                        $campaign->payment_title,
+                        $campaign->target,
+                        $donation->amount.' '.$donation->currency_label,
+                        $donation->date,
+                    ],
+                    apply_filters(
+                        'leyka_error_email_notification_text',
+                        sprintf(__("Hello!\n\nDonation failure detected on the #SITE_NAME# website.\n\nCampaign: #CAMPAIGN_NAME#\nAmount: #SUM#\nPayment method: #PAYMENT_METHOD_NAME#\nType: #DONATION_TYPE#\n\nYou may revise the donation <a href='%s' target='_blank'>here</a>.\n\nYour Leyka", 'leyka'), admin_url('post.php?post='.$donation->id.'&action=edit')),
+                        $donation, $campaign
+                    )
+                )),
+                [
+                    'From: '.apply_filters(
+                        'leyka_email_from_name',
+                        leyka_options()->opt_safe('email_from_name'),
+                        $donation,
+                        $campaign
+                    ).' <'.leyka_options()->opt_safe('email_from').'>',
+                ]
+            );
 
-        remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
+            remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
-        return $res;
+            return $res;
+
+        } else if(leyka_options()->opt('notify_donors_on_failed_donations')) { // Notify Donor, if needed
+
+            add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
+
+            $campaign = new Leyka_Campaign($donation->campaign_id);
+            $res = wp_mail(
+                $donation->donor_email,
+                apply_filters(
+                    'leyka_error_donor_email_notification_title',
+                    leyka_options()->opt('donation_error_donor_notification_title'),
+                    $donation, $campaign
+                ),
+                wpautop(str_replace(
+                    [
+                        '#SITE_NAME#',
+                        '#SITE_URL#',
+                        '#ORG_NAME#',
+                        '#ORG_SHORT_NAME#',
+                        '#DONATION_ID#',
+                        '#DONATION_TYPE#',
+                        '#DONOR_NAME#',
+                        '#DONOR_EMAIL#',
+                        '#DONOR_COMMENT#',
+                        '#PAYMENT_METHOD_NAME#',
+                        '#CAMPAIGN_NAME#',
+                        '#CAMPAIGN_URL#',
+                        '#PURPOSE#',
+                        '#CAMPAIGN_TARGET#',
+                        '#SUM#',
+                        '#DATE#',
+                    ],
+                    [
+                        get_bloginfo('name'),
+                        home_url(),
+                        leyka_options()->opt('org_full_name'),
+                        leyka_options()->opt('org_short_name'),
+                        $donation->id,
+                        leyka_get_payment_types_list($donation->type),
+                        $donation->donor_name ? : __('anonymous', 'leyka'),
+                        $donation->donor_email ? : __('unknown email', 'leyka'),
+                        $donation->donor_comment,
+                        $donation->payment_method_label,
+                        $campaign->title,
+                        $campaign->url,
+                        $campaign->payment_title,
+                        $campaign->target,
+                        $donation->amount.' '.$donation->currency_label,
+                        $donation->date,
+                    ],
+                    apply_filters(
+                        'leyka_error_donor_email_notification_text',
+                        leyka_options()->opt('donation_error_donor_notification_text'),
+                        $donation, $campaign
+                    )
+                )),
+                [
+                    'From: '.apply_filters(
+                        'leyka_email_from_name',
+                        leyka_options()->opt_safe('email_from_name'),
+                        $donation,
+                        $campaign
+                    ).' <'.leyka_options()->opt_safe('email_from').'>',
+                ]
+            );
+
+            remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
+
+            return $res;
+
+        } else {
+            return false;
+        }
 
     }
 
@@ -1470,14 +1539,14 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         $donation_id = empty($_GET['donation']) ? false : absint($_GET['donation']);
         $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
 
-        $donor_thanks_date = $donation->get_meta('donor_email_date');
+        $donor_thanks_date = $donation->donor_email_date;
         $manager_notification_date = $donation->get_meta('managers_emails_date');
 
-		if($donor_thanks_date) {?>
+		if($donation->donor_email_date) {?>
 			<div class="leyka-ddata-string donor has-thanks">
                 <?php echo sprintf(
                     __('Grateful email to the donor has been sent (at %s)', 'leyka'),
-                    '<time>'.date(get_option('date_format').', H:i</time>', $donor_thanks_date).'</time>'
+                    '<time>'.date(get_option('date_format').', H:i</time>', $donation->donor_email_date).'</time>'
                 );?>
             </div>
 		<?php } else {?>

@@ -502,8 +502,8 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
                     [
                         $item['id'],
                         empty($item['status']) ?
-                            __('not active', '[about recurring subscription]', 'leyka') :
-                            __('active', '[about recurring subscription]', 'leyka'),
+                            _x('not active', '[about recurring subscription]', 'leyka') :
+                            _x('active', '[about recurring subscription]', 'leyka'),
                         empty($item['donor']['name']) ? '' : $item['donor']['name'],
                         empty($item['donor']['email']) ? '' : $item['donor']['email'],
                         empty($item['campaign']['title']) ? 'Кампания #'.$item['campaign']['id'] : $item['campaign']['title'],

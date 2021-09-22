@@ -4,10 +4,10 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
 
     protected static $_instance;
 
-    protected $_options_meta = array();
+    protected $_options_meta = [];
 
     /** Can't make instance of the root/factory class, so overload the get_instance() */
-    public static function get_instance(array $params = array()) {
+    public static function get_instance(array $params = []) {
         return self::get_controller();
     }
 
@@ -26,6 +26,10 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
             LEYKA_PLUGIN_DIR.'inc/options-meta/leyka-class-'.$country_id.'-options-meta-controller.php',
             $country_id
         );
+
+        if($country_id === 'eu') { // Some countries options meta controllers are descendants of the Ru controller
+            require_once LEYKA_PLUGIN_DIR.'inc/options-meta/leyka-class-ru-options-meta-controller.php';
+        }
 
         if(file_exists($file_path)) {
             require_once($file_path);
@@ -63,7 +67,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
             );
         } else if(is_array($options_group)) {
 
-            $options_meta = array();
+            $options_meta = [];
             foreach($options_group as $group) {
                 $options_meta = array_merge($options_meta, $this->_get_options_meta($group));
             }
@@ -160,7 +164,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'custom_additional_fields_library', // Special option type
                 'title' => __('Additional fields library', 'leyka'),
                 'field_classes' => array('additional-fields-settings'),
-                'default' => array(),
+                'default' => [],
             ),
             'extensions_available' => array(
                 'type' => 'custom_extensions', // Special option type
@@ -168,7 +172,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
             ),
             'extensions_active' => array( // The option is never displayed in UI via standard means
                 'type' => 'multi_checkbox',
-                'default' => array(),
+                'default' => [],
                 'title' => __('Extensions', 'leyka'),
             ),
             'success_page' => array(
@@ -692,6 +696,26 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'description' => $email_placeholders,
                 'field_classes' => array('type-rich_html'),
             ),
+            'notify_donors_on_failed_donations' => array(
+                'type' => 'checkbox',
+                'default' => false,
+                'title' => __('Send emails to donors on failed donations', 'leyka'),
+                'short_format' => true,
+            ),
+            'donation_error_donor_notification_title' => array(
+                'type' => 'text',
+                'default' => __('Your donation failed', 'leyka'),
+                'title' => __('A title of a failed donation notification email', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('Your donation failed', 'leyka')),
+            ),
+            'donation_error_donor_notification_text' => array(
+                'type' => 'rich_html',
+                'default' => __('Hello!<br><br>You just made a donation on #SITE_NAME# website, and it failed for some reason.<br><br>Campaign: #CAMPAIGN_NAME#.<br>Donation purpose: #PURPOSE#<br>Amount: #SUM#.<br>Payment method: #PAYMENT_METHOD_NAME#.<br>Date: #DATE#<br><br>Please, report this to website tech. support and try donating again later.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
+                'title' => __('A text of after-donation notification sended to a website personnel', 'leyka'),
+                'comment' => __('A text of the notification email that would be sended to each email stated before right after donation is made.', 'leyka'),
+                'description' => $email_placeholders,
+                'field_classes' => array('type-rich_html'),
+            ),
         );
 
     }
@@ -1156,7 +1180,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
 
     // The default implementation to get some country-specific options group:
     protected function _get_unknown_group_options_meta($options_group) {
-        return array();
+        return [];
     }
 
     /** @todo */

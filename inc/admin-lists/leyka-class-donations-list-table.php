@@ -275,12 +275,12 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
     </li>
 
     <li>
-        <span class="leyka-li-title">'._x('Subscription', "[Donor's email subscription. Should be short]", 'leyka').':</span>
+        <span class="leyka-li-title">'.__('Email subscription', 'leyka').':</span>
         <span class="leyka-li-value">'.($donation->donor_subscribed ? __('yes', 'leyka') : __('no', 'leyka')).'</span>
     </li>
 
     <li>
-        <span class="leyka-li-title">'._x('Comment', "[Donor's comment. Should be short]", 'leyka').':</span>
+        <span class="leyka-li-title">'._x('Comment', "Donor's comment. Should be short.", 'leyka').':</span>
         <span class="leyka-li-value">'.($donation->donor_comment ? mb_ucfirst($donation->donor_comment) : __('no', 'leyka')).'</span>
     </li>';
         $donor_additional_data_html = apply_filters(
@@ -367,7 +367,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
     public function column_emails($donation) { /** @var $donation Leyka_Donation_Base */
 
-        if($donation->donor_email_date){
+        if($donation->donor_email_date) {
             $column_content = str_replace(
                 '%s',
                 '<time>'.date(get_option('date_format').', H:i</time>', $donation->donor_email_date).'</time>',

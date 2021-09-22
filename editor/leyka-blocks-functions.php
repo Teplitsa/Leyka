@@ -6,6 +6,10 @@
 // Add scripts to a page if it's post_content has leyka/form block:
 function leyka_block_modern_template_displayed($modern_template_displayed) {
 
+    if( !is_singular() ) {
+        return false;
+    }
+
 	if( has_block('leyka/form', get_the_ID()) ) {
 		return true;
 	}
@@ -130,5 +134,28 @@ function leyka_block_font_size_vars($block_name = 'leyka/form', $template = 'def
 	}
 
 	return $vars;
+
+}
+
+function leyka_block_get_campaigns() {
+	return get_posts(['post_type' => 'leyka_campaign', 'posts_per_page' => -1,]);
+}
+
+/**
+ * Get The last Campaigns.
+ *
+ * @return integer Last Campaign ID.
+ */
+function leyka_block_get_recent_campaign($output = 'object') {
+
+	$campaigns = leyka_block_get_campaigns();
+
+	if($campaigns) {
+        $recent_campaign = $output === 'id' ? $campaigns[0]->ID : $campaigns[0];
+	} else {
+        $recent_campaign = '';
+    }
+
+	return $recent_campaign;
 
 }
