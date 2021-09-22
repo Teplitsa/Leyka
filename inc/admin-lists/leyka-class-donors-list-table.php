@@ -440,7 +440,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
     public function column_donor_type($item) {
         return apply_filters(
             'leyka_admin_donor_type_column_content',
-            '<i class="icon-donor-type icon-'.$item['donor_type'].' has-tooltip" title="'.__(mb_ucfirst($item['donor_type']), 'leyka').'"></i>',
+            '<i class="icon-donor-type icon-'.$item['donor_type'].' has-tooltip" title="'._x(mb_ucfirst($item['donor_type']), 'Donor type name', 'leyka').'"></i>',
             $item
         );
     }
