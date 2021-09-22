@@ -368,7 +368,8 @@ class Leyka_Donor {
                 ];
                 return empty($this->_meta['type']) || empty($labels[$this->_meta['type']]) ? '' : $labels[$this->_meta['type']];
 
-            case 'first_donation_id': return empty($this->_meta['first_donation_id']) ? false : $this->_meta['first_donation_id'];
+            case 'first_donation_id':
+                return empty($this->_meta['first_donation_id']) ? false : $this->_meta['first_donation_id'];
             case 'first_donation':
                 return $this->first_donation_id ? Leyka_Donations::get_instance()->get($this->first_donation_id) : false;
 
