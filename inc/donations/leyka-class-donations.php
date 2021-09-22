@@ -35,7 +35,6 @@ abstract class Leyka_Donations extends Leyka_Singleton {
 
     /**
      * @param int|WP_Post|Leyka_Donation_Base $donation
-     * @param bool $update_cache
      * @return Leyka_Donation_Base|null
      */
     public function get_donation($donation) {
