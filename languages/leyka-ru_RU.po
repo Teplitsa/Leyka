@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Leyka - Development (trunk) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2021-09-22 12:46:08+0000\n"
+"PO-Revision-Date: 2021-09-22 15:17:38+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -474,7 +474,7 @@ msgstr "Расширение позволяет добавлять в форму
 
 #: extensions/merchandise/leyka-class-merchandise-extension.php:16
 msgid "Donation rewards"
-msgstr "Вознаграждения за пожертвования"
+msgstr "Вознаграждения"
 
 #: editor/leyka-blocks-functions.php:118 inc/leyka-class-campaign.php:502
 msgid "Form submit text size"
