@@ -594,7 +594,6 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 $this->_main_data->post_status = $value;
 
                 do_action('leyka_donation_status_'.$old_status.'_to_'.$value);
-                Leyka_Donation_Management::get_instance()->donation_status_changed($value, $old_status, $this);
 
                 $status_log = $this->get_meta('_status_log');
                 if($status_log && is_array($status_log)) {

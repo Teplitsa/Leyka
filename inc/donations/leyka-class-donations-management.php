@@ -89,26 +89,26 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
     }
 
-    public function donation_status_changed($new, $old, $donation) {
+    public function donation_status_changed($new_status, $old_status, $donation) {
         // WARNING: don't use type hinting for $donation argument here (it may be WP_Post or Leyka_Donation_Base)
 
-        if($new === $old || (is_a($donation, 'WP_Post') && $donation->post_type !== self::$post_type)) {
+        if($new_status === $old_status || (is_a($donation, 'WP_Post') && $donation->post_type !== self::$post_type)) {
             return;
         }
 
         $donation = Leyka_Donations::get_instance()->get_donation($donation);
 
-        if($old === 'new' && $new !== 'trash') {
+        if($old_status === 'new' && $new_status !== 'trash') {
             do_action('leyka_new_donation_added', $donation->id);
         }
 
-        if($new === 'funded' || $old === 'funded') {
+        if($new_status === 'funded' || $old_status === 'funded') {
 
-            do_action('leyka_donation_funded_status_changed', $donation->id, $old, $new);
+            do_action('leyka_donation_funded_status_changed', $donation->id, $old_status, $new_status);
 
             // Campaign total funded amount refresh:
             $campaign = new Leyka_Campaign($donation->campaign_id);
-            $campaign->update_total_funded_amount($donation, $old === 'funded' ? 'remove' : 'add');
+            $campaign->update_total_funded_amount($donation, $old_status === 'funded' ? 'remove' : 'add');
 
         }
 
