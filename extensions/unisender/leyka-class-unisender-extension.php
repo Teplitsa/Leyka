@@ -114,8 +114,8 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
 
             foreach(leyka_options()->opt($this->_id.'_donor_fields') as $field_name) {
 
-                if( !empty($donation->__get('leyka_donor_'.$field_name)) ) {
-                    $donor_fields[$field_name] = $donation->__get('leyka_donor_'.$field_name);
+                if( $field_name === 'name') {
+                    $donor_fields[$field_name] = $donation->donor_name;
                 } else {
 
                     $donation_additional_fields = $donation->leyka_additional_fields;
@@ -129,7 +129,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
             };
 
             $uni = new \Unisender\ApiWrapper\UnisenderApi($api_key);
-            $uni->subscribe([ // TODO Обработка и вывод ошибок
+            $uni->subscribe([
                 'list_ids' => str_replace(' ','', stripslashes(leyka_options()->opt($this->_id.'_lists_ids'))),
                 'fields' =>  $donor_fields,
                 'double_optin' => leyka_options()->opt($this->_id.'_donor_confirmation') === '1' ? 4 : 3,
@@ -139,6 +139,9 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
         }
 
     }
+
+    // TODO Лог ошибок на странице расширения
+    // TODO Вывод ошибки на странице деталей пожертвования
 
 }
 
