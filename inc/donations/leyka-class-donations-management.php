@@ -806,7 +806,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
     public static function send_error_notifications($donation) {
 
-        $donation = Leyka_Donations::get_instance()->get($donation);
+        $donation = Leyka_Donations::get_instance()->get_donation($donation);
 
         if( !$donation ) {
             return false;
