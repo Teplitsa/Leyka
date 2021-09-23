@@ -70,8 +70,19 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
                 'default' => true,
                 'title' => __('Donor subscription confirmation', 'leyka'),
                 'comment' => __('If enabled donors will be asked by email for permission upon subscribing on the list', 'leyka'),
-                'short_format' => true,
-            ]
+                'short_format' => true
+            ],
+            $this->_id.'_donor_overwrite' => [
+                'type' => 'select',
+                'title' => __('Overwrite donor information', 'leyka'),
+                'comment' => __('If donor already registered in "Unisender"', 'leyka'),
+                'default' => '0',
+                'list_entries' => array(
+                    '0' => __('New fields will be created, old fields will not get new values.', 'leyka'),
+                    '1' => __('Old donor data will be fully dropped, new data will be stored.', 'leyka'),
+                    '2' => __('New fields will be created, old ones will be refreshed. Unaffected fields will keep their data.', 'leyka')
+                )
+            ],
         ]);
 
     }
@@ -124,7 +135,13 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
             };
 
             $uni = new \Unisender\ApiWrapper\UnisenderApi($apikey);
-            $uni->subscribe(['list_ids' => $lists_ids, 'fields' =>  $donor_fields, 'double_optin' => $double_optin]);
+            $uni->subscribe([ // TODO Обработка и вывод ошибок
+                'list_ids' => str_replace(' ','',
+                    stripslashes(leyka_options()->get_value($this->_id.'_lists_ids'))),
+                'fields' =>  $donor_fields,
+                'double_optin' => leyka_options()->get_value($this->_id.'_donor_confirmation') === '1' ? 4 : 3,
+                'overwrite' => leyka_options()->get_value($this->_id.'_donor_overwrite')
+            ]);
 
         }
 
