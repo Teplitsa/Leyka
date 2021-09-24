@@ -107,6 +107,10 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
             [$this, '_merchandise_manager_emails_placeholders_values'],
             10, 3
         );
+        add_filter('leyka_email_placeholders_help_list_content', [$this, '_merchandise_emails_placeholders_help_list']);
+
+        add_filter('leyka_donations_export_headers', [$this, '_merchandise_donations_export_headers']);
+        add_filter('leyka_donations_export_line', [$this, '_merchandise_donations_export_line'], 1, 2);
 
         // Donation merchandise data - END
 
@@ -357,6 +361,28 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
         <?php
     }
+
+    // Donations export:
+    public function _merchandise_donations_export_headers(array $export_headers) {
+
+        $export_headers[] = __('Donation reward', 'leyka');
+
+        return $export_headers;
+
+    }
+
+    public function _merchandise_donations_export_line(array $export_line, Leyka_Donation_Base $donation) {
+
+        $campaign = $donation->campaign; /** @var $campaign Leyka_Campaign */
+        $campaign_merchandise_settings = $campaign->merchandise_settings;
+
+        $export_line[] = $donation->merchandise && !empty($campaign_merchandise_settings[$donation->merchandise]) ?
+            $campaign_merchandise_settings[$donation->merchandise]['title'] : '';
+
+        return $export_line;
+
+    }
+    // Donations export - END
     // Admin functions - END
 
     // Campaign merchandise data handling methods:
@@ -472,6 +498,19 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
         );
 
         return $placeholders_values;
+
+    }
+
+    public function _merchandise_emails_placeholders_help_list($placeholders_list_content) {
+
+        $placeholders_list_content .= '<span class="item">
+        <code>#DONATION_MERCHANDISE_TITLE#</code><span class="description">Название выбранной награды за пожертвование</span>
+    </span>
+    <span class="item">
+        <code>#DONATION_MERCHANDISE_AMOUNT#</code><span class="description">Минимальная сумма для выбранной награды за пожертвование</span>
+    </span>';
+
+        return $placeholders_list_content;
 
     }
 

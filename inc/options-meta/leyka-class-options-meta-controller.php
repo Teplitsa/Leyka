@@ -415,71 +415,72 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
 
     protected function _get_meta_emails() { // Keywords: email, notify
 
-        $placeholders_controls = "<div class='placeholders-help-actions'>
-    <a href='#' class='inner hide-available-tags'>Свернуть доступные теги</a>
-    <a href='#' class='inner show-available-tags'>Посмотреть доступные теги</a>
-    <a href='#' class='inner restore-original-doc'>Вернуть первоначальный текст</a>
-</div>";
+        $placeholders_controls = '<div class="placeholders-help-actions">
+    <a href="#" class="inner hide-available-tags">Свернуть доступные теги</a>
+    <a href="#" class="inner show-available-tags">Посмотреть доступные теги</a>
+    <a href="#" class="inner restore-original-doc">Вернуть первоначальный текст</a>
+</div>';
 
-        $email_placeholders = "<span class='placeholders-help'>
-    <span class='item'>
-        <code>#SITE_NAME#</code><span class='description'>Название сайта</span>
+        $email_placeholders = '<span class="placeholders-help">'
+            .apply_filters('leyka_email_placeholders_help_list_content', '<span class="item">
+        <code>#SITE_NAME#</code><span class="description">Название сайта</span>
     </span>
-    <span class='item'>
-        <code>#SITE_EMAIL#</code><span class='description'>Email сайта</span>
+    <span class="item">
+        <code>#SITE_EMAIL#</code><span class="description">Email сайта</span>
     </span>
-    <span class='item'>
-        <code>#ORG_NAME#</code><span class='description'>Полное официальное название организации</span>
+    <span class="item">
+        <code>#ORG_NAME#</code><span class="description">Полное официальное название организации</span>
     </span>
-    <span class='item'>
-        <code>#ORG_SHORT_NAME#</code><span class='description'>Сокращённое название организации</span>
+    <span class="item">
+        <code>#ORG_SHORT_NAME#</code><span class="description">Сокращённое название организации</span>
     </span>
-    <span class='item'>
-        <code>#DONATION_ID#</code><span class='description'>Идентификатор текущего пожертвования</span>
+    <span class="item">
+        <code>#DONATION_ID#</code><span class="description">Идентификатор текущего пожертвования</span>
     </span>
-    <span class='item'>
-        <code>#DONATION_TYPE#</code><span class='description'>Тип пожертвования</span>
+    <span class="item">
+        <code>#DONATION_TYPE#</code><span class="description">Тип пожертвования</span>
     </span>
-    <span class='item'>
-        <code>#DONOR_NAME#</code><span class='description'>Имя донора</span>
+    <span class="item">
+        <code>#DONOR_NAME#</code><span class="description">Имя донора</span>
     </span>
-    <span class='item'>
-        <code>#DONOR_EMAIL#</code><span class='description'>Email донора</span>
+    <span class="item">
+        <code>#DONOR_EMAIL#</code><span class="description">Email донора</span>
     </span>
-    <span class='item'>
-        <code>#DONOR_COMMENT#</code><span class='description'>Комментарий донора к пожертвованию</span>
+    <span class="item">
+        <code>#DONOR_COMMENT#</code><span class="description">Комментарий донора к пожертвованию</span>
     </span>
-    <span class='item'>
-        <code>#SUM#</code><span class='description'>Полная сумма пожертвования (без учёта комиссий)</span>
+    <span class="item">
+        <code>#SUM#</code><span class="description">Полная сумма пожертвования (без учёта комиссий)</span>
     </span>
-    <span class='item'>
-        <code>#PAYMENT_METHOD_NAME#</code><span class='description'>Название способа оплаты</span>
+    <span class="item">
+        <code>#PAYMENT_METHOD_NAME#</code><span class="description">Название способа оплаты</span>
     </span>
-    <span class='item'>
-        <code>#CAMPAIGN_NAME#</code><span class='description'>Кампания, на которую было сделано пожертвование</span>
+    <span class="item">
+        <code>#CAMPAIGN_NAME#</code><span class="description">Кампания, на которую было сделано пожертвование</span>
     </span>
-    <span class='item'>
-        <code>#CAMPAIGN_URL#</code><span class='description'>Адрес страницы кампании, на которую было сделано пожертвование</span>
+    <span class="item">
+        <code>#CAMPAIGN_URL#</code><span class="description">Адрес страницы кампании, на которую было сделано пожертвование</span>
     </span>
-    <span class='item'>
-        <code>#CAMPAIGN_TARGET#</code><span class='description'>Официальная цель пожертвования (см. настройки кампании, опция «заголовок для платёжной системы»)</span>
+    <span class="item">
+        <code>#CAMPAIGN_TARGET#</code><span class="description">Официальная цель пожертвования (см. настройки кампании, опция «заголовок для платёжной системы»)</span>
     </span>
-    <span class='item'>
-        <code>#PURPOSE#</code><span class='description'>Название кампании для платежных систем</span>
+    <span class="item">
+        <code>#PURPOSE#</code><span class="description">Название кампании для платежных систем</span>
     </span>
-    <span class='item'>
-        <code>#DATE#</code><span class='description'>Дата пожертвования</span>
+    <span class="item">
+        <code>#DATE#</code><span class="description">Дата пожертвования</span>
     </span>
-    <span class='item'>
-        <code>#DONOR_ACCOUNT_LOGIN_LINK#</code><span class='description'>Приглашение войти в Личный кабинет донора</span>
+    <span class="item">
+        <code>#DONOR_ACCOUNT_LOGIN_LINK#</code><span class="description">Приглашение войти в Личный кабинет донора</span>
     </span>
-    <span class='item'>
-        <code>#RECURRING_SUBSCRIPTION_CANCELLING_LINK#</code><span class='description'>Отменить рекуррентную подписку донора</span>
+    <span class="item">
+        <code>#RECURRING_SUBSCRIPTION_CANCELLING_LINK#</code><span class="description">Отменить рекуррентную подписку донора</span>
     </span>
-    <span class='item'>
-        <code>#DONOR_ACCOUNT_LOGIN_LINK#</code><span class='description'>Ссылка на активацию/вход в Личный кабинет донора</span>
-    </span>
-</span>".$placeholders_controls;
+    <span class="item">
+        <code>#DONOR_ACCOUNT_LOGIN_LINK#</code><span class="description">Ссылка на активацию/вход в Личный кабинет донора</span>
+    </span>')
+        .'</span>'
+        .$placeholders_controls;
 
         $campaign_target_reaching_email_placeholders = "<span class='placeholders-help'>
     <code>#SITE_NAME#</code> — ".__('a website title', 'leyka')."<br>
