@@ -13,8 +13,8 @@
 	Lev "ahaenor" Zvyagintsev (ahaenor@gmail.com)
 	Anna "foralien" Ladoshkina (webdev@foralien.com)
 	Denis Cherniatev (denis.cherniatev@gmail.com)
+    Vyacheslav Oleinik (oleinik.v89@gmail.com)
     Marie Borisyonok (pro100mary@gmail.com)
-    Vladimir Petrozavodsky (petrozavodsky@gmail.com)
 
  * License: GPLv2 or later
 	Copyright (C) 2012-2019 by Teplitsa of Social Technologies (http://te-st.ru).

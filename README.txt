@@ -2,10 +2,10 @@
 Contributors: Ahaenor, foralien, denis.cherniatev
 Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
-Tags: лейка, crowdfunding, fundraising, donations, recurring donations, charity, leyka, recurring, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, yoomoney, chronopay, sms, yookassa, миксплат, mixplat, paypal, paymaster, qiwi, киви
+Tags: лейка, crowdfunding, fundraising, donations, recurring donations, charity, leyka, recurring, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, yoomoney, chronopay, sms, yookassa, миксплат, mixplat, paypal, paymaster, qiwi, киви, stripe, страйп, gds, google data studio
 Requires at least: 3.6.1
-Tested up to: 5.8
-Stable tag: 3.18
+Tested up to: 5.8.1
+Stable tag: 3.19
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -81,6 +81,16 @@ PHP version required: 5.6+
 5. The plugin start page (a console)
 
 == Changelog ==
+= 3.19 =
+* New: Core architecture features added for separated donations storage.
+* New: Donations, recurring subscriptions & donors admin UI greatly improved.
+* New: Stripe gateway support added.
+* New: Donations rewards/merchandise extension added.
+* New: Donors's account column is added to the GDS-prepared data table in the GDS extension.
+* Fix: The important bugfix for donor's account registration & login pages.
+* Fix: Lots and lots of smaller bugfixes.
+~ Tweak: Lots and lots of refactorings & improvements, both in frontend & backend.
+
 = 3.18 =
 * New: Google Data Studio integration extension added.
 * Fix: success emails added for Qiwi gateway.
