@@ -20,7 +20,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             $this->_id
         );
 
-        $this->_docs_link = 'https://stripe.com/docs'; /** @todo URL на наш ман по подключению / настройке гейта. */
+        $this->_docs_link = 'https://leyka.te-st.ru/docs/podklyuchenie-stripe/';
         $this->_registration_link = '//dashboard.stripe.com/register';
         $this->_has_wizard = false;
 
@@ -143,7 +143,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             ];
         } else {
 
-            $checkout_session_data['line_items'][0]['price_data']['recurring'] = ['interval' => 'day']; /** @todo Поправить на "month" после завершения тестинга. */
+            $checkout_session_data['line_items'][0]['price_data']['recurring'] = ['interval' => 'month'];
             $checkout_session_data['subscription_data'] = [
                 'metadata' => ['description' => $description, 'donation_id' => $donation_id,]
             ];
