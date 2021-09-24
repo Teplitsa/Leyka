@@ -254,12 +254,12 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                     $_POST['Currency'] = mb_strtoupper($_POST['Currency']);
 
-                    if($donation->sum != $_POST['Amount'] || $donation->currency_id != $_POST['Currency']) {
+                    if($donation->sum != $_POST['Amount'] || mb_strtoupper($donation->currency_id) != $_POST['Currency']) {
                         die(json_encode(array(
                             'code' => '11',
                             'reason' => sprintf(
                                 __('Amount of original data and POST are mismatching. Orig.: %.2f %s, POST: %.2f %s', 'leyka'),
-                                $donation->sum, $donation->currency, $_POST['Amount'], $_POST['Currency']
+                                $donation->sum, $donation->currency_id, $_POST['Amount'], $_POST['Currency']
                             )
                         )));
                     }

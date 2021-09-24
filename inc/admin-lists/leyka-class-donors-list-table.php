@@ -440,7 +440,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
     public function column_donor_type($item) {
         return apply_filters(
             'leyka_admin_donor_type_column_content',
-            '<i class="icon-donor-type icon-'.$item['donor_type'].' has-tooltip" title="'.__(mb_ucfirst($item['donor_type']), 'leyka').'"></i>',
+            '<i class="icon-donor-type icon-'.$item['donor_type'].' has-tooltip" title="'._x(mb_ucfirst($item['donor_type']), 'Donor type name', 'leyka').'"></i>',
             $item
         );
     }
@@ -509,7 +509,26 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             return '';
         }
 
-        $donation = Leyka_Donations::get_instance()->get($item['first_donation']);
+        try{
+            $donation = Leyka_Donations::get_instance()->get($item['first_donation']);
+        } catch(Exception $ex) { // Donor's last Donation isn't found by ID, try to find it anew
+
+            $donation = Leyka_Donations::get_instance()->get([
+                'donor_id' => $item['donor_id'],
+                'status' => 'funded',
+                'order' => 'ASC',
+                'get_single' => true,
+            ]);
+
+            if($donation) {
+
+                $donor = new Leyka_Donor($item['donor_id']);
+                $donor->first_donation_id = $donation->id;
+                $donor->first_donation_date_timestamp = $donation->date_timestamp;
+
+            }
+
+        }
 
         return apply_filters(
             'leyka_admin_donor_first_donation_column_content',
@@ -646,21 +665,46 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             return '';
         }
 
-        $donation = Leyka_Donations::get_instance()->get($item['last_donation']);
+        try{
+            $donation = Leyka_Donations::get_instance()->get($item['last_donation']);
+        } catch(Exception $ex) { // Donor's last Donation isn't found by ID, try to find it anew
 
-        $column_content = '<i class="icon-leyka-donation-status icon-'.$donation->status.' has-tooltip leyka-tooltip-align-left" title=""></i>'
-            .'<span class="leyka-tooltip-content">'
-                .apply_filters(
-                    'leyka_admin_donors_list_donation_status_tooltip_content',
-                    '<strong>'.$donation->status_label.':</strong> '.mb_lcfirst($donation->status_description),
-                    $donation
-                )
-            .'</span>'
-            .'<div class="first-sub-row">'
-                .'<span class="leyka-donation-amount">'.leyka_format_amount($donation->amount).'&nbsp;'.$donation->currency_label.',</span>'
-                .'<span class="leyka-donation-date">'.$donation->date_time_label.'</span>'
-            .'</div>'
-            .'<div class="second-sub-row">«'.$donation->campaign_title.'»</div>';
+            $donation = Leyka_Donations::get_instance()->get([
+                'donor_id' => $item['donor_id'],
+                'status' => 'funded',
+                'order' => 'DESC',
+                'get_single' => true,
+            ]);
+
+            if($donation) {
+
+                $donor = new Leyka_Donor($item['donor_id']);
+                $donor->last_donation_id = $donation->id;
+                $donor->last_donation_date_timestamp = $donation->date_timestamp;
+
+            }
+
+        }
+
+        if($donation) {
+
+            $column_content = '<i class="icon-leyka-donation-status icon-'.$donation->status.' has-tooltip leyka-tooltip-align-left" title=""></i>'
+                .'<span class="leyka-tooltip-content">'
+                    .apply_filters(
+                        'leyka_admin_donors_list_donation_status_tooltip_content',
+                        '<strong>'.$donation->status_label.':</strong> '.mb_lcfirst($donation->status_description),
+                        $donation
+                    )
+                .'</span>'
+                .'<div class="first-sub-row">'
+                    .'<span class="leyka-donation-amount">'.leyka_format_amount($donation->amount).'&nbsp;'.$donation->currency_label.',</span>'
+                    .'<span class="leyka-donation-date">'.$donation->date_time_label.'</span>'
+                .'</div>'
+                .'<div class="second-sub-row">«'.$donation->campaign_title.'»</div>';
+
+        } else {
+            $column_content = '';
+        }
 
         return apply_filters('leyka_admin_donor_last_donation_column_content', $column_content, $item, $donation);
 

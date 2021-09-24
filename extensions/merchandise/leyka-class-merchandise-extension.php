@@ -177,7 +177,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
                                     <div class="leyka-select-field-wrapper">
                                         <?php leyka_render_text_field('merchandise_title', [
                                             'title' => __('Reward title', 'leyka'),
-                                            'placeholder' => sprintf(__('E.g., %s'), __('A cool hat with our logo', 'leyka')),
+                                            'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('A cool hat with our logo', 'leyka')),
                                             'value' => $placeholders['title'],
                                             'required' => true,
                                         ]);?>
