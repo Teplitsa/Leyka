@@ -284,6 +284,10 @@ class Leyka_Donations_Posts extends Leyka_Donations {
         // Results limiting - END
 
         // Donation date filtering:
+        if(isset($params['date_query']) && is_array($params['date_query'])) {
+            $query_params['date_query'] = $params['date_query'];
+        }
+
         if(isset($params['year_month']) && absint($params['year_month'])) {
             $query_params['m'] = absint($params['year_month']);
         }

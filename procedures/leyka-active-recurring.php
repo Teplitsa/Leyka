@@ -26,24 +26,41 @@ $current_day_param[] = $max_days_in_month < 31 && $max_days_in_month === $curren
     array(array('day' => $current_day, 'compare' => '>='), array('day' => 31, 'compare' => '<=')) :
     array(array('day' => (int)date('j')));
 
-$donations = Leyka_Donations::get_instance()->get(array(
+$init_recurring_donations = Leyka_Donations::get_instance()->get([
     'status' => 'funded',
     'recurring_only_init' => true,
     'recurring_active' => true,
     'pm_full_id' => array_keys(leyka_get_active_recurring_pm_list()),
     'get_all' => true,
-));
+    'date_query' => $current_day_param, // TODO ATM 'date_query' param isn't supported for sep-Donations! Add this support ASAP
+]);
 
-foreach($donations as $init_recurring_donation) {
+foreach($init_recurring_donations as $init_recurring_donation) {
 
     $gateway = leyka_get_gateway_by_id($init_recurring_donation->gateway_id);
-    if($gateway) {
+    if( !$gateway ) {
+        continue;
+    }
 
-        $new_recurring_donation = $gateway->do_recurring_donation($init_recurring_donation);
-        if($new_recurring_donation && is_a($new_recurring_donation, 'Leyka_Donation_Base')) {
-            Leyka_Donation_Management::send_all_recurring_emails($new_recurring_donation);
-        } // else if( !$new_recurring_donation || is_wp_error($new_recurring_donation) ) { ... } /** @todo Log & handle error */
+    // In production mode, check if there have already been rebills for current recurring subscription in current month:
+    if( !leyka_options()->opt('plugin_debug_mode') ) {
+
+        $rebill_for_current_month_exists = Leyka_Donations::get_instance()->get([
+            'status' => 'funded',
+            'recurring_rebills_of' => $init_recurring_donation->id,
+            'year_month' => date('Ym'), // YYYYMM, e.g. 202105
+        ]) > 0;
+
+        if($rebill_for_current_month_exists) {
+            continue;
+        }
 
     }
+
+    // All checks are passed, make a new rebill for current recurring subscription:
+    $new_recurring_donation = $gateway->do_recurring_donation($init_recurring_donation);
+    if($new_recurring_donation && is_a($new_recurring_donation, 'Leyka_Donation_Base')) {
+        Leyka_Donation_Management::send_all_recurring_emails($new_recurring_donation);
+    } // else if( !$new_recurring_donation || is_wp_error($new_recurring_donation) ) { ... } /** @todo Log & handle error */
 
 }
