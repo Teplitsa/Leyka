@@ -14,7 +14,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
     const RBK_API_PATH = '/v2/processing/invoices';
 
     protected $_rbk_response;
-    protected $_rbk_log = array();
+    protected $_rbk_log = [];
 
     protected function _set_attributes() {
 
@@ -31,7 +31,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
         $this->_registration_link = '//auth.rbk.money/auth/realms/external/login-actions/registration?client_id=koffing';
 
         $this->_min_commission = 2.9;
-        $this->_receiver_types = array('legal');
+        $this->_receiver_types = ['legal',];
         $this->_may_support_recurring = true;
 
     }
@@ -42,36 +42,36 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
             return;
         }
 
-        $this->_options = array(
-            'rbk_shop_id' => array(
+        $this->_options = [
+            'rbk_shop_id' => [
                 'type' => 'text',
                 'title' => __('RBK Money shopID', 'leyka'),
                 'comment' => __('Please, enter your shopID value here. It can be found in your contract with RBK Money or in your control panel there.', 'leyka'),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1234'),
-            ),
-            'rbk_api_key' => array(
+            ],
+            'rbk_api_key' => [
                 'type' => 'textarea',
                 'title' => __('RBK Money apiKey', 'leyka'),
                 'comment' => __('Please, enter your apiKey value here. It can be found in your RBK Money control panel.', 'leyka'),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'RU123456789'),
-            ),
-            'rbk_api_web_hook_key' => array(
+            ],
+            'rbk_api_web_hook_key' => [
                 'type' => 'textarea',
                 'title' => __('RBK Money webhook public key', 'leyka'),
                 'comment' => __('Please, enter your webhook public key value here.', 'leyka'),
                 'required' => true,
                 'placeholder' => __('-----BEGIN PUBLIC KEY----- ...', 'leyka'),
-            ),
-            'rbk_keep_payment_logs' => array(
+            ],
+            'rbk_keep_payment_logs' => [
                 'type' => 'checkbox',
                 'default' => false,
                 'title' => __('Keep detailed logs of all gateway service operations', 'leyka'),
                 'comment' => __('Check if you want to keep detailed logs of all gateway service operations for each incoming donation.', 'leyka'),
                 'short_format' => true,
-            ),
-        );
+            ],
+        ];
 
     }
 
@@ -85,11 +85,11 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
         if(Leyka_Rbk_Card::get_instance()->active) {
 
-            wp_enqueue_script('leyka-rbk-checkout', 'https://checkout.rbk.money/checkout.js', array(), false, true);
+            wp_enqueue_script('leyka-rbk-checkout', 'https://checkout.rbk.money/checkout.js', [], false, true);
             wp_enqueue_script(
                 'leyka-rbk',
                 LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_Rbk_Gateway::get_instance()->id.'/js/leyka.rbk.js',
-                array('jquery', 'leyka-rbk-checkout',),
+                ['jquery', 'leyka-rbk-checkout',],
                 LEYKA_VERSION,
                 true
             );
@@ -115,29 +115,29 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
         // 1. Create an invoice:
         $api_request_url = self::RBK_API_HOST.self::RBK_API_PATH;
-        $args = array(
+        $args = [
             'timeout' => 30,
             'redirection' => 10,
             'blocking' => true,
             'httpversion' => '1.1',
-            'headers' => array(
+            'headers' => [
                 'X-Request-ID' => uniqid(),
                 'Authorization' => 'Bearer '.leyka_options()->opt('leyka_rbk_api_key'),
                 'Content-type' => 'application/json; charset=utf-8',
                 'Accept' => 'application/json',
-            ),
-            'body' => json_encode(array(
+            ],
+            'body' => json_encode([
                 'shopID' => leyka_options()->opt('leyka_rbk_shop_id'),
                 'amount' => 100 * (int)$donation->amount, // Amount in minor currency units (like cent or kopeyka). Must be int
                 'currency' => 'RUB',
                 'product' => sprintf(__('%s - recurring donation'), $donation->payment_title),
                 'dueDate' => date( 'Y-m-d\TH:i:s\Z', strtotime('+2 minute', current_time('timestamp', 1)) ),
-                'metadata' => array('donation_id' => $donation_id,),
-            ))
-        );
+                'metadata' => ['donation_id' => $donation_id,],
+            ])
+        ];
 
         if(leyka_options()->opt('rbk_keep_payment_logs')) {
-            $this->_rbk_log['RBK_Request'] = array('url' => $api_request_url, 'params' => $args,);
+            $this->_rbk_log['RBK_Request'] = ['url' => $api_request_url, 'params' => $args,];
         }
 
         $this->_rbk_response = json_decode(wp_remote_retrieve_body(wp_remote_post($api_request_url, $args)));
@@ -157,9 +157,9 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
         }
 
         if(is_wp_error($donation_id)) { /** @var WP_Error $donation_id */
-            return array('status' => 1, 'message' => $donation_id->get_error_message());
+            return ['status' => 1, 'message' => $donation_id->get_error_message()];
         } else if( !$donation_id ) {
-            return array('status' => 1, 'message' => __('The donation was not created due to error.', 'leyka'));
+            return ['status' => 1, 'message' => __('The donation was not created due to error.', 'leyka')];
         }
 
         $donation = Leyka_Donations::get_instance()->get($donation_id);
@@ -177,7 +177,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
             $donation->add_gateway_response((array)$this->_rbk_response);
         }
 
-        return array(
+        return [
             'invoice_id' => $this->_rbk_response['invoice']['id'],
             'invoice_access_token' => $invoice_access_token,
             'is_recurring' => !empty($form_data['leyka_recurring']),
@@ -191,7 +191,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 <button class="rbk-final-submit-button">'.sprintf(__('Donate %s', 'leyka'), $donation->amount.' '.$donation->currency_label).'</button>
                 <button class="rbk-final-cancel-button">'.__('Cancel', 'leyka').'</button>
             </div>'
-        );
+        ];
 
     }
 
@@ -232,13 +232,13 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
             return false; // Mb, return WP_Error?
         }
 
-        $map_status = array(
+        $map_status = [
             'InvoicePaid' => 'funded',
             'PaymentRefunded' => 'refunded',
             'PaymentFailed' => 'failed',
             'InvoiceCancelled' => 'failed',
             'PaymentCancelled' => 'failed',
-        );
+        ];
         $donation_id = $this->_get_donation_by_invoice_id($data['invoice']['id']);
         $donation_status = empty($map_status[ $data['eventType'] ]) ? false : $map_status[ $data['eventType'] ];
 
@@ -287,13 +287,13 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 ->setTransactionId($donation->id)
                 ->setAffiliation(get_bloginfo('name'))
                 ->setRevenue($donation->amount)
-                ->addProduct(array( // Donation params
+                ->addProduct([ // Donation params
                     'name' => $donation->payment_title,
                     'price' => $donation->amount,
                     'brand' => get_bloginfo('name'), // Mb, it won't work with it
                     'category' => $donation->type_label, // Mb, it won't work with it
                     'quantity' => 1,
-                ))
+                ])
                 ->setProductActionToPurchase()
                 ->setEventCategory('Checkout')
                 ->setEventAction('Purchase')
@@ -327,19 +327,19 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
         // Capture the invoice:
         return wp_remote_post(
             self::RBK_API_HOST.self::RBK_API_PATH."/{$data['invoice']['id']}/payments/{$data['payment']['id']}/capture",
-            array(
+            [
                 'timeout' => 30,
                 'redirection' => 10,
                 'blocking' => true,
                 'httpversion' => '1.1',
-                'headers' => array(
+                'headers' => [
                     'X-Request-ID' => uniqid(),
                     'Authorization' => 'Bearer '.leyka_options()->opt('leyka_rbk_api_key'),
                     'Content-type' => 'application/json; charset=utf-8',
                     'Accept' => 'application/json'
-                ),
-                'body' => json_encode(array('reason' => 'Donation auto capture',))
-            )
+                ],
+                'body' => json_encode(['reason' => 'Donation auto capture',])
+            ]
         );
 
     }
@@ -347,26 +347,26 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
     public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {
 
         if( !$donation->gateway_response ) {
-            return array();
+            return [];
         }
 
         $vars = $donation->gateway_response;
         if( !$vars || !is_array($vars) ) {
-            return array();
+            return [];
         }
 
         $vars = $vars[array_key_last($vars)];
 
         return apply_filters(
             'leyka_donation_gateway_response',
-            array(
+            [
                 __('Invoice ID:', 'leyka') => $vars['id'],
                 __('Operation date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($vars['createdAt'])),
                 __('Operation status:', 'leyka') => $vars['status'],
                 __('Full donation amount:', 'leyka') => $vars['amount'] / 100,
                 __('Donation currency:', 'leyka') => $vars['currency'],
                 __('Shop Account:', 'leyka') => $vars['shopID'],
-            ),
+            ],
             $donation
         );
 
@@ -384,14 +384,14 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
         $new_recurring_donation = Leyka_Donations::get_instance()->add_clone(
             $init_recurring_donation,
-            array(
+            [
                 'status' => 'submitted',
                 'payment_type' => 'rebill',
                 'init_recurring_donation' => $init_recurring_donation->id,
                 'rbk_invoice_id' => false,
                 'rbk_payment_id' => false,
-            ),
-            array('recalculate_total_amount' => true,)
+            ],
+            ['recalculate_total_amount' => true,]
         );
 
         if(is_wp_error($new_recurring_donation)) {
@@ -400,30 +400,30 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
         // 1. Create a new invoice:
         $api_request_url = self::RBK_API_HOST.self::RBK_API_PATH;
-        $args = array(
+        $args = [
             'timeout' => 30,
             'redirection' => 10,
             'blocking' => true,
             'httpversion' => '1.1',
-            'headers' => array(
+            'headers' => [
                 'Authorization' => 'Bearer '.leyka_options()->opt('leyka_rbk_api_key'),
                 'Cache-Control' => 'no-cache',
                 'Content-type' => 'application/json; charset=utf-8',
                 'X-Request-ID' => uniqid(),
                 'Accept' => 'application/json',
-            ),
-            'body' => json_encode(array(
+            ],
+            'body' => json_encode([
                 'shopID' => leyka_options()->opt('leyka_rbk_shop_id'),
                 'dueDate' => date( 'Y-m-d\TH:i:s\Z', strtotime('+2 minute', current_time('timestamp', 1)) ),
                 'amount' => 100 * (int)$new_recurring_donation->amount, // Amount in minor currency units. Must be int
                 'currency' => 'RUB',
                 'product' => sprintf(__('%s - non-initial recurring donation'), $new_recurring_donation->payment_title),
-                'metadata' => array('donation_id' => $new_recurring_donation->id,),
-            ))
-        );
+                'metadata' => ['donation_id' => $new_recurring_donation->id,],
+            ])
+        ];
 
         if(leyka_options()->opt('rbk_keep_payment_logs')) {
-            $this->_rbk_log['RBK_Request'] = array('url' => $api_request_url, 'params' => $args,);
+            $this->_rbk_log['RBK_Request'] = ['url' => $api_request_url, 'params' => $args,];
         }
 
         $this->_rbk_response = json_decode(wp_remote_retrieve_body(wp_remote_post($api_request_url, $args)), true);
@@ -439,33 +439,33 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
         // 2. Create a payment for the invoice:
         $api_request_url = self::RBK_API_HOST.self::RBK_API_PATH."/{$this->_rbk_response['invoice']['id']}/payments";
-        $args = array(
+        $args = [
             'timeout' => 30,
             'redirection' => 10,
             'blocking' => true,
             'httpversion' => '1.1',
-            'headers' => array(
+            'headers' => [
                 'Authorization' => 'Bearer '.$this->_rbk_response['invoiceAccessToken']['payload'],
                 'Cache-Control' => 'no-cache',
                 'Content-type' => 'application/json; charset=utf-8',
                 'X-Request-ID' => uniqid(),
                 'Accept' => 'application/json',
-            ),
-            'body' => json_encode(array(
-                'flow' => array('type' => 'PaymentFlowInstant',),
-                'payer' => array(
+            ],
+            'body' => json_encode([
+                'flow' => ['type' => 'PaymentFlowInstant',],
+                'payer' => [
                     'payerType' => 'RecurrentPayer',
-                    'recurrentParentPayment' => array(
+                    'recurrentParentPayment' => [
                         'invoiceID' => $init_recurring_donation->rbk_invoice_id,
                         'paymentID' => $init_recurring_donation->rbk_payment_id,
-                    ),
-                    'contactInfo' => array('email' => $new_recurring_donation->donor_email,),
-                )
-            ))
-        );
+                    ],
+                    'contactInfo' => ['email' => $new_recurring_donation->donor_email,],
+                ]
+            ])
+        ];
 
         if(leyka_options()->opt('rbk_keep_payment_logs')) {
-            $this->_rbk_log['RBK_Request'] = array('url' => $api_request_url, 'params' => $args,);
+            $this->_rbk_log['RBK_Request'] = ['url' => $api_request_url, 'params' => $args,];
         }
 
         $this->_rbk_response = json_decode(wp_remote_retrieve_body(wp_remote_post($api_request_url, $args)), true);
@@ -479,7 +479,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
             $gateway_response = $new_recurring_donation->gateway_response;
             $new_recurring_donation->add_gateway_response(array_merge(
-                $gateway_response ? (array)$gateway_response : array(), $this->_rbk_log
+                $gateway_response ? (array)$gateway_response : [], $this->_rbk_log
             ));
 
         } else {
@@ -641,12 +641,12 @@ class Leyka_Rbk_Card extends Leyka_Payment_Method {
         $this->_label_backend = __('Bank card (RBK Money)', 'leyka');
         $this->_label = __('Bank card', 'leyka');
 
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_' . $this->_id, array(
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_' . $this->_id, [
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
-        ));
+        ]);
 
         $this->_supported_currencies[] = 'rub';
         $this->_default_currency = 'rub';
@@ -664,5 +664,4 @@ class Leyka_Rbk_Card extends Leyka_Payment_Method {
 function leyka_add_gateway_rbk() {
     leyka_add_gateway(Leyka_Rbk_Gateway::get_instance());
 }
-
 add_action('leyka_init_actions', 'leyka_add_gateway_rbk');

@@ -38,9 +38,7 @@ class Leyka_Rbk_Gateway_Webhook_Verification {
 
         // Cleanup the webhook public key:
         $public_key = str_replace(
-            array('-----BEGIN PUBLIC KEY-----', '-----END PUBLIC KEY-----'),
-            '',
-            leyka_options()->opt('rbk_api_web_hook_key')
+            ['-----BEGIN PUBLIC KEY-----', '-----END PUBLIC KEY-----'], '', leyka_options()->opt('rbk_api_web_hook_key')
         );
         $public_key = '-----BEGIN PUBLIC KEY-----'.str_replace(' ', PHP_EOL, $public_key).'-----END PUBLIC KEY-----';
 
@@ -73,7 +71,7 @@ class Leyka_Rbk_Gateway_Webhook_Verification {
 
     protected static function _urlsafe_b64decode($string) {
 
-        $data = str_replace(array('-', '_'), array('+', '/'), $string);
+        $data = str_replace(['-', '_'], ['+', '/'], $string);
         $mod4 = strlen($data) % 4;
 
         if($mod4) {
@@ -87,17 +85,17 @@ class Leyka_Rbk_Gateway_Webhook_Verification {
     protected static function _urlsafe_b64encode($string) {
 
         $data = base64_encode($string);
-        return str_replace(array('+', '/'), array('-', '_'), $data);
+        return str_replace(['+', '/'], ['-', '_'], $data);
 
     }
 
     protected static function _get_parameters_content_signature($content_signature) {
 
         preg_match_all(static::SIGNATURE_PATTERN, $content_signature, $matches, PREG_PATTERN_ORDER);
-        return array(
+        return [
             static::SIGNATURE_ALG => empty($matches[1][0]) ? '' : $matches[1][0],
             static::SIGNATURE_DIGEST => empty($matches[2][0]) ? '' : $matches[2][0],
-        );
+        ];
 
     }
 

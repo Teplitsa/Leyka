@@ -281,7 +281,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
             case 'campaign_title':
                 $campaign = $this->campaign;
-                return $campaign ? $campaign->title : $this->payment_title;
+                return $campaign ? strip_tags($campaign->title) : strip_tags($this->payment_title);
 
             case 'title':
             case 'name':
@@ -497,7 +497,11 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 if($this->payment_type !== 'rebill') {
                     return false;
                 } else if($this->init_recurring_donation_id) {
-                    return Leyka_Donations::get_instance()->get_donation($this->init_recurring_donation_id);
+                    try{
+                        return Leyka_Donations::get_instance()->get_donation($this->init_recurring_donation_id);
+                    } catch(Exception $ex) { // No init recurring donation in DB, for some reason
+                        return false;
+                    }
                 } else {
                     return $this;
                 }
@@ -593,7 +597,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 $old_status = $this->_main_data->post_status;
                 $this->_main_data->post_status = $value;
 
-                do_action('leyka_donation_status_'.$old_status.'_to_'.$value);
+                do_action('leyka_donation_status_'.$old_status.'_to_'.$value, $this);
 
                 $status_log = $this->get_meta('_status_log');
                 if($status_log && is_array($status_log)) {

@@ -723,7 +723,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     }
 
     /**
-     * @return string: active inactive activating
+     * @return string active|inactive|activating
      */
     public function get_activation_status() {
 

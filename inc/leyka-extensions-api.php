@@ -451,7 +451,7 @@ abstract class Leyka_Extension extends Leyka_Singleton {
     }
 
     /**
-     * @return string: active inactive activating
+     * @return string active|inactive|activating
      */
     public function get_activation_status() {
         return $this->is_active ?

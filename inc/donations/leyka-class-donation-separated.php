@@ -218,7 +218,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
             case 'campaign_title':
                 $campaign = $this->campaign;
-                return $campaign ? $campaign->title : $this->payment_title;
+                return $campaign ? strip_tags($campaign->title) : strip_tags($this->payment_title);
 
             case 'title':
             case 'name':
@@ -522,7 +522,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                 }
 
                 Leyka_Donation_Management::get_instance()->donation_status_changed($value, $old_status, $this);
-                do_action('leyka_donation_status_'.$old_status.'_to_'.$value);
+                do_action('leyka_donation_status_'.$old_status.'_to_'.$value, $this);
 
                 $status_log = $this->get_meta('_status_log');
                 if($status_log && is_array($status_log)) {
