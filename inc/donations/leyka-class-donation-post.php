@@ -11,24 +11,6 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             return $params;
         }
 
-        remove_all_actions('save_post_'.Leyka_Donation_Management::$post_type);
-
-        $donation_params = [
-            'post_type' => Leyka_Donation_Management::$post_type,
-            'post_status' => $params['status'],
-            'post_title' => $params['payment_title'],
-            'post_date' => $params['date_created'],
-            'post_name' => uniqid('donation-', true), // For fast WP_Post creation when DB already has lots of donations
-            'post_parent' => $params['init_recurring_donation'],
-            'post_author' => $params['donor_user_id'],
-        ];
-
-        $donation_id = wp_insert_post($donation_params, true);
-
-        if(is_wp_error($donation_id)) {
-            return $donation_id;
-        }
-
         $params['currency_id'] = empty($params['currency_id']) ?
             (empty($params['currency']) ? $params['currency'] : false) : $params['currency_id'];
         $params['currency_id'] = $params['currency_id'] && leyka_get_currencies_full_info($params['currency_id']) ?
@@ -117,23 +99,20 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
         );
         $donation_meta_fields = apply_filters('leyka_new_donation_specific_data', $donation_meta_fields, $donation_id, $params);
 
-        foreach($donation_meta_fields as $key => $value) {
+        remove_all_actions('save_post_'.Leyka_Donation_Management::$post_type);
 
-            if( !add_post_meta($donation_id, $key, $value) ) {
+        $donation_params = [
+            'post_type' => Leyka_Donation_Management::$post_type,
+            'post_status' => $params['status'],
+            'post_title' => wp_strip_all_tags($params['payment_title']),
+            'post_date' => $params['date_created'],
+            'post_name' => uniqid('donation-', true), // For fast WP_Post creation when DB already has lots of donations
+            'post_parent' => $params['init_recurring_donation'],
+            'post_author' => $params['donor_user_id'],
+            'meta_input' => $donation_meta_fields,
+        ];
 
-                wp_delete_post($donation_id, true);
-
-                return new WP_Error(
-                    'donation_addition_error',
-                    __('Error while adding a donation', 'leyka'),
-                    ['donation_meta_not_inserted' => ['key' => $key, 'value' => $value,]]
-                );
-
-            }
-
-        }
-
-        return $donation_id;
+        return wp_insert_post($donation_params, true);
 
     }
 

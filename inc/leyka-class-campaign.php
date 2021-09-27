@@ -1285,7 +1285,8 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 		} else if($column_name === 'target') {
 
 			if($campaign->target_state === 'no_target') {
-				leyka_fake_scale_ultra($campaign);			
+//                echo '<pre>'.print_r($campaign->target_state, 1).'</pre>';
+				leyka_fake_scale_ultra($campaign);
 			} else {
 				leyka_scale_ultra($campaign);
 			}
@@ -1940,6 +1941,36 @@ class Leyka_Campaign {
     }
 
     /**
+     * Low-level service method to quickly recalculate total amount for current Campaign.
+     *
+     * @return float A sum of total amounts for all current Campaign's funded Donations'.
+     */
+    protected function _get_calculated_total_funded_amount() {
+
+        $total_amount = 0.0;
+
+        if(leyka_get_donations_storage_type() === 'post') {
+
+            /** @todo Optimize it for the case of MANY donations here! Make a sep method to get an amount_total metas sum() with one query. */
+            foreach($this->get_donations(['funded']) as $donation) {
+                $total_amount += $donation->sum_total;
+            }
+
+//            global $wpdb;
+//            return $wpdb->get_var('SELECT LEYKA_GET_CAMPAIGN_TOTAL_FUNDED_AMOUNT('.$this->_id.')');
+
+        } else {
+
+//            global $wpdb;
+//            return $wpdb->get_var('SELECT LEYKA_GET_CAMPAIGN_TOTAL_FUNDED_AMOUNT('.$this->_id.')');
+
+        }
+
+        return $total_amount;
+
+    }
+
+    /**
      * @param $donation Leyka_Donation_Base|integer|false
      * @param $action string
      * @param $old_sum float|false
@@ -1949,11 +1980,7 @@ class Leyka_Campaign {
 
         if( !$donation ) { // Recalculate total collected amount for a campaign and recache it
 
-            /** @todo Optimize it for the case of MANY donations here! Make a sep method to get an amount_total metas sum() with one query. */
-            $sum = 0.0;
-            foreach($this->get_donations(['funded']) as $donation) {
-                $sum += $donation->sum_total;
-            }
+            $sum = $this->_get_calculated_total_funded_amount();
 
             $this->_campaign_meta['total_funded'] = $sum;
             update_post_meta($this->_id, 'total_funded', $this->_campaign_meta['total_funded']);
@@ -1961,6 +1988,7 @@ class Leyka_Campaign {
         } else { // Add/subtract a sum of a donation from its campaign metadata
 
             $donation = Leyka_Donations::get_instance()->get_donation($donation);
+
             if( !$donation ) {
                 return false;
             }

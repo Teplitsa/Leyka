@@ -17,7 +17,20 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             add_action('add_meta_boxes', [$this, 'add_metaboxes']); // Add Donation PT metaboxes
             add_action('transition_post_status',  [$this, 'donation_status_changed'], 10, 3);
 
+            // If Donation is deleted permanently, trigger donation_status_changed() manually:
+            add_action('before_delete_post', function($post_id, WP_Post $donation_post){
+
+                if(is_a($donation_post, 'WP_Post') && $donation_post->post_type !== self::$post_type) {
+                    return;
+                }
+
+                $this->donation_status_changed('deleted', $donation_post->post_status, $donation_post);
+
+            }, 10, 2);
+
         }
+
+        /** @todo For sep-typed Donations only: check if it's needed to make manual call of $this->donation_status_changed('deleted', $donation->status, $donation); */
 
         add_action('wp_ajax_leyka_send_donor_email', [$this, 'ajax_send_donor_email']);
 
@@ -25,7 +38,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         // If some funded donation data are changed, order its donor's data cache refreshing:
         function leyka_order_donation_to_refresh($donation_id) {
 
-            $donation = Leyka_DonationS::get_instance()->get_donation($donation_id);
+            $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
             if($donation && $donation->status === 'funded') {
                 Leyka_Donor::order_donor_data_refreshing($donation_id);
             }
@@ -98,7 +111,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         $donation = Leyka_Donations::get_instance()->get_donation($donation);
 
-        if($old_status === 'new' && $new_status !== 'trash') {
+        if($old_status === 'new' && !in_array($new_status, ['trash', 'deleted'])) {
             do_action('leyka_new_donation_added', $donation->id);
         }
 

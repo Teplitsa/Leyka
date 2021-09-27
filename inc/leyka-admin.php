@@ -576,10 +576,6 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
-        if($donation->status !== $_POST['donation_status']) {
-            $donation->status = $_POST['donation_status'];
-        }
-
         if( !$donation->payment_title && $campaign->payment_title ) {
             $donation->payment_title = $campaign->payment_title;
         }
@@ -711,6 +707,13 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         }
 
+        // Donation status change should be last - else donation_status_change action won't work correctly:
+        if($donation->status !== $_POST['donation_status']) {
+            echo '<pre>'.print_r("Changing status from {$donation->status} to {$_POST['donation_status']}...", 1).'</pre>';
+            $donation->status = $_POST['donation_status'];
+            echo '<pre>'.print_r("Status changed to {$donation->status}", 1).'</pre>';
+        }
+
         do_action("leyka_{$donation->gateway_id}_edit_donation_data", $donation);
         do_action("leyka_{$donation->gateway_id}_save_donation_data", $donation);
 
@@ -743,7 +746,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             $new_donation_params['amount_total'] = round($_POST['donation-amount-total'], 2);
         }
 
+        echo '<pre>'.print_r("Adding new donation with status {$_POST['donation_status']}", 1).'</pre>';
+//        $donation->status = $_POST['donation_status'];
+
         $donation_id = Leyka_Donations::get_instance()->add($new_donation_params + $_POST);
+        echo '<pre>'.print_r("Donation #$donation_id added, status: {$_POST['donation_status']}", 1).'</pre>';
         if(is_wp_error($donation_id)) {
 
             $_SESSION['leyka_new_donation_error'] = $donation_id; /** @todo Change it when using Donation Add/Edit Controller */
@@ -751,7 +758,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         } else {
 
-            $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
+            $donation = Leyka_Donations::get_instance()->get($donation_id);
 
             do_action("leyka_{$donation->gateway_id}_add_donation_data", $donation);
             do_action("leyka_{$donation->gateway_id}_save_donation_data", $donation);
