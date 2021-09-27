@@ -5,17 +5,7 @@
 
 // Add scripts to a page if it's post_content has leyka/form block:
 function leyka_block_modern_template_displayed($modern_template_displayed) {
-
-    if( !is_singular() ) {
-        return false;
-    }
-
-	if( has_block('leyka/form', get_the_ID()) ) {
-		return true;
-	}
-
-	return $modern_template_displayed;
-
+    return is_singular() && has_block('leyka/form', get_the_ID()) ? true : $modern_template_displayed;
 }
 add_filter('leyka_modern_template_displayed', 'leyka_block_modern_template_displayed');
 
