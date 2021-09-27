@@ -5,7 +5,7 @@ Plugin URI: http://leyka.te-st.ru
 Tags: лейка, crowdfunding, fundraising, donations, recurring donations, charity, leyka, recurring, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, yoomoney, chronopay, sms, yookassa, миксплат, mixplat, paypal, paymaster, qiwi, киви, stripe, страйп, gds, google data studio
 Requires at least: 3.6.1
 Tested up to: 5.8.1
-Stable tag: 3.19
+Stable tag: 3.19.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -81,6 +81,15 @@ PHP version required: 5.6+
 5. The plugin start page (a console)
 
 == Changelog ==
+= 3.19.0.1 =
+* Fix: the bug of active recurring subscriptions that rebilled everyday fixed.
+* Fix: the fatal error for non-existent donations admin pages fixed.
+* Fix: the bug of fatal error when donation status is changed on a donation details page fixed.
+* Fix: RBK callbacks helper error is fixed.
+* Fix: Donor accounts login page bug fixed.
+* Fix: the double success emails for YooKassa fixed.
+* Fix: small fixes.
+
 = 3.19 =
 * New: Core architecture features added for separated donations storage.
 * New: Donations, recurring subscriptions & donors admin UI greatly improved.
