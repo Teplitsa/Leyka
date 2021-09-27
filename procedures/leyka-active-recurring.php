@@ -59,8 +59,8 @@ foreach($init_recurring_donations as $init_recurring_donation) {
 
     // All checks are passed, make a new rebill for current recurring subscription:
     $new_recurring_donation = $gateway->do_recurring_donation($init_recurring_donation);
-    if($new_recurring_donation && is_a($new_recurring_donation, 'Leyka_Donation_Base')) {
-        Leyka_Donation_Management::send_all_recurring_emails($new_recurring_donation);
-    } // else if( !$new_recurring_donation || is_wp_error($new_recurring_donation) ) { ... } /** @todo Log & handle error */
+    if( !$new_recurring_donation || is_wp_error($new_recurring_donation) ) {
+        /** @todo Log & handle error */
+    }
 
 }

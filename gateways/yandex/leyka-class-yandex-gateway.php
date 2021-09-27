@@ -404,12 +404,7 @@ techMessage="'.$tech_message.'"/>');
                     case 'refund.succeeded':
                         $donation->status = 'refunded';
                         break;
-                    default: // Also possible gateway-side payment statuses: 'pending', 'waiting_for_capture'
-                }
-
-                // No emails for non-init recurring donations - the active recurring procedure do mailouts for them:
-                if($donation->status === 'funded' && ($donation->type === 'single' || $donation->is_init_recurring_donation)) {
-                    Leyka_Donation_Management::send_all_emails($donation);
+                    default: // Other possible gateway-side payment statuses: 'pending', 'waiting_for_capture'
                 }
 
                 exit(200);
