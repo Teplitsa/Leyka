@@ -166,7 +166,8 @@ add_shortcode('leyka_donations_list', 'leyka_shortcode_donations_list');
 function leyka_shortcode_donations_list($atts) {
 
     $atts = shortcode_atts(array(
-        // Possible values: 'all'/0/false to count funded donations for all campaigns,
+        // Possible values:
+        // 'all'/0/false to count funded donations for all campaigns,
         // 'current' for current campaign,
         // int for campaign with ID given:
         'campaign_id' => 'current',
@@ -189,12 +190,7 @@ function leyka_shortcode_donations_list($atts) {
         'unstyled' => 0, // True/1 to use Leyka styling for the output, false/0 otherwise
     ), $atts);
 
-    $donations_params = array(
-//        'post_type' => Leyka_Donation_Management::$post_type,
-        'status' => 'funded',
-        'results_limit' => absint($atts['length']),
-//        'meta_query' => array(),
-    );
+    $donations_params = ['status' => 'funded', 'results_limit' => absint($atts['length']),];
 
     if($atts['campaign_id']) {
 
@@ -203,14 +199,11 @@ function leyka_shortcode_donations_list($atts) {
             ($atts['campaign_id'] === 'all' ? false : absint($atts['campaign_id']));
 
         if($atts['campaign_id']) {
-//            $donation_params['meta_query'][] = array('key' => 'leyka_campaign_id', 'value' => esc_sql($atts['campaign_id']));
             $donations_params['campaign_id'] = esc_sql($atts['campaign_id']);
         }
 
     }
     if($atts['recurring']) {
-//        $donation_params['post_parent'] = 0;
-//        $donation_params['meta_query'][] = array('key' => 'leyka_payment_type', 'value' => 'rebill',);
         $donation_params['payment_type'] = 'rebill-init';
     }
 
@@ -238,18 +231,19 @@ function leyka_shortcode_donations_list($atts) {
             $line['donation_date'] = $donation->date_time_label;
         }
         if($atts['show_name']) {
-            $line['donation_donor_name'] = $donation->donor_name ? $donation->donor_name : __('Anonymous', 'leyka');
+            $line['donation_donor_name'] = $donation->donor_name ? : __('Anonymous', 'leyka');
         }
         if($atts['show_type_text']) {
-            $line['donation_type'] = $donation->type_label;
+            $line['donation_type'] = $donation->type === 'rebill' ?
+                _x('Regular', '[Donation], but not the "recurrent/recurring", something more Donor-friendly', 'leyka') :
+                $donation->type_label;
         }
         if($atts['show_amount']) {
 
             $line['donation_amount'] = $donation->amount_formatted.' '.$donation->currency_label;
 
             if($atts['show_type_icon']) {
-                $line['donation_amount'] = '<img class="donation-type-icon" src="'.LEYKA_PLUGIN_BASE_URL.'/img/dashboard/icon-donation-type-'.$donation->type.'.svg" alt="">'
-                    .$line['donation_amount'];
+                $line['donation_amount'] = '<img class="donation-type-icon" src="'.LEYKA_PLUGIN_BASE_URL.'/img/dashboard/icon-donation-type-'.$donation->type.'.svg" alt="">'.$line['donation_amount'];
             }
 
         }
