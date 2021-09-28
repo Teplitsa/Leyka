@@ -446,14 +446,11 @@ class Leyka_Robokassa_Yandex_Money extends Leyka_Payment_Method {
 
         $this->_description = apply_filters('leyka_pm_description', '', $this->_id, $this->_gateway_id, $this->_category);
 
-        $this->_label_backend = __('Payment with Yandex.Money', 'leyka');
-        $this->_label = __('Yandex.Money', 'leyka');
+        $this->_label_backend = __('YooMoney', 'leyka');
+        $this->_label = __('YooMoney', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/yandex-money.svg',
         ));
 
         $this->_supported_currencies[] = 'rub';
@@ -475,14 +472,10 @@ class Leyka_Robokassa_Webmoney extends Leyka_Payment_Method {
 
         $this->_description = apply_filters('leyka_pm_description', '', $this->_id, $this->_gateway_id, $this->_category);
 
-        $this->_label_backend = __('Payment with Webmoney', 'leyka');
+        $this->_label_backend = __('Webmoney', 'leyka');
         $this->_label = __('Webmoney', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/webmoney.svg',
         ));
 
@@ -505,14 +498,10 @@ class Leyka_Robokassa_Qiwi extends Leyka_Payment_Method {
 
         $this->_description = apply_filters('leyka_pm_description', '', $this->_id, $this->_gateway_id, $this->_category);
 
-        $this->_label_backend = __('Payment with Qiwi wallet', 'leyka');
+        $this->_label_backend = __('Qiwi wallet', 'leyka');
         $this->_label = __('Qiwi wallet', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/qiwi.svg',
         ));
 
@@ -535,10 +524,11 @@ class Leyka_Robokassa_All extends Leyka_Payment_Method {
 
         $this->_description = apply_filters('leyka_pm_description', '', $this->_id, $this->_gateway_id, $this->_category);
 
-        $this->_label_backend = __('Use any Robokassa payment method available', 'leyka');
+        $this->_label_backend = __('Robokassa (any)', 'leyka');
         $this->_label = __('Robokassa (any)', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+            LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/robokassa.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
