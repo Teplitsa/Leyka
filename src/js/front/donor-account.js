@@ -346,9 +346,10 @@ jQuery(function($){
 
     	$forms.find('form.leyka-screen-form').css('display', 'none');
     	$forms.find('form.leyka-cancel-subscription-form').css('display', 'flex');
-        $forms.find('form.leyka-cancel-subscription-form input[name=leyka_campaign_id]').val($(this).data('campaign-id'));
-        $forms.find('form.leyka-cancel-subscription-form input[name=leyka_donation_id]').val($(this).data('donation-id'));
-    	$forms.find('form.leyka-cancel-subscription-form input[name=leyka_campaign_permalink]').val($(this).attr('href'));
+        $forms.find('form.leyka-cancel-subscription-form input[name="leyka_campaign_id"]').val($(this).data('campaign-id'));
+        $forms.find('form.leyka-cancel-subscription-form input[name="leyka_donation_id"]').val($(this).data('donation-id'));
+    	$forms.find('form.leyka-cancel-subscription-form input[name="leyka_campaign_permalink"]')
+            .val($(this).data('campaign-page-public-url'));
 
 	});
 

@@ -131,7 +131,6 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'title' => __('Select your country', 'leyka'),
                 'required' => true,
                 'list_entries' => leyka_get_countries_list(),
-                'description' => __('Leyka architecture allows you to collect funds even in other countries. Read more about it <a href="//leyka.te-st.ru/docs/translating-leyka/" target="_blank">here</a>.', 'leyka'),
             ),
             'receiver_legal_type' => array(
                 'type' => 'radio',

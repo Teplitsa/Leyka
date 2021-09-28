@@ -64,7 +64,7 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php');?>
 
 										</div>
 
-                                        <a data-campaign-id="<?php echo $init_donation->campaign_id;?>" data-donation-id="<?php echo $init_donation->id;?>" href="<?php echo $donation_campaign->permalink;?>" class="action-disconnect"><?php _e('Disable', 'leyka');?></a>
+                                        <div data-campaign-id="<?php echo $init_donation->campaign_id;?>" data-donation-id="<?php echo $init_donation->id;?>" data-campaign-page-public-url="<?php echo $donation_campaign->permalink;?>" class="action-disconnect"><?php _e('Disable', 'leyka');?></div>
 
                                     </div>
 
