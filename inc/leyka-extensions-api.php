@@ -52,10 +52,17 @@ abstract class Leyka_Extension extends Leyka_Singleton {
     public static function is_admin_settings_page($extension_id = '') {
 
         if( !$extension_id ) {
-            return !empty($_GET['page']) && $_GET['page'] === 'leyka_extension_settings' && !empty($_GET['extension']);
+            return
+                !empty($_GET['page'])
+                && $_GET['page'] === 'leyka_settings'
+                && !empty($_GET['stage'])
+                && $_GET['stage'] === 'extensions'
+                && !empty($_GET['extension']);
         } else {
             return !empty($_GET['page'])
-                && $_GET['page'] === 'leyka_extension_settings'
+                && $_GET['page'] === 'leyka_settings'
+                && !empty($_GET['stage'])
+                && $_GET['stage'] === 'extensions'
                 && !empty($_GET['extension'])
                 && $_GET['extension'] === trim($extension_id);
         }
