@@ -75,8 +75,6 @@ class Leyka extends Leyka_Singleton {
                 (defined('LEYKA_DEBUG') && LEYKA_DEBUG !== 'inherit' ? !!LEYKA_DEBUG : $value) : $value;
         }, 10, 2);
 
-        leyka_do_plugin_update(); // Handle the plugin update, if needed
-
         // By default, we'll assume some errors in the payment form, so redirect will get us back to it:
         $this->_payment_url = wp_get_referer();
 
@@ -529,6 +527,21 @@ class Leyka extends Leyka_Singleton {
                 break;
             default:
         }
+    }
+
+    /** Fired when the plugin is manually activated. NOT FIRED ON UPDATES. */
+    public static function activate() {
+
+        $leyka_last_ver = get_option('leyka_last_ver');
+
+        if( !$leyka_last_ver || $leyka_last_ver <= '3.18' ) {
+            leyka_create_separate_donations_db_tables(); // Create plugin-specific DB tables if needed
+        }
+
+    }
+
+    public static function deactivate() {
+        delete_option('leyka_permalinks_flushed');
     }
 
     /**
@@ -1073,7 +1086,7 @@ class Leyka extends Leyka_Singleton {
         $_SESSION['leyka_errors'] = [];
     }
 
-    public function get_donation_types() {
+    public static function get_donation_types() {
         return apply_filters('leyka_donation_types', [
             'single' => _x('Single', '"Single" donation type name', 'leyka'),
             'recurring' => _x('Recurring', '"Recurring" donation type name', 'leyka'),
@@ -1081,7 +1094,7 @@ class Leyka extends Leyka_Singleton {
         ]);
     }
 
-    public function get_donation_types_descriptions() {
+    public static function get_donation_types_descriptions() {
         return apply_filters('leyka_donation_types_descriptions', [
             'single' => _x("A one-time donation.", '«Single» donation type description', 'leyka'),
             'recurring' => _x('A monthly recurring donation.', '«Recurring» donation type description', 'leyka'),
@@ -1095,7 +1108,7 @@ class Leyka extends Leyka_Singleton {
      * @param $with_hidden boolean
      * @return array of status_id => status label pairs
      */
-    public function get_donation_statuses($with_hidden = true) {
+    public static function get_donation_statuses($with_hidden = true) {
 
         $with_hidden = !!$with_hidden;
 
@@ -1120,7 +1133,7 @@ class Leyka extends Leyka_Singleton {
      *
      * @return array of status_id => status_description pairs
      */
-    public function get_donation_statuses_descriptions() {
+    public static function get_donation_statuses_descriptions() {
         return apply_filters('leyka_donation_statuses_descriptions', [
             'submitted' => _x("Donation attempt was made, but the payment itself wasn't sent.\n\nOr, maybe, the payment was completed, but Leyka wasn't notified of it. If that is the case, you should check if your payment gateway callbacks are set up correctly.", '«Submitted» donation status description', 'leyka'),
             'funded' => _x('Donation was finished, the funds were made to your account.', '«Completed» donation status description', 'leyka'),
@@ -1137,10 +1150,10 @@ class Leyka extends Leyka_Singleton {
      * @param $info_field string|false Either 'label' or 'description' string, or false to get all info as an array.
      * @return array|false Either an array with status info, or false if given status ID is incorrect.
      */
-    public function get_donation_status_info($status_id, $info_field = false) {
+    public static function get_donation_status_info($status_id, $info_field = false) {
 
-        $status_names = $this->get_donation_statuses();
-        $status_descriptions = $this->get_donation_statuses_descriptions();
+        $status_names = self::get_donation_statuses();
+        $status_descriptions = self::get_donation_statuses_descriptions();
 
         $status_info = ['id' => $status_id];
 
@@ -1166,7 +1179,7 @@ class Leyka extends Leyka_Singleton {
      *
      * @return array of state_id => state label pairs
      */
-    public function get_campaign_target_states() {
+    public static function get_campaign_target_states() {
         return apply_filters('leyka_campaign_target_states', [
             'no_target'   => _x('No target', 'Campaign state when target is not set', 'leyka'),
             'is_reached'  => _x('Reached', 'Campaign state when target is reached', 'leyka'),
@@ -1264,15 +1277,6 @@ class Leyka extends Leyka_Singleton {
         if( !empty($this->_extensions[$extension_id]) ) {
             unset($this->_extensions[$extension_id]);
         }
-    }
-
-    /** Fired when the plugin is manually activated. NOT FIRED ON UPDATES. */
-    public static function activate() {
-        leyka_do_plugin_update();
-    }
-
-    public static function deactivate() {
-        delete_option('leyka_permalinks_flushed');
     }
 
     public function apply_content_formatting() {

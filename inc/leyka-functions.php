@@ -574,24 +574,24 @@ function leyka_get_form_templates_list() {
  * @return array
  */
 function leyka_get_donation_status_list($with_hidden = true) {
-    return leyka()->get_donation_statuses($with_hidden);
+    return Leyka::get_donation_statuses($with_hidden);
 }
 
 function leyka_get_donation_status_description($status) {
 
-    $status_descriptions = leyka()->get_donation_statuses_descriptions();
+    $status_descriptions = Leyka::get_donation_statuses_descriptions();
     return $status && isset($status_descriptions[$status]) ? $status_descriptions[$status] : '';
 
 }
 
 function leyka_get_donation_types() {
-    return leyka()->get_donation_types();
+    return Leyka::get_donation_types();
 }
 
 function leyka_get_donation_type_description($type) {
 
     $type = $type === 'rebill' ? 'recurring' : $type;
-    $types = leyka()->get_donation_types_descriptions();
+    $types = Leyka::get_donation_types_descriptions();
 
     return $type && isset($types[$type]) ? $types[$type] : '';
 
@@ -717,18 +717,16 @@ function leyka_get_receiver_description($receiver_types) {
     
 }
 
-/**
- * Get all possible campaign target states.
- **/
+/** Get all possible campaign target states. */
 function leyka_get_campaign_target_states_list() {
-    return leyka()->get_campaign_target_states();
+    return Leyka::get_campaign_target_states();
 }
 
 /**
  * Get campaign target - template tag
  * 
  * @var $campaign integer Campaign ID.
- * @return mixed Array of campaign target info, false if wrong campaign ID given, or int 0 if a campaign doesn't have a target.
+ * @return array|false|0 Array of campaign target info, false if wrong campaign ID given, or int 0 if a campaign doesn't have a target.
  */
 function leyka_get_campaign_target($campaign) {
 
@@ -743,7 +741,7 @@ function leyka_get_campaign_target($campaign) {
     }
 
     // Currently, target is always in RUB:
-    return $campaign->target ? array('amount' => $campaign->target, 'currency' => 'rur',) : 0;
+    return $campaign->target ? ['amount' => $campaign->target, 'currency' => 'rur',] : 0;
 
 }
 

@@ -1623,7 +1623,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
 	public static function get_status_labels($status = false) {
 
-        $labels = leyka()->get_donation_statuses();
+        $labels = Leyka::get_donation_statuses();
 
         if(empty($status)) {
 		    return $labels;

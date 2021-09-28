@@ -118,7 +118,7 @@ require_once(LEYKA_PLUGIN_DIR.'inc/leyka-widgets.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-hooks.php');
 //require_once(ABSPATH.'wp-admin/includes/meta-boxes.php');
 
-if ( version_compare( $GLOBALS['wp_version'], '5.8', '>=' ) ) {
+if(version_compare( $GLOBALS['wp_version'], '5.8', '>=' )) {
     require_once(LEYKA_PLUGIN_DIR.'editor/leyka-editor.php');
 }
 
@@ -179,5 +179,9 @@ add_action('plugins_loaded', 'leyka_load_plugin_textdomain');
 
 register_activation_hook(__FILE__, array('Leyka', 'activate')); // Activation
 register_deactivation_hook(__FILE__, array('Leyka', 'deactivate')); // Deactivate
+
+add_action('init', function(){
+    leyka_handle_plugin_update(); // Only if needed
+});
 
 leyka(); // All systems, go
