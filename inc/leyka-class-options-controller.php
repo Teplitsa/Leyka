@@ -7,8 +7,8 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
     protected $_options = [];
     protected static $_field_types = [
-        'text', 'textarea', 'number', 'html', 'rich_html', 'select', 'multi_select', 'radio', 'checkbox', 'multi_checkbox', 'legend', 'file',
-        'colorpicker', 'campaign_select',
+        'text', 'textarea', 'number', 'static_text', 'html', 'rich_html', 'select', 'multi_select', 'radio', 'checkbox',
+        'multi_checkbox', 'legend', 'file', 'colorpicker', 'campaign_select'
     ];
 
     protected $_templates_common_options = [

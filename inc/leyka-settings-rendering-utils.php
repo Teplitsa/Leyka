@@ -507,6 +507,65 @@ function leyka_render_multi_select_field($option_id, $data){
 
 <?php }
 
+// Static text fields:
+add_action('leyka_render_static_text', 'leyka_render_static_text_field', 10, 2);
+function leyka_render_static_text_field($option_id, $data){
+
+    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
+    $content = '';
+
+    if( !empty($data['is_html']) && $data['is_html'] === true ) {
+        $content = $data['value'];
+    } else if( !empty($data['is_file']) && $data['is_file'] === true ) {
+
+        if(file_exists($data['value'])) {
+
+            ob_start();
+
+            include $data['value'];
+
+            $content = ob_get_contents();
+
+            ob_end_clean();
+
+        }
+
+    } else {
+        $content = esc_attr($data['value']);
+    }
+
+    $data['value'] = isset($data['value']) ? $data['value'] : '';
+
+    ?>
+
+    <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-textarea-field-wrapper field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?> <?php echo $data['is_code_editor'] === 'css' ? 'css-editor' : '';?>">
+
+        <span class="field-component title">
+            <span class="text"><?php echo $data['title'];?></span>
+            <?php if( !empty($data['comment'])) {?>
+                <span class="field-q">
+                <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-q.svg" alt="">
+                <span class="field-q-tooltip"><?php echo $data['comment']?></span>
+            </span>
+            <?php }?>
+        </span>
+
+        <span class="field-component field">
+
+            <div id="<?php echo $option_id.'-field';?>" class="<?php echo !empty($data['field_classes']) ? $data['field_classes'] : '' ?>">
+                <?php echo $content;?>
+            </div>
+
+        </span>
+
+        <?php if( !empty($data['description']) ) {?>
+        <span class="field-component help"><?php echo $data['description'];?></span>
+        <?php }?>
+
+    </div>
+
+<?php }
+
 // Textarea fields:
 add_action('leyka_render_textarea', 'leyka_render_textarea_field', 10, 2);
 function leyka_render_textarea_field($option_id, $data){
