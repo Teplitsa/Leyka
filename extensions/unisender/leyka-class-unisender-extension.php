@@ -166,7 +166,8 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
             if( !empty($result_array['error']) ) {
 
                 $error_log = !get_option('leyka_unisender_error_log') ? [] : get_option('leyka_unisender_error_log');
-                array_push($error_log, $result);
+                $result_array['date'] = date('d.m.Y H:i');
+                array_push($error_log, json_encode($result_array));
 
                 if(sizeof($error_log) > 10) {
                     array_shift($error_log);
@@ -187,10 +188,11 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
         }
 
         $error_log = get_option('leyka_unisender_error_log');
-
         foreach ($error_log as $index => $error_data_str) {
+
            $error_data = json_decode($error_data_str, true);
-           $error_log_text .= !empty($error_data['error']) ? '<li>'.$error_data['error'].'</li>' : '';
+           $error_log_text .= !empty($error_data['error']) && !empty($error_data['date']) ?
+                '<li><b>('.$error_data['date'].')</b> '.$error_data['error'].'</li>' : '';
         }
 
         return '<ul>'.$error_log_text.'</ul>';
