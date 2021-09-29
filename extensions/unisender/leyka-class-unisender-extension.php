@@ -143,7 +143,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
                     $donor_fields[$field_name] = $donation->donor_name;
                 } else {
 
-                    $donation_additional_fields = $donation->leyka_additional_fields;
+                    $donation_additional_fields = $donation->get_meta('leyka_additional_fields');
 
                     if( !empty($donation_additional_fields[$field_name]) ) {
                         $donor_fields[$field_name] = $donation_additional_fields[$field_name];
@@ -160,6 +160,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
                 'double_optin' => leyka_options()->opt($this->_id.'_donor_confirmation') === '1' ? 4 : 3,
                 'overwrite' => leyka_options()->opt($this->_id.'_donor_overwrite')
             ]);
+
             $result_array = json_decode($result, true);
             $donation->set_meta('unisender_subscription_response', $result_array);
 
@@ -230,13 +231,12 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
             echo '<div><b>'.__('Error', 'leyka').': </b>'.$subscription_response['error'].'</div>';
         } else if(
             !empty($subscription_response['result']) &&
-            !empty($subscription_response['result']['person_id']) &&
-            isset($subscription_response['result']['invitation_letter_sent'])
+            !empty($subscription_response['result']['person_id'])
         ) {
             echo
                 '<div>
                     <b>'.__('Subscribed user ID', 'leyka').': </b>'.$subscription_response['result']['person_id'].'</br>
-                    <b>'.__('Invitation letter', 'leyka').': </b>'.($subscription_response['result']['invitation_letter_sent'] ? 'Yes' : 'No').'</br>
+                    <b>'.__('Invitation letter', 'leyka').': </b>'.(isset($subscription_response['result']['invitation_letter_sent']) ? 'Yes' : 'No').'</br>
                 </div>';
         } else {
             echo '<div>'.__('Response data is not correct', 'leyka').'</div>';
