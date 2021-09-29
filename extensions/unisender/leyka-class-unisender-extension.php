@@ -227,7 +227,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
         $subscription_response = $donation->get_meta('unisender_subscription_response');
 
         if( !empty($subscription_response['error']) ) {
-            echo '<div><b>Error: </b>'.$subscription_response['error'].'</div>';
+            echo '<div><b>'.__('Error', 'leyka').': </b>'.$subscription_response['error'].'</div>';
         } else if(
             !empty($subscription_response['result']) &&
             !empty($subscription_response['result']['person_id']) &&
@@ -235,11 +235,11 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
         ) {
             echo
                 '<div>
-                    <b>Subscribed user ID: </b>'.$subscription_response['result']['person_id'].'</br>
-                    <b>Invitation letter: </b>'.($subscription_response['result']['invitation_letter_sent'] ? 'Yes' : 'No').'</br>
+                    <b>'.__('Subscribed user ID', 'leyka').': </b>'.$subscription_response['result']['person_id'].'</br>
+                    <b>'.__('Invitation letter', 'leyka').': </b>'.($subscription_response['result']['invitation_letter_sent'] ? 'Yes' : 'No').'</br>
                 </div>';
         } else {
-            echo '<div>Response data is not correct</div>';
+            echo '<div>'.__('Response data is not correct', 'leyka').'</div>';
         }
 
     }
