@@ -45,11 +45,12 @@ foreach($init_recurring_donations as $init_recurring_donation) {
     // In production mode, check if there have already been rebills for current recurring subscription in current month:
     if( !leyka_options()->opt('plugin_debug_mode') ) {
 
-        $rebill_for_current_month_exists = Leyka_Donations::get_instance()->get([
+        $rebill_for_current_month_exists = Leyka_Donations::get_instance()->get_count([
             'status' => 'funded',
             'recurring_rebills_of' => $init_recurring_donation->id,
             'year_month' => date('Ym'), // YYYYMM, e.g. 202105
-        ]) > 0;
+            'get_single' => true,
+        ]);
 
         if($rebill_for_current_month_exists) {
             continue;
@@ -61,6 +62,7 @@ foreach($init_recurring_donations as $init_recurring_donation) {
     $new_recurring_donation = $gateway->do_recurring_donation($init_recurring_donation);
     if( !$new_recurring_donation || is_wp_error($new_recurring_donation) ) {
         /** @todo Log & handle error */
+    } else {
     }
 
 }

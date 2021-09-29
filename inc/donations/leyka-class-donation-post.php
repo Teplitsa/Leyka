@@ -83,25 +83,13 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             $donation_meta_fields['donor_subscribed'] = $params['donor_subscribed'];
         }
 
-        if($params['gateway_id']) {
-            do_action("leyka_{$params['gateway_id']}_add_donation_specific_data", $donation_id, $params);
-        }
-
         if($params['ga_client_id']) {
             $donation_meta_fields['leyka_ga_client_id'] = $params['ga_client_id'];
         }
 
-        $donation_meta_fields = apply_filters(
-            "leyka_{$params['gateway_id']}_new_donation_specific_data",
-            $donation_meta_fields,
-            $donation_id,
-            $params
-        );
-        $donation_meta_fields = apply_filters('leyka_new_donation_specific_data', $donation_meta_fields, $donation_id, $params);
-
         remove_all_actions('save_post_'.Leyka_Donation_Management::$post_type);
 
-        $donation_params = [
+        $donation_id = wp_insert_post([
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => $params['status'],
             'post_title' => wp_strip_all_tags($params['payment_title']),
@@ -110,9 +98,29 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             'post_parent' => $params['init_recurring_donation'],
             'post_author' => $params['donor_user_id'],
             'meta_input' => $donation_meta_fields,
-        ];
+        ], true);
 
-        return wp_insert_post($donation_params, true);
+        if($params['gateway_id']) {
+            do_action("leyka_{$params['gateway_id']}_add_donation_specific_data", $donation_id, $params);
+        }
+
+        if(is_wp_error($donation_id)) {
+            return $donation_id;
+        }
+
+        $donation_meta_fields = apply_filters(
+            "leyka_{$params['gateway_id']}_new_donation_specific_data",
+            [],
+            $donation_id,
+            $params
+        );
+        $donation_meta_fields = apply_filters('leyka_new_donation_specific_data', $donation_meta_fields, $donation_id, $params);
+
+        foreach($donation_meta_fields as $key => $value) {
+            update_post_meta($donation_id, $key, $value);
+        }
+
+        return $donation_id;
 
     }
 

@@ -83,71 +83,7 @@ function leyka_handle_plugin_update() {
         return;
     }
 
-    leyka_create_separate_donations_db_tables();
-
-    if( !$leyka_last_ver ) {
-        update_option('leyka_init_wizard_redirect', true);
-    }
-
-    if( !$leyka_last_ver || $leyka_last_ver < '3.1.1' ) {
-        if(get_option('leyka_show_gtm_dataLayer_on_success')) {
-
-            update_option('leyka_use_gtm_ua_integration', 'simple');
-            delete_option('leyka_show_gtm_dataLayer_on_success');
-
-        }
-    }
-
-    if( !$leyka_last_ver || $leyka_last_ver < '3.3' ) {
-
-        // Update "donor account" donation meta storage. "donor_account_error" meta for errors, post_author field for donors:
-        $donations = get_posts([
-            'post_type' => Leyka_Donation_Management::$post_type,
-            'post_status' => leyka_get_donation_status_list(false),
-            'posts_per_page' => -1,
-            'meta_query' => [['key' => 'leyka_donor_account', 'compare' => 'EXISTS'],],
-            'fields' => 'ids',
-        ]);
-        foreach($donations as $donation_id) {
-
-            $donor_account = maybe_unserialize(get_post_meta($donation_id, 'leyka_donor_account', true));
-
-            if(is_wp_error($donor_account)) {
-                update_post_meta($donation_id, 'donor_account_error', $donor_account);
-            } else if((int)$donor_account > 0) {
-
-                $donor_user = get_user_by('id', (int)$donor_account);
-                if($donor_user && leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, false, $donor_user)) {
-                    wp_update_post(['ID' => $donation_id, 'post_author' => $donor_user->ID,]);
-                }
-
-            }
-
-            delete_post_meta($donation_id, 'leyka_donor_account');
-
-        }
-
-        // Add the new "Donor's account access" role:
-        $donor_account_users = get_users(['role__in' => [Leyka_Donor::DONOR_USER_ROLE,], 'number' => -1,]);
-
-        $old_donor_role = get_role(Leyka_Donor::DONOR_USER_ROLE);
-        if($old_donor_role) {
-            $old_donor_role->remove_cap('access_donor_account_desktop');
-        }
-
-        foreach($donor_account_users as $donor_user) {
-
-            $donor_user->add_cap(Leyka_Donor::DONOR_ACCOUNT_ACCESS_CAP);
-
-            try { // Initialize & fill the Donor Cache for all existing Donor users
-                Leyka_Donor::calculate_donor_metadata(new Leyka_Donor($donor_user));
-            } catch(Exception $e) {
-                //...
-            }
-
-        }
-
-    }
+    leyka_create_separate_donations_db_tables(); // Create plugin-specific DB tables if needed
 
     // From v3.3.0.1 - enable Donors management by default for all new installations:
     if( !$leyka_last_ver || $leyka_last_ver <= '3.3.0.1' ) {
@@ -175,8 +111,6 @@ function leyka_handle_plugin_update() {
     }
 
     if($leyka_last_ver && $leyka_last_ver <= '3.19.0.1') {
-
-        leyka_create_separate_donations_db_tables(); // Create plugin-specific DB tables if needed
 
         global $wpdb;
 
@@ -292,6 +226,10 @@ function leyka_handle_plugin_update() {
 
     // Set a flag to flush permalinks (needs to be done a bit later than this activation itself):
     update_option('leyka_permalinks_flushed', 0);
+
+    if( !$leyka_last_ver ) {
+        update_option('leyka_init_wizard_redirect', true);
+    }
 
     update_option('leyka_last_ver', LEYKA_VERSION);
 

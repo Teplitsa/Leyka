@@ -19,7 +19,9 @@ if( !function_exists('leyka_get_wp_core_path') ) {
     }
 }
 
-define('WP_USE_THEMES', false);
+if( !defined('WP_USE_THEMES') ) {
+	define('WP_USE_THEMES', false);
+}
 
 require_once leyka_get_wp_core_path().'/wp-load.php';
 
