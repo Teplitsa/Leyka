@@ -27,8 +27,9 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
                     <li>Copy API key from Unisender personal account to extension settings</li>
                     <li>Select needed donor fields</li>
                 </ol>
-            </div>'
-        , 'leyka'); // TODO Заменить до релиза
+            </div>',
+            'leyka'
+        );
         $this->_user_docs_link = 'https://leyka.te-st.ru/docs/unisender/';
         $this->_has_wizard = false;
         $this->_has_color_options = false;
@@ -192,14 +193,17 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
         }
 
         $error_log = get_option('leyka_unisender_error_log');
+        $error_log_text = '';
+
         foreach($error_log as $index => $error_data_str) {
 
            $error_data = json_decode($error_data_str, true);
            $error_log_text .= !empty($error_data['error']) && !empty($error_data['date']) ?
                 '<li><b>('.$error_data['date'].')</b> '.$error_data['error'].'</li>' : '';
+
         }
 
-        return '<ul>'.$error_log_text.'</ul>';
+        return $error_log_text ? '<ul>'.$error_log_text.'</ul>' : '';
 
     }
 
@@ -236,8 +240,9 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
             echo
                 '<div>
                     <b>'.__('Subscribed user ID', 'leyka').': </b>'.$subscription_response['result']['person_id'].'</br>
-                    <b>'.__('Invitation letter', 'leyka').': </b>'.(isset($subscription_response['result']['invitation_letter_sent']) ? 'Yes' : 'No').'</br>
-                </div>';
+                    <b>'.__('Invitation letter', 'leyka').': </b>'
+                    .(isset($subscription_response['result']['invitation_letter_sent']) ? __('Yes', 'leyka') : __('No', 'leyka'))
+                .'</div>';
         } else {
             echo '<div>'.__('Response data is not correct', 'leyka').'</div>';
         }
