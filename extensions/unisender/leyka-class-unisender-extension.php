@@ -120,10 +120,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
 
     protected function _initialize_active() {
 
-        add_action(
-            get_plugin_page_hookname('leyka_donation_info', null),
-            [$this, '_show_subscription_result_metabox']
-        );
+        add_action('admin_page_leyka_donation_info', [$this, '_show_subscription_result_metabox']);
         add_action('admin_enqueue_scripts', [$this, '_load_admin_assets']);
         add_action('leyka_donation_funded_status_changed', [$this, '_add_donor_to_unisender_list'], 11, 3);
         add_filter('leyka_js_localized_strings', [$this, '_localize_js_strings']);
