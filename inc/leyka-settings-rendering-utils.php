@@ -501,6 +501,10 @@ function leyka_render_multi_select_field($option_id, $data){
 
             </span>
 
+            <?php if( !empty($data['description']) ) {?>
+                <span class="field-component help"><?php echo $data['description'];?></span>
+            <?php }?>
+
         </label>
 
     </div>
