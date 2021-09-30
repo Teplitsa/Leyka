@@ -2841,6 +2841,33 @@ ul.ui-autocomplete.ui-menu li.ui-menu-item:hover {
   border: 2px solid red;
 }
 
+.settings-block.option-block.type-multi_select, .leyka-wizard.wizard-yandex.step-test_payment .main-area .settings-block.type-multi_select.custom_yandex_enumerated_block {
+  font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 13px !important;
+  line-height: 16px;
+}
+
+.settings-block.option-block.type-multi_select select[multiple], .leyka-wizard.wizard-yandex.step-test_payment .main-area .settings-block.type-multi_select.custom_yandex_enumerated_block select[multiple] {
+  height: 90px;
+}
+
+.settings-block.option-block.type-multi_select select[multiple] option, .leyka-wizard.wizard-yandex.step-test_payment .main-area .settings-block.type-multi_select.custom_yandex_enumerated_block select[multiple] option {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 2px 6px;
+  height: 25px;
+}
+
 .settings-block.container-block {
   display: -webkit-box;
   display: -ms-flexbox;

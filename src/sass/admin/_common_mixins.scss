@@ -322,7 +322,7 @@
 
 }
 
-@mixin leyka-field-multiselect() {
+@mixin leyka-field-multiselect() { // Dynamic multi-select fields - with ajax queries for values
 
     @include multiselect-input-typo();
 
@@ -424,6 +424,26 @@
         text-align: left;
         box-shadow: none !important;
         width: 100%;
+    }
+
+}
+
+@mixin leyka-field-miltiselect-simple() {
+
+    @include multiselect-input-typo();
+
+    select[multiple] {
+
+        height: 90px;
+
+        option {
+            display: flex;
+            flex-flow: row wrap;
+            align-items: center;
+            padding: 2px 6px;
+            height: 25px;
+        }
+
     }
 
 }

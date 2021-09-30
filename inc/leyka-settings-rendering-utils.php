@@ -486,19 +486,81 @@ function leyka_render_multi_select_field($option_id, $data){
 
                 $data['value'] = empty($data['value']) ? // 'value' should be an array of 'list_entry' items values
                     (empty($data['default']) ? [] : maybe_unserialize($data['default'])) :
-                    (is_array(maybe_unserialize($data['value'])) ? maybe_unserialize($data['value']) : [$data['value']]);?>
+                    maybe_unserialize($data['value']);
+                $data['value'] = is_array($data['value']) ? $data['value'] : [$data['value']];?>
 
                 <select id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>[]" size="<?php echo empty($data['length']) ? 5 : absint($data['length']);?>" multiple="multiple">
+
                 <?php foreach((array)$data['list_entries'] as $value => $label) {?>
                     <option value="<?php echo $value;?>" <?php echo in_array($value, $data['value']) ? 'selected="selected"' : '';?>>
                         <?php echo esc_attr($label);?>
                     </option>
+
                 <?php }?>
                 </select>
 
             </span>
 
         </label>
+
+    </div>
+
+<?php }
+
+// Static text fields:
+add_action('leyka_render_static_text', 'leyka_render_static_text_field', 10, 2);
+function leyka_render_static_text_field($option_id, $data){
+
+    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
+    $content = '';
+
+    if( !empty($data['is_html']) && $data['is_html'] === true ) {
+        $content = $data['value'];
+    } else if( !empty($data['is_file']) && $data['is_file'] === true ) {
+
+        if(file_exists($data['value'])) {
+
+            ob_start();
+
+            include $data['value'];
+
+            $content = ob_get_contents();
+
+            ob_end_clean();
+
+        }
+
+    } else {
+        $content = esc_attr($data['value']);
+    }
+
+    $data['value'] = isset($data['value']) ? $data['value'] : '';
+
+    ?>
+
+    <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-textarea-field-wrapper field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?> <?php echo $data['is_code_editor'] === 'css' ? 'css-editor' : '';?>">
+
+        <span class="field-component title">
+            <span class="text"><?php echo $data['title'];?></span>
+            <?php if( !empty($data['comment'])) {?>
+                <span class="field-q">
+                <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-q.svg" alt="">
+                <span class="field-q-tooltip"><?php echo $data['comment']?></span>
+            </span>
+            <?php }?>
+        </span>
+
+        <span class="field-component field">
+
+            <div id="<?php echo $option_id.'-field';?>" class="<?php echo !empty($data['field_classes']) ? $data['field_classes'] : '' ?>">
+                <?php echo $content;?>
+            </div>
+
+        </span>
+
+        <?php if( !empty($data['description']) ) {?>
+        <span class="field-component help"><?php echo $data['description'];?></span>
+        <?php }?>
 
     </div>
 
