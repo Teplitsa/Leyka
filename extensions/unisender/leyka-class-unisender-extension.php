@@ -65,6 +65,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
                         'comment' => __('Donor fields which will be transferred to Unisender', 'leyka'),
                         'list_entries' => $this->_get_donor_fields(),
                         'default' => ['name'], // 'default' should be an array of values (even if it's single value there)
+                        'description' => __('Hint: to capture your data Unisender list should have fields with this variables -', 'leyka')
                     ],
                     $this->_id.'_donor_confirmation' => [
                         'type' => 'checkbox',
@@ -124,6 +125,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
         );
         add_action('admin_enqueue_scripts', [$this, '_load_admin_assets']);
         add_action('leyka_donation_funded_status_changed', [$this, '_add_donor_to_unisender_list'], 11, 3);
+        add_filter('leyka_js_localized_strings', [$this, '_localize_js_strings']);
 
     }
 
@@ -250,6 +252,20 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
             [],
             defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY ? uniqid() : null
         );
+
+        wp_enqueue_script(
+            $this->_id.'-admin',
+            self::get_base_url().'/assets/js/admin.js',
+            ['jquery']
+        );
+
+    }
+
+    public function _localize_js_strings($strings) {
+
+        $strings['donor_fields_description_hint'] = __('Hint: to capture your data Unisender list should have fields with this variables -', 'leyka');
+
+        return $strings;
 
     }
 
