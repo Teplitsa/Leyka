@@ -904,7 +904,8 @@ function leyka_get_countries_full_info($country_id = null) {
         'ru' => array('title' => __('Russia', 'leyka'), 'currency' => 'rub',),
         'by' => array('title' => __('Belarus Republic', 'leyka'), 'currency' => 'byn'),
         'ua' => array('title' => __('Ukraine', 'leyka'), 'currency' => 'uah'),
-        'eu' => array('title' => __('European Union ', 'leyka'), 'currency' => 'eur')
+        'eu' => array('title' => __('European Union', 'leyka'), 'currency' => 'eur'),
+        'kg' => array('title' => __('Kyrgyzstan', 'leyka'), 'currency' => 'kgs')
     ));
 
     if(empty($country_id)) {
@@ -980,53 +981,61 @@ function leyka_get_currencies_list() {
 }
 
 function leyka_get_main_currencies_full_info() {
-    return apply_filters('leyka_main_currencies_list', array(
-        'rub' => array(
+    return apply_filters('leyka_main_currencies_list', [
+        'rub' => [
             'title' => __('Russian Rouble', 'leyka'),
             'label' => __('₽', 'leyka'),
             'min_amount' => 10,
             'max_amount' => 30000,
             'flexible_default_amount' => 500,
             'fixed_amounts' => '100,300,500,1000',
-        ),
-        'byn' => array(
+        ],
+        'byn' => [
             'title' => __('Belarus Rouble', 'leyka'),
             'label' => __('BYN', 'leyka'),
             'min_amount' => 1,
             'max_amount' => 30000,
             'flexible_default_amount' => 10,
             'fixed_amounts' => '5,10,20,50',
-        ),
-        'uah' => array(
+        ],
+        'uah' => [
             'title' => __('Ukraine Hryvnia', 'leyka'),
             'label' => __('₴', 'leyka'),
             'min_amount' => 10,
             'max_amount' => 30000,
             'flexible_default_amount' => 500,
             'fixed_amounts' => '100,300,500,1000',
-        ),
-        'eur' => array(
+        ],
+        'eur' => [
             'title' => __('Euro', 'leyka'),
             'label' => __('€', 'leyka'),
             'min_amount' => 1,
             'max_amount' => 650,
             'flexible_default_amount' => 5,
             'fixed_amounts' => '1,3,5,10,100',
-        )
-    ));
+        ],
+        'kgs' => [
+            'title' => __('Kyrgyzstani som', 'leyka'),
+            'label' => __('COM', 'leyka'),
+            'min_amount' => 10,
+            'max_amount' => 30000,
+            'flexible_default_amount' => 500,
+            'fixed_amounts' => '100,300,500,1000',
+        ]
+    ]);
 }
 
 function leyka_get_secondary_currencies_full_info($country_id = null) {
-    return apply_filters('leyka_secondary_currencies_list', array(
-        'usd' => array(
+    return apply_filters('leyka_secondary_currencies_list', [
+        'usd' => [
             'title' => __('US Dollar', 'leyka'),
             'label' => __('$', 'leyka'),
             'min_amount' => 1,
             'max_amount' => 1000,
             'flexible_default_amount' => 10,
             'fixed_amounts' => '1,3,5,10,15,50',
-        )
-    ), $country_id);
+        ]
+    ], $country_id);
 }
 
 /**
