@@ -311,7 +311,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
     public function has_packages() {
         return count($this->get_packages()) > 0;
     }
-    
+
     public function get_packages($min_package = null) {
 
         if($this->_packages === null) {

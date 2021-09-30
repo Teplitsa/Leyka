@@ -1375,7 +1375,7 @@ function leyka_modern_template_displayed($template_id = false) {
     $post = get_post();
 
     if(get_query_var('leyka-screen')) {
-        $modern_template_displayed = true;
+        return true; // No filters here - sometimes for some reason the usual filter returns false on Donor's account login page
     } else if(is_singular(Leyka_Campaign_Management::$post_type)) {
 
         $campaign = new Leyka_Campaign(get_post());
@@ -1413,7 +1413,7 @@ function leyka_modern_template_displayed($template_id = false) {
                 foreach($matches[2] as $key => $value) {
                     if(in_array($value, array('leyka_campaign_form', 'leyka_payment_form'))) {
 
-                        $get = str_replace(" ", "&" , $matches[3][$key]);
+                        $get = str_replace(' ', '&', $matches[3][$key]);
                         parse_str($get, $atts);
                         
                         if(array_key_exists('id', $atts)) {
