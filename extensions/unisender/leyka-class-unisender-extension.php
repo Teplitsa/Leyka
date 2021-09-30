@@ -29,7 +29,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
                 </ol>
             </div>'
         , 'leyka'); // TODO Заменить до релиза
-        $this->_user_docs_link = 'https://www.unisender.com/ru/support/'; // TODO Заменить до релиза
+        $this->_user_docs_link = 'https://leyka.te-st.ru/docs/unisender/';
         $this->_has_wizard = false;
         $this->_has_color_options = false;
         $this->_icon = LEYKA_PLUGIN_BASE_URL.'extensions/unisender/img/main_icon.jpeg';
@@ -42,7 +42,6 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
             ['section' => [
                 'name' => $this->_id.'-main-options',
                 'title' => __('Main options', 'leyka'),
-                'is_default_collapsed' => true,
                 'options' => [
                     $this->_id.'_api_key' => [
                         'type' => 'text',
@@ -50,21 +49,21 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
                         'comment' => __('"Unisender" API key', 'leyka'),
                         'required' => true,
                         'is_password' => true,
-                        'placeholder' => 'abcdefghijklmnopqrstuvwxyz1234567890',
+                        'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'abcdefghijklmnopqrstuvwxyz1234567890'),
                     ],
                     $this->_id.'_lists_ids' => [
                         'type' => 'text',
                         'title' => __('IDs of the "Unisender" lists to subscribe', 'leyka'),
                         'comment' => __('IDs of the lists (in "Unisender") that holds donors contacts', 'leyka'),
                         'required' => true,
-                        'placeholder' => '1,3,10',
+                        'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1,3,10'),
                         'description' => __('Comma-separated IDs list', 'leyka'),
                     ],
                     $this->_id.'_donor_fields' => [
                         'type' => 'multi_select',
                         'title' => __('Donor fields', 'leyka'),
                         'required' => true,
-                        'comment' => __('Donor fields which will be transferred to "Unisender"', 'leyka'),
+                        'comment' => __('Donor fields which will be transferred to Unisender', 'leyka'),
                         'list_entries' => $this->_get_donor_fields(),
                         'default' => ['name'], // 'default' should be an array of values (even if it's single value there)
                     ],
@@ -72,7 +71,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
                         'type' => 'checkbox',
                         'default' => true,
                         'title' => __('Donor subscription confirmation', 'leyka'),
-                        'comment' => __('If enabled donors will be asked by email for permission upon subscribing on the list', 'leyka'),
+                        'comment' => __('If enabled, donors will be asked by email for permission upon subscribing on the list', 'leyka'),
                         'short_format' => true
                     ],
                     $this->_id.'_donor_overwrite' => [
@@ -119,12 +118,14 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
     }
 
     protected function _initialize_active() {
+
         add_action(
-            get_plugin_page_hookname( 'leyka_donation_info', null ),
+            get_plugin_page_hookname('leyka_donation_info', null),
             [$this, '_show_subscription_result_metabox']
         );
         add_action('admin_enqueue_scripts', [$this, '_load_admin_assets']);
         add_action('leyka_donation_funded_status_changed', [$this, '_add_donor_to_unisender_list'], 11, 3);
+
     }
 
     public function _add_donor_to_unisender_list($donation_id, $old_status, $new_status) {
@@ -143,7 +144,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
                     $donor_fields[$field_name] = $donation->donor_name;
                 } else {
 
-                    $donation_additional_fields = $donation->get_meta('leyka_additional_fields');
+                    $donation_additional_fields = $donation->additional_fields;
 
                     if( !empty($donation_additional_fields[$field_name]) ) {
                         $donor_fields[$field_name] = $donation_additional_fields[$field_name];
@@ -168,13 +169,14 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
 
                 $error_log = !get_option('leyka_unisender_error_log') ? [] : get_option('leyka_unisender_error_log');
                 $result_array['date'] = date('d.m.Y H:i');
-                array_push($error_log, json_encode($result_array));
+
+                $error_log[] = json_encode($result_array);
 
                 if(sizeof($error_log) > 10) {
                     array_shift($error_log);
                 }
 
-                update_option( 'leyka_unisender_error_log', $error_log, 'no' );
+                update_option('leyka_unisender_error_log', $error_log, 'no');
 
             }
 
@@ -189,7 +191,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
         }
 
         $error_log = get_option('leyka_unisender_error_log');
-        foreach ($error_log as $index => $error_data_str) {
+        foreach($error_log as $index => $error_data_str) {
 
            $error_data = json_decode($error_data_str, true);
            $error_log_text .= !empty($error_data['error']) && !empty($error_data['date']) ?
@@ -207,7 +209,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
             $donation_id = $_GET['donation'];
             $donation = Leyka_Donations::get_instance()->get($donation_id);
 
-            if ( !empty($donation->get_meta('unisender_subscription_response')) ) {
+            if( !empty($donation->get_meta('unisender_subscription_response')) ) {
                 add_meta_box(
                     'leyka_donation_unisender_subscription_response',
                     __('Unisender subscription response', 'leyka'),
@@ -217,22 +219,19 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
                     'low'
                 );
             }
+
         }
 
     }
 
     public function _render_subscription_response() {
 
-        $donation_id = $_GET['donation'];
-        $donation = Leyka_Donations::get_instance()->get($donation_id);
+        $donation = Leyka_Donations::get_instance()->get(absint($_GET['donation']));
         $subscription_response = $donation->get_meta('unisender_subscription_response');
 
         if( !empty($subscription_response['error']) ) {
             echo '<div><b>'.__('Error', 'leyka').': </b>'.$subscription_response['error'].'</div>';
-        } else if(
-            !empty($subscription_response['result']) &&
-            !empty($subscription_response['result']['person_id'])
-        ) {
+        } else if( !empty($subscription_response['result']) && !empty($subscription_response['result']['person_id']) ) {
             echo
                 '<div>
                     <b>'.__('Subscribed user ID', 'leyka').': </b>'.$subscription_response['result']['person_id'].'</br>
