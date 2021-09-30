@@ -17,7 +17,7 @@ jQuery(document).ready(function($){
         donor_fields.forEach((field, idx) => {
 
             if(field === 'phone') return;
-            description += (idx === 0 ? ' ' : ', ')+'"'+field+'"';
+            description += (idx === 0 ? ' ' : ', ')+'"'+field.replaceAll('-', '_')+'"';
 
         })
 

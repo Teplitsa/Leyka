@@ -139,6 +139,8 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
 
             foreach(leyka_options()->opt($this->_id.'_donor_fields') as $field_name) {
 
+                $field_name_fix = str_replace('-', '_', $field_name);
+
                 if($field_name === 'name') {
                     $donor_fields[$field_name] = $donation->donor_name;
                 } else {
@@ -146,7 +148,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
                     $donation_additional_fields = $donation->additional_fields;
 
                     if( !empty($donation_additional_fields[$field_name]) ) {
-                        $donor_fields[$field_name] = $donation_additional_fields[$field_name];
+                        $donor_fields[$field_name_fix] = $donation_additional_fields[$field_name];
                     }
 
                 }
