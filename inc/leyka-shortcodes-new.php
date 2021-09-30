@@ -359,7 +359,7 @@ function leyka_shortcode_donations_comments_list($atts) {
 
     foreach($donations as $donation) {
 
-        $donation = new Leyka_Donation($donation);?>
+        $donation = Leyka_Donations::get_instance()->get_donation($donation);?>
 
         <div class="comments-list-item" style="<?php echo $atts['background_color'] ? 'background-color:'.esc_attr($atts['background_color']) : '';?>">
 
