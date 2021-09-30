@@ -534,11 +534,9 @@ function leyka_render_static_text_field($option_id, $data){
         $content = esc_attr($data['value']);
     }
 
-    $data['value'] = isset($data['value']) ? $data['value'] : '';
+    $data['value'] = isset($data['value']) ? $data['value'] : '';?>
 
-    ?>
-
-    <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-textarea-field-wrapper field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?> <?php echo $data['is_code_editor'] === 'css' ? 'css-editor' : '';?>">
+    <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-textarea-field-wrapper field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?> <?php echo isset($data['is_code_editor']) && $data['is_code_editor'] === 'css' ? 'css-editor' : '';?>">
 
         <span class="field-component title">
             <span class="text"><?php echo $data['title'];?></span>
