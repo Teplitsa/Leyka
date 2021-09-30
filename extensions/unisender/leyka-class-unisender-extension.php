@@ -46,15 +46,14 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
                     $this->_id.'_api_key' => [
                         'type' => 'text',
                         'title' => __('API key', 'leyka'),
-                        'comment' => __('"Unisender" API key', 'leyka'),
                         'required' => true,
                         'is_password' => true,
                         'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'abcdefghijklmnopqrstuvwxyz1234567890'),
                     ],
                     $this->_id.'_lists_ids' => [
                         'type' => 'text',
-                        'title' => __('IDs of the "Unisender" lists to subscribe', 'leyka'),
-                        'comment' => __('IDs of the lists (in "Unisender") that holds donors contacts', 'leyka'),
+                        'title' => __('IDs of the Unisender lists to subscribe donors', 'leyka'),
+                        'comment' => __("IDs of the Unisender mailout lists with donors' contacts", 'leyka'),
                         'required' => true,
                         'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1,3,10'),
                         'description' => __('Comma-separated IDs list', 'leyka'),
@@ -77,7 +76,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
                     $this->_id.'_donor_overwrite' => [
                         'type' => 'select',
                         'title' => __('Overwrite donor information', 'leyka'),
-                        'comment' => __('If donor already registered in "Unisender"', 'leyka'),
+                        'comment' => __('In case when donor is already registered in Unisender', 'leyka'),
                         'default' => '0',
                         'list_entries' => [
                             '0' => __('New fields will be created, old fields will not get new values.', 'leyka'),
