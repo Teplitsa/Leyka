@@ -783,7 +783,9 @@ techMessage="'.$tech_message.'"/>');
             case 'yandex_recurring_id':
             case 'yandex_invoice_id':
             case 'yandex_payment_id':
-                return $donation->get_meta('yandex_invoice_id');
+                return !empty($donation->get_meta('yandex_invoice_id')) ?
+                    $donation->get_meta('yandex_invoice_id') :
+                    $donation->get_meta('_yandex_invoice_id');
             default:
                 return $value;
         }
