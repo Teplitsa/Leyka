@@ -5,7 +5,7 @@ Plugin URI: http://leyka.te-st.ru
 Tags: лейка, crowdfunding, fundraising, donations, recurring donations, charity, leyka, recurring, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, yoomoney, chronopay, sms, yookassa, миксплат, mixplat, paypal, paymaster, qiwi, киви, stripe, страйп, gds, google data studio
 Requires at least: 3.6.1
 Tested up to: 5.8.1
-Stable tag: 3.20
+Stable tag: 3.20.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -81,6 +81,10 @@ PHP version required: 5.6+
 5. The plugin start page (a console)
 
 == Changelog ==
+= 3.20.0.1 =
+* Fix: recurring subscriptions.
+* Fix: different bugfixes.
+
 = 3.20 =
 * New: Unisender mailout service integration added as an extension.
 * Fix: different bugfixes.
