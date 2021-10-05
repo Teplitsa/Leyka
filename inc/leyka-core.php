@@ -534,7 +534,7 @@ class Leyka extends Leyka_Singleton {
 
         $leyka_last_ver = get_option('leyka_last_ver');
 
-        if( !$leyka_last_ver || $leyka_last_ver <= '3.18' ) {
+        if( !$leyka_last_ver || version_compare($leyka_last_ver, '3.18', '<=') ) {
             leyka_create_separate_donations_db_tables(); // Create plugin-specific DB tables if needed
         }
 

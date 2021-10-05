@@ -11,7 +11,7 @@ function leyka_create_separate_donations_db_tables() {
 
     global $wpdb;
 
-    if($leyka_last_ver && $leyka_last_ver < '3.19.0.2') {
+    if($leyka_last_ver && version_compare($leyka_last_ver, '3.20.0.1', '<')) {
 
         $charset_collate = $wpdb->get_charset_collate();
 
@@ -110,7 +110,7 @@ function leyka_handle_plugin_update() {
         update_option('leyka_yandex-yandex_money_label', __('YooMoney', 'leyka'));
     }
 
-    if($leyka_last_ver && version_compare($leyka_last_ver, '3.19.0.1', '<=')) {
+    if($leyka_last_ver && version_compare($leyka_last_ver, '3.20.0.1', '<=')) {
 
         global $wpdb;
 
