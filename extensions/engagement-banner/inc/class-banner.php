@@ -23,7 +23,7 @@ class Leyka_Engagement_Banner  {
 
 	public function get_text() {
 
-		$out = array();
+		$out = [];
 
 		$text = leyka_engb_get_option('text');
 
@@ -56,7 +56,7 @@ class Leyka_Engagement_Banner  {
 
 	public function get_classes() {
 
-		$classes = array();
+		$classes = [];
 		$classes[] = $this->_get_position_class();
 		$classes[] = $this->_get_header_class();
 
@@ -91,7 +91,7 @@ class Leyka_Engagement_Banner  {
 
 	public function get_attributes() {
 
-		$data = array();
+		$data = [];
 		$attrs = '';
 
 		$data['delay'] = $this->_get_delay_attribute();
@@ -122,7 +122,8 @@ class Leyka_Engagement_Banner  {
 			$delay_value = $delay_type == 'time' ? 30 : 50;
 		}
 
-		return array( $delay_type => $delay_value );
+		return [$delay_type => $delay_value,];
+
 	}
 	
 

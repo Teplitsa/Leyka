@@ -43,19 +43,19 @@ if( !empty($this->field_data['option_id']) ) {
             
         <?php } else {
             
-            $field_classes = array();
+            $field_classes = [];
             if( !empty($this->field_data['copy2clipboard']) ) {
                 $field_classes[] = 'leyka-wizard-copy2clipboard';
             }
 
-            leyka_render_text_field($this->field_data['option_id'], array(
+            leyka_render_text_field($this->field_data['option_id'], [
                 'title' => $this->field_data['option_title'],
                 'comment' => !empty($this->field_data['option_comment']) ? $this->field_data['option_comment'] : null,
                 'placeholder' => !empty($this->field_data['option_placeholder']) ?
                     $this->field_data['option_placeholder'] : null,
                 'field_classes' => $field_classes,
-                'value' => $option_value)
-            );
+                'value' => $option_value
+            ]);
 
         }
 

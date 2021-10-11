@@ -7,7 +7,7 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
 
     protected static $_instance;
 
-    public function get_template_data(array $params = array()) {
+    public function get_template_data(array $params = []) {
 
         $params['interval'] = empty($params['interval']) ? 'year' : $params['interval'];
         switch($params['interval']) {
@@ -23,7 +23,7 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
 
         global $wpdb;
 
-        $curr_interval_donations = $prev_interval_donations = array();
+        $curr_interval_donations = $prev_interval_donations = [];
 
         if(leyka_get_donations_storage_type() === 'post') { // Post-based donations storage
 
@@ -60,7 +60,7 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
 
         } else { // Separate donations storage
 
-            $donors_emails = array();
+            $donors_emails = [];
 
             $tmp = $wpdb->get_results(
                 "SELECT ID, donor_email
@@ -138,7 +138,7 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
         $curr_amount_avg = $curr_amount ? round($curr_amount/count($curr_interval_donations), 2) : 0;
         $donations_amount_avg_delta = leyka_get_delta_percent($prev_amount_avg, $curr_amount_avg);
 
-        return array(
+        return [
             'donations_amount' => $curr_amount,
             'donations_amount_delta_percent' =>
                 $donations_amount_delta === NULL ? '—' : ($donations_amount_delta < 0 ? '' : '+').$donations_amount_delta.'%',
@@ -149,7 +149,7 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
             'donations_amount_avg_delta_percent' =>
                 $donations_amount_avg_delta === NULL ?
                     '—' : ($donations_amount_avg_delta < 0 ? '' : '+').$donations_amount_avg_delta.'%',
-        );
+        ];
 
     }
 

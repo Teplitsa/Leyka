@@ -7,7 +7,7 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
 
     protected static $_instance = null;
 
-//    protected $_params = array();
+//    protected $_params = [];
 
     protected function _set_attributes() {
         $this->_id = 'options';
@@ -138,7 +138,7 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
     }
 
     public function render_js_data() {
-//        wp_localize_script('leyka-settings', 'metabox_areas', array())
+//        wp_localize_script('leyka-settings', 'metabox_areas', [])
     }
 
     public function render_main_area() {
@@ -307,7 +307,7 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
                 add_meta_box(
                     'leyka_'.$section->id,
                     $section->title,
-                    array($this, 'render_section_metabox'),
+                    [$this, 'render_section_metabox'],
                     $this->_controller->id.'-options_main_area',
                     'normal',
                     'default',

@@ -69,7 +69,7 @@ class Leyka_Engagement_Banner_Controller  {
 		}
 
 		// leyka service pages 
-		$exclude = array();
+		$exclude = [];
 
 		$thanks = (int)get_option('leyka_success_page');
 		if($thanks > 0) {
@@ -199,10 +199,10 @@ class Leyka_Engagement_Banner_Controller  {
 
 	protected function _exclude_rule() {
 
-		$ids = array();
-		$tids = array();
-		$pts = array();
-		$taxes = array();
+		$ids = [];
+		$tids = [];
+		$pts = [];
+		$taxes = [];
 
 		$raw_rules = leyka_engb_get_option('exclude_rules');
 

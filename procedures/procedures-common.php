@@ -63,9 +63,9 @@ function leyka_procedures_print($expression, $add_new_line = true) {
  * @param $default_options array
  * @return array
  */
-function leyka_procedures_get_procedure_options(array $default_options = array()) {
+function leyka_procedures_get_procedure_options(array $default_options = []) {
 
-    $options_keys = array();
+    $options_keys = [];
     foreach($default_options as $name => $value) {
 
         if(rtrim($name, ':') == $name) {

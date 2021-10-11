@@ -94,11 +94,11 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php'); ?>
                             <div class="section">
 
                                 <?php $_GET['activate'] = esc_sql($_GET['activate']);
-                                $donor_account = get_users(array('meta_query' => array(array(
+                                $donor_account = get_users(['meta_query' => [[
                                     'key' => 'leyka_account_activation_code',
                                     'value' => $_GET['activate'],
                                     'compare' => '=',
-                                ))));
+                                ]]]);
 
                                 if( !$donor_account) {?>
 

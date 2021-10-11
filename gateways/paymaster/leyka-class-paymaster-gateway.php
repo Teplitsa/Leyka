@@ -20,7 +20,7 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
         $this->_registration_link = '//info.paymaster.ru/check/';
 
         $this->_min_commission = 2.8;
-        $this->_receiver_types = array('legal');
+        $this->_receiver_types = ['legal',];
 
     }
 
@@ -30,30 +30,30 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
             return;
         }
 
-        $this->_options = array(
-            'paymaster_merchant_id' => array(
+        $this->_options = [
+            'paymaster_merchant_id' => [
                 'type' => 'text',
                 'title' => __('Paymaster merchant ID', 'leyka'),
                 'comment' => __('Please find your merchant id in PayMaster merchant Control Panel.', 'leyka'),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'ct5b8f62-297f-4d19-b805-249cab7a37ed'),
-            ),
-            'paymaster_secret_word' => array(
+            ],
+            'paymaster_secret_word' => [
                 'type' => 'text',
                 'title' => __('Secret word', 'leyka'),
                 'comment' => __('Paymaster secret word, please set it also in PayMaster merchant backoffice.', 'leyka'),
                 'required' => true,
                 'is_password' => true,
-            ),
-            'paymaster_hash_method' => array(
+            ],
+            'paymaster_hash_method' => [
                 'type' => 'select',
                 'default' => 'md5',
                 'title' => __('Hash security method', 'leyka'),
                 'comment' => __('Please, find your hash method in PayMaster merchant Control Panel.', 'leyka'),
                 'required' => true,
-                'list_entries' => array('md5' => 'md5', 'sha1' => 'sha1', 'sha256' => 'sha256'),
-            ),
-        );
+                'list_entries' => ['md5' => 'md5', 'sha1' => 'sha1', 'sha256' => 'sha256'],
+            ],
+        ];
 
     }
 
@@ -89,7 +89,7 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
                 break;
         }
 
-        return array(
+        return [
             'LMI_MERCHANT_ID' => leyka_options()->opt('paymaster_merchant_id'),
             'LMI_PAYMENT_AMOUNT' => $amount,
             'LMI_PAYMENT_NO' => $donation_id,
@@ -99,7 +99,7 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
             'LMI_PAYMENT_NOTIFICATION_URL' => home_url('leyka/service/' . $this->_id . '/response/'),
             'LMI_SUCCESS_URL' => leyka_get_success_page_url(),
             'LMI_FAILURE_URL' => leyka_get_failure_page_url(),
-        );
+        ];
 
     }
 
@@ -196,13 +196,13 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
                     ->setTransactionId($donation->id)
                     ->setAffiliation(get_bloginfo('name'))
                     ->setRevenue($donation->amount)
-                    ->addProduct(array( // Donation params
+                    ->addProduct([ // Donation params
                         'name' => $donation->payment_title,
                         'price' => $donation->amount,
                         'brand' => get_bloginfo('name'), // Mb, it won't work with it
                         'category' => $donation->type_label, // Mb, it won't work with it
                         'quantity' => 1,
-                    ))
+                    ])
                     ->setProductActionToPurchase()
                     ->setEventCategory('Checkout')
                     ->setEventAction('Purchase')
@@ -221,8 +221,8 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
 
     protected function _get_hash($request) {
 
-        foreach(array('LMI_MERCHANT_ID', 'LMI_PAYMENT_NO', 'LMI_SYS_PAYMENT_ID', 'LMI_SYS_PAYMENT_DATE', 'LMI_PAYMENT_AMOUNT', 'LMI_CURRENCY', 'LMI_PAID_AMOUNT', 'LMI_PAID_CURRENCY', 'LMI_PAYMENT_SYSTEM', 'LMI_SIM_MODE',) as $key) {
-            $request[$key] = $request[$key] ? $request[$key] : '';
+        foreach(['LMI_MERCHANT_ID', 'LMI_PAYMENT_NO', 'LMI_SYS_PAYMENT_ID', 'LMI_SYS_PAYMENT_DATE', 'LMI_PAYMENT_AMOUNT', 'LMI_CURRENCY', 'LMI_PAID_AMOUNT', 'LMI_PAID_CURRENCY', 'LMI_PAYMENT_SYSTEM', 'LMI_SIM_MODE',] as $key) {
+            $request[$key] = $request[$key] ? : '';
         }
 
         return base64_encode(hash(
@@ -251,24 +251,24 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
     public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {
 
         if( !$donation->gateway_response ) {
-            return array();
+            return [];
         }
 
         $vars = maybe_unserialize($donation->gateway_response);
         if( !$vars || !is_array($vars) ) {
-            return array();
+            return [];
         }
 
         return apply_filters(
             'leyka_donation_gateway_response',
-            array(
+            [
                 __('Outcoming sum:', 'leyka') => $this->_get_value_if_any($vars, 'OutSum', !empty($vars['OutSum']) ? round($vars['OutSum'], 2) : false),
                 __('Incoming sum:', 'leyka') => $this->_get_value_if_any($vars, 'IncSum', !empty($vars['IncSum']) ? round($vars['IncSum'], 2) : false),
                 __('Invoice ID:', 'leyka') => $this->_get_value_if_any($vars, 'InvId'),
                 __('Signature value (sent from Paymaster):', 'leyka') => $this->_get_value_if_any($vars, 'SignatureValue'),
                 __('Payment method:', 'leyka') => $this->_get_value_if_any($vars, 'PaymentMethod'),
                 __('Paymaster currency label:', 'leyka') => $this->_get_value_if_any($vars, 'IncCurrLabel'),
-            ),
+            ],
             $donation
         );
 
@@ -297,13 +297,13 @@ class Leyka_Paymaster_All extends Leyka_Payment_Method {
         $this->_label_backend = __('Paymaster smart payment', 'leyka');
         $this->_label = __('Paymaster smart payment', 'leyka');
 
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, [
             LEYKA_PLUGIN_BASE_URL.'gateways/paymaster/icons/paymaster_all.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
-        ));
+        ]);
 
         $this->_supported_currencies[] = 'rub';
         $this->_default_currency = 'rub';

@@ -9,12 +9,12 @@
 
 $active_pm_list = apply_filters('leyka_form_pm_order', leyka_get_pm_list(true));
 
-$active_currencies = array();
+$active_currencies = [];
 foreach($active_pm_list as $pm) {
     $active_currencies = $active_currencies + $pm->currencies;
 }
 
-$pm_forms = array();
+$pm_forms = [];
 foreach($active_pm_list as $pm) {
     $pm_forms[$pm->full_id] = new Leyka_Payment_Form($pm, $pm->default_currency);
 }

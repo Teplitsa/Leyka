@@ -23,9 +23,9 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
         );
 
         $this->_min_commission = 2.8;
-        $this->_receiver_types = array('legal');
+        $this->_receiver_types = ['legal'];
         $this->_may_support_recurring = true;
-        $this->_countries = array('by',);
+        $this->_countries = ['by',];
 
     }
 
@@ -35,36 +35,36 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
             return;
         }
 
-        $this->_options = array(
-            $this->_id.'_store_id' => array(
+        $this->_options = [
+            $this->_id.'_store_id' => [
                 'type' => 'text',
                 'title' => __('Store ID', 'leyka'),
                 'comment' => sprintf(__('Please, enter your %s here. It can be found in your contract with the gateway or (for most gateways) by asking your gateway connection manager for it.', 'leyka'), __('Store ID', 'leyka')),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '123456789'),
-            ),
-            $this->_id.'_secret_key' => array(
+            ],
+            $this->_id.'_secret_key' => [
                 'type' => 'text',
                 'title' => __('Secret key', 'leyka'),
                 'comment' => sprintf(__("Please, enter a %s parameter value from your %s account.", 'leyka'), mb_strtolower(__('Secret key', 'leyka')), $this->_title),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'OkT0flRaEnS0fWqMFZuTg01hu_8SxSkx'),
                 'is_password' => true,
-            ),
-            $this->_id.'_test_mode' => array(
+            ],
+            $this->_id.'_test_mode' => [
                 'type' => 'checkbox',
                 'default' => true,
                 'title' => __('Payments testing mode', 'leyka'),
                 'comment' => __('Check if the gateway integration is in test mode.', 'leyka'),
                 'short_format' => true,
-            ),
-            $this->_id.'_check_callbacks_signature' => array(
+            ],
+            $this->_id.'_check_callbacks_signature' => [
                 'type' => 'checkbox',
                 'default' => true,
                 'title' => __('Check payments notifications digital signatures', 'leyka'),
                 'short_format' => true,
-            ),
-        );
+            ],
+        ];
 
     }
 
@@ -105,7 +105,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
         $is_test_mode = leyka_options()->opt('webpay_test_mode') ? '1' : '0';
         $currency_id = mb_strtoupper(leyka_options()->opt('currency_main'));
 
-        $data = array();
+        $data = [];
 
         if($donation->type === 'rebill') { // Init recurring donation
 
@@ -124,7 +124,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
             );
         }
 
-        $data = $data + array(
+        $data = $data + [
             '*scart' => '',
             'wsb_storeid' => leyka_options()->opt($this->_id.'_store_id'),
             'wsb_store' => get_bloginfo('name'),
@@ -146,7 +146,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
             'wsb_invoice_item_price[0]' => $donation->amount,
             'wsb_total' => $donation->amount,
             'wsb_order_tag' => $donation->type === 'rebill' ? __('Recurring subscription', 'leyka') : __('Single', 'leyka'),
-        );
+        ];
 
         return apply_filters('leyka_'.$this->_id.'_custom_submission_data', $data, $pm_id);
 
@@ -297,13 +297,13 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
                 ->setTransactionId($donation->id)
                 ->setAffiliation(get_bloginfo('name'))
                 ->setRevenue($donation->amount)
-                ->addProduct(array( // Donation params
+                ->addProduct([ // Donation params
                     'name' => $donation->payment_title,
                     'price' => $donation->amount,
                     'brand' => get_bloginfo('name'), // Mb, it won't work with it
                     'category' => $donation->type_label, // Mb, it won't work with it
                     'quantity' => 1,
-                ))
+                ])
                 ->setProductActionToPurchase()
                 ->setEventCategory('Checkout')
                 ->setEventAction('Purchase')
@@ -317,19 +317,19 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
     public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {
 
         if( !$donation->gateway_response ) {
-            return array();
+            return [];
         }
 
         $response = maybe_unserialize($donation->gateway_response);
         if( !$response ) {
-            $response = array();
+            $response = [];
         }
 
         $calculated = $response['batch_timestamp'].$response['currency_id'].$response['amount'].$response['payment_method'].$response['order_id']
             .$response['site_order_id'].$response['transaction_id'].$response['payment_type'].$response['rrn']
             .leyka_options()->opt($this->_id.'_secret_key');
 
-        $response = array(
+        $response = [
             __('Callback received at:', 'leyka') => empty($response['batch_timestamp']) ?
                 '-' : date_i18n(get_option('date_format').' '.get_option('time_format'), $response['batch_timestamp']),
             __('Amount:', 'leyka') => empty($response['amount']) ? '-' : $response['amount'],
@@ -350,7 +350,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
             __('RC', 'leyka') => empty($response['rc']) ? '-' : $response['rc'],
             __('Approval:', 'leyka') => empty($response['approval']) ? '-' : $response['approval'],
             __('Order Tag:', 'leyka') => empty($response['order_tag']) ? '-' : $response['order_tag'],
-        );
+        ];
 
         if($donation->status === 'failed') {
             $response[__('Failure reason:')] = empty($donation->gateway_response['failure_reason']) ?
@@ -583,7 +583,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
 
         $new_recurring_donation = Leyka_Donations::get_instance()->add_clone(
             $init_recurring_donation,
-            array(
+            [
                 'status' => 'submitted',
                 'payment_type' => 'rebill',
                 'init_recurring_donation' => $init_recurring_donation->id,
@@ -594,8 +594,8 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
                 'webpay_customer_id' => $init_recurring_donation->webpay_customer_id,
                 'webpay_recurring_token' => $init_recurring_donation->webpay_recurring_token,
                 'webpay_card_expiring_date' => $init_recurring_donation->webpay_card_expiring_date,
-            ),
-            array('recalculate_total_amount' => true,)
+            ],
+            ['recalculate_total_amount' => true,]
         );
 
         if(is_wp_error($new_recurring_donation)) {
@@ -612,7 +612,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
             .$init_recurring_donation->webpay_recurring_token.leyka_options()->opt($this->_id.'_secret_key')
         );
 
-        $data = array(
+        $data = [
             '*scart' => '',
             'wsb_storeid' => leyka_options()->opt($this->_id.'_store_id'),
             'wsb_store' => __('Leyka', 'leyka').' - '.(
@@ -641,17 +641,17 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
             'wsb_customer_id' => $init_recurring_donation->webpay_customer_id,
             'wsb_operation_type' => 'recurring_pay',
             'wsb_recurring_token' => $init_recurring_donation->webpay_recurring_token,
-        );
+        ];
 
         $ch = curl_init();
-        curl_setopt_array($ch, array(
+        curl_setopt_array($ch, [
             CURLOPT_URL => rtrim($this->submission_redirect_url('', ''), '/'),
             CURLOPT_CUSTOMREQUEST => 'POST',
             CURLOPT_POSTFIELDS => http_build_query($data),
             CURLOPT_VERBOSE => true,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_CONNECTTIMEOUT => 60,
-        ));
+        ]);
 
         if( !$result = curl_exec($ch) ) {
             $this->_handle_callback_error(sprintf(__("Rebilling request to the WebPay system couldn't be made due to some error.\n\nThe error: %s", 'leyka'), curl_error($ch).' ('.curl_errno($ch).')'), $new_recurring_donation);
@@ -695,11 +695,11 @@ class Leyka_Webpay_Card extends Leyka_Payment_Method {
         $this->_label_backend = __('Bank card', 'leyka');
         $this->_label = __('Bank card', 'leyka');
 
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, [
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
-        ));
+        ]);
 
         $this->_supported_currencies[] = 'byn';
         $this->_default_currency = 'byn';
@@ -712,15 +712,15 @@ class Leyka_Webpay_Card extends Leyka_Payment_Method {
             return;
         }
 
-        $this->_options = array(
-            $this->full_id.'_rebilling_available' => array(
+        $this->_options = [
+            $this->full_id.'_rebilling_available' => [
                 'type' => 'checkbox',
                 'default' => false,
                 'title' => __('Monthly recurring subscriptions are available', 'leyka'),
                 'comment' => __('Check if the gateway allows you to create recurrent subscriptions to do regular automatic payments.', 'leyka'),
                 'short_format' => true,
-            ),
-        );
+            ],
+        ];
 
     }
 

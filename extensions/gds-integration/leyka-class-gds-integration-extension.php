@@ -53,25 +53,25 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
 
     protected function _set_options_defaults() {
 
-        $this->_options = apply_filters('leyka_'.$this->_id.'_extension_options', array(
-            $this->_id.'_donations_date_period' => array(
+        $this->_options = apply_filters('leyka_'.$this->_id.'_extension_options', [
+            $this->_id.'_donations_date_period' => [
                 'type' => 'select',
                 'title' => __('Donations dates period', 'leyka'),
                 'description' => __('Choose a donations dates period from which your donations will be prepared to export to Google Data Studio. WARNING: donations data to export will be refreshed only at the closest call of your special data preparing procedure.', 'leyka'),
-                'field_classes' => array('leyka-option-field-width-half'),
+                'field_classes' => ['leyka-option-field-width-half'],
                 'default' => '2_years',
-                'list_entries' => array(
+                'list_entries' => [
                     '2_months' => __('Last two months', 'leyka'),
                     '6_months' => __('Last six months', 'leyka'),
                     '1_year' => __('Last one year', 'leyka'),
                     '2_years' => __('Last two years', 'leyka'),
                     'all' => __('For all time', 'leyka'),
-                ),
-            ),
-            $this->_id.'_data_info' => array(
+                ],
+            ],
+            $this->_id.'_data_info' => [
                 'type' => 'custom_gds_integration_data_info', // Special option type
-            ),
-        ));
+            ],
+        ]);
 
     }
 
@@ -188,7 +188,7 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
     public function get_donations_to_convert() {
 
         return Leyka_Donations::get_instance()->get(apply_filters('leyka_gds_integration_donation_query_params', [
-            'date_query' => array($this->_get_date_query()),
+            'date_query' => [$this->_get_date_query()],
         ]));
 
     }
@@ -196,7 +196,7 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
     public function get_donations_to_convert_count() {
 
         return Leyka_Donations::get_instance()->get_count(apply_filters('leyka_gds_integration_donation_query_params', [
-            'date_query' => array($this->_get_date_query()),
+            'date_query' => [$this->_get_date_query()],
         ]));
 
     }
@@ -205,16 +205,16 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
 
         switch(leyka_options()->opt($this->_id.'_donations_date_period')) {
             case '2_months':
-                return array('after' => '-2 month', 'inclusive' => true,);
+                return ['after' => '-2 month', 'inclusive' => true,];
             case '6_months':
-                return array('after' => '-6 month', 'inclusive' => true,);
+                return ['after' => '-6 month', 'inclusive' => true,];
             case '1_year':
-                return array('after' => '-1 year', 'inclusive' => true,);
+                return ['after' => '-1 year', 'inclusive' => true,];
             case 'all':
-                return array();
+                return [];
             case '2_years':
             default:
-                return array('after' => '-2 year', 'inclusive' => true,);
+                return ['after' => '-2 year', 'inclusive' => true,];
         }
 
     }

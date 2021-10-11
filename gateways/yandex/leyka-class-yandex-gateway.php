@@ -25,7 +25,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         $this->_has_wizard = true;
 
         $this->_min_commission = 2.8;
-        $this->_receiver_types = array('legal');
+        $this->_receiver_types = ['legal'];
         $this->_may_support_recurring = true;
 
     }
@@ -36,62 +36,62 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             return;
         }
 
-        $this->_options = array(
-            $this->_id.'_new_api' => array(
+        $this->_options = [
+            $this->_id.'_new_api' => [
                 'type' => 'checkbox',
                 'default' => true,
                 'title' => __('Use the new REST API', 'leyka'),
                 'comment' => __('Check if your YooKassa connection uses REST API for payments.', 'leyka'),
                 'short_format' => true,
-            ),
-            $this->_id.'_shop_id' => array(
+            ],
+            $this->_id.'_shop_id' => [
                 'type' => 'text',
                 'title' => __('ShopID', 'leyka'),
                 'comment' => __('Please, enter your shopID here. It can be found in your gateway account or in the contract documents. Also you can ask your gateway-side manager for it.', 'leyka'),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '12345'),
-            ),
-            $this->_id.'_scid' => array(
+            ],
+            $this->_id.'_scid' => [
                 'type' => 'text',
                 'title' => __('ScID', 'leyka'),
                 'comment' => __('Please, enter your shop showcase ID (SCID) here. It can be found in your gateway account or in the contract documents. Also you can ask your gateway-side manager for it.', 'leyka'),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '12345'),
-                'field_classes' => array('old-api'),
-            ),
-            $this->_id.'_shop_article_id' => array(
+                'field_classes' => ['old-api',],
+            ],
+            $this->_id.'_shop_article_id' => [
                 'type' => 'text',
                 'title' => __('ShopArticleID', 'leyka'),
                 'comment' => __('Please, enter your shop article ID here, if it exists. It can be found in your gateway account or in the contract documents. Also you can ask your gateway-side manager for it.', 'leyka'),
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '12345'),
-                'field_classes' => array('old-api'),
-            ),
-            $this->_id.'_shop_password' => array(
+                'field_classes' => ['old-api',],
+            ],
+            $this->_id.'_shop_password' => [
                 'type' => 'text',
                 'title' => __('shopPassword', 'leyka'),
                 'comment' => __("Please, enter a shopPassword parameter value that you filled in the gateway technical questionaire. If it's set, Leyka will perform MD5 hash checks of each incoming donation data integrity.", 'leyka'),
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1^2@3#&84nDsOmE5h1T'),
                 'is_password' => true,
-                'field_classes' => array('old-api'),
-            ),
-            $this->_id.'_secret_key' => array(
+                'field_classes' => ['old-api',],
+            ],
+            $this->_id.'_secret_key' => [
                 'type' => 'text',
                 'title' => __('Secret key for API', 'leyka'),
                 'comment' => __("Please, enter a secret key parameter value that you filled in the gateway technical questionaire. If it's set, Leyka will perform MD5 hash checks of each incoming donation data integrity. More information  <a href='https://yookassa.ru/docs/support/merchant/payments/implement/keys' target='_blank'>here</a>.", 'leyka'),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'test_OkT0flRaEnS0fWqMFZuTg01hu_8SxSkxZuAVIw7CMgB'),
                 'is_password' => true,
-                'field_classes' => array('new-api'),
-            ),
-            $this->_id.'_test_mode' => array(
+                'field_classes' => ['new-api',],
+            ],
+            $this->_id.'_test_mode' => [
                 'type' => 'checkbox',
                 'default' => true,
                 'title' => __('Payments testing mode', 'leyka'),
                 'comment' => __('Check if the gateway integration is in test mode.', 'leyka'),
                 'short_format' => true,
-                'field_classes' => array('old-api'),
-            ),
-        );
+                'field_classes' => ['old-api',],
+            ],
+        ];
 
     }
 
@@ -168,31 +168,29 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
             try {
 
-                $payment_data = array(
-                    'amount' => array(
+                $payment_data = [
+                    'amount' => [
                         'value' => round($form_data['leyka_donation_amount'], 2),
                         'currency' => $form_data['leyka_donation_currency'],
-                    ),
-                    'confirmation' => array(
+                    ],
+                    'confirmation' => [
                         'type' => 'redirect',
                         'return_url' => empty($form_data['leyka_success_page_url']) ?
                             leyka_get_success_page_url() : $form_data['leyka_success_page_url'],
-                    ),
+                    ],
                     'capture' => true, // Make payment at once, don't wait for shop confirmation
                     'description' => mb_strlen($description) >= 128 ? mb_substr($description, 0, 124).' ...' : $description,
-                    'metadata' => array(
+                    'metadata' => [
                         'donation_id' => $donation_id,
                         'donor_name' => $donation->donor_name,
                         'payment_title' => $donation->payment_title,
                         'email' => $donation->donor_email,
                         'cms_name' => 'Leyka',
-                    ),
+                    ],
                     'save_payment_method' => !empty($form_data['leyka_recurring']),
-                );
+                ];
                 if($pm_id !== 'yandex_all') {
-                    $payment_data['payment_method_data'] = array(
-                        'type' => $this->_get_gateway_pm_id($pm_id),
-                    );
+                    $payment_data['payment_method_data'] = ['type' => $this->_get_gateway_pm_id($pm_id),];
                 }
 
                 $payment = $client->createPayment($payment_data, uniqid('', true));
@@ -262,13 +260,13 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
         // New (REST) API doesn't require the data to be sent with redirect:
 //        if(leyka_options()->opt('yandex_new_api')) {
-//            return apply_filters('leyka_yandex_custom_submission_data', array(), $pm_id);
+//            return apply_filters('leyka_yandex_custom_submission_data', [], $pm_id);
 //        }
         // ... but we'll send the data anyway - some Leyka installations are using the AJAX response to hook in the analytics
 
         $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
 
-        $data = array(
+        $data = [
             'scid' => leyka_options()->opt('yandex_scid'),
             'shopId' => leyka_options()->opt('yandex_shop_id'),
             'sum' => $donation->amount,
@@ -281,7 +279,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             'shopFailURL' => leyka_get_failure_page_url(),
             'cps_email' => $donation->donor_email,
             'cms_name' => 'wp-leyka', // Service parameter, added by Yandex request
-        );
+        ];
         if(leyka_options()->opt('yandex_shop_article_id')) {
             $data['shopArticleId'] = leyka_options()->opt('yandex_shop_article_id');
         }
@@ -382,13 +380,13 @@ techMessage="'.$tech_message.'"/>');
                                 ->setTransactionId($donation->id)
                                 ->setAffiliation(get_bloginfo('name'))
                                 ->setRevenue($donation->amount)
-                                ->addProduct(array( // Donation params
+                                ->addProduct([ // Donation params
                                     'name' => $donation->payment_title,
                                     'price' => $donation->amount,
                                     'brand' => get_bloginfo('name'), // Mb, it won't work with it
                                     'category' => $donation->type_label, // Mb, it won't work with it
                                     'quantity' => 1,
-                                ))
+                                ])
                                 ->setProductActionToPurchase()
                                 ->setEventCategory('Checkout')
                                 ->setEventAction('Purchase')
@@ -484,13 +482,13 @@ techMessage="'.$tech_message.'"/>');
                             ->setTransactionId($donation->id)
                             ->setAffiliation(get_bloginfo('name'))
                             ->setRevenue($donation->amount)
-                            ->addProduct(array( // Donation params
+                            ->addProduct([ // Donation params
                                 'name' => $donation->payment_title,
                                 'price' => $donation->amount,
                                 'brand' => get_bloginfo('name'), // Mb, it won't work with it
                                 'category' => $donation->type_label, // Mb, it won't work with it
                                 'quantity' => 1,
-                            ))
+                            ])
                             ->setProductActionToPurchase()
                             ->setEventCategory('Checkout')
                             ->setEventAction('Purchase')
@@ -514,7 +512,7 @@ techMessage="'.$tech_message.'"/>');
     public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {
 
         if( !$donation->gateway_response ) {
-            return array();
+            return [];
         }
 
         require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
@@ -527,14 +525,14 @@ techMessage="'.$tech_message.'"/>');
             $response = maybe_unserialize($response);
 
             if(is_a($response, '__PHP_Incomplete_Class')) { // Normally it doesn't happen - just in case
-                return array();
+                return [];
             }
 
             if(
                 is_a($response, 'YooKassa\Request\Payments\PaymentResponse')
                 || is_a($response, 'YooKassa\Request\Payments\CreatePaymentResponse')
             ) { // Payment proceeded normally
-                $response = array(
+                $response = [
                     __('YooKassa payment ID:', 'leyka') => $response->id,
                     __('YooKassa payment status:', 'leyka') => $response->status,
                     __('Payment is done:', 'leyka') => !!$response->paid ? __('Yes') : __('No'),
@@ -548,15 +546,13 @@ techMessage="'.$tech_message.'"/>');
                         (empty($response->payment_method->type) ? __('No') : $response->payment_method->type) :
                         $response->payment_method->title,
 //                    __('Is test payment:', 'leyka') => !!$response->test ? __('Yes') : __('No'),
-                );
+                ];
             } else if(is_a($response, 'Exception')) { // Exceptions were thrown
-                $response = array(
+                $response = [
                     __('Failure type:', 'leyka') => empty($response->type) ? __('unknown', 'leyka') : $response->type,
                     __('Failure code:', 'leyka') => $response->getCode(),
                     __('Failure message:', 'leyka') => $response->getMessage(),
-                );
-            } else if(is_a($response, '__PHP_Incomplete_Class')) {
-                $response = array();
+                ];
             }
 
         } else { // Old API
@@ -565,12 +561,12 @@ techMessage="'.$tech_message.'"/>');
                 $donation->gateway_response : maybe_unserialize($donation->gateway_response);
 
             if( !$response ) {
-                $response = array();
+                $response = [];
             } else if( !is_array($response) ) {
-                $response = array('' => ucfirst($response));
+                $response = ['' => ucfirst($response)];
             }
 
-            $response = array(
+            $response = [
                 __('Last response operation:', 'leyka') => empty($response['action']) ?
                     __('Unknown', 'leyka') :
                     ($response['action'] == 'checkOrder' ? __('Donation confirmation', 'leyka') : __('Donation approval notice', 'leyka')),
@@ -582,7 +578,7 @@ techMessage="'.$tech_message.'"/>');
                 __('Gateway donor ID:', 'leyka') => empty($response['customerNumber']) ? '' : $response['customerNumber'],
                 __('Response date:', 'leyka') => empty($response['requestDatetime']) ?
                     '' : date('d.m.Y, H:i:s', strtotime($response['requestDatetime'])),
-            );
+            ];
 
         }
 
@@ -602,13 +598,13 @@ techMessage="'.$tech_message.'"/>');
 
         $new_recurring_donation = Leyka_Donations::get_instance()->add_clone(
             $init_recurring_donation,
-            array(
+            [
                 'status' => 'submitted',
                 'payment_type' => 'rebill',
                 'init_recurring_donation' => $init_recurring_donation->id,
                 'yandex_recurring_id' => $init_recurring_donation->yandex_recurring_id,
-            ),
-            array('recalculate_total_amount' => true,)
+            ],
+            ['recalculate_total_amount' => true,]
         );
 
         if(is_wp_error($new_recurring_donation)) {
@@ -629,25 +625,25 @@ techMessage="'.$tech_message.'"/>');
             try {
 
                 $payment = $client->createPayment(
-                    array(
-                        'amount' => array(
+                    [
+                        'amount' => [
                             'value' => round($new_recurring_donation->amount, 2),
                             'currency' => $new_recurring_donation->currency_id,
-                        ),
+                        ],
                         'payment_method_id' => $init_recurring_donation->yandex_recurring_id,
                         'capture' => true,
                         'description' =>
                             ( !empty($form_data['leyka_recurring']) ? _x('[R]', 'For "rebill"', 'leyka').' ' : '' )
                             .$new_recurring_donation->payment_title." (№ {$new_recurring_donation->id}); "
                             ."{$new_recurring_donation->donor_name}; {$new_recurring_donation->donor_email}",
-                        'metadata' => array(
+                        'metadata' => [
                             'donation_id' => $new_recurring_donation->id,
                             'donor_name' => $new_recurring_donation->donor_name,
                             'payment_title' => $new_recurring_donation->payment_title,
                             'email' => $new_recurring_donation->donor_email,
                             'cms_name' => 'Leyka',
-                        ),
-                    ),
+                        ],
+                    ],
                     uniqid('', true)
                 );
 
@@ -665,20 +661,20 @@ techMessage="'.$tech_message.'"/>');
         } else {
 
             $ch = curl_init();
-            $params = array(
+            $params = [
                 CURLOPT_URL => leyka_options()->opt('yandex_test_mode') ?
                     'https://penelope-demo.yamoney.ru/webservice/mws/api/repeatCardPayment' :
                     'https://penelope.yamoney.ru/webservice/mws/api/repeatCardPayment',
                 CURLOPT_PORT => leyka_options()->opt('yandex_test_mode') ? 8083 : 443,
                 CURLOPT_HEADER => false,
-                CURLOPT_HTTPHEADER => array('Content-Type: application/x-www-form-urlencoded'),
+                CURLOPT_HTTPHEADER => ['Content-Type: application/x-www-form-urlencoded'],
                 CURLOPT_POST => true,
-                CURLOPT_POSTFIELDS => http_build_query(array(
+                CURLOPT_POSTFIELDS => http_build_query([
                     'clientOrderId' => $new_recurring_donation->id,
                     'invoiceId' => $init_recurring_donation->yandex_recurring_id,
                     'orderNumber' => 'recurring-'.$init_recurring_donation->id.'-'.$new_recurring_donation->id,
                     'amount' => $init_recurring_donation->amount,
-                )),
+                ]),
                 CURLOPT_VERBOSE => false,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_CONNECTTIMEOUT => 60,
@@ -691,7 +687,7 @@ techMessage="'.$tech_message.'"/>');
                 CURLOPT_SSLKEY => leyka_options()->opt('yandex-yandex_card_private_key_path') ?
                     WP_CONTENT_DIR.'/'.trim(leyka_options()->opt('yandex-yandex_card_private_key_path'), '/') : false,
                 CURLOPT_SSLKEYPASSWD => leyka_options()->opt('yandex-yandex_card_private_key_password'),
-            );
+            ];
             if(leyka_options()->opt('yandex_outer_ip_to_inner')) {
                 $params[CURLOPT_INTERFACE] = gethostbyname(gethostname());
             }
@@ -829,14 +825,14 @@ techMessage="'.$tech_message.'"/>');
      */
     protected function _get_gateway_pm_id($pm_id) {
 
-        $all_pm_ids = leyka_options()->opt('yandex_new_api') ? array(
+        $all_pm_ids = leyka_options()->opt('yandex_new_api') ? [
             'yandex_card' => 'bank_card',
             'yandex_money' => 'yoo_money',
             'yandex_wm' => 'webmoney',
             'yandex_sb' => 'sberbank',
             'yandex_ab' => 'alfabank',
             'yandex_pb' => 'psb',
-        ) : array(
+        ] : [
             'yandex_all' => '',
             'yandex_card' => 'AC',
             'yandex_money' => 'PC',
@@ -844,7 +840,7 @@ techMessage="'.$tech_message.'"/>');
             'yandex_sb' => 'SB',
             'yandex_ab' => 'AB',
             'yandex_pb' => 'PB',
-        );
+        ];
 
         if(array_key_exists($pm_id, $all_pm_ids)) {
             return $all_pm_ids[$pm_id];
@@ -899,15 +895,15 @@ class Leyka_Yandex_All extends Leyka_Payment_Method {
         $this->_label_backend = __('Smart payment', 'leyka');
         $this->_label = __('Smart payment', 'leyka');
 
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, [
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/yandex-money.svg',
-        ));
+        ]);
 
-        $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
+        $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, []);
 
         $this->_supported_currencies[] = 'rub';
         $this->_default_currency = 'rub';
@@ -931,12 +927,12 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
         $this->_label_backend = __('Bank card', 'leyka');
         $this->_label = __('Bank card', 'leyka');
 
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, [
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
-        ));
+        ]);
 
         $this->_supported_currencies[] = 'rub';
         $this->_default_currency = 'rub';
@@ -949,40 +945,40 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
             return;
         }
 
-        $this->_options = array(
-            $this->full_id.'_rebilling_available' => array(
+        $this->_options = [
+            $this->full_id.'_rebilling_available' => [
                 'type' => 'checkbox',
                 'default' => false,
                 'title' => __('Monthly recurring subscriptions are available', 'leyka'),
                 'comment' => __('Check if the gateway allows you to create recurrent subscriptions to do regular automatic payments.', 'leyka'),
                 'short_format' => true,
-            ),
-            $this->full_id.'_certificate_path' => array(
+            ],
+            $this->full_id.'_certificate_path' => [
                 'type' => 'text',
                 'default' => '',
                 'title' => __('Recurring payments certificate path', 'leyka'),
                 'comment' => __("Please, enter the path to your SSL certificate given to you by the gateway. <strong>Warning!</strong> The path should include the certificate filename intself. Also it should be relative to wp-content directory.", 'leyka'),
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '/uploads/leyka/your-cert-file.cer'),
-                'field_classes' => array('old-api'),
-            ),
-            $this->full_id.'_private_key_path' => array(
+                'field_classes' => ['old-api'],
+            ],
+            $this->full_id.'_private_key_path' => [
                 'type' => 'text',
                 'default' => '',
                 'title' => __("Recurring payments certificate private key path", 'leyka'),
                 'comment' => __("Please, enter the path to your SSL certificate's private key given to you by the gateway.<li><li>The path should include the certificate filename intself.</li><li>The path should be relative to wp-content directory. </li></ul>", 'leyka'),
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '/uploads/leyka/your-private.key'),
-                'field_classes' => array('old-api'),
-            ),
-            $this->full_id.'_private_key_password' => array(
+                'field_classes' => ['old-api'],
+            ],
+            $this->full_id.'_private_key_password' => [
                 'type' => 'text',
                 'default' => '',
                 'title' => __("Recurring payments certificate private key password", 'leyka'),
                 'comment' => __("Please, enter a password for your SSL certificate's private key, if you set this password during the generation of your sertificate request file.", 'leyka'),
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'fW!^12@3#&8A4'),
                 'is_password' => true,
-                'field_classes' => array('old-api'),
-            ),
-        );
+                'field_classes' => ['old-api'],
+            ],
+        ];
 
     }
 
@@ -1007,11 +1003,11 @@ class Leyka_Yandex_Money extends Leyka_Payment_Method {
         $this->_label_backend = __('YooMoney', 'leyka');
         $this->_label = __('YooMoney', 'leyka');
 
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, [
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/yandex-money.svg',
-        ));
+        ]);
 
-        $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
+        $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, []);
 
         $this->_supported_currencies[] = 'rub';
         $this->_default_currency = 'rub';
@@ -1041,11 +1037,11 @@ class Leyka_Yandex_Webmoney extends Leyka_Payment_Method {
         $this->_label_backend = __('Webmoney', 'leyka');
         $this->_label = __('Webmoney', 'leyka');
 
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, [
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/webmoney.svg',
-        ));
+        ]);
 
-        $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
+        $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, []);
 
         $this->_supported_currencies[] = 'rub';
         $this->_default_currency = 'rub';
@@ -1075,11 +1071,11 @@ class Leyka_Yandex_Sberbank_Online extends Leyka_Payment_Method {
         $this->_label_backend = __('Sberbank Online invoicing', 'leyka');
         $this->_label = __('Sberbank Online', 'leyka');
 
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, [
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/sber.svg',
-        ));
+        ]);
 
-        $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
+        $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, []);
 
         $this->_supported_currencies[] = 'rub';
         $this->_default_currency = 'rub';
@@ -1109,11 +1105,11 @@ class Leyka_Yandex_Alpha_Click extends Leyka_Payment_Method {
         $this->_label_backend = __('Alpha-Click invoicing', 'leyka');
         $this->_label = __('Alpha-Click', 'leyka');
 
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, [
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/alfa-click.svg',
-        ));
+        ]);
 
-        $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
+        $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, []);
 
         $this->_supported_currencies[] = 'rub';
         $this->_default_currency = 'rub';
@@ -1143,11 +1139,11 @@ class Leyka_Yandex_Promvzyazbank extends Leyka_Payment_Method {
         $this->_label_backend = __('Promsvyazbank invoicing', 'leyka');
         $this->_label = __('Promsvyazbank', 'leyka');
 
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, [
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/promsvyazbank.svg',
-        ));
+        ]);
 
-        $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, array());
+        $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, []);
 
         $this->_supported_currencies[] = 'rub';
         $this->_default_currency = 'rub';

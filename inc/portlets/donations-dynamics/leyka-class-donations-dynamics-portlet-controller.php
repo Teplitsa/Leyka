@@ -7,7 +7,7 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
 
     protected static $_instance;
 
-    public function get_template_data(array $params = array()) {
+    public function get_template_data(array $params = []) {
 
         $params['interval'] = empty($params['interval']) ? 'year' : $params['interval'];
         switch($params['interval']) {
@@ -35,8 +35,8 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
 
         global $wpdb;
 
-        $result = array();
-        $labels = array();
+        $result = [];
+        $labels = [];
 
         for($sub_interval_index = 0; $sub_interval_index < $interval_length; $sub_interval_index++) {
 
@@ -62,7 +62,7 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
 
             $amount = $wpdb->get_var($query);
 
-            $result[] = array('x' => date('d.m.Y', strtotime($sub_interval_end_date)), 'y' => $amount,);
+            $result[] = ['x' => date('d.m.Y', strtotime($sub_interval_end_date)), 'y' => $amount,];
             if($sub_interval === 'month') {
                 $labels[] = date('m.y', strtotime($sub_interval_end_date));
             } else if($sub_interval === 'week') {
@@ -73,7 +73,7 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
 
         }
 
-        return array('data' => array_reverse($result), 'labels' => array_reverse($labels),);
+        return ['data' => array_reverse($result), 'labels' => array_reverse($labels),];
 
     }
 

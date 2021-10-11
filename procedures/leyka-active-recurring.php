@@ -18,13 +18,13 @@ ini_set('memory_limit', 536870912); // 512 Mb, just in case
 // Get all active initial donations for the recurring subscriptions:
 $current_day = (int)date('j');
 $max_days_in_month = (int)date('t');
-$current_day_param = array('relation' => 'AND',);
+$current_day_param = ['relation' => 'AND',];
 if( !leyka_options()->opt('plugin_debug_mode') ) { // In production mode, rebill only subscriptions older than 1 full day
-    $current_day_param[] = array('before' => '-1 day');
+    $current_day_param[] = ['before' => '-1 day'];
 }
 $current_day_param[] = $max_days_in_month < 31 && $max_days_in_month === $current_day ? // Last day of short month
-    array(array('day' => $current_day, 'compare' => '>='), array('day' => 31, 'compare' => '<=')) :
-    array(array('day' => (int)date('j')));
+    [['day' => $current_day, 'compare' => '>='], ['day' => 31, 'compare' => '<=']] :
+    [['day' => (int)date('j')]];
 
 $init_recurring_donations = Leyka_Donations::get_instance()->get([
     'status' => 'funded',

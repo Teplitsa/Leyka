@@ -13,15 +13,15 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
             return;
         }
 
-        $this->_options = array(
-            'quittance_redirect_page' => array(
+        $this->_options = [
+            'quittance_redirect_page' => [
                 'type' => 'select',
                 'default' => leyka_get_default_success_page(),
                 'title' => __('Page to redirect a donor after a donation', 'leyka'),
                 'comment' => __('Select a page for donor to redirect to after he has acquired a quittance.', 'leyka'),
                 'list_entries' => leyka_get_pages_list(),
-            ),
-        );
+            ],
+        ];
 
     }
 
@@ -36,13 +36,13 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
             $this->_id
         );
 
-        $this->_countries = array('ru',);
+        $this->_countries = ['ru',];
 
         $this->_docs_link = '//leyka.te-st.ru/docs/nastrojka-lejki/';
         $this->_registration_link = '';
 
         $this->_min_commission = 2.1;
-        $this->_receiver_types = array('legal',);
+        $this->_receiver_types = ['legal',];
 
     }
 
@@ -67,7 +67,7 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
         leyka_remembered_data('template_id', $campaign->template);
 
         $quittance_html = str_replace(
-            apply_filters('leyka_quittance_placeholders_list', array(
+            apply_filters('leyka_quittance_placeholders_list', [
                 '#BACK_TO_DONATION_FORM_TEXT#',
                 '#PRINT_THE_QUITTANCE_TEXT#',
                 '#QUITTANCE_RECEIVED_TEXT#',
@@ -82,8 +82,8 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
                 '#RECEIVER_BANK_NAME#',
                 '#BIC#',
                 '#CORR#',
-            ), $pm_id, $donation_id, $form_data),
-            apply_filters('leyka_quittance_placeholders_values', array( // Form field values
+            ], $pm_id, $donation_id, $form_data),
+            apply_filters('leyka_quittance_placeholders_values', [ // Form field values
                 '#BACK_TO_DONATION_FORM_TEXT#' => __('Return to the donation form', 'leyka'),
                 '#PRINT_THE_QUITTANCE_TEXT#' => __('Print the quittance', 'leyka'),
                 '#QUITTANCE_RECEIVED_TEXT#' => __("OK, I've received the quittance", 'leyka'),
@@ -98,24 +98,24 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
                 '#RECEIVER_BANK_NAME#' => leyka_options()->opt('org_bank_name'),
                 '#BIC#' => leyka_options()->opt('org_bank_bic'),
                 '#CORR#' => leyka_options()->opt('org_bank_corr_account'),
-            ), $pm_id, $donation_id, $form_data),
+            ], $pm_id, $donation_id, $form_data),
             $this->_payment_methods[$pm_id]->get_quittance_html()
         );
 
-        for($i=0; $i<10; $i++) {
+        for($i = 0; $i < 10; $i++) {
             $quittance_html = str_replace("#INN_$i#", mb_substr(leyka_options()->opt('org_inn'), $i, 1), $quittance_html);
         }
-        for($i=0; $i<20; $i++) {
+        for($i = 0; $i < 20; $i++) {
             $quittance_html = str_replace(
                 "#ACC_$i#", mb_substr(leyka_options()->opt('org_bank_account'), $i, 1), $quittance_html
             );
         }
-        for($i=0; $i<9; $i++) {
+        for($i = 0; $i<9; $i++) {
             $quittance_html = str_replace(
                 "#BIC_$i#", mb_substr(leyka_options()->opt('org_bank_bic'), $i, 1), $quittance_html
             );
         }
-        for($i=0; $i<20; $i++) {
+        for($i = 0; $i < 20; $i++) {
             $quittance_html = str_replace(
                 "#CORR_$i#", mb_substr(leyka_options()->opt('org_bank_corr_account'), $i, 1), $quittance_html
             );
@@ -136,7 +136,7 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
     }
 
     public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {
-        return array();
+        return [];
     }
 
 }
@@ -162,13 +162,13 @@ class Leyka_Bank_Order extends Leyka_Payment_Method {
         $this->_label_backend = __('Bank order quittance', 'leyka');
         $this->_label = __('Bank order quittance', 'leyka');
 
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, [
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/sber.svg',
-        ));
+        ]);
 
         $this->_submit_label = __('Get bank order quittance', 'leyka');
 
-        $this->_supported_currencies = array('rub');
+        $this->_supported_currencies = ['rub',];
         $this->_default_currency = 'rub';
 
         $this->_ajax_without_form_submission = true;

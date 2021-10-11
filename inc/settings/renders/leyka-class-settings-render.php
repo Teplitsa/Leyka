@@ -50,8 +50,8 @@ abstract class Leyka_Settings_Render extends Leyka_Singleton {
     abstract public function render_submit_area();
 
     protected function _load_scripts() {
-//        wp_enqueue_script('leyka-settings-XXX', 'some/URL', array('jquery',), LEYKA_VERSION, true);
-//        wp_localize_script('leyka-settings-XXX', 'leyka-settings-XXX', array());
+//        wp_enqueue_script('leyka-settings-XXX', 'some/URL', ['jquery',], LEYKA_VERSION, true);
+//        wp_localize_script('leyka-settings-XXX', 'leyka-settings-XXX', []);
         /** WARNING: CSS files loaded here will appear only in page footer. */
         do_action('leyka_settings_render_enqueue_scripts', $this->_id);
     }

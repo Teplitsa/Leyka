@@ -29,7 +29,7 @@ class Leyka_Settings_Factory extends Leyka_Singleton { // Each descendant is a c
      * @return Leyka_Settings_Controller
      * @throws Exception With codes 500-509
      */
-    public function get_controller($controller_id, array $params = array()) {
+    public function get_controller($controller_id, array $params = []) {
 
         $controller_id = trim(esc_attr($controller_id));
 

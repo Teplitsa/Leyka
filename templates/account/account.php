@@ -55,11 +55,11 @@ try {
 								<div class="leyka-ext-support-packages">
 
 								<?php foreach($leyka_ext_sp->get_packages() as $package) {
-								    $leyka_ext_sp_template_tags->show_manage_card($package, array(
+								    $leyka_ext_sp_template_tags->show_manage_card($package, [
 									    'is_active' => $leyka_ext_sp->is_package_active($package, $current_user),
 									    'is_activation_available' => $leyka_ext_sp->is_activation_available($package, $current_user),
 									    'campaign_post_permalink' => $campaign_post_permalink,
-									));
+                                    ]);
 								}?>
 
 								</div>

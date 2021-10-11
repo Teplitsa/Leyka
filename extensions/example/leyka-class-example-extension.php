@@ -40,38 +40,38 @@ class Leyka_Example_Extension extends Leyka_Extension {
 
     protected function _set_options_defaults() {
 
-        $this->_options = apply_filters('leyka_'.$this->_id.'_extension_options', array(
-            $this->_id.'_text_req' => array(
+        $this->_options = apply_filters('leyka_'.$this->_id.'_extension_options', [
+            $this->_id.'_text_req' => [
                 'type' => 'text',
                 'title' => 'Обязательное текстовое поле',
                 'comment' => 'Комментарий к полю. Может отсутствовать - при этом символ комментария к полю не выводится.',
                 'required' => true,
                 'placeholder' => 'Подсказка для заполнения поля',
                 'description' => 'Пояснение к полю выше. Может отсутствовать.',
-            ),
-            $this->_id.'_text_non_req' => array(
+            ],
+            $this->_id.'_text_non_req' => [
                 'type' => 'text',
                 'title' => 'Необязательное текстовое поле',
 //                'comment' => 'Комментарий к полю. Может отсутствовать - при этом символ комментария к полю не выводится.',
                 'required' => false,
                 'placeholder' => 'Подсказка для заполнения поля',
-            ),
-            $this->_id.'_textarea_non_req' => array(
+            ],
+            $this->_id.'_textarea_non_req' => [
                 'type' => 'textarea',
                 'title' => 'Необязательный многострочный текст',
                 'comment' => 'Комментарий к полю',
                 'required' => false,
-            ),
-            $this->_id.'_test_contained_options_1' => array(
+            ],
+            $this->_id.'_test_contained_options_1' => [
                 'type' => 'container',
-                'entries' => array(
-                    $this->_id.'_some_color' => array(
+                'entries' => [
+                    $this->_id.'_some_color' => [
                         'type' => 'colorpicker',
                         'title' => 'Цвет для вывода',
                         'description' => 'Рекомендуем красивый цвет',
                         'default' => '#123456',
-                    ),
-                    $this->_id.'_some_number' => array(
+                    ],
+                    $this->_id.'_some_number' => [
                         'type' => 'number',
                         'title' => 'Некоторое число процентов',
                         'required' => true,
@@ -79,18 +79,18 @@ class Leyka_Example_Extension extends Leyka_Extension {
                         'min' => 0.0,
                         'max' => 100.0,
                         'step' => 0.1,
-                    ),
-                    $this->_id.'_checkbox' => array(
+                    ],
+                    $this->_id.'_checkbox' => [
                         'type' => 'checkbox',
                         'default' => true,
                         'title' => 'Галочка',
                         'description' => 'Отметьте, чтобы галочка оказалась проставленной',
                         'comment' => 'Комментарий к полю-галочке.',
 //                        'short_format' => true,
-                    ),
-                ),
-            ),
-        ));
+                    ],
+                ],
+            ],
+        ]);
 
     }
 

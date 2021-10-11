@@ -22,18 +22,18 @@ if(leyka_options()->opt('send_recurring_canceling_donor_notification_email')) {
     $recurring_subscription_date_timestamp = strtotime("-$mailout_delay_days days");
     $recurring_subscription_date = date('Y-m-d', $recurring_subscription_date_timestamp);
 
-    $recurring_subscriptions = get_posts(array(
+    $recurring_subscriptions = get_posts([
         'post_type' => Leyka_Donation_Management::$post_type,
         'post_status' => 'funded',
         'post_parent' => 0,
         'posts_per_page' => -1,
-        'meta_query' => array(
+        'meta_query' => [
             'relation' => 'AND',
-            array('key' => 'leyka_payment_type', 'value' => 'rebill',),
-            array('key' => 'leyka_recurrents_cancel_date', 'value' => strtotime($recurring_subscription_date.' 00:00'), 'compare' => '>=',),
-            array('key' => 'leyka_recurrents_cancel_date', 'value' => strtotime($recurring_subscription_date.' 23:59'), 'compare' => '<=',),
-        ),
-    ));
+            ['key' => 'leyka_payment_type', 'value' => 'rebill',],
+            ['key' => 'leyka_recurrents_cancel_date', 'value' => strtotime($recurring_subscription_date.' 00:00'), 'compare' => '>=',],
+            ['key' => 'leyka_recurrents_cancel_date', 'value' => strtotime($recurring_subscription_date.' 23:59'), 'compare' => '<=',],
+        ],
+    ]);
 
     foreach($recurring_subscriptions as $recurring_subscription) {
 
@@ -46,24 +46,24 @@ if(leyka_options()->opt('send_recurring_canceling_donor_notification_email')) {
         }
 
         // Check for the current subscription Donor's later active subscriptions to the current campaign:
-        $later_recurring_subscriptions = new WP_Query(array(
+        $later_recurring_subscriptions = new WP_Query([
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => 'funded',
             'post_parent' => 0,
             'posts_per_page' => 1,
-            'meta_query' => array(
+            'meta_query' => [
                 'relation' => 'AND',
-                array('key' => 'donor_email', 'value' => $recurring_subscription->donor_email,),
-                array('key' => 'leyka_payment_type', 'value' => 'rebill',),
-                array('key' => 'leyka_campaign_id', 'value' => $recurring_subscription->campaign_id),
-                array('key' => '_rebilling_is_active', 'value' => 1),
-                array(
+                ['key' => 'donor_email', 'value' => $recurring_subscription->donor_email,],
+                ['key' => 'leyka_payment_type', 'value' => 'rebill',],
+                ['key' => 'leyka_campaign_id', 'value' => $recurring_subscription->campaign_id],
+                ['key' => '_rebilling_is_active', 'value' => 1],
+                [
                     'key' => 'leyka_recurrents_cancel_date',
                     'value' => date('Y-m-d H:i', $recurring_subscription_date_timestamp),
                     'compare' => '>',
-                ),
-            ),
-        ));
+                ],
+            ],
+        ]);
 
         if($later_recurring_subscriptions->found_posts) {
             continue;
@@ -72,7 +72,7 @@ if(leyka_options()->opt('send_recurring_canceling_donor_notification_email')) {
 
         $campaign = new Leyka_Campaign($recurring_subscription->campaign_id);
 
-        $email_placeholders = array(
+        $email_placeholders = [
             '#SITE_NAME#',
             '#SITE_EMAIL#',
             '#SITE_TECH_SUPPORT_EMAIL#',
@@ -91,8 +91,8 @@ if(leyka_options()->opt('send_recurring_canceling_donor_notification_email')) {
             '#DATE#',
             '#RECURRING_SUBSCRIPTION_CANCELLING_LINK#',
             '#DONOR_ACCOUNT_LOGIN_LINK#',
-        );
-        $email_placeholder_values = array(
+        ];
+        $email_placeholder_values = [
             get_bloginfo('name'),
             get_bloginfo('admin_email'),
             leyka_options()->opt('tech_support_email'),
@@ -114,7 +114,7 @@ if(leyka_options()->opt('send_recurring_canceling_donor_notification_email')) {
                 sprintf(__('<a href="mailto:%s">write us a letter about it</a>', 'leyka'), leyka_options()->opt('tech_support_email')),
                 $recurring_subscription
             ),
-        );
+        ];
 
         // Donor account login link, if needed:
         if(leyka_options()->opt('donor_accounts_available')) {
@@ -164,12 +164,12 @@ if(leyka_options()->opt('send_recurring_canceling_donor_notification_email')) {
                     $recurring_subscription, $campaign
                 )
             )),
-            array('From: '.apply_filters(
+            ['From: '.apply_filters(
                     'leyka_email_from_name',
                     leyka_options()->opt_safe('email_from_name'),
                     $recurring_subscription,
                     $campaign
-                ).' <'.leyka_options()->opt_safe('email_from').'>',)
+                ).' <'.leyka_options()->opt_safe('email_from').'>',]
         );
 
         // Reset content-type to avoid conflicts (http://core.trac.wordpress.org/ticket/23578):

@@ -13,7 +13,7 @@ class Leyka_Qiwi_Gateway_Web_Hook_Verification {
      */
     public static function check_notification_signature($signature, $notification_body, $secret) {
 
-        $processed_notification_data = array(
+        $processed_notification_data = [
             'billId' => (string)isset($notification_body['bill']['billId']) ? $notification_body['bill']['billId'] : '',
             'amount.value' => (string)isset($notification_body['bill']['amount']['value']) ?
                 number_format(round($notification_body['bill']['amount']['value'], 2, PHP_ROUND_HALF_DOWN), 2, '.', '') : 0,
@@ -22,7 +22,7 @@ class Leyka_Qiwi_Gateway_Web_Hook_Verification {
             'siteId' => (string)isset($notification_body['bill']['siteId']) ? $notification_body['bill']['siteId'] : '',
             'status' => (string)isset($notification_body['bill']['status']['value']) ?
                 $notification_body['bill']['status']['value'] : '',
-        );
+        ];
         ksort($processed_notification_data);
 
         $hash = hash_hmac(self::DEFAULT_ALGORITHM, join(self::VALUE_SEPARATOR, $processed_notification_data), $secret);

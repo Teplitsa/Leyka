@@ -22,7 +22,7 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
         $this->_registration_link = 'https://partner.robokassa.ru/reg/register';
 
         $this->_min_commission = 2.7;
-        $this->_receiver_types = array('legal');
+        $this->_receiver_types = ['legal',];
         $this->_may_support_recurring = true;
 
     }
@@ -33,38 +33,38 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
             return;
         }
 
-        $this->_options = array(
-            'robokassa_shop_id' => array(
+        $this->_options = [
+            'robokassa_shop_id' => [
                 'type' => 'text',
                 'title' => __('Shop ID', 'leyka'),
                 'comment' => __('Please, enter your Robokassa shop ID here. It can be found in your Robokassa control panel (shop technical settings).', 'leyka'),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1234'),
-            ),
-            'robokassa_shop_password1' => array(
+            ],
+            'robokassa_shop_password1' => [
                 'type' => 'text',
                 'title' => __('Shop password 1', 'leyka'),
                 'comment' => __('Please, enter your Robokassa shop password 1 here. It can be found in your Robokassa control panel (shop technical settings, field "password 1").', 'leyka'),
                 'required' => true,
                 'is_password' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '12abc34+'),
-            ),
-            'robokassa_shop_password2' => array(
+            ],
+            'robokassa_shop_password2' => [
                 'type' => 'text',
                 'title' => __('Shop password 2', 'leyka'),
                 'comment' => __('Please, enter your Robokassa shop password 2 here. It can be found in your Robokassa control panel (shop technical settings, field "password 2").', 'leyka'),
                 'required' => true,
                 'is_password' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '12abc34+'),
-            ),
-            'robokassa_test_mode' => array(
+            ],
+            'robokassa_test_mode' => [
                 'type' => 'checkbox',
                 'default' => true,
                 'title' => __('Payments testing mode', 'leyka'),
                 'comment' => __('Check if the gateway integration is in test mode.', 'leyka'),
                 'short_format' => true,
-            ),
-        );
+            ],
+        ];
 
     }
 
@@ -123,7 +123,7 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
             default: $pm_curr .= 'R';
         }
 
-        $form_data = array(
+        $form_data = [
             'MrchLogin' => leyka_options()->opt('robokassa_shop_id'),
             'InvId' => $donation_id,
             'OutSum' => $amount,
@@ -132,7 +132,7 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
             'Shp_item' => 1, // Maybe, not needed
             'IncCurrLabel' => $pm_curr, // Default PM + Currency. "R" for "RUB", as we'll always use RUB for now
             'Culture' => get_locale() == 'ru_RU' ? 'ru' : 'en',
-        );
+        ];
 
         if(leyka_options()->opt('robokassa_test_mode')) {
             $form_data['IsTest'] = 1;
@@ -154,12 +154,12 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
 
         $new_recurring_donation = Leyka_Donations::get_instance()->add_clone(
             $init_recurring_donation,
-            array(
+            [
                 'status' => 'submitted',
                 'payment_type' => 'rebill',
                 'init_recurring_donation' => $init_recurring_donation->id,
-            ),
-            array('recalculate_total_amount' => true,)
+            ],
+            ['recalculate_total_amount' => true,]
         );
 
         if(is_wp_error($new_recurring_donation)) {
@@ -171,19 +171,19 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
             .leyka_options()->opt('robokassa_shop_password1'));
 
         $ch = curl_init();
-        $params = array(
+        $params = [
             CURLOPT_URL => 'https://auth.robokassa.ru/Merchant/Recurring',
             CURLOPT_HEADER => false,
-            CURLOPT_HTTPHEADER => array('Content-Type: application/x-www-form-urlencoded'),
+            CURLOPT_HTTPHEADER => ['Content-Type: application/x-www-form-urlencoded'],
             CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => http_build_query(array(
+            CURLOPT_POSTFIELDS => http_build_query([
                 'MerchantLogin' => leyka_options()->opt('robokassa_shop_id'),
                 'InvoiceID' => $new_recurring_donation->id,
                 'PreviousInvoiceID' => $init_recurring_donation->id,
                 'Description' => $init_recurring_donation->payment_title,
                 'SignatureValue' => $hash,
                 'OutSum' => $amount,
-            )),
+            ]),
             CURLOPT_VERBOSE => false,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_CONNECTTIMEOUT => 60,
@@ -191,7 +191,7 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
             CURLOPT_SSL_VERIFYHOST => false,
             CURLOPT_FORBID_REUSE => true,
             CURLOPT_FRESH_CONNECT => true,
-        );
+        ];
         curl_setopt_array($ch, $params);
 
         $answer = curl_exec($ch);
@@ -222,7 +222,7 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
 
         if($donation) { // Edit donation page displayed
 
-            $donation = Leyka_Donations::get_instance()->get($donation);
+            $donation = Leyka_Donations::get_instance()->get_donation($donation);
 
             if($donation->type !== 'rebill') {
                 return;
@@ -329,13 +329,13 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
                     ->setTransactionId($donation->id)
                     ->setAffiliation(get_bloginfo('name'))
                     ->setRevenue($donation->amount)
-                    ->addProduct(array( // Donation params
+                    ->addProduct([ // Donation params
                         'name' => $donation->payment_title,
                         'price' => $donation->amount,
                         'brand' => get_bloginfo('name'), // Mb, it won't work with it
                         'category' => $donation->type_label, // Mb, it won't work with it
                         'quantity' => 1,
-                    ))
+                    ])
                     ->setProductActionToPurchase()
                     ->setEventCategory('Checkout')
                     ->setEventAction('Purchase')
@@ -359,23 +359,23 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
     public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {
 
         if( !$donation->gateway_response ) {
-            return array();
+            return [];
         }
 
         $vars = maybe_unserialize($donation->gateway_response);
         if( !$vars || !is_array($vars) )
-            return array();
+            return [];
 
         return apply_filters(
             'leyka_donation_gateway_response',
-            array(
+            [
                 __('Outcoming sum:', 'leyka') => $this->_get_value_if_any($vars, 'OutSum', !empty($vars['OutSum']) ? round($vars['OutSum'], 2) : false),
                 __('Incoming sum:', 'leyka') => $this->_get_value_if_any($vars, 'IncSum', !empty($vars['IncSum']) ? round($vars['IncSum'], 2) : false),
                 __('Invoice ID:', 'leyka') => $this->_get_value_if_any($vars, 'InvId'),
                 __('Signature value (sent from Robokassa):', 'leyka') => $this->_get_value_if_any($vars, 'SignatureValue'),
                 __('Payment method:', 'leyka') => $this->_get_value_if_any($vars, 'PaymentMethod'),
                 __('Robokassa currency label:', 'leyka') => $this->_get_value_if_any($vars, 'IncCurrLabel'),
-            ),
+            ],
             $donation
         );
 
@@ -398,12 +398,12 @@ class Leyka_Robokassa_Card extends Leyka_Payment_Method {
         $this->_label_backend = __('Bank card', 'leyka');
         $this->_label = __('Bank card', 'leyka');
 
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, [
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
-        ));
+        ]);
 
         $this->_supported_currencies[] = 'rub';
         $this->_default_currency = 'rub';
@@ -416,15 +416,15 @@ class Leyka_Robokassa_Card extends Leyka_Payment_Method {
             return;
         }
 
-        $this->_options = array(
-            $this->full_id.'_rebilling_available' => array(
+        $this->_options = [
+            $this->full_id.'_rebilling_available' => [
                 'type' => 'checkbox',
                 'default' => false,
                 'title' => __('Monthly recurring subscriptions are available', 'leyka'),
                 'comment' => __('Check if the gateway allows you to create recurrent subscriptions to do regular automatic payments.', 'leyka'),
                 'short_format' => true,
-            ),
-        );
+            ],
+        ];
 
     }
 
@@ -449,9 +449,9 @@ class Leyka_Robokassa_Yandex_Money extends Leyka_Payment_Method {
         $this->_label_backend = __('YooMoney', 'leyka');
         $this->_label = __('YooMoney', 'leyka');
 
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, [
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/yandex-money.svg',
-        ));
+        ]);
 
         $this->_supported_currencies[] = 'rub';
         $this->_default_currency = 'rub';
@@ -475,9 +475,9 @@ class Leyka_Robokassa_Webmoney extends Leyka_Payment_Method {
         $this->_label_backend = __('Webmoney', 'leyka');
         $this->_label = __('Webmoney', 'leyka');
 
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, [
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/webmoney.svg',
-        ));
+        ]);
 
         $this->_supported_currencies[] = 'rub';
         $this->_default_currency = 'rub';
@@ -501,9 +501,9 @@ class Leyka_Robokassa_Qiwi extends Leyka_Payment_Method {
         $this->_label_backend = __('Qiwi wallet', 'leyka');
         $this->_label = __('Qiwi wallet', 'leyka');
 
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, [
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/qiwi.svg',
-        ));
+        ]);
 
         $this->_supported_currencies[] = 'rub';
         $this->_default_currency = 'rub';
@@ -527,13 +527,13 @@ class Leyka_Robokassa_All extends Leyka_Payment_Method {
         $this->_label_backend = __('Robokassa (any)', 'leyka');
         $this->_label = __('Robokassa (any)', 'leyka');
 
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, [
             LEYKA_PLUGIN_BASE_URL.'gateways/robokassa/icons/robokassa.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
-        ));
+        ]);
 
         $this->_supported_currencies[] = 'rub';
         $this->_default_currency = 'rub';

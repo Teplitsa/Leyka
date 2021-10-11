@@ -51,7 +51,7 @@ leyka_pf_submission_errors();?>
                                         if($mode == 'fixed' || $mode == 'mixed') {
                                             $variants = explode(',', $data['amount_settings']['fixed']);
                                         } else {
-                                            $variants = array();
+                                            $variants = [];
                                         }?>
                                         <div class="<?php echo $currency;?> amount-variants-container" <?php echo $currency == $current_curr ? '' : 'style="display:none;"';?>>
                                             <div class="amount-variants-row">
@@ -135,7 +135,7 @@ leyka_pf_submission_errors();?>
                         $icons = leyka_pf_get_pm_icons();
                         if($icons) {
 
-                            $list = array();
+                            $list = [];
                             foreach($icons as $i) {
                                 $list[] = "<li>".(is_ssl() ? str_replace('http:', 'https:', $i) : $i)."</li>";
                             }

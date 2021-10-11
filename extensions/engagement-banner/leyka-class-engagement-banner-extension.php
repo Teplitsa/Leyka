@@ -41,16 +41,16 @@ class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
 
     protected function _initialize_always() {
 
-        add_action('admin_enqueue_scripts', array($this, 'load_admin_cssjs'));
+        add_action('admin_enqueue_scripts', [$this, 'load_admin_cssjs']);
 
-        add_action('leyka_render_custom_engb_multiselect', array($this, 'render_custom_multiselect'), 10, 2);
+        add_action('leyka_render_custom_engb_multiselect', [$this, 'render_custom_multiselect'], 10, 2);
 
-        // process custom multiselect options
+        // Process custom multiselect options:
         $custom_options = $this->_get_multiselect_fields();
 
         if( !empty($custom_options) ) {
             foreach ($custom_options as $option_id) {
-                add_action("leyka_save_custom_option-$option_id", array($this, 'save_custom_multiselect'));
+                add_action("leyka_save_custom_option-$option_id", [$this, 'save_custom_multiselect']);
             }
         }
 
@@ -102,7 +102,7 @@ class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
 
     protected function _get_multiselect_field_config($option_id) {
 
-        $config = array();
+        $config = [];
 
         if( !$this->_options ) {
             return $config;
@@ -156,7 +156,7 @@ class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
 
     protected function _get_multiselect_fields() {
 
-        $fields = array();
+        $fields = [];
 
         if(empty($this->_options)) {
             return $fields;
@@ -184,11 +184,11 @@ class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
 
         $this->_load_files();
 
-        add_action('wp_enqueue_scripts', array( $this, 'load_cssjs'));
-        add_action('wp_footer', array($this, 'display_banner'));
+        add_action('wp_enqueue_scripts', [$this, 'load_cssjs']);
+        add_action('wp_footer', [$this, 'display_banner']);
 
-        add_shortcode('leyka_engb_scale', array($this, 'shortcode_scale_screen'));
-        add_shortcode('leyka_engb_photo', array($this, 'shortcode_photo_screen'));
+        add_shortcode('leyka_engb_scale', [$this, 'shortcode_scale_screen']);
+        add_shortcode('leyka_engb_photo', [$this, 'shortcode_photo_screen']);
 
     }
 
@@ -240,14 +240,14 @@ class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
         wp_enqueue_style(
             $this->_id.'-admin',
             self::get_base_url().'/assets/css/engb-admin.css',
-            array($this->_id.'-select2'),
+            [$this->_id.'-select2'],
             defined('WP_DEBUG') && WP_DEBUG ? uniqid() : null
         );
 
         wp_enqueue_script(
             $this->_id.'-select2',
             self::get_base_url().'/assets/js/select2.min.js',
-            array('jquery'), 
+            ['jquery',],
             null, 
             true
         );
@@ -255,14 +255,14 @@ class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
         wp_enqueue_script(
             $this->_id.'-admin',
             self::get_base_url().'/assets/js/engb-admin.js',
-            array('jquery', $this->_id.'-select2'),
+            ['jquery', $this->_id.'-select2',],
             defined('WP_DEBUG') && WP_DEBUG ? uniqid() : null,
             true
         );
 
-        wp_localize_script($this->_id.'-admin', 'engb', array(
+        wp_localize_script($this->_id.'-admin', 'engb', [
             'placeholder' => __('Select user role', 'leyka'),
-        ));
+        ]);
 
     }
 
@@ -347,7 +347,7 @@ class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
 
             ob_start();
 
-            $scale = array();
+            $scale = [];
             $scale['currency'] = leyka_get_currency_label('rub');
             $scale['percentage'] = $percentage > 100 ? 100 : $percentage;
             $scale['delta'] = ($funded < $target) ? $target - $funded : 0;

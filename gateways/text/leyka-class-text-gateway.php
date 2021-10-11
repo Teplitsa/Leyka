@@ -24,7 +24,7 @@ class Leyka_Text_Gateway extends Leyka_Gateway {
         $this->_registration_link = '';
 
         $this->_min_commission = 0;
-        $this->_receiver_types = array('legal', 'physical',);
+        $this->_receiver_types = ['legal', 'physical',];
 
     }
 
@@ -35,7 +35,7 @@ class Leyka_Text_Gateway extends Leyka_Gateway {
     }
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
-        remove_action('leyka_payment_form_submission-'.$this->id, array($this, 'process_form_default'), 100);
+        remove_action('leyka_payment_form_submission-'.$this->id, [$this, 'process_form_default'], 100);
     }
 
     public function submission_redirect_url($current_url, $pm_id) {
@@ -47,7 +47,7 @@ class Leyka_Text_Gateway extends Leyka_Gateway {
     }
 
     public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {
-        return apply_filters('leyka_donation_gateway_response', array(), $donation);
+        return apply_filters('leyka_donation_gateway_response', [], $donation);
     }
 
 }
@@ -70,21 +70,21 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
 
         $this->_support_global_fields = false;
 
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, [
             LEYKA_PLUGIN_BASE_URL.'gateways/text/icons/pm-text.svg',
-        ));
+        ]);
 
-        $this->_supported_currencies = array('rub', 'uah', 'byn',);
+        $this->_supported_currencies = ['rub', 'uah', 'byn',];
         $this->_default_currency = 'rub';
 
-        $this->_processing_type = 'static'; // We should display custom data instead of the donors data & submit step
+        $this->_processing_type = 'static'; // We should display custom data instead of the donors' data & submit step
 
     }
 
     protected function _set_dynamic_attributes() {
-        $this->_custom_fields = array(
+        $this->_custom_fields = [
             'box_details' => apply_filters('leyka_the_content', leyka_options()->opt_safe('text_box_details')),
-        );
+        ];
     }
 
     protected function _set_options_defaults() {
@@ -93,21 +93,21 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
             return;
         }
 
-        $this->_options = array(
-            $this->full_id.'_description' => array(
+        $this->_options = [
+            $this->full_id.'_description' => [
                 'type' => 'html',
                 'default' => __('With this ways you can make your donation.', 'leyka'),
                 'title' => __('Comment', 'leyka'),
                 'comment' => __('Please, set a text of comment to describe an additional ways to donate.', 'leyka'),
                 'required' => false,
-            ),
-            'text_box_details' => array(
+            ],
+            'text_box_details' => [
                 'type' => 'html',
                 'title' => __('Ways to donate', 'leyka'),
                 'description' => __('Please, set a text to describe an additional ways to donate.', 'leyka'),
                 'required' => true,
-            )
-        );
+            ]
+        ];
 
     }
 

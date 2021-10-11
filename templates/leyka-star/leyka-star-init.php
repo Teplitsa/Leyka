@@ -21,7 +21,7 @@ function leyka_star_template_campaign_page($content) {
     }
 
     $campaign_id = get_queried_object_id();
-    $form_html = leyka_payment_form_screen(array('id' => $campaign_id, 'template' => 'star'));
+    $form_html = leyka_payment_form_screen(['id' => $campaign_id, 'template' => 'star']);
 
     return $form_html.$content;
 

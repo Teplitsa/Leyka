@@ -19,7 +19,7 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
         $this->_has_wizard = false;
 
         $this->_min_commission = 1;
-        $this->_receiver_types = array('legal');
+        $this->_receiver_types = ['legal',];
         $this->_may_support_recurring = true;
 
     }
@@ -30,45 +30,45 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
             return;
         }
 
-        $this->_options = array(
-            $this->_id.'_api_login' => array(
+        $this->_options = [
+            $this->_id.'_api_login' => [
                 'type' => 'text',
                 'title' => __('API Login', 'leyka'),
                 'comment' => __('Please, enter your Sberbank API login here. You should have received it from your Sberbank connection manager.', 'leyka'),
                 'required' => false,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'somelogin_1-api'),
-            ),
-            $this->_id.'_api_password' => array(
+            ],
+            $this->_id.'_api_password' => [
                 'type' => 'text',
                 'title' => __('API Password', 'leyka'),
                 'comment' => __('Please, enter your Sberbank API password here. You should have received it from your Sberbank connection manager.', 'leyka'),
                 'is_password' => true,
                 'required' => false,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '16918737fgc9fbdgc7c312dkmp7u27iu'),
-            ),
-            $this->_id.'_test_mode' => array(
+            ],
+            $this->_id.'_test_mode' => [
                 'type' => 'checkbox',
                 'default' => true,
                 'title' => __('Payments testing mode', 'leyka'),
                 'comment' => __('Check if the gateway integration is in test mode.', 'leyka'),
                 'short_format' => true,
-            ),
-//            $this->_id.'_verify_checksum' => array(
+            ],
+//            $this->_id.'_verify_checksum' => [
 //                'type' => 'checkbox',
 //                'default' => true,
 //                'title' => __('Verify the callbacks with checksum', 'leyka'),
 //                'comment' => __('Check if the gateway callbacks should be verified with checksums.', 'leyka'),
 //                'short_format' => true,
-//            ),
-//            $this->_id.'_checksum_symmetic_token' => array(
+//            ],
+//            $this->_id.'_checksum_symmetic_token' => [
 //                'type' => 'text',
 //                'title' => __('A secret token for symmetric cryptography', 'leyka'),
 //                'comment' => __('Please, enter your secret cryptographic token value. You should have received it from your Sberbank tech. support.', 'leyka'),
 //                'is_password' => true,
 //                'required' => false,
 //                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'fkpmerpsh9hhlomngkq21cpstk'),
-//            ),
-        );
+//            ],
+        ];
 
     }
 
@@ -96,7 +96,7 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
 
         $this->_require_lib();
 
-        $connection = array('currency' => Voronkovich\SberbankAcquiring\Currency::RUB,);
+        $connection = ['currency' => Voronkovich\SberbankAcquiring\Currency::RUB,];
 
         $connection['userName'] = leyka_options()->opt($this->_id.'_api_login');
         $connection['password'] = leyka_options()->opt($this->_id.'_api_password');
@@ -109,13 +109,13 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
 
             $client = new Voronkovich\SberbankAcquiring\Client($connection);
 
-            $result = $client->registerOrder($donation->id, 100*$donation->amount, leyka_get_success_page_url(), array(
+            $result = $client->registerOrder($donation->id, 100*$donation->amount, leyka_get_success_page_url(), [
                 'failUrl' => leyka_get_failure_page_url(),
                 'clientId' => $donation->type === 'rebill' ? $donation->donor_email : '',
                 'description' => (
                         !empty($form_data['leyka_recurring']) ? _x('[RS]', 'For "recurring subscription"', 'leyka').' ' : ''
                     ).$donation->payment_title." (№ $donation_id)",
-            ));
+            ]);
 
             $donation->sber_order_id = empty($result['orderId']) ? '' : esc_sql($result['orderId']);
             $donation->add_gateway_response($result);
@@ -147,14 +147,14 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
 
         $new_recurring_donation = Leyka_Donations::get_instance()->add_clone(
             $init_recurring_donation,
-            array(
+            [
                 'status' => 'submitted',
                 'payment_type' => 'rebill',
                 'amount_total' => 'auto',
                 'init_recurring_donation' => $init_recurring_donation->id,
                 'sber_binding_id' => $init_recurring_donation->sber_binding_id,
-            ),
-            array('recalculate_total_amount' => true,)
+            ],
+            ['recalculate_total_amount' => true,]
         );
 
         if(is_wp_error($new_recurring_donation)) {
@@ -165,20 +165,20 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
 
         try {
 
-            $client = new Voronkovich\SberbankAcquiring\Client(array(
+            $client = new Voronkovich\SberbankAcquiring\Client([
                 'currency' => Voronkovich\SberbankAcquiring\Currency::RUB,
                 'userName' => leyka_options()->opt($this->_id.'_api_login'),
                 'password' => leyka_options()->opt($this->_id.'_api_password'),
                 'apiUri' => leyka_options()->opt($this->_id.'_test_mode') ?
                     Voronkovich\SberbankAcquiring\Client::API_URI_TEST : Voronkovich\SberbankAcquiring\Client::API_URI,
-            ));
+            ]);
 
-            $result = $client->registerOrder($new_recurring_donation->id, 100*$new_recurring_donation->amount, leyka_get_success_page_url(), array(
+            $result = $client->registerOrder($new_recurring_donation->id, 100*$new_recurring_donation->amount, leyka_get_success_page_url(), [
                 'failUrl' => leyka_get_failure_page_url(),
                 'clientId' => $init_recurring_donation->donor_email,
                 'bindingId' => $init_recurring_donation->sber_binding_id,
                 'features' => 'AUTO_PAYMENT',
-            ));
+            ]);
 
             $new_recurring_donation->sber_order_id = empty($result['orderId']) ? '' : esc_sql($result['orderId']);
             $new_recurring_donation->sber_binding_id = $init_recurring_donation->sber_binding_id;
@@ -220,17 +220,17 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
         }
 
         if(is_wp_error($donation_id)) { /** @var WP_Error $donation_id */
-            return array('status' => 1, 'message' => $donation_id->get_error_message());
+            return ['status' => 1, 'message' => $donation_id->get_error_message()];
         } else if( !$donation_id ) {
-            return array('status' => 1, 'message' => __('The donation was not created due to error.', 'leyka'));
+            return ['status' => 1, 'message' => __('The donation was not created due to error.', 'leyka')];
         } else if( !$this->is_setup_complete() ) {
-            return array(
+            return [
                 'status' => 1,
                 'message' => __('Error in the gateway settings. Please report to the website tech support.', 'leyka'),
-            );
+            ];
         }
 
-        return apply_filters('leyka_sber_custom_submission_data', array(), $pm_id);
+        return apply_filters('leyka_sber_custom_submission_data', [], $pm_id);
 
     }
 
@@ -293,13 +293,13 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
                                 ->setTransactionId($donation->id)
                                 ->setAffiliation(get_bloginfo('name'))
                                 ->setRevenue($donation->amount)
-                                ->addProduct(array( // Donation params
+                                ->addProduct([ // Donation params
                                     'name' => $donation->payment_title,
                                     'price' => $donation->amount,
                                     'brand' => get_bloginfo('name'), // Mb, it won't work with it
                                     'category' => $donation->type_label, // Mb, it won't work with it
                                     'quantity' => 1,
-                                ))
+                                ])
                                 ->setProductActionToPurchase()
                                 ->setEventCategory('Checkout')
                                 ->setEventAction('Purchase')
@@ -321,13 +321,13 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
 
                     $this->_require_lib();
 
-                    $client = new Voronkovich\SberbankAcquiring\Client(array(
+                    $client = new Voronkovich\SberbankAcquiring\Client([
                         'currency' => Voronkovich\SberbankAcquiring\Currency::RUB,
                         'userName' => leyka_options()->opt($this->_id.'_api_login'),
                         'password' => leyka_options()->opt($this->_id.'_api_password'),
                         'apiUri' => leyka_options()->opt($this->_id.'_test_mode') ?
                             Voronkovich\SberbankAcquiring\Client::API_URI_TEST : Voronkovich\SberbankAcquiring\Client::API_URI,
-                    ));
+                    ]);
 
                     $result = $client->getOrderStatusExtended($donation->sber_order_id);
                     if( !empty($result['bindingInfo']) && !empty($result['bindingInfo']['bindingId']) ) {
@@ -367,19 +367,15 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
      */
     public function get_donation_by_transaction_id($sber_order_id) {
 
-        $donation = Leyka_Donations::get_instance()->get(array( // Get init recurrent payment with Sberbank order_id given
+        $donation = Leyka_Donations::get_instance()->get([ // Get init recurrent payment with Sberbank order_id given
             'get_single' => true,
-            'meta' => array(
+            'meta' => [
                 'RELATION' => 'AND',
-                array(
-                    'key' => '_leyka_sber_order_id',
-                    'value' => $sber_order_id,
-                    'compare' => '=',
-                ),
-            ),
-        ));
+                ['key' => '_leyka_sber_order_id', 'value' => $sber_order_id, 'compare' => '=',],
+            ],
+        ]);
 
-        return $donation ? $donation : null;
+        return $donation ? : null;
 
     }
 
@@ -390,22 +386,22 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
     public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {
 
         if( !$donation->gateway_response ) {
-            return array();
+            return [];
         }
 
         $vars = maybe_unserialize($donation->gateway_response);
         if( !$vars || !is_array($vars) ) {
-            return array();
+            return [];
         }
 
         return apply_filters(
             'leyka_donation_gateway_response',
-            array(
+            [
                 __('Sberbank Order number:', 'leyka') => $this->_get_value_if_any($vars, 'mdOrder'),
                 __('Leyka Order Number:', 'leyka') => $this->_get_value_if_any($vars, 'orderNumber'),
                 __('Last operation:', 'leyka') => $this->_get_value_if_any($vars, 'operation'),
                 __('Last operation status:', 'leyka') => $this->_get_value_if_any($vars, 'status'),
-            ),
+            ],
             $donation
         );
 
@@ -558,12 +554,12 @@ class Leyka_Sber_Card extends Leyka_Payment_Method {
         $this->_label_backend = __('Bank card', 'leyka');
         $this->_label = __('Bank card', 'leyka');
 
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, [
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
-        ));
+        ]);
 
         $this->_supported_currencies[] = 'rub';
         $this->_default_currency = 'rub';
@@ -576,15 +572,15 @@ class Leyka_Sber_Card extends Leyka_Payment_Method {
             return;
         }
 
-        $this->_options = array(
-            $this->full_id.'_recurring_available' => array(
+        $this->_options = [
+            $this->full_id.'_recurring_available' => [
                 'type' => 'checkbox',
                 'default' => false,
                 'title' => __('Monthly recurring subscriptions are available', 'leyka'),
                 'comment' => __('Check if the gateway allows you to create recurrent subscriptions to do regular automatic payments.', 'leyka').' '.__('WARNING: you should enable the Sberbank auto-payments feature for test mode and for production mode separately.', 'leyka'),
                 'short_format' => true,
-            ),
-        );
+            ],
+        ];
 
     }
 

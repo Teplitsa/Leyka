@@ -19,7 +19,7 @@ if( !function_exists('leyka_show_wizard_captioned_screenshot')) {
 }
 
 if( !function_exists('leyka_show_gateway_logo')) {
-    function leyka_show_gateway_logo($gateway, $show_gateway_info = true, $wrapper_classes = array(), $use_paceholders = false) {
+    function leyka_show_gateway_logo($gateway, $show_gateway_info = true, $wrapper_classes = [], $use_paceholders = false) {
 
         $use_paceholders = !!$use_paceholders;
 
@@ -54,7 +54,7 @@ if( !function_exists('leyka_show_gateway_logo')) {
 }
 
 if( !function_exists('leyka_show_extension_logo')) {
-    function leyka_show_extension_logo($extension, $show_info = true, $wrapper_classes = array(), $use_paceholders = false) {
+    function leyka_show_extension_logo($extension, $show_info = true, $wrapper_classes = [], $use_paceholders = false) {
 
         $use_paceholders = !!$use_paceholders;
 
@@ -206,11 +206,11 @@ function leyka_get_gateway_activation_button_label(Leyka_Gateway $gateway) {
 
     $activation_status = $gateway->get_activation_status();
 
-    $activation_status_labels = array(
+    $activation_status_labels = [
         'active' => esc_attr_x('Settings', '[of the extension]', 'leyka'),
         'inactive' => esc_attr_x('Step-by-step setup', '[of the extension]', 'leyka'),
         'activating' => esc_attr_x('Continue', '[the extension step-by-step setup]', 'leyka'),
-    );
+    ];
 
     if($activation_status !== 'active' && !leyka_gateway_setup_wizard($gateway)) {
         $label = esc_attr_x('Setup', '[the extension]', 'leyka');
@@ -234,11 +234,11 @@ function leyka_get_extension_activation_button_label(Leyka_Extension $extension)
 
     $activation_status = $extension->get_activation_status();
 
-    $activation_status_labels = array(
+    $activation_status_labels = [
         'active' => __('Deactivate'),
         'inactive' => __('Activate'),
         'activating' => _x('Continue the setup', '[the extension step-by-step setup]', 'leyka'),
-    );
+    ];
 
     if($activation_status !== 'active' && !$extension->wizard_id) {
         $label = __('Activate');
@@ -254,7 +254,7 @@ function leyka_get_extension_activation_button_label(Leyka_Extension $extension)
 if( !function_exists('leyka_is_settings_step_valid') ) {
     function leyka_is_settings_step_valid($step_id) {
 
-        $options_to_validate = array();
+        $options_to_validate = [];
 
         if($step_id === 'receiver_type') {
             $options_to_validate[] = 'receiver_legal_type';
@@ -284,7 +284,7 @@ if( !function_exists('leyka_is_settings_step_valid') ) {
             }
         }
 
-        $options_invalid = array();
+        $options_invalid = [];
         foreach($options_to_validate as $option_id) {
             if( !leyka_options()->opt($option_id) || !leyka_options()->is_valid($option_id) ) {
                 $options_invalid[] = $option_id;

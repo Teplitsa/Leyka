@@ -10,7 +10,7 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
     protected static $_instance;
 
     protected $_qiwi_response;
-    protected $_qiwi_log = array();
+    protected $_qiwi_log = [];
 
     protected function _set_attributes() {
 
@@ -27,7 +27,7 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
         $this->_registration_link = 'https://kassa.qiwi.com/pay/';
 
         $this->_min_commission = 2.9;
-        $this->_receiver_types = array('legal');
+        $this->_receiver_types = ['legal'];
 
     }
 
@@ -43,22 +43,22 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
             return;
         }
 
-        $this->_options = array(
-            'qiwi_public_key' => array(
+        $this->_options = [
+            'qiwi_public_key' => [
                 'type' => 'text',
                 'title' => __('Public key', 'leyka'),
                 'description' => __('Please, enter your public key.', 'leyka'),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'XXXX')
-            ),
-            'qiwi_secret_key' => array(
+            ],
+            'qiwi_secret_key' => [
                 'type' => 'text',
                 'title' => __('Secret key', 'leyka'),
                 'description' => __('Please, enter your secret key.', 'leyka'),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '2tbq1WQvsgQeziGY9vTLe1vDZNg7tmCyJb4Lh6STQOkQKrPCc6qrUiKEDZAj12heiD1GQX8jTnjMxLpMcSZuGZP7xbMpj6EiqTf6VeAEzGMeaskfzVSw13AeqyeqR'),
-            ),
-        );
+            ],
+        ];
 
     }
 
@@ -75,10 +75,10 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
         $response = $bill->create_bill(
             $donation_id,
             $amount,
-            array(
-                'customer' => array('account' => $donation->donor_name, 'email' => $donation->donor_email,),
+            [
+                'customer' => ['account' => $donation->donor_name, 'email' => $donation->donor_email,],
                 'comment' => $description
-            )
+            ]
         );
 
         if(empty($response['body'])) {
@@ -97,7 +97,7 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
     public function submission_redirect_url($current_url, $pm_id) {
 
         return add_query_arg(
-            array('url' => urlencode($this->_qiwi_response->payUrl)),
+            ['url' => urlencode($this->_qiwi_response->payUrl)],
             site_url('/leyka/service/qiwi/redirect/')
         );
 
@@ -120,7 +120,7 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
 
     public function _handle_service_calls($call_type = '') {
 
-        switch ($call_type) {
+        switch($call_type) {
             case 'check_order':
             case 'notify':
             case 'process':
@@ -128,7 +128,7 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
                 break;
             case 'redirect':
                 $url = add_query_arg(
-                    array('successUrl' => urlencode(get_permalink(leyka_options()->opt('quittance_redirect_page')))),
+                    ['successUrl' => urlencode(get_permalink(leyka_options()->opt('quittance_redirect_page')))],
                     urldecode($_GET['url'])
                 );
                 wp_redirect($url, 302);
@@ -141,17 +141,17 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
     public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {
 
         if( !$donation->gateway_response ) {
-            return array();
+            return [];
         }
 
         $vars = maybe_unserialize($donation->gateway_response);
         if(!$vars || !is_array($vars)) {
-            return array();
+            return [];
         }
 
         return apply_filters(
             'leyka_donation_gateway_response',
-            array(
+            [
                 __('Operation date:', 'leyka') => isset($vars['QIWI_Response']->creationDateTime) ?
                     $vars['QIWI_Response']->creationDateTime : '',
                 __('Shop Account:', 'leyka') => isset($vars['QIWI_Response']->siteId) ? $vars['QIWI_Response']->siteId : '',
@@ -163,7 +163,7 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
                 __('Donor name:', 'leyka') => isset($vars['QIWI_Form']['leyka_donor_name']) ?
                     $vars['QIWI_Form']['leyka_donor_name'] : '',
                 __('Form url:', 'leyka') => isset($vars['QIWI_Response']->payUrl) ? $vars['QIWI_Response']->payUrl : '',
-            ),
+            ],
             $donation
         );
 
@@ -210,12 +210,12 @@ class Leyka_Qiwi_Card extends Leyka_Payment_Method {
         $this->_label_backend = __('QIWI Kassa smart payment', 'leyka');
         $this->_label = __('QIWI Kassa', 'leyka');
 
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, [
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
-        ));
+        ]);
 
         $this->_supported_currencies[] = 'rub';
         $this->_default_currency = 'rub';

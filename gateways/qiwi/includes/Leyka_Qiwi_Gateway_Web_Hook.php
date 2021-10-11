@@ -5,7 +5,7 @@
 class Leyka_Qiwi_Gateway_Web_Hook {
 
     public static function run() {
-        add_action('leyka_qiwi_gateway_web_hook', array(__CLASS__, 'hook'));
+        add_action('leyka_qiwi_gateway_web_hook', [__CLASS__, 'hook']);
     }
 
     public static function hook() {
@@ -53,13 +53,13 @@ class Leyka_Qiwi_Gateway_Web_Hook {
                         ->setTransactionId($donation->id)
                         ->setAffiliation(get_bloginfo('name'))
                         ->setRevenue($donation->amount)
-                        ->addProduct(array( // Donation params
+                        ->addProduct([ // Donation params
                             'name' => $donation->payment_title,
                             'price' => $donation->amount,
                             'brand' => get_bloginfo('name'), // Mb, it won't work with it
                             'category' => $donation->type_label, // Mb, it won't work with it
                             'quantity' => 1,
-                        ))
+                        ])
                         ->setProductActionToPurchase()
                         ->setEventCategory('Checkout')
                         ->setEventAction('Purchase')
@@ -72,10 +72,10 @@ class Leyka_Qiwi_Gateway_Web_Hook {
                     Leyka_Donation_Management::send_all_emails($donation);
                 }
 
-                echo wp_json_encode(array('error' => 0), JSON_FORCE_OBJECT);
+                echo wp_json_encode(['error' => 0], JSON_FORCE_OBJECT);
 
             } else {
-                echo wp_json_encode(array('error' => 1), JSON_FORCE_OBJECT);
+                echo wp_json_encode(['error' => 1], JSON_FORCE_OBJECT);
             }
 
         }

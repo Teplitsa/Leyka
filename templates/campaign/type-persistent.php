@@ -87,7 +87,7 @@ $cover_bg_color = $header_cover_type == 'color' ? get_post_meta($campaign_id, 'c
                             sprintf(
                                 wp_kses(
                                     _x('Continue reading<span class="screen-reader-text"> "%s"</span>', '%s is a current post title. Only visible to screen readers', 'leyka'),
-                                    array('span' => array('class' => array(),),)
+                                    ['span' => ['class' => [],],]
                                 ),
                                 get_the_title()
                             )

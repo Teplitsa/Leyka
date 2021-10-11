@@ -12,10 +12,10 @@
 add_shortcode('leyka_scale', 'leyka_scale_screen');
 function leyka_scale_screen($atts) {
 
-    $atts = shortcode_atts(array(
+    $atts = shortcode_atts([
         'id' => 0,
         'show_button' => 0,
-    ), $atts);
+    ], $atts);
 
     $campaign = $atts['id'] > 0 ? get_post($atts['id']) : get_post();
 
@@ -27,12 +27,12 @@ function leyka_scale_screen($atts) {
 
 }
 
-function leyka_get_scale($campaign = null, $args = array()) {
+function leyka_get_scale($campaign = null, $args = []) {
 
-    $args = wp_parse_args($args, array(
+    $args = wp_parse_args($args, [
         'show_button' => 0,
         'embed_mode' => 0
-    ));
+    ]);
 
     $campaign = leyka_get_validated_campaign($campaign);
     if( !$campaign ) {
@@ -76,7 +76,7 @@ function leyka_get_scale_button_label(){
 add_shortcode('leyka_campaign_card', 'leyka_campaign_card_screen' );
 function leyka_campaign_card_screen($atts) {
 
-    $atts = shortcode_atts(array(
+    $atts = shortcode_atts([
         'id' => 0,
         'show_title' => 1,
         'show_thumb' => 1,
@@ -84,7 +84,7 @@ function leyka_campaign_card_screen($atts) {
         'show_scale' => 1,
         'show_finished' => 1,
         'show_button' => 1,
-    ), $atts);
+    ], $atts);
 
     $campaign_post = $atts['id'] > 0 ? get_post($atts['id']) : get_post();
 
@@ -100,9 +100,9 @@ function leyka_campaign_card_screen($atts) {
 
 }
 
-function leyka_get_campaign_card($campaign = null, $args = array()) {
+function leyka_get_campaign_card($campaign = null, $args = []) {
 
-    $args = wp_parse_args($args, array(
+    $args = wp_parse_args($args, [
         'show_title' => 1,
         'show_thumb' => 1,
         'show_excerpt' => 1,
@@ -111,7 +111,7 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
         'show_finished' => 1,
         'increase_counters' => 0,
         'embed_mode' => 0,
-    ));
+    ]);
 
     if( !$campaign ) {
         $campaign = get_post();
@@ -148,7 +148,7 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
                     <?php echo get_the_post_thumbnail(
                         $campaign_obj->ID,
                         $thumbnail_size,
-                        array('alt' => esc_attr(sprintf(__('Thumbnail for - %s', 'leyka'), $campaign_obj->post_title)),)
+                        ['alt' => esc_attr(sprintf(__('Thumbnail for - %s', 'leyka'), $campaign_obj->post_title)),]
                     );?>
                 </a>
             </div>
@@ -184,10 +184,10 @@ function leyka_get_campaign_card($campaign = null, $args = array()) {
         <?php }
 
         if( !!$args['show_scale'] ) {
-            echo leyka_get_scale($campaign_obj,	array(
+            echo leyka_get_scale($campaign_obj,	[
                 'show_button' => $args['show_button'],
                 'embed_mode' => $args['embed_mode'],
-            ));
+            ]);
         } else if( !!$args['show_button'] ) {
 
             $url = trailingslashit(get_permalink($campaign_obj->ID)).'#leyka-payment-form'.
@@ -215,7 +215,7 @@ add_shortcode('leyka_payment_form', 'leyka_payment_form_screen');
 add_shortcode('leyka_campaign_form', 'leyka_payment_form_screen');
 function leyka_payment_form_screen($atts) {
 
-    $atts = shortcode_atts(array('id' => false, 'template' => null, 'show_finished' => 1), $atts);
+    $atts = shortcode_atts(['id' => false, 'template' => null, 'show_finished' => 1], $atts);
 
     $campaign_id = !empty($atts['id']) ? (int)$atts['id'] : get_post()->ID;
     $campaign = leyka_get_validated_campaign($campaign_id);
@@ -234,9 +234,9 @@ function leyka_payment_form_screen($atts) {
 
 }
 
-function leyka_get_payment_form($campaign = null, $args = array()) {
+function leyka_get_payment_form($campaign = null, $args = []) {
 
-    $args = wp_parse_args($args, array('template' => null,));
+    $args = wp_parse_args($args, ['template' => null,]);
 
     if( !$campaign ) {
         $campaign = get_post();
@@ -257,13 +257,13 @@ function leyka_get_payment_form($campaign = null, $args = array()) {
 add_shortcode('leyka_donors_list', 'leyka_donors_list_screen' );
 function leyka_donors_list_screen($atts) {
 
-    $atts = shortcode_atts(array(
+    $atts = shortcode_atts([
         'id'           => 'all', // Could be also 0 ("obtain from context") or real campaign ID
         'num'          => leyka_get_donations_list_per_page(),
         'show_purpose' => 1,
         'show_name'    => 1,
         'show_date'    => 1,
-    ), $atts);
+    ], $atts);
 
     if($atts['id'] !== 'all') {
         $atts['id'] = (int)$atts['id'];
@@ -277,32 +277,28 @@ function leyka_get_donations_list_per_page() {
     return apply_filters('leyka_donations_list_per_page', 10);
 }
 
-function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
+function leyka_get_donors_list($campaign_id = 'all', $args = []) {
 
-    $args = wp_parse_args($args, array(
+    $args = wp_parse_args($args, [
         'num' => leyka_get_donations_list_per_page(),
         'show_purpose' => 1,
         'show_name' => 1,
         'show_date' => 1,
         'show_donation_comments' => false, // leyka_options()->opt('show_donation_comments_in_frontend'),
-    ));
+    ]);
 
     if($campaign_id === 0 && get_post()->post_type === Leyka_Campaign_Management::$post_type) {
         $campaign_id = get_post()->ID;
     }
 
     // Get donations: funded amount > 0
-    $d_args = array(
-        'status' => 'funded',
-        'results_limit' => $args['num'],
-        'amount_filter' => 'only+',
-    );
+    $donations_params = ['status' => 'funded', 'results_limit' => $args['num'], 'amount_filter' => 'only+',];
 
     if($campaign_id && $campaign_id !== 'all') {
-        $d_args['campaign_id'] = $campaign_id;
+        $donations_params['campaign_id'] = $campaign_id;
     }
 
-    $donations = Leyka_Donations::get_instance()->get($d_args);
+    $donations = Leyka_Donations::get_instance()->get($donations_params);
 
     if( !$donations ) {
         return '';
@@ -328,7 +324,7 @@ function leyka_get_donors_list($campaign_id = 'all', $args = array()) {
             $html .= "<div class='purpose'><a href='".get_permalink($donation->campaign_id)."'>".$donation->campaign_payment_title."</a></div>";
         }
 
-        $meta = array();
+        $meta = [];
 
         if($args['show_name']) {
             $meta[] = '<span>'.($donation->donor_name ? $donation->donor_name : __('Anonymous', 'leyka')).'</span>';
@@ -385,14 +381,14 @@ function leyka_get_campaign_supporters($campaign_id = false, $max_names = 5) {
 
     $campaign_id = $campaign_id ? absint($campaign_id) : false;
 
-    $donations = array();
-    $first_donors_names = array();
+    $donations = [];
+    $first_donors_names = [];
 
     foreach(leyka_get_campaign_donations($campaign_id) as $donation) { /** @var $donation Leyka_Donation_Base */
 
         if(
             $donation->donor_name &&
-            !in_array($donation->donor_name, array(__('Anonymous', 'leyka'), 'Anonymous')) &&
+            !in_array($donation->donor_name, [__('Anonymous', 'leyka'), 'Anonymous']) &&
             !in_array($donation->donor_name, $first_donors_names)
         ) {
 
@@ -406,7 +402,7 @@ function leyka_get_campaign_supporters($campaign_id = false, $max_names = 5) {
 
     }
 
-    return array('supporters' => $first_donors_names, 'donations' => $donations);
+    return ['supporters' => $first_donors_names, 'donations' => $donations,];
 
 }
 
@@ -433,24 +429,24 @@ function leyka_get_campaign_supporters_names($campaign_id = false, $max_names = 
         "SELECT DISTINCT meta.meta_value FROM {$wpdb->prefix}postmeta meta $query_joins WHERE $query_where ORDER BY p.ID DESC ".($max_names ? 'LIMIT 0,'.(5*$max_names) : '')
     );
 
-    return array(
+    return [
         'names' => array_slice($first_donors_names, 0, $max_names), // First $max_names of donors' names
         'names_remain' => array_slice($first_donors_names, $max_names), // The remains of the names, no more than 4*$max_names
         'total' => $first_donors_names_total,
-    );
+    ];
 
 }
 
 add_shortcode('leyka_inline_campaign', 'leyka_inline_campaign');
-function leyka_inline_campaign(array $atts = array()) {
+function leyka_inline_campaign(array $atts = []) {
 
-    $atts = shortcode_atts(array(
+    $atts = shortcode_atts([
         'id' => false,
         'template' => 'revo', // ATM this shortcode is only for Revo
         'show_thumbnail' => leyka_options()->opt('revo_template_show_thumbnail'),
         'show_finished' => true,
         'show_preview' => true,
-    ), $atts);
+    ], $atts);
 
     $campaign_id = $atts['id'] ? absint($atts['id']) : get_post()->ID;
     $campaign = leyka_get_validated_campaign($campaign_id);
@@ -563,7 +559,7 @@ function leyka_inline_campaign(array $atts = array()) {
 					</div>
 
 					<?php $supporters = leyka_options()->opt('revo_template_show_donors_list') ?
-                        leyka_get_campaign_supporters($campaign_id, 5) : array('donations' => array(), 'supporters' => array());?>
+                        leyka_get_campaign_supporters($campaign_id, 5) : ['donations' => [], 'supporters' => [],];?>
 
 					<div class="supporter-and-button">
 
@@ -711,7 +707,7 @@ function leyka_inline_campaign(array $atts = array()) {
 add_shortcode('leyka_inline_campaign_small', 'leyka_inline_campaign_small');
 function leyka_inline_campaign_small($atts) {
 
-    $atts = shortcode_atts(array('id' => false,), $atts);
+    $atts = shortcode_atts(['id' => false,], $atts);
 
     $campaign_id = $atts['id'] ? absint($atts['id']) : get_post()->ID;
     $campaign = leyka_get_validated_campaign($campaign_id);
@@ -743,7 +739,7 @@ function leyka_inline_campaign_small($atts) {
         </div>
 
 		<?php $supporters = leyka_options()->opt('revo_template_show_donors_list') ?
-                leyka_get_campaign_supporters($campaign_id, 5) : array('donations' => array(), 'supporters' => array());
+                leyka_get_campaign_supporters($campaign_id, 5) : ['donations' => [], 'supporters' => [],];
 
 			if(count($supporters['supporters'])) { // There is at least one donor ?>
 

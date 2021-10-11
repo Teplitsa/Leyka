@@ -575,7 +575,7 @@ function leyka_render_textarea_field($option_id, $data){
     $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
 
     $data['value'] = isset($data['value']) ? $data['value'] : '';
-    $data['is_code_editor'] = empty($data['is_code_editor']) || !in_array($data['is_code_editor'], array('css')) ?
+    $data['is_code_editor'] = empty($data['is_code_editor']) || !in_array($data['is_code_editor'], ['css']) ?
         false : $data['is_code_editor'];?>
 
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-textarea-field-wrapper field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?> <?php echo $data['is_code_editor'] === 'css' ? 'css-editor' : '';?>">
@@ -678,12 +678,12 @@ function leyka_render_rich_html_field($option_id, $data){
                 <?php }?>
             </span>
 
-            <?php wp_editor($data['value'], $option_id.'-field', array(
+            <?php wp_editor($data['value'], $option_id.'-field', [
                 'media_buttons' => false,
                 'textarea_name' => $option_id,
                 'tinymce' => true,
                 'teeny' => true, // For rich HTML editor
-            ));
+            ]);
 
             if( !empty($data['description']) ) {?>
             <span class="field-component help"><?php echo $data['description'];?></span>
@@ -736,17 +736,17 @@ function leyka_render_campaign_select_field($option_id, $data) {
 
     $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
 
-    $data = wp_parse_args($data, array(
+    $data = wp_parse_args($data, [
         'placeholder' => __('Select a campaign', 'leyka'),
         'default' => '',
 //        'multiple' => false, /** Multi-selects are not supported yet */
         'required' => false,
-    ));
+    ]);
 
     $data['value'] = empty($data['value']) ?
         (empty($data['default']) ? false : absint($data['default'])) :
         absint($data['value']);
-//    $data['value'] = empty($data['value']) ? ($data['multiple'] ? array() : false) : $data['value'];
+//    $data['value'] = empty($data['value']) ? ($data['multiple'] ? [] : false) : $data['value'];
 
     $campaign_title = '';
     if($data['value'] && absint($data['value'])) {
@@ -883,25 +883,25 @@ function leyka_render_tabbed_section_options_area($section) {
     }
 }
 
-function leyka_additional_form_field_main_subfields_html(array $placeholders = array()) {
+function leyka_additional_form_field_main_subfields_html(array $placeholders = []) {
 
-    $placeholders = wp_parse_args($placeholders, array(
+    $placeholders = wp_parse_args($placeholders, [
         'id' => '',
         'box_title' => __('New field', 'leyka'),
         'type' => '-',
         'title' => '',
         'is_required' => false,
-    ));?>
+    ]);?>
 
     <div class="single-line">
 
         <div class="option-block type-select">
             <div class="leyka-select-field-wrapper">
-                <?php leyka_render_select_field('field_type', array(
+                <?php leyka_render_select_field('field_type', [
                     'title' => __('Field type', 'leyka'),
                     'value' => $placeholders['type'] ? $placeholders['type'] : '-',
                     'required' => true,
-                    'list_entries' => array(
+                    'list_entries' => [
                         '-' => __('Select field type', 'leyka'),
                         'text' => __('Text', 'leyka'),
                         'phone' => __('Telephone number', 'leyka'),
@@ -909,20 +909,20 @@ function leyka_additional_form_field_main_subfields_html(array $placeholders = a
 //                        'textarea' => __('Multi-lined text', 'leyka'),
 //                        'select' => __('Dropdown', 'leyka'),
 //                        'checkbox' => __('Check (yes/no)', 'leyka'),
-                    ),
-                ));?>
+                    ],
+                ]);?>
             </div>
             <div class="field-errors"></div>
         </div>
 
         <div class="option-block type-text">
             <div class="leyka-text-field-wrapper">
-                <?php leyka_render_text_field('field_title', array(
+                <?php leyka_render_text_field('field_title', [
                     'title' => __('Field title', 'leyka'),
                     'required' => true,
                     'placeholder' => __('E.g., "Your mobile phone"', 'leyka'),
                     'value' => $placeholders['title'],
-                ));?>
+                ]);?>
             </div>
             <div class="field-errors"></div>
         </div>
@@ -931,11 +931,11 @@ function leyka_additional_form_field_main_subfields_html(array $placeholders = a
 
     <div class="single-line">
         <div class="leyka-text-field-wrapper leyka-field-wide">
-            <?php leyka_render_text_field('field_description', array(
+            <?php leyka_render_text_field('field_description', [
                 'title' => __('Description text', 'leyka'),
                 'placeholder' => __('E.g., "We are going to send you an SMS"', 'leyka'),
                 'value' => empty($placeholders['description']) ? '' : $placeholders['description'],
-            ));?>
+            ]);?>
         </div>
         <div class="field-errors"></div>
     </div>
@@ -943,11 +943,11 @@ function leyka_additional_form_field_main_subfields_html(array $placeholders = a
     <div class="single-line">
         <div class="option-block type-checkbox">
             <div class="leyka-checkbox-field-wrapper">
-                <?php leyka_render_checkbox_field('field_is_required', array(
+                <?php leyka_render_checkbox_field('field_is_required', [
                     'title' => __('The field is required on donation form', 'leyka'),
                     'value' => !!$placeholders['is_required'],
                     'short_format' => true,
-                ));?>
+                ]);?>
             </div>
             <div class="field-errors"></div>
         </div>
@@ -957,23 +957,23 @@ function leyka_additional_form_field_main_subfields_html(array $placeholders = a
 
 // [Special field] Common additional donation form fields option:
 add_action('leyka_render_custom_additional_fields_library', 'leyka_render_additional_fields_library_settings', 10, 2);
-function leyka_render_additional_fields_library_settings($option_id, $data = array()){
+function leyka_render_additional_fields_library_settings($option_id, $data = []){
 
-    function leyka_additional_form_field_html($is_template = false, $placeholders = array()) {
+    function leyka_additional_form_field_html($is_template = false, $placeholders = []) {
 
-        $placeholders = wp_parse_args($placeholders, array(
+        $placeholders = wp_parse_args($placeholders, [
             'id' => '',
             'box_title' => __('New field', 'leyka'),
             'type' => '-',
             'title' => '',
             'is_required' => false,
-            'field_campaigns' => array(),
+            'field_campaigns' => [],
             'field_for_all_campaigns' => false,
-            'field_campaigns_exceptions' => array(),
-        ));
+            'field_campaigns_exceptions' => [],
+        ]);
 
         $_COOKIE['leyka-additional-fields-boxes-closed'] = empty($_COOKIE['leyka-additional-fields-boxes-closed']) ?
-            array() : json_decode(stripslashes('[\"someline\"]'));?>
+            [] : json_decode(stripslashes('[\"someline\"]'));?>
 
         <div id="<?php echo $placeholders['id'] ? $placeholders['id'] : 'item-'.leyka_get_random_string(4);?>" class="multi-valued-item-box field-box <?php echo $is_template ? 'item-template' : '';?> <?php echo !$is_template && !empty($_COOKIE['leyka-additional-fields-boxes-closed']) && !empty($placeholders['id']) && in_array($placeholders['id'], $_COOKIE['leyka-additional-fields-boxes-closed']) ? 'closed' : '';?>" <?php echo $is_template ? 'style="display: none;"' : '';?>>
 
@@ -1031,12 +1031,12 @@ function leyka_render_additional_fields_library_settings($option_id, $data = arr
                 <div class="single-line">
                     <div class="option-block type-checkbox">
                         <div class="leyka-checkbox-field-wrapper">
-                            <?php leyka_render_checkbox_field('field_for_all_campaigns', array(
+                            <?php leyka_render_checkbox_field('field_for_all_campaigns', [
                                 'title' => __('The field is for all campaigns by default', 'leyka'),
                                 'value' => !!$placeholders['field_for_all_campaigns'],
                                 'short_format' => true,
-                                'field_classes' => array('field-for-all-campaigns',),
-                            ));?>
+                                'field_classes' => ['field-for-all-campaigns',],
+                            ]);?>
                         </div>
                         <div class="field-errors"></div>
                     </div>
@@ -1106,18 +1106,18 @@ function leyka_render_additional_fields_library_settings($option_id, $data = arr
             // Display existing common fields (the assoc. array keys order is important):
             if($data['value'] && is_array($data['value'])) {
                 foreach($data['value'] as $field_id => $field_options) {
-                    leyka_additional_form_field_html(false, array(
+                    leyka_additional_form_field_html(false, [
                         'id' => $field_id,
                         'box_title' => $field_options['title'],
                         'type' => $field_options['type'],
                         'title' => $field_options['title'],
                         'description' => empty($field_options['description']) ? '' : $field_options['description'],
                         'is_required' => $field_options['is_required'],
-                        'field_campaigns' => empty($field_options['campaigns']) ? array() : $field_options['campaigns'],
+                        'field_campaigns' => empty($field_options['campaigns']) ? [] : $field_options['campaigns'],
                         'field_for_all_campaigns' => !empty($field_options['for_all_campaigns']),
                         'field_campaigns_exceptions' => empty($field_options['campaigns_exceptions']) ?
-                            array() : $field_options['campaigns_exceptions'],
-                    ));
+                            [] : $field_options['campaigns_exceptions'],
+                    ]);
                 }
             }?>
 
@@ -1140,7 +1140,7 @@ function leyka_save_additional_fields_library_settings() {
     $_POST['leyka_additional_donation_form_fields_library'] = json_decode(
         urldecode($_POST['leyka_additional_donation_form_fields_library'])
     );
-    $result = array();
+    $result = [];
 
     foreach($_POST['leyka_additional_donation_form_fields_library'] as $field) {
 
@@ -1148,7 +1148,7 @@ function leyka_save_additional_fields_library_settings() {
             $field->id :
             trim(preg_replace('~[^-a-z0-9_]+~u', '-', mb_strtolower(leyka_cyr2lat($field->title))), '-');
 
-        $result[$field->id] = array(
+        $result[$field->id] = [
             'type' => $field->type,
             'title' => $field->title,
             'description' => $field->description,
@@ -1156,7 +1156,7 @@ function leyka_save_additional_fields_library_settings() {
             'campaigns' => $field->campaigns,
             'for_all_campaigns' => $field->for_all_campaigns,
             'campaigns_exceptions' => $field->campaigns_exceptions,
-        );
+        ];
 
         if($field->campaigns && !$field->for_all_campaigns) {
             foreach($field->campaigns as $campaign_id) { // Add Field 2 Campaign links to selected Campaigns
@@ -1186,18 +1186,18 @@ function leyka_save_additional_fields_library_settings() {
 add_action('leyka_render_custom_support_packages_settings', 'leyka_render_support_packages_settings', 10, 2);
 function leyka_render_support_packages_settings($option_id, $data){
 
-    function leyka_support_package_html($is_template = false, $placeholders = array()) {
+    function leyka_support_package_html($is_template = false, $placeholders = []) {
 
-        $placeholders = wp_parse_args($placeholders, array(
+        $placeholders = wp_parse_args($placeholders, [
             'id' => '',
             'box_title' => __('New reward', 'leyka'),
             'package_title' => '',
             'amount_needed' => 0,
             'package_icon' => '',
-        ));
+        ]);
 
         $_COOKIE['leyka-support-packages-boxes-closed'] = empty($_COOKIE['leyka-support-packages-boxes-closed']) ?
-            array() : json_decode(stripslashes('[\"someline\"]'));?>
+            [] : json_decode(stripslashes('[\"someline\"]'));?>
 
         <div id="<?php echo $placeholders['id'] ? 'item-'.$placeholders['id'] : 'item-'.leyka_get_random_string(4);?>" class="multi-valued-item-box package-box <?php echo $is_template ? 'item-template' : '';?> <?php echo !$is_template && !empty($_COOKIE['leyka-support-packages-boxes-closed']) && !empty($placeholders['id']) && in_array($placeholders['id'], $_COOKIE['leyka-support-packages-boxes-closed']) ? 'closed' : '';?>" <?php echo $is_template ? 'style="display: none;"' : '';?>>
 
@@ -1210,12 +1210,12 @@ function leyka_render_support_packages_settings($option_id, $data){
 
                 <div class="option-block type-text">
                     <div class="leyka-text-field-wrapper">
-                        <?php leyka_render_text_field('package_title', array(
+                        <?php leyka_render_text_field('package_title', [
                             'title' => __('Reward title', 'leyka'),
                             'placeholder' => __('E.g., "Golden support level"', 'leyka'),
                             'required' => true,
                             'value' => $placeholders['package_title'],
-                        ));?>
+                        ]);?>
                     </div>
                     <div class="field-errors"></div>
                 </div>
@@ -1223,34 +1223,34 @@ function leyka_render_support_packages_settings($option_id, $data){
                 <?php if($placeholders['id']) {?>
                 <div class="option-block type-text-readonly">
                     <div class="leyka-text-field-wrapper">
-                        <?php leyka_render_text_field('package_id', array(
+                        <?php leyka_render_text_field('package_id', [
                             'title' => __('Package ID', 'leyka'),
                             'value' => $placeholders['id'],
                             'is_read_only' => true,
-                        ));?>
+                        ]);?>
                     </div>
                 </div>
                 <?php }?>
 
                 <div class="option-block type-number">
                     <div class="leyka-number-field-wrapper">
-                        <?php leyka_render_number_field('package_amount_needed', array(
+                        <?php leyka_render_number_field('package_amount_needed', [
                             'title' => sprintf(__('Donations amount needed, %s', 'leyka'), leyka_get_currency_label()),
                             'placeholder' => '500',
                             'required' => true,
                             'value' => $placeholders['amount_needed'],
-                        ));?>
+                        ]);?>
                     </div>
                     <div class="field-errors"></div>
                 </div>
 
                 <div class="settings-block option-block type-file">
-                    <?php leyka_render_file_field('package_icon', array(
+                    <?php leyka_render_file_field('package_icon', [
                         'upload_label' => __('Load icon', 'leyka'),
                         'description' => __('A *.png or *.svg file. The size is no more than 2 Mb', 'leyka'),
                         'required' => true,
                         'value' => $placeholders['package_icon'],
-                    ));?>
+                    ]);?>
                     <div class="field-errors"></div>
                 </div>
 
@@ -1276,13 +1276,13 @@ function leyka_render_support_packages_settings($option_id, $data){
 
         if($data['value'] && is_array($data['value'])) { // Display existing packages (the assoc. array keys order is important)
             foreach($data['value'] as $package_id => $options) {
-                leyka_support_package_html(false, array(
+                leyka_support_package_html(false, [
                     'id' => $package_id,
                     'box_title' => $options['title'],
                     'package_title' => $options['title'],
                     'amount_needed' => $options['amount_needed'],
                     'package_icon' => $options['icon'],
-                ));
+                ]);
             }
         }?>
 
@@ -1302,7 +1302,7 @@ add_action('leyka_save_custom_option-custom_support_packages_settings', 'leyka_s
 function leyka_save_support_packages_settings() {
 
     $_POST['leyka_support_packages'] = json_decode(urldecode($_POST['leyka_support_packages']));
-    $result = array();
+    $result = [];
 
     foreach($_POST['leyka_support_packages'] as $package) {
 
@@ -1310,11 +1310,11 @@ function leyka_save_support_packages_settings() {
             $package->id :
             trim(preg_replace('~[^-a-z0-9_]+~u', '-', mb_strtolower(leyka_cyr2lat($package->title))), '-');
 
-        $result[$package->id] = array(
+        $result[$package->id] = [
             'title' => $package->title,
             'amount_needed' => $package->amount_needed,
             'icon' => $package->icon,
-        );
+        ];
 
     }
 

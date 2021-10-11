@@ -7,7 +7,7 @@ class Leyka_Recent_Donations_Portlet_Controller extends Leyka_Portlet_Controller
 
     protected static $_instance;
 
-    public function get_template_data(array $params = array()) {
+    public function get_template_data(array $params = []) {
 
         $params['number'] = empty($params['number']) || (int)$params['number'] <= 0 ? 5 : $params['number'];
         $params['interval'] = empty($params['interval']) ? 'year' : $params['interval'];
@@ -20,17 +20,17 @@ class Leyka_Recent_Donations_Portlet_Controller extends Leyka_Portlet_Controller
             default: $interval = '1 year';
         }
 
-        $result = array();
-        $donations = Leyka_Donations::get_instance()->get(array(
-            'status' => array('submitted', 'funded', 'failed',),
+        $result = [];
+        $donations = Leyka_Donations::get_instance()->get([
+            'status' => ['submitted', 'funded', 'failed',],
             'results_limit' => $params['number'],
             'date_from' => date('Y-m-d', strtotime("-$interval")),
             'orderby' => 'donation_id',
             'order' => 'DESC',
-        ));
+        ]);
 
         foreach($donations as $donation) {
-            $result[] = array(
+            $result[] = [
                 'id' => $donation->id,
                 'type' => $donation->type,
                 'donor_id' => $donation->donor_id ? $donation->donor_id : 0,
@@ -39,10 +39,10 @@ class Leyka_Recent_Donations_Portlet_Controller extends Leyka_Portlet_Controller
                 'date_time' => $donation->date_time_label,
                 'campaign_title' => $donation->campaign_title,
                 'campaign_id' => $donation->campaign_id,
-                'status' => array('id' => $donation->status, 'label' => $donation->status_label,),
+                'status' => ['id' => $donation->status, 'label' => $donation->status_label,],
                 'amount' => $donation->amount,
                 'currency' => $donation->currency_label,
-            );
+            ];
         }
 
         return $result;

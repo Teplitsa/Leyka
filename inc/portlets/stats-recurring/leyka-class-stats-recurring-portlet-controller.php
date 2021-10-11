@@ -7,7 +7,7 @@ class Leyka_Recurring_Stats_Portlet_Controller extends Leyka_Portlet_Controller 
 
     protected static $_instance;
 
-    public function get_template_data(array $params = array()) {
+    public function get_template_data(array $params = []) {
 
         $params['interval'] = empty($params['interval']) ? 'year' : $params['interval'];
         switch($params['interval']) {
@@ -118,7 +118,7 @@ class Leyka_Recurring_Stats_Portlet_Controller extends Leyka_Portlet_Controller 
 
         $curr_all_donations_count = $wpdb->get_var($query);
 
-        return array(
+        return [
             'recurring_donations_amount' => $curr_recurring_amount,
             'recurring_donations_amount_delta_percent' =>
                 $recurring_amount_delta === NULL ? '—' : ($recurring_amount_delta < 0 ? '' : '+').$recurring_amount_delta.'%',
@@ -126,7 +126,7 @@ class Leyka_Recurring_Stats_Portlet_Controller extends Leyka_Portlet_Controller 
             'all_donations_number' => $curr_all_donations_count,
             'recurring_donations_number_percent' => $curr_all_donations_count ?
                 round($curr_recurring_donations_count*100.0/$curr_all_donations_count, 1) : 0,
-        );
+        ];
 
     }
 

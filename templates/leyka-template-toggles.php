@@ -47,7 +47,7 @@ leyka_pf_submission_errors();?>
             $icons = leyka_pf_get_pm_icons();
             if($icons) {
 
-                $list = array();
+                $list = [];
                 foreach($icons as $i) {
                     $list[] = "<li>{$i}</li>";
                 }

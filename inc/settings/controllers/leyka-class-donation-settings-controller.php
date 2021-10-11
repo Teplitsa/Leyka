@@ -22,7 +22,7 @@ class Leyka_Donation_Settings_Controller extends Leyka_Settings_Controller {
         return self::get_instance();
     }
 
-    protected function __construct(array $params = array()) {
+    protected function __construct(array $params = []) {
 
         if( !empty($params['donation']) && is_a($params['donation'], 'Leyka_Donation_Base') ) {
             $this->_donation = $params['donation'];
@@ -32,7 +32,7 @@ class Leyka_Donation_Settings_Controller extends Leyka_Settings_Controller {
         $this->_set_attributes();
         $this->_set_stages();
 
-        add_action('leyka_settings_submit_'.$this->_id, array($this, 'handle_submit'));
+        add_action('leyka_settings_submit_'.$this->_id, [$this, 'handle_submit']);
 
         $this->_handle_settings_submit();
 
@@ -144,7 +144,7 @@ class Leyka_Donation_Settings_Controller extends Leyka_Settings_Controller {
 
         return empty($component_id) ?
             $this->_component_errors :
-            (empty($this->_component_errors[$component_id]) ? array() : $this->_component_errors[$component_id]);
+            (empty($this->_component_errors[$component_id]) ? [] : $this->_component_errors[$component_id]);
 
     }
 
@@ -160,7 +160,7 @@ class Leyka_Donation_Settings_Controller extends Leyka_Settings_Controller {
 
         if( !$blocks ) {
 
-            $blocks = array();
+            $blocks = [];
 
             foreach($this->get_current_stage()->get_sections() as $section) { /** @var $section Leyka_Settings_Section */
                 $blocks = array_merge($blocks, $section->get_blocks());
@@ -188,7 +188,7 @@ class Leyka_Donation_Settings_Controller extends Leyka_Settings_Controller {
 
     protected function _add_component_error($component_id, WP_Error $error) {
         if(empty($this->_component_errors[$component_id])) {
-            $this->_component_errors[$component_id] = array($error);
+            $this->_component_errors[$component_id] = [$error];
         } else {
             $this->_component_errors[$component_id][] = $error;
         }
@@ -216,10 +216,10 @@ class Leyka_Donation_Settings_Controller extends Leyka_Settings_Controller {
     }
 
     public function get_submit_data($component = null) {
-        return array(
+        return [
 //            'activation_status' => $this->_extension->activation_status,
 //            'activation_button_label' => leyka_get_extension_activation_button_label($this->_extension),
-        );
+        ];
     }
 
     public function get_navigation_data() {
@@ -261,7 +261,7 @@ class Leyka_Donation_Settings_Controller extends Leyka_Settings_Controller {
 
         if($params['type'] === 'container' && !empty($params['entries'])) {
 
-            $settings_block = new Leyka_Container_Block(array('id' => $this->_id.'_container-'.random_int(0, 1000)));
+            $settings_block = new Leyka_Container_Block(['id' => $this->_id.'_container-'.random_int(0, 1000)]);
             if( !empty($params['classes']) ) {
                 $settings_block->classes = $params['classes'];
             }
@@ -278,12 +278,12 @@ class Leyka_Donation_Settings_Controller extends Leyka_Settings_Controller {
 
         } else if(stristr($params['type'], 'custom_') !== false) {
 
-            $settings_block = new Leyka_Custom_Setting_Block(array(
+            $settings_block = new Leyka_Custom_Setting_Block([
                 'id' => $this->_id.'_'.$option_id,
                 'custom_setting_id' => $option_id,
                 'field_type' => $params['type'],
                 'rendering_type' => apply_filters('leyka_custom_setting_rendering_type', 'callback', $option_id),
-            ));
+            ]);
 
             if( !leyka_options()->option_exists($option_id) ) {
                 leyka_options()->add_option($option_id, $params['type'], $params);
@@ -291,7 +291,7 @@ class Leyka_Donation_Settings_Controller extends Leyka_Settings_Controller {
 
         } else {
 
-            $block_params = array('id' => $this->_id.'_'.$option_id, 'option_id' => $option_id);
+            $block_params = ['id' => $this->_id.'_'.$option_id, 'option_id' => $option_id];
             if( !empty($params['width']) && $params['width'] > 0 && $params['width'] < 1.0 ) {
                 $block_params['width'] = $params['width'];
             }

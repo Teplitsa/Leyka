@@ -4,7 +4,7 @@ add_action('leyka_settings_submit', 'leyka_save_settings');
 
 function leyka_save_settings($tab_name) {
 
-    $options_names = array();
+    $options_names = [];
     $submitted_options_section = !empty($_POST['leyka_options_section']) ? $_POST['leyka_options_section'] : null;
 
     foreach(leyka_opt_alloc()->get_tab_options($tab_name) as $entry) {

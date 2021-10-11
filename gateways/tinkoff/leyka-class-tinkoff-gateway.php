@@ -13,7 +13,7 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
         $this->_has_wizard = false;
 
         $this->_min_commission = 1;
-        $this->_receiver_types = array('legal');
+        $this->_receiver_types = ['legal',];
         $this->_may_support_recurring = true;
 
     }
@@ -24,22 +24,21 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
             return;
         }
 
-
-        $this->_options = array(
-            $this->_id.'_terminal_key' => array(
+        $this->_options = [
+            $this->_id.'_terminal_key' => [
                 'type' => 'text',
                 'title' => __('Terminal ID', 'leyka'),
                 'comment' => __('The value may be acquired from the bank when Tinkoff payment terminal is created.', 'leyka'),
                 'required' => true,
-            ),
-            $this->_id.'_password' => array(
+            ],
+            $this->_id.'_password' => [
                 'type' => 'text',
                 'is_password' => true,
                 'title' => __('Password', 'leyka'),
                 'comment' => __('The value may be acquired from the bank when Tinkoff payment terminal is created.', 'leyka'),
                 'required' => true,
-            ),
-        );
+            ],
+        ];
 
     }
 
@@ -75,13 +74,13 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
 
         $new_recurring_donation = Leyka_Donations::get_instance()->add_clone(
             $init_recurring_donation,
-            array(
+            [
                 'status' => 'submitted',
                 'payment_type' => 'rebill',
                 'amount_total' => 'auto',
                 'init_recurring_donation' => $init_recurring_donation->id,
-            ),
-            array('recalculate_total_amount' => true,)
+            ],
+            ['recalculate_total_amount' => true,]
         );
 
         $new_recurring_donation->tinkoff_rebill_id = esc_sql($init_recurring_donation->tinkoff_rebill_id);
@@ -97,17 +96,17 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
             leyka_options()->opt($this->_id.'_password')
         );
 
-        $api->init(array(
+        $api->init([
             'OrderId' => $new_recurring_donation->id,
             'Amount' => 100 * absint($new_recurring_donation->amount),
-            'DATA' => array('Email' => $init_recurring_donation->donor_email,),
-        ));
+            'DATA' => ['Email' => $init_recurring_donation->donor_email,],
+        ]);
 
         if($api->error){
             $this->_handle_donation_failure($new_recurring_donation, $api);
         } else {
 
-            $api->charge(array('RebillId' => $init_recurring_donation->tinkoff_rebill_id, 'PaymentId' => $api->paymentId,));
+            $api->charge(['RebillId' => $init_recurring_donation->tinkoff_rebill_id, 'PaymentId' => $api->paymentId,]);
 
             if($api->error || $api->status === 'REJECTED') {
                 $this->_handle_donation_failure($new_recurring_donation, $api);
@@ -146,11 +145,11 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
             leyka_options()->opt($this->_id.'_password')
         );
 
-        $params = array(
+        $params = [
             'OrderId' => $donation_id,
             'Amount' => 100 * absint($donation->amount),
-            'DATA' => array('Email' => $donation->donor_email,),
-        );
+            'DATA' => ['Email' => $donation->donor_email,],
+        ];
 
         if($donation->type === 'rebill') {
 
@@ -175,15 +174,15 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
     public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {
 
         if( !$donation->gateway_response ) {
-            return array();
+            return [];
         }
 
         $vars = $donation->gateway_response;
         if( !$vars || !is_array($vars) ) {
-            return array();
+            return [];
         }
 
-        return array(
+        return [
             __('Terminal key:', 'leyka') => $vars['TerminalKey'],
             __('Payment succeeded:', 'leyka') => !empty($vars['Success']) ? __('yes', 'leyka') : __('no', 'leyka'),
             __('Last payment status:', 'leyka') => $vars['Status'],
@@ -193,7 +192,7 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
             __('Bank card number:', 'leyka') => $vars['Pan'],
             __('Bank card expiring date:', 'leyka') => $vars['ExpDate'],
             __('Payment error code:', 'leyka') => empty($vars['ErrorCode']) ? __('no', 'leyka') : $vars['ErrorCode'],
-        );
+        ];
 
     }
 
@@ -211,7 +210,7 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
             return $form_data; // It's not our PM
         }
 
-        return array();
+        return [];
 
     }
 
@@ -245,7 +244,7 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
 
         if($donation) { // Edit donation page displayed
 
-            $donation = Leyka_Donations::get_instance()->get($donation);?>
+            $donation = Leyka_Donations::get_instance()->get_donation($donation);?>
 
             <label><?php _e('Tinkoff payment ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
@@ -367,13 +366,13 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
                     ->setTransactionId($donation->id)
                     ->setAffiliation(get_bloginfo('name'))
                     ->setRevenue($donation->amount)
-                    ->addProduct(array( // Donation params
+                    ->addProduct([ // Donation params
                         'name' => $donation->payment_title,
                         'price' => $donation->amount,
                         'brand' => get_bloginfo('name'), // Mb, it won't work with it
                         'category' => $donation->type_label, // Mb, it won't work with it
                         'quantity' => 1,
-                    ))
+                    ])
                     ->setProductActionToPurchase()
                     ->setEventCategory('Checkout')
                     ->setEventAction('Purchase')
@@ -388,7 +387,7 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
 
     }
 
-    protected function _check_result_response($params = array()) {
+    protected function _check_result_response($params = []) {
 
         $prev_token = $params['Token'];
 
@@ -424,12 +423,12 @@ class Leyka_Tinkoff_Card extends Leyka_Payment_Method {
         $this->_label_backend = __('Bank card', 'leyka');
         $this->_label = __('Bank card', 'leyka');
 
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, [
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
-        ));
+        ]);
 
         $this->_supported_currencies[] = 'rub';
         $this->_default_currency = 'rub';
@@ -442,15 +441,15 @@ class Leyka_Tinkoff_Card extends Leyka_Payment_Method {
             return;
         }
 
-        $this->_options = array(
-            $this->full_id.'_recurring_available' => array(
+        $this->_options = [
+            $this->full_id.'_recurring_available' => [
                 'type' => 'checkbox',
                 'default' => false,
                 'title' => __('Monthly recurring subscriptions are available', 'leyka'),
                 'comment' => __('Check if TinkoffBank Acquiring allows you to create recurrent subscriptions to do regular automatic payments. WARNING: you should enable the Tinkoffbank auto-payments feature for test mode and for production mode separately.', 'leyka'),
                 'short_format' => true,
-            ),
-        );
+            ],
+        ];
 
     }
 

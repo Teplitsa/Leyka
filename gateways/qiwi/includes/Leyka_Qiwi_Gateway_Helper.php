@@ -2,18 +2,18 @@
 
 class Leyka_Qiwi_Gateway_Helper {
 
-    public static $map_status = array(
+    public static $map_status = [
         'PAID' => 'funded',
         'WAITING' => 'submitted',
         'REJECTED' => 'failed',
         'PARTIAL' => 'refunded',
         'FULL' => 'refunded',
         'EXPIRED' => 'failed'
-    );
+    ];
 
     public function __construct() {
         /** @todo Refunds handling is commented out - further debugging/testing needed. WTF is $this->salt ??? */
-//        add_action('leyka_donation_status_funded_to_refunded', array($this, 'create_refund'), 10);
+//        add_action('leyka_donation_status_funded_to_refunded', [$this, 'create_refund'], 10);
     }
 
     public function create_refund(Leyka_Donation_Base $donation) {
@@ -24,54 +24,52 @@ class Leyka_Qiwi_Gateway_Helper {
 
         $bill_id .= "-{$this->salt}";
 
-        $response = wp_remote_request(
+        return wp_remote_request(
             "https://api.qiwi.com/partner/bill/v1/bills/{$bill_id}/refunds/refund_{$bill_id}",
-            array(
+            [
                 'method' => 'PUT',
-                'headers' => array(
+                'headers' => [
                     'Accept' => 'application/json',
                     'Content-Type' => 'application/json',
                     'Authorization' => 'Bearer '.leyka_options()->opt('leyka_qiwi_secret_key'),
-                ),
+                ],
                 'body' => json_encode(
-                    array('amount' => array('currency' => 'RUB', 'value' => intval($amount),)),
+                    ['amount' => ['currency' => 'RUB', 'value' => intval($amount),]],
                     JSON_FORCE_OBJECT
                 )
-            )
+            ]
         );
-
-        return $response;
 
     }
 
-    public function create_bill($bill_id, $amount, $args = array()) {
+    public function create_bill($bill_id, $amount, $args = []) {
 
         $amount = number_format(intval($amount), 2, '.', '');
 
         $args = wp_parse_args(
             $args,
-            array(
-                'amount' => array('currency' => 'RUB', 'value' => $amount,),
+            [
+                'amount' => ['currency' => 'RUB', 'value' => $amount,],
                 'comment' => '',
                 'expirationDateTime' => self::_format_date(strtotime('+1 day', current_time('timestamp', 1))),
-                'customer' => array(),
-                'customFields' => array('apiClient' => 'WordPress Leyka', 'apiClientVersion' => LEYKA_VERSION,),
-            )
+                'customer' => [],
+                'customFields' => ['apiClient' => 'WordPress Leyka', 'apiClientVersion' => LEYKA_VERSION,],
+            ]
         );
 
         $args['amount']['value'] = $amount;
 
         return wp_remote_request(
             'https://api.qiwi.com/partner/bill/v1/bills/'.$bill_id."-{$this->salt}",
-            array(
+            [
                 'method' => 'PUT',
-                'headers' => array(
+                'headers' => [
                     'Accept' => 'application/json',
                     'Content-Type' => 'application/json',
                     'Authorization' => 'Bearer '.leyka_options()->opt('leyka_qiwi_secret_key'),
-                ),
+                ],
                 'body' => json_encode($args, JSON_FORCE_OBJECT)
-            )
+            ]
         );
 
     }

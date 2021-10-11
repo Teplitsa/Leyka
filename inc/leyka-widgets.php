@@ -16,12 +16,10 @@ class Leyka_Campaign_Card_Widget extends WP_Widget {
 
 	public function __construct() {
 
-		$widget_ops = array(
-			'classname'   => 'leyka_campaign_card',
-			'description' => __('Campaign informer with configurable elements', 'leyka')
-		);
-
-		parent::__construct('leyka_campaign_card',  __('Leyka: Campaign Card', 'leyka'), $widget_ops);
+		parent::__construct('leyka_campaign_card',  __('Leyka: Campaign Card', 'leyka'), [
+            'classname'   => 'leyka_campaign_card',
+            'description' => __('Campaign informer with configurable elements', 'leyka')
+        ]);
 
 	}
 
@@ -33,7 +31,7 @@ class Leyka_Campaign_Card_Widget extends WP_Widget {
 
 		if( !empty($instance['campaign_id']) && $instance['campaign_id'] === '-' ) { // Last campaign
 
-			$query = get_posts(array('post_type' => Leyka_Campaign_Management::$post_type, 'posts_per_page' => 1,));
+			$query = get_posts(['post_type' => Leyka_Campaign_Management::$post_type, 'posts_per_page' => 1,]);
 			if( !$query ) {
 				return;
 			}
@@ -46,20 +44,20 @@ class Leyka_Campaign_Card_Widget extends WP_Widget {
 			$campaign_id = (int)$instance['campaign_id'];
 		}
 
-		$args = array(
+		$args = [
 			'show_title'    => !!$instance['show_title'],
 			'show_thumb'    => !!$instance['show_thumb'],
 			'show_excerpt'  => !!$instance['show_excerpt'],
 			'show_scale'    => !!$instance['show_scale'],
 			'show_button'   => !!$instance['show_button'],
-		);
+		];
 
 		$css_id = 'leyka_campaign_card_widget-'.uniqid();
 
 		$campaign = new Leyka_Campaign($campaign_id);
 
 		if($campaign->campaign_template === 'star') {
-		    $html = leyka_shortcode_campaign_card(array_merge(array('campaign_id' => $campaign_id), $args));
+		    $html = leyka_shortcode_campaign_card(array_merge(['campaign_id' => $campaign_id], $args));
 		}
 		else {
 		    $html = leyka_get_campaign_card($campaign_id, $args);
@@ -109,7 +107,7 @@ class Leyka_Campaign_Card_Widget extends WP_Widget {
 
 	public function form($instance) {
 
-		$defaults = array(
+		$defaults = [
 			'title' => '',
 			'campaign_id' => '',
 			'show_title' => 1,
@@ -117,7 +115,7 @@ class Leyka_Campaign_Card_Widget extends WP_Widget {
 			'show_excerpt' => 1,
 			'show_scale' => 1,
 			'show_button' => 1,
-		);
+		];
 
 		$instance = wp_parse_args((array)$instance, $defaults);?>
 
@@ -142,7 +140,7 @@ class Leyka_Campaign_Card_Widget extends WP_Widget {
 					<?php esc_html_e('Campaign based on a context', 'leyka');?>
                 </option>
 
-				<?php foreach(get_posts(array('post_type' => Leyka_Campaign_Management::$post_type, 'nopaging' => true)) as $campaign) {?>
+				<?php foreach(get_posts(['post_type' => Leyka_Campaign_Management::$post_type, 'nopaging' => true]) as $campaign) {?>
                     <option value="<?php echo $campaign->ID;?>" <?php echo $current_value == $campaign->ID ? 'selected="selected"' : '';?>>
 						<?php echo $campaign->post_title;?>
                     </option>
@@ -188,12 +186,10 @@ class Leyka_Campaigns_List_Widget extends WP_Widget {
 
 	public function __construct() {
 
-		$widget_ops = array(
-			'classname'   => 'leyka_campaigns_list',
-			'description' => esc_html__('List of recent campaigns with configurable attributes', 'leyka'),
-		);
-
-		parent::__construct('leyka_campaigns_list',  esc_html__('Leyka: Campaigns List', 'leyka'), $widget_ops);
+		parent::__construct('leyka_campaigns_list',  esc_html__('Leyka: Campaigns List', 'leyka'), [
+            'classname'   => 'leyka_campaigns_list',
+            'description' => esc_html__('List of recent campaigns with configurable attributes', 'leyka'),
+        ]);
 
 	}
 
@@ -203,11 +199,11 @@ class Leyka_Campaigns_List_Widget extends WP_Widget {
 
 		$title = apply_filters('widget_title', $instance['title']);
 
-		$q_args = array(
+		$q_args = [
 			'post_type' => Leyka_Campaign_Management::$post_type,
 			'posts_per_page' => empty($instance['limit']) ? 3 : (int)$instance['limit'],
 			'post_status' => 'publish',
-		);
+		];
 
 		if( !empty($instance['include']) ) {
 			$q_args['post__in'] = array_map('intval', explode(',', $instance['include']));
@@ -218,14 +214,14 @@ class Leyka_Campaigns_List_Widget extends WP_Widget {
 		}
 
 		if( !empty($instance['exclude_finished']) ) {
-			$q_args['meta_query'] = array(
-				array(
+			$q_args['meta_query'] = [
+				[
 					'key'     => 'is_finished',
 					'value'   => 1,
 					'compare' => '!=',
 					'type' => 'NUMERIC',
-				),
-			);
+				],
+			];
 		}
 
 		$campaigns = get_posts(apply_filters('leyka_campaigns_list_widget_query_args', $q_args, $instance));
@@ -233,14 +229,14 @@ class Leyka_Campaigns_List_Widget extends WP_Widget {
 			return;
 		}
 
-		$args = array(
+		$args = [
 			'show_title' => !empty($instance['show_title']),
 			'show_thumb' => !empty($instance['show_thumb']),
 			'show_excerpt' => !empty($instance['show_excerpt']),
 			'show_scale' => !empty($instance['show_scale']),
 			'show_button' => !empty($instance['show_button']),
 			'exclude_finished' => !empty($instance['exclude_finished']),
-		);
+		];
 
 		/** @var $before_widget */
 		/** @var $before_title */
@@ -254,17 +250,17 @@ class Leyka_Campaigns_List_Widget extends WP_Widget {
 		$css_id = 'leyka_campaign_list_widget-'.uniqid();
 		echo "<div id='".esc_attr($css_id)."' class='leyka-campaigns-list'>";
 
-		add_filter('leyka_campaign_card_thumbnail_size', array($this, '_campaign_thumb_size'));
-		add_filter('leyka_campaign_card_class', array($this, '_campaign_css'));
+		add_filter('leyka_campaign_card_thumbnail_size', [$this, '_campaign_thumb_size']);
+		add_filter('leyka_campaign_card_class', [$this, '_campaign_css']);
 
 		foreach($campaigns as $campaign) {
 			echo leyka_get_campaign_card($campaign->ID, $args);
 		}
-		remove_filter('leyka_campaign_card_thumbnail_size', array($this, '_campaign_thumb_size'));
-		remove_filter('leyka_campaign_card_class', array($this, '_campaign_css'));
+		remove_filter('leyka_campaign_card_thumbnail_size', [$this, '_campaign_thumb_size']);
+		remove_filter('leyka_campaign_card_class', [$this, '_campaign_css']);
 
-		echo "</div>";
-		echo $after_widget;
+		echo "</div>".$after_widget;
+
 	}
 
 	public function _campaign_thumb_size($size){
@@ -299,7 +295,7 @@ class Leyka_Campaigns_List_Widget extends WP_Widget {
 
 	public function form($instance) {
 
-		$defaults = array(
+		$defaults = [
 			'title' => '',
 			'limit' => 3,
 			'show_title' => true,
@@ -310,7 +306,7 @@ class Leyka_Campaigns_List_Widget extends WP_Widget {
 			'include' => '',
 			'exclude' => '',
 			'exclude_finished' => false,
-		);
+		];
 
 		$instance = wp_parse_args((array)$instance, $defaults);
 
@@ -387,11 +383,10 @@ class Leyka_Donations_List_Widget extends WP_Widget {
 
 	public function __construct() {
 
-		$widget_ops = array(
-			'classname'   => 'leyka_donations_list',
-			'description' => esc_html__('Recent donations list, optionally filtered by campaign', 'leyka')
-		);
-		parent::__construct('leyka_donations_list',  esc_html__('Leyka: Donations List', 'leyka'), $widget_ops);
+		parent::__construct('leyka_donations_list',  esc_html__('Leyka: Donations List', 'leyka'), [
+            'classname'   => 'leyka_donations_list',
+            'description' => esc_html__('Recent donations list, optionally filtered by campaign', 'leyka')
+        ]);
 
 	}
 
@@ -403,14 +398,12 @@ class Leyka_Donations_List_Widget extends WP_Widget {
 
 		$campaign_id = empty($instance['campaign_id']) ? 'all' : (int)$instance['campaign_id'];
 
-		$args = array(
-			'num' => empty($instance['limit']) ? 5 : (int)$instance['limit'],
-			'show_purpose' => !empty($instance['show_purpose']),
-			'show_name' => !empty($instance['show_name']),
-			'show_date' => !empty($instance['show_date']),
-		);
-
-		$html = leyka_get_donors_list($campaign_id, $args);
+		$html = leyka_get_donors_list($campaign_id, [
+            'num' => empty($instance['limit']) ? 5 : (int)$instance['limit'],
+            'show_purpose' => !empty($instance['show_purpose']),
+            'show_name' => !empty($instance['show_name']),
+            'show_date' => !empty($instance['show_date']),
+        ]);
 		if( !$html ) {
 			return;
 		}
@@ -442,14 +435,14 @@ class Leyka_Donations_List_Widget extends WP_Widget {
 
 	public function form($instance) {
 
-		$defaults = array(
+		$defaults = [
 			'title' => '',
 			'limit' => 5,
 			'campaign_id' => '',
 			'show_purpose' => 1,
 			'show_name' => 1,
 			'show_date' => 1,
-		);
+		];
 
 		$instance = wp_parse_args((array)$instance, $defaults);?>
 

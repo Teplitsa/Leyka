@@ -8,15 +8,13 @@ if( !defined('WPINC') ) die;
 
 global $wpdb;
 
-$procedure_options = leyka_procedures_get_procedure_options(array(
+$procedure_options = leyka_procedures_get_procedure_options([
     'delete_old_donations' => false,
     'pre_clear_sep_storage' => false,
     'only_funded' => false,
     'limit' => false,
     'debug_profiling' => false, // Display time to complete each sub-operation
-));
-
-Leyka_Donations::$use_leyka_object_cache = false; // So Donations objects wouldn't stay in memory (and lead to leaking problem)
+]);
 
 //update_option('leyka_donations_storage_type', 'post'); // TODO TMP, for debugging only
 
@@ -114,8 +112,8 @@ if($procedure_options['only_funded'] && $procedure_options['delete_old_donations
 
     foreach($donations_ids as $donation_id) {
 
-        $wpdb->delete($wpdb->postmeta, array('post_id' => $donation_id), array('%d'));
-        $wpdb->delete($wpdb->posts, array('ID' => $donation_id), array('%d'));
+        $wpdb->delete($wpdb->postmeta, ['post_id' => $donation_id], ['%d']);
+        $wpdb->delete($wpdb->posts, ['ID' => $donation_id], ['%d']);
 
         $donations_processed++;
 
@@ -206,7 +204,7 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
 
     foreach($donation_post_meta as $key => $meta) { // Clean up meta fields names
 
-        $donation_post_meta[ str_replace(array('leyka_', '_leyka_'), '', $meta['meta_key']) ] = $meta['meta_value'];
+        $donation_post_meta[ str_replace(['leyka_', '_leyka_'], '', $meta['meta_key']) ] = $meta['meta_value'];
         unset($donation_post_meta[$key]);
 
     }
@@ -243,7 +241,7 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
     $donation_post_data['payment_type'] = $donation_post_meta['payment_type']; // Save the payment type for further usage
 
     // From now on, these data fields are not metas anymore, but main object attributes:
-    foreach(array('campaign_id','payment_type','gateway','payment_method','donation_currency','donation_amount','donation_amount_total','main_curr_amount','main_curr_amount_total','donor_name','donor_email',) as $key) {
+    foreach(['campaign_id','payment_type','gateway','payment_method','donation_currency','donation_amount','donation_amount_total','main_curr_amount','main_curr_amount_total','donor_name','donor_email',] as $key) {
         unset($donation_post_meta[$key]);
     }
 
@@ -366,7 +364,7 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
     }
 
     // Don't transfer the unneeded post meta:
-    foreach(array('_edit_last', '_edit_lock', '_gapp_post_views', '_wp_desired_post_slug', '_wp_trash_meta_status', '_wp_trash_meta_time', '_yoast_wpseo_content_score', '_yoast_wpseo_is_cornerstone', '_count_view', 'views', '_is_subscribed') as $key) {
+    foreach(['_edit_last', '_edit_lock', '_gapp_post_views', '_wp_desired_post_slug', '_wp_trash_meta_status', '_wp_trash_meta_time', '_yoast_wpseo_content_score', '_yoast_wpseo_is_cornerstone', '_count_view', 'views', '_is_subscribed'] as $key) {
         unset($donation_post_meta[$key]);
     }
 
@@ -405,8 +403,8 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
     if($procedure_options['delete_old_donations']) {
 
 //        wp_delete_post($donation_id, true);
-        $wpdb->delete($wpdb->postmeta, array('post_id' => $donation_post_data['ID']), array('%d'));
-        $wpdb->delete($wpdb->posts, array('ID' => $donation_post_data['ID']), array('%d'));
+        $wpdb->delete($wpdb->postmeta, ['post_id' => $donation_post_data['ID']], ['%d']);
+        $wpdb->delete($wpdb->posts, ['ID' => $donation_post_data['ID']], ['%d']);
 
 //        leyka_procedures_print('Memory after deleting original ID='.$donation_id.': '.get_memory_formatted(memory_get_usage()));
         if($procedure_options['debug_profiling']) {

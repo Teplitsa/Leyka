@@ -9,7 +9,7 @@ add_shortcode('leyka_sum', 'leyka_shortcode_amount_collected');
 add_shortcode('leyka_amount_collected', 'leyka_shortcode_amount_collected');
 function leyka_shortcode_amount_collected($atts) {
 
-    $atts = shortcode_atts(array(
+    $atts = shortcode_atts([
         // Possible values: 'all'/0/false for all campaigns, 'current' for current campaign, int for campaign with ID given:
         'campaign_id' => 'current',
         'total_funded' => 0, // True/1 to use the "amount_total" field in counting, false/0 to use the "amount" field.
@@ -18,13 +18,10 @@ function leyka_shortcode_amount_collected($atts) {
         'date_to' => false, // strtotime-compatible string, like dd.mm.yyyy
         'classes' => '', // HTML classes for the shortcode wrapper
         'unstyled' => 0, // True/1 to use Leyka styling for the output, false/0 otherwise
-    ), $atts);
+    ], $atts);
 
     $amount_collected = 0.0;
-    $donation_params = array(
-        'nopaging' => true,
-        'status' => 'funded',
-    );
+    $donation_params = ['nopaging' => true, 'status' => 'funded',];
 
     if($atts['campaign_id']) {
 
@@ -64,7 +61,7 @@ function leyka_shortcode_amount_collected($atts) {
 add_shortcode('leyka_donations_count', 'leyka_shortcode_donations_count');
 function leyka_shortcode_donations_count($atts) {
 
-    $atts = shortcode_atts(array(
+    $atts = shortcode_atts([
         // Possible values: 'all'/0/false to count funded donations for all campaigns,
         // 'current' for current campaign,
         // int for campaign with ID given:
@@ -72,13 +69,13 @@ function leyka_shortcode_donations_count($atts) {
         'recurring' => 0, // True/1 to count only active recurring subscriptions, false/0 otherwise
         'classes' => '', // HTML classes for the shortcode wrapper
         'unstyled' => 0, // True/1 to use Leyka styling for the output, false/0 otherwise
-    ), $atts);
+    ], $atts);
 
-    $donation_params = array(
+    $donation_params = [
 //        'post_type' => Leyka_Donation_Management::$post_type,
         'nopaging' => true,
         'status' => 'funded',
-    );
+    ];
 
     if($atts['campaign_id']) {
 
@@ -87,14 +84,14 @@ function leyka_shortcode_donations_count($atts) {
             ($atts['campaign_id'] === 'all' ? false : absint($atts['campaign_id']));
 
         if($atts['campaign_id']) {
-//            $donation_params['meta_query'][] = array('key' => 'leyka_campaign_id', 'value' => esc_sql($atts['campaign_id']));
+//            $donation_params['meta_query'][] = ['key' => 'leyka_campaign_id', 'value' => esc_sql($atts['campaign_id'])];
             $donation_params['campaign_id'] = esc_sql($atts['campaign_id']);
         }
 
     }
     if($atts['recurring']) {
 //        $donation_params['post_parent'] = 0;
-//        $donation_params['meta_query'][] = array('key' => 'leyka_payment_type', 'value' => 'rebill',);
+//        $donation_params['meta_query'][] = ['key' => 'leyka_payment_type', 'value' => 'rebill',];
         $donation_params['payment_type'] = 'rebill-init';
     }
 
@@ -114,7 +111,7 @@ function leyka_shortcode_donations_count($atts) {
 add_shortcode('leyka_donors_count', 'leyka_shortcode_donors_count');
 function leyka_shortcode_donors_count($atts) {
 
-    $atts = shortcode_atts(array(
+    $atts = shortcode_atts([
         // Possible values: 'all'/0/false to count funded donations for all campaigns,
         // 'current' for current campaign,
         // int for campaign with ID given:
@@ -122,14 +119,9 @@ function leyka_shortcode_donors_count($atts) {
         'recurring' => 0, // True/1 to count only active recurring subscriptions, false/0 otherwise
         'classes' => '', // HTML classes for the shortcode wrapper
         'unstyled' => 0, // True/1 to use Leyka styling for the output, false/0 otherwise
-    ), $atts);
+    ], $atts);
 
-    $donors_params = array(
-        'role__in' => array(Leyka_Donor::DONOR_USER_ROLE,),
-        'number' => -1,
-        'fields' => 'id',
-        'meta_query' => array(),
-    );
+    $donors_params = ['role__in' => [Leyka_Donor::DONOR_USER_ROLE,], 'number' => -1, 'fields' => 'id', 'meta_query' => [],];
 
     if($atts['campaign_id']) {
 
@@ -138,16 +130,16 @@ function leyka_shortcode_donors_count($atts) {
             ($atts['campaign_id'] === 'all' ? false : absint($atts['campaign_id']));
 
         if($atts['campaign_id']) {
-            $donors_params['meta_query'][] = array(
+            $donors_params['meta_query'][] = [
                 'key' => 'leyka_donor_campaigns',
                 'value' => 'i:'.absint($atts['campaign_id']).';', // A little freaky, I know, but it's the best we could think of
                 'compare' => 'LIKE',
-            );
+            ];
         }
 
     }
     if($atts['recurring']) {
-        $donors_params['meta_query'][] = array('key' => 'leyka_donor_type', 'value' => 'regular',);
+        $donors_params['meta_query'][] = ['key' => 'leyka_donor_type', 'value' => 'regular',];
     }
 
     $query = new WP_User_Query($donors_params);
@@ -165,7 +157,7 @@ function leyka_shortcode_donors_count($atts) {
 add_shortcode('leyka_donations_list', 'leyka_shortcode_donations_list');
 function leyka_shortcode_donations_list($atts) {
 
-    $atts = shortcode_atts(array(
+    $atts = shortcode_atts([
         // Possible values:
         // 'all'/0/false to count funded donations for all campaigns,
         // 'current' for current campaign,
@@ -188,7 +180,7 @@ function leyka_shortcode_donations_list($atts) {
         'length' => isset($atts['num']) ? absint($atts['num']) : leyka_get_donations_list_per_page(),
         'classes' => '', // HTML classes for the shortcode wrapper
         'unstyled' => 0, // True/1 to use Leyka styling for the output, false/0 otherwise
-    ), $atts);
+    ], $atts);
 
     $donations_params = ['status' => 'funded', 'results_limit' => absint($atts['length']),];
 
@@ -207,7 +199,7 @@ function leyka_shortcode_donations_list($atts) {
         $donation_params['payment_type'] = 'rebill-init';
     }
 
-    $table_columns = array();
+    $table_columns = [];
     if($atts['show_date']) {
         $table_columns['donation_date'] = $atts['show_time'] ? __('Date / time', 'leyka') : __('Date', 'leyka');
     }
@@ -222,10 +214,10 @@ function leyka_shortcode_donations_list($atts) {
     }
 //    $atts['show_total_amount_as'] = $atts['show_total_amount_as'] === 'none' ? false : $atts['show_total_amount_as'];
 
-    $table_lines = array();
+    $table_lines = [];
     foreach(Leyka_Donations::get_instance()->get($donations_params) as $donation) {
 
-        $line = array('donation_id' => $donation->id);
+        $line = ['donation_id' => $donation->id,];
 
         if($atts['show_date']) {
             $line['donation_date'] = $donation->date_time_label;
@@ -308,7 +300,7 @@ function leyka_shortcode_donations_list($atts) {
 add_shortcode('leyka_donations_comments_list', 'leyka_shortcode_donations_comments_list');
 function leyka_shortcode_donations_comments_list($atts) {
 
-    $atts = shortcode_atts(array(
+    $atts = shortcode_atts([
         // Possible values: 'all'/0/false to count funded donations for all campaigns,
         // 'current' for current campaign,
         // int for campaign with ID given:
@@ -322,15 +314,15 @@ function leyka_shortcode_donations_comments_list($atts) {
         'length' => isset($atts['num']) ? absint($atts['num']) : leyka_get_donations_list_per_page(),
         'classes' => '', // HTML classes for the shortcode wrapper
         'unstyled' => 0, // True/1 to use Leyka styling for the output, false/0 otherwise
-    ), $atts);
+    ], $atts);
 
     /** @todo Can't refactor to the Leyka_Donations() - get() doesn't support 'comment' => true/'exists' yet. */
-    $donations_params = array(
+    $donations_params = [
         'post_type' => Leyka_Donation_Management::$post_type,
         'post_status' => 'funded',
         'posts_per_page' => absint($atts['length']),
-        'meta_query' => array(array('key' => 'leyka_donor_comment', 'compare' => 'EXISTS',)),
-    );
+        'meta_query' => [['key' => 'leyka_donor_comment', 'compare' => 'EXISTS',],],
+    ];
 
     if($atts['campaign_id']) {
 
@@ -339,7 +331,7 @@ function leyka_shortcode_donations_comments_list($atts) {
             ($atts['campaign_id'] === 'all' ? false : absint($atts['campaign_id']));
 
         if($atts['campaign_id']) {
-            $donations_params['meta_query'][] = array('key' => 'leyka_campaign_id', 'value' => absint($atts['campaign_id']),);
+            $donations_params['meta_query'][] = ['key' => 'leyka_campaign_id', 'value' => absint($atts['campaign_id']),];
         }
 
     }
@@ -389,7 +381,7 @@ function leyka_shortcode_donations_comments_list($atts) {
 add_shortcode('leyka_supporters_list', 'leyka_shortcode_supporters_list');
 function leyka_shortcode_supporters_list($atts) {
 
-    $atts = shortcode_atts(array(
+    $atts = shortcode_atts([
         // Possible values: 'all'/0/false to count funded donations for all campaigns,
         // 'current' for current campaign,
         // int for campaign with ID given:
@@ -401,7 +393,7 @@ function leyka_shortcode_supporters_list($atts) {
         'color_special' => false, // Special elements color
         'classes' => '', // HTML classes for the shortcode wrapper
         'unstyled' => 0, // True/1 to use Leyka styling for the output, false/0 otherwise
-    ), $atts);
+    ], $atts);
 
     if($atts['campaign_id']) {
         $atts['campaign_id'] = $atts['campaign_id'] === 'current' ?
@@ -471,7 +463,7 @@ add_shortcode('leyka_bar', 'leyka_shortcode_campaign_card');
 add_shortcode('leyka_campaign_card_new', 'leyka_shortcode_campaign_card');
 function leyka_shortcode_campaign_card($atts) {
 
-    $atts = shortcode_atts(array(
+    $atts = shortcode_atts([
         // Possible values: 'current'/0/false for current campaign,
         // int for campaign with ID given:
         'campaign_id' => 'current',
@@ -495,7 +487,7 @@ function leyka_shortcode_campaign_card($atts) {
         'color_unfulfilled' => false, // Progressbar unfulfilled part color
         'classes' => '', // HTML classes for the shortcode wrapper
         'unstyled' => 0, // True/1 to use Leyka styling for the output, false/0 otherwise
-    ), $atts);
+    ], $atts);
 
     $atts['campaign_id'] = $atts['campaign_id'] === 'current' || empty($atts['campaign_id']) ?
         (get_post() && get_post()->post_type === Leyka_Campaign_Management::$post_type ? get_the_ID() : false) :

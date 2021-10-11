@@ -7,8 +7,8 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
 
     protected $_id;
     protected $_title;
-    protected $_common_errors = array();
-    protected $_component_errors = array();
+    protected $_common_errors = [];
+    protected $_component_errors = [];
 
     /** @var $_stages array of Leyka_Settings_Section objects */
     protected $_stages;
@@ -35,7 +35,7 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
         $this->_set_attributes();
         $this->_set_stages();
 
-        add_action('leyka_settings_submit_'.$this->_id, array($this, 'handle_submit'));
+        add_action('leyka_settings_submit_'.$this->_id, [$this, 'handle_submit']);
 
     }
 
@@ -43,10 +43,10 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
 
         add_action('admin_enqueue_scripts', function(){
 
-            wp_localize_script('leyka-settings', 'leyka_wizard_common', array(
+            wp_localize_script('leyka-settings', 'leyka_wizard_common', [
                 'copy2clipboard' => esc_html__('Copy', 'leyka'),
                 'copy2clipboard_done' => esc_html__('Copied to the clipboard!', 'leyka'),
-            ));
+            ]);
 
         }, 11);
 
@@ -91,7 +91,7 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
 
         return empty($component_id) ?
             $this->_component_errors :
-            (empty($this->_component_errors[$component_id]) ? array() : $this->_component_errors[$component_id]);
+            (empty($this->_component_errors[$component_id]) ? [] : $this->_component_errors[$component_id]);
 
     }
 
@@ -108,11 +108,13 @@ abstract class Leyka_Settings_Controller extends Leyka_Singleton { // Each desce
     }
 
     protected function _add_component_error($component_id, WP_Error $error) {
+
         if(empty($this->_component_errors[$component_id])) {
-            $this->_component_errors[$component_id] = array($error);
+            $this->_component_errors[$component_id] = [$error];
         } else {
             $this->_component_errors[$component_id][] = $error;
         }
+
     }
 
     /** @return Leyka_Settings_Section */
@@ -133,8 +135,8 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     protected static $_instance = null;
 
-    protected $_activity = array('history' => array(), 'current_section' => false, 'current_stage' => false,);
-    protected $_navigation_data = array();
+    protected $_activity = ['history' => [], 'current_section' => false, 'current_stage' => false,];
+    protected $_navigation_data = [];
 
     protected function __construct() {
 
@@ -145,7 +147,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             $this->_activity = $wizards_activities[$this->_id];
         }
 
-        add_action('leyka_settings_wizard-'.$this->_id.'-_section_init', array($this, 'section_init'));
+        add_action('leyka_settings_wizard-'.$this->_id.'-_section_init', [$this, 'section_init']);
 
         if( !$this->_stages ) {
             return;
@@ -154,7 +156,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
         if( !empty($_GET['return_to'])) { // Wizards active navigation
 
             $_GET['return_to'] = esc_attr($_GET['return_to']);
-            $history = empty($this->_activity['history']) ? array() : $this->_activity['history'];
+            $history = empty($this->_activity['history']) ? [] : $this->_activity['history'];
 
             foreach($history as $section_full_id => $section_history_entry) {
 
@@ -240,7 +242,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
                 return $this->_get_next_section_id();
             
             case 'history':
-                return empty($this->_activity['history']) ? array() : $this->_activity['history'];
+                return empty($this->_activity['history']) ? [] : $this->_activity['history'];
 
             case 'navigation_data':
                 return $this->_navigation_data;
@@ -264,7 +266,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     protected function _reset_activity() {
 
-        $this->_activity = array('history' => array(), 'current_stage' => false, 'current_section' => false,);
+        $this->_activity = ['history' => [], 'current_stage' => false, 'current_section' => false,];
         $this->current_section = reset($this->_stages)->init_section;
 
         return $this->_save_activity();
@@ -353,7 +355,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
         } else {
 
-            $res = array();
+            $res = [];
             foreach($this->_activity['history'] as $section_full_id => $section_history_entry) {
                 $res = array_merge($res, $section_history_entry['data']);
             }
@@ -364,21 +366,21 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
     }
 
-    protected function _add_history_entry(array $data = array(), $section_full_id = false) {
+    protected function _add_history_entry(array $data = [], $section_full_id = false) {
 
         $data = empty($data) ? $this->get_current_section()->get_fields_values() : $data;
         $section_full_id = !$section_full_id ? $this->get_current_section()->full_id : trim($section_full_id);
 
         if(empty($this->_activity['history'][$section_full_id])) {
-            $this->_activity['history'][$section_full_id] = array(
+            $this->_activity['history'][$section_full_id] = [
                 'navigation_position' => $this->_get_section_navigation_position($section_full_id),
-                'data' => $data
-            );
+                'data' => $data,
+            ];
         } else {
-            $this->_activity['history'][$section_full_id] = $this->_activity['history'][$section_full_id] + array(
+            $this->_activity['history'][$section_full_id] = $this->_activity['history'][$section_full_id] + [
                 'navigation_position' => $this->_get_section_navigation_position($section_full_id),
-                'data' => $data
-            );
+                'data' => $data,
+            ];
         }
 
         return $this->_save_activity();
@@ -453,7 +455,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
             return;
         }
 
-        $this->_navigation_data = array();
+        $this->_navigation_data = [];
 
         foreach($this->_stages as $stage) { /** @var Leyka_Settings_Stage $stage */
 
@@ -462,7 +464,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
                 continue;
             }
 
-            $sections_data = array();
+            $sections_data = [];
             $all_sections_completed = true;
             foreach($sections as $section) { /** @var Leyka_Settings_Section $section */
 
@@ -472,24 +474,24 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
                     $all_sections_completed = false;
                 }
 
-                $sections_data[] = array(
+                $sections_data[] = [
                     'section_id' => $section->full_id,
                     'title' => $section->title,
                     'url' => false,
                     'is_current' => $this->current_section->full_id === $section->full_id,
                     'is_completed' => $section_completed,
-                );
+                ];
 
             }
 
-            $this->_navigation_data[] = array(
+            $this->_navigation_data[] = [
                 'stage_id' => $stage->id,
                 'title' => $stage->title,
                 'url' => false,
                 'is_current' => $this->current_stage_id === $stage->id, // True if the current Section belongs to the Stage
                 'is_completed' => $all_sections_completed,
                 'sections' => $sections_data,
-            );
+            ];
 
         }
 
@@ -525,7 +527,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
 
             }
 
-            foreach(empty($stage['sections']) ? array() : $stage['sections'] as $section_index => $section) {
+            foreach(empty($stage['sections']) ? [] : $stage['sections'] as $section_index => $section) {
 
                 $section_navigation_position = $stage['stage_id'].'-'.$section['section_id'];
 

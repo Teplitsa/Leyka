@@ -24,7 +24,7 @@ if( !$extension ) {
         Leyka_Settings_Factory::get_instance()
             ->get_render('extension')
             ->set_controller(
-                Leyka_Settings_Factory::get_instance()->get_controller('extension', array('extension' => $extension,))
+                Leyka_Settings_Factory::get_instance()->get_controller('extension', ['extension' => $extension,])
             )
             ->render_content();
 
