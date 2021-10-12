@@ -218,33 +218,33 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'text',
                 'title' => __('The organization full name', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., Eastern charity foundation of st. John the Merciful', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('Eastern charity foundation of st. John the Merciful', 'leyka')),
             ],
             'org_short_name' => [
                 'type' => 'text',
                 'title' => __('The organization short name', 'leyka'),
                 'required' => true,
-                'placeholder' => __("E.g., St. John's foundation", 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), __("St. John's foundation", 'leyka')),
             ],
             'org_face_fio_ip' => [
                 'type' => 'text',
                 'title' => __('Full name of the organization head person', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., John Frederic Daw', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('John Frederic Daw', 'leyka')),
             ],
             'org_contact_person_name' => [
                 'type' => 'text',
                 'title' => __('Full name of the organization contact person', 'leyka'),
                 'description' => __('Contact person is a person who watch over Leyka installation, setup and plugin connection to the payment gateways.', 'leyka'),
                 'required' => false,
-                'placeholder' => __('E.g., James Frederic Daw Jr.', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('James Frederic Daw Jr.', 'leyka')),
             ],
             'org_face_fio_rp' => [
                 'type' => 'text',
                 'title' => __('Full name of a person representing the NGO, in genitive case', 'leyka'),
                 'description' => __("Enter a person's full name in genitive case.", 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., John Frederic Dow (in genitive case, if it exists)', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('John Frederic Dow (in genitive case, if it exists)', 'leyka')),
             ],
             'org_face_position' => [
                 'type' => 'text',
@@ -259,14 +259,14 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'title' => __('The organization official address', 'leyka'),
                 'description' => __('Enter the organization official address.', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., Malrose str., 4, Washington, DC, USA', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('Malrose str., 4, Washington, DC, USA', 'leyka')),
             ],
             'org_bank_name' => [
                 'type' => 'text',
                 'title' => __('The organization bank name', 'leyka'),
                 'description' => __('Enter a full name for the organization bank.', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., First Columbia Credit Bank', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('First Columbia Credit Bank', 'leyka')),
             ],
             'org_bank_account' => [
                 'type' => 'text',
@@ -285,14 +285,14 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'text',
                 'title' => __('Your full name', 'leyka'),
                 'required' => false,
-                'placeholder' => __('E.g., John Frederic Daw', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('John Frederic Daw', 'leyka')),
                 'comment' => __('This info is needed only to use in your report documents on the site. We are not going to collect this info ourselves or pass it to the third party.', 'leyka'),
             ],
             'person_address' => [
                 'type' => 'text',
                 'title' => _x('Your official address', 'For a physical person', 'leyka'),
                 'required' => false,
-                'placeholder' => __('E.g., Malrose str., 4, Washington, DC, USA', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('Malrose str., 4, Washington, DC, USA', 'leyka')),
                 'comment' => 'This info is needed only to use in your report documents on the site. We are not going to collect this info ourselves or pass it to the third party.',
             ],
             'person_inn' => [
@@ -305,7 +305,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
             'person_bank_name' => [
                 'type' => 'text',
                 'title' => __('Your bank name', 'leyka'),
-                'placeholder' => _x('E.g., First Columbia Credit Bank', 'For a physical person', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('First Columbia Credit Bank', 'leyka')),
             ],
             'person_bank_account' => [
                 'type' => 'text',
@@ -510,7 +510,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'text',
                 'default' => get_bloginfo('name'),
                 'title' => __('Sender', 'leyka'),
-                'placeholder' => __('E.g., Daisy Foundation website', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('Daisy Foundation website', 'leyka')),
                 'comment' => __('What your donors will see in the "from whom" email field. For the most of the cases, your organization name will do fine.', 'leyka'),
             ],
             'email_from' => [
@@ -526,7 +526,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'title' => __('A title of after-donation notice sended to a donor', 'leyka'),
                 'comment' => __('A title of the notification (or thankful) email with donation data that would be sended to each donor right after his donation is made.', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., Daisy Foundation thanks you for your kindness', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('Daisy Foundation thanks you for your kindness', 'leyka')),
             ],
             'email_thanks_text' => [
                 'type' => 'rich_html',
@@ -543,7 +543,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'title' => __('A title of an initial recurring donation notice sent to a donor', 'leyka'),
                 'comment' => __('A title of a notification email with donation data that would be sended to each donor on each rebill donation.', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., Daisy Foundation thanks you for your kindness', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('Daisy Foundation thanks you for your kindness', 'leyka')),
             ],
             'email_recurring_init_thanks_text' => [
                 'type' => 'rich_html',
@@ -611,7 +611,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'title' => __('A title of a notification email', 'leyka'),
                 'description' => __('Enter the email title.', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., Thank you for being with us!', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('Thank you for being with us!', 'leyka')),
             ],
             'recurring_canceling_donor_notification_emails_text' => [
                 'type' => 'rich_html',
@@ -629,14 +629,14 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'required' => false,
                 'min' => 0,
                 'step' => 1,
-                'placeholder' => __('E.g., 7', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 7),
             ],
             'non_init_recurring_donor_registration_emails_title' => [
                 'type' => 'text',
                 'default' => __('Your personal account was created', 'leyka'),
                 'title' => __('A title of a notification email', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., Your personal account was created', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('Your personal account was created', 'leyka')),
             ],
             'non_init_recurring_donor_registration_emails_text' => [
                 'type' => 'rich_html',
@@ -651,7 +651,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'default' => __('Thanks to you, the campaign succeeded!', 'leyka'),
                 'title' => __('A title of an email notification sent to each donor when campaign target reached', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., Thanks to you, the campaign succeeded!', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('Thanks to you, the campaign succeeded!', 'leyka')),
             ],
             'email_campaign_target_reaching_text' => [
                 'type' => 'rich_html',
@@ -680,13 +680,13 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'text',
                 'default' => get_bloginfo('admin_email').',',
                 'title' => __('A comma-separated emails to notify of incoming donation', 'leyka'),
-                'placeholder' => __('E.g., admin@daisyfoundation.org,yourmail@domain.com', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('admin@daisyfoundation.org,yourmail@domain.com', 'leyka')),
             ],
             'email_notification_title' => [
                 'type' => 'text',
                 'default' => __('New donation incoming', 'leyka'),
                 'title' => __('A title of new donation notification email', 'leyka'),
-                'placeholder' => __('E.g., new donation incoming', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('New donation incoming', 'leyka')),
             ],
             'email_notification_text' => [
                 'type' => 'rich_html',
@@ -711,7 +711,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
             'donation_error_donor_notification_text' => [
                 'type' => 'rich_html',
                 'default' => __('Hello!<br><br>You just made a donation on #SITE_NAME# website, and it failed for some reason.<br><br>Campaign: #CAMPAIGN_NAME#.<br>Donation purpose: #PURPOSE#<br>Amount: #SUM#.<br>Payment method: #PAYMENT_METHOD_NAME#.<br>Date: #DATE#<br><br>Please, report this to website tech. support and try donating again later.<br><br>Sincerely thank you,<br>#ORG_NAME#', 'leyka'),
-                'title' => __('A text of after-donation notification sended to a website personnel', 'leyka'),
+                'title' => __('A text of a failed donation notification email', 'leyka'),
                 'comment' => __('A text of the notification email that would be sended to each email stated before right after donation is made.', 'leyka'),
                 'description' => $email_placeholders,
                 'field_classes' => ['type-rich_html'],
@@ -754,7 +754,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'title' => __('Label of the button to submit a donation form', 'leyka'),
                 'description' => __('Enter the text for a submit buttons on a donation forms.', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., "Donate" or "Support"', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('Donate', 'leyka')),
             ],
             'do_not_display_donation_form' => [
                 'type' => 'checkbox',
@@ -908,7 +908,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'text',
                 'title' => __('Google UA Tracking ID ', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., UA-12345678-90', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'UA-12345678-90'),
             ],
         ];
     }
@@ -1008,14 +1008,14 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'default' => __('I agree with', 'leyka'),
                 'title' => __('Terms acception checkbox label - the first (text) part', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., I agree with', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('I agree with', 'leyka')),
             ],
             'agree_to_terms_text_link_part' => [
                 'type' => 'text',
                 'default' => __('Terms of the donation service', 'leyka'),
                 'title' => __('Terms acception checkbox label - the second (link) part', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., Terms of the donation service', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('Terms of the donation service', 'leyka')),
             ],
             'terms_of_service_text' => [
                 'type' => 'rich_html',
@@ -1066,14 +1066,14 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'default' => __('I agree with the processing of', 'leyka'),
                 'title' => __('Personal data usage Terms checkbox label - the first (text) part', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., I agree with', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('I agree with', 'leyka')),
             ],
             'agree_to_pd_terms_text_link_part' => [
                 'type' => 'text',
                 'default' => _x('my personal data', 'In instrumental case', 'leyka'),
                 'title' => __('Personal data usage Terms checkbox label - the second (link) part', 'leyka'),
                 'required' => true,
-                'placeholder' => __('E.g., Terms of personal data usage', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('Terms of personal data usage', 'leyka')),
             ],
             'pd_terms_text' => [
                 'type' => 'rich_html',
