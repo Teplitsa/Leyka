@@ -1839,7 +1839,7 @@ class Leyka_Campaign {
         }
 
         return Leyka_Donations::get_instance()->get([
-            'status' => $status ? $status : ['submitted', 'funded', 'refunded', 'failed',],
+            'status' => $status ? : ['submitted', 'funded', 'refunded', 'failed',],
             'get_all' => true,
             'campaign_id' => $this->_id,
         ]);
@@ -1989,24 +1989,20 @@ class Leyka_Campaign {
 
         $total_amount = 0.0;
 
-        if(leyka_get_donations_storage_type() === 'post') {
-
-            /** @todo Optimize it for the case of MANY donations here! Make a sep method to get an amount_total metas sum() with one query. */
-            foreach($this->get_donations(['funded']) as $donation) {
-                $total_amount += $donation->sum_total;
-            }
-
-//            global $wpdb;
-//            return $wpdb->get_var('SELECT LEYKA_GET_CAMPAIGN_TOTAL_FUNDED_AMOUNT('.$this->_id.')');
-
-        } else {
-
-//            global $wpdb;
-//            return $wpdb->get_var('SELECT LEYKA_GET_CAMPAIGN_TOTAL_FUNDED_AMOUNT('.$this->_id.')');
-
+        foreach($this->get_donations(['funded']) as $donation) { // Old ver. Ineffective in case of MANY Donations
+            $total_amount += $donation->sum_total;
         }
 
         return $total_amount;
+
+        /** @todo The MySQL functions are ready (see /private/leyka_mysql_functions.sql), but need to add & debug dbDelta() call for their creation on plugin update to 4.0. */
+
+//        global $wpdb;
+//        if(leyka_get_donations_storage_type() === 'post') {
+//            return $wpdb->get_var('SELECT LEYKA_GET_CAMPAIGN_TOTAL_FUNDED_AMOUNT_POST('.$this->_id.')');
+//        } else {
+//            return $wpdb->get_var('SELECT LEYKA_GET_CAMPAIGN_TOTAL_FUNDED_AMOUNT_SEP('.$this->_id.')');
+//        }
 
     }
 
