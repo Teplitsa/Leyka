@@ -250,18 +250,22 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
 
     public function _load_admin_assets() {
 
-        wp_enqueue_style(
-            $this->_id.'-admin',
-            self::get_base_url().'/assets/css/admin.css',
-            [],
-            defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY ? uniqid() : null
-        );
+        if ($this->is_admin_settings_page($this->_id)) {
 
-        wp_enqueue_script(
-            $this->_id.'-admin',
-            self::get_base_url().'/assets/js/admin.js',
-            ['jquery']
-        );
+            wp_enqueue_style(
+                $this->_id.'-admin',
+                self::get_base_url().'/assets/css/admin.css',
+                [],
+                defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY ? uniqid() : null
+            );
+
+            wp_enqueue_script(
+                $this->_id.'-admin',
+                self::get_base_url().'/assets/js/admin.js',
+                ['jquery']
+            );
+
+        }
 
     }
 
