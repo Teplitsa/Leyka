@@ -381,6 +381,46 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         </fieldset>
 
+        <fieldset id="collected-amount" class="metabox-field campaign-field campaign-target-collected">
+
+            <div class="leyka-campaign-amount-collected-wrapper">
+
+            <?php if($campaign->target) {
+
+                $percentage = round(($campaign->total_funded / $campaign->target) * 100, 1);
+                $percentage = $percentage > 100 ? 100 : $percentage;
+
+                echo sprintf(__('Currently collected: %.01f%%', 'leyka'), $percentage);?>
+
+                (<span id="collected-amount-number"><?php echo leyka_format_amount($campaign->total_funded);?></span>
+                &nbsp;<?php echo leyka_get_currency_label();?> / <?php echo leyka_format_amount($campaign->target).' '.leyka_get_currency_label();?>)
+
+            <?php } else {
+
+                _e('Currently collected:', 'leyka');?>
+
+                <span id="collected-amount"><?php echo leyka_format_amount($campaign->total_funded);?></span>
+                &nbsp;<?php echo leyka_get_currency_label();?>
+            <?php }?>
+
+            </div>
+
+            <?php if(get_current_screen()->action != 'add') {?>
+
+            <div class="recalculate-total-funded">
+
+                <a href="<?php echo add_query_arg(array('recalculate_total_funded' => 1,));?>" id="recalculate_total_funded" data-nonce="<?php echo wp_create_nonce('leyka_recalculate_total_funded_amount');?>" data-campaign-id="<?php echo $campaign->id;?>"><?php _e('Recalculate the collected amount', 'leyka');?></a>
+
+                <img src="<?php echo LEYKA_PLUGIN_BASE_URL.'/img/ajax-loader-h.gif';?>" id="recalculate_total_funded_loader" style="display: none;" alt="">
+
+                <div class="message error-message" id="recalculate_message"></div>
+
+            </div>
+
+            <?php }?>
+
+        </fieldset>
+
         <fieldset id="payment-title" class="metabox-field campaign-field campaign-purpose">
 
             <h3 class="field-title">

@@ -50,24 +50,24 @@ function leyka_ajax_get_campaigns_list() {
 add_action('wp_ajax_leyka_get_campaigns_list', 'leyka_ajax_get_campaigns_list');
 add_action('wp_ajax_nopriv_leyka_get_campaigns_list', 'leyka_ajax_get_campaigns_list');
 
-//function leyka_recalculate_total_funded_action(){
-//
-//    if( !wp_verify_nonce($_GET['nonce'], 'leyka_recalculate_total_funded_amount') ) {
-//        wp_die(__('Error: incorrect request parameters', 'leyka'));
-//    }
-//
-//    if(empty($_GET['campaign_id'])) {
-//        wp_die(__('Error: campaign ID is missing', 'leyka'));
-//    }
-//
-//    $campaign = new Leyka_Campaign(absint($_GET['campaign_id']));
-//    $campaign->update_total_funded_amount();
-//
-//    wp_die($campaign->total_funded);
-//
-//}
-//add_action('wp_ajax_leyka_recalculate_total_funded_amount', 'leyka_recalculate_total_funded_action');
-//add_action('wp_ajax_nopriv_leyka_recalculate_total_funded_amount', 'leyka_recalculate_total_funded_action');
+function leyka_recalculate_total_funded_action(){
+
+    if( !wp_verify_nonce($_GET['nonce'], 'leyka_recalculate_total_funded_amount') ) {
+        wp_die(__('Error: incorrect request parameters', 'leyka'));
+    }
+
+    if(empty($_GET['campaign_id'])) {
+        wp_die(__('Error: campaign ID is missing', 'leyka'));
+    }
+
+    $campaign = new Leyka_Campaign(absint($_GET['campaign_id']));
+    $campaign->update_total_funded_amount();
+
+    wp_die($campaign->total_funded);
+
+}
+add_action('wp_ajax_leyka_recalculate_total_funded_amount', 'leyka_recalculate_total_funded_action');
+add_action('wp_ajax_nopriv_leyka_recalculate_total_funded_amount', 'leyka_recalculate_total_funded_action');
 
 
 function leyka_get_gateway_redirect_data(){

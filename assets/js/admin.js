@@ -2015,6 +2015,45 @@ jQuery(document).ready(function($){
             });
     });
 
+    // Recalculate total funded amount:
+    $('#recalculate_total_funded').click(function(e){
+
+        e.preventDefault();
+
+        let $link = $(this).prop('disabled', 'disabled'),
+            $indicator = $link.parent().find('#recalculate_total_funded_loader').show(),
+            $message = $link.parent().find('#recalculate_message').hide(),
+            $total_collected = $('#collected-amount-number');
+
+        $.get(leyka.ajaxurl, {
+            campaign_id: $link.data('campaign-id'),
+            action: 'leyka_recalculate_total_funded_amount',
+            nonce: $link.data('nonce')
+        }, function(resp){
+
+            $link.removeProp('disabled');
+            $indicator.hide();
+
+            if(parseFloat(resp) >= 0) {
+
+                resp = parseFloat(resp);
+
+                $total_collected.html(resp);
+
+                // If recalculated sum is different than saved one, refresh the campaign edition page:
+                if(parseFloat($total_collected.html()) !== resp) {
+                    $('#publish').click();
+                }
+
+            } else {
+                $message.html(resp).show();
+            }
+
+        });
+
+    });
+    // Recalculate total funded amount - END
+
     // Dynamic fields values length display in field description:
     $(':input[maxlength]').keyup(function(e){
 

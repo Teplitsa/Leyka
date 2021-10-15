@@ -816,7 +816,6 @@ function leyka_scale_ultra($campaign) {
     }
 
     $target = (float)$campaign->target;
-    $curr_label = leyka_get_currency_label();
 
     if($target == 0) {
         return;
@@ -837,7 +836,7 @@ function leyka_scale_ultra($campaign) {
         <?php $target_f = number_format($target, ($target - round($target) > 0.0 ? 2 : 0), '.', ' ');
         $collected_f = number_format($campaign->total_funded, ($campaign->total_funded - round($campaign->total_funded) > 0.0 ? 2 : 0), '.', ' ');
 
-        printf(esc_html_x('%s of %s %s', 'Label on ultra-compact scale', 'leyka'), '<b>'.$collected_f.'</b>', '<b>'.$target_f.'</b>', $curr_label);?>
+        printf(esc_html_x('%s of %s %s', 'Label on ultra-compact scale', 'leyka'), '<b>'.$collected_f.'</b>', '<b>'.$target_f.'</b>', leyka_get_currency_label());?>
 
         </span>
     </div>
@@ -1945,7 +1944,7 @@ if( !function_exists('leyka_amount_format') ) {
 if( !function_exists('leyka_format_amount') ) {
     function leyka_format_amount($amount, $use_number_format_l10n = false) {
 
-        $amount_is_float = (float)$amount - (int)$amount > 0;
+        $amount_is_float = abs((float)$amount) - abs((int)$amount) > 0;
 
         return !!$use_number_format_l10n ?
             ($amount_is_float ? number_format_i18n($amount, 2) : number_format_i18n($amount)) :
