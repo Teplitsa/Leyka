@@ -94,7 +94,8 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         if(empty($_POST['leyka_recurring'])) { // Single donation
 
             $donation->type = 'single';
-            $chronopay_product_id = leyka_options()->opt($pm_id.'_product_id_'.$donation->currency_id);
+            $chronopay_product_id = leyka_options()->opt($pm_id.'_product_id_'.mb_strtolower($donation->currency_id));
+            //.($donation->currency_id == 'rub' ? 'rur' : $donation->currency_id)
 
         } else { // Recurring donation
 
@@ -212,9 +213,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         }
 
         $_POST['currency'] = mb_strtolower($_POST['currency']);
-        if(in_array($_POST['currency'], ['rub', 'usd', 'eur'])) {
-            $currency_id = mb_strtoupper($_POST['currency']);
-        } else {
+        if( !in_array($_POST['currency'], ['rub', 'usd', 'eur']) ) {
 
             $message = __("This message has been sent because a call to your ChronoPay callbacks URL was made with a currency parameter (POST['currency']) that Leyka is unknown of. The details of the call are below.", 'leyka')."\n\r\n\r";
 
@@ -231,7 +230,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         // Store donation data - rebill payment:
         if(apply_filters(
             'leyka_chronopay_callback_is_recurring',
-            $_POST['product_id'] == leyka_options()->opt('chronopay_card_rebill_product_id_'.$currency_id),
+            $_POST['product_id'] == leyka_options()->opt('chronopay_card_rebill_product_id_'.$_POST['currency']),
             $_POST['product_id']
         )) {
 
@@ -287,8 +286,8 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             }
 
         } else if( // Single payment. For now, processing is just like initial rebills
-            leyka_options()->opt('chronopay_card_product_id_'.$currency_id)
-            && $_POST['product_id'] == leyka_options()->opt('chronopay_card_product_id_'.$currency_id)
+            leyka_options()->opt('chronopay_card_product_id_'.$_POST['currency'])
+            && $_POST['product_id'] == leyka_options()->opt('chronopay_card_product_id_'.$_POST['currency'])
         ) {
             if($donation->status != 'funded') {
 
@@ -602,7 +601,7 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
 
     protected function _set_dynamic_attributes() {
 
-        if(leyka_options()->opt('chronopay_card_product_id_rur')) {
+        if(leyka_options()->opt('chronopay_card_product_id_rub')) {
             $this->_supported_currencies[] = 'rub';
         }
         if(leyka_options()->opt('chronopay_card_product_id_usd')) {
@@ -621,7 +620,7 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
         }
 
         $this->_options = [
-            'chronopay_card_product_id_rur' => [
+            'chronopay_card_product_id_rub' => [
                 'type' => 'text',
                 'title' => sprintf(__('Chronopay product_id for %s', 'leyka'), leyka_options()->opt('currency_rub_label')),
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '012345-0001-0001'),
