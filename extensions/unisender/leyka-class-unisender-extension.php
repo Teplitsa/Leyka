@@ -34,6 +34,10 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
         $this->_has_wizard = false;
         $this->_has_color_options = false;
         $this->_icon = LEYKA_PLUGIN_BASE_URL.'extensions/unisender/img/main_icon.jpeg';
+        $this->_unisender_system_fields = ['delete', 'tags', 'email', 'email_status', 'delete', 'email_availability',
+            'email_list_ids', 'email_subscribe_times', 'email_unsubscribed_list_ids', 'email_excluded_list_ids',
+            'phone', 'phone_status', 'phone_availability', 'phone_list_ids', 'phone_subscribe_times',
+            'phone_unsubscribed_list_ids', 'phone_excluded_list_ids'];
 
     }
 
@@ -56,7 +60,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
                         'title' => __('IDs of the Unisender lists to subscribe donors', 'leyka'),
                         'comment' => __("IDs of the Unisender mailout lists with donors' contacts", 'leyka'),
                         'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1,3,10'),
-                        'description' => sprintf(__('Comma-separated IDs list. If empty, then new list with name "%s" will be created in Unisender (or updated if list with this name is already exists).', 'leyka'), __('Donors', 'leyka'))
+                        'description' => sprintf(__('Comma-separated IDs list. If empty, a new list with name "%s" will be created in Unisender (or updated if such list already exists).', 'leyka'), __('Donors', 'leyka'))
                     ],
                     $this->_id.'_donor_fields' => [
                         'type' => 'multi_select',
@@ -202,7 +206,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
 
                 }
 
-                $result = $uni->getFields(); // Get fields that already exists in Unisender
+                $result = $uni->getFields(); // Get custom fields that already exists in Unisender
 
                 $result_array = json_decode($result, true);
 
@@ -212,11 +216,15 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
 
                     $unisender_exist_fields = $result_array['result'];
 
+                    foreach ($this->_unisender_system_fields as $system_field_name) {
+                        array_push($unisender_exist_fields, ['name' => $system_field_name]);
+                    }
+
                     // Create fields filled by donor in Unisender
                     foreach($donor_fields as $donor_field_name => $donor_field_value ) {
 
                         foreach($unisender_exist_fields as $unisender_exist_field) {
-                            if($unisender_exist_field['name'] === $donor_field_name) { // Field exists
+                            if(($unisender_exist_field['name'] === $donor_field_name)) { // Field exists
                                 continue 2;
                             }
                         }
