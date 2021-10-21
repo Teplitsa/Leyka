@@ -657,7 +657,7 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
                 'title' => sprintf(__('Chronopay product_id for %s', 'leyka'), leyka_options()->opt('currency_eur_label')),
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '012345-0001-0003'),
             ],
-            'chronopay_card_rebill_product_id_rur' => [
+            'chronopay_card_rebill_product_id_rub' => [
                 'type' => 'text',
                 'title' => sprintf(__('Chronopay product_id for rebills in %s', 'leyka'), leyka_options()->opt('currency_rub_label')),
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '012345-0001-0011'),
@@ -677,9 +677,9 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
     }
 
     public function has_recurring_support() { // Support recurring donations only if both single & recurring options set
-        return ( !!leyka_options()->opt('chronopay_card_rebill_product_id_rur') && !!leyka_options()->opt('chronopay_card_product_id_rur') )
-        || ( !!leyka_options()->opt('chronopay_card_rebill_product_id_usd') && !!leyka_options()->opt('chronopay_card_product_id_usd') )
-        || ( !!leyka_options()->opt('chronopay_card_rebill_product_id_eur') && !!leyka_options()->opt('chronopay_card_product_id_eur') ) ?
+        return ( !!leyka_options()->opt('chronopay_card_rebill_product_id_rub') && !!leyka_options()->opt('chronopay_card_product_id_rub') )
+            || ( !!leyka_options()->opt('chronopay_card_rebill_product_id_usd') && !!leyka_options()->opt('chronopay_card_product_id_usd') )
+            || ( !!leyka_options()->opt('chronopay_card_rebill_product_id_eur') && !!leyka_options()->opt('chronopay_card_product_id_eur') ) ?
             'passive' : false;
     }
 
