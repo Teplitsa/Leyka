@@ -131,11 +131,15 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
     protected function _handle_donation_failure(Leyka_Donation_Base $donation, $gateway_response = false) {
 
-        $donation->status = 'failed';
-
         if($gateway_response) {
             $donation->add_gateway_response($gateway_response);
         }
+
+        if($donation->status === 'failed') {
+            return;
+        }
+
+        $donation->status = 'failed';
 
         if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
             Leyka_Donation_Management::send_error_notifications($donation);
