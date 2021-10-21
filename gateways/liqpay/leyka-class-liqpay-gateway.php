@@ -188,17 +188,21 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
 
         if($signature != $_POST['signature']) {
 
-            $message = __("This message has been sent because a call to your Liqpay callback was made with wrong signature. The details of the call are below.", 'leyka')."\n\r\n\r";
+            if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
 
-            $message .= "THEIR_DATA:\n\r".print_r($data, true)."\n\r\n\r";
-            $message .= "THEIR_SIGNATURE:\n\r".print_r($_POST['signature'], true)."\n\r\n\r";
-            $message .= "CALCULATED_SIGNATURE:\n\r".print_r($signature, true)."\n\r\n\r";
+                $message = __("This message has been sent because a call to your Liqpay callback was made with wrong signature. The details of the call are below.", 'leyka')."\n\r\n\r";
 
-            $message .= "THEIR_POST:\n\r".print_r($_POST, true)."\n\r\n\r";
-            $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
-            $message .= "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
+                $message .= "THEIR_DATA:\n\r".print_r($data, true)."\n\r\n\r";
+                $message .= "THEIR_SIGNATURE:\n\r".print_r($_POST['signature'], true)."\n\r\n\r";
+                $message .= "CALCULATED_SIGNATURE:\n\r".print_r($signature, true)."\n\r\n\r";
 
-            wp_mail(leyka_get_website_tech_support_email(), __('Leyka: Liqpay signature mismatch!', 'leyka'), $message);
+                $message .= "THEIR_POST:\n\r".print_r($_POST, true)."\n\r\n\r";
+                $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
+                $message .= "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
+
+                wp_mail(leyka_get_website_tech_support_email(), __('Leyka: Liqpay signature mismatch!', 'leyka'), $message);
+
+            }
 
             status_header(200);
             die();

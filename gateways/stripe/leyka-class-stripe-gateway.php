@@ -254,19 +254,23 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
     }
 
     public function _handle_service_calls($call_type = '') {
-        // Test for gateway's IP:
-        if( !$this->_is_callback_caller_correct() ) {
 
-            $client_ip = leyka_get_client_ip();
+        if( !$this->_is_callback_caller_correct() ) { // Test for gateway IP
 
-            $message = __("This message has been sent because a call to your Stripe function was made from an IP that did not match with the one in your Stripe gateway setting. This could mean someone is trying to hack your payment website. The details of the call are below.", 'leyka')."\n\r\n\r".
-                "POST:\n\r".print_r($_POST, true)."\n\r\n\r".
-                "GET:\n\r".print_r($_GET, true)."\n\r\n\r".
-                "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r".
-                "IP:\n\r".print_r($client_ip, true)."\n\r\n\r".
-                "Stripe IP setting value:\n\r".print_r(leyka_options()->opt('stripe_webhooks_ips'),true)."\n\r\n\r";
+            if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
 
-            wp_mail(get_option('admin_email'), __('Stripe IP check failed!', 'leyka'), $message);
+                $message = __("This message has been sent because a call to your Stripe function was made from an IP that did not match with the one in your Stripe gateway setting. This could mean someone is trying to hack your payment website. The details of the call are below.", 'leyka')."\n\r\n\r".
+                    "POST:\n\r".print_r($_POST, true)."\n\r\n\r".
+                    "GET:\n\r".print_r($_GET, true)."\n\r\n\r".
+                    "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r".
+                    "IP:\n\r".print_r(leyka_get_client_ip(), true)."\n\r\n\r".
+                    "Stripe IP setting value:\n\r".print_r(leyka_options()->opt('stripe_webhooks_ips'),true)."\n\r\n\r";
+
+                wp_mail(leyka_get_website_tech_support_email(), __('Stripe IP check failed!', 'leyka'), $message);
+
+            }
+
+            exit();
 
         }
 
@@ -280,18 +284,30 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             );
         } catch(\UnexpectedValueException $e) { // Invalid payload
 
-            $message = sprintf(__('This message has been sent because a "replay attack" attempt on Stripe callback was detected. This could mean someone is trying to hack your payment website. The error message is listed below.\n\r\n\r. Stripe error message:\n\r%s\n\r\n\r', 'leyka'), $e->getMessage());
+            if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
 
-            wp_mail(get_option('admin_email'), __('The "replay attack" attempt on Stripe callback was detected!', 'leyka'), $message);
+                wp_mail(
+                    leyka_get_website_tech_support_email(),
+                    __('The "replay attack" attempt on Stripe callback was detected!', 'leyka'),
+                    sprintf(__('This message has been sent because a "replay attack" attempt on Stripe callback was detected. This could mean someone is trying to hack your payment website. The error message is listed below.\n\r\n\r. Stripe error message:\n\r%s\n\r\n\r', 'leyka'), $e->getMessage())
+                );
+
+            }
 
             exit();
 
         } catch(\Stripe\Exception\SignatureVerificationException $e) { // Invalid signature
 
-            $message = __('This message has been sent because a "downgrade attack" attempt on Stripe callback was detected. This could mean someone is trying to hack your payment website. The error message is listed below.', 'leyka')."\n\r\n\r".
-                "Stripe error message:\n\r".print_r($e->getMessage(), true)."\n\r\n\r";
+            if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
 
-            wp_mail(get_option('admin_email'), __('The "downgrade attack" attempt on Stripe callback was detected!', 'leyka'), $message);
+                wp_mail(
+                    leyka_get_website_tech_support_email(),
+                    __('The "downgrade attack" attempt on Stripe callback was detected!', 'leyka'),
+                    __('This message has been sent because a "downgrade attack" attempt on Stripe callback was detected. This could mean someone is trying to hack your payment website. The error message is listed below.', 'leyka')."\n\r\n\r".
+                    "Stripe error message:\n\r".print_r($e->getMessage(), true)."\n\r\n\r"
+                );
+
+            }
 
             exit();
 
@@ -302,7 +318,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
         if( !empty($response_data->metadata->donation_id) ) {
 
             $donation_id = $response_data->metadata->donation_id;
-            $donation = Leyka_Donations::get_instance()->get_donation((int)$donation_id);
+            $donation = Leyka_Donations::get_instance()->get_donation(absint($donation_id));
 
         }
 

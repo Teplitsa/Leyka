@@ -151,20 +151,21 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         $client_ip = leyka_get_client_ip();
 
         // Test for gateway's IP:
-        if(
-            leyka_options()->opt('chronopay_ip')
-            && !in_array($client_ip, explode(',', leyka_options()->opt('chronopay_ip')))
-        ) { // Security fail
+        if( leyka_options()->opt('chronopay_ip') && !in_array($client_ip, explode(',', leyka_options()->opt('chronopay_ip'))) ) {
 
-            $message = __("This message has been sent because a call to your ChronoPay function was made from an IP that did not match with the one in your Chronopay gateway setting. This could mean someone is trying to hack your payment website. The details of the call are below.", 'leyka')."\n\r\n\r";
+            if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
 
-            $message .= "POST:\n\r".print_r($_POST, true)."\n\r\n\r";
-            $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
-            $message .= "SERVER:\n\r".print_r(apply_filters('leyka_notification_server_data', $_SERVER), true)."\n\r\n\r";
-            $message .= "IP: ".print_r($client_ip, true)."\n\r\n\r";
-            $message .= "Chronopay IP setting value: ".print_r(leyka_options()->opt('chronopay_ip'),true)."\n\r\n\r";
+                $message = __("This message has been sent because a call to your ChronoPay function was made from an IP that did not match with the one in your Chronopay gateway setting. This could mean someone is trying to hack your payment website. The details of the call are below.", 'leyka')."\n\r\n\r";
 
-            wp_mail(get_option('admin_email'), __('Chronopay IP check failed!', 'leyka'), $message);
+                $message .= "POST:\n\r".print_r($_POST, true)."\n\r\n\r";
+                $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
+                $message .= "SERVER:\n\r".print_r(apply_filters('leyka_notification_server_data', $_SERVER), true)."\n\r\n\r";
+                $message .= "IP: ".print_r($client_ip, true)."\n\r\n\r";
+                $message .= "Chronopay IP setting value: ".print_r(leyka_options()->opt('chronopay_ip'),true)."\n\r\n\r";
+
+                wp_mail(leyka_get_website_tech_support_email(), __('Chronopay IP check failed!', 'leyka'), $message);
+
+            }
 
             status_header(200);
             die(1);
@@ -178,15 +179,19 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         $total = isset($_POST['total']) ? trim(stripslashes($_POST['total'])) : '';
         $sign = md5(leyka_options()->opt('chronopay_shared_sec').$customer_id.$transaction_id.$transaction_type.$total);
 
-        if(empty($_POST['sign']) || $sign != trim(stripslashes($_POST['sign']))) { // Security fail
+        if( empty($_POST['sign']) || $sign != trim(stripslashes($_POST['sign'])) ) {
 
-            $message = __("This message has been sent because a call to your ChronoPay function was made by a server that did not have the correct security key.  This could mean someone is trying to hack your payment site.  The details of the call are below.", 'leyka')."\n\r\n\r";
+            if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
 
-            $message .= "POST:\n\r".print_r($_POST, true)."\n\r\n\r";
-            $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
-            $message .= "SERVER:\n\r".print_r(apply_filters('leyka_notification_server_data', $_SERVER), true)."\n\r\n\r";
+                $message = __("This message has been sent because a call to your ChronoPay function was made by a server that did not have the correct security key.  This could mean someone is trying to hack your payment site.  The details of the call are below.", 'leyka')."\n\r\n\r";
 
-            wp_mail(get_option('admin_email'), __('Chronopay security key check failed!', 'leyka'), $message);
+                $message .= "POST:\n\r".print_r($_POST, true)."\n\r\n\r";
+                $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
+                $message .= "SERVER:\n\r".print_r(apply_filters('leyka_notification_server_data', $_SERVER), true)."\n\r\n\r";
+
+                wp_mail(leyka_get_website_tech_support_email(), __('Chronopay security key check failed!', 'leyka'), $message);
+
+            }
 
             status_header(200);
             die(2);
@@ -198,14 +203,22 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
         if( !$donation->id || !$donation->campaign_id ) {
 
-            $message = __("This message has been sent because a call to your ChronoPay callbacks URL was made with a donation ID parameter (POST['cs2']) that Leyka is unknown of. The details of the call are below.", 'leyka')."\n\r\n\r";
+            if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
 
-            $message .= "POST:\n\r".print_r($_POST, true)."\n\r\n\r";
-            $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
-            $message .= "SERVER:\n\r".print_r(apply_filters('leyka_notification_server_data', $_SERVER), true)."\n\r\n\r";
-            $message .= "Donation ID: ".$_POST['cs2']."\n\r\n\r";
+                $message = __("This message has been sent because a call to your ChronoPay callbacks URL was made with a donation ID parameter (POST['cs2']) that Leyka is unknown of. The details of the call are below.", 'leyka')."\n\r\n\r";
 
-            wp_mail(get_option('admin_email'), __('Chronopay gives unknown donation ID parameter!', 'leyka'), $message);
+                $message .= "POST:\n\r".print_r($_POST, true)."\n\r\n\r";
+                $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
+                $message .= "SERVER:\n\r".print_r(apply_filters('leyka_notification_server_data', $_SERVER), true)."\n\r\n\r";
+                $message .= "Donation ID: ".$_POST['cs2']."\n\r\n\r";
+
+                wp_mail(
+                    leyka_get_website_tech_support_email(),
+                    __('Chronopay gives unknown donation ID parameter!', 'leyka'),
+                    $message
+                );
+
+            }
 
             status_header(200);
             die(3);
@@ -215,13 +228,22 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
         $_POST['currency'] = mb_strtolower($_POST['currency']);
         if( !in_array($_POST['currency'], ['rub', 'usd', 'eur']) ) {
 
-            $message = __("This message has been sent because a call to your ChronoPay callbacks URL was made with a currency parameter (POST['currency']) that Leyka is unknown of. The details of the call are below.", 'leyka')."\n\r\n\r";
+            if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
 
-            $message .= "POST:\n\r".print_r($_POST, true)."\n\r\n\r";
-            $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
-            $message .= "SERVER:\n\r".print_r(apply_filters('leyka_notification_server_data', $_SERVER), true)."\n\r\n\r";
+                $message = __("This message has been sent because a call to your ChronoPay callbacks URL was made with a currency parameter (POST['currency']) that Leyka is unknown of. The details of the call are below.", 'leyka')."\n\r\n\r";
 
-            wp_mail(get_option('admin_email'), __('Chronopay gives unknown currency parameter!', 'leyka'), $message);
+                $message .= "POST:\n\r".print_r($_POST, true)."\n\r\n\r";
+                $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
+                $message .= "SERVER:\n\r".print_r(apply_filters('leyka_notification_server_data', $_SERVER), true)."\n\r\n\r";
+
+                wp_mail(
+                    leyka_get_website_tech_support_email(),
+                    __('Chronopay gives unknown currency parameter!', 'leyka'),
+                    $message
+                );
+
+            }
+
             status_header(200);
             die(4);
 

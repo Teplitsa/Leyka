@@ -262,12 +262,12 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
                 ]
             ],],
             ['section' => [
-                'name' => 'notify_donors_of_donations_errors',
-                'title' => __('Donation errors notifications for donors', 'leyka'),
+                'name' => 'notifications_of_donations_errors',
+                'title' => __('Donation errors notifications', 'leyka'),
                 'is_default_collapsed' => true,
                 'options' => [
-                    'notify_donors_on_failed_donations', 'donation_error_donor_notification_title',
-                    'donation_error_donor_notification_text',
+                    'notify_tech_support_on_failed_donations', 'notify_donors_on_failed_donations',
+                    'donation_error_donor_notification_title', 'donation_error_donor_notification_text',
                 ]
             ],],
         ];

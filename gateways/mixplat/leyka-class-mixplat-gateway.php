@@ -248,11 +248,13 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
             if(leyka()->template_is_deprecated($donation->campaign->template)) { // Old templates (Revo & earlier)
 
-                wp_mail(
-                    get_option('admin_email'),
-                    __('MIXPLAT - payment callback error occured', 'leyka'),
-                    sprintf(__("This message has been sent because a create_payment call to MIXPLAT payment system returned some error. The details of the call are below. Payment error code / text: %s / %s", 'leyka'), $json['result'], $json['message'])."\n\r\n\r"
-                );
+                if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
+                    wp_mail(
+                        leyka_get_website_tech_support_email(),
+                        __('MIXPLAT - payment callback error occured', 'leyka'),
+                        sprintf(__("This message has been sent because a create_payment call to MIXPLAT payment system returned some error. The details of the call are below. Payment error code / text: %s / %s", 'leyka'), $json['result'], $json['message'])."\n\r\n\r"
+                    );
+                }
 
                 wp_redirect(leyka_get_failure_page_url());
                 exit(0);
@@ -381,16 +383,20 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             $donation->status = 'failed';
             $donation->add_gateway_response($response);
 
-            $message .= "CALLBACK TYPE: ".print_r(empty($response['request']) ? '-' : $response['request'], true)."\n\r\n\r";
-            $message .= "THEIR POST:\n\r".print_r($_POST, true)."\n\r\n\r";
-            $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
-            $message .= "SERVER:\n\r".print_r(apply_filters('leyka_notification_server_data', $_SERVER), true)."\n\r\n\r";
-            $message .= "THEIR JSON:\n\r".print_r($json_string, true)."\n\r\n\r";
-            $message .= "THEIR JSON DECODED:\n\r".print_r(json_decode($json_string), true)."\n\r\n\r";
+            if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
 
-            wp_mail(get_option('admin_email'), __('MIXPLAT - payment callback error occured', 'leyka'), $message);
+                $message .= "CALLBACK TYPE: ".print_r(empty($response['request']) ? '-' : $response['request'], true)."\n\r\n\r";
+                $message .= "THEIR POST:\n\r".print_r($_POST, true)."\n\r\n\r";
+                $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
+                $message .= "SERVER:\n\r".print_r(apply_filters('leyka_notification_server_data', $_SERVER), true)."\n\r\n\r";
+                $message .= "THEIR JSON:\n\r".print_r($json_string, true)."\n\r\n\r";
+                $message .= "THEIR JSON DECODED:\n\r".print_r(json_decode($json_string), true)."\n\r\n\r";
+
+                wp_mail(leyka_get_website_tech_support_email(), __('MIXPLAT - payment callback error occured', 'leyka'), $message);
+
+            }
+
             status_header(500);
-
             die('Payment callback error');
 
         }
@@ -405,16 +411,24 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                 $donation = Leyka_Donations::get_instance()->get(absint($response['merchant_payment_id']));
                 if( !$donation || !$donation->id ) {
 
-                    $message .= "CALLBACK TYPE: ".print_r(empty($response['request']) ? '-' : $response['request'], true)."\n\r\n\r";
-                    $message .= "THEIR POST:\n\r".print_r($_POST, true)."\n\r\n\r";
-                    $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
-                    $message .= "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
-                    $message .= "THEIR JSON:\n\r".print_r($json_string, true)."\n\r\n\r";
-                    $message .= "THEIR JSON DECODED:\n\r".print_r(json_decode($json_string), true)."\n\r\n\r";
+                    if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
 
-                    wp_mail(get_option('admin_email'), __('MIXPLAT - payment callback error: unknown donation', 'leyka'), $message);
+                        $message .= "CALLBACK TYPE: ".print_r(empty($response['request']) ? '-' : $response['request'], true)."\n\r\n\r";
+                        $message .= "THEIR POST:\n\r".print_r($_POST, true)."\n\r\n\r";
+                        $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
+                        $message .= "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
+                        $message .= "THEIR JSON:\n\r".print_r($json_string, true)."\n\r\n\r";
+                        $message .= "THEIR JSON DECODED:\n\r".print_r(json_decode($json_string), true)."\n\r\n\r";
+
+                        wp_mail(
+                            leyka_get_website_tech_support_email(),
+                            __('MIXPLAT - payment callback error: unknown donation', 'leyka'),
+                            $message
+                        );
+
+                    }
+
                     status_header(500);
-
                     die('Payment callback error');
 
                 }

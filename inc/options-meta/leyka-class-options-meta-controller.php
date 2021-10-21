@@ -493,13 +493,6 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
 </span>".$placeholders_controls;
 
         return [
-            'notify_tech_support_on_failed_donations' => [
-                'type' => 'checkbox',
-                'default' => true,
-                'title' => __('Send error reporting emails to the tech. support on failed donations', 'leyka'),
-                'comment' => __('Check to notify the website technical support (see the "website technical support email" option) of each failed donation.', 'leyka'),
-                'short_format' => true,
-            ],
             'tech_support_email' => [
                 'type' => 'email',
                 'title' => __('Website technical support email', 'leyka'),
@@ -695,6 +688,16 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'comment' => __('A text of the notification email that would be sended to each email stated before right after donation is made.', 'leyka'),
                 'description' => $email_placeholders,
                 'field_classes' => ['type-rich_html'],
+            ],
+            'notify_tech_support_on_failed_donations' => [
+                'type' => 'checkbox',
+                'default' => true,
+                'title' => __('Send emails to the website tech. support on failed donations', 'leyka'),
+                'comment' => sprintf(
+                    __('Check to notify the website technical support (see the "website technical support email" option) of each failed donation. Current tech. support email: <b>%s</b>', 'leyka'),
+                    leyka_get_website_tech_support_email()
+                ),
+                'short_format' => true,
             ],
             'notify_donors_on_failed_donations' => [
                 'type' => 'checkbox',

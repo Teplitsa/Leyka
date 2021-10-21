@@ -2174,7 +2174,12 @@ add_filter('single_template', 'leyka_use_leyka_campaign_template', 10, 1);
 add_filter('page_template', 'leyka_use_leyka_campaign_template', 10, 1);
 
 function leyka_get_website_tech_support_email() {
-    return leyka()->opt('tech_support_email') ? leyka()->opt('tech_support_email') : get_option('admin_email');
+
+    // Warning: don't use leyka_options()->opt() here - this function is used on the first options meta controller call
+    $leyka_tech_support_email = leyka_options()->get_option_value('tech_support_email');
+
+    return $leyka_tech_support_email ? : get_option('admin_email');
+
 }
 
 function leyka_get_recurring_subscription_cancelling_reasons() {

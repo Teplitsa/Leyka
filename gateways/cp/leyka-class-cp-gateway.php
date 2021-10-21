@@ -195,14 +195,19 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
             $client_ip = leyka_get_client_ip();
 
-            $message = __("This message has been sent because a call to your CloudPayments function was made from an IP that did not match with the one in your CloudPayments gateway setting. This could mean someone is trying to hack your payment website. The details of the call are below.", 'leyka')."\n\r\n\r".
-                "POST:\n\r".print_r($_POST, true)."\n\r\n\r".
-                "GET:\n\r".print_r($_GET, true)."\n\r\n\r".
-                "SERVER:\n\r".print_r(apply_filters('leyka_notification_server_data', $_SERVER), true)."\n\r\n\r".
-                "IP:\n\r".print_r($client_ip, true)."\n\r\n\r".
-                "CloudPayments IP setting value:\n\r".print_r(leyka_options()->opt('cp_ip'),true)."\n\r\n\r";
+            if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
 
-            wp_mail(get_option('admin_email'), __('CloudPayments IP check failed!', 'leyka'), $message);
+                $message = __("This message has been sent because a call to your CloudPayments function was made from an IP that did not match with the one in your CloudPayments gateway setting. This could mean someone is trying to hack your payment website. The details of the call are below.", 'leyka')."\n\r\n\r".
+                    "POST:\n\r".print_r($_POST, true)."\n\r\n\r".
+                    "GET:\n\r".print_r($_GET, true)."\n\r\n\r".
+                    "SERVER:\n\r".print_r(apply_filters('leyka_notification_server_data', $_SERVER), true)."\n\r\n\r".
+                    "IP:\n\r".print_r($client_ip, true)."\n\r\n\r".
+                    "CloudPayments IP setting value:\n\r".print_r(leyka_options()->opt('cp_ip'),true)."\n\r\n\r";
+
+                wp_mail(leyka_get_website_tech_support_email(), __('CloudPayments IP check failed!', 'leyka'), $message);
+
+            }
+
             status_header(200);
             die(json_encode([
                 'code' => '13',

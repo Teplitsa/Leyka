@@ -249,13 +249,18 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
 
         if(empty($_REQUEST['InvId'])) {
 
-            $message = __("This message has been sent because a call to your Robokassa callback (Result URL) was made without InvId parameter given. The details of the call are below.", 'leyka')."\n\r\n\r";
+            if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
 
-            $message .= "THEIR_POST:\n\r".print_r($_POST,true)."\n\r\n\r";
-            $message .= "GET:\n\r".print_r($_GET,true)."\n\r\n\r";
-            $message .= "SERVER:\n\r".print_r(apply_filters('leyka_notification_server_data', $_SERVER),true)."\n\r\n\r";
+                $message = __("This message has been sent because a call to your Robokassa callback (Result URL) was made without InvId parameter given. The details of the call are below.", 'leyka')."\n\r\n\r";
 
-            wp_mail(get_option('admin_email'), __('Robokassa - InvId missing!', 'leyka'), $message);
+                $message .= "THEIR_POST:\n\r".print_r($_POST, true)."\n\r\n\r";
+                $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
+                $message .= "SERVER:\n\r".print_r(apply_filters('leyka_notification_server_data', $_SERVER), true)."\n\r\n\r";
+
+                wp_mail(leyka_get_website_tech_support_email(), __('Robokassa - InvId missing!', 'leyka'), $message);
+
+            }
+
             status_header(200);
             die();
 
@@ -272,22 +277,26 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
 
         if(empty($_REQUEST['SignatureValue']) || mb_strtoupper($_REQUEST['SignatureValue']) != $sign) {
 
-            $message = __("This message has been sent because a call to your Robokassa callback was called with wrong digital signature. This could mean someone is trying to hack your payment website. The details of the call are below:", 'leyka')."\n\r\n\r";
-
-            $message .= "POST:\n\r".print_r($_POST,true)."\n\r\n\r";
-            $message .= "GET:\n\r".print_r($_GET,true)."\n\r\n\r";
-            $message .= "SERVER:\n\r".print_r(apply_filters('leyka_notification_server_data', $_SERVER),true)."\n\r\n\r";
-            $message .= "Signature from request:\n\r".print_r($_REQUEST['SignatureValue'], true)."\n\r\n\r";
-            $message .= "Signature calculated:\n\r".print_r($sign, true)."\n\r\n\r";
-
-            wp_mail(get_option('admin_email'), __('Robokassa digital signature check failed!', 'leyka'), $message);
-
             $donation->status = 'failed';
 
             $_REQUEST['failure_reason'] = __('Robokassa digital signature check failed!', 'leyka').
                 'Signature (from callback request / calculated): '.$_REQUEST['SignatureValue'].' / '.$sign;
 
             $donation->add_gateway_response($_REQUEST);
+
+            if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
+
+                $message = __("This message has been sent because a call to your Robokassa callback was called with wrong digital signature. This could mean someone is trying to hack your payment website. The details of the call are below:", 'leyka')."\n\r\n\r";
+
+                $message .= "POST:\n\r".print_r($_POST,true)."\n\r\n\r";
+                $message .= "GET:\n\r".print_r($_GET,true)."\n\r\n\r";
+                $message .= "SERVER:\n\r".print_r(apply_filters('leyka_notification_server_data', $_SERVER),true)."\n\r\n\r";
+                $message .= "Signature from request:\n\r".print_r($_REQUEST['SignatureValue'], true)."\n\r\n\r";
+                $message .= "Signature calculated:\n\r".print_r($sign, true)."\n\r\n\r";
+
+                wp_mail(leyka_get_website_tech_support_email(), __('Robokassa digital signature check failed!', 'leyka'), $message);
+
+            }
 
             die();
 
