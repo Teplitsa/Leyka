@@ -132,20 +132,20 @@ function leyka_block_get_campaigns() {
 }
 
 /**
- * Get The last Campaigns.
+ * Get The last Campaign ID.
  *
  * @return integer Last Campaign ID.
  */
-function leyka_block_get_recent_campaign($output = 'object') {
+function leyka_block_get_recent_campaign_id() {
 
-	$campaigns = leyka_block_get_campaigns();
+	$campaign = get_posts(['post_type' => 'leyka_campaign', 'posts_per_page' => 1,]);
 
-	if($campaigns) {
-        $recent_campaign = $output === 'id' ? $campaigns[0]->ID : $campaigns[0];
+	if( $campaign ) {
+		$campaign_id = $campaign[0]->ID;
 	} else {
-        $recent_campaign = '';
-    }
+		$campaign_id = '';
+	}
 
-	return $recent_campaign;
+	return $campaign_id;
 
 }

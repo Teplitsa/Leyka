@@ -6,7 +6,7 @@
 function leyka_block_form_attributes(){
 
     $attributes = [
-        'campaign' => ['type' => 'string', 'default' => '',],
+        'campaign' => ['type' => 'string', 'default' => leyka_block_get_recent_campaign_id(),],
         'template' => ['type' => 'string', 'default' => 'star',],
         'className' => ['type' => 'string', 'default' => '',],
         'preview' => ['type' => 'boolean', 'default' => false,],

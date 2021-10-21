@@ -291,7 +291,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'payment_method_id':
             case 'pm':
             case 'pm_id':
-                return $this->_main_data->pm_id ? $this->_main_data->pm_id : false;
+                return $this->_main_data->pm_id ? : false;
 
             case 'gateway':
             case 'gateway_id':
@@ -316,7 +316,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'pm_label':
             case 'payment_method_label':
 
-                $pm = leyka_get_pm_by_id($this->_main_data->pm_id);
+                $pm = leyka_get_pm_by_id($this->_main_data->gateway_id.'-'.$this->_main_data->pm_id, true);
                 return $pm ? $pm->label : __('Unknown payment method', 'leyka');
 
             case 'currency':

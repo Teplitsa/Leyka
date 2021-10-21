@@ -40,7 +40,7 @@ function leyka_enqueue_block_editor_assets() {
     );
 
 	$leyka_block = [];
-	$campaigns = get_posts(['post_type' => 'leyka_campaign', 'posts_per_page' => -1,]);
+	$campaigns = leyka_block_get_campaigns();
 
 	if($campaigns) {
 
