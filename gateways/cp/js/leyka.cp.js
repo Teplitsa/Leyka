@@ -13,12 +13,12 @@ jQuery(document).ready(function($){
 
         /** @var leyka object Localization strings */
 
-        var $form = $(this),
+        let $form = $(this),
             $errors = $('#leyka-submit-errors');
 
         // Selected PM don't belong to the CP gateway:
 
-        var $pm_field = $form.find('input[name="leyka_payment_method"][value*="cp-"]'),
+        let $pm_field = $form.find('input[name="leyka_payment_method"][value*="cp-"]'),
             gateway_is_chosen = $pm_field.prop('type') === 'hidden' ?
                 $pm_field.val().indexOf('cp') >= 0 : !!$pm_field.prop('checked');
 
@@ -26,7 +26,7 @@ jQuery(document).ready(function($){
             return; /** @todo Add some error to the form! Or at least do some console.logging */
         }
 
-        var $revo_redirect_step = $form.closest('.leyka-pf').find('.leyka-pf__redirect');
+        let $revo_redirect_step = $form.closest('.leyka-pf').find('.leyka-pf__redirect');
         if($revo_redirect_step.length) {
             $revo_redirect_step.addClass('leyka-pf__redirect--open');
         }
@@ -39,12 +39,12 @@ jQuery(document).ready(function($){
 
         // Donation form validation already passed in the main script (public.js)
 
-        var is_recurring = $form.find('.leyka-recurring').prop('checked') ||
+        let is_recurring = $form.find('.leyka-recurring').prop('checked') ||
                            $form.find('.is-recurring-chosen').val() > 0, // For Revo template
             data_array = $form.serializeArray(),
             data = {action: 'leyka_ajax_get_gateway_redirect_data'};
 
-        for(var i = 0; i < data_array.length; i++) {
+        for(let i = 0; i < data_array.length; i++) {
             data[data_array[i].name] = data_array[i].value;
         }
 
@@ -101,7 +101,7 @@ jQuery(document).ready(function($){
 
             }
 
-            var widget = new cp.CloudPayments(),
+            let widget = new cp.CloudPayments(),
                 data = {};
 
             if(is_recurring) {
@@ -128,7 +128,13 @@ jQuery(document).ready(function($){
                 $errors.html('').hide();
 
             }, function(reason, options){ // fail callback
+
+                if( !reason ) { // In some cases of Donor cancelling payment, reason === null
+                    reason = 'User has cancelled';
+                }
+
                 addError($errors, leyka.cp_donation_failure_reasons[reason] || reason);
+
             });
 
             if($form.hasClass('leyka-revo-form')) {
