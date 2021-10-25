@@ -470,9 +470,6 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
         <code>#DATE#</code><span class="description">Дата пожертвования</span>
     </span>
     <span class="item">
-        <code>#DONOR_ACCOUNT_LOGIN_LINK#</code><span class="description">Приглашение войти в Личный кабинет донора</span>
-    </span>
-    <span class="item">
         <code>#RECURRING_SUBSCRIPTION_CANCELLING_LINK#</code><span class="description">Отменить рекуррентную подписку донора</span>
     </span>
     <span class="item">

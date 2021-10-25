@@ -205,13 +205,18 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         $email_placeholders = [
             '#SITE_NAME#',
             '#SITE_EMAIL#',
+            '#SITE_URL#',
+            '#SITE_TECH_SUPPORT_EMAIL#',
             '#ORG_NAME#',
+            '#ORG_SHORT_NAME#',
             '#DONATION_ID#',
             '#DONATION_TYPE#',
             '#DONOR_NAME#',
             '#DONOR_EMAIL#',
+            '#DONOR_COMMENT#',
             '#PAYMENT_METHOD_NAME#',
             '#CAMPAIGN_NAME#',
+            '#CAMPAIGN_URL#',
             '#PURPOSE#',
             '#CAMPAIGN_TARGET#',
             '#SUM#',
@@ -222,20 +227,25 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         $email_placeholder_values = [
             get_bloginfo('name'),
             get_bloginfo('admin_email'),
+            home_url(),
+            leyka_options()->opt('tech_support_email'),
             leyka_options()->opt('org_full_name'),
+            leyka_options()->opt('org_short_name'),
             $donation->id,
-            leyka_get_payment_types_list($donation->type),
-            $donation->donor_name ? $donation->donor_name : __('dear donor', 'leyka'),
-            $donation->donor_email ? $donation->donor_email : __('unknown email', 'leyka'),
+            $donation->type_label,
+            $donation->donor_name ? : __('dear donor', 'leyka'),
+            $donation->donor_email ? : __('unknown email', 'leyka'),
+            $donation->donor_comment,
             $donation->payment_method_label,
             $campaign->title,
+            $campaign->url,
             $campaign->payment_title,
             $campaign->target,
             $donation->amount.' '.$donation->currency_label,
             $donation->date,
             apply_filters(
                 'leyka_'.$donation->gateway_id.'_recurring_subscription_cancelling_link',
-                sprintf(__('<a href="mailto:%s">write us a letter about it</a>', 'leyka'), leyka_get_website_tech_support_email()),
+                sprintf(__('<a href="mailto:%s">write us a letter about it</a>', 'leyka'), leyka_options()->opt('tech_support_email')),
                 $donation
             ),
         ];
@@ -325,13 +335,18 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         $email_placeholders = [
             '#SITE_NAME#',
             '#SITE_EMAIL#',
+            '#SITE_URL#',
+            '#SITE_TECH_SUPPORT_EMAIL#',
             '#ORG_NAME#',
+            '#ORG_SHORT_NAME#',
             '#DONATION_ID#',
             '#DONATION_TYPE#',
             '#DONOR_NAME#',
             '#DONOR_EMAIL#',
+            '#DONOR_COMMENT#',
             '#PAYMENT_METHOD_NAME#',
             '#CAMPAIGN_NAME#',
+            '#CAMPAIGN_URL#',
             '#PURPOSE#',
             '#CAMPAIGN_TARGET#',
             '#SUM#',
@@ -342,20 +357,25 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         $email_placeholder_values = [
             get_bloginfo('name'),
             get_bloginfo('admin_email'),
+            home_url(),
+            leyka_options()->opt('tech_support_email'),
             leyka_options()->opt('org_full_name'),
+            leyka_options()->opt('org_short_name'),
             $donation->id,
             $donation->type_label,
-            $donation->donor_name ? $donation->donor_name : __('dear donor', 'leyka'),
-            $donation->donor_email ? $donation->donor_email : __('unknown email', 'leyka'),
+            $donation->donor_name ? : __('dear donor', 'leyka'),
+            $donation->donor_email ? : __('unknown email', 'leyka'),
+            $donation->donor_comment,
             $donation->payment_method_label,
             $campaign->title,
+            $campaign->url,
             $campaign->payment_title,
             $campaign->target,
             $donation->amount.' '.$donation->currency_label,
             $donation->date,
             apply_filters(
                 'leyka_'.$donation->gateway_id.'_recurring_subscription_cancelling_link',
-                sprintf(__('<a href="mailto:%s">write us a letter about it</a>', 'leyka'), leyka_get_website_tech_support_email()),
+                sprintf(__('<a href="mailto:%s">write us a letter about it</a>', 'leyka'), leyka_options()->opt('tech_support_email')),
                 $donation
             ),
         ];
@@ -459,13 +479,18 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         $email_placeholders = [
             '#SITE_NAME#',
             '#SITE_EMAIL#',
+            '#SITE_URL#',
+            '#SITE_TECH_SUPPORT_EMAIL#',
             '#ORG_NAME#',
+            '#ORG_SHORT_NAME#',
             '#DONATION_ID#',
             '#DONATION_TYPE#',
             '#DONOR_NAME#',
             '#DONOR_EMAIL#',
+            '#DONOR_COMMENT#',
             '#PAYMENT_METHOD_NAME#',
             '#CAMPAIGN_NAME#',
+            '#CAMPAIGN_URL#',
             '#PURPOSE#',
             '#CAMPAIGN_TARGET#',
             '#SUM#',
@@ -476,20 +501,25 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         $email_placeholder_values = [
             get_bloginfo('name'),
             get_bloginfo('admin_email'),
+            home_url(),
+            leyka_options()->opt('tech_support_email'),
             leyka_options()->opt('org_full_name'),
+            leyka_options()->opt('org_short_name'),
             $donation->id,
-            leyka_get_payment_types_list($donation->type),
-            $donation->donor_name ? $donation->donor_name : __('dear donor', 'leyka'),
-            $donation->donor_email ? $donation->donor_email : __('unknown email', 'leyka'),
+            $donation->type_label,
+            $donation->donor_name ? : __('dear donor', 'leyka'),
+            $donation->donor_email ? : __('unknown email', 'leyka'),
+            $donation->donor_comment,
             $donation->payment_method_label,
             $campaign->title,
+            $campaign->url,
             $campaign->payment_title,
             $campaign->target,
             $donation->amount.' '.$donation->currency_label,
             $donation->date,
             apply_filters(
                 'leyka_'.$donation->gateway_id.'_recurring_subscription_cancelling_link',
-                sprintf(__('<a href="mailto:%s">write us a letter about it</a>', 'leyka'), leyka_get_website_tech_support_email()),
+                sprintf(__('<a href="mailto:%s">write us a letter about it</a>', 'leyka'), leyka_options()->opt('tech_support_email')),
                 $donation
             ),
         ];
@@ -568,149 +598,149 @@ class Leyka_Donation_Management extends Leyka_Singleton {
     }
 
     /** Send all emails in case of a recurring auto-payment */
-    public static function send_all_recurring_emails($donation) {
-
-        if( !leyka_options()->opt('send_donor_thanking_emails_on_recurring_ongoing') ) {
-            return false;
-        }
-
-        $donation = Leyka_Donations::get_instance()->get_donation($donation);
-
-        $donor_email = $donation->donor_email;
-        if( !$donor_email ) {
-            $donor_email = leyka_pf_get_donor_email_value();
-        }
-
-        if( !$donation || !$donor_email || $donation->type !== 'rebill' ) {
-            return false;
-        }
-
-        add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
-
-        $campaign = new Leyka_Campaign($donation->campaign_id);
-
-        $email_placeholders = [
-            '#SITE_NAME#',
-            '#SITE_EMAIL#',
-            '#SITE_URL#',
-            '#SITE_TECH_SUPPORT_EMAIL#',
-            '#ORG_NAME#',
-            '#ORG_SHORT_NAME#',
-            '#DONATION_ID#',
-            '#DONATION_TYPE#',
-            '#DONOR_NAME#',
-            '#DONOR_EMAIL#',
-            '#DONOR_COMMENT#',
-            '#PAYMENT_METHOD_NAME#',
-            '#CAMPAIGN_NAME#',
-            '#CAMPAIGN_URL#',
-            '#PURPOSE#',
-            '#CAMPAIGN_TARGET#',
-            '#SUM#',
-            '#DATE#',
-            '#RECURRING_SUBSCRIPTION_CANCELLING_LINK#',
-            '#DONOR_ACCOUNT_LOGIN_LINK#',
-        ];
-        $email_placeholder_values = [
-            get_bloginfo('name'),
-            get_bloginfo('admin_email'),
-            home_url(),
-            leyka_options()->opt('tech_support_email'),
-            leyka_options()->opt('org_full_name'),
-            leyka_options()->opt('org_short_name'),
-            $donation->id,
-            $donation->type_label,
-            $donation->donor_name ? $donation->donor_name : __('dear donor', 'leyka'),
-            $donation->donor_email ? $donation->donor_email : __('unknown email', 'leyka'),
-            $donation->donor_comment,
-            $donation->payment_method_label,
-            $campaign->title,
-            $campaign->url,
-            $campaign->payment_title,
-            $campaign->target,
-            $donation->amount.' '.$donation->currency_label,
-            $donation->date,
-            apply_filters(
-                'leyka_'.$donation->gateway_id.'_recurring_subscription_cancelling_link',
-                sprintf(__('<a href="mailto:%s">write us a letter about it</a>', 'leyka'), leyka_options()->opt('tech_support_email')),
-                $donation
-            ),
-        ];
-
-        // Donor account login link:
-        if(leyka_options()->opt('donor_accounts_available')) {
-
-            $donor_account_login_text = '';
-
-            if($donation->donor_account_error) { // Donor account wasn't created due to some error
-                $donor_account_login_text = sprintf(__('To control your recurring subscriptions please contact the <a href="mailto:%s">website administration</a>.', 'leyka'), get_option('admin_email'));
-            } else if($donation->donor_account_id) {
-
-                try {
-                    $donor = new Leyka_Donor($donation->donor_account_id);
-                } catch(Exception $e) {
-                    $donor = false;
-                }
-
-                $donor_account_login_text = $donor && $donor->account_activation_code ?
-                    sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?activate='.$donor->account_activation_code)) :
-                    sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?u='.$donation->donor_account_id));
-
-            }
-
-            $email_placeholder_values[] = apply_filters(
-                'leyka_email_donor_acccount_link',
-                $donor_account_login_text,
-                $donation,
-                $campaign
-            );
-
-        } else {
-            $email_placeholder_values[] = ''; // Replace '#DONOR_ACCOUNT_LOGIN_LINK#' with empty string
-        }
-
-        // Donor thanking email:
-        $res = wp_mail(
-            $donor_email,
-            apply_filters(
-                'leyka_email_thanks_recurring_ongoing_title',
-                leyka_options()->opt('email_recurring_ongoing_thanks_title'),
-                $donation, $campaign
-            ),
-            wpautop(str_replace(
-                $email_placeholders,
-                $email_placeholder_values,
-                apply_filters(
-                    'leyka_email_thanks_recurring_ongoing_text',
-                    leyka_options()->opt('email_recurring_ongoing_thanks_text'),
-                    $donation, $campaign
-                )
-            )),
-            [
-                'From: '.apply_filters(
-                    'leyka_email_from_name',
-                    leyka_options()->opt_safe('email_from_name'),
-                    $donation,
-                    $campaign
-                ).' <'.leyka_options()->opt_safe('email_from').'>',
-            ]
-        );
-
-        if($res) {
-            $donation->donor_email_date = current_time('timestamp');
-        }
-
-        // Donations managers notifying emails:
-        if(leyka_options()->opt('notify_managers_on_recurrents')) {
-            $res &= Leyka_Donation_Management::send_managers_notifications($donation);
-        }
-
-        // Reset content-type to avoid conflicts (http://core.trac.wordpress.org/ticket/23578):
-        remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
-
-        return $res;
-
-    }
+//    public static function send_all_recurring_emails($donation) {
+//
+//        if( !leyka_options()->opt('send_donor_thanking_emails_on_recurring_ongoing') ) {
+//            return false;
+//        }
+//
+//        $donation = Leyka_Donations::get_instance()->get_donation($donation);
+//
+//        $donor_email = $donation->donor_email;
+//        if( !$donor_email ) {
+//            $donor_email = leyka_pf_get_donor_email_value();
+//        }
+//
+//        if( !$donation || !$donor_email || $donation->type !== 'rebill' ) {
+//            return false;
+//        }
+//
+//        add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
+//
+//        $campaign = new Leyka_Campaign($donation->campaign_id);
+//
+//        $email_placeholders = [
+//            '#SITE_NAME#',
+//            '#SITE_EMAIL#',
+//            '#SITE_URL#',
+//            '#SITE_TECH_SUPPORT_EMAIL#',
+//            '#ORG_NAME#',
+//            '#ORG_SHORT_NAME#',
+//            '#DONATION_ID#',
+//            '#DONATION_TYPE#',
+//            '#DONOR_NAME#',
+//            '#DONOR_EMAIL#',
+//            '#DONOR_COMMENT#',
+//            '#PAYMENT_METHOD_NAME#',
+//            '#CAMPAIGN_NAME#',
+//            '#CAMPAIGN_URL#',
+//            '#PURPOSE#',
+//            '#CAMPAIGN_TARGET#',
+//            '#SUM#',
+//            '#DATE#',
+//            '#RECURRING_SUBSCRIPTION_CANCELLING_LINK#',
+//            '#DONOR_ACCOUNT_LOGIN_LINK#',
+//        ];
+//        $email_placeholder_values = [
+//            get_bloginfo('name'),
+//            get_bloginfo('admin_email'),
+//            home_url(),
+//            leyka_options()->opt('tech_support_email'),
+//            leyka_options()->opt('org_full_name'),
+//            leyka_options()->opt('org_short_name'),
+//            $donation->id,
+//            $donation->type_label,
+//            $donation->donor_name ? : __('dear donor', 'leyka'),
+//            $donation->donor_email ? : __('unknown email', 'leyka'),
+//            $donation->donor_comment,
+//            $donation->payment_method_label,
+//            $campaign->title,
+//            $campaign->url,
+//            $campaign->payment_title,
+//            $campaign->target,
+//            $donation->amount.' '.$donation->currency_label,
+//            $donation->date,
+//            apply_filters(
+//                'leyka_'.$donation->gateway_id.'_recurring_subscription_cancelling_link',
+//                sprintf(__('<a href="mailto:%s">write us a letter about it</a>', 'leyka'), leyka_options()->opt('tech_support_email')),
+//                $donation
+//            ),
+//        ];
+//
+//        // Donor account login link:
+//        if(leyka_options()->opt('donor_accounts_available')) {
+//
+//            $donor_account_login_text = '';
+//
+//            if($donation->donor_account_error) { // Donor account wasn't created due to some error
+//                $donor_account_login_text = sprintf(__('To control your recurring subscriptions please contact the <a href="mailto:%s">website administration</a>.', 'leyka'), get_option('admin_email'));
+//            } else if($donation->donor_account_id) {
+//
+//                try {
+//                    $donor = new Leyka_Donor($donation->donor_account_id);
+//                } catch(Exception $e) {
+//                    $donor = false;
+//                }
+//
+//                $donor_account_login_text = $donor && $donor->account_activation_code ?
+//                    sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?activate='.$donor->account_activation_code)) :
+//                    sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?u='.$donation->donor_account_id));
+//
+//            }
+//
+//            $email_placeholder_values[] = apply_filters(
+//                'leyka_email_donor_acccount_link',
+//                $donor_account_login_text,
+//                $donation,
+//                $campaign
+//            );
+//
+//        } else {
+//            $email_placeholder_values[] = ''; // Replace '#DONOR_ACCOUNT_LOGIN_LINK#' with empty string
+//        }
+//
+//        // Donor thanking email:
+//        $res = wp_mail(
+//            $donor_email,
+//            apply_filters(
+//                'leyka_email_thanks_recurring_ongoing_title',
+//                leyka_options()->opt('email_recurring_ongoing_thanks_title'),
+//                $donation, $campaign
+//            ),
+//            wpautop(str_replace(
+//                $email_placeholders,
+//                $email_placeholder_values,
+//                apply_filters(
+//                    'leyka_email_thanks_recurring_ongoing_text',
+//                    leyka_options()->opt('email_recurring_ongoing_thanks_text'),
+//                    $donation, $campaign
+//                )
+//            )),
+//            [
+//                'From: '.apply_filters(
+//                    'leyka_email_from_name',
+//                    leyka_options()->opt_safe('email_from_name'),
+//                    $donation,
+//                    $campaign
+//                ).' <'.leyka_options()->opt_safe('email_from').'>',
+//            ]
+//        );
+//
+//        if($res) {
+//            $donation->donor_email_date = current_time('timestamp');
+//        }
+//
+//        // Donations managers notifying emails:
+//        if(leyka_options()->opt('notify_managers_on_recurrents')) {
+//            $res &= Leyka_Donation_Management::send_managers_notifications($donation);
+//        }
+//
+//        // Reset content-type to avoid conflicts (http://core.trac.wordpress.org/ticket/23578):
+//        remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
+//
+//        return $res;
+//
+//    }
 
     /**
      * @param $donation Leyka_Donation_Base|integer
@@ -739,6 +769,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 '#DONATION_TYPE#',
                 '#DONOR_NAME#',
                 '#DONOR_EMAIL#',
+                '#DONOR_COMMENT#',
                 '#PAYMENT_METHOD_NAME#',
                 '#CAMPAIGN_NAME#',
                 '#PURPOSE#',
@@ -754,8 +785,9 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 leyka_options()->opt('org_full_name'),
                 $donation->id,
                 leyka_get_payment_types_list($donation->type),
-                $donation->donor_name ? $donation->donor_name : __('anonymous', 'leyka'),
-                $donation->donor_email ? $donation->donor_email : __('unknown email', 'leyka'),
+                $donation->donor_name ? : __('anonymous', 'leyka'),
+                $donation->donor_email ? : __('unknown email', 'leyka'),
+                $donation->donor_comment,
                 $donation->payment_method_label,
                 $campaign->title,
                 $campaign->payment_title,
