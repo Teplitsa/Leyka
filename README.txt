@@ -81,6 +81,14 @@ PHP version required: 5.6+
 5. The plugin start page (a console)
 
 == Changelog ==
+= 3.21 =
+* New: now admins' & donors' email notifications about failed donations may be turned off.
+* New: the campaign total funded amount recalculation feature returned.
+* New: Unisender extension improvements.
+* Fix: Chronopay gateway donations error fixed.
+* Fix: double notifications bug fixed.
+* Fix: small fixes.
+
 = 3.20.0.1 =
 * Fix: recurring subscriptions.
 * Fix: different bugfixes.
