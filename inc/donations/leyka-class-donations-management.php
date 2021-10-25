@@ -825,6 +825,8 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             return false;
         }
 
+        $res = true;
+
         if(leyka_options()->opt('notify_tech_support_on_failed_donations')) { // Notification to Donations managers, if needed
 
             if($donation->managers_emails_date) {
@@ -834,7 +836,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
             $campaign = new Leyka_Campaign($donation->campaign_id);
-            $res = wp_mail(
+            $res &= wp_mail(
                 leyka_get_website_tech_support_email(),
                 apply_filters(
                     'leyka_error_email_notification_title',
@@ -896,14 +898,14 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
             remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
-            return $res;
+        }
 
-        } else if(leyka_options()->opt('notify_donors_on_failed_donations')) { // Notify Donor, if needed
+        if(leyka_options()->opt('notify_donors_on_failed_donations') && $donation->donor_email) { // Notify Donor, if needed
 
             add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
             $campaign = new Leyka_Campaign($donation->campaign_id);
-            $res = wp_mail(
+            $res &= wp_mail(
                 $donation->donor_email,
                 apply_filters(
                     'leyka_error_donor_email_notification_title',
@@ -965,11 +967,9 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
             remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
-            return $res;
-
-        } else {
-            return false;
         }
+
+        return $res;
 
     }
 

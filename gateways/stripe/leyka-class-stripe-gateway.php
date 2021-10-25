@@ -421,6 +421,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                         $response_data->id
                     );
                     $donation = Leyka_Donations::get_instance()->get_donation((int)$donation_id);
+
                     $init_recurring_donation = $donation->init_recurring_donation;
                     $init_recurring_donation->recurring_is_active = false;
 
@@ -428,9 +429,8 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
                 $donation->status = 'failed';
 
-                if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
-                    Leyka_Donation_Management::send_error_notifications($donation_id);
-                }
+                // Emails will be sent only if respective options are on:
+                Leyka_Donation_Management::send_error_notifications($donation);
 
                 $donation->add_gateway_response(json_encode($event, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
 

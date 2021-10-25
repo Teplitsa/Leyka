@@ -195,9 +195,8 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
             $new_recurring_donation->status = 'failed';
             $new_recurring_donation->add_gateway_response($ex);
 
-            if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
-                Leyka_Donation_Management::send_error_notifications($new_recurring_donation);
-            }
+            // Emails will be sent only if respective options are on:
+            Leyka_Donation_Management::send_error_notifications($new_recurring_donation);
 
         }
 
@@ -260,9 +259,8 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
                     $donation->status = 'failed';
                     $donation->add_gateway_response($_REQUEST);
 
-                    if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
-                        Leyka_Donation_Management::send_error_notifications($donation);
-                    }
+                    // Emails will be sent only if respective options are on:
+                    Leyka_Donation_Management::send_error_notifications($donation);
 
                     exit(500);
 
@@ -340,9 +338,8 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
 
                         $donation->recurring_is_active = false;
 
-                        if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
-                            Leyka_Donation_Management::send_error_notifications($donation);
-                        }
+                        // Emails will be sent only if respective options are on:
+                        Leyka_Donation_Management::send_error_notifications($donation);
 
                         exit(500);
 

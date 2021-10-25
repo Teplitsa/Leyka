@@ -302,9 +302,8 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                         $donation->status = 'failed';
                         $donation->add_gateway_response($_POST);
 
-                        if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
-                            Leyka_Donation_Management::send_error_notifications($donation);
-                        }
+                        // Emails will be sent only if respective options are on:
+                        Leyka_Donation_Management::send_error_notifications($donation);
 
                         die(json_encode(['code' => '0',]));
 
@@ -389,9 +388,8 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                     $donation->status = 'failed';
 
-                    if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
-                        Leyka_Donation_Management::send_error_notifications($donation);
-                    }
+                    // Emails will be sent only if respective options are on:
+                    Leyka_Donation_Management::send_error_notifications($donation);
 
                 }
 

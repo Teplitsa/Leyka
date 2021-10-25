@@ -246,10 +246,10 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
             return false; // Mb, return WP_Error?
         }
 
-        $donation = Leyka_Donations::get_instance()->get($donation_id);
+        $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
         $donation->status = $map_status[ $data['eventType'] ];
 
-        if($donation->status === 'failed' && leyka_options()->opt('notify_tech_support_on_failed_donations')) {
+        if($donation->status === 'failed') { // Emails will be sent only if respective options are on
             Leyka_Donation_Management::send_error_notifications($donation);
         }
 

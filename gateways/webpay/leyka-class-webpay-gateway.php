@@ -273,7 +273,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
 
         if($donation->status === 'funded') {
             Leyka_Donation_Management::send_all_emails($donation->id);
-        } else if($donation->status === 'failed' && leyka_options()->opt('notify_tech_support_on_failed_donations')) {
+        } else if($donation->status === 'failed') { // Emails will be sent only if respective options are on
             Leyka_Donation_Management::send_error_notifications($donation);
         }
 
