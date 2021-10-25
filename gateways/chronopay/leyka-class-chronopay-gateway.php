@@ -95,12 +95,11 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
             $donation->type = 'single';
             $chronopay_product_id = leyka_options()->opt($pm_id.'_product_id_'.mb_strtolower($donation->currency_id));
-            //.($donation->currency_id == 'rub' ? 'rur' : $donation->currency_id)
 
         } else { // Recurring donation
 
             $donation->type = 'rebill';
-            $chronopay_product_id = leyka_options()->opt($pm_id.'_rebill_product_id_'.$donation->currency_id);
+            $chronopay_product_id = leyka_options()->opt($pm_id.'_rebill_product_id_'.mb_strtolower($donation->currency_id));
 
         }
 

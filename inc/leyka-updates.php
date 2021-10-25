@@ -152,24 +152,6 @@ function leyka_handle_plugin_update() {
 
         }
 
-        // Chronopay RUR -> RUB options IDs transition:
-        $tmp_value = Leyka_Options_Controller::get_option_value('chronopay_card_product_id_rur');
-        if($tmp_value) {
-
-            Leyka_Options_Controller::set_option_value('chronopay_card_rebill_product_id_rub', $tmp_value);
-            delete_option('chronopay_card_product_id_rur');
-
-        }
-
-        $tmp_value = Leyka_Options_Controller::get_option_value('chronopay_card_rebill_product_id_rub');
-        if($tmp_value) {
-
-            Leyka_Options_Controller::set_option_value('chronopay_card_rebill_product_id_rub', $tmp_value);
-            delete_option('chronopay_card_rebill_product_id_rur');
-
-        }
-        // Chronopay RUR -> RUB options IDs transition - END
-
         // Rename "rur" postmeta value to "RUB", if needed:
         $update_needed = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}postmeta WHERE meta_key = 'leyka_donation_currency' AND meta_value = 'rur'");
         if($update_needed) {
@@ -239,6 +221,28 @@ function leyka_handle_plugin_update() {
                 ['meta_key' => '_yandex_invoice_id']
             );
         }
+
+    }
+
+    if($leyka_last_ver && version_compare($leyka_last_ver, '3.21', '<=')) {
+
+        // Chronopay RUR -> RUB options IDs transition:
+        $tmp_value = Leyka_Options_Controller::get_option_value('chronopay_card_product_id_rur');
+        if($tmp_value) {
+
+            Leyka_Options_Controller::set_option_value('chronopay_card_product_id_rub', $tmp_value);
+            delete_option('chronopay_card_product_id_rur');
+
+        }
+
+        $tmp_value = Leyka_Options_Controller::get_option_value('chronopay_card_rebill_product_id_rub');
+        if($tmp_value) {
+
+            Leyka_Options_Controller::set_option_value('chronopay_card_rebill_product_id_rub', $tmp_value);
+            delete_option('chronopay_card_rebill_product_id_rur');
+
+        }
+        // Chronopay RUR -> RUB options IDs transition - END
 
     }
 
