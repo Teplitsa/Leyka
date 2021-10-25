@@ -135,7 +135,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
         $donation = Leyka_Donations::get_instance()->get($donation_id);
 
         // Non-init rebill payment
-        if($donation->payment_type === 'rebill' && $donation->init_recurring_donation_id === $donation->id) {
+        if($donation->payment_type === 'rebill' && $donation->init_recurring_donation_id !== $donation->id) {
             return false;
         }
 
