@@ -132,12 +132,18 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
 
     public function _add_donor_to_unisender_list($donation_id, $old_status, $new_status) {
 
+        $donation = Leyka_Donations::get_instance()->get($donation_id);
+
+        // Non-init rebill payment
+        if ($donation->payment_type === 'rebill' && $donation->init_recurring_donation_id === $donation->id) {
+            return false;
+        }
+
         if($old_status !== 'funded' && $new_status === 'funded') {
 
             require_once LEYKA_PLUGIN_DIR.'extensions/unisender/lib/UnisenderApi.php';
 
             $api_key = leyka_options()->opt($this->_id.'_api_key');
-            $donation = Leyka_Donations::get_instance()->get($donation_id);
             $list_ids = str_replace(' ','', stripslashes(leyka_options()->opt($this->_id.'_lists_ids')));
             $donor_fields = ['email' => $donation->donor_email];
 
@@ -259,7 +265,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
 
                 $this->_error_handle($result, $donation);
                 return false;
-                
+
             }
 
             $donation->set_meta('unisender_subscription_response', $result_array);
