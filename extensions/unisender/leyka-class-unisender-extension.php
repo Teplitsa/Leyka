@@ -113,7 +113,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
         $fields_library = leyka_options()->opt('additional_donation_form_fields_library');
         $additional_fields = ['name' => __('Name', 'leyka')];
 
-        foreach ($fields_library as $name => $data) {
+        foreach($fields_library as $name => $data) {
             $additional_fields[$name] = __($data['title'], 'leyka');
         }
 
@@ -135,7 +135,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
         $donation = Leyka_Donations::get_instance()->get($donation_id);
 
         // Non-init rebill payment
-        if ($donation->payment_type === 'rebill' && $donation->init_recurring_donation_id === $donation->id) {
+        if($donation->payment_type === 'rebill' && $donation->init_recurring_donation_id === $donation->id) {
             return false;
         }
 
@@ -222,7 +222,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
 
                     $unisender_exist_fields = $result_array['result'];
 
-                    foreach ($this->_unisender_system_fields as $system_field_name) {
+                    foreach($this->_unisender_system_fields as $system_field_name) {
                         array_push($unisender_exist_fields, ['name' => $system_field_name]);
                     }
 
@@ -343,7 +343,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
 
         if( !empty($subscription_response['error']) ) {
             echo '<div><b>'.__('Error', 'leyka').': </b>'.$subscription_response['error'].'</div>';
-        } else if( !empty($subscription_response['result']) && !empty($subscription_response['result']['person_id']) ) {
+        } elseif( !empty($subscription_response['result']) && !empty($subscription_response['result']['person_id']) ) {
             echo
                 '<div>
                     <b>'.__('Subscribed user ID', 'leyka').': </b>'.$subscription_response['result']['person_id'].'</br>
@@ -358,7 +358,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
 
     public function _load_admin_assets() {
 
-        if ($this->is_admin_settings_page($this->_id)) {
+        if($this->is_admin_settings_page($this->_id)) {
 
             wp_enqueue_style(
                 $this->_id.'-admin',
