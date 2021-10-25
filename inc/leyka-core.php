@@ -2044,7 +2044,7 @@ class Leyka extends Leyka_Singleton {
                     $donation->donor_name,
                     $donation->donor_email,
                     $donor_account_error->get_error_message(),
-                    admin_url('post.php?post='.$donation->id.'&action=edit')
+                    admin_url('admin.php?page=leyka_donation_info&donation='.$donation->id)
                 ),
                 $donor_account_error,
                 $donation

@@ -693,7 +693,7 @@ function leyka_cancel_recurring_subscription(){
             $campaign->ID,
             home_url(),
             get_bloginfo('name'),
-            admin_url('/post.php?post='.$init_recurring_donation->id.'&action=edit'),
+            admin_url('admin.php?page=leyka_donation_info&donation='.$init_recurring_donation->id),
             $reason_text
         );
         add_filter('wp_mail_content_type', 'leyka_set_html_content_type');

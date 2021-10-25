@@ -880,7 +880,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                     ],
                     apply_filters(
                         'leyka_error_email_notification_text',
-                        sprintf(__("Hello!\n\nDonation failure detected on the #SITE_NAME# website.\n\nCampaign: #CAMPAIGN_NAME#\nAmount: #SUM#\nPayment method: #PAYMENT_METHOD_NAME#\nType: #DONATION_TYPE#\n\nYou may revise the donation <a href='%s' target='_blank'>here</a>.\n\nYour Leyka", 'leyka'), admin_url('post.php?post='.$donation->id.'&action=edit')),
+                        sprintf(__("Hello!\n\nDonation failure detected on the #SITE_NAME# website.\n\nCampaign: #CAMPAIGN_NAME#\nAmount: #SUM#\nPayment method: #PAYMENT_METHOD_NAME#\nType: #DONATION_TYPE#\n\nYou may revise the donation <a href='%s' target='_blank'>here</a>.\n\nYour Leyka", 'leyka'), admin_url('admin.php?page=leyka_donation_info&donation='.$donation->id)),
                         $donation, $campaign
                     )
                 )),
@@ -1651,16 +1651,10 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
     public static function get_donation_delete_link(Leyka_Donation_Base $donation) {
         return admin_url('admin.php?page=leyka_donations&action=delete&donation='.$donation->id.'&_wpnonce='.wp_create_nonce('leyka_delete_donation'));
-        /* = leyka_get_donations_storage_type() === 'post' ?
-            get_delete_post_link($donation->id) :
-            admin_url('admin.php?page=leyka_donations&action=delete&donation='.$donation->id.'&_wpnonce='.wp_create_nonce('leyka_delete_donation'));*/
     }
 
     public static function get_donation_edit_link(Leyka_Donation_Base $donation) {
         return admin_url('admin.php?page=leyka_donation_info&donation='.$donation->id);
-        /* = leyka_get_donations_storage_type() === 'post' ?
-            admin_url('post.php?post='.$donation->id.'&action=edit') :
-            admin_url('admin.php?page=leyka_donation_info&donation='.$donation->id);*/
     }
 
 }
