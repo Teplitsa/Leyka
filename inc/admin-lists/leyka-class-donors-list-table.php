@@ -904,7 +904,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
                 'UTF-8',
                 apply_filters('leyka_donations_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
-                "\r\n".implode(';', apply_filters('leyka_donations_export_line', [
+                "\r\n".implode(';', apply_filters('leyka_donors_export_line', [
                         $donor_data['donor_id'],
                         _x(mb_ucfirst($donor_data['donor_type']), 'Donor type', 'leyka'),
                         $donor_data['donor_name'],
