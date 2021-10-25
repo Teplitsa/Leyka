@@ -34,6 +34,10 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
         $this->_has_wizard = false;
         $this->_has_color_options = false;
         $this->_icon = LEYKA_PLUGIN_BASE_URL.'extensions/unisender/img/main_icon.jpeg';
+        $this->_unisender_system_fields = ['delete', 'tags', 'email', 'email_status', 'delete', 'email_availability',
+            'email_list_ids', 'email_subscribe_times', 'email_unsubscribed_list_ids', 'email_excluded_list_ids',
+            'phone', 'phone_status', 'phone_availability', 'phone_list_ids', 'phone_subscribe_times',
+            'phone_unsubscribed_list_ids', 'phone_excluded_list_ids'];
 
     }
 
@@ -55,9 +59,8 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
                         'type' => 'text',
                         'title' => __('IDs of the Unisender lists to subscribe donors', 'leyka'),
                         'comment' => __("IDs of the Unisender mailout lists with donors' contacts", 'leyka'),
-                        'required' => true,
                         'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1,3,10'),
-                        'description' => __('Comma-separated IDs list', 'leyka'),
+                        'description' => sprintf(__('Comma-separated IDs list. If empty, a new list with name "%s" will be created in Unisender (or updated if such list already exists).', 'leyka'), __('Donors', 'leyka'))
                     ],
                     $this->_id.'_donor_fields' => [
                         'type' => 'multi_select',
@@ -110,7 +113,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
         $fields_library = leyka_options()->opt('additional_donation_form_fields_library');
         $additional_fields = ['name' => __('Name', 'leyka')];
 
-        foreach ($fields_library as $name => $data) {
+        foreach($fields_library as $name => $data) {
             $additional_fields[$name] = __($data['title'], 'leyka');
         }
 
@@ -129,12 +132,19 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
 
     public function _add_donor_to_unisender_list($donation_id, $old_status, $new_status) {
 
+        $donation = Leyka_Donations::get_instance()->get($donation_id);
+
+        // Non-init rebill payment
+        if($donation->payment_type === 'rebill' && $donation->init_recurring_donation_id !== $donation->id) {
+            return false;
+        }
+
         if($old_status !== 'funded' && $new_status === 'funded') {
 
             require_once LEYKA_PLUGIN_DIR.'extensions/unisender/lib/UnisenderApi.php';
 
             $api_key = leyka_options()->opt($this->_id.'_api_key');
-            $donation = Leyka_Donations::get_instance()->get($donation_id);
+            $list_ids = str_replace(' ','', stripslashes(leyka_options()->opt($this->_id.'_lists_ids')));
             $donor_fields = ['email' => $donation->donor_email];
 
             foreach(leyka_options()->opt($this->_id.'_donor_fields') as $field_name) {
@@ -156,31 +166,129 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
             }
 
             $uni = new \Unisender\ApiWrapper\UnisenderApi($api_key);
-            $result = $uni->subscribe([
-                'list_ids' => str_replace(' ','', stripslashes(leyka_options()->opt($this->_id.'_lists_ids'))),
+
+            // No list IDs in options. Need to create a new list or check if the one was created before
+            if($list_ids === '') {
+
+                $result = $uni->getLists();
+                $result_array = json_decode($result, true);
+
+                if( !empty($result_array['error']) ) {
+
+                    $this->_error_handle($result, $donation);
+                    return false;
+
+                }
+
+                foreach($result_array['result'] as $list) {
+                    if($list['title'] === __('Donors', 'leyka')) {
+                        $donors_list_id = $list['id']; // List with name reserved for Leyka is already exists
+                    }
+                }
+
+                if(empty($donors_list_id)) { // New list need to be created
+
+                    $result = $uni->createList([
+                        'title' => __('Donors', 'leyka')
+                    ]);
+
+                    $result_array = json_decode($result, true);
+
+                    if( !empty($result_array['error']) ) {
+
+                        $this->_error_handle($result, $donation);
+                        return false;
+
+                    }
+
+                    $donors_list_id = $result_array['result']['id'];
+
+                }
+
+                if( !empty($donors_list_id) ) { // Save created/found list ID in options
+
+                    $list_ids = $donors_list_id;
+                    leyka_options()->opt($this->_id.'_lists_ids', $list_ids);
+
+                }
+
+                $result = $uni->getFields(); // Get custom fields that already exists in Unisender
+
+                $result_array = json_decode($result, true);
+
+                if( !empty($result_array['error']) ) {
+                    $this->_error_handle($result);
+                } else {
+
+                    $unisender_exist_fields = $result_array['result'];
+
+                    foreach($this->_unisender_system_fields as $system_field_name) {
+                        array_push($unisender_exist_fields, ['name' => $system_field_name]);
+                    }
+
+                    // Create fields filled by donor in Unisender
+                    foreach($donor_fields as $donor_field_name => $donor_field_value ) {
+
+                        foreach($unisender_exist_fields as $unisender_exist_field) {
+                            if(($unisender_exist_field['name'] === $donor_field_name)) { // Field exists
+                                continue 2;
+                            }
+                        }
+
+                        $result = $uni->createField([ // Create field in Unisender
+                            'name' => $donor_field_name,
+                            'type' => 'string'
+                        ]);
+
+                        $result_array = json_decode($result, true);
+
+                        if( !empty($result_array['error']) ) {
+                            $this->_error_handle($result);
+                        }
+
+                    }
+
+                }
+
+            }
+
+            $result = $uni->subscribe([ // Donor subscribe
+                'list_ids' => $list_ids,
                 'fields' =>  $donor_fields,
                 'double_optin' => leyka_options()->opt($this->_id.'_donor_confirmation') === '1' ? 4 : 3,
                 'overwrite' => leyka_options()->opt($this->_id.'_donor_overwrite')
             ]);
 
             $result_array = json_decode($result, true);
-            $donation->set_meta('unisender_subscription_response', $result_array);
 
             if( !empty($result_array['error']) ) {
 
-                $error_log = !get_option('leyka_unisender_error_log') ? [] : get_option('leyka_unisender_error_log');
-                $result_array['date'] = date('d.m.Y H:i');
-
-                $error_log[] = json_encode($result_array);
-
-                if(sizeof($error_log) > 10) {
-                    array_shift($error_log);
-                }
-
-                update_option('leyka_unisender_error_log', $error_log, 'no');
+                $this->_error_handle($result, $donation);
+                return false;
 
             }
 
+            $donation->set_meta('unisender_subscription_response', $result_array);
+
+        }
+
+    }
+
+    protected function _error_handle($error_data, $donation = null) {
+
+        $result_array = json_decode($error_data, true);
+        $error_log = !get_option('leyka_unisender_error_log') ? [] : get_option('leyka_unisender_error_log');
+        $result_array['date'] = date('d.m.Y H:i');
+        $error_log[] = json_encode($result_array);
+
+        if(sizeof($error_log) > 10) {
+            array_shift($error_log);
+        }
+
+        update_option('leyka_unisender_error_log', $error_log, 'no');
+
+        if($donation instanceof Leyka_Donation_Base) {
+            $donation->set_meta('unisender_subscription_response', $result_array);
         }
 
     }
@@ -235,7 +343,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
 
         if( !empty($subscription_response['error']) ) {
             echo '<div><b>'.__('Error', 'leyka').': </b>'.$subscription_response['error'].'</div>';
-        } else if( !empty($subscription_response['result']) && !empty($subscription_response['result']['person_id']) ) {
+        } elseif( !empty($subscription_response['result']) && !empty($subscription_response['result']['person_id']) ) {
             echo
                 '<div>
                     <b>'.__('Subscribed user ID', 'leyka').': </b>'.$subscription_response['result']['person_id'].'</br>
@@ -250,18 +358,22 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
 
     public function _load_admin_assets() {
 
-        wp_enqueue_style(
-            $this->_id.'-admin',
-            self::get_base_url().'/assets/css/admin.css',
-            [],
-            defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY ? uniqid() : null
-        );
+        if($this->is_admin_settings_page($this->_id)) {
 
-        wp_enqueue_script(
-            $this->_id.'-admin',
-            self::get_base_url().'/assets/js/admin.js',
-            ['jquery']
-        );
+            wp_enqueue_style(
+                $this->_id.'-admin',
+                self::get_base_url().'/assets/css/admin.css',
+                [],
+                defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY ? uniqid() : null
+            );
+
+            wp_enqueue_script(
+                $this->_id.'-admin',
+                self::get_base_url().'/assets/js/admin.js',
+                ['jquery']
+            );
+
+        }
 
     }
 
