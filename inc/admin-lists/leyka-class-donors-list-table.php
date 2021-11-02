@@ -284,6 +284,8 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             'role__in' => [Leyka_Donor::DONOR_USER_ROLE,],
             'number' => $per_page ? absint($per_page) : -1,
             'paged' => $page_number ? absint($page_number) : false,
+            'orderby' => 'ID',
+            'order' => 'DESC',
         ]);
 
         $donors = [];

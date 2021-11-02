@@ -1136,9 +1136,24 @@ class Leyka extends Leyka_Singleton {
     public static function get_donation_statuses_descriptions() {
         return apply_filters('leyka_donation_statuses_descriptions', [
             'submitted' => _x("Donation attempt was made, but the payment itself wasn't sent.\n\nOr, maybe, the payment was completed, but Leyka wasn't notified of it. If that is the case, you should check if your payment gateway callbacks are set up correctly.", '«Submitted» donation status description', 'leyka'),
-            'funded' => _x('Donation was finished, the funds were made to your account.', '«Completed» donation status description', 'leyka'),
+            'funded' => _x('Donation was finished, the funds were received by your account.', '«Completed» donation status description', 'leyka'),
             'refunded' => _x('Donation funds were returned to the donor.', '«Refunded» donation status description', 'leyka'),
-            'failed' => _x("Donation payment was finished with an error. The funds weren't sent.", '«Failed» donation status description', 'leyka'),
+            'failed' => _x("Donation payment was incomplete due to an error. The funds weren't received.", '«Failed» donation status description', 'leyka'),
+            'trash' => _x('Donation information was deleted.', '«Trash» donation status description', 'leyka'),
+        ]);
+    }
+
+    /**
+     * Retrieve all available donation status descriptions for Donors.
+     *
+     * @return array of status_id => status_description pairs
+     */
+    public static function get_donation_statuses_descriptions_for_donors() {
+        return apply_filters('leyka_donation_statuses_descriptions_for_donors', [
+            'submitted' => _x("Donation attempt was made, but the funds weren't received.\n\nMaybe, the payment wasn't completed, or the receiver's website wasn't notified of it.", '«Submitted» donation status description', 'leyka'),
+            'funded' => _x('Donation was finished, the funds were properly received.', '«Completed» donation status description', 'leyka'),
+            'refunded' => _x('Donation funds were returned to you.', '«Refunded» donation status description', 'leyka'),
+            'failed' => _x("Donation payment was incomplete due to an error. The funds weren't received.", '«Failed» donation status description', 'leyka'),
             'trash' => _x('Donation information was deleted.', '«Trash» donation status description', 'leyka'),
         ]);
     }
@@ -1154,6 +1169,7 @@ class Leyka extends Leyka_Singleton {
 
         $status_names = self::get_donation_statuses();
         $status_descriptions = self::get_donation_statuses_descriptions();
+        $status_descriptions_for_donors = self::get_donation_statuses_descriptions_for_donors();
 
         $status_info = ['id' => $status_id];
 
@@ -1162,6 +1178,9 @@ class Leyka extends Leyka_Singleton {
         }
         if( !empty($status_descriptions[$status_id]) ) {
             $status_info['description'] = $status_descriptions[$status_id];
+        }
+        if( !empty($status_descriptions_for_donors[$status_id]) ) {
+            $status_info['description_for_donors'] = $status_descriptions_for_donors[$status_id];
         }
 
         if( !count($status_info) ) {
