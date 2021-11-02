@@ -13,7 +13,7 @@ $current_user = wp_get_current_user();
 
 if( !$current_user->ID ) {
     wp_die(
-        __('Error: cannot display a page for a given donor.', 'leyka')
+        __('Error: cannot display the page for a given donor.', 'leyka')
         .' '.sprintf(__('Try <a href="%s">logging into the account</a> anew.', 'leyka'), site_url('donor-account/login'))
     );
 }
@@ -54,12 +54,14 @@ try {
 								<h3 class="list-title"><?php _e('Support packages', 'leyka');?></h3>
 								<div class="leyka-ext-support-packages">
 
-								<?php foreach($leyka_ext_sp->get_packages() as $package) {
+								<?php foreach($leyka_ext_sp->get_packages(null, 'asc') as $package) {
+
 								    $leyka_ext_sp_template_tags->show_manage_card($package, [
 									    'is_active' => $leyka_ext_sp->is_package_active($package, $current_user),
 									    'is_activation_available' => $leyka_ext_sp->is_activation_available($package, $current_user),
 									    'campaign_post_permalink' => $campaign_post_permalink,
                                     ]);
+
 								}?>
 
 								</div>

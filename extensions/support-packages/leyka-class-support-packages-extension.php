@@ -304,7 +304,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
             return false;
         }
 
-        return $this->_is_package_active($package, $donor->get_init_recurring_donations(true));
+        return $this->_is_package_active($package, $donor->get_init_recurring_donations());
 
     }
     
@@ -312,7 +312,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
         return count($this->get_packages()) > 0;
     }
 
-    public function get_packages($min_package = null) {
+    public function get_packages($min_package = null, $order_by_amount = false) {
 
         if($this->_packages === null) {
 
@@ -343,6 +343,32 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
 
         } else {
             $result_packages = $this->_packages;
+        }
+
+        if($order_by_amount) {
+
+            if(mb_strtolower($order_by_amount) === 'asc') {
+
+                usort($result_packages, function($package_1, $package_2){
+                    if($package_1->amount_needed == $package_2->amount_needed) {
+                        return 0;
+                    } else {
+                        return $package_1->amount_needed < $package_2->amount_needed ? -1 : 1;
+                    }
+                });
+
+            } else {
+
+                usort($result_packages, function($package_1, $package_2){
+                    if($package_1->amount_needed == $package_2->amount_needed) {
+                        return 0;
+                    } else {
+                        return $package_1->amount_needed > $package_2->amount_needed ? -1 : 1;
+                    }
+                });
+
+            }
+
         }
 
         return $result_packages;
@@ -393,10 +419,19 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
         }
 
         $max_active_package = null;
+        $max_active_package_amount = 0;
         foreach($this->get_packages() as $package) {
-            if($this->_is_package_active($package, $donor->get_init_recurring_donations(true))) {
+
+            if(
+                $this->_is_package_active($package, $donor->get_init_recurring_donations())
+                && $max_active_package_amount < $package->amount_needed
+            ) {
+
                 $max_active_package = $package;
+                $max_active_package_amount = $package->amount_needed;
+
             }
+
         }
 
         return $max_active_package;
@@ -679,43 +714,55 @@ class Leyka_Support_Packages_Template_Tags {
 
     protected function _show_card_data_3rows($package, array $params = []) {
 
-        $is_active = !empty($params['is_active']) && boolval($params['is_active']);
-        
+        $is_active = !empty($params['is_active']) && !!$params['is_active'];
+
         if(empty($params['classes'])) {
             $params['classes'] = [];
         }
-        
+
         if($is_active) {
             $params['classes'][] = 'active';
         }
-        
-        $extra_classes_str = !empty($params['classes']) ? implode(" ", $params['classes']) : '';?>
+
+        $extra_classes_str = !empty($params['classes']) ? implode(' ', $params['classes']) : '';?>
 
         <div class="leyka-ext-sp-card <?php echo $extra_classes_str;?>" data-amount_needed="<?php echo $package->amount_needed;?>">
+
             <div class="leyka-ext-sp-card-row1">
+
                 <div class="leyka-ext-sp-icon">
-                	<?php if(preg_match("/\.svg$/", $package->icon_url)) {?>
-                		<?php if(is_file($package->icon_path)) readfile($package->icon_path);?>
-                	<?php } else {?>
+                	<?php if(preg_match("/\.svg$/", $package->icon_url)) {
+                        if(is_file($package->icon_path)) {
+                            readfile($package->icon_path);
+                        }
+                    } else {?>
                 		<img src="<?php echo $package->icon_url;?>" alt="">
             		<?php }?>
             	</div>
+
                 <div class="leyka-ext-sp-title"><?php echo $package->title;?></div>
+
             </div>
+
             <div class="leyka-ext-sp-card-row2">
-                <div class="leyka-ext-sp-price"><?php echo $package->price;?></div>
+                <div class="leyka-ext-sp-price"><?php echo leyka_format_amount($package->price);?></div>
                 <div class="leyka-ext-sp-currency"><?php echo $package->price_currency;?></div>
             </div>
+
             <div class="leyka-ext-sp-card-row3">
-                <div class="leyka-ext-sp-period"><?php esc_html_e('Per month', 'leyka')?></div>
+
+                <div class="leyka-ext-sp-period"><?php _e('Per month', 'leyka')?></div>
+
                 <div class="leyka-ext-sp-status">
                 	<?php if($is_active) {?>
-                	<span><?php esc_html_e('Current status', 'leyka')?></span>
+                	<span><?php _e('Current status', 'leyka')?></span>
                 	<?php } elseif(!empty($params['campaign_post_permalink']) && !empty($params['is_activation_available']) && $params['is_activation_available']) {?>
-            		<a href="<?php echo $params['campaign_post_permalink'];?>#leyka-activate-package|<?php echo $package->amount_needed;?>" class="leyka-activate-package-link"><?php esc_html_e('Choose', 'leyka')?></a>
+            		<a href="<?php echo $params['campaign_post_permalink'];?>#leyka-activate-package|<?php echo $package->amount_needed;?>" class="leyka-activate-package-link"><?php _e('Choose', 'leyka')?></a>
                 	<?php }?>
                 </div>
+
             </div>
+
         </div>
 
         <?php
