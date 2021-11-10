@@ -14,6 +14,7 @@
 	Anna "foralien" Ladoshkina (webdev@foralien.com)
     Vyacheslav Oleinik (oleinik.v89@gmail.com)
 	Denis Cherniatev (denis.cherniatev@gmail.com)
+    Ion Burdianov (burdianov@gmail.com)
     Marie Borisyonok (pro100mary@gmail.com)
 
  * License: GPLv2 or later
@@ -177,8 +178,8 @@ if( !function_exists('leyka_load_plugin_textdomain') ) {
 }
 add_action('plugins_loaded', 'leyka_load_plugin_textdomain');
 
-register_activation_hook(__FILE__, array('Leyka', 'activate')); // Activation
-register_deactivation_hook(__FILE__, array('Leyka', 'deactivate')); // Deactivate
+register_activation_hook(__FILE__, ['Leyka', 'activate']); // Activation
+register_deactivation_hook(__FILE__, ['Leyka', 'deactivate']); // Deactivate
 
 add_action('init', function(){
     leyka_handle_plugin_update(); // Only if needed

@@ -36,7 +36,23 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
     protected function _set_options_defaults() {
 
         $this->_options = apply_filters('leyka_'.$this->_id.'_extension_options', [
-            // No options for this Extension yet
+            ['section' => [
+                'name' => $this->_id.'-merchandise_library',
+                'title' => __('Donations rewards library', 'leyka'),
+                'is_default_collapsed' => false,
+                'options' => [
+                    'tmp_html_field' => [
+                        'type' => 'html', // Special option type
+                        'title' => 'Test HTML editor field',
+                        'default' => [],
+                    ],
+                    'custom_merchandise_library' => [
+                        'type' => 'custom_merchandise_library', // Special option type
+                        'field_classes' => ['merchandise-settings'],
+                        'default' => [],
+                    ],
+                ],
+            ],],
         ]);
 
     }
@@ -44,86 +60,131 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
     /** Will be called only if the Extension is active. */
     protected function _initialize_active() {
 
-        if(is_admin()) {
+        // Merchandise library custom option field:
+//        add_action('leyka_add_custom_option', function($option_id, Leyka_Options_Controller $options_controller){
+//
+//            if($option_id != 'merchandise_library') {
+//                return;
+//            }
+//
+//            $options_controller->add_option($option_id, 'custom_merchandise_library', [
+//                'type' => 'custom_merchandise_library', // Special option type
+//                'title' => __('Donations rewards library', 'leyka'),
+//                'field_classes' => ['merchandise-settings'],
+//                'default' => [],
+//            ]);
+//
+//        }, 10, 2);
+//
+//        add_filter('leyka_view_options_allocation', function(array $options_allocated){
+//
+//            array_splice($options_allocated, 2, 0, [['section' => [
+//                'name' => 'merchandise_library_settings',
+//                'title' => __('Merchandise library', 'leyka'),
+//                'is_default_collapsed' => true,
+//                'options' => ['merchandise_library',],
+//            ]]]);
+//
+//            return $options_allocated;
+//
+//        });
+        // Merchandise library custom option field - END
 
-            // Campaign metabox:
-            add_action('add_meta_boxes', function(){
 
-                add_meta_box(
-                    Leyka_Campaign_Management::$post_type.'_merchandise',
-                    __('Rewards for donations', 'leyka'),
-                    [$this, 'merchandise_campaign_metabox'],
-                    Leyka_Campaign_Management::$post_type,
-                    'normal',
-                    'low'
-                );
+//        if(is_admin()) {
+//
+//            // Campaign metabox:
+//            add_action('add_meta_boxes', function(){
+//
+//                add_meta_box(
+//                    Leyka_Campaign_Management::$post_type.'_merchandise',
+//                    __('Rewards for donations', 'leyka'),
+//                    [$this, 'merchandise_campaign_metabox'],
+//                    Leyka_Campaign_Management::$post_type,
+//                    'normal',
+//                    'low'
+//                );
+//
+//            });
+//
+//            // Donations admin list column:
+//            add_filter('leyka_admin_donations_columns_names', [$this, '_merchandise_admin_donations_list_column_name']);
+//
+//            add_filter(
+//                'leyka_admin_donation_merchandise_column_content',
+//                [$this, '_merchandise_admin_donations_list_column_content'],
+//                10, 2
+//            );
+//
+//            // Donation edit page:
+//            add_action('leyka_donation_info_data_post_content', [$this, '_merchandise_admin_donation_info']);
+//
+//        }
 
-            });
-
-            // Donations admin list column:
-            add_filter('leyka_admin_donations_columns_names', [$this, '_merchandise_admin_donations_list_column_name']);
-
-            add_filter(
-                'leyka_admin_donation_merchandise_column_content',
-                [$this, '_merchandise_admin_donations_list_column_content'],
-                10, 2
-            );
-
-            // Donation edit page:
-            add_action('leyka_donation_info_data_post_content', [$this, '_merchandise_admin_donation_info']);
-
-        }
-
+        // OLD (V.1) MERCH CODE:
         // Campaign merchandise data:
 
-        // To initialize merchandise data as Campaign meta on object construction:
-        add_filter('leyka_campaign_constructor_meta', [$this, '_merchandise_campaign_data_initializing'], 10, 2);
-
-        // To get/set merchandise settings from Campaign object:
-        add_filter('leyka_get_unknown_campaign_field', [$this, '_merchandise_campaign_data_get'], 10, 3);
-        add_action('leyka_set_unknown_campaign_field', [$this, '_merchandise_campaign_data_set'], 10, 3);
-
-        // To save merchandise data on Campaign saving:
-        add_action('leyka_campaign_data_after_saving', [$this, '_merchandise_campaign_data_saving'], 10, 2);
-
-        // Campaign merchandise data - END
-
-        // Donation merchandise data:
-
-        // To initialize merchandise data as Donation meta on object construction:
-        add_filter('leyka_donation_constructor_meta', [$this, '_merchandise_donation_data_initializing'], 10, 2);
-
-        // To get/set merchandise data from Donation object:
-        add_filter('leyka_get_unknown_donation_field', [$this, '_merchandise_donation_data_get'], 10, 3);
-        add_action('leyka_set_unknown_donation_field', [$this, '_merchandise_donation_data_set'], 10, 3);
-
-        // To add merchandise data for new Donations:
-        add_filter('leyka_new_donation_specific_data', [$this, '_merchandise_new_donation_data'], 10, 3);
-
-        // To add merchandise-related placeholders to admin notifications emails:
-        add_filter('leyka_email_manager_notification_placeholders', [$this, '_merchandise_manager_emails_placeholders'], 10, 1);
-        add_filter(
-            'leyka_email_manager_notification_placeholders_values',
-            [$this, '_merchandise_manager_emails_placeholders_values'],
-            10, 3
-        );
-        add_filter('leyka_email_placeholders_help_list_content', [$this, '_merchandise_emails_placeholders_help_list']);
-
-        add_filter('leyka_donations_export_headers', [$this, '_merchandise_donations_export_headers']);
-        add_filter('leyka_donations_export_line', [$this, '_merchandise_donations_export_line'], 1, 2);
-
-        // Donation merchandise data - END
-
-        add_action('wp_enqueue_scripts', [$this, 'load_public_scripts']);
-
-        // Add the merchandise block to public Donation forms:
-        add_action('leyka_template_star_after_amount', [$this, 'display_merchandise_field_star'], 2, 10);
-//        add_action('leyka_template_need_help_after_amount', [$this, 'display_merchandise_field_need_help'], 2, 10);
+//        // To initialize merchandise data as Campaign meta on object construction:
+//        add_filter('leyka_campaign_constructor_meta', [$this, '_merchandise_campaign_data_initializing'], 10, 2);
+//
+//        // To get/set merchandise settings from Campaign object:
+//        add_filter('leyka_get_unknown_campaign_field', [$this, '_merchandise_campaign_data_get'], 10, 3);
+//        add_action('leyka_set_unknown_campaign_field', [$this, '_merchandise_campaign_data_set'], 10, 3);
+//
+//        // To save merchandise data on Campaign saving:
+//        add_action('leyka_campaign_data_after_saving', [$this, '_merchandise_campaign_data_saving'], 10, 2);
+//
+//        // Campaign merchandise data - END
+//
+//        // Donation merchandise data:
+//
+//        // To initialize merchandise data as Donation meta on object construction:
+//        add_filter('leyka_donation_constructor_meta', [$this, '_merchandise_donation_data_initializing'], 10, 2);
+//
+//        // To get/set merchandise data from Donation object:
+//        add_filter('leyka_get_unknown_donation_field', [$this, '_merchandise_donation_data_get'], 10, 3);
+//        add_action('leyka_set_unknown_donation_field', [$this, '_merchandise_donation_data_set'], 10, 3);
+//
+//        // To add merchandise data for new Donations:
+//        add_filter('leyka_new_donation_specific_data', [$this, '_merchandise_new_donation_data'], 10, 3);
+//
+//        // To add merchandise-related placeholders to admin notifications emails:
+//        add_filter('leyka_email_manager_notification_placeholders', [$this, '_merchandise_manager_emails_placeholders'], 10, 1);
+//        add_filter(
+//            'leyka_email_manager_notification_placeholders_values',
+//            [$this, '_merchandise_manager_emails_placeholders_values'],
+//            10, 3
+//        );
+//        add_filter('leyka_email_placeholders_help_list_content', [$this, '_merchandise_emails_placeholders_help_list']);
+//
+//        add_filter('leyka_donations_export_headers', [$this, '_merchandise_donations_export_headers']);
+//        add_filter('leyka_donations_export_line', [$this, '_merchandise_donations_export_line'], 1, 2);
+//
+//        // Donation merchandise data - END
+//
+//        add_action('wp_enqueue_scripts', [$this, 'load_public_scripts']);
+//
+//        // Add the merchandise block to public Donation forms:
+//        add_action('leyka_template_star_after_amount', [$this, 'display_merchandise_field_star'], 2, 10);
+//        add_action('leyka_template_need_help_after_amount', [$this, 'display_merchandise_field_need_help'], 2, 10); // TODO DON'T UNCOMMENT THIS LINE
 
     }
 
     /** Will be called everytime the Extension is loading into the plugin (i.e. always). */
     protected function _initialize_always() {
+
+        add_action('admin_enqueue_scripts', [$this, 'load_admin_scripts']);
+
+    }
+
+    public function load_admin_scripts() {
+
+        if( !Leyka_Extension::is_admin_settings_page($this->_id) ) { // Extension CSS & JS is only for admin settings page
+            return;
+        }
+
+        wp_enqueue_editor();
+
     }
 
     public function load_public_scripts() {

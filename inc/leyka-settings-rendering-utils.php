@@ -1181,6 +1181,198 @@ function leyka_save_additional_fields_library_settings() {
 }
 // [Special field] Common additional donation form fields option - END
 
+// [Special field] Common Donor merchandise/rewards fields option:
+add_action('leyka_render_custom_merchandise_library', 'leyka_render_merchandise_library_settings', 10, 2);
+function leyka_render_merchandise_library_settings($option_id, $data = []){
+
+    function leyka_merchandise_item_html($is_template = false, $placeholders = []) {
+
+        $placeholders = wp_parse_args($placeholders, [
+            'id' => '',
+            'box_title' => __('New reward', 'leyka'),
+            'title' => '',
+            'description' => false,
+            'donation_amount_needed' => 0,
+            'thumbnail' => false,
+        ]);
+
+        $_COOKIE['leyka-merchandise-boxes-closed'] = empty($_COOKIE['leyka-merchandise-boxes-closed']) ?
+            [] : json_decode(stripslashes('[\"someline\"]'));?>
+
+        <div id="<?php echo $is_template || !$placeholders['id'] ? 'item-'.leyka_get_random_string(4) : $placeholders['id'];?>" class="multi-valued-item-box field-box <?php echo $is_template ? 'item-template' : '';?> <?php echo !$is_template && !empty($_COOKIE['leyka-merchandise-boxes-closed']) && !empty($placeholders['id']) && in_array($placeholders['id'], $_COOKIE['leyka-merchandise-boxes-closed']) ? 'closed' : '';?>" style="<?php echo $is_template ? 'display: none;' : '';?>">
+
+            <h3 class="item-box-title ui-sortable-handle">
+                <span class="draggable"></span>
+                <span class="title" data-empty-box-title="<?php _e('New reward', 'leyka');?>">
+                    <?php echo esc_html($placeholders['box_title']);?>
+                </span>
+            </h3>
+
+            <div class="box-content">
+
+                <div class="single-line">
+
+                    <div class="option-block type-text">
+                        <div class="leyka-select-field-wrapper">
+                            <?php leyka_render_text_field('merchandise_title', [
+                                'title' => __('Reward title', 'leyka'),
+                                'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('A cool hat with our logo', 'leyka')),
+                                'value' => $placeholders['title'],
+                                'required' => true,
+                            ]);?>
+                        </div>
+                        <div class="field-errors"></div>
+                    </div>
+
+                </div>
+
+                <div class="single-line">
+
+                    <div class="option-block type-number">
+                        <div class="leyka-number-field-wrapper">
+                            <?php leyka_render_number_field('merchandise_donation_amount_needed', [
+                                'title' => sprintf(
+                                    __('Donations amount needed for the reward, %s', 'leyka'),
+                                    leyka_get_currency_label()
+                                ),
+                                'required' => true,
+                                'value' => absint($placeholders['donation_amount_needed']) ? : 1000,
+                                'length' => 6,
+                                'min' => 1,
+                                'max' => 9999999,
+                            ]);?>
+                        </div>
+                        <div class="field-errors"></div>
+                    </div>
+
+                    <div class="settings-block option-block type-file">
+                        <?php leyka_render_file_field('merchandise_thumbnail', [
+                            'upload_label' => __('Load picture', 'leyka'),
+                            'required' => false,
+                            'value' => $placeholders['thumbnail'],
+                        ]);?>
+                        <div class="field-errors"></div>
+                    </div>
+
+                </div>
+
+                <div class="single-line">
+
+                    <div class="settings-block option-block type-html">
+                        <?php leyka_render_textarea_field('merchandise_description', [
+                            'title' => __('Description text', 'leyka'),
+                            'value' => $placeholders['description'],
+                            'required' => false,
+                        ]);?>
+                        <div class="field-errors"></div>
+                    </div>
+
+                </div>
+
+                <ul class="notes-and-errors">
+                </ul>
+
+                <div class="box-footer">
+                    <div class="remove-campaign-merchandise delete-item">
+                        <?php _e('Remove the reward', 'leyka');?>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    <?php }
+
+    $option_id = mb_stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
+    $data = $data ? : leyka_options()->get_info_of($option_id);?>
+
+    <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-<?php echo $option_id;?>-field-wrapper multi-valued-items-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) ? '' : implode(' ', $data['field_classes']);?>">
+
+        <div class="leyka-main-multi-items leyka-main-merchandise" data-max-items="" data-min-items="0" data-items-cookie-name="leyka-merchandise-boxes-closed" data-item-inputs-names-prefix="leyka_merchandise_" data-show-new-item-if-empty="1">
+
+            <?php $data['value'] = empty($data['value']) || !is_array($data['value']) ?
+                leyka_options()->opt('merchandise_library') :
+                $data['value'];
+
+            // Display existing common fields (the assoc. array keys order is important):
+            if($data['value'] && is_array($data['value'])) {
+                foreach($data['value'] as $item_id => $item) {
+                    leyka_merchandise_item_html(false, [
+                        'id' => $item_id,
+                        'box_title' => $item['title'],
+                        'title' => $item['title'],
+                        'description' => empty($item['description']) ? '' : $item['description'],
+                        'donation_amount_needed' => $item['donation_amount_needed'],
+                        'thumbnail' => $item['thumbnail'],
+                        'merchandise_campaigns' => empty($item['campaigns']) ? [] : $item['campaigns'],
+                        'merchandise_for_all_campaigns' => !empty($item['for_all_campaigns']),
+                        'merchandise_campaigns_exceptions' => empty($item['campaigns_exceptions']) ?
+                            [] : $item['campaigns_exceptions'],
+                    ]);
+                }
+            }?>
+
+        </div>
+
+        <?php leyka_merchandise_item_html(true); // Additional field box template ?>
+
+        <div class="add-field add-item bottom"><?php _e('Add reward', 'leyka');?></div>
+
+        <input type="hidden" class="leyka-items-options" name="leyka_merchandise_library" value="">
+
+    </div>
+
+    <?php
+}
+
+add_action('leyka_save_custom_option-merchandise_library', 'leyka_save_merchandise_library_settings');
+function leyka_save_merchandise_library_settings() { // TODO MERCH V.2
+
+//    $_POST['leyka_additional_donation_form_fields_library'] = json_decode(
+//        urldecode($_POST['leyka_additional_donation_form_fields_library'])
+//    );
+//    $result = [];
+//
+//    foreach($_POST['leyka_additional_donation_form_fields_library'] as $field) {
+//
+//        $field->id = mb_stripos($field->id, 'item-') === false || empty($field->title) ?
+//            $field->id :
+//            trim(preg_replace('~[^-a-z0-9_]+~u', '-', mb_strtolower(leyka_cyr2lat($field->title))), '-');
+//
+//        $result[$field->id] = [
+//            'type' => $field->type,
+//            'title' => $field->title,
+//            'description' => $field->description,
+//            'is_required' => !empty($field->is_required),
+//            'campaigns' => $field->campaigns,
+//            'for_all_campaigns' => $field->for_all_campaigns,
+//            'campaigns_exceptions' => $field->campaigns_exceptions,
+//        ];
+//
+//        if($field->campaigns && !$field->for_all_campaigns) {
+//            foreach($field->campaigns as $campaign_id) { // Add Field 2 Campaign links to selected Campaigns
+//
+//                $campaign = new Leyka_Campaign($campaign_id);
+//                $campaign_additional_fields = $campaign->additional_fields_settings;
+//
+//                if(in_array($field->id, $campaign_additional_fields)) { // Field is already in Campaign fields list
+//                    continue;
+//                }
+//
+//                $campaign_additional_fields[] = $field->id;
+//                $campaign->additional_fields_settings = $campaign_additional_fields;
+//
+//            }
+//        }
+//
+//    }
+//
+//    leyka_options()->opt('additional_donation_form_fields_library', $result);
+
+}
+// [Special field] Common Donor merchandise/rewards fields option - END
+
 // [Special field] Support packages extension - packages list field:
 /** @todo Move to somewhere in the Support_Packages Extension */
 add_action('leyka_render_custom_support_packages_settings', 'leyka_render_support_packages_settings', 10, 2);
