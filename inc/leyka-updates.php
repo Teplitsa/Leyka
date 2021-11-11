@@ -222,10 +222,6 @@ function leyka_handle_plugin_update() {
             );
         }
 
-    }
-
-    if($leyka_last_ver && version_compare($leyka_last_ver, '3.21', '<=')) {
-
         // Chronopay RUR -> RUB options IDs transition:
         $tmp_value = Leyka_Options_Controller::get_option_value('chronopay_card_product_id_rur');
         if($tmp_value) {

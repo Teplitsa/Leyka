@@ -782,7 +782,11 @@ class Leyka_Donations_Separated extends Leyka_Donations {
             if($params['recurring_active']) {
                 $params['meta'][] = ['key' => 'recurring_active', 'value' => 1,];
             } else {
-                $params['meta'][] = ['key' => 'recurring_active', 'compare' => 'NOT EXISTS',];
+                $params['meta'][] = [
+                    'relation' => 'OR',
+                    ['key' => 'recurring_active', 'compare' => 'NOT EXISTS',],
+                    ['key' => 'recurring_active', 'value' => false,]
+                ];
             }
 
         }
