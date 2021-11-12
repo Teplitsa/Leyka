@@ -18,11 +18,12 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
             $this->_id
         );
 
-        $this->_docs_link = 'https://leyka.te-st.ru/docs/podklyuchenie-demirbank/';
+        // TODO Добавить ссылку на доки по подключению и ссылку регистрации
+        //$this->_docs_link = 'https://leyka.te-st.ru/docs/podklyuchenie-demirbank/';
         //$this->_registration_link = '//dashboard.demirbank.com/register';
         $this->_has_wizard = false;
 
-        $this->_min_commission = '2.2';
+        $this->_min_commission = '2';
         $this->_receiver_types = ['legal'];
         $this->_may_support_recurring = false;
         $this->_countries = ['kg'];
@@ -40,16 +41,14 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
                 'type' => 'text',
                 'title' => __('Client ID', 'leyka'),
                 'comment' => __('Please, enter your Demirbank client (merchant) ID here.', 'leyka'),
-                'required' => true,
-                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'pk_test_51IybR4JyYVP3cRIfBBSIGvoolI...'),
+                'required' => true
             ],
             'demirbank_store_key' => [
                 'type' => 'text',
                 'title' => __('Store key', 'leyka'),
                 'comment' => __('Please, enter your Demirbank store key here.', 'leyka'),
                 'is_password' => true,
-                'required' => true,
-                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'sk_test_51IybR4JyYVP3cRIf5zbSzovieA...'),
+                'required' => true
             ]
         ];
 
@@ -66,33 +65,34 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
         }
     }
 
-    public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
-
-    }
+    public function process_form($gateway_id, $pm_id, $donation_id, $form_data) { }
 
     public function submission_redirect_url($current_url, $pm_id) {
-        return 'https://testvpos.asseco-see.com.tr/fim/est3dteststore';
+        return 'https://entegrasyon.asseco-see.com.tr/fim/est3Dgate';
     }
 
     public function submission_form_data($form_data, $pm_id, $donation_id) {
 
         $data = [
-            'clientid' => leyka_options()->opt('demirbank_client_id'),
-            'storekey' => leyka_options()->opt('demirbank_store_key'),
+            'clientid' => str_replace(' ', '', leyka_options()->opt('demirbank_client_id')),
+            'oid' => '',
             'amount' => $form_data['leyka_donation_amount'],
             'islemtipi' => 'Auth',
             'taksit' => '',
-            'oid' => '',
+            'storetype' => '3d_Pay_Hosting',
             'okUrl' => leyka_get_success_page_url(),
             'failUrl' => leyka_get_failure_page_url(),
+            'callbackUrl' => get_site_url().'/leyka/service/'.$this->_id.'/',
+            'trantype'=> 'Auth',
+            'instalment' => '',
             'rnd' => microtime(),
-            'storetype' => '3d_Pay_Hosting',
-            'lang' => 'ru',
+            'lang' => 'en',
             'currency' => '417',
-            'callbackUrl' => get_site_url().'/leyka/service/'.$this->_id.'/'
+            'refreshtime' => 5
         ];
-        $hashstr = $data['clientid'].$data['oid'].$data['amount'].$data['okUrl'].$data['failUrl'] .$data['islemtipi'].$data['taksit'].$data['rnd'].$data['storekey'];
-        $data['hash'] = base64_encode(pack('H*',sha1($hashstr)));
+        $storekey = str_replace(' ', '', leyka_options()->opt('demirbank_store_key'));
+        $hash_str = $data['clientid'].$data['oid'].$data['amount'].$data['okUrl'].$data['failUrl'] .$data['islemtipi'].$data['taksit'].$data['rnd'].$data['callbackUrl'].$storekey;
+        $data['hash'] = base64_encode(pack('H*',sha1($hash_str)));
 
         return $data;
 
@@ -100,11 +100,61 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
 
     public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {
 
-        return [];
+        if( !$donation->gateway_response ) {
+            return [];
+        }
+
+        $vars = json_decode($donation->gateway_response, true);
+
+        if( !$vars || !is_array($vars) ) {
+            return [];
+        }
+
+        $vars_final[__('Transaction ID:', 'leyka')] = $vars['TransId'];
+        $vars_final[__('Response:', 'leyka')] = $vars['Response'];
+        $vars_final[__('Last event date:', 'leyka')] = date('d.m.Y H:i', strtotime($vars['EXTRA_TRXDATE']));
+
+        if($vars['ProcReturnCode'] !== '00') {
+            $vars_final[__('Donation failure reason:', 'leyka')] = $vars['ErrMsg'];
+        }
+
+        return $vars_final;
+
+    }
+
+    protected function _is_callback_hash_correct($request) {
+
+        $hash_str = $request['clientid'].$request['oid'].$request['AuthCode'].$request['ProcReturnCode']
+            .$request['Response'].$request['mdStatus'].$request['eci'].$request['cavv'].$request['md'].$request['rnd'];
+        $hash = base64_encode(pack('H*',sha1($hash_str)));
+
+        return $hash === $request['HASH'];
 
     }
 
     public function _handle_service_calls($call_type = '') {
+
+        //TODO Вернуть проверку когда гейт проверит формирование своего хэша. Сейчас он не сходится с их же схемой.
+        /*
+        if(!$this->_is_callback_hash_correct($_POST)) {
+            $message = __("This message has been sent because a call to your Demirbank callback function was made with wrong hash parameter. This could mean someone is trying to hack your payment website. The details of the call are below.", 'leyka')."\n\r\n\r".
+                "POST:\n\r".print_r($_POST, true)."\n\r\n\r".
+                "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
+
+            wp_mail(get_option('admin_email'), __('Demirbank callback hash check failed!', 'leyka'), $message);
+        }
+        */
+
+        $donation = Leyka_Donations::get_instance()->get_donation((int)$_POST['donation_id']);
+
+        if($_POST['ProcReturnCode'] === '00') {
+            $donation->status = 'funded';
+        } else {
+            $donation->status = 'failed';
+        }
+
+        $donation->add_gateway_response(json_encode($_POST));
+
         exit(200);
     }
 
@@ -144,7 +194,7 @@ class Leyka_Demirbank_Card extends Leyka_Payment_Method {
     }
 
     public function has_recurring_support() {
-        return 'passive';
+        return false;
     }
 
 }
