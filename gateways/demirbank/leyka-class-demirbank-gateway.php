@@ -148,7 +148,10 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
         $donation = Leyka_Donations::get_instance()->get_donation((int)$_POST['donation_id']);
 
         if($_POST['ProcReturnCode'] === '00') {
+
             $donation->status = 'funded';
+            Leyka_Donation_Management::send_all_emails($donation);
+
         } else {
             $donation->status = 'failed';
         }
