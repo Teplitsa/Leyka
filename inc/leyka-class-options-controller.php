@@ -388,25 +388,26 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
         $option_id = $this->_get_filtered_option_id($option_id);
         
-        $val = false;
+        $value = false;
         if(leyka_options()->is_template_option($option_id)) {
 
-            $template_id = $template_id ? $template_id : leyka_remembered_data('template_id');
-            
+            $template_id = $template_id ? : leyka_remembered_data('template_id');
+
             if( !$template_id ) {
 
                 $current_template_data = leyka_get_current_template_data();
-                $template_id = empty($current_template_data['id']) ? null : $current_template_data['id'];
+                $template_id = empty($current_template_data['id']) ?
+                    $this->get_value('donation_form_template') : $current_template_data['id'];
 
             }
 
             if($template_id) {
-                $val = leyka_options()->get_template_option($option_id, $template_id);
+                $value = leyka_options()->get_template_option($option_id, $template_id);
             }
 
         }
 
-        return $val === false ? $this->opt_safe($option_id) : $val;
+        return $value === false ? $this->opt_safe($option_id) : $value;
 
     }
 
