@@ -1033,7 +1033,7 @@ function leyka_get_current_template_data($campaign = null, $template = null, $is
 
     $template = leyka()->get_template($template, !!$is_service);
 
-    return $template ? $template : false;
+    return $template ? : false;
 
 }
 

@@ -72,6 +72,8 @@ PHP version required: 5.6+
 
 [FAQ section](//leyka.te-st.ru/faq/) can be found at the plugin website. Also you can address our development and support team by [creating a project issue n Github](//github.com/Teplitsa/Leyka/issues/new/).
 
+For technical support questions, please, use the [plugin support email](maillto:help@te-st.ru) or the official [Telegram chat](https://t.me/leykadev).
+
 == Screenshots ==
 
 1. "Campaign card" widget example
