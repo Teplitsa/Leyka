@@ -687,6 +687,56 @@ jQuery(document).ready(function($){
         }
         // Refresh the main items option value before submit - END
 
+        // Campaigns select fields:
+
+        // Init all existing campaigns list fields on page load:
+        $items_wrapper.find('input.leyka-campaigns-selector').each(function(){
+            $.leyka_admin_campaigns_select($(this));
+        });
+
+        // Init campaign list for a new additional field:
+        $add_item_button.on('click.leyka', function(){
+
+            $.leyka_admin_campaigns_select(
+                $items_wrapper
+                    .find('.field-box:last-child .autocomplete-select[name="campaigns\[\]"]')
+                    .siblings('input.leyka-campaigns-selector')
+            );
+
+            $.leyka_admin_campaigns_select(
+                $items_wrapper
+                    .find('.field-box:last-child .autocomplete-select[name="campaigns_exceptions\[\]"]')
+                    .siblings('input.leyka-campaigns-selector')
+            );
+
+        });
+
+        // Hide/show the campaigns list field when "for all Ccampaigns" checkbox is checked/unchecked:
+        $items_wrapper.on('change.leyka', '.item-for-all-campaigns input:checkbox', function(){
+
+            let $checkbox = $(this),
+                $campaigns_list_field_wrapper = $checkbox.parents('.single-line').siblings('.single-line.campaigns-list-select'),
+                $campaigns_exceptions_list_field_wrapper = $checkbox
+                    .parents('.single-line')
+                    .siblings('.single-line.campaigns-exceptions-list-select');
+
+            if($checkbox.prop('checked')) {
+
+                $campaigns_list_field_wrapper.hide();
+                $campaigns_exceptions_list_field_wrapper.show();
+
+            } else {
+
+                $campaigns_list_field_wrapper.show();
+                $campaigns_exceptions_list_field_wrapper.hide();
+
+            }
+
+        });
+        // Hide/show the campaigns list field - END
+
+        // Campaigns select fields - END
+
     });
     // Multi-valued item complex fields - END
 

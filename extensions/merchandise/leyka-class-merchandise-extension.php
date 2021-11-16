@@ -41,12 +41,12 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
                 'title' => __('Donations rewards library', 'leyka'),
                 'is_default_collapsed' => false,
                 'options' => [
-                    'tmp_html_field' => [
-                        'type' => 'html', // Special option type
-                        'title' => 'Test HTML editor field',
-                        'default' => [],
-                    ],
-                    'custom_merchandise_library' => [
+//                    'tmp_html_field' => [
+//                        'type' => 'html', // Special option type
+//                        'title' => 'Test HTML editor field',
+//                        'default' => [],
+//                    ],
+                    'merchandise_library' => [
                         'type' => 'custom_merchandise_library', // Special option type
                         'field_classes' => ['merchandise-settings'],
                         'default' => [],
@@ -121,16 +121,15 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 //
 //        }
 
-        // OLD (V.1) MERCH CODE:
         // Campaign merchandise data:
 
-//        // To initialize merchandise data as Campaign meta on object construction:
-//        add_filter('leyka_campaign_constructor_meta', [$this, '_merchandise_campaign_data_initializing'], 10, 2);
-//
-//        // To get/set merchandise settings from Campaign object:
-//        add_filter('leyka_get_unknown_campaign_field', [$this, '_merchandise_campaign_data_get'], 10, 3);
-//        add_action('leyka_set_unknown_campaign_field', [$this, '_merchandise_campaign_data_set'], 10, 3);
-//
+        // To initialize merchandise data as Campaign meta on object construction:
+        add_filter('leyka_campaign_constructor_meta', [$this, '_merchandise_campaign_data_initializing'], 10, 2);
+
+        // To get/set merchandise settings from Campaign object:
+        add_filter('leyka_get_unknown_campaign_field', [$this, '_merchandise_campaign_data_get'], 10, 3);
+        add_action('leyka_set_unknown_campaign_field', [$this, '_merchandise_campaign_data_set'], 10, 3);
+
 //        // To save merchandise data on Campaign saving:
 //        add_action('leyka_campaign_data_after_saving', [$this, '_merchandise_campaign_data_saving'], 10, 2);
 //
@@ -138,35 +137,35 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 //
 //        // Donation merchandise data:
 //
-//        // To initialize merchandise data as Donation meta on object construction:
-//        add_filter('leyka_donation_constructor_meta', [$this, '_merchandise_donation_data_initializing'], 10, 2);
-//
-//        // To get/set merchandise data from Donation object:
-//        add_filter('leyka_get_unknown_donation_field', [$this, '_merchandise_donation_data_get'], 10, 3);
-//        add_action('leyka_set_unknown_donation_field', [$this, '_merchandise_donation_data_set'], 10, 3);
-//
-//        // To add merchandise data for new Donations:
-//        add_filter('leyka_new_donation_specific_data', [$this, '_merchandise_new_donation_data'], 10, 3);
-//
-//        // To add merchandise-related placeholders to admin notifications emails:
-//        add_filter('leyka_email_manager_notification_placeholders', [$this, '_merchandise_manager_emails_placeholders'], 10, 1);
-//        add_filter(
-//            'leyka_email_manager_notification_placeholders_values',
-//            [$this, '_merchandise_manager_emails_placeholders_values'],
-//            10, 3
-//        );
-//        add_filter('leyka_email_placeholders_help_list_content', [$this, '_merchandise_emails_placeholders_help_list']);
-//
-//        add_filter('leyka_donations_export_headers', [$this, '_merchandise_donations_export_headers']);
-//        add_filter('leyka_donations_export_line', [$this, '_merchandise_donations_export_line'], 1, 2);
-//
-//        // Donation merchandise data - END
-//
-//        add_action('wp_enqueue_scripts', [$this, 'load_public_scripts']);
-//
-//        // Add the merchandise block to public Donation forms:
-//        add_action('leyka_template_star_after_amount', [$this, 'display_merchandise_field_star'], 2, 10);
-//        add_action('leyka_template_need_help_after_amount', [$this, 'display_merchandise_field_need_help'], 2, 10); // TODO DON'T UNCOMMENT THIS LINE
+        // To initialize merchandise data as Donation meta on object construction:
+        add_filter('leyka_donation_constructor_meta', [$this, '_merchandise_donation_data_initializing'], 10, 2);
+
+        // To get/set merchandise data from Donation object:
+        add_filter('leyka_get_unknown_donation_field', [$this, '_merchandise_donation_data_get'], 10, 3);
+        add_action('leyka_set_unknown_donation_field', [$this, '_merchandise_donation_data_set'], 10, 3);
+
+        // To add merchandise data for new Donations:
+        add_filter('leyka_new_donation_specific_data', [$this, '_merchandise_new_donation_data'], 10, 3);
+
+        // To add merchandise-related placeholders to admin notifications emails:
+        add_filter('leyka_email_manager_notification_placeholders', [$this, '_merchandise_manager_emails_placeholders'], 10, 1);
+        add_filter(
+            'leyka_email_manager_notification_placeholders_values',
+            [$this, '_merchandise_manager_emails_placeholders_values'],
+            10, 3
+        );
+        add_filter('leyka_email_placeholders_help_list_content', [$this, '_merchandise_emails_placeholders_help_list']);
+
+        add_filter('leyka_donations_export_headers', [$this, '_merchandise_donations_export_headers']);
+        add_filter('leyka_donations_export_line', [$this, '_merchandise_donations_export_line'], 1, 2);
+
+        // Donation merchandise data - END
+
+        add_action('wp_enqueue_scripts', [$this, 'load_public_scripts']);
+
+        // Add the merchandise block to public Donation forms:
+        add_action('leyka_template_star_after_amount', [$this, 'display_merchandise_field_star'], 2, 10);
+//        add_action('leyka_template_need_help_after_amount', [$this, 'display_merchandise_field_need_help'], 2, 10); // TODO DON'T UNCOMMENT THIS LINE UNTIL THE NEED HELP TEMPLATE IS DEBUGGED FOR THE USE OF MERCHANDISE
 
     }
 
