@@ -31,6 +31,8 @@ abstract class Leyka_Donation_Base {
 
         $params['force_insert'] = !empty($params['force_insert']);
 
+        $params['is_test_mode'] = !empty($params['is_test_mode']) ? $params['is_test_mode'] : false;
+
         $params['amount'] = empty($params['amount']) ? leyka_pf_get_amount_value() : round((float)$params['amount'], 2);
         $params['amount'] = $params['amount'] ? $params['amount'] : 0.0;
         if( !$params['amount'] && !$params['force_insert'] ) {

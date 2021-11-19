@@ -1577,6 +1577,16 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         </div>
 
+        <?php $is_test_mode = $donation ? $donation->is_test_mode : false;
+
+        if($is_test_mode) {?>
+
+        <div class="leyka-status-section is-test-mode">
+            <div>Тестовое пожертвование</div>
+        </div>
+
+        <?php } ?>
+
 	<?php }
 
     public static function emails_status_metabox() {

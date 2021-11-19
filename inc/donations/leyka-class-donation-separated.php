@@ -31,6 +31,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             'amount_total_in_main_currency' => $params['amount_total_in_main_currency'],
             'donor_name' => $params['donor_name'] ? $params['donor_name'] : '',
             'donor_email' => $params['donor_email'] ? $params['donor_email'] : '',
+            'is_test_mode' => $params['is_test_mode']
         ];
         $new_donation_data_placeholders = ['%s', '%s', '%s', '%s', '%s', '%s', '%f', '%f', '%f', '%f', '%s', '%s',];
 
@@ -210,6 +211,9 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'id':
             case 'ID':
                 return $this->_id;
+
+            case 'is_test_mode':
+                return $this->get_meta('is_test_mode');
 
             case 'campaign_id':
                 return $this->_main_data->campaign_id;

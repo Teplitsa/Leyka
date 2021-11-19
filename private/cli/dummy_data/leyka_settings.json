@@ -1,0 +1,107 @@
+[
+  {
+    "title": "leyka_org_full_name",
+    "value": "Фонд помощи бездомным животным \"Общий Барсик\"",
+    "translate": false
+  },
+  {
+    "title": "leyka_org_face_fio_ip",
+    "value": "Котов Аристарх Евграфович",
+    "translate": false
+  },
+  {
+    "title": "leyka_org_face_fio_rp",
+    "value": "Собакин Евлампий Мстиславович",
+    "translate": false
+  },
+  {
+    "title": "leyka_org_face_position",
+    "value": "Директор",
+    "translate": false
+  },
+  {
+    "title": "leyka_org_address",
+    "value": "127001, Россия, Москва, ул. Ленина, д.1, оф.5",
+    "translate": false
+  },
+  {
+    "title": "leyka_org_state_reg_number",
+    "value": "1134567890123",
+    "translate": false
+  },
+  {
+    "title": "leyka_org_kpp",
+    "value": "223456789",
+    "translate": false
+  },
+  {
+    "title": "leyka_org_inn",
+    "value": "333456789012",
+    "translate": false
+  },
+  {
+    "title": "leyka_org_bank_account",
+    "value": "44445678901234567890",
+    "translate": false
+  },
+  {
+    "title": "leyka_org_bank_name",
+    "value": "МЯО Звербанк",
+    "translate": false
+  },
+  {
+    "title": "leyka_org_bank_bic",
+    "value": "555556789",
+    "translate": false
+  },
+  {
+    "title": "leyka_org_bank_corr_account",
+    "value": "66666678901234567890",
+    "translate": false
+  },
+  {
+    "title": "leyka_donation_form_template",
+    "value": "revo",
+    "translate": false
+  },
+  {
+    "title": "leyka_donation_sum_field_type",
+    "value": "mixed",
+    "translate": false
+  },
+  {
+    "title": "leyka_scale_widget_place",
+    "value": "-",
+    "translate": false
+  },
+  {
+    "title": "leyka_donations_history_under_forms",
+    "value": 0,
+    "translate": false
+  },
+  {
+    "title": "leyka_show_campaign_sharing",
+    "value": 0,
+    "translate": false
+  },
+  {
+    "title": "leyka_agree_to_terms_needed",
+    "value": 1,
+    "translate": false
+  },
+  {
+    "title": "leyka_terms_agreed_by_default",
+    "value": 1,
+    "translate": false
+  },
+  {
+    "title": "leyka_agree_to_terms_text_text_part",
+    "value": "I accept",
+    "translate": true
+  },
+  {
+    "title": "leyka_agree_to_terms_text_link_part",
+    "value": "Terms of Service",
+    "translate": true
+  }
+]

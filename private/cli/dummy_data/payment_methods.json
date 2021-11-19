@@ -1,0 +1,22 @@
+[
+  {
+    "gateway_id": "yandex",
+    "title": "yandex_money"
+  },
+  {
+    "gateway_id": "mixplat",
+    "title": "sms"
+  },
+  {
+    "gateway_id": "quittance",
+    "title": "bank_order"
+  },
+  {
+    "gateway_id": "text",
+    "title": "text_box"
+  },
+  {
+    "gateway_id": "cp",
+    "title": "card"
+  }
+]

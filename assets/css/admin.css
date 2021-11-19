@@ -5974,6 +5974,17 @@ ul.ui-autocomplete.ui-menu li.ui-menu-item:hover {
   font-size: 12px;
 }
 
+.leyka-admin-donation-info .leyka-status-section.is-test-mode {
+    overflow: hidden;
+    background: #f5f5f5;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    margin: 0 -12px;
+    padding: 5px 12px;
+    text-align: center;
+    color: #aa0000;
+}
+
 /** == Seetings and variables (_dashboard_presets.scss)  == **/
 /** == Typography (_dashboard_typo.scss) == **/
 /** == Mixins (_dashboard_mixins.scss) == **/

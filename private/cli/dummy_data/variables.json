@@ -1,0 +1,33 @@
+{
+  "donations_count" : {
+    "description": "количество новых пожертвований",
+    "value": 100
+  },
+  "donations_types_proportions": {
+    "description": "доли типов пожертвований",
+    "value": {
+      "single": 50,
+      "rebill": 30,
+      "correction": 20
+    }
+  },
+  "gates_usage_proportions" : {
+    "description": "доли использования гейтов",
+    "value": {
+      "yandex": 30,
+      "cp": 30,
+      "mixplat": 20,
+      "quittance": 10,
+      "text": 10
+    }
+  },
+  "donations_statuses_proportions" : {
+    "description": "доли статусов пожертвований",
+    "value": {
+      "funded": 60,
+      "submitted": 20,
+      "failed": 15,
+      "refunded": 5
+    }
+  }
+}

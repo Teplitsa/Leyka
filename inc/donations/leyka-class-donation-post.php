@@ -28,6 +28,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 //            '_leyka_donor_email_date' => 0, /** @todo Check if this lines are needed at all */
 //            '_leyka_managers_emails_date' => 0,
             '_status_log' => [['date' => current_time('timestamp'), 'status' => $params['status']]],
+            'leyka_is_test_mode' => $params['is_test_mode']
         ];
 
         if($params['amount_total'] && $params['amount_total'] != $params['amount']) {
@@ -199,6 +200,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             do_action('leyka_donation_constructor_meta', $meta, $this->_id);
 
             $this->_donation_meta = apply_filters('leyka_donation_constructor_meta', [
+                'leyka_is_test_mode' => empty($meta['leyka_is_test_mode']) ? false : $meta['leyka_is_test_mode'][0],
                 'payment_title' => empty($payment_title) ? $this->_main_data->post_title : $payment_title,
                 'leyka_payment_type' => empty($meta['leyka_payment_type']) ? 'single' : $meta['leyka_payment_type'][0],
                 'leyka_payment_method' => empty($meta['leyka_payment_method']) ? '' : $meta['leyka_payment_method'][0],
@@ -259,6 +261,9 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'id':
             case 'ID':
                 return $this->_id;
+
+            case 'is_test_mode':
+                return $this->_donation_meta['leyka_is_test_mode'];
 
             case 'campaign_id':
                 return $this->_donation_meta['leyka_campaign_id'];

@@ -1,0 +1,9 @@
+{
+  "first_names": ["Семен ","Остап","Иван","Вениамин","Петр","Сергей","Евгений"],
+  "last_names": ["Мартынов","Коровин","Быков","Лось"],
+  "patronymics": ["Семенович","Рудольфович","Иванович","Робертович"],
+  "emails": [
+    "dm_1@leyka2.ngo2.ru", "dm_2@leyka2.ngo2.ru", "dm_3@leyka2.ngo2.ru", "dm_4@leyka2.ngo2.ru", "dm_5@leyka2.ngo2.ru",
+    "dm_6@leyka2.ngo2.ru", "dm_7@leyka2.ngo2.ru", "dm_8@leyka2.ngo2.ru", "dm_9@leyka2.ngo2.ru", "dm_10@leyka2.ngo2.ru"
+  ]
+}

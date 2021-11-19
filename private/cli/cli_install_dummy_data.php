@@ -5,22 +5,25 @@ ini_set('memory_limit','512M');
 
 try {
     $time_start = microtime(true);
+
 	include('cli_common.php');
     include('dummy_data_utils.php');
+
 	fwrite(STDOUT, 'Memory before anything: '.memory_get_usage(true).chr(10).chr(10));
 
-	LeykaDummyData::install_settings();
+	$leyka_dummy_data = new LeykaDummyData();
+
+	$leyka_dummy_data->install_settings();
 	fwrite(STDOUT, "Settings installed\n");
 
-	LeykaDummyData::install_payment_methods();
+    $leyka_dummy_data->install_payment_methods();
 	fwrite(STDOUT, "Payment methods installed\n");
 
-	LeykaDummyData::install_campaigns_with_donations();
+    $leyka_dummy_data->install_campaigns_with_donations();
 	fwrite(STDOUT, "Campaigns with donations installed\n");
 
 	LeykaDummyDataUtils::reset_default_pages();
 	fwrite(STDOUT, "Accessory pages reset to default\n");
-
 
 	fwrite(STDOUT, "done\n\n");
 	fwrite(STDOUT, 'Memory '.memory_get_usage(true).chr(10));
@@ -38,85 +41,57 @@ catch (Exception $ex) {
 
 class LeykaDummyData {
 
-    public static function install_settings() {
+    public $vars = [];
 
-        # NGO data
-        update_option('leyka_org_full_name', 'Фонд помощи бездомным животным "Общий Барсик"');
-        update_option('leyka_org_face_fio_ip', 'Котов Аристарх Евграфович');
-        update_option('leyka_org_face_fio_rp', 'Собакин Евлампий Мстиславович');
-        update_option('leyka_org_face_position', 'Директор');
-        update_option('leyka_org_address', '127001, Россия, Москва, ул. Ленина, д.1, оф.5');
+    public function __construct() {
+        $this->_update_dummy_data_settings();
+    }
 
-        # reg and bank account
-        update_option('leyka_org_state_reg_number', '1134567890123');
-        update_option('leyka_org_kpp', '223456789');
-        update_option('leyka_org_inn', '333456789012');
-        update_option('leyka_org_bank_account', '44445678901234567890');
-        update_option('leyka_org_bank_name', 'МЯО Звербанк');
-        update_option('leyka_org_bank_bic', '555556789');
-        update_option('leyka_org_bank_corr_account', '66666678901234567890');
+    public function install_settings() {
 
-        // View settings:
-        update_option('leyka_donation_form_template', 'revo');
-        update_option('leyka_donation_sum_field_type', 'mixed');
-        update_option('leyka_scale_widget_place', '-');
-        update_option('leyka_donations_history_under_forms', 0);
-        update_option('leyka_show_campaign_sharing', 0);
+        $settings_raw = file_get_contents(LEYKA_PLUGIN_DIR.'private/cli/dummy_data/leyka_settings.json');
+        $settings = json_decode($settings_raw, true);
 
-         // Misc settings:
-        update_option('leyka_agree_to_terms_needed', 1);
-        update_option('leyka_terms_agreed_by_default', 1);
-        update_option('leyka_agree_to_terms_text_text_part', __('I accept', 'leyka'));
-        update_option('leyka_agree_to_terms_text_link_part', __('Terms of Service', 'leyka'));
+        foreach($settings as $setting) {
+
+            $value = $setting['translate'] === true ? __($setting['value'], 'leyka') : $setting['value'];
+            update_option($setting['title'], $value);
+
+        }
 
     }
 
-    public static function install_payment_methods() {
-        $available_pms = array(
-            'yandex-yandex_money', 'mixplat-sms', 'quittance-bank_order', 'text-text_box'
-        );
-        update_option('leyka_pm_available', $available_pms);
+    public function install_payment_methods() {
+
+        $available_pms_raw = file_get_contents(LEYKA_PLUGIN_DIR.'private/cli/dummy_data/payment_methods.json');
+        $available_pms_array = json_decode($available_pms_raw, true);
+
+        if(sizeof($available_pms_array) > 0) {
+
+            foreach($available_pms_array as $pm) {
+                $available_pms[] = $pm['gateway_id']."-".$pm['title'];
+            }
+
+            update_option('leyka_pm_available', $available_pms);
+
+        }
+
     }
 
-    public static function install_campaigns_with_donations() {
+    public function install_campaigns_with_donations() {
+
         global $wpdb;
 
-        $campaigns_data = array(
-            array('name' => 'build-house-for-pets', 'title' => 'Строим жилье для питомцев', 'target' => 27000.0, 'thumbnail' => 'dog001.jpg', 'content' => <<<EOT
-Ритмоединица, по определению, регрессийно представляет собой септаккорд. Показательный пример – midi-контроллер иллюстрирует звукорядный канал. Аллюзийно-полистилистическая композиция образует контрапункт контрастных фактур, в таких условиях можно спокойно выпускать пластинки раз в три года.
-
-Ощущение мономерности ритмического движения возникает, как правило, в условиях темповой стабильности, тем не менее явление культурологического порядка монотонно вызывает дорийский флэнжер. Серпантинная волна, следовательно, использует контрапункт контрастных фактур. Еще Аристотель в своей «Политике» говорил, что музыка, воздействуя на человека, доставляет «своего рода очищение, то есть облегчение, связанное с наслаждением», однако эффект «вау-вау» полифигурно выстраивает септаккорд.
-
-Показательный пример – кластерное вибрато выстраивает сонорный фузз. Пуантилизм, зародившийся в музыкальных микроформах начала ХХ столетия, нашел далекую историческую параллель в лице средневекового гокета, однако форшлаг просветляет гармонический интервал, это и есть одномоментная вертикаль в сверхмногоголосной полифонической ткани. Септаккорд имеет изоритмический хорус. Нота, так или иначе, просветляет однокомпонентный рефрен. Аллегро иллюстрирует самодостаточный гармонический интервал.
-EOT
-            ),
-            array('name' => 'buy-food-for-kittens', 'title' => 'Покупаем еду для котят', 'target' => 15000.0, 'thumbnail' => 'cat001.jpg', 'content' => <<<EOT
-Беспошлинный ввоз вещей и предметов в пределах личной потребности, куда входят Пик-Дистрикт, Сноудония и другие многочисленные национальные резерваты природы и парки, оформляет бассейн нижнего Инда.
-
-Утконос прочно вызывает тюлень, именно здесь с 8.00 до 11.00 идет оживленная торговля с лодок, нагруженных всевозможными тропическими фруктами, овощами, орхидеями, банками с пивом. Пустыня уязвима. Горная река изящно входит круговорот машин вокруг статуи Эроса, при этом имейте в виду, что чаевые следует оговаривать заранее, так как в разных заведениях они могут сильно различаться.
-
-Акцентируется не красота садовой дорожки, а растительный покров входит урбанистический белый саксаул, здесь есть много ценных пород деревьев, таких как железное, красное, коричневое (лим), черное (гу), сандаловое деревья, бамбуки и другие виды. Население, при том, что королевские полномочия находятся в руках исполнительной власти - кабинета министров, последовательно просветляет протяженный портер. Административно-территориальное деление оформляет традиционный растительный покров, а чтобы сторож не спал и был добрым, ему приносят еду и питье, цветы и ароматные палочки.
-EOT
-            ),
-            array('name' => 'heal-kid', 'title' => 'Требуется лечение душевной травмы', 'target' => 6500.0, 'thumbnail' => 'child001.jpeg', 'content' => <<<EOT
-Береговая линия притягивает бахрейнский динар, здесь сохранились остатки построек древнего римского поселения Аквинка - "Аквинкум". Море традиционно. На коротко подстриженной траве можно сидеть и лежать, но поваренная соль дегустирует шведский антарктический пояс.
-
-Очаг многовекового орошаемого земледелия поднимает протяженный кит. Южное полушарие входит крестьянский санитарный и ветеринарный контроль. Кандым просветляет гидроузел. Герцеговина, в первом приближении, входит протяженный очаг многовекового орошаемого земледелия.
-
-Памятник Нельсону теоретически возможен. Озеро Ньяса вразнобой дегустирует культурный эфемероид. Здесь работали Карл Маркс и Владимир Ленин, но Амазонская низменность отталкивает протяженный культурный ландшафт.
-EOT
-            ),
-            array('name' => 'treat-pets', 'title' => 'Лечим больных животных', 'target' => 800.0, 'content' => ""),
-			array('name' => 'treat-pets-fin', 'title' => 'Лечим Барсика - успешно', 'target' => 800.0, 'content' => ""),
-        );
-
+        $campaigns_data_raw = file_get_contents(LEYKA_PLUGIN_DIR.'private/cli/dummy_data/campaigns.json');
+        $campaigns_data = json_decode($campaigns_data_raw, true);
         $uploads = wp_upload_dir();
 
         foreach($campaigns_data as $campaign_data) {
 
             $campaign_post = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->posts} WHERE post_type = %s AND post_name = %s", Leyka_Campaign_Management::$post_type, $campaign_data['name']));
+
             if($campaign_post) {
-                $campaign_post = new WP_Post( $campaign_post );
+                $campaign_post = new WP_Post($campaign_post);
                 $campaign = new Leyka_Campaign($campaign_post);
 
                 LeykaDummyDataUtils::delete_campaign_donations($campaign);
@@ -136,11 +111,13 @@ EOT
             update_post_meta($campaign_id, 'campaign_template', 'revo');
             $campaign = new Leyka_Campaign($campaign_id);
 
-            self::install_campaign_donations($campaign);
+            $payments_per_compaign = round($this->vars['donations_count']['value'] / sizeof($campaign_data));
+            $this->install_campaign_donations($campaign, $payments_per_compaign);
+            $campaign->update_total_funded_amount();
             $campaign->refresh_target_state();
 
 			//finished campaign
-			if($campaign->post_name == 'treat-pets-fin') {
+			if($campaign_data['finished'] === true) {
 				update_post_meta($campaign_id, 'is_finished', 1);
 			}
 
@@ -163,54 +140,134 @@ EOT
         }
     }
 
-    public static function install_campaign_donations($campaign) {
+    public function install_campaign_donations(Leyka_Campaign $campaign, $payments_count) {
 
-        $donations_data = array(
-            array('gateway_id' => 'yandex', 'payment_method_id' => 'yandex_money', 'donor_name' => 'Мартынов Семен Семенович', 'donor_email' => 'test@ngo2.ru', 'amount' => 150.0),
-            array('gateway_id' => 'mixplat', 'payment_method_id' => 'sms', 'donor_name' => 'Коровин Остап Рудольфович', 'donor_email' => 'test@ngo2.ru', 'amount' => 30.0),
-            array('gateway_id' => 'quittance', 'payment_method_id' => 'bank_order', 'donor_name' => 'Быков Иван Иванович', 'donor_email' => 'test@ngo2.ru', 'amount' => 420.0),
-            array('gateway_id' => 'text', 'payment_method_id' => 'text_box', 'donor_name' => 'Лось Вениамин Робертович', 'donor_email' => 'test@ngo2.ru', 'amount' => 210.0),
-        );
+        $donors_constructor_data_raw = file_get_contents(LEYKA_PLUGIN_DIR.'private/cli/dummy_data/donors_constructor.json');
+        $donors_constructor_data = json_decode($donors_constructor_data_raw, true);
 
-        if($campaign->post_name == 'heal-kid') {
-            $add_donations_data = array(
-                array('gateway_id' => 'yandex', 'payment_method_id' => 'yandex_money', 'donor_name' => 'Мартынов Семен Семенович', 'donor_email' => 'test@ngo2.ru', 'amount' => 150.0),
-                array('gateway_id' => 'mixplat', 'payment_method_id' => 'sms', 'donor_name' => 'Коровин Остап Рудольфович', 'donor_email' => 'test@ngo2.ru', 'amount' => 30.0),
-                array('gateway_id' => 'quittance', 'payment_method_id' => 'bank_order', 'donor_name' => 'Быков Иван Иванович', 'donor_email' => 'test@ngo2.ru', 'amount' => 420.0),
-                array('gateway_id' => 'text', 'payment_method_id' => 'text_box', 'donor_name' => 'Лось Вениамин Робертович', 'donor_email' => 'test@ngo2.ru', 'amount' => 210.0),
-                array('gateway_id' => 'yandex', 'payment_method_id' => 'yandex_money', 'donor_name' => 'Мартынов Семен Семенович', 'donor_email' => 'test@ngo2.ru', 'amount' => 150.0),
-                array('gateway_id' => 'mixplat', 'payment_method_id' => 'sms', 'donor_name' => 'Коровин Остап Рудольфович', 'donor_email' => 'test@ngo2.ru', 'amount' => 30.0),
-                array('gateway_id' => 'quittance', 'payment_method_id' => 'bank_order', 'donor_name' => 'Быков Иван Иванович', 'donor_email' => 'test@ngo2.ru', 'amount' => 420.0),
-                array('gateway_id' => 'text', 'payment_method_id' => 'text_box', 'donor_name' => 'Лось Вениамин Робертович', 'donor_email' => 'test@ngo2.ru', 'amount' => 210.0),
-                array('gateway_id' => 'yandex', 'payment_method_id' => 'yandex_money', 'donor_name' => 'Мартынов Семен Семенович', 'donor_email' => 'test@ngo2.ru', 'amount' => 150.0),
-                array('gateway_id' => 'mixplat', 'payment_method_id' => 'sms', 'donor_name' => 'Коровин Остап Рудольфович', 'donor_email' => 'test@ngo2.ru', 'amount' => 30.0),
-                array('gateway_id' => 'quittance', 'payment_method_id' => 'bank_order', 'donor_name' => 'Быков Иван Иванович', 'donor_email' => 'test@ngo2.ru', 'amount' => 420.0),
-                array('gateway_id' => 'text', 'payment_method_id' => 'text_box', 'donor_name' => 'Лось Вениамин Робертович', 'donor_email' => 'test@ngo2.ru', 'amount' => 210.0),
-                array('gateway_id' => 'yandex', 'payment_method_id' => 'yandex_money', 'donor_name' => 'Мартынов Семен Семенович', 'donor_email' => 'test@ngo2.ru', 'amount' => 150.0),
-                array('gateway_id' => 'mixplat', 'payment_method_id' => 'sms', 'donor_name' => 'Коровин Остап Рудольфович', 'donor_email' => 'test@ngo2.ru', 'amount' => 30.0),
-                array('gateway_id' => 'quittance', 'payment_method_id' => 'bank_order', 'donor_name' => 'Быков Иван Иванович', 'donor_email' => 'test@ngo2.ru', 'amount' => 420.0),
-                array('gateway_id' => 'text', 'payment_method_id' => 'text_box', 'donor_name' => 'Лось Вениамин Робертович', 'donor_email' => 'test@ngo2.ru', 'amount' => 210.0),
-                array('gateway_id' => 'yandex', 'payment_method_id' => 'yandex_money', 'donor_name' => 'Мартынов Семен Семенович', 'donor_email' => 'test@ngo2.ru', 'amount' => 150.0),
-            );
-            $donations_data = array_merge($donations_data, $add_donations_data);
+        $available_pms_raw = file_get_contents(LEYKA_PLUGIN_DIR.'private/cli/dummy_data/payment_methods.json');
+        $available_pms_array = json_decode($available_pms_raw, true);
+
+        if(sizeof($available_pms_array) > 0) {
+            foreach($available_pms_array as $pm) {
+                $available_pms[$pm['gateway_id']] = $pm['gateway_id']."-".$pm['title'];
+            }
         }
 
-        foreach($donations_data as $donation_data) {
-            $donation_id = Leyka_Donation::add(array(
-                'gateway_id' => $donation_data['gateway_id'],
-                'payment_method_id' => $donation_data['payment_method_id'],
+        $init_rebills = [];
+
+        for($i = 0; $i < $payments_count; $i++ ) {
+
+            $gateway_id = $this->_get_proportion_part_title($this->vars['gates_usage_proportions']['value']);
+            $payment_method_id = $available_pms[$gateway_id];
+            $donor_name =
+                $donors_constructor_data['first_names'][rand(0, sizeof($donors_constructor_data['first_names'])-1)]." ".
+                $donors_constructor_data['patronymics'][rand(0, sizeof($donors_constructor_data['patronymics'])-1)]." ".
+                $donors_constructor_data['last_names'][rand(0, sizeof($donors_constructor_data['last_names'])-1)];
+            $donor_email = $donors_constructor_data['emails'][rand(0, sizeof($donors_constructor_data['emails'])-1)];
+            $status = $this->_get_proportion_part_title($this->vars['donations_statuses_proportions']['value']);
+            $payment_type = $i === 0 ?
+                'single' : $this->_get_proportion_part_title($this->vars['donations_types_proportions']['value']);
+
+            $donation_data = [
+                'gateway_id' => $gateway_id,
+                'payment_method_id' => $payment_method_id,
                 'campaign_id' => $campaign->ID,
                 'purpose_text' => $campaign->title,
-                'status' => 'funded',
-                'payment_type' => 'single',
-                'amount' => $donation_data['amount'],
-                'currency' => 'rur',
-                'donor_name' => $donation_data['donor_name'],
-                'donor_email' => $donation_data['donor_email'],
-            ));
+                'status' => $status,
+                'payment_type' => $payment_type,
+                'amount' => round(rand(10, 1000), -1),
+                'currency' => 'rub',
+                'donor_name' => $donor_name,
+                'donor_email' => $donor_email,
+                'is_test_mode' => true
+            ];
 
-            $donation = new Leyka_Donation($donation_id);
-            $campaign->update_total_funded_amount($donation);
+            if($payment_type === 'rebill') {
+
+                $donation_data['recurring_is_active'] = true;
+
+                if(rand(1, 5) > 1 && sizeof($init_rebills) > 0) { // non-init rebill
+                    $donation_data['init_recurring_donation'] = $init_rebills[rand(0, sizeof($init_rebills))];
+                }
+            }
+
+            $donation_id = Leyka_Donations::get_instance()->add($donation_data);
+
+            if($payment_type === 'rebill' && $status === 'funded' && empty($donation_data['init_recurring_donation'])) {
+                $active_init_rebills[] = $donation_id;
+            }
+
         }
+
     }
+
+    protected static function _get_proportion_part_title($proportions) {
+
+        $rnd = rand(1, 100);
+        $min = null;
+        $max = null;
+
+        foreach($proportions as $proportion_title => $proportion_value) {
+            $min = $min ? $max : 0;
+            $max = $max ? $max + $proportion_value : $proportion_value;
+
+            if($rnd > $min && $rnd <= $max) {
+                return $proportion_title;
+            }
+        }
+
+    }
+
+    protected function _update_dummy_data_settings() {
+
+        $def_vars_raw = file_get_contents(LEYKA_PLUGIN_DIR.'private/cli/dummy_data/variables.json');
+        $def_vars = json_decode($def_vars_raw, true);
+
+        foreach($def_vars as $def_var_title => $def_var_value) {
+
+            $message = "\nВведите через запятую ".$def_var_value['description'].":\n\n";
+
+            if(is_array($def_var_value['value'])) {
+                $idx = 1;
+
+                foreach($def_var_value['value'] as $part_title => $part_value) {
+                    $message .= "\t${idx} цифра - % ${part_title}\n";
+                    $idx++;
+                }
+
+                $message .= "\n\tПо умолчанию - ".implode(',', $def_var_value['value'])."\n";
+            } else {
+                $message .= "\tПо умолчанию - ".$def_var_value['value']."\n";
+            }
+
+            fwrite(STDOUT, $message);
+
+            $this->vars[$def_var_title] = [
+                'description' => $def_var_value['description'],
+                'value' => LeykaDummyDataUtils::ask_settings_variable_update($def_var_value['value'])
+            ];
+
+            if($this->vars[$def_var_title]['value'] === $def_var_value['value']) {
+
+                fwrite(STDOUT,PHP_EOL.'Ошибка ввода! Взяты дефолтные значения. '.PHP_EOL);
+
+                if (is_array($this->vars[$def_var_title]['value'])) {
+                    fwrite(
+                        STDOUT,
+                        PHP_EOL.ucfirst($def_var_value['description']).": ".implode(',', $this->vars[$def_var_title]['value']).PHP_EOL.PHP_EOL
+                    );
+                } else {
+                    fwrite(
+                        STDOUT,
+                        PHP_EOL.ucfirst($def_var_value['description']).": ".$this->vars[$def_var_title]['value'].PHP_EOL.PHP_EOL
+                    );
+                }
+
+            }
+
+        }
+
+    }
+
 }
