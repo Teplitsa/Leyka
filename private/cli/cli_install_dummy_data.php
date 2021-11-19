@@ -111,7 +111,7 @@ class LeykaDummyData {
             update_post_meta($campaign_id, 'campaign_template', 'revo');
             $campaign = new Leyka_Campaign($campaign_id);
 
-            $payments_per_compaign = round($this->vars['donations_count']['value'] / sizeof($campaign_data));
+            $payments_per_compaign = round((int)$this->vars['donations_count']['value'] / sizeof($campaign_data));
             $this->install_campaign_donations($campaign, $payments_per_compaign);
             $campaign->update_total_funded_amount();
             $campaign->refresh_target_state();
