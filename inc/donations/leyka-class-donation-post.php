@@ -102,7 +102,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
         }
 
         if( !empty($donation_meta_fields['_rebilling_is_active']) ) {
-            do_action('leyka_donation_recurring_activity_changed', $donation_id, $donation_meta_fields['recurring_active']);
+            do_action('leyka_donation_recurring_activity_changed', $donation_id, $donation_meta_fields['_rebilling_is_active']);
         }
 
         if(is_wp_error($donation_id)) {

@@ -195,7 +195,7 @@ class LeykaDummyData {
             $donation_id = Leyka_Donations::get_instance()->add($donation_data);
 
             if($payment_type === 'rebill' && $status === 'funded' && empty($donation_data['init_recurring_donation'])) {
-                $active_init_rebills[] = $donation_id;
+                $init_rebills[] = $donation_id;
             }
 
         }
