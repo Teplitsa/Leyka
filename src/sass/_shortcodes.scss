@@ -186,7 +186,10 @@
 
         max-width: 790px !important;
 
-        margin: 0;
+        &:not(.wp-block-leyka-card) {
+            margin: 0;
+        }
+
         padding: 16px;
 
         border-radius: 10px;
