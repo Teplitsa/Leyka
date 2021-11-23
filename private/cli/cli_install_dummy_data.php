@@ -84,27 +84,29 @@ class LeykaDummyData {
             $campaign_post = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->posts} WHERE post_type = %s AND post_name = %s", Leyka_Campaign_Management::$post_type, $campaign_data['name']));
 
             if($campaign_post) {
+
                 $campaign_post = new WP_Post($campaign_post);
                 $campaign = new Leyka_Campaign($campaign_post);
 
                 LeykaDummyDataUtils::delete_campaign_donations($campaign);
                 $campaign->delete(True);
+
             }
 
-            $campaign_id = wp_insert_post(array(
+            $campaign_id = wp_insert_post([
                 'post_type' => Leyka_Campaign_Management::$post_type,
                 'post_status' => 'publish',
                 'post_title' => $campaign_data['title'],
                 'post_name' => $campaign_data['name'],
                 'post_content' => $campaign_data['content'],
                 'post_parent' => 0,
-            ));
+            ]);
 
             update_post_meta($campaign_id, 'campaign_target', $campaign_data['target']);
             update_post_meta($campaign_id, 'campaign_template', 'revo');
             $campaign = new Leyka_Campaign($campaign_id);
 
-            $payments_per_compaign = round((int)$this->data['variables']['donations_count']['value'] / sizeof($campaign_data));
+            $payments_per_compaign = round((int)$this->data['variables']['donations_count']['value'] / sizeof($this->data['campaigns']));
             $this->install_campaign_donations($campaign, $payments_per_compaign);
             $campaign->update_total_funded_amount();
             $campaign->refresh_target_state();
@@ -116,19 +118,19 @@ class LeykaDummyData {
 
             # add thumbnail
             if(isset($campaign_data['thumbnail'])) {
-                $thumb_id = false;
+
                 $file = $campaign_data['thumbnail'];
                 $path = WP_CONTENT_DIR.'/plugins/leyka/private/res/'.$file;
 
                 $test_path = $uploads['path'].'/'.$file;
                 if(!file_exists($test_path)) {
                     $thumb_id = LeykaDummyDataUtils::upload_img_from_path($path);
-                }
-                else {
+                } else {
                     $a_url = $uploads['url'].'/'.$file;
                     $thumb_id = attachment_url_to_postid($a_url);
                 }
                 update_post_meta($campaign->ID, '_thumbnail_id', (int)$thumb_id);
+
             }
         }
     }
@@ -188,6 +190,8 @@ class LeykaDummyData {
 
         }
 
+        fwrite(STDOUT,$payments_count.' donations installed for "'.$campaign->name.'" campaign'.PHP_EOL);
+
     }
 
     protected function _get_proportion_part_title($proportions) {
@@ -237,7 +241,7 @@ class LeykaDummyData {
 
                 fwrite(STDOUT,PHP_EOL.'Ошибка ввода! Взяты дефолтные значения. '.PHP_EOL);
 
-                if (is_array($this->data['variables'][$def_var_title]['value'])) {
+                if(is_array($this->data['variables'][$def_var_title]['value'])) {
                     fwrite(
                         STDOUT,
                         PHP_EOL.ucfirst($def_var_value['description']).": ".implode(',', $this->data['variables'][$def_var_title]['value']).PHP_EOL.PHP_EOL
@@ -256,6 +260,7 @@ class LeykaDummyData {
     }
 
     protected function _get_data() {
+
         $raw_data_file_names = ['variables','leyka_settings','campaigns','donors_constructor','payment_methods'];
 
         foreach($raw_data_file_names as $raw_data_file_name) {

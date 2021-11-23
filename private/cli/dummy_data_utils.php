@@ -63,9 +63,8 @@ class LeykaDummyDataUtils {
 
         $read = [$fd];
         $write = $except = [];
-        $timeout = 10;
 
-        if(stream_select($read, $write, $except, $timeout)) {
+        if(stream_select($read, $write, $except, null)) {
 
             $result = explode(',', fgets($fd));
 
