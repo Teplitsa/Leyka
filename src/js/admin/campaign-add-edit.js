@@ -464,92 +464,96 @@ jQuery(document).ready(function($){
 
     }).change();
 
-    // Campaign additional fields:
+    // Multi-valued items fields:
+    $('.multi-valued-items-field-wrapper').each(function(){
 
-    let $additional_fields_settings = $('#leyka_campaign_additional_fields .inside'),
-        $add_field_button = $additional_fields_settings.find('.add-field');
+        let $items_wrapper = $(this),
+            $add_item_button = $items_wrapper.find('.add-item');
 
-    // Each additional field should be added to the Campaign form only once.
-    // So if it's already added, hide it from the field variants for a new Campaign field:
-    function leyka_refresh_new_campaign_additional_fields_variants() {
+        // Each muli-valued item should be added to the Campaign form only once.
+        // So if it's already added, hide it from the variants for a new Campaign item:
+        function leyka_refresh_campaign_new_items_variants() {
 
-        let $new_field_selects = $additional_fields_settings.find('select[name="leyka_campaign_field_add"]'),
-            added_fields_ids = [];
+            let $new_item_select = $items_wrapper.find('.leyka-campaign-item-add-wrapper select'),
+                added_items_ids = [];
 
-        $additional_fields_settings.find('.field-box:not([id*="item-"])').each(function(){
-            added_fields_ids.push($(this).prop('id'));
-        });
-        $new_field_selects.each(function(){
+            $items_wrapper.find('.multi-valued-item-box:not([id*="item-"])').each(function(){
+                added_items_ids.push($(this).prop('id'));
+            });
+            $new_item_select.each(function(){
 
-            let selected_id = $(this).val();
+                let selected_id = $(this).val();
 
-            if(selected_id !== '-' && selected_id !== '+') {
-                added_fields_ids.push(selected_id);
+                if(selected_id !== '-' && selected_id !== '+') {
+                    added_items_ids.push(selected_id);
+                }
+
+            });
+
+            $new_item_select.find('option').show(); // First, show all options (new items variants)...
+
+            $(added_items_ids).each(function(){
+                // ...Then hide options for fields that are already added to Campaign
+                $new_item_select.find('option[value="'+this+'"]').hide();
+            });
+
+        }
+
+        $add_item_button.on('click.leyka', function(e){
+
+            e.preventDefault();
+
+            if($add_item_button.hasClass('inactive')) {
+                return;
+            }
+
+            leyka_refresh_campaign_new_items_variants();
+
+            let $new_item_box_wrapper = $items_wrapper.find('.multi-valued-item-box:visible:last'),
+                $new_item_subfields_wrapper = $new_item_box_wrapper.find('.leyka-campaign-new-item-subfields'),
+                $add_campaign_item_select = $new_item_box_wrapper.find('.leyka-campaign-item-add-wrapper select');
+
+            if($add_campaign_item_select.val() === '+') {
+                $new_item_subfields_wrapper.show();
+            } else {
+                $new_item_subfields_wrapper.hide();
             }
 
         });
 
-        $new_field_selects.find('option').show(); // First, show all options (new additional field variants)...
-
-        $(added_fields_ids).each(function(){
-            // ...Then hide options for fields that are already added to Campaign
-            $new_field_selects.find('option[value="'+this+'"]').hide();
+        $items_wrapper.find('.leyka-main-multi-items').on('click.leyka', '.delete-item', function(){
+            leyka_refresh_campaign_new_items_variants();
         });
 
-    }
+        $items_wrapper.on('change.leyka', '.leyka-campaign-item-add-wrapper select', function(){
 
-    $add_field_button.on('click.leyka', function(e){
+            let $add_campaign_item_select = $(this),
+                $new_item_box_wrapper = $add_campaign_item_select
+                    .parents('.box-content')
+                    .find('.leyka-campaign-new-item-subfields');
 
-        e.preventDefault();
+            if($add_campaign_item_select.val() === '+') {
+                $new_item_box_wrapper.show();
+            } else {
+                $new_item_box_wrapper.hide();
+            }
 
-        if($add_field_button.hasClass('inactive')) {
-            return;
-        }
+            leyka_refresh_campaign_new_items_variants();
 
-        leyka_refresh_new_campaign_additional_fields_variants();
+        }).find('.leyka-campaign-item-add-wrapper select:visible').each(function(){
 
-        let $new_additional_field_box_wrapper = $additional_fields_settings.find('.multi-valued-item-box:visible:last'),
-            $new_additional_field_wrapper = $new_additional_field_box_wrapper.find('.campaign-new-additional-field'),
-            $add_campaign_field = $new_additional_field_box_wrapper.find('select[name="leyka_campaign_field_add"]');
+            // For the case when there are no fields in the Library, display the new field subfields right from the start:
 
-        if($add_campaign_field.val() === '+') {
-            $new_additional_field_wrapper.show();
-        } else {
-            $new_additional_field_wrapper.hide();
-        }
+            let $this = $(this);
 
-    });
+            if($this.val() === '+') {
+                $this.trigger('change.leyka');
+            }
 
-    $additional_fields_settings.find('.leyka-main-multi-items').on('click.leyka', '.delete-item', function(){
-        leyka_refresh_new_campaign_additional_fields_variants();
-    });
-
-    $additional_fields_settings.on('change.leyka', 'select[name="leyka_campaign_field_add"]', function(){
-
-        let $add_campaign_field = $(this),
-            $new_additional_field_wrapper = $add_campaign_field.parents('.box-content').find('.campaign-new-additional-field');
-
-        if($add_campaign_field.val() === '+') {
-            $new_additional_field_wrapper.show();
-        } else {
-            $new_additional_field_wrapper.hide();
-        }
-
-        leyka_refresh_new_campaign_additional_fields_variants();
-
-    }).find('select[name="leyka_campaign_field_add"]:visible').each(function(){
-
-        // For the case when there are no fields in the Library, display the new field subfields right from the start:
-
-        let $this = $(this);
-
-        if($this.val() === '+') {
-            $this.trigger('change.leyka');
-        }
+        });
 
     });
-
-    // Campaign additional fields - END
+    // Multi-valued items fields - END
 
     /* Support packages Extension - available campaign existence check: */
 

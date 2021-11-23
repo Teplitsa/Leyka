@@ -46,7 +46,20 @@ abstract class Leyka_Extension extends Leyka_Singleton {
      * @return boolean True if given Extension is active, false otherwise.
      */
     public static function is_active($extension_id) {
-        return leyka()->extension_is_active(trim($extension_id));
+
+        try {
+            return leyka()->extension_is_active(trim($extension_id));
+        } catch(Exception $ex) {
+            return false;
+        }
+
+    }
+
+    public static function is_settings_page($extension_id = false) {
+        return
+            !empty($_GET['page']) && $_GET['page'] == 'leyka_settings'
+            && !empty($_GET['stage']) && $_GET['stage'] == 'extensions'
+            && ( !$extension_id || ( !empty($_GET['extension']) && $_GET['extension'] == $extension_id ) );
     }
 
     public static function is_admin_settings_page($extension_id = '') {

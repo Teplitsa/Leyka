@@ -811,7 +811,7 @@ jQuery(document).ready(function($){
 
     };
 
-    jQuery.leyka_admin_filter_datepicker_ranged = function($input, options){
+    jQuery.leyka_admin_filter_datepicker_ranged = function($input /*, options*/){
 
         $input.datepicker({
             range: 'period',
@@ -863,7 +863,7 @@ jQuery(document).ready(function($){
     // Ranged datepicker fields - END
 
     // Campaigns autocomplete select:
-    jQuery.leyka_admin_campaigns_select = function($text_selector_field, options){
+    jQuery.leyka_admin_campaigns_select = function($text_selector_field /*, options*/){
 
         $text_selector_field = $($text_selector_field);
 
@@ -1086,12 +1086,12 @@ jQuery(document).ready(function($){
 
     });
 
-    $body.on('click.leyka', '.leyka-file-field-wrapper .delete-uploaded-file', function(e){ // Mark uploaded file to be removed
+    $body.on('click.leyka', '.leyka-upload-field-wrapper .delete-uploaded-file', function(e){ // Mark uploaded file to be removed
 
         e.preventDefault();
 
         let $delete_link = $(this),
-            $field_wrapper = $delete_link.parents('.leyka-file-field-wrapper'),
+            $field_wrapper = $delete_link.parents('.leyka-upload-field-wrapper'),
             // option_id = $field_wrapper.find('.upload-field').data('option-id'),
             $file_preview = $field_wrapper.find('.uploaded-file-preview'),
             $main_field = $field_wrapper.find('input.leyka-upload-result');
@@ -1102,6 +1102,44 @@ jQuery(document).ready(function($){
 
     });
     // Ajax file upload fields - END
+
+    // Media library upload fields:
+    $body.on('click.leyka', '.upload-field', function(e){
+
+        e.preventDefault();
+
+        let $field = $(this),
+            $field_wrapper = $field.parents('.leyka-media-upload-field-wrapper'),
+            // option_id = $upload_button_wrapper.data('option-id'),
+            $preview = $field_wrapper.find('.uploaded-file-preview'),
+            $main_field = $field_wrapper.find('input.leyka-upload-result'),
+            media_uploader = wp.media({
+            title: $field.data('upload-title') ? $field.data('upload-title') : leyka.media_upload_title,
+            button: {
+                text: $field.data('upload-button-label') ? $field.data('upload-button-label') : leyka.media_upload_button_label,
+            },
+            library: {type: $field.data('upload-files-type') ? $field.data('upload-files-type') : 'image'},
+            multiple: $field.data('upload-is-multiple') ? !!$field.data('upload-is-multiple') : false
+        }).on('select', function(){ // It's a wp.media event, so dont't use "select.leyka" events types
+
+            let attachment = media_uploader.state().get('selection').first().toJSON();
+            // console.log('Media uploaded/selected:', attachment);
+
+            $preview
+                .show()
+                .find('.file-preview')
+                .html('<img class="leyka-upload-image-preview" src="'+attachment.url+'" alt="">');
+
+            $field.hide(); // Hide the "upload" button when picture is uploaded
+
+            $main_field.val(attachment.id);
+
+        }).open();
+
+        // console.log('HERE:', $field)
+
+    });
+    // Media library upload fields - END
 
     // Expandable options sections (portlets only):
     /** @todo Remove this completely when all portlets are converted to metaboxes */
@@ -1305,8 +1343,7 @@ jQuery(document).ready(function($){
             $item_template = $items_wrapper.siblings('.item-template'),
             $add_item_button = $items_wrapper.siblings('.add-item'),
             items_cookie_name = $items_wrapper.data('items-cookie-name'),
-            closed_boxes = typeof $.cookie(items_cookie_name) === 'string' ?
-                JSON.parse($.cookie(items_cookie_name)) : [];
+            closed_boxes = typeof $.cookie(items_cookie_name) === 'string' ? JSON.parse($.cookie(items_cookie_name)) : [];
 
         if($.isArray(closed_boxes)) { // Close the item boxes needed
             $.each(closed_boxes, function(key, value){
@@ -1346,9 +1383,9 @@ jQuery(document).ready(function($){
 
                 });
 
-                $items_wrapper.siblings('input.leyka-items-options').val(
-                    encodeURIComponent(JSON.stringify(items_options))
-                );
+                $items_wrapper.siblings('input.leyka-items-options').val( encodeURIComponent(JSON.stringify(items_options)) );
+
+                console.log(decodeURIComponent($items_wrapper.siblings('input.leyka-items-options').val()))
 
             }
         });
@@ -1477,13 +1514,13 @@ jQuery(document).ready(function($){
 
             $.leyka_admin_campaigns_select(
                 $items_wrapper
-                    .find('.field-box:last-child .autocomplete-select[name="campaigns\[\]"]')
+                    .find('.multi-valued-item-box:last-child .autocomplete-select[name="campaigns\[\]"]')
                     .siblings('input.leyka-campaigns-selector')
             );
 
             $.leyka_admin_campaigns_select(
                 $items_wrapper
-                    .find('.field-box:last-child .autocomplete-select[name="campaigns_exceptions\[\]"]')
+                    .find('.multi-valued-item-box:last-child .autocomplete-select[name="campaigns_exceptions\[\]"]')
                     .siblings('input.leyka-campaigns-selector')
             );
 
@@ -2246,92 +2283,96 @@ jQuery(document).ready(function($){
 
     }).change();
 
-    // Campaign additional fields:
+    // Multi-valued items fields:
+    $('.multi-valued-items-field-wrapper').each(function(){
 
-    let $additional_fields_settings = $('#leyka_campaign_additional_fields .inside'),
-        $add_field_button = $additional_fields_settings.find('.add-field');
+        let $items_wrapper = $(this),
+            $add_item_button = $items_wrapper.find('.add-item');
 
-    // Each additional field should be added to the Campaign form only once.
-    // So if it's already added, hide it from the field variants for a new Campaign field:
-    function leyka_refresh_new_campaign_additional_fields_variants() {
+        // Each muli-valued item should be added to the Campaign form only once.
+        // So if it's already added, hide it from the variants for a new Campaign item:
+        function leyka_refresh_campaign_new_items_variants() {
 
-        let $new_field_selects = $additional_fields_settings.find('select[name="leyka_campaign_field_add"]'),
-            added_fields_ids = [];
+            let $new_item_select = $items_wrapper.find('.leyka-campaign-item-add-wrapper select'),
+                added_items_ids = [];
 
-        $additional_fields_settings.find('.field-box:not([id*="item-"])').each(function(){
-            added_fields_ids.push($(this).prop('id'));
-        });
-        $new_field_selects.each(function(){
+            $items_wrapper.find('.multi-valued-item-box:not([id*="item-"])').each(function(){
+                added_items_ids.push($(this).prop('id'));
+            });
+            $new_item_select.each(function(){
 
-            let selected_id = $(this).val();
+                let selected_id = $(this).val();
 
-            if(selected_id !== '-' && selected_id !== '+') {
-                added_fields_ids.push(selected_id);
+                if(selected_id !== '-' && selected_id !== '+') {
+                    added_items_ids.push(selected_id);
+                }
+
+            });
+
+            $new_item_select.find('option').show(); // First, show all options (new items variants)...
+
+            $(added_items_ids).each(function(){
+                // ...Then hide options for fields that are already added to Campaign
+                $new_item_select.find('option[value="'+this+'"]').hide();
+            });
+
+        }
+
+        $add_item_button.on('click.leyka', function(e){
+
+            e.preventDefault();
+
+            if($add_item_button.hasClass('inactive')) {
+                return;
+            }
+
+            leyka_refresh_campaign_new_items_variants();
+
+            let $new_item_box_wrapper = $items_wrapper.find('.multi-valued-item-box:visible:last'),
+                $new_item_subfields_wrapper = $new_item_box_wrapper.find('.leyka-campaign-new-item-subfields'),
+                $add_campaign_item_select = $new_item_box_wrapper.find('.leyka-campaign-item-add-wrapper select');
+
+            if($add_campaign_item_select.val() === '+') {
+                $new_item_subfields_wrapper.show();
+            } else {
+                $new_item_subfields_wrapper.hide();
             }
 
         });
 
-        $new_field_selects.find('option').show(); // First, show all options (new additional field variants)...
-
-        $(added_fields_ids).each(function(){
-            // ...Then hide options for fields that are already added to Campaign
-            $new_field_selects.find('option[value="'+this+'"]').hide();
+        $items_wrapper.find('.leyka-main-multi-items').on('click.leyka', '.delete-item', function(){
+            leyka_refresh_campaign_new_items_variants();
         });
 
-    }
+        $items_wrapper.on('change.leyka', '.leyka-campaign-item-add-wrapper select', function(){
 
-    $add_field_button.on('click.leyka', function(e){
+            let $add_campaign_item_select = $(this),
+                $new_item_box_wrapper = $add_campaign_item_select
+                    .parents('.box-content')
+                    .find('.leyka-campaign-new-item-subfields');
 
-        e.preventDefault();
+            if($add_campaign_item_select.val() === '+') {
+                $new_item_box_wrapper.show();
+            } else {
+                $new_item_box_wrapper.hide();
+            }
 
-        if($add_field_button.hasClass('inactive')) {
-            return;
-        }
+            leyka_refresh_campaign_new_items_variants();
 
-        leyka_refresh_new_campaign_additional_fields_variants();
+        }).find('.leyka-campaign-item-add-wrapper select:visible').each(function(){
 
-        let $new_additional_field_box_wrapper = $additional_fields_settings.find('.multi-valued-item-box:visible:last'),
-            $new_additional_field_wrapper = $new_additional_field_box_wrapper.find('.campaign-new-additional-field'),
-            $add_campaign_field = $new_additional_field_box_wrapper.find('select[name="leyka_campaign_field_add"]');
+            // For the case when there are no fields in the Library, display the new field subfields right from the start:
 
-        if($add_campaign_field.val() === '+') {
-            $new_additional_field_wrapper.show();
-        } else {
-            $new_additional_field_wrapper.hide();
-        }
+            let $this = $(this);
 
-    });
+            if($this.val() === '+') {
+                $this.trigger('change.leyka');
+            }
 
-    $additional_fields_settings.find('.leyka-main-multi-items').on('click.leyka', '.delete-item', function(){
-        leyka_refresh_new_campaign_additional_fields_variants();
-    });
-
-    $additional_fields_settings.on('change.leyka', 'select[name="leyka_campaign_field_add"]', function(){
-
-        let $add_campaign_field = $(this),
-            $new_additional_field_wrapper = $add_campaign_field.parents('.box-content').find('.campaign-new-additional-field');
-
-        if($add_campaign_field.val() === '+') {
-            $new_additional_field_wrapper.show();
-        } else {
-            $new_additional_field_wrapper.hide();
-        }
-
-        leyka_refresh_new_campaign_additional_fields_variants();
-
-    }).find('select[name="leyka_campaign_field_add"]:visible').each(function(){
-
-        // For the case when there are no fields in the Library, display the new field subfields right from the start:
-
-        let $this = $(this);
-
-        if($this.val() === '+') {
-            $this.trigger('change.leyka');
-        }
+        });
 
     });
-
-    // Campaign additional fields - END
+    // Multi-valued items fields - END
 
     /* Support packages Extension - available campaign existence check: */
 

@@ -56,14 +56,13 @@
 
         &.type-file {
 
-            .leyka-file-field-wrapper {
+            .leyka-file-field-wrapper, .leyka-media-upload-field-wrapper {
                 height: 100%;
             }
 
             .upload-field {
 
                 display: flex;
-                //height: 100%;
 
                 .field input[type="file"] { // Hide the input
 
@@ -131,7 +130,7 @@
                     .file-preview {
 
                         display: flex;
-                        margin-left: 16px;
+                        //margin-left: 16px;
 
                         img {
                             height: 100px;

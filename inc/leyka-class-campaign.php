@@ -827,6 +827,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                                                 'required' => true,
                                                 'list_entries' => $fields_select_values,
                                                 'hide_title' => true,
+                                                'field_classes' => ['leyka-campaign-item-add-wrapper'],
                                             ]);?>
                                         </div>
                                         <div class="field-errors"></div>
@@ -834,7 +835,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
                                 </div>
 
-                                <div class="campaign-new-additional-field" style="display: none;">
+                                <div class="leyka-campaign-new-additional-field leyka-campaign-new-item-subfields" style="display: none;">
                                     <?php leyka_additional_form_field_main_subfields_html([]);?>
                                 </div>
 

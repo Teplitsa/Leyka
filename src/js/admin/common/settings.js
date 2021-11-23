@@ -33,7 +33,7 @@ jQuery(document).ready(function($){
 
     };
 
-    jQuery.leyka_admin_filter_datepicker_ranged = function($input, options){
+    jQuery.leyka_admin_filter_datepicker_ranged = function($input /*, options*/){
 
         $input.datepicker({
             range: 'period',
@@ -85,7 +85,7 @@ jQuery(document).ready(function($){
     // Ranged datepicker fields - END
 
     // Campaigns autocomplete select:
-    jQuery.leyka_admin_campaigns_select = function($text_selector_field, options){
+    jQuery.leyka_admin_campaigns_select = function($text_selector_field /*, options*/){
 
         $text_selector_field = $($text_selector_field);
 
@@ -308,12 +308,12 @@ jQuery(document).ready(function($){
 
     });
 
-    $body.on('click.leyka', '.leyka-file-field-wrapper .delete-uploaded-file', function(e){ // Mark uploaded file to be removed
+    $body.on('click.leyka', '.leyka-upload-field-wrapper .delete-uploaded-file', function(e){ // Mark uploaded file to be removed
 
         e.preventDefault();
 
         let $delete_link = $(this),
-            $field_wrapper = $delete_link.parents('.leyka-file-field-wrapper'),
+            $field_wrapper = $delete_link.parents('.leyka-upload-field-wrapper'),
             // option_id = $field_wrapper.find('.upload-field').data('option-id'),
             $file_preview = $field_wrapper.find('.uploaded-file-preview'),
             $main_field = $field_wrapper.find('input.leyka-upload-result');
@@ -324,6 +324,44 @@ jQuery(document).ready(function($){
 
     });
     // Ajax file upload fields - END
+
+    // Media library upload fields:
+    $body.on('click.leyka', '.upload-field', function(e){
+
+        e.preventDefault();
+
+        let $field = $(this),
+            $field_wrapper = $field.parents('.leyka-media-upload-field-wrapper'),
+            // option_id = $upload_button_wrapper.data('option-id'),
+            $preview = $field_wrapper.find('.uploaded-file-preview'),
+            $main_field = $field_wrapper.find('input.leyka-upload-result'),
+            media_uploader = wp.media({
+            title: $field.data('upload-title') ? $field.data('upload-title') : leyka.media_upload_title,
+            button: {
+                text: $field.data('upload-button-label') ? $field.data('upload-button-label') : leyka.media_upload_button_label,
+            },
+            library: {type: $field.data('upload-files-type') ? $field.data('upload-files-type') : 'image'},
+            multiple: $field.data('upload-is-multiple') ? !!$field.data('upload-is-multiple') : false
+        }).on('select', function(){ // It's a wp.media event, so dont't use "select.leyka" events types
+
+            let attachment = media_uploader.state().get('selection').first().toJSON();
+            // console.log('Media uploaded/selected:', attachment);
+
+            $preview
+                .show()
+                .find('.file-preview')
+                .html('<img class="leyka-upload-image-preview" src="'+attachment.url+'" alt="">');
+
+            $field.hide(); // Hide the "upload" button when picture is uploaded
+
+            $main_field.val(attachment.id);
+
+        }).open();
+
+        // console.log('HERE:', $field)
+
+    });
+    // Media library upload fields - END
 
     // Expandable options sections (portlets only):
     /** @todo Remove this completely when all portlets are converted to metaboxes */
@@ -527,8 +565,7 @@ jQuery(document).ready(function($){
             $item_template = $items_wrapper.siblings('.item-template'),
             $add_item_button = $items_wrapper.siblings('.add-item'),
             items_cookie_name = $items_wrapper.data('items-cookie-name'),
-            closed_boxes = typeof $.cookie(items_cookie_name) === 'string' ?
-                JSON.parse($.cookie(items_cookie_name)) : [];
+            closed_boxes = typeof $.cookie(items_cookie_name) === 'string' ? JSON.parse($.cookie(items_cookie_name)) : [];
 
         if($.isArray(closed_boxes)) { // Close the item boxes needed
             $.each(closed_boxes, function(key, value){
@@ -568,9 +605,9 @@ jQuery(document).ready(function($){
 
                 });
 
-                $items_wrapper.siblings('input.leyka-items-options').val(
-                    encodeURIComponent(JSON.stringify(items_options))
-                );
+                $items_wrapper.siblings('input.leyka-items-options').val( encodeURIComponent(JSON.stringify(items_options)) );
+
+                console.log(decodeURIComponent($items_wrapper.siblings('input.leyka-items-options').val()))
 
             }
         });
@@ -699,13 +736,13 @@ jQuery(document).ready(function($){
 
             $.leyka_admin_campaigns_select(
                 $items_wrapper
-                    .find('.field-box:last-child .autocomplete-select[name="campaigns\[\]"]')
+                    .find('.multi-valued-item-box:last-child .autocomplete-select[name="campaigns\[\]"]')
                     .siblings('input.leyka-campaigns-selector')
             );
 
             $.leyka_admin_campaigns_select(
                 $items_wrapper
-                    .find('.field-box:last-child .autocomplete-select[name="campaigns_exceptions\[\]"]')
+                    .find('.multi-valued-item-box:last-child .autocomplete-select[name="campaigns_exceptions\[\]"]')
                     .siblings('input.leyka-campaigns-selector')
             );
 

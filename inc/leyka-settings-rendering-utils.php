@@ -114,7 +114,7 @@ function leyka_render_email_field($option_id, $data){
 
 <?php }
 
-// File fields:
+// General file upload fields:
 add_action('leyka_render_file', 'leyka_render_file_field', 10, 2);
 function leyka_render_file_field($option_id, $data){
 
@@ -126,7 +126,7 @@ function leyka_render_file_field($option_id, $data){
     $file_exists = ( $data['value'] && file_exists($upload_dir['basedir'].'/'.ltrim($data['value'], '/')) )
         || ($file_data && !empty($file_data['file']));?>
 
-    <div class="leyka-file-field-wrapper <?php echo $option_id;?>-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>" id="<?php echo $option_id;?>-upload">
+    <div class="leyka-upload-field-wrapper leyka-file-field-wrapper <?php echo $option_id;?>-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>" id="<?php echo $option_id;?>-upload">
 
         <?php if( !empty($data['title']) ) {?>
         <span class="field-component title">
@@ -181,6 +181,70 @@ function leyka_render_file_field($option_id, $data){
                 <?php echo $data['description'];?>
             </span>
         <?php }?>
+
+            <input type="hidden" class="leyka-upload-result" name="<?php echo $option_id;?>" value="<?php echo $data['value'];?>">
+
+        </label>
+
+    </div>
+
+<?php }
+
+// Media library file upload fields:
+add_action('leyka_render_media_upload', 'leyka_render_media_upload_field', 10, 2);
+function leyka_render_media_upload_field($option_id, $data){
+
+    $option_id = mb_stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
+    $data['value'] = isset($data['value']) ? $data['value'] : '';?>
+
+    <div class="leyka-upload-field-wrapper leyka-media-upload-field-wrapper <?php echo $option_id;?>-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) ? '' : implode(' ', $data['field_classes']);?>" id="<?php echo $option_id;?>-upload">
+
+        <?php if( !empty($data['title']) ) {?>
+            <span class="field-component title">
+
+            <?php echo esc_html($data['title']);
+
+            if( !empty($data['comment']) ) {?>
+                <span class="field-q">
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
+                    <span class="field-q-tooltip"><?php echo $data['comment'];?></span>
+                </span>
+            <?php }?>
+
+        </span>
+        <?php }?>
+
+        <div class="preview-wrapper">
+
+            <div class="uploaded-file-preview" <?php echo $data['value'] ? '' : 'style="display: none;"';?>>
+
+                <span class="file-preview">
+                <?php if($data['value']) {?>
+                    <img src="<?php echo wp_get_attachment_image_url($data['value'], 'medium');?>" alt="" class="leyka-upload-image-preview">
+                <?php }?>
+                </span>
+
+                <a href="#" class="delete-uploaded-file" title="<?php _e('Delete the uploaded file');?>"></a>
+
+            </div>
+
+            <div class="loading-indicator-wrap" style="display: none;">
+                <div class="loader-wrap"><span class="leyka-loader xs"></span></div>
+            </div>
+
+        </div>
+
+        <label class="upload-field field-wrapper flex" data-upload-title="<?php echo empty($data['upload_title']) ? __('Select a file', 'leyka') : $data['upload_title'];?>" data-upload-button-label="<?php echo empty($data['upload_button_label']) ? __('Use the media', 'leyka') : $data['upload_button_label'];?>" data-upload-is-multiple="<?php echo (int)!empty($data['is_multiple']);?>" data-upload-files-type="<?php echo empty($data['upload_files_type']) ? '' : $data['upload_files_type'];?>" data-option-id="<?php echo $option_id;?>" <?php echo $data['value'] ? 'style="display:none;"' : '';?>>
+
+            <span class="field-component label upload-picture" id="<?php echo $option_id;?>-upload-button">
+                <?php echo empty($data['upload_label']) ? __('Upload', 'leyka') : $data['upload_label'];?>
+            </span>
+
+            <?php if( !empty($data['description']) ) {?>
+                <span class="field-component help">
+                <?php echo $data['description'];?>
+            </span>
+            <?php }?>
 
             <input type="hidden" class="leyka-upload-result" name="<?php echo $option_id;?>" value="<?php echo $data['value'];?>">
 
@@ -1212,13 +1276,13 @@ function leyka_save_additional_fields_library_settings() {
 // [Special field] Common additional donation form fields option - END
 
 // [Special field] Common Donor merchandise/rewards fields option:
-
+/** @todo Move somewhere in the Merchandise Extension */
 function leyka_merchandise_library_main_subfields_html(array $placeholders = []) {
 
     $placeholders = wp_parse_args($placeholders, [
         'title' => '',
         'donation_amount_needed' => 0,
-        'thumbnail' => 0,
+        'thumbnail' => false,
         'description' => '',
     ]);?>
 
@@ -1257,9 +1321,12 @@ function leyka_merchandise_library_main_subfields_html(array $placeholders = [])
             <div class="field-errors"></div>
         </div>
 
-        <div class="settings-block option-block type-file">
-            <?php leyka_render_file_field('merchandise_thumbnail', [
-                'upload_label' => __('Load picture', 'leyka'),
+        <div class="settings-block option-block type-file type-media-upload">
+            <?php leyka_render_media_upload_field('merchandise_thumbnail', [
+                'title' => __('Reward picture', 'leyka'),
+                'upload_label' => __('Upload picture', 'leyka'),
+                'upload_title' => __('Select a picture for the reward', 'leyka'),
+                'upload_button_label' => __('Use the picture', 'leyka'),
                 'required' => false,
                 'value' => $placeholders['thumbnail'],
             ]);?>
@@ -1384,7 +1451,7 @@ function leyka_render_merchandise_library_settings($option_id, $data = []){
 }
 
 add_action('leyka_save_custom_option-merchandise_library', 'leyka_save_merchandise_library_settings');
-function leyka_save_merchandise_library_settings() { // TODO MERCH V.2
+function leyka_save_merchandise_library_settings() {
 
     $_POST['leyka_merchandise_library'] = json_decode(urldecode($_POST['leyka_merchandise_library']));
     $result = [];
@@ -1429,7 +1496,7 @@ function leyka_save_merchandise_library_settings() { // TODO MERCH V.2
 // [Special field] Common Donor merchandise/rewards fields option - END
 
 // [Special field] Support packages extension - packages list field:
-/** @todo Move to somewhere in the Support_Packages Extension */
+/** @todo Move somewhere in the Support_Packages Extension */
 add_action('leyka_render_custom_support_packages_settings', 'leyka_render_support_packages_settings', 10, 2);
 function leyka_render_support_packages_settings($option_id, $data){
 
