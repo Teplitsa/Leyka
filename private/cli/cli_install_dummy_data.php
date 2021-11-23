@@ -41,18 +41,16 @@ catch (Exception $ex) {
 
 class LeykaDummyData {
 
-    public $vars = [];
+    public $data = [];
 
     public function __construct() {
+        $this->_get_data();
         $this->_update_dummy_data_settings();
     }
 
     public function install_settings() {
 
-        $settings_raw = file_get_contents(LEYKA_PLUGIN_DIR.'private/cli/dummy_data/leyka_settings.json');
-        $settings = json_decode($settings_raw, true);
-
-        foreach($settings as $setting) {
+        foreach($this->data['leyka_settings'] as $setting) {
 
             $value = $setting['translate'] === true ? __($setting['value'], 'leyka') : $setting['value'];
             update_option($setting['title'], $value);
@@ -63,12 +61,9 @@ class LeykaDummyData {
 
     public function install_payment_methods() {
 
-        $available_pms_raw = file_get_contents(LEYKA_PLUGIN_DIR.'private/cli/dummy_data/payment_methods.json');
-        $available_pms_array = json_decode($available_pms_raw, true);
+        if(sizeof($this->data['payment_methods']) > 0) {
 
-        if(sizeof($available_pms_array) > 0) {
-
-            foreach($available_pms_array as $pm) {
+            foreach($this->data['payment_methods'] as $pm) {
                 $available_pms[] = $pm['gateway_id']."-".$pm['title'];
             }
 
@@ -82,11 +77,9 @@ class LeykaDummyData {
 
         global $wpdb;
 
-        $campaigns_data_raw = file_get_contents(LEYKA_PLUGIN_DIR.'private/cli/dummy_data/campaigns.json');
-        $campaigns_data = json_decode($campaigns_data_raw, true);
         $uploads = wp_upload_dir();
 
-        foreach($campaigns_data as $campaign_data) {
+        foreach($this->data['campaigns'] as $campaign_data) {
 
             $campaign_post = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->posts} WHERE post_type = %s AND post_name = %s", Leyka_Campaign_Management::$post_type, $campaign_data['name']));
 
@@ -111,7 +104,7 @@ class LeykaDummyData {
             update_post_meta($campaign_id, 'campaign_template', 'revo');
             $campaign = new Leyka_Campaign($campaign_id);
 
-            $payments_per_compaign = round((int)$this->vars['donations_count']['value'] / sizeof($campaign_data));
+            $payments_per_compaign = round((int)$this->data['variables']['donations_count']['value'] / sizeof($campaign_data));
             $this->install_campaign_donations($campaign, $payments_per_compaign);
             $campaign->update_total_funded_amount();
             $campaign->refresh_target_state();
@@ -142,32 +135,27 @@ class LeykaDummyData {
 
     public function install_campaign_donations(Leyka_Campaign $campaign, $payments_count) {
 
-        $donors_constructor_data_raw = file_get_contents(LEYKA_PLUGIN_DIR.'private/cli/dummy_data/donors_constructor.json');
-        $donors_constructor_data = json_decode($donors_constructor_data_raw, true);
-
-        $available_pms_raw = file_get_contents(LEYKA_PLUGIN_DIR.'private/cli/dummy_data/payment_methods.json');
-        $available_pms_array = json_decode($available_pms_raw, true);
-
-        if(sizeof($available_pms_array) > 0) {
-            foreach($available_pms_array as $pm) {
+        if(sizeof($this->data['payment_methods']) > 0) {
+            foreach($this->data['payment_methods'] as $pm) {
                 $available_pms[$pm['gateway_id']] = $pm['gateway_id']."-".$pm['title'];
             }
         }
 
+        $donors_constructor_data = $this->data['donors_constructor'];
         $init_rebills = [];
 
         for($i = 0; $i < $payments_count; $i++ ) {
 
-            $gateway_id = $this->_get_proportion_part_title($this->vars['gates_usage_proportions']['value']);
+            $gateway_id = $this->_get_proportion_part_title($this->data['variables']['gates_usage_proportions']['value']);
             $payment_method_id = $available_pms[$gateway_id];
             $donor_name =
                 $donors_constructor_data['first_names'][rand(0, sizeof($donors_constructor_data['first_names'])-1)]." ".
                 $donors_constructor_data['patronymics'][rand(0, sizeof($donors_constructor_data['patronymics'])-1)]." ".
                 $donors_constructor_data['last_names'][rand(0, sizeof($donors_constructor_data['last_names'])-1)];
             $donor_email = $donors_constructor_data['emails'][rand(0, sizeof($donors_constructor_data['emails'])-1)];
-            $status = $this->_get_proportion_part_title($this->vars['donations_statuses_proportions']['value']);
+            $status = $this->_get_proportion_part_title($this->data['variables']['donations_statuses_proportions']['value']);
             $payment_type = $i === 0 ?
-                'single' : $this->_get_proportion_part_title($this->vars['donations_types_proportions']['value']);
+                'single' : $this->_get_proportion_part_title($this->data['variables']['donations_types_proportions']['value']);
 
             $donation_data = [
                 'gateway_id' => $gateway_id,
@@ -188,7 +176,7 @@ class LeykaDummyData {
                 $donation_data['recurring_is_active'] = true;
 
                 if(rand(1, 5) > 1 && sizeof($init_rebills) > 0) { // non-init rebill
-                    $donation_data['init_recurring_donation'] = $init_rebills[rand(0, sizeof($init_rebills))];
+                    $donation_data['init_recurring_donation'] = $init_rebills[rand(0, sizeof($init_rebills) - 1)];
                 }
             }
 
@@ -202,7 +190,7 @@ class LeykaDummyData {
 
     }
 
-    protected static function _get_proportion_part_title($proportions) {
+    protected function _get_proportion_part_title($proportions) {
 
         $rnd = rand(1, 100);
         $min = null;
@@ -221,10 +209,7 @@ class LeykaDummyData {
 
     protected function _update_dummy_data_settings() {
 
-        $def_vars_raw = file_get_contents(LEYKA_PLUGIN_DIR.'private/cli/dummy_data/variables.json');
-        $def_vars = json_decode($def_vars_raw, true);
-
-        foreach($def_vars as $def_var_title => $def_var_value) {
+        foreach($this->data['variables'] as $def_var_title => $def_var_value) {
 
             $message = "\nВведите через запятую ".$def_var_value['description'].":\n\n";
 
@@ -243,29 +228,39 @@ class LeykaDummyData {
 
             fwrite(STDOUT, $message);
 
-            $this->vars[$def_var_title] = [
+            $this->data['variables'][$def_var_title] = [
                 'description' => $def_var_value['description'],
                 'value' => LeykaDummyDataUtils::ask_settings_variable_update($def_var_value['value'])
             ];
 
-            if($this->vars[$def_var_title]['value'] === $def_var_value['value']) {
+            if($this->data['variables'][$def_var_title]['value'] === $def_var_value['value']) {
 
                 fwrite(STDOUT,PHP_EOL.'Ошибка ввода! Взяты дефолтные значения. '.PHP_EOL);
 
-                if (is_array($this->vars[$def_var_title]['value'])) {
+                if (is_array($this->data['variables'][$def_var_title]['value'])) {
                     fwrite(
                         STDOUT,
-                        PHP_EOL.ucfirst($def_var_value['description']).": ".implode(',', $this->vars[$def_var_title]['value']).PHP_EOL.PHP_EOL
+                        PHP_EOL.ucfirst($def_var_value['description']).": ".implode(',', $this->data['variables'][$def_var_title]['value']).PHP_EOL.PHP_EOL
                     );
                 } else {
                     fwrite(
                         STDOUT,
-                        PHP_EOL.ucfirst($def_var_value['description']).": ".$this->vars[$def_var_title]['value'].PHP_EOL.PHP_EOL
+                        PHP_EOL.ucfirst($def_var_value['description']).": ".$this->data['variables'][$def_var_title]['value'].PHP_EOL.PHP_EOL
                     );
                 }
 
             }
 
+        }
+
+    }
+
+    protected function _get_data() {
+        $raw_data_file_names = ['variables','leyka_settings','campaigns','donors_constructor','payment_methods'];
+
+        foreach($raw_data_file_names as $raw_data_file_name) {
+            $raw_data = file_get_contents(LEYKA_PLUGIN_DIR.'private/cli/dummy_data/'.$raw_data_file_name.'.json');
+            $this->data[$raw_data_file_name] = json_decode($raw_data, true);
         }
 
     }
