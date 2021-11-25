@@ -1,6 +1,6 @@
 <?php if( !defined('WPINC') ) die;
 /**
- * Leyka_CP_Gateway class
+ * Leyka_Stripe_Gateway class
  */
 
 class Leyka_Stripe_Gateway extends Leyka_Gateway {
