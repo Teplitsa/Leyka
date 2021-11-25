@@ -63,7 +63,7 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php'); ?>
 
                         <?php } else { // 2-nd reset step form - Account password resetting ?>
 
-                            <form class="leyka-screen-form leyka-account-pass-setup" action="<?php echo home_url('/donor_account/login/');?>" method="post">
+                            <form class="leyka-screen-form leyka-account-pass-setup" action="<?php echo home_url('/donor-account/login/');?>" method="post">
 
                                 <h2><?php _e('Set up your new password', 'leyka');?></h2>
 

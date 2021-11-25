@@ -9,7 +9,7 @@ class Leyka_Donor {
     /** @var WP_User */
 	protected $_user;
 
-    protected $_meta = array();
+    protected $_meta = [];
 
     const DONOR_USER_ROLE = 'donor';
     const DONOR_ACCOUNT_ACCESS_CAP = 'donor_account_access';
@@ -38,14 +38,14 @@ class Leyka_Donor {
 
         } else { // Create a new Donor user
 
-            $donor_user_id = wp_insert_user(array(
+            $donor_user_id = wp_insert_user([
                 'user_email' => $params['donor_email'],
                 'user_login' => $params['donor_email'],
-                'user_pass' => wp_generate_password(16, true, false),
+                'user_pass' => wp_generate_password(16),
                 'display_name' => $params['donor_name'],
                 'show_admin_bar_front' => false,
                 'role' => Leyka_Donor::DONOR_USER_ROLE,
-            ));
+            ]);
 
             $donor_user = get_user_by('id', $donor_user_id);
 
@@ -71,7 +71,7 @@ class Leyka_Donor {
             $donor_user->add_cap(self::DONOR_ACCOUNT_ACCESS_CAP);
 
             // If Donor user just acquired account access, make him set up a password:
-            update_user_meta($donor_user->id, 'leyka_account_activation_code', wp_generate_password(60, false, false));
+            update_user_meta($donor_user->id, 'leyka_account_activation_code', wp_generate_password(60, false));
 
         } else {
             $donor_user->remove_cap(self::DONOR_ACCOUNT_ACCESS_CAP);
@@ -84,13 +84,13 @@ class Leyka_Donor {
     /**
      * Create Donor account from donation, if it doesn't exist yet.
      *
-     * @param $donation int|WP_Post|Leyka_Donation
+     * @param $donation int|Leyka_Donation_Base
      * @param $donor_has_account boolean|null Either true/false, or NULL to decide based on given donation type.
      * @return int|WP_Error New donor user ID or WP_Error object.
      */
     public static function create_donor_from_donation($donation, $donor_has_account = null) {
 
-        $donation = leyka_get_validated_donation($donation);
+        $donation = Leyka_Donations::get_instance()->get_donation($donation);
 
         if( !$donation || !leyka_options()->opt('donor_management_available') ) {
             $donor_user_id = new WP_Error(
@@ -110,11 +110,11 @@ class Leyka_Donor {
 
         if( !$donor_user_id ) {
 
-            $donor_user_id = Leyka_Donor::add(array(
+            $donor_user_id = Leyka_Donor::add([
                 'donor_email' => $donation->donor_email,
                 'donor_name' => $donation->donor_name,
                 'donor_has_account_access' => $donor_has_account,
-            ));
+            ]);
 
             $donation->donor_account = $donor_user_id; // Donor ID or WP_Error
 
@@ -138,63 +138,59 @@ class Leyka_Donor {
             return;
         }
 
-        $donor_data = array(
+        $donor_data = [
             'donor_type' => 'single',
             'first_donation' => false,
             'last_donation' => false,
-            'campaigns' => array(),
-            'campaigns_news_subscriptions' => array(),
-            'gateways' => array(),
+            'campaigns' => [],
+            'campaigns_news_subscriptions' => [],
+            'gateways' => [],
             'amount_donated' => 0.0,
-        );
+        ];
 
-        $donor_donations = get_posts(array( // Get donations by donor's email
-            'post_type' => Leyka_Donation_Management::$post_type,
-            'post_status' => 'funded',
-            'posts_per_page' => -1,
-//            'author' => $donor->id,
-            'meta_query' => array(array('key' => 'leyka_donor_email', 'value' => $donor->email),),
+        $donations = Leyka_Donations::get_instance()->get([ // Get Donations by Donor's email
+            'status' => ['submitted', 'funded', 'failed', 'refunded',],
+            'get_all' => true,
+            'donor_email' => $donor->email,
             'orderby' => 'date',
             'order' => 'ASC',
-        ));
+        ]);
 
-        $donations_count = count($donor_donations);
+        $donations_count = count($donations);
         for($i = 0; $i < $donations_count; $i++) {
 
-            $donation = new Leyka_Donation($donor_donations[$i]);
+            $donations[$i]->donor_user_id = $donor->id;
 
-            $donation->donor_user_id = $donor->id;
-
-            if($donation->is_init_recurring_donation && $donation->recurring_on) {
+            if($donations[$i]->is_init_recurring_donation && $donations[$i]->recurring_on) {
                 $donor_data['donor_type'] = 'regular';
             }
 
             if($i === 0) {
-                $donor_data['first_donation'] = $donation;
+                $donor_data['first_donation'] = $donations[$i];
             }
             if($i === $donations_count - 1) {
-                $donor_data['last_donation'] = $donation;
+                $donor_data['last_donation'] = $donations[$i];
             }
 
-            if(empty($donor_data['campaigns']) || empty($donor_data['campaigns'][$donation->campaign_id])) {
-                $donor_data['campaigns'][$donation->campaign_id] = $donation->campaign_title;
+            if(empty($donor_data['campaigns']) || empty($donor_data['campaigns'][$donations[$i]->campaign_id])) {
+                $donor_data['campaigns'][$donations[$i]->campaign_id] = $donations[$i]->campaign_title;
             }
-            if($donation->donor_subscribed) {
+            if($donations[$i]->donor_subscribed) {
                 if(
                     empty($donor_data['campaigns_news_subscriptions'])
-                    || empty($donor_data['campaigns_news_subscriptions'][$donation->campaign_id])
+                    || empty($donor_data['campaigns_news_subscriptions'][$donations[$i]->campaign_id])
                 ) {
-                    $donor_data['campaigns_news_subscriptions'][$donation->campaign_id] = $donation->campaign_title;
+                    $donor_data['campaigns_news_subscriptions'][$donations[$i]->campaign_id] = $donations[$i]->campaign_title;
                 }
             }
 
-            if(empty($donor_data['gateways']) || !in_array($donation->gateway, $donor_data['gateways'])) {
-                $donor_data['gateways'][] = $donation->gateway;
+            if(empty($donor_data['gateways']) || !in_array($donations[$i]->gateway, $donor_data['gateways'])) {
+                $donor_data['gateways'][] = $donations[$i]->gateway;
             }
 
-            if($donation->status === 'funded') {
+            if($donations[$i]->status === 'funded') {
                 $donor_data['amount_donated'] = empty($donor_data['amount_donated']) ?
-                    $donation->amount : $donor_data['amount_donated'] + $donation->amount;
+                    $donations[$i]->amount : $donor_data['amount_donated'] + $donations[$i]->amount;
             }
 
         }
@@ -241,7 +237,7 @@ class Leyka_Donor {
 
         $donations_ordered = get_transient('leyka_donations2refresh_donor_data_cache');
         if( !$donations_ordered ) {
-            $donations_ordered = array();
+            $donations_ordered = [];
         }
 
         if(is_array($donations_ordered) && !in_array($donation_id, $donations_ordered)) {
@@ -276,7 +272,7 @@ class Leyka_Donor {
 
             $meta = get_user_meta($this->_id, '', true);
 
-            $this->_meta = array(
+            $this->_meta = [
                 'account_activation_code' => empty($meta['leyka_account_activation_code']) ?
                     '' : $meta['leyka_account_activation_code'][0],
                 'name' => $this->_user->display_name,
@@ -292,17 +288,17 @@ class Leyka_Donor {
                 'last_donation_date' => empty($meta['leyka_donor_last_donation_date']) ?
                     0 : absint($meta['leyka_donor_last_donation_date'][0]),
                 'campaigns' => empty($meta['leyka_donor_campaigns']) ?
-                    array() : maybe_unserialize($meta['leyka_donor_campaigns'][0]),
+                    [] : maybe_unserialize($meta['leyka_donor_campaigns'][0]),
                 'campaigns_news_subscriptions' => empty($meta['leyka_donor_campaigns_news_subscriptions']) ?
-                    array() : maybe_unserialize($meta['leyka_donor_campaigns_news_subscriptions'][0]),
+                    [] : maybe_unserialize($meta['leyka_donor_campaigns_news_subscriptions'][0]),
                 'gateways' => empty($meta['leyka_donor_gateways']) ?
-                    array() : maybe_unserialize($meta['leyka_donor_gateways'][0]),
+                    [] : maybe_unserialize($meta['leyka_donor_gateways'][0]),
                 'amount_donated' => empty($meta['leyka_amount_donated']) ? 0.0 : (float)$meta['leyka_amount_donated'][0],
-                //'comments' => empty($meta['leyka_donor_comments']) ? array() : maybe_unserialize($meta['leyka_donor_comments']),
-            );
+                //'comments' => empty($meta['leyka_donor_comments']) ? [] : maybe_unserialize($meta['leyka_donor_comments']),
+            ];
 
             // Donor comments:
-            $this->_meta['comments'] = array();
+            $this->_meta['comments'] = [];
 
             if( !empty($meta['leyka_donor_comments']) ) {
 
@@ -366,18 +362,16 @@ class Leyka_Donor {
 
             case 'type_label':
             case 'donor_type_label':
-                $labels = array(
+                $labels = [
                     'single' => _x('Single', "Donor's type", 'leyka'),
                     'regular' => _x('Regular', "Donor's type", 'leyka'),
-                );
+                ];
                 return empty($this->_meta['type']) || empty($labels[$this->_meta['type']]) ? '' : $labels[$this->_meta['type']];
 
-            case 'first_donation_id': return empty($this->_meta['first_donation_id']) ? false : $this->_meta['first_donation_id'];
+            case 'first_donation_id':
+                return empty($this->_meta['first_donation_id']) ? false : $this->_meta['first_donation_id'];
             case 'first_donation':
-                if( !$this->_meta['first_donation_id'] ) {
-                    return false;
-                }
-                return new Leyka_Donation($this->_meta['first_donation_id']);
+                return $this->first_donation_id ? Leyka_Donations::get_instance()->get($this->first_donation_id) : false;
 
             case 'first_donation_date_timestamp': return $this->_meta['first_donation_date'];
             case 'first_donation_date':
@@ -411,10 +405,7 @@ class Leyka_Donor {
 
             case 'last_donation_id': return empty($this->_meta['last_donation_id']) ? false : $this->_meta['last_donation_id'];
             case 'last_donation':
-                if( !$this->_meta['last_donation_id'] ) {
-                    return false;
-                }
-                return new Leyka_Donation($this->_meta['last_donation_id']);                
+                return $this->last_donation_id ? Leyka_Donations::get_instance()->get($this->last_donation_id) : false;
 
             case 'last_donation_date_timestamp': return $this->_meta['last_donation_date'];
             case 'last_donation_date':
@@ -487,7 +478,7 @@ class Leyka_Donor {
                     return true;
                 }
                 $this->_meta['name'] = esc_sql($value);
-                $res = wp_update_user(array('ID' => $this->_id, 'display_name' => $this->_meta['name']));
+                $res = wp_update_user(['ID' => $this->_id, 'display_name' => $this->_meta['name']]);
                 break;
 
             case 'email':
@@ -496,7 +487,7 @@ class Leyka_Donor {
                     return true;
                 }
                 $this->_meta['email'] = esc_sql($value);
-                $res = wp_update_user(array('ID' => $this->_id, 'user_email' => $this->_meta['email']));
+                $res = wp_update_user(['ID' => $this->_id, 'user_email' => $this->_meta['email']]);
                 break;
 
             case 'desc':
@@ -602,7 +593,7 @@ class Leyka_Donor {
             case 'donor_password':
             case 'account_password':
                 $value = trim($value);
-                $res = wp_update_user(array('ID' => $this->_id, 'user_pass' => esc_sql($value)));
+                $res = wp_update_user(['ID' => $this->_id, 'user_pass' => esc_sql($value)]);
                 break;
 
             default:
@@ -618,108 +609,70 @@ class Leyka_Donor {
     function get_init_recurring_donations($only_active = true, $show_cancel_requested = true) {
 
         if( !$this->_id || !$this->email ) {
-            return array();
+            return [];
         }
 
-        $meta_params = array(
-            'relation' => 'AND',
-            array('key' => 'leyka_payment_type', 'value' => 'rebill'),
-            array('key' => 'leyka_donor_email', 'value' => $this->email),
-        );
+        $params = [
+            'status' => 'funded',
+            'recurring_only_init' => true,
+            'donor_id' => $this->_id, // 'donor_email' => $this->email
+            'get_all' => true,
+        ];
 
         if($only_active) {
-            $meta_params[] = array(
-                array('key' => '_rebilling_is_active', 'value' => 1),
+            $params['recurring_active'] = true;
+        }
+
+        if( !$show_cancel_requested ) { /** @todo Add this param handling to the Leyka_Donations::get() for both storage types */
+//            $meta_params[] = [
 //                'relation' => 'OR',
-//                array('key' => 'leyka_recurrents_cancelled', 'value' => false),
-//                array('key' => 'leyka_recurrents_cancelled', 'compare' => 'NOT EXISTS'),
-            );
+//                ['key' => 'leyka_cancel_recurring_requested', 'value' => false],
+//                ['key' => 'leyka_cancel_recurring_requested', 'compare' => 'NOT EXISTS'],
+//            ];
         }
 
-        if( !$show_cancel_requested ) {
-            $meta_params[] = array(
-                'relation' => 'OR',
-                array('key' => 'leyka_cancel_recurring_requested', 'value' => false),
-                array('key' => 'leyka_cancel_recurring_requested', 'compare' => 'NOT EXISTS'),
-            );
-        }
-
-        $recurring_subscriptions = get_posts(array(
-            'post_type' => Leyka_Donation_Management::$post_type,
-            'post_status' => 'funded',
-            'post_parent' => 0,
-            'meta_query' => $meta_params,
-            'posts_per_page' => -1,
-        ));
-
-        if( !$recurring_subscriptions ) {
-            return array();
-        }
-
-        foreach($recurring_subscriptions as &$init_donation) { /** @var $init_donation WP_Post */
-            $init_donation = new Leyka_Donation($init_donation);
-        }
-
-        return $recurring_subscriptions;
+        return Leyka_Donations::get_instance()->get($params);
 
     }
 
-    function get_donations($page_number = false) {
+    function get_donations($page_number = false, $donations_per_page = false) {
 
-        $page_number = (int)$page_number > 0 ? (int)$page_number : 1;
+        $page_number = $page_number > 0 ? absint($page_number) : 1;
+        $donations_per_page = $donations_per_page === 'all' || $donations_per_page === -1 ?
+            -1 : ($donations_per_page > 0 ? absint($donations_per_page) : static::DONOR_ACCOUNT_DONATIONS_PER_PAGE);
 
         if( !$this->_id || !$this->email ) {
-            return array();
+            return [];
         }
 
-        $donations = get_posts(array(
-            'post_type' => Leyka_Donation_Management::$post_type,
-            'post_status' => array('funded', 'refunded', 'failed'),
-            'author' => $this->_id,
-            'posts_per_page' => static::DONOR_ACCOUNT_DONATIONS_PER_PAGE,
-            'paged' => $page_number,
-            'orderby' => 'date ID',
+        return Leyka_Donations::get_instance()->get([
+            'status' => ['funded', 'refunded', 'failed'],
+            'donor_id' => $this->_id,
+            'results_limit' => $donations_per_page <= 0 ? false : $donations_per_page,
+            'get_all' => $donations_per_page <= 0,
+            'page' => $page_number,
+            'orderby' => 'ID',
             'order' => 'DESC',
-        ));
-
-        if( !$donations ) {
-            return array();
-        }
-
-        foreach($donations as &$donation) { /** @var $donation WP_Post */
-            $donation = new Leyka_Donation($donation);
-        }
-
-        return $donations;
+        ]);
 
     }
 
     function get_donations_count() {
 
         if( !$this->_id || !$this->email ) {
-            return array();
+            return 0;
         }
 
-        $donations = new WP_Query(array(
-            'post_type' => Leyka_Donation_Management::$post_type,
-            'post_status' => array('funded', 'refunded', 'failed'),
-            'meta_query' => array(
-                'relation' => 'AND',
-                array(
-                    'relation' => 'OR',
-                    array('key' => 'leyka_payment_type', 'value' => 'single'),
-                    array('key' => 'leyka_payment_type', 'value' => 'rebill'),
-                ),
-                array('key' => 'leyka_donor_email', 'value' => $this->email),
-            ),
-            'posts_per_page' => -1,
-        ));
-
-        return $donations->found_posts;
+        return Leyka_Donations::get_instance()->get_count([
+            'status' => ['funded', 'refunded', 'failed'],
+            'payment_type' => ['single', 'rebill'],
+            'donor_id' => $this->_id,
+            'get_all' => true,
+        ]);
 
     }
 
-    public function get_tags(array $params = array()) {
+    public function get_tags(array $params = []) {
         return wp_get_object_terms($this->_id, static::DONORS_TAGS_TAXONOMY_NAME, $params);
     }
 
@@ -727,13 +680,11 @@ class Leyka_Donor {
         return !empty($this->_meta['comments']);
     }
 
-    public function get_comments( /*array $params = array()*/ ) {
+    public function get_comments() {
 
         if( !$this->comments_exist() ) {
-            return array();
+            return [];
         }
-
-        // Apply $params filters here
 
         return $this->_meta['comments'];
 
@@ -751,12 +702,12 @@ class Leyka_Donor {
             $new_comment_id += 1;
         }
 
-        $this->_meta['comments'][$new_comment_id] = array(
+        $this->_meta['comments'][$new_comment_id] = [
             'date' => time(),
             'text' => esc_attr($text),
             'author_id' => get_current_user_id(),
             'author_name' => wp_get_current_user()->display_name,
-        );
+        ];
 
         return !!update_user_meta($this->_id, 'leyka_donor_comments', $this->_meta['comments']);
 
@@ -795,11 +746,11 @@ class Leyka_Donor {
             return false;
         }
 
-        $res = wp_signon(array(
+        $res = wp_signon([
             'user_login' => $this->_user->user_login,
             'user_password' => trim($password),
             'remember' => !!$remember,
-        ));
+        ]);
 
         return is_wp_error($res) ? $res : true;
 

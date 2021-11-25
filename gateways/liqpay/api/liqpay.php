@@ -36,13 +36,13 @@ class LiqPay {
 
     private $_api_url = 'https://www.liqpay.ua/api/';
     private $_checkout_url = 'https://www.liqpay.ua/api/3/checkout';
-    protected $_supportedCurrencies = array(
+    protected $_supportedCurrencies = [
         self::CURRENCY_EUR,
         self::CURRENCY_USD,
         self::CURRENCY_UAH,
         self::CURRENCY_RUB,
         self::CURRENCY_RUR,
-    );
+    ];
     private $_public_key;
     private $_private_key;
     private $_server_response_code = null;

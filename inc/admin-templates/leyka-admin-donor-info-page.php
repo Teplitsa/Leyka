@@ -4,7 +4,7 @@
 /** @var $this Leyka_Admin_Setup */
 
 if(empty($_GET['donor']) || !current_user_can('leyka_manage_options')) {
-    wp_die(__('Error: cannot display a page for a given donor.', 'leyka'));
+    wp_die(__('Error: cannot display the page for the given donor.', 'leyka'));
 }
 
 try {

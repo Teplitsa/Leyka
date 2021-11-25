@@ -1,0 +1,99 @@
+/** Donations list page **/
+.leyka-admin-list-page.leyka-admin-donations-list {
+
+    // Table filters:
+    .leyka-admin-list-filter-wrapper.leyka-donation-date-filter-wrapper {
+
+        position: relative;
+
+        label {
+            position: absolute;
+            top: 6px;
+            left: 10px;
+        }
+
+        input {
+            padding-left: 50px;
+            width: 100% !important;
+            color: $color-text-semi;
+        }
+
+    }
+    // Table filters - END
+
+    // List table (columns & content):
+    .wp-list-table.widefat {
+
+        // Columns width:
+        tr {
+
+            .column-id {
+                width: 80px;
+            }
+
+            .column-payment_type {
+                width: 40px;
+            }
+
+            .column-campaign {
+                //width: 350px;
+                min-width: 250px;
+                max-width: 350px;
+            }
+
+            .column-donor {
+                width: 180px;
+                max-width: 250px;
+            }
+
+            .column-date {
+                width: 70px;
+            }
+
+            .column-gateway_pm {
+                //width: 230px;
+                min-width: 170px;
+                max-width: 230px;
+            }
+
+            .column-emails {
+                width: 100px;
+            }
+
+            .column-donor_subscription {
+                width: 78px;
+            }
+
+        }
+        // Columns width - END
+
+        // Columns content settings:
+        td {
+
+            font-size: 13px;
+
+            &.column-emails {
+
+                font-size: 12px;
+
+                .send-donor-thanks {
+                    display: inline-block;
+                }
+
+                time {
+                    font-size: 11px;
+                }
+
+            }
+
+            &.column-donor_comment {
+                font-size: 11px;
+            }
+
+        }
+        // Columns content settings - END
+
+    }
+    // List table (columns & content) END
+
+}

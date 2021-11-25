@@ -68,7 +68,7 @@ class Leyka_Settings_Stage {
 
     public function get_errors() {
 
-        $errors = array();
+        $errors = [];
 
         foreach($this->_sections as $section) { /** @var $section Leyka_Settings_Section */
             $errors = array_merge($errors, $section->get_errors());

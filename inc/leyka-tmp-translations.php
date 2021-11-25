@@ -10,15 +10,15 @@ function leyka_tmp__($line, $locale = false) {
         return __($line, 'leyka');
     }
 
-    $tmp_translations = array(
-        'Terms of donation service' => array('ru_RU' => 'Условия сервиса сбора пожертвований',),
-        'Terms of personal data usage' => array('ru_RU' => 'Условия использования персональных данных'),
-        'Thank you!' => array('ru_RU' => 'Спасибо!'),
-        'Your donation completed. We are grateful for your help.' => array('ru_RU' => 'Ваше пожертвование завершено. Мы благодарим вас за помощь!'),
-        'Payment failure' => array('ru_RU' => 'Ошибка платежа'),
-        'We are deeply sorry, but for some technical reason we failed to receive your donation. Your money are intact. Please try again later!' => array('ru_RU' => 'Мы извиняемся, но по какой-то причине мы не смогли получить ваше пожертвование. Ваши деньги вернутся на ваш счёт. Пожалуйста, попробуйте ещё раз попозже!'),
-//        '' => array('ru_RU' => ''),
-        'Organization Terms of service text' => array('ru_RU' => 'Публичная оферта о заключении договора пожертвования<br>
+    $tmp_translations = [
+        'Terms of donation service' => ['ru_RU' => 'Условия сервиса сбора пожертвований',],
+        'Terms of personal data usage' => ['ru_RU' => 'Условия использования персональных данных'],
+        'Thank you!' => ['ru_RU' => 'Спасибо!'],
+        'Your donation completed. We are grateful for your help.' => ['ru_RU' => 'Ваше пожертвование завершено. Мы благодарим вас за помощь!'],
+        'Payment failure' => ['ru_RU' => 'Ошибка платежа'],
+        'We are deeply sorry, but for some technical reason we failed to receive your donation. Your money are intact. Please try again later!' => ['ru_RU' => 'Мы извиняемся, но по какой-то причине мы не смогли получить ваше пожертвование. Ваши деньги вернутся на ваш счёт. Пожалуйста, попробуйте ещё раз попозже!'],
+//        '' => ['ru_RU' => ''],
+        'Organization Terms of service text' => ['ru_RU' => 'Публичная оферта о заключении договора пожертвования<br>
 <br>
 #LEGAL_NAME# (#LEGAL_FACE_POSITION#: #LEGAL_FACE#),<br>
 предлагает гражданам сделать пожертвование на ниже приведенных условиях:<br>
@@ -62,8 +62,8 @@ function leyka_tmp__($line, $locale = false) {
 <br>
 <br>
 #LEGAL_FACE_POSITION#<br>
-#LEGAL_FACE#'),
-        'Terms of donation service text for individual. Use <br> for line-breaks, please.' => array('ru_RU' => 'Публичная оферта о заключении договора пожертвования<br>
+#LEGAL_FACE#'],
+        'Terms of donation service text for individual. Use <br> for line-breaks, please.' => ['ru_RU' => 'Публичная оферта о заключении договора пожертвования<br>
 <br>
 #LEGAL_NAME#,<br>
 предлагает гражданам сделать пожертвование на ниже приведенных условиях:<br>
@@ -104,8 +104,8 @@ function leyka_tmp__($line, $locale = false) {
 БИК банка: #BANK_BIC#<br>
 Номер корреспондентского счёта банка: #BANK_CORR_ACCOUNT#<br>
 <br>
-#LEGAL_FACE#'),
-        'Terms of personal data usage full text. Use <br> for line-breaks.' => array('ru_RU' => 'Согласие на обработку персональных данных
+#LEGAL_FACE#'],
+        'Terms of personal data usage full text. Use <br> for line-breaks.' => ['ru_RU' => 'Согласие на обработку персональных данных
 
 Пользователь, оставляя заявку, оформляя подписку, комментарий, запрос на обратную связь, регистрируясь либо совершая иные действия, связанные с внесением своих персональных данных на интернет-сайте #SITE_URL#, принимает настоящее Согласие на обработку персональных данных (далее – Согласие), размещенное по адресу #PD_TERMS_PAGE_URL#.
 
@@ -142,8 +142,8 @@ function leyka_tmp__($line, $locale = false) {
 
 9. Настоящее Согласие является бессрочным, и действует все время до момента прекращения обработки персональных данных, указанных в п.7 и п.8 данного Согласия.
 
-10. Место нахождения организации «#LEGAL_NAME#» в соответствии с учредительными документами: #LEGAL_ADDRESS#.'),
-    );
+10. Место нахождения организации «#LEGAL_NAME#» в соответствии с учредительными документами: #LEGAL_ADDRESS#.'],
+    ];
 
     return !empty($tmp_translations[$line]) && !empty($tmp_translations[$line][$locale]) ?
         $tmp_translations[$line][$locale] : __($line, 'leyka');

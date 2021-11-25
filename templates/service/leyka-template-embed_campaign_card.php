@@ -22,7 +22,7 @@ $campaign = new Leyka_Campaign(get_post());?>
 </head>
 <body style="background-color: transparent;">
     <div id="embedded-card">
-        <?php echo leyka_shortcode_campaign_card(array('campaign_id' => $campaign->id,));?>
+        <?php echo leyka_shortcode_campaign_card(['campaign_id' => $campaign->id,]);?>
     </div>
 </body>
 

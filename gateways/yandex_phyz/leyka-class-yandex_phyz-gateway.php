@@ -10,11 +10,11 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
     protected function _set_attributes() {
 
         $this->_id = 'yandex_phyz';
-        $this->_title = __('Yandex.Money for physical persons', 'leyka');
+        $this->_title = __('YooMoney for physical persons', 'leyka');
         $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-yandeks-dengi-dlya-fizicheskih-lits/';
 
         $this->_min_commission = 2;
-        $this->_receiver_types = array('physical');
+        $this->_receiver_types = ['physical'];
 
     }
 
@@ -24,30 +24,22 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
             return;
         }
 
-        $this->_options = array(
-            'yandex_money_account' => array(
-                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox  
-                'value' => '',
-                'default' => '',
-                'title' => __('Yandex account ID', 'leyka'),
-                'comment' => __("Please, enter your Yandex.Money account ID here. It's else known as Yandex.wallet number.", 'leyka'),
+        $this->_options = [
+            'yandex_money_account' => [
+                'type' => 'text',
+                'title' => __('YooMoney account ID', 'leyka'),
+                'comment' => __('Please, enter your YooMoney account ID here.', 'leyka'),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '4100111111111111'),
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
-            ),
-            'yandex_money_secret' => array(
-                'type' => 'text', // html, rich_html, select, radio, checkbox, multi_checkbox  
-                'value' => '',
-                'default' => '',
-                'title' => __('Yandex account API secret', 'leyka'),
-                'comment' => __('Please, enter your Yandex.Money account API secret string here.', 'leyka'),
+            ],
+            'yandex_money_secret' => [
+                'type' => 'text',
+                'title' => __('YooMoney account API secret', 'leyka'),
+                'comment' => __('Please, enter your YooMoney account API secret string here.', 'leyka'),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'QweR+1TYUIo/p2aS3DFgHJ4K5'),
-                'list_entries' => array(), // For select, radio & checkbox fields
-                'validation_rules' => array(), // List of regexp?..
-            ),
-        );
+            ],
+        ];
 
     }
 
@@ -79,7 +71,7 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
 
     public function submission_form_data($form_data, $pm_id, $donation_id) {
 
-        $donation = new Leyka_Donation($donation_id);
+        $donation = Leyka_Donations::get_instance()->get($donation_id);
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
         switch($pm_id) {
@@ -89,9 +81,11 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
                 $payment_type = '';
         }
 
-		$name = apply_filters('leyka_yandex_phyz_custom_payment_comment', esc_attr(get_bloginfo('name').': '.__('donation', 'leyka')));
+		$name = apply_filters(
+		    'leyka_yandex_phyz_custom_payment_comment', esc_attr(get_bloginfo('name').': '.__('donation', 'leyka'))
+        );
 
-        return array(
+        return [
             'receiver' => leyka_options()->opt('yandex_money_account'),
             'sum' => $donation->amount,
             'formcomment' => $name,
@@ -103,14 +97,14 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
             'shopSuccessURL' => leyka_get_success_page_url(),
             'shopFailURL' => leyka_get_failure_page_url(),
             'cps_email' => $donation->donor_email,
-        );
+        ];
 
     }
 
     // Wrapper method to answer the checkOrder service calls:
     private function _check_order_answer($is_error = false, $message = '', $tech_message = '') {
 
-        $tech_message = $tech_message ? $tech_message : $message;
+        $tech_message = $tech_message ? : $message;
 
         $_POST['operation_id'] = empty($_POST['operation_id']) ? 0 : (int)$_POST['operation_id'];
 
@@ -134,7 +128,7 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
 
 		error_log_yandex_phyz("\n\n---- $call_type ----\n\n".print_r($_REQUEST, true));
 
-        $donation_id = empty($_POST['label']) ? 0 : (int)$_POST['label']; // Donation ID
+        $donation_id = empty($_POST['label']) ? 0 : absint($_POST['label']); // Donation ID
         $amount = empty($_POST['withdraw_amount']) ? 0.0 : (float)$_POST['withdraw_amount'];
 
         error_log_yandex_phyz("Label=$donation_id\n");
@@ -152,12 +146,12 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
 
         }
 
-        $donation = new Leyka_Donation($donation_id);
+        $donation = Leyka_Donations::get_instance()->get($donation_id);
 
         error_log_yandex_phyz("Donation initialized\n");
         error_log_yandex_phyz(print_r($donation, TRUE)."\n");
 
-        $sha1 = sha1(implode('&', array(
+        $sha1 = sha1(implode('&', [
             empty($_POST['notification_type']) ? '' : $_POST['notification_type'],
             empty($_POST['operation_id']) ? '' : $_POST['operation_id'],
             empty($_POST['amount']) ? '' : $_POST['amount'],
@@ -167,7 +161,7 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
             empty($_POST['codepro']) ? '' : $_POST['codepro'],
             leyka_options()->opt('yandex_money_secret'),
             $donation_id
-        )));
+        ]));
 
         error_log_yandex_phyz("sha1=$sha1\n");
 
@@ -182,7 +176,7 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
             error_log_yandex_phyz('$donation->sum='.$donation->sum."\n");
             error_log_yandex_phyz('$donation->status='.$donation->status."\n");
 
-            if($donation->sum != $amount) {
+            if($donation->amount != $amount) {
 
                 error_log_yandex_phyz("Donation sum is unmatched\n");
                 $this->_check_order_answer(1, __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('Donation sum is unmatched', 'leyka'));
@@ -202,12 +196,15 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
 
                 $donation->add_gateway_response($_POST);
                 $donation->status = 'funded';
+
                 Leyka_Donation_Management::send_all_emails($donation->id);
 
                 if( // GUA direct integration - "purchase" event:
                     leyka_options()->opt('use_gtm_ua_integration') === 'enchanced_ua_only'
                     && leyka_options()->opt('gtm_ua_tracking_id')
                     && in_array('purchase', leyka_options()->opt('gtm_ua_enchanced_events'))
+                    // We should send data to GA only for single or init recurring donations:
+                    && ($donation->type === 'single' || $donation->is_init_recurring_donation)
                 ) {
 
                     require_once LEYKA_PLUGIN_DIR.'vendor/autoload.php';
@@ -221,13 +218,13 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
                         ->setTransactionId($donation->id)
                         ->setAffiliation(get_bloginfo('name'))
                         ->setRevenue($donation->amount)
-                        ->addProduct(array( // Donation params
+                        ->addProduct([ // Donation params
                             'name' => $donation->payment_title,
                             'price' => $donation->amount,
                             'brand' => get_bloginfo('name'), // Mb, it won't work with it
                             'category' => $donation->type_label, // Mb, it won't work with it
                             'quantity' => 1,
-                        ))
+                        ])
                         ->setProductActionToPurchase()
                         ->setEventCategory('Checkout')
                         ->setEventAction('Purchase')
@@ -245,39 +242,46 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
         } else {
 
             error_log_yandex_phyz("There is no donation in Leyka DB\n");
+
             $this->_check_order_answer(1, __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('Unregistered donation ID', 'leyka'));
+
         }
     }
 
-    public function get_gateway_response_formatted(Leyka_Donation $donation) {
+    public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {
 
         if( !$donation->gateway_response ) {
-            return array();
+            return [];
         }
 
         $response_vars = maybe_unserialize($donation->gateway_response);
         if( !$response_vars || !is_array($response_vars) ) {
-            return array();
+            return [];
         }
 
 		$payment_type = '';
 		if($response_vars['notification_type'] == 'p2p-incoming') {
-			$payment_type = __('Using Yandex.Money Account', 'leyka');
+			$payment_type = __('Using YooMoney Account', 'leyka');
 		} else if($response_vars['notification_type'] == 'card-incoming') {
 			$payment_type = __('Using Banking Card', 'leyka');
 		}
 
-        return array(
-            __('Last response operation:', 'leyka') => __('Donation confirmation', 'leyka'),
-            __('Yandex payment type:', 'leyka') => $payment_type,
-            __('Gateway invoice ID:', 'leyka') => $response_vars['operation_id'],
-            __('Full donation amount:', 'leyka') =>
-                (float)$response_vars['withdraw_amount'].' '.$donation->currency_label,
-            __('Donation amount after gateway commission:', 'leyka') =>
-                (float)$response_vars['amount'].' '.$donation->currency_label,
-            __("Gateway's donor ID:", 'leyka') => $response_vars['sender'],
-            __('Response date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($response_vars['datetime'])),
+        return apply_filters(
+            'leyka_donation_gateway_response',
+            [
+                __('Last response operation:', 'leyka') => __('Donation confirmation', 'leyka'),
+                __('YooMoney payment type:', 'leyka') => $payment_type,
+                __('Gateway invoice ID:', 'leyka') => $response_vars['operation_id'],
+                __('Full donation amount:', 'leyka') =>
+                    (float)$response_vars['withdraw_amount'].' '.$donation->currency_label,
+                __('Donation amount after gateway commission:', 'leyka') =>
+                    (float)$response_vars['amount'].' '.$donation->currency_label,
+                __("Gateway's donor ID:", 'leyka') => $response_vars['sender'],
+                __('Response date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($response_vars['datetime'])),
+            ],
+            $donation
         );
+
     }
 
 }
@@ -300,15 +304,15 @@ class Leyka_Yandex_Phyz_Money extends Leyka_Payment_Method {
             $this->_category
         );
 
-        $this->_label_backend = __('Virtual cash Yandex.Money', 'leyka');
-        $this->_label = __('Virtual cash Yandex.Money', 'leyka');
+        $this->_label_backend = __('YooMoney virtual cash', 'leyka');
+        $this->_label = __('YooMoney', 'leyka');
 
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, [
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/yandex-money.svg',
-        ));
+        ]);
 
-        $this->_supported_currencies[] = 'rur';
-        $this->_default_currency = 'rur';
+        $this->_supported_currencies[] = 'rub';
+        $this->_default_currency = 'rub';
 
     }
 
@@ -335,15 +339,15 @@ class Leyka_Yandex_Phyz_Card extends Leyka_Payment_Method {
         $this->_label = __('Bank card', 'leyka');
         $this->_label_backend = $this->_label;
 
-        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, array(
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, [
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
-        ));
+        ]);
 
-        $this->_supported_currencies[] = 'rur';
-        $this->_default_currency = 'rur';
+        $this->_supported_currencies[] = 'rub';
+        $this->_default_currency = 'rub';
 
     }
 

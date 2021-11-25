@@ -10,7 +10,10 @@
 @import 'wizard_yandex';
 @import 'loader';
 @import 'settings_sections';
+@import 'donations_list';
+@import 'campaigns_list';
 @import 'campaign_edit';
+@import 'donation_edit';
 
 @import 'dashboard_presets';
 @import 'dashboard_typo';
@@ -26,8 +29,10 @@
 @import 'donors_typo';
 @import 'donors_mixins';
 @import 'donors';
+@import 'donors_list';
+@import 'donor_edit';
 
-@import 'recurring_subscriptions';
+@import 'recurring_subscriptions_list';
 
 @import 'extensions';
 
@@ -109,6 +114,25 @@
         @include leyka-button-primary();
     }
 
+    .main-area-wrapper {
+
+        .main-area-top {
+            margin-bottom: 1rem;
+        }
+
+        .settings-return-link {
+
+            font-size: 14px;
+            text-decoration: none;
+
+            &:before {
+                @include arrow-left-icon();
+            }
+
+        }
+
+    }
+
     #payment-settings-area-new {
 
         display: flex;
@@ -119,22 +143,22 @@
             border-right: 1px solid $color-border-normal;
             flex: 1 1 auto; // 640px of the main area + 32px of the it's right margin
 
-            .main-area-top {
-
-                margin-bottom: 1rem;
-
-                .settings-return-link {
-
-                    font-size: 14px;
-                    text-decoration: none;
-
-                    &:before {
-                        @include arrow-left-icon();
-                    }
-
-                }
-
-            }
+            //.main-area-top {
+            //
+            //    margin-bottom: 1rem;
+            //
+            //    .settings-return-link {
+            //
+            //        font-size: 14px;
+            //        text-decoration: none;
+            //
+            //        &:before {
+            //            @include arrow-left-icon();
+            //        }
+            //
+            //    }
+            //
+            //}
 
             .main-area.single-gateway-settings {
 
@@ -842,6 +866,7 @@
                 }
 
                 .pm-icons-scroll {
+
                     overflow: hidden;
                     position: relative;
                     width: 100%;
@@ -854,6 +879,7 @@
                         width: max-content;
                         min-width: 100%;
                     }
+
                 }
 
                 .scroll-arrow {
@@ -902,14 +928,13 @@
                 padding: 0 16px;
 
                 .button-primary {
-
                     width: 100%;
                     margin-right: 0;
-                    
                 }
 
                 .extension-settings, 
                 .activation-button {
+
                     display: flex;
                     justify-content: center;
                     padding-right: 18px;
@@ -922,6 +947,7 @@
                         left: 2px;
                         top: 3px;
                     }
+
                 }
 
             }

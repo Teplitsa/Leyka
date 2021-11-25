@@ -4,12 +4,12 @@
 
 /** @var $this Leyka_Text_Block A block for which the template is used. */
 
-$campaigns = get_posts(array(
+$campaigns = get_posts([
     'post_type' => Leyka_Campaign_Management::$post_type,
-    'post_status' => array('publish', 'pending', 'draft'),
+    'post_status' => ['publish', 'pending', 'draft',],
     'posts_per_page'   => 1,
     'fields' => 'ids',
-));
+]);
 
 $campaign_id = count($campaigns) ? $campaigns[0] : null;
 $campaign_url = $campaign_id ? get_the_permalink($campaign_id) : null;?>

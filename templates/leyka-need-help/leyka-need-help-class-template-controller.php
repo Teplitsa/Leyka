@@ -30,12 +30,12 @@ class Leyka_Need_Help_Template_Controller extends Leyka_Template_Controller {
             if($amount_mode === 'fixed' || $amount_mode === 'mixed') {
                 $amount_variants = explode(',', $currencies[$main_currency_id]['amount_settings']['fixed']);
             } else {
-                $amount_variants = array();
+                $amount_variants = [];
             }
 
         }
 
-        $this->_template_data[$campaign->id] = array(
+        $this->_template_data[$campaign->id] = [
         	'currency_id' => $main_currency_id,
             'currency_label' => $currencies[$main_currency_id]['label'],
             'amount_default' => $currencies[$main_currency_id]['amount_settings']['flexible'],
@@ -43,10 +43,10 @@ class Leyka_Need_Help_Template_Controller extends Leyka_Template_Controller {
             'amount_max' => $currencies[$main_currency_id]['top'],
             'amount_max_total' => leyka_options()->opt('leyka_currency_'.$main_currency_id.'_max_sum'),
             'pm_list' => $campaign->daily_rouble_mode_on_and_valid ?
-                array($campaign->daily_rouble_pm) : leyka_get_pm_list(true, $main_currency_id),
+                [$campaign->daily_rouble_pm] : leyka_get_pm_list(true, $main_currency_id),
             'amount_mode' => $amount_mode,
             'amount_variants' => $amount_variants,
-        );
+        ];
 
     }
 

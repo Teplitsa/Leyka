@@ -370,6 +370,8 @@
                 
                 .action-disconnect {
                     margin-left: 1.5 * $leyka-star-base;
+                    color: var(--leyka-color-main);
+                    cursor: pointer;
                 }
             }
         }
@@ -392,7 +394,7 @@
             margin-bottom: 1.5 * $leyka-star-base;
             
             &:last-of-type {
-                margin-bottom: 0px;
+                margin-bottom: 0;
             }
         }
     }

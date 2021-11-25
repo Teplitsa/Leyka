@@ -20,10 +20,10 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
 
         <div class="step__fields amount">
 
-        <?php echo Leyka_Payment_Form::get_common_hidden_fields($campaign, array(
+        <?php echo Leyka_Payment_Form::get_common_hidden_fields($campaign, [
             'leyka_template_id' => 'revo',
             'leyka_amount_field_type' => 'custom',
-        ));
+        ]);
 
         $form_api = new Leyka_Payment_Form();
         echo $form_api->get_hidden_amount_fields();?>

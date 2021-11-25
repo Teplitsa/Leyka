@@ -14,7 +14,7 @@ require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php');?
     </div>
 
     <div class="leyka-bottom-link leyka-official-website">
-        <a href="//leyka.te-st.ru/" target="_blank"><?php _e('Go to the plugin documentation', 'leyka');?></a>
+        <a href="//leyka.te-st.ru/docs/what-is-leyka/" target="_blank"><?php _e('Go to the plugin documentation', 'leyka');?></a>
     </div>
 
     <div class="leyka-bottom-link leyka-wizard-link">
@@ -25,7 +25,7 @@ require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php');?
 
 <?php $init_wizard_controller = Leyka_Settings_Factory::get_instance()->get_controller('init');
 $main_settings_steps = $init_wizard_controller->navigation_data[0]['stage_id'] === 'rd' ?
-    $init_wizard_controller->navigation_data[0]['sections'] : array();
+    $init_wizard_controller->navigation_data[0]['sections'] : [];
 
 if($main_settings_steps) {?>
     <div class="leyka-info-sidebar-part">
@@ -74,7 +74,7 @@ if($main_settings_steps) {?>
 
     <div class="sidebar-part-content gateways">
 
-        <?php foreach(leyka()->get_gateways(array('activation_status' => 'activating')) as $gateway) {?>
+        <?php foreach(leyka()->get_gateways(['activation_status' => 'activating']) as $gateway) {?>
             <div class="gateway status-activating">
                 <div class="module-logo"><img src="<?php echo $gateway->icon_url;?>" alt=""></div>
                 <div class="gateway-data">
@@ -84,7 +84,7 @@ if($main_settings_steps) {?>
             </div>
         <?php }?>
 
-        <?php foreach(leyka()->get_gateways(array('activation_status' => 'active')) as $gateway) {?>
+        <?php foreach(leyka()->get_gateways(['activation_status' => 'active']) as $gateway) {?>
             <div class="gateway status-active">
                 <div class="module-logo"><img src="<?php echo $gateway->icon_url;?>" alt=""></div>
                 <div class="gateway-data">
@@ -140,7 +140,7 @@ if($main_settings_steps) {?>
 
         <div class="data-line">
 
-            <?php $php_extensions_needed = array('curl', 'date', 'ereg', 'filter', 'ftp', 'gd', 'hash', 'iconv', 'json', 'libxml', 'mbstring', 'mysql', 'mysqli', 'openssl', 'pcre', 'simplexml', 'sockets', 'spl', 'tokenizer', 'xmlreader', 'xmlwriter', 'zlib',); // According to https://wordpress.stackexchange.com/questions/42098/what-are-php-extensions-and-libraries-wp-needs-and-or-uses
+            <?php $php_extensions_needed = ['curl', 'date', 'ereg', 'filter', 'ftp', 'gd', 'hash', 'iconv', 'json', 'libxml', 'mbstring', 'mysql', 'mysqli', 'openssl', 'pcre', 'simplexml', 'sockets', 'spl', 'tokenizer', 'xmlreader', 'xmlwriter', 'zlib',]; // According to https://wordpress.stackexchange.com/questions/42098/what-are-php-extensions-and-libraries-wp-needs-and-or-uses
 
             $php_extensions = get_loaded_extensions();
 

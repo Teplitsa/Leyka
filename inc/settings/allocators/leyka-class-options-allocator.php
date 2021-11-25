@@ -4,21 +4,22 @@ abstract class Leyka_Options_Allocator extends Leyka_Singleton {
 
     protected static $_instance;
 
-    protected $_tabs = array();
+    protected $_tabs = [];
 
     protected function __construct() {
-        $this->_tabs = apply_filters('leyka_settings_tabs', array(
+        $this->_tabs = apply_filters('leyka_settings_tabs', [
             'payment' => __('Payment options', 'leyka'),
             'beneficiary' => __('My data', 'leyka'),
             'view' => __('Campaign view', 'leyka'),
             'email' => __('Notifications', 'leyka'),
             'technical' => __('Tech settings', 'leyka'),
             'additional' => __('For developers', 'leyka'),
-        ));
+            'extensions' => __('Extensions', 'leyka'),
+        ]);
     }
 
     /** Can't make instance of the root/factory class, so overload the get_instance() */
-    public static function get_instance(array $params = array()) {
+    public static function get_instance(array $params = []) {
         return self::get_allocator();
     }
 
@@ -37,9 +38,13 @@ abstract class Leyka_Options_Allocator extends Leyka_Singleton {
         $country_id = leyka_options()->opt_safe('receiver_country');
 
         // Specific Allocator class:
-        $file_path = LEYKA_PLUGIN_DIR.'inc/settings/allocators/leyka-class-'.$country_id.'-options-allocator.php';
+        $file_path = apply_filters(
+            'leyka_options_allocator_class_file_address',
+            LEYKA_PLUGIN_DIR.'inc/settings/allocators/leyka-class-'.$country_id.'-options-allocator.php',
+            $country_id
+        );
 
-        if(in_array($country_id, array('by', 'ua',))) { // Some countries allocators are descendants of the Ru allocator
+        if(in_array($country_id, ['by', 'ua', 'eu', 'kg'])) { // Some countries allocators are descendants of the Ru allocator
             require_once LEYKA_PLUGIN_DIR.'inc/settings/allocators/leyka-class-ru-options-allocator.php';
         }
 

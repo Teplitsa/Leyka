@@ -24,11 +24,11 @@ function leyka_sync_plugin_stats_option() {
         }
 
         $sipher_public_key = get_option('leyka_stats_sipher_public_key');
-        $params = array(
+        $params = [
             'stats_active' => (int)(leyka()->opt('send_plugin_stats') === 'y'),
             'installation_url' => home_url(), // Just in case
             'installation_id' => $leyka_installation_id,
-        );
+        ];
 
         if($sipher_public_key) {
 
@@ -47,27 +47,27 @@ function leyka_sync_plugin_stats_option() {
         }
 
     } else { // Add new installation
-        $params = array(
+        $params = [
             'stats_active' => true,
             'installation_url' => home_url(),
             'plugin_install_date' => get_option('leyka_plugin_install_date'),
             'collect_stats_from_date' => time(),
             'stats_collection_active' => true,
-        );
+        ];
     }
 
-    $response = wp_remote_post($stats_server_base_url.'/sync-installation.php', array(
+    $response = wp_remote_post($stats_server_base_url.'/sync-installation.php', [
         'timeout' => 10, // Max request time in seconds
         'redirection' => 3, // A number of max times for request redirects
         'httpversion' => '1.1',
         'blocking' => true, // True for sync request, false otherwise
         'body' => $params,
-        'headers' => array(
+        'headers' => [
             'Authorization' =>
                 'Basic '.base64_encode(leyka_options()->opt('plugin_debug_mode') ? 'test:testhouse' : 'leyka:kopeyka'),
             'Expect' => '',
-        ),
-    ));
+        ],
+    ]);
 
     if(is_wp_error($response)) {
         return new WP_Error(

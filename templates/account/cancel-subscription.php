@@ -41,22 +41,31 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php');?>
                                 	    $donation_campaign = new Leyka_Campaign($init_donation->campaign_id);?>
 
                                     <div class="item">
+
 										<div class="subscription-details">
+
     										<div class="campaign-title">
                                                 <?php echo $init_donation->campaign_title;?>
                                             </div>
+
                                             <div class="subscription-payment-details">
+
         										<div class="amount">
                                                     <?php echo $init_donation->amount.' '.$init_donation->currency_label;?>/<?php echo _x('month', 'Recurring interval, as in "[XX Rub in] month"', 'leyka');?>
                                                 </div>
+
                                                 <div class="donation-gateway-pm">
                                                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/star-icon-info-small.svg" alt="">
                                                     <span class="gateway"><?php echo $init_donation->gateway_label;?></span> /
                                                     <span class="pm"><?php echo $init_donation->pm_label;?></span>
                                                 </div>
+
                                             </div>
+
 										</div>
-                                        <a data-campaign-id="<?php echo $init_donation->campaign_id;?>" data-donation-id="<?php echo $init_donation->id;?>" href="<?php echo $donation_campaign->permalink;?>" class="action-disconnect"><?php _e('Disable', 'leyka');?></a>
+
+                                        <div data-campaign-id="<?php echo $init_donation->campaign_id;?>" data-donation-id="<?php echo $init_donation->id;?>" data-campaign-page-public-url="<?php echo $donation_campaign->permalink;?>" class="action-disconnect"><?php _e('Disable', 'leyka');?></div>
+
                                     </div>
 
                                 	<?php }?>
@@ -73,16 +82,16 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php');?>
                                     <?php _e('To main' , 'leyka');?>
                                 </a>
                             </div>
-        
+
                         </form>
-                        
+
                         <form class="leyka-screen-form leyka-cancel-subscription-form">
                             
                             <h2><?php _e('We will be grateful if you share why you decided to cancel the subscription?', 'leyka');?></h2>
-                            
+
                             <div class="limit-width">
                                 <div class="leyka-cancel-subscription-reason">
-                                	<?php foreach(leyka_get_cancel_subscription_reasons() as $reason_value => $reason_text) {?>
+                                	<?php foreach(leyka_get_recurring_subscription_cancelling_reasons() as $reason_value => $reason_text) {?>
                                     <span>
                                         <input type="checkbox" name="leyka_cancel_subscription_reason[]" id="leyka_cancel_subscription_reason_<?php echo $reason_value;?>" class="required" value="<?php echo $reason_value;?>">
                                         <label for="leyka_cancel_subscription_reason_<?php echo $reason_value;?>">
@@ -92,9 +101,10 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php');?>
                                     </span>
                                 	<?php }?>
                                 </div>
-                                
+
                                 <div class="section unsubscribe-comment">
                                     <div class="section__fields donor">
+
                                         <?php $field_id = 'leyka-'.wp_rand();?>
                                         <div class="donor__textfield donor__textfield--comment">
                                             <div class="leyka-star-field-frame">
@@ -106,6 +116,7 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php');?>
                                                 <textarea id="<?php echo $field_id;?>" class="leyka-donor-comment" name="leyka_donor_custom_reason"></textarea>
                                             </div>
                                         </div>
+
                                     </div>
                                 </div>
 
@@ -126,10 +137,13 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php');?>
                                 </div>
 
                                 <div class="leyka-star-submit double">
+
                                     <a href="<?php echo site_url('/donor-account/');?>" class="leyka-star-btn leyka-do-not-unsubscribe">
                                         <?php _e('Do not unsubscribe', 'leyka');?>
                                     </a>
+
                                     <input type="submit" name="unsubscribe" class="leyka-star-btn secondary last" value="<?php _e('Continue', 'leyka');?>">
+
                                 </div>
 
                             </div>
@@ -141,16 +155,21 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php');?>
                             <h2><?php _e('Disable subscription?', 'leyka');?></h2>
 
                             <div class="form-controls">
+
                                 <p><?php _e('We were able to do a lot with the help of your donations. Without your support, it will be harder for us to achieve results. It is a pity that you unsubscribe!', 'leyka');?></p>
                                 
                                 <div class="form-message"></div>
-                                
+
                                 <div class="leyka-star-submit double confirm-unsubscribe-submit">
+
                                     <a href="#" class="leyka-star-btn leyka-do-not-unsubscribe">
                                         <?php _e('Do not cancel', 'leyka');?>
                                     </a>
+
                                     <input type="submit" name="unsubscribe" class="leyka-star-btn secondary last" value="<?php _e('Cancel subscription', 'leyka');?>">
+
                                 </div>
+
                             </div>
                         
                             <div class="leyka-form-spinner"><?php echo leyka_get_ajax_indicator();?></div>

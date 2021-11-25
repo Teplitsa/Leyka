@@ -35,7 +35,7 @@ array_shift($pm_order);?>
 
     foreach($pm_order as $i => &$pm_full_id) { // Active PM list
 
-        $pm_full_id = str_replace(array('&amp;', '&'), '', $pm_full_id);
+        $pm_full_id = str_replace(['&amp;', '&'], '', $pm_full_id);
         $pm = leyka_get_pm_by_id($pm_full_id, true);
 
         if( !$pm ) {

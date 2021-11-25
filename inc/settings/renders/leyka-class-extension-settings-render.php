@@ -7,7 +7,7 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
 
     protected static $_instance = null;
 
-//    protected $_params = array();
+//    protected $_params = [];
 
     protected function _set_attributes() {
         $this->_id = 'options';
@@ -24,7 +24,7 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
 
                 <div class="header-left">
 
-                    <h1 class="wp-heading-inline"><?php echo $extension->title;?></h1>
+                    <h2 class="wp-heading-inline"><?php echo $extension->title;?></h2>
 
                     <div class="meta-data">
 
@@ -138,7 +138,7 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
     }
 
     public function render_js_data() {
-//        wp_localize_script('leyka-settings', 'metabox_areas', array())
+//        wp_localize_script('leyka-settings', 'metabox_areas', [])
     }
 
     public function render_main_area() {
@@ -186,7 +186,11 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
             <div class="delete-extension-error error" style="display: none;"></div>
 
             <span class="buttons">
+
+                <?php if($this->_controller->extension->get_options_data()) { // Show "Save" submit only if there are options ?>
                 <input type="submit" class="button button-primary button-small save-settings" name="leyka_settings_submit_<?php echo $this->_controller->id;?>" value="<?php _e('Save', 'leyka');?>">
+                <?php }?>
+
                 <input type="submit" class="button <?php echo $submit_data['activation_status'] === 'active' ? 'button-secondary' : 'button-primary';?> activation-button <?php echo $submit_data['activation_status'];?>" name="<?php echo $submit_data['activation_status'] === 'active' ? 'leyka_deactivate_'.$this->_controller->id : 'leyka_activate_'.$this->_controller->id;?>" value="<?php echo $submit_data['activation_button_label'];?>">
             </span>
 
@@ -303,7 +307,7 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
                 add_meta_box(
                     'leyka_'.$section->id,
                     $section->title,
-                    array($this, 'render_section_metabox'),
+                    [$this, 'render_section_metabox'],
                     $this->_controller->id.'-options_main_area',
                     'normal',
                     'default',

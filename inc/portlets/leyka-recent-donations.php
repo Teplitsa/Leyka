@@ -28,16 +28,22 @@ $data = Leyka_Recent_Donations_Portlet_Controller::get_instance()->get_template_
                 <img src="<?php echo LEYKA_PLUGIN_BASE_URL . 'img/dashboard/icon-donation-type-'.$donation['type'].'.svg';?>" alt="">
             </td>
             <td class="donation-donor">
-                <a href="<?php echo get_edit_post_link($donation['id']);?>"><?php echo $donation['donor_name'];?></a>
+
+                <?php $edit_url = empty($donation['donor_id']) ?
+                    admin_url('admin.php?page=leyka_donor_info&donor='.$donation['donor_id']) :
+                    admin_url('admin.php?page=leyka_donation_info&donation='.$donation['id'])?>
+
+                <a href="<?php echo $edit_url;?>" target="_blank"><?php echo $donation['donor_name'];?></a>
                 <div class="donor-contact"><?php echo $donation['donor_email'];?></div>
+
             </td>
             <td class="donation-campaign-date">
                 <div class="campaign"><?php echo $donation['campaign_title'];?></div>
                 <div class="date"><?php echo $donation['date_time'];?></div>
             </td>
             <td class="donation-amount-status">
-            <span class="donation-status <?php echo $donation['status'];?> field-q">
-                <span class="field-q-tooltip"><?php esc_html_e('Donation ' . $donation['status'], 'leyka');?></span>
+            <span class="donation-status <?php echo $donation['status']['id'];?> field-q">
+                <span class="field-q-tooltip"><?php echo $donation['status']['label'];?></span>
             </span>
                 <span class="donation-amount"><?php echo $donation['amount'].' '.$donation['currency'];?></span>
             </td>

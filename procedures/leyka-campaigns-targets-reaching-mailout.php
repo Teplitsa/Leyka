@@ -14,31 +14,31 @@ ini_set('max_execution_time', 0);
 set_time_limit(0);
 ini_set('memory_limit', 256*1024*1024); // 256 Mb, just in case
 
-$campaigns_ids = empty($_POST['procedure_params'][0]) ? false : array((int)$_POST['procedure_params'][0]);
+$campaigns_ids = empty($_POST['procedure_params'][0]) ? false : [(int)$_POST['procedure_params'][0]];
 
-$reached_targets_campaigns = get_posts(array(
+$reached_targets_campaigns = get_posts([
     'post_type' => Leyka_Campaign_Management::$post_type,
     'post_status' => 'publish',
     'posts_per_page' => -1,
     'post__in' => $campaigns_ids,
-    'meta_query' => array(
+    'meta_query' => [
         'relation' => 'AND',
-        array('key' => 'target_state', 'value' => 'is_reached'),
-        array(
+        ['key' => 'target_state', 'value' => 'is_reached'],
+        [
             'relation' => 'OR',
-            array('key' => '_leyka_target_reaching_mailout_sent', 'value' => false),
-            array('key' => '_leyka_target_reaching_mailout_sent', 'value' => '0'),
-            array('key' => '_leyka_target_reaching_mailout_sent', 'compare' => 'NOT EXISTS'),
-        ),
-    ),
-));
+            ['key' => '_leyka_target_reaching_mailout_sent', 'value' => false],
+            ['key' => '_leyka_target_reaching_mailout_sent', 'value' => '0'],
+            ['key' => '_leyka_target_reaching_mailout_sent', 'compare' => 'NOT EXISTS'],
+        ],
+    ],
+]);
 
 foreach($reached_targets_campaigns as $campaign) {
 
     $campaign = new Leyka_Campaign($campaign);
-    $donations = $campaign->get_donations(array('funded'));
+    $donations = $campaign->get_donations(['funded']);
 
-    $mailout_list = array();
+    $mailout_list = [];
 
     // Create the campaign mailout list:
     foreach($donations as $donation) {
@@ -48,21 +48,21 @@ foreach($reached_targets_campaigns as $campaign) {
         }
 
         if(empty($mailout_list[$donation->donor_email])) {
-            $mailout_list[$donation->donor_email] = array(
+            $mailout_list[$donation->donor_email] = [
                 'donor_name' => $donation->donor_name,
                 'amount_donated_to_campaign' => $donation->amount,
                 'currency_donated_to_campaign' => $donation->currency_label,
-                'donations' => array(
-                    array(
+                'donations' => [
+                    [
                         'amount' => $donation->amount,
                         'currency_label' => $donation->currency_label,
                         'gateway_label' => $donation->gateway_label,
                         'pm_label' => $donation->pm_label,
                         'date_label' => $donation->date_label,
                         'date' => $donation->date_timestamp,
-                    )
-                )
-            );
+                    ]
+                ]
+            ];
         } else {
 
             if(empty($mailout_list[$donation->donor_email]['donor_name']) && $donation->donor_name) {
@@ -70,7 +70,7 @@ foreach($reached_targets_campaigns as $campaign) {
             }
 
             $mailout_list[$donation->donor_email]['amount_donated_to_campaign'] += $donation->amount;
-            $mailout_list[$donation->donor_email]['donations'][] = array(
+            $mailout_list[$donation->donor_email]['donations'][] = [
                 'donation_id' => $donation->id,
                 'amount' => $donation->amount,
                 'currency_label' => $donation->currency_label,
@@ -78,7 +78,7 @@ foreach($reached_targets_campaigns as $campaign) {
                 'pm_label' => $donation->pm_label,
                 'date_label' => $donation->date_label,
                 'date' => $donation->date_timestamp,
-            );
+            ];
 
         }
 
@@ -102,7 +102,7 @@ foreach($reached_targets_campaigns as $campaign) {
                     $campaign
                 ),
                 wpautop(str_replace( // Email text
-                    array(
+                    [
                         '#SITE_NAME#',
                         '#SITE_EMAIL#',
                         '#ORG_NAME#',
@@ -112,8 +112,8 @@ foreach($reached_targets_campaigns as $campaign) {
                         '#CAMPAIGN_NAME#',
                         '#CAMPAIGN_TARGET#',
                         '#CAMPAIGN_PURPOSE#',
-                    ),
-                    array(
+                    ],
+                    [
                         get_bloginfo('name'),
                         get_bloginfo('admin_email'),
                         leyka_options()->opt('org_full_name'),
@@ -123,10 +123,10 @@ foreach($reached_targets_campaigns as $campaign) {
                         $campaign->title,
                         $campaign->target,
                         $campaign->payment_title,
-                    ),
+                    ],
                     leyka_options()->opt('email_campaign_target_reaching_text')
                 )),
-                array(
+                [
                     'Content-Type: text/html; charset=UTF-8',
                     'From: '.apply_filters( // Email additional headers
                         'leyka_campaign_target_reaching_email_from_name',
@@ -135,7 +135,7 @@ foreach($reached_targets_campaigns as $campaign) {
                         $donor_data,
                         $campaign
                     ).' <'.leyka_options()->opt_safe('email_from').'>',
-                )
+                ]
             );
 
     }

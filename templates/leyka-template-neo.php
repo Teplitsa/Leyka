@@ -18,8 +18,6 @@ leyka_pf_submission_errors();?>
 
 <div id="leyka-payment-form" class="leyka-tpl-neo" data-template="neo" data-leyka-ver="<?php echo Leyka_Payment_Form::get_plugin_ver_for_atts();?>">
 
-    <!-- <?php echo __("This donation form is created by Leyka WordPress plugin, created by Teplitsa of Social Technologies. If you are interested in some way, don't hesitate to write to us: support@te-st.ru", 'leyka');?> -->
-
     <?php $counter = 0;
 
     foreach($active_pm as $i => $pm) {
@@ -53,7 +51,7 @@ leyka_pf_submission_errors();?>
                                         if($mode == 'fixed' || $mode == 'mixed') {
                                             $variants = explode(',', $data['amount_settings']['fixed']);
                                         } else {
-                                            $variants = array();
+                                            $variants = [];
                                         }?>
                                         <div class="<?php echo $currency;?> amount-variants-container" <?php echo $currency == $current_curr ? '' : 'style="display:none;"';?>>
                                             <div class="amount-variants-row">
@@ -137,7 +135,7 @@ leyka_pf_submission_errors();?>
                         $icons = leyka_pf_get_pm_icons();
                         if($icons) {
 
-                            $list = array();
+                            $list = [];
                             foreach($icons as $i) {
                                 $list[] = "<li>".(is_ssl() ? str_replace('http:', 'https:', $i) : $i)."</li>";
                             }

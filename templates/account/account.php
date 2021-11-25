@@ -11,6 +11,13 @@
 $leyka_account_page_title = __('Personal account', 'leyka');
 $current_user = wp_get_current_user();
 
+if( !$current_user->ID ) {
+    wp_die(
+        __('Error: cannot display the page for a given donor.', 'leyka')
+        .' '.sprintf(__('Try <a href="%s">logging into the account</a> anew.', 'leyka'), site_url('donor-account/login'))
+    );
+}
+
 // Support packages:
 $leyka_ext_sp = Leyka_Support_Packages_Extension::get_instance();
 $leyka_ext_sp_template_tags = new Leyka_Support_Packages_Template_Tags();
@@ -22,7 +29,7 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php');
 try {
 	$donor = new Leyka_Donor(wp_get_current_user());
 } catch(Exception $e) {
-    wp_die(__("Error: cannot display a page for a given donor.", 'leyka'));
+    wp_die(__('Error: cannot display a page for a given donor.', 'leyka'));
 }?>
 
 <div id="content" class="site-content leyka-campaign-content">
@@ -47,12 +54,14 @@ try {
 								<h3 class="list-title"><?php _e('Support packages', 'leyka');?></h3>
 								<div class="leyka-ext-support-packages">
 
-								<?php foreach($leyka_ext_sp->get_packages() as $package) {
-								    $leyka_ext_sp_template_tags->show_manage_card($package, array(
+								<?php foreach($leyka_ext_sp->get_packages(null, 'asc') as $package) {
+
+								    $leyka_ext_sp_template_tags->show_manage_card($package, [
 									    'is_active' => $leyka_ext_sp->is_package_active($package, $current_user),
 									    'is_activation_available' => $leyka_ext_sp->is_activation_available($package, $current_user),
 									    'campaign_post_permalink' => $campaign_post_permalink,
-									));
+                                    ]);
+
 								}?>
 
 								</div>

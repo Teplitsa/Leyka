@@ -4,7 +4,7 @@
 /** Terms text filters */
 function leyka_terms_of_service_text($text) {
     return wpautop(str_replace(
-        array(
+        [
             '#SITE_URL#',
             '#SITE_NAME#',
             '#ADMIN_EMAIL#',
@@ -24,8 +24,8 @@ function leyka_terms_of_service_text($text) {
             '#UA_ERDPOU#',
             '#UA_BANK_MFO#',
             '#BY_UNP#',
-        ),
-        array(
+        ],
+        [
             home_url(),
             get_bloginfo('name'),
             get_option('admin_email'),
@@ -45,7 +45,7 @@ function leyka_terms_of_service_text($text) {
             leyka_options()->opt('org_erdpou'),
             leyka_options()->opt('org_bank_mfo'),
             leyka_options()->opt('org_unp'),
-        ),
+        ],
         $text
     ));
 }
@@ -59,7 +59,7 @@ add_filter('the_content', 'leyka_service_terms_page_text');
 
 function leyka_terms_of_pd_usage_text($text) {
     return wpautop(str_replace(
-        array(
+        [
             '#SITE_URL#',
             '#SITE_NAME#',
             '#ADMIN_EMAIL#',
@@ -71,8 +71,8 @@ function leyka_terms_of_pd_usage_text($text) {
             '#UA_ERDPOU#',
             '#UA_BANK_MFO#',
             '#BY_UNP#',
-        ),
-        array(
+        ],
+        [
             home_url(),
             get_bloginfo('name'),
             get_option('admin_email'),
@@ -84,7 +84,7 @@ function leyka_terms_of_pd_usage_text($text) {
             leyka_options()->opt('org_erdpou'),
             leyka_options()->opt('org_bank_mfo'),
             leyka_options()->opt('org_unp'),
-        ),
+        ],
         $text
     ));
 }
@@ -113,7 +113,7 @@ function leyka_star_body_classes($classes) {
     } else if(is_page(leyka_options()->opt('success_page')) || is_page(leyka_options()->opt('failure_page'))) {
 
         $donation_id = leyka_remembered_data('donation_id');
-        $donation = $donation_id ? new Leyka_Donation($donation_id) : null;
+        $donation = $donation_id ? Leyka_Donations::get_instance()->get($donation_id) : null;
         $campaign_id = $donation ? $donation->campaign_id : null;
 
     }
@@ -158,10 +158,16 @@ function leyka_donor_account_redirects() {
         return;
     }
 
-    if($donor_account_page === 'login' && is_user_logged_in()) { /** @todo $donor_account_page === 'reset-password' also? */
-        wp_redirect(home_url('/donor-account/')); exit;
+    if($donor_account_page === 'login' && is_user_logged_in()) {
+
+        wp_redirect(home_url('/donor-account/'));
+        exit;
+
     } else if($donor_account_page !== 'login' && $donor_account_page !== 'reset-password' && !is_user_logged_in()) {
-        wp_redirect(home_url('/donor-account/login/')); exit;
+
+        wp_redirect(home_url('/donor-account/login/'));
+        exit;
+
     }
 
 }
@@ -199,6 +205,7 @@ function leyka_set_donor_account_page_title($title_parts) {
 add_filter('document_title_parts', 'leyka_set_donor_account_page_title', 9999, 1);
 
 function leyka_yoast_seo_title_workaround($title) {
+
     $leyka_screen = get_query_var('leyka-screen');
     
     if(empty($leyka_screen)) {
@@ -206,5 +213,11 @@ function leyka_yoast_seo_title_workaround($title) {
     }
     
     return '';
+
 }
 add_filter('pre_get_document_title', 'leyka_yoast_seo_title_workaround', 999, 1);
+
+// For the 3.19 update - just in case when 'rur' -> 'rub' currency ID update won't work on plugin activation:
+add_filter('leyka_option_value-currency_main', function($value){
+    return $value == 'rur' ? 'rub' : $value;
+}, 1, 9999);

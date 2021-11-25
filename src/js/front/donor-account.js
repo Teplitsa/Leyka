@@ -313,12 +313,12 @@ jQuery(document).ready(function($){
     
 });
 
-// unsubscribe campaign
+// Recurring subscriptions cancelling:
 jQuery(function($){
-	
+
     function leyka_validate_unsubscribe_form($form) {
 
-        var form_is_valid = true;
+        let form_is_valid = true;
         
         $form.find('.donor__textfield-error').hide();
         
@@ -337,69 +337,86 @@ jQuery(function($){
         return form_is_valid;
         
     }
-	
-    var $forms = $('.leyka-unsubscribe-campains-forms').first();
-    
-	$forms.find('.action-disconnect').on('click.leyka', function(e){
+
+    let $forms = $('.leyka-unsubscribe-campains-forms').first();
+
+	$forms.on('click.leyka', '.action-disconnect', function(e){
+
 		e.preventDefault();
+
     	$forms.find('form.leyka-screen-form').css('display', 'none');
     	$forms.find('form.leyka-cancel-subscription-form').css('display', 'flex');
-        $forms.find('form.leyka-cancel-subscription-form input[name=leyka_campaign_id]').val($(this).data('campaign-id'));
-        $forms.find('form.leyka-cancel-subscription-form input[name=leyka_donation_id]').val($(this).data('donation-id'));
-    	$forms.find('form.leyka-cancel-subscription-form input[name=leyka_campaign_permalink]').val($(this).attr('href'));
+        $forms.find('form.leyka-cancel-subscription-form input[name="leyka_campaign_id"]').val($(this).data('campaign-id'));
+        $forms.find('form.leyka-cancel-subscription-form input[name="leyka_donation_id"]').val($(this).data('donation-id'));
+    	$forms.find('form.leyka-cancel-subscription-form input[name="leyka_campaign_permalink"]')
+            .val($(this).data('campaign-page-public-url'));
+
 	});
-	
+
 	$forms.find('input[name="leyka_cancel_subscription_reason[]"]').on('change.leyka', function(e){
-		if($(this).val() == 'other') {
-			if($(this).prop('checked')) {
+
+	    let $this = $(this);
+
+		if($this.val() === 'other') {
+			if($this.prop('checked')) {
 				$forms.find('.unsubscribe-comment').show();
-			}
-			else {
+			} else {
 				$forms.find('.unsubscribe-comment').hide();
 			}
 		}
+
 	});
-	
+
 	if($forms.find('input[name="leyka_cancel_subscription_reason[]"][value="other"]:checked').length) {
 		$forms.find('.unsubscribe-comment').show();
-	}
-	else {
+	} else {
 		$forms.find('.unsubscribe-comment textarea').val('');
 	}
-	
+
     $forms.find('.leyka-do-not-unsubscribe').on('click.leyka', function(e){
+
     	e.preventDefault();
+
     	$forms.find('form.leyka-screen-form').css('display', 'none');
     	$forms.find('form.leyka-unsubscribe-campains-form').css('display', 'block');
+
     });
 
     $forms.find('form.leyka-cancel-subscription-form').on('submit.leyka', function(e){
+
 		e.preventDefault();
 		
-        var $form = $(this);
-        
+        let $form = $(this);
+
         if(leyka_validate_unsubscribe_form($form)) {
+
 	    	$forms.find('form.leyka-screen-form').css('display', 'none');
+
 	    	if($form.find('input[name="leyka_cancel_subscription_reason[]"][value="uncomfortable_pm"]:checked, input[name="leyka_cancel_subscription_reason[]"][value="too_much"]:checked').length) {
 	    		$forms.find('form.leyka-confirm-go-resubscribe-form').css('display', 'block');
-	    	}
-	    	else {
+	    	} else {
 		    	$forms.find('form.leyka-confirm-unsubscribe-request-form').css('display', 'block');
 	    	}
+
         }
+
 	});
 
     $forms.find('form.leyka-confirm-unsubscribe-request-form').on('submit.leyka', function(e){
+
         e.preventDefault();
-        leykaCancelSubscription($(this));
+        leyka_cancel_recurring_subscription($(this));
+
     });    
 
     $forms.find('form.leyka-confirm-go-resubscribe-form').on('submit.leyka', function(e){
+
         e.preventDefault();
-        leykaCancelSubscription($(this));
+        leyka_cancel_recurring_subscription($(this));
+
     });    
-    
-    function leykaCancelSubscription($form) {
+
+    function leyka_cancel_recurring_subscription($form) {
 
         let $cancelling_form = $form.siblings('form.leyka-cancel-subscription-form'),
 	        params = $cancelling_form.serializeArray(),
@@ -466,7 +483,6 @@ jQuery(function($){
     }
 	
 });
-
 
 jQuery(function($){
 	

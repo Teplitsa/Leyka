@@ -1,111 +1,76 @@
-<?php if (!defined('WPINC')) {
-    die;
-}
+<?php if (!defined('WPINC')) { die; }
 
 class Leyka_Qiwi_Gateway_Helper {
 
-    private $_key;
-
-    public static $map_status = array(
+    public static $map_status = [
         'PAID' => 'funded',
         'WAITING' => 'submitted',
         'REJECTED' => 'failed',
         'PARTIAL' => 'refunded',
         'FULL' => 'refunded',
         'EXPIRED' => 'failed'
-    );
+    ];
 
-    public function __construct($key = false) {
-
-        if( !$key ) {
-            $this->_key = leyka_options()->opt('leyka_qiwi_secret_key');
-        }
-
-        add_action('funded_to_refunded', array($this, 'create_refund'), 10, 1);
-
+    public function __construct() {
+        /** @todo Refunds handling is commented out - further debugging/testing needed. WTF is $this->salt ??? */
+//        add_action('leyka_donation_status_funded_to_refunded', [$this, 'create_refund'], 10);
     }
 
-    public function create_refund(WP_Post $donation) {
-
-        if(Leyka_Donation_Management::$post_type == $donation->post_type) {
-
-            $donation = new Leyka_Donation($donation);
-            $bill_id = get_post_meta(
-                $donation->id . "-{$this->salt}",
-                '_leyka_donation_id_on_gateway_response',
-                true
-            );
-            $this->refund($bill_id, $donation->amount);
-
-        }
-
+    public function create_refund(Leyka_Donation_Base $donation) {
+        $this->refund($donation->qiwi_donation_id_on_gateway_response, $donation->amount);
     }
 
     public function refund($bill_id, $amount) {
 
-        $bill_id = $bill_id."-{$this->salt}";
-        $args = array(
-            "amount" => array(
-                "currency" => "RUB",
-                "value" => intval($amount)
-            )
-        );
+        $bill_id .= "-{$this->salt}";
 
-        $response = wp_remote_request(
+        return wp_remote_request(
             "https://api.qiwi.com/partner/bill/v1/bills/{$bill_id}/refunds/refund_{$bill_id}",
-            array(
+            [
                 'method' => 'PUT',
-                'headers' => array(
+                'headers' => [
                     'Accept' => 'application/json',
                     'Content-Type' => 'application/json',
-                    'Authorization' => "Bearer {$this->_key}",
-                ),
-                'body' => json_encode($args, JSON_FORCE_OBJECT)
-            )
+                    'Authorization' => 'Bearer '.leyka_options()->opt('leyka_qiwi_secret_key'),
+                ],
+                'body' => json_encode(
+                    ['amount' => ['currency' => 'RUB', 'value' => intval($amount),]],
+                    JSON_FORCE_OBJECT
+                )
+            ]
         );
-
-        return $response;
 
     }
 
-    public function create_bill($bill_id, $amount, $args = array()) {
+    public function create_bill($bill_id, $amount, $args = []) {
 
-        $bill_id = $bill_id."-{$this->salt}";
-        $amount = intval($amount);
-        $amount = number_format($amount, 2, '.', '');
+        $amount = number_format(intval($amount), 2, '.', '');
+
         $args = wp_parse_args(
             $args,
-            array(
-                "amount" => array(
-                    "currency" => "RUB",
-                    "value" => $amount
-                ),
-                "comment" => "",
-                "expirationDateTime" => self::date_formatter(strtotime('+1 day', current_time('timestamp', 1))),
-                "customer" => array(),
-                "customFields" => array(
-                    "apiClient" => 'WordPress Leyka',
-                    "apiClientVersion" => LEYKA_VERSION
-                )
-            )
+            [
+                'amount' => ['currency' => 'RUB', 'value' => $amount,],
+                'comment' => '',
+                'expirationDateTime' => self::_format_date(strtotime('+1 day', current_time('timestamp', 1))),
+                'customer' => [],
+                'customFields' => ['apiClient' => 'WordPress Leyka', 'apiClientVersion' => LEYKA_VERSION,],
+            ]
         );
 
         $args['amount']['value'] = $amount;
 
-        $response = wp_remote_request(
-            "https://api.qiwi.com/partner/bill/v1/bills/{$bill_id}",
-            array(
+        return wp_remote_request(
+            'https://api.qiwi.com/partner/bill/v1/bills/'.$bill_id."-{$this->salt}",
+            [
                 'method' => 'PUT',
-                'headers' => array(
+                'headers' => [
                     'Accept' => 'application/json',
                     'Content-Type' => 'application/json',
-                    'Authorization' => "Bearer {$this->_key}",
-                ),
+                    'Authorization' => 'Bearer '.leyka_options()->opt('leyka_qiwi_secret_key'),
+                ],
                 'body' => json_encode($args, JSON_FORCE_OBJECT)
-            )
+            ]
         );
-
-        return $response;
 
     }
 
@@ -113,11 +78,11 @@ class Leyka_Qiwi_Gateway_Helper {
      * @param $timestamp integer UNIX timestamp.
      * @return string
      */
-    public static function date_formatter($timestamp) {
-        return str_replace(' ', 'T', date('Y-m-d H:i:s', $timestamp)) . self::gtm_prefix();
+    protected static function _format_date($timestamp) {
+        return str_replace(' ', 'T', date('Y-m-d H:i:s', $timestamp)).self::_gtm_prefix();
     }
 
-    private static function gtm_prefix() {
+    protected static function _gtm_prefix() {
 
         $gmt = get_option('gmt_offset', 3);
 
@@ -126,16 +91,7 @@ class Leyka_Qiwi_Gateway_Helper {
     }
 
     public static function get_payment_id_by_response_data($bill_id) {
-
-        global $wpdb;
-
-        return $wpdb->get_var(
-            "SELECT post_id FROM 
-			{$wpdb->postmeta}
-			WHERE meta_key = '_leyka_donation_id_on_gateway_response'
-			AND meta_value  = '{$bill_id}'
-			LIMIT 1");
-
+        return Leyka_Donations::get_instance()->get_donation_id_by_meta_value('_leyka_donation_id_on_gateway_response', $bill_id);
     }
 
 }

@@ -10,7 +10,7 @@ if(defined('POLYLANG_VERSION')) {
         // Localize options values:
         function leyka_localize_option_value($value, $option_name) {
 
-            if(in_array($option_name, array('success_page', 'failure_page', 'terms_of_service_page', 'pd_terms_page'))) {
+            if(in_array($option_name, ['success_page', 'failure_page', 'terms_of_service_page', 'pd_terms_page',])) {
 
                 // Get ID of a localized page instead of originally set:
                 $localized_page_id = empty($_POST['cur_lang']) ?
@@ -20,7 +20,7 @@ if(defined('POLYLANG_VERSION')) {
 
             }
 
-            if(in_array(leyka_options()->get_type_of($option_name), array('text', 'textarea', 'html', 'rich_html'))) {
+            if(in_array(leyka_options()->get_type_of($option_name), ['text', 'textarea', 'html', 'rich_html',])) {
                 $value = pll__($value);
             }
 
@@ -30,7 +30,7 @@ if(defined('POLYLANG_VERSION')) {
         add_filter('leyka_option_value', 'leyka_localize_option_value', 10, 2);
 
         // Now donations can return their language (a language of their respective campaigns):
-        function leyka_localize_unknown_donation_field($value, $field, Leyka_Donation $donation) {
+        function leyka_localize_unknown_donation_field($value, $field, Leyka_Donation_Base $donation) {
 
             if($field == 'lang' || $field == 'campaign_lang') {
 
@@ -120,7 +120,7 @@ if(defined('POLYLANG_VERSION')) {
 
             if($option_data['type'] == 'text') {
                 pll_register_string($option_data['title'], $value, 'leyka');
-            } else if(in_array($option_data['type'], array('textarea', 'html', 'rich_html'))) {
+            } else if(in_array($option_data['type'], ['textarea', 'html', 'rich_html',])) {
                 pll_register_string(
                     $option_data['title'],
                     $value,
@@ -164,7 +164,7 @@ if(defined('POLYLANG_VERSION')) {
 
                         if($option_data['type'] == 'text') {
                             pll_register_string($option_data['title'], $option_data['value'], 'leyka');
-                        } elseif(in_array($option_data['type'], array('textarea', 'html', 'rich_html'))) {
+                        } elseif(in_array($option_data['type'], ['textarea', 'html', 'rich_html'])) {
                             pll_register_string($option_data['title'], leyka_options()->opt($option), 'leyka', true);
                         }
 
@@ -178,7 +178,7 @@ if(defined('POLYLANG_VERSION')) {
 //            });
 
             // leyka_donation post type must not be included - there's no need to translate it:
-            $leyka_post_types = array(Leyka_Campaign_Management::$post_type);
+            $leyka_post_types = [Leyka_Campaign_Management::$post_type];
 
             if($leyka_post_types != $polylang->options['post_types']) {
 

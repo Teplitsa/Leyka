@@ -5,7 +5,29 @@
         color: $color-metabox-title;
     }
 
+    .leyka-settings-page { // // For custom metaboxes with Leyka admin styling, like Campaign additional fields
+        margin: 0;
+    }
+
+    .campaign-additional-fields-wrapper {
+
+        max-width: 643px;
+
+        &.leyka-options-section { // For custom metaboxes with Leyka admin styling, like Campaign additional fields
+            margin-bottom: 0;
+        }
+
+        p {
+            margin-top: 0;
+        }
+
+    }
+
     .inside { // Metaboxes content
+
+        p:first-child { // If there is some comment on top of a metabox content
+            margin-top: 0;
+        }
 
         .metabox-field {
 
@@ -103,6 +125,7 @@
                 }
                 
             }
+
         }
 
         .info-field {
@@ -213,14 +236,68 @@
 
         @include leyka-loading-indicator();
 
-        .leyka-field-wide {
-            width: 100%;
-        }
-
         label[for="hide-cover-type-image"] {
             margin-right: 32px;
+        }
+
+        // Additional donation fields settings:
+        .leyka-campaign-additional-fields-wrapper .multi-valued-item-box {
+
+            &:hover {
+
+                border: 2px solid #78b6d5;
+                //margin-bottom: 14px;
+
+                .item-box-title {
+                    margin: 7px 15px !important;
+                }
+                //
+                .box-content {
+
+                    padding: 0 9px 9px 9px;
+
+                    //.notes-and-errors li {
+                    //    margin-top: 15px;
+                    //}
+
+                }
+
+            }
+
+        }
+        // Additional donation fields settings - END
+
+    }
+
+}
+
+// Donations list metabox:
+#leyka_campaign_donations {
+
+    .column-amount .leyka-amount {
+
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: flex-start;
+
+        .icon-leyka-donation-status {
+            margin: 6px 12px 0 0;
+        }
+
+    }
+
+    .column-gateway_pm .leyka-gateway-name {
+
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+
+        img {
+            width: 20px;
+            height: 20px;
         }
 
     }
 
 }
+// Donations list metabox - END

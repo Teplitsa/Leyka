@@ -2,10 +2,10 @@
 Contributors: Ahaenor, foralien, denis.cherniatev
 Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
-Tags: crowdfunding, fundraising, donations, recurring donations, charity, leyka, recurring, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, yandexmoney, yandex.money, яндекс.деньги, chronopay, sms, яндекс.касса, yandex.kassa, миксплат, mixplat, paypal, paymaster, qiwi, киви
+Tags: лейка, crowdfunding, fundraising, donations, recurring donations, charity, leyka, recurring, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, yoomoney, chronopay, sms, yookassa, миксплат, mixplat, paypal, paymaster, qiwi, киви, stripe, страйп, gds, google data studio
 Requires at least: 3.6.1
-Tested up to: 5.6.1
-Stable tag: 3.14
+Tested up to: 5.8.1
+Stable tag: 3.20.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -72,6 +72,8 @@ PHP version required: 5.6+
 
 [FAQ section](//leyka.te-st.ru/faq/) can be found at the plugin website. Also you can address our development and support team by [creating a project issue n Github](//github.com/Teplitsa/Leyka/issues/new/).
 
+For technical support questions, please, use the [plugin support email](maillto:help@te-st.ru) or the official [Telegram chat](https://t.me/leykadev).
+
 == Screenshots ==
 
 1. "Campaign card" widget example
@@ -81,6 +83,76 @@ PHP version required: 5.6+
 5. The plugin start page (a console)
 
 == Changelog ==
+= 3.21 =
+* New: now admins' & donors' email notifications about failed donations may be turned off.
+* New: the campaign total funded amount recalculation feature returned.
+* New: Unisender extension improvements.
+* Fix: Chronopay gateway donations error fixed.
+* Fix: double notifications bug fixed.
+* Fix: small fixes.
+
+= 3.20.0.1 =
+* Fix: recurring subscriptions.
+* Fix: different bugfixes.
+
+= 3.20 =
+* New: Unisender mailout service integration added as an extension.
+* Fix: different bugfixes.
+
+= 3.19.0.2 =
+* Fix: the bug of check callbacks for CP gateway recurring subscriptions fixed.
+* Fix: critical fix for all plugin updates code.
+* Fix: small fixes.
+
+= 3.19.0.1 =
+* Fix: the bug of active recurring subscriptions that rebilled everyday fixed.
+* Fix: the fatal error for non-existent donations admin pages fixed.
+* Fix: the bug of fatal error when donation status is changed on a donation details page fixed.
+* Fix: RBK callbacks helper error is fixed.
+* Fix: Donor accounts login page bug fixed.
+* Fix: the double success emails for YooKassa fixed.
+* Fix: small fixes.
+
+= 3.19 =
+* New: Core architecture features added for separated donations storage.
+* New: Donations, recurring subscriptions & donors admin UI greatly improved.
+* New: Stripe gateway support added.
+* New: Donations rewards/merchandise extension added.
+* New: Donors's account column is added to the GDS-prepared data table in the GDS extension.
+* Fix: The important bugfix for donor's account registration & login pages.
+* Fix: Lots and lots of smaller bugfixes.
+~ Tweak: Lots and lots of refactorings & improvements, both in frontend & backend.
+
+= 3.18 =
+* New: Google Data Studio integration extension added.
+* Fix: success emails added for Qiwi gateway.
+* Fix: small fixes.
+
+= 3.17.1 =
+* New: now Extensions settings don't block the main settings areas menu.
+* Fix: now YooKassa payment descriptions are forcibly trimmed if they are longer than 128 chars.
+* Fix: small fixes.
+
+= 3.17 =
+* New: the Additional fields feature added.
+* New: Robokassa recurring support added.
+* Fix: Tinkoff gateway - fix for recurring rebills.
+* Fix: small fixes.
+
+= 3.16 =
+* New: Tinkoff gateway added.
+* New: additional payment metadata pass to the YooKassa on donation.
+* New: new recurring Donation purpose automatically changes to "Charity donation" constant string if it's Campaign is finished.
+* New: now Sber Acquiring pass payment description on donation.
+* New: now YooKassa gateway handles "canceled" payment status.
+* New: now there are links to Donations details pages in Donations list metabox on the Donor details page.
+* Change: the main Dashboard banner changed (to the "please grade the plugin" one).
+* Fix: Yandex.Money PM label renamed to "YooMoney" on the plugin update to v.3.15+.
+* Fix: Engagement Banner extension - now excluding posts/pages by ID works correctly for all post types.
+* Fix: Now correctional Donations don't validate a Donor's name field at all. So, any symbols allowed there.
+* Fix: Small fixes: l10n, CSS & others.
+* Fix for Donors admin list filtering on "single" Donor type.
+
 = 3.15 =
 * New: admin menu refactored (shortened).
 * New: now Star template text styles are irrelevant of current website theme.

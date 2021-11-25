@@ -39,31 +39,40 @@
                 $this->show_banner('admin-dashboard', 'main');
             }
 
-            $_GET['interval'] = empty($_GET['interval']) ? 'year' : esc_attr($_GET['interval']);
+            $dashboard_stats_intervals = apply_filters('leyka_admin_dashboard_intervals', [
+                'year' => __('Year', 'leyka'),
+                'half-year' => __('Half-year', 'leyka'),
+                'quarter' => __('Quarter', 'leyka'),
+                'month' => __('Month', 'leyka'),
+                'week' => __('Week', 'leyka'),
+            ]);
+            $_GET['interval'] = empty($_GET['interval']) ?
+                apply_filters('leyka_admin_dashboard_interval_default', 'year') : esc_attr($_GET['interval']);
             $current_url = admin_url('admin.php?page=leyka');?>
 
             <div class="plugin-data-interval">
-                <a href="<?php echo add_query_arg('interval', 'year', $current_url);?>" class="<?php echo $_GET['interval'] === 'year' ? 'current-interval' : '';?>"><?php _e('Year', 'leyka');?></a>
-                <a href="<?php echo add_query_arg('interval', 'half-year', $current_url);?>" class="<?php echo $_GET['interval'] === 'half-year' ? 'current-interval' : '';?>"><?php _e('Half-year', 'leyka');?></a>
-                <a href="<?php echo add_query_arg('interval', 'quarter', $current_url);?>" class="<?php echo $_GET['interval'] === 'quarter' ? 'current-interval' : '';?>"><?php _e('Quarter', 'leyka');?></a>
-                <a href="<?php echo add_query_arg('interval', 'month', $current_url);?>" class="<?php echo $_GET['interval'] === 'month' ? 'current-interval' : '';?>"><?php _e('Month', 'leyka');?></a>
-                <a href="<?php echo add_query_arg('interval', 'week', $current_url);?>" class="<?php echo $_GET['interval'] === 'week' ? 'current-interval' : '';?>"><?php _e('Week', 'leyka');?></a>
+
+            <?php foreach($dashboard_stats_intervals as $interval_id => $title) {?>
+                <a href="<?php echo add_query_arg('interval', $interval_id, $current_url);?>" class="<?php echo $_GET['interval'] === $interval_id ? 'current-interval' : '';?>">
+                    <?php echo esc_html($title);?>
+                </a>
+            <?php }?>
+
             </div>
 
-            <div class="leyka-content-row">
-                <?php $this->show_admin_portlet('stats-donations-main', array('interval' => $_GET['interval']));
-                $this->show_admin_portlet('stats-recurring', array('interval' => $_GET['interval']));?>
+            <?php $row_id = 'donations-stats';?>
+            <div class="leyka-content-row leyka-<?php echo $row_id;?>">
+                <?php do_action('leyka_admin_dashboard_portlets_row', $row_id);?>
             </div>
 
-            <div class="leyka-content-row">
-                <?php $this->show_admin_portlet('donations-dynamics', array('interval' => $_GET['interval']));?>
+            <?php $row_id = 'donations-dynamics';?>
+            <div class="leyka-content-row leyka-<?php echo $row_id;?>">
+                <?php do_action('leyka_admin_dashboard_portlets_row', $row_id);?>
             </div>
 
-            <div class="leyka-content-row">
-                <?php $this->show_admin_portlet('recent-donations', array(
-                    'interval' => $_GET['interval'],
-                    'number' => 5,
-                ));?>
+            <?php $row_id = 'recent-donations';?>
+            <div class="leyka-content-row leyka-<?php echo $row_id;?>">
+                <?php do_action('leyka_admin_dashboard_portlets_row', $row_id);?>
             </div>
 
         </div>

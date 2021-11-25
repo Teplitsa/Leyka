@@ -14,7 +14,7 @@ if(is_singular(Leyka_Campaign_Management::$post_type)) {
 } else if(is_page(leyka()->opt('success_page')) || is_page(leyka()->opt('failure_page'))) {
 
     $donation_id = leyka_remembered_data('donation_id');
-    $donation = $donation_id ? new Leyka_Donation($donation_id) : null;
+    $donation = $donation_id ? Leyka_Donations::get_instance()->get_donation($donation_id) : null;
     $campaign_id = $donation ? $donation->campaign_id : null;
 
 }
@@ -87,7 +87,7 @@ $cover_bg_color = $header_cover_type == 'color' ? get_post_meta($campaign_id, 'c
                             sprintf(
                                 wp_kses(
                                     _x('Continue reading<span class="screen-reader-text"> "%s"</span>', '%s is a current post title. Only visible to screen readers', 'leyka'),
-                                    array('span' => array('class' => array(),),)
+                                    ['span' => ['class' => [],],]
                                 ),
                                 get_the_title()
                             )

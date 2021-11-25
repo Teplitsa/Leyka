@@ -3,11 +3,15 @@
  * Donor's account template tags & helpers
  **/
 
+if( !function_exists('leyka_get_donation_status_description_for_donor') ) {
+
+}
+
 if( !function_exists('leyka_get_donor_account_donations_list_item_html') ) {
     function leyka_get_donor_account_donations_list_item_html($is_hidden = false, $donation = false) {
 
         $is_hidden = !!$is_hidden;
-        $placeholders = array(
+        $placeholders = [
             'donation_status' => '#STATUS#',
             'donation_status_description' => '#STATUS_DESCR#',
             'donation_type' => '#TYPE#',
@@ -20,15 +24,15 @@ if( !function_exists('leyka_get_donor_account_donations_list_item_html') ) {
             'pm_label' => '#PM#',
             'date' => '#DATE#',
             'campaign_title' => '#CAMPAIGN_TITLE#',
-        );
+        ];
 
         if($donation) {
 
-            $donation = leyka_get_validated_donation($donation);
+            $donation = Leyka_Donations::get_instance()->get_donation($donation);
 
-            $placeholders = array(
+            $placeholders = [
                 'donation_status' => $donation->status,
-                'donation_status_description' => $donation->status_description,
+                'donation_status_description' => $donation->status_description_for_donors,
                 'donation_type' => $donation->type,
                 'donation_type_description' => $donation->type_description,
                 'recurring_is_active' => $donation->recurring_is_active ? 'recurring-is-active' : '',
@@ -39,7 +43,7 @@ if( !function_exists('leyka_get_donor_account_donations_list_item_html') ) {
                 'pm_label' => $donation->pm_label,
                 'date' => $donation->date,
                 'campaign_title' => $donation->campaign_title,
-            );
+            ];
 
         }
 

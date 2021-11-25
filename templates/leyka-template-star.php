@@ -46,7 +46,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
             </div>
 
         </div>
-        
+
         <?php if(in_array('recurring', $campaign->donations_types_available)) {?>
         <div class="section section--description"><?php echo leyka_options()->opt_template('recurring_donation_benefits_text', 'star');?></div>
         <?php }?>
@@ -56,10 +56,10 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 
             <div class="section__fields amount">
 
-            <?php echo Leyka_Payment_Form::get_common_hidden_fields($campaign, array(
+            <?php echo Leyka_Payment_Form::get_common_hidden_fields($campaign, [
                 'leyka_template_id' => 'star',
                 'leyka_amount_field_type' => 'custom',
-            ));
+            ]);
 
             $form_api = new Leyka_Payment_Form();
             echo $form_api->get_hidden_amount_fields();?>
@@ -91,42 +91,55 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                 <input type="hidden" class="leyka_donation_currency" name="leyka_donation_currency" data-currency-label="<?php echo $template_data['currency_label'];?>" value="<?php echo leyka_options()->opt('currency_main');?>">
                 <input type="hidden" name="leyka_recurring" class="is-recurring-chosen" value="<?php echo $is_recurring_campaign ? "1" : "0";?>">
             </div>
-    
+
         </div>
 
+        <?php do_action('leyka_template_after_amount', 'star', $template_data, $campaign);
+        do_action('leyka_template_star_after_amount', $template_data, $campaign);?>
+
         <div class="section section--cards">
-        	<div class="section-title-container"><div class="section-title-line"></div><div class="section-title-text"><?php esc_html_e('Payment method', 'leyka');?></div></div>
+
+        	<div class="section-title-container"><div class="section-title-line"></div><div class="section-title-text"><?php _e('Payment method', 'leyka');?></div></div>
     
             <div class="section__fields payments-grid">
-                <div class="star-swiper  <?php if(!$is_swipe_pm_list){?>no-swipe<?php }?>">
+                <div class="star-swiper <?php echo $is_swipe_pm_list ? '' : 'no-swipe';?>">
+
                     <div class="arrow-gradient left"></div><a class="swiper-arrow swipe-left" href="#"></a>
                     <div class="arrow-gradient right"></div><a class="swiper-arrow swipe-right" href="#"></a>
 
-                	<div class="<?php if($is_swipe_pm_list){?>swiper-list<?php }else{?>full-list<?php }?>">
+                	<div class="<?php echo $is_swipe_pm_list ? 'swiper-list' : 'full-list';?>">
     
                     <?php foreach($template_data['pm_list'] as $number => $pm) { /** @var $pm Leyka_Payment_Method */?>
             
-                        <div class="payment-opt swiper-item <?php echo $number ? "" : "selected";?>">
-                        <div class="swiper-item-inner">
-                            <label class="payment-opt__button">
-                                <input class="payment-opt__radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="radio" data-processing="<?php echo $pm->processing_type;?>" data-has-recurring="<?php echo $pm->has_recurring_support() ? '1' : '0';?>" data-ajax-without-form-submission="<?php echo $pm->ajax_without_form_submission ? '1' : '0';?>">
-                                <span class="payment-opt__icon">
-                                    <?php foreach($pm->icons ? $pm->icons : array($pm->main_icon_url) as $icon_url) {?>
-                                        <img class="pm-icon <?php echo $pm->full_id.' '.basename($icon_url, '.svg');?>" src="<?php echo $icon_url;?>" alt="">
-                                    <?php }?>
-                                </span>
-                            </label>
-                            <span class="payment-opt__label"><?php echo $pm->label;?></span>
-                        </div>
+                        <div class="payment-opt swiper-item <?php echo $number ? '' : 'selected';?>">
+
+                            <div class="swiper-item-inner">
+
+                                <label class="payment-opt__button">
+
+                                    <input class="payment-opt__radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="radio" data-processing="<?php echo $pm->processing_type;?>" data-has-recurring="<?php echo $pm->has_recurring_support() ? '1' : '0';?>" data-ajax-without-form-submission="<?php echo $pm->ajax_without_form_submission ? '1' : '0';?>">
+                                    <span class="payment-opt__icon">
+                                        <?php foreach($pm->icons ? $pm->icons : [$pm->main_icon_url] as $icon_url) {?>
+                                            <img class="pm-icon <?php echo $pm->full_id.' '.basename($icon_url, '.svg');?>" src="<?php echo $icon_url;?>" alt="">
+                                        <?php }?>
+                                    </span>
+
+                                </label>
+
+                                <span class="payment-opt__label"><?php echo $pm->label;?></span>
+
+                            </div>
+
                         </div>
                     <?php }?>
             
                     </div>
+
                 </div>
             </div>
 
         </div>
-    
+
         <?php foreach($template_data['pm_list'] as $pm) { /** @var $pm Leyka_Payment_Method */
     
             if($pm->processing_type !== 'static') {
@@ -181,11 +194,49 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                     </div>
                 </div>
 
-                <?php // For now, we get field settings only for the Mixplat Mobile PM and only for it's Phone field:
+                <?php // Additional fields:
+
+                $form_has_phone_field = false;
+                foreach($campaign->get_calculated_additional_fields_settings() as $field_slug => $field) {
+
+                    $field_id = 'leyka-'.wp_rand();
+                    $form_has_phone_field = $form_has_phone_field || $field['type'] === 'phone';
+
+                    switch($field['type']) {
+                        case 'phone': $text_input_type = 'tel'; break;
+                        case 'date': $text_input_type = 'text'; break; // type="date" is not universal yet
+                        default:
+                            $text_input_type = 'text';
+                    }?>
+
+                <div class="donor-additional-field donor__textfield donor__textfield--<?php echo $field['type'];?> donor__textfield--<?php echo $field_slug;?> <?php echo empty($field['is_required']) ? '' : 'required';?>">
+
+                    <div class="leyka-star-field-frame">
+                        <label for="<?php echo $field_id;?>">
+                            <span class="donor__textfield-label donor__<?php echo $field['type'];?>_field-label leyka_<?php echo $field_slug;?>-label"><?php echo $field['title'];?></span>
+                        </label>
+                        <input type="<?php echo $text_input_type;?>" id="<?php echo $field_id;?>" name="leyka_<?php echo $field_slug;?>" value="" autocomplete="off" <?php echo $field['type'] === 'phone' ? 'data-inputmask="\'mask\': \''.apply_filters('leyka_front_forms_phone_fields_mask', '+9(999)999-99-99').'\'"' : '';?> <?php echo $field['type'] === 'date' ? 'data-inputmask="\'mask\': \''.apply_filters('leyka_front_forms_date_fields_mask', '99.99.9999').'\'"' : '';?>>
+                    </div>
+
+                <?php if( !empty($field['description']) ) {?>
+                    <div class="leyka-star-field-description-frame donor__<?php echo $field['type'];?>_field-description leyka_<?php echo $field_slug;?>-description">
+                        <?php echo $field['description'];?>
+                    </div>
+                <?php }?>
+
+                    <div class="leyka-star-field-error-frame">
+                        <span class="donor__textfield-error donor__<?php echo $field['type'];?>_field-error leyka_<?php echo $field_slug;?>-error"></span>
+                    </div>
+
+                </div>
+
+                <?php }
+
+                // For now, we get field settings only for the Mixplat Mobile PM and only for it's Phone field:
                 foreach(leyka_get_special_fields_settings() as $pm_full_id => $special_fields) {
 
-                    if($pm_full_id !== 'mixplat-mobile') {
-                        return;
+                    if($pm_full_id !== 'mixplat-mobile' || $form_has_phone_field) {
+                        continue;
                     }
 
                     foreach($special_fields as $field_settings) {
@@ -194,7 +245,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                             continue;
                         }
 
-                        /** @todo Something like such: $star_template->render_field($field_settings['type'], $field_settings);*/
+                        /** @todo Something like: $star_template->render_field($field_settings['type'], $field_settings);*/
 
                         $field_id = 'leyka-'.wp_rand();?>
                         <div class="donor__textfield donor__textfield--phone special-field <?php echo $pm_full_id;?> <?php echo empty($field_settings['required']) ? '' : 'required';?> <?php echo empty($field_settings['classes']) ? '' : implode(' ', $field_settings['classes']);?>" style="display: none;">
@@ -221,7 +272,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 
                     <?php }
 
-                }
+                } // Additional fields - END
 
                 if(leyka_options()->opt_template('show_donation_comment_field', 'star')) {
 

@@ -106,12 +106,15 @@
 
             // Data interval:
             .plugin-data-interval {
+
+                margin-bottom: 1.5*$leyka-base;
+
                 a {
 
                     @include leyka-adb-link-period;
                     @include leyka-admin-a(dashed);
 
-                    margin-right: 1.5 * $leyka-base;
+                    margin-right: 1.5*$leyka-base;
 
                     &:last-of-type {
                         margin-right: 0;
@@ -123,6 +126,7 @@
                     }
 
                 }
+
             } // Data interval - END
 
         }

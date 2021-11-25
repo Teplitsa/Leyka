@@ -1,0 +1,65 @@
+.leyka-admin-list-page.leyka-admin-recurring-subscriptions-list {
+
+    // List table (columns & content):
+    .wp-list-table.widefat {
+
+        // Columns width:
+        tr {
+
+            .column-donation_id {
+                width: 80px;
+            }
+            .column-status {
+                width: 60px;
+            }
+            .column-donor {
+                //width: 250px;
+                min-width: 180px;
+                max-width: 250px;
+            }
+            .column-campaign {
+                //width: 350px;
+                min-width: 250px;
+                max-width: 350px;
+            }
+            .column-first_donation {
+                width: 121px;
+            }
+            .column-next_donation {
+                width: 121px;
+            }
+            .column-donations_number {
+                width: 100px;
+            }
+            .column-gateway_pm {
+                //width: 230px;
+                min-width: 170px;
+                max-width: 230px;
+            }
+            .column-amount {
+                width: 150px;
+            }
+
+        }
+        // Columns width - END
+
+        // Columns content settings:
+        td {
+
+            font-size: 13px;
+
+            &.column-next_donation {
+                .leyka-recurring-not-active {
+                    font-size: 11px;
+                    color: $color-error-message;
+                }
+            }
+
+        }
+        // Columns content settings - END
+
+
+    }
+    // List table (columns & content) - END
+
+}

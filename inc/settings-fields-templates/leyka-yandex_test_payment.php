@@ -4,18 +4,18 @@
 
 /** @var $this Leyka_Custom_Setting_Block A block for which the template is used. */
 
-$campaigns = get_posts(array(
+$campaigns = get_posts([
     'post_type' => Leyka_Campaign_Management::$post_type,
-    'post_status' => array('publish', 'pending', 'draft'),
+    'post_status' => ['publish', 'pending', 'draft',],
     'posts_per_page'   => 1,
     'fields' => 'ids',
-));
+]);
 
 $campaign_id = count($campaigns) ? $campaigns[0] : null;
 $campaign = $campaign_id ? new Leyka_Campaign($campaign_id) : null;
 $campaign_title = $campaign ? apply_filters('single_post_title', $campaign->title) : null;
 
-$test_payment = !empty($_COOKIE['leyka_donation_id']) ? new Leyka_Donation($_COOKIE['leyka_donation_id']) : null;
+$test_payment = !empty($_COOKIE['leyka_donation_id']) ? Leyka_Donations::get_instance()->get($_COOKIE['leyka_donation_id']) : null;
 $is_came_back_from_yandex = preg_match(
     '/^https:\/\/money.yandex.ru\/payments\/external\/success-sandbox\\?orderId=.*/',
     wp_get_raw_referer()

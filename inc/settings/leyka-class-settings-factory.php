@@ -3,7 +3,8 @@
  * Leyka main Controllers & renders creation class.
  */
 
-class Leyka_Settings_Factory extends Leyka_Singleton {
+/** @todo Rename to "Leyka_Settings" after finishing the works to move all settings to the new format. */
+class Leyka_Settings_Factory extends Leyka_Singleton { // Each descendant is a concrete wizard
 
     protected static $_instance = null;
 
@@ -28,7 +29,7 @@ class Leyka_Settings_Factory extends Leyka_Singleton {
      * @return Leyka_Settings_Controller
      * @throws Exception With codes 500-509
      */
-    public function get_controller($controller_id, array $params = array()) {
+    public function get_controller($controller_id, array $params = []) {
 
         $controller_id = trim(esc_attr($controller_id));
 
@@ -41,7 +42,7 @@ class Leyka_Settings_Factory extends Leyka_Singleton {
         } else {
             throw new Exception(
                 sprintf(
-                    __("Settings Factory error: Can't find Settings Controller script by given render ID (%s, %s)"),
+                    __("Settings Factory error: Can't find Settings Controller script by given ID (%s, %s)"),
                     $controller_id, $file_path
                 ), 500
             );

@@ -8,21 +8,21 @@ class Leyka_Settings_Section {
     protected $_id;
     protected $_stage_id;
     protected $_title = '';
-    protected $_params = array();
+    protected $_params = [];
     protected $_handler = false;
 
     protected $_blocks;
 
-    public function __construct($id, $stage_id, $title = '', array $params = array()) {
+    public function __construct($id, $stage_id, $title = '', array $params = []) {
 
         $this->_id = trim($id);
         $this->_stage_id = trim($stage_id);
         $this->_title = trim($title);
 
-        $this->_params = wp_parse_args($params, array(
+        $this->_params = wp_parse_args($params, [
             'header_classes' => '',
             'form_enctype' => '',
-        ));
+        ]);
 
     }
 
@@ -37,7 +37,7 @@ class Leyka_Settings_Section {
             case 'title':
                 return $this->_title;
             case 'blocks':
-                return $this->_blocks ? $this->_blocks : array();
+                return $this->_blocks ? $this->_blocks : [];
             case 'handler':
                 return $this->_handler;
             default:
@@ -108,7 +108,7 @@ class Leyka_Settings_Section {
      */
     public function get_errors() {
 
-        $errors = array();
+        $errors = [];
 
         foreach($this->blocks as $block) { /** @var $block Leyka_Settings_Block */
             $errors = array_merge($errors, $block->get_errors());
@@ -118,12 +118,13 @@ class Leyka_Settings_Section {
 
     }
 
-    /** Get all options & values set on the step
+    /**
+     * Get all options & values set on the step
      * @return array
      */
     public function get_fields_values() {
 
-        $fields = array();
+        $fields = [];
 
         foreach($this->blocks as $block) { /** @var $block Leyka_Settings_Block */
             $fields = array_merge($fields, $block->get_fields_values());

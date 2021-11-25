@@ -36,13 +36,15 @@
 
 @mixin star-clean-input() {
     text-decoration: none;
-    border: none;
+    border: none !important;
+    border-radius: 0 !important;
     box-shadow: none;
     outline: none;
     
     &:active, &:focus, &:hover {
         text-decoration: none;
-        border: none;
+        border: none !important;
+        border-radius: 0 !important;
         box-shadow: none;
         outline: none;
     }
@@ -647,7 +649,7 @@
 @mixin leyka-star-style-block-box {
     background-color: $leyka-star-color-white;
     border-radius: 4px;
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05), 0px 2px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05), 0 2px 2px rgba(0, 0, 0, 0.05);
     padding: 2 * $leyka-star-base $leyka-star-base $leyka-star-base $leyka-star-base;
     max-width: unset;
     
@@ -657,7 +659,8 @@
 }
 
 @mixin leyka-star-style-block-position {
-    margin-top: 0px;
+
+    margin-top: 0;
     margin-left: - $leyka-star-base;
     margin-right: - $leyka-star-base;
     
@@ -666,23 +669,31 @@
         margin-left: - 2 * $leyka-star-base;
         margin-right: - 2 * $leyka-star-base;
     }
+
 }
 
 @mixin leyka-star-field-error-frame {
+
 	min-height: 21px;
 	height: auto;
 	padding-top: 1px;
-	margin-left: 1 * $leyka-star-base;
+	margin-left: 1*$leyka-star-base;
 	vertical-align: bottom;
 	
 	span.donor__textfield-error {
+
 		@include star-text-field-title();
+
 	    color: $leyka-star-color-error;
+
 	}
+
 }
 
 @mixin leyka-donation-gateway-pm {
+
     @include star-text-pm-label();
+
     color: $leyka-star-color-text;
     margin-top: 0.5 * $leyka-star-base;
 
@@ -693,9 +704,11 @@
         margin-right: 4px;
         vertical-align: bottom;
     }
+
 }
 
 @mixin leyka-subscription-list-item {
+
     &.subscription-canceling,&.subscription-canceled {
         opacity: 0.5;
     }
@@ -729,4 +742,5 @@
         @include leyka-donation-gateway-pm();
         display: inline-block;
     }
+
 }

@@ -7,7 +7,7 @@ abstract class Leyka_Settings_Block {
 
     protected $_id;
 
-    public function __construct(array $params = array()) {
+    public function __construct(array $params = []) {
 
         if( !empty($params['id']) ) {
             $this->_id = trim($params['id']);
@@ -36,7 +36,7 @@ class Leyka_Text_Block extends Leyka_Settings_Block {
     protected $_text = '';
     protected $_template = null;
 
-    public function __construct(array $params = array()) {
+    public function __construct(array $params = []) {
 
         parent::__construct($params);
         
@@ -83,11 +83,11 @@ class Leyka_Text_Block extends Leyka_Settings_Block {
     }
 
     public function get_errors() {
-        return array();
+        return [];
     }
 
     public function get_fields_values() {
-        return array();
+        return [];
     }
 
 }
@@ -96,7 +96,7 @@ class Leyka_Subtitle_Block extends Leyka_Settings_Block {
 
     protected $_subtitle_text = '';
 
-    public function __construct(array $params = array()) {
+    public function __construct(array $params = []) {
 
         parent::__construct($params);
 
@@ -115,11 +115,11 @@ class Leyka_Subtitle_Block extends Leyka_Settings_Block {
     }
 
     public function get_errors() {
-        return array();
+        return [];
     }
 
     public function get_fields_values() {
-        return array();
+        return [];
     }
 
 }
@@ -127,9 +127,9 @@ class Leyka_Subtitle_Block extends Leyka_Settings_Block {
 class Leyka_Option_Block extends Leyka_Settings_Block {
 
     protected $_option_id = '';
-    protected $_params = array();
+    protected $_params = [];
 
-    public function __construct(array $params = array()) {
+    public function __construct(array $params = []) {
 
         parent::__construct($params);
 
@@ -139,14 +139,14 @@ class Leyka_Option_Block extends Leyka_Settings_Block {
             /** @todo Throw some Exception */
         }
 
-        $this->_params = wp_parse_args($params, array(
+        $this->_params = wp_parse_args($params, [
             'title' => null,
             'show_title' => true,
             'description' => null,
             'show_description' => true,
             'required' => null,
             'width' => 1.0,
-        ));
+        ]);
 
         $this->_option_id = $params['option_id'];
 
@@ -194,22 +194,23 @@ class Leyka_Option_Block extends Leyka_Settings_Block {
     public function get_errors() {
 
         $value = isset($_POST['leyka_'.$this->_option_id]) ? $_POST['leyka_'.$this->_option_id] : false;
-        $errors = array();
+        $errors = [];
 
         foreach(leyka_options()->get_validation_errors($this->_option_id, $value) as $error_message) {
             $errors[] = new WP_Error('option_invalid', $error_message);
         }
 
-        return $errors ? array($this->_id => $errors) : array();
+        return $errors ? [$this->_id => $errors,] : [];
 
     }
 
-    /** Get all options & values set on the step
+    /**
+     * Get all options & values set on the step
      * @return array
      */
     public function get_fields_values() {
         return isset($_POST['leyka_'.$this->_option_id]) ?
-            array($this->_option_id => $_POST['leyka_'.$this->_option_id]) : array();
+            [$this->_option_id => $_POST['leyka_'.$this->_option_id]] : [];
     }
 
 }
@@ -218,9 +219,9 @@ class Leyka_Container_Block extends Leyka_Settings_Block {
 
     protected $_blocks;
     protected $_entry_width = false;
-    protected $_params = array();
+    protected $_params = [];
 
-    public function __construct(array $params = array()) {
+    public function __construct(array $params = []) {
 
         parent::__construct($params);
 
@@ -295,7 +296,7 @@ class Leyka_Container_Block extends Leyka_Settings_Block {
 
     public function get_errors() {
 
-        $errors = array();
+        $errors = [];
 
         foreach($this->_blocks as $sub_block) { /** @var $sub_block Leyka_Settings_Block */
             $errors = array_merge($errors, $sub_block->get_errors());
@@ -305,12 +306,13 @@ class Leyka_Container_Block extends Leyka_Settings_Block {
 
     }
 
-    /** Get all options & values set on the step
+    /**
+     * Get all options & values set on the step
      * @return array
      */
     public function get_fields_values() {
 
-        $fields_values = array();
+        $fields_values = [];
 
         foreach($this->_blocks as $block) { /** @var $block Leyka_Settings_Block */
             $fields_values = array_merge($fields_values, $block->get_fields_values());
@@ -327,10 +329,10 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
     protected $_setting_id = '';
     protected $_field_type = '';
     protected $_rendering_type = 'callback';
-    protected $_field_data = array();
-    protected $_fields_keys = array();
+    protected $_field_data = [];
+    protected $_fields_keys = [];
 
-    public function __construct(array $params = array()) {
+    public function __construct(array $params = []) {
 
         parent::__construct($params);
 
@@ -351,8 +353,8 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
         $this->_field_type = $params['field_type'];
         $this->_rendering_type = empty($params['rendering_type']) ? 'callback' : $params['rendering_type'];
 
-        $this->_field_data = empty($params['data']) ? array() : (array)$params['data'];
-        $this->_fields_keys = empty($params['keys']) || !is_array($params['keys']) ? array($this->_setting_id) : $params['keys'];
+        $this->_field_data = empty($params['data']) ? [] : (array)$params['data'];
+        $this->_fields_keys = empty($params['keys']) || !is_array($params['keys']) ? [$this->_setting_id] : $params['keys'];
         
     }
 
@@ -450,7 +452,7 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
 
     public function get_errors() {
 
-        $errors = array();
+        $errors = [];
 
         if( !empty($this->_field_data['required']) ) {
 
@@ -467,7 +469,7 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
 
         }
 
-        $errors = $errors ? array($this->_id => $errors) : array();
+        $errors = $errors ? [$this->_id => $errors] : [];
 
         return apply_filters(
             'leyka_custom_setting_validation_errors-'.$this->_field_type,
@@ -484,7 +486,7 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
      */
     public function get_fields_values() {
 
-        $values = array();
+        $values = [];
 
         foreach($this->_fields_keys as $key) {
             if(isset($_POST[ $this->is_standard_field_type ? 'leyka_'.$key : $key ])) {

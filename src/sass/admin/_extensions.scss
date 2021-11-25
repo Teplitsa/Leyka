@@ -9,6 +9,30 @@
 
     }
 
+    .extension-description {
+
+        h3 {
+            font-size: 14px;
+            font-weight: 500;
+            margin: 0 0 6px 0;
+        }
+
+        ul {
+
+            margin-bottom: 10px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+            li {
+                margin-top: 6px;
+            }
+
+        }
+
+    }
+
     &.extension-settings {
 
         width: 1050px;
@@ -216,68 +240,26 @@
         margin-top: 8px;
     }
 
-    /** @todo Packages settings custom field styles here */
-    .package-box {
-
-        @include leyka-metabox-styling();
-
-        margin-bottom: 16px;
-
-        h2.hndle {
-
-            .title {
-                flex: 1 1 100%;
-            }
-
-            &:after {
-
-                content: ' ';
-                background-image: url(../../img/icon-metabox-draggable.svg) !important;
-
-                pointer-events: all;
-                width: 8px;
-                height: 14px;
-
-            }
-
-        }
-
-        .box-footer {
-
-            margin: -16px;
-            margin-top: 16px;
-
-            border-top: 1px solid $color-border-semilight;
-            padding: 12px 16px;
-
-            text-align: right;
-
-            color: $color-error-message;
-
-            .delete-package {
-                cursor: pointer;
-            }
-
-        }
-
-    }
-
-    .add-package {
-
-        margin-left: 8px;
-        padding-bottom: 16px;
-
-        cursor: pointer;
-        color: $color-wizard-link-active;
-
-        &:before {
-            display: inline-block;
-            content: '+';
-            margin-right: 3px;
-        }
+    .package-box { /** @todo Multi-valued items field - specifics for Packages */
 
     }
     // Support packages admin page - END
+
+    // GDS Integration admin page
+    .leyka-gds-data-error {
+
+        color: $color-error-message;
+
+        &:before {
+            @include error-icon();
+        }
+
+    }
+
+    .leyka-gds-data-info {
+        margin-top: 8px;
+    }
+    // GDS Integration admin page - END
 
 }
 
@@ -293,8 +275,8 @@
             display: block;
             background-color: transparent;
             position: absolute;
-            left: 0px;
-            top: 0px;
+            left: 0;
+            top: 0;
             width: 100%;
             height: 100%
         }
@@ -313,13 +295,13 @@
     .color-actions {
         text-align: right;
         position: absolute;
-        right: 0px;
+        right: 0;
         bottom: $base;
 
         a {
             display: inline-block;
             text-decoration: none;
-            padding-bottom: 0px;
+            padding-bottom: 0;
             border-bottom: none;
 
             &:not(:last-child) {
@@ -329,7 +311,7 @@
             &:before {
                 background-image: url('../../img/icon-color-reset.svg');
                 background-size: 16px 16px;
-                content: " ";
+                content: ' ';
                 display: inline-block;
                 width: 16px;
                 height: 16px;

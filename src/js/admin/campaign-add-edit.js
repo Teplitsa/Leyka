@@ -33,6 +33,7 @@ jQuery(document).ready(function($){
         }
 
     }).change();
+    // "Daily rouble mode" change - END
 
     // Campaign type change:
     $(':input[name="campaign_type"]').on('change.leyka', function(e){
@@ -46,28 +47,28 @@ jQuery(document).ready(function($){
         }
 
         let $persistent_campaign_fields = $('.persistent-campaign-field'),
-            $temp_campaign_fields = $('.temporary-campaign-fields'),
-            $form_template_field = $(':input[name="campaign_template"]');
+            $temp_campaign_fields = $('.temporary-campaign-fields');
+            // $form_template_field = $(':input[name="campaign_template"]');
 
         if($this.val() === 'persistent') {
 
             $persistent_campaign_fields.show();
             $temp_campaign_fields.hide();
 
-            $form_template_field
-                .data('prev-value', $form_template_field.val())
-                .val('star')
-                .prop('disabled', 'disabled');
+            // $form_template_field
+            //     .data('prev-value', $form_template_field.val())
+            //     .val('star')
+            //     .prop('disabled', 'disabled');
 
         } else {
 
             $persistent_campaign_fields.hide();
             $temp_campaign_fields.show();
 
-            if($form_template_field.data('prev-value')) {
-                $form_template_field.val($form_template_field.data('prev-value'));
-            }
-            $form_template_field.removeProp('disabled');
+            // if($form_template_field.data('prev-value')) {
+            //     $form_template_field.val($form_template_field.data('prev-value'));
+            // }
+            // $form_template_field.removeProp('disabled');
 
         }
 
@@ -114,7 +115,7 @@ jQuery(document).ready(function($){
             .trigger('openModal');
 
     });
-    // Form templates screens demo - end
+    // Form templates screens demo - END
 
     // Campaign cover upload field:
     $('.upload-photo', '.upload-attachment-field').on('click.leyka', function(e){
@@ -153,7 +154,7 @@ jQuery(document).ready(function($){
                         alert('Ошибка!');
                     } else {
 
-                    	$img_wrapper.find('.img-value').html('<img src="'+json.img_url+'" />');
+                    	$img_wrapper.find('.img-value').html('<img src="'+json.img_url+'" alt="">');
                     	$img_wrapper.find('.reset-to-default').show();
 
                     }
@@ -189,7 +190,7 @@ jQuery(document).ready(function($){
     		}
     	}
     });
-    $('#campaign-cover-type input[type=radio]:checked').change();
+    $('#campaign-cover-type input[type="radio"]:checked').change();
     
     // Reset uploaded image to default:
     $('.set-page-img-control .reset-to-default').on('click.leyka', function(e){
@@ -233,6 +234,45 @@ jQuery(document).ready(function($){
             });
     });
 
+    // Recalculate total funded amount:
+    $('#recalculate_total_funded').click(function(e){
+
+        e.preventDefault();
+
+        let $link = $(this).prop('disabled', 'disabled'),
+            $indicator = $link.parent().find('#recalculate_total_funded_loader').show(),
+            $message = $link.parent().find('#recalculate_message').hide(),
+            $total_collected = $('#collected-amount-number');
+
+        $.get(leyka.ajaxurl, {
+            campaign_id: $link.data('campaign-id'),
+            action: 'leyka_recalculate_total_funded_amount',
+            nonce: $link.data('nonce')
+        }, function(resp){
+
+            $link.removeProp('disabled');
+            $indicator.hide();
+
+            if(parseFloat(resp) >= 0) {
+
+                resp = parseFloat(resp);
+
+                $total_collected.html(resp);
+
+                // If recalculated sum is different than saved one, refresh the campaign edition page:
+                if(parseFloat($total_collected.html()) !== resp) {
+                    $('#publish').click();
+                }
+
+            } else {
+                $message.html(resp).show();
+            }
+
+        });
+
+    });
+    // Recalculate total funded amount - END
+
     // Dynamic fields values length display in field description:
     $(':input[maxlength]').keyup(function(e){
 
@@ -255,8 +295,95 @@ jQuery(document).ready(function($){
 
     // Donations list data table:
     if(typeof $().DataTable !== 'undefined' && typeof leyka_dt !== 'undefined') {
-        $('.leyka-data-table').DataTable({
-            'lengthMenu': [[25, 50, 100, 200], [25, 50, 100, 200]],
+
+        let $data_table = $('.leyka-data-table.campaign-donations-table');
+        $data_table.DataTable({
+            ordering:  false, /** @todo Add ordering to the table & it's AJAX query */
+            searching: false,
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: leyka.ajaxurl,
+                type: 'POST',
+                data: function(data){
+                    data.action = 'leyka_get_campaign_donations';
+                    data.campaign_id = $data_table.data('campaign-id');
+                }
+            },
+            columns: [
+                {
+                    data: 'donation_id',
+                    className: 'column-id column-donation_id',
+                    render: function(donation_id){
+                        return '<a href="'+leyka.admin_url+'admin.php?page=leyka_donation_info&donation='+donation_id+'" target="_blank">'
+                            +donation_id
+                            +'</a>';
+                    },
+                },
+                {
+                    data: 'payment_type',
+                    className: 'column-donation_type',
+                    render: function(payment_type){
+                        return '<i class="icon-payment-type icon-'+payment_type.id+' has-tooltip" title="'+payment_type.label+'"></i>';
+                    },
+                },
+                {
+                    data: 'donor',
+                    className: 'column-donor',
+                    render: function(donor, type, row_data){
+                        return '<div class="donor-name">'
+                            +(donor.id ? '<a href="'+leyka.admin_url+'?page=leyka_donor_info&donor='+donor.id+'">' : '')
+                            +donor.name
+                            +(donor.id ? '</a>' : '')
+                        +'</div>'
+                        +'<div class="donor-email">'+donor.email+'</div>';
+                    }
+                },
+                {
+                    data: 'amount',
+                    className: 'column-amount data-amount',
+                    render: function(data_amount, type, row_data){
+
+                        let amount_html = data_amount.amount == data_amount.total ?
+                            data_amount.formatted+'&nbsp;'+data_amount.currency_label :
+                            data_amount.formatted+'&nbsp;'+data_amount.currency_label
+                            +'<span class="amount-total"> / '
+                                +data_amount.total_formatted+'&nbsp;'+data_amount.currency_label
+                            +'</span>';
+
+                        return '<span class="leyka-amount '+(data_amount.amount < 0.0 ? 'leyka-amount-negative' : '')+'">'
+                                +'<i class="icon-leyka-donation-status icon-'+row_data.status.id+' has-tooltip leyka-tooltip-align-left" title="'+row_data.status.description+'"></i>'
+                                +'<span class="leyka-amount-and-status">'
+                                    +'<div class="leyka-amount-itself">'+amount_html+'</div>'
+                                    +'<div class="leyka-donation-status-label label-'+row_data.status.id+'">'+row_data.status.label+'</div>'
+                                +'</span>'
+                            +'</span>';
+
+                    }
+                },
+                {data: 'date', className: 'column-date',},
+                {
+                    data: 'gateway_pm',
+                    className: 'column-gateway_pm data-gateway_pm',
+                    render: function(gateway_pm, type, row_data){
+
+                        return '<div class="leyka-gateway-name">'
+                                +'<img src="'+gateway_pm.gateway_icon_url+'" alt="'+gateway_pm.gateway_label+'">'
+                                +gateway_pm.gateway_label+','
+                            +'</div>'
+                            +'<div class="leyka-pm-name">'+gateway_pm.pm_label+'</div>';
+
+                    }
+                },
+            ],
+            rowCallback: function(row, data){ // After the data loaded from server, but before row is rendered in the table
+                $(row)
+                    .addClass('leyka-donations-table-row')
+                    .addClass(data.payment_type.type_id === 'correction' ? 'leyka-donation-row-correction' : '')
+                    .find('.has-tooltip').leyka_admin_tooltip();
+            },
+
+            lengthMenu: [[10, 25, 50, 100, 200], [10, 25, 50, 100, 200]],
             language: {
                 processing:     leyka_dt.processing,
                 search:         leyka_dt.search,
@@ -280,9 +407,10 @@ jQuery(document).ready(function($){
                 }
             }
         });
+
     }
 
-    // campaign template change
+    // Campaign template change:
     $campaign_template_field.on('change.leyka', function(e){
 
         e.preventDefault();
@@ -335,6 +463,93 @@ jQuery(document).ready(function($){
         }
 
     }).change();
+
+    // Campaign additional fields:
+
+    let $additional_fields_settings = $('#leyka_campaign_additional_fields .inside'),
+        $add_field_button = $additional_fields_settings.find('.add-field');
+
+    // Each additional field should be added to the Campaign form only once.
+    // So if it's already added, hide it from the field variants for a new Campaign field:
+    function leyka_refresh_new_campaign_additional_fields_variants() {
+
+        let $new_field_selects = $additional_fields_settings.find('select[name="leyka_campaign_field_add"]'),
+            added_fields_ids = [];
+
+        $additional_fields_settings.find('.field-box:not([id*="item-"])').each(function(){
+            added_fields_ids.push($(this).prop('id'));
+        });
+        $new_field_selects.each(function(){
+
+            let selected_id = $(this).val();
+
+            if(selected_id !== '-' && selected_id !== '+') {
+                added_fields_ids.push(selected_id);
+            }
+
+        });
+
+        $new_field_selects.find('option').show(); // First, show all options (new additional field variants)...
+
+        $(added_fields_ids).each(function(){
+            // ...Then hide options for fields that are already added to Campaign
+            $new_field_selects.find('option[value="'+this+'"]').hide();
+        });
+
+    }
+
+    $add_field_button.on('click.leyka', function(e){
+
+        e.preventDefault();
+
+        if($add_field_button.hasClass('inactive')) {
+            return;
+        }
+
+        leyka_refresh_new_campaign_additional_fields_variants();
+
+        let $new_additional_field_box_wrapper = $additional_fields_settings.find('.multi-valued-item-box:visible:last'),
+            $new_additional_field_wrapper = $new_additional_field_box_wrapper.find('.campaign-new-additional-field'),
+            $add_campaign_field = $new_additional_field_box_wrapper.find('select[name="leyka_campaign_field_add"]');
+
+        if($add_campaign_field.val() === '+') {
+            $new_additional_field_wrapper.show();
+        } else {
+            $new_additional_field_wrapper.hide();
+        }
+
+    });
+
+    $additional_fields_settings.find('.leyka-main-multi-items').on('click.leyka', '.delete-item', function(){
+        leyka_refresh_new_campaign_additional_fields_variants();
+    });
+
+    $additional_fields_settings.on('change.leyka', 'select[name="leyka_campaign_field_add"]', function(){
+
+        let $add_campaign_field = $(this),
+            $new_additional_field_wrapper = $add_campaign_field.parents('.box-content').find('.campaign-new-additional-field');
+
+        if($add_campaign_field.val() === '+') {
+            $new_additional_field_wrapper.show();
+        } else {
+            $new_additional_field_wrapper.hide();
+        }
+
+        leyka_refresh_new_campaign_additional_fields_variants();
+
+    }).find('select[name="leyka_campaign_field_add"]:visible').each(function(){
+
+        // For the case when there are no fields in the Library, display the new field subfields right from the start:
+
+        let $this = $(this);
+
+        if($this.val() === '+') {
+            $this.trigger('change.leyka');
+        }
+
+    });
+
+    // Campaign additional fields - END
 
     /* Support packages Extension - available campaign existence check: */
 

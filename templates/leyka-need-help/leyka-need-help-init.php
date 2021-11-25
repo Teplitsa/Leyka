@@ -20,7 +20,7 @@ function leyka_need_help_template_campaign_page($content) {
         return $content;
     }
 
-    return leyka_payment_form_screen(array('id' => get_queried_object_id(), 'template' => 'need-help'))
+    return leyka_payment_form_screen(['id' => get_queried_object_id(), 'template' => 'need-help'])
         .$content;
 
 }

@@ -21,7 +21,7 @@ function leyka_revo_template_campaign_page($content) {
 
     $campaign_id = get_queried_object_id();
 
-    $before = leyka_inline_campaign(array('id' => $campaign_id, 'template' => 'revo'));
+    $before = leyka_inline_campaign(['id' => $campaign_id, 'template' => 'revo']);
     $after = leyka_inline_campaign_small($campaign_id);
 
     return $before.$content.$after;
