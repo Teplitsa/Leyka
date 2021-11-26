@@ -144,6 +144,8 @@ class LeykaDummyData {
         }
 
         $donors_constructor_data = $this->data['donors_constructor'];
+
+        /*
         $init_rebills = [];
 
         for($i = 0; $i < $payments_count; $i++ ) {
@@ -189,6 +191,43 @@ class LeykaDummyData {
             }
 
         }
+        */
+
+        $donations_data = [];
+
+        for($i = 0; $i < $payments_count; $i++ ) {
+
+            $gateway_id = $this->_get_proportion_part_title($this->data['variables']['gates_usage_proportions']['value']);
+            $payment_method_id = $available_pms[$gateway_id];
+            $donor_name =
+                $donors_constructor_data['first_names'][rand(0, sizeof($donors_constructor_data['first_names'])-1)]." ".
+                $donors_constructor_data['patronymics'][rand(0, sizeof($donors_constructor_data['patronymics'])-1)]." ".
+                $donors_constructor_data['last_names'][rand(0, sizeof($donors_constructor_data['last_names'])-1)];
+            $donor_email = $donors_constructor_data['emails'][rand(0, sizeof($donors_constructor_data['emails'])-1)];
+            $status = $this->_get_proportion_part_title($this->data['variables']['donations_statuses_proportions']['value']);
+            $payment_type = $i === 0 ?
+                'single' : $this->_get_proportion_part_title($this->data['variables']['donations_types_proportions']['value']);
+
+            $donation_data = [
+                'gateway_id' => $gateway_id,
+                'payment_method_id' => $payment_method_id,
+                'campaign_id' => $campaign->ID,
+                'purpose_text' => $campaign->title,
+                'status' => $status,
+                'payment_type' => $payment_type,
+                'amount' => round(rand(10, 1000), -1),
+                'currency' => 'rub',
+                'donor_name' => $donor_name,
+                'donor_email' => $donor_email,
+                'is_test_mode' => true,
+                'recurring_is_active' => $payment_type === 'rebill'
+            ];
+
+            $donations_data[] = $donation_data;
+
+        }
+
+        Leyka_Donations::get_instance()->add_bulk($donations_data);
 
         fwrite(STDOUT,$payments_count.' donations installed for "'.$campaign->name.'" campaign'.PHP_EOL);
 

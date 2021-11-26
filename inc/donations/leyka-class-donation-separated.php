@@ -156,6 +156,12 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
     }
 
+    public static function add_bulk(array $donations_params = []) {
+
+        /** TODO Add method.*/
+        return [];
+    }
+
     public function __construct($donation) {
 
         if((is_int($donation) || is_string($donation)) && absint($donation)) {

@@ -88,6 +88,13 @@ abstract class Leyka_Donations extends Leyka_Singleton {
     abstract public function add(array $params = [], $return_object = false);
 
     /**
+     * @param $params array
+     * @param $return_objects boolean True to return a Leyka_Donation_Base objects, false to return just a new donations IDs.
+     * @return integer|WP_Error An ID of the new donation, WP_Error object if there was an error in the process
+     */
+    abstract public function add_bulk(array $donations_params = [], $return_objects = false);
+
+    /**
      * Helper to add a copy of given Donation.
      *
      * @param $original Leyka_Donation_Base
@@ -622,6 +629,26 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
     }
 
+    public function add_bulk(array $donations_params = [], $return_objects = false)
+    {
+        $donations_ids = Leyka_Donation_Post::add_bulk($donations_params);
+
+        if($return_objects) {
+
+            $donations = [];
+
+            foreach ($donations_ids as $donation_id) {
+                $donations[] = new Leyka_Donation_Post($donation_id);
+            }
+
+            return $donations;
+
+        } else {
+            return $donations_ids;
+        }
+
+    }
+
     public function delete_donation($donation_id, $force_delete = false) {
         return !!wp_delete_post(absint($donation_id), !!$force_delete);
     }
@@ -1114,6 +1141,26 @@ class Leyka_Donations_Separated extends Leyka_Donations {
         }
 
         return $donation;
+
+    }
+
+    public function add_bulk(array $donations_params = [], $return_objects = false)
+    {
+        $donations_ids = Leyka_Donation_Separated::add_bulk($donations_params);
+
+        if($return_objects) {
+
+            $donations = [];
+
+            foreach ($donations_ids as $donation_id) {
+                $donations[] = new Leyka_Donation_Separated($donation_id);
+            }
+
+            return $donations;
+
+        } else {
+            return $donations_ids;
+        }
 
     }
 

@@ -125,6 +125,195 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
     }
 
+    public static function add_bulk(array $donations_params = []) {
+
+        global $wpdb;
+
+        $posts_sql = "INSERT INTO `".$wpdb->base_prefix."posts` (`post_author`,`post_title`,`post_excerpt`,`post_name`,`to_ping`,`pinged`,`guid`,`post_type`,`post_date`,`post_date_gmt`,`post_content`,`post_modified`,`post_modified_gmt`,`post_content_filtered`,`post_parent`,`ping_status`) VALUES ";
+
+        foreach ($donations_params as $index => $params) {
+
+            $params = self::_handle_new_donation_params($params); // New Donation params pre-handling
+
+            if(is_wp_error($params)) {
+                continue; //TODO Handle errors
+            }
+
+            $timestamp = time();
+            $date = date('Y-m-d H:i:s', $timestamp);
+            $gmt_date = gmdate('Y-m-d H:i:s', $timestamp);
+            $post_name = str_replace('.','-',uniqid('donation-', true)) ;
+            $post_title = wp_strip_all_tags($params['payment_title']);
+            $guid = site_url().'/donation/'.$post_name.'/';
+            $post_type = Leyka_Donation_Management::$post_type;
+            $post_parent = 0;
+
+            $posts_sql = $index === 0 ? $posts_sql : $posts_sql.',';
+            $posts_sql .= "(0,'$post_title','','$post_name','','','$guid','$post_type','$date','$gmt_date','','$date','$gmt_date','','$post_parent','closed')";
+
+            $postsmeta_data[] = [
+                'post_name' => $post_name,
+                'params' => $params
+            ];
+        }
+
+        $wpdb->query($posts_sql);
+
+        $posts_list = '';
+
+        foreach($postsmeta_data as $index => $postmeta_data) {
+            $posts_list = $index === 0 ? $posts_list : $posts_list.',';
+            $posts_list .= "'".$postmeta_data['post_name']."'";
+        }
+
+        $posts_search_sql = "SELECT `ID`,`post_name` FROM `".$wpdb->base_prefix."posts` WHERE `post_name` in (".$posts_list.")";
+        $posts =  $wpdb->get_results( $posts_search_sql, ARRAY_A);
+
+        $postmeta_sql = "INSERT INTO `".$wpdb->base_prefix."postmeta` (`post_id`,`meta_key`,`meta_value`) VALUES ";
+
+        $init_rebills = [];
+
+        foreach($postsmeta_data as $index => $postmeta_data) {
+
+            $params = $postmeta_data['params'];
+
+            foreach($posts as $post) {
+                if($post['post_name'] === $postmeta_data['post_name']) {
+                    $donation_id = $post['ID'];
+                }
+            }
+
+            $params['currency_id'] = empty($params['currency_id']) ?
+                (empty($params['currency']) ? $params['currency'] : false) : $params['currency_id'];
+            $params['currency_id'] = $params['currency_id'] && leyka_get_currencies_full_info($params['currency_id']) ?
+                $params['currency_id'] : leyka_get_country_currency();
+
+            $donation_meta_fields = [
+                'leyka_donation_amount' => $params['amount'],
+                'leyka_donation_currency' => $params['currency_id'],
+                'leyka_payment_type' => $params['payment_type'],
+                'leyka_donor_name' => $params['donor_name'],
+                'leyka_donor_email' => $params['donor_email'],
+                'leyka_gateway' => $params['gateway_id'],
+                'leyka_payment_method' => $params['pm_id'],
+                'leyka_campaign_id' => $params['campaign_id'],
+                '_status_log' => [['date' => current_time('timestamp'), 'status' => $params['status']]],
+                'leyka_is_test_mode' => $params['is_test_mode']
+            ];
+
+            if($params['amount_total'] && $params['amount_total'] != $params['amount']) {
+                $donation_meta_fields['leyka_donation_amount_total'] = $params['amount_total'];
+            }
+
+            if($params['additional_fields']) {
+                $donation_meta_fields['leyka_additional_fields'] = $params['additional_fields'];
+            }
+
+            if($params['donor_comment']) {
+                $donation_meta_fields['leyka_donor_comment'] = $params['donor_comment'];
+            }
+
+            if($params['payment_type'] === 'rebill') {
+
+                $donation_meta_fields['recurring_is_active'] = true;
+
+                if(rand(1, 5) > 1 && sizeof($init_rebills) > 0) { // non-init rebill
+                    $donation_meta_fields['init_recurring_donation'] = $init_rebills[rand(0, sizeof($init_rebills) - 1)];
+                }
+
+                if($params['status'] === 'funded' && empty($donation_meta_fields['init_recurring_donation'])) {
+                    $init_rebills[] = $donation_id;
+                }
+
+            }
+
+            if($params['payment_type'] === 'rebill' && !$params['init_recurring_donation']) { // Init recurring donations only
+
+                $donation_meta_fields['_rebilling_is_active'] =
+                    !empty($params['rebilling_is_active']) ||
+                    !empty($params['rebilling_on']) ||
+                    !empty($params['recurring_active']) ||
+                    !empty($params['recurring_is_active']) ||
+                    !empty($params['recurring_on']);
+
+                if($params['recurring_cancelled']) {
+
+                    $donation_meta_fields['_rebilling_is_active'] = 0;
+                    $donation_meta_fields['leyka_recurrents_cancelled'] = 1;
+
+                    $donation_meta_fields['leyka_recurrents_cancel_date'] = $params['recurring_cancel_date'] ?
+                        : current_time('timestamp');
+
+                }
+
+                if($params['recurring_cancel_date'] && empty($donation_meta_fields['leyka_recurrents_cancel_date'])) {
+                    $donation_meta_fields['leyka_recurrents_cancel_date'] = $params['recurring_cancel_date'];
+                }
+
+                if($params['recurring_cancel_requested']) {
+                    $donation_meta_fields['cancel_recurring_requested'] = $params['recurring_cancel_requested'];
+                }
+
+                if( !empty($params['recurring_cancel_reason']) ) {
+                    $donation_meta_fields['leyka_recurring_cancel_reason'] = $params['recurring_cancel_reason'];
+                }
+
+            }
+
+            if($params['donor_subscribed']) {
+                $donation_meta_fields['donor_subscribed'] = $params['donor_subscribed'];
+            }
+
+            if($params['ga_client_id']) {
+                $donation_meta_fields['leyka_ga_client_id'] = $params['ga_client_id'];
+            }
+
+            remove_all_actions('save_post_'.Leyka_Donation_Management::$post_type);
+
+            $meta_field_loop_index = 0;
+            foreach($donation_meta_fields as $key => $value) {
+
+                $postmeta_sql = $index === 0 && $meta_field_loop_index === 0 ? $postmeta_sql : $postmeta_sql.',';
+                $postmeta_sql .= "('$donation_id','$key','".maybe_serialize( $value )."')";
+                $meta_field_loop_index++;
+
+            }
+
+            $donations_ids[] = $donation_id;
+
+            if($params['gateway_id']) {
+                do_action("leyka_{$params['gateway_id']}_add_donation_specific_data", $donation_id, $params);
+            }
+
+            if( !empty($donation_meta_fields['_rebilling_is_active']) ) {
+                do_action('leyka_donation_recurring_activity_changed', $donation_id, $donation_meta_fields['_rebilling_is_active']);
+            }
+
+            if(is_wp_error($donation_id)) {
+                return $donation_id;
+            }
+
+            $donation_meta_fields = apply_filters(
+                "leyka_{$params['gateway_id']}_new_donation_specific_data",
+                [],
+                $donation_id,
+                $params
+            );
+            $donation_meta_fields = apply_filters('leyka_new_donation_specific_data', $donation_meta_fields, $donation_id, $params);
+
+            foreach($donation_meta_fields as $key => $value) {
+                update_post_meta($donation_id, $key, $value);
+            }
+
+        }
+
+        $wpdb->query($postmeta_sql);
+
+        return $donations_ids;
+
+    }
+
+
     /**
      * @deprecated Use self::get_init_recurring_donation($donation) instead.
      * @param mixed $donation
