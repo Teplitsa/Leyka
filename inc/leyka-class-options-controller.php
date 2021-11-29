@@ -392,6 +392,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         if(leyka_options()->is_template_option($option_id)) {
 
             $template_id = $template_id ? : leyka_remembered_data('template_id');
+            $template_id = $template_id === 'default' ? $this->get_value('donation_form_template') : $template_id;
 
             if( !$template_id ) {
 

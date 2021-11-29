@@ -795,6 +795,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
                 <div class="section-title-text"><?php _e('Donation reward', 'leyka');?></div>
             </div>
 
+            <?php /* ?>
             <div class="section__fields merchandise-grid">
             <?php foreach(self::get_calculated_merchandise_settings($campaign) as $merchandise_id => $settings) {?>
 
@@ -818,6 +819,85 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
                 </div>
             <?php }?>
+            </div>
+
+            <?php */
+
+            /*?>
+
+            <div class="section__fields merchandise-grid">
+                <div class="star-swiper">
+
+                    <div class="arrow-gradient left"></div><a class="swiper-arrow swipe-left" href="#"></a>
+                    <div class="arrow-gradient right"></div><a class="swiper-arrow swipe-right" href="#"></a>
+
+                    <div class="swiper-list">
+
+                        <?php foreach(self::get_calculated_merchandise_settings($campaign) as $merchandise_id => $settings) {
+
+//                        echo '<pre>'.$merchandise_id.' - '.print_r($settings, 1).'</pre>';?>
+
+                        <div class="merchandise swiper-item merchandise-item" data-merchandise-id="<?php echo esc_attr($merchandise_id);?>" data-donation-amount-needed="<?php echo absint($settings['donation_amount_needed']);?>"> <!-- class="selected" -->
+
+                            <div class="swiper-item-inner">
+
+<!--                                <div class="merchandise-item" data-merchandise-id="--><?php //echo esc_attr($merchandise_id);?><!--" data-donation-amount-needed="--><?php //echo absint($settings['donation_amount_needed']);?><!--">-->
+
+                                    <label class="merchandise__button">
+
+                                        <span class="merchandise__label"><?php echo esc_html($settings['title']);?></span>
+
+                                        <?php if($settings['thumbnail']) {?>
+
+                                            <span class="merchandise__icon">
+                                                <img class="merchandise-icon" src="<?php echo wp_get_attachment_image_url($settings['thumbnail'], 'large');?>" alt="<?php echo esc_attr($settings['title']);?>">
+                                            </span>
+
+                                        <?php }?>
+
+                                        <span class="merchandise__description"><?php echo $settings['description'];?></span>
+
+                                    </label>
+
+<!--                                </div>-->
+
+                            </div>
+
+                        </div>
+
+                        <?php }?>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <?php */?>
+
+            <div class="section__fields merchandise-grid">
+
+                <ul class="merchandise-swiper"><!-- Will be filled with JS --></ul>
+
+                <ul class="merchandise-swiper-not-usable-slides" style="display: none;">
+                <?php foreach(self::get_calculated_merchandise_settings($campaign) as $merchandise_id => $settings) {?>
+                    <li class="merchandise-item" data-merchandise-id="<?php echo esc_attr($merchandise_id);?>" data-donation-amount-needed="<?php echo absint($settings['donation_amount_needed']);?>">
+
+                        <h3 class="merchandise-label"><?php echo esc_html($settings['title']);?></h3>
+
+                        <?php if($settings['thumbnail']) {?>
+
+                            <img class="merchandise-image" src="<?php echo wp_get_attachment_image_url($settings['thumbnail'], 'medium_large');?>" alt="<?php echo esc_attr($settings['title']);?>">
+
+                        <?php }
+
+                        if($settings['description']) {?>
+                            <div class="merchandise-description"><?php echo nl2br($settings['description']);?></div>
+                        <?php }?>
+
+                    </li>
+                <?php }?>
+                </ul>
+
             </div>
 
             <input type="hidden" name="leyka_donation_merchandise_id" value="">

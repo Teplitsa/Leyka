@@ -4,19 +4,39 @@ jQuery(document).ready(function($){
         return;
     }
 
-    $('input.leyka_donation_amount').on('change.leyka', function(){
-        leyka_setup_merchandise($(this).closest('form.leyka-pm-form'));
-    });
+    function leyka_create_merchandise_slider($slider_ul) {
 
-    function leyka_setup_merchandise($_form) { // For a given form: show merchandise items available, hide all non-available ones
+        return $slider_ul.lightSlider({
+            item: 1,
+            adaptiveHeight: true,
+            pager: false,
+            gallery: false,
+            prevHtml: '<div class="swiper-arrow swipe-left"></div>',
+            nextHtml: '<div class="swiper-arrow swipe-right"></div>',
+            onAfterSlide: function($slider){
+                $slider
+                    .parents('form.leyka-pm-form')
+                    .find('input[name="leyka_donation_merchandise_id"]')
+                    .val($slider.find('.merchandise-item.active').data('merchandise-id'));
+            },
+        });
 
-        let current_amount = $_form.find('input.leyka_donation_amount').val(),
-            $merchandise_form_section = $_form.find('.section--merchandise'),
-            $merchandise_selected = $merchandise_form_section.find('input[name="leyka_donation_merchandise_id"]').val('');
+    }
 
+    // For a given form: show merchandise items available, hide all non-available ones:
+    function leyka_setup_merchandise_slider($_form, $merchandise_slider) {
+
+        let current_donation_amount = $_form.find('input.leyka_donation_amount').val(),
+            $merchandise_wrapper = $_form.find('.section--merchandise'),
+            $merchandise_hidden_slides = $merchandise_wrapper.find('.merchandise-swiper-not-usable-slides'),
+            $merchandise_item_selected = $merchandise_wrapper.find('input[name="leyka_donation_merchandise_id"]').val('');
+
+        // 1. Hide all current Merchandise items slides from slider:
+        $merchandise_slider.find('.merchandise-item').remove();
+
+        // 2. Sort Merchandise items by amount:
         let merch_items_amounts = [];
-        $merchandise_form_section.find('.merchandise-grid .merchandise-item')
-            .addClass('disabled') // First, hide all merchandise items...
+        $merchandise_hidden_slides.find('.merchandise-item')
             .each(function(){
 
                 let $item = $(this);
@@ -28,36 +48,51 @@ jQuery(document).ready(function($){
             return a.amount < b.amount ? 1 : (a.amount > b.amount ? -1 : 0);
         });
 
-        // ... then display only the first one that fits, starting from max possible needed amount:
+        // 3. Fill the slider anew, with slides that fit the current Donation amount, starting from max possible needed amount:
         for(let i in merch_items_amounts) {
 
-            if(merch_items_amounts[i].amount <= current_amount) {
+            if(merch_items_amounts[i].amount <= current_donation_amount) {
 
-                $merchandise_form_section
+                $merchandise_hidden_slides
                     .find('.merchandise-item[data-merchandise-id="'+merch_items_amounts[i].id+'"]')
-                    .removeClass('disabled');
-
-                $merchandise_selected.val(merch_items_amounts[i].id);
-
-                break;
+                    .clone()
+                    .appendTo($merchandise_slider);
 
             }
 
         }
 
-        if($merchandise_form_section.find('.merchandise-item:not(.disabled)').length) {
-            console.log('Showing:', $merchandise_form_section)
-            $merchandise_form_section.show();
-            // leyka_setup_merchandise_swiper_width($_form);
+        // 4. If there are no slides for current Donation amount, hide all Merchandise form section:
+        if($merchandise_slider.find('.merchandise-item').length) {
+            $merchandise_wrapper.show();
         } else {
-            console.log('Hiding:', $merchandise_form_section)
-            $merchandise_form_section.hide();
+
+            $merchandise_item_selected.val('');
+            $merchandise_wrapper.hide();
+            return;
+
         }
+
+        // 5. Re-initialise the slider:
+        $merchandise_slider.refresh();
+        $merchandise_slider.goToSlide(0);
+
+        // 6. Set the currently chosen Merchandise item value:
+        $merchandise_item_selected.val($merchandise_slider.find('.merchandise-item.active').data('merchandise-id'));
 
     }
 
     $('form.leyka-pm-form').each(function(){ // Setup merchandise on initial page load
-        leyka_setup_merchandise($(this));
+
+        let $donation_form = $(this),
+            $merchandise_slider = leyka_create_merchandise_slider($donation_form.find('ul.merchandise-swiper'));
+
+        leyka_setup_merchandise_slider($donation_form, $merchandise_slider);
+
+        $donation_form.find('input.leyka_donation_amount').on('change.leyka', function(){
+            leyka_setup_merchandise_slider($donation_form, $merchandise_slider);
+        });
+
     });
 
 });

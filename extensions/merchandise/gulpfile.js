@@ -1,7 +1,7 @@
 let basePaths = {
     src: 'src/',
     dest: 'assets/',
-    npm: 'node_modules/',
+    npm: '../../node_modules/',
 };
 
 // Require plugins
@@ -36,13 +36,14 @@ if(opt.p && opt.p == true){
 }
 
 //sass
-gulp.task('build-css', function(){
+gulp.task('build-public-css', function(){
 
-    let appFiles = gulp.src([basePaths.src+'sass/public.scss']) // Our main file with @import-s
+    let vendorFiles = gulp.src([basePaths.npm+'lightslider/dist/css/lightslider.min.css']),
+        appFiles = gulp.src([basePaths.src+'sass/public.scss']) // Our main file with @import-s
         .pipe( !isProduction ? plugins.sourcemaps.init() : through.obj() )  // Process the original sources for sourcemap
         .pipe(plugins.sass({
             outputStyle: sassStyle, // SASS syntax
-            //includePaths: paths // Add Bourbon
+            // includePaths: []
         })
         .on('error', plugins.sass.logError))//sass own error log
         .pipe(plugins.autoprefixer({
@@ -52,7 +53,7 @@ gulp.task('build-css', function(){
         .pipe( !isProduction ? plugins.sourcemaps.write() : through.obj() ) //add the map to modified source
         .on('error', log.error);
 
-    return es.concat(appFiles) // Combine vendor CSS files and our files after-SASS
+    return es.concat(vendorFiles, appFiles) // Combine vendor CSS files and our files after-SASS
         .pipe(plugins.concat('public.css')) // Combine into a file
         .pipe(isProduction ? plugins.csso() : through.obj()) // Minification on production
         .pipe(plugins.size())
@@ -61,13 +62,12 @@ gulp.task('build-css', function(){
 
 });
 
-gulp.task('build-front-js', function(){
+gulp.task('build-public-js', function(){
 
-    let appFiles = gulp.src([basePaths.src+'js/public.js']);
+    let vendorFiles = [basePaths.npm+'lightslider/dist/js/lightslider.min.js'],
+        appFiles = [basePaths.src+'js/public.js'];
 
-    // console.log(basePaths.dest+'js', basePaths.src+'js/public.js')
-
-    return es.concat(appFiles) // Join all scripts
+    return gulp.src(vendorFiles.concat(appFiles)) // Join all scripts
         .pipe(plugins.concat('public.js')) // Combine them into a "public.js" bundle
         .pipe(isProduction ? plugins.uglify() : through.obj()) // Minification
         .pipe(plugins.size()) // Print total size for log
@@ -78,10 +78,10 @@ gulp.task('build-front-js', function(){
 
 gulp.task('build-admin-js', function(){
 
-    let // vendorFiles = [basePaths.npm+'jquery.cookie/jquery.cookie.js'],
+    let vendorFiles = [],
         appFiles = gulp.src([basePaths.src+'js/admin.js']);
 
-    return es.concat(appFiles) // gulp.src(vendorFiles.concat(appFiles))
+    return gulp.src(vendorFiles.concat(appFiles))
         .pipe(plugins.concat('admin.js'))
         .pipe(isProduction ? plugins.uglify() : gutil.noop()) // Minification
         .pipe(plugins.size())
@@ -90,12 +90,12 @@ gulp.task('build-admin-js', function(){
 
 });
 
-gulp.task('full-build', gulp.series('build-css', 'build-front-js', 'build-admin-js'));
+gulp.task('full-build', gulp.series('build-public-css', 'build-public-js', 'build-admin-js'));
 
 gulp.task('watch', function(){
 
-    gulp.watch([basePaths.src+'sass/*.scss'], gulp.series('build-css',));
-    gulp.watch(basePaths.src+'js/*.js', gulp.series('build-front-js', 'build-admin-js'));
+    gulp.watch([basePaths.src+'sass/*.scss'], gulp.series('build-public-css',));
+    gulp.watch(basePaths.src+'js/*.js', gulp.series('build-public-js', 'build-admin-js'));
 
 });
 
