@@ -336,29 +336,27 @@ jQuery(document).ready(function($){
             $preview = $field_wrapper.find('.uploaded-file-preview'),
             $main_field = $field_wrapper.find('input.leyka-upload-result'),
             media_uploader = wp.media({
-            title: $field.data('upload-title') ? $field.data('upload-title') : leyka.media_upload_title,
-            button: {
-                text: $field.data('upload-button-label') ? $field.data('upload-button-label') : leyka.media_upload_button_label,
-            },
-            library: {type: $field.data('upload-files-type') ? $field.data('upload-files-type') : 'image'},
-            multiple: $field.data('upload-is-multiple') ? !!$field.data('upload-is-multiple') : false
-        }).on('select', function(){ // It's a wp.media event, so dont't use "select.leyka" events types
+                title: $field.data('upload-title') ? $field.data('upload-title') : leyka.media_upload_title,
+                button: {
+                    text: $field.data('upload-button-label') ? $field.data('upload-button-label') : leyka.media_upload_button_label,
+                },
+                library: {type: $field.data('upload-files-type') ? $field.data('upload-files-type') : 'image'},
+                multiple: $field.data('upload-is-multiple') ? !!$field.data('upload-is-multiple') : false
+            }).on('select', function(){ // It's a wp.media event, so dont't use "select.leyka" events types
 
-            let attachment = media_uploader.state().get('selection').first().toJSON();
-            // console.log('Media uploaded/selected:', attachment);
+                let attachment = media_uploader.state().get('selection').first().toJSON();
+                // console.log('Media uploaded/selected:', attachment);
 
-            $preview
-                .show()
-                .find('.file-preview')
-                .html('<img class="leyka-upload-image-preview" src="'+attachment.url+'" alt="">');
+                $preview
+                    .show()
+                    .find('.file-preview')
+                    .html('<img class="leyka-upload-image-preview" src="'+attachment.url+'" alt="">');
 
-            $field.hide(); // Hide the "upload" button when picture is uploaded
+                $field.hide(); // Hide the "upload" button when picture is uploaded
 
-            $main_field.val(attachment.id);
+                $main_field.val(attachment.id);
 
-        }).open();
-
-        // console.log('HERE:', $field)
+            }).open();
 
     });
     // Media library upload fields - END

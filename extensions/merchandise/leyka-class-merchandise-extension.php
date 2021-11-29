@@ -539,11 +539,10 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
     public function _merchandise_admin_donations_list_column_content($content, Leyka_Donation_Base $donation){
 
-        $campaign = $donation->campaign; /** @var $campaign Leyka_Campaign */
-        $campaign_merchandise_settings = $campaign->merchandise_settings;
+        $merchandise_library = leyka_options()->opt('merchandise_library');
 
-        if($donation->merchandise && !empty($campaign_merchandise_settings[$donation->merchandise])) {
-            $content = $campaign_merchandise_settings[$donation->merchandise]['title'];
+        if($donation->merchandise_id && !empty($merchandise_library[$donation->merchandise_id])) {
+            $content = $merchandise_library[$donation->merchandise_id]['title'];
         }
 
         return $content;
@@ -582,11 +581,14 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
     public function _merchandise_donations_export_line(array $export_line, Leyka_Donation_Base $donation) {
 
-        $campaign = $donation->campaign; /** @var $campaign Leyka_Campaign */
-        $campaign_merchandise_settings = $campaign->merchandise_settings;
+        $merchandise_library = leyka_options()->opt('merchandise_library');
+        $campaign_merchandise_settings = $donation->campaign->merchandise_settings;
 
-        $export_line[] = $donation->merchandise && !empty($campaign_merchandise_settings[$donation->merchandise]) ?
-            $campaign_merchandise_settings[$donation->merchandise]['title'] : '';
+        $export_line[] = $donation->merchandise_id
+            && !empty($merchandise_library[$donation->merchandise_id])
+            && is_array($campaign_merchandise_settings)
+            && in_array($donation->merchandise_id, $campaign_merchandise_settings) ?
+            $merchandise_library[$donation->merchandise_id]['title'] : '';
 
         return $export_line;
 
@@ -671,11 +673,19 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
     public function _merchandise_new_donation_data($donation_meta_fields, $donation_id, $params) {
 
+        if(empty($_POST['leyka_donation_merchandise_id'])) {
+            return $donation_meta_fields;
+        }
+
+        $_POST['leyka_donation_merchandise_id'] = esc_sql($_POST['leyka_donation_merchandise_id']);
+
         $campaign = new Leyka_Campaign($params['campaign_id']);
+        $merchandise_library = leyka_options()->opt('merchandise_library');
 
         if(
-            isset($_POST['leyka_donation_merchandise_id'])
-            && !empty($campaign->merchandise_settings[$_POST['leyka_donation_merchandise_id']])
+            !empty($merchandise_library[$_POST['leyka_donation_merchandise_id']])
+            && is_array($campaign->merchandise_settings)
+            && in_array($_POST['leyka_donation_merchandise_id'], $campaign->merchandise_settings)
         ) {
             $donation_meta_fields['merchandise_id'] = $_POST['leyka_donation_merchandise_id'];
         }
@@ -697,14 +707,21 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
     public function _merchandise_manager_emails_placeholders_values(array $placeholders_values, array $placeholders, Leyka_Donation_Base $donation) {
 
         $campaign = $donation->campaign;
+        $merchandise_library = leyka_options()->opt('merchandise_library');
 
-        array_push(
-            $placeholders_values,
-            isset($donation->merchandise_id) && !empty($campaign->merchandise_settings[$donation->merchandise_id]) ?
-                $campaign->merchandise_settings[$donation->merchandise_id]['title'] : '',
-            isset($donation->merchandise_id) && !empty($campaign->merchandise_settings[$donation->merchandise_id]) ?
-                $campaign->merchandise_settings[$donation->merchandise_id]['donation_amount_needed'] : ''
-        );
+        $merchandise_title = isset($donation->merchandise_id)
+            && !empty($merchandise_library[$donation->merchandise_id])
+            && is_array($campaign->merchandise_settings)
+            && in_array($donation->merchandise_id, $campaign->merchandise_settings) ?
+                $merchandise_library[$donation->merchandise_id]['title'] : '';
+
+        $merchandise_donation_amount_needed = isset($donation->merchandise_id)
+            && !empty($merchandise_library[$donation->merchandise_id])
+            && is_array($campaign->merchandise_settings)
+            && in_array($donation->merchandise_id, $campaign->merchandise_settings) ?
+                $merchandise_library[$donation->merchandise_id]['donation_amount_needed'] : '';
+
+        array_push($placeholders_values, $merchandise_title, $merchandise_donation_amount_needed);
 
         return $placeholders_values;
 
@@ -794,85 +811,6 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
                 <div class="section-title-line"></div>
                 <div class="section-title-text"><?php _e('Donation reward', 'leyka');?></div>
             </div>
-
-            <?php /* ?>
-            <div class="section__fields merchandise-grid">
-            <?php foreach(self::get_calculated_merchandise_settings($campaign) as $merchandise_id => $settings) {?>
-
-                <div class="merchandise-item" data-merchandise-id="<?php echo esc_attr($merchandise_id);?>" data-donation-amount-needed="<?php echo absint($settings['donation_amount_needed']);?>">
-
-                    <label class="merchandise__button">
-
-                        <span class="merchandise__label"><?php echo esc_html($settings['title']);?></span>
-
-                        <?php if($settings['thumbnail']) {?>
-
-                            <span class="merchandise__icon">
-                                    <img class="merchandise-icon" src="<?php echo wp_get_attachment_image_url($settings['thumbnail'], 'large');?>" alt="<?php echo esc_attr($settings['title']);?>">
-                                </span>
-
-                        <?php }?>
-
-                        <span class="merchandise__description"><?php echo esc_attr($settings['description']);?></span>
-
-                    </label>
-
-                </div>
-            <?php }?>
-            </div>
-
-            <?php */
-
-            /*?>
-
-            <div class="section__fields merchandise-grid">
-                <div class="star-swiper">
-
-                    <div class="arrow-gradient left"></div><a class="swiper-arrow swipe-left" href="#"></a>
-                    <div class="arrow-gradient right"></div><a class="swiper-arrow swipe-right" href="#"></a>
-
-                    <div class="swiper-list">
-
-                        <?php foreach(self::get_calculated_merchandise_settings($campaign) as $merchandise_id => $settings) {
-
-//                        echo '<pre>'.$merchandise_id.' - '.print_r($settings, 1).'</pre>';?>
-
-                        <div class="merchandise swiper-item merchandise-item" data-merchandise-id="<?php echo esc_attr($merchandise_id);?>" data-donation-amount-needed="<?php echo absint($settings['donation_amount_needed']);?>"> <!-- class="selected" -->
-
-                            <div class="swiper-item-inner">
-
-<!--                                <div class="merchandise-item" data-merchandise-id="--><?php //echo esc_attr($merchandise_id);?><!--" data-donation-amount-needed="--><?php //echo absint($settings['donation_amount_needed']);?><!--">-->
-
-                                    <label class="merchandise__button">
-
-                                        <span class="merchandise__label"><?php echo esc_html($settings['title']);?></span>
-
-                                        <?php if($settings['thumbnail']) {?>
-
-                                            <span class="merchandise__icon">
-                                                <img class="merchandise-icon" src="<?php echo wp_get_attachment_image_url($settings['thumbnail'], 'large');?>" alt="<?php echo esc_attr($settings['title']);?>">
-                                            </span>
-
-                                        <?php }?>
-
-                                        <span class="merchandise__description"><?php echo $settings['description'];?></span>
-
-                                    </label>
-
-<!--                                </div>-->
-
-                            </div>
-
-                        </div>
-
-                        <?php }?>
-
-                    </div>
-
-                </div>
-            </div>
-
-            <?php */?>
 
             <div class="section__fields merchandise-grid">
 
