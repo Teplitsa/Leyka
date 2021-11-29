@@ -224,6 +224,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
                         'description' => '',
                         'thumbnail' => false,
                         'for_all_campaigns' => false,
+                        'campaign_id' => false,
                     ]);
 
                     $merchandise_library = leyka_options()->opt('merchandise_library');
@@ -235,10 +236,30 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
                             $merchandise_select_values = ['-' => __('Select the reward', 'leyka'),];
 
                             foreach($merchandise_library as $merchandise_id => $settings) {
-                                $merchandise_select_values[$merchandise_id] =
-                                    '['.leyka_format_amount($settings['donation_amount_needed'])
-                                    .'&nbsp;'.leyka_get_currency_label().']&nbsp;'
-                                    .$settings['title'];
+
+                                // If Merchandise item is excluded for the current Campaign, disable its option:
+                                if(
+                                    !empty($settings['campaigns_exceptions'])
+                                    && is_array($settings['campaigns_exceptions'])
+                                    && in_array($placeholders['campaign_id'], $settings['campaigns_exceptions'])
+                                ) {
+
+                                    $merchandise_select_values[$merchandise_id] = [
+                                        'option_label' => '['.leyka_format_amount($settings['donation_amount_needed'])
+                                            .'&nbsp;'.leyka_get_currency_label().']&nbsp;'
+                                            .$settings['title'].'&nbsp;('.__('excluded for this campaign', 'leyka').')',
+                                        'disabled' => true,
+                                    ];
+
+                                } else {
+
+                                    $merchandise_select_values[$merchandise_id] =
+                                        '['.leyka_format_amount($settings['donation_amount_needed'])
+                                        .'&nbsp;'.leyka_get_currency_label().']&nbsp;'
+                                        .$settings['title'];
+
+                                }
+
                             }
 
                         }
@@ -389,6 +410,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
                                 'thumbnail' => $merchandise_library[$merchandise_id]['thumbnail'],
                                 'description' => $merchandise_library[$merchandise_id]['description'],
                                 'for_all_campaigns' => $merchandise_library[$merchandise_id]['for_all_campaigns'],
+                                'campaign_id' => $campaign->id,
                             ]);
 
                         }
@@ -416,13 +438,14 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
                                 'thumbnail' => $merchandise_settings['thumbnail'],
                                 'description' => $merchandise_settings['description'],
                                 'for_all_campaigns' => $merchandise_settings['for_all_campaigns'],
+                                'campaign_id' => $campaign->id,
                             ]);
 
                         }?>
 
                     </div>
 
-                    <?php leyka_campaign_merchandise_html(true); // Additional field box template ?>
+                    <?php leyka_campaign_merchandise_html(true, ['campaign_id' => $campaign->id,]); // Merchandise box template ?>
 
                     <div class="add-merchandise add-item bottom"><?php _e('Add reward', 'leyka');?></div>
 
@@ -449,7 +472,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
         foreach($campaign_data['leyka_campaign_merchandise'] as $merchandise) {
 
-            if( !empty($merchandise->add) && $merchandise->add === '+' ) { // Totally new merchandise - first add it to the Library
+            if( !empty($merchandise->add) && $merchandise->add === '+' ) { // Totally new Merchandise - 1st, add it to the Library
 
                 if(
                     empty($merchandise->leyka_merchandise_title)
@@ -497,7 +520,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
         }
 
         if(leyka_options()->opt('merchandise_library') != $merchandise_library) {
-            leyka_options()->opt('mechandise_library', $merchandise_library);
+            leyka_options()->opt('merchandise_library', $merchandise_library);
         }
 
         if($updated_merchandise_settings != $campaign->merchandise_settings) {

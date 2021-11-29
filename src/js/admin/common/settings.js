@@ -345,7 +345,6 @@ jQuery(document).ready(function($){
             }).on('select', function(){ // It's a wp.media event, so dont't use "select.leyka" events types
 
                 let attachment = media_uploader.state().get('selection').first().toJSON();
-                // console.log('Media uploaded/selected:', attachment);
 
                 $preview
                     .show()

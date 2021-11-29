@@ -496,12 +496,14 @@ function leyka_render_select_field($option_id, $data){
             <span class="field-component field">
 
                 <?php if(is_string($data['list_entries'])) {
-                    $data['list_entries'] = $data['list_entries'](); // Call the callback to create select's options
+                    $data['list_entries'] = $data['list_entries'](); // Call the callback to create select field options
                 }?>
 
                 <select id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>">
                     <?php foreach((array)$data['list_entries'] as $value => $label) {?>
-                        <option value="<?php echo $value;?>" <?php echo $value == $data['value'] ? 'selected' : '';?>><?php echo $label;?></option>
+                        <option value="<?php echo $value;?>" <?php echo $value == $data['value'] ? 'selected' : '';?> <?php echo is_array($label) && !empty($label['disabled']) ? 'disabled="disabled"' : '';?>>
+                            <?php echo is_array($label) && !empty($label['option_label']) ? $label['option_label'] : $label;?>
+                        </option>
                     <?php }?>
                 </select>
 
@@ -1422,6 +1424,7 @@ function leyka_render_merchandise_library_settings($option_id, $data = []){
             // Display existing common fields (the assoc. array keys order is important):
             if($data['value'] && is_array($data['value'])) {
                 foreach($data['value'] as $item_id => $item) {
+
                     leyka_merchandise_item_html(false, [
                         'id' => $item_id,
                         'box_title' => $item['title'],
