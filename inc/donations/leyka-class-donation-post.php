@@ -293,7 +293,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
         $wpdb->query($postmeta_sql);
 
         $rebills_to_disable_recurring_string = implode(',', $rebills_to_disable_recurring);
-        $rebills_to_disable_recurring_sql = "UPDATE `".$wpdb->base_prefix."posts` SET `meta_value`= 0 WHERE `post_id` in ($rebills_to_disable_recurring_string) and `meta_name` = '_rebilling_is_active'";
+        $rebills_to_disable_recurring_sql = "UPDATE `".$wpdb->base_prefix."postmeta` SET `meta_value`= 0 WHERE `post_id` in ($rebills_to_disable_recurring_string) and `meta_name` = '_rebilling_is_active'";
         $wpdb->query($rebills_to_disable_recurring_sql);
 
         return $donations_ids;
