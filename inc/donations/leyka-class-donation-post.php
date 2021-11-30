@@ -173,7 +173,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
         $postmeta_sql = "INSERT INTO `".$wpdb->base_prefix."postmeta` (`post_id`,`meta_key`,`meta_value`) VALUES ";
 
         $init_rebills = [];
-        $rebills_to_disable_recurring = [];
+        $disabled_init_rebills = [];
 
         foreach($postsmeta_data as $index => $postmeta_data) {
 
@@ -237,7 +237,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
                     if ($params['status'] === 'failed') {
 
-                        $rebills_to_disable_recurring[] = $donation_meta_fields['init_recurring_donation'];
+                        $disabled_init_rebills[] = $donation_meta_fields['init_recurring_donation'];
 
                         unset($init_rebills[array_search($donation_meta_fields['init_recurring_donation'], $init_rebills)]);
                         $init_rebills = array_values($init_rebills);
@@ -292,7 +292,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
         $wpdb->query($postmeta_sql);
 
-        $rebills_to_disable_recurring_string = implode(',', $rebills_to_disable_recurring);
+        $rebills_to_disable_recurring_string = implode(',', $disabled_init_rebills);
         $rebills_to_disable_recurring_sql = "UPDATE `".$wpdb->base_prefix."postmeta` SET `meta_value`= 0 WHERE `post_id` in ($rebills_to_disable_recurring_string) and `meta_key` = '_rebilling_is_active'";
         $wpdb->query($rebills_to_disable_recurring_sql);
 

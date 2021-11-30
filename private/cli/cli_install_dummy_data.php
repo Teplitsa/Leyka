@@ -1,7 +1,7 @@
 <?php
 /* Service actions */
 set_time_limit (0);
-ini_set('memory_limit','512M');
+ini_set('memory_limit','1024M');
 
 try {
     $time_start = microtime(true);
