@@ -212,15 +212,22 @@ function leyka_render_media_upload_field($option_id, $data){
             <?php }?>
 
         </span>
-        <?php }?>
+        <?php }
+
+        $data['upload_files_type'] = empty($data['upload_files_type']) ? 'image' : esc_attr($data['upload_files_type']);
+        if($data['value']) {
+            $media_meta = wp_get_attachment_metadata($data['value']);
+        }?>
 
         <div class="preview-wrapper">
 
             <div class="uploaded-file-preview" <?php echo $data['value'] ? '' : 'style="display: none;"';?>>
 
                 <span class="file-preview">
-                <?php if($data['value']) {?>
+                <?php if($data['value'] && $data['upload_files_type'] === 'image' && $media_meta) {?>
+
                     <img src="<?php echo wp_get_attachment_image_url($data['value'], 'medium');?>" alt="" class="leyka-upload-image-preview">
+
                 <?php }?>
                 </span>
 
@@ -258,7 +265,7 @@ function leyka_render_media_upload_field($option_id, $data){
 add_action('leyka_render_legend', 'leyka_render_legend_field', 10, 2);
 function leyka_render_legend_field($option_id, $data){
 
-    $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
+    $option_id = mb_stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
     $data['value'] = isset($data['value']) ? $data['value'] : '';?>
 
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-legend-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">
@@ -1291,15 +1298,19 @@ function leyka_merchandise_library_main_subfields_html(array $placeholders = [])
     <div class="single-line">
 
         <div class="option-block type-text">
+
             <div class="leyka-select-field-wrapper">
-                <?php leyka_render_text_field('merchandise_title', [
-                    'title' => __('Reward title', 'leyka'),
-                    'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('A cool hat with our logo', 'leyka')),
-                    'value' => $placeholders['title'],
-                    'required' => true,
-                ]);?>
+
+            <?php leyka_render_text_field('merchandise_title', [
+                'title' => __('Reward title', 'leyka'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('A cool hat with our logo', 'leyka')),
+                'value' => $placeholders['title'],
+                'required' => true,
+            ]);?>
             </div>
+
             <div class="field-errors"></div>
+
         </div>
 
     </div>
@@ -1307,23 +1318,27 @@ function leyka_merchandise_library_main_subfields_html(array $placeholders = [])
     <div class="single-line">
 
         <div class="option-block type-number">
+
             <div class="leyka-number-field-wrapper">
-                <?php leyka_render_number_field('merchandise_donation_amount_needed', [
-                    'title' => sprintf(
-                        __('Donations amount needed for the reward, %s', 'leyka'),
-                        leyka_get_currency_label()
-                    ),
-                    'required' => true,
-                    'value' => absint($placeholders['donation_amount_needed']) ? : 1000,
-                    'length' => 6,
-                    'min' => 1,
-                    'max' => 9999999,
-                ]);?>
+            <?php leyka_render_number_field('merchandise_donation_amount_needed', [
+                'title' => sprintf(
+                    __('Donations amount needed for the reward, %s', 'leyka'),
+                    leyka_get_currency_label()
+                ),
+                'required' => true,
+                'value' => absint($placeholders['donation_amount_needed']) ? : 1000,
+                'length' => 6,
+                'min' => 1,
+                'max' => 9999999,
+            ]);?>
             </div>
+
             <div class="field-errors"></div>
+
         </div>
 
         <div class="settings-block option-block type-file type-media-upload">
+
             <?php leyka_render_media_upload_field('merchandise_thumbnail', [
                 'title' => __('Reward picture', 'leyka'),
                 'upload_label' => __('Upload picture', 'leyka'),
@@ -1331,8 +1346,11 @@ function leyka_merchandise_library_main_subfields_html(array $placeholders = [])
                 'upload_button_label' => __('Use the picture', 'leyka'),
                 'required' => false,
                 'value' => $placeholders['thumbnail'],
+                'comment' => __('For reward thumbnail, please, use a picture <strong>at least 536 pixels wide.</strong>.', 'leyka'),
             ]);?>
+
             <div class="field-errors"></div>
+
         </div>
 
     </div>
@@ -1396,7 +1414,9 @@ function leyka_render_merchandise_library_settings($option_id, $data = []){
                     'item_campaigns_exceptions_field_title' => __('Campaigns that will NOT use the reward', 'leyka'),
                 ]);?>
 
-                <ul class="notes-and-errors"></ul>
+                <ul class="notes-and-errors">
+                    <li class="any-field-note"><?php _e('For reward thumbnail, please, use a picture <strong>at least 536 pixels wide.</strong>.', 'leyka');?></li>
+                </ul>
 
                 <div class="box-footer">
                     <div class="remove-campaign-merchandise delete-item">

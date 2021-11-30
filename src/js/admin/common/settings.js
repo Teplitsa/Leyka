@@ -336,7 +336,8 @@ jQuery(document).ready(function($){
             $preview = $field_wrapper.find('.uploaded-file-preview'),
             $main_field = $field_wrapper.find('input.leyka-upload-result'),
             media_uploader = wp.media({
-                title: $field.data('upload-title') ? $field.data('upload-title') : leyka.media_upload_title,
+                title: $field.data('upload-title') ?
+                    $field.data('upload-title') : leyka.media_upload_title,
                 button: {
                     text: $field.data('upload-button-label') ? $field.data('upload-button-label') : leyka.media_upload_button_label,
                 },

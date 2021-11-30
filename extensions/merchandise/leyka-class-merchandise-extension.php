@@ -300,8 +300,9 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
                                     <?php leyka_merchandise_library_main_subfields_html();?>
                                 </div>
 
-<!--                                <ul class="notes-and-errors">-->
-<!--                                </ul>-->
+                                <ul class="notes-and-errors">
+                                    <li class="any-field-note"><?php _e('When you upload or choose an image for reward, please use a picture at least 536 pixels wide.', 'leyka');?></li>
+                                </ul>
 
                                 <div class="box-footer">
                                     <div class="remove-campaign-merchandise delete-item">
@@ -642,22 +643,9 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
         $_POST['leyka_donation_merchandise_id'] = esc_sql($_POST['leyka_donation_merchandise_id']);
 
         $campaign = new Leyka_Campaign($params['campaign_id']);
-        $merchandise_library = leyka_options()->opt('merchandise_library');
+        $campaign_merchandise_settings = self::get_calculated_merchandise_settings($campaign);
 
-//        echo '<pre>Donation metas before: '.print_r($donation_meta_fields, 1).'</pre>';
-//        echo '<pre>Campaign merchandise settings: '.print_r($campaign->merchandise_settings, 1).'</pre>';
-//
-//        echo '<pre>'.print_r((int)(!empty($merchandise_library[$_POST['leyka_donation_merchandise_id']])), 1).'</pre>';
-//        echo '<pre>'.print_r((int)is_array($campaign->merchandise_settings), 1).'</pre>';
-//        echo '<pre>'.print_r((int)in_array($_POST['leyka_donation_merchandise_id'], $campaign->merchandise_settings), 1).'</pre>';
-//
-//        die();
-
-        if(
-            !empty($merchandise_library[$_POST['leyka_donation_merchandise_id']])
-            && is_array($campaign->merchandise_settings)
-            && in_array($_POST['leyka_donation_merchandise_id'], $campaign->merchandise_settings)
-        ) {
+        if( $campaign_merchandise_settings && !empty($campaign_merchandise_settings[$_POST['leyka_donation_merchandise_id']]) ) {
             $donation_meta_fields['merchandise_id'] = $_POST['leyka_donation_merchandise_id'];
         }
 
