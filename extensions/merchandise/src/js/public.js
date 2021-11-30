@@ -23,7 +23,7 @@ jQuery(document).ready(function($){
 
     }
 
-    // For a given form: show merchandise items available, hide all non-available ones:
+    // For a given form: show Merchandise items available, hide all non-available ones:
     function leyka_setup_merchandise_slider($_form, $merchandise_slider) {
 
         let current_donation_amount = $_form.find('input.leyka_donation_amount').val(),

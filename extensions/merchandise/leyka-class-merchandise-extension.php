@@ -365,79 +365,23 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
                     <?php }
 
-                }
-
-                $merchandise_library = leyka_options()->opt('merchandise_library');?>
+                }?>
 
                 <div class="leyka-campaign-merchandise-wrapper multi-valued-items-field-wrapper">
 
                     <div class="leyka-main-multi-items leyka-main-merchandise" data-min-items="0" data-max-items="<?php echo 30;?>" data-item-inputs-names-prefix="leyka_campaign_merchandise_" data-show-new-item-if-empty="0">
 
-                        <?php // Display existing campaign merchandise items (the assoc. array keys order is important):
-                        foreach($campaign->merchandise_settings as $merchandise_id) {
-
-                            // Merchandise is in Campaign settings, but not in the Library - mb, it was deleted from there:
-                            if( !is_string($merchandise_id) || empty($merchandise_library[$merchandise_id]) ) {
-                                continue;
-                            }
-
-                            // Merchandise is in Campaign settings & in the Library,
-                            // but the Library doesn't have the current Campaign set for it:
-                            if(
-                                !$merchandise_library[$merchandise_id]['for_all_campaigns']
-                                && (
-                                    !is_array($merchandise_library[$merchandise_id]['campaigns'])
-                                    || !in_array($campaign->id, $merchandise_library[$merchandise_id]['campaigns'])
-                                )
-                            ) {
-                                continue;
-                            }
-
-                            if( // Merchandise is "for all Campaigns", but the current Campaign has been excluded for it
-                                $merchandise_library[$merchandise_id]['for_all_campaigns']
-                                && $merchandise_library[$merchandise_id]['campaigns_exceptions']
-                                && is_array($merchandise_library[$merchandise_id]['campaigns_exceptions'])
-                                && in_array($campaign->id, $merchandise_library[$merchandise_id]['campaigns_exceptions'])
-                            ) {
-                                continue;
-                            }
+                        <?php // Display existing Campaign Merchandise items (the assoc. array keys order is important):
+                        foreach(self::get_calculated_merchandise_settings($campaign) as $merchandise_id => $settings) {
 
                             leyka_campaign_merchandise_html(false, [
                                 'id' => $merchandise_id,
-                                'box_title' => $merchandise_library[$merchandise_id]['title'],
-                                'title' => $merchandise_library[$merchandise_id]['title'],
-                                'donation_amount_needed' => $merchandise_library[$merchandise_id]['donation_amount_needed'],
-                                'thumbnail' => $merchandise_library[$merchandise_id]['thumbnail'],
-                                'description' => $merchandise_library[$merchandise_id]['description'],
-                                'for_all_campaigns' => $merchandise_library[$merchandise_id]['for_all_campaigns'],
-                                'campaign_id' => $campaign->id,
-                            ]);
-
-                        }
-
-                        // Display Merchandise items "for all Campaigns", if they aren't already in the Campaign settings:
-                        foreach($merchandise_library as $merchandise_id => $merchandise_settings) {
-
-                            if(
-                                empty($merchandise_settings['for_all_campaigns'])
-                                || (
-                                    $merchandise_settings['campaigns_exceptions']
-                                    && is_array($merchandise_settings['campaigns_exceptions'])
-                                    && in_array($campaign->id, $merchandise_settings['campaigns_exceptions'])
-                                )
-                                || in_array($merchandise_id, $campaign->merchandise_settings)
-                            ) {
-                                continue;
-                            }
-
-                            leyka_campaign_merchandise_html(false, [
-                                'id' => $merchandise_id,
-                                'box_title' => $merchandise_settings['title'],
-                                'title' => $merchandise_settings['title'],
-                                'donation_amount_needed' => $merchandise_settings['donation_amount_needed'],
-                                'thumbnail' => $merchandise_settings['thumbnail'],
-                                'description' => $merchandise_settings['description'],
-                                'for_all_campaigns' => $merchandise_settings['for_all_campaigns'],
+                                'box_title' => $settings['title'],
+                                'title' => $settings['title'],
+                                'donation_amount_needed' => $settings['donation_amount_needed'],
+                                'thumbnail' => $settings['thumbnail'],
+                                'description' => $settings['description'],
+                                'for_all_campaigns' => $settings['for_all_campaigns'],
                                 'campaign_id' => $campaign->id,
                             ]);
 
@@ -574,11 +518,10 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
     public function _merchandise_admin_donation_info(Leyka_Donation_Base $donation){
 
-        $campaign = $donation->campaign; /** @var $campaign Leyka_Campaign */
-        $campaign_merchandise_settings = $campaign->merchandise_settings;
+        $merchandise_library = leyka_options()->opt('merchandise_library');
 
-        if($donation->merchandise && !empty($campaign_merchandise_settings[$donation->merchandise])) {
-            $content = $campaign_merchandise_settings[$donation->merchandise]['title'];
+        if($donation->merchandise_id && !empty($merchandise_library[$donation->merchandise_id])) {
+            $content = $merchandise_library[$donation->merchandise_id]['title'];
         } else {
             $content = __('none', 'leyka');
         }?>
@@ -605,12 +548,8 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
     public function _merchandise_donations_export_line(array $export_line, Leyka_Donation_Base $donation) {
 
         $merchandise_library = leyka_options()->opt('merchandise_library');
-        $campaign_merchandise_settings = $donation->campaign->merchandise_settings;
 
-        $export_line[] = $donation->merchandise_id
-            && !empty($merchandise_library[$donation->merchandise_id])
-            && is_array($campaign_merchandise_settings)
-            && in_array($donation->merchandise_id, $campaign_merchandise_settings) ?
+        $export_line[] = $donation->merchandise_id && !empty($merchandise_library[$donation->merchandise_id]) ?
             $merchandise_library[$donation->merchandise_id]['title'] : '';
 
         return $export_line;
@@ -705,6 +644,15 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
         $campaign = new Leyka_Campaign($params['campaign_id']);
         $merchandise_library = leyka_options()->opt('merchandise_library');
 
+//        echo '<pre>Donation metas before: '.print_r($donation_meta_fields, 1).'</pre>';
+//        echo '<pre>Campaign merchandise settings: '.print_r($campaign->merchandise_settings, 1).'</pre>';
+//
+//        echo '<pre>'.print_r((int)(!empty($merchandise_library[$_POST['leyka_donation_merchandise_id']])), 1).'</pre>';
+//        echo '<pre>'.print_r((int)is_array($campaign->merchandise_settings), 1).'</pre>';
+//        echo '<pre>'.print_r((int)in_array($_POST['leyka_donation_merchandise_id'], $campaign->merchandise_settings), 1).'</pre>';
+//
+//        die();
+
         if(
             !empty($merchandise_library[$_POST['leyka_donation_merchandise_id']])
             && is_array($campaign->merchandise_settings)
@@ -775,13 +723,23 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
         foreach($campaign->merchandise_settings as $merchandise_id) {
 
+            // Merchandise is in Campaign settings, but not in the Library - mb, it was deleted from there:
             if( !is_string($merchandise_id) || empty($merchandise_library[$merchandise_id]) ) {
                 continue;
             }
 
-            // The Merchandise is still in the Campaign fields settings,
-            // but in the Library (global) settings the current Campaign it's already excluded for it:
+            // Merchandise is in Campaign settings & in the Library, but the Library doesn't have the current Campaign set for it:
             if(
+                !$merchandise_library[$merchandise_id]['for_all_campaigns']
+                && (
+                    !is_array($merchandise_library[$merchandise_id]['campaigns'])
+                    || !in_array($campaign->id, $merchandise_library[$merchandise_id]['campaigns'])
+                )
+            ) {
+                continue;
+            }
+
+            if( // Merchandise is "for all Campaigns", but the current Campaign has been excluded for it
                 $merchandise_library[$merchandise_id]['for_all_campaigns']
                 && $merchandise_library[$merchandise_id]['campaigns_exceptions']
                 && is_array($merchandise_library[$merchandise_id]['campaigns_exceptions'])
@@ -791,12 +749,6 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
             }
 
             $campaign_merchandise[$merchandise_id] = $merchandise_library[$merchandise_id];
-
-            unset(
-                $campaign_merchandise[$merchandise_id]['campaigns'],
-                $campaign_merchandise[$merchandise_id]['for_all_campaigns'],
-                $campaign_merchandise[$merchandise_id]['campaigns_exceptions']
-            );
 
         }
 
@@ -817,8 +769,6 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
             }
 
             $campaign_merchandise[$merchandise_id] = $settings;
-
-            unset($settings['campaigns'], $settings['for_all_campaigns'], $settings['campaigns_exceptions']);
 
         }
 
