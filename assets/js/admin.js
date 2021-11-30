@@ -1015,9 +1015,9 @@ jQuery(document).ready(function($){
     // Custom CSS editor fields - END
 
     // Ajax file upload fields support:
-    $body.on('click.leyka', '.upload-field input[type="file"]', function(e){ // Just to be sure that the input will be called
+    $body.on('click.leyka', '.file-upload-field input[type="file"]', function(e){ // Just to be sure that the input will be called
         e.stopPropagation();
-    }).on('change.leyka', '.upload-field input[type="file"]', function(e){
+    }).on('change.leyka', '.file-upload-field input[type="file"]', function(e){
 
         if( !e.target.files ) {
             return;
@@ -1104,7 +1104,7 @@ jQuery(document).ready(function($){
     // Ajax file upload fields - END
 
     // Media library upload fields:
-    $body.on('click.leyka', '.upload-field', function(e){
+    $body.on('click.leyka', '.media-upload-field', function(e){
 
         e.preventDefault();
 

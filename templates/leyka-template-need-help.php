@@ -110,6 +110,9 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 
             </div>
 
+            <?php do_action('leyka_template_after_amount', 'need-help', $template_data, $campaign);
+            do_action('leyka_template_need-help_after_amount', $template_data, $campaign);?>
+
             <div class="section section--cards">
 
                 <div class="section-title-container">
