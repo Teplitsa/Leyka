@@ -129,7 +129,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
         global $wpdb;
 
-        $posts_sql = "INSERT INTO `".$wpdb->base_prefix."posts` (`post_author`,`post_title`,`post_excerpt`,`post_name`,`to_ping`,`pinged`,`guid`,`post_type`,`post_date`,`post_date_gmt`,`post_content`,`post_modified`,`post_modified_gmt`,`post_content_filtered`,`post_parent`,`ping_status`) VALUES ";
+        $posts_sql = "INSERT INTO `".$wpdb->base_prefix."posts` (`post_author`,`post_title`,`post_excerpt`,`post_status`,`post_name`,`to_ping`,`pinged`,`guid`,`post_type`,`post_date`,`post_date_gmt`,`post_content`,`post_modified`,`post_modified_gmt`,`post_content_filtered`,`post_parent`,`ping_status`) VALUES ";
 
         foreach ($donations_params as $index => $params) {
 
@@ -147,9 +147,10 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             $guid = site_url().'/donation/'.$post_name.'/';
             $post_type = Leyka_Donation_Management::$post_type;
             $post_parent = 0;
+            $post_status = $params['status'];
 
             $posts_sql = $index === 0 ? $posts_sql : $posts_sql.',';
-            $posts_sql .= "(0,'$post_title','','$post_name','','','$guid','$post_type','$date','$gmt_date','','$date','$gmt_date','','$post_parent','closed')";
+            $posts_sql .= "(0,'$post_title','','$post_status','$post_name','','','$guid','$post_type','$date','$gmt_date','','$date','$gmt_date','','$post_parent','closed')";
 
             $postsmeta_data[] = [
                 'post_name' => $post_name,
@@ -172,6 +173,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
         $postmeta_sql = "INSERT INTO `".$wpdb->base_prefix."postmeta` (`post_id`,`meta_key`,`meta_value`) VALUES ";
 
         $init_rebills = [];
+        $rebills_to_disable_recurring = [];
 
         foreach($postsmeta_data as $index => $postmeta_data) {
 
@@ -215,47 +217,44 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
             if($params['payment_type'] === 'rebill') {
 
-                $donation_meta_fields['recurring_is_active'] = true;
+                $donor = get_user_by('email', $params['donor_email']);
+                $params['donor_user_id'] = $donor->get('ID');
 
-                if(rand(1, 5) > 1 && sizeof($init_rebills) > 0) { // non-init rebill
+                $donation_meta_fields['_rebilling_is_active'] = $params['status'] === 'failed';
+
+                if (rand(1, 5) > 1 && sizeof($init_rebills) > 0) { // non-init rebill
+
                     $donation_meta_fields['init_recurring_donation'] = $init_rebills[rand(0, sizeof($init_rebills) - 1)];
-                }
 
-                if($params['status'] === 'funded' && empty($donation_meta_fields['init_recurring_donation'])) {
-                    $init_rebills[] = $donation_id;
-                }
+                    $wpdb->update(
+                        $wpdb->base_prefix."posts",
+                        [
+                            'post_parent' => $donation_meta_fields['init_recurring_donation'],
+                            'post_author' => $params['donor_user_id']
+                        ],
+                        ['ID' => $donation_id]);
 
-            }
 
-            if($params['payment_type'] === 'rebill' && !$params['init_recurring_donation']) { // Init recurring donations only
+                    if ($params['status'] === 'failed') {
 
-                $donation_meta_fields['_rebilling_is_active'] =
-                    !empty($params['rebilling_is_active']) ||
-                    !empty($params['rebilling_on']) ||
-                    !empty($params['recurring_active']) ||
-                    !empty($params['recurring_is_active']) ||
-                    !empty($params['recurring_on']);
+                        $rebills_to_disable_recurring[] = $donation_meta_fields['init_recurring_donation'];
 
-                if($params['recurring_cancelled']) {
+                        unset($init_rebills[array_search($donation_meta_fields['init_recurring_donation'], $init_rebills)]);
+                        $init_rebills = array_values($init_rebills);
 
-                    $donation_meta_fields['_rebilling_is_active'] = 0;
-                    $donation_meta_fields['leyka_recurrents_cancelled'] = 1;
+                    }
 
-                    $donation_meta_fields['leyka_recurrents_cancel_date'] = $params['recurring_cancel_date'] ?
-                        : current_time('timestamp');
+                } else {
 
-                }
+                    $wpdb->update(
+                        $wpdb->base_prefix."posts",
+                        ['post_author' => $params['donor_user_id']],
+                        ['ID' => $donation_id]);
 
-                if($params['recurring_cancel_date'] && empty($donation_meta_fields['leyka_recurrents_cancel_date'])) {
-                    $donation_meta_fields['leyka_recurrents_cancel_date'] = $params['recurring_cancel_date'];
-                }
+                    if($params['status'] === 'funded') {
+                        $init_rebills[] = $donation_id;
+                    }
 
-                if($params['recurring_cancel_requested']) {
-                    $donation_meta_fields['cancel_recurring_requested'] = $params['recurring_cancel_requested'];
-                }
-
-                if( !empty($params['recurring_cancel_reason']) ) {
-                    $donation_meta_fields['leyka_recurring_cancel_reason'] = $params['recurring_cancel_reason'];
                 }
 
             }
@@ -289,25 +288,13 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 do_action('leyka_donation_recurring_activity_changed', $donation_id, $donation_meta_fields['_rebilling_is_active']);
             }
 
-            if(is_wp_error($donation_id)) {
-                return $donation_id;
-            }
-
-            $donation_meta_fields = apply_filters(
-                "leyka_{$params['gateway_id']}_new_donation_specific_data",
-                [],
-                $donation_id,
-                $params
-            );
-            $donation_meta_fields = apply_filters('leyka_new_donation_specific_data', $donation_meta_fields, $donation_id, $params);
-
-            foreach($donation_meta_fields as $key => $value) {
-                update_post_meta($donation_id, $key, $value);
-            }
-
         }
 
         $wpdb->query($postmeta_sql);
+
+        $rebills_to_disable_recurring_string = implode(',', $rebills_to_disable_recurring);
+        $rebills_to_disable_recurring_sql = "UPDATE `".$wpdb->base_prefix."posts` SET `meta_value`= 0 WHERE `post_id` in ($rebills_to_disable_recurring_string) and `meta_name` = '_rebilling_is_active'";
+        $wpdb->query($rebills_to_disable_recurring_sql);
 
         return $donations_ids;
 
