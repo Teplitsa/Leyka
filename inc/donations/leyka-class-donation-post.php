@@ -218,7 +218,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             if($params['payment_type'] === 'rebill') {
 
                 $donor = get_user_by('email', $params['donor_email']);
-                $params['donor_user_id'] = $donor->get('ID');
+                $params['donor_user_id'] = $donor ? $donor->get('ID') : 0;
 
                 $donation_meta_fields['_rebilling_is_active'] = $params['status'] === 'failed';
 
