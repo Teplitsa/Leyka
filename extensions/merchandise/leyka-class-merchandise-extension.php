@@ -474,7 +474,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
                     'upload_button_label' => __('Use the picture', 'leyka'),
                     'required' => false,
                     'value' => $placeholders['thumbnail'],
-                    'comment' => __('For reward thumbnail, please, use a picture <strong>at least 536 pixels wide.</strong>.', 'leyka'),
+                    'comment' => __('For reward thumbnail, please, use a picture <strong>at least 536 pixels wide</strong>.', 'leyka'),
                 ]);?>
 
                 <div class="field-errors"></div>
@@ -540,7 +540,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
                 ]);?>
 
                 <ul class="notes-and-errors">
-                    <li class="any-field-note"><?php _e('For reward thumbnail, please, use a picture <strong>at least 536 pixels wide.</strong>.', 'leyka');?></li>
+                    <li class="any-field-note"><?php _e('For reward thumbnail, please, use a picture <strong>at least 536 pixels wide</strong>.', 'leyka');?></li>
                 </ul>
 
                 <div class="box-footer">

@@ -61,10 +61,6 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
             }
 
-            if($donation_meta_fields['_rebilling_is_active']) {
-                do_action('leyka_donation_recurring_activity_changed', $donation_id, $donation_meta_fields['recurring_active']);
-            }
-
             if($params['recurring_cancel_date'] && empty($donation_meta_fields['leyka_recurrents_cancel_date'])) {
                 $donation_meta_fields['leyka_recurrents_cancel_date'] = $params['recurring_cancel_date'];
             }
@@ -106,6 +102,10 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
         if(is_wp_error($donation_id)) {
             return $donation_id;
+        }
+
+        if($donation_meta_fields['_rebilling_is_active']) {
+            do_action('leyka_donation_recurring_activity_changed', $donation_id, $donation_meta_fields['recurring_active']);
         }
 
         $donation_meta_fields = apply_filters(
