@@ -919,7 +919,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         }
 
-        if($params['date_query']) { // Traditional (a la WP_Query) 'date_query' filter
+        if( !empty($params['date_query']) ) { // Traditional (a la WP_Query) 'date_query' filter
 
             $date_query_where_part = $this->_get_date_query_parts($params['date_query']);
 

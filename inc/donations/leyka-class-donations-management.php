@@ -30,8 +30,6 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         }
 
-        /** @todo For sep-typed Donations only: check if it's needed to make manual call of $this->donation_status_changed('deleted', $donation->status, $donation); */
-
         add_action('wp_ajax_leyka_send_donor_email', [$this, 'ajax_send_donor_email']);
 
         /** Donors data refresh actions */
@@ -1497,7 +1495,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
     public static function donation_status_metabox() {
 
         $donation_id = empty($_GET['donation']) ? false : absint($_GET['donation']);
-        $donation = $donation_id ? Leyka_Donations::get_instance()->get_donation($donation_id) : false;
+        $donation = $donation_id ? Leyka_Donations::get_instance()->get($donation_id) : false;
 
         wp_nonce_field('donation_status_metabox', '_donation_edit_nonce');
 
@@ -1650,6 +1648,41 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         </div>
 
     <?php }
+
+    /**
+     * @param $campaign WP_Post
+     */
+    public static function subscription_resurring_donations_metabox() {
+
+        $donation_id = empty($_GET['donation']) ? false : absint($_GET['donation']);?>
+
+        <table id="donations-data-table" class="leyka-data-table recurring-subscription-donations-table" data-init-recurring-donation-id="<?php echo $donation_id;?>">
+
+            <thead>
+                <tr>
+                    <td><?php _e('ID', 'leyka');?></td>
+                    <td><?php _e('Donor', 'leyka');?></td>
+                    <td><?php _e('Amount', 'leyka');?></td>
+                    <td><?php _e('Date', 'leyka');?></td>
+                    <td><?php _e('Payment method', 'leyka');?></td>
+                </tr>
+            </thead>
+
+            <tfoot>
+                <tr>
+                    <td><?php _e('ID', 'leyka');?></td>
+                    <td><?php _e('Donor', 'leyka');?></td>
+                    <td><?php _e('Amount', 'leyka');?></td>
+                    <td><?php _e('Date', 'leyka');?></td>
+                    <td><?php _e('Payment method', 'leyka');?></td>
+                </tr>
+            </tfoot>
+
+            <tbody><?php // All table data will be received via AJAX ?></tbody>
+
+        </table>
+        <?php
+    }
 
 	/** Helpers **/
 

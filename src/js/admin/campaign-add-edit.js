@@ -133,7 +133,7 @@ jQuery(document).ready(function($){
 
             let attachment = frame.state().get('selection').first().toJSON();
 
-            // disableForm(); /** @todo */
+            // disableForm();
             $loading.show();
 
             $field_value.val(attachment.id);
@@ -159,7 +159,7 @@ jQuery(document).ready(function($){
 
                     }
 
-                    // reloadPreviewFrame(); /** @todo */
+                    // reloadPreviewFrame();
 
                 })
                 .fail(function(){
@@ -168,7 +168,7 @@ jQuery(document).ready(function($){
                 .always(function(){
 
                     $loading.hide();
-                    // enableForm(); /** @todo */
+                    // enableForm();
 
                 });
 
