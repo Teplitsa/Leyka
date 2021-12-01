@@ -32,7 +32,7 @@ $init_recurring_donations = Leyka_Donations::get_instance()->get([
     'recurring_active' => true,
     'pm_full_id' => array_keys(leyka_get_active_recurring_pm_list()),
     'get_all' => true,
-    'date_query' => $current_day_param, // TODO ATM 'date_query' param isn't supported for sep-Donations! Add this support ASAP
+    'date_query' => $current_day_param,
 ]);
 
 foreach($init_recurring_donations as $init_recurring_donation) {
