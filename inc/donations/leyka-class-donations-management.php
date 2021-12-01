@@ -33,7 +33,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         add_action('wp_ajax_leyka_send_donor_email', [$this, 'ajax_send_donor_email']);
 
         /** Donors data refresh actions */
-        // If some funded donation data are changed, order its donor's data cache refreshing:
+        // If some funded Donation data are changed, order its Donor's data cache refreshing:
         function leyka_order_donation_to_refresh($donation_id) {
 
             $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
@@ -1649,14 +1649,11 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
     <?php }
 
-    /**
-     * @param $campaign WP_Post
-     */
     public static function subscription_resurring_donations_metabox() {
 
         $donation_id = empty($_GET['donation']) ? false : absint($_GET['donation']);?>
 
-        <table id="donations-data-table" class="leyka-data-table recurring-subscription-donations-table" data-init-recurring-donation-id="<?php echo $donation_id;?>">
+        <table id="donations-data-table" class="leyka-data-table leyka-donations-list recurring-subscription-donations-table" data-init-recurring-donation-id="<?php echo $donation_id;?>">
 
             <thead>
                 <tr>

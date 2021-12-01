@@ -1031,7 +1031,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             <a class="button" href="<?php echo admin_url('admin.php?page=leyka_donation_info&campaign_id='.$campaign->id);?>"><?php _e('Add correctional donation', 'leyka');?></a>
         </div>
 
-        <table id="donations-data-table" class="leyka-data-table campaign-donations-table" data-campaign-id="<?php echo $campaign->id;?>">
+        <table id="donations-data-table" class="leyka-data-table leyka-donations-list campaign-donations-table" data-campaign-id="<?php echo $campaign->id;?>">
             <thead>
                 <tr>
                     <td><?php _e('ID', 'leyka');?></td>

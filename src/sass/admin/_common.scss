@@ -1657,4 +1657,39 @@ ul.ui-autocomplete {
             }
         }
     }
+
+}
+
+.leyka-data-table {
+
+    // Donations lists data tables - default markup:
+    &.leyka-donations-list {
+
+        .column-amount .leyka-amount {
+
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: flex-start;
+
+            .icon-leyka-donation-status {
+                margin: 6px 12px 0 0;
+            }
+
+        }
+
+        .column-gateway_pm .leyka-gateway-name {
+
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+
+            img {
+                width: 20px;
+                height: 20px;
+            }
+
+        }
+
+    }
+
 }

@@ -177,6 +177,7 @@ jQuery(document).ready(function($){
 
     // Recurring subscriptions Donations list data table:
     let $data_table = $('.leyka-data-table.recurring-subscription-donations-table');
+
     if($data_table.length && typeof $().DataTable !== 'undefined' && typeof leyka_dt !== 'undefined') {
 
         $data_table.DataTable({

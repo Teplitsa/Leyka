@@ -1386,7 +1386,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         $dependencies[] = 'jquery-ui-selectmenu';
         $dependencies[] = 'tags-box';
 
-        if(in_array($current_screen->id, ['dashboard_page_leyka_donation_info', 'dashboard_page_leyka_donor_info',])) {
+        if(in_array($current_screen->id, ['admin_page_leyka_donation_info', 'dashboard_page_leyka_donor_info',])) {
             $dependencies[] = $this->_load_data_tables();
         }
 
