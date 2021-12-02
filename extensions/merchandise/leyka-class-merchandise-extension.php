@@ -175,7 +175,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
                 $campaign_merchandise_settings_new = [];
                 foreach($campaign->merchandise_settings as $merchandise_id => $settings) {
 
-                    if(isset($all_merchandise_items_used[$merchandise_id])) {
+                    if(isset($all_merchandise_items_used[$merchandise_id]) || !is_array($settings)) {
                         continue;
                     }
 
