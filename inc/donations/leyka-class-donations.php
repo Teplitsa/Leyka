@@ -673,6 +673,14 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
     }
 
+    protected function _get_date_query_parts($date_params) {
+
+        $date_query = new Leyka_Donations_Date_Query($date_params);
+
+        return $date_query->get_sql();
+
+    }
+
     protected function _get_query_parts(array $params = []) {
 
         global $wpdb;
@@ -861,8 +869,6 @@ class Leyka_Donations_Separated extends Leyka_Donations {
             $limit = ' LIMIT 0,'.$params['results_limit'];
         }
 
-        /** @todo Make it compatible with WP_Query 'date_query' param! Kinda like with $this->_get_meta_query_parts() for metas */
-
         if( !empty($params['date']) && strtotime($params['date']) ) {
             $where['date_created'] = $wpdb->prepare(
                 "{$wpdb->prefix}leyka_donations.date_created = %s",
@@ -906,7 +912,21 @@ class Leyka_Donations_Separated extends Leyka_Donations {
         }
 
         if(isset($params['day']) && (int)$params['day'] >= 1 && (int)$params['day'] <= 31) {
-            $where['day_created'] = $wpdb->prepare("DAYOFMONTH({$wpdb->prefix}leyka_donations.date_created) = %d", absint($params['day']));
+
+            $where['day_created'] = $wpdb->prepare(
+                "DAYOFMONTH({$wpdb->prefix}leyka_donations.date_created) = %d", absint($params['day'])
+            );
+
+        }
+
+        if( !empty($params['date_query']) ) { // Traditional (a la WP_Query) 'date_query' filter
+
+            $date_query_where_part = $this->_get_date_query_parts($params['date_query']);
+
+            if($date_query_where_part) {
+                $where[] = substr_replace($date_query_where_part, '', 0, mb_strlen(' AND '));
+            }
+
         }
 
         // Gateway & PM filtering:
@@ -916,7 +936,11 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
                 $params['gateway_pm'] = str_replace('gateway__', '', $params['gateway_pm']);
                 if( ($params['strict'] && leyka_get_gateway_by_id($params['gateway_pm'])) || !$params['strict'] ) {
-                    $where['gateway_id'] = $wpdb->prepare("{$wpdb->prefix}leyka_donations.gateway_id = %s", $params['gateway_pm']);
+
+                    $where['gateway_id'] = $wpdb->prepare(
+                        "{$wpdb->prefix}leyka_donations.gateway_id = %s", $params['gateway_pm']
+                    );
+
                 }
 
             } else if(mb_stripos($params['gateway_pm'], 'pm__') !== false) {
@@ -981,7 +1005,10 @@ class Leyka_Donations_Separated extends Leyka_Donations {
                         continue;
                     }
 
-                    $query_params[] = $wpdb->prepare("({$wpdb->prefix}leyka_donations.gateway_id = %s AND {$wpdb->prefix}leyka_donations.pm_id = %s)", $pm_full_id[0], $pm_full_id[1]);
+                    $query_params[] = $wpdb->prepare(
+                        "({$wpdb->prefix}leyka_donations.gateway_id = %s AND {$wpdb->prefix}leyka_donations.pm_id = %s)", $pm_full_id[0],
+                        $pm_full_id[1]
+                    );
 
                 }
             }
@@ -1002,9 +1029,13 @@ class Leyka_Donations_Separated extends Leyka_Donations {
             } else if($params['amount_filter'] === 'only-') {
                 $where['amount'] = "{$wpdb->prefix}leyka_donations.amount < 0.0";
             } else if(stripos($params['amount_filter'], '>=') !== false) {
-                $where['amount'] = $wpdb->prepare("{$wpdb->prefix}leyka_donations.amount >= %f", round(str_replace('>=', '', $params['amount_filter']), 2));
+                $where['amount'] = $wpdb->prepare(
+                    "{$wpdb->prefix}leyka_donations.amount >= %f", round(str_replace('>=', '', $params['amount_filter']), 2)
+                );
             } else if(stripos($params['amount_filter'], '<=') !== false) {
-                $where['amount'] = $wpdb->prepare("{$wpdb->prefix}leyka_donations.amount <= %f", round(str_replace('<=', '', $params['amount_filter']), 2));
+                $where['amount'] = $wpdb->prepare(
+                    "{$wpdb->prefix}leyka_donations.amount <= %f", round(str_replace('<=', '', $params['amount_filter']), 2)
+                );
             }
 
         }
@@ -1040,12 +1071,12 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
         if($params['meta']) {
 
-            $meta_query_parts = $this->_get_meta_query_parts($params['meta']);
+            $date_query_where_part = $this->_get_meta_query_parts($params['meta']);
 
-            if($meta_query_parts['join'] && $meta_query_parts['where']) {
+            if($date_query_where_part['join'] && $date_query_where_part['where']) {
 
-                $joins[] = $meta_query_parts['join'];
-                $where[] = substr_replace($meta_query_parts['where'], '', 0, mb_strlen(' AND '));
+                $joins[] = $date_query_where_part['join'];
+                $where[] = substr_replace($date_query_where_part['where'], '', 0, mb_strlen(' AND '));
 
             }
 
@@ -1054,7 +1085,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
         $query['fields'] = "{$wpdb->prefix}leyka_donations.".(empty($params['get_ids_only']) ? '*' : 'ID');
         $query['joins'] = $joins ? implode(' ', $joins) : '';
         $query['where'] = $where ? ' WHERE '.implode(' AND ', $where) : '';
-        $query['limit'] = $limit ? $limit : '';
+        $query['limit'] = $limit ? : '';
 
         return $query;
 

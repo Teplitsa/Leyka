@@ -2297,8 +2297,8 @@ class Leyka_Donations_Meta_Query extends WP_Meta_Query {
         $this->meta_table = $wpdb->prefix.'leyka_donations_meta';
         $this->meta_id_column = sanitize_key('donation_id');
 
-        $this->primary_table = $primary_table ? $primary_table : $wpdb->prefix.'leyka_donations';
-        $this->primary_id_column = $primary_id_column ? $primary_id_column : 'ID';
+        $this->primary_table = $primary_table ? : $wpdb->prefix.'leyka_donations';
+        $this->primary_id_column = $primary_id_column ? : 'ID';
 
         $sql = $this->get_sql_clauses();
 
@@ -2311,6 +2311,20 @@ class Leyka_Donations_Meta_Query extends WP_Meta_Query {
         }
 
         return $sql;
+
+    }
+
+}
+
+/** A service class - to use date queries (à la WP_Query) with separate-stored Donations. */
+class Leyka_Donations_Date_Query extends WP_Date_Query {
+
+    public function __construct($date_query, $default_column = 'post_date') {
+
+        global $wpdb;
+        $default_column = $wpdb->prefix.'leyka_donations.date_created';
+
+        parent::__construct($date_query, $default_column);
 
     }
 

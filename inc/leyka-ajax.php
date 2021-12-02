@@ -1135,6 +1135,90 @@ function leyka_admin_get_campaign_donations(){
 add_action('wp_ajax_leyka_get_campaign_donations', 'leyka_admin_get_campaign_donations');
 // Campaign Donations data table AJAX data source - END
 
+// Recurring subscription Donations data table AJAX data source:
+function leyka_admin_get_recurring_subscription_donations(){
+
+    $_POST['recurring_subscription_id'] = absint($_POST['recurring_subscription_id']);
+    if( !$_POST['recurring_subscription_id'] ) {
+        die( json_encode(['draw' => (int)$_POST['draw'], 'error' => __('Incorrect recurring subscription ID given', 'leyka')]) );
+    }
+
+    try {
+        $recurring_subscription = Leyka_Donations::get_instance()->get($_POST['recurring_subscription_id']);
+    } catch(Exception $ex) {
+        die( json_encode(['draw' => (int)$_POST['draw'], 'error' => $ex->getMessage()]) );
+    }
+
+    if( !$recurring_subscription->is_init_recurring_donation ) {
+        die( json_encode(['draw' => (int)$_POST['draw'], 'error' => __('ID given is not of a recurring subscription', 'leyka')]) );
+    }
+
+    $_POST['start'] = empty($_POST['start']) ? 0 : absint($_POST['start']); // Result record number to start from
+    $_POST['length'] = empty($_POST['length']) ? 10 : absint($_POST['length']); // Donations per table "page"
+
+    $total_recurring_donations = Leyka_Donations::get_instance()->get_count([
+        'status' => ['submitted', 'funded', 'refunded', 'failed',],
+        'recurring_rebills_of' => $recurring_subscription->id,
+        'get_all' => true,
+    ]);
+    $page_number = ($_POST['start'] / $_POST['length']) + 1;
+
+    $result = [
+        'draw' => (int)$_POST['draw'],
+        'recordsTotal' => $total_recurring_donations,
+        'recordsFiltered' => $total_recurring_donations,
+        'data' => [],
+    ];
+
+    $donations = Leyka_Donations::get_instance()->get([
+        'status' => ['submitted', 'funded', 'refunded', 'failed',],
+        'recurring_rebills_of' => $recurring_subscription->id,
+        'results_limit' => $_POST['length'],
+        'page' => $page_number,
+        'orderby' => 'ID',
+        'order' => 'DESC',
+    ]);
+
+    foreach($donations as $donation) {
+
+        $gateway = leyka_get_gateway_by_id($donation->gateway_id);
+
+        $result['data'][] = [
+            'donation_id' => $donation->id,
+            'donor' => [
+                'name' => $donation->donor_name,
+                'email' => $donation->donor_email,
+                'id' => leyka_options()->opt('donor_management_available') && $donation->donor_id ? $donation->donor_id : 0,
+            ],
+            'amount' => [
+                'amount' => $donation->amount,
+                'formatted' => $donation->amount_formatted,
+                'total' => $donation->amount_total,
+                'total_formatted' => $donation->amount_total_formatted,
+                'currency_label' => $donation->currency_label,
+            ],
+            'status' => [
+                'id' => $donation->status,
+                'label' => $donation->status_label,
+                'description' => $donation->status_description,
+            ],
+            'date' => $donation->date_time_label,
+            'gateway_pm' => [
+                'gateway_icon_url' => $gateway ? $gateway->icon_url : '',
+                'gateway_label' => $donation->gateway_id == 'correction' ?
+                    __('Custom payment info', 'leyka') : $donation->gateway_label,
+                'pm_label' => $donation->pm_label,
+            ],
+        ];
+
+    }
+
+    die(json_encode($result));
+
+}
+add_action('wp_ajax_leyka_get_recurring_subscription_donations', 'leyka_admin_get_recurring_subscription_donations');
+// Recurring subscription Donations data table AJAX data source - END
+
 function leyka_save_donor_description(){
 
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_save_editable_str')) {

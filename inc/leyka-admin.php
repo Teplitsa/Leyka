@@ -612,6 +612,20 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 'low'
             );
 
+            $donation = Leyka_Donations::get_instance()->get(absint($_GET['donation']));
+            if($donation->is_init_recurring_donation) {
+
+                add_meta_box(
+                    'leyka_donation_recurring_subscription_rebills',
+                    __('Recurring donations of this subscription', 'leyka'),
+                    ['Leyka_Donation_Management', 'subscription_resurring_donations_metabox'],
+                    'dashboard_page_leyka_donation_info',
+                    'normal',
+                    'low'
+                );
+
+            }
+
         }
 
         $this->_show_admin_template('donation-info-page');
@@ -1372,7 +1386,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         $dependencies[] = 'jquery-ui-selectmenu';
         $dependencies[] = 'tags-box';
 
-        if(in_array($current_screen->id, ['dashboard_page_leyka_donation_info', 'dashboard_page_leyka_donor_info',])) {
+        if(in_array($current_screen->id, ['admin_page_leyka_donation_info', 'dashboard_page_leyka_donor_info',])) {
             $dependencies[] = $this->_load_data_tables();
         }
 
