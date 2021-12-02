@@ -55,37 +55,6 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
     /** Will be called only if the Extension is active. */
     protected function _initialize_active() {
 
-        // Merchandise library custom option field:
-//        add_action('leyka_add_custom_option', function($option_id, Leyka_Options_Controller $options_controller){
-//
-//            if($option_id != 'merchandise_library') {
-//                return;
-//            }
-//
-//            $options_controller->add_option($option_id, 'custom_merchandise_library', [
-//                'type' => 'custom_merchandise_library', // Special option type
-//                'title' => __('Donations rewards library', 'leyka'),
-//                'field_classes' => ['merchandise-settings'],
-//                'default' => [],
-//            ]);
-//
-//        }, 10, 2);
-//
-//        add_filter('leyka_view_options_allocation', function(array $options_allocated){
-//
-//            array_splice($options_allocated, 2, 0, [['section' => [
-//                'name' => 'merchandise_library_settings',
-//                'title' => __('Merchandise library', 'leyka'),
-//                'is_default_collapsed' => true,
-//                'options' => ['merchandise_library',],
-//            ]]]);
-//
-//            return $options_allocated;
-//
-//        });
-        // Merchandise library custom option field - END
-
-
         if(is_admin()) {
 
             // Campaign metabox:
@@ -158,10 +127,119 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
         add_action('wp_enqueue_scripts', [$this, 'load_public_scripts']);
 
+        $this->update_extension_data();
+
         // Add the Merchandise block to public Donation forms:
         add_action('leyka_template_star_after_amount', [$this, 'display_merchandise_field_star'], 2, 10);
         add_action('leyka_template_need-help_after_amount', [$this, 'display_merchandise_field_star'], 2, 10);
         // 'display_merchandise_field_need_help'
+
+    }
+
+    /** Triggers on the main plugin data update routine. WARNING: mb, the method should use $wpdb for plugin options handling.*/
+    public function update_extension_data() {
+
+        if( // Data format update - from Merch v.1 (since plugin v.3.19) to Merch v.2 (since plugin v.3.22)
+            LEYKA_VERSION
+            && version_compare(LEYKA_VERSION, '3.22', '<=')
+            && !get_option('leyka_merchandise_updated')
+        ) {
+
+            $campaigns_with_merchandise = get_posts([
+                'post_type' => Leyka_Campaign_Management::$post_type,
+                'post_status' => ['publish','pending', 'draft',],
+                'meta_query' => [
+                    'key' => 'leyka_campaign_merchandise_settings',
+                    'compare' => 'EXISTS',
+                ],
+                'nopaging' => true,
+            ]);
+
+            if( !$campaigns_with_merchandise ) {
+
+                update_option('leyka_merchandise_updated', LEYKA_VERSION);
+                return;
+
+            }
+
+            require_once ABSPATH.'wp-admin/includes/file.php';
+            require_once ABSPATH.'wp-admin/includes/media.php';
+            require_once ABSPATH.'wp-admin/includes/image.php';
+
+            $all_merchandise_items_used = [];
+
+            foreach($campaigns_with_merchandise as $campaign) {
+
+                $campaign = new Leyka_Campaign($campaign);
+
+                $campaign_merchandise_settings_new = [];
+                foreach($campaign->merchandise_settings as $merchandise_id => $settings) {
+
+                    if(isset($all_merchandise_items_used[$merchandise_id])) {
+                        continue;
+                    }
+
+                    if($settings['thumbnail'] && is_string($settings['thumbnail'])) { // Add the picture to the WP Media library
+                        $settings['thumbnail'] = $this->_image_to_media($settings['thumbnail']);
+                    }
+
+                    $all_merchandise_items_used[$merchandise_id] = [
+                        'title' => $settings['title'],
+                        'donation_amount_needed' => $settings['donation_amount_needed'],
+                        'description' => $settings['description'],
+                        'thumbnail' => $settings['thumbnail'] && !is_wp_error($settings['thumbnail']) ?
+                            absint($settings['thumbnail']) : '',
+                        'campaigns' => [$campaign->id,],
+                        'for_all_campaigns' => '',
+                        'campaigns_exceptions' => [],
+                    ];
+
+                    $campaign_merchandise_settings_new[] = $merchandise_id;
+
+                }
+
+                $campaign->merchandise_settings = $campaign_merchandise_settings_new;
+
+            }
+
+            leyka_options()->opt('leyka_merchandise_library', $all_merchandise_items_used);
+
+            update_option('leyka_merchandise_updated', LEYKA_VERSION);
+
+        }
+
+    }
+
+    /**
+     * A service function used in the Extension data update (Merch v.1 -> v.2) sub-routine.
+     *
+     * @param string Image URL in the WP content folder.
+     * @return int|WP_Error A new Media library entry ID, or WP_Error if something went wrong.
+     */
+    protected function _image_to_media($image_url) {
+
+        if(absint($image_url)) { // In case image Media ID is somehow already set & passed here
+            return absint($image_url);
+        }
+
+        $wp_uploads_dir = wp_upload_dir();
+
+        $full_file_url = $wp_uploads_dir['baseurl'].$image_url;
+        $file_array = ['name' => wp_basename($full_file_url), 'tmp_name' => download_url($full_file_url)];
+
+        if(is_wp_error($file_array['tmp_name'])) { // If error storing temporarily, return the error
+            return $file_array['tmp_name'];
+        }
+
+        $image_media_id = media_handle_sideload($file_array, 0, ''); // Do the validation and storage stuff
+
+        if(is_wp_error($image_media_id)) { // If error storing permanently, unlink
+            @unlink($file_array['tmp_name']);
+        } else { // Media library entry created, delete the old file
+            @unlink($wp_uploads_dir['basedir'].$image_url);
+        }
+
+        return $image_media_id;
 
     }
 
