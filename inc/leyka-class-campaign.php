@@ -1256,7 +1256,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         // Plugin extensions & mods can add/modify Campaign data just saved:
         $_REQUEST = apply_filters('leyka_campaign_data_after_saving', $_REQUEST, $campaign);
-        do_action('leyka_campaign_data_after_saving', $_REQUEST, $campaign);
+        do_action('leyka_campaign_after_saving', $_REQUEST, $campaign);
 
 	}
 

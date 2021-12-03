@@ -83,6 +83,9 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
             // Donation edit page:
             add_action('leyka_donation_info_data_post_content', [$this, '_merchandise_admin_donation_info']);
 
+            // To save Merchandise data on Campaign saving:
+            add_action('leyka_campaign_after_saving', [$this, '_merchandise_campaign_data_saving'], 10, 2);
+
         }
 
         // Campaign Merchandise data:
@@ -93,9 +96,6 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
         // To get/set Merchandise settings from Campaign object:
         add_filter('leyka_get_unknown_campaign_field', [$this, '_merchandise_campaign_data_get'], 10, 3);
         add_action('leyka_set_unknown_campaign_field', [$this, '_merchandise_campaign_data_set'], 10, 3);
-
-        // To save Merchandise data on Campaign saving:
-        add_action('leyka_campaign_data_after_saving', [$this, '_merchandise_campaign_data_saving'], 10, 2);
 
         // Campaign Merchandise data - END
 

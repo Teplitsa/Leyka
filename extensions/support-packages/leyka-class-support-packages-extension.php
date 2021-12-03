@@ -221,7 +221,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
         add_filter('post_class', [$this, 'add_post_class'], 10, 3);
         add_filter('leyka_js_localized_strings', [$this, 'add_js_localized_strings']);
         add_action('admin_notices', [$this, 'admin_notices']);
-        add_action('leyka_campaign_data_after_saving', [$this, '_packages_campaign_data_saving'], 10, 2);
+        add_action('leyka_campaign_after_saving', [$this, '_packages_campaign_data_saving'], 10, 2);
 
         // Set up the Extension shortcodes:
         foreach(self::$_features as $feature_name => $feature_config) {
