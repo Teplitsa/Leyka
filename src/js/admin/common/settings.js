@@ -610,7 +610,7 @@ jQuery(document).ready(function($){
             }
         });
 
-        $items_wrapper.on('click.leyka', '.item-box-title .title', function(e){
+        $items_wrapper.on('click.leyka', '.item-box-title', function(e){
 
             let $this = $(this),
                 $current_box = $this.parents('.multi-valued-item-box');
