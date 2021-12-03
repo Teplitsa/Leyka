@@ -203,8 +203,13 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                     $form_has_phone_field = $form_has_phone_field || $field['type'] === 'phone';
 
                     switch($field['type']) {
-                        case 'phone': $text_input_type = 'tel'; break;
-                        case 'date': $text_input_type = 'text'; break; // type="date" is not universal yet
+                        case 'phone':
+                            $text_input_type = 'tel';
+                            $phone_field_data = leyka_get_phone_formats_full_info(leyka_options()->opt_safe('phone_format'));
+                            break;
+                        case 'date':
+                            $text_input_type = 'text';
+                            break; // type="date" is not universal yet
                         default:
                             $text_input_type = 'text';
                     }?>
@@ -215,7 +220,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                         <label for="<?php echo $field_id;?>">
                             <span class="donor__textfield-label donor__<?php echo $field['type'];?>_field-label leyka_<?php echo $field_slug;?>-label"><?php echo $field['title'];?></span>
                         </label>
-                        <input type="<?php echo $text_input_type;?>" id="<?php echo $field_id;?>" name="leyka_<?php echo $field_slug;?>" value="" autocomplete="off" <?php echo $field['type'] === 'phone' ? 'data-inputmask="\'mask\': \''.apply_filters('leyka_front_forms_phone_fields_mask', '+9(999)999-99-99').'\'"' : '';?> <?php echo $field['type'] === 'date' ? 'data-inputmask="\'mask\': \''.apply_filters('leyka_front_forms_date_fields_mask', '99.99.9999').'\'"' : '';?>>
+                        <input type="<?php echo $text_input_type;?>" id="<?php echo $field_id;?>" name="leyka_<?php echo $field_slug;?>" value="" autocomplete="off" <?php echo $field['type'] === 'phone' ? 'data-inputmask="\'mask\': \''.apply_filters('leyka_front_forms_phone_fields_mask', $phone_field_data['mask']).'\'"' : '';?> <?php echo $field['type'] === 'date' ? 'data-inputmask="\'mask\': \''.apply_filters('leyka_front_forms_date_fields_mask', '99.99.9999').'\'"' : '';?>>
                     </div>
 
                 <?php if( !empty($field['description']) ) {?>
