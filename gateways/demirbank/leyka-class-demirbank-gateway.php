@@ -188,7 +188,7 @@ class Leyka_Demirbank_Card extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-elkart.svg',
         ]);
 
         $this->_supported_currencies[] = 'kgs';
