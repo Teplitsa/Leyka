@@ -29,7 +29,6 @@ jQuery(document).ready(function($){
         } else {
 
             e.preventDefault();
-            console.log(leyka)
             $filters_warning_message.html(leyka.no_filters_while_exporting_warning_message).show();
 
         }

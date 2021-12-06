@@ -266,9 +266,16 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
             return;
         }
 
-        if(self::is_settings_page($this->_id) && !did_action('wp_enqueue_media')) {
+        if( !did_action('wp_enqueue_media') ) {
             wp_enqueue_media();
         }
+
+        wp_enqueue_script(
+            $this->_id.'-admin',
+            self::get_base_url().'/assets/js/admin.js',
+            ['jquery'],
+            defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY ? uniqid() : null
+        );
 
     }
 
@@ -505,7 +512,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
             <div class="option-block type-text">
 
-                <div class="leyka-select-field-wrapper">
+                <div class="leyka-text-field-wrapper">
 
                     <?php leyka_render_text_field('merchandise_title', [
                         'title' => __('Reward title', 'leyka'),
@@ -700,12 +707,17 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
             ];
 
             if($item->campaigns && !$item->leyka_item_for_all_campaigns) {
-                foreach($item->campaigns as $campaign_id) { // Add Field 2 Campaign links to selected Campaigns
+                foreach($item->campaigns as $campaign_id) { // "Add item to Campaign" links to selected Campaigns
+
+                    if( !$campaign_id ) {
+                        continue;
+                    }
 
                     $campaign = new Leyka_Campaign($campaign_id);
                     $campaign_merchandise = $campaign->merchandise_settings;
 
-                    if(in_array($item->id, $campaign_merchandise)) { // Field is already in Campaign fields list
+                    // Either no Campaigns were set, or Merchandise item is already in Campaign items list:
+                    if( !is_array($campaign_merchandise) || in_array($item->id, $campaign_merchandise) ) {
                         continue;
                     }
 

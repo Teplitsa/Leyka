@@ -68,7 +68,7 @@ gulp.task('build-public-js', function(){
         appFiles = [basePaths.src+'js/public.js'];
 
     return gulp.src(vendorFiles.concat(appFiles)) // Join all scripts
-        .pipe(plugins.concat('public.js')) // Combine them into a "public.js" bundle
+        .pipe(plugins.concat('public.js'))
         .pipe(isProduction ? plugins.uglify() : through.obj()) // Minification
         .pipe(plugins.size()) // Print total size for log
         .pipe(gulp.dest(basePaths.dest+'js')) // Write results into file
@@ -78,10 +78,10 @@ gulp.task('build-public-js', function(){
 
 gulp.task('build-admin-js', function(){
 
-    let vendorFiles = [],
+    let // vendorFiles = gulp.src([]),
         appFiles = gulp.src([basePaths.src+'js/admin.js']);
 
-    return gulp.src(vendorFiles.concat(appFiles))
+    return es.concat(appFiles /*, vendorFiles*/)
         .pipe(plugins.concat('admin.js'))
         .pipe(isProduction ? plugins.uglify() : gutil.noop()) // Minification
         .pipe(plugins.size())

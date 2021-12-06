@@ -16,7 +16,6 @@ jQuery(document).ready(function($){
         e.preventDefault();
 
         if( !validate_feedback_form($form) ) {
-            console.log('Not valid!');
             return false;
         }
 

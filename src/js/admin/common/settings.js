@@ -605,8 +605,6 @@ jQuery(document).ready(function($){
 
                 $items_wrapper.siblings('input.leyka-items-options').val( encodeURIComponent(JSON.stringify(items_options)) );
 
-                console.log(decodeURIComponent($items_wrapper.siblings('input.leyka-items-options').val()))
-
             }
         });
 

@@ -41,7 +41,7 @@ function leyka_render_text_field($option_id, $data){
     $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
     $data['value'] = isset($data['value']) ? $data['value'] : '';?>
 
-    <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-field-inner-wrapper leyka-text-field-wrapper field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>" data-field-title="<?php echo empty($data['title']) ? '' : $data['title'];?>">
+    <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-field-inner-wrapper leyka-text-field-wrapper field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>" data-field-title="<?php echo empty($data['title']) ? '' : esc_attr($data['title']);?>">
         <label>
 
         <?php if(empty($data['hide_title'])) {?>
@@ -298,7 +298,7 @@ function leyka_render_number_field($option_id, $data){
     $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
     $data['value'] = isset($data['value']) ? $data['value'] : '';?>
 
-    <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-number-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>">
+    <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-field-inner-wrapper leyka-number-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>" data-field-title="<?php echo empty($data['title']) ? '' : esc_attr($data['title']);?>">
         <label>
 
             <span class="field-component title">

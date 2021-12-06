@@ -48,7 +48,7 @@ jQuery(document).ready(function($){
 
     });
 
-    // Validate the multi-blocked complex field:
+    // Validate the multi-valued items complex field:
     function leyka_all_fields_valid($fields_wrapper) {
 
         let fields_valid = true;

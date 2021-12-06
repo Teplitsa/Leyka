@@ -1383,8 +1383,6 @@ jQuery(document).ready(function($){
 
                 $items_wrapper.siblings('input.leyka-items-options').val( encodeURIComponent(JSON.stringify(items_options)) );
 
-                console.log(decodeURIComponent($items_wrapper.siblings('input.leyka-items-options').val()))
-
             }
         });
 
@@ -1658,8 +1656,6 @@ function leyka_support_metaboxes(metabox_area) {
         return false;
     }
 
-    // console.log('Metaboxes supported for: ', metabox_area);
-
     jQuery('.if-js-closed').removeClass('if-js-closed').addClass('closed'); // Close postboxes that should be closed
     postboxes.add_postbox_toggles(metabox_area);
 
@@ -1770,7 +1766,7 @@ jQuery(document).ready(function($){
 
     });
 
-    // Validate the multi-blocked complex field:
+    // Validate the multi-valued items complex field:
     function leyka_all_fields_valid($fields_wrapper) {
 
         let fields_valid = true;
@@ -3017,7 +3013,6 @@ jQuery(document).ready(function($){
         } else {
 
             e.preventDefault();
-            console.log(leyka)
             $filters_warning_message.html(leyka.no_filters_while_exporting_warning_message).show();
 
         }
@@ -4064,7 +4059,6 @@ jQuery(document).ready(function($){
         e.preventDefault();
 
         if( !validate_feedback_form($form) ) {
-            console.log('Not valid!');
             return false;
         }
 
