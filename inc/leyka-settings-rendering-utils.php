@@ -216,8 +216,14 @@ function leyka_render_media_upload_field($option_id, $data){
 
         $data['upload_files_type'] = empty($data['upload_files_type']) ? 'image' : esc_attr($data['upload_files_type']);
         if($data['value']) {
+
             $media_meta = wp_get_attachment_metadata($data['value']);
-        }?>
+
+            if( !$media_meta ) {
+                $data['value'] = 0;
+            }
+
+        } ?>
 
         <div class="preview-wrapper">
 
