@@ -104,8 +104,8 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             return $donation_id;
         }
 
-        if($donation_meta_fields['_rebilling_is_active']) {
-            do_action('leyka_donation_recurring_activity_changed', $donation_id, $donation_meta_fields['recurring_active']);
+        if(isset($donation_meta_fields['_rebilling_is_active'])) {
+            do_action('leyka_donation_recurring_activity_changed', $donation_id, $donation_meta_fields['_rebilling_is_active']);
         }
 
         $donation_meta_fields = apply_filters(
