@@ -8,6 +8,7 @@ let basePaths = {
 
 // Require plugins:
 let gulp = require('gulp'),
+    // sass = require('gulp-sass'),
     es = require('event-stream'),
     gutil = require('gulp-util'),
     bourbon = require('node-bourbon'),
@@ -15,6 +16,8 @@ let gulp = require('gulp'),
     del = require('del');
 const {includePaths: paths} = require("node-bourbon");
     jsImport = require('gulp-js-import');
+
+// sass.compiler = require('dart-sass'); // Use Dart SASS instead of node-sass
 
 // Plugins - load gulp-* plugins without direct calls:
 let plugins = require('gulp-load-plugins')({
