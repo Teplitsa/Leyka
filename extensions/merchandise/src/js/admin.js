@@ -13,7 +13,7 @@ jQuery(document).ready(function($){
     // Pre-submit actions:
     if(leyka_is_gutenberg_active()) { // Gutenberg is on for Campaign edit page
 
-        /** @todo Add validation for Gutenberg mode */
+        /** @todo Add validation for Gutenberg mode (reference: https://bdwm.be/gutenberg-how-to-prevent-post-from-being-saved/) */
 
     } else { // Gutenberg is off
 
@@ -43,7 +43,7 @@ jQuery(document).ready(function($){
                 $item_sub_field_outer_wrapper = $item_sub_field.parents('.option-block').removeClass('has-errors');
 
             // Merchandise title is empty:
-            if( !$item_sub_field.val().length ) {
+            if($item_sub_field.length && !$item_sub_field.val().length) {
 
                 all_fields_valid = false;
 
@@ -58,7 +58,7 @@ jQuery(document).ready(function($){
             $item_sub_field_outer_wrapper = $item_sub_field.parents('.option-block').removeClass('has-errors');
 
             // Merchandise minimal amount is empty or non-positive:
-            if( !$item_sub_field.val().length || $item_sub_field.val() <= 0 ) {
+            if($item_sub_field.length && !$item_sub_field.val().length || $item_sub_field.val() <= 0) {
 
                 all_fields_valid = false;
 
