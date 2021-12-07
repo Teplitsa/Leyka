@@ -290,17 +290,19 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
         );
         $donor_additional_data_html .= '</ul>';
 
-        return '<div class="leyka-donor-data-additional">'
-                .'<i class="icon-donor-more-data has-tooltip leyka-tooltip-on-click leyka-tooltip-wide leyka-tooltip-white" data-tooltip-additional-classes="leyka-admin-tooltip-donor-more-data"></i>'
-                    .'<span class="leyka-tooltip-content">'
-                        .apply_filters(
-                            'leyka_admin_donation_donor_column_additional_data_full_html',
-                            $donor_additional_data_html,
-                            $donation
-                        )
-                    .'</span>'
-                .'</div>'
-            .'<div class="leyka-donor-data-main">'.$donor_data_html.'</div>';
+        return '<div class="leyka-donor-data-cell-wrapper">'
+                .'<div class="leyka-donor-data-additional">'
+                    .'<i class="icon-donor-more-data has-tooltip leyka-tooltip-on-click leyka-tooltip-wide leyka-tooltip-white" data-tooltip-additional-classes="leyka-admin-tooltip-donor-more-data"></i>'
+                        .'<span class="leyka-tooltip-content">'
+                            .apply_filters(
+                                'leyka_admin_donation_donor_column_additional_data_full_html',
+                                $donor_additional_data_html,
+                                $donation
+                            )
+                        .'</span>'
+                    .'</div>'
+                .'<div class="leyka-donor-data-main">'.$donor_data_html.'</div>'
+            .'</div>';
 
     }
 

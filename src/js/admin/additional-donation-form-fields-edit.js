@@ -8,7 +8,6 @@ jQuery(document).ready(function($){
     }
 
     let $items_wrapper = $additional_fields_settings_wrapper.find('.leyka-main-multi-items');
-        // $add_item_button = $items_wrapper.siblings('.add-item');
 
     // Change field box title when field title value changes:
     $items_wrapper.on('keyup.leyka change.leyka click.leyka', '[name="leyka_field_title"]', function(){

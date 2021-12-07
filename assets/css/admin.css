@@ -2049,7 +2049,7 @@ ul.ui-autocomplete.ui-menu li.ui-menu-item:hover {
   font-weight: 500;
 }
 
-.leyka-admin-list-page .wp-list-table.widefat td.column-donor {
+.leyka-admin-list-page .wp-list-table.widefat td.column-donor .leyka-donor-data-cell-wrapper {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -2062,7 +2062,7 @@ ul.ui-autocomplete.ui-menu li.ui-menu-item:hover {
   justify-content: flex-start;
   -webkit-box-align: center;
   -ms-flex-align: center;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .leyka-admin-list-page .wp-list-table.widefat td.column-donor .leyka-donor-data-main .donor-name {

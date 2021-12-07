@@ -556,7 +556,7 @@ jQuery(document).ready(function($){
     // Multi-valued items fields - END
 
     /* Support packages Extension - available campaign existence check: */
-
+    /** @todo Move all Support packages code here to the Extension */
     if(typeof($().dialog) === 'undefined') {
         return;
     }

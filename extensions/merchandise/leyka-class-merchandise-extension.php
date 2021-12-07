@@ -262,7 +262,10 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
     public function load_admin_scripts() {
 
-        if( !Leyka_Extension::is_admin_settings_page($this->_id) ) { // Extension CSS & JS is only for admin settings page
+        if( // Extension CSS & JS is only for admin settings page
+            !Leyka_Extension::is_admin_settings_page($this->_id)
+            && (empty($_GET['post']) || !absint($_GET['post']) || empty($_GET['action']) || $_GET['action'] !== 'edit')
+        ) {
             return;
         }
 

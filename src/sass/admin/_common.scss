@@ -1260,12 +1260,12 @@ ul.ui-autocomplete {
                 font-weight: 500;
             }
 
-            &.column-donor {
+            &.column-donor .leyka-donor-data-cell-wrapper {
 
                 display: flex;
                 flex-flow: row nowrap;
                 justify-content: flex-start;
-                align-items: center;
+                align-items: flex-start;
 
                 .leyka-donor-data-main {
 
