@@ -523,7 +523,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
             <div class="section-title-container">
                 <div class="section-title-line"></div>
-                <div class="section-title-text"><?php _e('Donation reward', 'leyka');?></div>
+                <div class="section-title-text" role="heading" aria-level="3"><?php _e('Donation reward', 'leyka');?></div>
             </div>
 
             <div class="section__fields merchandise-grid">

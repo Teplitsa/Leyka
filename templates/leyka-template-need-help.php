@@ -39,7 +39,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
             <div class="section section--periodicity <?php echo in_array('recurring', $campaign->donations_types_available) ? '' : 'hidden';?>" style="<?php echo $campaign->daily_rouble_mode_on_and_valid ? 'display: none;' : '';?>">
 
                 <div class="section-title-container">
-                    <div class="section-title-text"><?php _e('Donation type', 'leyka');?></div>
+                    <div class="section-title-text" role="heading" aria-level="3"><?php _e('Donation type', 'leyka');?></div>
                 </div>
 
                 <div class="section__fields periodicity">
@@ -52,7 +52,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
             <div class="section section--amount">
 
                 <div class="section-title-container">
-                    <div class="section-title-text"><?php _e('Donation sum', 'leyka');?></div>
+                    <div class="section-title-text" role="heading" aria-level="3"><?php _e('Donation sum', 'leyka');?></div>
                 </div>
 
                 <div class="section__fields amount">
@@ -113,7 +113,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
             <div class="section section--cards">
 
                 <div class="section-title-container">
-                    <div class="section-title-text"><?php _e('Payment method', 'leyka');?></div>
+                    <div class="section-title-text" role="heading" aria-level="3"><?php _e('Payment method', 'leyka');?></div>
                 </div>
 
                 <div class="section__fields payments-grid">
@@ -163,7 +163,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
             <div class="section section--person">
 
                 <div class="section-title-container">
-                    <div class="section-title-text"><?php _e('Personal information', 'leyka');?></div>
+                    <div class="section-title-text" role="heading" aria-level="3"><?php _e('Personal information', 'leyka');?></div>
                 </div>
 
                 <div class="section__fields donor equalize-elements-width" data-equalize-elements-exceptions=".donor__textfield--comment">

@@ -52,7 +52,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
         <?php }?>
 
         <div class="section section--amount">
-        	<div class="section-title-container"><div class="section-title-line"></div><div class="section-title-text"><?php esc_html_e('Donation amount', 'leyka');?></div></div>
+        	<div class="section-title-container"><div class="section-title-line"></div><div class="section-title-text" role="heading" aria-level="3"><?php esc_html_e('Donation amount', 'leyka');?></div></div>
 
             <div class="section__fields amount">
 
@@ -99,7 +99,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 
         <div class="section section--cards">
 
-        	<div class="section-title-container"><div class="section-title-line"></div><div class="section-title-text"><?php _e('Payment method', 'leyka');?></div></div>
+        	<div class="section-title-container"><div class="section-title-line"></div><div class="section-title-text" role="heading" aria-level="3"><?php _e('Payment method', 'leyka');?></div></div>
     
             <div class="section__fields payments-grid">
                 <div class="star-swiper <?php echo $is_swipe_pm_list ? '' : 'no-swipe';?>">
@@ -158,7 +158,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 
         <!-- donor data -->
         <div class="section section--person">
-        	<div class="section-title-container"><div class="section-title-line"></div><div class="section-title-text"><?php esc_html_e('Your data', 'leyka');?></div></div>
+        	<div class="section-title-container"><div class="section-title-line"></div><div class="section-title-text" role="heading" aria-level="3"><?php esc_html_e('Your data', 'leyka');?></div></div>
     
             <div class="section__fields donor">
 
