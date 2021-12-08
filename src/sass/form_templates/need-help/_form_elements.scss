@@ -447,9 +447,15 @@
             margin-bottom: 40px;
         }
 
-        input:checked + label::before { // Checked - box
-            background-color: var(--leyka-need-help-color-main-second);
-            border-color: var(--leyka-need-help-color-main-second);
+        input {
+            &:checked + label::before { // Checked - box
+                background-color: var(--leyka-need-help-color-main-second);
+                border-color: var(--leyka-need-help-color-main-second);
+            }
+
+            &:focus-visible + label::before {
+                box-shadow: 0px 0px 0px 2px;
+            }
         }
 
         label {
