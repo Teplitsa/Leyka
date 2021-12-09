@@ -207,7 +207,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         $campaign = new Leyka_Campaign($campaign);
 
-		$cur_template = $campaign->template ? $campaign->template : 'default';?>
+		$cur_template = $campaign->template ? : 'default';?>
 
         <fieldset id="campaign-form-template" class="metabox-field campaign-field campaign-template temporary-campaign-fields">
 
@@ -338,11 +338,15 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <div class="field-wrapper">
                 <label class="field-label">
-                    <input type="checkbox" name="donations_type[]" value="recurring" <?php echo in_array('recurring', $campaign->donations_types_available) || $campaign->status === 'auto-draft' ? 'checked="checked"' : '';?>><?php echo _x('Recurring', 'In mult., like "recurring donations"', 'leyka');?>
+                    <input type="checkbox" name="donations_type[]" value="recurring" <?php echo in_array('recurring', $campaign->donations_types_available) || $campaign->status === 'auto-draft' ? 'checked="checked"' : '';?> <?php echo leyka_is_recurring_supported() ? '' : 'disabled="disabled"'?>><?php echo _x('Recurring', 'In mult., like "recurring donations"', 'leyka');?>
                 </label>
                 <label class="field-label">
                     <input type="checkbox" name="donations_type[]" value="single" <?php echo in_array('single', $campaign->donations_types_available) || $campaign->status === 'auto-draft' ? 'checked="checked"' : '';?>><?php echo _x('Single', 'In mult., like "single donations"', 'leyka');?>
                 </label>
+
+                <?php if( !leyka_is_recurring_supported()) {?>
+                <div class="error-message">Внимание: на данный момент активация регулярных пожертвований на форме невозможна. Не включён ни один способ оплаты, поддерживающий рекуррентные платежи.<br />Чтобы изменить это, выберите и подключите <a href="<?php echo admin_url('admin.php?page=leyka_settings&stage=payment');?>" target="_blank">один из платёжных операторов с возможностью регулярных платежей</a>.</div>
+                <?php }?>
             </div>
 
         </fieldset>
