@@ -11,6 +11,7 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
 
         parent::__construct();
 
+        $this->_enque_success_page_scripts();
         $this->_set_success_page_content();
         $this->_set_ajax_actions();
 
@@ -182,7 +183,7 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
 
         add_filter('the_content', function ($content){
 
-            if( !$_POST ) {
+            if( is_page('thank-you-for-your-donation') === false || !$_POST ) {
                 return false;
             }
 
@@ -222,7 +223,16 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
 
         });
 
+    }
+
+    protected function _enque_success_page_scripts() {
+
         add_action( 'wp_enqueue_scripts', function () {
+
+            if( is_page('thank-you-for-your-donation') === false) {
+                return false;
+            };
+
             wp_enqueue_script(
                 'leyka-demirbank-card-check',
                 LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_Demirbank_Gateway::get_instance()->id.'/js/leyka.demirbank.card_check.js',
