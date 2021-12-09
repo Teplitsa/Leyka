@@ -38,7 +38,7 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
 
         $this->_countries = ['ru',];
 
-        $this->_docs_link = '//leyka.te-st.ru/docs/nastrojka-lejki/';
+//        $this->_docs_link = '//leyka.te-st.ru/docs/nastrojka-lejki/'; // No manual for the Quittance ATM
         $this->_registration_link = '';
 
         $this->_min_commission = 2.1;
