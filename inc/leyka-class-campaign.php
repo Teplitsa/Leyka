@@ -252,7 +252,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
                 </select>
 
-                <?php /** @todo Check if this div is used */ ?>
+                <?php /** @todo Check if this div is used */ /* ?>
                 <div class="form-template-demo" style="display: none;">
                 <?php foreach($templates as $template) {
 
@@ -262,6 +262,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
                 <?php }?>
                 </div>
+                <?php */?>
 
             </div>
 
@@ -451,6 +452,20 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         </fieldset>
 
 	    <?php }?>
+
+        <fieldset id="campaign-form-content-position" class="metabox-field campaign-field campaign-form-content-position">
+
+            <h3 class="field-title"><?php _e('Display donations form on the campaign page:', 'leyka');?></h3>
+
+            <div class="field-wrapper">
+                <label class="field-label">
+                    <input type="radio" name="campaign_form_content_position" value="before-content" <?php echo $campaign->form_content_position === 'before-content' ? 'checked="checked"' : '';?>><?php _e('Before the content', 'leyka');?>
+                </label>
+                <label class="field-label">
+                    <input type="radio" name="campaign_form_content_position" value="after-content" <?php echo $campaign->form_content_position === 'after-content' ? 'checked="checked"' : '';?>><?php _e('After the content', 'leyka');?>
+                </label>
+            </div>
+        </fieldset>
 
         <fieldset id="campaign-css" class="metabox-field campaign-field campaign-css">
 
@@ -1170,6 +1185,13 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         }
 
+        if(
+            !empty($_REQUEST['campaign_form_content_position'])
+            && $campaign->form_content_position !== $_REQUEST['campaign_form_content_position']
+        ) {
+            $meta['form_content_position'] = esc_attr($_REQUEST['campaign_form_content_position']);
+        }
+
         // Campaign additional form fields settings:
         if(isset($_REQUEST['leyka_campaign_additional_fields'])) {
 
@@ -1494,6 +1516,9 @@ class Leyka_Campaign {
                 'campaign_target' => empty($meta['campaign_target']) ? 0 : $meta['campaign_target'][0],
                 'ignore_global_template' => $ignore_view_settings,
                 'is_finished' => $meta['is_finished'] ? $meta['is_finished'][0] > 0 : 0,
+                'form_content_position' => empty($meta['form_content_position'])
+                    || !in_array($meta['form_content_position'][0], ['before-content', 'after-content']) ?
+                        'before-content' : $meta['form_content_position'][0],
                 'target_state' => $meta['target_state'][0],
                 'target_reaching_mailout_sent' => $meta['_leyka_target_reaching_mailout_sent'][0],
                 'target_reaching_mailout_errors' => $meta['_leyka_target_reaching_mailout_errors'][0],
@@ -1515,8 +1540,6 @@ class Leyka_Campaign {
             ], $this->_id);
 
         }
-
-        return $this;
 
 	}
 
@@ -1692,6 +1715,9 @@ class Leyka_Campaign {
 			case 'is_closed':
 				return $this->_campaign_meta['is_finished'];
 
+            case 'form_content_position':
+                return $this->_campaign_meta['form_content_position'];
+
             case 'ignore_view_settings':
             case 'ignore_global_template':
             case 'ignore_global_template_settings':
@@ -1763,6 +1789,14 @@ class Leyka_Campaign {
     public function __set($field, $value) {
 
         switch($field) {
+            case 'form_content_position':
+                if(in_array($value, ['before-content', 'after-content'])) {
+
+                    $this->_campaign_meta['form_content_position'] = $value;
+                    update_post_meta($this->_id, 'form_content_position', $value);
+
+                }
+
             case 'target_state':
                 if( in_array( $value, array_keys(Leyka::get_campaign_target_states()) ) ) {
 

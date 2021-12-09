@@ -1726,7 +1726,6 @@ jQuery(document).ready(function($){
     }
 
     let $items_wrapper = $additional_fields_settings_wrapper.find('.leyka-main-multi-items');
-        // $add_item_button = $items_wrapper.siblings('.add-item');
 
     // Change field box title when field title value changes:
     $items_wrapper.on('keyup.leyka change.leyka click.leyka', '[name="leyka_field_title"]', function(){
@@ -1907,27 +1906,27 @@ jQuery(document).ready(function($){
 
     }).change();
 
-    // Form templates screens demo:
-    $('.form-template-screenshot').easyModal({
-        top: 100,
-        autoOpen: false
-    });
-
-    $('.form-template-demo').on('click.leyka', function(e){
-
-        e.preventDefault();
-
-        let $this = $(this), // Demo icon
-            $template_field = $this.siblings(':input[name="campaign_template"]'),
-            selected_template_id = $template_field.val() === 'default' ?
-                $template_field.data('default-template-id'): $template_field.val();
-
-        $this
-            .find('.form-template-screenshot.'+selected_template_id)
-            .css('display', 'block')
-            .trigger('openModal');
-
-    });
+    // Form templates screens demo: /** @todo This template demo code isn't used - it's a candidat for removing */
+    // $('.form-template-screenshot').easyModal({
+    //     top: 100,
+    //     autoOpen: false
+    // });
+    //
+    // $('.form-template-demo').on('click.leyka', function(e){
+    //
+    //     e.preventDefault();
+    //
+    //     let $this = $(this), // Demo icon
+    //         $template_field = $this.siblings(':input[name="campaign_template"]'),
+    //         selected_template_id = $template_field.val() === 'default' ?
+    //             $template_field.data('default-template-id'): $template_field.val();
+    //
+    //     $this
+    //         .find('.form-template-screenshot.'+selected_template_id)
+    //         .css('display', 'block')
+    //         .trigger('openModal');
+    //
+    // });
     // Form templates screens demo - END
 
     // Campaign cover upload field:
@@ -2369,7 +2368,7 @@ jQuery(document).ready(function($){
     // Multi-valued items fields - END
 
     /* Support packages Extension - available campaign existence check: */
-
+    /** @todo Move all Support packages code here to the Extension */
     if(typeof($().dialog) === 'undefined') {
         return;
     }
