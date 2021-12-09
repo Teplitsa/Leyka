@@ -61,7 +61,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
      */
     protected function _get_options_meta($options_group = 'main') {
 
-        if($options_group == 'all') {
+        if($options_group === 'all') {
             return $this->_get_options_meta(
                 ['main', 'org', 'person', 'currency', 'email', 'templates', 'analytics', 'terms', 'admin',]
             );
@@ -508,7 +508,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'text',
                 'default' => leyka_get_default_email_from(),
                 'title' => __('Sender email', 'leyka'),
-                'placeholder' => sprintf(__('E.g., %s'), 'donations@daisyfoundation.org'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'donations@daisyfoundation.org'),
                 'comment' => __('What your donors will see in the "from email" field. For the most of the cases, your organization contact email will do fine.', 'leyka'),
             ],
             'email_thanks_title' => [
