@@ -1234,7 +1234,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                 }
 
                 // $field->add or $field->id is a field ID/slug:
-                $updated_additional_fields_settings[] = $field->add ? : $field->id;
+                $updated_additional_fields_settings[] = empty($field->add) ? $field->id : $field->add;
 
             }
 
