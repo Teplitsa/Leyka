@@ -7,6 +7,15 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
 
     protected static $_instance;
 
+    protected function __construct() {
+
+        parent::__construct();
+
+        $this->_set_success_page_content();
+        $this->_set_ajax_actions();
+
+    }
+
     protected function _set_attributes() {
 
         $this->_id = 'demirbank';
@@ -49,6 +58,12 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
                 'comment' => __('Please, enter your Demirbank store key here.', 'leyka'),
                 'is_password' => true,
                 'required' => true
+            ],
+            'demirbank_support_email' => [
+                'type' => 'text',
+                'title' => __('Support email'),
+                'comment' => __('Support email address to display into the card-check.', 'leyka'),
+                'required' => true
             ]
         ];
 
@@ -56,7 +71,8 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
 
     public function is_setup_complete($pm_id = false) {
         return leyka_options()->opt('demirbank_client_id')
-            && leyka_options()->opt('demirbank_store_key');
+            && leyka_options()->opt('demirbank_store_key')
+            && leyka_options()->opt('demirbank_support_email');
     }
 
     protected function _initialize_pm_list() {
@@ -145,6 +161,7 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
         }
         */
 
+
         $donation = Leyka_Donations::get_instance()->get_donation((int)$_POST['donation_id']);
 
         if($_POST['ProcReturnCode'] === '00') {
@@ -159,6 +176,128 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
         $donation->add_gateway_response(json_encode($_POST));
 
         exit(200);
+    }
+
+    protected function _set_success_page_content() {
+
+        add_filter('the_content', function ($content){
+
+            if( !$_POST ) {
+                return false;
+            }
+
+            $donation = Leyka_Donations::get_instance()->get_donation((int)$_POST['donation_id']);
+
+            if( !$donation ) {
+                return false;
+            }
+
+            $card_check_text_html = $this->_get_card_check_text($donation);
+
+            $card_check_tools_html = str_replace(
+                [
+                    '#SAVE_TEXT#',
+                    '#SEND_TEXT#',
+                    '#DONATION_ID#'
+                ],
+                [
+                    __("Save", 'leyka'),
+                    __("Send", 'leyka'),
+                    $donation->id
+                ],
+                file_get_contents(LEYKA_PLUGIN_DIR.'gateways/demirbank/templates/parts/card_check_tools.html')
+            );
+
+            return $content.str_replace(
+                [
+                    '#CARD_CHECK_TEXT_TMPL#',
+                    '#CARD_CHECK_TOOLS_TMPL#'
+                ],
+                [
+                    $card_check_text_html,
+                    $card_check_tools_html
+                ],
+                file_get_contents(LEYKA_PLUGIN_DIR.'gateways/demirbank/templates/card_check.html')
+            );
+
+        });
+
+        add_action( 'wp_enqueue_scripts', function () {
+            wp_enqueue_script(
+                'leyka-demirbank-card-check',
+                LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_Demirbank_Gateway::get_instance()->id.'/js/leyka.demirbank.card_check.js',
+                [],
+                LEYKA_VERSION,
+                true
+            );
+        });
+
+    }
+
+    protected function _get_card_check_text($donation) {
+
+        $vars = json_decode($donation->gateway_response, true);
+
+        $campaign_id = $donation->campaign_id;
+        $campaign = new Leyka_Campaign($campaign_id);
+
+        return str_replace(
+            [
+                '#CARD_CHECK_TEXT#',
+                '#ORDER_INFO_TEXT#',
+                '#ORDER_ID#',
+                '#ORDER_DATE#',
+                '#ITEM#',
+                '#PRICE#',
+                '#PAYMENT_INFO_TEXT#',
+                '#CARD_BRAND#',
+                '#CARD_NUMBER#',
+                '#AUTHORISATION_CODE#',
+                '#MERCHANT_INFO_TEXT#',
+                '#MERCHANT_NAME#',
+                '#SUPPORT_EMAIL#'
+            ],
+            [
+                __("Card-check", 'leyka'),
+                __("ORDER INFO", 'leyka'),
+                sprintf(__("<b>Order #:</b> %s", 'leyka'), $vars['ReturnOid']),
+                sprintf(__("<b>Order placed:</b> %s", 'leyka'), date('d.m.Y H:i', strtotime($vars['EXTRA_TRXDATE']))),
+                sprintf(__("<b>Donation purpose:</b> %s", 'leyka'), $campaign->payment_title),
+                sprintf(__("<b>Price:</b> %s %s", 'leyka'), $vars['amount'], $donation->currency_label),
+                __("PAYMENT INFO", 'leyka'),
+                sprintf(__("<b>Card brand:</b> %s", 'leyka'), $vars['EXTRA_CARDBRAND']),
+                sprintf(__("<b>Card last four digits:</b> %s", 'leyka'), substr($vars['MaskedPan'], strlen($vars['MaskedPan'])-4, 4)),
+                sprintf(__("<b>Authorisation code:</b> %s", 'leyka'), $vars['AuthCode']),
+                __("MERCHANT INFO", 'leyka'),
+                sprintf(__("<b>Merchant name:</b> %s", 'leyka'), get_site_url()),
+                sprintf(__("<b>Support email:</b> %s", 'leyka'), leyka_options()->opt('demirbank_support_email'))
+            ],
+            file_get_contents(LEYKA_PLUGIN_DIR.'gateways/demirbank/templates/parts/card_check_text.html')
+        );
+
+    }
+
+    public function send_card_check_email() {
+
+        $donation_id = $_POST['donation_id'];
+        $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
+
+        echo wp_mail(
+            $donation->donor_email,
+            __('Card-check', 'leyka'),
+            $this->_get_card_check_text($donation),
+            'From: My Name <'.leyka_options()->opt('demirbank_support_email').'>' . "\r\n"
+        );
+
+        wp_die();
+
+    }
+
+    protected function _set_ajax_actions() {
+
+        add_action( 'wp_ajax_send-card-check', [$this, 'send_card_check_email']);
+        add_action( 'wp_ajax_nopriv_send-card-check', [$this, 'send_card_check_email']);
+
     }
 
 }
