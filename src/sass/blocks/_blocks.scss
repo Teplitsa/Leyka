@@ -28,3 +28,58 @@
 div[id*="leyka-pf-"].leyka-pf-need-help {
 	padding: 80px;
 }
+
+/** Leyka Block cards */
+.leyka-block-cards {
+
+	&-grid {
+		display: grid;
+		grid-gap: var(--leyka-grid-gap, 30px);
+		grid-template-columns: repeat(var(--leyka-grid-columns, 1), minmax(0, 1fr));
+	}
+
+	.campaign-card {
+		max-width: 100% !important;
+		height: 100%;
+
+		.campaign-thumb {
+			height: auto;
+
+			&:after {
+				content: '';
+				display: block;
+				padding-top: 60%;
+			}
+		}
+	}
+
+	.leyka-shortcode.campaign-card .campaign-title {
+		font-size: var(--leyka-card-title-size,24px);
+		line-height: 1.2;
+	}
+
+	.bottom-line-item.target-info:not(:last-child){
+		padding-right: 10px;
+	}
+}
+
+.leyka-grid-columns {
+	@media (max-width: 1199px) {
+		&-4 {
+			--leyka-grid-columns: 3 !important;
+		}
+	}
+	@media (max-width: 991px) {
+		&-4,
+		&-3 {
+			--leyka-grid-columns: 2 !important;
+		}
+	}
+	@media (max-width: 767px) {
+		&-4,
+		&-3,
+		&-2 {
+			--leyka-grid-columns: 1 !important;
+		}
+	}
+}

@@ -25,19 +25,19 @@ function leyka_enqueue_block_editor_assets() {
 	];
 
 	wp_enqueue_script(
-	    'leyka-blocks',
-        LEYKA_PLUGIN_BASE_URL.'assets/js/blocks.js',
-        $dependencies,
-        filemtime(LEYKA_PLUGIN_DIR.'assets/js/blocks.js')
-    );
+		'leyka-blocks',
+		LEYKA_PLUGIN_BASE_URL.'assets/js/blocks.js',
+		$dependencies,
+		filemtime(LEYKA_PLUGIN_DIR.'assets/js/blocks.js')
+	);
 
 	wp_register_style('leyka-new-templates-styles', LEYKA_PLUGIN_BASE_URL.'assets/css/public.css', [], LEYKA_VERSION);
 	wp_enqueue_style(
-	    'leyka-editor-styles',
-        LEYKA_PLUGIN_BASE_URL.'assets/css/editor-style.css',
-        ['leyka-new-templates-styles'],
-        LEYKA_VERSION
-    );
+		'leyka-editor-styles',
+		LEYKA_PLUGIN_BASE_URL.'assets/css/editor-style.css',
+		['leyka-new-templates-styles'],
+		LEYKA_VERSION
+	);
 
 	$leyka_block = [];
 	$campaigns = leyka_block_get_campaigns();
@@ -57,7 +57,7 @@ function leyka_enqueue_block_editor_assets() {
 	} else {
 		$leyka_block['campaigns'][] = [
 			'value' => '',
-			'label' => __('No campaings', 'leyka'),
+			'label' => __('No campaigns', 'leyka'),
 			'disabled' => true,
 			'selected' => true,
 		];
@@ -67,6 +67,8 @@ function leyka_enqueue_block_editor_assets() {
 		'i18n' => [
 			'settings'            => __('Settings', 'leyka'),
 			'campaign'            => __('Campaign', 'leyka'),
+			'cardsToShow'         => __('Cards to show', 'leyka'),
+			'columns'             => __('Columns', 'leyka'),
 			'color'               => __('Colors', 'leyka'),
 			'typography'          => __('Typography', 'leyka'),
 			'reset'               => __('Reset', 'leyka'),
@@ -76,11 +78,24 @@ function leyka_enqueue_block_editor_assets() {
 			'buttonText'          => __('Button Text', 'leyka'),
 			'donate'              => __('Donate', 'leyka'),
 			'showTitle'           => __('Show Title', 'leyka'),
+			'showExcerpt'         => __('Show Description', 'leyka'),
 			'showImage'           => __('Show Image', 'leyka'),
 			'showButton'          => __('Show Button', 'leyka'),
 			'showProgressbar'     => __('Show Progressbar', 'leyka'),
 			'showTargetAmount'    => __('Show Target Amount', 'leyka'),
 			'showCollectedAmount' => __('Show Collected Amount', 'leyka'),
+			'query'               => _x('Query', 'Blocks', 'leyka'),
+			'includeCampaigns'    => __('Include campaigns', 'leyka'),
+			'includedCampaigns'   => __('Included campaigns', 'leyka'),
+			'excludeCampaigns'    => __('Exclude campaigns', 'leyka'),
+			'excludeFinished'     => __('Exclude finished campaigns', 'leyka'),
+			'offset'              => __('Offset', 'leyka'),
+			'offsetHelp'          => __('Number of campaigns to skip', 'leyka'),
+			'campaignType'        => __('Campaign type', 'leyka'),
+			'campaignAll'         => __('All', 'leyka'),
+			'campaignTemporary'   => __('Temporary', 'leyka'),
+			'campaignPersistent'  => __('Persistent', 'leyka'),
+			'headingFontSize'     => __('Heading font size', 'leyka'),
 		],
 		// Variables for block leyka/form.
 		'form' => [
@@ -94,9 +109,15 @@ function leyka_enqueue_block_editor_assets() {
 		],
 		// Variables for block leyka/card.
 		'card' => [
-			'title' => __('Leyka: Campaign Card', 'leyka'),
+			'title' => __('Campaign Card', 'leyka'),
 			'description' => __('Campaign informer with configurable elements', 'leyka'),
 			'colors' => leyka_block_color_vars('leyka/card'),
+		],
+		// Variables for block leyka/cards.
+		'cards' => [
+			'title' => __('Campaigns Cards', 'leyka'),
+			'description' => __('Campaigns informer with configurable elements', 'leyka'),
+			'colors' => leyka_block_color_vars('leyka/cards'),
 		],
 	];
 

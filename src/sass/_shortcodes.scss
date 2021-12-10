@@ -186,7 +186,7 @@
 
         max-width: 790px !important;
 
-        &:not(.wp-block-leyka-card) {
+        &:not(.leyka-block-card) {
             margin: 0;
         }
 
@@ -220,12 +220,23 @@
 
         .campaign-title {
             font-size: 24px;
+
+            + .campaign-excerpt {
+                margin-top: -10px;
+            }
+        }
+
+        .campaign-excerpt {
+            margin-top: 0;
+            margin-bottom: 24px;
+            line-height: 1.4;
         }
 
         .progressbar-unfulfilled {
 
             height: 8px;
             padding: 0;
+            margin-top: auto;
 
             border: 0;
             border-radius: 10px;
@@ -245,6 +256,10 @@
 
             }
 
+        }
+
+        > *:not(.progressbar-unfulfilled) + .bottom-line {
+            margin-top: auto;
         }
 
         .bottom-line {

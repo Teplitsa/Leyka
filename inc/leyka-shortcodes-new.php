@@ -470,6 +470,7 @@ function leyka_shortcode_campaign_card($atts) {
         'recurring' => 0,
 
         'show_title' => 1,
+        'show_excerpt' => false,
         'show_image' => isset($atts['show_thumb']) ? !!$atts['show_thumb'] : 1,
         'show_progressbar' => isset($atts['show_scale']) ? !!$atts['show_scale'] : 1,
         'show_button' => 1,
@@ -481,13 +482,19 @@ function leyka_shortcode_campaign_card($atts) {
         'link_to_form' => '',
 
         'color_title' => false, // Card title color
+        'color_excerpt' => false, // Card description color
         'color_background' => false, // Card background color
         'color_button' => false, // Main CTA button background color
         'color_fulfilled' => false, // Progressbar fulfilled part color
         'color_unfulfilled' => false, // Progressbar unfulfilled part color
+        'color_collected_amount' => false, // Card description color
+        'color_target_amount' => false, // Card description color
         'classes' => '', // HTML classes for the shortcode wrapper
+        'attr_id' => '', // Id attribute for the shortcode wrapper
         'unstyled' => 0, // True/1 to use Leyka styling for the output, false/0 otherwise
     ], $atts);
+
+    //print_r( $atts);
 
     $atts['campaign_id'] = $atts['campaign_id'] === 'current' || empty($atts['campaign_id']) ?
         (get_post() && get_post()->post_type === Leyka_Campaign_Management::$post_type ? get_the_ID() : false) :
@@ -500,9 +507,19 @@ function leyka_shortcode_campaign_card($atts) {
         return apply_filters('leyka_shortcode_campaign_card_campaign_finished', '', $atts);
     }
 
+    $attr_id = '';
+    if ( $atts['attr_id'] ) {
+        $attr_id = ' id="' . $atts['attr_id'] . '"';
+    }
+
+    $attr_style = '';
+    if ( $atts['color_background'] ) {
+        $attr_style = ' style="background-color:' . esc_attr( $atts['color_background'] ) . '"';
+    }
+
     ob_start();?>
 
-    <div class="<?php echo !!$atts['unstyled'] ? 'leyka-shortcode-custom-styling' : 'leyka-shortcode';?> campaign-card <?php echo $atts['classes'] ? esc_attr($atts['classes']) : '';?>" style="<?php echo $atts['color_background'] ? 'background-color:'.esc_attr($atts['color_background']) : '';?>">
+    <div class="<?php echo !!$atts['unstyled'] ? 'leyka-shortcode-custom-styling' : 'leyka-shortcode';?> campaign-card <?php echo $atts['classes'] ? esc_attr($atts['classes']) : '';?>"<?php echo $attr_id . $attr_style; ?>>
 
     <?php if($atts['show_image'] && has_post_thumbnail($campaign->id)) {?>
         <div class="campaign-thumb sub-block" style="background-image:url(<?php echo get_the_post_thumbnail_url($campaign->id, 'medium_large');?>);"></div>
@@ -511,6 +528,23 @@ function leyka_shortcode_campaign_card($atts) {
     if($atts['show_title']) {?>
         <div class="campaign-title sub-block" style="<?php echo $atts['color_title'] ? 'color:'.esc_attr($atts['color_title']) : '';?>"><?php echo $campaign->title;?></div>
     <?php }
+
+    if($atts['show_excerpt']) {
+        if( has_excerpt( $campaign->id ) ) {
+            $text = $campaign->post_excerpt;
+        } else {
+            $text = $campaign->content ? $campaign->content : '';
+            $text = leyka_strip_string_by_words($text, 200, true).(mb_strlen($text) > 200 ? '...' : '');
+        }
+        if ( $text ) {
+            $excerpt_color = $atts['color_excerpt'] ? 'color:'.$atts['color_excerpt'] : '';
+            ?>
+            <p class="campaign-excerpt sub-block"<?php if ( $excerpt_color ) { ?> style="<?php echo $excerpt_color;?>"<?php } ?>>
+                <?php echo apply_filters('leyka_get_the_excerpt', $text, $campaign); ?>
+            </p>
+            <?php
+        }
+    }
 
     $funded = $atts['recurring'] ? $campaign->get_recurring_subscriptions_amount() : $campaign->total_funded;
 
@@ -535,20 +569,26 @@ function leyka_shortcode_campaign_card($atts) {
 
             <div class="bottom-line-item target-info">
 
-                <?php if($atts['show_collected_amount']) {?>
-                <div class="funded" style="<?php echo $atts['color_fulfilled'] ? 'color:'.$atts['color_fulfilled'] : '';?>">
-                    <?php echo leyka_format_amount($funded).' '.leyka_get_currency_label()
-                        .($atts['recurring'] ? ' / '._x('month', '"Month" shortened, like "mon" maybe', 'leyka') : '');?>
-                </div>
+                <?php if($atts['show_collected_amount']) {
+                    $collected_amount_color = $atts['color_collected_amount'] ?
+                    'color:'.$atts['color_collected_amount'] :
+                    ($atts['color_fulfilled'] ? 'color:'.$atts['color_fulfilled'] : '');
+                    ?>
+                    <div class="funded"<?php if ( $collected_amount_color ) { ?> style="<?php echo $collected_amount_color;?>"<?php } ?>>
+                        <?php echo leyka_format_amount($funded).' '.leyka_get_currency_label()
+                            .($atts['recurring'] ? ' / '._x('month', '"Month" shortened, like "mon" maybe', 'leyka') : '');?>
+                    </div>
                 <?php }?>
 
-                <?php if($atts['show_target_amount'] && $campaign->target) {?>
+                <?php if($atts['show_target_amount'] && $campaign->target) {
+                    $target_amount_color = $atts['color_target_amount'] ? 'color:'.$atts['color_target_amount'] : '';
+                    ?>
 
-                <div class="target">
-                <?php echo $atts['recurring'] ?
-                    sprintf(__('We need to raise monthly: %s %s', 'leyka'), leyka_format_amount($campaign->target), leyka_get_currency_label()) :
-                    sprintf(__('We need to raise: %s %s', 'leyka'), leyka_format_amount($campaign->target), leyka_get_currency_label());?>
-                </div>
+                    <div class="target"<?php if ( $target_amount_color ) { ?> style="<?php echo $target_amount_color;?>"<?php } ?>>
+                    <?php echo $atts['recurring'] ?
+                        sprintf(__('We need to raise monthly: %s %s', 'leyka'), leyka_format_amount($campaign->target), leyka_get_currency_label()) :
+                        sprintf(__('We need to raise: %s %s', 'leyka'), leyka_format_amount($campaign->target), leyka_get_currency_label());?>
+                    </div>
 
                 <?php }?>
 

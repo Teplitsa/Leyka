@@ -5,25 +5,27 @@
 
 function leyka_block_card_attributes(){
 
-    $attributes = [
-        'campaign' => ['type' => 'string', 'default' => leyka_block_get_recent_campaign_id(),],
-        'template' => ['type' => 'string', 'default' => 'star',],
-        'className' => ['type' => 'string', 'default' => '',],
-        'preview' => ['type' => 'boolean', 'default' => false,],
-        'buttonText' => ['type' => 'string', 'default' => leyka_options()->opt_template('donation_submit_text'),],
-        'showTitle' => ['type' => 'boolean', 'default' => true,],
-        'showImage' => ['type' => 'boolean', 'default' => true,],
-        'showButton' => ['type' => 'boolean', 'default' => true,],
-        'showProgressbar' => ['type' => 'boolean', 'default' => true,],
-        'showTargetAmount' => ['type' => 'boolean', 'default' => true,],
-        'showCollectedAmount' => ['type' => 'boolean', 'default' => true,],
-    ];
+	$attributes = [
+		'campaign' => ['type' => 'string', 'default' => leyka_block_get_recent_campaign_id(),],
+		'template' => ['type' => 'string', 'default' => 'star',],
+		'className' => ['type' => 'string', 'default' => '',],
+		'anchor' => ['type' => 'string', 'default' => '',],
+		'preview' => ['type' => 'boolean', 'default' => false,],
+		'buttonText' => ['type' => 'string', 'default' => leyka_options()->opt_template('donation_submit_text'),],
+		'showTitle' => ['type' => 'boolean', 'default' => true,],
+		'showExcerpt' => ['type' => 'boolean', 'default' => false,],
+		'showImage' => ['type' => 'boolean', 'default' => true,],
+		'showButton' => ['type' => 'boolean', 'default' => true,],
+		'showProgressbar' => ['type' => 'boolean', 'default' => true,],
+		'showTargetAmount' => ['type' => 'boolean', 'default' => true,],
+		'showCollectedAmount' => ['type' => 'boolean', 'default' => true,],
+	];
 
-    foreach(leyka_block_color_vars('leyka/card') as $slug => $label) {
-        $attributes[$slug] = ['type' => 'string', 'default' => '',];
-    }
+	foreach(leyka_block_color_vars('leyka/card') as $slug => $label) {
+		$attributes[$slug] = ['type' => 'string', 'default' => '',];
+	}
 
-    return $attributes;
+	return $attributes;
 
 }
 
@@ -42,7 +44,7 @@ register_block_type('leyka/card', [
  */
 function leyka_block_card_render_callback( $attr, $content ) {
 
-	$classes = ['block_class' => 'wp-block-leyka-card',];
+	$classes = ['block_class' => 'wp-block-leyka-card leyka-block-card',];
 
 	if( !empty($attr['className']) ) {
 		$classes['class_name'] = $attr['className'];
@@ -53,14 +55,11 @@ function leyka_block_card_render_callback( $attr, $content ) {
 	$const_keys = array_keys(leyka_block_color_vars('leyka/card'));
 	$color_index = 0;
 	foreach(leyka_block_colors('leyka/card') as $slug => $label) {
-
 		$const = $const_keys[$color_index];
 		if( !empty($attr[$const]) ) {
 			$style_attr['color_'.$slug] = $attr[$const];
 		}
-
 		$color_index++;
-
 	}
 
 	if($style_attr) {
@@ -69,6 +68,7 @@ function leyka_block_card_render_callback( $attr, $content ) {
 
 	$shortcode_attr_arr = [
 		'show_title' => isset($attr['showTitle']) ? $attr['showTitle'] : true,
+		'show_excerpt' => isset($attr['showExcerpt']) ? $attr['showExcerpt'] : false,
 		'show_image' => isset($attr['showImage']) ? $attr['showImage'] : true,
 		'show_progressbar' => isset($attr['showProgressbar']) ? $attr['showProgressbar'] : true,
 		'show_button' => isset($attr['showButton']) ? $attr['showButton'] : true,
@@ -76,11 +76,12 @@ function leyka_block_card_render_callback( $attr, $content ) {
 		'show_collected_amount' => isset($attr['showCollectedAmount']) ? $attr['showCollectedAmount'] : true,
 		'button_text' => isset($attr['buttonText']) ? $attr['buttonText'] : '',
 		'classes' => implode(' ', $classes),
+		'attr_id' => isset($attr['anchor']) ? $attr['anchor'] : '',
 	];
 	$shortcode_attr = '';
 
 	/**
-	 * Render Campaign Card Using shortcode [leyka_bar]
+	 * Render Campaign Card
 	 */
 	$html = '';
 	if( !empty($attr['campaign']) ) {
@@ -105,11 +106,7 @@ function leyka_block_card_render_callback( $attr, $content ) {
 			$shortcode_attr_arr = array_merge($shortcode_attr_arr, $style_attr);
 		}
 
-		foreach($shortcode_attr_arr as $key => $value) {
-			$shortcode_attr .= ' '.$key.'="'.$value.'"';
-		}
-
-		$html .= do_shortcode('[leyka_bar'.$shortcode_attr.']');
+		$html = leyka_shortcode_campaign_card( $shortcode_attr_arr );
 
 	}
 

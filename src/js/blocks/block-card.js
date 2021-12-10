@@ -84,6 +84,9 @@
 			className: {
 				type: 'string',
 			},
+			anchor: {
+				type: 'string',
+			},
 			preview: {
 				type: 'boolean',
 				default: false,
@@ -99,6 +102,10 @@
 			showTitle: {
 				type: 'boolean',
 				default: true,
+			},
+			showExcerpt: {
+				type: 'boolean',
+				default: false,
 			},
 			showImage: {
 				type: 'boolean',
@@ -151,6 +158,16 @@
 
 				el( ColorPaletteControl,
 					{
+						label: blockColors.colorExcerpt,
+						value: props.attributes.colorExcerpt,
+						onChange: ( val ) => {
+							props.setAttributes({ colorExcerpt: val });
+						}
+					}
+				),
+
+				el( ColorPaletteControl,
+					{
 						label: blockColors.colorButton,
 						value: props.attributes.colorButton,
 						onChange: ( val ) => {
@@ -179,6 +196,26 @@
 					}
 				),
 
+				el( ColorPaletteControl,
+					{
+						label: blockColors.colorTargetAmount,
+						value: props.attributes.colorTargetAmount,
+						onChange: ( val ) => {
+							props.setAttributes({ colorTargetAmount: val });
+						}
+					}
+				),
+
+				el( ColorPaletteControl,
+					{
+						label: blockColors.colorCollectedAmount,
+						value: props.attributes.colorCollectedAmount,
+						onChange: ( val ) => {
+							props.setAttributes({ colorCollectedAmount: val });
+						}
+					}
+				),
+
 			);
 			return colorControls;
 		}
@@ -202,10 +239,11 @@
 			description: thisBlock.description,
 			icon: icon,
 			category: 'leyka',
-			keywords: [ 'campaing', 'leyka', 'form', 'payment' ],
+			keywords: [ 'campaign', 'leyka', 'form', 'payment' ],
 			attributes: blockAttributes,
 			supports: {
 				html: false,
+				anchor: true,
 			},
 			example: {
 				attributes: {
@@ -248,6 +286,18 @@
 												props.setAttributes( { showTitle: value } );
 											},
 											checked: props.attributes.showTitle,
+										}
+									)
+								),
+
+								el( PanelRow, {},
+									el( ToggleControl,
+										{
+											label: blockI18n.showExcerpt,
+											onChange: ( value ) => {
+												props.setAttributes( { showExcerpt: value } );
+											},
+											checked: props.attributes.showExcerpt,
 										}
 									)
 								),

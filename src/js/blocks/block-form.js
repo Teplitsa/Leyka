@@ -156,7 +156,7 @@
 			description: thisBlock.description,
 			icon: icon,
 			category: 'leyka',
-			keywords: [ 'campaing', 'leyka', 'form', 'payment' ],
+			keywords: [ 'campaign', 'leyka', 'form', 'payment' ],
 			attributes: blockAttributes,
 			supports: {
 				html: false,

@@ -62,15 +62,18 @@ function leyka_block_colors($block_name = null, $template = 'default') {
 			];
 		}
 
-	} else if($block_name === 'leyka/card') {
+	} else if($block_name === 'leyka/card' || $block_name === 'leyka/cards') {
 
 		if($template === 'default') {
 			$colors = [
-				'title'       => __('Card title color', 'leyka'),
-				'background'  => __('Card background color', 'leyka'),
-				'button'      => __('Main CTA button background color', 'leyka'),
-				'fulfilled'   => __('Progressbar fulfilled part color', 'leyka'),
-				'unfulfilled' => __('Progressbar unfulfilled part color', 'leyka'),
+				'title'            => __('Card title color', 'leyka'),
+				'excerpt'          => __('Card description color', 'leyka'),
+				'background'       => __('Card background color', 'leyka'),
+				'button'           => __('Main CTA button background color', 'leyka'),
+				'fulfilled'        => __('Progressbar fulfilled part color', 'leyka'),
+				'unfulfilled'      => __('Progressbar unfulfilled part color', 'leyka'),
+				'target_amount'    => __('Target amount color', 'leyka'),
+				'collected_amount' => __('Collected amount color', 'leyka'),
 			];
 		}
 
@@ -86,7 +89,12 @@ function leyka_block_color_vars($block_name = 'leyka/form', $template = 'default
 	$vars = [];
 
 	foreach(leyka_block_colors($block_name, $template) as $slug => $label) {
-		$vars[ 'color'.leyka_js_ucwords($slug) ] = $label;
+		$slug_parts = explode( '_', $slug );
+		$slug = '';
+		foreach( $slug_parts as $part ) {
+			$slug .= leyka_js_ucwords($part);
+		}
+		$vars[ 'color'.$slug ] = $label;
 	}
 
 	return $vars;
