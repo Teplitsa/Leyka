@@ -183,14 +183,14 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
 
         add_filter('the_content', function ($content){
 
-            if( is_page('thank-you-for-your-donation') === false || !$_POST ) {
-                return false;
+            if( is_page('thank-you-for-your-donation') === false || empty($_POST) ) {
+                return $content;
             }
 
             $donation = Leyka_Donations::get_instance()->get_donation((int)$_POST['donation_id']);
 
             if( !$donation ) {
-                return false;
+                return $content;
             }
 
             $card_check_text_html = $this->_get_card_check_text($donation);
@@ -229,17 +229,18 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
 
         add_action( 'wp_enqueue_scripts', function () {
 
-            if( is_page('thank-you-for-your-donation') === false) {
-                return false;
-            };
+            if( is_page('thank-you-for-your-donation') === true && empty($_POST) === false ) {
 
-            wp_enqueue_script(
-                'leyka-demirbank-card-check',
-                LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_Demirbank_Gateway::get_instance()->id.'/js/leyka.demirbank.card_check.js',
-                [],
-                LEYKA_VERSION,
-                true
-            );
+                wp_enqueue_script(
+                    'leyka-demirbank-card-check',
+                    LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_Demirbank_Gateway::get_instance()->id.'/js/leyka.demirbank.card_check.js',
+                    [],
+                    LEYKA_VERSION,
+                    true
+                );
+
+            }
+
         });
 
     }
@@ -287,16 +288,23 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
 
     }
 
-    public function send_card_check_email() {
+    public function send_card_check_email($donation_id) {
 
-        $donation_id = $_POST['donation_id'];
+        if( !$donation_id && empty($_POST) ) {
+            return false;
+        }
+
+        $donation_id = $donation_id ? $donation_id : $_POST['donation_id'];
         $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
 
         echo wp_mail(
             $donation->donor_email,
             __('Card-check', 'leyka'),
             $this->_get_card_check_text($donation),
-            'From: My Name <'.leyka_options()->opt('demirbank_support_email').'>' . "\r\n"
+            [
+                'From: '.$_SERVER['HTTP_HOST'].' <'.leyka_options()->opt('demirbank_support_email').'>',
+                'content-type: text/html'
+            ]
         );
 
         wp_die();
