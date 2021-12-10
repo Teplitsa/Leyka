@@ -279,7 +279,7 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
                 sprintf(__("<b>Card last four digits:</b> %s", 'leyka'), substr($vars['MaskedPan'], strlen($vars['MaskedPan'])-4, 4)),
                 sprintf(__("<b>Authorisation code:</b> %s", 'leyka'), $vars['AuthCode']),
                 __("MERCHANT INFO", 'leyka'),
-                sprintf(__("<b>Merchant name:</b> %s", 'leyka'), get_site_url()),
+                sprintf(__("<b>Merchant name:</b> %s", 'leyka'), $_SERVER['HTTP_HOST']),
                 sprintf(__("<b>Support email:</b> %s", 'leyka'), leyka_options()->opt('demirbank_support_email'))
             ],
             file_get_contents(LEYKA_PLUGIN_DIR.'gateways/demirbank/templates/parts/card_check_text.html')
