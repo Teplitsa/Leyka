@@ -19,6 +19,8 @@ function leyka_block_card_attributes(){
 		'showProgressbar' => ['type' => 'boolean', 'default' => true,],
 		'showTargetAmount' => ['type' => 'boolean', 'default' => true,],
 		'showCollectedAmount' => ['type' => 'boolean', 'default' => true,],
+		'titleFontSize' => ['type' => 'string', 'default' => '',],
+		'excerptFontSize' => ['type' => 'string', 'default' => '',],
 	];
 
 	foreach(leyka_block_color_vars('leyka/card') as $slug => $label) {
@@ -62,6 +64,18 @@ function leyka_block_card_render_callback( $attr, $content ) {
 		$color_index++;
 	}
 
+	$block_style = '';
+
+	// Title font size
+	if ( isset( $attr['titleFontSize'] ) && $attr['titleFontSize'] ) {
+		$block_style .= '--leyka-card-title-size:' . esc_attr( $attr['titleFontSize'] ) . ';';
+	}
+
+	// Description font size
+	if ( isset( $attr['excerptFontSize'] ) && $attr['excerptFontSize'] ) {
+		$block_style .= '--leyka-card-excerpt-size:' . esc_attr( $attr['excerptFontSize'] ) . ';';
+	}
+
 	if($style_attr) {
 		$classes[] = 'has-leyka-custom-colors';
 	}
@@ -77,8 +91,8 @@ function leyka_block_card_render_callback( $attr, $content ) {
 		'button_text' => isset($attr['buttonText']) ? $attr['buttonText'] : '',
 		'classes' => implode(' ', $classes),
 		'attr_id' => isset($attr['anchor']) ? $attr['anchor'] : '',
+		'style' => $block_style,
 	];
-	$shortcode_attr = '';
 
 	/**
 	 * Render Campaign Card

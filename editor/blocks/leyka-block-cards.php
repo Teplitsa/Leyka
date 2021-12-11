@@ -10,7 +10,7 @@ function leyka_block_cards_attributes(){
 		'template' => ['type' => 'string', 'default' => 'star',],
 		'className' => ['type' => 'string', 'default' => '',],
 		'anchor' => ['type' => 'string', 'default' => '',],
-		'align' => ['type' => 'string', 'default' => '',],
+		'align' => ['type' => 'string', 'default' => 'wide',],
 		'postsToShow' => ['type' => 'integer', 'default' => 2,],
 		'columns' => ['type' => 'integer', 'default' => 2,],
 		'preview' => ['type' => 'boolean', 'default' => false,],
@@ -23,10 +23,11 @@ function leyka_block_cards_attributes(){
 		'showTargetAmount' => ['type' => 'boolean', 'default' => true,],
 		'showCollectedAmount' => ['type' => 'boolean', 'default' => true,],
 		'titleFontSize' => ['type' => 'string', 'default' => '',],
+		'excerptFontSize' => ['type' => 'string', 'default' => '',],
 		'queryInclude' => ['type' => 'array', 'default' => array(),],
 		'queryExclude' => ['type' => 'array', 'default' => array(),],
 		'queryOffset' => ['type' => 'string', 'default' => '',],
-		'queryIsFinished' => ['type' => 'boolean', 'default' => false,],
+		'queryIsFinished' => ['type' => 'boolean', 'default' => true,],
 		'queryOrderBy' => ['type' => 'string', 'default' => 'date',],
 		'queryCampaignType' => ['type' => 'string', 'default' => 'all',],
 	];
@@ -106,13 +107,20 @@ function leyka_block_cards_render_callback( $attr, $content ) {
 
 	$block_style = '';
 
+	// Columns
 	if ( isset( $attr['columns'] ) && $attr['columns'] ) {
 		$block_style .= '--leyka-grid-columns:' . esc_attr( $attr['columns'] ) . ';';
 		$classes[] = 'leyka-grid-columns-' . esc_attr( $attr['columns'] );
 	}
 
+	// Title font size
 	if ( isset( $attr['titleFontSize'] ) && $attr['titleFontSize'] ) {
 		$block_style .= '--leyka-card-title-size:' . esc_attr( $attr['titleFontSize'] ) . ';';
+	}
+
+	// Description font size
+	if ( isset( $attr['excerptFontSize'] ) && $attr['excerptFontSize'] ) {
+		$block_style .= '--leyka-card-excerpt-size:' . esc_attr( $attr['excerptFontSize'] ) . ';';
 	}
 
 	$block_attr = 'class="' . implode(' ', $classes) . '"';
@@ -180,7 +188,7 @@ function leyka_block_cards_render_callback( $attr, $content ) {
 	}
 
 	// Exclude finished campaigns.
-	if ( $attr['queryIsFinished'] ) {
+	if ( false === $attr['queryIsFinished'] ) {
 		$args['meta_query'][] = array(
 			'key'     => 'is_finished',
 			'value'   => 1,

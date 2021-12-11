@@ -510,7 +510,15 @@
 			showCollectedAmount: {
 				type: 'boolean',
 				default: true,
-			}
+			},
+			titleFontSize: {
+				type: 'string',
+				default: '',
+			},
+			excerptFontSize: {
+				type: 'string',
+				default: '',
+			},
 		}
 
 		// Add colors to attributes
@@ -760,6 +768,18 @@
 
 							),
 
+							el( PanelBody,
+								{
+									title: blockI18n.typography,
+									initialOpen: false
+								},
+
+								leykaFontSizeControl( props, 'titleFontSize', blockAttributes, blockI18n.headingFontSize ),
+
+								leykaFontSizeControl( props, 'excerptFontSize', blockAttributes, blockI18n.excerptFontSize ),
+
+							),
+
 						),
 
 						el(	Disabled, null,
@@ -779,7 +799,7 @@
 
 	registerBlockLyekaCard();
 
-	// Register Block Leyka Card
+	// Register Block Leyka Cards
 	function registerBlockLyekaCards(){
 
 		const thisBlock   = leykaBlock.blocks.cards;
@@ -920,6 +940,10 @@
 				type: 'string',
 				default: '',
 			},
+			excerptFontSize: {
+				type: 'string',
+				default: '',
+			},
 			queryInclude: {
 				type: 'array',
 				default: [],
@@ -934,7 +958,7 @@
 			},
 			queryIsFinished: {
 				type: 'boolean',
-				default: false,
+				default: true,
 			},
 			queryOrderBy: {
 				type: 'string',
@@ -1277,6 +1301,8 @@
 
 								leykaFontSizeControl( props, 'titleFontSize', blockAttributes, blockI18n.headingFontSize ),
 
+								leykaFontSizeControl( props, 'excerptFontSize', blockAttributes, blockI18n.excerptFontSize ),
+
 							),
 
 							el( PanelBody,
@@ -1337,7 +1363,7 @@
 								el( PanelRow, {},
 									el( ToggleControl,
 										{
-											label: blockI18n.excludeFinished,
+											label: blockI18n.includeFinished,
 											onChange: ( value ) => {
 												props.setAttributes( { queryIsFinished: value } );
 											},

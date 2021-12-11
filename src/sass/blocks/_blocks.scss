@@ -1,5 +1,6 @@
 /** == Blocks (_blocks.scss) == **/
 
+/** Leyka Block form */
 .wp-block-leyka-form {
 
 	&.leyka-block-form-star:not(.alignwide):not(.alignfull):not(.alignleft):not(.alignright):not(.is-style-wide) {
@@ -41,25 +42,6 @@ div[id*="leyka-pf-"].leyka-pf-need-help {
 	.campaign-card {
 		max-width: 100% !important;
 		height: 100%;
-
-		.campaign-thumb {
-			height: auto;
-
-			&:after {
-				content: '';
-				display: block;
-				padding-top: 60%;
-			}
-		}
-	}
-
-	.leyka-shortcode.campaign-card .campaign-title {
-		font-size: var(--leyka-card-title-size,24px);
-		line-height: 1.2;
-	}
-
-	.bottom-line-item.target-info:not(:last-child){
-		padding-right: 10px;
 	}
 }
 

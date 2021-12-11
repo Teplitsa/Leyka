@@ -491,6 +491,7 @@ function leyka_shortcode_campaign_card($atts) {
         'color_target_amount' => false, // Card description color
         'classes' => '', // HTML classes for the shortcode wrapper
         'attr_id' => '', // Id attribute for the shortcode wrapper
+        'style' => '', // Inline CSS styles for the shortcode wrapper
         'unstyled' => 0, // True/1 to use Leyka styling for the output, false/0 otherwise
     ], $atts);
 
@@ -507,14 +508,25 @@ function leyka_shortcode_campaign_card($atts) {
         return apply_filters('leyka_shortcode_campaign_card_campaign_finished', '', $atts);
     }
 
+    $campaign_url = get_permalink($campaign->id).($atts['link_right_to_form'] ? ($atts['link_to_form'] ? str_replace('CAMPAIGN_ID', $campaign->id, $atts['link_to_form']) : '#leyka-pf-'.$campaign->id) : '');
+
     $attr_id = '';
     if ( $atts['attr_id'] ) {
         $attr_id = ' id="' . $atts['attr_id'] . '"';
     }
 
     $attr_style = '';
+    $css = '';
     if ( $atts['color_background'] ) {
-        $attr_style = ' style="background-color:' . esc_attr( $atts['color_background'] ) . '"';
+        $css .= 'background-color:' . esc_attr( $atts['color_background'] ) . ';';
+    }
+
+    if ( $atts['style'] ) {
+        $css .= $atts['style'];
+    }
+
+    if ( $css ) {
+        $attr_style = ' style="' . $css . '"';
     }
 
     ob_start();?>
@@ -522,11 +534,13 @@ function leyka_shortcode_campaign_card($atts) {
     <div class="<?php echo !!$atts['unstyled'] ? 'leyka-shortcode-custom-styling' : 'leyka-shortcode';?> campaign-card <?php echo $atts['classes'] ? esc_attr($atts['classes']) : '';?>"<?php echo $attr_id . $attr_style; ?>>
 
     <?php if($atts['show_image'] && has_post_thumbnail($campaign->id)) {?>
-        <div class="campaign-thumb sub-block" style="background-image:url(<?php echo get_the_post_thumbnail_url($campaign->id, 'medium_large');?>);"></div>
+        <a href="<?php echo esc_url($campaign_url);?>" class="campaign-thumb sub-block" style="background-image:url(<?php echo get_the_post_thumbnail_url($campaign->id, 'medium_large');?>);" aria-hidden="true" tabindex="-1" title="<?php echo $campaign->title;?>"></a>
     <?php }
 
     if($atts['show_title']) {?>
-        <div class="campaign-title sub-block" style="<?php echo $atts['color_title'] ? 'color:'.esc_attr($atts['color_title']) : '';?>"><?php echo $campaign->title;?></div>
+        <h3 class="campaign-title sub-block" style="<?php echo $atts['color_title'] ? 'color:'.esc_attr($atts['color_title']) : '';?>">
+            <a href="<?php echo esc_url($campaign_url);?>"><?php echo $campaign->title;?></a>
+        </h3>
     <?php }
 
     if($atts['show_excerpt']) {
@@ -600,7 +614,7 @@ function leyka_shortcode_campaign_card($atts) {
                 'background-color:'.$atts['color_button'] :
                 ($atts['color_fulfilled'] ? 'background-color:'.$atts['color_fulfilled'] : '');?>
 
-            <a class="bottom-line-item leyka-button-wrapper" href="<?php echo get_permalink($campaign->id).($atts['link_right_to_form'] ? ($atts['link_to_form'] ? str_replace('CAMPAIGN_ID', $campaign->id, $atts['link_to_form']) : '#leyka-pf-'.$campaign->id) : '');?>" style="<?php echo $button_color;?>">
+            <a class="bottom-line-item leyka-button-wrapper" href="<?php echo esc_url($campaign_url);?>" style="<?php echo $button_color;?>">
                 <?php echo esc_html($atts['button_text']);?>
             </a>
 

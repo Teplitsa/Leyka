@@ -88,7 +88,7 @@ function leyka_enqueue_block_editor_assets() {
 			'includeCampaigns'    => __('Include campaigns', 'leyka'),
 			'includedCampaigns'   => __('Included campaigns', 'leyka'),
 			'excludeCampaigns'    => __('Exclude campaigns', 'leyka'),
-			'excludeFinished'     => __('Exclude finished campaigns', 'leyka'),
+			'includeFinished'     => __('Include finished campaigns', 'leyka'),
 			'offset'              => __('Offset', 'leyka'),
 			'offsetHelp'          => __('Number of campaigns to skip', 'leyka'),
 			'campaignType'        => __('Campaign type', 'leyka'),
@@ -96,6 +96,7 @@ function leyka_enqueue_block_editor_assets() {
 			'campaignTemporary'   => __('Temporary', 'leyka'),
 			'campaignPersistent'  => __('Persistent', 'leyka'),
 			'headingFontSize'     => __('Heading font size', 'leyka'),
+			'excerptFontSize'     => __('Description font size', 'leyka'),
 		],
 		// Variables for block leyka/form.
 		'form' => [

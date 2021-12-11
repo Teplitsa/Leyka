@@ -126,7 +126,15 @@
 			showCollectedAmount: {
 				type: 'boolean',
 				default: true,
-			}
+			},
+			titleFontSize: {
+				type: 'string',
+				default: '',
+			},
+			excerptFontSize: {
+				type: 'string',
+				default: '',
+			},
 		}
 
 		// Add colors to attributes
@@ -373,6 +381,18 @@
 								},
 
 								colorControls( props, attributes ),
+
+							),
+
+							el( PanelBody,
+								{
+									title: blockI18n.typography,
+									initialOpen: false
+								},
+
+								leykaFontSizeControl( props, 'titleFontSize', blockAttributes, blockI18n.headingFontSize ),
+
+								leykaFontSizeControl( props, 'excerptFontSize', blockAttributes, blockI18n.excerptFontSize ),
 
 							),
 

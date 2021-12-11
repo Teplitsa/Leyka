@@ -207,26 +207,53 @@
         }
 
         .campaign-thumb {
-
-            height: 230px;
-            border-radius: 6px;;
+            display: block;
+            border-radius: 6px;
+            text-decoration: none;
+            border: none;
 
             background-color: $color-border-tiny;
             background-repeat: no-repeat;
             background-position: center center;
             background-size: cover;
+            transition: opacity .3s;
 
+            &:hover {
+                opacity: .9;
+            }
+
+            &:focus {
+                background-size: cover !important;
+                background-position: center center !important;
+            }
+
+            &:after {
+                content: '';
+                display: block;
+                padding-top: 60%;
+            }
         }
 
         .campaign-title {
-            font-size: 24px;
+            font-size: var(--leyka-card-title-size,24px);
+            line-height: 1.2;
+            font-weight: normal;
+            margin-top: 0;
+
+            > a,
+            > a:hover {
+                color: currentColor;
+                text-decoration: none;
+                border: none;
+            }
 
             + .campaign-excerpt {
-                margin-top: -10px;
+                margin-top: -0.5em;
             }
         }
 
         .campaign-excerpt {
+            font-size: var(--leyka-card-excerpt-size,16px);
             margin-top: 0;
             margin-bottom: 24px;
             line-height: 1.4;
@@ -276,6 +303,10 @@
 
             .target-info {
 
+                &:not(:last-child){
+                    padding-right: 10px;
+                }
+
                 .funded {
                     font-size: 32px;
                     color: $leyka-star-color-main;
@@ -300,6 +331,15 @@
                 text-transform: uppercase;
                 text-decoration: none;
                 color: white;
+                transition: opacity .3s;
+
+                &:focus {
+                    background-color: $leyka-star-color-main;
+                }
+
+                &:hover {
+                    opacity: .9;
+                }
 
             }
 
