@@ -198,6 +198,9 @@
 				type: 'boolean',
 				default: false,
 			},
+			anchor: {
+				type: 'string',
+			},
 			campaign: {
 				type: 'string',
 				default: optionsCampaigns[1] ? optionsCampaigns[1].value : '',
@@ -292,6 +295,7 @@
 			attributes: blockAttributes,
 			supports: {
 				html: false,
+				anchor: true,
 			},
 			example: {
 				attributes: {
