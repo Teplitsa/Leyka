@@ -39,11 +39,13 @@ jQuery(document).ready(function($){
 
             $box_errors_list.find('.error').remove();
 
-            let $item_sub_field = $item_box.find('[name="leyka_merchandise_title"]'),
+            let $item_sub_field = $item_box.find('[name="leyka_merchandise_title"]:visible'),
                 $item_sub_field_outer_wrapper = $item_sub_field.parents('.option-block').removeClass('has-errors');
 
             // Merchandise title is empty:
             if($item_sub_field.length && !$item_sub_field.val().length) {
+
+                console.log($item_sub_field)
 
                 all_fields_valid = false;
 
@@ -54,7 +56,7 @@ jQuery(document).ready(function($){
 
             }
 
-            $item_sub_field = $item_box.find('[name="leyka_merchandise_donation_amount_needed"]');
+            $item_sub_field = $item_box.find('[name="leyka_merchandise_donation_amount_needed"]:visible');
             $item_sub_field_outer_wrapper = $item_sub_field.parents('.option-block').removeClass('has-errors');
 
             // Merchandise minimal amount is empty or non-positive:
