@@ -472,15 +472,16 @@ jQuery(document).ready(function($){
             $list.css('left', 0);
             return;
         }
-        
-        var left = parseInt($list.css('left'));
+
+        // var left = parseInt($list.css('left'));
         if($swiper.find('.swiper-item:not(.disabled)').first().hasClass('selected')) {
             left = 0;
         } else if($swiper.find('.swiper-item:not(.disabled)').last().hasClass('selected')) {
             left = -dif;
         } else {
             left = $swiper.width() / 2 - ($activeItem.offset().left - $list.offset().left) - $activeItem.width() / 2;
-            left -= 24; // minus margin * 1.5
+            // console.log(parseInt($activeItem.css('margin-right')))
+            left -= parseInt($activeItem.css('margin-right')) * 1.5; //24; // minus margin * 1.5
         }
         
         $list.animate({'left': left});

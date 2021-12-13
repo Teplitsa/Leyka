@@ -46,7 +46,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
     protected function _modify_options_values() {
 
         add_filter('leyka_option_value-commission', function($value){
-            return $value ? $value : [];
+            return $value ? : [];
         });
 
         // Additional Donation form fields Library:
@@ -392,6 +392,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         if(leyka_options()->is_template_option($option_id)) {
 
             $template_id = $template_id ? : leyka_remembered_data('template_id');
+            $template_id = $template_id === 'default' ? $this->get_value('donation_form_template') : $template_id;
 
             if( !$template_id ) {
 
@@ -419,7 +420,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
         $value = $this->get_value($option_id);
 
-        return $value ? $value : $this->get_default_of($option_id);
+        return $value ? : $this->get_default_of($option_id);
 
     }
 
@@ -700,7 +701,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
         $check_list = $this->opt($option_id);
 
-        return is_array($check_list) ? in_array($value_to_check, $check_list) : false;
+        return is_array($check_list) && in_array($value_to_check, $check_list);
 
     }
 

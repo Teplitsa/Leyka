@@ -38,6 +38,7 @@
     "gulp-uglify": "^3.0.2",
     "gulp-util": "^3.0.6",
     "jquery.cookie": "^1.4.1",
+    "lightslider": "^1.1.6",
     "main-bower-files": "^2.13.3",
     "node-bourbon": "^4.2.8",
     "relative-path": "^1.1.0",

@@ -1,32 +1,32 @@
-//paths for source and bundled parts 
-var basePaths = {
+let basePaths = {
     src: 'src/',
     dest: 'assets/',
-    npm: 'node_modules/',
+    npm: '../../node_modules/',
 };
 
-//require plugins
-var gulp = require('gulp');
+// Require plugins
+let gulp = require('gulp');
 
-var es          = require('event-stream'),
+let es          = require('event-stream'),
     path        = require('relative-path'),
     del         = require('del'),
     parseArgs   = require('minimist'),
     log         = require('fancy-log'),
     through     = require('through2');
+const gutil = require("gulp-util");
 
-//plugins - load gulp-* plugins without direct calls
-var plugins = require("gulp-load-plugins")({
+// Plugins - load gulp-* plugins without direct calls
+let plugins = require("gulp-load-plugins")({
     pattern: ['gulp-*', 'gulp.*'],
     replaceString: /\bgulp[\-.]/ 
 });
 
-//call gulp -p to go into production mode
-var sassStyle = 'expanded'; // SASS syntax
-var sourceMap = true; //wheter to build source maps
-var isProduction = false; //mode flag
+// Call "gulp -p" to go into production mode
+let sassStyle = 'expanded'; // SASS syntax
+let sourceMap = true; // Wheter to build source maps
+let isProduction = false; // Mode flag
 
-var opt = parseArgs(process.argv);
+let opt = parseArgs(process.argv);
 
 if(opt.p && opt.p == true){
     log.info('In production mode');
@@ -36,39 +36,39 @@ if(opt.p && opt.p == true){
 }
 
 //sass
-gulp.task('build-css', function(){
+gulp.task('build-public-css', function(){
 
-    var appFiles = gulp.src([basePaths.src+'sass/public.scss']) //our main file with @import-s
-        .pipe( !isProduction ? plugins.sourcemaps.init() : through.obj() )  //process the original sources for sourcemap
+    let vendorFiles = gulp.src([basePaths.npm+'lightslider/dist/css/lightslider.min.css']),
+        appFiles = gulp.src([basePaths.src+'sass/public.scss']) // Our main file with @import-s
+        .pipe( !isProduction ? plugins.sourcemaps.init() : through.obj() )  // Process the original sources for sourcemap
         .pipe(plugins.sass({
-            outputStyle: sassStyle, //SASS syntas
-            //includePaths: paths //add bourbon
+            outputStyle: sassStyle, // SASS syntax
+            // includePaths: []
         })
         .on('error', plugins.sass.logError))//sass own error log
-        .pipe(plugins.autoprefixer({ //autoprefixer
+        .pipe(plugins.autoprefixer({
             overrideBrowserslist: ['last 4 versions'],
             cascade: false
         }))
         .pipe( !isProduction ? plugins.sourcemaps.write() : through.obj() ) //add the map to modified source
-        .on('error', log.error); //log
+        .on('error', log.error);
 
-    return es.concat(appFiles) //combine vendor CSS files and our files after-SASS
-        .pipe(plugins.concat('public.css')) //combine into file
-        .pipe(isProduction ? plugins.csso() : through.obj()) //minification on production
-        .pipe(plugins.size()) //display size
-        .pipe(gulp.dest(basePaths.dest+'css')) //write file
-        .on('error', log.error); //log
+    return es.concat(vendorFiles, appFiles) // Combine vendor CSS files and our files after-SASS
+        .pipe(plugins.concat('public.css')) // Combine into a file
+        .pipe(isProduction ? plugins.csso() : through.obj()) // Minification on production
+        .pipe(plugins.size())
+        .pipe(gulp.dest(basePaths.dest+'css')) // Write into a file
+        .on('error', log.error);
 
 });
 
-gulp.task('build-js', function(){
+gulp.task('build-public-js', function(){
 
-    var appFiles  = gulp.src([basePaths.src+'js/public.js']);
+    let vendorFiles = [basePaths.npm+'lightslider/dist/js/lightslider.min.js'],
+        appFiles = [basePaths.src+'js/public.js'];
 
-    console.log(basePaths.dest+'js', basePaths.src+'js/public.js')
-
-    return es.concat(appFiles) // Join all scripts
-        .pipe(plugins.concat('public.js')) // Combine them into a "public.js" bundle
+    return gulp.src(vendorFiles.concat(appFiles)) // Join all scripts
+        .pipe(plugins.concat('public.js'))
         .pipe(isProduction ? plugins.uglify() : through.obj()) // Minification
         .pipe(plugins.size()) // Print total size for log
         .pipe(gulp.dest(basePaths.dest+'js')) // Write results into file
@@ -76,13 +76,26 @@ gulp.task('build-js', function(){
 
 });
 
-//builds
-gulp.task('full-build', gulp.series('build-css', 'build-js',));
+gulp.task('build-admin-js', function(){
+
+    let // vendorFiles = gulp.src([]),
+        appFiles = gulp.src([basePaths.src+'js/admin.js']);
+
+    return es.concat(appFiles /*, vendorFiles*/)
+        .pipe(plugins.concat('admin.js'))
+        .pipe(isProduction ? plugins.uglify() : gutil.noop()) // Minification
+        .pipe(plugins.size())
+        .on('error', console.log)
+        .pipe(gulp.dest(basePaths.dest + 'js'));
+
+});
+
+gulp.task('full-build', gulp.series('build-public-css', 'build-public-js', 'build-admin-js'));
 
 gulp.task('watch', function(){
 
-    gulp.watch([basePaths.src+'sass/*.scss', basePaths.src+'sass/**/*.scss'], gulp.series('build-css',));
-    gulp.watch(basePaths.src+'js/*.js', gulp.series('build-js',));
+    gulp.watch([basePaths.src+'sass/*.scss'], gulp.series('build-public-css',));
+    gulp.watch(basePaths.src+'js/*.js', gulp.series('build-public-js', 'build-admin-js'));
 
 });
 

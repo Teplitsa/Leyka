@@ -336,7 +336,7 @@ class Leyka extends Leyka_Singleton {
 
                 if(
                     is_page(leyka_options()->opt('success_page'))
-                    && leyka_options()->opt_template('show_success_widget_on_success')
+                    && leyka_options()->opt_template('show_success_widget_on_success', 'default')
                     && is_main_query()
                 ) {
 
@@ -348,12 +348,8 @@ class Leyka extends Leyka_Singleton {
                     $donation = Leyka_Donations::get_instance()->get($donation_id);
                     $campaign_id = $donation ? $donation->campaign_id : null;
                     $campaign = new Leyka_Campaign($campaign_id);
-                    
-                    if($campaign) {
-                        $form_template = $campaign->template;
-                    } else {
-                        $form_template = '';
-                    }
+
+                    $form_template = $campaign->template;
 
                     if( !$form_template ) {
                         $form_template = leyka_remembered_data('template_id');

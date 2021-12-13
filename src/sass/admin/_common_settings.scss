@@ -56,14 +56,13 @@
 
         &.type-file {
 
-            .leyka-file-field-wrapper {
+            .leyka-file-field-wrapper, .leyka-media-upload-field-wrapper {
                 height: 100%;
             }
 
             .upload-field {
 
                 display: flex;
-                //height: 100%;
 
                 .field input[type="file"] { // Hide the input
 
@@ -131,7 +130,7 @@
                     .file-preview {
 
                         display: flex;
-                        margin-left: 16px;
+                        //margin-left: 16px;
 
                         img {
                             height: 100px;
@@ -360,6 +359,44 @@
             padding: 0 10px 10px 10px;
             margin-bottom: 0;
 
+            .notes-and-errors {
+
+                margin: 0;
+                text-align: left;
+
+                li {
+
+                    list-style: none;
+                    margin: 0;
+
+                    line-height: 12px;
+                    font-size: 10px;
+
+                    &:not(:last-child) {
+                        margin-bottom: 8px;
+                    }
+
+                    &:before {
+                        content: '';
+                        display: inline-block;
+                        margin-right: 4px;
+                        @include leyka-colored-icon('../../img/icon-info.svg', 8px, $leyka-admin-color-link);
+                    }
+
+                    &.error {
+
+                        color: $color-error-message;
+
+                        &:before {
+                            background-color: $color-error-message;
+                        }
+
+                    }
+
+                }
+
+            }
+
             .single-line {
 
                 display: flex;
@@ -476,55 +513,7 @@
 
 // Additional fields settings:
 .multi-valued-items-field-wrapper.additional-fields-settings {
-
     max-width: 100% !important;
-
-    .box-content {
-
-        .notes-and-errors {
-
-            margin: 0;
-            text-align: left;
-
-            li {
-
-                list-style: none;
-                margin: 0;
-
-                line-height: 12px;
-                font-size: 10px;
-
-                &:not(:last-child) {
-                    margin-bottom: 8px;
-                }
-
-                &:before {
-                    content: '';
-                    display: inline-block;
-                    margin-right: 4px;
-                    @include leyka-colored-icon('../../img/icon-info.svg', 8px, $leyka-admin-color-link);
-                }
-
-                &.error {
-
-                    color: $color-error-message;
-
-                    &:before {
-                        background-color: $color-error-message;
-                    }
-
-                }
-
-                //&.phone-field-note {
-                //    display: none;
-                //}
-
-            }
-
-        }
-
-    }
-
 }
 // Additional fields settings - END
 

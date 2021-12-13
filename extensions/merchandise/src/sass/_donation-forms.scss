@@ -1,121 +1,102 @@
-/** Star donation form */
-
 .leyka-tpl-star-form .section .section__fields {
 
     &.merchandise-grid {
 
-        .merchandise-item {
+        .merchandise-label {
+            font-family: var(--leyka-font-main);
+            font-size: 20px;
+            font-weight: 500;
+            text-transform: initial;
+            margin-bottom: 16px;
+            word-wrap: break-word;
+        }
 
-            //padding: 20px;
+        .merchandise-image {
+            border-radius: 4px;
+            width: 100%;
+        }
 
-            &.disabled {
-                display: none;
+        .merchandise-description {
+            text-transform: initial;
+            font-size: 13px;
+            font-weight: normal;
+            white-space: normal;
+            margin-top: 16px;
+        }
+
+        .swiper-arrow {
+
+            border: 1px solid lightgrey;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgb(255, 255, 255);
+
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: center;
+            align-items: center;
+
+            &.swipe-left {
+                &:before {
+                    content: '';
+                    display: block;
+                    width: 14px;
+                    height: 18px;
+                    background: url(../../../../img/icon-gallery-nav-arrow-left-002.svg) no-repeat;
+                }
             }
 
-            span {
-
-                display: block;
-
-                &:not(:last-child) {
-                    margin-bottom: 16px;
+            &.swipe-right {
+                &:before {
+                    content: '';
+                    display: block;
+                    width: 10px;
+                    height: 18px;
+                    background: url(../../../../img/icon-gallery-nav-arrow-right-002.svg) no-repeat;
                 }
-
-                &.merchandise__label {
-                    font-size: 20px;
-                    font-weight: 500;
-                    text-transform: initial;
-                }
-
-                &.merchandise__icon img {
-                    border-radius: 4px;
-                    width: 100%;
-                }
-
-                &.merchandise__description { // Merch item text
-                    text-transform: initial;
-                    font-size: 13px;
-                    font-weight: normal;
-                    white-space: normal;
-                }
-
             }
 
         }
 
-        //.star-swiper {
+        .merchandise-item {
+            &.disabled {
+                display: none;
+            }
+        }
+
+        //.merchandise-item {
         //
-        //    height: 420px;
+        //    //padding: 20px;
         //
-        //    .swiper-arrow {
-        //
-        //        width: 46px;
-        //        height: 46px;
-        //        border-radius: 50%;
-        //        border-color: #D4D9E2;
-        //
-        //        top: 50%;
-        //
-        //        //&.swipe-left {
-        //        //    //left: 0px;
-        //        //}
-        //        //&.swipe-right {
-        //        //    //right: 0px;
-        //        //}
-        //
-        //    }
-        //    .arrow-gradient {
-        //        display: none !important;
+        //    &.disabled {
+        //        display: none;
         //    }
         //
-        //    .swiper-list .merchandise.swiper-item {
+        //    span {
         //
-        //        width: 407px;
-        //        height: auto; // 420px
-        //        max-height: 420px;
+        //        display: block;
         //
-        //        padding: 20px;
-        //
-        //        //cursor: pointer;
-        //
-        //        &:not(.selected) {
-        //            border-color: transparent;
+        //        &:not(:last-child) {
+        //            margin-bottom: 16px;
         //        }
         //
-        //        .swiper-item-inner {
+        //        &.merchandise__label {
+        //            font-size: 20px;
+        //            font-weight: 500;
+        //            text-transform: initial;
+        //        }
         //
-        //            height: auto;
+        //        &.merchandise__icon img {
+        //            border-radius: 4px;
+        //            width: 100%;
+        //        }
         //
-        //            align-items: flex-start;
-        //
-        //            .merchandise__button { // Swiper list item content
-        //
-        //                display: flex;
-        //                flex-flow: column;
-        //
-        //                span {
-        //
-        //                    display: block;
-        //
-        //                    &:not(:last-child) {
-        //                        margin-bottom: 16px;
-        //                    }
-        //
-        //                    &.merchandise__label { // Merch item title
-        //                        text-transform: initial;
-        //                        font-size: 20px;
-        //                        font-weight: 500;
-        //                    }
-        //
-        //                    &.merchandise__description { // Merch item text
-        //                        text-transform: initial;
-        //                        font-size: 13px;
-        //                        white-space: normal;
-        //                    }
-        //
-        //                }
-        //
-        //            }
-        //
+        //        &.merchandise__description { // Merch item text
+        //            text-transform: initial;
+        //            font-size: 13px;
+        //            font-weight: normal;
+        //            white-space: normal;
         //        }
         //
         //    }

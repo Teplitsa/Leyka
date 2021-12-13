@@ -85,21 +85,6 @@ function leyka_handle_plugin_update() {
 
     leyka_create_separate_donations_db_tables(); // Create plugin-specific DB tables if needed
 
-    // From v3.3.0.1 - enable Donors management by default for all new installations:
-    if( !$leyka_last_ver || version_compare($leyka_last_ver, '3.3.0.1', '<=') ) {
-        update_option('leyka_donor_management_available', true);
-    }
-
-    if($leyka_last_ver && version_compare($leyka_last_ver, '3.5', '<=')) { // Allow the deprecated form templates for old installations
-        update_option('leyka_allow_deprecated_form_templates', true);
-    }
-
-    if($leyka_last_ver && version_compare($leyka_last_ver, '3.6', '<=')) { // Donors management & Donors' accounts fields logical link
-        if(get_option('leyka_donor_accounts_available')) {
-            update_option('leyka_donor_management_available', true);
-        }
-    }
-
     if($leyka_last_ver && version_compare($leyka_last_ver, '3.8.0.1', '<=')) { // CP IPs list fix
         if(get_option('leyka_cp_ip')) {
             update_option('leyka_cp_ip', '130.193.70.192, 185.98.85.109, 87.251.91.160/27, 185.98.81.0/28');
@@ -242,6 +227,8 @@ function leyka_handle_plugin_update() {
 
     }
 
+    do_action('leyka_plugin_update', $leyka_last_ver); // Warning: Extensions can't use this hook, as they are initialized later
+
     // Set a flag to flush permalinks (needs to be done a bit later than this activation itself):
     update_option('leyka_permalinks_flushed', 0);
 
@@ -249,6 +236,6 @@ function leyka_handle_plugin_update() {
         update_option('leyka_init_wizard_redirect', true);
     }
 
-    update_option('leyka_last_ver', LEYKA_VERSION);
+//    update_option('leyka_last_ver', LEYKA_VERSION); // TMP
 
 }

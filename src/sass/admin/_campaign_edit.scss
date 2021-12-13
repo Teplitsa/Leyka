@@ -212,14 +212,14 @@
             margin-right: 8px;
         }
 
-        /** @todo Made it a mixin, mb? */
-        .form-template-demo {
-            display: inline-block;
-            cursor: pointer;
-            width: 24px;
-            height: 24px;
-            background-image: url(../../img/icon-screen-demo.svg);
-        }
+        /** @todo This template demo code isn't used - it's a candidat for removing */
+        //.form-template-demo {
+        //    display: inline-block;
+        //    cursor: pointer;
+        //    width: 24px;
+        //    height: 24px;
+        //    background-image: url(../../img/icon-screen-demo.svg);
+        //}
 
         .css-editor {
             @include leyka-code-editor();

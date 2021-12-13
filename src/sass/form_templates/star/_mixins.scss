@@ -108,14 +108,16 @@
         
         .swiper-list {
             width: 100%;
-            left: 0px;
+            left: 0;
         }
     }
     
     .arrow-gradient {
+
         display: none;
         
         @include for(medium-screens) {
+
             width: 45px;
             height: 100%;
             position: absolute;
@@ -134,10 +136,13 @@
                 // left: 46px;
                 left: 34px;
             }
+
         }
+
     }
     
     .swiper-arrow {
+
         @include star-clean-a();
         // width: 46px;
         border: 2px solid $leyka-star-color-swiper-arrow-border;
@@ -156,14 +161,14 @@
         background-repeat: no-repeat;
         background-color: $leyka-star-color-white;
         position: absolute;
-        top: 0px;
+        top: 0;
         // top: -2px;
         z-index: 10;
 
         @include for(medium-screens) {
             display: none;
             height: 100%;
-            top: 0px;
+            top: 0;
         }
 
         // &:after {
@@ -178,10 +183,10 @@
             background-image: url(../../img/icon-gallery-nav-arrow-left-002.svg);
             justify-content: flex-end;                
             // left: -2px;
-            left: 0px;
+            left: 0;
 
             @include for(medium-screens) {
-                left: 0px;
+                left: 0;
             }
         }
         
@@ -189,12 +194,13 @@
             background-image: url(../../img/icon-gallery-nav-arrow-right-002.svg);
             justify-content: flex-start;
             // right: -2px;
-            right: 0px;
+            right: 0;
 
             @include for(medium-screens) {
-                right: 0px;
+                right: 0;
             }
         }
+
     }
     
     .swiper-list, .full-list {
@@ -207,7 +213,7 @@
         
         @include for(medium-screens) {
             justify-content: space-between;
-            left: 0px;
+            left: 0;
             width: auto;
             overflow: auto;
         }

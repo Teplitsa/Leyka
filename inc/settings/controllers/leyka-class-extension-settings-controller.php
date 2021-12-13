@@ -253,7 +253,8 @@ class Leyka_Extension_Settings_Controller extends Leyka_Settings_Controller {
 
     public function handle_activation() {
 
-        $this->handle_submit(); // Mb, we shouldn't auto-save Extension settings before activation
+//        $this->handle_submit(); // Mb, we shouldn't auto-save Extension settings before activation
+        // UPD: We certainly shouldn't. It leads to some errors if Extension has a custom multi-valued items field with Campaigns related subfields
 
         $extension_activation_valid = $this->_extension->activation_valid(); // Let Extension check it's all green for activation
         if($extension_activation_valid !== true) {

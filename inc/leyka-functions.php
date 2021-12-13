@@ -2187,7 +2187,7 @@ add_filter('page_template', 'leyka_use_leyka_campaign_template', 10, 1);
 function leyka_get_website_tech_support_email() {
 
     // Warning: don't use leyka_options()->opt() here - this function is used on the first options meta controller call
-    $leyka_tech_support_email = leyka_options()->get_option_value('tech_support_email');
+    $leyka_tech_support_email = Leyka_Options_Controller::get_option_value('tech_support_email');
 
     return $leyka_tech_support_email ? : get_option('admin_email');
 

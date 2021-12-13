@@ -33,7 +33,7 @@ jQuery(document).ready(function($){
 
     };
 
-    jQuery.leyka_admin_filter_datepicker_ranged = function($input, options){
+    jQuery.leyka_admin_filter_datepicker_ranged = function($input /*, options*/){
 
         $input.datepicker({
             range: 'period',
@@ -85,7 +85,7 @@ jQuery(document).ready(function($){
     // Ranged datepicker fields - END
 
     // Campaigns autocomplete select:
-    jQuery.leyka_admin_campaigns_select = function($text_selector_field, options){
+    jQuery.leyka_admin_campaigns_select = function($text_selector_field /*, options*/){
 
         $text_selector_field = $($text_selector_field);
 
@@ -237,9 +237,9 @@ jQuery(document).ready(function($){
     // Custom CSS editor fields - END
 
     // Ajax file upload fields support:
-    $body.on('click.leyka', '.upload-field input[type="file"]', function(e){ // Just to be sure that the input will be called
+    $body.on('click.leyka', '.file-upload-field input[type="file"]', function(e){ // Just to be sure that the input will be called
         e.stopPropagation();
-    }).on('change.leyka', '.upload-field input[type="file"]', function(e){
+    }).on('change.leyka', '.file-upload-field input[type="file"]', function(e){
 
         if( !e.target.files ) {
             return;
@@ -308,12 +308,12 @@ jQuery(document).ready(function($){
 
     });
 
-    $body.on('click.leyka', '.leyka-file-field-wrapper .delete-uploaded-file', function(e){ // Mark uploaded file to be removed
+    $body.on('click.leyka', '.leyka-upload-field-wrapper .delete-uploaded-file', function(e){ // Mark uploaded file to be removed
 
         e.preventDefault();
 
         let $delete_link = $(this),
-            $field_wrapper = $delete_link.parents('.leyka-file-field-wrapper'),
+            $field_wrapper = $delete_link.parents('.leyka-upload-field-wrapper'),
             // option_id = $field_wrapper.find('.upload-field').data('option-id'),
             $file_preview = $field_wrapper.find('.uploaded-file-preview'),
             $main_field = $field_wrapper.find('input.leyka-upload-result');
@@ -324,6 +324,42 @@ jQuery(document).ready(function($){
 
     });
     // Ajax file upload fields - END
+
+    // Media library upload fields:
+    $body.on('click.leyka', '.media-upload-field', function(e){
+
+        e.preventDefault();
+
+        let $field = $(this),
+            $field_wrapper = $field.parents('.leyka-media-upload-field-wrapper'),
+            // option_id = $upload_button_wrapper.data('option-id'),
+            $preview = $field_wrapper.find('.uploaded-file-preview'),
+            $main_field = $field_wrapper.find('input.leyka-upload-result'),
+            media_uploader = wp.media({
+                title: $field.data('upload-title') ?
+                    $field.data('upload-title') : leyka.media_upload_title,
+                button: {
+                    text: $field.data('upload-button-label') ? $field.data('upload-button-label') : leyka.media_upload_button_label,
+                },
+                library: {type: $field.data('upload-files-type') ? $field.data('upload-files-type') : 'image'},
+                multiple: $field.data('upload-is-multiple') ? !!$field.data('upload-is-multiple') : false
+            }).on('select', function(){ // It's a wp.media event, so dont't use "select.leyka" events types
+
+                let attachment = media_uploader.state().get('selection').first().toJSON();
+
+                $preview
+                    .show()
+                    .find('.file-preview')
+                    .html('<img class="leyka-upload-image-preview" src="'+attachment.url+'" alt="">');
+
+                $field.hide(); // Hide the "upload" button when picture is uploaded
+
+                $main_field.val(attachment.id);
+
+            }).open();
+
+    });
+    // Media library upload fields - END
 
     // Expandable options sections (portlets only):
     /** @todo Remove this completely when all portlets are converted to metaboxes */
@@ -527,8 +563,7 @@ jQuery(document).ready(function($){
             $item_template = $items_wrapper.siblings('.item-template'),
             $add_item_button = $items_wrapper.siblings('.add-item'),
             items_cookie_name = $items_wrapper.data('items-cookie-name'),
-            closed_boxes = typeof $.cookie(items_cookie_name) === 'string' ?
-                JSON.parse($.cookie(items_cookie_name)) : [];
+            closed_boxes = typeof $.cookie(items_cookie_name) === 'string' ? JSON.parse($.cookie(items_cookie_name)) : [];
 
         if($.isArray(closed_boxes)) { // Close the item boxes needed
             $.each(closed_boxes, function(key, value){
@@ -568,14 +603,12 @@ jQuery(document).ready(function($){
 
                 });
 
-                $items_wrapper.siblings('input.leyka-items-options').val(
-                    encodeURIComponent(JSON.stringify(items_options))
-                );
+                $items_wrapper.siblings('input.leyka-items-options').val( encodeURIComponent(JSON.stringify(items_options)) );
 
             }
         });
 
-        $items_wrapper.on('click.leyka', '.item-box-title .title', function(e){
+        $items_wrapper.on('click.leyka', '.item-box-title', function(e){
 
             let $this = $(this),
                 $current_box = $this.parents('.multi-valued-item-box');
@@ -686,6 +719,56 @@ jQuery(document).ready(function($){
             $items_wrapper.parents('form:first').on('submit.leyka', leyka_pre_submit_multi_items);
         }
         // Refresh the main items option value before submit - END
+
+        // Campaigns select fields:
+
+        // Init all existing campaigns list fields on page load:
+        $items_wrapper.find('input.leyka-campaigns-selector').each(function(){
+            $.leyka_admin_campaigns_select($(this));
+        });
+
+        // Init campaign list for a new additional field:
+        $add_item_button.on('click.leyka', function(){
+
+            $.leyka_admin_campaigns_select(
+                $items_wrapper
+                    .find('.multi-valued-item-box:last-child .autocomplete-select[name="campaigns\[\]"]')
+                    .siblings('input.leyka-campaigns-selector')
+            );
+
+            $.leyka_admin_campaigns_select(
+                $items_wrapper
+                    .find('.multi-valued-item-box:last-child .autocomplete-select[name="campaigns_exceptions\[\]"]')
+                    .siblings('input.leyka-campaigns-selector')
+            );
+
+        });
+
+        // Hide/show the campaigns list field when "for all Ccampaigns" checkbox is checked/unchecked:
+        $items_wrapper.on('change.leyka', '.item-for-all-campaigns input:checkbox', function(){
+
+            let $checkbox = $(this),
+                $campaigns_list_field_wrapper = $checkbox.parents('.single-line').siblings('.single-line.campaigns-list-select'),
+                $campaigns_exceptions_list_field_wrapper = $checkbox
+                    .parents('.single-line')
+                    .siblings('.single-line.campaigns-exceptions-list-select');
+
+            if($checkbox.prop('checked')) {
+
+                $campaigns_list_field_wrapper.hide();
+                $campaigns_exceptions_list_field_wrapper.show();
+
+            } else {
+
+                $campaigns_list_field_wrapper.show();
+                $campaigns_exceptions_list_field_wrapper.hide();
+
+            }
+
+        });
+        // Hide/show the campaigns list field - END
+
+        // Campaigns select fields - END
 
     });
     // Multi-valued item complex fields - END

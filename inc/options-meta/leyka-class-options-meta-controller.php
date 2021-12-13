@@ -61,7 +61,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
      */
     protected function _get_options_meta($options_group = 'main') {
 
-        if($options_group == 'all') {
+        if($options_group === 'all') {
             return $this->_get_options_meta(
                 ['main', 'org', 'person', 'currency', 'email', 'templates', 'analytics', 'terms', 'admin',]
             );
@@ -94,6 +94,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
             case 'admin': return $this->_get_meta_admin();
             default:
                return $this->_get_unknown_group_options_meta($options_group);
+
         }
 
     }
@@ -375,7 +376,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                     'description' => sprintf(__('Please set minimum sum available for %s donations.', 'leyka'), $data['title']),
                     'required' => true,
                     'placeholder' => sprintf(__('E.g., %s', 'leyka'), $data['min_amount']),
-                    'length' => 6,
+                    'length' => 8,
                 ],
                 "currency_{$currency_id}_max_sum" => [
                     'type' => 'number',
@@ -384,7 +385,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                     'description' => sprintf(__('Please set maximum sum available for %s donations.', 'leyka'), $data['title']),
                     'required' => true,
                     'placeholder' => sprintf(__('E.g., %s', 'leyka'), $data['max_amount']),
-                    'length' => 6,
+                    'length' => 8,
                 ],
                 "currency_{$currency_id}_flexible_default_amount" => [
                     'type' => 'number',
@@ -393,7 +394,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                     'description' => sprintf(__('Please, set a default amount of donation when %s selected as currency.', 'leyka'), $data['title']),
                     'required' => true,
                     'placeholder' => sprintf(__('E.g., %s', 'leyka'), $data['flexible_default_amount']),
-                    'length' => 6,
+                    'length' => 8,
                 ],
                 "currency_{$currency_id}_fixed_amounts" => [
                     'type' => 'text',
@@ -402,7 +403,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                     'description' => sprintf(__('Please, set possible amounts of donation in %s when «fixed» donation type is selected. Only an integer non-negative values, separated with commas.', 'leyka'), $data['title']),
                     'required' => true,
                     'placeholder' => sprintf(__('E.g., %s', 'leyka'), $data['fixed_amounts']),
-                    'length' => 25,
+                    'length' => 75,
                 ],
             ];
 
@@ -507,7 +508,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'text',
                 'default' => leyka_get_default_email_from(),
                 'title' => __('Sender email', 'leyka'),
-                'placeholder' => sprintf(__('E.g., %s'), 'donations@daisyfoundation.org'),
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'donations@daisyfoundation.org'),
                 'comment' => __('What your donors will see in the "from email" field. For the most of the cases, your organization contact email will do fine.', 'leyka'),
             ],
             'email_thanks_title' => [

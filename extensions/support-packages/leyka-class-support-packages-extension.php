@@ -221,10 +221,10 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
         add_filter('post_class', [$this, 'add_post_class'], 10, 3);
         add_filter('leyka_js_localized_strings', [$this, 'add_js_localized_strings']);
         add_action('admin_notices', [$this, 'admin_notices']);
-        add_action('leyka_campaign_data_after_saving', [$this, '_packages_campaign_data_saving'], 10, 2);
+        add_action('leyka_campaign_after_saving', [$this, '_packages_campaign_data_saving'], 10, 2);
 
         // Set up the Extension shortcodes:
-        foreach(Leyka_Support_Packages_Extension::$_features as $feature_name => $feature_config) {
+        foreach(self::$_features as $feature_name => $feature_config) {
             if( !empty($feature_config['is_shortcode']) && $feature_config['is_shortcode'] ) {
                 add_shortcode($feature_name, [$this, 'handle_shortcode']);
             }
@@ -240,6 +240,165 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
             delete_option('leyka_support_packages_no_campaign_behavior');
         });
 
+        if(is_admin()) {
+
+            // Support packages custom option display:
+            add_action('leyka_render_custom_support_packages_settings', [$this, '_render_support_packages_custom_option'], 10, 2);
+
+            // Support packages custom option saving:
+            add_action(
+                'leyka_save_custom_option-custom_support_packages_settings',
+                [$this, '_support_packages_custom_option_saving']
+            );
+
+        }
+
+    }
+
+    protected function _render_support_package_item_html($is_template = false, $placeholders = []) {
+
+        $placeholders = wp_parse_args($placeholders, [
+            'id' => '',
+            'box_title' => __('New reward', 'leyka'),
+            'package_title' => '',
+            'amount_needed' => 0,
+            'package_icon' => '',
+        ]);
+
+        $_COOKIE['leyka-support-packages-boxes-closed'] = empty($_COOKIE['leyka-support-packages-boxes-closed']) ?
+            [] : json_decode(stripslashes('[\"someline\"]'));?>
+
+        <div id="<?php echo $placeholders['id'] ? 'item-'.$placeholders['id'] : 'item-'.leyka_get_random_string(4);?>" class="multi-valued-item-box package-box <?php echo $is_template ? 'item-template' : '';?> <?php echo !$is_template && !empty($_COOKIE['leyka-support-packages-boxes-closed']) && !empty($placeholders['id']) && in_array($placeholders['id'], $_COOKIE['leyka-support-packages-boxes-closed']) ? 'closed' : '';?>" <?php echo $is_template ? 'style="display: none;"' : '';?>>
+
+            <h3 class="item-box-title ui-sortable-handle">
+                <span class="draggable"></span>
+                <span class="title"><?php echo esc_html($placeholders['box_title']);?></span>
+            </h3>
+
+            <div class="box-content">
+
+                <div class="option-block type-text">
+
+                    <div class="leyka-text-field-wrapper">
+                        <?php leyka_render_text_field('package_title', [
+                            'title' => __('Reward title', 'leyka'),
+                            'placeholder' => __('E.g., "Golden support level"', 'leyka'),
+                            'required' => true,
+                            'value' => $placeholders['package_title'],
+                        ]);?>
+                    </div>
+
+                    <div class="field-errors"></div>
+
+                </div>
+
+                <?php if($placeholders['id']) {?>
+                    <div class="option-block type-text-readonly">
+                        <div class="leyka-text-field-wrapper">
+                            <?php leyka_render_text_field('package_id', [
+                                'title' => __('Package ID', 'leyka'),
+                                'value' => $placeholders['id'],
+                                'is_read_only' => true,
+                            ]);?>
+                        </div>
+                    </div>
+                <?php }?>
+
+                <div class="option-block type-number">
+
+                    <div class="leyka-number-field-wrapper">
+                        <?php leyka_render_number_field('package_amount_needed', [
+                            'title' => sprintf(__('Donations amount needed, %s', 'leyka'), leyka_get_currency_label()),
+                            'placeholder' => '500',
+                            'required' => true,
+                            'value' => $placeholders['amount_needed'],
+                        ]);?>
+                    </div>
+
+                    <div class="field-errors"></div>
+
+                </div>
+
+                <div class="settings-block option-block type-file">
+
+                    <?php leyka_render_file_field('package_icon', [
+                        'upload_label' => __('Load icon', 'leyka'),
+                        'description' => __('A *.png or *.svg file. The size is no more than 2 Mb', 'leyka'),
+                        'required' => true,
+                        'value' => $placeholders['package_icon'],
+                    ]);?>
+
+                    <div class="field-errors"></div>
+
+                </div>
+
+                <div class="box-footer">
+                    <div class="delete-item delete-package"><?php _e('Delete the reward', 'leyka');?></div>
+                </div>
+
+            </div>
+
+        </div>
+
+    <?php }
+
+    public function _render_support_packages_custom_option($option_id, $data){
+
+        $option_id = mb_stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;?>
+
+        <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-<?php echo $option_id;?>-field-wrapper multi-valued-items-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) ? '' : implode(' ', $data['field_classes']);?>">
+
+            <div class="leyka-main-multi-items leyka-main-support-packages" data-max-items="<?php echo Leyka_Support_Packages_Extension::MAX_PACKAGES_NUMBER;?>" data-min-items="1" data-items-cookie-name="leyka-support-packages-boxes-closed" data-item-inputs-names-prefix="leyka_package_">
+
+            <?php $data['value'] = empty($data['value']) || !is_array($data['value']) ?
+                leyka_options()->opt('custom_support_packages_settings') :
+                $data['value'];
+
+            if($data['value'] && is_array($data['value'])) { // Display existing items (the assoc. array keys order is important)
+                foreach($data['value'] as $package_id => $options) {
+                    $this->_render_support_package_item_html(false, [
+                        'id' => $package_id,
+                        'box_title' => $options['title'],
+                        'package_title' => $options['title'],
+                        'amount_needed' => $options['amount_needed'],
+                        'package_icon' => $options['icon'],
+                    ]);
+                }
+            }?>
+
+            </div>
+
+            <?php $this->_render_support_package_item_html(true); // Package box template ?>
+
+            <div class="add-item bottom"><?php _e('Add reward', 'leyka');?></div>
+
+            <input type="hidden" class="leyka-items-options" name="leyka_support_packages" value="">
+
+        </div>
+
+    <?php }
+
+    public function _support_packages_custom_option_saving() {
+
+        $_POST['leyka_support_packages'] = json_decode(urldecode($_POST['leyka_support_packages']));
+        $result = [];
+
+        foreach($_POST['leyka_support_packages'] as $package) {
+
+            $package->id = stristr($package->id, 'item-') === false || empty($package->title) ?
+                $package->id :
+                trim(preg_replace('~[^-a-z0-9_]+~u', '-', mb_strtolower(leyka_cyr2lat($package->title))), '-');
+
+            $result[$package->id] = [
+                'title' => $package->title,
+                'amount_needed' => $package->amount_needed,
+                'icon' => $package->icon,
+            ];
+
+        }
+
+        leyka_options()->opt('custom_support_packages_settings', $result);
+
     }
 
     /* Campaign data saving - handling for the case of "single available campaign ceased to be available" */
@@ -249,7 +408,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
             return;
         }
 
-        if( // The case when Packages campaign is reactivated, or there is another campaign available for the extension
+        if( // The case when Packages Campaign is reactivated, or there is another Campaign available for the Extension
             (
                 $campaign->id == leyka_options()->opt('support_packages_campaign')
                 && ($campaign_data['post_status'] === 'publish' || !empty($campaign_data['publish']))
@@ -288,7 +447,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
 
     }
 
-    public function is_activation_available($package, $user) {
+    public function is_package_activation_available($package, $user) {
 
         $active_package = $this->get_user_active_package($user);
 

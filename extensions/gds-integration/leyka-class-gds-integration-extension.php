@@ -75,7 +75,14 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
 
     }
 
-    /** Will be called only if the Extension is active. */
+    protected function _initialize_always() {
+
+        if(is_admin()) {
+            add_action('leyka_render_custom_gds_integration_data_info', [$this, '_render_gds_integration_data_info'], 10, 2);
+        }
+
+    }
+
     protected function _initialize_active() {
 
         // Add the data preparing procedure to Leyka (to make it's browser calling possible):
@@ -102,6 +109,51 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
     public function deactivate() { // Remove the special DB table
         $this->_gds_data_table_delete();
     }
+
+    public function _render_gds_integration_data_info($option_id, $data) {
+
+        if( !Leyka_Gds_Integration_Extension::get_instance()->_gds_data_table_exists() ) {
+            return;
+        }
+
+        $data_lines_count = Leyka_Gds_Integration_Extension::get_instance()->get_donations_to_convert_count();?>
+
+        <div class="leyka-gds-integration-info-wrapper">
+
+            <?php if($data_lines_count > Leyka_Gds_Integration_Extension::get_instance()->get_max_gds_allowed_lines()) {?>
+
+                <div class="leyka-gds-data-error">
+                    <?php echo sprintf(
+                        __("WARNING: we can't use this donations selection. The GDS limit of data lines is exceeded (<strong>%s / %s</strong>). Try to select a more narrow period.", 'leyka'),
+                        leyka_amount_format($data_lines_count),
+                        leyka_amount_format(Leyka_Gds_Integration_Extension::get_instance()->get_max_gds_allowed_lines())
+                    );?>
+                </div>
+
+            <?php } else {?>
+
+                <div class="leyka-gds-data-info">
+                    <?php echo sprintf(
+                        __('Total donations to convert: <strong>%s / %s</strong>', 'leyka'),
+                        leyka_amount_format($data_lines_count),
+                        leyka_amount_format(Leyka_Gds_Integration_Extension::get_instance()->get_max_gds_allowed_lines())
+                    );?>
+                </div>
+
+            <?php }
+
+            $timestamp = get_transient('leyka_gds_integration_last_data_preparing_date');
+            $timestamp = $timestamp ? strtotime($timestamp) : false;
+            $last_procedure_run_date = $timestamp ?
+                date(get_option('date_format'), $timestamp).', '.date(get_option('time_format'), $timestamp) : __('no', 'leyka');?>
+
+            <div class="leyka-gds-data-info">
+                <?php echo sprintf(__('Last successful data preparation date: <strong>%s</strong>', 'leyka'), $last_procedure_run_date);?>
+            </div>
+
+        </div>
+
+    <?php }
 
     public function get_max_gds_allowed_lines() {
         return self::$_max_gds_allowed_data_lines;
