@@ -218,9 +218,14 @@ function leyka_render_media_upload_field($option_id, $data){
         if($data['value']) {
 
             $media_meta = wp_get_attachment_metadata($data['value']);
+            $image_url = wp_get_attachment_image_url($data['value'], 'medium');
 
             if( !$media_meta ) {
-                $data['value'] = 0;
+
+                if( !$image_url || !mb_stristr($image_url, '.svg') ) {
+                    $data['value'] = 0;
+                }
+
             }
 
         } ?>
@@ -230,7 +235,7 @@ function leyka_render_media_upload_field($option_id, $data){
             <div class="uploaded-file-preview" <?php echo $data['value'] ? '' : 'style="display: none;"';?>>
 
                 <span class="file-preview">
-                <?php if($data['value'] && $data['upload_files_type'] === 'image' && $media_meta) {?>
+                <?php if($data['value'] && $data['upload_files_type'] === 'image') {?>
 
                     <img src="<?php echo wp_get_attachment_image_url($data['value'], 'medium');?>" alt="" class="leyka-upload-image-preview">
 
