@@ -467,16 +467,24 @@
         }
     }
     
-    input:checked + label {
-        &:before {
-            background: $leyka-star-color-main-third;
-            border-color: $leyka-star-color-main-second;
+    input {
+        &:checked + label {
+            &:before {
+                background: $leyka-star-color-main-third;
+                border-color: $leyka-star-color-main-second;
+            }
+            
+            svg.icon-checkbox-check {
+            	display: block;
+            }
         }
+
+        &:focus-visible + label:before {
+            box-shadow: 0px 0px 0px 2px;
+        }
+
         
-        svg.icon-checkbox-check {
-        	display: block;
-        }
-    }    
+    }
 }
 
 @mixin leyka-star-btn($mod: default) {

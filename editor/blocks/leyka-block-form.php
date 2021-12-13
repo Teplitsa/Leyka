@@ -5,29 +5,30 @@
 
 function leyka_block_form_attributes(){
 
-    $attributes = [
-        'campaign' => ['type' => 'string', 'default' => leyka_block_get_recent_campaign_id(),],
-        'template' => ['type' => 'string', 'default' => 'star',],
-        'className' => ['type' => 'string', 'default' => '',],
-        'preview' => ['type' => 'boolean', 'default' => false,],
-    ];
+	$attributes = [
+		'campaign' => ['type' => 'string', 'default' => leyka_block_get_recent_campaign_id(),],
+		'template' => ['type' => 'string', 'default' => 'star',],
+		'className' => ['type' => 'string', 'default' => '',],
+		'preview' => ['type' => 'boolean', 'default' => false,],
+		'anchor' => ['type' => 'string', 'default' => '',],
+	];
 
-    // Set color attributes for the Star template:
-    foreach(leyka_block_color_vars('leyka/form', 'star') as $slug => $label) {
-        $attributes[$slug] = ['type' => 'string', 'default' => '',];
-    }
+	// Set color attributes for the Star template:
+	foreach(leyka_block_color_vars('leyka/form', 'star') as $slug => $label) {
+		$attributes[$slug] = ['type' => 'string', 'default' => '',];
+	}
 
-    // Set color attributes for the Need Help template:
-    foreach (leyka_block_color_vars('leyka/form', 'need-help') as $slug => $label) {
-        $attributes[$slug] = ['type' => 'string', 'default' => '',];
-    }
+	// Set color attributes for the Need Help template:
+	foreach (leyka_block_color_vars('leyka/form', 'need-help') as $slug => $label) {
+		$attributes[$slug] = ['type' => 'string', 'default' => '',];
+	}
 
-    // Set font size attributes:
-    foreach(leyka_block_font_size_vars('leyka/form', 'default') as $slug => $value) {
-        $attributes[$slug] = ['type' => 'string', 'default' => $value['default'],];
-    }
+	// Set font size attributes:
+	foreach(leyka_block_font_size_vars('leyka/form', 'default') as $slug => $value) {
+		$attributes[$slug] = ['type' => 'string', 'default' => $value['default'],];
+	}
 
-    return $attributes;
+	return $attributes;
 
 }
 
@@ -55,7 +56,7 @@ function leyka_block_form_render_callback($attr, $content) {
 		$classes['class_name'] = $attr['className'];
 	}
 
-	$style = '';
+	$block_style = '';
 	$css_var_prefix = '--leyka';
 
 	if($template === 'need-help') {
@@ -70,7 +71,7 @@ function leyka_block_form_render_callback($attr, $content) {
 
 		$const = $color_keys[$color_index];
 		if( !empty($attr[$const]) ) {
-			$style .= $css_var_prefix.'-color-'.$slug.':'.$attr[$const].';';
+			$block_style .= $css_var_prefix.'-color-'.$slug.':'.$attr[$const].';';
 		}
 
 		$color_index++;
@@ -85,18 +86,27 @@ function leyka_block_form_render_callback($attr, $content) {
 
 		$const = $font_keys[$font_index];
 		if ( !empty($attr[$const]) ) {
-			$style .= $css_var_prefix.'-font-size-'.$slug.':'.$attr[ $const ].';';
+			$block_style .= $css_var_prefix.'-font-size-'.$slug.':'.$attr[ $const ].';';
 		}
 
 		$font_index++;
 
 	}
 
-	if($style) {
-
+	if($block_style) {
 		$classes[] = 'has-leyka-custom-colors';
-		$style = ' style="'.$style.'"';
+	}
 
+	// Block attributes.
+	$block_attr = 'class="' . implode(' ', $classes) . '"';
+
+	// Id
+	if (isset( $attr['anchor'] ) && $attr['anchor']) {
+		$block_attr .= ' id="' . esc_attr( $attr['anchor'] ) . '"';
+	}
+
+	if ($block_style) {
+		$block_attr .= ' style="' . $block_style . '"';
 	}
 
 	// Render a Campaign form with shortcode [leyka_campaign_form]:
@@ -117,7 +127,7 @@ function leyka_block_form_render_callback($attr, $content) {
 		$shortcode_attr_arr = ['id' => $campaign, 'template' => $template,];
 		$shortcode_attr = '';
 
-		$html .= '<div class="'.implode(' ', $classes).'"'.$style.'>';
+		$html = '<div ' . $block_attr . '>';
 
 			foreach($shortcode_attr_arr as $key => $value) {
 				$shortcode_attr .= ' '.$key.'="'.$value.'"';

@@ -41,8 +41,8 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
         <div class="section section--periodicity <?php if(!in_array('recurring', $campaign->donations_types_available)){?>hidden<?php }?>">
 
             <div class="section__fields periodicity">
-                <a href="#" class="<?php echo 'recurring' === $campaign->donations_type_default ? 'active' : '';?> <?php echo !in_array('recurring', $campaign->donations_types_available) ? "invisible" : "";?>" data-periodicity="monthly"><?php esc_html_e('Monthly', 'leyka');?></a>
-                <a href="#" class="<?php echo 'single' === $campaign->donations_type_default ? 'active' : '';?> <?php echo !in_array('single', $campaign->donations_types_available) ? "invisible" : "";?>" data-periodicity="once"><?php esc_html_e('Once', 'leyka');?></a>
+                <a href="#" class="<?php echo 'recurring' === $campaign->donations_type_default ? 'active' : '';?> <?php echo !in_array('recurring', $campaign->donations_types_available) ? "invisible" : "";?>" data-periodicity="monthly" role="tab" aria-selected="<?php echo 'recurring' === $campaign->donations_type_default ? 'true' : 'false';?>"><?php esc_html_e('Monthly', 'leyka');?></a>
+                <a href="#" class="<?php echo 'single' === $campaign->donations_type_default ? 'active' : '';?> <?php echo !in_array('single', $campaign->donations_types_available) ? "invisible" : "";?>" data-periodicity="once" role="tab" aria-selected="<?php echo 'single' === $campaign->donations_type_default ? 'true' : 'false';?>"><?php esc_html_e('Once', 'leyka');?></a>
             </div>
 
         </div>
@@ -52,7 +52,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
         <?php }?>
 
         <div class="section section--amount">
-        	<div class="section-title-container"><div class="section-title-line"></div><div class="section-title-text"><?php esc_html_e('Donation amount', 'leyka');?></div></div>
+        	<div class="section-title-container"><div class="section-title-line"></div><div class="section-title-text" role="heading" aria-level="3"><?php esc_html_e('Donation amount', 'leyka');?></div></div>
 
             <div class="section__fields amount">
 
@@ -71,16 +71,16 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                     <div class="<?php if($is_swipe_amount_variants){?>swiper-list<?php }else{?>full-list<?php }?>">
 
                         <?php foreach($template_data['amount_variants'] as $i => $amount) {?>
-                            <div class="swiper-item <?php echo $i ? '' : 'selected';?>" data-value="<?php echo absint($amount);?>"><div class="swiper-item-inner"><span class="amount"><?php echo absint($amount);?></span><span class="currency"><?php echo $template_data['currency_label'];?></span></div></div>
+                            <div class="swiper-item <?php echo $i ? '' : 'selected';?>" data-value="<?php echo absint($amount);?>" role="button" tabindex="0"><div class="swiper-item-inner"><span class="amount"><?php echo absint($amount);?></span><span class="currency"><?php echo $template_data['currency_label'];?></span></div></div>
                         <?php }?>
         
                         <?php if($template_data['amount_mode'] != 'fixed') {?>
                             <div class="swiper-item flex-amount-item <?php echo empty($template_data['amount_variants']) ? 'selected' : '';?>">
                             	<div class="swiper-item-inner">
-                                    <label for="leyka-flex-amount">
+                                    <label>
                                         <span class="textfield-label"><?php echo $another_amount_title;?>, <span class="currency"><?php echo $template_data['currency_label'];?></span></span>
                                     </label>
-                                    <input type="number" title="<?php esc_html_e('Enter your amount', 'leyka');?>" placeholder="<?php esc_html_e('Enter your amount', 'leyka');?>" data-desktop-ph="<?php echo $another_amount_title;?>" data-mobile-ph="<?php esc_html_e('Enter your amount', 'leyka');?>" name="donate_amount_flex" class="donate_amount_flex" value="<?php echo esc_attr($template_data['amount_default']);?>" min="1" max="999999">
+                                    <input type="number" title="<?php esc_html_e('Enter your amount', 'leyka');?>" placeholder="<?php esc_html_e('Enter your amount', 'leyka');?>" data-desktop-ph="<?php echo $another_amount_title;?>" data-mobile-ph="<?php esc_html_e('Enter your amount', 'leyka');?>" name="donate_amount_flex" class="donate_amount_flex" value="<?php echo esc_attr($template_data['amount_default']);?>" min="1" max="999999" aria-label="<?php echo $another_amount_title;?>">
                                 </div>
                             </div>
                         <?php }?>
@@ -99,7 +99,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 
         <div class="section section--cards">
 
-        	<div class="section-title-container"><div class="section-title-line"></div><div class="section-title-text"><?php _e('Payment method', 'leyka');?></div></div>
+        	<div class="section-title-container"><div class="section-title-line"></div><div class="section-title-text" role="heading" aria-level="3"><?php _e('Payment method', 'leyka');?></div></div>
     
             <div class="section__fields payments-grid">
                 <div class="star-swiper <?php echo $is_swipe_pm_list ? '' : 'no-swipe';?>">
@@ -117,7 +117,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 
                                 <label class="payment-opt__button">
 
-                                    <input class="payment-opt__radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="radio" data-processing="<?php echo $pm->processing_type;?>" data-has-recurring="<?php echo $pm->has_recurring_support() ? '1' : '0';?>" data-ajax-without-form-submission="<?php echo $pm->ajax_without_form_submission ? '1' : '0';?>">
+                                    <input class="payment-opt__radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="radio" data-processing="<?php echo $pm->processing_type;?>" data-has-recurring="<?php echo $pm->has_recurring_support() ? '1' : '0';?>" data-ajax-without-form-submission="<?php echo $pm->ajax_without_form_submission ? '1' : '0';?>" aria-label="<?php echo $pm->label;?>">
                                     <span class="payment-opt__icon">
                                         <?php foreach($pm->icons ? $pm->icons : [$pm->main_icon_url] as $icon_url) {?>
                                             <img class="pm-icon <?php echo $pm->full_id.' '.basename($icon_url, '.svg');?>" src="<?php echo $icon_url;?>" alt="">
@@ -158,7 +158,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 
         <!-- donor data -->
         <div class="section section--person">
-        	<div class="section-title-container"><div class="section-title-line"></div><div class="section-title-text"><?php esc_html_e('Your data', 'leyka');?></div></div>
+        	<div class="section-title-container"><div class="section-title-line"></div><div class="section-title-text" role="heading" aria-level="3"><?php esc_html_e('Your data', 'leyka');?></div></div>
     
             <div class="section__fields donor">
 

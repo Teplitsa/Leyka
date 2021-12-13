@@ -1,5 +1,6 @@
 /** == Blocks (_blocks.scss) == **/
 
+/** Leyka Block form */
 .wp-block-leyka-form {
 
 	&.leyka-block-form-star:not(.alignwide):not(.alignfull):not(.alignleft):not(.alignright):not(.is-style-wide) {
@@ -27,4 +28,40 @@
 
 div[id*="leyka-pf-"].leyka-pf-need-help {
 	padding: 80px;
+}
+
+/** Leyka Block cards */
+.leyka-block-cards {
+
+	&-grid {
+		display: grid;
+		grid-gap: var(--leyka-grid-gap, 30px);
+		grid-template-columns: repeat(var(--leyka-grid-columns, 1), minmax(0, 1fr));
+	}
+
+	.campaign-card {
+		max-width: 100% !important;
+		height: 100%;
+	}
+}
+
+.leyka-grid-columns {
+	@media (max-width: 1199px) {
+		&-4 {
+			--leyka-grid-columns: 3 !important;
+		}
+	}
+	@media (max-width: 991px) {
+		&-4,
+		&-3 {
+			--leyka-grid-columns: 2 !important;
+		}
+	}
+	@media (max-width: 767px) {
+		&-4,
+		&-3,
+		&-2 {
+			--leyka-grid-columns: 1 !important;
+		}
+	}
 }

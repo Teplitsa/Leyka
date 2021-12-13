@@ -186,7 +186,7 @@
 
         max-width: 790px !important;
 
-        &:not(.wp-block-leyka-card) {
+        &:not(.leyka-block-card) {
             margin: 0;
         }
 
@@ -207,25 +207,63 @@
         }
 
         .campaign-thumb {
-
-            height: 230px;
-            border-radius: 6px;;
+            display: block;
+            border-radius: 6px;
+            text-decoration: none;
+            border: none;
 
             background-color: $color-border-tiny;
             background-repeat: no-repeat;
             background-position: center center;
             background-size: cover;
+            transition: opacity .3s;
 
+            &:hover {
+                opacity: .9;
+            }
+
+            &:focus {
+                background-size: cover !important;
+                background-position: center center !important;
+            }
+
+            &:after {
+                content: '';
+                display: block;
+                padding-top: 60%;
+            }
         }
 
         .campaign-title {
-            font-size: 24px;
+            font-size: var(--leyka-card-title-size,24px);
+            line-height: 1.2;
+            font-weight: normal;
+            margin-top: 0;
+
+            > a,
+            > a:hover {
+                color: currentColor;
+                text-decoration: none;
+                border: none;
+            }
+
+            + .campaign-excerpt {
+                margin-top: -0.5em;
+            }
+        }
+
+        .campaign-excerpt {
+            font-size: var(--leyka-card-excerpt-size,16px);
+            margin-top: 0;
+            margin-bottom: 24px;
+            line-height: 1.4;
         }
 
         .progressbar-unfulfilled {
 
             height: 8px;
             padding: 0;
+            margin-top: auto;
 
             border: 0;
             border-radius: 10px;
@@ -247,6 +285,10 @@
 
         }
 
+        > *:not(.progressbar-unfulfilled) + .bottom-line {
+            margin-top: auto;
+        }
+
         .bottom-line {
 
             display: flex;
@@ -260,6 +302,10 @@
             }
 
             .target-info {
+
+                &:not(:last-child){
+                    padding-right: 10px;
+                }
 
                 .funded {
                     font-size: 32px;
@@ -285,6 +331,15 @@
                 text-transform: uppercase;
                 text-decoration: none;
                 color: white;
+                transition: opacity .3s;
+
+                &:focus {
+                    background-color: $leyka-star-color-main;
+                }
+
+                &:hover {
+                    opacity: .9;
+                }
 
             }
 

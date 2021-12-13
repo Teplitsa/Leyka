@@ -66,6 +66,9 @@
 				type: 'boolean',
 				default: false,
 			},
+			anchor: {
+				type: 'string',
+			},
 			campaign: {
 				type: 'string',
 				default: optionsCampaigns[1] ? optionsCampaigns[1].value : '',
@@ -156,10 +159,11 @@
 			description: thisBlock.description,
 			icon: icon,
 			category: 'leyka',
-			keywords: [ 'campaing', 'leyka', 'form', 'payment' ],
+			keywords: [ 'campaign', 'leyka', 'form', 'payment' ],
 			attributes: blockAttributes,
 			supports: {
 				html: false,
+				anchor: true,
 			},
 			example: {
 				attributes: {
