@@ -9,8 +9,6 @@ function printCardCheck() {
 
     document.body.innerHTML = originalContent;
 
-    bindNoticeCloseEvent();
-
 }
 
 function sendCardCheck(donationId) {
@@ -43,19 +41,7 @@ function sendCardCheck(donationId) {
 
 }
 
-function bindNoticeCloseEvent() {
-
-    let $noticeClose = document.querySelector('#card-check-tools .notice__close');
-
-    $noticeClose.addEventListener('click', function (e) {
-
-        e.preventDefault();
-
-        document.getElementById('card-check-tools').classList.remove('leyka-pf--notice-open');
-
-    })
-
+function noticeClose() {
+    document.getElementById('card-check-tools').classList.remove('leyka-pf--notice-open');
 }
-
-bindNoticeCloseEvent();
 
