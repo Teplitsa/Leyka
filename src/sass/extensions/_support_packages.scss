@@ -144,7 +144,7 @@ $leyka-ext-sp-color-bg-light-gray: #FAFAFA;
         .leyka-ext-sp-currency {
             @include leyka-ext-sp-package-currency;
             margin-top: 8px;
-            margin-left: 0px;
+            margin-left: 0;
             white-space: nowrap;
         }
 
@@ -234,8 +234,8 @@ $leyka-ext-sp-color-bg-light-gray: #FAFAFA;
     display: none;
     min-height: 200px;
     position: absolute;
-    bottom: 0px;
-    left: 0px;
+    bottom: 0;
+    left: 0;
     z-index: 10;
 
     .leyka-ext-sp-activate-feature-overlay-gradient {
@@ -369,7 +369,7 @@ body.page, body.single {
         @include leyka-ext-sp-activate-feature-title;
         margin-bottom: $base * 2; 
         text-align: center;
-        margin-top: 0px;
+        margin-top: 0;
         color: $leyka-ext-sp-color-text;
     }
 
@@ -421,7 +421,7 @@ body.page, body.single {
                 margin-bottom: 4px;                
 
                 @include for(medium-screens) {
-                    margin-right: 0px;
+                    margin-right: 0;
                     margin-bottom: 8px;
                 }
             }
@@ -431,7 +431,7 @@ body.page, body.single {
             }
 
             .leyka-ext-sp-period {
-                margin-left: 0px;
+                margin-left: 0;
             }
 
             .leyka-ext-sp-card-row1 {

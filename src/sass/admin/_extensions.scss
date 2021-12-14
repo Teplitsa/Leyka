@@ -206,7 +206,7 @@
             padding-top: 32px;
             margin-top: -18px;
 
-            .button {
+            .button:not(:first-child) {
 
                 margin-left: 24px;
 
