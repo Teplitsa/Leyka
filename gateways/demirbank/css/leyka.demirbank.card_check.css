@@ -5,6 +5,10 @@
     clear: both;
 }
 
+#card-check-tools input[type="button"] {
+    font-size: 14px;
+}
+
 #card-check-tools .leyka-pf__overlay {
     display: none;
     opacity: 0;
@@ -56,6 +60,7 @@
     text-align: center;
     padding: 5px 20px;
     border: 2px solid #28303d;
+    font-size: 14px;
 }
 
 #card-check-tools .leyka-pf__notice .notice__close:hover {
