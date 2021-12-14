@@ -238,6 +238,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                     ]));
                 }
 
+                // Single or init recurring donation:
                 if(empty($_POST['InvoiceId'])) { // Non-init recurring donation
 
                     $init_recurring_donation = $this->get_init_recurring_donation($_POST['SubscriptionId']);
@@ -252,7 +253,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                         ]));
                     }
 
-                } else if($_POST['InvoiceId'] !== 'leyka-test-donation') { // Single or init recurring donation
+                } else if($_POST['InvoiceId'] !== 'leyka-test-donation') {
 
                     $donation = Leyka_Donations::get_instance()->get_donation(absint($_POST['InvoiceId']));
                     $donation->add_gateway_response($_POST);
@@ -364,7 +365,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                         $analytics // Main params:
                             ->setProtocolVersion('1')
                             ->setTrackingId(leyka_options()->opt('gtm_ua_tracking_id'))
-                            ->setClientId($donation->ga_client_id ? $donation->ga_client_id : leyka_gua_get_client_id())
+                            ->setClientId($donation->ga_client_id ? : leyka_gua_get_client_id())
                             // Transaction params:
                             ->setTransactionId($donation->id)
                             ->setAffiliation(get_bloginfo('name'))
@@ -407,7 +408,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                         if( !empty($_POST['Status']) ) {
 
-                            if(in_array($_POST['Status'], ['Cancelled', 'Rejected', 'Expired']))  {
+                            if(in_array($_POST['Status'], ['Cancelled', 'Rejected', /*'Expired'*/]))  {
 
                                 $init_recurring_donation->recurring_is_active = false;
 //                                do_action('leyka_cp_cancel_recurring_subscription', $init_recurring_donation);
