@@ -9,6 +9,8 @@ function printCardCheck() {
 
     document.body.innerHTML = originalContent;
 
+    bindNoticeCloseEvent();
+
 }
 
 function sendCardCheck(donationId) {
@@ -18,13 +20,20 @@ function sendCardCheck(donationId) {
     const params = "action=send-card-check&donation_id="+donationId;
 
     request.open("POST", ajaxUrl, true);
+
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
     request.addEventListener("readystatechange", () => {
 
         if(request.readyState === 4 && request.status === 200) {
+
             if (request.responseText === '1') {
-                alert('Card-check has been sent to your email!');
-            };
+
+                let $tools = document.getElementById('card-check-tools');
+
+                $tools.classList.add('leyka-pf--notice-open');
+
+            }
 
         }
 
@@ -33,4 +42,20 @@ function sendCardCheck(donationId) {
     request.send(params);
 
 }
+
+function bindNoticeCloseEvent() {
+
+    let $noticeClose = document.querySelector('#card-check-tools .notice__close');
+
+    $noticeClose.addEventListener('click', function (e) {
+
+        e.preventDefault();
+
+        document.getElementById('card-check-tools').classList.remove('leyka-pf--notice-open');
+
+    })
+
+}
+
+bindNoticeCloseEvent();
 

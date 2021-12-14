@@ -162,7 +162,6 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
         }
         */
 
-
         $donation = Leyka_Donations::get_instance()->get_donation((int)$_POST['donation_id']);
 
         if($_POST['ProcReturnCode'] === '00') {
@@ -199,12 +198,16 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
                 [
                     '#SAVE_TEXT#',
                     '#SEND_TEXT#',
-                    '#DONATION_ID#'
+                    '#DONATION_ID#',
+                    '#CARD_CHECK_SENT_TEXT#',
+                    '#OK_TEXT#'
                 ],
                 [
                     __("Save", 'leyka'),
                     __("Send", 'leyka'),
-                    $donation->id
+                    $donation->id,
+                    sprintf(__("Card-check has been sent to <b> %s </b>", 'leyka'), $donation->donor_email),
+                    __("OK", 'leyka'),
                 ],
                 file_get_contents(LEYKA_PLUGIN_DIR.'gateways/demirbank/templates/parts/card_check_tools.html')
             );
@@ -231,6 +234,11 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
 
             if( is_page('thank-you-for-your-donation') === true && empty($_POST) === false ) {
 
+                wp_enqueue_style(
+                    'demirbank-card-check',
+                    LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_Demirbank_Gateway::get_instance()->id.'/css/leyka.demirbank.card_check.css'
+                );
+
                 wp_enqueue_script(
                     'leyka-demirbank-card-check',
                     LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_Demirbank_Gateway::get_instance()->id.'/js/leyka.demirbank.card_check.js',
@@ -248,7 +256,6 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
     protected function _get_card_check_text($donation) {
 
         $vars = json_decode($donation->gateway_response, true);
-
         $campaign_id = $donation->campaign_id;
         $campaign = new Leyka_Campaign($campaign_id);
 
