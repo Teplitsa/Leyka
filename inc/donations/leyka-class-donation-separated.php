@@ -11,7 +11,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             return $params;
         }
 
-        $params['date_created'] = $params['date_created'] ? $params['date_created'] : date('Y-m-d H:i:s');
+        $params['date_created'] = $params['date_created'] ? : current_time('mysql');
 
         $params['currency_id'] = empty($params['currency_id']) ?
             (empty($params['currency']) ? $params['currency'] : false) : $params['currency_id'];
@@ -23,7 +23,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             'payment_type' => $params['payment_type'],
             'date_created' => $params['date_created'],
             'gateway_id' => $params['gateway_id'] ? $params['gateway_id'] : '',
-            'pm_id' => $params['pm_id'] ? $params['pm_id'] : '',
+            'pm_id' => $params['pm_id'] ? : '',
             'currency_id' => $params['currency_id'],
             'amount' => $params['amount'],
             'amount_total' => $params['amount_total'],
@@ -301,7 +301,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'gateway':
             case 'gateway_id':
             case 'gw_id':
-                return $this->_main_data->gateway_id ? $this->_main_data->gateway_id : false;
+                return $this->_main_data->gateway_id ? : false;
 
             case 'pm_full_id':
                 return $this->_main_data->gateway_id && $this->_main_data->pm_id ?

@@ -2469,15 +2469,24 @@ function leyka_generate_csv($filename, array $rows, array $headings = [], $colum
     $encoded_csv = mb_convert_encoding($fputcsv, apply_filters('leyka_donations_export_content_charset', 'UTF-16LE'), 'UTF-8');
 
     // Output CSV-specific headers
-    header('Set-Cookie: fileDownload=true; path=/'); // The cookie is needed to trigger the success window
-    header("Pragma: public");
-    header("Expires: 0");
-    header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-    header("Cache-Control: private", false);
-    header("Content-Type: application/octet-stream");
-    header("Content-Disposition: attachment; filename=\"$filename.csv\";");
-    header("Content-Transfer-Encoding: binary");
-    header('Content-Length: '.mb_strlen($encoded_csv));
+//    header('Set-Cookie: fileDownload=true; path=/'); // The cookie is needed to trigger the success window
+//    header("Pragma: public");
+//    header("Expires: 0");
+//    header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+//    header("Cache-Control: private", false);
+//    header("Content-Type: application/octet-stream");
+//    header("Content-Disposition: attachment; filename=\"$filename.csv\";");
+//    header("Content-Transfer-Encoding: binary");
+//    header('Content-Length: '.mb_strlen($encoded_csv));
+
+    header('Content-type: application/vnd.ms-excel');
+    header('Content-Transfer-Encoding: binary');
+    header('Expires: 0');
+    header('Pragma: no-cache');
+    header('Content-Disposition: attachment; filename="donations-'.date('d.m.Y-H.i.s').'.csv"');
+
+//    header('Content-Disposition: attachment; filename="'.$filename.'.csv";');
+//    header('Content-Length: '.mb_strlen($encoded_csv));
 
     echo chr(255).chr(254).$encoded_csv; // PHP array convert to csv/excel
     exit;

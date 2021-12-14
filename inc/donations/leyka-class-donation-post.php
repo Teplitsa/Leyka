@@ -89,7 +89,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             'post_type' => Leyka_Donation_Management::$post_type,
             'post_status' => $params['status'],
             'post_title' => wp_strip_all_tags($params['payment_title']),
-            'post_date' => $params['date_created'],
+            'post_date' => $params['date_created'] ? : '',
             'post_name' => uniqid('donation-', true), // For fast WP_Post creation when DB already has lots of donations
             'post_parent' => $params['init_recurring_donation'],
             'post_author' => $params['donor_user_id'],

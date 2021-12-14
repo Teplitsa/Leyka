@@ -34,10 +34,12 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
         $this->_has_wizard = false;
         $this->_has_color_options = false;
         $this->_icon = LEYKA_PLUGIN_BASE_URL.'extensions/unisender/img/main_icon.jpeg';
-        $this->_unisender_system_fields = ['delete', 'tags', 'email', 'email_status', 'delete', 'email_availability',
+        $this->_unisender_system_fields = [
+            'delete', 'tags', 'email', 'email_status', 'delete', 'email_availability',
             'email_list_ids', 'email_subscribe_times', 'email_unsubscribed_list_ids', 'email_excluded_list_ids',
             'phone', 'phone_status', 'phone_availability', 'phone_list_ids', 'phone_subscribe_times',
-            'phone_unsubscribed_list_ids', 'phone_excluded_list_ids'];
+            'phone_unsubscribed_list_ids', 'phone_excluded_list_ids',
+        ];
 
     }
 
@@ -316,10 +318,9 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
 
     public function _show_subscription_result_metabox() {
 
-        if( !empty($_GET['donation']) ) { // Edit Donation page
+        if( !empty($_GET['donation']) && absint($_GET['donation']) ) { // Edit Donation page
 
-            $donation_id = $_GET['donation'];
-            $donation = Leyka_Donations::get_instance()->get($donation_id);
+            $donation = Leyka_Donations::get_instance()->get($_GET['donation']);
 
             if( !empty($donation->get_meta('unisender_subscription_response')) ) {
                 add_meta_box(
