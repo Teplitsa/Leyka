@@ -173,16 +173,6 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
 
         <div class="options-form-submits">
 
-            <a href="#" class="delete-extension-link" data-nonce="<?php echo wp_create_nonce('leyka_delete_extension_'.$this->_controller->extension->id);?>" data-extension-id="<?php echo $this->_controller->extension->id;?>">
-
-                <?php _e('Delete the extension', 'leyka');?>
-
-                <div class="loading-indicator-wrap" style="display: none;">
-                    <div class="loader-wrap"><span class="leyka-loader xs"></span></div>
-                </div>
-
-            </a>
-
             <div class="delete-extension-error error" style="display: none;"></div>
 
             <span class="buttons">
