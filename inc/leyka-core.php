@@ -1684,7 +1684,7 @@ class Leyka extends Leyka_Singleton {
 
         $leyka_rewrite_rules = [
             'campaign/([^/]+)/donations/?$' => 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter=$matches[1]',
-            'campaign/([^/]+)/donations/page/([1-9]{1,})/?$' =>
+            'campaign/([^/]+)/donations/page/([0-9]{1,})/?$' =>
                 'index.php?post_type='.Leyka_Donation_Management::$post_type.'&leyka_campaign_filter=$matches[1]&paged=$matches[2]',
         ];
 

@@ -1176,6 +1176,16 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'title' => __('The plugin usage statistics data synchronization is on', 'leyka'),
                 'short_format' => true,
             ],
+//            'data_export_files_encoding' => [
+//                'type' => 'select',
+//                'default' => 'CP1251//TRANSLIT//IGNORE',
+//                'title' => __('Data export files encoding', 'leyka'),
+//                'comment' => __('An encoding for all data export files (e.g, donations CSV lists).', 'leyka'),
+//                'list_entries' => [
+//                    'UTF-8' => __('UTF-8', 'leyka'),
+//                    'CP1251//TRANSLIT//IGNORE' => __('Windows-1251', 'leyka'),
+//                ],
+//            ],
         ];
     }
 

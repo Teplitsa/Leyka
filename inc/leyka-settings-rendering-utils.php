@@ -980,9 +980,7 @@ function leyka_multi_valued_item_campaign_subfields_html(array $placeholders = [
         'item_campaigns_exceptions_field_title' => __('Campaigns that will NOT use the item', 'leyka'),
         'item_campaigns_exceptions_field_placeholder' => __('Campaigns list', 'leyka'),
         'item_campaigns_exceptions' => [],
-    ]);
-
-    // TODO WARNING!!! Before the 3.22 release, change all 'field_campaigns', 'field_for_all_campaigns' & 'field_campaigns_exceptions' subfield names in DB for ALL EXTSTING ADDITIONAL FIELDS to the 'item_campaigns', 'item_for_all_campaigns' & 'item_campaigns_exceptions' respectively ?>
+    ]);?>
 
     <div class="single-line campaigns-list-select" <?php echo !!$placeholders['item_for_all_campaigns'] ? 'style="display:none;"' : '';?>>
 
