@@ -507,24 +507,13 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
         $this->items = apply_filters('leyka_donations_pre_export', self::_get_items(false));
 
-        add_filter('leyka_donations_export_line', 'leyka_prepare_data_line_for_export', 10, 2);
-
         ob_clean();
 
-        header('Content-type: application/vnd.ms-excel');
-        header('Content-Transfer-Encoding: binary');
-        header('Expires: 0');
-        header('Pragma: no-cache');
-        header('Content-Disposition: attachment; filename="donations-'.date('d.m.Y-H.i.s').'.csv"');
+        $columns = apply_filters('leyka_donations_export_headers', [
+            'ID', 'Имя донора', 'Email', 'Тип платежа', 'Плат. оператор', 'Способ платежа', 'Полная сумма', 'Итоговая сумма', 'Валюта', 'Дата пожертвования', 'Статус', 'Кампания', 'Назначение', 'Подписка на рассылку', 'Email подписки', 'Комментарий'
+        ]);
 
-        echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
-            'UTF-8',
-            apply_filters('leyka_donations_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
-            "sep=;\n".implode(';', apply_filters('leyka_donations_export_headers', [
-                'ID', 'Имя донора', 'Email', 'Тип платежа', 'Плат. оператор', 'Способ платежа', 'Полная сумма', 'Итоговая сумма', 'Валюта', 'Дата пожертвования', 'Статус', 'Кампания', 'Назначение', 'Подписка на рассылку', 'Email подписки', 'Комментарий'
-            ]))
-        );
-
+        $rows = [];
         foreach($this->items as $donation) { /** @var $donation Leyka_Donation_Base */
 
             $campaign = $donation->campaign;
@@ -544,36 +533,32 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
                 $donor_subscription = 'О кампании «'.$campaign->title.'»';
             }
 
-            echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
-                'UTF-8',
-                apply_filters('leyka_donations_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
-                "\r\n".implode(';', apply_filters(
-                    'leyka_donations_export_line',
-                    [
-                        $donation->id,
-                        $donation->donor_name,
-                        $donation->donor_email,
-                        $donation->payment_type_label,
-                        $donation->gateway_label,
-                        $donation->payment_method_label,
-                        str_replace('.', ',', $donation->amount),
-                        str_replace('.', ',', $donation->amount_total),
-                        $currency,
-                        $donation->date_time_label,
-                        $donation->status_label,
-                        $campaign->title,
-                        $campaign->payment_title,
-                        $donor_subscription,
-                        $donation->donor_subscription_email,
-                        $donation->donor_comment,
-                    ],
-                    $donation
-                ))
+            $rows[] = apply_filters(
+                'leyka_donations_export_line',
+                [
+                    $donation->id,
+                    $donation->donor_name,
+                    $donation->donor_email,
+                    $donation->payment_type_label,
+                    $donation->gateway_label,
+                    $donation->payment_method_label,
+                    str_replace('.', ',', $donation->amount),
+                    str_replace('.', ',', $donation->amount_total),
+                    $currency,
+                    $donation->date_time_label,
+                    $donation->status_label,
+                    $campaign->title,
+                    $campaign->payment_title,
+                    $donor_subscription,
+                    $donation->donor_subscription_email,
+                    $donation->donor_comment,
+                ],
+                $donation
             );
 
         }
 
-        die();
+        leyka_generate_csv('donations-'.date('d.m.Y-H.i.s'), $rows, $columns); // It will exit automatically
 
     }
 

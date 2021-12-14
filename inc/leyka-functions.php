@@ -2271,10 +2271,11 @@ function leyka_get_dm_list_or_alternatives() {
 
 /** Service function to prepare a singular object data value for export as a CSV cell. */
 function leyka_export_data_prepare($text) {
-    return '"'.str_replace([';', '"'], ['', ''], $text).'"';
+    return str_replace(['"'], [''], $text);
 }
 
 /** Service function to prepare some object data array for export as a CSV line. */
+/** @todo When/if all data export is refactored to use the leyka_generate_csv() function, remove this function & all hooks that use it */
 function leyka_prepare_data_line_for_export(array $line_data) {
 
     foreach($line_data as &$data) {
@@ -2448,23 +2449,24 @@ if( !function_exists('leyka_get_donations_storage_type') ) {
 }
 
 /** @todo Try to use this function to generate all CSV import files - it may fix the encoding issues on some Excel versions */
-function leyka_generate_csv($filename, array $headings = [], array $data = []) {
+function leyka_generate_csv($filename, array $rows, array $headings = [], $column_sep = "\t", $line_sep = "\n") {
 
-    // 1. Use tab as field separator:
-    $column_separator = "\t";
-    $line_separator = "\n";
-
-    $fputcsv = count($headings) ? '"'.implode('"'.$column_separator.'"', $headings).'"'.$line_separator : '';
+    // 1. Use tab as column separator:
+    $fputcsv = count($headings) ? '"'.implode('"'.$column_sep.'"', $headings).'"'.$line_sep : '';
 
     // 2. Loop over the * to export:
-    if($data) {
-        foreach($data as $item) {
-            $fputcsv .= '"'.implode('"'.$column_separator.'"', $item).'"'.$line_separator;
+    if($rows) {
+        foreach($rows as $row_array) {
+
+            array_walk($row_array, function(&$item){ $item = leyka_export_data_prepare($item); });
+
+            $fputcsv .= '"'.implode('"'.$column_sep.'"', $row_array).'"'.$line_sep;
+
         }
     }
 
     // 3. Convert CSV to UTF-16:
-    $encoded_csv = mb_convert_encoding($fputcsv, 'UTF-16LE', 'UTF-8');
+    $encoded_csv = mb_convert_encoding($fputcsv, apply_filters('leyka_donations_export_content_charset', 'UTF-16LE'), 'UTF-8');
 
     // Output CSV-specific headers
     header('Set-Cookie: fileDownload=true; path=/'); // The cookie is needed to trigger the success window
