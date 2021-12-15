@@ -597,6 +597,10 @@ function leyka_get_donation_type_description($type) {
 
 }
 
+function leyka_get_donor_types() {
+    return Leyka::get_donor_types();
+}
+
 function leyka_get_pm_categories_list() {
     return apply_filters('leyka_pm_categories', [
         'bank_cards' => __('Bank cards', 'leyka'),
@@ -2448,7 +2452,6 @@ if( !function_exists('leyka_get_donations_storage_type') ) {
     }
 }
 
-/** @todo Try to use this function to generate all CSV import files - it may fix the encoding issues on some Excel versions */
 function leyka_generate_csv($filename, array $rows, array $headings = [], $column_sep = "\t", $line_sep = "\n") {
 
     // 1. Use tab as column separator:
@@ -2465,30 +2468,21 @@ function leyka_generate_csv($filename, array $rows, array $headings = [], $colum
         }
     }
 
-    // 3. Convert CSV to UTF-16:
-    $encoded_csv = mb_convert_encoding($fputcsv, apply_filters('leyka_donations_export_content_charset', 'UTF-16LE'), 'UTF-8');
-
-    // Output CSV-specific headers
-//    header('Set-Cookie: fileDownload=true; path=/'); // The cookie is needed to trigger the success window
-//    header("Pragma: public");
-//    header("Expires: 0");
-//    header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-//    header("Cache-Control: private", false);
-//    header("Content-Type: application/octet-stream");
-//    header("Content-Disposition: attachment; filename=\"$filename.csv\";");
-//    header("Content-Transfer-Encoding: binary");
-//    header('Content-Length: '.mb_strlen($encoded_csv));
-
+    // 3. Output CSV-specific headers:
     header('Content-type: application/vnd.ms-excel');
     header('Content-Transfer-Encoding: binary');
     header('Expires: 0');
     header('Pragma: no-cache');
-    header('Content-Disposition: attachment; filename="donations-'.date('d.m.Y-H.i.s').'.csv"');
+    header('Content-Disposition: attachment; filename="'.$filename.'.csv"');
 
-//    header('Content-Disposition: attachment; filename="'.$filename.'.csv";');
-//    header('Content-Length: '.mb_strlen($encoded_csv));
+    echo chr(255)
+        .chr(254)
+        .mb_convert_encoding( // 4. PHP array, converted to string - encode it into UTF-16
+            $fputcsv,
+            apply_filters('leyka_export_content_charset', 'UTF-16LE'),
+            'UTF-8'
+        );
 
-    echo chr(255).chr(254).$encoded_csv; // PHP array convert to csv/excel
     exit;
 
 }

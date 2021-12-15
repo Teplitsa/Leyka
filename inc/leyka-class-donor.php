@@ -362,10 +362,7 @@ class Leyka_Donor {
 
             case 'type_label':
             case 'donor_type_label':
-                $labels = [
-                    'single' => _x('Single', "Donor's type", 'leyka'),
-                    'regular' => _x('Regular', "Donor's type", 'leyka'),
-                ];
+                $labels = leyka_get_donor_types();
                 return empty($this->_meta['type']) || empty($labels[$this->_meta['type']]) ? '' : $labels[$this->_meta['type']];
 
             case 'first_donation_id':

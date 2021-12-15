@@ -461,71 +461,55 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
 
         $this->items = $this->_get_items();
 
-        add_filter('leyka_recurring_subscriptions_export_line', 'leyka_prepare_data_line_for_export', 10, 2);
-
         ob_clean();
 
-        header('Content-type: application/vnd.ms-excel');
-        header('Content-Transfer-Encoding: binary');
-        header('Expires: 0');
-        header('Pragma: no-cache');
-
-        header('Content-Disposition: attachment; filename="recurring_subscriptions-'.date('d.m.Y-H.i.s').'.csv"');
-
-        echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
-            'UTF-8',
-            apply_filters('leyka_recurring_subscriptions_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
-            "sep=;\n".implode(';', apply_filters('leyka_recurring_subscriptions_export_headers', [
-                'ID', 'Статус подписки', 'Имя донора', 'Email', 'Кампания', 'Дата первого пожертвования', 'Дата следующего пожертвования', 'Всего пожертвований', 'Платёжный оператор', 'Сумма подписки', 'Валюта',
-            ]))
-        );
+        $columns = apply_filters('leyka_recurring_subscriptions_export_headers', [
+            'ID', 'Статус подписки', 'Имя донора', 'Email', 'Кампания', 'Дата первого пожертвования', 'Дата следующего пожертвования', 'Всего пожертвований', 'Платёжный оператор', 'Сумма подписки', 'Валюта',
+        ]);
 
         $date_format = get_option('date_format');
 
+        $rows = [];
         foreach($this->items as $item) {
 
             $pm = leyka_get_pm_by_id($item['gateway_pm'], true);
             $gateway = leyka_get_gateway_by_id($pm->gateway_id);
 
             $currency = $item['first_donation']->currency_label;
-            $currency_label_encoded = @iconv( // Sometimes currency sighs can't be encoded, so check for it
-                'UTF-8',
-                apply_filters('leyka_recurring_subscriptions_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
-                $currency
-            );
-            $currency = $currency_label_encoded ? $currency : $item['first_donation']->currency;
+//            $currency_label_encoded = @iconv( // Sometimes currency sighs can't be encoded, so check for it
+//                'UTF-8',
+//                apply_filters('leyka_recurring_subscriptions_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
+//                $currency
+//            );
+//            $currency = $currency_label_encoded ? $currency : $item['first_donation']->currency;
 
-            echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
-                'UTF-8',
-                apply_filters('leyka_recurring_subscriptions_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
-                "\r\n".implode(';', apply_filters(
-                    'leyka_recurring_subscriptions_export_line',
-                    [
-                        $item['id'],
-                        empty($item['status']) ?
-                            _x('not active', '[about recurring subscription]', 'leyka') :
-                            _x('active', '[about recurring subscription]', 'leyka'),
-                        empty($item['donor']['name']) ? '' : $item['donor']['name'],
-                        empty($item['donor']['email']) ? '' : $item['donor']['email'],
-                        empty($item['campaign']['title']) ? 'Кампания #'.$item['campaign']['id'] : $item['campaign']['title'],
-                        $item['first_donation']->date_time_label,
-                        apply_filters(
-                            'leyka_admin_donation_date',
-                            date($date_format, $item['next_donation']),
-                            $item['next_donation'], $date_format
-                        ),
-                        $item['donations_number'],
-                        $gateway->label.', '.$pm->label,
-                        str_replace('.', ',', $item['first_donation']->amount),
-                        $currency,
-                    ],
-                    $item
-                ))
+            $rows[] = apply_filters(
+                'leyka_recurring_subscriptions_export_line',
+                [
+                    $item['id'],
+                    empty($item['status']) ?
+                        _x('not active', '[about recurring subscription]', 'leyka') :
+                        _x('active', '[about recurring subscription]', 'leyka'),
+                    empty($item['donor']['name']) ? '' : $item['donor']['name'],
+                    empty($item['donor']['email']) ? '' : $item['donor']['email'],
+                    empty($item['campaign']['title']) ? 'Кампания #'.$item['campaign']['id'] : $item['campaign']['title'],
+                    $item['first_donation']->date_time_label,
+                    apply_filters(
+                        'leyka_admin_donation_date',
+                        date($date_format, $item['next_donation']),
+                        $item['next_donation'], $date_format
+                    ),
+                    $item['donations_number'],
+                    $gateway->label.', '.$pm->label,
+                    str_replace('.', ',', $item['first_donation']->amount),
+                    $currency,
+                ],
+                $item
             );
 
         }
 
-        die();
+        leyka_generate_csv('recurring_subscriptions-'.date('d.m.Y-H.i.s'), $rows, $columns); // It will exit automatically
 
     }
 

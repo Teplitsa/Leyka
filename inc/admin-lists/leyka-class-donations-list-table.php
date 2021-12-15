@@ -221,6 +221,8 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
                 }
         }
 
+        return '';
+
     }
 
     /**
@@ -519,12 +521,12 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
             $campaign = $donation->campaign;
 
             $currency = $donation->currency_label;
-            $currency_label_encoded = @iconv( // Sometimes currency sighs can't be encoded, so check for it
-                'UTF-8',
-                apply_filters('leyka_donations_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
-                $currency
-            );
-            $currency = $currency_label_encoded ? $currency : $donation->currency_id;
+//            $currency_label_encoded = @iconv( // Sometimes currency sighs can't be encoded, so check for it
+//                'UTF-8',
+//                apply_filters('leyka_donations_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
+//                $currency
+//            );
+//            $currency = $currency_label_encoded ? $currency : $donation->currency_id;
 
             $donor_subscription = 'Нет';
             if($donation->donor_subscribed === true) {

@@ -1189,6 +1189,13 @@ class Leyka extends Leyka_Singleton {
 
     }
 
+    public static function get_donor_types() {
+        return apply_filters('leyka_donor_types', [
+            'single' => _x('Single', "Donor's type", 'leyka'),
+            'regular' => _x('Regular', "Donor's type", 'leyka'),
+        ]);
+    }
+
     /**
      * Retrieve all available campaign target states.
      *

@@ -836,25 +836,13 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         $this->items = self::_get_items();
 
-        add_filter('leyka_donors_export_line', 'leyka_prepare_data_line_for_export', 10, 2);
-
         ob_clean();
 
-        header('Content-type: application/vnd.ms-excel');
-        header('Content-Transfer-Encoding: binary');
-        header('Expires: 0');
-        header('Pragma: no-cache');
+        $columns = apply_filters('leyka_donors_export_headers', [
+            'ID', 'Тип донора', 'Имя', 'Email', 'Дата первого пожертвования', 'Сумма первого пожертвования', 'Кампания первого пожертвования', 'Метки донора', 'Кампании', 'Платёжные операторы', 'Дата последнего пожертвования', 'Сумма последнего пожертвования', 'Кампания последнего пожертвования', 'Общая сумма пожертвований', 'Валюта',
+        ]);
 
-        header('Content-Disposition: attachment; filename="donors-'.date('d.m.Y-H.i.s').'.csv"');
-
-        echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
-            'UTF-8',
-            apply_filters('leyka_donors_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
-            "sep=;\n".implode(';', apply_filters('leyka_donors_export_headers', [
-                'ID', 'Тип донора', 'Имя', 'Email', 'Дата первого пожертвования', 'Сумма первого пожертвования', 'Кампания первого пожертвования', 'Метки донора', 'Кампании', 'Платёжные операторы', 'Дата последнего пожертвования', 'Сумма последнего пожертвования', 'Кампания последнего пожертвования', 'Общая сумма пожертвований', 'Валюта',
-            ]))
-        );
-
+        $rows = [];
         foreach($this->items as $donor_data) {
 
             $first_donation = $donor_data['first_donation'] ?
@@ -896,39 +884,36 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             $donor_gateways_list = implode(', ', $donor_gateways_list);
 
             $currency = leyka_get_currency_label();
-            $currency_label_encoded = @iconv( // Sometimes currency sighs symbols can't be encoded, so check for it
-                'UTF-8',
-                apply_filters('leyka_donations_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
-                $currency
-            );
-            $currency = $currency_label_encoded ? $currency : leyka_options()->opt_safe('currency_main');
+//            $currency_label_encoded = @iconv( // Sometimes currency sighs symbols can't be encoded, so check for it
+//                'UTF-8',
+//                apply_filters('leyka_donations_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
+//                $currency
+//            );
+//            $currency = $currency_label_encoded ? $currency : leyka_options()->opt_safe('currency_main');
 
-            echo @iconv( // @ to avoid notices about illegal chars that happen in the line sometimes
-                'UTF-8',
-                apply_filters('leyka_donations_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
-                "\r\n".implode(';', apply_filters('leyka_donors_export_line', [
-                        $donor_data['donor_id'],
-                        _x(mb_ucfirst($donor_data['donor_type']), 'Donor type', 'leyka'),
-                        $donor_data['donor_name'],
-                        $donor_data['donor_email'],
-                        ($first_donation ? $first_donation->date_time_label : ''),
-                        ($first_donation ? str_replace('.', ',', $first_donation->amount) : ''),
-                        ($first_donation ? $first_donation->campaign_title : ''),
-                        $donor_tags_list,
-                        $donor_campaigns_list,
-                        $donor_gateways_list,
-                        ($last_donation ? $last_donation->date_time_label : ''),
-                        ($last_donation ? str_replace('.', ',', $last_donation->amount) : ''),
-                        ($last_donation ? $last_donation->campaign_title : ''),
-                        $donor_data['amount_donated'],
-                        $currency,
-                    ], $donor_data)
-                )
-            );
+            $donors_types_labels = leyka_get_donor_types();
+
+            $rows[] = apply_filters('leyka_donors_export_line', [
+                $donor_data['donor_id'],
+                $donors_types_labels[$donor_data['donor_type']],
+                $donor_data['donor_name'],
+                $donor_data['donor_email'],
+                ($first_donation ? $first_donation->date_time_label : ''),
+                ($first_donation ? str_replace('.', ',', $first_donation->amount) : ''),
+                ($first_donation ? $first_donation->campaign_title : ''),
+                $donor_tags_list,
+                $donor_campaigns_list,
+                $donor_gateways_list,
+                ($last_donation ? $last_donation->date_time_label : ''),
+                ($last_donation ? str_replace('.', ',', $last_donation->amount) : ''),
+                ($last_donation ? $last_donation->campaign_title : ''),
+                $donor_data['amount_donated'],
+                $currency,
+            ], $donor_data);
 
         }
 
-        die();
+        leyka_generate_csv('donors-'.date('d.m.Y-H.i.s'), $rows, $columns); // It will exit automatically
 
     }
 
