@@ -895,7 +895,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
             $rows[] = apply_filters('leyka_donors_export_line', [
                 $donor_data['donor_id'],
-                $donors_types_labels[$donor_data['donor_type']],
+                mb_strtolower($donors_types_labels[$donor_data['donor_type']]),
                 $donor_data['donor_name'],
                 $donor_data['donor_email'],
                 ($first_donation ? $first_donation->date_time_label : ''),
