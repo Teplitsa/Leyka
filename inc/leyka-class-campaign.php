@@ -332,7 +332,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             </div>
         </fieldset>
 
-        <fieldset id="donations-types" class="metabox-field campaign-field donaitons-types" style="<?php echo $campaign->daily_rouble_mode_on ? 'display: none;' : '';?>">
+        <fieldset id="donations-types" class="metabox-field campaign-field donations-types" style="<?php echo $campaign->daily_rouble_mode_on ? 'display: none;' : '';?>">
 
             <h3 class="field-title"><?php _e('Donations types available', 'leyka');?></h3>
 
@@ -393,7 +393,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             <?php if($campaign->target) {
 
                 $percentage = round(($campaign->total_funded / $campaign->target) * 100, 1);
-                $percentage = $percentage > 100 ? 100 : $percentage;
+                $percentage = min($percentage, 100);
 
                 echo sprintf(__('Currently collected: %.01f%%', 'leyka'), $percentage);?>
 
@@ -457,7 +457,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
 	    <?php }?>
 
-        <fieldset id="campaign-form-content-position" class="metabox-field campaign-field campaign-form-content-position">
+        <fieldset id="campaign-form-content-position" class="metabox-field campaign-field campaign-form-content-position temporary-campaign-fields">
 
             <h3 class="field-title"><?php _e('Display donations form on the campaign page:', 'leyka');?></h3>
 
@@ -1720,7 +1720,7 @@ class Leyka_Campaign {
 				return $this->_campaign_meta['is_finished'];
 
             case 'form_content_position':
-                return $this->_campaign_meta['form_content_position'];
+                return $this->type === 'persistent' ? 'before-content' : $this->_campaign_meta['form_content_position'];
 
             case 'ignore_view_settings':
             case 'ignore_global_template':
