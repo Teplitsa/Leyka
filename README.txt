@@ -1,11 +1,11 @@
 === Leyka ===
-Contributors: Ahaenor, foralien, denis.cherniatev
+Contributors: Ahaenor, foralien, denis.cherniatev, burdianov
 Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: лейка, crowdfunding, fundraising, donations, recurring donations, charity, leyka, recurring, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, yoomoney, chronopay, sms, yookassa, миксплат, mixplat, paypal, paymaster, qiwi, киви, stripe, страйп, gds, google data studio
 Requires at least: 3.6.1
-Tested up to: 5.8.1
-Stable tag: 3.20.0.1
+Tested up to: 5.8.2
+Stable tag: 3.22
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,21 @@ For technical support questions, please, use the [plugin support email](maillto:
 5. The plugin start page (a console)
 
 == Changelog ==
+= 3.22 =
+* New: Kyrgyzstan country support & DemiBank gateway added.
+* New: Merchandise/Rewards extension v.2 added.
+* New: Donations API improved.
+* New: new "Subscription Rebills/Donations list" metabox added for recurring subsctiption Donation info pages.
+* New: new Campaign setting added - "display Donations form before/after the content on Campaign page".
+* New: Campaign settings page UI - new additions/improvements.
+* New: Campaign cards blocks for Gutenberg added.
+* Fix: important fix for Polylang incompatibility since v.3.21.
+* Fix: failure widget displaying irrelevant of template option value fixed.
+* Fix: Small CSS fixes.
+~ Tweak: Donation export refactored for better compatibility with MacOS Excel, Google Sheets & other platforms/software.
+* Removed: Quittance user manual link removed from the gateway settings page.
+* Removed: Extension deletion links are removed.
+
 = 3.21 =
 * New: now admins' & donors' email notifications about failed donations may be turned off.
 * New: the campaign total funded amount recalculation feature returned.
