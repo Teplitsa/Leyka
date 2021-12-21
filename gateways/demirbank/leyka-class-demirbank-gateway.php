@@ -60,6 +60,12 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
                 'is_password' => true,
                 'required' => true
             ],
+            'demirbank_3d_post_url' => [
+                'type' => 'text',
+                'title' => __('3D Post URL', 'leyka'),
+                'comment' => __('Please, enter Demirbank 3D Post URL here.', 'leyka'),
+                'required' => true
+            ],
             'demirbank_support_email' => [
                 'type' => 'text',
                 'title' => __('Support email'),
@@ -73,6 +79,7 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
     public function is_setup_complete($pm_id = false) {
         return leyka_options()->opt('demirbank_client_id')
             && leyka_options()->opt('demirbank_store_key')
+            && leyka_options()->opt('demirbank_3d_post_url')
             && leyka_options()->opt('demirbank_support_email');
     }
 
@@ -85,7 +92,7 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) { }
 
     public function submission_redirect_url($current_url, $pm_id) {
-        return 'https://entegrasyon.asseco-see.com.tr/fim/est3Dgate';
+        return leyka_options()->opt('demirbank_3d_post_url');
     }
 
     public function submission_form_data($form_data, $pm_id, $donation_id) {
@@ -96,7 +103,7 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
             'amount' => $form_data['leyka_donation_amount'],
             'islemtipi' => 'Auth',
             'taksit' => '',
-            'storetype' => '3d_Pay_Hosting',
+            'storetype' => '3D_PAY_HOSTING ',
             'okUrl' => leyka_get_success_page_url(),
             'failUrl' => leyka_get_failure_page_url(),
             'callbackUrl' => get_site_url().'/leyka/service/'.$this->_id.'/',
