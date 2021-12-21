@@ -133,6 +133,7 @@ class LeykaDummyData {
 
             }
         }
+
     }
 
     public function install_campaign_donations(Leyka_Campaign $campaign, $payments_count) {

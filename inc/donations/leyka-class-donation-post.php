@@ -185,6 +185,8 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 }
             }
 
+            $params['donor_user_id'] = Leyka_Donor::create_donor_from_donation($donation_id);
+
             $params['currency_id'] = empty($params['currency_id']) ?
                 (empty($params['currency']) ? $params['currency'] : false) : $params['currency_id'];
             $params['currency_id'] = $params['currency_id'] && leyka_get_currencies_full_info($params['currency_id']) ?
@@ -217,8 +219,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
             if($params['payment_type'] === 'rebill') {
 
-                $donor = get_user_by('email', $params['donor_email']);
-                $params['donor_user_id'] = $donor ? $donor->get('ID') : 0;
+                $params['donor_user_id'] = $params['donor_user_id'] ?: 0;
 
                 $donation_meta_fields['_rebilling_is_active'] = $params['status'] === 'failed';
 
@@ -270,6 +271,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             remove_all_actions('save_post_'.Leyka_Donation_Management::$post_type);
 
             $meta_field_loop_index = 0;
+
             foreach($donation_meta_fields as $key => $value) {
 
                 $postmeta_sql = $index === 0 && $meta_field_loop_index === 0 ? $postmeta_sql : $postmeta_sql.',';
