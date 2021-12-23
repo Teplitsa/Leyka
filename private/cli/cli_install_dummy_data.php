@@ -44,8 +44,10 @@ class LeykaDummyData {
     public $data = [];
 
     public function __construct() {
+
         $this->_get_data();
         $this->_update_dummy_data_settings();
+
     }
 
     public function install_settings() {
@@ -144,6 +146,7 @@ class LeykaDummyData {
         }
 
         $donors_constructor_data = $this->data['donors_constructor'];
+        $campaign_payments_sum = 0;
 
         for($i = 0; $i < $payments_count; $i++ ) {
 
@@ -195,12 +198,14 @@ class LeykaDummyData {
         $max = null;
 
         foreach($proportions as $proportion_title => $proportion_value) {
+
             $min = $min ? $max : 0;
             $max = $max ? $max + $proportion_value : $proportion_value;
 
             if($rnd > $min && $rnd <= $max) {
                 return $proportion_title;
             }
+
         }
 
     }
@@ -212,14 +217,18 @@ class LeykaDummyData {
             $message = "\nВведите через запятую ".$def_var_value['description'].":\n\n";
 
             if(is_array($def_var_value['value'])) {
+
                 $idx = 1;
 
                 foreach($def_var_value['value'] as $part_title => $part_value) {
+
                     $message .= "\t${idx} цифра - % ${part_title}\n";
                     $idx++;
+
                 }
 
                 $message .= "\n\tПо умолчанию - ".implode(',', $def_var_value['value'])."\n";
+
             } else {
                 $message .= "\tПо умолчанию - ".$def_var_value['value']."\n";
             }
@@ -258,8 +267,10 @@ class LeykaDummyData {
         $raw_data_file_names = ['variables','leyka_settings','campaigns','donors_constructor','payment_methods'];
 
         foreach($raw_data_file_names as $raw_data_file_name) {
+
             $raw_data = file_get_contents(LEYKA_PLUGIN_DIR.'private/cli/dummy_data/'.$raw_data_file_name.'.json');
             $this->data[$raw_data_file_name] = json_decode($raw_data, true);
+
         }
 
     }

@@ -629,8 +629,8 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
     }
 
-    public function add_bulk(array $donations_params = [], $return_objects = false)
-    {
+    public function add_bulk(array $donations_params = [], $return_objects = false) {
+
         $donations_ids = Leyka_Donation_Post::add_bulk($donations_params);
 
         if($return_objects) {

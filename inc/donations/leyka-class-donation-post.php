@@ -156,6 +156,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 'post_name' => $post_name,
                 'params' => $params
             ];
+
         }
 
         $wpdb->query($posts_sql);
@@ -163,8 +164,10 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
         $posts_list = '';
 
         foreach($postsmeta_data as $index => $postmeta_data) {
+
             $posts_list = $index === 0 ? $posts_list : $posts_list.',';
             $posts_list .= "'".$postmeta_data['post_name']."'";
+
         }
 
         $posts_search_sql = "SELECT `ID`,`post_name` FROM `".$wpdb->base_prefix."posts` WHERE `post_name` in (".$posts_list.")";
