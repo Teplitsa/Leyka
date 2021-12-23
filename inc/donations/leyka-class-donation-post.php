@@ -173,7 +173,6 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
         $postmeta_sql = "INSERT INTO `".$wpdb->base_prefix."postmeta` (`post_id`,`meta_key`,`meta_value`) VALUES ";
 
         $init_rebills = [];
-        $disabled_init_rebills = [];
 
         foreach($postsmeta_data as $index => $postmeta_data) {
 
@@ -184,8 +183,6 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                     $donation_id = $post['ID'];
                 }
             }
-
-            $params['donor_user_id'] = Leyka_Donor::create_donor_from_donation($donation_id);
 
             $params['currency_id'] = empty($params['currency_id']) ?
                 (empty($params['currency']) ? $params['currency'] : false) : $params['currency_id'];
@@ -219,41 +216,26 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
             if($params['payment_type'] === 'rebill') {
 
-                $params['donor_user_id'] = $params['donor_user_id'] ?: 0;
-
-                $donation_meta_fields['_rebilling_is_active'] = $params['status'] === 'failed';
+                $donation_meta_fields['_rebilling_is_active'] = true;
 
                 if (rand(1, 5) > 1 && sizeof($init_rebills) > 0) { // non-init rebill
 
-                    $donation_meta_fields['init_recurring_donation'] = $init_rebills[rand(0, sizeof($init_rebills) - 1)];
+                    $init_recurring_donation_data = $init_rebills[rand(0, sizeof($init_rebills) - 1)];
+
+                    $donation_meta_fields['init_recurring_donation'] = $init_recurring_donation_data['id'];
+                    $donation_meta_fields['leyka_payment_method'] = $init_recurring_donation_data['pm_id'];
 
                     $wpdb->update(
                         $wpdb->base_prefix."posts",
                         [
-                            'post_parent' => $donation_meta_fields['init_recurring_donation'],
-                            'post_author' => $params['donor_user_id']
+                            'post_parent' => $donation_meta_fields['init_recurring_donation']
                         ],
                         ['ID' => $donation_id]);
 
-
-                    if ($params['status'] === 'failed') {
-
-                        $disabled_init_rebills[] = $donation_meta_fields['init_recurring_donation'];
-
-                        unset($init_rebills[array_search($donation_meta_fields['init_recurring_donation'], $init_rebills)]);
-                        $init_rebills = array_values($init_rebills);
-
-                    }
-
                 } else {
 
-                    $wpdb->update(
-                        $wpdb->base_prefix."posts",
-                        ['post_author' => $params['donor_user_id']],
-                        ['ID' => $donation_id]);
-
                     if($params['status'] === 'funded') {
-                        $init_rebills[] = $donation_id;
+                        $init_rebills[] = ['id' => $donation_id, 'pm_id' => $params['pm_id']];
                     }
 
                 }
@@ -293,10 +275,6 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
         }
 
         $wpdb->query($postmeta_sql);
-
-        $rebills_to_disable_recurring_string = implode(',', $disabled_init_rebills);
-        $rebills_to_disable_recurring_sql = "UPDATE `".$wpdb->base_prefix."postmeta` SET `meta_value`= 0 WHERE `post_id` in ($rebills_to_disable_recurring_string) and `meta_key` = '_rebilling_is_active'";
-        $wpdb->query($rebills_to_disable_recurring_sql);
 
         return $donations_ids;
 

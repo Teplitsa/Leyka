@@ -108,7 +108,6 @@ class LeykaDummyData {
 
             $payments_per_compaign = round((int)$this->data['variables']['donations_count']['value'] / sizeof($this->data['campaigns']));
             $this->install_campaign_donations($campaign, $payments_per_compaign);
-            $campaign->update_total_funded_amount();
             $campaign->refresh_target_state();
 
 			//finished campaign
@@ -146,56 +145,6 @@ class LeykaDummyData {
 
         $donors_constructor_data = $this->data['donors_constructor'];
 
-        /*
-        $init_rebills = [];
-
-        for($i = 0; $i < $payments_count; $i++ ) {
-
-            $gateway_id = $this->_get_proportion_part_title($this->data['variables']['gates_usage_proportions']['value']);
-            $payment_method_id = $available_pms[$gateway_id];
-            $donor_name =
-                $donors_constructor_data['first_names'][rand(0, sizeof($donors_constructor_data['first_names'])-1)]." ".
-                $donors_constructor_data['patronymics'][rand(0, sizeof($donors_constructor_data['patronymics'])-1)]." ".
-                $donors_constructor_data['last_names'][rand(0, sizeof($donors_constructor_data['last_names'])-1)];
-            $donor_email = $donors_constructor_data['emails'][rand(0, sizeof($donors_constructor_data['emails'])-1)];
-            $status = $this->_get_proportion_part_title($this->data['variables']['donations_statuses_proportions']['value']);
-            $payment_type = $i === 0 ?
-                'single' : $this->_get_proportion_part_title($this->data['variables']['donations_types_proportions']['value']);
-
-            $donation_data = [
-                'gateway_id' => $gateway_id,
-                'payment_method_id' => $payment_method_id,
-                'campaign_id' => $campaign->ID,
-                'purpose_text' => $campaign->title,
-                'status' => $status,
-                'payment_type' => $payment_type,
-                'amount' => round(rand(10, 1000), -1),
-                'currency' => 'rub',
-                'donor_name' => $donor_name,
-                'donor_email' => $donor_email,
-                'is_test_mode' => true
-            ];
-
-            if($payment_type === 'rebill') {
-
-                $donation_data['recurring_is_active'] = true;
-
-                if(rand(1, 5) > 1 && sizeof($init_rebills) > 0) { // non-init rebill
-                    $donation_data['init_recurring_donation'] = $init_rebills[rand(0, sizeof($init_rebills) - 1)];
-                }
-            }
-
-            $donation_id = Leyka_Donations::get_instance()->add($donation_data);
-
-            if($payment_type === 'rebill' && $status === 'funded' && empty($donation_data['init_recurring_donation'])) {
-                $init_rebills[] = $donation_id;
-            }
-
-        }
-        */
-
-        $donations_data = [];
-
         for($i = 0; $i < $payments_count; $i++ ) {
 
             $gateway_id = $this->_get_proportion_part_title($this->data['variables']['gates_usage_proportions']['value']);
@@ -225,10 +174,15 @@ class LeykaDummyData {
             ];
 
             $donations_data[] = $donation_data;
+            $campaign_payments_sum += (int)$donation_data['amount'];
 
         }
 
         Leyka_Donations::get_instance()->add_bulk($donations_data);
+
+        $campaign->total_funded = $campaign_payments_sum;
+
+        update_post_meta($campaign->id, 'total_funded', $campaign_payments_sum);
 
         fwrite(STDOUT,$payments_count.' donations installed for "'.$campaign->name.'" campaign'.PHP_EOL);
 
