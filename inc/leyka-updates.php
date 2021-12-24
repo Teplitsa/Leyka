@@ -236,6 +236,6 @@ function leyka_handle_plugin_update() {
         update_option('leyka_init_wizard_redirect', true);
     }
 
-//    update_option('leyka_last_ver', LEYKA_VERSION); // TMP
+    update_option('leyka_last_ver', LEYKA_VERSION);
 
 }
