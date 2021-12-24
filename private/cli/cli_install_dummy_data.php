@@ -181,7 +181,7 @@ class LeykaDummyData {
 
         }
 
-        Leyka_Donations::get_instance()->add_bulk($donations_data);
+        Leyka_Donations::get_instance()->add_bulk($donations_data, 1000);
 
         $campaign->total_funded = $campaign_payments_sum;
 

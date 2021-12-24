@@ -92,7 +92,7 @@ abstract class Leyka_Donations extends Leyka_Singleton {
      * @param $return_objects boolean True to return a Leyka_Donation_Base objects, false to return just a new donations IDs.
      * @return integer|WP_Error An ID of the new donation, WP_Error object if there was an error in the process
      */
-    abstract public function add_bulk(array $donations_params = [], $return_objects = false);
+    abstract public function add_bulk(array $donations_params = [], $chunk_size = null, $return_objects = false);
 
     /**
      * Helper to add a copy of given Donation.
@@ -629,9 +629,9 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
     }
 
-    public function add_bulk(array $donations_params = [], $return_objects = false) {
+    public function add_bulk(array $donations_params = [], $chunk_size = null, $return_objects = false) {
 
-        $donations_ids = Leyka_Donation_Post::add_bulk($donations_params);
+        $donations_ids = Leyka_Donation_Post::add_bulk($donations_params, $chunk_size);
 
         if($return_objects) {
 
@@ -1144,7 +1144,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
     }
 
-    public function add_bulk(array $donations_params = [], $return_objects = false)
+    public function add_bulk(array $donations_params = [], $chunk_size = null, $return_objects = false)
     {
         $donations_ids = Leyka_Donation_Separated::add_bulk($donations_params);
 
