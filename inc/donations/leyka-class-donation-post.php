@@ -255,6 +255,8 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
                         if($params['status'] === 'funded') {
                             $init_rebills[] = ['id' => $donation_id, 'pm_id' => $params['pm_id']];
+                        } else if($params['status'] === 'failed') {
+                            $donation_meta_fields['_rebilling_is_active'] = false;
                         }
 
                     }

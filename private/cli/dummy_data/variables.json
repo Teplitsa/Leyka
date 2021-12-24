@@ -3,6 +3,10 @@
     "description": "количество новых пожертвований",
     "value": 100
   },
+  "donations_chunk_size" : {
+    "description": "максимальное количество пожертвований обрабатываемое в 1 запросе на вставку/апдейт к бд",
+    "value": 2000
+  },
   "donations_types_proportions": {
     "description": "доли типов пожертвований",
     "value": {
