@@ -125,6 +125,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
     }
 
+    /** !NB - Use for dummy data creation only!  */
     public static function add_bulk(array $donations_params = [], $chunk_size = null) {
 
         global $wpdb;
@@ -133,9 +134,9 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
         $donations_chunks = [];
         $chunk_index = 0;
 
-        for ($i = 0; $i < sizeof($donations_params); $i++) {
+        for($i = 0; $i < sizeof($donations_params); $i++) {
 
-            if ($i !== 0 && $i%$chunk_size === 0) {
+            if($i !== 0 && $i%$chunk_size === 0) {
                 $chunk_index++;
             }
 
@@ -144,12 +145,15 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
         }
 
         $init_rebills = [];
+        $donations_ids = [];
 
-        foreach ($donations_chunks as $donations_chunk) {
+        foreach($donations_chunks as $donations_chunk) {
 
             $posts_sql = "INSERT INTO `".$wpdb->base_prefix."posts` (`post_author`,`post_title`,`post_excerpt`,`post_status`,`post_name`,`to_ping`,`pinged`,`guid`,`post_type`,`post_date`,`post_date_gmt`,`post_content`,`post_modified`,`post_modified_gmt`,`post_content_filtered`,`post_parent`,`ping_status`) VALUES ";
 
-            foreach ($donations_chunk as $index => $params) {
+            $postsmeta_data = [];
+
+            foreach($donations_chunk as $index => $params) {
 
                 $params = self::_handle_new_donation_params($params);
 
@@ -193,6 +197,8 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
             $postmeta_sql = "INSERT INTO `".$wpdb->base_prefix."postmeta` (`post_id`,`meta_key`,`meta_value`) VALUES ";
 
+            $chunk_init_rebills = [];
+
             foreach($postsmeta_data as $index => $postmeta_data) {
 
                 $params = $postmeta_data['params'];
@@ -202,11 +208,6 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                         $donation_id = $post['ID'];
                     }
                 }
-
-                $params['currency_id'] = empty($params['currency_id']) ?
-                    (empty($params['currency']) ? $params['currency'] : false) : $params['currency_id'];
-                $params['currency_id'] = $params['currency_id'] && leyka_get_currencies_full_info($params['currency_id']) ?
-                    $params['currency_id'] : leyka_get_country_currency();
 
                 $donation_meta_fields = [
                     'leyka_donation_amount' => $params['amount'],
@@ -221,57 +222,30 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                     'leyka_is_test_mode' => $params['is_test_mode']
                 ];
 
-                if($params['amount_total'] && $params['amount_total'] != $params['amount']) {
-                    $donation_meta_fields['leyka_donation_amount_total'] = $params['amount_total'];
-                }
-
-                if($params['additional_fields']) {
-                    $donation_meta_fields['leyka_additional_fields'] = $params['additional_fields'];
-                }
-
-                if($params['donor_comment']) {
-                    $donation_meta_fields['leyka_donor_comment'] = $params['donor_comment'];
-                }
-
                 if($params['payment_type'] === 'rebill') {
 
-                    $donation_meta_fields['_rebilling_is_active'] = true;
+                    $donation_meta_fields['_rebilling_is_active'] = 1;
 
-                    if (rand(1, 5) > 1 && sizeof($init_rebills) > 0) { // non-init rebill
+                    if(rand(1, 5) > 1 && sizeof($init_rebills) > 0) { // non-init rebill
 
                         $init_recurring_donation_data = $init_rebills[rand(0, sizeof($init_rebills) - 1)];
 
                         $donation_meta_fields['init_recurring_donation'] = $init_recurring_donation_data['id'];
                         $donation_meta_fields['leyka_payment_method'] = $init_recurring_donation_data['pm_id'];
 
-                        $wpdb->update(
-                            $wpdb->base_prefix."posts",
-                            [
-                                'post_parent' => $donation_meta_fields['init_recurring_donation']
-                            ],
-                            ['ID' => $donation_id]);
+                        $chunk_init_rebills[$donation_meta_fields['init_recurring_donation']][]= $donation_id;
 
                     } else {
 
                         if($params['status'] === 'funded') {
                             $init_rebills[] = ['id' => $donation_id, 'pm_id' => $params['pm_id']];
                         } else if($params['status'] === 'failed') {
-                            $donation_meta_fields['_rebilling_is_active'] = false;
+                            $donation_meta_fields['_rebilling_is_active'] = 0;
                         }
 
                     }
 
                 }
-
-                if($params['donor_subscribed']) {
-                    $donation_meta_fields['donor_subscribed'] = $params['donor_subscribed'];
-                }
-
-                if($params['ga_client_id']) {
-                    $donation_meta_fields['leyka_ga_client_id'] = $params['ga_client_id'];
-                }
-
-                remove_all_actions('save_post_'.Leyka_Donation_Management::$post_type);
 
                 $meta_field_loop_index = 0;
 
@@ -285,17 +259,25 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
                 $donations_ids[] = $donation_id;
 
-                if($params['gateway_id']) {
-                    do_action("leyka_{$params['gateway_id']}_add_donation_specific_data", $donation_id, $params);
-                }
-
-                if( !empty($donation_meta_fields['_rebilling_is_active']) ) {
-                    do_action('leyka_donation_recurring_activity_changed', $donation_id, $donation_meta_fields['_rebilling_is_active']);
-                }
-
             }
 
             $wpdb->query($postmeta_sql);
+
+            $rebills_parents_sql_set_part = '';
+            $chunk_rebills_ids_list = '';
+
+
+            foreach($chunk_init_rebills as $chunk_init_rebill_id => $chunk_init_rebill_rebills) {
+
+                $rebills_parents_sql_set_part .= "when ID in (".implode(',', $chunk_init_rebill_rebills).") then '".$chunk_init_rebill_id."' ";
+                $chunk_rebills_ids_list .= implode(',', $chunk_init_rebill_rebills);
+                $chunk_rebills_ids_list .= $chunk_init_rebill_rebills !==
+                    array_values(array_slice($chunk_init_rebills, -1))[0] ? ',' : '';
+
+            }
+
+            $rebills_parents_sql = "UPDATE ".$wpdb->base_prefix."posts SET post_parent = (case $rebills_parents_sql_set_part end) WHERE ID in ($chunk_rebills_ids_list)";
+            $wpdb->query($rebills_parents_sql);
 
         }
 

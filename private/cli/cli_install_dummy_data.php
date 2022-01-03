@@ -4,6 +4,7 @@ set_time_limit (0);
 ini_set('memory_limit','1024M');
 
 try {
+
     $time_start = microtime(true);
 
 	include('cli_common.php');
@@ -28,13 +29,17 @@ try {
 	fwrite(STDOUT, "done\n\n");
 	fwrite(STDOUT, 'Memory '.memory_get_usage(true).chr(10));
 	fwrite(STDOUT, 'Total execution time in seconds: ' . (microtime(true) - $time_start).chr(10).chr(10));
+
 }
+
 catch (TstNotCLIRunException $ex) {
 	echo $ex->getMessage() . "\n";
 }
+
 catch (TstCLIHostNotSetException $ex) {
 	echo $ex->getMessage() . "\n";
 }
+
 catch (Exception $ex) {
 	echo $ex;
 }
@@ -112,24 +117,25 @@ class LeykaDummyData {
             $this->install_campaign_donations($campaign, $payments_per_compaign);
             $campaign->refresh_target_state();
 
-			//finished campaign
 			if($campaign_data['finished'] === true) {
 				update_post_meta($campaign_id, 'is_finished', 1);
 			}
 
-            # add thumbnail
             if(isset($campaign_data['thumbnail'])) {
 
                 $file = $campaign_data['thumbnail'];
                 $path = WP_CONTENT_DIR.'/plugins/leyka/private/res/'.$file;
-
                 $test_path = $uploads['path'].'/'.$file;
+
                 if(!file_exists($test_path)) {
                     $thumb_id = LeykaDummyDataUtils::upload_img_from_path($path);
                 } else {
+
                     $a_url = $uploads['url'].'/'.$file;
                     $thumb_id = attachment_url_to_postid($a_url);
+
                 }
+
                 update_post_meta($campaign->ID, '_thumbnail_id', (int)$thumb_id);
 
             }
@@ -176,6 +182,7 @@ class LeykaDummyData {
                 'recurring_is_active' => $payment_type === 'rebill'
             ];
 
+            $donation_data["amount_total"] = $donation_data["amount"];
             $donations_data[] = $donation_data;
             $campaign_payments_sum += (int)$donation_data['amount'];
 
