@@ -83,7 +83,19 @@ class LeykaDummyDataUtils {
             if(sizeof($result) > 1) {
 
                 if(sizeof($result) === sizeof($default_value) && array_sum($result) === 100) {
-                    return $result;
+
+                    $result_item_index = 0;
+                    $new_value = [];
+
+                    foreach($default_value as $default_value_item_index => $default_value_item_data) {
+
+                        $new_value[$default_value_item_index] = $result[$result_item_index];
+                        $result_item_index++;
+
+                    }
+
+                    return $new_value;
+
                 } else {
                     return $default_value;
                 }

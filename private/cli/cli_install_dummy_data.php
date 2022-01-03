@@ -207,7 +207,7 @@ class LeykaDummyData {
         foreach($proportions as $proportion_title => $proportion_value) {
 
             $min = $min ? $max : 0;
-            $max = $max ? $max + $proportion_value : $proportion_value;
+            $max = $max ? $max + (int)$proportion_value : (int)$proportion_value;
 
             if($rnd > $min && $rnd <= $max) {
                 return $proportion_title;
@@ -249,7 +249,7 @@ class LeykaDummyData {
 
             if($this->data['variables'][$def_var_title]['value'] === $def_var_value['value']) {
 
-                fwrite(STDOUT,PHP_EOL.'Ошибка ввода! Взяты дефолтные значения. '.PHP_EOL);
+                fwrite(STDOUT,PHP_EOL.'Взяты дефолтные значения. '.PHP_EOL);
 
                 if(is_array($this->data['variables'][$def_var_title]['value'])) {
                     fwrite(
