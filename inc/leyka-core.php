@@ -1222,6 +1222,8 @@ class Leyka extends Leyka_Singleton {
         $params = wp_parse_args($params, [
             'activation_status' => null,
             'country_id' => leyka_options()->opt_safe('receiver_country'),
+            'orderby' => null,
+            'order' => 'desc',
         ]);
 
         if($params['activation_status'] && !in_array($params['activation_status'], ['active', 'inactive', 'activating'])) {
@@ -1248,6 +1250,28 @@ class Leyka extends Leyka_Singleton {
             }
 
             $gateways[$gateway->id] = $gateway;
+
+        }
+
+        if( !empty($params['orderby']) && in_array($params['orderby'], ['activation_status',]) ) {
+
+            $params['order'] = in_array(mb_strtolower($params['order']), ['asc', 'desc',]) ?
+                mb_strtolower($params['order']) : 'desc';
+
+            // Order by Gateway activation status, then by title:
+            usort($gateways, function(Leyka_Gateway $gateway_1, Leyka_Gateway $gateway_2){
+
+                $activation_status_1 = $gateway_1->get_activation_status();
+                $activation_status_2 = $gateway_2->get_activation_status();
+
+                if($activation_status_1 == $activation_status_2) {
+                    return strcmp($gateway_1->title, $gateway_2->title);
+                }
+
+                /** @todo $params['order'] isn't used now - can't pass the $params inside the closure. Find a way for it. */
+                return $activation_status_1 < $activation_status_2 ? -1 : 1;
+
+            });
 
         }
 

@@ -32,7 +32,7 @@
     
     <div class="modules-cards-list">
         
-    <?php foreach(leyka()->get_gateways() as $gateway) { /** @var $gateway Leyka_Gateway */
+    <?php foreach(leyka()->get_gateways(['orderby' => 'activation_status',]) as $gateway) { /** @var $gateway Leyka_Gateway */
 
         $gateway_activation_status = $gateway->get_activation_status();?>
 
