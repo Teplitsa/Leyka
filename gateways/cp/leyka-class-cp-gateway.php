@@ -351,6 +351,12 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                     $donation->status = 'funded';
                     Leyka_Donation_Management::send_all_emails($donation);
 
+                    // For the cases when CP recurring subscription is cancelled on Leyka, but is in fact active in CP
+                    // (so it's a successful rebill callback) - fix subscription activity in Leyka:
+                    if($donation->payment_type === 'rebill' && !$donation->recurring_is_active) {
+                        $donation->recurring_is_active = true;
+                    }
+
                     if( // GUA direct integration - "purchase" event:
                         leyka_options()->opt('use_gtm_ua_integration') === 'enchanced_ua_only'
                         && leyka_options()->opt('gtm_ua_tracking_id')

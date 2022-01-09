@@ -687,6 +687,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
                 $value = !!$value;
 
+                /** @var $init_recurring_donation Leyka_Donation_Base */
                 $init_recurring_donation = $this->init_recurring_donation;
                 if( !$init_recurring_donation ) {
                     return false;
