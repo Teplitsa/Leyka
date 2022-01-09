@@ -83,6 +83,12 @@ For technical support questions, please, use the [plugin support email](maillto:
 5. The plugin start page (a console)
 
 == Changelog ==
+= 3.23 =
+* New: now there's an option to allow turning off all nonce checks on public requests handling.
+* New: the Dashboard banner changed.
+* Fix: now each CP rebill callback handler automatically fixes the inactive subscription bug for its respective CP subscription.
+* Fix: small fixes.
+
 = 3.22 =
 * New: Kyrgyzstan country support & DemiBank gateway added.
 * New: Merchandise/Rewards extension v.2 added.
