@@ -179,14 +179,14 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'select',
                 'default' => leyka_get_default_success_page(),
                 'title' => __('Page of successful donation', 'leyka'),
-                'description' => __('Select a page for donor to redirect to when payment is successful.', 'leyka'),
+                'comment' => __('Select a page for donor to redirect to when payment is successful.', 'leyka'),
                 'list_entries' => 'leyka_get_pages_list',
             ],
             'failure_page' => [
                 'type' => 'select',
                 'default' => leyka_get_default_failure_page(),
                 'title' => __('Page of failed donation', 'leyka'),
-                'description' => __('Select a page for donor to redirect to when payment is failed for some reason.', 'leyka'),
+                'comment' => __('Select a page for donor to redirect to when payment is failed for some reason.', 'leyka'),
                 'list_entries' => 'leyka_get_pages_list',
             ],
             'donor_management_available' => [
@@ -207,7 +207,15 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'checkbox',
                 'default' => true,
                 'title' => __('Load plugin scripts only if necessary', 'leyka'),
-                'description' => __("Check this to load Leyka scripts and styles only on an applicable pages. If this box is unchecked, plugin will load it's scripts on every website page.", 'leyka'),
+                'comment' => __("Check this to load Leyka scripts and styles only on an applicable pages. If this box is unchecked, plugin will load it's scripts on every website page.", 'leyka'),
+                'short_format' => true,
+            ],
+            'check_nonce_on_public_donor_actions' => [
+                'type' => 'checkbox',
+                'default' => true,
+                'title' => __("On each donor's action, check if its submit request is unique", 'leyka'),
+                'comment' => __('WARNING: unchecking this option may compromise yor website security. Unckeck it ONLY if your website uses caching plugins, and your donors systematically encounter nonce check errors while trying to submit a donation.', 'leyka'),
+                'short_format' => true,
             ],
         ];
     }
@@ -835,7 +843,8 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'checkbox',
                 'default' => false,
                 'title' => __('Display donation comments in frontend', 'leyka'),
-                'description' => __('Check to show donors comments in the website frontend (e.g. in donation lists widgets)', 'leyka'),
+                'comment' => __('Check to show donors comments in the website frontend (e.g. in donation lists widgets)', 'leyka'),
+                'short_format' => true,
             ],
             'revo_template_show_thumbnail' => [
                 'type' => 'checkbox',
@@ -1154,7 +1163,8 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
             'donors_data_editable' => [ // donors_data_editable -> admin_donors_data_editable
                 'type' => 'checkbox',
                 'title' => __("You can edit donors' data for all donation types", 'leyka'),
-                'description' => __("Donation administrators and managers are allowed to edit donors' data for non-correctional donations.", 'leyka'),
+                'comment' => __("Check to allow donation administrators and managers to edit donors' data for all donations - even for non-correctional ones.", 'leyka'),
+                'short_format' => true,
             ],
             'plugin_demo_mode' => [
                 'type' => 'checkbox',

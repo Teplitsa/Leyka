@@ -52,7 +52,10 @@ class Leyka_Payment_Form {
             $errors[] = new WP_Error('auto_submit_detected', __('Sorry, donations auto-submitting is prohibited', 'leyka'));
         }
 
-        if(empty($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'leyka_payment_form')) {
+        if(
+            leyka_options()->opt('check_nonce_on_public_donor_actions')
+            && (empty($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'leyka_payment_form'))
+        ) {
             $errors[] = new WP_Error('wrong_form_submission', __('Wrong nonce in submitted form data', 'leyka'));
         }
 

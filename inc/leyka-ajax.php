@@ -1,6 +1,7 @@
 <?php if( !defined('WPINC') ) die;
 /** Different ajax handler functions */
 
+/** @todo Check if this handler & its request are still in use */
 function leyka_ajax_get_campaigns_list() {
 
     if(empty($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'leyka_get_campaigns_list_nonce')) {
@@ -191,7 +192,10 @@ add_action('wp_ajax_nopriv_leyka_ajax_get_gateway_redirect_data', 'leyka_get_gat
 
 function leyka_process_success_form(){
 
-    if(empty($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'leyka_donor_subscription')) {
+    if(
+        leyka_options()->opt('check_nonce_on_public_donor_actions')
+        && (empty($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'leyka_donor_subscription'))
+    ) {
         die(json_encode([
             'status' => 1,
             'message' => __('Wrong nonce in the submitted data', 'leyka'),
@@ -395,7 +399,10 @@ function leyka_setup_donor_password(){
 
     $res = ['status' => 'ok', 'message' => __('The password is set. Welcome to your personal account!', 'leyka')];
 
-    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_account_password_setup')) {
+    if(
+        leyka_options()->opt('check_nonce_on_public_donor_actions')
+        && (empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_account_password_setup'))
+    ) {
         $res = [
             'status' => 'error',
             'message' => sprintf(__('Wrong request. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_get_website_tech_support_email())
@@ -443,7 +450,10 @@ function leyka_donor_login(){
 
     $res = ['status' => 'ok', 'message' => __('You are logged in and will be redirected in a moment. Welcome to your personal account :)', 'leyka')];
 
-    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_donor_login')) {
+    if(
+        leyka_options()->opt('check_nonce_on_public_donor_actions')
+        && (empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_donor_login'))
+    ) {
         $res = [
             'status' => 'error',
             'message' => sprintf(__('Wrong request. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_get_website_tech_support_email())
@@ -491,7 +501,10 @@ function leyka_donor_password_reset_request(){
 
     $res = ['status' => 'ok', 'message' => __('Your password is ready to reset! Check your email for the confirmation link.', 'leyka')];
 
-    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_donor_password_reset')) {
+    if(
+        leyka_options()->opt('check_nonce_on_public_donor_actions')
+        && (empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_donor_password_reset'))
+    ) {
         $res = [
             'status' => 'error',
             'message' => sprintf(__('Wrong request. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_get_website_tech_support_email())
@@ -566,7 +579,10 @@ function leyka_get_donations_history_page() {
 
     $res = ['status' => 'ok', 'items_html' => ''];
 
-    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_get_donor_donations_history')) {
+    if(
+        leyka_options()->opt('check_nonce_on_public_donor_actions')
+        && (empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_get_donor_donations_history'))
+    ) {
         die(json_encode(['status' => 'error',]));
     }
 
@@ -592,7 +608,10 @@ add_action('wp_ajax_nopriv_leyka_get_donations_history_page', 'leyka_get_donatio
 
 function leyka_cancel_recurring_subscription(){
 
-    if(empty($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'leyka_cancel_subscription')) {
+    if(
+        leyka_options()->opt('check_nonce_on_public_donor_actions')
+        && (empty($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'leyka_cancel_subscription'))
+    ) {
         die(json_encode([
             'status' => 'error',
             'message' => sprintf(__('Wrong request. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_options()->opt('tech_support_email'))

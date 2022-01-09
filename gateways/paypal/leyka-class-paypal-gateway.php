@@ -1422,7 +1422,10 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
             case 'donation_update':
 
-                if(empty($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'leyka_payment_form')) {
+                if(
+                    leyka_options()->opt('check_nonce_on_public_donor_actions')
+                    && (empty($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'leyka_payment_form'))
+                ) {
                     die(json_encode(['status' => 1, 'message' => __('Wrong nonce in submitted form data', 'leyka'),]));
                 }
 
