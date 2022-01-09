@@ -476,6 +476,9 @@ class Leyka extends Leyka_Singleton {
 
         $this->apply_content_formatting(); // Internal formatting filters
 
+        // Plugin data placeholders in the Terms of service / Terms of PD pages content:
+        add_filter('the_content', [$this, 'apply_terms_pages_content_placeholders'], 100);
+
         // Currency rates auto refreshment - disabled for now
 
         if(class_exists('Leyka_Options_Controller')) {
@@ -1331,6 +1334,22 @@ class Leyka extends Leyka_Singleton {
         add_filter('leyka_the_content', 'convert_smilies');
         add_filter('leyka_the_content', 'convert_chars');
         add_filter('leyka_the_content', 'wpautop');
+
+    }
+
+    public function apply_terms_pages_content_placeholders($content) {
+
+        if(in_the_loop() && is_main_query()) {
+
+            if( is_page(leyka_options()->opt('terms_of_service_page')) ) {
+                $content = apply_filters('leyka_terms_of_service_text', $content);
+            } else if( is_page(leyka_options()->opt('terms_of_pd_page')) ) {
+                $content = apply_filters('leyka_terms_of_pd_usage_text', $content);
+            }
+
+        }
+
+        return $content;
 
     }
 
