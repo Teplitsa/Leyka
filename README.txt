@@ -4,7 +4,7 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: лейка, crowdfunding, fundraising, donations, recurring donations, charity, leyka, recurring, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, yoomoney, chronopay, sms, yookassa, миксплат, mixplat, paypal, paymaster, qiwi, киви, stripe, страйп, gds, google data studio
 Requires at least: 3.6.1
-Tested up to: 5.8.2
+Tested up to: 5.8.3
 Stable tag: 3.22
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -86,7 +86,9 @@ For technical support questions, please, use the [plugin support email](maillto:
 = 3.23 =
 * New: now there's an option to allow turning off all nonce checks on public requests handling.
 * New: the Dashboard banner changed.
+* New: now Payment settings admin page has Gateways list sorted.
 * Fix: now each CP rebill callback handler automatically fixes the inactive subscription bug for its respective CP subscription.
+* Fix: now placeholders in the Terms pages content are properly auto-replaced.
 * Fix: small fixes.
 
 = 3.22 =
