@@ -1685,8 +1685,8 @@ function leyka_calculate_donation_total_amount($donation = false, $amount = 0.0,
         $donation = Leyka_Donations::get_instance()->get_donation($donation);
     }
 
-    $amount = $amount ? $amount : ($donation ? $donation->amount : floatval($amount));
-    $pm_full_id = $pm_full_id ? $pm_full_id : ($donation ? $donation->pm_full_id : false);
+    $amount = $amount ? : ($donation ? $donation->amount : floatval($amount));
+    $pm_full_id = $pm_full_id ? : ($donation ? $donation->pm_full_id : false);
 
     if( !$amount || !$pm_full_id ) {
         return 0.0;

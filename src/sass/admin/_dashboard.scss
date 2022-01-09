@@ -72,9 +72,36 @@
                     line-height: 28px;
                 }
 
+                .banner-subtitle-upper {
+                    display: inline-block;
+                    padding: 6px 8px;
+                    margin-bottom: 16px;
+                    border-radius: 4px;
+
+                    font-weight: bold;
+                    font-size: 14px;
+                    line-height: 18px;
+                    text-transform: uppercase;
+                    background-color: $color-white;
+                    color: darken($color-main-green, 5.0);
+                }
+
                 .banner-title {
-                    font-size: 40px;
-                    line-height: 47px;
+                    font-size: 28px;
+                    font-weight: bold;
+                }
+
+                .banner-subtitle-lower {
+                    margin-top: 12px;
+
+                    font-weight: normal;
+                    font-size: 18px;
+                }
+
+                .banner-thumbnail {
+                    &.hands-picture { /** @todo TMP - just for this particular banner. REMOVE after the webinar (21.01.2022) */
+                        margin-bottom: -30px;
+                    }
                 }
 
             }
