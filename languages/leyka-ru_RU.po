@@ -8081,7 +8081,7 @@ msgstr "ID проекта в MIXPLAT"
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:15
 msgid "MIXPLAT (SMS)"
-msgstr "Миксплат (SMS платежи)"
+msgstr "MIXPLAT (SMS платежи)"
 
 #: inc/leyka-class-payment-form.php:79
 msgid "Incorrect donor email given while trying to add a donation"
