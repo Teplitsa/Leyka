@@ -1343,7 +1343,7 @@ class Leyka extends Leyka_Singleton {
 
             if( is_page(leyka_options()->opt('terms_of_service_page')) ) {
                 $content = apply_filters('leyka_terms_of_service_text', $content);
-            } else if( is_page(leyka_options()->opt('terms_of_pd_page')) ) {
+            } else if( is_page(leyka_options()->opt('pd_terms_page')) ) {
                 $content = apply_filters('leyka_terms_of_pd_usage_text', $content);
             }
 
