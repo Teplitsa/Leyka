@@ -85,11 +85,13 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
         if(Leyka_CP_Card::get_instance()->active) {
 
-            wp_enqueue_script('leyka-cp-widget', 'https://widget.cloudpayments.ru/bundles/cloudpayments', [], false, true);
+            $leyka_main_js_handle = wp_script_is('leyka-public') ? 'leyka-public' : 'leyka-new-templates-public';
+
+            wp_enqueue_script('leyka-cp-widget', 'https://widget.cloudpayments.ru/bundles/cloudpayments.js', [], false, true);
             wp_enqueue_script(
                 'leyka-cp',
                 LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_CP_Gateway::get_instance()->id.'/js/leyka.cp.js',
-                ['jquery', 'leyka-cp-widget', 'leyka-public',],
+                ['jquery', 'leyka-cp-widget', $leyka_main_js_handle,],
                 LEYKA_VERSION.'.001',
                 true
             );
@@ -146,6 +148,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             'amount' => number_format(floatval($donation->amount), 2, '.', ''),
             'currency' => $cp_currency,
             'payment_title' => $donation->payment_title,
+            'name' => $donation->donor_name,
             'donor_email' => $donation->donor_email,
             'success_page' => leyka_get_success_page_url(),
             'failure_page' => leyka_get_failure_page_url(),
