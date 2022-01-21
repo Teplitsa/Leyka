@@ -5237,6 +5237,12 @@ ul.ui-autocomplete.ui-menu li.ui-menu-item:hover {
     display: block;
 }
 
+.leyka-admin .leyka-options-section#payments_options .section-tabs-wrapper .section-tab-content .tab-content-options-wrapper .tab-section-options .delete-additional-field.delete-item {
+    margin-top: 24px;
+    color: red;
+    cursor: pointer;
+}
+
 .leyka-admin .leyka-options-section#currency_options .section-tabs-wrapper .section-tab-content .tab-content-options-wrapper .tab-section-options .field-component.field input:not([type=checkbox]):not([type=radio]), .leyka-admin .leyka-options-section#currency_options .section-tabs-wrapper .section-tab-content .tab-content-options-wrapper .tab-section-options .field-component.field select, .leyka-admin .leyka-options-section#currency_options .section-tabs-wrapper .section-tab-content .tab-content-options-wrapper .tab-section-options .field-component.field textarea {
   width: 248px;
 }

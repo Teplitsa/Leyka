@@ -2536,3 +2536,19 @@ function leyka_generate_csv($filename, array $rows, array $headings = [], $colum
     exit;
 
 }
+
+
+if( !function_exists('leyka_get_random_string') ) {
+    function leyka_get_random_string($length = 6) {
+
+        $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';
+        $result = '';
+
+        for($i = 0; $i < $length; $i++) {
+            $result .= $permitted_chars[ mt_rand(0, strlen($permitted_chars) - 1) ];
+        }
+
+        return $result;
+
+    }
+}
