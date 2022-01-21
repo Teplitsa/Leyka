@@ -340,29 +340,36 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
 
     protected function _get_meta_payments() {
 
+        $main_currency_id = leyka_get_country_currency();
+        $main_currencies = leyka_get_main_currencies_full_info();
+
+        if(empty($main_currencies[$main_currency_id])) {
+            return [];
+        }
+
         return [
-            'payments_single_tab_title' => [
+            "payments_single_tab_title" => [
                 'type' => 'text',
                 'default' => __('Single payments'),
                 'title' => __('Tab title', 'leyka'),
                 'required' => true,
                 'placeholder' => __('Single payments')
             ],
-            'payments_single_amounts_options' => [
+            "payments_single_{$main_currency_id}_amounts_options" => [
                 'type' => 'custom_payments_amounts_options',
                 'title' => __('Amounts options', 'leyka'),
                 'field_classes' => ['payments-amounts-options'],
                 'default' => [],
                 'payment_type' => 'single'
             ],
-            'payments_recurrent_tab_title' => [
+            "payments_recurrent_tab_title" => [
                 'type' => 'text',
                 'default' => __('Recurrent payments'),
                 'title' => __('Tab title', 'leyka'),
                 'required' => true,
                 'placeholder' => __('Recurrent payments')
             ],
-            'payments_recurrent_amounts_options' => [
+            "payments_recurrent_{$main_currency_id}_amounts_options" => [
                 'type' => 'custom_payments_amounts_options',
                 'title' => __('Amounts options', 'leyka'),
                 'field_classes' => ['payments-amounts-options'],

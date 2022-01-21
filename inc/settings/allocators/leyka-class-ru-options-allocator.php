@@ -48,14 +48,14 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
                 'title' => __('Single payment', 'leyka'),
                 'sections' => [
                     ['title' => '', 'options' => ["payments_single_tab_title"]],
-                    ['title' => '', 'options' => ["payments_single_amounts_options"]]
+                    ['title' => '', 'options' => ["payments_single_{$main_currency_id}_amounts_options"]]
                 ]
             ],
             'recurrent' => [
                 'title' => __('Recurrent payment', 'leyka'),
                 'sections' => [
                     ['title' => '', 'options' => ["payments_recurrent_tab_title"]],
-                    ['title' => '', 'options' => ["payments_recurrent_amounts_options"]]
+                    ['title' => '', 'options' => ["payments_recurrent_{$main_currency_id}_amounts_options"]]
                 ]
             ],
             'miscellaneous' => [
@@ -73,33 +73,6 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
         ];
 
         return $payments_options;
-    }
-
-    protected function _get_main_currency_options_tabs() {
-
-        $main_currency_id = leyka_get_country_currency();
-        $main_currencies = leyka_get_main_currencies_full_info();
-
-        if(empty($main_currencies[$main_currency_id])) {
-            return [];
-        }
-
-        return [
-            $main_currency_id.'_currency' => [
-                'title' => $main_currencies[$main_currency_id]['title'],
-                'sections' => [
-                    [
-                        'title' => '',
-                        'options' => [
-                            "currency_{$main_currency_id}_label", "currency_{$main_currency_id}_min_sum",
-                            "currency_{$main_currency_id}_max_sum", "currency_{$main_currency_id}_flexible_default_amount",
-                            "currency_{$main_currency_id}_fixed_amounts",
-                        ],
-                    ],
-                ],
-            ],
-        ];
-
     }
 
     protected function _get_secondary_currencies_options_tabs() {
@@ -498,18 +471,6 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
                     'options' => ['additional_donation_form_fields_library',],
                 ],
             ],
-            /*
-            [
-                'section' => [
-                    'name' => 'currency_options',
-                    'content_area_render' => 'leyka_render_tabbed_section_options_area',
-                    'title' => __('Currency settings', 'leyka'),
-                    'description' => __('Here you can change currency options', 'leyka'),
-                    'is_default_collapsed' => false,
-                    'tabs' => $this->_get_main_currency_options_tabs(),
-                ],
-            ],
-            */
             [
                 'section' => [
                     'name' => 'misc_view_settings',

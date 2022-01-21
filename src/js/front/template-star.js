@@ -206,11 +206,14 @@ jQuery(document).ready(function($){
 
     function showSelectedAmountDescription($form, amount_option_id) {
 
-        if( amount_option_id ) {
+        $amount_option_description = $form.find(`.section__fields.amount-description span[data-payment-amount-option-id = "${amount_option_id}"]`);
+
+        if(amount_option_id && $amount_option_description && $amount_option_description.text() !== '') {
 
             $form.find('.section__fields.amount-description').css('display', 'flex');
             $form.find('.section__fields.amount-description span').css('display', 'none');
-            $form.find(`.section__fields.amount-description span[data-payment-amount-option-id = "${amount_option_id}"]`).css('display', 'block');
+
+            $amount_option_description.css('display', 'block');
 
         } else {
             $form.find('.section__fields.amount-description').css('display', 'none');

@@ -59,12 +59,14 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         });
         // Additional Donation form fields Library - END
 
-        add_filter('leyka_option_value-payments_single_amounts_options', function($value){
-            return is_array($value) ? $value : [];
+        $main_currency_id = leyka_get_country_currency();
+
+        add_filter("leyka_option_default-payments_single_{$main_currency_id}_amounts_options", function($option_value){
+            return leyka_get_payments_amounts_options('single');
         });
 
-        add_filter('leyka_new_option_value-payments_single_amounts_options', function($option_value){
-            return is_array($option_value) ? $option_value : [];
+        add_filter("leyka_option_default-payments_recurrent_{$main_currency_id}_amounts_options", function($option_value){
+            return leyka_get_payments_amounts_options('recurrent');
         });
 
         // If Country option value changes, clear active PM lists:
@@ -519,7 +521,8 @@ class Leyka_Options_Controller extends Leyka_Singleton {
                 empty($option_data['default']) ? '' : $option_data['default']
             ),
         ];
-        $this->_options[$option_id] = array_merge($filtered_options, $this->_options[$option_id]);
+
+        $this->_options[$option_id] = array_merge($this->_options[$option_id], $filtered_options);
 
         return apply_filters('leyka_option_info-'.$option_id, $this->_options[$option_id]);
 

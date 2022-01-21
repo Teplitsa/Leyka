@@ -20,8 +20,8 @@ class Leyka_Star_Template_Controller extends Leyka_Template_Controller {
 
         if($amount_mode == 'fixed' || $amount_mode == 'mixed') {
             $amount_variants = [
-                'single' => leyka_options()->opt('payments_single_amounts_options'),
-                'recurrent' => leyka_options()->opt('payments_recurrent_amounts_options')
+                'single' => leyka_options()->opt_safe('payments_single_'.$main_currency_id.'_amounts_options'),
+                'recurrent' => leyka_options()->opt_safe('payments_recurrent_'.$main_currency_id.'_amounts_options')
             ];
         } else {
             $amount_variants = [];

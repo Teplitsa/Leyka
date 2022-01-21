@@ -1355,16 +1355,14 @@ function leyka_render_custom_payments_amounts_options_settings($option_id, $data
 
             <?php
 
-            $data['value'] = empty($data['value']) || !is_array($data['value']) ?
-                leyka_options()->opt($option_id) :
-                $data['value'];
+            $data['value'] = (empty($data['value']) || !is_array($data['value'])) && ( !empty($data['default']) && is_array($data['default'])) ?
+                $data['default'] : $data['value'];
 
             if($data['value'] && is_array($data['value'])) {
                 foreach($data['value'] as $amount_option_id => $amount_option_data) {
                     leyka_payments_amounts_options_html(false, [
                         'amount_option_id' => $amount_option_id,
                         'description' => empty($amount_option_data['description']) ? '' : $amount_option_data['description'],
-                        'campaign' => empty($amount_option_data['campaign']) ? '' : $amount_option_data['campaign'],
                         'payment_type' => $data['payment_type'],
                         'amount' => $amount_option_data['amount']
                     ]);
@@ -1373,7 +1371,6 @@ function leyka_render_custom_payments_amounts_options_settings($option_id, $data
                 leyka_payments_amounts_options_html(false, [
                     'amount_option_id' => leyka_get_random_string(4),
                     'description' => __('For small expenses','leyka'),
-                    'campaign' => [],
                     'payment_type' => $data['payment_type'],
                     'amount' =>  100
                 ]);
@@ -1386,14 +1383,13 @@ function leyka_render_custom_payments_amounts_options_settings($option_id, $data
         <?php leyka_payments_amounts_options_html(true, [
             'amount_option_id' => leyka_get_random_string(4),
             'description' => '',
-            'campaign' => [],
             'payment_type' => $data['payment_type'],
             'amount' => 0
         ]); // Additional field box template ?>
 
         <div class="add-field add-item bottom"><?php _e('Add field', 'leyka');?></div>
 
-        <input type="hidden" class="leyka-items-options" name="leyka_payments_<?php echo $data["payment_type"]; ?>_amounts_options" value="">
+        <input type="hidden" class="leyka-items-options" name="<?php echo $option_id; ?>" value="">
 
     </div>
 
@@ -1401,10 +1397,11 @@ function leyka_render_custom_payments_amounts_options_settings($option_id, $data
 
 }
 
-add_action('leyka_save_custom_option-payments_single_amounts_options', 'leyka_save_payments_amounts_options');
+$main_currency_id = leyka_options()->opt_safe('currency_main');
+add_action("leyka_save_custom_option-payments_single_".$main_currency_id."_amounts_options", 'leyka_save_payments_amounts_options');
 function leyka_save_payments_amounts_options() {
 
-    function save_payment_amounts_options($amounts_options, $payment_type) {
+    function save_payment_amounts_options($amounts_options, $payment_type, $currency_id) {
 
         $result = [];
 
@@ -1413,19 +1410,20 @@ function leyka_save_payments_amounts_options() {
             $amount_option_id = str_replace('item-', '', $amount_option['id']);
 
             $result[$amount_option_id] = [
-                'type' => 'custom_payments_amounts_options',
                 'amount' => $amount_option['leyka_payment_'.$payment_type.'_amount_'.$amount_option_id],
                 'description' => $amount_option['leyka_payment_'.$payment_type.'_description_'.$amount_option_id]
             ];
 
         }
 
-        leyka_options()->opt('payments_'.$payment_type.'_amounts_options', $result);
+        leyka_options()->opt('payments_'.$payment_type.'_'.$currency_id.'_amounts_options', $result);
 
     }
 
-    save_payment_amounts_options(json_decode(urldecode($_POST['leyka_payments_single_amounts_options']), true), 'single');
-    save_payment_amounts_options(json_decode(urldecode($_POST['leyka_payments_recurrent_amounts_options']), true), 'recurrent');
+    $currency_id = leyka_options()->opt_safe('currency_main');
+
+    save_payment_amounts_options(json_decode(urldecode($_POST['leyka_payments_single_'.$currency_id.'_amounts_options']), true), 'single', $currency_id);
+    save_payment_amounts_options(json_decode(urldecode($_POST['leyka_payments_recurrent_'.$currency_id.'_amounts_options']), true), 'recurrent', $currency_id);
 
 }
 // [Special field] Payments amounts options - END

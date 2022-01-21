@@ -1167,6 +1167,56 @@ function leyka_get_actual_currency_rates() {
     return [];
 }
 
+/**
+ * Get payments amounts options by the given payment type and currency.
+ * If no currency given, then currently selected receiver county will be used to get currency.
+ *
+ * @param string $currency_id
+ * @return mixed
+ */
+function leyka_get_payments_amounts_options($payment_type, $currency_id = null) {
+
+    $currency_id = $currency_id ? : leyka_options()->opt_safe('currency_main');
+
+    return leyka_options()->opt('payments_'.$payment_type.'_'.$currency_id.'_amounts_options') ?
+        leyka_options()->opt('payments_'.$payment_type.'_'.$currency_id.'_amounts_options') :
+        leyka_get_fixed_payments_amounts_options($currency_id);
+
+}
+
+/**
+ * Get fixed payments amounts options by the given currency.
+ *
+ * @param string $currency_id
+ * @return array|false
+ */
+function leyka_get_fixed_payments_amounts_options($currency_id) {
+
+    if (!$currency_id) {
+        return false;
+    }
+
+    $currency = leyka_get_currencies_data($currency_id);
+
+    $fixed_amounts_options = [];
+
+    if( !empty($currency['amount_settings']['fixed']) ) {
+
+        foreach(explode(',', $currency['amount_settings']['fixed']) as $fixed_amount) {
+
+            $fixed_amounts_options[leyka_get_random_string(4)] = [
+                'amount' => $fixed_amount,
+                'description' => ''
+            ];
+
+        }
+
+    }
+
+    return $fixed_amounts_options;
+
+}
+
 function leyka_get_campaigns_list($params = [], $simple_format = true) {
 
     $campaigns = get_posts(array_merge([
