@@ -59,6 +59,14 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         });
         // Additional Donation form fields Library - END
 
+        add_filter('leyka_option_value-payments_single_amounts_options', function($value){
+            return is_array($value) ? $value : [];
+        });
+
+        add_filter('leyka_new_option_value-payments_single_amounts_options', function($option_value){
+            return is_array($option_value) ? $option_value : [];
+        });
+
         // If Country option value changes, clear active PM lists:
         add_action('leyka_set_receiver_country_option_value', function($option_value){
 
@@ -135,6 +143,8 @@ class Leyka_Options_Controller extends Leyka_Singleton {
             $new_options_group_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta('org'); 
         } else if(stristr($option_id, 'person_') !== false) {
             $new_options_group_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta('person');
+        } else if(stristr($option_id, 'payments') !== false) {
+            $new_options_group_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta('payments');
         } else if(stristr($option_id, 'currency') !== false) {
             $new_options_group_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta('currency');
         } else if(stristr($option_id, 'email') !== false || stristr($option_id, 'notify') !== false) {

@@ -17,8 +17,12 @@ class Leyka_Star_Template_Controller extends Leyka_Template_Controller {
         $main_currency_id = leyka_options()->opt('currency_main');
         
         $amount_mode = leyka_options()->opt_template('donation_sum_field_type', 'star');
+
         if($amount_mode == 'fixed' || $amount_mode == 'mixed') {
-            $amount_variants = explode(',', $currencies[$main_currency_id]['amount_settings']['fixed']);
+            $amount_variants = [
+                'single' => leyka_options()->opt('payments_single_amounts_options'),
+                'recurrent' => leyka_options()->opt('payments_recurrent_amounts_options')
+            ];
         } else {
             $amount_variants = [];
         }

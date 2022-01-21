@@ -5800,6 +5800,21 @@ div[id*="leyka-pf-"].leyka-pf-star .leyka-tpl-star-form .section.section--descri
   margin-top: 32px;
 }
 
+div[id*="leyka-pf-"].leyka-pf-star .leyka-tpl-star-form .section__fields.amount-description {
+  background: #EAECF1;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 16px;
+  flex: none;
+  order: 3;
+  align-self: stretch;
+  flex-grow: 0;
+  margin: 20px 0px;
+}
+
 @media screen and (min-width: 640px) {
   div[id*="leyka-pf-"].leyka-pf-star .leyka-tpl-star-form .section.section--description {
     text-align: left;

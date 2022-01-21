@@ -157,6 +157,29 @@
         }
 
     }
+
+    &#payments_options {
+        .section-tabs-wrapper {
+            .section-tab-content {
+                .tab-content-options-wrapper {
+                    .tab-section-options {
+
+                        .field-component.field {
+                            input:not([type=checkbox]):not([type=radio]), select, textarea {
+                                width: 248px;
+                            }
+                        }
+
+                        .field-component.title {
+                            display: block;
+                        }
+
+                    }
+                }
+            }
+        }
+
+    }
     
     &#currency_options {
         .section-tabs-wrapper {

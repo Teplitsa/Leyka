@@ -34,6 +34,47 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
 
     }
 
+    protected function _get_payments_options_tabs() {
+
+        $main_currency_id = leyka_get_country_currency();
+        $main_currencies = leyka_get_main_currencies_full_info();
+
+        if(empty($main_currencies[$main_currency_id])) {
+            return [];
+        }
+
+        $payments_options = [
+            'single' => [
+                'title' => __('Single payment', 'leyka'),
+                'sections' => [
+                    ['title' => '', 'options' => ["payments_single_tab_title"]],
+                    ['title' => '', 'options' => ["payments_single_amounts_options"]]
+                ]
+            ],
+            'recurrent' => [
+                'title' => __('Recurrent payment', 'leyka'),
+                'sections' => [
+                    ['title' => '', 'options' => ["payments_recurrent_tab_title"]],
+                    ['title' => '', 'options' => ["payments_recurrent_amounts_options"]]
+                ]
+            ],
+            'miscellaneous' => [
+                'title' => __('Miscellaneous', 'leyka'),
+                'sections' => [
+                    [
+                        'title' => '',
+                        'options' => [
+                            "currency_{$main_currency_id}_label", "currency_{$main_currency_id}_flexible_default_amount",
+                            "currency_{$main_currency_id}_min_sum", "currency_{$main_currency_id}_max_sum"
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        return $payments_options;
+    }
+
     protected function _get_main_currency_options_tabs() {
 
         $main_currency_id = leyka_get_country_currency();
@@ -430,34 +471,53 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
         ];
 
         return [
-            ['section' => [
-                'name' => 'campaign_templates_options',
-                'content_area_render' => 'leyka_render_tabbed_section_options_area',
-                'title' => __('Campaign templates', 'leyka'),
-                'description' => __('Here you can change donation forms view', 'leyka'),
-                'is_default_collapsed' => false,
-                'tabs' => array_merge($main_form_template_select_options, $templates_options),
-            ],],
-            ['section' => [
-                'name' => 'additional_fields_library_settings',
-                'title' => __('Additional fields library', 'leyka'),
-                'is_default_collapsed' => false,
-                'options' => ['additional_donation_form_fields_library',],
-            ],],
-            ['section' => [
-                'name' => 'currency_options',
-                'content_area_render' => 'leyka_render_tabbed_section_options_area',
-                'title' => __('Currency settings', 'leyka'),
-                'description' => __('Here you can change currency options', 'leyka'),
-                'is_default_collapsed' => false,
-                'tabs' => $this->_get_main_currency_options_tabs(),
-            ],],
-            ['section' => [
-                'name' => 'misc_view_settings',
-                'title' => __('Miscellaneous', 'leyka'),
-                'is_default_collapsed' => true,
-                'options' => ['widgets_total_amount_usage',],
-            ],],
+            [
+                'section' => [
+                    'name' => 'campaign_templates_options',
+                    'content_area_render' => 'leyka_render_tabbed_section_options_area',
+                    'title' => __('Campaign templates', 'leyka'),
+                    'description' => __('Here you can change donation forms view', 'leyka'),
+                    'is_default_collapsed' => false,
+                    'tabs' => array_merge($main_form_template_select_options, $templates_options),
+                ],
+            ],
+            [
+                'section' => [
+                    'name' => 'payments_options',
+                    'content_area_render' => 'leyka_render_tabbed_section_options_area',
+                    'title' => __('Campaign payments', 'leyka'),
+                    'is_default_collapsed' => false,
+                    'tabs' => $this->_get_payments_options_tabs()
+                ]
+            ],
+            [
+                'section' => [
+                    'name' => 'additional_fields_library_settings',
+                    'title' => __('Additional fields library', 'leyka'),
+                    'is_default_collapsed' => false,
+                    'options' => ['additional_donation_form_fields_library',],
+                ],
+            ],
+            /*
+            [
+                'section' => [
+                    'name' => 'currency_options',
+                    'content_area_render' => 'leyka_render_tabbed_section_options_area',
+                    'title' => __('Currency settings', 'leyka'),
+                    'description' => __('Here you can change currency options', 'leyka'),
+                    'is_default_collapsed' => false,
+                    'tabs' => $this->_get_main_currency_options_tabs(),
+                ],
+            ],
+            */
+            [
+                'section' => [
+                    'name' => 'misc_view_settings',
+                    'title' => __('Miscellaneous', 'leyka'),
+                    'is_default_collapsed' => true,
+                    'options' => ['widgets_total_amount_usage',],
+                ],
+            ]
         ];
 
     }

@@ -286,6 +286,22 @@
         }
 
     }
+
+    //amount description
+    &.amount-description {
+        background: #EAECF1;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 16px;
+        flex: none;
+        order: 3;
+        align-self: stretch;
+        flex-grow: 0;
+        margin: 20px 0px;
+    }
     
     // payment methods
     &.payments-grid {
