@@ -171,16 +171,20 @@
                         }
 
                         .field-component.title {
-                            display: block;
+                            display: flex;
                         }
 
                         .delete-additional-field.delete-item {
                             margin-top: 24px;
-                            color: red;
+                            color: #d43c57;
                             cursor: pointer;
                         }
 
                     }
+                }
+
+                .field-component.title .required {
+                    display: block;
                 }
             }
         }

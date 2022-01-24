@@ -351,7 +351,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
             "payments_single_tab_title" => [
                 'type' => 'text',
                 'default' => __('Single payments'),
-                'title' => __('Tab title', 'leyka'),
+                'title' => __('Donation form tab title', 'leyka'),
                 'required' => true,
                 'placeholder' => __('Single payments')
             ],
@@ -365,7 +365,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
             "payments_recurrent_tab_title" => [
                 'type' => 'text',
                 'default' => __('Recurrent payments'),
-                'title' => __('Tab title', 'leyka'),
+                'title' => __('Donation form tab title', 'leyka'),
                 'required' => true,
                 'placeholder' => __('Recurrent payments')
             ],

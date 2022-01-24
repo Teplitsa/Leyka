@@ -307,7 +307,7 @@ add_action('leyka_render_number', 'leyka_render_number_field', 10, 2);
 function leyka_render_number_field($option_id, $data){
 
     $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
-    $data['value'] = isset($data['value']) ? $data['value'] : '';?>
+    $data['value'] = isset($data['value']) ? $data['value'] : ''; ?>
 
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-field-inner-wrapper leyka-number-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?>" data-field-title="<?php echo empty($data['title']) ? '' : esc_attr($data['title']);?>">
         <label>
@@ -1298,18 +1298,29 @@ function leyka_payments_amounts_options_html($is_template = false, array $placeh
 
     <div id="<?php echo 'item-'.$placeholders['amount_option_id'];?>" class="multi-valued-item-box payment-amount-option payment_<?php echo $placeholders['payment_type']; ?> field-box <?php echo $is_template ? 'item-template' : '';?>" <?php echo $is_template ? 'style="display: none;"' : '';?>>
 
+        <h3 class="item-box-title ui-sortable-handle">
+
+            <span class="draggable"></span>
+
+            <span class="title" data-empty-box-title="<?php _e('New field', 'leyka');?>">
+                <?php echo esc_html($placeholders['box_title']);?>
+            </span>
+
+        </h3>
+
         <div class="box-content">
 
             <div class="single-line">
 
                 <div class="option-block type-text">
                     <div class="leyka-text-field-wrapper">
-                        <?php leyka_render_text_field('payment_'.$placeholders['payment_type'].'_amount_'.$placeholders['amount_option_id'], [
+                        <?php leyka_render_number_field('payment_'.$placeholders['payment_type'].'_amount_'.$placeholders['amount_option_id'], [
                             'amount_option_id' => $placeholders['amount_option_id'],
-                            'title' => __('Amount', 'leyka'),
+                            'title' => __('Amount', 'leyka')." (".$placeholders['currency_label'].")",
                             'required' => true,
                             'value' => $placeholders['amount'],
-                            'field_classes' => ['payment-amount-option-amount']
+                            'field_classes' => ['payment-amount-option-amount'],
+                            'min' => $placeholders['currency_min_sum']
                         ]);?>
                     </div>
                     <div class="field-errors"></div>
@@ -1351,12 +1362,16 @@ function leyka_render_custom_payments_amounts_options_settings($option_id, $data
 
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-<?php echo $option_id;?>-field-wrapper multi-valued-items-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) ? '' : implode(' ', $data['field_classes']);?>">
 
-        <div class="leyka-main-multi-items leyka-main-payments-amounts" data-max-items="" data-min-items="0" data-item-inputs-names-prefix="leyka_field_" data-show-new-item-if-empty="1">
+        <div class="leyka-main-multi-items leyka-main-payments-amounts" data-max-items="10" data-min-items="0" data-item-inputs-names-prefix="leyka_field_" data-show-new-item-if-empty="1">
 
             <?php
 
             $data['value'] = (empty($data['value']) || !is_array($data['value'])) && ( !empty($data['default']) && is_array($data['default'])) ?
                 $data['default'] : $data['value'];
+
+            $currency_id = leyka_options()->opt_safe("currency_main");
+            $currency_label = leyka_options()->opt_safe("currency_{$currency_id}_label");
+            $currency_min_sum = leyka_options()->opt_safe("currency_{$currency_id}_min_sum");
 
             if($data['value'] && is_array($data['value'])) {
                 foreach($data['value'] as $amount_option_id => $amount_option_data) {
@@ -1364,7 +1379,10 @@ function leyka_render_custom_payments_amounts_options_settings($option_id, $data
                         'amount_option_id' => $amount_option_id,
                         'description' => empty($amount_option_data['description']) ? '' : $amount_option_data['description'],
                         'payment_type' => $data['payment_type'],
-                        'amount' => $amount_option_data['amount']
+                        'amount' => $amount_option_data['amount'],
+                        'currency_label' => $currency_label,
+                        'currency_min_sum' => $currency_min_sum,
+                        'box_title' => empty($amount_option_data['description']) ? __('Sum', 'leyka') : $amount_option_data['description']
                     ]);
                 }
             } else {
@@ -1372,7 +1390,10 @@ function leyka_render_custom_payments_amounts_options_settings($option_id, $data
                     'amount_option_id' => leyka_get_random_string(4),
                     'description' => __('For small expenses','leyka'),
                     'payment_type' => $data['payment_type'],
-                    'amount' =>  100
+                    'amount' =>  $currency_min_sum,
+                    'currency_label' => $currency_label,
+                    'currency_min_sum' => $currency_min_sum,
+                    'box_title' => __('For small expenses','leyka'),
                 ]);
             }
 
@@ -1384,10 +1405,13 @@ function leyka_render_custom_payments_amounts_options_settings($option_id, $data
             'amount_option_id' => leyka_get_random_string(4),
             'description' => '',
             'payment_type' => $data['payment_type'],
-            'amount' => 0
+            'amount' =>  $currency_min_sum,
+            'currency_label' => $currency_label,
+            'currency_min_sum' => $currency_min_sum,
+            'box_title' => __('New sum', 'leyka')
         ]); // Additional field box template ?>
 
-        <div class="add-field add-item bottom"><?php _e('Add field', 'leyka');?></div>
+        <div class="add-field add-item bottom"><?php _e('Add sum', 'leyka');?></div>
 
         <input type="hidden" class="leyka-items-options" name="<?php echo $option_id; ?>" value="">
 
@@ -1411,7 +1435,7 @@ function leyka_save_payments_amounts_options() {
 
             $result[$amount_option_id] = [
                 'amount' => $amount_option['leyka_payment_'.$payment_type.'_amount_'.$amount_option_id],
-                'description' => $amount_option['leyka_payment_'.$payment_type.'_description_'.$amount_option_id]
+                'description' => wp_strip_all_tags($amount_option['leyka_payment_'.$payment_type.'_description_'.$amount_option_id], true)
             ];
 
         }

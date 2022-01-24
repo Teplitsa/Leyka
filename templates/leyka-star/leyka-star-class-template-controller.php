@@ -30,6 +30,8 @@ class Leyka_Star_Template_Controller extends Leyka_Template_Controller {
         $this->_template_data[$campaign->id] = [
         	'currency_id' => $main_currency_id,
             'currency_label' => $currencies[$main_currency_id]['label'],
+            'payments_single_tab_title' => leyka_options()->opt('payments_single_tab_title'),
+            'payments_recurrent_tab_title' => leyka_options()->opt('payments_recurrent_tab_title'),
             'amount_default' => $currencies[$main_currency_id]['amount_settings']['flexible'],
             'amount_min' => $currencies[$main_currency_id]['bottom'],
             'amount_max' => $currencies[$main_currency_id]['top'],
