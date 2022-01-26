@@ -1,1 +1,59 @@
 /** == Campaign page styles (_campaign.scss) == **/
+.edit-post-meta-boxes-area {
+
+    #leyka_campaign_payments_amounts {
+        .section-tabs-wrapper {
+            .section-tab-content {
+                .tab-content-options-wrapper {
+                    .tab-section-options {
+
+                        .payment-amount-option-amount{
+                            .field-component.field {
+                                input:not([type=checkbox]):not([type=radio]), select, textarea {
+                                   width: 124px;
+                                }
+                            }
+                        }
+
+                        .payment-amount-option-description{
+                            .field-component.field {
+                                input:not([type=checkbox]):not([type=radio]), select, textarea {
+                                    width: 248px;
+                                }
+                            }
+                        }
+
+                        .field-component.title {
+                            display: flex;
+                        }
+
+                        .delete-additional-field.delete-item {
+                            margin-top: 24px;
+                            color: #d43c57;
+                            cursor: pointer;
+                        }
+
+                    }
+                }
+
+                .field-component.title .required {
+                    display: block;
+                }
+            }
+
+            .tab-miscellaneous {
+                .leyka-field-inner-wrapper {
+                    pointer-events: none;
+                }
+
+                .field-component.field {
+                    input:not([type=checkbox]):not([type=radio]), select, textarea {
+                        background-color: #e5e5e5;
+                    }
+                }
+            }
+        }
+
+    }
+}
+  

@@ -1178,8 +1178,8 @@ function leyka_get_payments_amounts_options($payment_type, $currency_id = null) 
 
     $currency_id = $currency_id ? : leyka_options()->opt_safe('currency_main');
 
-    return leyka_options()->opt('payments_'.$payment_type.'_'.$currency_id.'_amounts_options') ?
-        leyka_options()->opt('payments_'.$payment_type.'_'.$currency_id.'_amounts_options') :
+    return leyka_options()->opt('payments_'.$payment_type.'_amounts_options_'.$currency_id) ?
+        leyka_options()->opt('payments_'.$payment_type.'_amounts_options_'.$currency_id) :
         leyka_get_fixed_payments_amounts_options($currency_id);
 
 }
@@ -2065,7 +2065,7 @@ if( !function_exists('leyka_save_option') ) {
             }
 
         } else if(mb_stristr($option_type, 'custom_') !== false && isset($_POST["leyka_$setting_id"])) { // Custom field types
-            do_action("leyka_save_custom_option-$setting_id", $_POST["leyka_$setting_id"]);
+            do_action("leyka_save_custom_option-$setting_id", $_POST["leyka_$setting_id"], $setting_id);
         } else if(isset($_POST["leyka_$setting_id"])) { // Simple field types
 
             $old_value = leyka_options()->opt($setting_id);

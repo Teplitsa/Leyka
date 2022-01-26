@@ -166,6 +166,15 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         );
 
         add_meta_box(
+            self::$post_type.'_payments_amounts',
+            __('Payments amounts campaign form fields', 'leyka'),
+            [$this, 'payments_amounts_metabox'],
+            self::$post_type,
+            'normal',
+            'high'
+        );
+
+        add_meta_box(
             self::$post_type.'_additional_fields',
             __('Additional campaign form fields', 'leyka'),
             [$this, 'additional_fields_metabox'],
@@ -787,6 +796,86 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
     /**
      * @param $campaign WP_Post
      */
+    public function payments_amounts_metabox(WP_Post $campaign) {
+
+        $main_currency_id = leyka_get_country_currency();
+
+        if( in_array($campaign->post_status, ['auto-draft', 'draft']) ) {
+
+            leyka_options()->add_option('payments_single_tab_title_'.$campaign->ID,'text', [
+                'title' => __('Donation form tab title', 'leyka'),
+                'value' => leyka_options()->opt('payments_single_tab_title'),
+                'required' => true,
+                'placeholder' => __('Single payments')
+            ]);
+
+            leyka_options()->add_option('payments_recurrent_tab_title_'.$campaign->ID,'text', [
+                'title' => __('Donation form tab title', 'leyka'),
+                'value' => leyka_options()->opt('payments_recurrent_tab_title'),
+                'required' => true,
+                'placeholder' => __('Recurrent payments')
+            ]);
+
+            leyka_options()->add_option('payments_single_amounts_options_'.$main_currency_id.'_'.$campaign->ID,'custom_payments_amounts_options', [
+                'title' => __('Amounts options', 'leyka'),
+                'value' => leyka_options()->opt('payments_single_amounts_options_'.$main_currency_id),
+                'field_classes' => ['payments-amounts-options'],
+                'payment_type' => 'single'
+            ]);
+
+            leyka_options()->add_option('payments_recurrent_amounts_options_'.$main_currency_id.'_'.$campaign->ID,'custom_payments_amounts_options', [
+                'title' => __('Amounts options', 'leyka'),
+                'value' => leyka_options()->opt('payments_recurrent_amounts_options_'.$main_currency_id),
+                'field_classes' => ['payments-amounts-options'],
+                'payment_type' => 'recurrent'
+            ]);
+
+        }
+
+        $payments_amounts_section = [
+            'name' => 'payments_options',
+            'content_area_render' => 'leyka_render_tabbed_section_options_area',
+            'title' => __('Campaign payments', 'leyka'),
+            'is_default_collapsed' => false,
+            'tabs' => [
+                'single' => [
+                    'title' => __('Single payment', 'leyka'),
+                    'sections' => [
+                        ['title' => '', 'options' => ['payments_single_tab_title_'.$campaign->ID]],
+                        ['title' => '', 'options' => ['payments_single_amounts_options_'.$main_currency_id.'_'.$campaign->ID]]
+                    ]
+                ],
+                'recurrent' => [
+                    'title' => __('Recurrent payment', 'leyka'),
+                    'sections' => [
+                        ['title' => '', 'options' => ['payments_recurrent_tab_title_'.$campaign->ID]],
+                        ['title' => '', 'options' => ['payments_recurrent_amounts_options_'.$main_currency_id.'_'.$campaign->ID]]
+                    ]
+                ],
+                'miscellaneous' => [
+                    'title' => __('Miscellaneous', 'leyka'),
+                    'sections' => [
+                        [
+                            'title' => '',
+                            'options' => [
+                                "currency_{$main_currency_id}_label", "currency_{$main_currency_id}_flexible_default_amount",
+                                "currency_{$main_currency_id}_min_sum", "currency_{$main_currency_id}_max_sum"
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];?>
+
+        <div class="leyka-admin leyka-settings-page">
+            <div class="leyka-options-section"><?php leyka_render_tabbed_section_options_area($payments_amounts_section); ?></div>
+        </div>
+
+    <?php  }
+
+    /**
+     * @param $campaign WP_Post
+     */
     public function additional_fields_metabox(WP_Post $campaign) {
 
         $campaign = new Leyka_Campaign($campaign);?>
@@ -1196,6 +1285,23 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             $meta['form_content_position'] = esc_attr($_REQUEST['campaign_form_content_position']);
         }
 
+
+        if(isset($_REQUEST['leyka_payments_single_tab_title_'.$campaign_id])) {
+            leyka_options()->opt('leyka_payments_single_tab_title_'.$campaign_id, $_REQUEST['leyka_payments_single_tab_title_'.$campaign_id]);
+        }
+
+        if(isset($_REQUEST['leyka_payments_recurrent_tab_title_'.$campaign_id])) {
+            leyka_options()->opt('leyka_payments_recurrent_tab_title_'.$campaign_id, $_REQUEST['leyka_payments_recurrent_tab_title_'.$campaign_id]);
+        }
+
+        //Campaign payments amounts options:
+        $currency_id = leyka_options()->opt_safe("currency_main");
+
+        if(isset($_REQUEST['leyka_payments_single_amounts_options_'.$currency_id.'_'.$campaign_id]) ||
+            isset($_REQUEST['leyka_payments_recurring_amounts_options_'.$currency_id.'_'.$campaign_id])) {
+            leyka_save_payments_amounts_options([],'leyka_payments_single_amounts_options_'.$currency_id.'_'.$campaign_id);
+        }
+
         // Campaign additional form fields settings:
         if(isset($_REQUEST['leyka_campaign_additional_fields'])) {
 
@@ -1275,7 +1381,6 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         }
         // Campaign additional form fields settings - END
-
         foreach($meta as $campaign_key_in_array => $value) {
             update_post_meta($campaign->id, $campaign_key_in_array, $value);
         }

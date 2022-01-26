@@ -1449,37 +1449,37 @@ jQuery(document).ready(function($){
                 .prop('id', 'item-'+new_item_id)
                 .show();
 
-			if($items_wrapper.find('#item-'+new_item_id)) {
+            if($items_wrapper.find('#item-'+new_item_id)) {
 
-				$items_wrapper.sortable('option', 'update')();
+                $items_wrapper.sortable('option', 'update')();
 
-				const $new_item = $('#item-'+new_item_id);
+                const $new_item = $('#item-'+new_item_id);
 
-				if($new_item && $new_item.hasClass('payment-amount-option')) {
+                if($new_item && $new_item.hasClass('payment-amount-option')) {
 
-					const payment_type = $new_item.hasClass('payment_single') ? 'single' : 'recurrent';
+                    const payment_type = $new_item.hasClass('payment_single') ? 'single' : 'recurrent';
 
-					$new_item.find('input').each((idx, payment_amount_option_input) => {
+                    $new_item.find('input').each((idx, payment_amount_option_input) => {
 
-						if($(payment_amount_option_input).prop('id').indexOf('_amount_') !== -1) {
+                        if($(payment_amount_option_input).prop('id').indexOf('_amount_') !== -1) {
 
-							$(payment_amount_option_input)
-								.prop('id', 'leyka_payment_'+payment_type+'_amount_'+new_item_id+'-field')
-								.prop('name', 'leyka_payment_'+payment_type+'_amount_'+new_item_id);
+                            $(payment_amount_option_input)
+                                .prop('id', 'leyka_payment_'+payment_type+'_amount_'+new_item_id+'-field')
+                                .prop('name', 'leyka_payment_'+payment_type+'_amount_'+new_item_id);
 
-						} else if($(payment_amount_option_input).prop('id').indexOf('_description_') !== -1) {
+                        } else if($(payment_amount_option_input).prop('id').indexOf('_description_') !== -1) {
 
-							$(payment_amount_option_input)
-								.prop('id', 'leyka_payment_'+payment_type+'_description_'+new_item_id+'-field')
-								.prop('name', 'leyka_payment_'+payment_type+'_description_'+new_item_id);
+                            $(payment_amount_option_input)
+                                .prop('id', 'leyka_payment_'+payment_type+'_description_'+new_item_id+'-field')
+                                .prop('name', 'leyka_payment_'+payment_type+'_description_'+new_item_id);
 
-						};
+                        };
 
-					})
+                    })
 
-				}
+                }
 
-			}
+            }
 
             let items_current_count = $items_wrapper.find('.multi-valued-item-box').length;
 
@@ -1577,6 +1577,11 @@ jQuery(document).ready(function($){
         // Hide/show the campaigns list field - END
 
         // Campaigns select fields - END
+
+        // TODO - Temporary solution. Need to check save for multi-item fields (campaign page)
+        $items_wrapper.on('change.leyka', '.payment-amount-option-description input, .payment-amount-option-amount input', function(){
+            $items_wrapper.sortable('option', 'update')();
+        });
 
     });
     // Multi-valued item complex fields - END

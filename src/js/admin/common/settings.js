@@ -800,6 +800,11 @@ jQuery(document).ready(function($){
 
         // Campaigns select fields - END
 
+        // TODO - Temporary solution. Need to check save for multi-item fields (campaign page)
+        $items_wrapper.on('change.leyka', '.payment-amount-option-description input, .payment-amount-option-amount input', function(){
+            $items_wrapper.sortable('option', 'update')();
+        });
+
     });
     // Multi-valued item complex fields - END
 

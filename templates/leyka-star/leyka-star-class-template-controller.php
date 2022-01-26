@@ -19,19 +19,39 @@ class Leyka_Star_Template_Controller extends Leyka_Template_Controller {
         $amount_mode = leyka_options()->opt_template('donation_sum_field_type', 'star');
 
         if($amount_mode == 'fixed' || $amount_mode == 'mixed') {
+
             $amount_variants = [
-                'single' => leyka_options()->opt_safe('payments_single_'.$main_currency_id.'_amounts_options'),
-                'recurrent' => leyka_options()->opt_safe('payments_recurrent_'.$main_currency_id.'_amounts_options')
+                'single' => leyka_options()->opt_safe('payments_single_amounts_options_'.$main_currency_id.'_'.$campaign->id),
+                'recurrent' => leyka_options()->opt_safe('payments_recurrent_amounts_options_'.$main_currency_id.'_'.$campaign->id)
             ];
+
+            if (empty($amount_variants['single'])) {
+                $amount_variants = [
+                    'single' => leyka_options()->opt_safe('payments_single_amounts_options_'.$main_currency_id),
+                    'recurrent' => leyka_options()->opt_safe('payments_recurrent_amounts_options_'.$main_currency_id)
+                ];
+            }
+
         } else {
             $amount_variants = [];
+        }
+
+        $payments_amounts_tab_titles = [
+            'single' => leyka_options()->opt('payments_single_tab_title_'.$campaign->id),
+            'recurrent' => leyka_options()->opt('payments_recurrent_tab_title_'.$campaign->id)
+        ];
+
+        if (empty($payments_amounts_tab_titles['single'])) {
+            $payments_amounts_tab_titles = [
+                'single' => leyka_options()->opt_safe('payments_single_amounts_options'),
+                'recurrent' => leyka_options()->opt_safe('payments_recurrent_amounts_options')
+            ];
         }
         
         $this->_template_data[$campaign->id] = [
         	'currency_id' => $main_currency_id,
             'currency_label' => $currencies[$main_currency_id]['label'],
-            'payments_single_tab_title' => leyka_options()->opt('payments_single_tab_title'),
-            'payments_recurrent_tab_title' => leyka_options()->opt('payments_recurrent_tab_title'),
+            'payments_amounts_tab_titles' => $payments_amounts_tab_titles,
             'amount_default' => $currencies[$main_currency_id]['amount_settings']['flexible'],
             'amount_min' => $currencies[$main_currency_id]['bottom'],
             'amount_max' => $currencies[$main_currency_id]['top'],

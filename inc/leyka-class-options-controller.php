@@ -61,11 +61,11 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
         $main_currency_id = leyka_get_country_currency();
 
-        add_filter("leyka_option_default-payments_single_{$main_currency_id}_amounts_options", function($option_value){
+        add_filter("leyka_option_default-payments_single_amounts_options_".$main_currency_id, function($option_value){
             return leyka_get_payments_amounts_options('single');
         });
 
-        add_filter("leyka_option_default-payments_recurrent_{$main_currency_id}_amounts_options", function($option_value){
+        add_filter("leyka_option_default-payments_recurrent_amounts_options_".$main_currency_id, function($option_value){
             return leyka_get_payments_amounts_options('recurrent');
         });
 
