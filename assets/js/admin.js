@@ -2300,6 +2300,14 @@ jQuery(document).ready(function($){
 
     }).change();
 
+    $('input[name="leyka_default_payments_amounts"]').on('change.leyka', function(e){
+        if($(this).val() === '1') {
+            $('#leyka_campaign_payments_amounts .leyka-options-section').hide();
+        } else {
+            $('#leyka_campaign_payments_amounts .leyka-options-section').show();
+        }
+    });
+
     // Multi-valued items fields:
     $('.multi-valued-items-field-wrapper').each(function(){
 

@@ -874,7 +874,12 @@ function leyka_render_campaign_select_field($option_id, $data) {
 
 <?php }
 
-function leyka_render_tabbed_section_options_area($section) {
+/**
+ * @param $section
+ * @param $forced_data array Values from this array will be added to options data sent to the rendering function (with a replacement upon collisions)
+ * @return void
+ */
+function leyka_render_tabbed_section_options_area($section, $forced_data = []) {
 
     $default_active_tab_index = 0;
     
@@ -910,12 +915,19 @@ function leyka_render_tabbed_section_options_area($section) {
                             <?php } ?>
                             
                             <?php foreach($tab_section['options'] as $option) {
+
                                 if(leyka_options()->is_template_option($option)) {
                                     $option = leyka_options()->get_tab_option_full_name($tab_name, $option);
                                 }
-                                
+
                                 $option_info = leyka_options()->get_info_of($option);
+
+                                if( !empty($forced_data[$option]) && is_array($forced_data[$option]) ) {
+                                    $option_info = array_merge($option_info, $forced_data[$option]);
+                                }
+
                                 do_action("leyka_render_{$option_info['type']}", $option, $option_info);
+
                             }?>
                         
                         </div>
@@ -1361,17 +1373,6 @@ function leyka_render_custom_payments_amounts_options_settings($option_id, $data
     $option_id = mb_stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
     $data = $data ? : leyka_options()->get_info_of($option_id);
 
-    // if no campaign data - get common option value
-    if(is_numeric(explode('_', $option_id)[sizeof(explode('_', $option_id)) - 1])) {
-
-        $campaign_id = explode('_', $option_id)[sizeof(explode('_', $option_id)) - 1];
-
-        if(empty($data["value"])) {
-            $data = leyka_options()->get_info_of(str_replace('_'.$campaign_id, '', $option_id));
-        }
-
-    }
-
     ?>
 
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-<?php echo $option_id;?>-field-wrapper multi-valued-items-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) ? '' : implode(' ', $data['field_classes']);?>">
@@ -1440,14 +1441,10 @@ function leyka_render_custom_payments_amounts_options_settings($option_id, $data
 }
 
 $main_currency_id = leyka_options()->opt_safe('currency_main');
-add_action("leyka_save_custom_option-payments_single_amounts_options_".$main_currency_id, 'leyka_save_payments_amounts_options', 10, 2);
-function leyka_save_payments_amounts_options($data, $setting_id) {
+add_action("leyka_save_custom_option-payments_single_amounts_options_".$main_currency_id, 'leyka_save_payments_amounts_options');
+function leyka_save_payments_amounts_options() {
 
-    // if no campaign data - get common option value
-    $campaign_id = is_numeric(explode('_', $setting_id)[sizeof(explode('_', $setting_id)) - 1]) ?
-        explode('_', $setting_id)[sizeof(explode('_', $setting_id)) - 1] : null;
-
-    function save_payment_amounts_options($amounts_options, $payment_type, $currency_id, $campaign_id) {
+    function save_payment_amounts_options($amounts_options, $payment_type, $currency_id) {
 
         $result = [];
 
@@ -1462,20 +1459,20 @@ function leyka_save_payments_amounts_options($data, $setting_id) {
 
         }
 
-        leyka_options()->opt('payments_'.$payment_type.'_amounts_options_'.$currency_id.($campaign_id ? '_'.$campaign_id : ''), $result);
+        leyka_options()->opt('payments_'.$payment_type.'_amounts_options_'.$currency_id, $result);
 
     }
 
     $currency_id = leyka_options()->opt_safe('currency_main');
-    $payments_single_amounts_attr = 'leyka_payments_single_amounts_options_'.$currency_id.($campaign_id ? '_'.$campaign_id : '');
-    $payments_recurrent_amounts_attr = 'leyka_payments_recurrent_amounts_options_'.$currency_id.($campaign_id ? '_'.$campaign_id : '');
+    $payments_single_amounts_attr = 'leyka_payments_single_amounts_options_'.$currency_id;
+    $payments_recurrent_amounts_attr = 'leyka_payments_recurrent_amounts_options_'.$currency_id;
 
     if(isset($_POST[$payments_single_amounts_attr])) {
-        save_payment_amounts_options(json_decode(urldecode($_POST[$payments_single_amounts_attr]), true), 'single', $currency_id, $campaign_id);
+        save_payment_amounts_options(json_decode(urldecode($_POST[$payments_single_amounts_attr]), true), 'single', $currency_id);
     }
 
     if(isset($_POST[$payments_recurrent_amounts_attr])) {
-        save_payment_amounts_options(json_decode(urldecode($_POST[$payments_recurrent_amounts_attr]), true), 'recurrent', $currency_id, $campaign_id);
+        save_payment_amounts_options(json_decode(urldecode($_POST[$payments_recurrent_amounts_attr]), true), 'recurrent', $currency_id);
     }
 
 }

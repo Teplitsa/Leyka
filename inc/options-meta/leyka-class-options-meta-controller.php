@@ -378,41 +378,6 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
             ]
         ];
 
-        $campaigns = leyka_get_campaigns_list();
-
-        foreach(array_keys($campaigns) as $campaign_id) {
-            $options = array_merge($options, [
-                "payments_single_tab_title_{$campaign_id}" => [
-                    'type' => 'text',
-                    'default' => __('Single payments'),
-                    'title' => __('Donation form tab title', 'leyka'),
-                    'required' => true,
-                    'placeholder' => __('Single payments')
-                ],
-                "payments_single_amounts_options_{$main_currency_id}_{$campaign_id}" => [
-                    'type' => 'custom_payments_amounts_options',
-                    'title' => __('Amounts options', 'leyka'),
-                    'field_classes' => ['payments-amounts-options'],
-                    'default' => [],
-                    'payment_type' => 'single'
-                ],
-                "payments_recurrent_tab_title_{$campaign_id}" => [
-                    'type' => 'text',
-                    'default' => __('Recurrent payments'),
-                    'title' => __('Donation form tab title', 'leyka'),
-                    'required' => true,
-                    'placeholder' => __('Recurrent payments')
-                ],
-                "payments_recurrent_amounts_options_{$main_currency_id}_{$campaign_id}" => [
-                    'type' => 'custom_payments_amounts_options',
-                    'title' => __('Amounts options', 'leyka'),
-                    'field_classes' => ['payments-amounts-options'],
-                    'default' => [],
-                    'payment_type' => 'recurrent'
-                ]
-            ]);
-        }
-
         return $options;
 
     }
