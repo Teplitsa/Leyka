@@ -97,16 +97,14 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
             </div>
 
             <div class="section__fields amount-description">
-                <?php
-                    $all_amount_options = array_merge($template_data['amount_variants']['single'], $template_data['amount_variants']['recurrent']);
-                    $showed_amount_option_id = $campaign->donations_type_default === 'single' ?
-                        array_keys($template_data['amount_variants']['single'])[0] :
-                        array_keys($template_data['amount_variants']['recurrent'][0]);
+                <?php $all_amount_options = array_merge($template_data['amount_variants']['single'], $template_data['amount_variants']['recurrent']);
+                $showed_amount_option_id = $campaign->donations_type_default === 'single' ?
+                    array_keys($template_data['amount_variants']['single'])[0] :
+                    array_keys($template_data['amount_variants']['recurrent'][0]);
 
-                    foreach($all_amount_options as $i => $amount_option) { ?>
-                        <span data-payment-amount-option-id="<?php echo $i; ?>" style="<?php echo $i !== $showed_amount_option_id ? 'display: none' : '';?>"><?php echo $amount_option['description'] ?></span>
-                    <?php };
-                ?>
+                foreach($all_amount_options as $i => $amount_option) { ?>
+                    <span data-payment-amount-option-id="<?php echo $i; ?>" style="<?php echo $i !== $showed_amount_option_id ? 'display: none' : '';?>"><?php echo $amount_option['description'] ?></span>
+                <?php } ?>
             </div>
 
         </div>
