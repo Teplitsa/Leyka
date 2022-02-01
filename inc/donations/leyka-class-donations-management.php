@@ -43,12 +43,16 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         }
 
-        // Existing donation status changed to/from "funded":
+        // Existing Donation status changed to/from "funded":
         add_action('leyka_donation_funded_status_changed', function($donation_id, $old_status, $new_status){
             if($old_status === 'funded' || $new_status === 'funded') {
 
-                Leyka_Donor::create_donor_from_donation($donation_id);
-                Leyka_Donor::order_donor_data_refreshing($donation_id);
+                if(leyka_options()->opt('donor_management_available')) {
+
+                    Leyka_Donor::create_donor_from_donation($donation_id);
+                    Leyka_Donor::order_donor_data_refreshing($donation_id);
+
+                }
 
             }
         }, 10, 3);

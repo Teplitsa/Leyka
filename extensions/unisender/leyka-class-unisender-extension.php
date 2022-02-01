@@ -136,17 +136,18 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
 
         $donation = Leyka_Donations::get_instance()->get($donation_id);
 
-        // Non-init rebill payment
+        // Non-init rebill payment:
         if($donation->payment_type === 'rebill' && $donation->init_recurring_donation_id !== $donation->id) {
             return false;
         }
 
         if($old_status !== 'funded' && $new_status === 'funded') {
 
-            require_once LEYKA_PLUGIN_DIR.'extensions/unisender/lib/UnisenderApi.php';
+            if( !class_exists('UnisenderApi') ) { // Only if there isn't some Unisender plugin that already included the API
+                require_once LEYKA_PLUGIN_DIR.'extensions/unisender/lib/UnisenderApi.php';
+            }
 
-            $api_key = leyka_options()->opt($this->_id.'_api_key');
-            $list_ids = str_replace(' ','', stripslashes(leyka_options()->opt($this->_id.'_lists_ids')));
+            $list_ids = str_replace( ' ', '', stripslashes(leyka_options()->opt($this->_id.'_lists_ids')) );
             $donor_fields = ['email' => $donation->donor_email];
 
             foreach(leyka_options()->opt($this->_id.'_donor_fields') as $field_name) {
@@ -167,10 +168,9 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
 
             }
 
-            $uni = new \Unisender\ApiWrapper\UnisenderApi($api_key);
+            $uni = new \Unisender\ApiWrapper\UnisenderApi(leyka_options()->opt($this->_id.'_api_key'));
 
-            // No list IDs in options. Need to create a new list or check if the one was created before
-            if($list_ids === '') {
+            if($list_ids === '') { // No list IDs in options. Need to create a new list or check if the one was created before
 
                 $result = $uni->getLists();
                 $result_array = json_decode($result, true);
@@ -254,7 +254,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
 
             }
 
-            $result = $uni->subscribe([ // Donor subscribe
+            $result = $uni->subscribe([
                 'list_ids' => $list_ids,
                 'fields' =>  $donor_fields,
                 'double_optin' => leyka_options()->opt($this->_id.'_donor_confirmation') === '1' ? 4 : 3,
