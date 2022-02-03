@@ -357,7 +357,18 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
             </div>
                 
         </div>
+
     </form>
+
+    <?php if($template_data['platform_signature_on_form_enabled'] === '1') { ?>
+        <div class="section section--signature">
+            <div id="leyka-platform-signature">
+                <span id="leyka-signature-icon"></span>
+                <span id="leyka-signature-text"><?php echo __('Made with <a href="https://leyka.te-st.ru/" target="_blank">Leyka</a>', 'leyka'); ?></span>
+            </div>
+        </div>
+    <?php } ?>
+
 
     <div class="leyka-pf__overlay"></div>
     <?php if(leyka_options()->opt('agree_to_terms_needed')) {?>

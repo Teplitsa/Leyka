@@ -560,6 +560,43 @@
 
     }
 
+    .section.section--signature {
+
+        margin-top: 60px;
+
+        #leyka-platform-signature {
+
+            display: flex;
+            text-align: center;
+            margin: auto;
+            justify-content: end;
+
+            #leyka-signature-icon {
+
+                background-image: url(../../img/menu-icon.svg);
+                background-size: cover;
+                background-position-y: bottom;
+                width: 25px;
+                height: 25px;
+                display: block;
+
+            }
+
+            #leyka-signature-text {
+
+                margin: 7px 0px 0px 7px;
+                color: var(--leyka-color-gray-notsolight);
+
+                a {
+                    color: var(--leyka-color-main);
+                }
+
+            }
+
+        }
+
+    }
+
 }
 
 div[id*="leyka-pf-"].leyka-pf-need-help .leyka-tpl-need-help-form {
@@ -605,6 +642,8 @@ div[id*="leyka-pf-"].leyka-pf-need-help .leyka-tpl-need-help-form {
     }
 
 }
+
+
 
 // Success widget:
 .leyka-screen-form.leyka-screen-thankyou.leyka-need-help-thankyou {

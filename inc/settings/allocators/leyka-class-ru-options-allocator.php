@@ -536,7 +536,8 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
                 'options' => [
                     'show_donation_comments_in_frontend', 'success_page', 'failure_page', 'load_scripts_if_need',
                     'donors_data_editable', 'allow_deprecated_form_templates', 'check_nonce_on_public_donor_actions',
-                    'plugin_demo_mode', 'plugin_debug_mode', 'plugin_stats_sync_enabled', //'data_export_files_encoding',
+                    'plugin_demo_mode', 'plugin_debug_mode', 'plugin_stats_sync_enabled',
+                    'platform_signature_on_form_enabled' //,'data_export_files_encoding',
                 ]
             ],],
             ['section' => [

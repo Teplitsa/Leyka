@@ -1196,6 +1196,12 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
 //                    'CP1251//TRANSLIT//IGNORE' => __('Windows-1251', 'leyka'),
 //                ],
 //            ],
+            'platform_signature_on_form_enabled' => [
+                'type' => 'checkbox',
+                'default' => true,
+                'title' => __('Add platform signature to donation form', 'leyka'),
+                'short_format' => true
+            ],
         ];
     }
 

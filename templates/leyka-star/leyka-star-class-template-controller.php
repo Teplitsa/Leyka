@@ -33,6 +33,7 @@ class Leyka_Star_Template_Controller extends Leyka_Template_Controller {
             'pm_list' => leyka_get_pm_list(true, $main_currency_id),
             'amount_mode' => $amount_mode,
             'amount_variants' => $amount_variants,
+            'platform_signature_on_form_enabled' => leyka_options()->opt('platform_signature_on_form_enabled')
         ];
 
     }
