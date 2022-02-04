@@ -59,6 +59,16 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         });
         // Additional Donation form fields Library - END
 
+        $main_currency_id = leyka_get_country_currency();
+
+        add_filter("leyka_option_default-payments_single_amounts_options_".$main_currency_id, function($option_value){
+            return leyka_get_payments_amounts_options('single');
+        });
+
+        add_filter("leyka_option_default-payments_recurrent_amounts_options_".$main_currency_id, function($option_value){
+            return leyka_get_payments_amounts_options('recurrent');
+        });
+
         // If Country option value changes, clear active PM lists:
         add_action('leyka_set_receiver_country_option_value', function($option_value){
 
@@ -135,6 +145,8 @@ class Leyka_Options_Controller extends Leyka_Singleton {
             $new_options_group_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta('org'); 
         } else if(stristr($option_id, 'person_') !== false) {
             $new_options_group_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta('person');
+        } else if(stristr($option_id, 'payments') !== false) {
+            $new_options_group_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta('payments');
         } else if(stristr($option_id, 'currency') !== false) {
             $new_options_group_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta('currency');
         } else if(stristr($option_id, 'email') !== false || stristr($option_id, 'notify') !== false) {
@@ -509,7 +521,8 @@ class Leyka_Options_Controller extends Leyka_Singleton {
                 empty($option_data['default']) ? '' : $option_data['default']
             ),
         ];
-        $this->_options[$option_id] = array_merge($filtered_options, $this->_options[$option_id]);
+
+        $this->_options[$option_id] = array_merge($this->_options[$option_id], $filtered_options);
 
         return apply_filters('leyka_option_info-'.$option_id, $this->_options[$option_id]);
 

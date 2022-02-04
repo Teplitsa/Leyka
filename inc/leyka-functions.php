@@ -1167,6 +1167,56 @@ function leyka_get_actual_currency_rates() {
     return [];
 }
 
+/**
+ * Get payments amounts options by the given payment type and currency.
+ * If no currency given, then currently selected receiver county will be used to get currency.
+ *
+ * @param string $currency_id
+ * @return mixed
+ */
+function leyka_get_payments_amounts_options($payment_type, $currency_id = null) {
+
+    $currency_id = $currency_id ? : leyka_options()->opt_safe('currency_main');
+
+    return leyka_options()->opt('payments_'.$payment_type.'_amounts_options_'.$currency_id) ?
+        leyka_options()->opt('payments_'.$payment_type.'_amounts_options_'.$currency_id) :
+        leyka_get_fixed_payments_amounts_options($currency_id);
+
+}
+
+/**
+ * Get fixed payments amounts options by the given currency.
+ *
+ * @param string $currency_id
+ * @return array|false
+ */
+function leyka_get_fixed_payments_amounts_options($currency_id) {
+
+    if (!$currency_id) {
+        return false;
+    }
+
+    $currency = leyka_get_currencies_data($currency_id);
+
+    $fixed_amounts_options = [];
+
+    if( !empty($currency['amount_settings']['fixed']) ) {
+
+        foreach(explode(',', $currency['amount_settings']['fixed']) as $fixed_amount) {
+
+            $fixed_amounts_options[leyka_get_random_string(4)] = [
+                'amount' => $fixed_amount,
+                'description' => ''
+            ];
+
+        }
+
+    }
+
+    return $fixed_amounts_options;
+
+}
+
 function leyka_get_campaigns_list($params = [], $simple_format = true) {
 
     $campaigns = get_posts(array_merge([
@@ -2015,7 +2065,7 @@ if( !function_exists('leyka_save_option') ) {
             }
 
         } else if(mb_stristr($option_type, 'custom_') !== false && isset($_POST["leyka_$setting_id"])) { // Custom field types
-            do_action("leyka_save_custom_option-$setting_id", $_POST["leyka_$setting_id"]);
+            do_action("leyka_save_custom_option-$setting_id", $_POST["leyka_$setting_id"], $setting_id);
         } else if(isset($_POST["leyka_$setting_id"])) { // Simple field types
 
             $old_value = leyka_options()->opt($setting_id);
@@ -2485,4 +2535,20 @@ function leyka_generate_csv($filename, array $rows, array $headings = [], $colum
 
     exit;
 
+}
+
+
+if( !function_exists('leyka_get_random_string') ) {
+    function leyka_get_random_string($length = 6) {
+
+        $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';
+        $result = '';
+
+        for($i = 0; $i < $length; $i++) {
+            $result .= $permitted_chars[ mt_rand(0, strlen($permitted_chars) - 1) ];
+        }
+
+        return $result;
+
+    }
 }

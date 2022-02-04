@@ -63,7 +63,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
 
         if($options_group === 'all') {
             return $this->_get_options_meta(
-                ['main', 'org', 'person', 'currency', 'email', 'templates', 'analytics', 'terms', 'admin',]
+                ['main', 'org', 'person', 'payments', 'currency', 'email', 'templates', 'analytics', 'terms', 'admin',]
             );
         } else if(is_array($options_group)) {
 
@@ -82,6 +82,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
             case 'main': return $this->_get_meta_main();
             case 'org': return $this->_get_meta_org();
             case 'person': return $this->_get_meta_person();
+            case 'payments': return $this->_get_meta_payments();
             case 'currency': return $this->_get_meta_currency();
             case 'email':
             case 'emails':
@@ -335,6 +336,50 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'mask' => "'mask': '9{20}'",
             ],
         ];
+    }
+
+    protected function _get_meta_payments() {
+
+        $main_currency_id = leyka_get_country_currency();
+        $main_currencies = leyka_get_main_currencies_full_info();
+
+        if(empty($main_currencies[$main_currency_id])) {
+            return [];
+        }
+
+        $options = [
+            "payments_single_tab_title" => [
+                'type' => 'text',
+                'default' => __('Single payments'),
+                'title' => __('Donation form tab title', 'leyka'),
+                'required' => true,
+                'placeholder' => __('Single payments')
+            ],
+            "payments_single_amounts_options_".$main_currency_id => [
+                'type' => 'custom_payments_amounts_options',
+                'title' => __('Amounts options', 'leyka'),
+                'field_classes' => ['payments-amounts-options'],
+                'default' => [],
+                'payment_type' => 'single'
+            ],
+            "payments_recurrent_tab_title" => [
+                'type' => 'text',
+                'default' => __('Recurrent payments'),
+                'title' => __('Donation form tab title', 'leyka'),
+                'required' => true,
+                'placeholder' => __('Recurrent payments')
+            ],
+            "payments_recurrent_amounts_options_".$main_currency_id => [
+                'type' => 'custom_payments_amounts_options',
+                'title' => __('Amounts options', 'leyka'),
+                'field_classes' => ['payments-amounts-options'],
+                'default' => [],
+                'payment_type' => 'recurrent'
+            ]
+        ];
+
+        return $options;
+
     }
 
     protected function _get_meta_currency() { // Keywords: currency

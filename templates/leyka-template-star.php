@@ -41,8 +41,8 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
         <div class="section section--periodicity <?php if(!in_array('recurring', $campaign->donations_types_available)){?>hidden<?php }?>">
 
             <div class="section__fields periodicity">
-                <a href="#" class="<?php echo 'recurring' === $campaign->donations_type_default ? 'active' : '';?> <?php echo !in_array('recurring', $campaign->donations_types_available) ? "invisible" : "";?>" data-periodicity="monthly" role="tab" aria-selected="<?php echo 'recurring' === $campaign->donations_type_default ? 'true' : 'false';?>"><?php esc_html_e('Monthly', 'leyka');?></a>
-                <a href="#" class="<?php echo 'single' === $campaign->donations_type_default ? 'active' : '';?> <?php echo !in_array('single', $campaign->donations_types_available) ? "invisible" : "";?>" data-periodicity="once" role="tab" aria-selected="<?php echo 'single' === $campaign->donations_type_default ? 'true' : 'false';?>"><?php esc_html_e('Once', 'leyka');?></a>
+                <a href="#" class="<?php echo 'recurring' === $campaign->donations_type_default ? 'active' : '';?> <?php echo !in_array('recurring', $campaign->donations_types_available) ? "invisible" : "";?>" data-periodicity="monthly" role="tab" aria-selected="<?php echo 'recurring' === $campaign->donations_type_default ? 'true' : 'false';?>"><?php esc_html_e($template_data['payments_amounts_tab_titles']['recurrent'], 'leyka');?></a>
+                <a href="#" class="<?php echo 'single' === $campaign->donations_type_default ? 'active' : '';?> <?php echo !in_array('single', $campaign->donations_types_available) ? "invisible" : "";?>" data-periodicity="once" role="tab" aria-selected="<?php echo 'single' === $campaign->donations_type_default ? 'true' : 'false';?>"><?php esc_html_e($template_data['payments_amounts_tab_titles']['single'], 'leyka');?></a>
             </div>
 
         </div>
@@ -70,8 +70,12 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                     
                     <div class="<?php if($is_swipe_amount_variants){?>swiper-list<?php }else{?>full-list<?php }?>">
 
-                        <?php foreach($template_data['amount_variants'] as $i => $amount) {?>
-                            <div class="swiper-item <?php echo $i ? '' : 'selected';?>" data-value="<?php echo absint($amount);?>" role="button" tabindex="0"><div class="swiper-item-inner"><span class="amount"><?php echo absint($amount);?></span><span class="currency"><?php echo $template_data['currency_label'];?></span></div></div>
+                        <?php foreach($template_data['amount_variants']['single'] as $i => $amount_option) {?>
+                            <div class="swiper-item <?php echo $i ? '' : 'selected';?>" style="<?php echo 'single' === $campaign->donations_type_default ? '' : 'display: none';?>" data-payment-type="single" data-payment-amount-option-id="<?php echo $i; ?>" data-value="<?php echo absint($amount_option['amount']);?>" role="button" tabindex="0"><div class="swiper-item-inner"><span class="amount"><?php echo absint($amount_option['amount']);?></span><span class="currency"><?php echo $template_data['currency_label'];?></span></div></div>
+                        <?php }?>
+
+                        <?php foreach($template_data['amount_variants']['recurrent'] as $i => $amount_option) {?>
+                            <div class="swiper-item <?php echo $i ? '' : 'selected';?>" style="<?php echo 'recurring' === $campaign->donations_type_default ? '' : 'display: none';?>" data-payment-type="recurrent" data-payment-amount-option-id="<?php echo $i; ?>" data-value="<?php echo absint($amount_option['amount']);?>" role="button" tabindex="0"><div class="swiper-item-inner"><span class="amount"><?php echo absint($amount_option['amount']);?></span><span class="currency"><?php echo $template_data['currency_label'];?></span></div></div>
                         <?php }?>
         
                         <?php if($template_data['amount_mode'] != 'fixed') {?>
@@ -90,6 +94,17 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                 
                 <input type="hidden" class="leyka_donation_currency" name="leyka_donation_currency" data-currency-label="<?php echo $template_data['currency_label'];?>" value="<?php echo leyka_options()->opt('currency_main');?>">
                 <input type="hidden" name="leyka_recurring" class="is-recurring-chosen" value="<?php echo $is_recurring_campaign ? "1" : "0";?>">
+            </div>
+
+            <div class="section__fields amount-description">
+                <?php $all_amount_options = array_merge($template_data['amount_variants']['single'], $template_data['amount_variants']['recurrent']);
+                $showed_amount_option_id = $campaign->donations_type_default === 'single' ?
+                    array_keys($template_data['amount_variants']['single'])[0] :
+                    array_keys($template_data['amount_variants']['recurrent'][0]);
+
+                foreach($all_amount_options as $i => $amount_option) { ?>
+                    <span data-payment-amount-option-id="<?php echo $i; ?>" style="<?php echo $i !== $showed_amount_option_id ? 'display: none' : '';?>"><?php echo $amount_option['description'] ?></span>
+                <?php } ?>
             </div>
 
         </div>

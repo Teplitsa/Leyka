@@ -2325,6 +2325,37 @@ jQuery(document).ready(function($){
 
     }
 
+    function showAmountOptionsByPaymentType($form, payment_type) {
+
+        $form.find(`.swiper-item`).removeClass('selected');
+        $form.find(`.swiper-item:not(.flex-amount-item)`).css('display', 'none');
+        $form.find(`.swiper-item[data-payment-type="${payment_type}"]`).css('display', 'block');
+
+        let $swiper_first_item = $(`.swiper-item[data-payment-type="${payment_type}"]`).first();
+        $swiper_first_item.first().addClass('selected');
+
+        setAmountInputValue($form, $swiper_first_item.find('.amount').text());
+        showSelectedAmountDescription($form, $swiper_first_item.data('payment-amount-option-id'));
+
+    }
+
+    function showSelectedAmountDescription($form, amount_option_id) {
+
+        $amount_option_description = $form.find(`.section__fields.amount-description span[data-payment-amount-option-id = "${amount_option_id}"]`);
+
+        if(amount_option_id && $amount_option_description && $amount_option_description.text() !== '') {
+
+            $form.find('.section__fields.amount-description').css('display', 'flex');
+            $form.find('.section__fields.amount-description span').css('display', 'none');
+
+            $amount_option_description.css('display', 'block');
+
+        } else {
+            $form.find('.section__fields.amount-description').css('display', 'none');
+        }
+
+    }
+
     function bindModeEvents() {
 
         $('.leyka-tpl-star-form .section__fields.periodicity').on('click.leyka', 'a', function(e){
@@ -2344,6 +2375,12 @@ jQuery(document).ready(function($){
             $_form.find('.payments-grid .equalize-elements-width').each(function(){
                 equalizeFormElementsWidth($(this));
             });
+
+            $('.swiper-item[data-payment-type="single"], .swiper-item[data-payment-type="recurrent"]').removeClass('selected');
+
+            let payment_type = $this.data('periodicity') === 'once' ? 'single' : 'recurrent';
+
+            showAmountOptionsByPaymentType($_form, payment_type);
 
         });
         
@@ -2489,7 +2526,8 @@ jQuery(document).ready(function($){
             let $this = $(this),
                 $swiper = $this.closest('.star-swiper'),
                 $daily_rouble_comment = $this.parents('.star-swiper').find('.daily-rouble-comment'),
-                $daily_rouble_amount = $daily_rouble_comment.find('.daily-rouble-amount');
+                $daily_rouble_amount = $daily_rouble_comment.find('.daily-rouble-amount'),
+                $form = $this.closest('.leyka-tpl-star-form');
 
         	if($this.hasClass('selected')) {
         		return;
@@ -2517,6 +2555,8 @@ jQuery(document).ready(function($){
 
             }
 
+            showSelectedAmountDescription($form, $this.data('payment-amount-option-id'));
+
             swipeList($swiper, $this);
             toggleSwiperArrows($swiper);
 
@@ -2526,10 +2566,10 @@ jQuery(document).ready(function($){
             }
             
             if($swiper.hasClass('amount__figure')) {
-                setAmountInputValue($this.closest('.leyka-tpl-star-form'), getAmountValueFromControl($this));
+                setAmountInputValue($form, getAmountValueFromControl($this));
             }
 
-            checkFormFillCompletion($swiper.closest('form.leyka-pm-form'));
+            checkFormFillCompletion($form);
 
         });
 

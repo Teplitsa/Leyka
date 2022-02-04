@@ -1449,7 +1449,37 @@ jQuery(document).ready(function($){
                 .prop('id', 'item-'+new_item_id)
                 .show();
 
-            $items_wrapper.sortable('option', 'update')();
+            if($items_wrapper.find('#item-'+new_item_id)) {
+
+                $items_wrapper.sortable('option', 'update')();
+
+                const $new_item = $('#item-'+new_item_id);
+
+                if($new_item && $new_item.hasClass('payment-amount-option')) {
+
+                    const payment_type = $new_item.hasClass('payment_single') ? 'single' : 'recurrent';
+
+                    $new_item.find('input').each((idx, payment_amount_option_input) => {
+
+                        if($(payment_amount_option_input).prop('id').indexOf('_amount_') !== -1) {
+
+                            $(payment_amount_option_input)
+                                .prop('id', 'leyka_payment_'+payment_type+'_amount_'+new_item_id+'-field')
+                                .prop('name', 'leyka_payment_'+payment_type+'_amount_'+new_item_id);
+
+                        } else if($(payment_amount_option_input).prop('id').indexOf('_description_') !== -1) {
+
+                            $(payment_amount_option_input)
+                                .prop('id', 'leyka_payment_'+payment_type+'_description_'+new_item_id+'-field')
+                                .prop('name', 'leyka_payment_'+payment_type+'_description_'+new_item_id);
+
+                        };
+
+                    })
+
+                }
+
+            }
 
             let items_current_count = $items_wrapper.find('.multi-valued-item-box').length;
 
@@ -1547,6 +1577,11 @@ jQuery(document).ready(function($){
         // Hide/show the campaigns list field - END
 
         // Campaigns select fields - END
+
+        // TODO - Temporary solution. Need to check save for multi-item fields (campaign page)
+        $items_wrapper.on('change.leyka', '.payment-amount-option-description input, .payment-amount-option-amount input', function(){
+            $items_wrapper.sortable('option', 'update')();
+        });
 
     });
     // Multi-valued item complex fields - END
@@ -2264,6 +2299,14 @@ jQuery(document).ready(function($){
         }
 
     }).change();
+
+    $('input[name="leyka_default_payments_amounts"]').on('change.leyka', function(e){
+        if($(this).val() === '1') {
+            $('#leyka_campaign_payments_amounts .leyka-options-section').hide();
+        } else {
+            $('#leyka_campaign_payments_amounts .leyka-options-section').show();
+        }
+    });
 
     // Multi-valued items fields:
     $('.multi-valued-items-field-wrapper').each(function(){

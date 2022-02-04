@@ -157,6 +157,39 @@
         }
 
     }
+
+    &#payments_options {
+        .section-tabs-wrapper {
+            .section-tab-content {
+                .tab-content-options-wrapper {
+                    .tab-section-options {
+
+                        .field-component.field {
+                            input:not([type=checkbox]):not([type=radio]), select, textarea {
+                                width: 248px;
+                            }
+                        }
+
+                        .field-component.title {
+                            display: flex;
+                        }
+
+                        .delete-additional-field.delete-item {
+                            margin-top: 24px;
+                            color: #d43c57;
+                            cursor: pointer;
+                        }
+
+                    }
+                }
+
+                .field-component.title .required {
+                    display: block;
+                }
+            }
+        }
+
+    }
     
     &#currency_options {
         .section-tabs-wrapper {
