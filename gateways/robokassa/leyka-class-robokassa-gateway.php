@@ -432,6 +432,14 @@ class Leyka_Robokassa_Card extends Leyka_Payment_Method {
                 'title' => __('Monthly recurring subscriptions are available', 'leyka'),
                 'comment' => __('Check if the gateway allows you to create recurrent subscriptions to do regular automatic payments.', 'leyka'),
                 'short_format' => true,
+                'field_classes' => ['active-recurring-available',],
+            ],
+            'active_recurring_setup_help' => [
+                'type' => 'static_text',
+                'title' => __('The necessary Cron job setup', 'leyka'),
+                'is_html' => true,
+                'value' => leyka_get_active_recurring_setup_help_content(),
+                'field_classes' => ['active-recurring-on'],
             ],
         ];
 

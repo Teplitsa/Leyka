@@ -540,14 +540,6 @@ class Leyka_Sber_Card extends Leyka_Payment_Method {
         $this->_gateway_id = 'sber';
         $this->_category = 'bank_cards';
 
-//        $this->_description = apply_filters(
-//            'leyka_pm_description',
-//            __('<a href="//www.sberbank.ru/ru/s_m_business/bankingservice/acquiring_total/">Sberbank Acquiring</a> cards payment description here.', 'leyka'),
-//            $this->_id,
-//            $this->_gateway_id,
-//            $this->_category
-//        );
-
         $this->_label_backend = __('Bank card', 'leyka');
         $this->_label = __('Bank card', 'leyka');
 
@@ -576,6 +568,14 @@ class Leyka_Sber_Card extends Leyka_Payment_Method {
                 'title' => __('Monthly recurring subscriptions are available', 'leyka'),
                 'comment' => __('Check if the gateway allows you to create recurrent subscriptions to do regular automatic payments.', 'leyka').' '.__('WARNING: you should enable the Sberbank auto-payments feature for test mode and for production mode separately.', 'leyka'),
                 'short_format' => true,
+                'field_classes' => ['active-recurring-available',],
+            ],
+            'active_recurring_setup_help' => [
+                'type' => 'static_text',
+                'title' => __('The necessary Cron job setup', 'leyka'),
+                'is_html' => true,
+                'value' => leyka_get_active_recurring_setup_help_content(),
+                'field_classes' => ['active-recurring-on'],
             ],
         ];
 

@@ -954,6 +954,7 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
                 'title' => __('Monthly recurring subscriptions are available', 'leyka'),
                 'comment' => __('Check if the gateway allows you to create recurrent subscriptions to do regular automatic payments.', 'leyka'),
                 'short_format' => true,
+                'field_classes' => ['active-recurring-available',],
             ],
             $this->full_id.'_certificate_path' => [
                 'type' => 'text',
@@ -979,6 +980,13 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'fW!^12@3#&8A4'),
                 'is_password' => true,
                 'field_classes' => ['old-api'],
+            ],
+            'active_recurring_setup_help' => [
+                'type' => 'static_text',
+                'title' => __('The necessary Cron job setup', 'leyka'),
+                'is_html' => true,
+                'value' => leyka_get_active_recurring_setup_help_content(),
+                'field_classes' => ['active-recurring-on'],
             ],
         ];
 

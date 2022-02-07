@@ -71,6 +71,13 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 'comment' => __('Check if you want to keep detailed logs of all gateway service operations for each incoming donation.', 'leyka'),
                 'short_format' => true,
             ],
+            'active_recurring_setup_help' => [
+                'type' => 'static_text',
+                'title' => __('The necessary Cron job setup', 'leyka'),
+                'is_html' => true,
+                'value' => leyka_get_active_recurring_setup_help_content(),
+                'field_classes' => ['active-recurring-on'],
+            ],
         ];
 
     }

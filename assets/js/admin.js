@@ -3892,6 +3892,30 @@ jQuery(document).ready(function($){
 
 });
 
+// Active recurring Gateways CRON job setup "option":
+jQuery(document).ready(function($){
+
+    let $active_recurring_cron_setup_field = $('.single-gateway-settings .active-recurring-on');
+
+    if( !$active_recurring_cron_setup_field.length ) {
+        return;
+    }
+
+    let $gateway_settings_wrapper = $active_recurring_cron_setup_field.parents('.gateway-settings'),
+        $recurring_on_field = $gateway_settings_wrapper.find('.active-recurring-available input');
+
+    $recurring_on_field.on('change.leyka', function(){
+
+        if($recurring_on_field.prop('checked')) {
+            $active_recurring_cron_setup_field.show();
+        } else {
+            $active_recurring_cron_setup_field.hide();
+        }
+
+    }).change();
+
+});
+
 // Yandex.Kassa old/new API options:
 jQuery(document).ready(function($){
 
