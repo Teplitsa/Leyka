@@ -1793,6 +1793,8 @@ class Leyka_Campaign {
 
     public function __get($field) {
 
+        $currency_id = leyka_get_country_currency();
+
         switch($field) {
             case 'id':
             case 'ID':
@@ -1946,13 +1948,13 @@ class Leyka_Campaign {
 
             case 'payments_single_tab_title': return $this->_campaign_meta['payments_single_tab_title'];
 
-            case 'payments_single_amounts_options_eur':
-                return $this->_campaign_meta['payments_single_amounts_options_eur'];
+            case 'payments_single_amounts_options_'.$currency_id:
+                return $this->_campaign_meta['payments_single_amounts_options_'.$currency_id];
 
             case 'payments_recurrent_tab_title': return $this->_campaign_meta['payments_recurrent_tab_title'];
 
-            case 'payments_recurrent_amounts_options_eur':
-                return $this->_campaign_meta['payments_recurrent_amounts_options_eur'];
+            case 'payments_recurrent_amounts_options_'.$currency_id:
+                return $this->_campaign_meta['payments_recurrent_amounts_options_'.$currency_id];
 
             default:
                 return apply_filters('leyka_get_unknown_campaign_field', null, $field, $this);
