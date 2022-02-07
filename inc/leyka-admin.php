@@ -497,15 +497,14 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	}
 
 	public function has_banners($page = false, $location = false) {
-//	    return !get_user_meta(get_current_user_id(), 'leyka_dashboard_banner_closed-grade_plugin', true);
-	    return !get_user_meta(get_current_user_id(), 'leyka_dashboard_banner_closed-webinar-jan2022', true);
+	    return !get_user_meta(get_current_user_id(), 'leyka_dashboard_banner_closed-grade_plugin', true);
     }
 
     public function show_banner($page = false, $location = false) {?>
     
         <div class="banner-wrapper">
         	<div class="banner-inner" data-banner-id="grade_plugin">
-                <?php /* ?>
+
                 <a href="https://wordpress.org/support/plugin/leyka/reviews/#new-post" class="banner" target="_blank">
                     <div class="banner-text">
                         <div class="banner-subtitle"><?php _e('Like Leyka?', 'leyka');?></div>
@@ -515,19 +514,10 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                         <img src="<?php echo LEYKA_PLUGIN_BASE_URL.'/img/dashboard/banner-grade-plugin.svg';?>" alt="">
                     </div>
             	</a>
-                <?php */?>
-                <a href="https://pd.te-st.ru/leyka-webinar/" class="banner" target="_blank">
-                    <div class="banner-text">
-                        <div class="banner-subtitle-upper"><?php _e('Webinar. January 21, 11:00', 'leyka');?></div>
-                        <div class="banner-title"><?php _e('How Leyka changed in 2021?', 'leyka');?></div>
-                        <div class="banner-subtitle-lower"><?php _e('New functions, new features.', 'leyka');?></div>
-                    </div>
-                    <div class="banner-thumbnail hands-picture">
-                        <img src="<?php echo LEYKA_PLUGIN_BASE_URL.'/img/dashboard/banner-hands-puzzle.svg';?>" alt="">
-                    </div>
-                </a>
-            	<a class="close" href="#" title="<?php _e('Close permanently', 'leyka');?>"></a>
-        	</div>
+
+                <a class="close" href="#" title="<?php _e('Close permanently', 'leyka');?>"></a>
+
+            </div>
         </div>
 
     <?php

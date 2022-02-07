@@ -1690,7 +1690,7 @@ class Leyka_Campaign {
                 'daily_rouble_pm_id' => empty($meta['_leyka_daily_rouble_pm_id']) ?
                     false : $meta['_leyka_daily_rouble_pm_id'][0],
                 'default_payments_amounts' => isset($meta['default_payments_amounts']) ? $meta['default_payments_amounts'] :
-                    isset($meta['default_payments_amounts'][0]) ? $meta['default_payments_amounts'][0] : '1',
+                    (isset($meta['default_payments_amounts'][0]) ? $meta['default_payments_amounts'][0] : '1'),
                 'payments_single_tab_title' => empty($meta['payments_single_tab_title']) ? '' : $meta['payments_single_tab_title'][0],
                 'payments_single_amounts_options_'.$main_currency_id => empty($meta['payments_single_amounts_options_'.$main_currency_id]) ?
                     [] : maybe_unserialize($meta['payments_single_amounts_options_'.$main_currency_id][0]),
