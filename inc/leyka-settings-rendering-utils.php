@@ -638,7 +638,7 @@ function leyka_render_static_text_field($option_id, $data){
 
         <span class="field-component field">
 
-            <span id="<?php echo $option_id.'-field';?>" class="<?php echo !empty($data['field_classes']) ? $data['field_classes'] : '' ?>">
+            <span id="<?php echo $option_id.'-field';?>" class="<?php echo !empty($data['field_classes']) ? (is_array($data['field_classes']) ? implode(' ', $data['field_classes']) : $data['field_classes']) : '' ?>">
                 <?php echo $content;?>
             </span>
 
