@@ -21,10 +21,10 @@ class Leyka_Star_Template_Controller extends Leyka_Template_Controller {
         if($amount_mode == 'fixed' || $amount_mode == 'mixed') {
             $amount_variants = $campaign->default_payments_amounts === '1' ? [
                 'single' => leyka_options()->opt_safe('payments_single_amounts_options_'.$main_currency_id),
-                'recurrent' => leyka_options()->opt_safe('payments_recurrent_amounts_options_'.$main_currency_id)
+                'recurring' => leyka_options()->opt_safe('payments_recurring_amounts_options_'.$main_currency_id)
             ] : [
                 'single' =>  $campaign->{'payments_single_amounts_options_'.$main_currency_id},
-                'recurrent' => $campaign->{'payments_recurrent_amounts_options_'.$main_currency_id},
+                'recurring' => $campaign->{'payments_recurring_amounts_options_'.$main_currency_id},
             ];
         } else {
             $amount_variants = [];
@@ -32,10 +32,10 @@ class Leyka_Star_Template_Controller extends Leyka_Template_Controller {
 
         $payments_amounts_tab_titles = $campaign->default_payments_amounts === '1' ? [
             'single' => leyka_options()->opt('payments_single_tab_title'),
-            'recurrent' => leyka_options()->opt('payments_recurrent_tab_title')
+            'recurring' => leyka_options()->opt('payments_recurring_tab_title')
         ] : [
             'single' => $campaign->payments_single_tab_title,
-            'recurrent' => $campaign->payments_recurrent_tab_title
+            'recurring' => $campaign->payments_recurring_tab_title
         ];
 
         $this->_template_data[$campaign->id] = [

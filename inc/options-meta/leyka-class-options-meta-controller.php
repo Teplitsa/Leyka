@@ -362,19 +362,19 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'default' => [],
                 'payment_type' => 'single'
             ],
-            "payments_recurrent_tab_title" => [
+            "payments_recurring_tab_title" => [
                 'type' => 'text',
-                'default' => __('Recurrent payments'),
+                'default' => __('Recurring payments'),
                 'title' => __('Donation form tab title', 'leyka'),
                 'required' => true,
-                'placeholder' => __('Recurrent payments')
+                'placeholder' => __('Recurring payments')
             ],
-            "payments_recurrent_amounts_options_".$main_currency_id => [
+            "payments_recurring_amounts_options_".$main_currency_id => [
                 'type' => 'custom_payments_amounts_options',
                 'title' => __('Amounts options', 'leyka'),
                 'field_classes' => ['payments-amounts-options'],
                 'default' => [],
-                'payment_type' => 'recurrent'
+                'payment_type' => 'recurring'
             ]
         ];
 

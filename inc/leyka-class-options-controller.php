@@ -65,8 +65,8 @@ class Leyka_Options_Controller extends Leyka_Singleton {
             return leyka_get_payments_amounts_options('single');
         });
 
-        add_filter("leyka_option_default-payments_recurrent_amounts_options_".$main_currency_id, function($option_value){
-            return leyka_get_payments_amounts_options('recurrent');
+        add_filter("leyka_option_default-payments_recurring_amounts_options_".$main_currency_id, function($option_value){
+            return leyka_get_payments_amounts_options('recurring');
         });
 
         // If Country option value changes, clear active PM lists:
