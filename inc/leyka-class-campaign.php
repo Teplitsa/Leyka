@@ -1661,7 +1661,7 @@ class Leyka_Campaign {
                 'payment_title' => empty($meta['payment_title']) ?
                     (empty($this->_post_object) ? '' : $this->_post_object->post_title) : $meta['payment_title'][0],
                 'campaign_type' => empty($meta['campaign_type']) ? '-' : $meta['campaign_type'][0],
-                'donations_type' => empty($meta['donations_type']) ? [] : $meta['donations_type'][0],
+                'donations_type' => empty($meta['donations_type']) ? [] : maybe_unserialize($meta['donations_type'][0]),
                 'donations_type_default' => empty($meta['donations_type_default']) ? false : $meta['donations_type_default'][0],
                 'campaign_template' => empty($meta['campaign_template']) ? '' : $meta['campaign_template'][0],
                 'campaign_css' => empty($meta['campaign_css']) ? '' : $meta['campaign_css'][0],
@@ -1782,7 +1782,8 @@ class Leyka_Campaign {
      */
     protected function _get_donations_types_available() {
 
-        $types_available = $this->donations_types;
+        $types_available = is_array($this->donations_types) ? $this->donations_types : (array)$this->donations_types;
+
         if(in_array('recurring', $types_available) && !leyka_is_recurring_supported()) {
             unset( $types_available[array_search('recurring', $types_available)] );
         }
@@ -1812,8 +1813,8 @@ class Leyka_Campaign {
 
             case 'donations_type': // Donation types checked in campaign settings
             case 'donations_types':
-                return $this->_campaign_meta['donations_type'] ?
-                    maybe_unserialize($this->_campaign_meta['donations_type']) : ['single', 'recurring',];
+                return $this->_campaign_meta['donations_type'] && is_array($this->_campaign_meta['donations_type']) ?
+                    $this->_campaign_meta['donations_type'] : ['single', 'recurring',];
 
             case 'donations_type_available': // Donation types really available for campaign
             case 'donations_types_available':
