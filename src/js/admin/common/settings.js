@@ -679,7 +679,7 @@ jQuery(document).ready(function($){
 
                 if($new_item && $new_item.hasClass('payment-amount-option')) {
 
-                    const payment_type = $new_item.hasClass('payment_single') ? 'single' : 'recurrent';
+                    const payment_type = $new_item.hasClass('payment_single') ? 'single' : 'recurring';
 
                     $new_item.find('input').each((idx, payment_amount_option_input) => {
 

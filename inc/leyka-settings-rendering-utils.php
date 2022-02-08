@@ -1478,14 +1478,14 @@ function leyka_save_payments_amounts_options() {
 
     $currency_id = leyka_options()->opt_safe('currency_main');
     $payments_single_amounts_attr = 'leyka_payments_single_amounts_options_'.$currency_id;
-    $payments_recurrent_amounts_attr = 'leyka_payments_recurrent_amounts_options_'.$currency_id;
+    $payments_recurring_amounts_attr = 'leyka_payments_recurring_amounts_options_'.$currency_id;
 
     if(isset($_POST[$payments_single_amounts_attr])) {
         save_payment_amounts_options(json_decode(urldecode($_POST[$payments_single_amounts_attr]), true), 'single', $currency_id);
     }
 
-    if(isset($_POST[$payments_recurrent_amounts_attr])) {
-        save_payment_amounts_options(json_decode(urldecode($_POST[$payments_recurrent_amounts_attr]), true), 'recurrent', $currency_id);
+    if(isset($_POST[$payments_recurring_amounts_attr])) {
+        save_payment_amounts_options(json_decode(urldecode($_POST[$payments_recurring_amounts_attr]), true), 'recurring', $currency_id);
     }
 
 }

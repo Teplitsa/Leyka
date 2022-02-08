@@ -241,7 +241,7 @@ jQuery(document).ready(function($){
                 equalizeFormElementsWidth($(this));
             });
 
-            let payment_type = $this.data('periodicity') === 'once' ? 'single' : 'recurrent';
+            let payment_type = $this.data('periodicity') === 'once' ? 'single' : 'recurring';
 
             showAmountOptionsByPaymentType($_form, payment_type);
 

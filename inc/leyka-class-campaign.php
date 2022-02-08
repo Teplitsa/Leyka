@@ -813,11 +813,11 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                         ['title' => '', 'options' => ['payments_single_amounts_options_'.$main_currency_id]]
                     ]
                 ],
-                'recurrent' => [
-                    'title' => __('Recurrent payment', 'leyka'),
+                'recurring' => [
+                    'title' => __('Recurring payment', 'leyka'),
                     'sections' => [
-                        ['title' => '', 'options' => ['payments_recurrent_tab_title']],
-                        ['title' => '', 'options' => ['payments_recurrent_amounts_options_'.$main_currency_id]]
+                        ['title' => '', 'options' => ['payments_recurring_tab_title']],
+                        ['title' => '', 'options' => ['payments_recurring_amounts_options_'.$main_currency_id]]
                     ]
                 ],
                 'miscellaneous' => [
@@ -839,11 +839,13 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         if ( $campaign->default_payments_amounts === '0' ) {
             foreach(['payments_single_tab_title', 'payments_single_amounts_options_'.$main_currency_id,
-                        'payments_recurrent_tab_title', 'payments_recurrent_amounts_options_'.$main_currency_id]
+                        'payments_recurring_tab_title', 'payments_recurring_amounts_options_'.$main_currency_id]
                     as $forced_option) {
                 $forced_options_data[$forced_option] = ['value' => $campaign->$forced_option];
             }
-        }?>
+        }
+
+        ?>
 
         <div class="leyka-admin leyka-settings-page">
             <fieldset id="default-payments-options" class="metabox-field campaign-field default-payments-options">
@@ -861,7 +863,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                 </div>
             </fieldset>
 
-            <div class="leyka-options-section" style="<?php echo $campaign->default_payments_amounts === '1' ? 'display:none;' : '' ?>"><?php leyka_render_tabbed_section_options_area($payments_amounts_section, $forced_options_data); ?></div>
+            <div class="leyka-options-section" style="<?php echo $campaign->default_payments_amounts === '1' ? 'display:none;' : '' ?>"><?php leyka_render_tabbed_section_options_area($payments_amounts_section, isset($forced_options_data) ? $forced_options_data : []); ?></div>
         </div>
 
     <?php  }
@@ -1245,11 +1247,11 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         if( !empty($_REQUEST['cover_bg_color']) && $campaign->cover_bg_color !== $_REQUEST['cover_bg_color'] ) {
             $meta['cover_bg_color'] = sanitize_hex_color($_REQUEST['cover_bg_color']);
         }
-        
+
         if( !empty($_REQUEST['header_cover_type']) && $campaign->header_cover_type !== $_REQUEST['header_cover_type'] ) {
             $meta['header_cover_type'] = $_REQUEST['header_cover_type'];
         }
-        
+
         $_REQUEST['is_finished'] = empty($_REQUEST['is_finished']) ? 0 : 1;
         if($_REQUEST['is_finished'] != $campaign->is_finished) {
             $meta['is_finished'] = $_REQUEST['is_finished'];
@@ -1290,8 +1292,8 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                     $meta['payments_single_tab_title'] = esc_attr($_REQUEST['leyka_payments_single_tab_title']);
                 }
 
-                if(isset($_REQUEST['leyka_payments_recurrent_tab_title'])) {
-                    $meta['payments_recurrent_tab_title'] = esc_attr($_REQUEST['leyka_payments_recurrent_tab_title']);
+                if(isset($_REQUEST['leyka_payments_recurring_tab_title'])) {
+                    $meta['payments_recurring_tab_title'] = esc_attr($_REQUEST['leyka_payments_recurring_tab_title']);
                 }
 
                 function prepare_payment_amounts_options($amounts_options, $payment_type) {
@@ -1320,10 +1322,10 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                     );
                 }
 
-                if(isset($_REQUEST['leyka_payments_recurrent_amounts_options_'.$currency_id])) {
-                    $meta['payments_recurrent_amounts_options_'.$currency_id] = prepare_payment_amounts_options(
-                        json_decode(urldecode($_REQUEST['leyka_payments_recurrent_amounts_options_'.$currency_id]), true),
-                        'recurrent'
+                if(isset($_REQUEST['leyka_payments_recurring_amounts_options_'.$currency_id])) {
+                    $meta['payments_recurring_amounts_options_'.$currency_id] = prepare_payment_amounts_options(
+                        json_decode(urldecode($_REQUEST['leyka_payments_recurring_amounts_options_'.$currency_id]), true),
+                        'recurring'
                     );
                 }
 
@@ -1331,8 +1333,8 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
                 delete_post_meta($campaign_id, 'payments_single_tab_title');
                 delete_post_meta($campaign_id, 'payments_single_amounts_options_'.$currency_id);
-                delete_post_meta($campaign_id, 'payments_recurrent_tab_title');
-                delete_post_meta($campaign_id, 'payments_recurrent_amounts_options_'.$currency_id);
+                delete_post_meta($campaign_id, 'payments_recurring_tab_title');
+                delete_post_meta($campaign_id, 'payments_recurring_amounts_options_'.$currency_id);
 
             }
 
@@ -1576,12 +1578,12 @@ class Leyka_Campaign {
 
             }
             if( !isset($meta['hide_cover_tint']) ) {
-                
+
                 update_post_meta($this->_id, 'hide_cover_tint', 0);
                 $meta['hide_cover_tint'] = [0];
-                
+
             }
-            
+
             if( !isset($meta['total_funded']) ) { // If campaign total collected amount is not saved, save it
 
                 $sum = 0.0;
@@ -1689,14 +1691,14 @@ class Leyka_Campaign {
                     empty($meta['_leyka_daily_rouble_amount_variants']) ? '' : $meta['_leyka_daily_rouble_amount_variants'][0],
                 'daily_rouble_pm_id' => empty($meta['_leyka_daily_rouble_pm_id']) ?
                     false : $meta['_leyka_daily_rouble_pm_id'][0],
-                'default_payments_amounts' => isset($meta['default_payments_amounts']) ? $meta['default_payments_amounts'] :
-                    (isset($meta['default_payments_amounts'][0]) ? $meta['default_payments_amounts'][0] : '1'),
+                'default_payments_amounts' => !isset($meta['default_payments_amounts']) ? '1' :
+                    (is_array($meta['default_payments_amounts']) ? $meta['default_payments_amounts'][0] : $meta['default_payments_amounts']),
                 'payments_single_tab_title' => empty($meta['payments_single_tab_title']) ? '' : $meta['payments_single_tab_title'][0],
                 'payments_single_amounts_options_'.$main_currency_id => empty($meta['payments_single_amounts_options_'.$main_currency_id]) ?
                     [] : maybe_unserialize($meta['payments_single_amounts_options_'.$main_currency_id][0]),
-                'payments_recurrent_tab_title' => empty($meta['payments_recurrent_tab_title']) ? '' : $meta['payments_recurrent_tab_title'][0],
-                'payments_recurrent_amounts_options_'.$main_currency_id => empty($meta['payments_recurrent_amounts_options_'.$main_currency_id]) ?
-                    [] : maybe_unserialize($meta['payments_recurrent_amounts_options_'.$main_currency_id][0]),
+                'payments_recurring_tab_title' => empty($meta['payments_recurring_tab_title']) ? '' : $meta['payments_recurring_tab_title'][0],
+                'payments_recurring_amounts_options_'.$main_currency_id => empty($meta['payments_recurring_amounts_options_'.$main_currency_id]) ?
+                    [] : maybe_unserialize($meta['payments_recurring_amounts_options_'.$main_currency_id][0]),
                 'additional_fields_settings' => empty($meta['leyka_campaign_additional_fields_settings']) ?
                     [] : maybe_unserialize($meta['leyka_campaign_additional_fields_settings'][0]),
             ], $this->_id);
@@ -1951,10 +1953,10 @@ class Leyka_Campaign {
             case 'payments_single_amounts_options_'.$currency_id:
                 return $this->_campaign_meta['payments_single_amounts_options_'.$currency_id];
 
-            case 'payments_recurrent_tab_title': return $this->_campaign_meta['payments_recurrent_tab_title'];
+            case 'payments_recurring_tab_title': return $this->_campaign_meta['payments_recurring_tab_title'];
 
-            case 'payments_recurrent_amounts_options_'.$currency_id:
-                return $this->_campaign_meta['payments_recurrent_amounts_options_'.$currency_id];
+            case 'payments_recurring_amounts_options_'.$currency_id:
+                return $this->_campaign_meta['payments_recurring_amounts_options_'.$currency_id];
 
             default:
                 return apply_filters('leyka_get_unknown_campaign_field', null, $field, $this);

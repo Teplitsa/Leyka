@@ -51,11 +51,11 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
                     ['title' => '', 'options' => ["payments_single_amounts_options_{$main_currency_id}"]]
                 ]
             ],
-            'recurrent' => [
-                'title' => __('Recurrent payment', 'leyka'),
+            'recurring' => [
+                'title' => __('Recurring payment', 'leyka'),
                 'sections' => [
-                    ['title' => '', 'options' => ["payments_recurrent_tab_title"]],
-                    ['title' => '', 'options' => ["payments_recurrent_amounts_options_{$main_currency_id}"]]
+                    ['title' => '', 'options' => ["payments_recurring_tab_title"]],
+                    ['title' => '', 'options' => ["payments_recurring_amounts_options_{$main_currency_id}"]]
                 ]
             ],
             'miscellaneous' => [

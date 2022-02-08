@@ -2376,9 +2376,7 @@ jQuery(document).ready(function($){
                 equalizeFormElementsWidth($(this));
             });
 
-            $('.swiper-item[data-payment-type="single"], .swiper-item[data-payment-type="recurrent"]').removeClass('selected');
-
-            let payment_type = $this.data('periodicity') === 'once' ? 'single' : 'recurrent';
+            let payment_type = $this.data('periodicity') === 'once' ? 'single' : 'recurring';
 
             showAmountOptionsByPaymentType($_form, payment_type);
 
