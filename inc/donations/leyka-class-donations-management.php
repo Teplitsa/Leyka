@@ -104,10 +104,14 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
     }
 
-    public function donation_status_changed($new_status, $old_status, $donation) {
+    public function donation_status_changed($new_status, $old_status, $donation = null) {
         // WARNING: don't use type hinting for $donation argument here (it may be WP_Post or Leyka_Donation_Base)
 
-        if($new_status === $old_status || (is_a($donation, 'WP_Post') && $donation->post_type !== self::$post_type)) {
+        if(
+            $new_status === $old_status
+            || !$donation
+            || (is_a($donation, 'WP_Post') && $donation->post_type !== self::$post_type)
+        ) {
             return;
         }
 

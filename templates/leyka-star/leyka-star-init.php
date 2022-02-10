@@ -4,15 +4,25 @@
  **/
 
 // Campaigns have different elements order:
-if( !is_admin() && is_main_query() && is_singular(Leyka_Campaign_Management::$post_type) ) {
+add_action('pre_get_posts', function(WP_Query $query){
 
-    remove_filter('the_content', 'leyka_print_donation_elements');
+    if( // Can't use $query->is_singular(Leyka_Campaign_Management::$post_type) here,
+        // because there is no $query->get_queried_object_id() value at this point
+        $query->is_main_query()
+        && $query->is_singular()
+        && $query->get('post_type') == Leyka_Campaign_Management::$post_type
+        && $query->get('name')
+    ) {
 
-    if( !leyka_options()->opt_template('do_not_display_donation_form') ) {
-        add_filter('the_content', 'leyka_star_template_campaign_page');
+        remove_filter('the_content', 'leyka_print_donation_elements');
+
+        if( !leyka_options()->opt_template('do_not_display_donation_form') ) {
+            add_filter('the_content', 'leyka_star_template_campaign_page');
+        }
+
     }
 
-}
+}, 11);
 
 function leyka_star_template_campaign_page($content) {
 

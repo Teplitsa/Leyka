@@ -5,6 +5,7 @@
 
 require_once LEYKA_PLUGIN_DIR.'gateways/rbk/includes/Leyka_Rbk_Gateway_Webhook_Verification.php';
 require_once LEYKA_PLUGIN_DIR.'gateways/rbk/includes/Leyka_Rbk_Gateway_Helper.php';
+//require_once(LEYKA_PLUGIN_DIR.'inc/leyka-settings-rendering-utils.php'); // Just in case - sometimes the script isn't included
 
 class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
