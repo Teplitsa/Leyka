@@ -1,30 +1,41 @@
 <?php if( !defined('WPINC') ) die;
 /**
- * Leyka_Mixplat_Gateway class
+ * Leyka_Mixplat_Processing_Gateway class
  */
 
-class Leyka_Mixplat_Gateway extends Leyka_Gateway {
+function debug_header_log($data) {
+  $bt = debug_backtrace();
+  $caller = array_shift($bt);
+  $line = $caller['line'];
+  $file = array_pop(explode('/', $caller['file']));
+  header('log_'.$file.'_'.$caller['line'].': '.json_encode($data));
+}
+
+class Leyka_Mixplat_Processing_Gateway extends Leyka_Gateway {
 
     protected static $_instance;
 
     protected $_submit_result = false;
+    protected $_redirect_url = '';
+
 
     protected function _set_attributes() {
 
-        $this->_id = 'mixplat';
-        $this->_title = __('MIXPLAT - SMS', 'leyka');
+        $this->_id = 'mixplat_processing';
+        $this->_title = __('MIXPLAT - Processing', 'leyka');
 
         $this->_description = apply_filters(
             'leyka_gateway_description',
-            __('MIXPLAT allows a simple and safe way to pay for goods and services with your mobile phone by sending SMS.', 'leyka'),
+            __('MIXPLAT is a simple and safe way to donate with Bank Cards, Apple Pay and Google Pay.', 'leyka'),
             $this->_id
         );
 
-        $this->_docs_link = '//leyka.te-st.ru/docs/nastrojka-mixplat/';
+        $this->_docs_link = '//leyka.te-st.ru/docs/nastrojka-mixplat_processing/';
         $this->_registration_link = '//mixplat.ru/#join';
 
-        $this->_min_commission = 2.5;
+        $this->_min_commission = 0.4;
         $this->_receiver_types = ['legal'];
+        $this->_may_support_recurring = true;
 
     }
 
@@ -35,19 +46,26 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         }
 
         $this->_options = [
-            'mixplat_service_id' => [
+            $this->_id.'_service_id' => [
                 'type' => 'text',
                 'title' => __('MIXPLAT Project ID', 'leyka'),
                 'comment' => __('Enter your project ID. It can be found in your MIXPLAT project settings page on MIXPLAT site.', 'leyka'),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '100359'),
             ],
-            'mixplat_secret_key' => [
+            $this->_id.'_secret_key' => [
                 'type' => 'text',
                 'title' => __('MIXPLAT API key', 'leyka'),
                 'comment' => __('Enter your API key. It can be found in your MIXPLAT project settings page on MIXPLAT site.', 'leyka'),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'c23a4398db8ef7b3ae1f4b07aeeb7c54f8e3c7c9'),
+            ],
+            $this->_id.'_test_mode' => [
+                'type' => 'checkbox',
+                'default' => false,
+                'title' => __('Payments testing mode', 'leyka'),
+                'comment' => __('Check if the gateway integration is in test mode.', 'leyka'),
+                'short_format' => true,
             ],
         ];
 
@@ -55,11 +73,14 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
     protected function _initialize_pm_list() {
 
-        if(empty($this->_payment_methods['mobile'])) {
-            $this->_payment_methods['mobile'] = Leyka_Mixplat_Mobile::get_instance();
+        if(empty($this->_payment_methods['pay'])) {
+            $this->_payment_methods['pay'] = Leyka_Mixplat_Processing_Apple_Google_Pay::get_instance();
         }
-        if(empty($this->_payment_methods['sms'])) {
-            $this->_payment_methods['sms'] = Leyka_Mixplat_Text::get_instance();
+        if(empty($this->_payment_methods['yandex'])) {
+            $this->_payment_methods['yandex'] = Leyka_Mixplat_Processing_Yandex_Pay::get_instance();
+        }
+        if(empty($this->_payment_methods['bankcard'])) {
+            $this->_payment_methods['bankcard'] = Leyka_Mixplat_Processing_BankCard::get_instance();
         }
 
     }
@@ -72,69 +93,20 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
     }
 
-    public function localize_js_strings($js_data){
-        return array_merge($js_data, [
-            'phone_invalid' => __('Please, enter a phone number in a 7xxxxxxxxxx format.', 'leyka'),
-        ]);
-    }
-
-    public function enqueue_gateway_scripts() {
-
-        if(Leyka_Mixplat_Mobile::get_instance()->active) {
-
-            wp_enqueue_script(
-                'leyka-mixplat',
-                LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_Mixplat_Gateway::get_instance()->id.'/js/leyka.mixplat.js',
-                ['jquery', 'leyka-public'],
-                LEYKA_VERSION,
-                true
-            );
-        }
-
-        add_filter('leyka_js_localized_strings', [$this, 'localize_js_strings']);
-
-    }
-
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
         $donation = Leyka_Donations::get_instance()->get($donation_id);
 
-        $phone = isset($form_data['leyka_donor_phone']) ? $form_data['leyka_donor_phone'] : false;
-        if( !$phone ) { // Check the phone field in the additional form fields list
+        if( !empty($form_data['leyka_recurring']) ) {
 
-            foreach(Leyka_Campaign::get_additional_fields_settings($donation->campaign_id) as $field_slug => $field) {
-                if( !empty($field['type']) && $field['type'] === 'phone' ) {
-
-                    $phone = $form_data['leyka_'.$field_slug];
-                    break;
-
-                }
-            }
-
-        }
-        $phone = str_replace(['+', '(', ')', '-'], '', trim($phone));
-
-        $error = false;
-        if(empty($phone)) {
-            $error = new WP_Error('leyka_mixplat_phone_is_empty', __('Phone number is required.', 'leyka'));
-        } else if( !leyka_is_phone_number($phone) ) {
-            $error = new WP_Error('leyka_mixplat_phone_is_incorrect', __('Phone number is incorrect.', 'leyka'));
-        }
-
-        if($error) {
-
-            leyka()->add_payment_form_error($error);
-
-            return ['status' => 1, 'errors' => $error, 'message' => $error->get_error_message(),];
+            $donation->payment_type = 'rebill';
+            $donation->recurring_is_active = true; // So we could turn it on/off later
 
         }
 
-        $phone = '7'.mb_substr(str_replace(['+', ' ', '-', '.'], '', $phone), -10);
-
-        $is_test = leyka_options()->opt('mixplat_test_mode') ? 1 : 0;
+        $is_test = leyka_options()->opt($gateway_id.'_test_mode') ? 1 : 0;
 
         $amount = (int)round((float)$donation->amount * 100);
-        $donation->mixplat_phone = $phone;
         $currency = $this->_get_currency_id($donation->currency);
         $is_success = false;
 
@@ -143,31 +115,35 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             require_once LEYKA_PLUGIN_DIR.'gateways/mixplat/lib/autoload.php';
 
             $mixplat_conf = new \MixplatClient\Configuration();
-            $mixplat_conf->projectId = leyka_options()->opt('mixplat_service_id');
-            $mixplat_conf->apiKey = leyka_options()->opt('mixplat_secret_key');
+            $mixplat_conf->projectId = leyka_options()->opt($gateway_id.'_service_id');
+            $mixplat_conf->apiKey = leyka_options()->opt($gateway_id.'_secret_key');
 
             $http_client = new \MixplatClient\HttpClient\SimpleHttpClient();
             $mixplat_client = new \MixplatClient\MixplatClient();
             $mixplat_client->setConfig($mixplat_conf);
             $mixplat_client->setHttpClient($http_client);
 
-            $new_payment = new \MixplatClient\Method\CreatePayment();
+            $new_payment = new \MixplatClient\Method\CreatePaymentForm();
 
             $new_payment->test = $is_test;
             $new_payment->merchantPaymentId = $donation_id;
-            $new_payment->paymentMethod = \MixplatClient\MixplatVars::PAYMENT_METHOD_MOBILE;
-            $new_payment->userPhone = $phone;
-	          $new_payment->userEmail = $donation->donor_email;
+            $new_payment->paymentMethod = \MixplatClient\MixplatVars::PAYMENT_METHOD_CARD;
+            $new_payment->userEmail = $donation->donor_email;
             $new_payment->amount = $amount;
+            $new_payment->description = get_bloginfo('name').' '.$donation->payment_title;
+            $new_payment->urlSuccess = leyka_get_success_page_url();
+            $new_payment->urlFailure = leyka_get_failure_page_url();
             $new_payment->merchantFields = [
                 'donor_name' => $donation->donor_name,
                 'email' => $donation->donor_email,
                 'payment_title' => $donation->payment_title,
-                'campaign_id' => leyka_options()->opt('mixplat-sms_default_campaign_id'),
+                'campaign_id' => $donation->campaign_id,
             ];
 
-            $response = $mixplat_client->request($new_payment);
+            $new_payment->billingType = ($this->_get_gateway_pm_id($pm_id) == 'pay') ? 'apple_pay' : ( ($this->_get_gateway_pm_id($pm_id) == 'yandex') ? 'yandex_pay' : ( ($this->_get_gateway_pm_id($pm_id) == 'bankcard') ? 'bank_card' : '' ) );
+            $new_payment->recurrentPayment = ($donation->type == 'rebill') ? 1 : 0;
 
+            $response = $mixplat_client->request($new_payment);
             $donation->add_gateway_response($response);
 
             if( !empty($response['result']) && $response['result'] == 'ok' ) {
@@ -184,6 +160,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
             } else { // New templates (Star & further)
                 $this->_submit_result = 'success';
+                $this->_redirect_url = !empty($response['redirect_url']) ? $response['redirect_url'] : leyka_get_failure_page_url();
             }
 
         } else {
@@ -215,11 +192,11 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
     }
 
     public function submission_redirect_url($current_url, $pm_id) {
-        return $pm_id === 'mobile' && $this->_submit_result === 'success' ? leyka_get_success_page_url() : $current_url;
+        return $this->_redirect_url ? $this->_redirect_url : ''; // The Gateway receives redirection URL on payment
     }
 
     public function submission_redirect_type($redirect_type, $pm_id, $donation_id) {
-        return $pm_id === 'mobile' && $this->_submit_result === 'success' ? 'redirect' : $redirect_type;
+        return 'redirect';
     }
 
     public function submission_form_data($form_data, $pm_id, $donation_id) {
@@ -266,19 +243,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
         if( !$is_error ) {
 
-            if($response['api_version'] == 3) { // Only 1 callback request type for the API v.3
-                $nessessary_params = ['request', 'status', 'user_phone', 'amount', 'signature',];
-            } else if($response['request'] == 'check') { // Check request
-                $nessessary_params = [
-                    'id', 'service_id', 'phone', 'date_created', 'amount', 'currency', 'text', 'signature',
-                ];
-            } else { // Status request
-                $nessessary_params = [
-                    'id', 'external_id', 'service_id', 'status', 'status_extended', 'phone', 'amount', 'amount_merchant',
-                    'currency', 'test', 'signature',
-                ];
-            }
-
+            $nessessary_params = ['request', 'status', 'amount', 'signature',];
             foreach($nessessary_params as $param_name) {
                 if( !array_key_exists($param_name, $response) ) {
 
@@ -293,23 +258,8 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
         if( !$is_error ) { // Signature check
 
-            if($response['api_version'] == 3) {
-                $params_signature = md5($response['payment_id'].leyka_options()->opt('mixplat_secret_key'));
-            } else if($response['request'] == 'check') { // Check request
-                $params_signature = md5(
-                    $response['id'].$response['service_id'].$response['phone'].$response['amount'].
-                    leyka_options()->opt('mixplat_secret_key')
-                );
-            } else { // Status request
-                $params_signature = md5(
-                    $response['id'].$response['external_id'].$response['service_id'].$response['status'].
-                    $response['status_extended'].$response['phone'].$response['amount'].$response['amount_merchant'].
-                    $response['currency'].$response['test'].leyka_options()->opt('mixplat_secret_key')
-                );
-            }
-
+            $params_signature = md5($response['payment_id'].leyka_options()->opt('mixplat_processing_secret_key'));
             $response['signature_calculated'] = $params_signature;
-
             if($params_signature !== $response['signature']) {
 
                 $message = sprintf(__("This message has been sent because a call to your MIXPLAT callback was made with invalid MIXPLAT signature. The details of the call are below. The callback type: %s. Signatures sent / calculated: %s / %s", 'leyka'), $response['request'], $response['signature'], $params_signature)."\n\r\n\r";
@@ -345,9 +295,9 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
         if($response['api_version'] == 3 && $response['request'] == 'payment_status') {
 
-            // SMS payment:
+            // Card payment:
             if(empty($response['merchant_payment_id']) && !empty($response['status']) && $response['status'] == 'success') {
-                $this->_handle_sms_donation_callback($response);
+                $this->_handle_card_donation_callback($response);
             } else if( !empty($response['status']) ) { // Mobile payment via website
 
                 $donation = Leyka_Donations::get_instance()->get(absint($response['merchant_payment_id']));
@@ -397,9 +347,9 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
         } else if($response['request'] == 'status') { // Status request
 
-            if(empty($response['external_id']) && !empty($response['status']) && $response['status'] == 'success') { // SMS
-                $this->_handle_sms_donation_callback($response);
-            } else if( !empty($response['status']) && $response['status'] == 'success' ) { // Mobile payment via website
+            if(empty($response['external_id']) && !empty($response['status']) && $response['status'] == 'success') {
+                $this->_handle_card_donation_callback($response);
+            } else if( !empty($response['status']) && $response['status'] == 'success' ) {
 
                 $donation = Leyka_Donations::get_instance()->get(absint($response['external_id']));
                 if($donation && $donation->status != 'funded') {
@@ -422,20 +372,19 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
     }
 
-    protected function _handle_sms_donation_callback($response) {
+    protected function _handle_card_donation_callback($response) {
 
         $response['currency'] = empty($response['currency']) ? 'rub' : trim($response['currency']);
 
         $donation_id = Leyka_Donations::get_instance()->add([
             'gateway_id' => $this->_id,
-            'payment_method_id' => 'sms',
-            'campaign_id' => leyka_options()->opt('mixplat-sms_default_campaign_id'),
+            'payment_method_id' => 'bank_cards',
+            'campaign_id' => '',
             'status' => 'funded',
             'payment_type' => 'single',
             'amount' => $response['amount']/100.0,
             'currency' => empty($response['currency']) ?
                 leyka_options()->opt('currency_main') : mb_strtolower($response['currency']),
-            'mixplat_phone' => $response['phone'],
         ]);
 
         $donation = Leyka_Donations::get_instance()->get($donation_id);
@@ -522,226 +471,135 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
     }
 
-    public function display_donation_specific_data_fields($donation = false) {
-
-        if($donation) { // Edit donation page displayed
-
-            $donation = Leyka_Donations::get_instance()->get_donation($donation);?>
-
-            <label><?php _e('Phone number', 'leyka');?>:</label>
-            <div class="leyka-ddata-field">
-
-            <?php if($donation->type == 'correction') {?>
-                <input type="text" id="mixplat-phone" name="mixplat-phone" placeholder="<?php _e('Enter a phone number', 'leyka');?>" value="<?php echo $donation->mixplat_phone;?>">
-            <?php } else {?>
-                <span class="fake-input"><?php echo $donation->mixplat_phone;?></span>
-            <?php }?>
-            </div>
-
-        <?php } else { // New donation page displayed ?>
-
-            <label for="mixplat-phone"><?php _e('Phone number', 'leyka');?>:</label>
-            <div class="leyka-ddata-field">
-                <input type="text" id="mixplat-phone" name="mixplat-phone" placeholder="<?php _e('Enter a phone number', 'leyka');?>" value="">
-            </div>
-        <?php }
-
-    }
-
-    public function get_specific_data_value($value, $field_name, Leyka_Donation_Base $donation) {
-        switch($field_name) {
-            case 'donor_phone':
-            case 'mixplat_phone':
-                return Leyka_Donations::get_instance()->get_donation_meta($donation->id, '_leyka_mixplat_phone');
-            default: return $value;
-        }
-    }
-
-    public function set_specific_data_value($field_name, $value, Leyka_Donation_Base $donation) {
-        switch($field_name) {
-            case 'donor_phone':
-            case 'mixplat_phone':
-                return Leyka_Donations::get_instance()->set_donation_meta($donation->id, '_leyka_mixplat_phone', $value);
-            default: return false;
-        }
-    }
-
-    public function save_donation_specific_data(Leyka_Donation_Base $donation) {
-        if(isset($_POST['mixplat-phone']) && $donation->mixplat_phone != $_POST['mixplat-phone']) {
-            $donation->mixplat_phone = $_POST['mixplat-phone'];
-        }
-    }
-
-    public function add_donation_specific_data($donation_id, array $params) {
-        if( !empty($params['mixplat_phone']) ) {
-
-            Leyka_Donations::get_instance()->set_donation_meta(
-                $donation_id,
-                '_leyka_mixplat_phone',
-                $params['mixplat_phone']
-            );
-
-        }
-    }
-
 }
 
-class Leyka_Mixplat_Mobile extends Leyka_Payment_Method {
+class Leyka_Mixplat_Processing_BankCard extends Leyka_Payment_Method {
 
     protected static $_instance = null;
 
     public function _set_attributes() {
 
-        $this->_id = 'mobile';
-        $this->_gateway_id = 'mixplat';
-        $this->_category = 'mobile_payments';
+        $this->_id = 'bankcard';
+        $this->_gateway_id = 'mixplat_processing';
+        $this->_category = 'bank_cards';
 
         $this->_description = apply_filters(
             'leyka_pm_description',
-            __('Mobile payment is performed from user mobile account without sending SMS.', 'leyka'),
+            __('Enable Bank Card payments', 'leyka'),
             $this->_id,
             $this->_gateway_id,
             $this->_category
         );
 
-        $this->_label_backend = __('Mobile payment', 'leyka');
-        $this->_label = __('Mobile payment', 'leyka');
+        $this->_label_backend = __('Bank card', 'leyka');
+        $this->_label = __('Bank card', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, [
-            //LEYKA_PLUGIN_BASE_URL.'gateways/mixplat/icons/sms.png',
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-beeline.svg',
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-megafon.svg',
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-mts.svg',
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-tele2.svg',
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-yota.svg',
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-tinkoff.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-jcb.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-unionpay.svg',
         ]);
 
-        $this->_specific_fields = [[ // For the new templates - from Star & further
-            'type' => 'phone',
-            'required' => true,
-//            'classes' => ['phone-num',],
-//            'name' => 'leyka_donor_phone',
-//            'title' => '', // Visible field title (label text)
-//            'placeholder' => '',
-//            'description' => '',
-//            'comment' => '',
-//            'errors' => [
-//                'regexp1' => 'Error message 1',
-//                'regexp2' => 'Error message 2',
-//            ],
-        ]];
-
-        $this->_custom_fields = [/** @todo Only for old templates - Revo & earlier. Remove it when old templates support is finished. */
-            'mixplat_phone' => apply_filters('leyka_donor_phone_field_html', '<label class="input req"><input id="leyka_'.$this->full_id.'_phone" class="required phone-num mixplat-phone" type="text" value="" name="leyka_donor_phone" placeholder="'.__('Your phone number in the 7xxxxxxxxxx format', 'leyka').'" maxlength="11">
-</label>
-<p class="field-comment">'.__('We will use this phone number to make a mobile payment', 'leyka').'</p>
-<p class="leyka_donor_phone-error field-error"></p>', $this),
-        ];
+	$this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, []);
 
         $this->_supported_currencies[] = 'rub';
         $this->_default_currency = 'rub';
 
     }
-    protected function _set_options_defaults() {
 
-        if($this->_options) {
-            return;
-        }
-
-        $this->_options = [
-            'mixplat_test_mode' => [
-                'type' => 'checkbox',
-                'default' => false,
-                'title' => __('Payments testing mode', 'leyka'),
-                'comment' => __('Check if the gateway integration is in test mode.', 'leyka'),
-                'short_format' => true,
-		'required' => false,
-            ],
-        ];
-
+    public function has_recurring_support() {
+        return 'active';
     }
 
 }
 
-class Leyka_Mixplat_Text extends Leyka_Payment_Method {
+class Leyka_Mixplat_Processing_Yandex_Pay extends Leyka_Payment_Method {
 
     protected static $_instance = null;
 
     public function _set_attributes() {
 
-        $this->_id = 'sms';
-        $this->_gateway_id = 'mixplat';
-        $this->_category = 'mobile_payments';
+        $this->_id = 'yandex';
+        $this->_gateway_id = 'mixplat_processing';
+        $this->_category = 'bank_cards';
 
         $this->_description = apply_filters(
             'leyka_pm_description',
-            __('Payments via SMS are common way of collecting donations by sending SMS with keyword to short 4-digit number.', 'leyka'),
+            __('Enable Yandex Pay payment method', 'leyka'),
             $this->_id,
             $this->_gateway_id,
             $this->_category
         );
 
-        $this->_label_backend = __('Payments via SMS', 'leyka');
-        $this->_label = __('Payments via SMS', 'leyka');
+        $this->_label_backend = __('Yandex Pay', 'leyka');
+        $this->_label = __('Yandex Pay', 'leyka');
+
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, [
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/yandex-pay.svg',
+        ]);
+
+	$this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, []);
+
+        $this->_supported_currencies[] = 'rub';
+        $this->_default_currency = 'rub';
+
+    }
+
+}
+
+class Leyka_Mixplat_Processing_Apple_Google_Pay extends Leyka_Payment_Method {
+
+    protected static $_instance = null;
+
+    public function _set_attributes() {
+
+        $this->_id = 'pay';
+        $this->_gateway_id = 'mixplat_processing';
+        $this->_category = 'bank_cards';
+
+        $this->_description = apply_filters(
+            'leyka_pm_description',
+            __('Apple Pay and Google Pay are popular payment methods on ios and Android devices correspondingly.', 'leyka'),
+            $this->_id,
+            $this->_gateway_id,
+            $this->_category
+        );
+
+        $this->_label_backend = __('Apple Pay / Google Pay', 'leyka');
+        $this->_label = __('Apple Pay / Google Pay', 'leyka');
 
         $this->_support_global_fields = false;
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, [
-            //LEYKA_PLUGIN_BASE_URL.'gateways/mixplat/icons/sms.png',
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-beeline.svg',
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-megafon.svg',
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-mts.svg',
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-tele2.svg',
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-yota.svg',
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mobile-tinkoff.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/pay-applepay.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/pay-googlepay.svg',
         ]);
+
+	$this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, []);
 
         $this->_supported_currencies[] = 'rub';
         $this->_default_currency = 'rub';
 
-        $this->_processing_type = 'static';
-
-    }
-
-    protected function _set_dynamic_attributes() {
-        $this->_custom_fields = [
-            'sms_details' => apply_filters('leyka_the_content', leyka_options()->opt_safe($this->full_id.'_details')),
-        ];
     }
 
     protected function _set_options_defaults() {
-
         if($this->_options) {
             return;
         }
 
-        $this->_options = [
-            $this->full_id.'_default_campaign_id' => [
-                'type' => 'select',
-                'default' => leyka_get_campaigns_select_default(),
-                'title' => __('Campaign for SMS payments', 'leyka'),
-                'comment' => __('Select a campaign to which SMS payments will be related by default.', 'leyka'),
-                'list_entries' => 'leyka_get_campaigns_list',
-            ],
-            $this->full_id.'_details' => [
-                'type' => 'html',
-                'default' => __('Donate by sending SMS to short number 3434 with text XXXX and your donation amount.', 'leyka'),
-                'title' => __('Text how to donate via SMS', 'leyka'),
-                'comment' => __('Enter text describing donation via SMS. Change XXXX to your registered keyword in MIXPLAT system.', 'leyka'),
-                'required' => true,
-            ],
-        ];
-
     }
 
-    public function display_static_data() {
-        echo apply_filters('leyka_the_content', leyka_options()->opt_safe($this->full_id.'_details'));
+    public function has_recurring_support() {
+        return 'active';
     }
 
 }
 
-function leyka_add_gateway_mixplat() { // Use named function to leave a possibility to remove/replace it on the hook
-    leyka_add_gateway(Leyka_Mixplat_Gateway::get_instance());
+function leyka_add_gateway_mixplat_processing() { // Use named function to leave a possibility to remove/replace it on the hook
+    leyka_add_gateway(Leyka_Mixplat_Processing_Gateway::get_instance());
 }
-add_action('leyka_init_actions', 'leyka_add_gateway_mixplat');
+
+add_action('leyka_init_actions', 'leyka_add_gateway_mixplat_processing');

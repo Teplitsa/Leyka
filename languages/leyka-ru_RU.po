@@ -1489,10 +1489,6 @@ msgstr "<a href=\"%s\">%s</a> — это доступный и безопасн�
 msgid "YooKassa"
 msgstr "ЮKassa"
 
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:42
-msgid "Check if your %s connection uses MIXPLAT API v3"
-msgstr "Отметьте, если ваше подключение к %s использует MIXPLAT API v3"
-
 #: gateways/sber/leyka-class-sber-gateway.php:577
 msgid "WARNING: you should enable the Sberbank auto-payments feature for test mode and for production mode separately."
 msgstr "ВНИМАНИЕ: для тестового и боевого режимов возможность авто-платежей необходимо подключать отдельно."
@@ -1684,13 +1680,9 @@ msgstr "WebPay"
 msgid "MIXPLAT - payment callback error: unknown donation"
 msgstr "MIXPLAT - ошибка обработки системного уведомления: неизвестное пожертвование"
 
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:55
-msgid "Please, enter your MIXPLAT project secret key (or API key for the new API) here. It can be found in your MIXPLAT project settings page on MIXPLAT site."
-msgstr "Пожалуйста, укажите ваш секретный ключ проекта в системе Миксплат (или ключ API в случае использования нового API). Значение ключа может быть найдено на странице настроек вашего проекта в Личном кабинете Миксплат."
-
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:41
-msgid "Use %s new API"
-msgstr "Использовать новый API %s"
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "Enter your API key. It can be found in your MIXPLAT project settings page on MIXPLAT site."
+msgstr "Укажите ключ API вашего проекта в системе Миксплат. Его можно найти в личном кабинете MIXPLAT, в разделе «Проекты», кнопка «Настройки»."
 
 #: inc/options-meta/leyka-class-by-options-meta-controller.php:27
 msgid "The organization bank BIC"
@@ -9781,131 +9773,149 @@ msgstr "Имя пользователя API PayPal"
 msgid "PayPal"
 msgstr "PayPal"
 
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:776
-msgid "Please, set a text to describe a donation via SMS."
-msgstr "Пожалуйста, укажите текст, описывающий для донора процедуру пожертвования через SMS."
-
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:775
-msgid "Ways to donate via SMS"
-msgstr "Способы платежа с помощью SMS"
-
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:774
-msgid "You can make a donation by sending an SMS on the number XXXX."
-msgstr "Чтобы сделать пожертвование, отправьте SMS на номер ХХХХ."
-
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:770
-msgid "Please, set a text of payments via SMS description."
-msgstr "Пожалуйста, укажите текст описания процедуры платежа через SMS."
-
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:769
-msgid "Comment to the message of donations via SMS"
-msgstr "Комментарий к сообщению о пожертвовании через SMS"
-
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:764
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
 msgid "Select a campaign to which SMS payments will be related by default."
 msgstr "Выберите кампанию, к которой по умолчанию будут приписываться все поступающие SMS-платежи."
 
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:763
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
 msgid "Campaign for SMS payments"
 msgstr "Кампания для поступающих SMS-платежей"
 
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:725
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:726
-msgid "Payments via SMS"
-msgstr "Платежи с помощью SMS"
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "This message was sent because a call to your MIXPLAT callback was made with an unknown request parameter value. The details of the call are below. Request value: %s"
+msgstr "Вы получили это сообщение, т. к. запрос системы MIXPLAT к вашему сайту содержал неизвестное значение параметра request. Детали вызова ниже. Тип вызова: %s"
 
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:19
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:659
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:719
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "This message was sent because a call to your MIXPLAT callback was made with an empty request parameter value. The details of the call are below."
+msgstr "Вы получили это сообщение, т. к. запрос системы MIXPLAT к вашему сайту не содержал значение параметра request. Детали вызова ниже."
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "Enter text describing donation via SMS. Change XXXX to your registered keyword in MIXPLAT system."
+msgstr "Отредактируйте текст, описывающий для донора процедуру пожертвования через SMS. Замените ХХХХ на ваше ключевое слово, подключенное в системе Миксплат."
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "Text how to donate via SMS"
+msgstr "Текст как оплатить с помощью SMS"
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "Donate by sending SMS to short number 3434 with text XXXX and your donation amount."
+msgstr "Чтобы сделать пожертвование, отправьте SMS на номер <strong>3434</strong> с текстом <strong>ХХХХ</strong> и любой суммой пожертвования. Например, <strong>ХХХХ 300</strong>. Вам поступит запрос на подтверждение от оператора связи, подтвердите платёж ответным сообщением. Спасибо за помощь!"
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "Payments via SMS"
+msgstr "Платежи по SMS"
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
 msgid "MIXPLAT allows a simple and safe way to pay for goods and services with your mobile phone by sending SMS."
 msgstr "Компания ООО \"Миксплат\" является процессингом мобильных платежей от абонентов операторов сотовой связи в России, Украине, Беларуси и операторов стран Европы. Благодаря большому опыту работы с высоконагруженными сервисами, МИКСПЛАТ имеет надёжную техническую базу для своей деятельности."
 
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:696
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "Mobile payment is performed from user mobile account without sending SMS."
+msgstr "Мобильный платёж - способ пожертвования со счёта мобильного телефона донора, не требующий отправки SMS для старта. Пользователь вводит свой номер телефона на сайте и таким образом инициирует платёж."
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "Payments via SMS are common way of collecting donations by sending SMS with keyword to short 4-digit number."
+msgstr "Платёж по SMS - способ пожертвования со счёта мобильного телефона, при котором донор отправляет SMS с ключевым словом и суммой пожертвования на короткий четырёхзначный номер."
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
 msgid "We will use this phone number to make a mobile payment"
 msgstr "Мы спишем средства со счёта этого номера"
 
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:694
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
 #: templates/leyka-template-need-help.php:263
 #: templates/leyka-template-star.php:257
 msgid "Your phone number in the 7xxxxxxxxxx format"
 msgstr "Номер телефона в формате 7хххххххххх"
 
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:665
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:666
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
 msgid "Mobile payment"
 msgstr "Мобильный платёж"
 
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:593
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:603
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
 msgid "Enter a phone number"
 msgstr "Укажите номер телефона"
 
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:589
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:601
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
 msgid "Phone number"
 msgstr "Номер телефона"
 
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:576
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
 msgid "Error message:"
 msgstr "Ошибка:"
 
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:575
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
 msgid "Operator:"
 msgstr "Моб. оператор:"
 
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:574
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
 msgid "Operation result:"
 msgstr "Результат операции:"
 
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:572
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
 msgid "MIXPLAT payment ID:"
 msgstr "ID платежа в системе MIXPLAT:"
 
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:373
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
 msgid "This message has been sent because a call to your MIXPLAT callback was made with invalid MIXPLAT signature. The details of the call are below. The callback type: %s. Signatures sent / calculated: %s / %s"
 msgstr "Вы получили это сообщение, т. к. запрос системы MIXPLAT к вашему сайту был выполнен с некорректной цифровой подписи. Детали вызова ниже. Тип вызова: %s. Переданная / вычисленная цифровая подпись: %s / %s"
 
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:343
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
 msgid "This message has been sent because a call to your MIXPLAT callback was made without required parameters given. The details of the call are below. The callback type: %s. The parameter missing: %s"
 msgstr "Вы получили это сообщение, т. к. запрос системы MIXPLAT к вашему сайту не содержал необходимых параметров. Детали вызова ниже. Тип вызова: %s. Недостающий параметр: %s"
 
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:320
-msgid "This message was sent because a call to your MIXPLAT callback was made with an unknown request parameter value. The details of the call are below. Request value: %s"
-msgstr "Вы получили это сообщение, т. к. запрос системы MIXPLAT к вашему сайту содержал неизвестное значение параметра request. Детали вызова ниже. Тип вызова: %s"
-
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:312
-msgid "This message was sent because a call to your MIXPLAT callback was made with an empty request parameter value. The details of the call are below."
-msgstr "Вы получили это сообщение, т. к. запрос системы MIXPLAT к вашему сайту не содержал значение параметра request. Детали вызова ниже."
-
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:255
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
 msgid "This message has been sent because a create_payment call to MIXPLAT payment system returned some error. The details of the call are below. Payment error code / text: %s / %s"
 msgstr "Вы получили это сообщение, т.к. команда «create_payment» к системе MIXPLAT вызвала ошибку. Детали вызова ниже. Код / текст ошибки: %s / %s"
 
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:254
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:264
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:395
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
 msgid "MIXPLAT - payment callback error occured"
 msgstr "MIXPLAT - ошибка при обработке уведомления от платёжного оператора"
 
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:92
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
 msgid "Please, enter a phone number in a 7xxxxxxxxxx format."
 msgstr "Пожалуйста, введите номер телефона в формате 7хххххххххх"
 
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:54
-msgid "MIXPLAT project secret API key"
-msgstr "Секретный ключ / ключ API проекта в MIXPLAT"
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "MIXPLAT API key"
+msgstr "Ключ API в MIXPLAT"
 
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:48
-msgid "Please, enter your MIXPLAT project ID here. It can be found in your MIXPLAT project settings page on MIXPLAT site."
-msgstr "Пожалуйста, укажите ID вашего проекта в системе MIXPLAT. Его значение можно найти на странице настроек проекта."
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "Enter your project ID. It can be found in your MIXPLAT project settings page on MIXPLAT site."
+msgstr "Укажите ID вашего проекта в системе Миксплат. Его можно найти в личном кабинете MIXPLAT, в разделе «Проекты», кнопка «Настройки»."
 
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:47
-msgid "MIXPLAT project ID"
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "MIXPLAT Project ID"
 msgstr "ID проекта в MIXPLAT"
 
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:15
-msgid "MIXPLAT"
-msgstr "MIXPLAT"
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "MIXPLAT - SMS"
+msgstr "MIXPLAT - SMS платежи"
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "MIXPLAT is a simple and safe way to donate with Bank Cards, Apple Pay and Google Pay."
+msgstr "Миксплат - это простой и безопасный способ оплаты банковскими картами, Apple Pay и Google Pay."
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "MIXPLAT - Processing"
+msgstr "MIXPLAT - Процессинг"
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "Apple Pay and Google Pay are popular payment methods on ios and Android devices correspondingly."
+msgstr "Apple Pay и Google Pay - популярные методы платежей на устройствах ios и Android, позволяющие совершать платежи в один клик."
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "Enable Bank Card payments"
+msgstr "Подключить платежи по банковским картам"
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "Enable Yandex Pay payment method"
+msgstr "Подключить оплату по кнопке Яндекс Pay"
 
 #: gateways/cp/leyka-class-cp-gateway.php:17
 #: gateways/cp/leyka-class-cp-gateway.php:741
