@@ -23,8 +23,13 @@
 		margin-bottom: 8px;
 	}
 
-	.components-font-size-picker__controls .components-color-palette__clear {
-		margin-top: 0;
+	.components-font-size-picker__controls {
+		display: flex;
+
+		.components-color-palette__clear {
+			margin-top: 0;
+			margin-left: 10px;
+		}
 	}
 
 }
