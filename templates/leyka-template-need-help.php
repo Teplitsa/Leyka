@@ -441,7 +441,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 
         </form>
 
-        <?php if($template_data['platform_signature_on_form_enabled'] === '1') { ?>
+        <?php if($template_data['platform_signature_on_form_enabled']) { ?>
             <div class="section section--signature">
                 <div id="leyka-platform-signature">
                     <span id="leyka-signature-icon"></span>
