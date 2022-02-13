@@ -88,6 +88,7 @@ For technical support questions, please, use the [plugin support email](maillto:
 * New: plugin branding form signatures added.
 * New: the cronjob setup info added for all active recurring oriented Gateways.
 * Fix: Unisender Extension bug fixed.
+* Fix: YooKassa payment tryout step won't get stuck now.
 * Fix: small fixes.
 
 = 3.23.1 =
