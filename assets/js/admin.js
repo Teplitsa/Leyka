@@ -5003,7 +5003,7 @@ jQuery(document).ready(function($){
     
 });
 
-// Yandex.Kassa shopPassword generator:
+// YooKassa shopPassword generator:
 jQuery(document).ready(function($){
 
     var $genBtn = $('#yandex-generate-shop-password');
@@ -5031,24 +5031,25 @@ jQuery(document).ready(function($){
     });
 
 });
-// Yandex.Kassa shopPassword generator - END
+// YooKassa shopPassword generator - END
 
-// Yandex.Kassa payment tryout:
+// YooKassa payment tryout:
 jQuery(document).ready(function($){
 
-    var $genBtn = $('#yandex-make-live-payment'),
+    let $gen_btn = $('#yandex-make-live-payment'),
         $loading = $('.yandex-make-live-payment-loader');
 
-    if( !$genBtn.length ) {
+    if( !$gen_btn.length ) {
         return;
     }
 
     leykaYandexPaymentData.leyka_success_page_url = window.location.href;
+    leykaYandexPaymentData.leyka_is_gateway_tryout = 1;
 
-    $genBtn.click(function(){
+    $gen_btn.click(function(){
 
         $loading.show();
-        $genBtn.prop('disabled', true);
+        $gen_btn.prop('disabled', true);
 
         $.post(leyka.ajaxurl, leykaYandexPaymentData, null, 'json')
             .done(function(json) {
@@ -5065,7 +5066,7 @@ jQuery(document).ready(function($){
                 alert('Ошибка!');
             }).always(function(){
                 $loading.hide();
-                $genBtn.prop('disabled', false);
+                $gen_btn.prop('disabled', false);
             });
             
     });

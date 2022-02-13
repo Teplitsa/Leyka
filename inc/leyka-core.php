@@ -1941,7 +1941,7 @@ class Leyka extends Leyka_Singleton {
             $ga_client_id = leyka_gua_get_client_id();
             if(mb_stristr($ga_client_id, '.')) { // A real GA client ID found, save it
                 $params['ga_client_id'] = $ga_client_id;
-            } /** @todo MERGE: check that 'ga_client_id' field is supported by both Donation classes */
+            }
 
         }
 
