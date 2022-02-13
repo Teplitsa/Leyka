@@ -227,8 +227,14 @@ function leyka_handle_plugin_update() {
 
     }
 
-    if($leyka_last_ver && version_compare($leyka_last_ver, '3.24', '>=')) { // Delete the service user meta for the old banner
+    if($leyka_last_ver && version_compare($leyka_last_ver, '3.24', '<=')) {
+
+        // Delete the service user meta for the old banner:
         delete_user_meta(get_current_user_id(), 'leyka_dashboard_banner_closed-webinar-jan2022');
+
+        // Turn off the "platform_signature_on_form_enabled" option for all updating (i.e. non-new) installations:
+        Leyka_Options_Controller::set_option_value('platform_signature_on_form_enabled', 0);
+
     }
 
     do_action('leyka_plugin_update', $leyka_last_ver); // Warning: Extensions can't use this hook, as they are initialized later
