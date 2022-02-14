@@ -574,8 +574,7 @@ class Leyka_Sber_Card extends Leyka_Payment_Method {
                 'type' => 'static_text',
                 'title' => __('The necessary Cron job setup', 'leyka'),
                 'is_html' => true,
-                //'value' => leyka_get_active_recurring_setup_help_content(),
-                'value' => '',
+                'value' => leyka_get_active_recurring_setup_help_content(),
                 'field_classes' => ['active-recurring-on'],
             ],
         ];

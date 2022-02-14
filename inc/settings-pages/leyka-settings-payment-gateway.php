@@ -58,7 +58,7 @@ if( !$gateway ) {?>
 
         <?php }
 
-        foreach($gateway->get_payment_methods() as $pm) { /** @var $pm Leyka_Payment_Method */ ?>
+        foreach($gateway->get_payment_methods() as $pm) { /** @var $pm Leyka_Payment_Method */?>
 
             <div id="pm-<?php echo $pm->full_id;?>" class="pm-settings" <?php echo in_array($pm->full_id, $pm_available) ? '' : 'style="display:none;"';?>>
 

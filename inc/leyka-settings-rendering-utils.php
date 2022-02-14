@@ -602,6 +602,8 @@ function leyka_render_static_text_field($option_id, $data){
     $option_id = stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
     $content = '';
 
+    $data['value'] = isset($data['value']) ? $data['value'] : '';
+
     if( !empty($data['is_html']) && $data['is_html'] === true ) {
         $content = $data['value'];
     } else if( !empty($data['is_file']) && $data['is_file'] === true ) {
@@ -620,9 +622,7 @@ function leyka_render_static_text_field($option_id, $data){
 
     } else {
         $content = esc_attr($data['value']);
-    }
-
-    $data['value'] = isset($data['value']) ? $data['value'] : '';?>
+    }?>
 
     <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-textarea-field-wrapper field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) || !$data['field_classes'] ? '' : implode(' ', $data['field_classes']);?> <?php echo isset($data['is_code_editor']) && $data['is_code_editor'] === 'css' ? 'css-editor' : '';?>">
 
@@ -984,7 +984,7 @@ function leyka_get_active_recurring_setup_help_content() {
     return '<ul>'
         .'<li>'
             .__('Copy your procedure absolute address:', 'leyka')
-            .'<br><code>'.LEYKA_PLUGIN_DIR.'procedures/leyka-active-recurring.php</code>'
+            .'<p><code>'.LEYKA_PLUGIN_DIR.'procedures/leyka-active-recurring.php</code></p>'
         .'</li>'
         .'<li>'
             .sprintf(__('Set the Cron job to call the procedure nightly (<a href="%s" target="_blank" class="leyka-outer-link">user manual for setting up Cron jobs</a>, chapter 3)', 'leyka'), 'https://leyka.te-st.ru/docs/yandex-kassa-recurring/')
