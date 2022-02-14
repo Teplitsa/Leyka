@@ -12,7 +12,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
     protected function _set_attributes() {
 
         $this->_id = 'mixplat';
-        $this->_title = __('MIXPLAT - SMS', 'leyka');
+        $this->_title = __('MIXPLAT', 'leyka');
 
         $this->_description = apply_filters(
             'leyka_gateway_description',
@@ -23,7 +23,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         $this->_docs_link = '//leyka.te-st.ru/docs/nastrojka-mixplat/';
         $this->_registration_link = '//mixplat.ru/#join';
 
-        $this->_min_commission = 2.5;
+        $this->_min_commission = 3;
         $this->_receiver_types = ['legal'];
 
     }
@@ -35,19 +35,34 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         }
 
         $this->_options = [
+            $this->_id.'_new_api' => [
+                'type' => 'checkbox',
+                'default' => false,
+                'title' => sprintf(__('Use %s new API', 'leyka'), $this->_title),
+                'comment' => sprintf(__('Check if your %s connection uses MIXPLAT API v3', 'leyka'), $this->_title),
+                'short_format' => true,
+            ],
             'mixplat_service_id' => [
                 'type' => 'text',
-                'title' => __('MIXPLAT Project ID', 'leyka'),
-                'comment' => __('Enter your project ID. It can be found in your MIXPLAT project settings page on MIXPLAT site.', 'leyka'),
+                'title' => __('MIXPLAT project ID', 'leyka'),
+                'comment' => __('Please, enter your MIXPLAT project ID here. It can be found in your MIXPLAT project settings page on MIXPLAT site.', 'leyka'),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '100359'),
             ],
             'mixplat_secret_key' => [
                 'type' => 'text',
-                'title' => __('MIXPLAT API key', 'leyka'),
-                'comment' => __('Enter your API key. It can be found in your MIXPLAT project settings page on MIXPLAT site.', 'leyka'),
+                'title' => __('MIXPLAT project secret API key', 'leyka'),
+                'comment' => __('Please, enter your MIXPLAT project secret key (or API key for the new API) here. It can be found in your MIXPLAT project settings page on MIXPLAT site.', 'leyka'),
                 'required' => true,
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'c23a4398db8ef7b3ae1f4b07aeeb7c54f8e3c7c9'),
+            ],
+            'mixplat_test_mode' => [
+                'type' => 'checkbox',
+                'default' => true,
+                'title' => __('Payments testing mode', 'leyka'),
+                'comment' => __('Check if the gateway integration is in test mode.', 'leyka'),
+                'short_format' => true,
+                'required' => false,
             ],
         ];
 
@@ -138,7 +153,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         $currency = $this->_get_currency_id($donation->currency);
         $is_success = false;
 
-				// Use only API v3
+        if(leyka_options()->opt('mixplat_new_api')) { // API v3
 
             require_once LEYKA_PLUGIN_DIR.'gateways/mixplat/lib/autoload.php';
 
@@ -157,13 +172,11 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             $new_payment->merchantPaymentId = $donation_id;
             $new_payment->paymentMethod = \MixplatClient\MixplatVars::PAYMENT_METHOD_MOBILE;
             $new_payment->userPhone = $phone;
-	          $new_payment->userEmail = $donation->donor_email;
             $new_payment->amount = $amount;
             $new_payment->merchantFields = [
                 'donor_name' => $donation->donor_name,
                 'email' => $donation->donor_email,
                 'payment_title' => $donation->payment_title,
-                'campaign_id' => leyka_options()->opt('mixplat-sms_default_campaign_id'),
             ];
 
             $response = $mixplat_client->request($new_payment);
@@ -174,6 +187,51 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                 $is_success = true;
             }
 
+        } else { // Older APIs
+
+            $ch = curl_init();
+            curl_setopt_array($ch, [
+                CURLOPT_URL => 'http://api.mixplat.com/mc/create_payment',
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => json_encode([
+                    'service_id' => leyka_options()->opt('mixplat_service_id'),
+                    'phone' => $phone,
+                    'amount' => $amount,
+                    'currency' => $currency,
+                    'external_id' => $donation_id,
+                    'test' => $is_test,
+                    'signature' => md5(
+                        leyka_options()->opt('mixplat_service_id').$phone.$amount.$currency.$donation_id.$is_test
+                        .leyka_options()->opt('mixplat_secret_key')
+                    ),
+                ]),
+                CURLOPT_VERBOSE => true,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_CONNECTTIMEOUT => 60,
+            ]);
+            $answer = curl_exec($ch);
+            curl_close($ch);
+
+            $json = null;
+            if($answer) {
+                try {
+                    $json = json_decode($answer, true);
+                } catch(Exception $ex) {
+                    error_log($ex);
+                }
+            }
+
+            if($json) {
+
+                $donation->add_gateway_response($json);
+
+                if($json['result'] == 'ok') {
+                    $is_success = true;
+                }
+
+            }
+
+        }
 
         if($is_success) {
 
@@ -598,7 +656,7 @@ class Leyka_Mixplat_Mobile extends Leyka_Payment_Method {
 
         $this->_description = apply_filters(
             'leyka_pm_description',
-            __('Mobile payment is performed from user mobile account without sending SMS.', 'leyka'),
+            __('MIXPLAT allows a simple and safe way to pay for goods and services with your mobile phone by sending SMS.', 'leyka'),
             $this->_id,
             $this->_gateway_id,
             $this->_category
@@ -643,24 +701,6 @@ class Leyka_Mixplat_Mobile extends Leyka_Payment_Method {
         $this->_default_currency = 'rub';
 
     }
-    protected function _set_options_defaults() {
-
-        if($this->_options) {
-            return;
-        }
-
-        $this->_options = [
-            'mixplat_test_mode' => [
-                'type' => 'checkbox',
-                'default' => false,
-                'title' => __('Payments testing mode', 'leyka'),
-                'comment' => __('Check if the gateway integration is in test mode.', 'leyka'),
-                'short_format' => true,
-		'required' => false,
-            ],
-        ];
-
-    }
 
 }
 
@@ -676,7 +716,7 @@ class Leyka_Mixplat_Text extends Leyka_Payment_Method {
 
         $this->_description = apply_filters(
             'leyka_pm_description',
-            __('Payments via SMS are common way of collecting donations by sending SMS with keyword to short 4-digit number.', 'leyka'),
+            __('MIXPLAT allows a simple and safe way to pay for goods and services with your mobile phone by sending SMS.', 'leyka'),
             $this->_id,
             $this->_gateway_id,
             $this->_category
@@ -724,11 +764,16 @@ class Leyka_Mixplat_Text extends Leyka_Payment_Method {
                 'comment' => __('Select a campaign to which SMS payments will be related by default.', 'leyka'),
                 'list_entries' => 'leyka_get_campaigns_list',
             ],
+            $this->full_id.'_description' => [
+                'type' => 'html',
+                'title' => __('Comment to the message of donations via SMS', 'leyka'),
+                'comment' => __('Please, set a text of payments via SMS description.', 'leyka'),
+            ],
             $this->full_id.'_details' => [
                 'type' => 'html',
-                'default' => __('Donate by sending SMS to short number 3434 with text XXXX and your donation amount.', 'leyka'),
-                'title' => __('Text how to donate via SMS', 'leyka'),
-                'comment' => __('Enter text describing donation via SMS. Change XXXX to your registered keyword in MIXPLAT system.', 'leyka'),
+                'default' => __('You can make a donation by sending an SMS on the number XXXX.', 'leyka'),
+                'title' => __('Ways to donate via SMS', 'leyka'),
+                'comment' => __('Please, set a text to describe a donation via SMS.', 'leyka'),
                 'required' => true,
             ],
         ];
