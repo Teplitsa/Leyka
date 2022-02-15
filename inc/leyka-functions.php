@@ -2553,3 +2553,21 @@ if( !function_exists('leyka_get_random_string') ) {
 
     }
 }
+
+/** Static text options fields content: */
+if( !function_exists('leyka_get_active_recurring_setup_help_content') ) {
+    function leyka_get_active_recurring_setup_help_content() {
+
+        return '<ul>'
+            .'<li>'
+                .__('Copy your procedure absolute address:', 'leyka')
+                .'<p><code>'.LEYKA_PLUGIN_DIR.'procedures/leyka-active-recurring.php</code></p>'
+            .'</li>'
+            .'<li>'
+                .sprintf(__('Set the Cron job to call the procedure nightly (<a href="%s" target="_blank" class="leyka-outer-link">user manual for setting up Cron jobs</a>, chapter 3)', 'leyka'), 'https://leyka.te-st.ru/docs/yandex-kassa-recurring/')
+            .'</li>'
+        .'</ul>';
+
+    }
+}
+/** Static text options fields content - END */
