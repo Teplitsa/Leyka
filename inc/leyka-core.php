@@ -410,10 +410,29 @@ class Leyka extends Leyka_Singleton {
                 <?php
             }
 
-            function leyka_template_init_include() {
-                if(is_main_query() && is_singular(Leyka_Campaign_Management::$post_type)) { // Include template init script
+            function leyka_template_init_include(WP_Query $query) { // Include template init script
 
-                    $campaign = new Leyka_Campaign(get_queried_object_id());
+//                if($query->is_main_query() && $query->is_singular(Leyka_Campaign_Management::$post_type)) {
+                if( // Can't use $query->is_singular(Leyka_Campaign_Management::$post_type) here,
+                    // because there is no $query->get_queried_object_id() value at this point
+                    $query->is_main_query()
+                    && $query->is_singular()
+                    && $query->get('post_type') == Leyka_Campaign_Management::$post_type
+                    && $query->get('name')
+                ) {
+
+                    $campaign_post = get_posts([
+                        'post_type' => Leyka_Campaign_Management::$post_type,
+                        'name' => $query->get('name'),
+                        'posts_per_page' => 1,
+                    ]);
+                    $campaign_post = $campaign_post ? $campaign_post[0] : [];
+
+                    if( !$campaign_post ) {
+                        return;
+                    }
+
+                    $campaign = new Leyka_Campaign($campaign_post);
                     $template = leyka_get_current_template_data($campaign);
 
                     if($template && isset($template['file'])) {
@@ -426,8 +445,9 @@ class Leyka extends Leyka_Singleton {
                     }
 
                 }
+
             }
-            add_action('wp_head', 'leyka_template_init_include');
+            add_action('pre_get_posts', 'leyka_template_init_include'); // add_action('wp_head', 'leyka_template_init_include');
 
             add_filter('template_include', function($template){
 
@@ -1921,7 +1941,7 @@ class Leyka extends Leyka_Singleton {
             $ga_client_id = leyka_gua_get_client_id();
             if(mb_stristr($ga_client_id, '.')) { // A real GA client ID found, save it
                 $params['ga_client_id'] = $ga_client_id;
-            } /** @todo MERGE: check that 'ga_client_id' field is supported by both Donation classes */
+            }
 
         }
 

@@ -1274,10 +1274,11 @@ function leyka_get_pd_terms_text() {
 }
 
 /** Default campaign ID cache invalidation */
-function leyka_flush_cache_default_campaign_id($new_status, $old_status, WP_Post $campaign) {
+function leyka_flush_cache_default_campaign_id($new_status, $old_status, WP_Post $campaign = null) {
 
     if(
-        $campaign->post_type !== Leyka_Campaign_Management::$post_type ||
+        !$campaign
+        || $campaign->post_type !== Leyka_Campaign_Management::$post_type ||
         ($old_status !== 'publish'  &&  $new_status !== 'publish')
     ) {
         return;
@@ -2553,6 +2554,7 @@ if( !function_exists('leyka_get_random_string') ) {
     }
 }
 
+
 if( !function_exists('leyka_str_to_translit') ) {
     function leyka_str_to_translit($string) {
 
@@ -2590,3 +2592,22 @@ if( !function_exists('leyka_email_to_punycode') ) {
 
     }
 }
+
+/** Static text options fields content: */
+if( !function_exists('leyka_get_active_recurring_setup_help_content') ) {
+    function leyka_get_active_recurring_setup_help_content() {
+
+        return '<ul>'
+            .'<li>'
+                .__('Copy your procedure absolute address:', 'leyka')
+                .'<p><code>'.LEYKA_PLUGIN_DIR.'procedures/leyka-active-recurring.php</code></p>'
+            .'</li>'
+            .'<li>'
+                .sprintf(__('Set the Cron job to call the procedure nightly (<a href="%s" target="_blank" class="leyka-outer-link">user manual for setting up Cron jobs</a>, chapter 3)', 'leyka'), 'https://leyka.te-st.ru/docs/yandex-kassa-recurring/')
+            .'</li>'
+        .'</ul>';
+
+    }
+}
+/** Static text options fields content - END */
+

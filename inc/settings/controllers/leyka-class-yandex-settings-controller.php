@@ -698,9 +698,9 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             $submit_settings['next_label'] = $section->next_label;
         }
 
-        if($section->section_id === 'yandex' && $section->id === 'init') {
+        if($section->stage_id === 'yandex' && $section->id === 'init') {
             $submit_settings['prev'] = false;   // The Wizard shouldn't display the back link
-        } else if($section->section_id === 'final') {
+        } else if($section->stage_id === 'final') {
 
             $submit_settings['next_label'] = __('Go to the Dashboard', 'leyka');
             $submit_settings['next_url'] = admin_url('admin.php?page=leyka');

@@ -15,14 +15,8 @@ $campaign_id = count($campaigns) ? $campaigns[0] : null;
 $campaign = $campaign_id ? new Leyka_Campaign($campaign_id) : null;
 $campaign_title = $campaign ? apply_filters('single_post_title', $campaign->title) : null;
 
-$test_payment = !empty($_COOKIE['leyka_donation_id']) ? Leyka_Donations::get_instance()->get($_COOKIE['leyka_donation_id']) : null;
-$is_came_back_from_yandex = preg_match(
-    '/^https:\/\/money.yandex.ru\/payments\/external\/success-sandbox\\?orderId=.*/',
-    wp_get_raw_referer()
-) || preg_match(
-    '/^https:\/\/money.yandex.ru\/payments\/external\/success\\?orderId=.*/',
-    wp_get_raw_referer()
-);
+$test_payment = empty($_COOKIE['leyka_donation_id']) ? null : Leyka_Donations::get_instance()->get($_COOKIE['leyka_donation_id']);
+$is_came_back_from_yandex = preg_match('/^https:\/\/yoomoney.ru*/', wp_get_raw_referer());
 $is_payment_completed = $is_came_back_from_yandex && $test_payment && $test_payment->get_funded_date();?>
 
 <div class="payment-tryout-wrapper">
@@ -48,19 +42,19 @@ $is_payment_completed = $is_came_back_from_yandex && $test_payment && $test_paym
 
 <script>
 
-    var leykaYandexPaymentData = {
+    let leykaYandexPaymentData = {
         action: 'leyka_ajax_get_gateway_redirect_data',
-        leyka_template_id: 'revo',
+        leyka_template_id: 'star',
         leyka_amount_field_type: 'custom',
         leyka_donation_amount: 1.0,
-        leyka_donation_currency: 'rur',
+        leyka_donation_currency: 'rub',
         leyka_recurring: 0,
         leyka_payment_method: 'yandex-yandex_card',
         leyka_agree: 1,
         leyka_agree_pd: 1,
         _wpnonce: '<?php echo wp_create_nonce('leyka_payment_form');?>',
         _wp_http_referer: '<?php echo wp_get_referer();?>',
-        leyka_campaign_id: <?php echo $campaign_id ? $campaign_id : 0;?>,
+        leyka_campaign_id: <?php echo $campaign_id ? : 0;?>,
         leyka_ga_campaign_title: '<?php echo $campaign_title ? $campaign_title : '';?>',
         leyka_donor_name: '<?php echo leyka_options()->opt('org_face_fio_ip');?>',
         leyka_donor_email: '<?php echo get_option('admin_email');?>',

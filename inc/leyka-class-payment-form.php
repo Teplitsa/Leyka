@@ -124,29 +124,33 @@ class Leyka_Payment_Form {
         }
 
         // Server-side validation of Additional form fields:
-        foreach(Leyka_Campaign::get_additional_fields_settings($_POST['leyka_campaign_id']) as $field_id => $field) {
+        if(empty($_POST['leyka_is_gateway_tryout'])) { // Don't try to validate Additional fields if it's a Gateway tryout
 
-            if( !empty($field['is_required']) && empty($_POST['leyka_'.$field_id]) ) { // Check for mandatory field value
-                $errors[] = new WP_Error('no_value_for_required_field', sprintf(__('%s value is mandatory', 'leyka'), $field['title']));
-            }
+            foreach(Leyka_Campaign::get_additional_fields_settings($_POST['leyka_campaign_id']) as $field_id => $field) {
 
-            switch($field['type']) {
-                case 'phone':
-                    $_POST['leyka_'.$field_id] = str_replace(['+', '(', ')', '-'], '', $_POST['leyka_'.$field_id]);
+                if( !empty($field['is_required']) && empty($_POST['leyka_'.$field_id]) ) { // Check for mandatory field value
+                    $errors[] = new WP_Error('no_value_for_required_field', sprintf(__('%s value is mandatory', 'leyka'), $field['title']));
+                }
 
-                    if( !leyka_validate_donor_phone($_POST['leyka_'.$field_id]) ) {
-                        $errors[] = new WP_Error('leyka_donor_phone_is_incorrect', __('Phone number is incorrect.', 'leyka'));
-                    }
-                    break;
+                switch($field['type']) {
+                    case 'phone':
+                        $_POST['leyka_'.$field_id] = str_replace(['+', '(', ')', '-'], '', $_POST['leyka_'.$field_id]);
 
-                case 'date':
-                    if( !leyka_validate_donor_date($_POST['leyka_'.$field_id]) ) {
-                        $errors[] = new WP_Error('leyka_donor_date_is_incorrect', __('Date value is incorrect.', 'leyka'));
-                    }
-                    break;
+                        if( !leyka_validate_donor_phone($_POST['leyka_'.$field_id]) ) {
+                            $errors[] = new WP_Error('leyka_donor_phone_is_incorrect', __('Phone number is incorrect.', 'leyka'));
+                        }
+                        break;
 
-                default: // It's inflexible to have to explicitly add new switch clauses for each field type, so turn it off
+                    case 'date':
+                        if( !leyka_validate_donor_date($_POST['leyka_'.$field_id]) ) {
+                            $errors[] = new WP_Error('leyka_donor_date_is_incorrect', __('Date value is incorrect.', 'leyka'));
+                        }
+                        break;
+
+                    default: // It's inflexible to have to explicitly add new switch clauses for each field type, so turn it off
 //                    $errors[] = new WP_Error('unknown_form_field_type', sprintf(__('Unknown field type (%s) for the field: %s', 'leyka'), $field['type'], $field['title']));
+                }
+
             }
 
         }

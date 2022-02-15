@@ -52,7 +52,9 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
             <div class="section section--amount">
 
                 <div class="section-title-container">
-                    <div class="section-title-text" role="heading" aria-level="3"><?php _e('Donation sum', 'leyka');?></div>
+                    <div class="section-title-text" role="heading" aria-level="3">
+                        <?php echo apply_filters('leyka_template_fields_group_header_label', __('Donation sum', 'leyka'), 'need-help', $campaign, 'amount');?>
+                    </div>
                 </div>
 
                 <div class="section__fields amount">
@@ -141,7 +143,9 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
             <div class="section section--cards">
 
                 <div class="section-title-container">
-                    <div class="section-title-text" role="heading" aria-level="3"><?php _e('Payment method', 'leyka');?></div>
+                    <div class="section-title-text" role="heading" aria-level="3">
+                        <?php echo apply_filters('leyka_template_fields_group_header_label', __('Payment method', 'leyka'), 'need-help', $campaign, 'payment_method');?>
+                    </div>
                 </div>
 
                 <div class="section__fields payments-grid">
@@ -191,31 +195,46 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
             <div class="section section--person">
 
                 <div class="section-title-container">
-                    <div class="section-title-text" role="heading" aria-level="3"><?php _e('Personal information', 'leyka');?></div>
+                    <div class="section-title-text" role="heading" aria-level="3">
+                        <?php echo apply_filters('leyka_template_fields_group_header_label', __('Personal information', 'leyka'), 'need-help', $campaign, 'donor_data');?>
+                    </div>
                 </div>
 
                 <div class="section__fields donor equalize-elements-width" data-equalize-elements-exceptions=".donor__textfield--comment">
 
                     <?php $field_id = 'leyka-'.wp_rand();?>
                     <div class="donor-field donor__textfield donor__textfield--email required">
+
                         <label class="leyka-star-field-frame">
-                            <input type="text" id="<?php echo $field_id;?>" name="leyka_donor_email" value="" autocomplete="off" placeholder="<?php _e('Your email', 'leyka');?>">
+                            <input type="text" id="<?php echo $field_id;?>" name="leyka_donor_email" value="" autocomplete="off" placeholder="<?php echo apply_filters('leyka_template_field_label', __('Your email', 'leyka'), 'need-help', $campaign, 'donor_email', 'donor_data');?>">
                         </label>
+
                         <div class="leyka-star-field-error-frame">
                             <span class="donor__textfield-error leyka_donor_email-error">
-                                <?php _e('Please, enter a valid email', 'leyka');?>
+                                <?php echo apply_filters('leyka_template_field_error', __('Please, enter a valid email', 'leyka'), 'need-help', $campaign, 'donor_email', 'donor_data');?>
                             </span>
                         </div>
+
                     </div>
 
-                    <?php $field_id = 'leyka-'.wp_rand();?>
+                    <?php $field_id = 'leyka-'.wp_rand();
+                    $donor_name_label = apply_filters(
+                        'leyka_template_field_label',
+                        apply_filters(
+                            'leyka_need-help_donor_name_field_label', __('Your first and last name', 'leyka'), $campaign
+                        ),
+                        'need-help',
+                        $campaign,
+                        'donor_name',
+                        'donor_data'
+                    );?>
                     <div class="donor-field donor__textfield donor__textfield--name required">
                         <label class="leyka-star-field-frame">
-                            <input id="<?php echo $field_id;?>" type="text" name="leyka_donor_name" value="" autocomplete="off" placeholder="<?php _e('Your first and last name', 'leyka');?>">
+                            <input id="<?php echo $field_id;?>" type="text" name="leyka_donor_name" value="" autocomplete="off" placeholder="<?php echo $donor_name_label;?>">
                         </label>
                         <div class="leyka-star-field-error-frame">
                             <span class="donor__textfield-error leyka_donor_name-error">
-                                <?php _e('Please, enter your name', 'leyka');?>
+                                <?php echo apply_filters('leyka_template_field_error', __('Enter your name', 'leyka'), 'need-help', $campaign, 'donor_name', 'donor_data');?>
                             </span>
                         </div>
                     </div>
@@ -284,9 +303,13 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                                 <div class="leyka-star-field-frame">
 
                                     <label for="<?php echo $field_id;?>">
+
+                                        <?php $phone_field_label = empty($field_settings['title']) ? __('Your phone number in the 7xxxxxxxxxx format', 'leyka') : $field_settings['title'];?>
+
                                         <span class="donor__textfield-label leyka_donor_phone-label">
-                                            <?php echo empty($field_settings['title']) ? __('Your phone number in the 7xxxxxxxxxx format', 'leyka') : $field_settings['title'];?>
+                                            <?php echo apply_filters('leyka_template_field_label', $phone_field_label, 'need-help', $campaign, 'donor_phone', 'donor_data');?>
                                         </span>
+
                                     </label>
 
                                     <input id="<?php echo $field_id;?>" type="text" name="<?php echo empty($field_settings['name']) ? 'leyka_donor_phone' : $field_settings['name'];?>" value="" maxlength="20" autocomplete="off" placeholder="<?php echo empty($field_settings['placeholder']) ? '' : $field_settings['placeholder'];?>">
@@ -295,7 +318,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 
                                 <div class="leyka-star-field-error-frame">
                                     <span class="donor__textfield-error leyka_donor_phone-error">
-                                        <?php _e('Enter your phone number in the 7xxxxxxxxxx format', 'leyka');?>
+                                        <?php echo apply_filters('leyka_template_field_error', __('Enter your phone number in the 7xxxxxxxxxx format', 'leyka'), 'need-help', $campaign, 'donor_phone', 'donor_data');?>
                                     </span>
                                 </div>
 
@@ -316,7 +339,9 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                         </label>
 
                         <div class="leyka-star-field-error-frame">
-                            <span class="donor__textfield-error leyka_donor_comment-error"><?php _e('Entered value is too long', 'leyka');?></span>
+                            <span class="donor__textfield-error leyka_donor_comment-error">
+                                <?php echo apply_filters('leyka_template_field_error', __('Entered value is too long', 'leyka'), 'need-help', $campaign, 'donor_comment', 'donor_data');?>
+                            </span>
 
                         </div>
 
@@ -416,7 +441,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 
         </form>
 
-        <?php if($template_data['platform_signature_on_form_enabled'] === '1') { ?>
+        <?php if($template_data['platform_signature_on_form_enabled']) { ?>
             <div class="section section--signature">
                 <div id="leyka-platform-signature">
                     <span id="leyka-signature-icon"></span>

@@ -1180,9 +1180,9 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
      * @param $campaign_id integer
      * @param $campaign WP_Post
      */
-	public function save_data($campaign_id, WP_Post $campaign) {
+	public function save_data($campaign_id, WP_Post $campaign = null) {
 
-	    if($campaign->post_type != Leyka_Campaign_Management::$post_type) {
+	    if( !$campaign || $campaign->post_type != Leyka_Campaign_Management::$post_type ) {
 	        return;
         }
 

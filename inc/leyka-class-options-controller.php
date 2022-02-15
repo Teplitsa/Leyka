@@ -8,7 +8,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
     protected $_options = [];
     protected static $_field_types = [
         'text', 'textarea', 'number', 'static_text', 'html', 'rich_html', 'select', 'multi_select', 'radio', 'checkbox',
-        'multi_checkbox', 'legend', 'file', 'colorpicker', 'campaign_select'
+        'multi_checkbox', 'legend', 'file', 'colorpicker', 'campaign_select', 'static_text',
     ];
 
     protected $_templates_common_options = [
@@ -291,11 +291,12 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         if( !in_array($type, self::$_field_types) && stristr($type, 'custom_') === false ) {
             return false;
         }
+
         if( !empty($params['type']) ) { // Just in case
             unset($params['type']);
         }
 
-        $value_saved = maybe_unserialize(get_option($option_id));
+        $value_saved = $type === 'static_text' ? trim($params['value']) : maybe_unserialize(get_option($option_id));
 
         if(empty($params['value']) && $value_saved !== false) {
             $params['value'] = $value_saved;

@@ -2345,11 +2345,11 @@ jQuery(document).ready(function($){
 
     function showAmountOptionsByPaymentType($form, payment_type) {
 
-        $form.find(`.swiper-item`).removeClass('selected');
-        $form.find(`.swiper-item:not(.flex-amount-item)`).css('display', 'none');
-        $form.find(`.swiper-item[data-payment-type="${payment_type}"]`).css('display', 'block');
+        $form.find(`.section--amount .swiper-item`).removeClass('selected');
+        $form.find(`.section--amount .swiper-item:not(.flex-amount-item)`).css('display', 'none');
+        $form.find(`.section--amount .swiper-item[data-payment-type="${payment_type}"]`).css('display', 'block');
 
-        let $swiper_first_item = $(`.swiper-item[data-payment-type="${payment_type}"]`).first();
+        let $swiper_first_item = $(`.section--amount .swiper-item[data-payment-type="${payment_type}"]`).first();
         $swiper_first_item.first().addClass('selected');
 
         setAmountInputValue($form, $swiper_first_item.find('.amount').text());
@@ -2571,7 +2571,9 @@ jQuery(document).ready(function($){
 
             }
 
-            showSelectedAmountDescription($form, $this.data('payment-amount-option-id'));
+            if ($this.parents('.section--amount').length > 0) {
+                showSelectedAmountDescription($form, $this.data('payment-amount-option-id'));
+            }
 
             swipeList($swiper, $this);
             toggleSwiperArrows($swiper);

@@ -37,7 +37,7 @@ class Leyka_Settings_Section {
             case 'title':
                 return $this->_title;
             case 'blocks':
-                return $this->_blocks ? $this->_blocks : [];
+                return $this->_blocks ? : [];
             case 'handler':
                 return $this->_handler;
             default:
