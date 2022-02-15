@@ -206,7 +206,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                     <div class="donor-field donor__textfield donor__textfield--email required">
 
                         <label class="leyka-star-field-frame">
-                            <input type="email" id="<?php echo $field_id;?>" name="leyka_donor_email" value="" autocomplete="off" placeholder="<?php echo apply_filters('leyka_template_field_label', __('Your email', 'leyka'), 'need-help', $campaign, 'donor_email', 'donor_data');?>">
+                            <input type="text" id="<?php echo $field_id;?>" name="leyka_donor_email" value="" autocomplete="off" placeholder="<?php echo apply_filters('leyka_template_field_label', __('Your email', 'leyka'), 'need-help', $campaign, 'donor_email', 'donor_data');?>">
                         </label>
 
                         <div class="leyka-star-field-error-frame">
@@ -441,7 +441,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 
         </form>
 
-        <?php if($template_data['platform_signature_on_form_enabled']) { ?>
+        <?php if($template_data['platform_signature_on_form_enabled']) {?>
             <div class="section section--signature">
                 <div id="leyka-platform-signature">
                     <span id="leyka-signature-icon"></span>
