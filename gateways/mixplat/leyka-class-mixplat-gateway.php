@@ -287,6 +287,10 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         return $pm_id == 'sms' ? $redirect_type : 'redirect';
     }
 
+    public function submission_form_data($form_data, $pm_id, $donation_id) {
+        return $form_data;
+    }
+
     public function _handle_service_calls($call_type = '') {
 
         $json_string = file_get_contents('php://input');
