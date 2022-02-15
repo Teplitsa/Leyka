@@ -821,7 +821,7 @@ function leyka_scale_ultra($campaign) {
 
     $target = (float)$campaign->target;
 
-    if($target == 0) {
+    if( !$target ) {
         return;
     }
 

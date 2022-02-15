@@ -24,7 +24,77 @@
         // Columns content settings:
         td {
 
-            //font-size: 13px;
+            &.column-target {
+
+                .leyka-scale-ultra {
+
+                    position: relative;
+                    border: 1px solid #1db318;
+                    box-sizing: border-box;
+
+                    .leyka-scale-scale {
+
+                        height: 16px;
+
+                        .target {
+                            background: #fff;
+                            width: 100%;
+                            height: 100%;
+                        }
+
+                        .collected {
+                            height: 100%;
+                            background: rgba(29, 179, 24, 0.5);
+                        }
+
+                    }
+
+                }
+
+                .leyka-scale-ultra-fake {
+
+                    position: relative;
+                    border: 1px solid #ccc;
+                    box-sizing: border-box;
+
+                    .leyka-scale-scale {
+
+                        height: 16px;
+
+                        .target {
+                            background: #fff;
+                            width: 100%;
+                            height: 100%;
+                        }
+
+                        .collected {
+                            height: 100%;
+                            background: rgba(204, 204, 204, 0.5);
+                        }
+
+                    }
+
+                }
+
+                .leyka-scale-label {
+
+                    position: absolute;
+                    top: -2px;
+                    left: 0;
+                    width: 100%;
+                    text-align: center;
+                    height: 14px;
+
+                    span {
+                        font-size: 11px;
+                        line-height: 14px;
+                        padding: 0 3px;
+                        color: #333;
+                    }
+
+                }
+
+            }
 
             &.column-shortcode {
                 input.campaign-shortcode {

@@ -1496,7 +1496,6 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 		} else if($column_name === 'target') {
 
 			if($campaign->target_state === 'no_target') {
-//                echo '<pre>'.print_r($campaign->target_state, 1).'</pre>';
 				leyka_fake_scale_ultra($campaign);
 			} else {
 				leyka_scale_ultra($campaign);
@@ -1531,7 +1530,7 @@ class Leyka_Campaign {
                 $this->_post_object = $campaign;
 
             } else if(is_a($campaign, 'Leyka_Campaign')) {
-                return $campaign;
+                $this->_id = $campaign->id;
             }
 
 		} else if(absint($campaign) > 0) {
@@ -1549,13 +1548,6 @@ class Leyka_Campaign {
 
             $meta = get_post_meta($this->_id, '', true);
             $meta = is_array($meta) ? $meta : [];
-
-            if(empty($meta['target_state'])) {
-
-                $this->target_state = $this->_get_calculated_target_state();
-                $meta['target_state'] = [$this->target_state,];
-
-            }
 
             if(empty($meta['_leyka_target_reaching_mailout_sent'])) {
 
@@ -1675,7 +1667,6 @@ class Leyka_Campaign {
                 'form_content_position' => empty($meta['form_content_position'])
                     || !in_array($meta['form_content_position'][0], ['before-content', 'after-content']) ?
                         'before-content' : $meta['form_content_position'][0],
-                'target_state' => $meta['target_state'][0],
                 'target_reaching_mailout_sent' => $meta['_leyka_target_reaching_mailout_sent'][0],
                 'target_reaching_mailout_errors' => $meta['_leyka_target_reaching_mailout_errors'][0],
                 'date_target_reached' => empty($meta['date_target_reached']) ? 0 : $meta['date_target_reached'][0],
@@ -1708,7 +1699,7 @@ class Leyka_Campaign {
 	}
 
     protected function _get_calculated_target_state() {
-        return empty($this->target) ? 'no_target' : ($this->total_funded >= $this->target ? 'is_reached' : 'in_progress');
+        return !$this->target ? 'no_target' : ($this->total_funded >= $this->target ? 'is_reached' : 'in_progress');
     }
 
     /**
@@ -1891,7 +1882,7 @@ class Leyka_Campaign {
 				return $this->_campaign_meta['ignore_global_template'];
 
             case 'target_state':
-                return $this->_campaign_meta['target_state'];
+                return $this->_get_calculated_target_state();
             case 'date_reached':
             case 'target_reached_date':
             case 'date_target_reached':
@@ -1975,15 +1966,6 @@ class Leyka_Campaign {
                     update_post_meta($this->_id, 'form_content_position', $value);
 
                 }
-
-            case 'target_state':
-                if( in_array( $value, array_keys(Leyka::get_campaign_target_states()) ) ) {
-
-                    $this->_campaign_meta['target_state'] = $value;
-                    update_post_meta($this->_id, 'target_state', $value);
-
-                }
-                break;
             case 'target_reaching_mailout_sent':
                 $this->_campaign_meta['target_reaching_mailout_sent'] = !!$value;
                 update_post_meta($this->_id, '_leyka_target_reaching_mailout_sent', !!$value);
