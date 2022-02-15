@@ -299,7 +299,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         try {
 
             $response = json_decode($json_string, true);
-            $response = $response ? $response : $_POST;
+            $response = $response ? : $_POST;
 
         } catch(Exception $ex) {
             error_log($ex);
@@ -314,8 +314,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             $is_error = true;
 
         } else if(
-            ($response['api_version'] == 3 && !in_array($response['request'], ['payment_status', 'payment_check']))
-            || ($response['api_version'] != 3 && !in_array($response['request'], ['check', 'status']))
+            $response['api_version'] == 3 && !in_array($response['request'], ['payment_status', 'payment_check'])
         ) {
 
             $message = sprintf(__("This message was sent because a call to your MIXPLAT callback was made with an unknown request parameter value. The details of the call are below. Request value: %s", 'leyka'), $response['request'])."\n\r\n\r";
@@ -325,7 +324,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
         if( !$is_error ) {
 
-            foreach(['request', 'status', 'amount', 'signature',] as $param_name) { // Check for necessary params
+            foreach(['status', 'amount', 'signature',] as $param_name) { // Check for necessary params
                 if( !array_key_exists($param_name, $response) ) {
 
                     $message = sprintf(__('This message has been sent because a call to your MIXPLAT callback was made without required parameters given. The details of the call are below. The callback type: %s. The parameter missing: %s', 'leyka'), $response['request'], $param_name)."\n\r\n\r";
@@ -342,7 +341,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             $params_signature = md5($response['payment_id'].leyka_options()->opt('mixplat_secret_key'));
             $response['signature_calculated'] = $params_signature;
 
-            if($params_signature !== $response['signature']) {
+            if($params_signature != $response['signature']) {
 
                 $message = sprintf(__('This message has been sent because a call to your MIXPLAT callback was made with invalid MIXPLAT signature. The details of the call are below. The callback type: %s. Signatures sent / calculated: %s / %s', 'leyka'), $response['request'], $response['signature'], $params_signature)."\n\r\n\r";
                 $is_error = true;
@@ -353,9 +352,13 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
         if($is_error) {
 
-            $donation = Leyka_Donations::get_instance()->get(absint($response['merchant_payment_id']));
-            $donation->status = 'failed';
-            $donation->add_gateway_response($response);
+            if($response['merchant_payment_id']) {
+
+                $donation = Leyka_Donations::get_instance()->get(absint($response['merchant_payment_id']));
+                $donation->status = 'failed';
+                $donation->add_gateway_response($response);
+
+            }
 
             if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
 
@@ -469,6 +472,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             'currency' => empty($response['currency']) ?
                 leyka_options()->opt('currency_main') : mb_strtolower($response['currency']),
             'mixplat_phone' => $response['user_phone'],
+            'force_insert' => true, // SMS payments don't have Donor emails, so to avoid the error, insert a Donation forcefully
         ]);
 
         $donation = Leyka_Donations::get_instance()->get($donation_id);
