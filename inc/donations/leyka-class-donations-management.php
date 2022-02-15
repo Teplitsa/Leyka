@@ -185,7 +185,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
     public static function send_donor_thanking_email_on_single($donation) {
 
         $donation = Leyka_Donations::get_instance()->get_donation($donation);
-        $donor_email = $donation->donor_email;
+        $donor_email = leyka_email_to_punycode($donation->donor_email);
 
         if( !$donor_email ) {
             $donor_email = leyka_pf_get_donor_email_value();
@@ -318,7 +318,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
     public static function send_donor_thanking_email_on_recurring_init($donation) {
 
         $donation = Leyka_Donations::get_instance()->get_donation($donation);
-        $donor_email = $donation->donor_email;
+        $donor_email = leyka_email_to_punycode($donation->donor_email);
 
         if( !$donor_email ) {
             $donor_email = leyka_pf_get_donor_email_value();
@@ -458,7 +458,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
     public static function send_donor_thanking_email_on_recurring_ongoing($donation) {
 
         $donation = Leyka_Donations::get_instance()->get_donation($donation);
-        $donor_email = $donation->donor_email;
+        $donor_email = leyka_email_to_punycode($donation->donor_email);
 
         if( !$donor_email ) {
             $donor_email = leyka_pf_get_donor_email_value();
@@ -829,7 +829,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         $res = true;
         foreach(explode(',', leyka_options()->opt('leyka_donations_managers_emails')) as $email) {
 
-            $email = trim($email);
+            $email = leyka_email_to_punycode(trim($email));
 
             if( !$email ) {
                 continue;
@@ -926,7 +926,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                         leyka_options()->opt_safe('email_from_name'),
                         $donation,
                         $campaign
-                    ).' <'.leyka_options()->opt_safe('email_from').'>',
+                    ).' <'.leyka_email_to_punycode(leyka_options()->opt_safe('email_from')).'>',
                 ]
             );
 
@@ -940,7 +940,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
             $campaign = new Leyka_Campaign($donation->campaign_id);
             $res &= wp_mail(
-                $donation->donor_email,
+                leyka_email_to_punycode($donation->donor_email),
                 apply_filters(
                     'leyka_error_donor_email_notification_title',
                     leyka_options()->opt('donation_error_donor_notification_title'),
@@ -995,7 +995,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                         leyka_options()->opt_safe('email_from_name'),
                         $donation,
                         $campaign
-                    ).' <'.leyka_options()->opt_safe('email_from').'>',
+                    ).' <'.leyka_email_to_punycode(leyka_options()->opt_safe('email_from')).'>',
                 ]
             );
 

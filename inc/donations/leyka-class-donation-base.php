@@ -63,10 +63,11 @@ abstract class Leyka_Donation_Base {
         // Donor's email:
         $params['donor_email'] = empty($params['donor_email']) ? leyka_pf_get_donor_email_value() : $params['donor_email'];
         $params['donor_email'] = trim($params['donor_email']);
+
         if(
             !$params['force_insert']
             && $params['payment_type'] !== 'correction'
-            && ( !$params['donor_email'] || !is_email($params['donor_email']) )
+            && ( !$params['donor_email'] || !leyka_is_email($params['donor_email']) )
         ) {
             return new WP_Error('incorrect_donor_email', __('Incorrect donor email given while adding a donation', 'leyka'));
         }

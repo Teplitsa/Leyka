@@ -199,7 +199,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                     <?php $field_id = 'leyka-'.wp_rand();?>
                     <div class="donor-field donor__textfield donor__textfield--email required">
                         <label class="leyka-star-field-frame">
-                            <input type="email" id="<?php echo $field_id;?>" name="leyka_donor_email" value="" autocomplete="off" placeholder="<?php _e('Your email', 'leyka');?>">
+                            <input type="text" id="<?php echo $field_id;?>" name="leyka_donor_email" value="" autocomplete="off" placeholder="<?php _e('Your email', 'leyka');?>">
                         </label>
                         <div class="leyka-star-field-error-frame">
                             <span class="donor__textfield-error leyka_donor_email-error">

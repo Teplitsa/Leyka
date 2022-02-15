@@ -183,7 +183,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                         <label for="<?php echo $field_id;?>">
                             <span class="donor__textfield-label leyka_donor_name-label"><?php _e('Your email', 'leyka');?></span>
                         </label>
-                        <input type="email" id="<?php echo $field_id;?>" name="leyka_donor_email" value="" autocomplete="off">
+                        <input type="text" id="<?php echo $field_id;?>" name="leyka_donor_email" value="" autocomplete="off">
                     </div>
                     <div class="leyka-star-field-error-frame">
                         <span class="donor__textfield-error leyka_donor_email-error">
