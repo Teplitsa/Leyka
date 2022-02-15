@@ -2538,7 +2538,6 @@ function leyka_generate_csv($filename, array $rows, array $headings = [], $colum
 
 }
 
-
 if( !function_exists('leyka_get_random_string') ) {
     function leyka_get_random_string($length = 6) {
 

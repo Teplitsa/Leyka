@@ -504,7 +504,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     }
 
     /**
-     * A service method to get a a gateway inner system payment method ID by according Leyka pm_id, and vice versa.
+     * A service method to get a gateway inner system payment method ID by according Leyka pm_id, and vice versa.
      *
      * @param $pm_id string PM ID (either Leyka or the gateway system).
      * @return string|false A PM ID in gateway/Leyka system, or false if PM ID is unknown.
