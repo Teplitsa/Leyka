@@ -141,6 +141,8 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         }
 
         $phone = isset($form_data['leyka_donor_phone']) ? $form_data['leyka_donor_phone'] : false;
+        $error = false;
+
         if($pm_id == 'mobile') {
 
             if( !$phone ) { // Check the phone field in the additional form fields list
@@ -159,7 +161,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             }
             $phone = str_replace(['+', '(', ')', '-'], '', trim($phone));
 
-            $error = false;
+
             if(empty($phone)) {
                 $error = new WP_Error('leyka_mixplat_phone_is_empty', __('Phone number is required.', 'leyka'));
             } else if( !leyka_validate_donor_phone($phone) ) {
@@ -176,6 +178,28 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
             $phone = '7'.mb_substr(str_replace(['+', ' ', '-', '.'], '', $phone), -10);
             $donation->mixplat_phone = $phone;
+
+        }
+
+        // Donation amount limits checks:
+        if(leyka_options()->opt($gateway_id.'_test_mode') && $donation->amount > 50000) { // Test mode - max. 50 000 RUB
+            $error = new WP_Error(
+                'leyka_mixplat_max_donation_size_exceeded',
+                sprintf(__('Maximum donation amount of %s %s exceeded', 'leyka'), leyka_format_amount(50000), $donation->currency_label)
+            );
+        } else if($donation->amount > 600000) { // Production mode - max. 600 000 RUB
+            $error = new WP_Error(
+                'leyka_mixplat_max_donation_size_exceeded',
+                sprintf(__('Maximum donation amount of %s %s exceeded', 'leyka'), leyka_format_amount(600000), $donation->currency_label)
+            );
+        }
+
+        if($error) {
+
+            leyka()->add_payment_form_error($error);
+            $donation->status = 'failed';
+
+            return ['status' => 1, 'errors' => $error, 'message' => $error->get_error_message(),];
 
         }
 
