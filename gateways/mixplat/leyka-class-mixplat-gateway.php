@@ -179,7 +179,6 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
         }
 
-//        $currency = $this->_get_currency_id($donation->currency);
         $is_success = false;
 
         // Use only API v3 from now on:
@@ -245,7 +244,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
             }
 
-            return ['status' => 0]; // TODO Mb, it's not needed here
+            return ['status' => 0];
 
         } else {
 
@@ -264,7 +263,10 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
             } else { // New templates (Star & further)
 
-                $error = new WP_Error('mixplat_error', __('MIXPLAT - payment callback error occured', 'leyka'));
+                $error_text = __('MIXPLAT - payment callback error occured', 'leyka')
+                    .(empty($response['error_description']) ? '' : ': '.$response['error_description']);
+
+                $error = new WP_Error('mixplat_error', $error_text);
                 leyka()->add_payment_form_error($error);
 
                 return ['status' => 1, 'errors' => $error, 'message' => $error->get_error_message(),];
