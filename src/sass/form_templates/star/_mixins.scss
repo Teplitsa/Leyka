@@ -6,11 +6,12 @@
 @mixin star-control-frame() {
     @include star-corners();
     border: 2px solid $leyka-star-color-gray-superlight;
-    width: 100%;
+    /* width: 100%; // TODO If this commenting out won't harm form fields display, remove the line completely */
     height: 56px;
 }
 
 @mixin star-clean-a() {
+
     text-decoration: none;
     border: none;
     box-shadow: none;
@@ -22,19 +23,24 @@
         box-shadow: none;
         outline: none;
     }
+
 }
 
 @mixin leyka-star-link {
+
     @include star-clean-a();
     @include star-text();
+
     color: $leyka-star-color-main;
     
     &:hover {
         text-decoration: underline;
     }
+
 }
 
 @mixin star-clean-input() {
+
     text-decoration: none;
     border: none !important;
     border-radius: 0 !important;
@@ -48,9 +54,11 @@
         box-shadow: none;
         outline: none;
     }
+
 }
 
 @mixin star-swiper {
+
     height: 56px;
     width: 100%;
     border-bottom: none;
