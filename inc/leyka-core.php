@@ -334,26 +334,31 @@ class Leyka extends Leyka_Singleton {
 
             function leyka_success_page_widget_template($content) {
 
+                $donation_id = leyka_remembered_data('donation_id');
+
+                if( !$donation_id ) {
+                    return '';
+                }
+
+                $donation = Leyka_Donations::get_instance()->get($donation_id);
+                $campaign_id = $donation ? $donation->campaign_id : null;
+                $campaign = new Leyka_Campaign($campaign_id);
+
+                if( !$campaign->id ) {
+                    return '';
+                }
+
+                $form_template = $campaign->template;
+
+                if( !$form_template ) {
+                    $form_template = leyka_remembered_data('template_id');
+                }
+
                 if(
                     is_page(leyka_options()->opt('success_page'))
-                    && leyka_options()->opt_template('show_success_widget_on_success', 'default')
+                    && leyka_options()->opt_template('show_success_widget_on_success', $form_template ? : 'default')
                     && is_main_query()
                 ) {
-
-                    $donation_id = leyka_remembered_data('donation_id');
-
-                    if( !$donation_id ) {
-                        return '';
-                    }
-                    $donation = Leyka_Donations::get_instance()->get($donation_id);
-                    $campaign_id = $donation ? $donation->campaign_id : null;
-                    $campaign = new Leyka_Campaign($campaign_id);
-
-                    $form_template = $campaign->template;
-
-                    if( !$form_template ) {
-                        $form_template = leyka_remembered_data('template_id');
-                    }
                     
                     $form_template_suffix = $form_template === 'star' || $form_template === 'need-help' ? '-star' : '';
 
