@@ -819,18 +819,6 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                         ['title' => '', 'options' => ['payments_recurring_tab_title']],
                         ['title' => '', 'options' => ['payments_recurring_amounts_options_'.$main_currency_id]]
                     ]
-                ],
-                'miscellaneous' => [
-                    'title' => __('Miscellaneous', 'leyka'),
-                    'sections' => [
-                        [
-                            'title' => '',
-                            'options' => [
-                                "currency_{$main_currency_id}_label", "currency_{$main_currency_id}_flexible_default_amount",
-                                "currency_{$main_currency_id}_min_sum", "currency_{$main_currency_id}_max_sum"
-                            ]
-                        ]
-                    ]
                 ]
             ]
         ];
@@ -854,10 +842,10 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                 </h3>
 
                 <div class="field-wrapper">
-                    <label for="hide-cover-type-image" class="field-label">
+                    <label class="field-label">
                         <input type="radio" name="leyka_default_payments_amounts" value="1" <?php echo $campaign->default_payments_amounts === '1' ? 'checked="checked"' : '';?>> <?php _e('Yes', 'leyka');?>
                     </label>
-                    <label for="hide-cover-type-color" class="field-label">
+                    <label class="field-label">
                         <input type="radio" name="leyka_default_payments_amounts" value="0" <?php echo $campaign->default_payments_amounts === '0' ? 'checked="checked"' : '';?>> <?php _e('No', 'leyka');?>
                     </label>
                 </div>
