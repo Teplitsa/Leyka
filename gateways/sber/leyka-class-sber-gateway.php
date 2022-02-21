@@ -112,9 +112,9 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
             $result = $client->registerOrder($donation->id, 100*$donation->amount, leyka_get_success_page_url(), [
                 'failUrl' => leyka_get_failure_page_url(),
                 'clientId' => $donation->type === 'rebill' ? $donation->donor_email : '',
-                'description' => (
-                        !empty($form_data['leyka_recurring']) ? _x('[RS]', 'For "recurring subscription"', 'leyka').' ' : ''
-                    ).$donation->payment_title." (№ $donation_id)",
+                'description' =>
+                    (empty($form_data['leyka_recurring']) ? '' : _x('[RS]', 'For "recurring subscription"', 'leyka').' ')
+                    .$donation->payment_title." (№ $donation_id)",
             ]);
 
             $donation->sber_order_id = empty($result['orderId']) ? '' : esc_sql($result['orderId']);
@@ -178,6 +178,9 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
                 'clientId' => $init_recurring_donation->donor_email,
                 'bindingId' => $init_recurring_donation->sber_binding_id,
                 'features' => 'AUTO_PAYMENT',
+                'description' =>
+                    _x('[RP]', 'For "recurring auto-payment"', 'leyka')
+                    .$new_recurring_donation->payment_title." (№ {$new_recurring_donation->id})",
             ]);
 
             $new_recurring_donation->sber_order_id = empty($result['orderId']) ? '' : esc_sql($result['orderId']);
