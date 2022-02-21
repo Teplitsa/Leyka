@@ -26,6 +26,24 @@ class Leyka_Star_Template_Controller extends Leyka_Template_Controller {
                 'single' =>  $campaign->{'payments_single_amounts_options_'.$main_currency_id},
                 'recurring' => $campaign->{'payments_recurring_amounts_options_'.$main_currency_id},
             ];
+
+            // TODO: remove these checks when validation on the campaign edit page will be fixed
+            foreach ($amount_variants['single'] as $variant_idx => $variant_data) {
+                if (empty($variant_data['amount']) ||
+                    $variant_data['amount'] < $currencies[$main_currency_id]['bottom'] ||
+                    $variant_data['amount'] > $currencies[$main_currency_id]['top']) {
+                    unset($amount_variants['single'][$variant_idx]);
+                }
+            }
+
+            foreach ($amount_variants['recurring'] as $variant_idx => $variant_data) {
+                if (empty($variant_data['amount']) ||
+                    $variant_data['amount'] < $currencies[$main_currency_id]['bottom'] ||
+                    $variant_data['amount'] > $currencies[$main_currency_id]['top']) {
+                    unset($amount_variants['recurring'][$variant_idx]);
+                }
+            }
+
         } else {
             $amount_variants = [];
         }

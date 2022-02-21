@@ -1502,7 +1502,65 @@ jQuery(document).ready(function($){
 
         // Refresh the main items option value before submit:
         function leyka_pre_submit_multi_items(e) {
+
+            let items_options = [];
+            $.each($items_wrapper.sortable('toArray'), function(key, item_id){ // Value is an item ID (generated randomly)
+
+                if( !item_id.length ) {
+                    return;
+                }
+
+                let item_options = {'id': item_id}; // Assoc. array key should be initialized explicitly
+
+                $.each($items_wrapper.find('#'+item_id).find(':input'), function(key, item_setting_input){
+
+                    let $input = $(item_setting_input),
+                        input_name = $input.prop('name')
+                            .replace($items_wrapper.data('item-inputs-names-prefix'), '')
+                            .replace('[]', '');
+
+                    if($input.prop('type') === 'checkbox') {
+                        item_options[input_name] = $input.prop('checked');
+                    } else {
+                        item_options[input_name] = $input.val();
+                    }
+
+                });
+
+                if ($items_wrapper.hasClass('leyka-main-payments-amounts')) {
+
+                    const item_pure_id = item_id.replace('item-','');
+                    let skip = false;
+
+                    items_options.forEach((other_item_option, idx) => {
+
+                        const other_item_pure_id = other_item_option.id.replace('item-','');
+
+                        if ((('leyka_payment_single_amount_'+item_pure_id in item_options) &&
+                            (item_options['leyka_payment_single_amount_'+item_pure_id] == other_item_option['leyka_payment_single_amount_'+other_item_pure_id]) &&
+                            (item_options['leyka_payment_single_description_'+item_pure_id] == other_item_option['leyka_payment_single_description_'+other_item_pure_id])) ||
+                            (('leyka_payment_recurring_amount_'+item_pure_id in item_options) &&
+                            (item_options['leyka_payment_recurring_amount_'+item_pure_id] == other_item_option['leyka_payment_recurring_amount_'+other_item_pure_id]) &&
+                            (item_options['leyka_payment_recurring_description_'+item_pure_id] == other_item_option['leyka_payment_recurring_description_'+other_item_pure_id]))
+                        ) {
+                            skip = true;
+                        }
+
+                    })
+
+                    if (skip) {
+                        $('#'+item_id).remove();
+                        return;
+                    }
+
+                }
+
+                items_options.push(item_options);
+
+            });
+
             $items_wrapper.sortable('option', 'update')();
+
         }
 
         if(leyka_is_gutenberg_active()) { // Post edit page - Gutenberg mode
