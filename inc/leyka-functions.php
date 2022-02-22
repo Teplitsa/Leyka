@@ -877,8 +877,9 @@ function leyka_get_payment_types_list($type_id = false) {
 
     $types = [
         'single' => _x('Single', '[donation]', 'leyka'),
-        'rebill' => _x('Recurring', '[donation]', 'leyka'),
-        'rebill-init' => _x('Initial recurring', '[donation]', 'leyka'),
+        'rebill' => _x('All recurring payments', '[donation]', 'leyka'),
+        'rebill-init' => _x('Recurring subscriptions', '[donation]', 'leyka'),
+        'rebill-write-off' => _x('Recurring auto write-offs', '[donation]', 'leyka'),
         'correction' => _x('Correctional', '[donation]', 'leyka'),
     ];
 
