@@ -97,13 +97,25 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
             }?>
 
             <div class="payment-opt">
+
                 <label class="payment-opt__button">
+
                     <input class="payment-opt__radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="radio" data-processing="<?php echo $pm->processing_type;?>" data-has-recurring="<?php echo $pm->has_recurring_support() ? '1' : '0';?>" data-ajax-without-form-submission="<?php echo $pm->ajax_without_form_submission ? '1' : '0';?>">
+
                     <span class="payment-opt__icon">
-                        <svg class="svg-icon <?php echo esc_attr($pm->main_icon);?>"><use xlink:href="#<?php echo esc_attr($pm->main_icon);?>" /></svg>
+                        <?php if(leyka_url_exists($pm->main_icon_url)) {?>
+                        <img src="<?php echo esc_attr($pm->main_icon_url);?>" alt="<?php echo esc_attr($pm->label);?>">
+                        <?php } else {
+                            echo esc_html($pm->label);
+                        }?>
                     </span>
+
                 </label>
+
+                <?php if(leyka_url_exists($pm->main_icon_url)) {?>
                 <span class="payment-opt__label"><?php echo $pm->label;?></span>
+                <?php }?>
+
             </div>
         <?php }?>
 

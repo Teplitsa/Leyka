@@ -801,6 +801,7 @@ div[id *="leyka-pf-"] {  //aka namespace
 	}
 
 	.payment-opt__icon {
+
 		width: 100%;
 		height: 65px;
 
@@ -824,13 +825,20 @@ div[id *="leyka-pf-"] {  //aka namespace
 		}
 
 		@include for(medium-screens) {
+
 			height: 85px;
 
 			.svg-icon {
 				width: 150px;
 				height: 60px;
 			}
+
 		}
+
+        img {
+            height: 60px;
+        }
+
 	}
 
 	.payment-opt__radio:checked + .payment-opt__icon {

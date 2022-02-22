@@ -2607,3 +2607,7 @@ if( !function_exists('leyka_get_active_recurring_setup_help_content') ) {
     }
 }
 /** Static text options fields content - END */
+
+function leyka_url_exists($url) {
+    return str_contains(get_headers($url)[0], '200 OK');
+}
