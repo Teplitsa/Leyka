@@ -145,7 +145,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             if( !$this->_main_data) {
                 throw new Exception(sprintf(__('No post found by ID while constructing a donation ("%s" given)', 'leyka'), $donation));
             } else if($this->_main_data->post_type !== Leyka_Donation_Management::$post_type) {
-                throw new Exception(sprintf(__('Wrong post type for donation ("%s" given)', 'leyka'), $donation->post_type));
+                throw new Exception(sprintf(__('Wrong post type for donation ("%s" given)', 'leyka'), $this->_main_data->post_type));
             }
 
             $this->_id = $donation;
@@ -244,8 +244,6 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 'leyka_ga_client_id' => empty($meta['leyka_ga_client_id'][0]) ? false : $meta['leyka_ga_client_id'][0],
             ], $this->_id);
         }
-
-        return $this;
 
 	}
 

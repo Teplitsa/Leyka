@@ -2581,7 +2581,7 @@ if( !function_exists('leyka_is_email') ) {
 if( !function_exists('leyka_email_to_punycode') ) {
     function leyka_email_to_punycode($email) {
 
-        $email__array = explode( '@', $email);
+        $email__array = explode('@', $email);
 
         require_once LEYKA_PLUGIN_DIR.'/lib/class-punycode.php';
 
