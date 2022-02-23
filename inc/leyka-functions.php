@@ -879,7 +879,7 @@ function leyka_get_payment_types_list($type_id = false) {
         'single' => _x('Single', '[donation]', 'leyka'),
         'rebill' => _x('All recurring payments', '[donation]', 'leyka'),
         'rebill-init' => _x('Recurring subscriptions', '[donation]', 'leyka'),
-        'rebill-write-off' => _x('Recurring auto write-offs', '[donation]', 'leyka'),
+        'rebill-auto-payment' => _x('Recurring auto-payments', '[donation]', 'leyka'),
         'correction' => _x('Correctional', '[donation]', 'leyka'),
     ];
 
