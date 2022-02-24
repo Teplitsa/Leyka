@@ -1631,7 +1631,7 @@ class Leyka extends Leyka_Singleton {
                 'show_in_admin_bar' => false,
                 'supports' => false,
                 'taxonomies' => [],
-                'has_archive' => 'donations',
+                'has_archive' => apply_filters('leyka_donations_archive_slug', 'donations'),
                 'capability_type' => ['donation', 'donations'],
                 'map_meta_cap' => true,
                 'rewrite' => ['slug' => 'donation', 'with_front' => false],
