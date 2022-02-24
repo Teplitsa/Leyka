@@ -158,7 +158,9 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
         if(leyka_options()->opt('yandex_new_api')) {
 
-            require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
+            if( !function_exists('yookassaSdkLoadClass') ) {
+                require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
+            }
 
             $client = new YooKassa\Client();
             $client->setAuth(leyka_options()->opt('yandex_shop_id'), leyka_options()->opt('yandex_secret_key'));
@@ -318,7 +320,9 @@ techMessage="'.$tech_message.'"/>');
             case 'response':
             case 'notify':
 
-                require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
+                if( !function_exists('yookassaSdkLoadClass') ) {
+                    require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
+                }
 
                 $notification = json_decode(file_get_contents('php://input'), true);
 
@@ -517,7 +521,9 @@ techMessage="'.$tech_message.'"/>');
             return [];
         }
 
-        require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
+        if( !function_exists('yookassaSdkLoadClass') ) {
+            require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
+        }
 
         $response = is_object($donation->gateway_response) || is_array($donation->gateway_response) ?
             serialize($donation->gateway_response) : $donation->gateway_response;
@@ -619,7 +625,9 @@ techMessage="'.$tech_message.'"/>');
 
         if(leyka_options()->opt('yandex_new_api')) {
 
-            require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
+            if( !function_exists('yookassaSdkLoadClass') ) {
+                require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
+            }
 
             $client = new YooKassa\Client();
             $client->setAuth(leyka_options()->opt('yandex_shop_id'), leyka_options()->opt('yandex_secret_key'));
