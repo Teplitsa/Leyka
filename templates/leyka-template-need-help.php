@@ -80,7 +80,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                                     </div>
                                 </div>
                             <?php }
-                        } else {
+                        } else if($template_data['amount_mode'] != 'flexible') {
 
                             foreach($template_data['amount_variants']['single'] as $i => $amount_option) {?>
                                 <div class="swiper-item <?php echo $i ? '' : 'selected';?>" style="<?php echo 'single' === $campaign->donations_type_default ? '' : 'display: none';?>" data-payment-type="single" data-payment-amount-option-id="<?php echo $i; ?>" data-value="<?php echo absint($amount_option['amount']);?>" role="button" tabindex="0"><div class="swiper-item-inner"><span class="amount"><?php echo absint($amount_option['amount']);?></span><span class="currency"><?php echo $template_data['currency_label'];?></span></div></div>
@@ -122,7 +122,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 
                 </div>
 
-                <?php if( !$campaign->daily_rouble_mode_on_and_valid ) { ?>
+                <?php if( $template_data['amount_mode'] != 'flexible' && !$campaign->daily_rouble_mode_on_and_valid ) { ?>
                     <div class="section__fields amount-description">
                         <?php $all_amount_options = array_merge($template_data['amount_variants']['single'], $template_data['amount_variants']['recurring']);
                         $showed_amount_option_id = $campaign->donations_type_default === 'single' ?
