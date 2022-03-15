@@ -9,17 +9,7 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
 
     public function get_template_data(array $params = []) {
 
-        $params['interval'] = empty($params['interval']) ? 'year' : $params['interval'];
-        switch($params['interval']) {
-            case 'year': $interval = '1 year'; break;
-            case 'half-year': $interval = '6 month'; break;
-            case 'quarter': $interval = '3 month'; break;
-            case 'month': $interval = '1 month'; break;
-            case 'week': $interval = '1 week'; break;
-            default: $interval = '1 year';
-        }
-        $curr_interval_begin_date = date('Y-m-d 23:59:59', strtotime('-'.$interval));
-        $prev_interval_begin_date = date('Y-m-d 23:59:59', strtotime('-'.$interval, strtotime('-'.$interval)));
+        $interval_dates = leyka_count_interval_dates($params['interval']);
 
         global $wpdb;
 
@@ -33,14 +23,14 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
                 FROM {$wpdb->prefix}posts
                 WHERE post_type='{$donations_post_type}'
                 AND post_status='funded'
-                AND post_date >= '$prev_interval_begin_date' AND post_date < '$curr_interval_begin_date'"
+                AND post_date >= '".$interval_dates["prev_interval_begin_date"]."' AND post_date < '".$interval_dates["curr_interval_begin_date"]."'"
             );
             $curr_interval_donations = $wpdb->get_col(
                 "SELECT ID
                 FROM {$wpdb->prefix}posts
                 WHERE post_type='{$donations_post_type}'
                 AND post_status='funded'
-                AND post_date >= '$curr_interval_begin_date'"
+                AND post_date >= '".$interval_dates["curr_interval_begin_date"]."'"
             );
 
             // Donors (unique donors' emails) count:
@@ -66,7 +56,7 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
                 "SELECT ID, donor_email
                 FROM {$wpdb->prefix}leyka_donations
                 WHERE status='funded'
-                AND date_created >= '$prev_interval_begin_date' AND date_created < '$curr_interval_begin_date'"
+                AND date_created >= '".$interval_dates["prev_interval_begin_date"]."' AND date_created < '".$interval_dates["curr_interval_begin_date"]."'"
             );
             foreach($tmp as $line) {
 
@@ -80,7 +70,7 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
                 "SELECT ID, donor_email
                 FROM {$wpdb->prefix}leyka_donations
                 WHERE status='funded'
-                AND date_created >= '$curr_interval_begin_date'"
+                AND date_created >= '".$interval_dates["curr_interval_begin_date"]."'"
             );
             foreach($tmp as $line) {
 
@@ -133,6 +123,11 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
 
         $donations_amount_delta = leyka_get_delta_percent($prev_amount, $curr_amount);
 
+        //ltv
+        $prev_ltv = $prev_amount && $prev_donors_count ? round($prev_amount/$prev_donors_count, 2) : 0;
+        $curr_ltv = $curr_amount && $curr_donors_count ? round($curr_amount/$curr_donors_count, 2) : 0;
+        $ltv_delta = leyka_get_delta_percent($prev_ltv, $curr_ltv);
+
         // Donations avg amount:
         $prev_amount_avg = $prev_amount ? round($prev_amount/count($prev_interval_donations), 2) : 0;
         $curr_amount_avg = $curr_amount ? round($curr_amount/count($curr_interval_donations), 2) : 0;
@@ -145,6 +140,9 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
             'donors_number' => $curr_donors_count,
             'donors_number_delta_percent' =>
                 $donors_count_delta === NULL ? '—' : ($donors_count_delta < 0 ? '' : '+').$donors_count_delta.'%',
+            'ltv' => $curr_ltv,
+            'ltv_delta_percent' => $ltv_delta === NULL ?
+                '—' : ($ltv_delta < 0 ? '' : '+').$ltv_delta.'%',
             'donations_amount_avg' => $curr_amount_avg,
             'donations_amount_avg_delta_percent' =>
                 $donations_amount_avg_delta === NULL ?

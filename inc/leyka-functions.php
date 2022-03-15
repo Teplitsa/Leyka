@@ -2611,3 +2611,86 @@ if( !function_exists('leyka_get_active_recurring_setup_help_content') ) {
 function leyka_url_exists($url) {
     return str_contains(get_headers($url)[0], '200 OK');
 }
+
+/** Count interval dates for portlets */
+function leyka_count_interval_dates($interval) {
+
+    $interval = empty($interval) ? '365 day' : $interval;
+
+    if(strpos($interval, 'this') === false) {
+
+        switch($interval) {
+            case 'days_365': $interval = '365 day'; break;
+            case 'days_180': $interval = '180 day'; break;
+            case 'days_90': $interval = '90 day'; break;
+            case 'days_30': $interval = '30 day'; break;
+            case 'days_7': $interval = '7 day'; break;
+            default: $interval = '365 day';
+        }
+
+        $curr_interval_begin_date = date('Y-m-d 23:59:59', strtotime('-'.$interval));
+        $prev_interval_begin_date = date('Y-m-d 23:59:59', strtotime('-'.$interval, strtotime('-'.$interval)));
+
+    } else {
+
+        switch($interval) {
+
+            case 'this_year':
+
+                $curr_interval_begin_date = date('Y-m-d 23:59:59', strtotime('31-12-'.(date('Y') - 1)));
+                $prev_interval_begin_date = date('Y-m-d 23:59:59', strtotime('31-12-'.(date('Y') - 2)));
+                break;
+
+            case 'this_half_year':
+
+                $curr_interval_begin_date = date('Y-m-d 23:59:59',
+                    strtotime(date('m') < 7 ? '31-12-'.(date('Y') - 1) : '30-06-'.(date('Y'))));
+                $prev_interval_begin_date = date('Y-m-d 23:59:59',
+                    strtotime(date('m') < 7 ? '30-06-'.(date('Y') - 1) : '31-12-'.(date('Y') - 1)));
+                break;
+
+            case 'this_quarter':
+
+                $current_month = date("m");
+                if($current_month < 4) {
+                    $date_from_month = '01';
+                } else if($current_month < 7) {
+                    $date_from_month = '04';
+                } else if($current_month < 10) {
+                    $date_from_month = '07';
+                } else {
+                    $date_from_month = '10';
+                }
+
+                $date_prev_from_month = $date_from_month == '01' ? '10' : '0'.($date_from_month - 3);
+
+                $curr_interval_begin_date = date('Y-m-d 23:59:59',
+                    strtotime('- 1 day', strtotime('01-'.$date_from_month.'-'.date('Y'))));
+                $prev_interval_begin_date = date('Y-m-d 23:59:59',
+                    strtotime('- 1 day', strtotime('01-'.$date_prev_from_month.'-'.( $date_prev_from_month == '10' ? date('Y') - 1 : date('Y')))));
+                break;
+
+            case 'this_month':
+
+                $curr_interval_begin_date = date('Y-m-d 23:59:59',
+                    strtotime('- 1 day', strtotime('01-'.date('m').'-'.date('Y'))));
+                $prev_interval_begin_date = date('Y-m-d 23:59:59',
+                    strtotime('- 1 day', strtotime('01-'.(date('m') == 1 ? 12 : date('m') - 1).'-'.(date('m') == 1 ? date('Y') - 1 : date('Y')))));
+                break;
+
+            case 'this_week':
+
+                $curr_interval_begin_date = date('Y-m-d 23:59:59', strtotime('- 1 day', strtotime('Monday this week')));
+                $prev_interval_begin_date = date('Y-m-d 23:59:59', strtotime('- 1 day', strtotime('Monday previous week')));
+                break;
+
+        }
+
+    }
+
+    return [
+        'curr_interval_begin_date' => $curr_interval_begin_date,
+        'prev_interval_begin_date' => $prev_interval_begin_date
+    ];
+
+}

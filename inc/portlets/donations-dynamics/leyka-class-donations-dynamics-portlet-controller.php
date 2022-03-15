@@ -11,23 +11,37 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
 
         $params['interval'] = empty($params['interval']) ? 'year' : $params['interval'];
         switch($params['interval']) {
-            case 'half-year':
+
+            case 'days_180':
+            case 'this_half_year':
+
                 $sub_interval = 'month';
                 $interval_length = 6;
                 break;
-            case 'quarter':
+
+            case 'days_90':
+            case 'this_quarter':
+
                 $sub_interval = 'week';
                 $interval_length = 12;
                 break;
-            case 'month':
+
+            case 'days_30':
+            case 'this_month':
+
                 $sub_interval = 'week';
                 $interval_length = 4;
                 break;
-            case 'week':
+
+            case 'days_7':
+            case 'this_week':
+
                 $sub_interval = 'day';
                 $interval_length = 7;
                 break;
-            case 'year':
+
+            case 'this_year':
+            case 'days_365':
             default:
                 $sub_interval = 'month';
                 $interval_length = 12;
@@ -37,11 +51,19 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
 
         $result = [];
         $labels = [];
+        $interval_dates = leyka_count_interval_dates($params['interval']);
 
         for($sub_interval_index = 0; $sub_interval_index < $interval_length; $sub_interval_index++) {
 
-            $sub_interval_begin_date = date('Y-m-d 23:59:59', strtotime(' -'.($sub_interval_index + 1).' '.$sub_interval));
             $sub_interval_end_date = date('Y-m-d 23:59:59', strtotime(' -'.$sub_interval_index.' '.$sub_interval));
+
+            if($sub_interval_end_date <= $interval_dates['curr_interval_begin_date']) {
+                continue;
+            }
+
+            $sub_interval_begin_date = date('Y-m-d 23:59:59', strtotime(' -'.($sub_interval_index + 1).' '.$sub_interval));
+            $sub_interval_begin_date = $sub_interval_begin_date < $interval_dates['curr_interval_begin_date'] ?
+                $interval_dates['curr_interval_begin_date'] : $sub_interval_begin_date;
 
             $query = leyka_get_donations_storage_type() === 'post' ?
                 // Post-based donations storage:

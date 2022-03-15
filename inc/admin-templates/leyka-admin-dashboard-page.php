@@ -36,27 +36,54 @@
         <div class="main-col">
 
             <?php if($this->has_banners('admin-dashboard', 'main')) {
-                $this->show_banner('admin-dashboard', 'main');
-            }
+                $this->show_banner('admin-dashboard', 'main');        }
 
             $dashboard_stats_intervals = apply_filters('leyka_admin_dashboard_intervals', [
-                'year' => __('Year', 'leyka'),
-                'half-year' => __('Half-year', 'leyka'),
-                'quarter' => __('Quarter', 'leyka'),
-                'month' => __('Month', 'leyka'),
-                'week' => __('Week', 'leyka'),
+                'days_365' => __('365 days', 'leyka'),
+                'days_180' => __('180 days', 'leyka'),
+                'days_90' => __('90 days', 'leyka'),
+                'days_30' => __('30 days', 'leyka'),
+                'days_7' => __('7 days', 'leyka'),
+                'this_year' => __('From the year start', 'leyka'),
+                'this_half_year' => __('Half-year', 'leyka'),
+                'this_quarter' => __( sprintf('%d quarter of %d',ceil(date("m", time()) / 3), date("Y") ) , 'leyka'),
+                'this_month' => __(date("F", time()), 'leyka'),
+                'this_week' => __('Current week', 'leyka')
             ]);
             $_GET['interval'] = empty($_GET['interval']) ?
-                apply_filters('leyka_admin_dashboard_interval_default', 'year') : esc_attr($_GET['interval']);
+                apply_filters('leyka_admin_dashboard_interval_default', 'days_365') : esc_attr($_GET['interval']);
             $current_url = admin_url('admin.php?page=leyka');?>
 
             <div class="plugin-data-interval">
 
-            <?php foreach($dashboard_stats_intervals as $interval_id => $title) {?>
-                <a href="<?php echo add_query_arg('interval', $interval_id, $current_url);?>" class="<?php echo $_GET['interval'] === $interval_id ? 'current-interval' : '';?>">
-                    <?php echo esc_html($title);?>
-                </a>
-            <?php }?>
+                <div class ="plugin-data-interval-content">
+
+                    <div class="leyka-content-row">
+                        <?php foreach($dashboard_stats_intervals as $interval_id => $title) {
+                            if(strpos($interval_id, 'this') === false) { ?>
+                                <a href="<?php echo add_query_arg('interval', $interval_id, $current_url);?>" class="<?php echo $_GET['interval'] === $interval_id ? 'current-interval' : '';?>">
+                                    <?php echo esc_html($title);?>
+                                </a>
+                            <?php }
+                        }?>
+                    </div>
+
+                    <div class="leyka-content-row">
+                        <?php foreach($dashboard_stats_intervals as $interval_id => $title) {
+                            if(strpos($interval_id, 'this') !== false) { ?>
+                                <a href="<?php echo add_query_arg('interval', $interval_id, $current_url);?>" class="<?php echo $_GET['interval'] === $interval_id ? 'current-interval' : '';?>">
+                                    <?php echo esc_html($title);?>
+                                </a>
+                            <?php }
+                        }?>
+                    </div>
+
+                </div>
+
+                <div class="plugin-data-interval-tools">
+                    <a id="plugin-data-interval-reset-btn" href="?page=leyka&interval=days_365"><?php _e('Reset interval', 'leyka');  ?></a>
+                </div>
+
 
             </div>
 

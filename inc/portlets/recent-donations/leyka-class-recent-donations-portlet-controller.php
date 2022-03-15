@@ -10,21 +10,13 @@ class Leyka_Recent_Donations_Portlet_Controller extends Leyka_Portlet_Controller
     public function get_template_data(array $params = []) {
 
         $params['number'] = empty($params['number']) || (int)$params['number'] <= 0 ? 5 : $params['number'];
-        $params['interval'] = empty($params['interval']) ? 'year' : $params['interval'];
-        switch($params['interval']) {
-            case 'year': $interval = '1 year'; break;
-            case 'half-year': $interval = '6 month'; break;
-            case 'quarter': $interval = '3 month'; break;
-            case 'month': $interval = '1 month'; break;
-            case 'week': $interval = '1 week'; break;
-            default: $interval = '1 year';
-        }
+        $interval_dates = leyka_count_interval_dates($params['interval']);
 
         $result = [];
         $donations = Leyka_Donations::get_instance()->get([
             'status' => ['submitted', 'funded', 'failed',],
             'results_limit' => $params['number'],
-            'date_from' => date('Y-m-d', strtotime("-$interval")),
+            'date_from' => date('Y-m-d', strtotime($interval_dates["curr_interval_begin_date"])),
             'orderby' => 'donation_id',
             'order' => 'DESC',
         ]);

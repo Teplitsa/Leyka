@@ -50,11 +50,9 @@
 
         .portlet-row {
 
+            float: left;
+            width: 100%;
             margin-bottom: $leyka-base;
-
-            &:last-of-type {
-                margin-bottom: 0;
-            }
 
             .row-label {
                 @include leyka-adb-portlet-row-label;
@@ -95,6 +93,22 @@
         }
 
     } // Common - END
+
+    &.portlet-stats-donations-main {
+
+        .portlet-row {
+
+            &:nth-child(2) {
+                width: fit-content;
+                margin-right: 24px;
+            }
+
+            &:nth-child(3) {
+                width: fit-content;
+            }
+        }
+
+    }
 
     &.portlet-recent-donations {
         width: 100%;

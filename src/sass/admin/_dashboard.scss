@@ -131,6 +131,8 @@
             // Data interval:
             .plugin-data-interval {
 
+                display: flex;
+                justify-content: space-between;
                 margin-bottom: 1.5*$leyka-base;
 
                 a {
@@ -149,6 +151,24 @@
                         border-bottom-style: none;
                     }
 
+                }
+
+                .leyka-content-row {
+                    justify-content: start;
+                }
+
+                .plugin-data-interval-content {
+                    width: 80%;
+                }
+
+                #plugin-data-interval-reset-btn {
+
+                    color: $leyka-adb-color-error;
+                    border-color: $leyka-adb-color-error;
+
+                    &:hover {
+                        border-color: transparent;
+                    }
                 }
 
             } // Data interval - END
