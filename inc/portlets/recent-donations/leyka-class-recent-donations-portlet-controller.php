@@ -33,7 +33,11 @@ class Leyka_Recent_Donations_Portlet_Controller extends Leyka_Portlet_Controller
                 'campaign_id' => $donation->campaign_id,
                 'status' => ['id' => $donation->status, 'label' => $donation->status_label,],
                 'amount' => $donation->amount,
+                'total_amount' => $donation->total_amount,
                 'currency' => $donation->currency_label,
+                'gateway' =>['label' => $donation->gateway_label, 'icon' => $donation->gateway_icon],
+                'payment_method' => ['label' => $donation->payment_method_label,
+                    'main_icon_url' => $donation->payment_method_main_icon_url]
             ];
         }
 
