@@ -32,7 +32,7 @@ $data = Leyka_Recent_Donations_Portlet_Controller::get_instance()->get_template_
                 <div><a href="<?php echo admin_url('admin.php?page=leyka_donation_info&donation='.$donation['id']) ?>">К платежу</a></div>
             </td>
             <td class="donation-type">
-                <img src="<?php echo LEYKA_PLUGIN_BASE_URL . 'img/dashboard/icon-donation-type-'.$donation['type'].'.svg';?>" alt="">
+                <img class="has-tooltip" src="<?php echo LEYKA_PLUGIN_BASE_URL . 'img/dashboard/icon-donation-type-'.$donation['donation_type']['id'].'.svg';?>" alt="" title="<?php echo $donation['donation_type']['label'] ?>">
             </td>
             <td class="donation-campaign">
                 <div class="campaign">
@@ -47,30 +47,33 @@ $data = Leyka_Recent_Donations_Portlet_Controller::get_instance()->get_template_
             </td>
             <td class="donation-donor">
 
-                <?php $edit_url = empty($donation['donor_id']) ?
-                    admin_url('admin.php?page=leyka_donor_info&donor='.$donation['donor_id']) :
+                <?php $edit_url = empty($donation['donor']['id']) ?
+                    admin_url('admin.php?page=leyka_donor_info&donor='.$donation['donor']['id']) :
                     admin_url('admin.php?page=leyka_donation_info&donation='.$donation['id'])?>
 
-                <a href="<?php echo $edit_url;?>" target="_blank"><?php echo $donation['donor_name'];?></a>
-                <div class="donor-contact"><?php echo $donation['donor_email'];?></div>
-
+                <a href="<?php echo $edit_url;?>" target="_blank"><?php echo $donation['donor']['name'];?></a>
+                <div class="donor-contact"><?php echo $donation['donor']['email'];?></div>
+                <div class="donor-contact"><?php echo $donation['donor']['phone'];?></div>
             </td>
             <td class="donation-date">
                 <div class="date"><?php echo date('Y.m.d', strtotime($donation['date_time']) ) ;?></div>
                 <div class="time"><?php echo date('H:i', strtotime($donation['date_time']) ) ;?></div>
             </td>
             <td class="donation-amount-status">
-                <div class="donation-amount"><?php echo $donation['amount'].' '.$donation['currency'];?></div>
-                <div class="donation-total-amount"><?php echo $donation['total_amount'].' '.$donation['currency'];?></div>
-                <div class="donation-status-label">
-                    <span class="donation-status <?php echo $donation['status']['id'];?> field-q"></span>
-                    <span class="donation-status-label <?php echo $donation['status']['id'];?>"><?php echo $donation['status']['label'];?></span>
+                <div class="wrapper-donation-amount-status">
+                    <div class="wrapper-donation-status">
+                        <i class="donation-status <?php echo $donation['status']['id'];?> has-tooltip leyka-tooltip-align-left" title=""></i>
+                        <span class="donation-status-description leyka-tooltip-content"><b><?php echo $donation['status']['label'];?></b>: <?php echo $donation['status']['description'];?></span>
+                    </div>
+                    <div class="wrapper-donation-amount">
+                        <div class="donation-amount"><?php echo $donation['amount'].' '.$donation['currency'];?></div>
+                        <div class="donation-total-amount"><?php echo $donation['total_amount'].' '.$donation['currency'];?></div>
+                    </div>
                 </div>
             </td>
             <td class="donation-gateway-pm">
                 <span class="donation-gateway"><img src="<?php echo $donation['gateway']['icon'] ?>" alt="<?php echo $donation['gateway']['label'] ?>"></span>
-                <!-- TODO. Это плейсхолдер. Нужно заменить на вывод настоящих иконок методов оплат   -->
-                <span class="donation-pm"><img src="/wp-content/plugins/leyka/img/icon-docs-link.svg" alt="<?php echo $donation['payment_method']['label'] ?>"></span>
+                <span class="donation-pm"><img src="<?php echo $donation['payment_method']['category_icon']; ?>" alt="<?php echo $donation['payment_method']['category_label'] ?>"></span>
             </td>
         </tr>
         <?php }

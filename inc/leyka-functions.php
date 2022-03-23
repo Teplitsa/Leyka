@@ -601,6 +601,41 @@ function leyka_get_donor_types() {
     return Leyka::get_donor_types();
 }
 
+/**
+ ** Get donor's phone
+ *
+ * @param int|WP_Post|Leyka_Donation_Base $donation
+ * @return string
+ */
+function leyka_get_donor_phone($donation) {
+
+    $donation = Leyka_Donations::get_instance()->get_donation($donation);
+    $donation_additional_fields = $donation->additional_fields;
+    $common_additional_fields = leyka_options()->opt('additional_donation_form_fields_library');
+
+    if($donation->gateway_id === 'mixplat') {
+        $phone = $donation->mixplat_phone;
+    }
+
+    if(empty($phone)) {
+
+        foreach($common_additional_fields as $additional_field_title => $additional_field_data) {
+
+            if(in_array($additional_field_title, array_keys($donation_additional_fields)) &&
+
+                $additional_field_data['type'] === 'phone') {
+                $phone = $donation_additional_fields[$additional_field_title];
+
+            }
+
+        }
+
+    }
+
+    return empty($phone) ? '' : $phone;
+
+}
+
 function leyka_get_pm_categories_list() {
     return apply_filters('leyka_pm_categories', [
         'bank_cards' => __('Bank cards', 'leyka'),
@@ -2630,6 +2665,7 @@ function leyka_count_interval_dates($interval) {
 
         $curr_interval_begin_date = date('Y-m-d 23:59:59', strtotime('-'.$interval));
         $prev_interval_begin_date = date('Y-m-d 23:59:59', strtotime('-'.$interval, strtotime('-'.$interval)));
+        $curr_interval_end_date = date('Y-m-d 23:59:59');
 
     } else {
 
@@ -2639,6 +2675,7 @@ function leyka_count_interval_dates($interval) {
 
                 $curr_interval_begin_date = date('Y-m-d 23:59:59', strtotime('31-12-'.(date('Y') - 1)));
                 $prev_interval_begin_date = date('Y-m-d 23:59:59', strtotime('31-12-'.(date('Y') - 2)));
+                $curr_interval_end_date = date('Y-m-d 23:59:59', strtotime('31-12-'.date('Y')));
                 break;
 
             case 'this_half_year':
@@ -2647,6 +2684,8 @@ function leyka_count_interval_dates($interval) {
                     strtotime(date('m') < 7 ? '31-12-'.(date('Y') - 1) : '30-06-'.(date('Y'))));
                 $prev_interval_begin_date = date('Y-m-d 23:59:59',
                     strtotime(date('m') < 7 ? '30-06-'.(date('Y') - 1) : '31-12-'.(date('Y') - 1)));
+                $curr_interval_end_date = date('Y-m-d 23:59:59',
+                    strtotime(date('m') < 7 ? '30-06-'.date('Y') : '31-12-'.date('Y')));
                 break;
 
             case 'this_quarter':
@@ -2654,12 +2693,16 @@ function leyka_count_interval_dates($interval) {
                 $current_month = date("m");
                 if($current_month < 4) {
                     $date_from_month = '01';
+                    $date_to_month = '04';
                 } else if($current_month < 7) {
                     $date_from_month = '04';
+                    $date_to_month = '07';
                 } else if($current_month < 10) {
                     $date_from_month = '07';
+                    $date_to_month = '10';
                 } else {
                     $date_from_month = '10';
+                    $date_to_month = '01';
                 }
 
                 $date_prev_from_month = $date_from_month == '01' ? '10' : '0'.($date_from_month - 3);
@@ -2668,6 +2711,9 @@ function leyka_count_interval_dates($interval) {
                     strtotime('- 1 day', strtotime('01-'.$date_from_month.'-'.date('Y'))));
                 $prev_interval_begin_date = date('Y-m-d 23:59:59',
                     strtotime('- 1 day', strtotime('01-'.$date_prev_from_month.'-'.( $date_prev_from_month == '10' ? date('Y') - 1 : date('Y')))));
+                $curr_interval_end_date = date('Y-m-d 23:59:59',
+                    strtotime('- 1 day', strtotime('01-'.$date_to_month.'-'.( $date_to_month == '01' ? date('Y') + 1 : date('Y')))));
+
                 break;
 
             case 'this_month':
@@ -2676,12 +2722,15 @@ function leyka_count_interval_dates($interval) {
                     strtotime('- 1 day', strtotime('01-'.date('m').'-'.date('Y'))));
                 $prev_interval_begin_date = date('Y-m-d 23:59:59',
                     strtotime('- 1 day', strtotime('01-'.(date('m') == 1 ? 12 : date('m') - 1).'-'.(date('m') == 1 ? date('Y') - 1 : date('Y')))));
+                $curr_interval_end_date = date('Y-m-d 23:59:59',
+                    strtotime('- 1 day', strtotime('01-'.(date('m') == 12 ? 1 : date('m') + 1).'-'.(date('m') == 12 ? date('Y') + 1 : date('Y')))));
                 break;
 
             case 'this_week':
 
                 $curr_interval_begin_date = date('Y-m-d 23:59:59', strtotime('- 1 day', strtotime('Monday this week')));
                 $prev_interval_begin_date = date('Y-m-d 23:59:59', strtotime('- 1 day', strtotime('Monday previous week')));
+                $curr_interval_end_date = date('Y-m-d 23:59:59', strtotime('- 1 day', strtotime('Monday next week')));
                 break;
 
         }
@@ -2690,7 +2739,17 @@ function leyka_count_interval_dates($interval) {
 
     return [
         'curr_interval_begin_date' => $curr_interval_begin_date,
-        'prev_interval_begin_date' => $prev_interval_begin_date
+        'prev_interval_begin_date' => $prev_interval_begin_date,
+        'curr_interval_end_date' => $curr_interval_end_date
     ];
+
+}
+
+/** Set transient */
+function leyka_set_transient($name, $value, $expiration_date = null) {
+
+    $expiration = $expiration_date ? strtotime($expiration_date) - time() : strtotime('tomorrow') - time();
+
+    return set_transient($name, $value, $expiration);
 
 }

@@ -81,7 +81,7 @@
                 </div>
 
                 <div class="plugin-data-interval-tools">
-                    <a id="plugin-data-interval-reset-btn" href="?page=leyka&interval=days_365"><?php _e('Reset interval', 'leyka');  ?></a>
+                    <a id="plugin-data-interval-reset-btn" href="?page=leyka&interval=<?php echo $_GET['interval']; ?>&reset=true"><?php _e('Reset the interval', 'leyka');  ?></a>
                 </div>
 
 
