@@ -594,7 +594,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             <label><?php _e('Phone number', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
 
-            <?php if($donation->type == 'correction') {?>
+            <?php if($donation->type === 'correction') {?>
                 <input type="text" id="mixplat-phone" name="mixplat-phone" placeholder="<?php _e('Enter a phone number', 'leyka');?>" value="<?php echo $donation->mixplat_phone;?>">
             <?php } else {?>
                 <span class="fake-input"><?php echo $donation->mixplat_phone;?></span>

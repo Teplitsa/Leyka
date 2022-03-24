@@ -83,7 +83,8 @@ abstract class Leyka_Donation_Base {
         $params['campaign_id'] = empty($params['campaign_id']) ?
             leyka_pf_get_campaign_id_value() : absint($params['campaign_id']);
 
-        $params['date_created'] = empty($params['date_created']) ? false : $params['date_created'];
+        $params['date_created'] = empty($params['date_created']) ?
+            (empty($params['date']) ? false : $params['date']) : $params['date_created'];
 
         // Recurring-only params:
         $params['init_recurring_donation'] = empty($params['init_recurring_donation']) ?

@@ -54,7 +54,7 @@ abstract class Leyka_Donations extends Leyka_Singleton {
 
         } else if(is_a($donation, 'Leyka_Donation_Base')) {
             return $donation->id;
-        } else if(is_object($donation) && isset($donation->ID) && isset($donation->campaign_id)) {
+        } else if(is_object($donation) && isset($donation->ID) && $donation->campaign_id) {
             return $donation->ID;
         } else {
             return false;
@@ -70,7 +70,7 @@ abstract class Leyka_Donations extends Leyka_Singleton {
 
     /**
      * @param $params array|int
-     * @return array|Leyka_Donation_Base|boolean Either an array of Leyka_Donation_Base objects, or single object (if get_single param is set), or false if no donations found.
+     * @return array|Leyka_Donation_Base|boolean Either an array of Leyka_Donation_Base objects, or single object if 'get_single' param is set, or false if no donations found.
      */
     abstract public function get($params);
 

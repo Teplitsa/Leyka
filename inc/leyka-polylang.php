@@ -8,19 +8,19 @@ if(defined('POLYLANG_VERSION')) {
         load_plugin_textdomain('leyka', false, apply_filters('leyka_l10n_mo_folder', WP_LANG_DIR.'/plugins'));
 
         // Localize options values:
-        function leyka_localize_option_value($value, $option_name) {
+        function leyka_localize_option_value($value, $option_id) {
 
-            if(in_array($option_name, ['success_page', 'failure_page', 'terms_of_service_page', 'pd_terms_page',])) {
+            if(in_array($option_id, ['success_page', 'failure_page', 'terms_of_service_page', 'pd_terms_page',])) {
 
                 // Get ID of a localized page instead of originally set:
                 $localized_page_id = empty($_POST['cur_lang']) ?
                     pll_get_post($value) : pll_get_post($value, $_POST['cur_lang']);
 
-                return $localized_page_id ? $localized_page_id : $value;
+                return $localized_page_id ? : $value;
 
             }
 
-            if(in_array(leyka_options()->get_type_of($option_name), ['text', 'textarea', 'html', 'rich_html',])) {
+            if(in_array(leyka_options()->get_type_of($option_id), ['text', 'textarea', 'html', 'rich_html',])) {
                 $value = pll__($value);
             }
 
@@ -32,7 +32,7 @@ if(defined('POLYLANG_VERSION')) {
         // Now donations can return their language (a language of their respective campaigns):
         function leyka_localize_unknown_donation_field($value, $field, Leyka_Donation_Base $donation) {
 
-            if($field == 'lang' || $field == 'campaign_lang') {
+            if($field === 'lang' || $field === 'campaign_lang') {
 
                 global $polylang;
                 return $polylang->model->get_post_language($donation->campaign_id)->slug;
@@ -47,7 +47,7 @@ if(defined('POLYLANG_VERSION')) {
         add_filter('leyka_get_unknown_campaign_field', 'leyka_localize_unknown_campaign_field', 10, 4);
         function leyka_localize_unknown_campaign_field($value, $field, Leyka_Campaign $campaign) {
 
-            if($field == 'lang' || $field == 'campaign_lang') {
+            if($field === 'lang' || $field === 'campaign_lang') {
 
                 global $polylang;
                 return $polylang->model->get_post_language($campaign->id)->slug;
@@ -89,8 +89,8 @@ if(defined('POLYLANG_VERSION')) {
     }
     add_action('pll_language_defined', 'leyka_pll_do_localization', 10, 2);
 
-    // If Polylang is active, we need to init all options at once (to localize them).
-    // By default, only 'main' & 'templates' opt. groups initialized. Polylang needs all Leyka options to l10n them properly:
+    // If Polylang is active, we need to init all options at once - to localize them properly.
+    // By default, only 'main' & 'templates' opt. groups initialized.
     add_filter('leyka_init_options_meta_group', function($initialize_options_meta_group){
         return 'all';
     });
@@ -118,7 +118,7 @@ if(defined('POLYLANG_VERSION')) {
                 continue;
             }
 
-            if($option_data['type'] == 'text') {
+            if($option_data['type'] === 'text') {
                 pll_register_string($option_data['title'], $value, 'leyka');
             } else if(in_array($option_data['type'], ['textarea', 'html', 'rich_html',])) {
                 pll_register_string(
@@ -162,7 +162,7 @@ if(defined('POLYLANG_VERSION')) {
 
                         $option_data = leyka_options()->get_info_of($option);
 
-                        if($option_data['type'] == 'text') {
+                        if($option_data['type'] === 'text') {
                             pll_register_string($option_data['title'], $option_data['value'], 'leyka');
                         } elseif(in_array($option_data['type'], ['textarea', 'html', 'rich_html'])) {
                             pll_register_string($option_data['title'], leyka_options()->opt($option), 'leyka', true);

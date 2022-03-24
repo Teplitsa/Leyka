@@ -61,11 +61,11 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
         $main_currency_id = leyka_get_country_currency();
 
-        add_filter("leyka_option_default-payments_single_amounts_options_".$main_currency_id, function($option_value){
+        add_filter('leyka_option_default-payments_single_amounts_options_'.$main_currency_id, function($option_value){
             return leyka_get_payments_amounts_options('single');
         });
 
-        add_filter("leyka_option_default-payments_recurring_amounts_options_".$main_currency_id, function($option_value){
+        add_filter('leyka_option_default-payments_recurring_amounts_options_'.$main_currency_id, function($option_value){
             return leyka_get_payments_amounts_options('recurring');
         });
 
@@ -82,9 +82,8 @@ class Leyka_Options_Controller extends Leyka_Singleton {
     protected function _get_filtered_option_id($option_id) {
 
         $option_id = apply_filters('leyka_option_id-'.$option_id, str_replace('leyka_', '', $option_id));
-        $option_id = apply_filters('leyka_option_id', $option_id);
 
-        return $option_id;
+        return apply_filters('leyka_option_id', $option_id);
 
     }
 
@@ -93,24 +92,32 @@ class Leyka_Options_Controller extends Leyka_Singleton {
     }
 
     /**
-     * A service method to retrieve a plugin option value when the plugin is just being initialized
+     * A service method to retrieve a plugin option value when the plugin is just being initialized,
      * and it can't properly load options metadata yet.
      *
      * @param $option_id string
+     * @package $use_option_value_filters boolean
      * @return mixed
      */
-    public static function get_option_value($option_id) {
+    public static function get_option_value($option_id, $use_option_value_filters = true) {
 
         // Don't use $this->_get_filtered_option_id() here:
-        $option_id = stristr($option_id, 'leyka_') !== false ? $option_id : 'leyka_'.$option_id;
-        $value = apply_filters('leyka_option_value-'.$option_id, get_option($option_id));
+        $option_id = stripos($option_id, 'leyka_') === false ? 'leyka_'.$option_id : $option_id;
+        $value = get_option($option_id);
 
-        return apply_filters('leyka_option_value', $value, $option_id);
+        if($use_option_value_filters) {
+            $value = apply_filters(
+                'leyka_option_value-'.$option_id,
+                apply_filters('leyka_option_value', $value, $option_id)
+            );
+        }
+
+        return $value;
 
     }
 
     /**
-     * A service method to set a plugin option value when the plugin is just being initialized
+     * A service method to set a plugin option value when the plugin is just being initialized,
      * and it can't properly load options metadata yet.
      *
      * @param $option_id string
@@ -118,7 +125,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
      */
     public static function set_option_value($option_id, $value) {
 
-        $option_id = mb_stristr($option_id, 'leyka_') !== false ? $option_id : 'leyka_'.$option_id;
+        $option_id = mb_stripos($option_id, 'leyka_') !== false ? $option_id : 'leyka_'.$option_id;
 
         $value = apply_filters('leyka_new_option_value', $value, $option_id);
         $value = apply_filters('leyka_new_option_value-'.str_replace('leyka_', '', $option_id), $value);
@@ -141,29 +148,29 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
         $new_options_group_meta = [];
 
-        if(stristr($option_id, 'org_') !== false) {
+        if(stripos($option_id, 'org_') !== false) {
             $new_options_group_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta('org'); 
-        } else if(stristr($option_id, 'person_') !== false) {
+        } else if(stripos($option_id, 'person_') !== false) {
             $new_options_group_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta('person');
-        } else if(stristr($option_id, 'payments') !== false) {
+        } else if(stripos($option_id, 'payments') !== false) {
             $new_options_group_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta('payments');
-        } else if(stristr($option_id, 'currency') !== false) {
+        } else if(stripos($option_id, 'currency') !== false) {
             $new_options_group_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta('currency');
-        } else if(stristr($option_id, 'email') !== false || stristr($option_id, 'notify') !== false) {
+        } else if(stripos($option_id, 'email') !== false || stripos($option_id, 'notify') !== false) {
             $new_options_group_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta('emails');
         } else if(
-            stristr($option_id, 'template') !== false
-            || stristr($option_id, 'display') !== false
-            || stristr($option_id, 'show') !== false
-            || stristr($option_id, 'widget') !== false
-            || stristr($option_id, 'revo') !== false
+            stripos($option_id, 'template') !== false
+            || stripos($option_id, 'display') !== false
+            || stripos($option_id, 'show') !== false
+            || stripos($option_id, 'widget') !== false
+            || stripos($option_id, 'revo') !== false
         ) {
             $new_options_group_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta('templates');
-        } else if(stristr($option_id, '_ua') !== false || stristr($option_id, '_gtm') !== false) {
+        } else if(stripos($option_id, '_ua') !== false || stripos($option_id, '_gtm') !== false) {
             $new_options_group_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta('analytics');
-        } else if(stristr($option_id, 'terms') !== false) {
+        } else if(stripos($option_id, 'terms') !== false) {
             $new_options_group_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta('terms');
-        } else if(stristr($option_id, 'admin') !== false || stristr($option_id, 'plugin')) {
+        } else if(stripos($option_id, 'admin') !== false || stripos($option_id, 'plugin')) {
             $new_options_group_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta('admin');
         }
 
@@ -221,7 +228,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
             $this->_options[$option_id]['value'] = get_option("leyka_$option_id");
 
-            // Option is not set, use default value from meta:
+            // Option is not set, use default value from options meta:
             if($this->_options[$option_id]['value'] === false && !empty(self::$_options_meta[$option_id])) {
                 $this->_options[$option_id]['value'] = empty(self::$_options_meta[$option_id]['default']) ?
                     '' : self::$_options_meta[$option_id]['default'];
@@ -271,24 +278,24 @@ class Leyka_Options_Controller extends Leyka_Singleton {
                 $this->_options[$option_id]['value'] :
                 trim($this->_options[$option_id]['value']);
 
-        } else if(stristr($this->_options[$option_id]['type'], 'multi_') !== false && !$this->_options[$option_id]['value']) {
+        } else if(stripos($this->_options[$option_id]['type'], 'multi_') !== false && !$this->_options[$option_id]['value']) {
             $this->_options[$option_id]['value'] = [];
         }
 
         $this->_options[$option_id]['value'] = apply_filters(
             'leyka_option_value-'.$option_id,
-            $this->_options[$option_id]['value']
+            apply_filters('leyka_option_value', $this->_options[$option_id]['value'], $option_id)
         );
 
-        return apply_filters('leyka_option_value', $this->_options[$option_id]['value'], $option_id);
+        return $this->_options[$option_id]['value'];
 
     }
 
     public function add_option($option_id, $type, $params) {
 
-        $option_id = stristr($option_id, 'leyka_') !== false ? $option_id : 'leyka_'.$option_id;
+        $option_id = stripos($option_id, 'leyka_') !== false ? $option_id : 'leyka_'.$option_id;
 
-        if( !in_array($type, self::$_field_types) && stristr($type, 'custom_') === false ) {
+        if( !in_array($type, self::$_field_types) && stripos($type, 'custom_') === false ) {
             return false;
         }
 
@@ -331,7 +338,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
     public function delete_option($option_id) {
 
-        $option_id = stristr($option_id, 'leyka_') !== false ? $option_id : 'leyka_'.$option_id;
+        $option_id = stripos($option_id, 'leyka_') !== false ? $option_id : 'leyka_'.$option_id;
 
         $this->_intialize_option($option_id);
 
@@ -510,7 +517,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
         $this->_intialize_option($option_id, true);
 
-        $filtered_options = [
+        $filtered_option_metadata = [
             'title' => apply_filters('leyka_option_title-'.$option_id, $this->_options[$option_id]['title']),
             'type' => apply_filters('leyka_option_type-'.$option_id, $this->_options[$option_id]['type']),
             'required' => apply_filters(
@@ -523,7 +530,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
             ),
         ];
 
-        $this->_options[$option_id] = array_merge($this->_options[$option_id], $filtered_options);
+        $this->_options[$option_id] = array_merge($this->_options[$option_id], $filtered_option_metadata);
 
         return apply_filters('leyka_option_info-'.$option_id, $this->_options[$option_id]);
 

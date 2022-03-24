@@ -122,10 +122,10 @@ class Leyka extends Leyka_Singleton {
 
                 if(is_wp_error($stats_option_synch_result)) {
                     return $stats_option_synch_result;
-                } else {
-                    return delete_option('leyka_plugin_stats_option_needs_sync')
-                        && update_option('leyka_plugin_stats_option_sync_done', time());
                 }
+
+                return delete_option('leyka_plugin_stats_option_needs_sync')
+                    && update_option('leyka_plugin_stats_option_sync_done', time());
 
             }
             add_action('admin_init', 'leyka_sync_stats_option');
@@ -359,8 +359,8 @@ class Leyka extends Leyka_Singleton {
                 }
 
                 if(
-                    leyka_options()->opt_template('show_success_widget_on_success', $form_template ? : 'default')
-                    && is_main_query()
+                    is_main_query()
+                    && leyka_options()->opt_template('show_success_widget_on_success', $form_template ? : 'default')
                 ) {
                     
                     $form_template_suffix = $form_template === 'star' || $form_template === 'need-help' ? '-star' : '';
@@ -383,9 +383,9 @@ class Leyka extends Leyka_Singleton {
             function leyka_failure_page_widget_template($content) {
 
                 if(
-                    is_page(leyka_options()->opt('failure_page'))
-                    && is_main_query()
+                    is_main_query()
                     && leyka_options()->opt_template('show_failure_widget_on_failure')
+                    && is_page(leyka_options()->opt('failure_page'))
                 ) {
 
                     ob_start();
@@ -420,12 +420,11 @@ class Leyka extends Leyka_Singleton {
 
             function leyka_template_init_include(WP_Query $query) { // Include template init script
 
-//                if($query->is_main_query() && $query->is_singular(Leyka_Campaign_Management::$post_type)) {
                 if( // Can't use $query->is_singular(Leyka_Campaign_Management::$post_type) here,
                     // because there is no $query->get_queried_object_id() value at this point
                     $query->is_main_query()
                     && $query->is_singular()
-                    && $query->get('post_type') == Leyka_Campaign_Management::$post_type
+                    && $query->get('post_type') === Leyka_Campaign_Management::$post_type
                     && $query->get('name')
                 ) {
 
@@ -597,20 +596,20 @@ class Leyka extends Leyka_Singleton {
 
         if( !$activation_status ) {
             return $this->_extensions;
-        } else if( !in_array($activation_status, ['active', 'inactive', 'activating']) ) {
-            return [];
-        } else {
-
-            $extensions = [];
-            foreach($this->_extensions as $extension) { /** @var $extension Leyka_Extension */
-                if($extension->get_activation_status() === $activation_status) {
-                    $extensions[] = $extension;
-                }
-            }
-
-            return $extensions;
-
         }
+
+        if( !in_array($activation_status, ['active', 'inactive', 'activating']) ) {
+            return [];
+        }
+
+        $extensions = [];
+        foreach($this->_extensions as $extension) { /** @var $extension Leyka_Extension */
+            if($extension->get_activation_status() === $activation_status) {
+                $extensions[] = $extension;
+            }
+        }
+
+        return $extensions;
 
     }
 

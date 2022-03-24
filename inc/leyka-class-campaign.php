@@ -719,7 +719,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         <?php // If Support packages Extention is active, add the special fields to check if current campaign can be turned off.
         // Also, the check is only for active (published + non-finished) campaigns:
-        if( !leyka()->extension_is_active('support_packages') || $campaign->status != 'publish' || $campaign->is_finished ) {
+        if( !leyka()->extension_is_active('support_packages') || $campaign->status !== 'publish' || $campaign->is_finished ) {
             return;
         }
 

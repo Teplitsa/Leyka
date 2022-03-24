@@ -220,7 +220,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
             if(
                 $pm_id === 'yandex_sb'
-                && $form_data['leyka_donation_currency'] == 'rub'
+                && $form_data['leyka_donation_currency'] === 'rub'
                 && $form_data['leyka_donation_amount'] < 10.0
             ) {
 
@@ -248,12 +248,10 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             case 'yandex_money':
             case 'yandex_card':
             case 'yandex_wm':
-                return leyka_options()->opt('yandex_test_mode') ?
-                    'https://demomoney.yandex.ru/eshop.xml' : 'https://money.yandex.ru/eshop.xml';
             case 'yandex_sb':
             case 'yandex_ab':
             case 'yandex_pb':
-                return 'https://money.yandex.ru/eshop.xml';
+                return 'https://yoomoney.ru/eshop.xml';
             default:
                 return $current_url;
         }
@@ -299,16 +297,16 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
     private function _callback_answer($is_error = false, $callback_type = 'co', $message = '', $tech_message = '') {
 
         $is_error = !!$is_error;
-        $tech_message = $tech_message ? $tech_message : $message;
-        $callback_type = $callback_type == 'co' ? 'checkOrderResponse' : 'paymentAvisoResponse';
+        $tech_message = $tech_message ? : $message;
+        $callback_type = $callback_type === 'co' ? 'checkOrderResponse' : 'paymentAvisoResponse';
 
         if($is_error) {
             die('<?xml version="1.0" encoding="UTF-8"?><'.$callback_type.' performedDatetime="'.date(DATE_ATOM).'"
 code="1000" invoiceId="'.$_POST['invoiceId'].'" shopId="'.leyka_options()->opt('yandex_shop_id').'" message="'.$message.'"
 techMessage="'.$tech_message.'"/>');
-        } else {
-            die('<?xml version="1.0" encoding="UTF-8"?><'.$callback_type.' performedDatetime="'.date(DATE_ATOM).'" code="0" invoiceId="'.$_POST['invoiceId'].'" shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
         }
+
+        die('<?xml version="1.0" encoding="UTF-8"?><'.$callback_type.' performedDatetime="'.date(DATE_ATOM).'" code="0" invoiceId="'.$_POST['invoiceId'].'" shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
 
     }
 
@@ -608,6 +606,7 @@ techMessage="'.$tech_message.'"/>');
             $init_recurring_donation,
             [
                 'status' => 'submitted',
+                'date' => false, // Use current date for rebill Donations
                 'payment_type' => 'rebill',
                 'init_recurring_donation' => $init_recurring_donation->id,
                 'yandex_recurring_id' => $init_recurring_donation->yandex_recurring_id,
@@ -854,11 +853,12 @@ techMessage="'.$tech_message.'"/>');
 
         if(array_key_exists($pm_id, $all_pm_ids)) {
             return $all_pm_ids[$pm_id];
-        } else if(in_array($pm_id, $all_pm_ids)) {
-            return array_search($pm_id, $all_pm_ids);
-        } else {
-            return false;
         }
+        if(in_array($pm_id, $all_pm_ids)) {
+            return array_search($pm_id, $all_pm_ids);
+        }
+
+        return false;
 
     }
 
@@ -867,7 +867,7 @@ techMessage="'.$tech_message.'"/>');
         if( !absint($order_number) ) { // Recurring donation callback
 
             $order_number = explode('-', $order_number);
-            if(count($order_number) == 3 && $order_number[0] == 'recurring' && absint($order_number[2])) {
+            if(count($order_number) === 3 && $order_number[0] === 'recurring' && absint($order_number[2])) {
                 $order_number = absint($order_number[2]);
             } else { // Order number is wrong
                 $order_number = false;
