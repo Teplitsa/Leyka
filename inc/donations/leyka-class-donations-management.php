@@ -18,7 +18,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             add_action('transition_post_status',  [$this, 'donation_status_changed'], 10, 3);
 
             // If Donation is deleted permanently, trigger donation_status_changed() manually:
-            add_action('before_delete_post', function($post_id, WP_Post $donation_post){
+            add_action('before_delete_post', function($post_id, $donation_post){
 
                 if(is_a($donation_post, 'WP_Post') && $donation_post->post_type !== self::$post_type) {
                     return;
