@@ -140,6 +140,8 @@
                     @include leyka-adb-link-period;
                     @include leyka-admin-a(dashed);
 
+                    font-size: 14px;
+                    line-height: 18px;
                     margin-right: 1.5*$leyka-base;
 
                     &:last-of-type {
@@ -158,18 +160,37 @@
                 }
 
                 .plugin-data-interval-content {
-                    width: 80%;
+                    width: 600px;
+                    height: 50px;
+                    display: flex;
+                    flex-direction: column;
+                    flex-wrap: wrap;
+                    justify-content: space-between;
                 }
 
-                #plugin-data-interval-reset-btn {
+                .plugin-data-interval-tools {
 
-                    color: $leyka-adb-color-error;
-                    border-color: $leyka-adb-color-error;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-around;
 
-                    &:hover {
-                        border-color: transparent;
+                    * {
+                        font-size: 10px;
+                        line-height: 16px;
                     }
+
+                    .plugin-data-interval-reset-text {
+                        color: $leyka-adb-table-color-text-light;
+                        font-weight: $leyka-adb-table-weight-text;
+                    }
+
+                    .plugin-data-interval-reset-btn {
+                        width: fit-content;
+                    }
+
                 }
+
+
 
             } // Data interval - END
 

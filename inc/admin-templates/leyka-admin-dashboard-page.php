@@ -52,7 +52,10 @@
             ]);
             $_GET['interval'] = empty($_GET['interval']) ?
                 apply_filters('leyka_admin_dashboard_interval_default', 'days_365') : esc_attr($_GET['interval']);
-            $current_url = admin_url('admin.php?page=leyka');?>
+            $current_url = admin_url('admin.php?page=leyka');
+            $dashboard_data_cache_date = date('d.m.Y, H:i',
+                get_transient('leyka_dashboard_data_cache_timestamp_'.$_GET['interval']) === false || isset($_GET['reset']) ?
+                time() : get_transient('leyka_dashboard_data_cache_timestamp_'.$_GET['interval'])); ?>
 
             <div class="plugin-data-interval">
 
@@ -81,7 +84,8 @@
                 </div>
 
                 <div class="plugin-data-interval-tools">
-                    <a id="plugin-data-interval-reset-btn" href="?page=leyka&interval=<?php echo $_GET['interval']; ?>&reset=true"><?php _e('Reset the interval', 'leyka');  ?></a>
+                    <span class="plugin-data-interval-reset-text"><?php echo __('The data is current as</br> of ', 'leyka').$dashboard_data_cache_date; ?></span>
+                    <a class="plugin-data-interval-reset-btn" href="?page=leyka&interval=<?php echo $_GET['interval']; ?>&reset=true"><?php echo __('Renew data', 'leyka');  ?></a>
                 </div>
 
 

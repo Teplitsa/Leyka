@@ -15,6 +15,7 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
 
             delete_transient('leyka_stats_donations_main_curr_'.$params['interval']);
             delete_transient('leyka_stats_donations_main_prev_'.$params['interval']);
+            delete_transient('leyka_dashboard_data_cache_timestamp_'.$params['interval']);
 
             $curr_interval_data = false;
             $prev_interval_data = false;
@@ -96,6 +97,7 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
             ];
 
             leyka_set_transient('leyka_stats_donations_main_curr_'.$params['interval'], $curr_interval_data);
+            leyka_set_transient('leyka_dashboard_data_cache_timestamp_'.$params['interval'], time());
 
         }
 
@@ -182,11 +184,10 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
         $curr_ltv = $curr_interval_data['amount'] && $curr_interval_data['donors_count'] ?
             round($curr_interval_data['amount'] / $curr_interval_data['donors_count'], 2) : 0;
         $ltv_delta = leyka_get_delta_percent($prev_ltv, $curr_ltv);
-
         // Donations avg amount:
-        $prev_amount_avg = $prev_interval_data['amount'] ?
+        $prev_amount_avg = $prev_interval_data['amount'] && $prev_interval_data['donations_count'] ?
             round($prev_interval_data['amount'] / $prev_interval_data['donations_count'], 2) : 0;
-        $curr_amount_avg = $curr_interval_data['amount'] ?
+        $curr_amount_avg = $curr_interval_data['amount'] && $curr_interval_data['donations_count'] ?
             round($curr_interval_data['amount'] / $curr_interval_data['donations_count'], 2) : 0;
         $donations_amount_avg_delta = leyka_get_delta_percent($prev_amount_avg, $curr_amount_avg);
 

@@ -622,8 +622,8 @@ function leyka_get_donor_phone($donation) {
         foreach($common_additional_fields as $additional_field_title => $additional_field_data) {
 
             if(in_array($additional_field_title, array_keys($donation_additional_fields)) &&
-
                 $additional_field_data['type'] === 'phone') {
+
                 $phone = $donation_additional_fields[$additional_field_title];
 
             }

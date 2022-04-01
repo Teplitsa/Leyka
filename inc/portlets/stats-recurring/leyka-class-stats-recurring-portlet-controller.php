@@ -155,8 +155,10 @@ class Leyka_Recurring_Stats_Portlet_Controller extends Leyka_Portlet_Controller 
         $recurring_amount_delta = leyka_get_delta_percent($prev_interval_data['amount'], $curr_interval_data['amount']);
 
         // Donations avg amount:
-        $prev_amount_avg = $prev_interval_data['amount'] ? round($prev_interval_data['amount']/$prev_interval_data['donations_count'], 2) : 0;
-        $curr_amount_avg = $curr_interval_data['amount'] ? round($curr_interval_data['amount']/$curr_interval_data['donations_count'], 2) : 0;
+        $prev_amount_avg = $prev_interval_data['amount'] && $prev_interval_data['donations_count'] ?
+            round($prev_interval_data['amount']/$prev_interval_data['donations_count'], 2) : 0;
+        $curr_amount_avg = $curr_interval_data['amount'] && $curr_interval_data['donations_count'] ?
+            round($curr_interval_data['amount']/$curr_interval_data['donations_count'], 2) : 0;
         $donations_amount_avg_delta = leyka_get_delta_percent($prev_amount_avg, $curr_amount_avg);
 
         // Subscriptions count:
