@@ -57,7 +57,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                     </div>
                 </div>
 
-                <div class="section__fields amount">
+                <div class="section__fields amount" data-amount-mode="<?php echo $template_data['amount_mode']; ?>">
 
                 <?php echo Leyka_Payment_Form::get_common_hidden_fields($campaign, [
                     'leyka_template_id' => 'need-help',

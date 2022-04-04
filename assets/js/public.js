@@ -2394,9 +2394,14 @@ jQuery(document).ready(function($){
                 equalizeFormElementsWidth($(this));
             });
 
-            let payment_type = $this.data('periodicity') === 'once' ? 'single' : 'recurring';
+            const amount_mode = $('.section--amount .section__fields.amount').data('amount-mode');
+            const payment_type = $this.data('periodicity') === 'once' ? 'single' : 'recurring';
 
-            showAmountOptionsByPaymentType($_form, payment_type);
+            if(amount_mode === 'flexible') {
+                setAmountInputValue($_form, $('.flex-amount-item input').val());
+            } else {
+                showAmountOptionsByPaymentType($_form, payment_type);
+            }
 
         });
         
