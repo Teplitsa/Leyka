@@ -165,10 +165,27 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             $client = new YooKassa\Client();
             $client->setAuth(leyka_options()->opt('yandex_shop_id'), leyka_options()->opt('yandex_secret_key'));
 
-            $description = (
-                    !empty($form_data['leyka_recurring']) ? _x('[RS]', 'For "recurring subscription"', 'leyka').' ' : ''
-                )
-                .$donation->payment_title." (№ $donation_id); {$donation->donor_name}; {$donation->donor_email}";
+            // The max length allowed for the 'description' field is 128 symbols:
+            $description = !empty($form_data['leyka_recurring']) ? _x('[RS]', 'For "recurring subscription"', 'leyka').' ' : '';
+            $description_maybe = $description.$donation->payment_title." (№ {$donation_id});";
+            $max_length = 128;
+
+            if(mb_strlen($description_maybe) <= $max_length) { // Payment title length is OK, try to add Donor's data
+
+                $description = $description_maybe;
+                $description_maybe = $description." {$donation->donor_name}; {$donation->donor_email}";
+
+                if(mb_strlen($description_maybe) <= $max_length) {
+                    $description = $description_maybe;
+                }
+
+            } else { // Even payment title is critically long
+
+                $description .= leyka_strip_string_by_words(
+                        $donation->payment_title, $max_length - mb_strlen("… (№ {$donation->id});")
+                )."… (№ {$donation_id});";
+
+            }
 
             try {
 
@@ -183,7 +200,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                             leyka_get_success_page_url() : $form_data['leyka_success_page_url'],
                     ],
                     'capture' => true, // Make payment at once, don't wait for shop confirmation
-                    'description' => mb_strlen($description) >= 128 ? mb_substr($description, 0, 124).' ...' : $description,
+                    'description' => $description,
                     'metadata' => [
                         'donation_id' => $donation_id,
                         'donor_name' => $donation->donor_name,
@@ -633,6 +650,30 @@ techMessage="'.$tech_message.'"/>');
 
             try {
 
+                // The max length allowed for the 'description' field is 128 symbols:
+                $description = !empty($form_data['leyka_recurring']) ? _x('[R]', 'For "rebill"', 'leyka').' ' : '';
+                $description_maybe = $description.$new_recurring_donation->payment_title." (№ {$new_recurring_donation->id});";
+                $max_length = 128;
+
+                if(mb_strlen($description_maybe) <= $max_length) { // Payment title length is OK, try to add Donor's data
+
+                    $description = $description_maybe;
+
+                    $description_maybe = $description
+                        ." {$new_recurring_donation->donor_name}; {$new_recurring_donation->donor_email}";
+
+                    if(mb_strlen($description_maybe) <= $max_length) {
+                        $description = $description_maybe;
+                    }
+
+                } else { // Even payment title is critically long
+
+                    $description .= leyka_strip_string_by_words(
+                        $new_recurring_donation->payment_title, $max_length - mb_strlen("… (№ {$new_recurring_donation->id});")
+                    )."… (№ {$new_recurring_donation->id});";
+
+                }
+
                 $payment = $client->createPayment(
                     [
                         'amount' => [
@@ -641,10 +682,7 @@ techMessage="'.$tech_message.'"/>');
                         ],
                         'payment_method_id' => $init_recurring_donation->yandex_recurring_id,
                         'capture' => true,
-                        'description' =>
-                            ( !empty($form_data['leyka_recurring']) ? _x('[R]', 'For "rebill"', 'leyka').' ' : '' )
-                            .$new_recurring_donation->payment_title." (№ {$new_recurring_donation->id}); "
-                            ."{$new_recurring_donation->donor_name}; {$new_recurring_donation->donor_email}",
+                        'description' => $description,
                         'metadata' => [
                             'donation_id' => $new_recurring_donation->id,
                             'donor_name' => $new_recurring_donation->donor_name,
