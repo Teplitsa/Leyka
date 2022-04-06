@@ -83,11 +83,13 @@ try {
 									<div class="item <?php echo $init_donation->recurring_on ? 'active' : 'inactive subscription-canceled';?> <?php echo $init_donation->cancel_recurring_requested ? 'subscription-canceling' : '';?>">
                                         <div class="subscription-details">
 
-                                            <div class="campaign-title"><?php echo $init_donation->campaign_title;?></div>
+                                            <div class="campaign-title">
+                                                <a href="<?php echo get_permalink($init_donation->campaign_id);?>"><?php echo mb_ucfirst($init_donation->campaign_title);?></a>
+                                            </div>
 
                                             <div class="subscription-payment-details">
                                                 <div class="amount">
-                                                    <?php echo $init_donation->amount.' '.$init_donation->currency_label;?>/<?php echo _x('month', 'Recurring interval, as in "[XX Rub in] month"', 'leyka');?>
+                                                    <?php echo $init_donation->amount_formatted.' '.$init_donation->currency_label;?>/<?php echo _x('month', 'Recurring interval, as in "[XX Rub in] month"', 'leyka');?>
                                                 </div>
                                                 <div class="donation-gateway-pm">
                                                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/star-icon-info-small.svg" alt="">

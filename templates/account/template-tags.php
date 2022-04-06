@@ -38,11 +38,13 @@ if( !function_exists('leyka_get_donor_account_donations_list_item_html') ) {
                 'recurring_is_active' => $donation->recurring_is_active ? 'recurring-is-active' : '',
                 'init_recurring_donation' => $donation->is_init_recurring_donation ? 'init-recurring-donation' : '',
                 'amount' => $donation->amount,
+                'amount_formatted' => $donation->amount_formatted,
                 'currency_label' => $donation->currency_label,
                 'gateway_label' => $donation->gateway_label,
                 'pm_label' => $donation->pm_label,
                 'date' => $donation->date,
-                'campaign_title' => $donation->campaign_title,
+                'campaign_title' => mb_ucfirst($donation->campaign_title),
+                'campaign_id' => $donation->campaign_id,
             ];
 
         }
@@ -58,11 +60,13 @@ if( !function_exists('leyka_get_donor_account_donations_list_item_html') ) {
                 </span></span>
 
                 <?php echo ($donation->status === 'refunded' ? __('Refunding:', 'leyka').' ' : '')
-                    .$placeholders['amount'].' '.$placeholders['currency_label'];?>
+                    .$placeholders['amount_formatted'].' '.$placeholders['currency_label'];?>
 
             </h4>
             <span class="date"><?php echo $placeholders['date'];?></span>
-            <p><?php echo '«'.$placeholders['campaign_title'].'»';?></p>
+            <p>
+                <a href="<?php echo get_permalink($placeholders['campaign_id']);?>"><?php echo $placeholders['campaign_title'];?></a>
+            </p>
 
             <div class="donation-gateway-pm">
                 <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/star-icon-info-small.svg" alt="">
