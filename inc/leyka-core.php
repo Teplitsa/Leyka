@@ -887,8 +887,13 @@ class Leyka extends Leyka_Singleton {
 
                 do_action('leyka_do_procedure', $request[1], array_slice($request, 2));
 
-            } else if($request[0] === 'get_usage_stats') {
+            }
 
+            else if($request[0] === 'get_usage_stats') {
+
+                echo '';
+
+                /* Statistics collection disabled
                 require_once LEYKA_PLUGIN_DIR.'bin/sodium-compat.phar';
 
                 if( !$this->_outer_request_allowed() ) {
@@ -901,7 +906,7 @@ class Leyka extends Leyka_Singleton {
                         \Sodium\hex2bin(get_option('leyka_stats_sipher_public_key'))
                     ) :
                     '<pre>'.print_r($this->_get_usage_stats($_REQUEST), 1).'</pre>';
-
+                */
             } else { // Gateway callback URL
 
                 // Callback URLs are: some-website.org/leyka/service/{gateway_id}/{action_name}/
