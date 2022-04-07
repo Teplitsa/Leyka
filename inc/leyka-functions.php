@@ -1176,8 +1176,9 @@ function leyka_get_actual_currency_rates() {
  */
 function leyka_get_payments_amounts_options($payment_type, $currency_id = null) {
 
-    // Don't use leyka_options()->opt() & ->opt_safe() here - it creates an infinite recursion when Polylang is active:
+    // WARNING: Don't use leyka_options()->opt() & ->opt_safe() here - it creates an infinite recursion when Polylang is active:
     $currency_id = $currency_id ? : Leyka_Options_Controller::get_option_value('currency_main', false);
+    $currency_id = $currency_id ? : leyka_get_country_currency(); // There are no 'currency_main' value in DB on new installations
 
     return Leyka_Options_Controller::get_option_value('leyka_payments_'.$payment_type.'_amounts_options_'.$currency_id, false) ? :
         leyka_get_fixed_payments_amounts_options($currency_id);
