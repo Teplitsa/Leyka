@@ -67,7 +67,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
 
         add_filter('leyka_option_default-payments_recurring_amounts_options_'.$main_currency_id, function($option_value){
             return leyka_get_payments_amounts_options('recurring');
-        });
+        }, 10, 2);
 
         // If Country option value changes, clear active PM lists:
         add_action('leyka_set_receiver_country_option_value', function($option_value){

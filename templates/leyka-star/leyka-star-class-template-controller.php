@@ -15,10 +15,11 @@ class Leyka_Star_Template_Controller extends Leyka_Template_Controller {
 
         $currencies = leyka_get_currencies_data();
         $main_currency_id = leyka_options()->opt('currency_main');
-        
+
         $amount_mode = leyka_options()->opt_template('donation_sum_field_type', 'star');
 
         if($amount_mode == 'fixed' || $amount_mode == 'mixed') {
+
             $amount_variants = $campaign->default_payments_amounts === '1' ? [
                 'single' => leyka_options()->opt_safe('payments_single_amounts_options_'.$main_currency_id),
                 'recurring' => leyka_options()->opt_safe('payments_recurring_amounts_options_'.$main_currency_id)
@@ -28,20 +29,28 @@ class Leyka_Star_Template_Controller extends Leyka_Template_Controller {
             ];
 
             // TODO: remove these checks when validation on the campaign edit page will be fixed
-            foreach ($amount_variants['single'] as $variant_idx => $variant_data) {
-                if (empty($variant_data['amount']) ||
-                    $variant_data['amount'] < $currencies[$main_currency_id]['bottom'] ||
-                    $variant_data['amount'] > $currencies[$main_currency_id]['top']) {
+            foreach($amount_variants['single'] as $variant_idx => $variant_data) {
+
+                if(
+                    empty($variant_data['amount'])
+                    || $variant_data['amount'] < $currencies[$main_currency_id]['bottom']
+                    || $variant_data['amount'] > $currencies[$main_currency_id]['top']
+                ) {
                     unset($amount_variants['single'][$variant_idx]);
                 }
+
             }
 
-            foreach ($amount_variants['recurring'] as $variant_idx => $variant_data) {
-                if (empty($variant_data['amount']) ||
-                    $variant_data['amount'] < $currencies[$main_currency_id]['bottom'] ||
-                    $variant_data['amount'] > $currencies[$main_currency_id]['top']) {
+            foreach($amount_variants['recurring'] as $variant_idx => $variant_data) {
+
+                if(
+                    empty($variant_data['amount'])
+                    || $variant_data['amount'] < $currencies[$main_currency_id]['bottom']
+                    || $variant_data['amount'] > $currencies[$main_currency_id]['top']
+                ) {
                     unset($amount_variants['recurring'][$variant_idx]);
                 }
+
             }
 
         } else {

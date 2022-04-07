@@ -1289,7 +1289,7 @@ class Leyka extends Leyka_Singleton {
                 mb_strtolower($params['order']) : 'desc';
 
             // Order by Gateway activation status, then by title:
-            usort($gateways, function(Leyka_Gateway $gateway_1, Leyka_Gateway $gateway_2){
+            @usort($gateways, function(Leyka_Gateway $gateway_1, Leyka_Gateway $gateway_2){
 
                 $activation_status_1 = $gateway_1->get_activation_status();
                 $activation_status_2 = $gateway_2->get_activation_status();
