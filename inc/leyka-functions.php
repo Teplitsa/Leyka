@@ -662,6 +662,45 @@ function leyka_get_gateway_activation_status_label($activation_status) {
 }
 
 /**
+ *
+ */
+function leyka_get_donation_gateway_description(Leyka_Donation_Base $donation, $max_length) {
+
+    $max_length = absint($max_length);
+    if( !$max_length ) {
+        return false;
+    }
+
+    $description = '';
+    if($donation->payment_type === 'rebill') {
+        $description = $donation->is_init_recurring_donation ?
+            _x('[RS]', 'For "recurring subscription"', 'leyka') : _x('[R]', 'For "rebill"', 'leyka');
+    }
+
+    $description_maybe = ($description ? $description.' ' : '').$donation->payment_title." (№ {$donation->id});";
+
+    if(mb_strlen($description_maybe) <= $max_length) { // Payment title length is OK, try to add Donor's data
+
+        $description = $description_maybe;
+        $description_maybe = $description." {$donation->donor_name}; {$donation->donor_email}";
+
+        if(mb_strlen($description_maybe) <= $max_length) {
+            $description = $description_maybe;
+        }
+
+    } else { // Even payment title is critically long
+
+        $description .= leyka_strip_string_by_words(
+                $donation->payment_title, $max_length - mb_strlen("… (№ {$donation->id});")
+            )."… (№ {$donation->id});";
+
+    }
+
+    return $description;
+
+}
+
+/**
  * @param string $wizard_id
  * @return bool
  */

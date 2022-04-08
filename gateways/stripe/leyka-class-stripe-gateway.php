@@ -104,16 +104,14 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             $donation->payment_type = 'rebill';
         }
 
-        $description =
-            ( !empty($form_data['leyka_recurring'] ) ? _x('[RS]', 'For "recurring subscription"', 'leyka').' ' : '')
-            .$donation->payment_title." (№ $donation_id); {$donation->donor_name}; {$donation->donor_email}";
+        $description = leyka_get_donation_gateway_description($donation, 250);
 
         \Stripe\Stripe::setApiKey(leyka_options()->opt('stripe_key_secret'));
 
         $checkout_session_data = [
             'line_items' => [[
                 'price_data' => [
-                    'unit_amount' => $form_data['leyka_donation_amount']*100,
+                    'unit_amount' => 100*$form_data['leyka_donation_amount'],
                     'currency' => 'eur',
                     'product' => leyka_options()->opt('stripe_product_id')
                 ],
@@ -137,9 +135,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
         if(empty($form_data['leyka_recurring'])) {
             $checkout_session_data['payment_intent_data'] = [
                 'description' => $description,
-                'metadata' => [
-                    'donation_id' => $donation_id
-                ]
+                'metadata' => ['donation_id' => $donation_id,]
             ];
         } else {
 

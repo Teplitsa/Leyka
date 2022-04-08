@@ -67,7 +67,6 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
         $donation = Leyka_Donations::get_instance()->get($donation_id);
 
         $campaign = new Leyka_Campaign($form_data['leyka_campaign_id']);
-        $description = $campaign->short_description;
         $amount = absint($donation->amount);
 
         $bill = new Leyka_Qiwi_Gateway_Helper();
@@ -77,7 +76,7 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
             $amount,
             [
                 'customer' => ['account' => $donation->donor_name, 'email' => $donation->donor_email,],
-                'comment' => $description
+                'comment' => leyka_get_donation_gateway_description($donation, 128), // $campaign->short_description
             ]
         );
 

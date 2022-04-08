@@ -146,6 +146,11 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
         $params = [
             'OrderId' => $donation_id,
             'Amount' => 100 * absint($donation->amount),
+            'Description' => leyka_get_donation_gateway_description($donation, 250),
+            'PayType' => 'O', // 1-stage payment
+//            'NotificationURL' => site_url('/leyka/service/tinkoff/process'), /** @todo Check if this will work */
+//            'SuccessURL' => get_permalink(leyka_options()->opt('success_page')), /** @todo Check if this will work */
+//            'FailURL' => get_permalink(leyka_options()->opt('failure_page')), /** @todo Check if this will work */
             'DATA' => ['Email' => $donation->donor_email,],
         ];
 
