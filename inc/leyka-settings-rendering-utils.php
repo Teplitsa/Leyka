@@ -324,7 +324,7 @@ function leyka_render_number_field($option_id, $data){
             </span>
 
             <span class="field-component field">
-                <input type="number" id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo empty($data['placeholder']) ? '' : esc_attr($data['placeholder']);?>" <?php echo empty($data['length']) ? '' : 'maxlength="'.(int)$data['length'].'"';?> <?php echo isset($data['max']) ? 'max="'.(float)$data['max'].'"' : '';?> <?php echo isset($data['min']) ? 'min="'.(float)$data['min'].'"' : '';?> <?php echo empty($data['step']) ? '' : 'step="'.(float)$data['step'].'"';?>>
+                <input type="number" id="<?php echo $option_id.'-field';?>" name="<?php echo $option_id;?>" value="<?php echo esc_attr($data['value']);?>" placeholder="<?php echo empty($data['placeholder']) ? '' : esc_attr($data['placeholder']);?>" <?php echo empty($data['length']) ? '' : 'maxlength="'.(int)$data['length'].'"';?> <?php echo !empty($data['max']) ? 'max="'.(float)$data['max'].'"' : '';?> <?php echo !empty($data['min']) ? 'min="'.(float)$data['min'].'"' : 'min="0"';?> <?php echo empty($data['step']) ? '' : 'step="'.(float)$data['step'].'"';?>>
             </span>
 
             <?php if( !empty($data['description']) ) {?>

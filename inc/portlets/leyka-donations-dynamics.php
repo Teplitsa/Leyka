@@ -9,7 +9,7 @@
  * @var $params
  **/
 
-$data = Leyka_Donations_Dynamics_Portlet_Controller::get_instance()->get_template_data($params);?>
+$data = Leyka_Donations_Dynamics_Portlet_Controller::get_instance()->get_template_data($params); ?>
 
 
 <div class="dynamics-bar-chart">
