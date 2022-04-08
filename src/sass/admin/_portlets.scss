@@ -50,11 +50,9 @@
 
         .portlet-row {
 
+            float: left;
+            width: 100%;
             margin-bottom: $leyka-base;
-
-            &:last-of-type {
-                margin-bottom: 0;
-            }
 
             .row-label {
                 @include leyka-adb-portlet-row-label;
@@ -95,6 +93,22 @@
         }
 
     } // Common - END
+
+    &.portlet-stats-donations-main {
+
+        .portlet-row {
+
+            &:nth-child(2) {
+                width: fit-content;
+                margin-right: 24px;
+            }
+
+            &:nth-child(3) {
+                width: fit-content;
+            }
+        }
+
+    }
 
     &.portlet-recent-donations {
         width: 100%;
@@ -195,8 +209,9 @@
 
         @include leyka-adb-text-bigger1;
 
-        color: $color-metabox-text;
+        color: $leyka-adb-table-color-text-normal;
         width: 100%;
+        font-weight: $leyka-adb-table-weight-text;
 
         thead {
             tr th {
@@ -204,6 +219,10 @@
                 text-align: left;
                 border-bottom: 1px solid $color-border-light-001;
                 padding-bottom: $leyka-base;
+            }
+
+            th.donation-type, th.donation-gateway-pm {
+                text-align: center;
             }
         }
 
@@ -222,8 +241,12 @@
                 }
 
                 td.donation-type {
-                    min-width: 59px;
+                    min-width: 45px;
                     text-align: center;
+                }
+
+                td.donation-date {
+                    min-width: 75px;
                 }
 
                 td.donation-donor {
@@ -237,6 +260,7 @@
 
                     .donor-contact {
                         @include leyka-info-page-text-smaller1;
+                        font-weight: $leyka-adb-table-weight-text;
                     }
 
                 }
@@ -254,44 +278,91 @@
 
                 td.donation-amount-status {
 
-                    min-width: 83px;
+                    max-width: 155px;
 
-                    .donation-status {
+                    .wrapper-donation-amount-status {
 
-                        @include leyka-donation-status-marker;
+                        display: flex;
+                        align-items: flex-start;
+                        flex-flow: row nowrap;
 
-                        display: inline-block;
-                        width: 8px;
-                        height: 8px;
-                        border-radius: 4px;
-                        background-color: $leyka-color-donation-status-submitted;
-                        margin-right: 0.5 * $leyka-base;
-
-                        &.funded {
-                            background-color: $leyka-color-donation-status-funded;
+                        .donation-total-amount {
+                            color: $leyka-adb-table-color-text-light;
                         }
 
-                        &.refunded {
-                            background-color: $leyka-color-donation-status-refunded;
-                        }
+                        .donation-status {
 
-                        &.failed {
-                            background-color: $leyka-color-donation-status-failed;
-                        }
+                            @include leyka-donation-status-marker;
 
-                        &.field-q {
+                            display: inline-block;
+                            width: 8px;
+                            height: 8px;
+                            border-radius: 4px;
+                            background-color: $leyka-color-donation-status-submitted;
+                            margin-right: 0.125 * $leyka-base + 12px;
 
-                            @include field-q();
+                            &.funded {
+                                background-color: $leyka-color-donation-status-funded;
+                            }
 
-                            .field-q-tooltip {
-                                top: 250%;
-                                padding-left: 2* $leyka-base;
-                                padding-right: 2* $leyka-base;
-                                font-weight: 500;
+                            &.refunded {
+                                background-color: $leyka-color-donation-status-refunded;
+                            }
+
+                            &.failed {
+                                background-color: $leyka-color-donation-status-failed;
+                            }
+
+                            &.field-q {
+
+                                @include field-q();
+
+                                .field-q-tooltip {
+                                    top: 250%;
+                                    padding-left: 2* $leyka-base;
+                                    padding-right: 2* $leyka-base;
+                                    font-weight: 500;
+                                }
+
                             }
 
                         }
 
+                        .donation-status-label {
+
+                            color: $leyka-color-donation-status-submitted;
+
+                            &.funded {
+                                color: $leyka-color-donation-status-funded;
+                            }
+
+                            &.refunded {
+                                color: $leyka-color-donation-status-refunded;
+                            }
+
+                            &.failed {
+                                color: $leyka-color-donation-status-failed;
+                            }
+
+                        }
+
+                    }
+
+                }
+
+                td.donation-gateway-pm {
+
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+
+                    .donation-gateway {
+                        margin-right: 4px;
+                    }
+
+                    img {
+                        width: 30px;
+                        height: 30px;
                     }
 
                 }

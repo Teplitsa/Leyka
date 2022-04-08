@@ -324,6 +324,14 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                 $pm = leyka_get_pm_by_id($this->_main_data->gateway_id.'-'.$this->_main_data->pm_id, true);
                 return $pm ? $pm->label : __('Unknown payment method', 'leyka');
 
+            case 'payment_method_category_label':
+                $pm = leyka_get_pm_by_id($this->pm_full_id, true);
+                return $pm ? $pm->category_label : __('Unknown payment method', 'leyka');
+
+            case 'payment_method_category_icon':
+                $pm = leyka_get_pm_by_id($this->pm_full_id, true);
+                return $pm ? $pm->category_icon : __('Unknown payment method', 'leyka');
+
             case 'currency':
             case 'currency_id':
             case 'currency_code':
@@ -371,6 +379,8 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                 return stripslashes($this->_main_data->donor_name);
             case 'donor_email':
                 return $this->_main_data->donor_email;
+            case 'donor_phone':
+                return leyka_get_donor_phone($this->_id);
             case 'donor_comment':
                 return $this->get_meta('donor_comment');
 

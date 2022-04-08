@@ -49,6 +49,24 @@ $data = Leyka_Donations_Main_Stats_Portlet_Controller::get_instance()->get_templ
 
 <div class="portlet-row">
 
+    <div class="row-label"><?php _e('LTV', 'leyka');?></div>
+    <div class="row-data">
+
+        <?php if( !isset($data['ltv']) ) {?>
+            <div class="no-data"><?php _e('No data available', 'leyka');?></div>
+        <?php } else {?>
+
+            <div class="main-number"><?php echo number_format($data['ltv'], 0, ".", " ").'&nbsp;'.leyka()->opt('currency_'.leyka()->opt('currency_main').'_label');?></div>
+            <div class="percent <?php echo $data['ltv_delta_percent'] < 0 ? 'negative' : ($data['ltv_delta_percent'] > 0 ? 'positive' : '');?>"><?php echo str_replace(['+', '-'], '', $data['ltv_delta_percent']);?></div>
+
+        <?php }?>
+
+    </div>
+
+</div>
+
+<div class="portlet-row">
+
     <div class="row-label"><?php _e('Donations average amount', 'leyka');?></div>
     <div class="row-data">
 

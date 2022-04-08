@@ -814,6 +814,9 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
             case 'category_label':
                 $param = $this->category ? leyka_get_pm_category_label($this->_category) : '';
                 break;
+            case 'category_icon':
+                $param = $this->category ? LEYKA_PLUGIN_BASE_URL."img/pm-category-icons/{$this->_category}.svg" : '';
+                break;
             case 'active':
             case 'is_active': $param = $this->_active; break;
             case 'label':

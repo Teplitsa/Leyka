@@ -418,20 +418,20 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		    switch($dashboard_row_id) {
                 case 'donations-stats':
                     Leyka_Admin_Setup::get_instance()->show_admin_portlet(
-                        'stats-donations-main', ['interval' => $_GET['interval']]
+                        'stats-donations-main', ['interval' => $_GET['interval'], 'reset' => isset($_GET['reset'])]
                     );
                     Leyka_Admin_Setup::get_instance()->show_admin_portlet(
-                        'stats-recurring', ['interval' => $_GET['interval']]
+                        'stats-recurring', ['interval' => $_GET['interval'], 'reset' => isset($_GET['reset'])]
                     );
                     break;
                 case 'donations-dynamics':
                     Leyka_Admin_Setup::get_instance()->show_admin_portlet(
-                        'donations-dynamics', ['interval' => $_GET['interval']]
+                        'donations-dynamics', ['interval' => $_GET['interval'], 'reset' => isset($_GET['reset'])]
                     );
                     break;
                 case 'recent-donations':
                     Leyka_Admin_Setup::get_instance()->show_admin_portlet(
-                        'recent-donations', ['interval' => $_GET['interval'], 'number' => 5,]
+                        'recent-donations', ['interval' => $_GET['interval'], 'number' => 5, 'reset' => isset($_GET['reset'])]
                     );
                     break;
                 default:

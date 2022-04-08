@@ -365,10 +365,32 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 $gateway = leyka_get_gateway_by_id($this->gateway_id);
                 return $gateway ? $gateway->label : __('Unknown gateway', 'leyka');
 
+            case 'gateway_icon':
+
+                if(empty($this->_donation_meta['leyka_gateway'])) {
+                    return __('Unknown gateway', 'leyka');
+                }
+
+                $gateway = leyka_get_gateway_by_id($this->gateway_id);
+                return $gateway ? $gateway->icon : __('Unknown gateway', 'leyka');
+
             case 'pm_label':
             case 'payment_method_label':
+
                 $pm = leyka_get_pm_by_id($this->pm_full_id, true);
                 return $pm ? $pm->label : __('Unknown payment method', 'leyka');
+
+            case 'payment_method_main_icon_url':
+                $pm = leyka_get_pm_by_id($this->pm_full_id, true);
+                return $pm ? $pm->main_icon_url : __('Unknown payment method', 'leyka');
+
+            case 'payment_method_category_label':
+                $pm = leyka_get_pm_by_id($this->pm_full_id, true);
+                return $pm ? $pm->category_label : __('Unknown payment method', 'leyka');
+
+            case 'payment_method_category_icon':
+                $pm = leyka_get_pm_by_id($this->pm_full_id, true);
+                return $pm ? $pm->category_icon : __('Unknown payment method', 'leyka');
 
             case 'currency':
             case 'currency_id':
@@ -419,6 +441,8 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 return stripslashes($this->_donation_meta['leyka_donor_name']);
             case 'donor_email':
                 return $this->_donation_meta['leyka_donor_email'];
+            case 'donor_phone':
+                return leyka_get_donor_phone($this->_id);
             case 'donor_comment':
                 return empty($this->_donation_meta['leyka_donor_comment']) ? '' : $this->_donation_meta['leyka_donor_comment'];
 
