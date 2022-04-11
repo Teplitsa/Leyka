@@ -237,6 +237,14 @@ function leyka_handle_plugin_update() {
 
     }
 
+    if($leyka_last_ver && version_compare($leyka_last_ver, '3.25', '<=')) {
+
+        // Rename "donors_data_editable" option ID to the "admin_donors_data_editable":
+        update_option('leyka_admin_donors_data_editable', Leyka_Options_Controller::get_option_value('donors_data_editable'));
+        delete_option('leyka_donors_data_editable');
+
+    }
+
     do_action('leyka_plugin_update', $leyka_last_ver); // Warning: Extensions can't use this hook, as they are initialized later
 
     // Set a flag to flush permalinks (needs to be done a bit later than this activation itself):

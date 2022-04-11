@@ -170,7 +170,11 @@ class Leyka_Options_Controller extends Leyka_Singleton {
             $new_options_group_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta('analytics');
         } else if(stripos($option_id, 'terms') !== false) {
             $new_options_group_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta('terms');
-        } else if(stripos($option_id, 'admin') !== false || stripos($option_id, 'plugin')) {
+        } else if(
+            stripos($option_id, 'admin') !== false
+            || stripos($option_id, 'plugin') !== false
+            || stripos($option_id, 'paltform') !== false
+        ) {
             $new_options_group_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta('admin');
         }
 

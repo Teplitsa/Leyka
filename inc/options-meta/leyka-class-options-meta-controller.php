@@ -1170,7 +1170,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
         ];
     }
 
-    protected function _get_meta_admin() { // Keywords: admin, plugin
+    protected function _get_meta_admin() { // Keywords: admin, plugin, platform
         return [
             'admin_donations_list_amount_display' => [
                 'type' => 'radio',
@@ -1205,7 +1205,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'title' => __('Remove all plugin data upon plugin uninstall', 'leyka'),
                 'description' => __('WARNING: checking this checkbox will cause loss of ALL Leyka data, including all donation and campaign transaction history, upon plugin uninstall. Please, proceed with caution.', 'leyka'),
             ],
-            'donors_data_editable' => [ // donors_data_editable -> admin_donors_data_editable
+            'admin_donors_data_editable' => [
                 'type' => 'checkbox',
                 'title' => __("You can edit donors' data for all donation types", 'leyka'),
                 'comment' => __("Check to allow donation administrators and managers to edit donors' data for all donations - even for non-correctional ones.", 'leyka'),
