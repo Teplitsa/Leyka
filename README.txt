@@ -5,7 +5,7 @@ Plugin URI: http://leyka.te-st.ru
 Tags: лейка, crowdfunding, fundraising, donations, recurring donations, charity, leyka, recurring, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, yoomoney, chronopay, sms, yookassa, миксплат, mixplat, paypal, paymaster, qiwi, киви, stripe, страйп, gds, google data studio
 Requires at least: 3.6.1
 Tested up to: 5.9.3
-Stable tag: 3.24
+Stable tag: 3.25
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -70,7 +70,7 @@ PHP version required: 5.6+
 
 == Frequently Asked Questions ==
 
-[FAQ section](//leyka.te-st.ru/faq/) can be found at the plugin website. Also you can address our development and support team by [creating a project issue n Github](//github.com/Teplitsa/Leyka/issues/new/).
+[FAQ section](//leyka.te-st.ru/faq/) can be found at the plugin website. Also, you can address our development and support team by [creating a project issue n Github](//github.com/Teplitsa/Leyka/issues/new/).
 
 For technical support questions, please, use the [plugin support email](maillto:help@te-st.ru) or the official [Telegram chat](https://t.me/leykadev).
 
@@ -84,10 +84,20 @@ For technical support questions, please, use the [plugin support email](maillto:
 
 == Changelog ==
 = 3.25 =
-* New:
-* Fix:
-~ Tweak:
-* Removed:
+* New: now Leyka is fully PHP 8.* compatible.
+* New: Dashboard admin page is updated.
+* New: cosmetic usability additions to the Donor's Account page.
+* New: new filter added for Donations archive page slug.
+* Fix: the critical Polylang compatibility bug fixed.
+* Fix: the case of very long value of Campaign "payment title" field on YooKassa rebills fixed.
+* Fix: the Gateways settings page warning on new installations fixed.
+* Fix: the important amounts' error on new installations fixed.
+* Fix: the Donations' management page filter fixed.
+* Fix: the rare case when YooKassa SDK class is included in some other plugin or an active theme fixed.
+* Fix: Donation forms fix for flexible amount mode.
+* Fix: the potential error on donors' emails sending fixed.
+* Fix: Donation form payment methods icons are fixed.
+~ Tweak: small optimizations.
 
 = 3.24 =
 * New: Donations amounts descriptions function added.

@@ -2,14 +2,64 @@
 # This file is distributed under the same license as the Plugins - Leyka - Development (trunk) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2022-02-21 13:13:50+0000\n"
+"PO-Revision-Date: 2022-04-11 09:26:23+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : ((n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14)) ? 1 : 2);\n"
-"X-Generator: GlotPress/3.0.0-alpha.2\n"
+"X-Generator: GlotPress/3.0.0-rc.4\n"
 "Language: ru\n"
 "Project-Id-Version: Plugins - Leyka - Development (trunk)\n"
+
+#: inc/portlets/leyka-stats-recurring.php:48
+msgid "Subscriptions count"
+msgstr "Количество подписок"
+
+#: inc/portlets/leyka-stats-recurring.php:16
+msgid "Recurring donation average amount"
+msgstr "Средний размер рекуррента"
+
+#: inc/portlets/leyka-stats-donations-main.php:52
+msgid "LTV"
+msgstr "LTV"
+
+#: inc/admin-templates/leyka-admin-dashboard-page.php:88
+msgid "Renew data"
+msgstr "Обновить данные"
+
+#: inc/admin-templates/leyka-admin-dashboard-page.php:87
+msgid "The data is current as</br> of "
+msgstr ""
+"Данные актуальны\n"
+"</br>на"
+
+#: inc/admin-templates/leyka-admin-dashboard-page.php:51
+msgid "Current week"
+msgstr "За эту неделю"
+
+#: inc/admin-templates/leyka-admin-dashboard-page.php:47
+msgid "From the year start"
+msgstr "С начала года"
+
+#: inc/admin-templates/leyka-admin-dashboard-page.php:46
+msgid "7 days"
+msgstr "7 дней"
+
+#: inc/admin-templates/leyka-admin-dashboard-page.php:45
+msgid "30 days"
+msgstr "30 дней"
+
+#: inc/admin-templates/leyka-admin-dashboard-page.php:44
+msgid "90 days"
+msgstr "90 дней"
+
+#: inc/admin-templates/leyka-admin-dashboard-page.php:43
+msgid "180 days"
+msgstr "180 дней"
+
+#: inc/admin-templates/leyka-admin-dashboard-page.php:42
+msgid "365 days"
+msgstr "365 дней"
 
 #: gateways/sber/leyka-class-sber-gateway.php:182
 msgctxt "For \"recurring auto-payment\""
@@ -44,7 +94,7 @@ msgid "Maximum donation amount of %s %s exceeded"
 msgstr "Превышен максимально возможный объём пожертвования - %s %s"
 
 #: templates/leyka-template-need-help.php:448
-#: templates/leyka-template-star.php:474
+#: templates/leyka-template-star.php:481
 msgid "Made with <a href=\"https://leyka.te-st.ru/\" target=\"_blank\">Leyka</a>"
 msgstr "Сделано на <a href=\"https://leyka.te-st.ru/\" target=\"_blank\">Лейке</a>"
 
@@ -86,6 +136,7 @@ msgid "For small expenses"
 msgstr "На мелкие расходы"
 
 #: inc/leyka-settings-rendering-utils.php:1402
+#: inc/portlets/leyka-recent-donations.php:22
 msgid "Sum"
 msgstr "Сумма"
 
@@ -93,7 +144,7 @@ msgstr "Сумма"
 msgid "E.g., \"For small expenses\""
 msgstr "Например, «На мелкие расходы»"
 
-#: inc/leyka-functions.php:2603
+#: inc/leyka-functions.php:2678
 msgid "Set the Cron job to call the procedure nightly (<a href=\"%s\" target=\"_blank\" class=\"leyka-outer-link\">user manual for setting up Cron jobs</a>, chapter 3)"
 msgstr "Настройте задание для Cron, чтобы вызывать процедуру каждую ночь (<a href=\"%s\" target=\"_blank\" class=\"leyka-outer-link\">инструкция по настройке Cron-задания</a>, глава 3)"
 
@@ -123,7 +174,7 @@ msgstr "Настройка платежей"
 #: gateways/rbk/leyka-class-rbk-gateway.php:76
 #: gateways/robokassa/leyka-class-robokassa-gateway.php:439
 #: gateways/sber/leyka-class-sber-gateway.php:578
-#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:453
+#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:458
 #: gateways/webpay/leyka-class-webpay-gateway.php:726
 #: gateways/yandex/leyka-class-yandex-gateway.php:986
 msgid "The necessary Cron job setup"
@@ -193,15 +244,15 @@ msgstr "Использовать элемент в следующих кампа
 msgid "Use the media"
 msgstr "Использовать изображение"
 
-#: inc/leyka-functions.php:1022
+#: inc/leyka-functions.php:1096
 msgid "COM"
 msgstr "сом"
 
-#: inc/leyka-functions.php:1021
+#: inc/leyka-functions.php:1095
 msgid "Kyrgyzstani som"
 msgstr "Киргизский сом"
 
-#: inc/leyka-functions.php:911
+#: inc/leyka-functions.php:985
 msgid "Kyrgyzstan"
 msgstr "Кыргызстан"
 
@@ -391,7 +442,7 @@ msgstr "Столбцы"
 msgid "Cards to show"
 msgstr "Количество выводимых карточек"
 
-#: inc/leyka-core.php:1166
+#: inc/leyka-core.php:1170
 msgctxt "«Completed» donation status description"
 msgid "Donation was finished, the funds were received by your account."
 msgstr "Пожертвование было завершено, средства зачислены на ваш счёт."
@@ -400,12 +451,12 @@ msgstr "Пожертвование было завершено, средства
 msgid "Error: cannot display the page for a given donor."
 msgstr "Ошибка: невозможно отобразить страницу выбранного донора."
 
-#: inc/leyka-core.php:1182
+#: inc/leyka-core.php:1186
 msgctxt "«Refunded» donation status description"
 msgid "Donation funds were returned to you."
 msgstr "Пожертвование было возвращено донору."
 
-#: inc/leyka-core.php:1180
+#: inc/leyka-core.php:1184
 msgctxt "«Submitted» donation status description"
 msgid ""
 "Donation attempt was made, but the funds weren't received.\n"
@@ -620,31 +671,31 @@ msgstr "Отправлять донорам уведомления об ошиб
 msgid "<a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">email abount this to the website tech. support</a>"
 msgstr "<a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">письмо об этом технической поддержке сайта</a>"
 
-#: inc/leyka-functions.php:910
+#: inc/leyka-functions.php:984
 msgid "European Union "
 msgstr "Страны Евросоюза"
 
-#: inc/leyka-functions.php:882
+#: inc/leyka-functions.php:956
 msgctxt "[donation]"
 msgid "Correctional"
 msgstr "Корректировочное"
 
-#: inc/leyka-functions.php:881
+#: inc/leyka-functions.php:955
 msgctxt "[donation]"
 msgid "Initial recurring"
 msgstr "Инитное рекуррентное"
 
-#: inc/leyka-functions.php:880
+#: inc/leyka-functions.php:954
 msgctxt "[donation]"
 msgid "Recurring"
 msgstr "Рекуррентное"
 
-#: inc/leyka-functions.php:879
+#: inc/leyka-functions.php:953
 msgctxt "[donation]"
 msgid "Single"
 msgstr "Разовое"
 
-#: inc/leyka-core.php:1829
+#: inc/leyka-core.php:1833
 msgid "The gateway URL to redirect isn't set"
 msgstr "Адрес для перенаправления на страницу платёжного оператора не задан"
 
@@ -719,11 +770,11 @@ msgstr "При инициализации пожертвования не най
 msgid "Error while adding a donation"
 msgstr "Ошибка при добавлении пожертвования"
 
-#: inc/donations/leyka-class-donation-base.php:156
+#: inc/donations/leyka-class-donation-base.php:157
 msgid "Incorrect gateway or PM ID given while adding a donation"
 msgstr "При добавлении пожертвования передан некорректный ID платёжного оператора или способа оплаты"
 
-#: inc/donations/leyka-class-donation-base.php:152
+#: inc/donations/leyka-class-donation-base.php:153
 msgid "Gateway or PM ID is missing while adding a donation"
 msgstr "При добавлении пожертвования не передан ID платёжного оператора или способа оплаты"
 
@@ -866,8 +917,8 @@ msgstr "Сумма / без комиссии"
 msgid "No donations avaliable."
 msgstr "Пожертвований не найдено."
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:740
-#: gateways/yandex/leyka-class-yandex-gateway.php:765
+#: gateways/yandex/leyka-class-yandex-gateway.php:739
+#: gateways/yandex/leyka-class-yandex-gateway.php:764
 msgid "YooKassa invoice ID"
 msgstr "Invoice ID в ЮКассе"
 
@@ -875,98 +926,98 @@ msgstr "Invoice ID в ЮКассе"
 msgid "Calculated signature:"
 msgstr "Вычисленная подпись:"
 
-#: gateways/stripe/leyka-class-stripe-gateway.php:546
-#: gateways/stripe/leyka-class-stripe-gateway.php:581
+#: gateways/stripe/leyka-class-stripe-gateway.php:542
+#: gateways/stripe/leyka-class-stripe-gateway.php:577
 msgid "Enter Stripe invoice ID"
 msgstr "Укажите ID инвойса в системе Stripe"
 
-#: gateways/stripe/leyka-class-stripe-gateway.php:542
-#: gateways/stripe/leyka-class-stripe-gateway.php:579
+#: gateways/stripe/leyka-class-stripe-gateway.php:538
+#: gateways/stripe/leyka-class-stripe-gateway.php:575
 msgid "Stripe invoice ID"
 msgstr "ID инвойса в Stripe"
 
-#: gateways/stripe/leyka-class-stripe-gateway.php:536
-#: gateways/stripe/leyka-class-stripe-gateway.php:576
+#: gateways/stripe/leyka-class-stripe-gateway.php:532
+#: gateways/stripe/leyka-class-stripe-gateway.php:572
 msgid "Enter Stripe subscription ID"
 msgstr "Укажите ID рекуррентной подписки в Stripe"
 
-#: gateways/stripe/leyka-class-stripe-gateway.php:532
-#: gateways/stripe/leyka-class-stripe-gateway.php:574
+#: gateways/stripe/leyka-class-stripe-gateway.php:528
+#: gateways/stripe/leyka-class-stripe-gateway.php:570
 msgid "Stripe subscription ID"
 msgstr "ID рекуррентной подписки в Stripe"
 
-#: gateways/stripe/leyka-class-stripe-gateway.php:522
-#: gateways/stripe/leyka-class-stripe-gateway.php:571
+#: gateways/stripe/leyka-class-stripe-gateway.php:518
+#: gateways/stripe/leyka-class-stripe-gateway.php:567
 msgid "Enter Stripe payment intent ID"
 msgstr "Укажите payment intent ID в Stripe"
 
-#: gateways/stripe/leyka-class-stripe-gateway.php:517
-#: gateways/stripe/leyka-class-stripe-gateway.php:569
+#: gateways/stripe/leyka-class-stripe-gateway.php:513
+#: gateways/stripe/leyka-class-stripe-gateway.php:565
 msgid "Stripe payment intent ID"
 msgstr "Payment intent ID в Stripe"
 
-#: gateways/stripe/leyka-class-stripe-gateway.php:506
+#: gateways/stripe/leyka-class-stripe-gateway.php:502
 msgid "Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href=\"%s\" target=\"_blank\">website tech. support</a>.<br>We are very sorry for inconvenience."
 msgstr "Ошибка при попытке отменить рекуррентную подписку.<br><br>Пожалуйста, сообщите об этом <a href=\"%s\" target=\"_blank\">технической поддержке сайта</a>.<br>Приносим извинения за неудобство."
 
-#: gateways/stripe/leyka-class-stripe-gateway.php:482
+#: gateways/stripe/leyka-class-stripe-gateway.php:478
 msgid "<strong>Error:</strong> the recurring subscription cancelling request returned an unexpected result. We cannot cancel the recurring subscription automatically.<br><br>Please, email about this to the <a href=\"mailto:%s\" target=\"_blank\">website tech. support</a>.<br>We are very sorry for inconvenience."
 msgstr "<strong>Ошибка:</strong> запрос на отмену рекуррентной подписки вернул неожиданный результат. Мы не можем отменить рекуррентную подписку автоматически.<br><br>Пожалуйста, сообщите об этом <a href=\"mailto:%s\" target=\"_blank\">технической поддержке сайта</a>.<br>Приносим извинения за неудобство."
 
-#: gateways/stripe/leyka-class-stripe-gateway.php:469
+#: gateways/stripe/leyka-class-stripe-gateway.php:465
 msgid "<strong>Error:</strong> unknown Subscription ID for donation #%d. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href=\"%s\" target=\"_blank\">website tech. support</a>.<br>We are very sorry for inconvenience."
 msgstr "<strong>Ошибка:</strong> неизвестный ID рекуррентной подписки для пожертвования #%d. Мы не можем отменить рекуррентную подписку автоматически.<br><br>Пожалуйста, сообщите об этом <a href=\"%s\" target=\"_blank\">технической поддержке сайта</a>.<br>Приносим извинения за неудобство."
 
-#: gateways/stripe/leyka-class-stripe-gateway.php:305
+#: gateways/stripe/leyka-class-stripe-gateway.php:301
 msgid "The \"downgrade attack\" attempt on Stripe callback was detected!"
 msgstr "Замечена попытка \"атаки через даунгрейд\" на адрес для коллбэков Stripe!"
 
-#: gateways/stripe/leyka-class-stripe-gateway.php:306
+#: gateways/stripe/leyka-class-stripe-gateway.php:302
 msgid "This message has been sent because a \"downgrade attack\" attempt on Stripe callback was detected. This could mean someone is trying to hack your payment website. The error message is listed below."
 msgstr "Вы получили это сообщение, т.к. была замечена попытка \"атаки через даунгрейд\" на адрес для системных уведомлений Stripe. Это может означать, что кто-то пытается взломать ваш сайт. Текст сообщения об ошибке ниже."
 
-#: gateways/stripe/leyka-class-stripe-gateway.php:291
+#: gateways/stripe/leyka-class-stripe-gateway.php:287
 msgid "The \"replay attack\" attempt on Stripe callback was detected!"
 msgstr "Замечена попытка \"атаки через replay\" на адрес для коллбэков Stripe!"
 
-#: gateways/stripe/leyka-class-stripe-gateway.php:292
+#: gateways/stripe/leyka-class-stripe-gateway.php:288
 msgid "This message has been sent because a \"replay attack\" attempt on Stripe callback was detected. This could mean someone is trying to hack your payment website. The error message is listed below.\\n\\r\\n\\r. Stripe error message:\\n\\r%s\\n\\r\\n\\r"
 msgstr "Вы получили это сообщение, т.к. была замечена попытка \"атаки через replay\" на адрес для системных уведомлений Stripe. Это может означать, что кто-то пытается взломать ваш сайт. Текст сообщения об ошибке:\\n\\r\\n\\r%s\\n\\r\\n\\r"
 
-#: gateways/stripe/leyka-class-stripe-gateway.php:269
+#: gateways/stripe/leyka-class-stripe-gateway.php:265
 msgid "Stripe IP check failed!"
 msgstr "Ошибка проверки IP Stripe!"
 
-#: gateways/stripe/leyka-class-stripe-gateway.php:262
+#: gateways/stripe/leyka-class-stripe-gateway.php:258
 msgid "This message has been sent because a call to your Stripe function was made from an IP that did not match with the one in your Stripe gateway setting. This could mean someone is trying to hack your payment website. The details of the call are below."
 msgstr "Вы получили это сообщение, т.к. была замечена попытка вызова адреса для системных уведомлений Stripe с некорректного IP-адреса. Это может означать, что кто-то пытается взломать ваш сайт. Подробная информация об ошибке ниже."
 
-#: gateways/stripe/leyka-class-stripe-gateway.php:211
+#: gateways/stripe/leyka-class-stripe-gateway.php:207
 msgid "Refund reason:"
 msgstr "Причина возврата средств:"
 
-#: gateways/stripe/leyka-class-stripe-gateway.php:210
+#: gateways/stripe/leyka-class-stripe-gateway.php:206
 msgid "Refunded amount:"
 msgstr "Возвращённая сумма:"
 
-#: gateways/stripe/leyka-class-stripe-gateway.php:197
+#: gateways/stripe/leyka-class-stripe-gateway.php:193
 msgid "Currency:"
 msgstr "Валюта:"
 
 #: gateways/demirbank/leyka-class-demirbank-gateway.php:115
-#: gateways/stripe/leyka-class-stripe-gateway.php:190
+#: gateways/stripe/leyka-class-stripe-gateway.php:186
 msgid "Last event date:"
 msgstr "Дата последнего события:"
 
-#: gateways/stripe/leyka-class-stripe-gateway.php:189
+#: gateways/stripe/leyka-class-stripe-gateway.php:185
 msgid "Last event type:"
 msgstr "Тип последнего события:"
 
-#: gateways/stripe/leyka-class-stripe-gateway.php:188
+#: gateways/stripe/leyka-class-stripe-gateway.php:184
 msgid "Last event ID:"
 msgstr "ID последнего события:"
 
-#: gateways/stripe/leyka-class-stripe-gateway.php:157
+#: gateways/stripe/leyka-class-stripe-gateway.php:153
 msgid "<strong>Error:</strong> the checkout session creation request returned an unexpected result. <br><br>Please, email about this to the <a href=\"mailto:%s\" target=\"_blank\">website tech. support</a>.<br>We are very sorry for inconvenience."
 msgstr "<strong>Ошибка:</strong> запрос на создание сессии оплаты вернул неожиданный результат.<br><br>Пожалуйста, сообщите об этом <a href=\"mailto:%s\" target=\"_blank\">технической поддержке сайта</a>.<br>Приносим извинения за доставленные неудобства."
 
@@ -1237,7 +1288,7 @@ msgid "Set the Cron job to call the procedure nightly (<a href=\"%s\" target=\"_
 msgstr "Настройке задание для Cron, чтобы вызывать процедуру подготовки данных кажду ночь (для примеров настройки задания Cron <a href=\"%s\" target=\"_blank\" class=\"leyka-outer-link\">см. главу 2 инструкции</a>)"
 
 #: extensions/gds-integration/leyka-class-gds-integration-extension.php:33
-#: inc/leyka-functions.php:2599
+#: inc/leyka-functions.php:2674
 msgid "Copy your procedure absolute address:"
 msgstr "Скопируйте абсолютный адрес файла процедуры:"
 
@@ -1273,17 +1324,17 @@ msgstr "+ Создать поле"
 msgid "Additional campaign form fields"
 msgstr "Дополнительные поля формы"
 
-#: inc/leyka-core.php:2356
+#: inc/leyka-core.php:2360
 msgctxt "Field type title"
 msgid "text"
 msgstr "текст"
 
-#: inc/leyka-core.php:2355
+#: inc/leyka-core.php:2359
 msgctxt "Field type title"
 msgid "date"
 msgstr "дата"
 
-#: inc/leyka-core.php:2354
+#: inc/leyka-core.php:2358
 msgctxt "Field type title"
 msgid "phone"
 msgstr "тел."
@@ -1399,40 +1450,40 @@ msgstr "Поставьте плагину оценку"
 msgid "Like Leyka?"
 msgstr "Нравится Лейка?"
 
-#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:284
+#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:289
 msgid "Enter Tinkoff recurring ID"
 msgstr "Укажите ID рекуррентной подписки в системе Tinkoff"
 
-#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:261
-#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:282
+#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:266
+#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:287
 msgid "Tinkoff recurring subscription ID"
 msgstr "ID рекуррентной подписки в Tinkoff"
 
-#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:247
+#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:252
 msgid "Tinkoff payment ID"
 msgstr "ID платежа в Tinkoff"
 
-#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:192
+#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:197
 msgid "Payment error code:"
 msgstr "Код ошибки платежа:"
 
-#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:190
+#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:195
 msgid "Bank card number:"
 msgstr "Номер банковской карты:"
 
-#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:189
+#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:194
 msgid "Bank card ID:"
 msgstr "ID банковской карты"
 
-#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:186
+#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:191
 msgid "Last payment status:"
 msgstr "Последний статус платежа:"
 
-#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:185
+#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:190
 msgid "Payment succeeded:"
 msgstr "Платёж успешен:"
 
-#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:184
+#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:189
 msgid "Terminal key:"
 msgstr "Ключ терминала:"
 
@@ -1595,16 +1646,16 @@ msgstr "Умный платёж"
 msgid "Any payment method available for the donor and receiver. Donor will be redirected to the gateway payment page to choose specific payment method (instead of choosing it on the website form). More of YooKassa Smart payments <a href=\"https://yookassa.ru/developers/payments/smart-payment\" target=\"_blank\">here</a>."
 msgstr "Любой способ платежа, доступный донору и получателю. Донор будет перенаправлен на безопасную страницу на сайте платёжного оператора, где сможет выбрать конкретный способ оплаты (вместо выбора на форме пожертвования). Больше информации об Умном платеже ЮKassa <a href=\"https://yookassa.ru/developers/payments/smart-payment\" target=\"_blank\">здесь</a>."
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:744
-#: gateways/yandex/leyka-class-yandex-gateway.php:767
+#: gateways/yandex/leyka-class-yandex-gateway.php:743
+#: gateways/yandex/leyka-class-yandex-gateway.php:766
 msgid "Enter YooKassa invoice ID"
 msgstr "Укажите параметр \"ID платежа\" в системе ЮKassa"
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:539
+#: gateways/yandex/leyka-class-yandex-gateway.php:538
 msgid "YooKassa payment status:"
 msgstr "Статус платежа в системе ЮKassa:"
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:538
+#: gateways/yandex/leyka-class-yandex-gateway.php:537
 msgid "YooKassa payment ID:"
 msgstr "ID платежа в системе ЮKassa:"
 
@@ -1663,7 +1714,7 @@ msgstr "УНП организации"
 msgid "The organization bank account IBAN"
 msgstr "Номер банковского счёта (IBAN) организации"
 
-#: inc/leyka-functions.php:908
+#: inc/leyka-functions.php:982
 msgid "Belarus Republic"
 msgstr "Республика Беларусь"
 
@@ -1739,7 +1790,7 @@ msgstr "Укажите ID заказа в системе WebPay"
 msgid "WebPay order ID"
 msgstr "ID заказа в системе WebPay"
 
-#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:191
+#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:196
 #: gateways/webpay/leyka-class-webpay-gateway.php:364
 msgid "Bank card expiring date:"
 msgstr "Срок завершения действия банковской карты:"
@@ -1974,7 +2025,7 @@ msgstr "Ошибка фабрики мета-контроллеров опций
 msgid "Options Meta Controllers Factory error: Can't find Controller script by given country ID (%s, %s)"
 msgstr "Ошибка фабрики мета-контроллеров опций: файл класса контроллера для переданной страны не найден (файл: %s, страна: %s)"
 
-#: inc/leyka-functions.php:909
+#: inc/leyka-functions.php:983
 msgid "Ukraine"
 msgstr "Украина"
 
@@ -1983,7 +2034,7 @@ msgid "The value should be max. %d characters length (currently: <span class=\"l
 msgstr "Значение не должно быть длиннее %d символов (сейчас: <span class=\"leyka-field-current-value-length\">%d</span> / %d)"
 
 #: templates/leyka-template-need-help.php:214
-#: templates/leyka-template-star.php:248
+#: templates/leyka-template-star.php:255
 msgid "Please, enter a valid email"
 msgstr "Укажите корректный адрес email"
 
@@ -2028,7 +2079,7 @@ msgid "Acquiring ID:"
 msgstr "Acquiring ID:"
 
 #: gateways/liqpay/leyka-class-liqpay-gateway.php:388
-#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:187
+#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:192
 msgid "Order ID:"
 msgstr "ID заказа:"
 
@@ -2060,28 +2111,26 @@ msgstr "Платёжный оператор Liqpay позволяет легко
 msgid "Liqpay"
 msgstr "Liqpay"
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:638
+#: inc/leyka-functions.php:712
 msgctxt "For \"rebill\""
 msgid "[R]"
 msgstr "[Р]"
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:580
+#: gateways/yandex/leyka-class-yandex-gateway.php:579
 msgid "Gateway donor ID:"
 msgstr "ID донора в системе оператора:"
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:573
+#: gateways/yandex/leyka-class-yandex-gateway.php:572
 msgid "Unknown"
 msgstr "Неизвестно"
 
 #: gateways/sber/leyka-class-sber-gateway.php:116
-#: gateways/stripe/leyka-class-stripe-gateway.php:108
-#: gateways/yandex/leyka-class-yandex-gateway.php:167
-#: inc/leyka-class-campaign.php:450
+#: inc/leyka-class-campaign.php:450 inc/leyka-functions.php:712
 msgctxt "For \"recurring subscription\""
 msgid "[RS]"
 msgstr "[РП]"
 
-#: inc/leyka-core.php:2353
+#: inc/leyka-core.php:2357
 msgid "Another modern and lightweight form template"
 msgstr "Ещё один современный и лёгкий шаблон формы"
 
@@ -2113,7 +2162,7 @@ msgstr "Мин. размер пожертвования"
 msgid "Currency label"
 msgstr "Текстовое обозначение"
 
-#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:447
+#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:452
 msgid "Check if TinkoffBank Acquiring allows you to create recurrent subscriptions to do regular automatic payments. WARNING: you should enable the Tinkoffbank auto-payments feature for test mode and for production mode separately."
 msgstr "Отметьте, если Tinkoff позволяет вам принимать авто-платежи (для рекуррентных пожертвований). ВНИМАНИЕ: для тестового и боевого режимов возможность авто-платежей необходимо подключать отдельно."
 
@@ -2240,35 +2289,35 @@ msgstr "Выберите основную валюту ваших пожертв
 msgid "The main currency"
 msgstr "Основная валюта"
 
-#: inc/leyka-functions.php:1036
+#: inc/leyka-functions.php:1110
 msgid "US Dollar"
 msgstr "Доллар США"
 
-#: inc/leyka-functions.php:1006
+#: inc/leyka-functions.php:1080
 msgid "₴"
 msgstr "₴"
 
-#: inc/leyka-functions.php:1005
+#: inc/leyka-functions.php:1079
 msgid "Ukraine Hryvnia"
 msgstr "Украинская гривна"
 
-#: inc/leyka-functions.php:998
+#: inc/leyka-functions.php:1072
 msgid "BYN"
 msgstr "BYN"
 
-#: inc/leyka-functions.php:997
+#: inc/leyka-functions.php:1071
 msgid "Belarus Rouble"
 msgstr "Белорусский рубль"
 
-#: inc/leyka-functions.php:989
+#: inc/leyka-functions.php:1063
 msgid "Russian Rouble"
 msgstr "Российский рубль"
 
-#: inc/leyka-core.php:2351
+#: inc/leyka-core.php:2355
 msgid "Need Help"
 msgstr "Нужна помощь"
 
-#: inc/leyka-core.php:1262
+#: inc/leyka-core.php:1266
 msgid "Unknown gateways activation status given: %s"
 msgstr "Передан неизвестный статус активации платёжного оператора: %s"
 
@@ -2289,7 +2338,7 @@ msgstr "Оформить ежемесячное пожертвование в #D
 msgid "Make a monthly donation of %s %s"
 msgstr "Оформить ежемесячное пожертвование в %s %s"
 
-#: inc/leyka-functions.php:1014
+#: inc/leyka-functions.php:1088
 msgid "€"
 msgstr "€"
 
@@ -2509,7 +2558,7 @@ msgid "Thank you for being with us!"
 msgstr "Спасибо, что были с нами!"
 
 #: gateways/cp/leyka-class-cp-gateway.php:643
-#: gateways/stripe/leyka-class-stripe-gateway.php:561
+#: gateways/stripe/leyka-class-stripe-gateway.php:557
 msgid "canceled on %s"
 msgstr "отменено %s"
 
@@ -2811,7 +2860,7 @@ msgstr "Содержание"
 msgid "Your recurring subscription cancelled."
 msgstr "Ваша рекуррентная подписка отменена."
 
-#: templates/account/account.php:105
+#: templates/account/account.php:107
 msgid "Cancelled"
 msgstr "Отменено"
 
@@ -2838,7 +2887,7 @@ msgstr "Ошибка при отмене подписки на рекуррен�
 
 #: gateways/cp/leyka-class-cp-gateway.php:502
 #: gateways/paypal/leyka-class-paypal-gateway.php:1524
-#: gateways/stripe/leyka-class-stripe-gateway.php:502
+#: gateways/stripe/leyka-class-stripe-gateway.php:498
 #: inc/leyka-gateways-api.php:434
 msgid "Recurring subscription cancelled successfully."
 msgstr "Рекуррентная подписка успешно отменена."
@@ -2846,7 +2895,7 @@ msgstr "Рекуррентная подписка успешно отменен�
 #: gateways/cp/leyka-class-cp-gateway.php:447
 #: gateways/liqpay/leyka-class-liqpay-gateway.php:335
 #: gateways/paypal/leyka-class-paypal-gateway.php:1471
-#: gateways/stripe/leyka-class-stripe-gateway.php:464
+#: gateways/stripe/leyka-class-stripe-gateway.php:460
 #: inc/leyka-gateways-api.php:454
 msgid "Wrong donation given to cancel a recurring subscription."
 msgstr "Для отмены рекуррентной поддержки передано некорректное пожертвование."
@@ -3098,7 +3147,7 @@ msgid "Per month"
 msgstr "В месяц"
 
 #: extensions/support-packages/leyka-class-support-packages-extension.php:863
-#: inc/leyka-functions.php:990
+#: inc/leyka-functions.php:1064
 msgid "₽"
 msgstr "₽"
 
@@ -3258,7 +3307,7 @@ msgid "We will be happy with a small but monthly help, this gives us confidence 
 msgstr "Мы будем рады небольшой, но ежемесячной помощи - это позволит нам увереннее чувствовать себя и надёжнее строить планы нашей работы."
 
 #: inc/leyka-shortcodes-new.php:272 inc/leyka-shortcodes-new.php:428
-#: inc/portlets/leyka-recent-donations.php:54
+#: inc/portlets/leyka-recent-donations.php:82
 msgid "No donations yet"
 msgstr "Пожертвований пока не было"
 
@@ -3294,7 +3343,7 @@ msgid "For developers"
 msgstr "Разработчикам"
 
 #: templates/leyka-template-need-help.php:321
-#: templates/leyka-template-star.php:364
+#: templates/leyka-template-star.php:371
 msgid "Enter your phone number in the 7xxxxxxxxxx format"
 msgstr "Укажите номер моб. связи в формате 7хххххххххх"
 
@@ -3359,8 +3408,8 @@ msgid "%s - recurring donation"
 msgstr "%s - рекуррентное пожертвование"
 
 #: gateways/sber/leyka-class-sber-gateway.php:132
-#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:163
-#: gateways/yandex/leyka-class-yandex-gateway.php:212
+#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:168
+#: gateways/yandex/leyka-class-yandex-gateway.php:209
 msgid "Error while processing the payment: %s. Your money will remain intact. Please report to the <a href=\"mailto:%s\" target=\"_blank\">website tech support</a>."
 msgstr "Ошибка при обработке платежа: %s. Средства будут возвращены на ваш счёт. Пожалуйста, сообщите об этой ошибке <a href=\"mailto:%s\" target=\"_blank\">технической поддержке сайта</a>."
 
@@ -3406,7 +3455,7 @@ msgid "Payment state:"
 msgstr "Состояние платежа:"
 
 #: gateways/paypal/leyka-class-paypal-gateway.php:1623
-#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:188
+#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:193
 msgid "Payment ID:"
 msgstr "ID платежа:"
 
@@ -3538,35 +3587,35 @@ msgstr "Тип"
 msgid "No donors avaliable."
 msgstr "Доноров не найдено."
 
-#: inc/leyka-core.php:1746
+#: inc/leyka-core.php:1750
 msgid "New donors tag name"
 msgstr "Новая метка донора"
 
-#: inc/leyka-core.php:1745
+#: inc/leyka-core.php:1749
 msgid "Add new donors tag"
 msgstr "Добавить новую метку"
 
-#: inc/leyka-core.php:1744
+#: inc/leyka-core.php:1748
 msgid "Update donors tag"
 msgstr "Обновить метку донора"
 
-#: inc/leyka-core.php:1743
+#: inc/leyka-core.php:1747
 msgid "Edit donors tag"
 msgstr "Редактировать метку"
 
-#: inc/leyka-core.php:1742
+#: inc/leyka-core.php:1746
 msgid "All donors tags"
 msgstr "Все метки доноров"
 
-#: inc/leyka-core.php:1741
+#: inc/leyka-core.php:1745
 msgid "Popular donors tags"
 msgstr "Популярные метки доноров"
 
-#: inc/leyka-core.php:1740
+#: inc/leyka-core.php:1744
 msgid "Search donors tag"
 msgstr "Искать метки доноров"
 
-#: inc/leyka-core.php:1738
+#: inc/leyka-core.php:1742
 msgid "Donors tag"
 msgstr "Метка донора"
 
@@ -3742,7 +3791,7 @@ msgstr "Фильтровать данные"
 
 #: inc/admin-lists/leyka-class-donors-list-table.php:806
 #: inc/admin-templates/leyka-admin-donors-list-page.php:86
-#: inc/leyka-core.php:1737 inc/leyka-core.php:1739
+#: inc/leyka-core.php:1741 inc/leyka-core.php:1743
 msgid "Donors tags"
 msgstr "Метки доноров"
 
@@ -3804,12 +3853,12 @@ msgstr "Включить функции управления донорами"
 msgid "Notification email text"
 msgstr "Текст уведомления"
 
-#: inc/leyka-core.php:1226
+#: inc/leyka-core.php:1230
 msgctxt "Donor's type"
 msgid "Regular"
 msgstr "Постоянный"
 
-#: inc/leyka-core.php:1225
+#: inc/leyka-core.php:1229
 msgctxt "Donor's type"
 msgid "Single"
 msgstr "Разовый"
@@ -3995,25 +4044,9 @@ msgstr "Перейти к документации"
 msgid "Leyka is a simple donations collection & management system for your website"
 msgstr "Лейка - простая система для сбора и управления пожертвованиями на вашем сайте"
 
-#: inc/admin-templates/leyka-admin-dashboard-page.php:47
-msgid "Week"
-msgstr "Неделя"
-
-#: inc/admin-templates/leyka-admin-dashboard-page.php:46
-msgid "Month"
-msgstr "Месяц"
-
-#: inc/admin-templates/leyka-admin-dashboard-page.php:45
-msgid "Quarter"
-msgstr "Квартал"
-
-#: inc/admin-templates/leyka-admin-dashboard-page.php:44
+#: inc/admin-templates/leyka-admin-dashboard-page.php:48
 msgid "Half-year"
 msgstr "Полугодие"
-
-#: inc/admin-templates/leyka-admin-dashboard-page.php:43
-msgid "Year"
-msgstr "За год"
 
 #: inc/admin-templates/leyka-admin-dashboard-page.php:20
 msgid "Allow usage statistics collection"
@@ -4027,30 +4060,18 @@ msgstr "Пожалуйста, включите передачу техничес
 msgid "Leyka dashboard"
 msgstr "Панель управления"
 
-#: inc/portlets/leyka-recent-donations.php:19
-msgid "Campaign/date"
-msgstr "Кампания/дата"
-
 #: inc/admin-lists/leyka-class-donations-list-table.php:133
 #: inc/admin-templates/leyka-admin-metabox-donor-donations.php:26
 #: inc/admin-templates/leyka-admin-metabox-donor-donations.php:35
-#: inc/leyka-shortcodes-new.php:210 inc/portlets/leyka-recent-donations.php:17
+#: inc/leyka-shortcodes-new.php:210 inc/portlets/leyka-recent-donations.php:18
 msgid "Type"
 msgstr "Тип"
 
-#: inc/portlets/leyka-stats-recurring.php:46
-msgid "Other payments"
-msgstr "Остальные платежи"
-
-#: inc/portlets/leyka-stats-recurring.php:42
-msgid "Recurrings"
-msgstr "Рекурренты"
-
-#: inc/portlets/leyka-stats-recurring.php:16
+#: inc/portlets/leyka-stats-recurring.php:32
 msgid "Recurring donations amount"
 msgstr "Сумма рекуррентных пожертвований"
 
-#: inc/portlets/leyka-stats-donations-main.php:52
+#: inc/portlets/leyka-stats-donations-main.php:70
 msgid "Donations average amount"
 msgstr "Средний размер пожертвования"
 
@@ -4061,7 +4082,10 @@ msgstr "Всего доноров"
 #: inc/portlets/leyka-stats-donations-main.php:20
 #: inc/portlets/leyka-stats-donations-main.php:38
 #: inc/portlets/leyka-stats-donations-main.php:56
+#: inc/portlets/leyka-stats-donations-main.php:74
 #: inc/portlets/leyka-stats-recurring.php:20
+#: inc/portlets/leyka-stats-recurring.php:36
+#: inc/portlets/leyka-stats-recurring.php:52
 msgid "No data available"
 msgstr "Нет данных"
 
@@ -4154,7 +4178,7 @@ msgstr "Цвет фона активных кнопок и переключат�
 msgid "Either PayPal sandbox Client ID is wrong, or sandbox wasn't created."
 msgstr "Либо значение Client ID для тестового подключения PayPal некорректно, либо тестовое подключение не было создано."
 
-#: inc/leyka-core.php:1165
+#: inc/leyka-core.php:1169
 msgctxt "«Submitted» donation status description"
 msgid ""
 "Donation attempt was made, but the payment itself wasn't sent.\n"
@@ -4165,7 +4189,7 @@ msgstr ""
 "\n"
 "Либо платёж был завершён, но Лейка не получила подтверждения этому. В этом случае вам стоит проверить, правильно ли настроены адреса для системных уведомлений платёжного оператора."
 
-#: templates/leyka-template-revo.php:239
+#: templates/leyka-template-revo.php:251
 msgid "You should check out and accept the Terms to donate"
 msgstr "Для выполнения пожертвования необходимо прочитать и согласиться с Условиями."
 
@@ -4173,23 +4197,23 @@ msgstr "Для выполнения пожертвования необходи�
 msgid "Donors & accounts options"
 msgstr "Настройки доноров и аккаунтов"
 
-#: inc/leyka-functions.php:2256
+#: inc/leyka-functions.php:2331
 msgid "Other reason"
 msgstr "Другая причина"
 
-#: inc/leyka-functions.php:2255
+#: inc/leyka-functions.php:2330
 msgid "I have found better use of money"
 msgstr "Нашёл лучшее применение средствам"
 
-#: inc/leyka-functions.php:2254
+#: inc/leyka-functions.php:2329
 msgid "Does not meet my interests"
 msgstr "Не отражает мои интересы"
 
-#: inc/leyka-functions.php:2253
+#: inc/leyka-functions.php:2328
 msgid "Too much donation"
 msgstr "Слишком большая сумма"
 
-#: inc/leyka-functions.php:2252
+#: inc/leyka-functions.php:2327
 msgid "Unconfortable payment method"
 msgstr "Неудобный способ оплаты"
 
@@ -4209,7 +4233,7 @@ msgstr "Вход в личный кабинет"
 msgid "Donor account"
 msgstr "Личный кабинет донора"
 
-#: inc/leyka-core.php:2133
+#: inc/leyka-core.php:2137
 msgid ""
 "Hello,\n"
 "\n"
@@ -4237,35 +4261,35 @@ msgstr ""
 "\n"
 "Примечание: <a href='%s'>сама подписка на рекуррентные пожертвования</a> создалась успешно."
 
-#: inc/leyka-core.php:2126
+#: inc/leyka-core.php:2130
 msgid "Warning: donor account wasn't created"
 msgstr "Внимание: учётная запись донора не создалась."
 
 #: extensions/unisender/leyka-class-unisender-extension.php:346
-#: inc/leyka-core.php:1528
+#: inc/leyka-core.php:1532
 msgid "Error"
 msgstr "Ошибка"
 
-#: inc/leyka-core.php:1527
+#: inc/leyka-core.php:1531
 msgid "Error while requesting unsubscription"
 msgstr "Ошибка при запросе на отмену рекуррентной подписки"
 
-#: inc/leyka-core.php:1128
+#: inc/leyka-core.php:1132
 msgctxt "«Refunded» donation status description"
 msgid "A donation manually added by the website administration."
 msgstr "Пожертвование добавлено вручную администрацией сайта."
 
-#: inc/leyka-core.php:1127
+#: inc/leyka-core.php:1131
 msgctxt "«Recurring» donation type description"
 msgid "A monthly recurring donation."
 msgstr "Ежемесячное рекуррентное пожертвование."
 
-#: inc/leyka-core.php:1126
+#: inc/leyka-core.php:1130
 msgctxt "«Single» donation type description"
 msgid "A one-time donation."
 msgstr "Единовременное пожертвование."
 
-#: inc/leyka-core.php:733
+#: inc/leyka-core.php:732
 msgid "Campaign page view"
 msgstr "Просмотр страницы кампании"
 
@@ -4275,7 +4299,7 @@ msgstr "Просмотр страницы кампании"
 #: inc/donations/leyka-class-donations-management.php:406
 #: inc/donations/leyka-class-donations-management.php:549
 #: inc/donations/leyka-class-donations-management.php:550
-#: inc/leyka-core.php:2051 inc/leyka-core.php:2052
+#: inc/leyka-core.php:2055 inc/leyka-core.php:2056
 #: procedures/leyka-send-deferred-emails.php:135
 #: procedures/leyka-send-deferred-emails.php:136
 msgid "You may manage your donations in your <a href=\"%s\" target=\"_blank\">personal account</a>."
@@ -4284,7 +4308,7 @@ msgstr "Вы можете управлять вашими пожертвован
 #: inc/donations/leyka-class-donations-management.php:265
 #: inc/donations/leyka-class-donations-management.php:395
 #: inc/donations/leyka-class-donations-management.php:539
-#: inc/leyka-core.php:2041 procedures/leyka-send-deferred-emails.php:125
+#: inc/leyka-core.php:2045 procedures/leyka-send-deferred-emails.php:125
 msgid "To control your recurring subscriptions please contact the <a href=\"mailto:%s\">website administration</a>."
 msgstr "Для управления вашими рекуррентными подписками, пожалуйста, свяжитесь с <a href=\"mailto:%s\">администрацией сайта</a>."
 
@@ -4421,9 +4445,9 @@ msgstr "Ваш пароль сохранён. Добро пожаловать в
 #: gateways/paypal/leyka-class-paypal-gateway.php:1612
 #: gateways/paypal/leyka-class-paypal-gateway.php:1628
 #: gateways/paypal/leyka-class-paypal-gateway.php:1702
-#: gateways/stripe/leyka-class-stripe-gateway.php:558
-#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:185
-#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:192
+#: gateways/stripe/leyka-class-stripe-gateway.php:554
+#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:190
+#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:197
 #: inc/admin-lists/leyka-class-donations-list-table.php:270
 #: inc/admin-lists/leyka-class-donations-list-table.php:276
 #: inc/admin-lists/leyka-class-donations-list-table.php:281
@@ -4442,8 +4466,8 @@ msgstr "нет"
 #: gateways/paypal/leyka-class-paypal-gateway.php:1612
 #: gateways/paypal/leyka-class-paypal-gateway.php:1628
 #: gateways/paypal/leyka-class-paypal-gateway.php:1702
-#: gateways/stripe/leyka-class-stripe-gateway.php:558
-#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:185
+#: gateways/stripe/leyka-class-stripe-gateway.php:554
+#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:190
 #: inc/admin-lists/leyka-class-donations-list-table.php:270
 #: inc/admin-lists/leyka-class-donations-list-table.php:281
 #: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:281
@@ -4465,23 +4489,23 @@ msgstr "<strong>Ошибка:</strong> запрос на автоматичес�
 msgid "<strong>Error:</strong> unknown Subscription ID for donation #%d. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href=\"%s\" target=\"_blank\">website tech. support</a>.<br>Also you may <a href=\"%s\">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience."
 msgstr "<strong>Ошибка:</strong> неизвестное значение Subscription ID для пожертвования #%d. Отмена рекуррентной подписки невозможна.<br><br>Пожалуйста, сообщите об этом <a href=\"%s\" target=\"_blank\">технической поддержке сайта</a>.<br>Также вы можете отменить вашу рекуррентную подписку <a href=\"%s\">вручную</a>.<br><br>Мы приносим извинения за неудобство."
 
-#: templates/account/account.php:165
+#: templates/account/account.php:167
 msgid "You can always <a href=\"%s\">cancel your recurring donations</a>.<br>But we will struggle without your support."
 msgstr "Вы всегда можете <a href=\"%s\">отключить ваше ежемесячное пожертвование</a>.<br>Но нам будет без вас трудно."
 
-#: templates/account/account.php:152
+#: templates/account/account.php:154
 msgid "Load more"
 msgstr "Загрузить ещё"
 
-#: templates/account/account.php:144
+#: templates/account/account.php:146
 msgid "There are no donations yet."
 msgstr "Пожертвований ещё нет."
 
-#: templates/account/account.php:115
+#: templates/account/account.php:117
 msgid "There are no active recurring subscriptions."
 msgstr "Активных рекуррентных подписок ещё нет."
 
-#: templates/account/account.php:103
+#: templates/account/account.php:105
 msgid "Canceling"
 msgstr "Отмена"
 
@@ -4625,7 +4649,7 @@ msgstr "У вас нет активных подписок на регулярн
 msgid "Disable"
 msgstr "Отключить"
 
-#: templates/account/account.php:90
+#: templates/account/account.php:92
 #: templates/account/cancel-subscription.php:54
 msgctxt "Recurring interval, as in \"[XX Rub in] month\""
 msgid "month"
@@ -4635,7 +4659,7 @@ msgstr "месяц"
 msgid "Which campaign you want to unsubscibe from?"
 msgstr "Какую подписку на регулярные пожертвования вы желаете отменить?"
 
-#: templates/account/template-tags.php:60
+#: templates/account/template-tags.php:62
 msgid "Refunding:"
 msgstr "Возврат средств:"
 
@@ -4652,39 +4676,39 @@ msgctxt "%s is a current post title. Only visible to screen readers"
 msgid "Continue reading<span class=\"screen-reader-text\"> \"%s\"</span>"
 msgstr "Читать далее<span class=\"screen-reader-text\"> \"%s\"</span>"
 
-#: inc/leyka-functions.php:656
+#: inc/leyka-functions.php:691
 msgid "Connection is in process"
 msgstr "В процессе подключения"
 
-#: inc/leyka-functions.php:655
+#: inc/leyka-functions.php:690
 msgid "Inactive"
 msgstr "Не подключен"
 
 #: inc/admin-templates/leyka-admin-dashboard-sidebar.php:92
-#: inc/leyka-functions.php:654 templates/account/account.php:105
+#: inc/leyka-functions.php:689 templates/account/account.php:107
 msgid "Active"
 msgstr "Подключен"
 
-#: inc/leyka-core.php:2352
+#: inc/leyka-core.php:2356
 msgid "A modern and lightweight form template"
 msgstr "Современный минималистичный шаблон формы"
 
-#: editor/leyka-blocks-assets.php:76 inc/leyka-core.php:2350
+#: editor/leyka-blocks-assets.php:76 inc/leyka-core.php:2354
 #: inc/settings/allocators/leyka-class-ru-options-allocator.php:381
 msgid "Star"
 msgstr "Стар"
 
-#: inc/leyka-core.php:1120
+#: inc/leyka-core.php:1124
 msgctxt "\"Correction\" donation type name"
 msgid "Correction"
 msgstr "Корректировочное"
 
-#: inc/leyka-core.php:1119
+#: inc/leyka-core.php:1123
 msgctxt "\"Recurring\" donation type name"
 msgid "Recurring"
 msgstr "Рекуррентное"
 
-#: inc/leyka-core.php:1118
+#: inc/leyka-core.php:1122
 msgctxt "\"Single\" donation type name"
 msgid "Single"
 msgstr "Разовое"
@@ -4813,12 +4837,12 @@ msgstr "Мы будем рады небольшой, но ежемесячной
 msgid "Skip to content"
 msgstr "Перейти к контенту"
 
-#: templates/leyka-template-star.php:264
+#: templates/leyka-template-star.php:271
 msgid "First and second name"
 msgstr "Имя и Фамилия"
 
 #: templates/leyka-template-need-help.php:98
-#: templates/leyka-template-star.php:121
+#: templates/leyka-template-star.php:124
 msgid "Enter your amount"
 msgstr "Введите вашу сумму"
 
@@ -4915,11 +4939,7 @@ msgstr "Свернуть"
 msgid "More"
 msgstr "Подробнее"
 
-#: inc/leyka-usage-stats-functions.php:22
-msgid "Plugin stats sync error: Sodium syphering module is not included"
-msgstr "Ошибка отправки диагностических данных: модуль шифрования не подключён"
-
-#: inc/leyka-functions.php:1013
+#: inc/leyka-functions.php:1087
 msgid "Euro"
 msgstr "Евро"
 
@@ -4974,19 +4994,6 @@ msgstr "Добрый день. Мы бы хотели подключиться �
 msgid "Thank your donor. Below are settings of thankful email, that would be sent to every donor once donation is complete."
 msgstr "Поблагодарите вашего донора. Ниже – настройки благодарственного письма, которое будет автоматически отправляться каждому жертвователю при успешном пожертвовании."
 
-#: inc/leyka-usage-stats-functions.php:83
-msgid "code %d"
-msgstr "код %d"
-
-#: inc/leyka-usage-stats-functions.php:82
-msgid "the response code & status data weren't received"
-msgstr "данные о коде и статусе ответа не получены"
-
-#: inc/leyka-usage-stats-functions.php:75
-#: inc/leyka-usage-stats-functions.php:80
-msgid "Error while saving the plugin usage data: %s"
-msgstr "Ошибка при сохранении данных о сборе статистики использования: %s"
-
 #: inc/settings-fields-templates/leyka-cp_notification_email.php:13
 msgid "Turn on the \"Email notifications\" field flag and insert the email to the field, as screenshot shows:"
 msgstr "Переведите флажок у поля «Уведомления по почте» в режим «Включено» и вставьте email в поле, как на скриншоте: "
@@ -5027,11 +5034,6 @@ msgstr "Отключить статистику"
 #: inc/leyka-admin.php:1421
 msgid "Error!"
 msgstr "Ошибка!"
-
-#: inc/leyka-usage-stats-functions.php:93
-#: inc/leyka-usage-stats-functions.php:104
-msgid "The plugin stats collection status wasn't saved :( Please send a message about it to the <a href='mailto:%s' target='_blank'>plugin tech support</a>"
-msgstr "Мы не смогли сохранить ваше согласие или отказ на сбор анонимных диагностических данных :( Пожалуйста, напишите об этой ошибке нам в <a href='mailto:%s' target='_blank'>службу технической поддержки</a>."
 
 #: gateways/rbk/leyka-class-rbk-gateway.php:648
 msgid "Bank card (RBK Money)"
@@ -5190,15 +5192,15 @@ msgstr "Вид кампании"
 msgid "My data"
 msgstr "Мои данные"
 
-#: inc/leyka-functions.php:717
+#: inc/leyka-functions.php:791
 msgid "Only physical persons allowed as a receiver."
 msgstr "Доступно только для физических лиц."
 
-#: inc/leyka-functions.php:716
+#: inc/leyka-functions.php:790
 msgid "Only legal persons allowed as a receiver."
 msgstr "Доступно только для юридических лиц."
 
-#: inc/leyka-functions.php:715
+#: inc/leyka-functions.php:789
 msgid "Legal & physical persons allowed as a receiver."
 msgstr "Доступно и для физических, и для юридических лиц."
 
@@ -5212,37 +5214,37 @@ msgctxt "[of the extension]"
 msgid "Step-by-step setup"
 msgstr "Пошаговая установка"
 
-#: inc/leyka-functions.php:631
+#: inc/leyka-functions.php:666
 msgid "Physical persons"
 msgstr "Физ. лица"
 
-#: inc/leyka-functions.php:630
+#: inc/leyka-functions.php:665
 msgid "Legal persons"
 msgstr "Юр. лица"
 
-#: inc/leyka-functions.php:611
+#: inc/leyka-functions.php:646
 msgid "Offline"
 msgstr "Интернет не нужен"
 
-#: inc/leyka-functions.php:610
+#: inc/leyka-functions.php:645
 #: inc/settings/allocators/leyka-class-ru-options-allocator.php:62
 #: inc/settings/allocators/leyka-class-ru-options-allocator.php:477
 msgid "Miscellaneous"
 msgstr "Разное"
 
-#: inc/leyka-functions.php:609
+#: inc/leyka-functions.php:644
 msgid "Mobile payments"
 msgstr "Мобильные платежи"
 
-#: inc/leyka-functions.php:608
+#: inc/leyka-functions.php:643
 msgid "Online banking"
 msgstr "Онлайн-банки"
 
-#: inc/leyka-functions.php:607
+#: inc/leyka-functions.php:642
 msgid "Digital currrencies"
 msgstr "Электронные деньги"
 
-#: inc/leyka-functions.php:606
+#: inc/leyka-functions.php:641
 msgid "Bank cards"
 msgstr "Банковские карты"
 
@@ -5269,7 +5271,7 @@ msgstr "При добавлении пожертвования указан ну
 #: inc/donations/leyka-class-donations-management.php:795
 #: inc/donations/leyka-class-donations-management.php:911
 #: inc/donations/leyka-class-donations-management.php:980
-#: inc/leyka-core.php:2019 procedures/leyka-send-deferred-emails.php:103
+#: inc/leyka-core.php:2023 procedures/leyka-send-deferred-emails.php:103
 msgid "unknown email"
 msgstr "неизвестный email"
 
@@ -5411,7 +5413,7 @@ msgstr "НКО — юридическое лицо"
 msgid "Donations receiver legal type"
 msgstr "Тип получателя пожертвований"
 
-#: inc/leyka-functions.php:907
+#: inc/leyka-functions.php:981
 msgid "Russia"
 msgstr "Россия"
 
@@ -6302,7 +6304,7 @@ msgstr "Эти данные мы будем использовать для от
 msgid "Contact person"
 msgstr "Контактное лицо"
 
-#: inc/leyka-class-options-controller.php:494
+#: inc/leyka-class-options-controller.php:505
 #: inc/settings/controllers/leyka-class-init-settings-controller.php:98
 #: inc/settings/leyka-class-settings-block.php:460
 msgid "The field value is required"
@@ -6339,7 +6341,7 @@ msgstr "Приветствуем вас!"
 #: inc/settings/controllers/leyka-class-init-settings-controller.php:163
 #: inc/settings/controllers/leyka-class-init-settings-controller.php:524
 #: inc/settings/controllers/leyka-class-init-settings-controller.php:534
-#: templates/leyka-template-star.php:225
+#: templates/leyka-template-star.php:232
 msgid "Your data"
 msgstr "Ваши данные"
 
@@ -6368,7 +6370,7 @@ msgstr "Рекуррентные платежи не поддерживаютс�
 msgid "Recurring supported."
 msgstr "Рекуррентные платежи поддерживаются."
 
-#: inc/leyka-functions.php:632 inc/settings/leyka-admin-template-tags.php:173
+#: inc/leyka-functions.php:667 inc/settings/leyka-admin-template-tags.php:173
 msgctxt "a \"recurring donations\" in one word (like \"recurrings\")"
 msgid "recurring"
 msgstr "рекурренты"
@@ -6676,7 +6678,7 @@ msgstr "Ошибка: отсутствуют необходимые данные
 msgid "You can set a custom text information to display as one of the payment methods for donors."
 msgstr "Вы можете указать сведения о том, как доноры могут сделать пожертвование, с помощью обычного текстового сообщения."
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:554
+#: gateways/yandex/leyka-class-yandex-gateway.php:553
 msgid "unknown"
 msgstr "неизвестно"
 
@@ -6741,7 +6743,7 @@ msgstr "Shared Sec"
 #: gateways/yandex/leyka-class-yandex-gateway.php:980
 #: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:33
 #: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:40
-#: inc/leyka-gateways-api.php:911
+#: inc/leyka-gateways-api.php:914
 #: inc/options-meta/leyka-class-by-options-meta-controller.php:14
 #: inc/options-meta/leyka-class-by-options-meta-controller.php:22
 #: inc/options-meta/leyka-class-by-options-meta-controller.php:30
@@ -6798,25 +6800,25 @@ msgstr "Shared Sec"
 msgid "E.g., %s"
 msgstr "Например, %s"
 
-#: gateways/qiwi/leyka-class-qiwi-gateway.php:210
+#: gateways/qiwi/leyka-class-qiwi-gateway.php:209
 msgid "QIWI Kassa smart payment"
 msgstr "QIWI Касса"
 
 #: gateways/qiwi/leyka-class-qiwi-gateway.php:18
-#: gateways/qiwi/leyka-class-qiwi-gateway.php:211
+#: gateways/qiwi/leyka-class-qiwi-gateway.php:210
 msgid "QIWI Kassa"
 msgstr "QIWI Касса"
 
 #: gateways/qiwi/leyka-class-qiwi-gateway.php:22
-#: gateways/qiwi/leyka-class-qiwi-gateway.php:204
+#: gateways/qiwi/leyka-class-qiwi-gateway.php:203
 msgid "<a href=\"http://qiwi.com/\">qiwi</a> is a Designer IT-solutions for the e-commerce market. Every partner receives the most comprehensive set of key technical options allowing to create a customer-centric payment system on site or in mobile application. Partners are allowed to receive payments in roubles and in other world currencies."
 msgstr "<a href=\"https://kassa.qiwi.com/\">QIWI Касса</a> - оплата с банковских карт, QIWI Кошелька и баланса телефона. Гарантия безопасности ваших платежей."
 
-#: gateways/qiwi/leyka-class-qiwi-gateway.php:165
+#: gateways/qiwi/leyka-class-qiwi-gateway.php:164
 msgid "Form url:"
 msgstr "URL формы:"
 
-#: gateways/qiwi/leyka-class-qiwi-gateway.php:158
+#: gateways/qiwi/leyka-class-qiwi-gateway.php:157
 msgid "Shop bill ID:"
 msgstr "Shop bill ID:"
 
@@ -6845,55 +6847,55 @@ msgstr "Публичный ключ"
 msgid "Recurring"
 msgstr "Рекуррентное"
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:556
+#: gateways/yandex/leyka-class-yandex-gateway.php:555
 msgid "Failure message:"
 msgstr "Сообщение об ошибке:"
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:555
+#: gateways/yandex/leyka-class-yandex-gateway.php:554
 msgid "Failure code:"
 msgstr "Код ошибки:"
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:554
+#: gateways/yandex/leyka-class-yandex-gateway.php:553
 msgid "Failure type:"
 msgstr "Тип ошибки:"
 
 #: gateways/liqpay/leyka-class-liqpay-gateway.php:395
-#: gateways/yandex/leyka-class-yandex-gateway.php:546
+#: gateways/yandex/leyka-class-yandex-gateway.php:545
 msgid "Description:"
 msgstr "Описание:"
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:544
+#: gateways/yandex/leyka-class-yandex-gateway.php:543
 msgid "Captured at:"
 msgstr "Дата подтверждения:"
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:543
+#: gateways/yandex/leyka-class-yandex-gateway.php:542
 msgid "Created at:"
 msgstr "Дата создания:"
 
 #: gateways/liqpay/leyka-class-liqpay-gateway.php:393
-#: gateways/stripe/leyka-class-stripe-gateway.php:196
+#: gateways/stripe/leyka-class-stripe-gateway.php:192
 #: gateways/webpay/leyka-class-webpay-gateway.php:335
-#: gateways/yandex/leyka-class-yandex-gateway.php:541
+#: gateways/yandex/leyka-class-yandex-gateway.php:540
 msgid "Amount:"
 msgstr "Размер:"
 
 #: extensions/engagement-banner/inc/config-options.php:77
 #: extensions/unisender/leyka-class-unisender-extension.php:352
-#: gateways/yandex/leyka-class-yandex-gateway.php:540
-#: gateways/yandex/leyka-class-yandex-gateway.php:545
-#: gateways/yandex/leyka-class-yandex-gateway.php:548
+#: gateways/yandex/leyka-class-yandex-gateway.php:539
+#: gateways/yandex/leyka-class-yandex-gateway.php:544
+#: gateways/yandex/leyka-class-yandex-gateway.php:547
 #: inc/leyka-class-campaign.php:849
 msgid "No"
 msgstr "Нет"
 
 #: extensions/engagement-banner/inc/config-options.php:76
 #: extensions/unisender/leyka-class-unisender-extension.php:352
-#: gateways/yandex/leyka-class-yandex-gateway.php:540
+#: gateways/yandex/leyka-class-yandex-gateway.php:539
 #: inc/leyka-class-campaign.php:846
 msgid "Yes"
 msgstr "Да"
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:540
+#: gateways/yandex/leyka-class-yandex-gateway.php:539
 msgid "Payment is done:"
 msgstr "Платёж проведён:"
 
@@ -6921,7 +6923,7 @@ msgstr "Параметр scID"
 msgid "ShopID"
 msgstr "Параметр shopID"
 
-#: gateways/qiwi/leyka-class-qiwi-gateway.php:87
+#: gateways/qiwi/leyka-class-qiwi-gateway.php:86
 msgid "The gateway you used has incorrect or missing settings"
 msgstr "Настройки используемого платёжного оператора не указаны или некорректны"
 
@@ -7201,20 +7203,20 @@ msgstr "Включить поле комментария донора в фор�
 msgid "Entered comment is too long (maximum %d characters allowed)"
 msgstr "Ваш комментарий слишком длинный (допустимо максимум %d символов)"
 
-#: inc/leyka-core.php:1526 templates/leyka-template-need-help.php:343
-#: templates/leyka-template-revo.php:185 templates/leyka-template-star.php:394
+#: inc/leyka-core.php:1530 templates/leyka-template-need-help.php:343
+#: templates/leyka-template-revo.php:197 templates/leyka-template-star.php:401
 msgid "Entered value is too long"
 msgstr "Указано слишком длинное значение"
 
 #: inc/leyka-class-payment-form.php:407 templates/leyka-template-neo.php:118
-#: templates/leyka-template-revo.php:184 templates/leyka-template-star.php:384
+#: templates/leyka-template-revo.php:196 templates/leyka-template-star.php:391
 msgid "Your comment (<span class=\"donation-comment-current-length\">0</span> / <span class=\"donation-comment-max-length\">%d</span> symbols)"
 msgstr "Ваш комментарий (<span class=\"donation-comment-current-length\">0</span> / <span class=\"donation-comment-max-length\">%d</span>)"
 
 #: inc/leyka-class-payment-form.php:402 inc/leyka-class-payment-form.php:407
 #: templates/leyka-template-need-help.php:338
-#: templates/leyka-template-neo.php:118 templates/leyka-template-revo.php:184
-#: templates/leyka-template-star.php:384
+#: templates/leyka-template-neo.php:118 templates/leyka-template-revo.php:196
+#: templates/leyka-template-star.php:391
 msgid "Your comment"
 msgstr "Ваш комментарий"
 
@@ -7432,7 +7434,7 @@ msgstr "Заголовок письма, уведомляющего донора
 #: inc/donations/leyka-class-donations-management.php:254
 #: inc/donations/leyka-class-donations-management.php:384
 #: inc/donations/leyka-class-donations-management.php:528
-#: inc/leyka-core.php:2030 procedures/leyka-send-deferred-emails.php:114
+#: inc/leyka-core.php:2034 procedures/leyka-send-deferred-emails.php:114
 msgid "<a href=\"mailto:%s\">write us a letter about it</a>"
 msgstr "<a href=\"mailto:%s\">напишите нам email об этом</a>"
 
@@ -7462,11 +7464,11 @@ msgstr "Яндекс.Касса"
 #: gateways/robokassa/leyka-class-robokassa-gateway.php:408
 #: gateways/sber/leyka-class-sber-gateway.php:546
 #: gateways/sber/leyka-class-sber-gateway.php:547
-#: gateways/stripe/leyka-class-stripe-gateway.php:664
-#: gateways/stripe/leyka-class-stripe-gateway.php:670
-#: gateways/stripe/leyka-class-stripe-gateway.php:671
-#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:421
-#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:422
+#: gateways/stripe/leyka-class-stripe-gateway.php:660
+#: gateways/stripe/leyka-class-stripe-gateway.php:666
+#: gateways/stripe/leyka-class-stripe-gateway.php:667
+#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:426
+#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:427
 #: gateways/webpay/leyka-class-webpay-gateway.php:695
 #: gateways/webpay/leyka-class-webpay-gateway.php:696
 #: gateways/yandex/leyka-class-yandex-gateway.php:929
@@ -7525,11 +7527,11 @@ msgstr "Ваше пожертвование завершено. Мы благо�
 msgid "Thank you!"
 msgstr "Спасибо!"
 
-#: inc/leyka-core.php:2344
+#: inc/leyka-core.php:2348
 msgid "A modern and lightweight step-by-step form template"
 msgstr "Современный и компактный шаблон формы с пошаговым заполнением"
 
-#: inc/leyka-core.php:2343
+#: inc/leyka-core.php:2347
 #: inc/settings/allocators/leyka-class-ru-options-allocator.php:298
 msgid "Revo"
 msgstr "Рево"
@@ -7702,12 +7704,12 @@ msgstr "ВНИМАНИЕ: если поставлена эта отметка, �
 msgid "Remove all plugin settings upon plugin uninstall"
 msgstr "При удалении плагина удалить все его настройки"
 
-#: inc/leyka-core.php:2342
+#: inc/leyka-core.php:2346
 msgid "An updated version of \"Toggles\" form template"
 msgstr "Более современная версия шаблона формы «блоки»"
 
-#: templates/leyka-template-revo.php:83 templates/leyka-template-revo.php:122
-#: templates/leyka-template-revo.php:148
+#: templates/leyka-template-revo.php:83 templates/leyka-template-revo.php:134
+#: templates/leyka-template-revo.php:160
 msgid "monthly"
 msgstr "ежемесячно"
 
@@ -7724,11 +7726,11 @@ msgid "Make a donation"
 msgstr "Пожертвовать"
 
 #: inc/leyka-shortcodes.php:667 templates/leyka-template-need-help.php:486
-#: templates/leyka-template-star.php:514
+#: templates/leyka-template-star.php:521
 msgid "Awaiting for the safe payment page redirection..."
 msgstr "Перенаправление на безопасную страницу платежа..."
 
-#: templates/leyka-template-revo.php:154
+#: templates/leyka-template-revo.php:166
 msgid "Whom should we thank?"
 msgstr "Кого нам благодарить?"
 
@@ -7755,24 +7757,24 @@ msgstr "и"
 msgid "Supporters:"
 msgstr "Поддержали:"
 
-#: inc/leyka-core.php:1524 templates/account/login.php:42
+#: inc/leyka-core.php:1528 templates/account/login.php:42
 #: templates/account/reset-password.php:42
-#: templates/leyka-template-revo.php:175
+#: templates/leyka-template-revo.php:187
 #: templates/service/leyka-template-success-widget-star.php:59
 #: templates/service/leyka-template-success-widget.php:37
 msgid "Enter an email in the some@email.com format"
 msgstr "Укажите email в формате your@email.com"
 
-#: inc/leyka-core.php:1519
+#: inc/leyka-core.php:1523
 msgid "You have to agree with the terms of the donation service"
 msgstr "Необходимо ваше согласие"
 
-#: inc/leyka-core.php:1518 templates/leyka-template-need-help.php:237
-#: templates/leyka-template-revo.php:164 templates/leyka-template-star.php:279
+#: inc/leyka-core.php:1522 templates/leyka-template-need-help.php:237
+#: templates/leyka-template-revo.php:176 templates/leyka-template-star.php:286
 msgid "Enter your name"
 msgstr "Укажите ваше имя"
 
-#: inc/leyka-core.php:1517
+#: inc/leyka-core.php:1521
 msgid "Set an amount from %s to %s <span class=\"curr-mark\">%s</span>"
 msgstr "Укажите сумму от %s до %s <span class=\"curr-mark\">%s</span>"
 
@@ -7791,7 +7793,7 @@ msgstr "офертой"
 msgid "I agree with"
 msgstr "Соглашаюсь с"
 
-#: inc/leyka-core.php:2341
+#: inc/leyka-core.php:2345
 #: inc/settings/allocators/leyka-class-ru-options-allocator.php:317
 msgid "Neo"
 msgstr "Нео"
@@ -7800,11 +7802,11 @@ msgstr "Нео"
 msgid "Campaign shortcode"
 msgstr "Шорткод кампании"
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:716
+#: gateways/yandex/leyka-class-yandex-gateway.php:715
 msgid "Some error while repeatCardPayment call. Please ask your Yandex.Kassa manager for details."
 msgstr "Ошибка при выполнении запроса «repeatCardPayment». Пожалуйста, обратитесь за деталями к вашему менеджеру по подключению Яндекс.Кассы."
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:510
+#: gateways/yandex/leyka-class-yandex-gateway.php:507
 msgid "Unknown service operation"
 msgstr "Неизвестная служебная операция"
 
@@ -8065,7 +8067,7 @@ msgstr "Ошибка в ответе сервера. Пожалуйста, со�
 #: gateways/chronopay/leyka-class-chronopay-gateway.php:89
 #: gateways/cp/leyka-class-cp-gateway.php:128
 #: gateways/rbk/leyka-class-rbk-gateway.php:169
-#: gateways/sber/leyka-class-sber-gateway.php:227 inc/leyka-core.php:1885
+#: gateways/sber/leyka-class-sber-gateway.php:227 inc/leyka-core.php:1889
 msgid "The donation was not created due to error."
 msgstr "Пожертвование не было создано по причине ошибки."
 
@@ -8077,7 +8079,7 @@ msgstr "Исключить завершённые кампании"
 msgid "Check to send a thankful email to a donor on each funded donation"
 msgstr "Отметьте, чтобы при каждом оплаченном пожертвовании донору отправлялось благодарственное письмо"
 
-#: inc/leyka-core.php:1652
+#: inc/leyka-core.php:1656
 msgctxt "In genitive case"
 msgid "Campaign"
 msgstr "Кампания"
@@ -8097,7 +8099,7 @@ msgstr "аноним"
 #: inc/donations/leyka-class-donations-management.php:242
 #: inc/donations/leyka-class-donations-management.php:372
 #: inc/donations/leyka-class-donations-management.php:516
-#: inc/leyka-core.php:2018
+#: inc/leyka-core.php:2022
 #: procedures/leyka-campaigns-targets-reaching-mailout.php:120
 #: procedures/leyka-send-deferred-emails.php:102
 msgid "dear donor"
@@ -8118,7 +8120,7 @@ msgstr "Мы спишем средства со счёта этого номер
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:688
 #: templates/leyka-template-need-help.php:307
-#: templates/leyka-template-star.php:350
+#: templates/leyka-template-star.php:357
 msgid "Your phone number in the 7xxxxxxxxxx format"
 msgstr "Номер телефона в формате 7хххххххххх"
 
@@ -8199,30 +8201,30 @@ msgstr "И фиксированные варианты, и произвольн�
 msgid "A text of a recurring subscription donation notice sent to a donor"
 msgstr "Текст письма, уведомляющего донора о подписке на рекарринг и первом списании по ней "
 
-#: inc/leyka-core.php:2349
+#: inc/leyka-core.php:2353
 msgid "Teplitsa of Social Technologies"
 msgstr "Теплица социальных технологий"
 
-#: inc/leyka-core.php:1525
+#: inc/leyka-core.php:1529
 msgid "You shouldn't enter an email here"
 msgstr "В этом поле не нужно указывать email"
 
-#: inc/leyka-core.php:1169 inc/leyka-core.php:1184
+#: inc/leyka-core.php:1173 inc/leyka-core.php:1188
 msgctxt "«Trash» donation status description"
 msgid "Donation information was deleted."
 msgstr "Информация о пожертвовании была удалена."
 
-#: inc/leyka-core.php:1168 inc/leyka-core.php:1183
+#: inc/leyka-core.php:1172 inc/leyka-core.php:1187
 msgctxt "«Failed» donation status description"
 msgid "Donation payment was incomplete due to an error. The funds weren't received."
 msgstr "Платёж не был завершён по технической причине (например, средств на счету донора оказалось недостаточно)."
 
-#: inc/leyka-core.php:1167
+#: inc/leyka-core.php:1171
 msgctxt "«Refunded» donation status description"
 msgid "Donation funds were returned to the donor."
 msgstr "Средства были возвращены донору (например, по его требованию)."
 
-#: inc/leyka-core.php:1181
+#: inc/leyka-core.php:1185
 msgctxt "«Completed» donation status description"
 msgid "Donation was finished, the funds were properly received."
 msgstr "Пожертвование было завершено, средства поступили на ваш счёт."
@@ -8302,7 +8304,7 @@ msgstr "Поставьте отметку, если платёжный опер�
 
 #: gateways/robokassa/leyka-class-robokassa-gateway.php:432
 #: gateways/sber/leyka-class-sber-gateway.php:571
-#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:446
+#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:451
 #: gateways/webpay/leyka-class-webpay-gateway.php:719
 #: gateways/yandex/leyka-class-yandex-gateway.php:954
 msgid "Monthly recurring subscriptions are available"
@@ -8317,14 +8319,14 @@ msgstr "Ежемесячные рекуррентные пожертвовани
 #: gateways/rbk/leyka-class-rbk-gateway.php:529
 #: gateways/robokassa/leyka-class-robokassa-gateway.php:234
 #: gateways/sber/leyka-class-sber-gateway.php:432
-#: gateways/stripe/leyka-class-stripe-gateway.php:556
-#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:274
+#: gateways/stripe/leyka-class-stripe-gateway.php:552
+#: gateways/tinkoff/leyka-class-tinkoff-gateway.php:279
 #: gateways/webpay/leyka-class-webpay-gateway.php:423
-#: gateways/yandex/leyka-class-yandex-gateway.php:757
+#: gateways/yandex/leyka-class-yandex-gateway.php:756
 msgid "Recurring subscription is active"
 msgstr "Рекуррентная подписка активна"
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:225
+#: gateways/yandex/leyka-class-yandex-gateway.php:222
 msgid "The amount of donations via Sberbank Online should be at least 10 RUB."
 msgstr "Размер пожертвования с помощью Сбербанк Онлайн должен составлять как минимум 10 руб."
 
@@ -8344,7 +8346,7 @@ msgstr "Если вы не были перенаправлены на стран
 msgid "<h3>Thank you!</h3><p>In a few seconds you will be redirected to the payment system website, where you can complete your donation.</p>"
 msgstr "<h3>Благодарим вас!</h3><p>Через несколько секунд вы будете перенаправлены на страницу платёжного оператора, где вы сможете подтвердить ваше пожертвование.</p>"
 
-#: inc/leyka-core.php:1819 templates/service/leyka-gateway-redirect-page.php:3
+#: inc/leyka-core.php:1823 templates/service/leyka-gateway-redirect-page.php:3
 msgid "Redirecting to the gateway payment page"
 msgstr "Перенаправление на защищённую страницу платежа"
 
@@ -8619,7 +8621,7 @@ msgstr "Заголовок (тема) письма при обычном пла�
 msgid "Thank you for your donation!"
 msgstr "Спасибо за ваше пожертвование!"
 
-#: inc/leyka-functions.php:1037
+#: inc/leyka-functions.php:1111
 msgid "$"
 msgstr "$"
 
@@ -8687,11 +8689,11 @@ msgstr "Официальная цель пожертвования (см. нас
 msgid "a campaign to which donation was made"
 msgstr "Кампания, на которую было сделано пожертвование"
 
-#: inc/leyka-gateways-api.php:909
+#: inc/leyka-gateways-api.php:912
 msgid "A label for this payment method that will appear on all donation forms."
 msgstr "Название этого способа платежа, которое будет использоваться на всех формах пожертвований."
 
-#: inc/leyka-gateways-api.php:908
+#: inc/leyka-gateways-api.php:911
 msgid "Payment method custom label"
 msgstr "Индивидуальное название способа платежа"
 
@@ -8707,21 +8709,21 @@ msgstr "В данных формы указана некорректная ва�
 msgid "Single"
 msgstr "Разовый"
 
-#: inc/leyka-functions.php:865
+#: inc/leyka-functions.php:939
 msgctxt "Label on ultra-compact fake scale"
 msgid "Collected: %s"
 msgstr "Собрано: %s"
 
-#: inc/leyka-functions.php:843
+#: inc/leyka-functions.php:917
 msgctxt "Label on ultra-compact scale"
 msgid "%s of %s %s"
 msgstr "%s из %s %s"
 
-#: inc/leyka-functions.php:809
+#: inc/leyka-functions.php:883
 msgid "Collected %s of %s %s"
 msgstr "Собрано %s из %s %s"
 
-#: inc/leyka-functions.php:807
+#: inc/leyka-functions.php:881
 msgid "Needed %s %s"
 msgstr "Нужно %s %s"
 
@@ -8742,198 +8744,198 @@ msgstr "Главная страница сайта"
 msgid "Technical support"
 msgstr "Техническая поддержка"
 
-#: inc/leyka-core.php:2348
+#: inc/leyka-core.php:2352
 msgid "The donations management system for your WP site"
 msgstr "Система управления пожертвованиями на вашем сайте на WordPress"
 
-#: inc/leyka-core.php:2347
+#: inc/leyka-core.php:2351
 msgid "correction"
 msgstr "корректировочное"
 
-#: inc/leyka-core.php:2346
+#: inc/leyka-core.php:2350
 msgid "rebill"
 msgstr "регулярное"
 
-#: inc/leyka-core.php:2345
+#: inc/leyka-core.php:2349
 msgid "single"
 msgstr "разовое"
 
-#: inc/leyka-core.php:2340
+#: inc/leyka-core.php:2344
 msgid "Toggled options for each payment method"
 msgstr "Способы оплаты расположены в раскрывающихся блоках"
 
-#: inc/leyka-core.php:2339
+#: inc/leyka-core.php:2343
 #: inc/settings/allocators/leyka-class-ru-options-allocator.php:338
 msgid "Toggles"
 msgstr "Блоки"
 
-#: inc/leyka-core.php:2338
+#: inc/leyka-core.php:2342
 msgid "Radio options for each payment method"
 msgstr "Переключатель методов оплаты с обновлением полей формы"
 
-#: inc/leyka-core.php:2337
+#: inc/leyka-core.php:2341
 #: inc/settings/allocators/leyka-class-ru-options-allocator.php:361
 msgid "Radios"
 msgstr "Радио"
 
-#: inc/leyka-core.php:1718
+#: inc/leyka-core.php:1722
 msgid "Failed <span class=\"count\">(%s)</span>"
 msgid_plural "Failed <span class=\"count\">(%s)</span>"
 msgstr[0] "С ошибкой <span class=\"count\">(%s)</span>"
 msgstr[1] "С ошибкой <span class=\"count\">(%s)</span>"
 msgstr[2] "С ошибкой <span class=\"count\">(%s)</span>"
 
-#: inc/leyka-core.php:1709
+#: inc/leyka-core.php:1713
 msgid "Refunded <span class=\"count\">(%s)</span>"
 msgid_plural "Refunded <span class=\"count\">(%s)</span>"
 msgstr[0] "Возвращено <span class=\"count\">(%s)</span>"
 msgstr[1] "Возвращено <span class=\"count\">(%s)</span>"
 msgstr[2] "Возвращено <span class=\"count\">(%s)</span>"
 
-#: inc/leyka-core.php:1700
+#: inc/leyka-core.php:1704
 msgid "Funded <span class=\"count\">(%s)</span>"
 msgid_plural "Funded <span class=\"count\">(%s)</span>"
 msgstr[0] "Оплачено <span class=\"count\">(%s)</span>"
 msgstr[1] "Оплачено <span class=\"count\">(%s)</span>"
 msgstr[2] "Оплачено <span class=\"count\">(%s)</span>"
 
-#: inc/leyka-core.php:1691
+#: inc/leyka-core.php:1695
 msgid "Submitted <span class=\"count\">(%s)</span>"
 msgid_plural "Submitted <span class=\"count\">(%s)</span>"
 msgstr[0] "Отправлено <span class=\"count\">(%s)</span>"
 msgstr[1] "Отправлено <span class=\"count\">(%s)</span>"
 msgstr[2] "Отправлено <span class=\"count\">(%s)</span>"
 
-#: inc/leyka-core.php:1662
+#: inc/leyka-core.php:1666
 msgid "Campaigns not found in Trash"
 msgstr "Кампании не найдены в корзине"
 
-#: inc/leyka-core.php:1661
+#: inc/leyka-core.php:1665
 msgid "Campaigns not found"
 msgstr "Кампании не найдены"
 
-#: inc/leyka-core.php:1660
+#: inc/leyka-core.php:1664
 msgid "Search campaigns"
 msgstr "Поиск кампаний"
 
-#: inc/leyka-core.php:1659
+#: inc/leyka-core.php:1663
 msgid "View campaign"
 msgstr "Просмотр кампании"
 
-#: inc/leyka-core.php:1656
+#: inc/leyka-core.php:1660
 msgid "Add new campaign"
 msgstr "Добавить новую кампанию"
 
-#: inc/leyka-core.php:1654
+#: inc/leyka-core.php:1658
 msgid "All Campaigns"
 msgstr "Все кампании"
 
-#: inc/leyka-core.php:1624
+#: inc/leyka-core.php:1628
 msgid "Donations not found in Trash"
 msgstr "Пожертвования не найдены в Корзине"
 
-#: inc/leyka-core.php:1623
+#: inc/leyka-core.php:1627
 msgid "Donations not found"
 msgstr "Пожертвования не найдены"
 
-#: inc/leyka-core.php:1622
+#: inc/leyka-core.php:1626
 msgid "Search donation"
 msgstr "Поиск пожертвований"
 
-#: inc/leyka-core.php:1621
+#: inc/leyka-core.php:1625
 msgid "View donation"
 msgstr "Просмотреть пожертвование"
 
-#: inc/leyka-core.php:1620
+#: inc/leyka-core.php:1624
 msgid "New donation"
 msgstr "Новое пожертвование"
 
 #: inc/admin-templates/leyka-admin-donation-info-page.php:30
-#: inc/leyka-core.php:1619
+#: inc/leyka-core.php:1623
 msgid "Donation profile"
 msgstr "Профиль пожертвования"
 
 #: inc/admin-lists/leyka-class-donations-list-table.php:14
-#: inc/leyka-core.php:1614
+#: inc/leyka-core.php:1618
 msgid "Donation"
 msgstr "Пожертвование"
 
-#: inc/leyka-core.php:1589
+#: inc/leyka-core.php:1593
 msgid "Donations Administrator"
 msgstr "Администратор пожертвований"
 
-#: inc/leyka-core.php:1584
+#: inc/leyka-core.php:1588
 msgid "Donations Manager"
 msgstr "Менеджер пожертвований"
 
-#: inc/leyka-core.php:1523
+#: inc/leyka-core.php:1527
 msgid "Email must be filled to submit the form"
 msgstr "Укажите email"
 
-#: inc/leyka-core.php:1522
+#: inc/leyka-core.php:1526
 msgid "This field must be filled to submit the form"
 msgstr "Заполните это поле"
 
-#: inc/leyka-core.php:1521
+#: inc/leyka-core.php:1525
 msgid "This checkbox must be checked to submit the form"
 msgstr "Необходимо ваше согласие"
 
-#: inc/leyka-class-payment-form.php:117 inc/leyka-core.php:1516
+#: inc/leyka-class-payment-form.php:117 inc/leyka-core.php:1520
 #: inc/leyka-gateways-api.php:570
 msgid "Donation amount you entered is too small (minimum %s allowed)"
 msgstr "Указанный размер слишком мал (допустимо минимум %s)"
 
-#: inc/leyka-class-payment-form.php:110 inc/leyka-core.php:1515
+#: inc/leyka-class-payment-form.php:110 inc/leyka-core.php:1519
 #: inc/leyka-gateways-api.php:557
 msgid "Donation amount you entered is too great (maximum %s allowed)"
 msgstr "Указанный размер слишком велик (допустимо максимум %s)"
 
-#: inc/leyka-class-payment-form.php:100 inc/leyka-core.php:1514
+#: inc/leyka-class-payment-form.php:100 inc/leyka-core.php:1518
 #: inc/leyka-gateways-api.php:535
 msgid "Donation amount must be specified to submit the form"
 msgstr "Укажите сумму"
 
-#: inc/leyka-core.php:1239
+#: inc/leyka-core.php:1243
 msgctxt "Campaign state when target is not reached yet"
 msgid "In progress"
 msgstr "В процессе"
 
-#: inc/leyka-core.php:1238
+#: inc/leyka-core.php:1242
 msgctxt "Campaign state when target is reached"
 msgid "Reached"
 msgstr "Достигнуто"
 
-#: inc/leyka-core.php:1237
+#: inc/leyka-core.php:1241
 msgctxt "Campaign state when target is not set"
 msgid "No target"
 msgstr "Целевая сумма не задана"
 
-#: inc/leyka-core.php:1147
+#: inc/leyka-core.php:1151
 msgctxt "«Deleted» donation status"
 msgid "Trash"
 msgstr "Корзина"
 
-#: inc/leyka-core.php:1146 inc/leyka-core.php:1713
+#: inc/leyka-core.php:1150 inc/leyka-core.php:1717
 msgctxt "«Failed» donation status"
 msgid "Failed"
 msgstr "Платёж завершён с ошибкой"
 
-#: inc/leyka-core.php:1145 inc/leyka-core.php:1704
+#: inc/leyka-core.php:1149 inc/leyka-core.php:1708
 msgctxt "«Refunded» donation status"
 msgid "Refunded"
 msgstr "Деньги возвращены"
 
-#: inc/leyka-core.php:1144 inc/leyka-core.php:1695
+#: inc/leyka-core.php:1148 inc/leyka-core.php:1699
 msgctxt "«Completed» donation status"
 msgid "Funded"
 msgstr "Оплачено"
 
-#: inc/leyka-core.php:1143 inc/leyka-core.php:1686
+#: inc/leyka-core.php:1147 inc/leyka-core.php:1690
 msgctxt "«Submitted» donation status"
 msgid "Submitted"
 msgstr "Попытка пожертвовать"
 
-#: inc/leyka-core.php:940
+#: inc/leyka-core.php:944
 msgid "Desktop"
 msgstr "Панель управления"
 
@@ -8970,7 +8972,7 @@ msgstr "Лейке"
 msgid "Proudly powered by %s"
 msgstr "Работает на %s"
 
-#: inc/leyka-class-payment-form.php:385 templates/leyka-template-revo.php:249
+#: inc/leyka-class-payment-form.php:385 templates/leyka-template-revo.php:261
 msgid "We will send the donation success notice to this address"
 msgstr "Мы пришлем уведомление о получении пожертвования"
 
@@ -8980,7 +8982,7 @@ msgstr "Мы пришлем уведомление о получении пож�
 #: templates/account/login.php:35 templates/account/reset-password.php:35
 #: templates/leyka-template-need-help.php:209
 #: templates/leyka-template-neo.php:106 templates/leyka-template-neo.php:107
-#: templates/leyka-template-revo.php:173 templates/leyka-template-star.php:239
+#: templates/leyka-template-revo.php:185 templates/leyka-template-star.php:246
 #: templates/service/leyka-template-success-widget-star.php:55
 #: templates/service/leyka-template-success-widget.php:35
 msgid "Your email"
@@ -8993,7 +8995,7 @@ msgstr "Представьтесь, пожалуйста"
 #: inc/leyka-class-payment-form.php:359 inc/leyka-class-payment-form.php:361
 #: inc/settings-fields-templates/leyka-helpchat.php:35
 #: templates/leyka-template-neo.php:97 templates/leyka-template-neo.php:98
-#: templates/leyka-template-revo.php:161
+#: templates/leyka-template-revo.php:173
 msgid "Your name"
 msgstr "Ваше имя"
 
@@ -9042,8 +9044,10 @@ msgstr "Валюта"
 msgid "Payment options"
 msgstr "Платёжные операторы"
 
-#: inc/donations/leyka-class-donation-post.php:364
-#: inc/donations/leyka-class-donation-post.php:368
+#: inc/donations/leyka-class-donation-post.php:362
+#: inc/donations/leyka-class-donation-post.php:366
+#: inc/donations/leyka-class-donation-post.php:371
+#: inc/donations/leyka-class-donation-post.php:375
 #: inc/donations/leyka-class-donation-separated.php:314
 #: inc/donations/leyka-class-donation-separated.php:319
 msgid "Unknown gateway"
@@ -9124,8 +9128,13 @@ msgstr "Первоначальное пожертвование в подпис�
 msgid "unknown gateway"
 msgstr "неизвестный платёжный оператор"
 
-#: inc/donations/leyka-class-donation-post.php:373
+#: inc/donations/leyka-class-donation-post.php:381
+#: inc/donations/leyka-class-donation-post.php:385
+#: inc/donations/leyka-class-donation-post.php:389
+#: inc/donations/leyka-class-donation-post.php:393
 #: inc/donations/leyka-class-donation-separated.php:325
+#: inc/donations/leyka-class-donation-separated.php:329
+#: inc/donations/leyka-class-donation-separated.php:333
 #: inc/donations/leyka-class-donations-management.php:1418
 msgid "Unknown payment method"
 msgstr "Неизвестный способ платежа"
@@ -9150,7 +9159,7 @@ msgid "Preview campaign"
 msgstr "Страница кампании"
 
 #: inc/donations/leyka-class-donations-management.php:1205
-#: inc/leyka-core.php:1657
+#: inc/leyka-core.php:1661
 msgid "Edit campaign"
 msgstr "Редактировать кампанию"
 
@@ -9176,7 +9185,7 @@ msgstr "Укажите способ платежа, которым осущес�
 #: inc/donations/leyka-class-donations-management.php:1682
 #: inc/leyka-class-campaign.php:1134 inc/leyka-class-campaign.php:1144
 #: templates/leyka-template-need-help.php:147
-#: templates/leyka-template-revo.php:87 templates/leyka-template-star.php:161
+#: templates/leyka-template-revo.php:87 templates/leyka-template-star.php:168
 msgid "Payment method"
 msgstr "Способ оплаты"
 
@@ -9228,6 +9237,7 @@ msgstr "Назначение пожертвования"
 #: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:197
 #: inc/admin-templates/leyka-admin-metabox-donor-donations.php:28
 #: inc/admin-templates/leyka-admin-metabox-donor-donations.php:37
+#: inc/portlets/leyka-recent-donations.php:19
 msgid "Campaign"
 msgstr "Кампания"
 
@@ -9332,6 +9342,10 @@ msgstr "Индивидуальная информация о платеже"
 msgid "Payment type"
 msgstr "Тип пожертвования"
 
+#: inc/portlets/leyka-recent-donations.php:23
+msgid "Method"
+msgstr "Способ оплаты"
+
 #: inc/admin-lists/leyka-class-donations-list-table.php:132
 #: inc/admin-lists/leyka-class-donors-list-table.php:379
 #: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:194
@@ -9340,12 +9354,13 @@ msgstr "Тип пожертвования"
 #: inc/donations/leyka-class-donations-management.php:1668
 #: inc/donations/leyka-class-donations-management.php:1678
 #: inc/leyka-class-campaign.php:1129 inc/leyka-class-campaign.php:1139
+#: inc/portlets/leyka-recent-donations.php:17
 msgid "ID"
 msgstr "ID"
 
 #: inc/admin-templates/leyka-admin-donations-list-page.php:9
-#: inc/leyka-class-campaign.php:1123 inc/leyka-core.php:1617
-#: inc/leyka-core.php:1618
+#: inc/leyka-class-campaign.php:1123 inc/leyka-core.php:1621
+#: inc/leyka-core.php:1622
 msgid "Add correctional donation"
 msgstr "Добавить корректировочное пожертвование"
 
@@ -9390,7 +9405,7 @@ msgid "Campaign statistics"
 msgstr "Статистика кампании"
 
 #: inc/leyka-class-campaign.php:192 inc/leyka-shortcodes-new.php:167
-#: templates/account/account.php:121
+#: templates/account/account.php:123
 msgid "Donations history"
 msgstr "История пожертвований"
 
@@ -9646,7 +9661,6 @@ msgstr "Статус"
 #: inc/donations/leyka-class-donations-management.php:1680
 #: inc/leyka-class-campaign.php:1132 inc/leyka-class-campaign.php:1142
 #: inc/leyka-settings-rendering-utils.php:1331 inc/leyka-shortcodes-new.php:213
-#: inc/portlets/leyka-recent-donations.php:20
 msgid "Amount"
 msgstr "Сумма"
 
@@ -9656,7 +9670,7 @@ msgstr "Сумма"
 #: inc/donations/leyka-class-donations-management.php:1669
 #: inc/donations/leyka-class-donations-management.php:1679
 #: inc/leyka-class-campaign.php:1131 inc/leyka-class-campaign.php:1141
-#: inc/leyka-core.php:1597 inc/portlets/leyka-recent-donations.php:18
+#: inc/leyka-core.php:1601 inc/portlets/leyka-recent-donations.php:20
 msgid "Donor"
 msgstr "Донор"
 
@@ -9668,6 +9682,7 @@ msgstr "Донор"
 #: inc/donations/leyka-class-donations-management.php:1681
 #: inc/leyka-class-campaign.php:1133 inc/leyka-class-campaign.php:1143
 #: inc/leyka-settings-rendering-utils.php:1108 inc/leyka-shortcodes-new.php:204
+#: inc/portlets/leyka-recent-donations.php:21
 #: inc/settings-fields-templates/leyka-cp_payment_tryout.php:13
 #: assets/js/blocks.js:1322
 msgid "Date"
@@ -9691,7 +9706,7 @@ msgstr "У вас недостаточно полномочий для дост�
 
 #: editor/leyka-blocks-assets.php:68
 #: inc/admin-templates/leyka-admin-metabox-docs-info.php:15
-#: inc/leyka-admin.php:370 inc/leyka-admin.php:403 inc/leyka-core.php:960
+#: inc/leyka-admin.php:370 inc/leyka-admin.php:403 inc/leyka-core.php:964
 #: inc/settings/controllers/leyka-class-yandex-settings-controller.php:638
 msgid "Settings"
 msgstr "Настройки"
@@ -9700,13 +9715,13 @@ msgstr "Настройки"
 msgid "Leyka Settings"
 msgstr "Лейка: Настройки"
 
-#: inc/leyka-core.php:1655 inc/leyka-core.php:1658
+#: inc/leyka-core.php:1659 inc/leyka-core.php:1662
 msgid "New campaign"
 msgstr "Новая кампания"
 
 #: inc/admin-templates/leyka-admin-metabox-donor-data.php:119
-#: inc/leyka-admin.php:316 inc/leyka-admin.php:317 inc/leyka-core.php:952
-#: inc/leyka-core.php:1651 inc/leyka-core.php:1653
+#: inc/leyka-admin.php:316 inc/leyka-admin.php:317 inc/leyka-core.php:956
+#: inc/leyka-core.php:1655 inc/leyka-core.php:1657
 msgid "Campaigns"
 msgstr "Кампании"
 
@@ -9722,8 +9737,8 @@ msgstr "Новое корректировочное пожертвование"
 #: inc/admin-lists/leyka-class-donations-list-table.php:14
 #: inc/admin-templates/leyka-admin-donations-list-page.php:8
 #: inc/leyka-admin.php:325 inc/leyka-admin.php:326 inc/leyka-admin.php:923
-#: inc/leyka-core.php:741 inc/leyka-core.php:946 inc/leyka-core.php:1611
-#: inc/leyka-core.php:1613 inc/leyka-core.php:1615 inc/leyka-core.php:1616
+#: inc/leyka-core.php:740 inc/leyka-core.php:950 inc/leyka-core.php:1615
+#: inc/leyka-core.php:1617 inc/leyka-core.php:1619 inc/leyka-core.php:1620
 msgid "Donations"
 msgstr "Пожертвования"
 
@@ -9735,7 +9750,7 @@ msgstr "Панель управления"
 #: editor/leyka-blocks-category.php:9
 #: gateways/webpay/leyka-class-webpay-gateway.php:618
 #: inc/admin-templates/leyka-admin-dashboard-sidebar.php:110
-#: inc/leyka-admin.php:192 inc/leyka-admin.php:299 inc/leyka-core.php:934
+#: inc/leyka-admin.php:192 inc/leyka-admin.php:299 inc/leyka-core.php:938
 msgid "Leyka"
 msgstr "Лейка"
 
@@ -9779,53 +9794,53 @@ msgstr "Яндекс.Деньги — доступный и безопасный
 msgid "Yandex.Money is a simple and safe payment system to pay for goods and services through internet. You will have to fill a payment form, you will be redirected to the <a href='https://money.yandex.ru/'>Yandex.Money website</a> to confirm your payment. If you haven't got a Yandex.Money account, you can create it there."
 msgstr "Яндекс.Деньги — доступный и безопасный способ платить за товары и услуги через интернет. Заполнив форму оплаты на нашем сайте, вы будете перенаправлены на <a href='https://money.yandex.ru/'>сайт Яндекс.Денег</a>, где сможете завершить платеж. Если у вас нет счета в Яндекс.Деньгах, его нужно открыть на сайте платежной системы."
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:578
+#: gateways/yandex/leyka-class-yandex-gateway.php:577
 #: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:277
 msgid "Donation amount after gateway commission:"
 msgstr "Размер пожертвования за вычетом комиссии платёжного оператора:"
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:575
+#: gateways/yandex/leyka-class-yandex-gateway.php:574
 #: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:274
 msgid "Gateway invoice ID:"
 msgstr "ID платежа в рамках платёжной системы:"
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:572
+#: gateways/yandex/leyka-class-yandex-gateway.php:571
 #: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:272
 msgid "Last response operation:"
 msgstr "Последняя сервисная операция:"
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:574
+#: gateways/yandex/leyka-class-yandex-gateway.php:573
 msgid "Donation approval notice"
 msgstr "Уведомление о подтверждении пожертвования"
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:574
+#: gateways/yandex/leyka-class-yandex-gateway.php:573
 #: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:272
 msgid "Donation confirmation"
 msgstr "Подтверждение пожертвования"
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:428
-#: gateways/yandex/leyka-class-yandex-gateway.php:451
+#: gateways/yandex/leyka-class-yandex-gateway.php:425
+#: gateways/yandex/leyka-class-yandex-gateway.php:448
 #: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:182
 msgid "Donation sum is unmatched"
 msgstr "Размер пожертвования не соответствует указанному."
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:422
-#: gateways/yandex/leyka-class-yandex-gateway.php:445
+#: gateways/yandex/leyka-class-yandex-gateway.php:419
+#: gateways/yandex/leyka-class-yandex-gateway.php:442
 msgid "OrderNumber is not set"
 msgstr "Параметр OrderNumber не указан"
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:422
-#: gateways/yandex/leyka-class-yandex-gateway.php:428
-#: gateways/yandex/leyka-class-yandex-gateway.php:445
-#: gateways/yandex/leyka-class-yandex-gateway.php:451
+#: gateways/yandex/leyka-class-yandex-gateway.php:419
+#: gateways/yandex/leyka-class-yandex-gateway.php:425
+#: gateways/yandex/leyka-class-yandex-gateway.php:442
+#: gateways/yandex/leyka-class-yandex-gateway.php:448
 #: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:171
 #: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:182
 #: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:246
 msgid "Sorry, there is some tech error on our side. Your payment will be cancelled."
 msgstr "К сожалению, при проведении платежа у нас возникла какая-то техническая ошибка. Деньги вернутся на ваш счёт."
 
-#: gateways/yandex/leyka-class-yandex-gateway.php:416
-#: gateways/yandex/leyka-class-yandex-gateway.php:439
+#: gateways/yandex/leyka-class-yandex-gateway.php:413
+#: gateways/yandex/leyka-class-yandex-gateway.php:436
 msgid "Wrong service operation"
 msgstr "Неизвестная служебная операция"
 
@@ -9887,7 +9902,7 @@ msgstr "ID способа и валюты платежа:"
 #: gateways/paypal/leyka-class-paypal-gateway.php:1625
 #: gateways/robokassa/leyka-class-robokassa-gateway.php:385
 #: gateways/webpay/leyka-class-webpay-gateway.php:337
-#: gateways/yandex/leyka-class-yandex-gateway.php:547
+#: gateways/yandex/leyka-class-yandex-gateway.php:546
 msgid "Payment method:"
 msgstr "Способ оплаты:"
 
@@ -9947,12 +9962,12 @@ msgid "RBK Money allows a simple and safe way to pay for goods and services with
 msgstr "Платежный сервис <a href=\"https://rbkmoney.ru/\">RBK Money</a> представляет собой современную, простую и удобную платформу для осуществления переводов различными популярными способами, включая банковские карты VISA и Mastercard, мобильные и онлайн платежи, широкую сеть оффлайн отделений и терминалов и множество других способов платежа."
 
 #: gateways/liqpay/leyka-class-liqpay-gateway.php:394
-#: gateways/qiwi/leyka-class-qiwi-gateway.php:159
+#: gateways/qiwi/leyka-class-qiwi-gateway.php:158
 #: gateways/rbk/leyka-class-rbk-gateway.php:374
 msgid "Donation currency:"
 msgstr "Валюта платежа:"
 
-#: gateways/qiwi/leyka-class-qiwi-gateway.php:157
+#: gateways/qiwi/leyka-class-qiwi-gateway.php:156
 #: gateways/rbk/leyka-class-rbk-gateway.php:375
 msgid "Shop Account:"
 msgstr "Учётная запись магазина:"
@@ -9969,7 +9984,7 @@ msgid "Invoice ID:"
 msgstr "ID инвойса:"
 
 #: gateways/liqpay/leyka-class-liqpay-gateway.php:380
-#: gateways/qiwi/leyka-class-qiwi-gateway.php:155
+#: gateways/qiwi/leyka-class-qiwi-gateway.php:154
 #: gateways/rbk/leyka-class-rbk-gateway.php:371
 msgid "Operation date:"
 msgstr "Дата операции:"
@@ -10062,7 +10077,7 @@ msgstr "ID подписки на рекуррентные платежи:"
 
 #: gateways/cp/leyka-class-cp-gateway.php:589
 #: gateways/demirbank/leyka-class-demirbank-gateway.php:118
-#: gateways/stripe/leyka-class-stripe-gateway.php:204
+#: gateways/stripe/leyka-class-stripe-gateway.php:200
 msgid "Donation failure reason:"
 msgstr "Причина ошибки при проведении платежа:"
 
@@ -10088,13 +10103,13 @@ msgid "Callback time:"
 msgstr "Время вызова callback:"
 
 #: gateways/cp/leyka-class-cp-gateway.php:580
-#: gateways/stripe/leyka-class-stripe-gateway.php:200
+#: gateways/stripe/leyka-class-stripe-gateway.php:196
 msgid "Donor email:"
 msgstr "Email донора:"
 
 #: gateways/cp/leyka-class-cp-gateway.php:579
-#: gateways/qiwi/leyka-class-qiwi-gateway.php:163
-#: gateways/stripe/leyka-class-stripe-gateway.php:198
+#: gateways/qiwi/leyka-class-qiwi-gateway.php:162
+#: gateways/stripe/leyka-class-stripe-gateway.php:194
 msgid "Donor name:"
 msgstr "Имя донора:"
 
@@ -10190,7 +10205,7 @@ msgid "Chronopay customer ID"
 msgstr "Customer ID в системе Chronopay"
 
 #: gateways/chronopay/leyka-class-chronopay-gateway.php:500
-#: gateways/yandex/leyka-class-yandex-gateway.php:581
+#: gateways/yandex/leyka-class-yandex-gateway.php:580
 #: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:280
 msgid "Response date:"
 msgstr "Дата ответа:"
@@ -10202,7 +10217,7 @@ msgstr "ID донора в системе платёжного оператор�
 
 #: gateways/chronopay/leyka-class-chronopay-gateway.php:498
 #: gateways/rbk/leyka-class-rbk-gateway.php:373
-#: gateways/yandex/leyka-class-yandex-gateway.php:576
+#: gateways/yandex/leyka-class-yandex-gateway.php:575
 #: gateways/yandex_phyz/leyka-class-yandex_phyz-gateway.php:275
 msgid "Full donation amount:"
 msgstr "Полный размер пожертвования:"
@@ -10217,7 +10232,7 @@ msgstr "ID транзакции:"
 
 #: gateways/chronopay/leyka-class-chronopay-gateway.php:496
 #: gateways/liqpay/leyka-class-liqpay-gateway.php:397
-#: gateways/qiwi/leyka-class-qiwi-gateway.php:161
+#: gateways/qiwi/leyka-class-qiwi-gateway.php:160
 #: gateways/rbk/leyka-class-rbk-gateway.php:372
 msgid "Operation status:"
 msgstr "Статус операции:"
