@@ -1175,6 +1175,21 @@ class Leyka extends Leyka_Singleton {
     }
 
     /**
+     * Retrieve all available donation status descriptions.
+     *
+     * @return array of status_id => status_description pairs
+     */
+    public static function get_donation_statuses_short_names() {
+        return apply_filters('leyka_donation_statuses_short_names', [
+            'submitted' => _x('Submitted', '«Submitted» donation status short (one word) title', 'leyka'),
+            'funded' => _x('Funded', '«Funded» donation status short (one word) title', 'leyka'),
+            'refunded' => _x('Refunded', '«Refunded» donation status short (one word) title', 'leyka'),
+            'failed' => _x('Failed', '«Failed» donation status short (one word) title', 'leyka'),
+            'trash' => _x('Trash', '«Trash» donation status short (one word) title', 'leyka'),
+        ]);
+    }
+
+    /**
      * Retrieve all available donation status descriptions for Donors.
      *
      * @return array of status_id => status_description pairs
@@ -1199,6 +1214,7 @@ class Leyka extends Leyka_Singleton {
     public static function get_donation_status_info($status_id, $info_field = false) {
 
         $status_names = self::get_donation_statuses();
+        $status_short_names = self::get_donation_statuses_short_names();
         $status_descriptions = self::get_donation_statuses_descriptions();
         $status_descriptions_for_donors = self::get_donation_statuses_descriptions_for_donors();
 
@@ -1206,6 +1222,9 @@ class Leyka extends Leyka_Singleton {
 
         if( !empty($status_names[$status_id]) ) {
             $status_info['label'] = $status_names[$status_id];
+        }
+        if( !empty($status_short_names[$status_id]) ) {
+            $status_info['short_label'] = $status_short_names[$status_id];
         }
         if( !empty($status_descriptions[$status_id]) ) {
             $status_info['description'] = $status_descriptions[$status_id];

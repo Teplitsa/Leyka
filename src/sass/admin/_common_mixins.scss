@@ -228,7 +228,7 @@
 }
 
 @mixin leyka-field-control {
-    // TODO: move colors to presets after comlete
+    // TODO: move colors to presets after complete
     input[type="text"], input[type="email"], input[type="password"], input[type="number"], select, textarea {
 
         @include wizard-field-input-text();

@@ -28,7 +28,15 @@
         tr {
 
             .column-id {
+
                 width: 80px;
+
+                a.donation-edit-link {
+                    font-size: 10px;
+                    font-weight: 500;
+                    line-height: 16px;
+                }
+
             }
 
             .column-payment_type {
@@ -51,9 +59,30 @@
             }
 
             .column-gateway_pm {
-                //width: 230px;
+
                 min-width: 170px;
                 max-width: 230px;
+
+                .leyka-gateway-pm {
+
+                    display: flex;
+                    flex-flow: row nowrap;
+                    align-items: flex-start;
+
+                    cursor: pointer;
+
+                    .leyka-gateway-name {
+                        margin-right: 10px;
+                    }
+
+                    img {
+                        width: 35px;
+                        height: 35px;
+                        margin: 0;
+                    }
+
+                }
+
             }
 
             .column-emails {
@@ -61,7 +90,33 @@
             }
 
             .column-donor_subscription {
+
                 width: 78px;
+
+                .donor-subscription-status {
+
+                    display: flex;
+                    flex-flow: row nowrap;
+                    justify-content: center;
+                    align-items: center;
+
+                    .donor-subscription {
+
+                        display: inline-block;
+                        cursor: pointer;
+
+                        &.campaign-subscription {
+                            @include leyka-colored-icon('../../img/icon-ok.svg', 16px, $leyka-admin-color-link, 12px);
+                        }
+
+                        &.full-subscription {
+                            @include leyka-colored-icon('../../img/icon-ok-circled.svg', 26px, $leyka-admin-color-link);
+                        }
+
+                    }
+
+                }
+
             }
 
         }

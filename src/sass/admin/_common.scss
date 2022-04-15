@@ -1321,6 +1321,10 @@ ul.ui-autocomplete {
 
                     font-weight: 500;
 
+                    .leyka-amount-and-status {
+                        text-align: right;
+                    }
+
                     .amount-total {
                         color: $color-text-light;
                     }
@@ -1328,13 +1332,17 @@ ul.ui-autocomplete {
                 }
 
                 .icon-leyka-donation-status {
-                    margin-top: 3px;
-                    margin-right: 12px;
+                    margin-right: 4px;
                 }
 
                 .leyka-donation-status-label {
+                    display: flex;
+                    flex-flow: row nowrap;
+                    justify-content: flex-end;
+                    align-items: center;
                     font-size: 11px;
                     font-weight: 400;
+                    cursor: pointer;
                 }
 
             }

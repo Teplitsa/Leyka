@@ -815,6 +815,7 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
                 $param = $this->category ? leyka_get_pm_category_label($this->_category) : '';
                 break;
             case 'category_icon':
+            case 'category_icon_url':
                 $param = $this->category ? LEYKA_PLUGIN_BASE_URL."img/pm-category-icons/{$this->_category}.svg" : '';
                 break;
             case 'active':
@@ -827,23 +828,31 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
                 break;
             case 'label_backend':
             case 'title_backend':
-            case 'name_backend': $param = $this->_label_backend ? $this->_label_backend : $this->_label;
+            case 'name_backend': $param = $this->_label_backend ? : $this->_label;
                 break;
             case 'desc':
             case 'description': $param = html_entity_decode($this->_description); break;
             case 'has_global_fields': $param = $this->_support_global_fields; break;
-            case 'specific_fields': $param = $this->_specific_fields ? $this->_specific_fields : []; break;
-            case 'custom_fields': $param = $this->_custom_fields ? $this->_custom_fields : []; break;
+            case 'specific_fields': $param = $this->_specific_fields ? : []; break;
+            case 'custom_fields': $param = $this->_custom_fields ? : []; break;
             case 'icons': $param = $this->_icons; break;
             case 'main_icon':
-                $param = $this->_main_icon ? $this->_main_icon : 'pic-main-'.$this->full_id;
-                $param = apply_filters('leyka_pm_main_icon_name', $param, $this->_id);
-                $param = apply_filters('leyka_'.$this->_id.'_pm_main_icon_name', $param);
+                $param = $this->_main_icon ? : 'pic-main-'.$this->full_id;
+                $param = apply_filters('leyka_pm_main_icon_name', $param, $this->_id, $this->_gateway_id);
+                $param = apply_filters('leyka_'.$this->full_id.'_pm_main_icon_name', $param);
                 break;
             case 'main_icon_url':
                 $param = LEYKA_PLUGIN_BASE_URL."gateways/{$this->gateway_id}/icons/{$this->main_icon}.svg";
-                $param = apply_filters('leyka_pm_main_icon_url', $param, $this->_id);
-                $param = apply_filters('leyka_'.$this->_id.'_pm_main_icon_url', $param);
+                $param = apply_filters('leyka_pm_main_icon_url', $param, $this->_id, $this->_gateway_id);
+                $param = apply_filters('leyka_'.$this->full_id.'_pm_main_icon_url', $param);
+                break;
+            case 'admin_icon_url':
+                $param = $this->category_id === 'bank_cards' ? $this->category_icon_url : $this->main_icon_url;
+                $param = apply_filters('leyka_pm_admin_icon_url', $param, $this->_id, $this->_gateway_id);
+                $param = apply_filters('leyka_'.$this->full_id.'_pm_admin_icon_url', $param);
+                break;
+            case 'admin_icon':
+                $param = basename($this->admin_icon_url);
                 break;
             case 'submit_label': $param = $this->_submit_label; break;
             case 'currencies': $param = $this->_supported_currencies; break;
