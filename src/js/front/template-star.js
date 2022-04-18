@@ -419,7 +419,9 @@ jQuery(document).ready(function($){
                 $submit.val( $submit.data('submit-text-template').replace('#DAILY_ROUBLE_AMOUNT#', monthly_amount_formatted) );
 
                 // Move the "daily rouble" comment arrow to the selected amount block:
-                document.styleSheets[0].addRule('.amount__figure.star-swiper .daily-rouble-comment:before', 'left: '+comment_arrow_offset+'px !important;');
+                let style = document.createElement('style');
+                style.innerHTML = '.amount__figure.star-swiper .daily-rouble-comment:before {left: '+comment_arrow_offset+'px !important;}';
+                document.head.appendChild(style);
 
             }
 
