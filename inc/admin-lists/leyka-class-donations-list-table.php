@@ -120,6 +120,14 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
         _e('No donations avaliable.', 'leyka');
     }
 
+    public function single_row($donation) {
+
+        echo '<tr '.($donation->status === 'failed' ? 'class="leyka-donation-failed-row"' : '').'>';
+        $this->single_row_columns($donation);
+        echo '</tr>';
+
+    }
+
     /**
      *  An associative array of columns.
      *
@@ -243,10 +251,10 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
-        $column_content = '<div class="donation-campaign"><a href="'.Leyka_Donation_Management::get_donation_edit_link($donation).'">'.$campaign->title.'</a></div>'
+        $column_content = '<div class="donation-campaign"><a href="'.admin_url('post.php?post='.$campaign->id.'&action=edit').'">'.$campaign->title.'</a></div>'
             .$this->row_actions([
-                'donation_page' => '<a href="'.Leyka_Donation_Management::get_donation_edit_link($donation).'">'.__('Edit').'</a>',
-                'delete' => '<a href="'.Leyka_Donation_Management::get_donation_delete_link($donation).'">'.__('Delete').'</a>',
+                'campaign_edit' => '<a href="'.admin_url('post.php?post='.$campaign->id.'&action=edit').'">'.__('Edit').'</a>',
+                'campaign_public' => '<a href="'.get_permalink($donation->campaign_id).'">'.__('Public page', 'leyka').'</a>',
             ]);
 
         return apply_filters('leyka_admin_donation_campaign_column_content', $column_content, $donation);
@@ -366,12 +374,12 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
         return apply_filters(
             'leyka_admin_donation_gateway_pm_column_content',
-            "<span class='leyka-gateway-pm has-tooltip leyka-tooltip-align-left' title='".sprintf(__('Gateway: %s<br>Payment method: %s', 'leyka'), mb_strtolower($gateway_label), mb_strtolower($pm_label))."'>
-                <div class='leyka-gateway-name'>" /** @todo Add some icon for the Custom payment info */
-                    .($gateway ? "<img src='".$gateway->icon_url."' alt='$gateway_label'>" : '')
+            "<span class='leyka-gateway-pm has-tooltip leyka-tooltip-align-left' title='".$gateway_label.' / '.$pm_label."'>
+                <div class='leyka-gateway-name'>"
+                    .($gateway ? "<img src='".$gateway->icon_url."' alt='$gateway_label'>" : '<img src="'.LEYKA_PLUGIN_BASE_URL.'/img/pm-icons/custom-payment-info.svg" alt="'.$pm.'">')
                 ."</div>
                 <div class='leyka-pm-name'>"
-                    .(is_a($pm, 'Leyka_Payment_Method') ? "<img src='".$pm->admin_icon_url."' alt='$pm_label'>" : $pm)
+                    .(is_a($pm, 'Leyka_Payment_Method') ? "<img src='".$pm->admin_icon_url."' alt='$pm_label'>" : '')
                 ."</div>
             </span>",
             $donation

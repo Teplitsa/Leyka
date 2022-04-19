@@ -24,9 +24,13 @@
     // List table (columns & content):
     .wp-list-table.widefat {
 
-        // Columns width:
         tr {
 
+            &.leyka-donation-failed-row {
+                background: $leyka-color-error-light-1;
+            }
+
+            // Columns width:
             .column-id {
 
                 width: 80px;
@@ -70,6 +74,8 @@
                     align-items: flex-start;
 
                     cursor: pointer;
+
+                    width: 20px; // Use the deliberately small width, so icons inside would widen only by their needs
 
                     .leyka-gateway-name {
                         margin-right: 10px;
