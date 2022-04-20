@@ -142,7 +142,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             default:
         }
 
-        return [
+        $response = [
             'public_id' => trim(leyka_options()->opt('cp_public_id')),
             'donation_id' => $donation_id,
             'amount' => number_format(floatval($donation->amount), 2, '.', ''),
@@ -153,6 +153,12 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             'success_page' => leyka_get_success_page_url(),
             'failure_page' => leyka_get_failure_page_url(),
         ];
+
+        if($donation->additional_fields) {
+            $response['additional_fields'] = $donation->additional_fields;
+        }
+
+        return $response;
 
     }
 
