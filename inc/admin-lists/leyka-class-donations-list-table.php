@@ -122,7 +122,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
     public function single_row($donation) {
 
-        echo '<tr '.($donation->status === 'failed' ? 'class="leyka-donation-failed-row"' : '').'>';
+        echo '<tr'.($donation->status === 'failed' ? ' class="leyka-donation-failed-row"' : '').'>';
         $this->single_row_columns($donation);
         echo '</tr>';
 
@@ -263,6 +263,8 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
     public function column_donor($donation) { /** @var $donation Leyka_Donation_Base */
 
+        $donor_phone = leyka_get_donor_phone($donation);
+
         $donor_data_html = apply_filters(
             'leyka_admin_donation_donor_column_content',
             '<div class="donor-name">'
@@ -270,7 +272,8 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
                 .$donation->donor_name
                 .(leyka_options()->opt('donor_management_available') ? '</a>' : '')
             .'</div>'
-            .'<div class="donor-email">'.$donation->donor_email.'</div>',
+            .'<div class="donor-additional-data donor-email">'.$donation->donor_email.'</div>'
+            .($donor_phone ? '<div class="donor-additional-data donor-phone">'.$donor_phone.'</div>' : ''),
             $donation
         );
 
