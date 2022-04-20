@@ -5,6 +5,7 @@
 jQuery(document).ready(function($){
 
     function init() {
+        assignSizeClasses();
 		bindEvents();
     }
 
@@ -21,42 +22,29 @@ jQuery(document).ready(function($){
 
         // Window resize events:
         $(window).on('resize.leyka', function(){
-            $('.full-list.equalize-elements-width').each(function(){
-                equalizeFormElementsWidth($(this));
-            });
+            assignSizeClasses();
         }).resize();
 
     }
 
-    function equalizeFormElementsWidth($elements_wrapper){
+    function assignSizeClasses() {
 
-        let width = 0,
-            wrapper_width = $elements_wrapper.innerWidth()
-                - Math.abs(parseInt($elements_wrapper.css('margin-left')))
-                - Math.abs(parseInt($elements_wrapper.css('margin-right'))),
-            $elements = $elements_wrapper
-                .children(':not('+$elements_wrapper.data('equalize-elements-exceptions')+'):not(.disabled):visible');
+        let $form = $('.leyka-pf-need-help'),
+            form_parent_width = Math.ceil($form.parent().width());
 
-        $elements.each(function(){
+        $form.removeClass('leyka-width-small leyka-width-medium leyka-width-large leyka-width-exlarge leyka-width-xxlarge');
 
-            let $element = jQuery(this);
-
-            if(wrapper_width / $elements.length > 230) { // Element total width: 220 is the basis, 10 is the margin
-
-                $element.removeProp('style'); // If elements are few, let them just stretch to fit in one line
-                return;
-
-            }
-
-            if( !width ) {
-                width = $element.outerWidth();
-            }
-
-            if($element.outerWidth() !== width) {
-                $element.css('flex', width+'px 0 1');
-            }
-
-        });
+        if(form_parent_width <= (320 + 20 - 1)) {
+            $form.addClass('leyka-width-small');
+        } else if(form_parent_width <= (600 + 20 - 1)) {
+            $form.addClass('leyka-width-medium');
+        } else if(form_parent_width <= (760 + 20 - 1)) {
+            $form.addClass('leyka-width-large');
+        } else if(form_parent_width <= (1020 + 20 - 1)) {
+            $form.addClass('leyka-width-exlarge');
+        } else {
+            $form.addClass('leyka-width-xxlarge');
+        }
 
     }
 	
@@ -235,11 +223,6 @@ jQuery(document).ready(function($){
 
             setupPeriodicity($_form);
             setupSwiperWidth($_form);
-
-            // Equalize the PM selection blocks widths:
-            $_form.find('.payments-grid .equalize-elements-width').each(function(){
-                equalizeFormElementsWidth($(this));
-            });
 
             const amount_mode = $('.section--amount .section__fields.amount').data('amount-mode');
             const payment_type = $this.data('periodicity') === 'once' ? 'single' : 'recurring';
@@ -831,11 +814,6 @@ jQuery(document).ready(function($){
                     togglePmSpecialFields($_form);
 
                 }
-
-                // Equalize the Donor info fields widths:
-                $_form.find('.section--person .equalize-elements-width').each(function(){
-                    equalizeFormElementsWidth($(this));
-                });
 
             });
 

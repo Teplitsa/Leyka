@@ -2174,10 +2174,35 @@ jQuery(document).ready(function($){
 
         // Window resize events:
         $(window).on('resize.leyka', function(){
+
+            assignSizeClasses();
+
             $('.full-list.equalize-elements-width').each(function(){
                 equalizeFormElementsWidth($(this));
             });
+
         }).resize();
+
+    }
+
+    function assignSizeClasses() {
+
+        let $form = $('.leyka-pf-need-help'),
+            form_parent_width = Math.ceil($form.parent().width());
+
+        $form.removeClass('leyka-width-small leyka-width-medium leyka-width-large leyka-width-exlarge leyka-width-xxlarge');
+
+        if(form_parent_width <= (320 + 20 - 1)) {
+            $form.addClass('leyka-width-small');
+        } else if(form_parent_width <= (600 + 20 - 1)) {
+            $form.addClass('leyka-width-medium');
+        } else if(form_parent_width <= (760 + 20 - 1)) {
+            $form.addClass('leyka-width-large');
+        } else if(form_parent_width <= (1020 + 20 - 1)) {
+            $form.addClass('leyka-width-exlarge');
+        } else {
+            $form.addClass('leyka-width-xxlarge');
+        }
 
     }
 

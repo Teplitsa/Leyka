@@ -9,15 +9,17 @@ div[id*="leyka-pf-"].leyka-pf-need-help {
     box-shadow: none;
 
     margin: 0 auto;
-    padding: 80px 220px;
+    padding: 32px 36px;
 
-    @include need-help-upto(exlarge-screens) {
+    &.leyka-width-exlarge {
         padding: 60px 70px;
     }
-    @include need-help-upto(large-screens) {
+
+    &.leyka-width-large {
         padding: 36px 40px;
     }
-    @include need-help-upto(small-screens) {
+
+    &.leyka-width-small {
         padding: 26px 15px;
     }
 

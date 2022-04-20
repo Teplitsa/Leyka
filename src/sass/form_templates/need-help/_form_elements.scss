@@ -8,20 +8,18 @@
 
     &.periodicity {
 
-        width: calc(100% + 20px);
-        @include need-help-upto(small-screens) {
+        .leyka-width-small & {
             width: calc(100% + 10px);
+            margin-left: -10px;
         }
+
+        width: calc(100% + 20px);
 
         display: flex;
         flex-flow: row wrap;
 
         margin-left: -20px;
         margin-bottom: -10px;
-
-        @include need-help-upto(small-screens) {
-            margin-left: -10px;
-        }
 
         a {
 
@@ -36,14 +34,15 @@
             margin-left: 20px;
             margin-bottom: 10px;
 
-            @include need-help-upto(small-screens) {
+            .leyka-width-small & {
                 margin-left: 10px;
             }
 
             &:first-of-type {
 
                 margin-left: 20px;
-                @include need-help-upto(small-screens) {
+
+                .leyka-width-small & {
                     margin-left: 10px;
                 }
 
@@ -87,7 +86,8 @@
                 padding: 0 20px;
 
                 flex: 110px 0 0; // Make amount blocks fix width on large screens...
-                @include need-help-upto(xxlarge-screens) { // ... but on any other width let amounts widen to fit
+
+                .leyka-width-xxlarge & {
                     flex: 100px 1 1;
                 }
 
@@ -248,17 +248,14 @@
 
             .full-list {
 
-                width: calc(100% + 20px);
-                @include need-help-upto(small-screens) {
+                .leyka-width-small & {
                     width: calc(100% + 10px);
-                }
-
-                margin-left: -20px;
-                margin-bottom: -10px;
-
-                @include need-help-upto(small-screens) {
                     margin-left: -10px;
                 }
+
+                width: calc(100% + 20px);
+                margin-left: -20px;
+                margin-bottom: -10px;
 
             }
 
@@ -286,16 +283,15 @@
                 .swiper-item {
                     &.payment-opt {
 
+                        .leyka-width-small & {
+                            margin-left: 10px;
+                        }
+
                         flex: 220px 1 0;
                         height: 80px;
 
                         margin-left: 20px;
                         margin-bottom: 10px;
-
-                        @include need-help-upto(small-screens) {
-                            margin-left: 10px;
-                            //margin-bottom: 10px;
-                        }
 
                         span {
                             color: var(--leyka-need-help-color-text-superlight);
@@ -338,26 +334,26 @@
     // Donor data:
     &.donor {
 
+        .leyka-width-small & {
+            margin-left: -10px;
+        }
+
         display: flex;
         flex-wrap: wrap;
 
         margin-left: -20px;
         margin-bottom: -10px;
 
-        @include need-help-upto(small-screens) {
-            margin-left: -10px;
-        }
-
         .donor-field {
+
+            .leyka-width-small & {
+                margin-left: 10px;
+            }
 
             flex: 220px 1 0;
 
             margin-left: 20px;
             margin-bottom: 10px;
-
-            @include need-help-upto(small-screens) {
-                margin-left: 10px;
-            }
 
             &.donor-additional-field { // All additional form fields should be in separate lines
                 flex-basis: calc(100% - 20px);
