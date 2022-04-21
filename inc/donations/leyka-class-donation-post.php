@@ -226,6 +226,8 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 'leyka_donor_account_error' => empty($meta['leyka_donor_account_error']) ?
                     '' : $meta['leyka_donor_account_error'][0],
                 '_status_log' => empty($meta['_status_log']) ? '' : maybe_unserialize($meta['_status_log'][0]),
+                'error_id' => $this->_main_data->post_status !== 'failed' || empty($meta['leyka_error_id']) ?
+                    '' : $meta['leyka_error_id'],
                 'leyka_gateway_response' => empty($meta['leyka_gateway_response']) ? '' : $meta['leyka_gateway_response'][0],
 
                 'leyka_recurrents_cancelled' => isset($meta['leyka_recurrents_cancelled']) ?
@@ -295,6 +297,10 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
             case 'status_log':
                 return $this->_donation_meta['_status_log'];
+
+            case 'error_id':
+                return $this->status === 'failed' && !empty($this->_donation_meta['error_id']) ?
+                    $this->_donation_meta['error_id'] : false;
 
             case 'date':
             case 'date_label':
@@ -463,8 +469,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
             case 'subscription_email':
             case 'donor_subscription_email':
-                return $this->_donation_meta['leyka_donor_subscription_email'] ?
-                    $this->_donation_meta['leyka_donor_subscription_email'] :
+                return $this->_donation_meta['leyka_donor_subscription_email'] ? :
                     ($this->_donation_meta['leyka_donor_email'] ? $this->_donation_meta['leyka_donor_email'] : '');
 
             case 'donor_id':
@@ -621,6 +626,21 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 }
 
                 $this->set_meta('_status_log', $status_log);
+
+                if($value !== 'failed') {
+                    $this->delete_meta('leyka_error_id');
+                }
+
+                break;
+
+            case 'error_id':
+            case 'donation_error_id':
+
+                if($this->status !== 'failed') {
+                    $this->status = 'failed';
+                }
+
+                $this->set_meta('leyka_error_id', $value);
                 break;
 
             case 'date':

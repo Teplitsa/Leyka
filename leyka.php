@@ -109,6 +109,7 @@ if(in_array(get_option('leyka_donations_storage_type'), ['sep', 'sep-incompleted
 }
 require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donations-management.php'); /** @todo Make this class ADMIN ONLY. */
 require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donations.php');
+require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donations-errors.php');
 
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-donor.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-class-payment-form.php');
