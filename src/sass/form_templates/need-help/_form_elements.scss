@@ -114,6 +114,10 @@
                     text-transform: none;
                 }
 
+                .swiper-item-inner {
+                    height: 100%;
+                }
+
                 &.flex-amount-item {
 
                     display: flex !important;
@@ -239,6 +243,10 @@
 
         }
 
+    }
+
+    &.amount-description {
+        border-radius: unset;
     }
 
     // Payment methods:

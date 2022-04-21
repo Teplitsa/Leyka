@@ -23,6 +23,7 @@ jQuery(document).ready(function($){
         // Window resize events:
         $(window).on('resize.leyka', function(){
             assignSizeClasses();
+            setupSwiperWidth($('.leyka-pf-need-help'));
         }).resize();
 
     }
@@ -268,7 +269,7 @@ jQuery(document).ready(function($){
 
         if($swiper.find('.full-list').length) {
 
-            max_width -= 60;
+            max_width = $_form.width() > 502 ? (max_width - 60) / 2 : max_width - 60;
             $swiper.find('.payment-opt__label').css('max-width', max_width);
             $swiper.find('.payment-opt__icon').css('max-width', max_width);
 
