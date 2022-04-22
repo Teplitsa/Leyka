@@ -218,6 +218,8 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     protected $_payment_methods = []; // Supported PMs array
     protected $_options = []; // Gateway configs
 
+    protected $_donation_errors_ids = []; // A list of Gateway errors IDs and their respective Leyka errors IDs
+
     protected function __construct() {
 
         // A gateway icon is an attribute that is persistent for all gateways, it's just changing values:
@@ -370,7 +372,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     public function enqueue_gateway_scripts() {
     }
 
-    abstract protected function _set_attributes(); // Attributes are constant, like id, title, etc.
+    abstract protected function _set_attributes(); // Attributes are constant, like Gateway id, title, etc.
     protected function _set_options_defaults() {} // Options are admin configurable parameters
     abstract protected function _initialize_pm_list(); // PM list is specific for each Gateway
 
@@ -607,7 +609,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     /** @param Leyka_Payment_Method|string $pm A PM object or it's ID to remove from gateway. */
     public function remove_payment_method($pm) {
 
-        if(is_object($pm) && $pm instanceof Leyka_Payment_Method) {
+        if($pm instanceof Leyka_Payment_Method) {
             unset($this->_payment_methods[$pm->id]);
         } else if(strlen($pm) && !empty($this->_payment_methods[$pm])) {
             unset($this->_payment_methods[$pm->id]);
@@ -672,6 +674,27 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
         return empty($this->_payment_methods[$pm_id]) ? false : $this->_payment_methods[$pm_id];
     }
 
+    /**
+     * @param $gateway_error_code string Gateway system's Donation error ID/code
+     * @return string Leyka system's Donation error ID
+     */
+    public function get_donation_error_id($gateway_error_code, $return_gateway_error_code_if_no_match = false) {
+
+        return empty($this->_donation_errors_ids[$gateway_error_code]) ?
+            ( !!$return_gateway_error_code_if_no_match ? $gateway_error_code : Leyka_Donations_Errors::UNKNOWN_ERROR_ID ) :
+            $this->_donation_errors_ids[$gateway_error_code];
+
+    }
+
+    /**
+     * A service method to add Gateway specific errors to the Donations errors library. Should call Leyka_Donations_Errors::get_instance()->add();
+     *
+     * @return boolean True if Donation errors were added successfully, false otherwise.
+     */
+    protected function _set_donations_errors() {
+        return true;
+    }
+
     /** Default filter for the donation page redirect type parameter */
     public function submission_redirect_type($redirect_type, $pm_id, $donation_id) {
         return 'auto';
@@ -708,7 +731,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     }
 
     /**
-     * @return array; list of possible values in leyka_get_gateways_filter_categories_list function
+     * @return array A list of possible values in leyka_get_gateways_filter_categories_list function
      */
     public function get_filter_categories() {
 
@@ -986,4 +1009,4 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
     /** For PM with a static processing type, this method should display some static data. Otherwise, it may stay empty. */
     public function display_static_data() {}
 
-} // Leyka_Payment_Method end
+} // Leyka_Payment_Method - END
