@@ -145,7 +145,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
         }
 
         $columns['donor_subscription'] = __('Mailout', 'leyka');
-        $columns['donor_comment'] = __('Comment', 'leyka');
+        $columns['donor_comment'] = _x('Comment', "[Donor's comment. Should be short]", 'leyka');
 
         // Additional fields columns:
         foreach(leyka_options()->opt('additional_donation_form_fields_library') as $field_id => $field_settings) {
@@ -519,9 +519,14 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
         ob_clean();
 
-        $columns = apply_filters('leyka_donations_export_headers', [
-            'ID', 'Имя донора', 'Email', 'Тип платежа', 'Плат. оператор', 'Способ платежа', 'Полная сумма', 'Итоговая сумма', 'Валюта', 'Дата пожертвования', 'Статус', 'Кампания', 'Назначение', 'Подписка на рассылку', 'Email подписки', 'Комментарий'
-        ]);
+        $columns = [
+            'ID', 'Имя донора', 'Email', 'Тип платежа', 'Плат. оператор', 'Способ платежа', 'Полная сумма', 'Итоговая сумма', 'Валюта', 'Дата пожертвования', 'Статус', 'Кампания', 'Назначение', 'Подписка на рассылку', 'Email подписки', 'Комментарий',
+        ];
+
+        // Additional donation form fields headers:
+        foreach(leyka_options()->opt('additional_donation_form_fields_library') as $field_id => $field_settings) {
+            $columns[] = '['.$field_id.'] '.$field_settings['title'];
+        }
 
         $rows = [];
         foreach($this->items as $donation) { /** @var $donation Leyka_Donation_Base */
@@ -529,12 +534,6 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
             $campaign = $donation->campaign;
 
             $currency = $donation->currency_label;
-//            $currency_label_encoded = @iconv( // Sometimes currency sighs can't be encoded, so check for it
-//                'UTF-8',
-//                apply_filters('leyka_donations_export_content_charset', 'CP1251//TRANSLIT//IGNORE'),
-//                $currency
-//            );
-//            $currency = $currency_label_encoded ? $currency : $donation->currency_id;
 
             $donor_subscription = 'Нет';
             if($donation->donor_subscribed === true) {
@@ -543,32 +542,42 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
                 $donor_subscription = 'О кампании «'.$campaign->title.'»';
             }
 
-            $rows[] = apply_filters(
-                'leyka_donations_export_line',
-                [
-                    $donation->id,
-                    $donation->donor_name,
-                    $donation->donor_email,
-                    $donation->payment_type_label,
-                    $donation->gateway_label,
-                    $donation->payment_method_label,
-                    str_replace('.', ',', $donation->amount),
-                    str_replace('.', ',', $donation->amount_total),
-                    $currency,
-                    $donation->date_time_label,
-                    $donation->status_label,
-                    $campaign->title,
-                    $campaign->payment_title,
-                    $donor_subscription,
-                    $donation->donor_subscription_email,
-                    $donation->donor_comment,
-                ],
-                $donation
-            );
+            $row = [
+                $donation->id,
+                $donation->donor_name,
+                $donation->donor_email,
+                $donation->payment_type_label,
+                $donation->gateway_label,
+                $donation->payment_method_label,
+                str_replace('.', ',', $donation->amount),
+                str_replace('.', ',', $donation->amount_total),
+                $currency,
+                $donation->date_time_label,
+                $donation->status_label,
+                $campaign->title,
+                $campaign->payment_title,
+                $donor_subscription,
+                $donation->donor_subscription_email,
+                $donation->donor_comment,
+            ];
+
+            foreach(leyka_options()->opt('additional_donation_form_fields_library') as $field_id => $field_settings) {
+
+                $row[] = is_array($donation->additional_fields) && isset($donation->additional_fields[$field_id]) ?
+                    $donation->additional_fields[$field_id] : '';
+
+            }
+
+            $rows[] = apply_filters('leyka_donations_export_line', $row, $donation);
 
         }
 
-        leyka_generate_csv('donations-'.date('d.m.Y-H.i.s'), $rows, $columns); // It will exit automatically
+        // It will exit automatically:
+        leyka_generate_csv(
+            'donations-'.date( get_option('date_format').'-'.str_replace([':'], ['.'], get_option('time_format')) ),
+            apply_filters('leyka_donations_export_rows', $rows),
+            apply_filters('leyka_donations_export_headers', $columns)
+        );
 
     }
 
