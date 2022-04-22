@@ -318,6 +318,10 @@
                             flex-flow: row nowrap;
                             align-items: center;
 
+                            &:hover {
+                                overflow: scroll;
+                            }
+
                             .pm-icon {
 
                                 margin-right: 8px;

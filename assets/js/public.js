@@ -2426,6 +2426,13 @@ jQuery(document).ready(function($){
             $swiper.find('.payment-opt__label').css('max-width', max_width);
             $swiper.find('.payment-opt__icon').css('max-width', max_width);
 
+            if($_form.width() < 220) {
+
+                $swiper.find('.payment-opt').css('flex-basis', $_form.width());
+                $_form.find('.donor-field').css('flex-basis', $_form.width());
+
+            }
+
         } else {
 
             max_width -= 184;
