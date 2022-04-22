@@ -24,7 +24,7 @@ if( !leyka_options()->opt('plugin_debug_mode') ) { // In production mode, rebill
 }
 $current_day_param[] = $max_days_in_month < 31 && $max_days_in_month === $current_day ? // Last day of short month
     [['day' => $current_day, 'compare' => '>='], ['day' => 31, 'compare' => '<=']] :
-    [['day' => (int)date('j')]];
+    [['day' => $current_day,]];
 
 $init_recurring_donations = Leyka_Donations::get_instance()->get([
     'status' => 'funded',

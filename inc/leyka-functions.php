@@ -2403,18 +2403,6 @@ function leyka_export_data_prepare($text) {
     return str_replace(['"'], [''], $text);
 }
 
-/** Service function to prepare some object data array for export as a CSV line. */
-/** @todo When/if all data export is refactored to use the leyka_generate_csv() function, remove this function & all hooks that use it */
-function leyka_prepare_data_line_for_export(array $line_data) {
-
-    foreach($line_data as &$data) {
-        $data = leyka_export_data_prepare($data);
-    }
-
-    return $line_data;
-
-}
-
 /** A service class - to use meta queries (à la WP_Query) with separate-stored Donations. */
 class Leyka_Donations_Meta_Query extends WP_Meta_Query {
 
