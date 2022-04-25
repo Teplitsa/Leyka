@@ -73,29 +73,35 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             '5206' => 'L-7002', '5207' => 'CP-7002', '5300' => 'L-5043',
         ];
 
-        return
-            Leyka_Donations_Errors::get_instance()->add_error(
-                'CP-7002',
-                __('3-D Secure authentication is unavailable', 'leyka')
-            ) && Leyka_Donations_Errors::get_instance()->add_error(
-                'CP-7041',
-                __('The operation amount is too big or too small', 'leyka')
-            ) && Leyka_Donations_Errors::get_instance()->add_error(
-                'CP-7042',
-                __('The operation limit of bank card is exceeded', 'leyka')
-            ) && Leyka_Donations_Errors::get_instance()->add_error(
-                'CP-7012',
-                __('The term of card being lost has expired', 'leyka')
-            ) && Leyka_Donations_Errors::get_instance()->add_error(
-                'CP-6002',
-                __("Online payments for the card aren't available", 'leyka')
-            ) && Leyka_Donations_Errors::get_instance()->add_error(
-                'CP-8001',
-                __('Acquirer side error - the transaction is formed incorrectly', 'leyka')
-            ) && Leyka_Donations_Errors::get_instance()->add_error(
-                'CP-9002',
-                __('Unknown acquirer or network error', 'leyka')
-            );
+        // Only Gateway-specific errors are initialized & added as objects here:
+        Leyka_Donations_Errors::get_instance()->add_error(
+            'CP-7002',
+            __('3-D Secure authentication is unavailable', 'leyka')
+        ) && Leyka_Donations_Errors::get_instance()->add_error(
+            'CP-7041',
+            __('The operation amount is too big or too small', 'leyka')
+        ) && Leyka_Donations_Errors::get_instance()->add_error(
+            'CP-7042',
+            __('The operation limit of bank card is exceeded', 'leyka')
+        ) && Leyka_Donations_Errors::get_instance()->add_error(
+            'CP-7051',
+            __('"Check" callback handling error - the payment amount and/or currency is mismatched', 'leyka')
+        ) && Leyka_Donations_Errors::get_instance()->add_error(
+            'CP-7052',
+            __("\"Complete\" callback handling error - can't find init recurring donation by SubscriptionId given", 'leyka')
+        ) && Leyka_Donations_Errors::get_instance()->add_error(
+            'CP-7012',
+            __('The term of card being lost has expired', 'leyka')
+        ) && Leyka_Donations_Errors::get_instance()->add_error(
+            'CP-6002',
+            __("Online payments for the card aren't available", 'leyka')
+        ) && Leyka_Donations_Errors::get_instance()->add_error(
+            'CP-8001',
+            __('Acquirer side error - the transaction is formed incorrectly', 'leyka')
+        ) && Leyka_Donations_Errors::get_instance()->add_error(
+            'CP-9002',
+            __('Unknown acquirer or network error', 'leyka')
+        );
 
     }
 
@@ -285,7 +291,6 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                     ]));
                 }
 
-                // Single or init recurring donation:
                 if(empty($_POST['InvoiceId'])) { // Non-init recurring donation
 
                     $init_recurring_donation = $this->get_init_recurring_donation($_POST['SubscriptionId']);
@@ -300,7 +305,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                         ]));
                     }
 
-                } else if($_POST['InvoiceId'] !== 'leyka-test-donation') {
+                } else if($_POST['InvoiceId'] !== 'leyka-test-donation') { // Single or init recurring donation
 
                     $donation = Leyka_Donations::get_instance()->get_donation(absint($_POST['InvoiceId']));
                     $donation->add_gateway_response($_POST);
@@ -308,6 +313,9 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                     $_POST['Currency'] = mb_strtoupper($_POST['Currency']);
 
                     if($donation->sum != $_POST['Amount'] || mb_strtoupper($donation->currency_id) != $_POST['Currency']) {
+
+                        $donation->error_id = 'CP-7051'; // Check callback error - amount/currency mismatch
+
                         die(json_encode([
                             'code' => '11',
                             'reason' => sprintf(
@@ -315,6 +323,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                                 $donation->sum, $donation->currency_id, $_POST['Amount'], $_POST['Currency']
                             )
                         ]));
+
                     }
 
                     if( !empty($_POST['TransactionId']) ) { // Unique transaction ID in the CP system
@@ -347,7 +356,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                     if( !$init_recurring_donation || !$init_recurring_donation->id || is_wp_error($init_recurring_donation) ) {
 
                         $donation->payment_type = 'rebill';
-                        $donation->status = 'failed';
+                        $donation->error_id = 'CP-7052'; // $donation->status will be set to "failed" automatically
                         $donation->add_gateway_response($_POST);
 
                         // Emails will be sent only if respective options are on:
@@ -440,7 +449,9 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                 } else {
 
-                    $donation->status = 'failed';
+                    $donation->error_id = empty($_POST['ReasonCode']) ? // $donation->status will be set to 'failed' automatically
+                        'L-4002' : // "Transaction was declined"
+                        $_POST['ReasonCode'];
 
                     // Emails will be sent only if respective options are on:
                     Leyka_Donation_Management::send_error_notifications($donation);
@@ -494,7 +505,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
         $recurring_manual_cancel_link = 'https://my.cloudpayments.ru/ru/unsubscribe';
 
-        if( !$donation->recurring_id ) {
+        if( !$donation->cp_recurring_id ) {
             return new WP_Error('cp_no_subscription_id', sprintf(__('<strong>Error:</strong> unknown Subscription ID for donation #%d. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
         }
 

@@ -231,10 +231,9 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
         );
 
         $this->_set_attributes(); // Initialize main Gateway's attributes
-
         $this->_set_options_defaults(); // Set configurable options in admin area
-
         $this->_set_gateway_pm_list(); // Initialize or restore Gateway's PMs list and all their options
+        $this->_set_donations_errors(); // Initialize Gateway's possible Donations errors list
 
         do_action('leyka_initialize_gateway', $this, $this->_id); // So one could change some of gateway's attributes
 
@@ -375,6 +374,13 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     abstract protected function _set_attributes(); // Attributes are constant, like Gateway id, title, etc.
     protected function _set_options_defaults() {} // Options are admin configurable parameters
     abstract protected function _initialize_pm_list(); // PM list is specific for each Gateway
+
+    /**
+     * A service method to:
+     * 1. Add Gateway specific errors to the Donations errors library via Leyka_Donations_Errors::get_instance()->add_error();
+     * 2. Initialize $this->_donations_errors_ids array.
+     */
+    protected function _set_donations_errors() {}
 
     // Handler for Gateway's service calls (activate the donations, etc.):
     public function _handle_service_calls($call_type = '') {}
@@ -675,26 +681,14 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     }
 
     /**
-     * @param $gateway_error_code string Gateway system's Donation error ID/code
-     * @return string Leyka system's Donation error ID
+     * @param $gateway_error_id string Gateway system's Donation error ID/code
+     * @return string|false Leyka system's Donation error ID, or false if no match found
      */
-    public function get_donation_error_id($gateway_error_code, $return_gateway_error_code_if_no_match = false) {
+    public function get_donation_error_id($gateway_error_id) {
 
-        return empty($this->_donations_errors_ids[$gateway_error_code]) ?
-            ( !!$return_gateway_error_code_if_no_match ? $gateway_error_code : Leyka_Donations_Errors::UNKNOWN_ERROR_ID ) :
-            $this->_donations_errors_ids[$gateway_error_code];
+        return empty($this->_donations_errors_ids[$gateway_error_id]) ?
+            false : $this->_donations_errors_ids[$gateway_error_id];
 
-    }
-
-    /**
-     * A service method to:
-     * 1. Add Gateway specific errors to the Donations errors library via Leyka_Donations_Errors::get_instance()->add_error();
-     * 2. Initialize $this->_donations_errors_ids array.
-     *
-     * @return boolean True if Donations errors were added successfully, false otherwise.
-     */
-    protected function _set_donations_errors() {
-        return true;
     }
 
     /** Default filter for the donation page redirect type parameter */

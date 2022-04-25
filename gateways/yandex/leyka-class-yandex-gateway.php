@@ -98,53 +98,48 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
     public function _set_donations_errors() {
 
         $this->_donations_errors_ids = [
-            '3d_secure_failed' => 'L-7002',
-            'call_issuer' => 'CP-9001',
-            'canceled_by_merchant' => 'L-4001',
-            'card_expired' => 'L-7004',
-            'country_forbidden' => 'YK-6011',
-            'deal_expired' => '',
-            'expired_on_capture' => '',
-            'expired_on_confirmation' => 'YK-7005',
-            'fraud_suspected' => 'L-5043',
-            'general_decline' => 'L-4002',
-            'identification_required' => 'YK-6001',
-            'insufficient_funds' => 'L-7005',
-            'internal_timeout' => 'YK-8002',
-            'invalid_card_number' => 'L-7003',
-            'invalid_csc' => 'L-7002',
-            'issuer_unavailable' => 'L-5001',
-            'payment_method_limit_exceeded' => 'YK-7042',
-            'payment_method_restricted' => 'YK-7011',
-            'permission_revoked' => '',
-            'unsupported_mobile_operator' => '',
+            '3d_secure_failed' => 'L-7002', 'call_issuer' => 'L-9001', 'canceled_by_merchant' => 'L-4001',
+            'card_expired' => 'L-7004', 'country_forbidden' => 'YK-6011', 'deal_expired' => 'YK-7006',
+            'expired_on_capture' => 'YK-7007', 'expired_on_confirmation' => 'YK-7005', 'fraud_suspected' => 'L-5043',
+            'general_decline' => 'L-4002', 'identification_required' => 'YK-6001', 'insufficient_funds' => 'L-7005',
+            'internal_timeout' => 'YK-8002', 'invalid_card_number' => 'L-7003', 'invalid_csc' => 'L-7002',
+            'issuer_unavailable' => 'L-5001', 'payment_method_limit_exceeded' => 'YK-7042',
+            'payment_method_restricted' => 'YK-7011', 'permission_revoked' => 'YK-7043',
+            'unsupported_mobile_operator' => 'YK-7050',
         ];
 
-        return
-            Leyka_Donations_Errors::get_instance()->add_error(
-                '',
-                __('', 'leyka')
-            )
-//            && Leyka_Donations_Errors::get_instance()->add_error(
-//                '',
-//                __('', 'leyka')
-//            )
-//            && Leyka_Donations_Errors::get_instance()->add_error(
-//                '',
-//                __('', 'leyka')
-//            )
-//            && Leyka_Donations_Errors::get_instance()->add_error(
-//                '',
-//                __('', 'leyka')
-//            )
-//            && Leyka_Donations_Errors::get_instance()->add_error(
-//                '',
-//                __('', 'leyka')
-//            )
-            && Leyka_Donations_Errors::get_instance()->add_error(
-                '',
-                __('', 'leyka')
-            );
+        // Only Gateway-specific errors are initialized & added as objects here:
+        Leyka_Donations_Errors::get_instance()->add_error(
+            'YK-6011',
+            __('Bank card payment is refused because of the country that issued the card', 'leyka')
+        ) && Leyka_Donations_Errors::get_instance()->add_error(
+            'YK-7006',
+            __('The payment deal is expired', 'leyka')
+        ) && Leyka_Donations_Errors::get_instance()->add_error(
+            'YK-7007',
+            __('The payment time for a two-staged (captured) payment is expired', 'leyka')
+        ) && Leyka_Donations_Errors::get_instance()->add_error(
+            'YK-7005',
+            __('The payment time for the payment is expired', 'leyka')
+        ) && Leyka_Donations_Errors::get_instance()->add_error(
+            'YK-6001',
+            __('The operations limit for YooMoney wallet is exceeded', 'leyka')
+        ) && Leyka_Donations_Errors::get_instance()->add_error(
+            'YK-8002',
+            __("Technical troubles on the YooKassa side - payment wasn't proceeded in time", 'leyka')
+        ) && Leyka_Donations_Errors::get_instance()->add_error(
+            'YK-7042',
+            __('The operations limit for the bank card or the shop is exceeded', 'leyka')
+        ) && Leyka_Donations_Errors::get_instance()->add_error(
+            'YK-7011',
+            __("Payer's bank card is lost, or e-wallet is blocked due to its security breach", 'leyka')
+        ) && Leyka_Donations_Errors::get_instance()->add_error(
+            'YK-7043',
+            __("Can't make a rebill payment - the donor revoked the auto-payments permission for the recurring subscription", 'leyka')
+        ) && Leyka_Donations_Errors::get_instance()->add_error(
+            'YK-7050',
+            __("Can't make a payment from this mobile phone operator", 'leyka')
+        );
 
     }
 

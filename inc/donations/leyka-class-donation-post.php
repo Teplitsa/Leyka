@@ -226,8 +226,8 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 'leyka_donor_account_error' => empty($meta['leyka_donor_account_error']) ?
                     '' : $meta['leyka_donor_account_error'][0],
                 '_status_log' => empty($meta['_status_log']) ? '' : maybe_unserialize($meta['_status_log'][0]),
-                'error_id' => $this->_main_data->post_status !== 'failed' || empty($meta['leyka_error_id']) ?
-                    '' : $meta['leyka_error_id'],
+                'leyka_error_id' => $this->_main_data->post_status !== 'failed' || empty($meta['leyka_error_id']) ?
+                    '' : $meta['leyka_error_id'][0],
                 'leyka_gateway_response' => empty($meta['leyka_gateway_response']) ? '' : $meta['leyka_gateway_response'][0],
 
                 'leyka_recurrents_cancelled' => isset($meta['leyka_recurrents_cancelled']) ?
@@ -299,8 +299,16 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 return $this->_donation_meta['_status_log'];
 
             case 'error_id':
-                return $this->status === 'failed' && !empty($this->_donation_meta['error_id']) ?
-                    $this->_donation_meta['error_id'] : false;
+            case 'payment_error_id':
+            case 'gateway_error_id':
+            case 'donation_error_id':
+                return $this->status === 'failed' && !empty($this->_donation_meta['leyka_error_id']) ?
+                    $this->_donation_meta['leyka_error_id'] : false;
+
+            case 'error':
+            case 'error_details':
+                return $this->error_id ?
+                    Leyka_Donations_Errors::get_instance()->get_error_by_id($this->error_id, $this->gateway_id) : false;
 
             case 'date':
             case 'date_label':
@@ -634,6 +642,8 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 break;
 
             case 'error_id':
+            case 'payment_error_id':
+            case 'gateway_error_id':
             case 'donation_error_id':
 
                 if($this->status !== 'failed') {

@@ -248,6 +248,17 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'status_log':
                 return $this->get_meta('_status_log');
 
+            case 'error_id':
+            case 'payment_error_id':
+            case 'gateway_error_id':
+            case 'donation_error_id':
+                return $this->status === 'failed' && $this->get_meta('error_id') ? $this->get_meta('error_id') : false;
+
+            case 'error':
+            case 'error_details':
+                return $this->error_id ?
+                    Leyka_Donations_Errors::get_instance()->get_error_by_id($this->error_id, $this->gateway_id) : false;
+
             case 'date':
             case 'date_label':
                 $date_format = get_option('date_format');
@@ -547,6 +558,18 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                 }
 
                 return $this->set_meta('_status_log', $status_log);
+
+            case 'error_id':
+            case 'payment_error_id':
+            case 'gateway_error_id':
+            case 'donation_error_id':
+
+                if($this->status !== 'failed') {
+                    $this->status = 'failed';
+                }
+
+                $this->set_meta('error_id', $value);
+                break;
 
             case 'date':
                 return $this->_set_data('date_created', $value);
