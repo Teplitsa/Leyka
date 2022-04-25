@@ -247,6 +247,8 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
         add_filter('leyka_'.$this->_id.'_get_unknown_donation_field', [$this, 'get_specific_data_value'], 10, 3);
         add_action('leyka_'.$this->_id.'_set_unknown_donation_field', [$this, 'set_specific_data_value'], 10, 3);
 
+        add_filter('leyka_'.$this->_id.'_get_donation_error_id', [$this, 'get_legacy_donation_error_id'], 10, 2);
+
         add_action('leyka_do_recurring_donation-'.$this->_id, [$this, 'do_recurring_donation']);
         add_filter(
             "leyka_{$this->_id}_recurring_subscription_cancelling_link",
@@ -381,6 +383,18 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
      * 2. Initialize $this->_donations_errors_ids array.
      */
     protected function _set_donations_errors() {}
+
+    /**
+     * A special method to get Donation error ID from this Donation's Gateway response data -
+     * it's intended for all old Donations which don't have a dedicated 'error_id' meta value yet.
+     *
+     * @param $error_id string|false
+     * @param $donation Leyka_Donation_Base
+     * @return string|false
+     */
+    public function get_legacy_donation_error_id($error_id, Leyka_Donation_Base $donation) {
+        return $error_id;
+    }
 
     // Handler for Gateway's service calls (activate the donations, etc.):
     public function _handle_service_calls($call_type = '') {}

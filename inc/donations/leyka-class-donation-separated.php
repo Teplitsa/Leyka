@@ -252,7 +252,13 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'payment_error_id':
             case 'gateway_error_id':
             case 'donation_error_id':
-                return $this->status === 'failed' && $this->get_meta('error_id') ? $this->get_meta('error_id') : false;
+
+                $error_id = false;
+                if($this->status === 'failed' && $this->get_meta('error_id')) {
+                    $error_id = $this->get_meta('error_id');
+                }
+
+                return apply_filters('leyka_'.($this->gateway_id ? : '').'_get_donation_error_id', $error_id, $this);
 
             case 'error':
             case 'error_details':

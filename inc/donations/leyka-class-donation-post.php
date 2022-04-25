@@ -302,8 +302,13 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'payment_error_id':
             case 'gateway_error_id':
             case 'donation_error_id':
-                return $this->status === 'failed' && !empty($this->_donation_meta['leyka_error_id']) ?
-                    $this->_donation_meta['leyka_error_id'] : false;
+
+                $error_id = false;
+                if($this->status === 'failed' && !empty($this->_donation_meta['leyka_error_id'])) {
+                    $error_id = $this->_donation_meta['leyka_error_id'];
+                }
+
+                return apply_filters('leyka_'.($this->gateway_id ? : '').'_get_donation_error_id', $error_id, $this);
 
             case 'error':
             case 'error_details':
@@ -492,7 +497,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 return $donor_account_error && is_wp_error($donor_account_error) ? $donor_account_error : false;
 
             case 'gateway_response':
-                return $this->_donation_meta['leyka_gateway_response'];
+                return maybe_unserialize($this->_donation_meta['leyka_gateway_response']);
             case 'gateway_response_formatted':
                 return $this->gateway_id && $this->gateway_id !== 'correction' ?
                     leyka_get_gateway_by_id($this->gateway_id)->get_gateway_response_formatted($this) : [];

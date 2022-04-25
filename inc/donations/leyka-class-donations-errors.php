@@ -126,15 +126,17 @@ class Leyka_Donations_Errors extends Leyka_Singleton {
             return false;
         }
 
-        $this->_errors[$leyka_error_id] = apply_filters('leyka_donation_error', [
-            'name' => $error_name,
-            'description' => empty($error_data['description']) ? '' : esc_attr(trim($error_data['description'])),
-            'recommendation_admin' => empty($error_data['recommendation_admin']) ?
-                '' : esc_attr(trim($error_data['recommendation_admin'])),
-            'recommendation_donor' => empty($error_data['recommendation_donor']) ?
-                '' : esc_attr(trim($error_data['recommendation_donor'])),
-            'docs_link' => empty($error_data['docs_link']) ? '' : esc_attr(trim($error_data['docs_link'])),
-        ]);
+        $this->_errors[$leyka_error_id] = apply_filters(
+            'leyka_donation_error_library_new_entry',
+            new Leyka_Donation_Error($leyka_error_id, $error_name, [
+                'description' => empty($error_data['description']) ? '' : esc_attr(trim($error_data['description'])),
+                'recommendation_admin' => empty($error_data['recommendation_admin']) ?
+                    '' : esc_attr(trim($error_data['recommendation_admin'])),
+                'recommendation_donor' => empty($error_data['recommendation_donor']) ?
+                    '' : esc_attr(trim($error_data['recommendation_donor'])),
+                'docs_link' => empty($error_data['docs_link']) ? '' : esc_attr(trim($error_data['docs_link'])),
+            ])
+        );
 
         return true;
 
