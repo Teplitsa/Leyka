@@ -61,6 +61,44 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
     }
 
+    public function _set_donations_errors() {
+
+        $this->_donations_errors_ids = [
+            '5001' => 'L-5002', '5003' => 'L-5002', '5004' => 'L-7011', '5005' => 'L-5003', '5006' => 'L-7001',
+            '5007' => 'L-7011', '5012' => 'CP-6002', '5013' => 'CP-7041', '5014' => 'L-7003', '5015' => 'L-5001',
+            '5019' => 'L-5003', '5030' => 'CP-8001', '5031' => 'L-5001', '5033' => 'CP-7012', '5034' => 'L-5043',
+            '5036' => 'L-6001', '5041' => 'L-7011', '5043' => 'L-7021', '5051' => 'L-7005', '5054' => 'L-7004',
+            '5057' => 'L-5003', '5059' => 'L-5043', '5062' => 'L-6001', '5063' => 'L-7022', '5065' => 'CP-7042',
+            '5082' => 'L-7001', '5091' => 'L-5001', '5092' => 'L-5001', '5096' => 'CP-9002', '5204' => 'CP-9002',
+            '5206' => 'L-7002', '5207' => 'CP-7002', '5300' => 'L-5043',
+        ];
+
+        return
+            Leyka_Donations_Errors::get_instance()->add_error(
+                'CP-7002',
+                __('3-D Secure authentication is unavailable', 'leyka')
+            ) && Leyka_Donations_Errors::get_instance()->add_error(
+                'CP-7041',
+                __('The operation amount is too big or too small', 'leyka')
+            ) && Leyka_Donations_Errors::get_instance()->add_error(
+                'CP-7042',
+                __('The operation limit of bank card is exceeded', 'leyka')
+            ) && Leyka_Donations_Errors::get_instance()->add_error(
+                'CP-7012',
+                __('The term of card being lost has expired', 'leyka')
+            ) && Leyka_Donations_Errors::get_instance()->add_error(
+                'CP-6002',
+                __("Online payments for the card aren't available", 'leyka')
+            ) && Leyka_Donations_Errors::get_instance()->add_error(
+                'CP-8001',
+                __('Acquirer side error - the transaction is formed incorrectly', 'leyka')
+            ) && Leyka_Donations_Errors::get_instance()->add_error(
+                'CP-9002',
+                __('Unknown acquirer or network error', 'leyka')
+            );
+
+    }
+
     public function is_setup_complete($pm_id = false) {
         return leyka_options()->opt('cp_public_id') && leyka_options()->opt('cp_api_secret');
     }

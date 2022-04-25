@@ -95,6 +95,59 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
     }
 
+    public function _set_donations_errors() {
+
+        $this->_donations_errors_ids = [
+            '3d_secure_failed' => 'L-7002',
+            'call_issuer' => 'CP-9001',
+            'canceled_by_merchant' => 'L-4001',
+            'card_expired' => 'L-7004',
+            'country_forbidden' => 'YK-6011',
+            'deal_expired' => '',
+            'expired_on_capture' => '',
+            'expired_on_confirmation' => 'YK-7005',
+            'fraud_suspected' => 'L-5043',
+            'general_decline' => 'L-4002',
+            'identification_required' => 'YK-6001',
+            'insufficient_funds' => 'L-7005',
+            'internal_timeout' => 'YK-8002',
+            'invalid_card_number' => 'L-7003',
+            'invalid_csc' => 'L-7002',
+            'issuer_unavailable' => 'L-5001',
+            'payment_method_limit_exceeded' => 'YK-7042',
+            'payment_method_restricted' => 'YK-7011',
+            'permission_revoked' => '',
+            'unsupported_mobile_operator' => '',
+        ];
+
+        return
+            Leyka_Donations_Errors::get_instance()->add_error(
+                '',
+                __('', 'leyka')
+            )
+//            && Leyka_Donations_Errors::get_instance()->add_error(
+//                '',
+//                __('', 'leyka')
+//            )
+//            && Leyka_Donations_Errors::get_instance()->add_error(
+//                '',
+//                __('', 'leyka')
+//            )
+//            && Leyka_Donations_Errors::get_instance()->add_error(
+//                '',
+//                __('', 'leyka')
+//            )
+//            && Leyka_Donations_Errors::get_instance()->add_error(
+//                '',
+//                __('', 'leyka')
+//            )
+            && Leyka_Donations_Errors::get_instance()->add_error(
+                '',
+                __('', 'leyka')
+            );
+
+    }
+
     public function is_setup_complete($pm_id = false) {
         if(leyka_options()->opt('yandex_new_api')) {
             return leyka_options()->opt('yandex_shop_id') && leyka_options()->opt('yandex_secret_key');

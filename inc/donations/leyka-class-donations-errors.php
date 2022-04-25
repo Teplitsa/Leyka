@@ -10,7 +10,7 @@ class Leyka_Donations_Errors extends Leyka_Singleton {
 
     // A special Donation error ID for the defaultest of all default cases -
     // when literally nothing is known of error reason or circumstances:
-    const UNKNOWN_ERROR_ID = 'L-0000';
+    const UNKNOWN_ERROR_ID = 'L-0000'; // __('Unknown error', 'leyka')
 
     protected $_errors = [];
     protected $_all_errors_docs_link = '';
@@ -22,74 +22,28 @@ class Leyka_Donations_Errors extends Leyka_Singleton {
             'https://leyka.te-st.ru/docs/donations-errors/'
         );
 
-        $this->_errors = apply_filters(
-            'leyka_donations_errors',
-            [
-                'L-1023' => [
-                    'name' => __('Leyka is unavailable', 'leyka'),
-                    'description' => __("Leyka wasn't available at the moment of the transaction handling", 'leyka'),
-                    'recommendation_admin' => __('', 'leyka'), // "Свяжитесь с тех. поддержкой Лейки (чат в тг / почта / обратная форма, со ссылками) и сообщите о вашей проблеме, включая код этой ошибки и описание ситуации, в которой она возникла."
-//                    'recommendation_donor' => __('', 'leyka'),
-//                    'docs_link' => '', // Pass the docs link here, if it's unique.
-                        // By default, single error docs link is $this->_all_errors_docs_link.'#'.mb_strtolower($error_id)
-                ],
-                'L-5001' => [
-                    'name' => __('Issuing bank for the card is not found or unavailable', 'leyka'),
-                    'description' => __('', 'leyka'),
-                    'recommendation_admin' => __('', 'leyka'),
-                ],
-                'L-5002' => [
-                    'name' => __('Issuing bank for the card refused to process the transaction', 'leyka'),
-                    'description' => __('', 'leyka'),
-                    'recommendation_admin' => __('', 'leyka'),
-                ],
-                'L-5043' => [
-                    'name' => __('Fraud suspicion', 'leyka'),
-                    'description' => __('', 'leyka'),
-                    'recommendation_admin' => __('', 'leyka'),
-                ],
-                'L-7001' => [
-                    'name' => __("CVV/CVC code isn't correct", 'leyka'),
-                    'description' => __('', 'leyka'),
-                    'recommendation_admin' => __('', 'leyka'),
-                ],
-                'L-7002' => [
-                    'name' => __("3D Secure Authentication isn't passed", 'leyka'),
-                    'description' => __('', 'leyka'),
-                    'recommendation_admin' => __('', 'leyka'),
-                ],
-                'L-7003' => [
-                    'name' => __('Incorrect bank card number', 'leyka'),
-                    'description' => __('', 'leyka'),
-                    'recommendation_admin' => __('', 'leyka'),
-                ],
-                'L-7004' => [
-                    'name' => __('Card has expired, or its expiry date is incorrect', 'leyka'),
-                    'description' => __('', 'leyka'),
-                    'recommendation_admin' => __('', 'leyka'),
-                ],
-                'L-7005' => [
-                    'name' => __('Insufficient funds on bank card', 'leyka'),
-                    'description' => __('', 'leyka'),
-                    'recommendation_admin' => __('', 'leyka'),
-                ],
-                'L-9001' => [
-                    'name' => __('Unknown system error', 'leyka'),
-                    'description' => __('', 'leyka'),
-                    'recommendation_admin' => __('', 'leyka'),
-                ],
-                'L-9004' => [
-                    'name' => __('The network refused to make the transaction', 'leyka'),
-                    'description' => __('', 'leyka'),
-                    'recommendation_admin' => __('', 'leyka'),
-                ],
-//                '' => [
-//                    'name' => __('', 'leyka'),
-//                    'description' => __('', 'leyka'),
-//                    'recommendation_admin' => __('', 'leyka'),
-//                ],
-            ]
-        );
+        $this->add_error('L-1023', __('Leyka is unavailable', 'leyka'), [
+            'description' => __("Leyka wasn't available at the moment of the transaction handling", 'leyka'),
+//            'recommendation_admin' => __('', 'leyka'), // "Свяжитесь с тех. поддержкой Лейки (чат в тг / почта / обратная форма, со ссылками) и сообщите о вашей проблеме, включая код этой ошибки и описание ситуации, в которой она возникла."
+        ]);
+        $this->add_error('L-4001', __('Transaction was cancelled by the merchant side', 'leyka'));
+        $this->add_error('L-4002', __('Transaction was declined', 'leyka'));
+        $this->add_error('L-5001', __('Issuing bank for the card is not found or unavailable', 'leyka'));
+        $this->add_error('L-5002', __('Issuing bank for the card refused to process the transaction', 'leyka'));
+        $this->add_error('L-5003', __('Acquirer refused to make a transaction without giving a reason', 'leyka'));
+        $this->add_error('L-5043', __('Fraud suspicion', 'leyka'));
+        $this->add_error('L-6001', __('Card is blocked (all operations are off limits)', 'leyka'));
+        $this->add_error('L-7001', __("CVV/CVC code isn't correct", 'leyka'));
+        $this->add_error('L-7002', __("3D Secure Authentication isn't passed", 'leyka'));
+        $this->add_error('L-7003', __('Incorrect bank card number', 'leyka'));
+        $this->add_error('L-7004', __('Card has expired, or its expiry date is incorrect', 'leyka'));
+        $this->add_error('L-7005', __('Insufficient funds on bank card', 'leyka'));
+        $this->add_error('L-7011', __('Card is lost', 'leyka'));
+        $this->add_error('L-7021', __('Card has been reported as stolen', 'leyka'));
+        $this->add_error('L-9004', __('The network refused to make the transaction', 'leyka'));
+//        $this->add_error('', __('', 'leyka'), []);
+
+        $this->_errors = apply_filters('leyka_donations_errors', $this->_errors);
 
     }
 
@@ -108,35 +62,38 @@ class Leyka_Donations_Errors extends Leyka_Singleton {
         return $this->_errors;
     }
 
-    public function get_error_by_id($error_id) {
+    public function get_error_by_id($leyka_error_id) {
 
-        $error_id = esc_attr(trim($error_id));
+        $leyka_error_id = esc_attr($leyka_error_id);
 
-        return empty($this->_errors[$error_id]) ? false : $this->_errors[$error_id];
+        return empty($this->_errors[$leyka_error_id]) ? false : $this->_errors[$leyka_error_id];
 
     }
 
     /**
      * @return boolean True if new error was successfully added, false otherwise.
      */
-    public function add_error(array $error_data, $rewrite_existing_error = false) {
+    public function add_error($leyka_error_id, $error_name, array $error_data = [], $rewrite_existing_error = false) {
 
-        if( !array_key_exists('id', $error_data) || !array_key_exists('name', $error_data) ) {
+        $leyka_error_id = esc_attr($leyka_error_id);
+        $error_name = esc_attr($error_name);
+
+        if( !$leyka_error_id || !$error_name ) {
             return false;
         }
-        if(array_key_exists($error_data['id'], $this->_errors) && !$rewrite_existing_error) {
+        if( !empty($this->_errors[$leyka_error_id]) && !$rewrite_existing_error ) {
             return false;
         }
 
-        $this->_errors[$error_data['id']] = [
-            'name' => esc_attr(trim($error_data['name'])),
+        $this->_errors[$leyka_error_id] = apply_filters('leyka_donation_error', [
+            'name' => $error_name,
             'description' => empty($error_data['description']) ? '' : esc_attr(trim($error_data['description'])),
             'recommendation_admin' => empty($error_data['recommendation_admin']) ?
                 '' : esc_attr(trim($error_data['recommendation_admin'])),
             'recommendation_donor' => empty($error_data['recommendation_donor']) ?
                 '' : esc_attr(trim($error_data['recommendation_donor'])),
             'docs_link' => empty($error_data['docs_link']) ? '' : esc_attr(trim($error_data['docs_link'])),
-        ];
+        ]);
 
         return true;
 
@@ -146,18 +103,17 @@ class Leyka_Donations_Errors extends Leyka_Singleton {
 
 class Leyka_Donation_Error {
 
-    protected $_id;
-    protected $_name;
-    protected $_description = '';
-    protected $_recommendation_for_admin = '';
-    protected $_recommendation_for_donor = '';
-    protected $_docs_link = '';
-//    An array of entries like this: ['leyka_error_id' => ['name' => '', 'description' => '', 'recommendation_admin' => '', 'recommendation_donor' => '', 'docs_link' => '',]].
+    protected $_id; // String
+    protected $_name; // String
+    protected $_description = ''; // HTML
+    protected $_recommendation_for_admin = ''; // HTML
+    protected $_recommendation_for_donor = ''; // HTML
+    protected $_docs_link = ''; // URL
 
-    public function __construct($id, $name, array $params = []) {
+    public function __construct($leyka_error_id, $error_name, array $params = []) {
 
-        $this->_id = trim(esc_attr($id));
-        $this->_name = trim(esc_attr($name));
+        $this->_id = esc_attr($leyka_error_id);
+        $this->_name = esc_attr($error_name);
 
         if( !empty($params['description']) ) {
             $this->_description = esc_html($params['description']);

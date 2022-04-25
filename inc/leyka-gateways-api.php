@@ -218,7 +218,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     protected $_payment_methods = []; // Supported PMs array
     protected $_options = []; // Gateway configs
 
-    protected $_donation_errors_ids = []; // A list of Gateway errors IDs and their respective Leyka errors IDs
+    protected $_donations_errors_ids = []; // A list of Gateway errors IDs and their respective Leyka errors IDs
 
     protected function __construct() {
 
@@ -227,7 +227,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
             'leyka_icon_'.$this->_id,
             file_exists(LEYKA_PLUGIN_DIR."/gateways/{$this->_id}/icons/{$this->_id}.png") ?
                 LEYKA_PLUGIN_BASE_URL."/gateways/{$this->_id}/icons/{$this->_id}.png" :
-                '' /** @todo Set an URL to the anonymous gateway icon?? */
+                LEYKA_PLUGIN_BASE_URL.'/img/pm-icons/custom-payment-info.svg' // Unknown Gateway icon
         );
 
         $this->_set_attributes(); // Initialize main Gateway's attributes
@@ -680,16 +680,18 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
      */
     public function get_donation_error_id($gateway_error_code, $return_gateway_error_code_if_no_match = false) {
 
-        return empty($this->_donation_errors_ids[$gateway_error_code]) ?
+        return empty($this->_donations_errors_ids[$gateway_error_code]) ?
             ( !!$return_gateway_error_code_if_no_match ? $gateway_error_code : Leyka_Donations_Errors::UNKNOWN_ERROR_ID ) :
-            $this->_donation_errors_ids[$gateway_error_code];
+            $this->_donations_errors_ids[$gateway_error_code];
 
     }
 
     /**
-     * A service method to add Gateway specific errors to the Donations errors library. Should call Leyka_Donations_Errors::get_instance()->add();
+     * A service method to:
+     * 1. Add Gateway specific errors to the Donations errors library via Leyka_Donations_Errors::get_instance()->add_error();
+     * 2. Initialize $this->_donations_errors_ids array.
      *
-     * @return boolean True if Donation errors were added successfully, false otherwise.
+     * @return boolean True if Donations errors were added successfully, false otherwise.
      */
     protected function _set_donations_errors() {
         return true;
