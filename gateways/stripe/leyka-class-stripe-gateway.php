@@ -343,7 +343,8 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                                 'init_recurring_donation' => $init_recurring_donation->id,
                                 'stripe_invoice_id' => $response_data->id,
                                 'stripe_payment_intent_id' => $response_data->payment_intent,
-                                'stripe_subscription_id' => $response_data->subscription
+                                'stripe_subscription_id' => $response_data->subscription,
+                                'date' => ''
                             ],
                             ['recalculate_total_amount' => true]
                         );

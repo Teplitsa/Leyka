@@ -100,7 +100,7 @@ abstract class Leyka_Donations extends Leyka_Singleton {
         $settings = array_merge(['recalculate_total_amount' => false,], $settings);
 
         $new_donation_id = $this->add(array_merge([
-            'date' => $original->date,
+            'date' => date('Y-m-d', strtotime($original->date)),
             'status' => $original->status,
             'payment_type' => $original->payment_type,
             'purpose_text' => $original->title,

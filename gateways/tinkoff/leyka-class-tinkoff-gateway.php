@@ -77,6 +77,7 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
                 'payment_type' => 'rebill',
                 'amount_total' => 'auto',
                 'init_recurring_donation' => $init_recurring_donation->id,
+                'date' => ''
             ],
             ['recalculate_total_amount' => true,]
         );

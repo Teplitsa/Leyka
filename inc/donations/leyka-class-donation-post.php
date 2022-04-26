@@ -603,8 +603,12 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                     return false;
                 }
 
-                $res = wp_update_post(['ID' => $this->_id, 'post_status' => $value,]);
-                if( !$res || is_wp_error($res) ) {
+                global $wpdb;
+
+                $update_query = $wpdb->prepare("UPDATE {$wpdb->prefix}posts SET post_status = '{$value}' WHERE ID = {$this->_id}");
+                $res = $wpdb->query($update_query);
+
+                if( !$res ) {
                     return false;
                 }
 
