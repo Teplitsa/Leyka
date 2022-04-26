@@ -1625,7 +1625,10 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         $donation = Leyka_Donations::get_instance()->get_donation($donation_id);?>
 
         <div>
-            <?php if( !$donation->gateway_response_formatted ) {
+
+            <?php do_action('leyka_donation_gateway_response_metabox_before_content', $donation);
+
+            if( !$donation->gateway_response_formatted ) {
                 _e('No gateway response has been received', 'leyka');
             } else {
 
@@ -1652,7 +1655,71 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
             <?php }
 
+                if($donation->status === 'failed' && $donation->error_id) { // Donation error details sub-block
+
+                    $error = $donation->error;?>
+
+                <div id="leyka-donation-error-details">
+
+                    <h2 class="error-details-header error-name"><?php echo $error->name;?></h2>
+
+                    <div class="error-details">
+
+                    <?php if($error->description) {?>
+                        <div class="error-description">
+
+                            <h3><?php _e('Error description', 'leyka');?></h3>
+
+                            <p><?php echo $error->description;?></p>
+
+                            <a href="<?php echo $error->docs_link;?>" target="_blank"><?php _e('Full description', 'leyka');?></a>
+
+                        </div>
+                    <?php }
+
+                    echo '<pre>'.print_r($error, 1).'</pre>';
+
+                    if($error->recommendation_admin) {?>
+                        <div class="error-recommendation error-recommendation-admin">
+
+                            <h3><?php _e('Recommendation for a donations administrator', 'leyka');?></h3>
+
+                            <p><?php echo $error->recommendation_admin;?></p>
+
+                        </div>
+                    <?php }
+
+                    if($error->recommendation_donor) {?>
+                        <div class="error-recommendation error-recommendation-donor">
+
+                            <h3><?php _e('Recommendation for the donor', 'leyka');?></h3>
+
+                            <p><?php echo $error->recommendation_donor;?></p>
+
+                        </div>
+                    <?php }?>
+
+
+                    </div>
+
+                    <div class="error-details-footer">
+
+                        <div class="error-code"><?php echo sprintf(__('Error code: %s', 'leyka'), $error->id);?></div>
+
+                        <div class="errors-docs-link">
+                            <a href="<?php echo Leyka_Donations_Errors::get_instance()->all_errors_docs_link;?>"><?php _e('All errors', 'leyka');?></a>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <?php } // Donation error details sub-block - END
+
+                do_action('leyka_donation_gateway_response_metabox_after_content', $donation);
+
             }?>
+
         </div>
 
     <?php }

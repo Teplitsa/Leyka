@@ -343,6 +343,8 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
             $tooltip_content = '<strong>'.$error->name.':</strong> '.mb_lcfirst($error->description)
                 .'<a class="leyka-tooltip-error-content-more" href="#">'.__('More info', 'leyka').'</a>';
 
+//        echo '<pre>'.print_r($donation->gateway_response, 1).'</pre>';
+
         } else {
             $tooltip_content = '<strong>'.$donation->status_label.':</strong> '.mb_lcfirst($donation->status_description);
         }
@@ -392,7 +394,11 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
             'leyka_admin_donation_gateway_pm_column_content',
             "<span class='leyka-gateway-pm has-tooltip leyka-tooltip-align-left' title='".$gateway_label.' / '.$pm_label."'>
                 <div class='leyka-gateway-name'>"
-                    .($gateway ? "<img src='".$gateway->icon_url."' alt='$gateway_label'>" : '<img src="'.LEYKA_PLUGIN_BASE_URL.'/img/pm-icons/custom-payment-info.svg" alt="'.$pm.'">')
+                    .(
+                        $gateway ?
+                            '<img src="'.$gateway->icon_url.'" alt="'.$gateway_label.'">' :
+                            '<img src="'.LEYKA_PLUGIN_BASE_URL.'/img/pm-icons/custom-payment-info.svg" alt="'.$pm.'">'
+                    )
                 ."</div>
                 <div class='leyka-pm-name'>"
                     .(is_a($pm, 'Leyka_Payment_Method') ? "<img src='".$pm->admin_icon_url."' alt='$pm_label'>" : '')

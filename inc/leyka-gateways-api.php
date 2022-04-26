@@ -222,18 +222,22 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
     protected function __construct() {
 
-        // A gateway icon is an attribute that is persistent for all gateways, it's just changing values:
-        $this->_icon = apply_filters(
-            'leyka_icon_'.$this->_id,
-            file_exists(LEYKA_PLUGIN_DIR."/gateways/{$this->_id}/icons/{$this->_id}.png") ?
-                LEYKA_PLUGIN_BASE_URL."/gateways/{$this->_id}/icons/{$this->_id}.png" :
-                LEYKA_PLUGIN_BASE_URL.'/img/pm-icons/custom-payment-info.svg' // Unknown Gateway icon
-        );
+        parent::__construct();
 
         $this->_set_attributes(); // Initialize main Gateway's attributes
         $this->_set_options_defaults(); // Set configurable options in admin area
         $this->_set_gateway_pm_list(); // Initialize or restore Gateway's PMs list and all their options
         $this->_set_donations_errors(); // Initialize Gateway's possible Donations errors list
+
+        // A gateway icon is an attribute that is persistent for all gateways, it's just changing values:
+        $this->_icon = !$this->_icon && file_exists(LEYKA_PLUGIN_DIR."/gateways/{$this->_id}/icons/{$this->_id}.svg") ?
+            LEYKA_PLUGIN_BASE_URL."/gateways/{$this->_id}/icons/{$this->_id}.svg" : $this->_icon;
+        $this->_icon = !$this->_icon && file_exists(LEYKA_PLUGIN_DIR."/gateways/{$this->_id}/icons/{$this->_id}.png") ?
+            LEYKA_PLUGIN_BASE_URL."/gateways/{$this->_id}/icons/{$this->_id}.png" : $this->_icon;
+        $this->_icon = apply_filters(
+            'leyka_icon_'.$this->_id,
+            $this->_icon ? : LEYKA_PLUGIN_BASE_URL.'/img/pm-icons/custom-payment-info.svg' // Unknown Gateway icon
+        );
 
         do_action('leyka_initialize_gateway', $this, $this->_id); // So one could change some of gateway's attributes
 
@@ -279,13 +283,20 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     public function __get($param) {
 
         switch($param) {
-            case 'id': return $this->_id;
+            case 'id':
+            case 'ID':
+                return $this->_id;
+
             case 'title':
             case 'name':
-            case 'label': return $this->_title;
+            case 'label':
+                return $this->_title;
+
             case 'description': return $this->_description;
+
             case 'icon':
             case 'icon_url':
+
                 $icon = false;
                 if($this->_icon) {
                     $icon = $this->_icon;
@@ -299,6 +310,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
             case 'has_recurring':
             case 'has_recurring_support':
                 return !!$this->_may_support_recurring;
+
             case 'has_recurring_auto_cancelling':
             case 'has_recurring_auto_cancelling_support':
                 return $this->_may_support_recurring && !!$this->_recurring_auto_cancelling_supported;
@@ -309,14 +321,19 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
             case 'docs':
             case 'docs_url':
             case 'docs_href':
-            case 'docs_link': return $this->_docs_link ? $this->_docs_link : false;
+            case 'docs_link':
+                return $this->_docs_link ? : false;
+
             case 'registration_url':
             case 'registration_href':
-            case 'registration_link': return $this->_registration_link ? $this->_registration_link : false;
+            case 'registration_link':
+                return $this->_registration_link ? : false;
+
             case 'has_wizard': return !!$this->_has_wizard;
             case 'wizard_url':
             case 'wizard_href':
-            case 'wizard_link': return admin_url('admin.php?page=leyka_settings_new&screen=wizard-'.$this->_id);
+            case 'wizard_link':
+                return admin_url('admin.php?page=leyka_settings_new&screen=wizard-'.$this->_id);
 
             default:
                 return false;

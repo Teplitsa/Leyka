@@ -149,8 +149,8 @@ class Leyka_Donation_Error {
     protected $_id; // String
     protected $_name; // String
     protected $_description = ''; // HTML
-    protected $_recommendation_for_admin = ''; // HTML
-    protected $_recommendation_for_donor = ''; // HTML
+    protected $_recommendation_admin = ''; // HTML
+    protected $_recommendation_donor = ''; // HTML
     protected $_docs_link = ''; // URL
 
     public function __construct($leyka_error_id, $error_name, array $params = []) {
@@ -161,11 +161,11 @@ class Leyka_Donation_Error {
         if( !empty($params['description']) ) {
             $this->_description = esc_html($params['description']);
         }
-        if( !empty($params['recommendation_for_admin']) ) {
-            $this->_recommendation_for_admin = esc_html($params['recommendation_for_admin']);
+        if( !empty($params['recommendation_admin']) ) {
+            $this->_recommendation_admin = esc_html($params['recommendation_admin']);
         }
-        if( !empty($params['recommendation_for_donor']) ) {
-            $this->_recommendation_for_donor = esc_html($params['recommendation_for_donor']);
+        if( !empty($params['recommendation_donor']) ) {
+            $this->_recommendation_donor = esc_html($params['recommendation_donor']);
         }
         if( !empty($params['docs_link']) ) {
             $this->_description = esc_url($params['docs_link']);
@@ -197,12 +197,12 @@ class Leyka_Donation_Error {
             case 'recommendation_admin':
             case 'recommendation_for_admin':
             case 'admin_recommendation':
-                return $this->_recommendation_for_admin;
+                return $this->_recommendation_admin;
 
             case 'recommendation_donor':
             case 'recommendation_for_donor':
             case 'donor_recommendation':
-                return $this->_recommendation_for_donor;
+                return $this->_recommendation_donor;
 
             case 'docs_link':
             case 'docs_url':

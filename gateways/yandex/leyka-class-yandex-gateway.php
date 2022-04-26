@@ -9,6 +9,16 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
     protected $_new_api_redirect_url = '';
 
+    protected function __construct() {
+
+        parent::__construct();
+
+        if(leyka_options()->get_value('yandex_new_api') && !function_exists('yookassaSdkLoadClass')) {
+            require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
+        }
+
+    }
+
     protected function _set_attributes() {
 
         $this->_id = 'yandex';
@@ -126,8 +136,11 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             __('The operations limit for YooMoney wallet is exceeded', 'leyka')
         ) && Leyka_Donations_Errors::get_instance()->add_error(
             'YK-8002',
-            __("Technical troubles on the YooKassa side - payment wasn't proceeded in time", 'leyka')
-        ) && Leyka_Donations_Errors::get_instance()->add_error(
+            __("Payment wasn't finished due to timeout", 'leyka'), [
+                'description' => __("Technical troubles on the YooKassa side - the payment wasn't completed in time.", 'leyka'),
+                'recommendation_admin' => __("For some reason, the donor stopped at the payment details entering step. Please, contact him/her, and ask to make a donation anew, but now he/she shoul finish it.", 'leyka'),
+                'recommendation_donor' => __("You didn't enter your payment details in time, and the payment was aborted. Your money are intact, but if you'd like to finish the payment, you should make it anew (and now complete it).", 'leyka'),
+        ]) && Leyka_Donations_Errors::get_instance()->add_error(
             'YK-7042',
             __('The operations limit for the bank card or the shop is exceeded', 'leyka')
         ) && Leyka_Donations_Errors::get_instance()->add_error(
@@ -183,13 +196,21 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             $donation->add_gateway_response($gateway_response);
         }
 
-        if($donation->status === 'failed') {
-            return;
+        if($donation->status !== 'failed') {
+
+            $donation->status = 'failed';
+            Leyka_Donation_Management::send_error_notifications($donation); // Emails will be sent only if their options are on
+
         }
 
-        $donation->status = 'failed';
-
-        Leyka_Donation_Management::send_error_notifications($donation); // Emails will be sent only if respective options are on
+        if(
+            is_a($gateway_response, 'YooKassa\Request\Payments\PaymentResponse')
+            && $gateway_response->status === 'canceled'
+            && !empty($gateway_response->cancellation_details)
+            && !empty($gateway_response->cancellation_details->reason)
+        ) {
+            $donation->error_id = $this->get_donation_error_id($gateway_response->cancellation_details->reason);
+        }
 
     }
 
@@ -206,9 +227,9 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
         if(leyka_options()->opt('yandex_new_api')) {
 
-            if( !function_exists('yookassaSdkLoadClass') ) {
-                require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
-            }
+//            if( !function_exists('yookassaSdkLoadClass') ) {
+//                require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
+//            }
 
             $client = new YooKassa\Client();
             $client->setAuth(leyka_options()->opt('yandex_shop_id'), leyka_options()->opt('yandex_secret_key'));
@@ -361,9 +382,9 @@ techMessage="'.$tech_message.'"/>');
             case 'response':
             case 'notify':
 
-                if( !function_exists('yookassaSdkLoadClass') ) {
-                    require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
-                }
+//                if( !function_exists('yookassaSdkLoadClass') ) {
+//                    require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
+//                }
 
                 $notification = json_decode(file_get_contents('php://input'), true);
 
@@ -562,10 +583,6 @@ techMessage="'.$tech_message.'"/>');
             return [];
         }
 
-        if( !function_exists('yookassaSdkLoadClass') ) {
-            require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
-        }
-
         $response = is_object($donation->gateway_response) || is_array($donation->gateway_response) ?
             serialize($donation->gateway_response) : $donation->gateway_response;
 
@@ -667,9 +684,9 @@ techMessage="'.$tech_message.'"/>');
 
         if(leyka_options()->opt('yandex_new_api')) {
 
-            if( !function_exists('yookassaSdkLoadClass') ) {
-                require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
-            }
+//            if( !function_exists('yookassaSdkLoadClass') ) {
+//                require_once LEYKA_PLUGIN_DIR.'gateways/yandex/lib/autoload.php';
+//            }
 
             $client = new YooKassa\Client();
             $client->setAuth(leyka_options()->opt('yandex_shop_id'), leyka_options()->opt('yandex_secret_key'));
@@ -918,6 +935,34 @@ techMessage="'.$tech_message.'"/>');
         }
 
         return $order_number;
+
+    }
+
+    public function get_legacy_donation_error_id($error_id, Leyka_Donation_Base $donation) {
+
+        if($error_id) {
+            return $error_id;
+        } else if($donation->status !== 'failed') {
+            return false;
+        }
+
+        $gateway_response = $donation->gateway_response;
+        if(
+            is_a($gateway_response, 'YooKassa\Request\Payments\PaymentResponse')
+            && $gateway_response->status === 'canceled'
+            && !empty($gateway_response->cancellation_details)
+            && !empty($gateway_response->cancellation_details->reason)
+        ) {
+
+            $error_id = $this->get_donation_error_id($gateway_response->cancellation_details->reason);
+
+            if($error_id) {
+                $this->error_id = $error_id;
+            }
+
+        }
+
+        return $error_id;
 
     }
 

@@ -791,13 +791,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
         $gateway_response = $donation->gateway_response;
         if(is_array($gateway_response) && !empty($gateway_response['ReasonCode'])) {
-
             $error_id = $this->get_donation_error_id($gateway_response['ReasonCode']);
-
-            if($error_id) {
-                $this->error_id = $error_id;
-            }
-
         }
 
         return $error_id;
