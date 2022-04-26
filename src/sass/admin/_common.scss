@@ -237,19 +237,35 @@ i.icon-leyka-donation-status {
 .leyka-donation-status-label {
     
     &.label-submitted {
+
         color: $color-border-semidark;
+
+        @include leyka-donation-status-icon($color-border-semidark);
+
     }
 
     &.label-funded {
+
         color: $color-ok-message;
+
+        @include leyka-donation-status-icon($color-ok-message);
+
     }
 
     &.label-refunded {
+
         color: $color-refunded-message;
+
+        @include leyka-donation-status-icon($color-refunded-message);
+
     }
 
     &.label-failed {
+
         color: $color-error-message;
+
+        @include leyka-donation-status-icon($color-error-message);
+
     }
 
 }

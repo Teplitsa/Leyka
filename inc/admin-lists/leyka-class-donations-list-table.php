@@ -340,10 +340,9 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
             $error = is_a($error, 'Leyka_Donation_Error') ?
                 $error : Leyka_Donations_Errors::get_instance()->get_error_by_id(false);
 
-            $tooltip_content = '<strong>'.$error->name.':</strong> '.mb_lcfirst($error->description)
+            $tooltip_content = '<strong>'.sprintf(__('Error %s', 'leyka'), $error->id).'</strong>: '.mb_lcfirst($error->name)
+                .'<p>'.$error->description.'</p>'
                 .'<a class="leyka-tooltip-error-content-more" href="#">'.__('More info', 'leyka').'</a>';
-
-//        echo '<pre>'.print_r($donation->gateway_response, 1).'</pre>';
 
         } else {
             $tooltip_content = '<strong>'.$donation->status_label.':</strong> '.mb_lcfirst($donation->status_description);
@@ -353,7 +352,6 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
             .'<span class="leyka-amount-and-status">'
                 .'<div class="leyka-amount-itself">'.$amount.'</div>'
                 .'<div class="leyka-donation-status-label label-'.$donation->status.' has-tooltip leyka-tooltip-align-left leyka-tooltip-on-click" title="">'
-                    .'<i class="icon-leyka-donation-status icon-'.$donation->status.'"></i>'
                     .Leyka::get_donation_status_info($donation->status, 'short_label')
                 .'</div>'
                 .'<span class="leyka-tooltip-content">'

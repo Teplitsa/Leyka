@@ -176,19 +176,30 @@
 }
 
 @mixin leyka-admin-tooltip-styles {
-    color: $color-white !important;
 
-    //background-color: $color-wizard-tooltip-bg !important;
+    color: $color-white !important;
     background: $color-wizard-tooltip-bg;
 
     font-family: $font-body !important;
-    font-size: 11px !important;
-    font-weight: 500;
-    line-height: 17px;
+    font-size: 12px !important;
+    font-weight: 400;
+    line-height: 16px;
 
     overflow-wrap: break-word;
     word-wrap: break-word;
     text-align: center;
+
+    p {
+        font-size: inherit !important;
+    }
+
+    a {
+        display: inline-block;
+        border-bottom: 1px dashed $color-white;
+        color: $color-white;
+        text-decoration: none;
+    }
+
 }
 
 @mixin leyka-field-title {
@@ -738,6 +749,22 @@
             border-bottom-width: 1px;
         }
 
+    }
+
+}
+
+@mixin leyka-donation-status-icon($icon-color) {
+
+    &:before {
+        content: '';
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border: none;
+        border-radius: 50%;
+        flex: 0 0 10px;
+        margin-right: 4px;
+        background-color: $icon-color;
     }
 
 }

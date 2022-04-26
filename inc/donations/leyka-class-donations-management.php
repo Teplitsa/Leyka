@@ -1677,8 +1677,6 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                         </div>
                     <?php }
 
-                    echo '<pre>'.print_r($error, 1).'</pre>';
-
                     if($error->recommendation_admin) {?>
                         <div class="error-recommendation error-recommendation-admin">
 
@@ -1699,7 +1697,6 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                         </div>
                     <?php }?>
 
-
                     </div>
 
                     <div class="error-details-footer">
@@ -1707,7 +1704,9 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                         <div class="error-code"><?php echo sprintf(__('Error code: %s', 'leyka'), $error->id);?></div>
 
                         <div class="errors-docs-link">
-                            <a href="<?php echo Leyka_Donations_Errors::get_instance()->all_errors_docs_link;?>"><?php _e('All errors', 'leyka');?></a>
+                            <a href="<?php echo Leyka_Donations_Errors::get_instance()->all_errors_docs_link;?>" target="_blank">
+                                <?php _e('All errors', 'leyka');?>
+                            </a>
                         </div>
 
                     </div>

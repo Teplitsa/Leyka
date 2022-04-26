@@ -130,16 +130,19 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             __('The payment time for a two-staged (captured) payment is expired', 'leyka')
         ) && Leyka_Donations_Errors::get_instance()->add_error(
             'YK-7005',
-            __('The payment time for the payment is expired', 'leyka')
-        ) && Leyka_Donations_Errors::get_instance()->add_error(
+            __('The allowed time for the payment is expired', 'leyka'), [
+                'description' => __("Donor waited for too long, so the payment wasn't completed in time.", 'leyka'),
+                'recommendation_admin' => __("For some reason, the donor stopped at the payment details entering step. Please, contact him/her, and ask to make a donation anew, but now he/she should finish it.", 'leyka'),
+                'recommendation_donor' => __("You didn't enter your payment details in time, so the payment was aborted. Your money are intact, but if you'd like to finish the donation, you should make it anew (and now complete it).", 'leyka'),
+        ]) && Leyka_Donations_Errors::get_instance()->add_error(
             'YK-6001',
             __('The operations limit for YooMoney wallet is exceeded', 'leyka')
         ) && Leyka_Donations_Errors::get_instance()->add_error(
             'YK-8002',
-            __("Payment wasn't finished due to timeout", 'leyka'), [
-                'description' => __("Technical troubles on the YooKassa side - the payment wasn't completed in time.", 'leyka'),
-                'recommendation_admin' => __("For some reason, the donor stopped at the payment details entering step. Please, contact him/her, and ask to make a donation anew, but now he/she shoul finish it.", 'leyka'),
-                'recommendation_donor' => __("You didn't enter your payment details in time, and the payment was aborted. Your money are intact, but if you'd like to finish the payment, you should make it anew (and now complete it).", 'leyka'),
+            __("Payment wasn't finished due to YooKassa internal timeout", 'leyka'), [
+                'description' => __("Technical troubles on the YooKassa side - the payment handling couldn't be completed in time allowed for the operation.", 'leyka'),
+                'recommendation_admin' => __("For some reason, YooKassa didn't process this payment in time allowed (30 seconds by default). Please, contact your YooKassa manager, and ask for the reason. If it was temporary technical failure, contact the donor and ask him/her to make a donation anew.", 'leyka'),
+                'recommendation_donor' => __("The payment gateway didn't process your payment in time, and the payment was aborted. Your money are intact, but if you'd like to finish the payment, you should make it anew. If the problem persists, please contact the website technical support and tell them that you have a problem making a donation due to the gateway behavior.", 'leyka'),
         ]) && Leyka_Donations_Errors::get_instance()->add_error(
             'YK-7042',
             __('The operations limit for the bank card or the shop is exceeded', 'leyka')

@@ -10,7 +10,7 @@ class Leyka_Donations_Errors extends Leyka_Singleton {
 
     // A special Donation error ID for the defaultest of all default cases -
     // when literally nothing is known of error reason or circumstances:
-    const UNKNOWN_ERROR_ID = 'L-0000'; // __('Unknown error', 'leyka')
+    const UNKNOWN_ERROR_ID = 'L-0000';
 
     protected $_errors = [];
     protected $_all_errors_docs_link = '';
@@ -24,7 +24,6 @@ class Leyka_Donations_Errors extends Leyka_Singleton {
 
         $this->add_error('L-1023', __('Leyka is unavailable', 'leyka'), [
             'description' => __("Leyka wasn't available at the moment of the transaction handling", 'leyka'),
-//            'recommendation_admin' => __('', 'leyka'), // "Свяжитесь с тех. поддержкой Лейки (чат в тг / почта / обратная форма, со ссылками) и сообщите о вашей проблеме, включая код этой ошибки и описание ситуации, в которой она возникла."
         ]);
         $this->add_error('L-4001', __('Transaction was cancelled by the merchant side', 'leyka'));
         $this->add_error('L-4002', __('Transaction was declined', 'leyka'));
@@ -42,7 +41,6 @@ class Leyka_Donations_Errors extends Leyka_Singleton {
         $this->add_error('L-7021', __('Card has been reported as stolen', 'leyka'));
         $this->add_error('L-9001', __('Payment with selected method was refused without a reason given', 'leyka'));
         $this->add_error('L-9004', __('The network refused to make the transaction', 'leyka'));
-//        $this->add_error('', __('', 'leyka'), []);
 
         $this->_errors = apply_filters('leyka_donations_errors', $this->_errors);
 
