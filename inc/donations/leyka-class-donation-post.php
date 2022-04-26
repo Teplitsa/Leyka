@@ -584,6 +584,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'title':
             case 'payment_title':
             case 'purpose_text':
+
                 if($value === $this->_main_data->post_title) {
                     return false;
                 }

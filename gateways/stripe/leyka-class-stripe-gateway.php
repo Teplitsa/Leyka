@@ -344,7 +344,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                                 'stripe_invoice_id' => $response_data->id,
                                 'stripe_payment_intent_id' => $response_data->payment_intent,
                                 'stripe_subscription_id' => $response_data->subscription,
-                                'date' => ''
+                                'date' => '' // don't copy the date
                             ],
                             ['recalculate_total_amount' => true]
                         );

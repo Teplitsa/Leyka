@@ -153,7 +153,7 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
                 'amount_total' => 'auto',
                 'init_recurring_donation' => $init_recurring_donation->id,
                 'sber_binding_id' => $init_recurring_donation->sber_binding_id,
-                'date' => ''
+                'date' => '' // don't copy the date
             ],
             ['recalculate_total_amount' => true,]
         );

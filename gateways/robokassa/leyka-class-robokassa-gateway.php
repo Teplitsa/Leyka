@@ -158,7 +158,7 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
                 'status' => 'submitted',
                 'payment_type' => 'rebill',
                 'init_recurring_donation' => $init_recurring_donation->id,
-                'date' => ''
+                'date' => '' // don't copy the date
             ],
             ['recalculate_total_amount' => true,]
         );
