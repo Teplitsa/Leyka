@@ -1264,6 +1264,7 @@ jQuery(document).ready(function($){
                     classes: {
                         'ui-tooltip':
                             ($tooltip_element.hasClass('leyka-tooltip-wide') ? 'leyka-tooltip-wide' : '')+' '
+                            +($tooltip_element.hasClass('leyka-tooltip-x-wide') ? 'leyka-tooltip-x-wide' : '')+' '
                             +($tooltip_element.hasClass('leyka-tooltip-white') ? 'leyka-tooltip-white' : '')+' '
                             +($tooltip_element.hasClass('leyka-tooltip-align-left') ? 'leyka-tooltip-align-left' : '')+' '
                             +$tooltip_element.data('tooltip-additional-classes')
@@ -1272,6 +1273,8 @@ jQuery(document).ready(function($){
 
                         let $element = $(this),
                             tooltip_content = $element.siblings('.leyka-tooltip-content:first').html();
+
+                        // console.log(this, 'Inner tooltip content:', $element.siblings('.leyka-tooltip-content:first'))
 
                         return tooltip_content ? tooltip_content : $element.prop('title');
 
@@ -1289,7 +1292,7 @@ jQuery(document).ready(function($){
         }
     });
 
-    if($tooltips.length && typeof $().tooltip !== 'undefined' ) {
+    if($tooltips.length && typeof $().tooltip !== 'undefined') {
 
         // Init all tooltips on initial page rendering:
         $tooltips.each(function(i, element){
@@ -1302,14 +1305,14 @@ jQuery(document).ready(function($){
         $tooltips_on_click.on('click.leyka', function(){ // Tooltips on click - open
 
             let $element = $(this);
-            if($element.hasClass('leyka-tooltip-on-click')) {
+            // if($element.hasClass('leyka-tooltip-on-click')) {
 
-                if($element.hasClass('tooltip-opened')) { // Tootips on click - hide
-                    $element.leyka_admin_tooltip('close').removeClass('tooltip-opened');
-                } else {
-                    $element.addClass('tooltip-opened').leyka_admin_tooltip('open'); //.mouseenter();
-                }
+            if($element.hasClass('tooltip-opened')) { // Tootips on click - hide
+                $element.leyka_admin_tooltip('close').removeClass('tooltip-opened');
+            } else {
+                $element.addClass('tooltip-opened').leyka_admin_tooltip('open'); //.mouseenter();
             }
+            // }
 
         }).on('mouseout.leyka', function(e){ // Prevent mouseout and other related events from firing their handlers
             e.stopImmediatePropagation();
@@ -1332,6 +1335,26 @@ jQuery(document).ready(function($){
         // Tooltips on click - END
 
     }
+
+    // "Hidden" tooltips on click:
+    // if(typeof $().tooltip !== 'undefined') {
+    //     $body.on('click.leyka', '.has-tooltip.leyka-tooltip-on-click.leyka-inner-tooltip', function(e){
+    //
+    //         e.preventDefault();
+    //         e.stopImmediatePropagation();
+    //
+    //         let $element = $(this);
+    //         // console.log('HERE:', this, $element.siblings('.leyka-tooltip-content'))
+    //
+    //         $element.leyka_admin_tooltip({
+    //             content: $element.siblings('.leyka-tooltip-content:first').html()
+    //         });
+    //         $element.addClass('tooltip-opened').leyka_admin_tooltip('open');
+    //
+    //     });
+    // }
+    // "Hidden" tooltips on click - END
+
     // Tooltips - END
 
     // Multi-valued item complex fields:
@@ -3105,6 +3128,20 @@ jQuery(document).ready(function($){
             $filters_warning_message.html(leyka.no_filters_while_exporting_warning_message).show();
 
         }
+
+    });
+
+    $('body').on('click.leyka', '.leyka-tooltip-error-content-more', function(e){
+
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        let $link = $(this),
+            $tooltip_wrapper = $link.parents('.ui-widget-content:first'),
+            tooltip_content_extended = $link.siblings('.error-full-info-tooltip-content').html(),
+            tooltip_content_default = $tooltip_wrapper.html();
+
+        $tooltip_wrapper.addClass('leyka-tooltip-x-wide leyka-tooltip-white').html(tooltip_content_extended);
 
     });
 

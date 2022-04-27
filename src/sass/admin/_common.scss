@@ -291,6 +291,12 @@ i.icon-leyka-recurring-subscription-status {
 }
 // Recurring subscription status icons - END
 
+// Donations errors full info boxes:
+.leyka-donation-error-details {
+    @include leyka-donation-error-full-info();
+}
+// Donations errors full info boxes - END
+
 // Tooltips:
 i.has-tooltip {
     cursor: pointer;
@@ -313,6 +319,12 @@ i.has-tooltip {
         max-width: 400px;
         font-weight: normal;
         text-align: left;
+    }
+
+    &.leyka-tooltip-x-wide {
+        width: 450px;
+        max-width: 550px;
+        height: auto;
     }
 
     &.leyka-tooltip-white {

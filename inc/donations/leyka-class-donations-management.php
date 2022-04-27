@@ -1653,67 +1653,11 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                     }?>
                 </div>
 
-            <?php }
+                <?php }
 
                 if($donation->status === 'failed' && $donation->error_id) { // Donation error details sub-block
-
-                    $error = $donation->error;?>
-
-                <div id="leyka-donation-error-details">
-
-                    <h2 class="error-details-header error-name"><?php echo $error->name;?></h2>
-
-                    <div class="error-details">
-
-                    <?php if($error->description) {?>
-                        <div class="error-description">
-
-                            <h3><?php _e('Error description', 'leyka');?></h3>
-
-                            <p><?php echo $error->description;?></p>
-
-                            <a href="<?php echo $error->docs_link;?>" target="_blank"><?php _e('Full description', 'leyka');?></a>
-
-                        </div>
-                    <?php }
-
-                    if($error->recommendation_admin) {?>
-                        <div class="error-recommendation error-recommendation-admin">
-
-                            <h3><?php _e('Recommendation for a donations administrator', 'leyka');?></h3>
-
-                            <p><?php echo $error->recommendation_admin;?></p>
-
-                        </div>
-                    <?php }
-
-                    if($error->recommendation_donor) {?>
-                        <div class="error-recommendation error-recommendation-donor">
-
-                            <h3><?php _e('Recommendation for the donor', 'leyka');?></h3>
-
-                            <p><?php echo $error->recommendation_donor;?></p>
-
-                        </div>
-                    <?php }?>
-
-                    </div>
-
-                    <div class="error-details-footer">
-
-                        <div class="error-code"><?php echo sprintf(__('Error code: %s', 'leyka'), $error->id);?></div>
-
-                        <div class="errors-docs-link">
-                            <a href="<?php echo Leyka_Donations_Errors::get_instance()->all_errors_docs_link;?>" target="_blank">
-                                <?php _e('All errors', 'leyka');?>
-                            </a>
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <?php } // Donation error details sub-block - END
+                    leyka_show_donation_error_full_info($donation->error);
+                } // Donation error details sub-block - END
 
                 do_action('leyka_donation_gateway_response_metabox_after_content', $donation);
 

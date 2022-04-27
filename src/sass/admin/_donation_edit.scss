@@ -335,96 +335,14 @@
     }
 
     // Donation gateway response - Donation error details:
-    #leyka-donation-error-details {
+    .leyka-donation-error-details {
+
+        @include leyka-donation-error-full-info();
 
         background: $leyka-color-error-light-2;
-        border-radius: 6px;
-        margin-top: 16px;
 
-        font-size: 14px;
-        line-height: 18px;
-
-        h2.error-name {
-
-            display: flex;
-            flex-flow: row nowrap;
-
-            padding: 12px 12px 12px 16px;
-            border-bottom: 1px solid $leyka-color-error-light-1;
-
-            font-size: 16px;
-            line-height: 16px;
-            font-weight: 550;
-
-            &:before {
-
-                content: '';
-                display: inline-block;
-                margin-right: 11px;
-
-                @include leyka-colored-icon('../../img/icon-info.svg', 16px, $color-error-message);
-
-            }
-
-        }
-
-        .error-details {
-
-            padding: 0 12px 12px 12px;
-
-            h3 {
-
-                margin: 12px 0 4px 0;
-
-                font-size: 14px;
-                line-height: 18px;
-                font-weight: 550;
-
-            }
-
-            p {
-
-                margin: 0 0 4px 0;
-                font-size: 14px;
-                line-height: 18px;
-                //font-weight: 400;
-
-                &:last-child {
-                    margin-bottom: 0;
-                }
-
-            }
-
-            a {
-                font-size: 12px;
-                font-weight: 600;
-                line-height: 16px;
-            }
-
-        }
-
-        .error-details-footer {
-
-            display: flex;
-            flex-flow: row nowrap;
-            justify-content: space-between;
-
-            padding: 0 12px 12px 12px;
-
-            .error-code {
-                color: $color-text-light;
-                font-size: 10px;
-                font-weight: bold;
-                line-height: 16px;
-            }
-
-            .errors-docs-link a {
-                color: $leyka-admin-color-link;
-                font-size: 12px;
-                font-weight: bold;
-                line-height: 16px;
-            }
-
+        i.close, .error-details-after-footer { // Hide the unneeded elements
+            display: none;
         }
 
     }

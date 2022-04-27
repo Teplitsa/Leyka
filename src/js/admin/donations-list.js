@@ -35,4 +35,18 @@ jQuery(document).ready(function($){
 
     });
 
+    $('body').on('click.leyka', '.leyka-tooltip-error-content-more', function(e){
+
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        let $link = $(this),
+            $tooltip_wrapper = $link.parents('.ui-widget-content:first'),
+            tooltip_content_extended = $link.siblings('.error-full-info-tooltip-content').html(),
+            tooltip_content_default = $tooltip_wrapper.html();
+
+        $tooltip_wrapper.addClass('leyka-tooltip-x-wide leyka-tooltip-white').html(tooltip_content_extended);
+
+    });
+
 });

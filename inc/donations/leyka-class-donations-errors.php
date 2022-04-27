@@ -208,6 +208,7 @@ class Leyka_Donation_Error {
 
             default:
                 return '';
+
         }
 
     }
