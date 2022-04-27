@@ -1090,8 +1090,10 @@
 
         display: flex;
         flex-flow: row nowrap;
+        align-items: center;
 
-        padding: 12px 12px 12px 16px;
+        margin: 0;
+        padding: 12px;
         border-bottom: 1px solid $leyka-color-error-light-1;
 
         font-size: 16px;
@@ -1114,10 +1116,10 @@
 
         i.close {
 
-            flex: 16px 0 0;
+            flex: 14px 0 0;
             cursor: pointer;
 
-            @include leyka-colored-icon('../../img/icon-help-close.svg', 16px, $color-border-normal);
+            @include leyka-colored-icon('../../img/icon-help-close.svg', 14px, $color-border-normal);
 
         }
 
@@ -1168,7 +1170,7 @@
 
         .error-code {
             color: $color-text-light;
-            font-size: 10px;
+            font-size: 12px;
             font-weight: bold;
             line-height: 16px;
         }
@@ -1178,6 +1180,25 @@
             font-size: 12px;
             font-weight: bold;
             line-height: 16px;
+            text-decoration: underline;
+        }
+
+    }
+
+    .error-details-after-footer {
+
+        padding: 0 12px 12px 12px;
+
+        button {
+
+            @include leyka-admin-btn();
+
+            width: 100%;
+            height: auto;
+            font-size: 14px;
+            line-height: 18px;
+            font-weight: 500;
+
         }
 
     }

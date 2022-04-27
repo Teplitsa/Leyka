@@ -360,7 +360,7 @@ if( !function_exists('leyka_show_donation_error_full_info') ) {
             </div>
 
             <div class="error-details-after-footer">
-                <button><?php _e('Understood', 'leyka');?></button>
+                <button class="close"><?php _e('Understood', 'leyka');?></button>
             </div>
 
         </div>

@@ -3141,7 +3141,18 @@ jQuery(document).ready(function($){
             tooltip_content_extended = $link.siblings('.error-full-info-tooltip-content').html(),
             tooltip_content_default = $tooltip_wrapper.html();
 
-        $tooltip_wrapper.addClass('leyka-tooltip-x-wide leyka-tooltip-white').html(tooltip_content_extended);
+        $tooltip_wrapper
+            .addClass('error-full-info-tooltip leyka-tooltip-x-wide leyka-tooltip-white')
+            .html(tooltip_content_extended);
+
+    }).on('click.leyka', '.error-full-info-tooltip', function(e){
+
+        if( !$(e.target).hasClass('close') ) {
+
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+        }
 
     });
 

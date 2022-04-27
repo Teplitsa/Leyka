@@ -161,6 +161,26 @@
     .error-full-info-tooltip-content {
         display: none;
     }
+    .ui-tooltip.error-full-info-tooltip {
+        padding: 0;
+    }
+    .leyka-donation-error-details {
+
+        margin: 0;
+
+        .error-details {
+            padding: 0 20px 20px 20px;
+        }
+
+        .error-details-footer {
+            padding: 0 20px 20px 20px;
+        }
+
+        .error-details-after-footer {
+            padding: 0 20px 20px 20px;
+        }
+
+    }
     // Donations errors display - END
 
 }
