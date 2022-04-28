@@ -625,8 +625,6 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             return [];
         }
 
-        echo '<pre>'.print_r($vars, 1).'</pre>';
-
         $vars_final = [
             __('Transaction ID:', 'leyka') => $this->_get_value_if_any($vars, 'TransactionId'),
             __('Outcoming sum:', 'leyka') => $this->_get_value_if_any($vars, 'Amount'),

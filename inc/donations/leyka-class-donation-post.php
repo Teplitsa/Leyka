@@ -127,7 +127,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
     /**
      * @deprecated Use self::get_init_recurring_donation($donation) instead.
      * @param mixed $donation
-     * @return Leyka_Donation_Post|boolean A Donation object found, or false if param is wrong or nothing found.
+     * @return Leyka_Donation_Base|false A Donation object found, or false if param is wrong or nothing found.
      */
     public static function get_init_recurrent_donation($donation) {
         return self::get_init_recurring_donation($donation);
@@ -330,6 +330,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
             case 'error':
             case 'error_details':
+
                 $value = $this->error_id ?
                     Leyka_Donations_Errors::get_instance()->get_error_by_id($this->error_id, $this->gateway_id) : false;
                 break;
@@ -549,6 +550,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
             case 'subscription_email':
             case 'donor_subscription_email':
+
                 $value = $this->_donation_meta['leyka_donor_subscription_email'] ? :
                     ($this->_donation_meta['leyka_donor_email'] ? $this->_donation_meta['leyka_donor_email'] : '');
                 break;
@@ -606,17 +608,17 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'init_recurring':
             case 'init_recurring_donation':
 
-                if($this->payment_type === 'rebill') {
+                if($this->payment_type !== 'rebill') {
+                    break;
+                }
 
-                    if($this->is_init_recurring_donation) {
-                        $value = $this;
-                    } else if($this->init_recurring_donation_id) {
+                if($this->is_init_recurring_donation) {
+                    $value = $this;
+                } else if($this->init_recurring_donation_id) {
 
-                        try {
-                            $value = Leyka_Donations::get_instance()->get_donation($this->init_recurring_donation_id);
-                        } catch(Exception $ex) {} // No init recurring donation in DB, for some reason
-
-                    }
+                    try {
+                        $value = Leyka_Donations::get_instance()->get_donation($this->init_recurring_donation_id);
+                    } catch(Exception $ex) {} // No init recurring donation in DB, for some reason
 
                 }
                 break;
@@ -631,15 +633,15 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'recurring_funded_rebills_number':
             case 'recurring_successful_rebills_number':
 
-                if($this->is_init_recurring_donation) {
-
-                    if($this->_donation_meta['leyka_recurring_funded_rebills_number'] === false) { // The rebills cache is empty
-                        $this->update_recurring_funded_rebills_number(); // ... so recalculate the funded rebills number
-                    }
-
-                    $value = absint($this->_donation_meta['leyka_recurring_funded_rebills_number']);
-
+                if( !$this->is_init_recurring_donation ) {
+                    break;
                 }
+
+                if($this->_donation_meta['leyka_recurring_funded_rebills_number'] === false) { // The rebills cache is empty
+                    $this->update_recurring_funded_rebills_number(); // ... so recalculate the funded rebills number
+                }
+
+                $value = absint($this->_donation_meta['leyka_recurring_funded_rebills_number']);
                 break;
 
             case 'recurring_active':
@@ -651,12 +653,12 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'rebilling_is_active':
             case 'recurring_is_active':
 
-                if($this->payment_type === 'rebill') {
-
-                    $init_recurring_donation = $this->init_recurring_donation;
-                    $value = $init_recurring_donation ? $init_recurring_donation->get_meta('_rebilling_is_active') : NULL;
-
+                if($this->payment_type !== 'rebill') {
+                    break;
                 }
+
+                $init_recurring_donation = $this->init_recurring_donation;
+                $value = $init_recurring_donation ? $init_recurring_donation->get_meta('_rebilling_is_active') : NULL;
                 break;
 
             case 'recurring_canceled':

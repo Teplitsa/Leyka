@@ -362,7 +362,10 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'gateway_label':
 
                 if(empty($this->_main_data->gateway_id)) {
-                    return __('Unknown gateway', 'leyka');
+
+                    $value = __('Unknown gateway', 'leyka');
+                    break;
+
                 }
 
                 $gateway = leyka_get_gateway_by_id($this->_main_data->gateway_id);
@@ -530,31 +533,30 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
             case 'init_recurring_donation_id':
 
-                if($this->payment_type === 'rebill') {
-
-                    $init_recurring_donation_id = $this->get_meta('init_recurring_donation_id');
-
-                    $value = $init_recurring_donation_id && $init_recurring_donation_id != $this->id ?
-                        $init_recurring_donation_id : $this->id;
-
+                if($this->payment_type !== 'rebill') {
+                    break;
                 }
+
+                $init_recurring_donation_id = $this->get_meta('init_recurring_donation_id');
+
+                $value = $init_recurring_donation_id && $init_recurring_donation_id != $this->id ?
+                    $init_recurring_donation_id : $this->id;
                 break;
 
             case 'init_recurring':
             case 'init_recurring_donation':
 
-                $value = false;
-                if($this->payment_type === 'rebill') {
+                if($this->payment_type !== 'rebill') {
+                    break;
+                }
 
-                    if($this->is_init_recurring_donation) {
-                        $value = $this;
-                    } else if($this->init_recurring_donation_id) {
+                if($this->is_init_recurring_donation) {
+                    $value = $this;
+                } else if($this->init_recurring_donation_id) {
 
-                        try {
-                            $value = Leyka_Donations::get_instance()->get_donation($this->init_recurring_donation_id);
-                        } catch(Exception $ex) {} // No init recurring donation in DB, for some reason
-
-                    }
+                    try {
+                        $value = Leyka_Donations::get_instance()->get_donation($this->init_recurring_donation_id);
+                    } catch(Exception $ex) {} // No init recurring donation in DB, for some reason
 
                 }
                 break;
@@ -570,15 +572,15 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'recurring_successful_rebills_number':
 
                 $value = false;
-                if($this->is_init_recurring_donation) {
-
-                    if($this->get_meta('recurring_funded_rebills_number') === false) { // The rebills cache is empty
-                        $this->update_recurring_funded_rebills_number(); // ... so recalculate the funded rebills number
-                    }
-
-                    $value = absint($this->_donation_meta['recurring_funded_rebills_number']);
-
+                if( !$this->is_init_recurring_donation ) {
+                    break;
                 }
+
+                if($this->get_meta('recurring_funded_rebills_number') === false) { // The rebills cache is empty
+                    $this->update_recurring_funded_rebills_number(); // ... so recalculate the funded rebills number
+                }
+
+                $value = absint($this->_donation_meta['recurring_funded_rebills_number']);
                 break;
 
             case 'recurring_active':
@@ -591,7 +593,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'recurring_is_active':
 
                 if($this->payment_type !== 'rebill') {
-                    return false;
+                    break;
                 }
 
                 $init_recurring_donation = $this->init_recurring_donation;
