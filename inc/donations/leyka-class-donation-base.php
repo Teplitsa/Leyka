@@ -253,6 +253,12 @@ abstract class Leyka_Donation_Base {
 
     }
 
+    /**
+     * @param string $action Either 'add'|'+' to add +1 to Donation's cache value, or 'remove'|'-' to subtract 1 from it, or ''|false to recalculate it completely.
+     * @return boolean True if calculation/update are successful, false otherwise.
+     */
+    abstract public function update_recurring_funded_rebills_number($action = '');
+
     /** Donation metadata get & set methods are public to use them in the "gateway-specific data" hooks. */
     abstract public function get_meta($meta_key);
     abstract public function set_meta($meta_name, $value);

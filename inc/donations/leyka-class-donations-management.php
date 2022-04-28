@@ -129,6 +129,17 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             $campaign = new Leyka_Campaign($donation->campaign_id);
             $campaign->update_total_funded_amount($donation, $old_status === 'funded' ? 'remove' : 'add');
 
+            // For non-init recurring donations only - update the recurring subscription's funded rebills number:
+            if($donation->type === 'rebill' && !$donation->is_init_recurring) {
+
+                $init_recurring_donation = $donation->init_recurring;
+
+                if($init_recurring_donation) {
+                    $init_recurring_donation->update_recurring_funded_rebills_number($old_status === 'funded' ? 'remove' : 'add');
+                }
+
+            }
+
         }
 
     }

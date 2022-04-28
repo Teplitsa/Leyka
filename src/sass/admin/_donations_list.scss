@@ -30,17 +30,13 @@
                 background: $leyka-color-error-light-1;
             }
 
+            &.leyka-donation-funded-row {
+                background: $color-ok-light;
+            }
+
             // Columns width:
             .column-id {
-
                 width: 80px;
-
-                a.donation-edit-link {
-                    font-size: 10px;
-                    font-weight: 500;
-                    line-height: 16px;
-                }
-
             }
 
             .column-payment_type {
@@ -48,7 +44,6 @@
             }
 
             .column-campaign {
-                //width: 350px;
                 min-width: 250px;
                 max-width: 350px;
             }

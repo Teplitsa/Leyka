@@ -726,9 +726,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         }
 
-        $donation_title = $campaign->payment_title ?
-            $campaign->payment_title :
-            ($campaign->title ? $campaign->title : sprintf(__('Donation #%s', 'leyka'), $donation->id));
+        $donation_title = $campaign->payment_title ? :
+            ($campaign->title ? : sprintf(__('Donation #%s', 'leyka'), $donation->id));
+
         if($donation->title !== $donation_title) {
             $donation->title = $donation_title;
         }

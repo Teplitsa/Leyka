@@ -230,6 +230,9 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                     '' : $meta['leyka_error_id'][0],
                 'leyka_gateway_response' => empty($meta['leyka_gateway_response']) ? '' : $meta['leyka_gateway_response'][0],
 
+                'leyka_recurring_funded_rebills_number' => isset($meta['leyka_recurring_funded_rebills_number'][0]) ?
+                    absint($meta['leyka_recurring_funded_rebills_number'][0]) : false,
+
                 'leyka_recurrents_cancelled' => isset($meta['leyka_recurrents_cancelled']) ?
                     $meta['leyka_recurrents_cancelled'][0] : false,
                 'leyka_recurrents_cancel_date' => isset($meta['leyka_recurrents_cancel_date']) ?
@@ -597,27 +600,46 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 break;
 
             case 'init_recurring_donation_id':
-
-                $value = $this->payment_type === 'rebill' ?
-                    ($this->_main_data->post_parent ? $this->_main_data->post_parent : $this->_id) : false;
+                $value = $this->payment_type === 'rebill' ? ($this->_main_data->post_parent ? : $this->_id) : false;
                 break;
 
+            case 'init_recurring':
             case 'init_recurring_donation':
 
-                if($this->payment_type === 'rebill' && $this->init_recurring_donation_id) {
+                if($this->payment_type === 'rebill') {
 
-                    try {
-                        $value = Leyka_Donations::get_instance()->get_donation($this->init_recurring_donation_id);
-                    } catch(Exception $ex) {} // No init recurring donation in DB, for some reason
+                    if($this->is_init_recurring_donation) {
+                        $value = $this;
+                    } else if($this->init_recurring_donation_id) {
 
-                } else if($this->payment_type === 'rebill') {
-                    $value = $this;
+                        try {
+                            $value = Leyka_Donations::get_instance()->get_donation($this->init_recurring_donation_id);
+                        } catch(Exception $ex) {} // No init recurring donation in DB, for some reason
+
+                    }
+
                 }
                 break;
 
             case 'is_init_recurring':
             case 'is_init_recurring_donation':
                 $value = $this->type === 'rebill' && $this->init_recurring_donation_id === $this->id;
+                break;
+
+            case 'funded_rebills_number':
+            case 'successful_rebills_number':
+            case 'recurring_funded_rebills_number':
+            case 'recurring_successful_rebills_number':
+
+                if($this->is_init_recurring_donation) {
+
+                    if($this->_donation_meta['leyka_recurring_funded_rebills_number'] === false) { // The rebills cache is empty
+                        $this->update_recurring_funded_rebills_number(); // ... so recalculate the funded rebills number
+                    }
+
+                    $value = absint($this->_donation_meta['leyka_recurring_funded_rebills_number']);
+
+                }
                 break;
 
             case 'recurring_active':
@@ -899,7 +921,11 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                     return false;
                 }
 
-                $this->set_meta('leyka_payment_type', $value);
+                $old_value = $this->payment_type;
+
+                if($this->set_meta('leyka_payment_type', $value) && ($old_value === 'rebill' || $value === 'rebill')) {
+                    $this->update_recurring_funded_rebills_number($old_value === 'rebill' ? 'remove' : 'add');
+                }
                 break;
 
             case 'campaign':
@@ -1018,6 +1044,44 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
     }
 
+    public function update_recurring_funded_rebills_number($action = '') {
+
+        if( !$this->id || $this->type !== 'rebill' ) {
+            return false;
+        }
+
+        if($action && !in_array($action, ['add', '+', 'remove', '-',])) {
+            return false;
+        }
+
+        $init_recurring_donation = $this->is_init_recurring_donation ? $this : $this->init_recurring_donation;
+        if( !$init_recurring_donation ) {
+            return false;
+        }
+
+        if(in_array($action, ['add', '+',])) {
+
+            $rebills_number = $this->get_meta('leyka_recurring_funded_rebills_number');
+            $rebills_number = $rebills_number ? absint($rebills_number) + 1 : 1;
+
+        } else if(in_array($action, ['remove', '-'])) {
+
+            $rebills_number = $this->get_meta('leyka_recurring_funded_rebills_number');
+            $rebills_number = $rebills_number > 0 ? $rebills_number - 1 : 0;
+
+        } else { // Total recalculation
+
+            $rebills_number = Leyka_Donations::get_instance()->get_count([
+                'status' => 'funded',
+                'recurring_rebills_of' => $this->id,
+            ]);
+
+        }
+
+        return $init_recurring_donation->set_meta('leyka_recurring_funded_rebills_number', $rebills_number);
+
+    }
+
     public function get_meta($meta_key) {
 
         $meta_key = trim($meta_key);
@@ -1091,22 +1155,6 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
     }
 
 }
-
-/** @todo Check if this code is needed */
-//function leyka_cancel_recurrents_action() {
-//
-//    if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_recurrent_cancel') || empty($_POST['donation_id'])) {
-//        die('-1');
-//    }
-//
-//    $_POST['donation_id'] = (int)$_POST['donation_id'];
-//
-//    $donation = new Leyka_Donation($_POST['donation_id']);
-//    do_action('leyka_cancel_recurrents-'.$donation->gateway_id, $donation);
-//
-//}
-//add_action('wp_ajax_leyka_cancel_recurrents', 'leyka_cancel_recurrents_action');
-//add_action('wp_ajax_nopriv_leyka_cancel_recurrents', 'leyka_cancel_recurrents_action');
 
 /**
  * Old donation class - a pseudonim of Leyka_Donation_Post, added for backward-compatibility.

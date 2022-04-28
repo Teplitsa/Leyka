@@ -122,7 +122,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
     public function single_row($donation) {
 
-        echo '<tr'.($donation->status === 'failed' ? ' class="leyka-donation-failed-row"' : '').'>';
+        echo '<tr class="leyka-donation-'.$donation->status.'-row">';
         $this->single_row_columns($donation);
         echo '</tr>';
 

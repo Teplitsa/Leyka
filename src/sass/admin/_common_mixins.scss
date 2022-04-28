@@ -1086,6 +1086,15 @@
     font-size: 14px;
     line-height: 18px;
 
+    a {
+        color: $leyka-admin-color-link !important;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 12px;
+        text-decoration: none;
+        border-bottom: 1px solid $leyka-admin-color-link !important;
+    }
+
     h2.error-name {
 
         display: flex;
@@ -1152,11 +1161,11 @@
 
         }
 
-        a {
-            font-size: 12px;
-            font-weight: 600;
-            line-height: 16px;
-        }
+        //a {
+        //    font-size: 12px;
+        //    font-weight: 600;
+        //    line-height: 16px;
+        //}
 
     }
 
@@ -1175,13 +1184,13 @@
             line-height: 16px;
         }
 
-        .errors-docs-link a {
-            color: $leyka-admin-color-link;
-            font-size: 12px;
-            font-weight: bold;
-            line-height: 16px;
-            text-decoration: underline;
-        }
+        //.errors-docs-link a {
+        //    color: $leyka-admin-color-link;
+        //    font-size: 12px;
+        //    font-weight: bold;
+        //    line-height: 16px;
+        //    text-decoration: underline;
+        //}
 
     }
 
