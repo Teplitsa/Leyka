@@ -143,9 +143,13 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             $this->_main_data = $wpdb->get_row($wpdb->prepare("SELECT * FROM $wpdb->posts WHERE ID = %d LIMIT 1", $donation));
 
             if( !$this->_main_data) {
-                throw new Exception(sprintf(__('No post found by ID while constructing a donation ("%s" given)', 'leyka'), $donation));
+                throw new Exception(
+                    sprintf(__('No post found by ID while constructing a donation ("%s" given)', 'leyka'), $donation)
+                );
             } else if($this->_main_data->post_type !== Leyka_Donation_Management::$post_type) {
-                throw new Exception(sprintf(__('Wrong post type for donation ("%s" given)', 'leyka'), $this->_main_data->post_type));
+                throw new Exception(
+                    sprintf(__('Wrong post type for donation ("%s" given)', 'leyka'), $this->_main_data->post_type)
+                );
             }
 
             $this->_id = $donation;
