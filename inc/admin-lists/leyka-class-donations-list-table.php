@@ -341,10 +341,9 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
                 $error : Leyka_Donations_Errors::get_instance()->get_error_by_id(false);
 
             $tooltip_content = '<strong>'.sprintf(__('Error %s', 'leyka'), $error->id).'</strong>: '.mb_lcfirst($error->name)
-                .'<p>'.$error->description.'</p>'
-                .'<a class="leyka-tooltip-error-content-more leyka-inner-tooltip leyka-tooltip-x-wide leyka-tooltip-white" title="" href="#">'
+                .'<p><a class="leyka-tooltip-error-content-more leyka-inner-tooltip leyka-tooltip-x-wide leyka-tooltip-white" title="" href="#">'
                     .__('More info', 'leyka')
-                .'</a>'
+                .'</a></p>'
                 .'<div class="error-full-info-tooltip-content">'.leyka_show_donation_error_full_info($error, true).'</div>';
 
         } else {
@@ -353,19 +352,41 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
         $column_content = '<span class="leyka-amount '.apply_filters('leyka_admin_donation_amount_column_css', ($donation->amount < 0.0 ? 'leyka-amount-negative' : '')).'">'
             .'<span class="leyka-amount-and-status">'
-                .'<div class="leyka-amount-itself">'.$amount.'</div>'
-                .'<div class="leyka-donation-status-label label-'.$donation->status.' has-tooltip leyka-tooltip-align-left leyka-tooltip-on-click" title="">'
-                    .Leyka::get_donation_status_info($donation->status, 'short_label')
+                .'<div class="leyka-amount-itself '.(leyka_options()->opt('admin_donations_list_amount_display') == 'amount-column' ? 'has-tooltip leyka-tooltip-align-left' : '').'" title="">'
+                    .$amount
                 .'</div>'
-                .'<span class="leyka-tooltip-content">'
-                    .apply_filters(
-                        'leyka_admin_donations_list_donation_status_tooltip_content',
-                        $tooltip_content,
-                        $donation
-                    )
-                .'</span>'
-            .'</span>
-        </span>';
+//                .(
+//                    leyka_options()->opt('admin_donations_list_amount_display') == 'amount-column' ?
+//                        '<span class="leyka-tooltip-content">'
+//                            .apply_filters(
+//                                'leyka_admin_donations_list_donation_amounts_tooltip_content',
+//                                '<ul>'
+//                                .'<li>'
+//                                    .__('Full donation amount:', 'leyka')
+//                                    .'<strong class="leyka-black">'.$donation->amount_formatted.'&nbsp;'.$donation->currency_label.'</strong>'
+//                                .'</li>'
+//                                .'<li>'
+//                                    .__('Total donation amount:', 'leyka')
+//                                    .'<strong class="leyka-grey">'.$donation->amount_total_formatted.'&nbsp;'.$donation->currency_label.'</strong>'
+//                                .'</li>'
+//
+//                                .'</ul>',
+//                                $donation
+//                            )
+//                        .'</span>' : ''
+//                )
+            .'</span>'
+            .'<div class="leyka-donation-status-label label-'.$donation->status.' has-tooltip leyka-tooltip-align-left leyka-tooltip-on-click" title="">'
+                .Leyka::get_donation_status_info($donation->status, 'short_label')
+            .'</div>'
+            .'<span class="leyka-tooltip-content">'
+                .apply_filters(
+                    'leyka_admin_donations_list_donation_status_tooltip_content',
+                    $tooltip_content,
+                    $donation
+                )
+            .'</span>'
+        .'</span>';
 
         return apply_filters('leyka_admin_donation_amount_column_content', $column_content, $donation);
 

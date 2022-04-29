@@ -3032,7 +3032,7 @@ jQuery(document).ready(function($){
                             +'</span>';
 
                         return '<span class="leyka-amount '+(data_amount.amount < 0.0 ? 'leyka-amount-negative' : '')+'">'
-                            +'<i class="icon-leyka-donation-status icon-'+row_data.status.id+' has-tooltip leyka-tooltip-align-left" title="'+row_data.status.description+'"></i>'
+                            // +'<i class="icon-leyka-donation-status icon-'+row_data.status.id+' has-tooltip leyka-tooltip-align-left" title="'+row_data.status.description+'"></i>'
                             +'<span class="leyka-amount-and-status">'
                             +'<div class="leyka-amount-itself">'+amount_html+'</div>'
                             +'<div class="leyka-donation-status-label label-'+row_data.status.id+'">'+row_data.status.label+'</div>'
@@ -3138,8 +3138,7 @@ jQuery(document).ready(function($){
 
         let $link = $(this),
             $tooltip_wrapper = $link.parents('.ui-widget-content:first'),
-            tooltip_content_extended = $link.siblings('.error-full-info-tooltip-content').html(),
-            tooltip_content_default = $tooltip_wrapper.html();
+            tooltip_content_extended = $link.parents('.ui-tooltip-content').find('.error-full-info-tooltip-content').html();
 
         $tooltip_wrapper
             .addClass('error-full-info-tooltip leyka-tooltip-x-wide leyka-tooltip-white')

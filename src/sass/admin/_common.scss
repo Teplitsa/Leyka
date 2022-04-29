@@ -299,7 +299,7 @@ i.icon-leyka-recurring-subscription-status {
 
 // Tooltips:
 i.has-tooltip {
-    cursor: pointer;
+    //cursor: pointer;
 }
 
 .ui-tooltip {
@@ -1082,10 +1082,10 @@ ul.ui-autocomplete {
 
     // ---- Admin lists common styles: ---- //
 
-    .striped > tbody > :nth-child(2n+1) {
-        background-color: $color-white;
-        filter: brightness(97%);
-    }
+    //.striped > tbody > :nth-child(2n+1) { /** @todo Inter-rows "zebra-like" background coloring. Check it with Nick. */
+    //    background-color: $color-white;
+    //    filter: brightness(97%);
+    //}
 
     // Filters board:
     .admin-list-filters {
@@ -1361,8 +1361,9 @@ ul.ui-autocomplete {
                 .leyka-amount {
 
                     display: flex;
-                    flex-flow: row nowrap;
-                    align-items: flex-start;
+                    flex-flow: column nowrap;
+                    justify-content: flex-end;
+                    align-items: flex-end;
 
                     font-weight: 500;
 

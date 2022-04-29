@@ -1627,9 +1627,6 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
     }
 
-    /**
-     * @param $donation WP_Post
-     */
     public static function gateway_response_metabox() {
 
         $donation_id = empty($_GET['donation']) ? false : absint($_GET['donation']);
@@ -1707,6 +1704,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             <tbody><?php // All table data will be received via AJAX ?></tbody>
 
         </table>
+
         <?php
     }
 

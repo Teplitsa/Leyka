@@ -190,7 +190,13 @@
     text-align: center;
 
     p {
+
         font-size: inherit !important;
+
+        &:last-of-type {
+            margin-bottom: 0;
+        }
+
     }
 
     a {
@@ -198,6 +204,7 @@
         border-bottom: 1px dashed $color-white;
         color: $color-white;
         text-decoration: none;
+        line-height: 1.2;
     }
 
 }

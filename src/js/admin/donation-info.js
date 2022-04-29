@@ -231,7 +231,7 @@ jQuery(document).ready(function($){
                             +'</span>';
 
                         return '<span class="leyka-amount '+(data_amount.amount < 0.0 ? 'leyka-amount-negative' : '')+'">'
-                            +'<i class="icon-leyka-donation-status icon-'+row_data.status.id+' has-tooltip leyka-tooltip-align-left" title="'+row_data.status.description+'"></i>'
+                            // +'<i class="icon-leyka-donation-status icon-'+row_data.status.id+' has-tooltip leyka-tooltip-align-left" title="'+row_data.status.description+'"></i>'
                             +'<span class="leyka-amount-and-status">'
                             +'<div class="leyka-amount-itself">'+amount_html+'</div>'
                             +'<div class="leyka-donation-status-label label-'+row_data.status.id+'">'+row_data.status.label+'</div>'

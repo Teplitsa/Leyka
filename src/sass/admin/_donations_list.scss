@@ -30,9 +30,9 @@
                 background: $leyka-color-error-light-1;
             }
 
-            &.leyka-donation-funded-row {
-                background: $color-ok-light;
-            }
+            //&.leyka-donation-funded-row { /** @todo Funded Donations rows background color. Check it w. Nick */
+            //    background: $color-ok-light;
+            //}
 
             // Columns width:
             .column-id {
@@ -53,13 +53,17 @@
                 max-width: 250px;
             }
 
+            .column-amount {
+                width: 90px;
+            }
+
             .column-date {
                 width: 70px;
             }
 
             .column-gateway_pm {
 
-                min-width: 170px;
+                width: 85px;
                 max-width: 230px;
 
                 .leyka-gateway-pm {
@@ -68,7 +72,7 @@
                     flex-flow: row nowrap;
                     align-items: flex-start;
 
-                    cursor: pointer;
+                    //cursor: pointer;
 
                     width: 20px; // Use the deliberately small width, so icons inside would widen only by their needs
 

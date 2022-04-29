@@ -42,8 +42,7 @@ jQuery(document).ready(function($){
 
         let $link = $(this),
             $tooltip_wrapper = $link.parents('.ui-widget-content:first'),
-            tooltip_content_extended = $link.siblings('.error-full-info-tooltip-content').html(),
-            tooltip_content_default = $tooltip_wrapper.html();
+            tooltip_content_extended = $link.parents('.ui-tooltip-content').find('.error-full-info-tooltip-content').html();
 
         $tooltip_wrapper
             .addClass('error-full-info-tooltip leyka-tooltip-x-wide leyka-tooltip-white')
