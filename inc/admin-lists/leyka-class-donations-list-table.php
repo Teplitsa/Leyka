@@ -251,7 +251,14 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
-        $column_content = '<div class="donation-campaign"><a href="'.admin_url('post.php?post='.$campaign->id.'&action=edit').'">'.$campaign->title.'</a></div>'
+        $campaign_title_stripped = leyka_strip_string_by_words($campaign->title, 30);
+        $is_title_stripped = $campaign_title_stripped !== $campaign->title;
+
+        $column_content = '<div class="donation-campaign '.($is_title_stripped ? 'has-tooltip' : '').'" '.($is_title_stripped ? 'title="'.esc_attr($campaign->title).'"' : '').'>
+                <a href="'.admin_url('post.php?post='.$campaign->id.'&action=edit').'">'
+                    .($is_title_stripped ? $campaign_title_stripped.'&nbsp;&mldr;' : $campaign->title)
+                .'</a>
+            </div>'
             .$this->row_actions([
                 'campaign_edit' => '<a href="'.admin_url('post.php?post='.$campaign->id.'&action=edit').'">'.__('Edit').'</a>',
                 'campaign_public' => '<a href="'.get_permalink($donation->campaign_id).'">'.__('Public page', 'leyka').'</a>',
