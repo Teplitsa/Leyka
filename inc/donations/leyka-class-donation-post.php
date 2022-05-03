@@ -617,6 +617,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 $this->_main_data->post_status = $value;
 
                 do_action('leyka_donation_status_'.$old_status.'_to_'.$value, $this);
+                wp_transition_post_status($value, $old_status, $this->_main_data);
 
                 $status_log = $this->get_meta('_status_log');
                 if($status_log && is_array($status_log)) {
