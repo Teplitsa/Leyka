@@ -217,6 +217,16 @@ class Leyka_Donations_Posts extends Leyka_Donations {
             });
 
         }
+        if($params['donation_id_excluded']) {
+
+            $params['donation_id_excluded'] = is_array($params['donation_id_excluded']) ?
+                $params['donation_id_excluded'] : [$params['donation_id_excluded']];
+
+            $query_params['post__not_in'] = array_filter($params['donation_id_excluded'], function($donation_id){
+                return absint($donation_id);
+            });
+
+        }
         // Donation ID filtering - END
 
         // Status filtering:
@@ -737,6 +747,18 @@ class Leyka_Donations_Separated extends Leyka_Donations {
             });
 
             $where['donation_id'] = "{$wpdb->prefix}leyka_donations.ID IN (".implode(',', $params['donation_id']).")";
+
+        }
+        if($params['donation_id_excluded']) {
+
+            $params['donation_id_excluded'] = is_array($params['donation_id_excluded']) ?
+                $params['donation_id_excluded'] : [$params['donation_id_excluded']];
+            $params['donation_id_excluded'] = array_filter($params['donation_id_excluded'], function($donation_id){
+                return absint($donation_id);
+            });
+
+            $where['donation_id_excluded'] =
+                "{$wpdb->prefix}leyka_donations.ID NOT IN (".implode(',', $params['donation_id_excluded']).")";
 
         }
         // Donation ID filtering - END
