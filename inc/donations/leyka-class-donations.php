@@ -217,6 +217,11 @@ class Leyka_Donations_Posts extends Leyka_Donations {
             });
 
         }
+
+        $params['donation_id_excluded'] = empty($params['donations_ids_excluded']) ?
+            (empty($params['donation_id_excluded']) ? [] : $params['donation_id_excluded']) :
+            $params['donations_ids_excluded'];
+
         if($params['donation_id_excluded']) {
 
             $params['donation_id_excluded'] = is_array($params['donation_id_excluded']) ?
@@ -749,6 +754,11 @@ class Leyka_Donations_Separated extends Leyka_Donations {
             $where['donation_id'] = "{$wpdb->prefix}leyka_donations.ID IN (".implode(',', $params['donation_id']).")";
 
         }
+
+        $params['donation_id_excluded'] = isset($params['donations_ids_excluded']) ?
+            $params['donations_ids_excluded'] :
+            (isset($params['donation_id_excluded']) ? $params['donation_id_excluded'] : false);
+
         if($params['donation_id_excluded']) {
 
             $params['donation_id_excluded'] = is_array($params['donation_id_excluded']) ?
