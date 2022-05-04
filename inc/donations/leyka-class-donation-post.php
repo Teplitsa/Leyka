@@ -556,7 +556,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'donor_subscription_email':
 
                 $value = $this->_donation_meta['leyka_donor_subscription_email'] ? :
-                    ($this->_donation_meta['leyka_donor_email'] ? $this->_donation_meta['leyka_donor_email'] : '');
+                    ($this->_donation_meta['leyka_donor_email'] ? : '');
                 break;
 
             case 'donor_id':

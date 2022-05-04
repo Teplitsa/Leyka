@@ -417,7 +417,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
             case 'sum':
             case 'amount':
-                $value = $this->_main_data->amount ? $this->_main_data->amount : 0.0;
+                $value = $this->_main_data->amount ? : 0.0;
                 break;
             case 'sum_formatted':
             case 'amount_formatted':
@@ -428,7 +428,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'total_sum':
             case 'total_amount':
             case 'amount_total':
-                $value = $this->_main_data->amount_total ? $this->_main_data->amount_total : $this->amount;
+                $value = $this->_main_data->amount_total ? : $this->amount;
                 break;
             case 'total_sum_formatted':
             case 'total_amount_formatted':
@@ -440,7 +440,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'main_curr_amount':
             case 'main_currency_amount':
             case 'amount_equiv':
-                $value = $this->_main_data->amount_in_main_currency ? $this->_main_data->amount_in_main_currency : $this->amount;
+                $value = $this->_main_data->amount_in_main_currency ? : $this->amount;
                 break;
 
             case 'donor_name':
@@ -478,10 +478,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
             case 'subscription_email':
             case 'donor_subscription_email':
-
-                $value = $this->get_meta('donor_subscription_email') ?
-                    $this->get_meta('donor_subscription_email') :
-                    ($this->donor_email ? : '');
+                $value = $this->get_meta('donor_subscription_email') ? : ($this->donor_email ? : '');
                 break;
 
             case 'donor_id':

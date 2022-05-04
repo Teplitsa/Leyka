@@ -431,10 +431,9 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
             return false;
         }
 
-        $init_recurring_donation_id = $donation->get_meta('init_recurring_donation_id');
+        $init_recurring_donation = $donation->init_recurring_donation;
 
-        return $init_recurring_donation_id ?
-            Leyka_Donations::get_instance()->get_donation($init_recurring_donation_id) : $donation;
+        return $init_recurring_donation ? : $donation;
 
     }
 
@@ -445,9 +444,9 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
         if($init_recurring_donation) {
 
             $cancelling_url = (
-                get_option('permalink_structure') ?
-                    home_url("leyka/service/cancel_recurring/{$donation->id}") :
-                    home_url("?page=leyka/service/cancel_recurring/{$donation->id}")
+                    get_option('permalink_structure') ?
+                        home_url("leyka/service/cancel_recurring/{$donation->id}") :
+                        home_url("?page=leyka/service/cancel_recurring/{$donation->id}")
                 ).'/'.md5($donation->id.'_'.$init_recurring_donation->id.'_leyka_cancel_recurring_subscription');
 
             return sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">click here</a>', 'leyka'), $cancelling_url);

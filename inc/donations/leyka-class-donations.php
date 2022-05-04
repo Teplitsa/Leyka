@@ -178,7 +178,7 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
     protected function _get_donation($donation) {
 
-        try{
+        try {
             $donation = new Leyka_Donation_Post($donation);
         } catch(Exception $ex) {
             $donation = false;
@@ -213,6 +213,21 @@ class Leyka_Donations_Posts extends Leyka_Donations {
             $params['donation_id'] = is_array($params['donation_id']) ? $params['donation_id'] : [$params['donation_id']];
 
             $query_params['post__in'] = array_filter($params['donation_id'], function($donation_id){
+                return absint($donation_id);
+            });
+
+        }
+
+        $params['donation_id_excluded'] = empty($params['donations_ids_excluded']) ?
+            (empty($params['donation_id_excluded']) ? [] : $params['donation_id_excluded']) :
+            $params['donations_ids_excluded'];
+
+        if($params['donation_id_excluded']) {
+
+            $params['donation_id_excluded'] = is_array($params['donation_id_excluded']) ?
+                $params['donation_id_excluded'] : [$params['donation_id_excluded']];
+
+            $query_params['post__not_in'] = array_filter($params['donation_id_excluded'], function($donation_id){
                 return absint($donation_id);
             });
 
@@ -737,6 +752,23 @@ class Leyka_Donations_Separated extends Leyka_Donations {
             });
 
             $where['donation_id'] = "{$wpdb->prefix}leyka_donations.ID IN (".implode(',', $params['donation_id']).")";
+
+        }
+
+        $params['donation_id_excluded'] = isset($params['donations_ids_excluded']) ?
+            $params['donations_ids_excluded'] :
+            (isset($params['donation_id_excluded']) ? $params['donation_id_excluded'] : false);
+
+        if($params['donation_id_excluded']) {
+
+            $params['donation_id_excluded'] = is_array($params['donation_id_excluded']) ?
+                $params['donation_id_excluded'] : [$params['donation_id_excluded']];
+            $params['donation_id_excluded'] = array_filter($params['donation_id_excluded'], function($donation_id){
+                return absint($donation_id);
+            });
+
+            $where['donation_id_excluded'] =
+                "{$wpdb->prefix}leyka_donations.ID NOT IN (".implode(',', $params['donation_id_excluded']).")";
 
         }
         // Donation ID filtering - END
