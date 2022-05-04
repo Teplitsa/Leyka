@@ -354,7 +354,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
             case 'sum':
             case 'amount':
-                return $this->_main_data->amount ? $this->_main_data->amount : 0.0;
+                return $this->_main_data->amount ? : 0.0;
             case 'sum_formatted':
             case 'amount_formatted':
                 return leyka_format_amount(round($this->amount, 2));
@@ -363,7 +363,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'total_sum':
             case 'total_amount':
             case 'amount_total':
-                return $this->_main_data->amount_total ? $this->_main_data->amount_total : $this->amount;
+                return $this->_main_data->amount_total ? : $this->amount;
             case 'total_sum_formatted':
             case 'total_amount_formatted':
             case 'sum_total_formatted':
@@ -373,7 +373,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'main_curr_amount':
             case 'main_currency_amount':
             case 'amount_equiv':
-                return $this->_main_data->amount_in_main_currency ? $this->_main_data->amount_in_main_currency : $this->amount;
+                return $this->_main_data->amount_in_main_currency ? : $this->amount;
 
             case 'donor_name':
                 return stripslashes($this->_main_data->donor_name);
@@ -401,9 +401,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
             case 'subscription_email':
             case 'donor_subscription_email':
-                return $this->get_meta('donor_subscription_email') ?
-                    $this->get_meta('donor_subscription_email') :
-                    ($this->donor_email ? $this->donor_email : '');
+                return $this->get_meta('donor_subscription_email') ? : ($this->donor_email ? : '');
 
             case 'donor_id':
             case 'donor_user_id':
@@ -442,6 +440,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                 return leyka_get_donation_type_description($this->type);
 
             case 'init_recurring_donation_id':
+
                 if($this->payment_type !== 'rebill') {
                     return false;
                 }
@@ -452,6 +451,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                     $init_recurring_donation_id : $this->id;
 
             case 'init_recurring_donation':
+
                 if($this->payment_type !== 'rebill') {
                     return false;
                 }

@@ -178,7 +178,7 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
     protected function _get_donation($donation) {
 
-        try{
+        try {
             $donation = new Leyka_Donation_Post($donation);
         } catch(Exception $ex) {
             $donation = false;

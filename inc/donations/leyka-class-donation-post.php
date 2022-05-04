@@ -463,9 +463,8 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
             case 'subscription_email':
             case 'donor_subscription_email':
-                return $this->_donation_meta['leyka_donor_subscription_email'] ?
-                    $this->_donation_meta['leyka_donor_subscription_email'] :
-                    ($this->_donation_meta['leyka_donor_email'] ? $this->_donation_meta['leyka_donor_email'] : '');
+                return $this->_donation_meta['leyka_donor_subscription_email'] ? :
+                    ($this->_donation_meta['leyka_donor_email'] ? : '');
 
             case 'donor_id':
             case 'donor_user_id':
@@ -504,18 +503,19 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 return leyka_get_donation_type_description($this->payment_type);
 
             case 'init_recurring_donation_id':
-                return $this->payment_type === 'rebill' ?
-                    ($this->_main_data->post_parent ? $this->_main_data->post_parent : $this->_id) : false;
+                return $this->payment_type === 'rebill' ? ($this->_main_data->post_parent ? : $this->_id) : false;
 
             case 'init_recurring_donation':
                 if($this->payment_type !== 'rebill') {
                     return false;
                 } else if($this->init_recurring_donation_id) {
-                    try{
+
+                    try {
                         return Leyka_Donations::get_instance()->get_donation($this->init_recurring_donation_id);
                     } catch(Exception $ex) { // No init recurring donation in DB, for some reason
                         return false;
                     }
+
                 } else {
                     return $this;
                 }
