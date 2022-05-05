@@ -152,8 +152,6 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
                 <?php }?>
             </div>
 
-            <label><?php _e('Liqpay transaction ID', 'leyka');?>:</label>
-
             <?php if($donation->type !== 'rebill') {
                 return;
             }?>
