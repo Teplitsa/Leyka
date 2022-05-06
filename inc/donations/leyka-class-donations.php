@@ -580,7 +580,7 @@ class Leyka_Donations_Posts extends Leyka_Donations {
         }
 
         // TODO: При очень большом кол-ве записей о пожертвованиях WP_Query отдает ошибку если
-        //  $query_params['posts_per_page'] === -1. Разобраться ограничение это WP, баг или бутылочное горлышко
+        //  $query_params['posts_per_page'] === -1. Разобраться, ограничение ли это WP, баг или бутылочное горлышко
         //  производительности серверов.
         $query_params['posts_per_page'] = $query_params['posts_per_page'] === -1 ? 9999 : $query_params['posts_per_page'];
 

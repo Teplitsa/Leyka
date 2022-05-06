@@ -137,6 +137,12 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         $donation = Leyka_Donations::get_instance()->get_donation($donation);
 
+        // Recreate Donation object anew, if needed, because sometimes when its donor_user_id value in the Gateways callbacks
+        // is updated in the DB, it's not updated in the object field (so new Donor ID value won't be used in the emails sending):
+        if(leyka_options()->opt('donor_management_available') && $donation->is_init_recurring && !$donation->donor_user_id) {
+            $donation = Leyka_Donations::get_instance()->get_donation($donation->id);
+        }
+
         if( !$donation ) {
             return false;
         }
