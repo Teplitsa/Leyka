@@ -310,7 +310,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             leyka_options()->opt('chronopay_card_product_id_'.$_POST['currency'])
             && $_POST['product_id'] == leyka_options()->opt('chronopay_card_product_id_'.$_POST['currency'])
         ) {
-            if($donation->status != 'funded') {
+            if($donation->status !== 'funded') {
 
                 $donation->add_gateway_response($_POST);
                 $donation->status = 'funded';

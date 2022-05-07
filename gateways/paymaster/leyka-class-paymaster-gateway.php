@@ -190,8 +190,8 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
 
         if($donation->status !== 'funded') {
 
-            $donation->add_gateway_response($_REQUEST);
             $donation->status = 'funded';
+            $donation->add_gateway_response($_REQUEST);
 
             $_REQUEST['IncCurrLabel'] = empty($_REQUEST['IncCurrLabel']) ?'' : substr_replace($_REQUEST['IncCurrLabel'], '', -1);
 

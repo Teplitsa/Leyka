@@ -182,7 +182,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             if( !empty($meta['leyka_campaign_id']) ) {
 
                 // Don't use Leyka_Campaign here to avoid loop dependency:
-                $campaign = get_post((int)$meta['leyka_campaign_id'][0]);
+                $campaign = get_post(absint($meta['leyka_campaign_id'][0]));
                 $payment_title = '';
 
                 if($campaign) {
@@ -828,8 +828,11 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
                 $value = absint($value);
 
-                $res = wp_update_post(['ID' => $this->id, 'post_author' => $value,]);
-                if( !$res || is_wp_error($res) ) {
+                global $wpdb;
+                $res = $wpdb->update($wpdb->prefix.'posts', ['post_author' => $value], ['ID' => $this->_id], ['%d'], ['%d']);
+//                $res = wp_update_post(['ID' => $this->id, 'post_author' => $value,]);
+
+                if($res === false) {
                     return false;
                 }
 
@@ -844,16 +847,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                     $this->set_meta('leyka_donor_account', $value);
 
                 } else if(absint($value)) {
-
-                    $value = absint($value);
-
-                    $res = wp_update_post(['ID' => $this->id, 'post_author' => $value,]);
-                    if( !$res || is_wp_error($res) ) {
-                        return false;
-                    }
-
-                    $this->_main_data->post_author = $value;
-
+                    $this->donor_user_id = $value;
                 }
                 break;
 
@@ -884,6 +878,8 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'main_curr_amount':
             case 'main_currency_amount':
             case 'amount_equiv':
+            case 'amount_curr_equiv':
+            case 'amount_currency_equiv':
                 return true; //$this->set_meta('amount_in_main_currency', (float)$value);
 
             case 'currency':

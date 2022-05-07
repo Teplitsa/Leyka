@@ -134,16 +134,14 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
 
     public function _handle_service_calls($call_type = '') {
 
-        //TODO Вернуть проверку когда гейт проверит формирование своего хэша. Сейчас он не сходится с их же схемой.
-        /*
-        if(!$this->_is_callback_hash_correct($_POST)) {
-            $message = __("This message has been sent because a call to your Demirbank callback function was made with wrong hash parameter. This could mean someone is trying to hack your payment website. The details of the call are below.", 'leyka')."\n\r\n\r".
-                "POST:\n\r".print_r($_POST, true)."\n\r\n\r".
-                "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
-
-            wp_mail(get_option('admin_email'), __('Demirbank callback hash check failed!', 'leyka'), $message);
-        }
-        */
+        /** @todo Return this check when the Gateway checks their hash forming. ATM it doesn't match their own dev. manual data */
+//        if( !$this->_is_callback_hash_correct($_POST) ) {
+//            $message = __("This message has been sent because a call to your Demirbank callback function was made with wrong hash parameter. This could mean someone is trying to hack your payment website. The details of the call are below.", 'leyka')."\n\r\n\r".
+//                "POST:\n\r".print_r($_POST, true)."\n\r\n\r".
+//                "SERVER:\n\r".print_r($_SERVER, true)."\n\r\n\r";
+//
+//            wp_mail(get_option('admin_email'), __('Demirbank callback hash check failed!', 'leyka'), $message);
+//        }
 
         $donation = Leyka_Donations::get_instance()->get_donation((int)$_POST['donation_id']);
 
