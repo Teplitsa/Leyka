@@ -192,12 +192,10 @@ class Leyka_Donations_Errors extends Leyka_Singleton {
         $this->_errors[$leyka_error_id] = apply_filters(
             'leyka_donation_error_library_new_entry',
             new Leyka_Donation_Error($leyka_error_id, $error_name, [
-                'description' => empty($params['description']) ? '' : esc_attr(trim($params['description'])),
-                'recommendation_admin' => empty($params['recommendation_admin']) ?
-                    '' : esc_attr(trim($params['recommendation_admin'])),
-                'recommendation_donor' => empty($params['recommendation_donor']) ?
-                    '' : esc_attr(trim($params['recommendation_donor'])),
-                'docs_link' => empty($params['docs_link']) ? '' : esc_attr(trim($params['docs_link'])),
+                'description' => empty($params['description']) ? '' : trim($params['description']),
+                'recommendation_admin' => empty($params['recommendation_admin']) ? '' : trim($params['recommendation_admin']),
+                'recommendation_donor' => empty($params['recommendation_donor']) ? '' : trim($params['recommendation_donor']),
+                'docs_link' => empty($params['docs_link']) ? '' : trim($params['docs_link']),
                 'error_data' => empty($params['error_data']) || !is_array($params['error_data']) ? [] : $params['error_data'],
             ])
         );
@@ -224,16 +222,16 @@ class Leyka_Donation_Error {
         $this->_name = esc_attr($error_name);
 
         if( !empty($params['description']) ) {
-            $this->_description = esc_html($params['description']);
+            $this->_description = $params['description'];
         }
         if( !empty($params['recommendation_admin']) ) {
-            $this->_recommendation_admin = esc_html($params['recommendation_admin']);
+            $this->_recommendation_admin = $params['recommendation_admin'];
         }
         if( !empty($params['recommendation_donor']) ) {
-            $this->_recommendation_donor = esc_html($params['recommendation_donor']);
+            $this->_recommendation_donor = $params['recommendation_donor'];
         }
         if( !empty($params['docs_link']) ) {
-            $this->_description = esc_url($params['docs_link']);
+            $this->_docs_link = esc_url($params['docs_link']);
         }
         if( !empty($params['error_data']) && is_array($params['error_data']) ) {
             $this->_error_data = $params['error_data'];

@@ -152,6 +152,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'description' => __("Technical troubles on the YooKassa side - the payment handling couldn't be completed in time allowed for the operation.", 'leyka'),
                 'recommendation_admin' => __("For some reason, YooKassa didn't process this payment in time allowed (30 seconds by default). Please, contact your YooKassa manager, and ask them for the reason. If it was temporary technical failure, contact the donor and ask him/her to make a donation anew.", 'leyka'),
                 'recommendation_donor' => sprintf(__("The payment gateway didn't process your payment in time, and the payment was aborted. Your money are intact, but if you'd like to finish the payment, you should make it anew. If the problem persists, please contact the <a href='mailto:%s' target='_blank'>website technical support</a> and tell them that you have a problem making a donation due to the gateway behavior.", 'leyka'), leyka_options()->opt('tech_support_email')),
+                'docs_link' => 'https://google.com',
         ]) && Leyka_Donations_Errors::get_instance()->add_error(
             'YK-7043',
             __("Can't make a rebill payment - the donor revoked the auto-payments permission", 'leyka'), [

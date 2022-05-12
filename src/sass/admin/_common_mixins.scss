@@ -204,7 +204,7 @@
         border-bottom: 1px dashed $color-white;
         color: $color-white;
         text-decoration: none;
-        line-height: 1.2;
+        line-height: 1.1;
     }
 
 }
@@ -1109,11 +1109,11 @@
         align-items: center;
 
         margin: 0;
-        padding: 12px;
+        padding: 16px;
         border-bottom: 1px solid $leyka-color-error-light-1;
 
         font-size: 16px;
-        line-height: 16px;
+        line-height: 20px !important;
         font-weight: 550;
 
         .error-name-text {
@@ -1123,19 +1123,26 @@
         i.error-symbol {
 
             display: inline-block;
-            margin-right: 11px;
-            flex: 16px 0 0;
+            margin-right: 8px;
+            flex: 12px 0 0;
 
-            @include leyka-colored-icon('../../img/icon-info.svg', 16px, $color-error-message);
+            width: 12px;
+            height: 12px;
+
+            border: 0;
+            border-radius: 50%;
+            background: $color-error-message;
+
+            //@include leyka-colored-icon('../../img/icon-info.svg', 16px, $color-error-message);
 
         }
 
         i.close {
 
-            flex: 14px 0 0;
+            flex: 12px 0 0;
             cursor: pointer;
 
-            @include leyka-colored-icon('../../img/icon-help-close.svg', 14px, $color-border-normal);
+            @include leyka-colored-icon('../../img/icon-help-close.svg', 12px, $color-text-light2);
 
         }
 

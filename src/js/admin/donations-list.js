@@ -50,7 +50,7 @@ jQuery(document).ready(function($){
 
     }).on('click.leyka', '.error-full-info-tooltip', function(e){
 
-        if( !$(e.target).hasClass('close') ) {
+        if( !$(e.target).hasClass('close') && !$(e.target).is('a') ) {
 
             e.preventDefault();
             e.stopImmediatePropagation();
