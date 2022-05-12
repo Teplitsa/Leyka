@@ -750,6 +750,10 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
                 do_action('leyka_donation_status_'.$old_status.'_to_'.$value, $this);
 
+                if ($value === 'funded' || $old_status === 'funded') {
+                    do_action('leyka_donation_funded_status_changed', $this->id, $old_status, $value);
+                }
+
                 $status_log = $this->get_meta('_status_log');
                 if($status_log && is_array($status_log)) {
                     $status_log[] = ['date' => current_time('timestamp'), 'status' => $value,];
