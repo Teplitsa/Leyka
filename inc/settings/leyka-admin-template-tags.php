@@ -337,6 +337,14 @@ if( !function_exists('leyka_show_donation_error_full_info') ) {
                     </div>
                 <?php }?>
 
+                <p class="error-common-support-contact-info">
+                    <?php _e('Still has questions? Need help? Message us:', 'leyka');?>
+                    <br>
+                    <?php _e('— <a href="https://t.me/leykadev" target="_blank">Telegram-chat of the support service</a> or', 'leyka');?>
+                    <br>
+                    <?php _e('— <a href="https://leyka.te-st.ru/support/" target="_blank">make a feedaback post</a>.', 'leyka');?>
+                </p>
+
             </div>
 
             <div class="error-details-footer">

@@ -1173,13 +1173,17 @@
                 margin-bottom: 0;
             }
 
-        }
+            &.error-common-support-contact-info {
+                margin-top: 12px;
+            }
 
-        //a {
-        //    font-size: 12px;
-        //    font-weight: 600;
-        //    line-height: 16px;
-        //}
+            a {
+                font-size: inherit;
+                font-weight: inherit;
+                border: none !important;
+            }
+
+        }
 
     }
 
