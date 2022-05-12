@@ -112,50 +112,59 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             'card_expired' => 'L-7004', 'country_forbidden' => 'YK-6011', 'deal_expired' => 'YK-7006',
             'expired_on_capture' => 'YK-7007', 'expired_on_confirmation' => 'YK-7005', 'fraud_suspected' => 'L-5043',
             'general_decline' => 'L-4002', 'identification_required' => 'YK-6001', 'insufficient_funds' => 'L-7005',
-            'internal_timeout' => 'YK-8002', 'invalid_card_number' => 'L-7003', 'invalid_csc' => 'L-7002',
+            'internal_timeout' => 'YK-8002', 'invalid_card_number' => 'L-7003', 'invalid_csc' => 'L-7001',
             'issuer_unavailable' => 'L-5001', 'payment_method_limit_exceeded' => 'YK-7042',
-            'payment_method_restricted' => 'YK-7011', 'permission_revoked' => 'YK-7043',
+            'payment_method_restricted' => 'L-6001', 'permission_revoked' => 'YK-7043',
             'unsupported_mobile_operator' => 'YK-7050',
         ];
 
         // Only Gateway-specific errors are initialized & added as objects here:
         Leyka_Donations_Errors::get_instance()->add_error(
+            'YK-6001',
+            __('The operations limit for YooMoney wallet is exceeded', 'leyka'), [
+                'recommendation_admin' => __('Ask the donor to identify their YooMoney wallet, if possible, or to use another payment method.', 'leyka'),
+                'recommendation_donor' => __('Please, identify your YooMoney wallet, if possible, or use another payment method.', 'leyka'),
+        ]) && Leyka_Donations_Errors::get_instance()->add_error(
             'YK-6011',
-            __('Bank card payment is refused because of the country that issued the card', 'leyka')
-        ) && Leyka_Donations_Errors::get_instance()->add_error(
+            __('Bank card payment is refused because of the country that issued the card', 'leyka'), [
+                'recommendation_admin' => __("Ask the donor to use another payment method (i.e., another card). If this won't help, ask the donor to contact the bank that issued the card.", 'leyka'),
+                'recommendation_donor' => __("Please, try to use another payment method (i.e., another card). If this won't help, report this issue to the bank that issued the card.", 'leyka'),
+        ]) && Leyka_Donations_Errors::get_instance()->add_error(
+            'YK-7005',
+            __('The allowed time for the payment is expired', 'leyka'), [
+            'description' => __("Donor waited for too long on the payment data entering step, so the payment wasn't completed in time allowed.", 'leyka'),
+            'recommendation_admin' => __("Ask the donor to make a donation anew, but now finish it.", 'leyka'),
+            'recommendation_donor' => __("You didn't confirm the payment in time, so it was was aborted. Your money are intact, but if you'd like to finish the donation, you should make it anew (and now complete it).", 'leyka'),
+        ]) && Leyka_Donations_Errors::get_instance()->add_error(
             'YK-7006',
             __('The payment deal is expired', 'leyka')
         ) && Leyka_Donations_Errors::get_instance()->add_error(
             'YK-7007',
             __('The payment time for a two-staged (captured) payment is expired', 'leyka')
         ) && Leyka_Donations_Errors::get_instance()->add_error(
-            'YK-7005',
-            __('The allowed time for the payment is expired', 'leyka'), [
-                'description' => __("Donor waited for too long, so the payment wasn't completed in time.", 'leyka'),
-                'recommendation_admin' => __("For some reason, the donor stopped at the payment details entering step. Please, contact him/her, and ask to make a donation anew, but now he/she should finish it.", 'leyka'),
-                'recommendation_donor' => __("You didn't enter your payment details in time, so the payment was aborted. Your money are intact, but if you'd like to finish the donation, you should make it anew (and now complete it).", 'leyka'),
+            'YK-7042',
+            __('The operations limit for the bank card or the shop is exceeded', 'leyka'), [
+                'recommendation_admin' => __("Ask the donor to use another payment method (i.e., another card). If this won't help, ask the donor to try to pay 1-2 days later. If the problem will persist, contact the gateway technical support.", 'leyka'),
+                'recommendation_donor' => sprintf(__("Please, try to use another payment method (i.e., another card). If it's not helping, try to pay 1-2 days later. If the problem still persists, ask the <a href='mailto:%s' target='_blank'>website administration</a> to report this to the gateway technical support.", 'leyka'), leyka_options()->opt('tech_support_email')),
         ]) && Leyka_Donations_Errors::get_instance()->add_error(
-            'YK-6001',
-            __('The operations limit for YooMoney wallet is exceeded', 'leyka')
-        ) && Leyka_Donations_Errors::get_instance()->add_error(
             'YK-8002',
             __("Payment wasn't finished due to YooKassa internal timeout", 'leyka'), [
                 'description' => __("Technical troubles on the YooKassa side - the payment handling couldn't be completed in time allowed for the operation.", 'leyka'),
-                'recommendation_admin' => __("For some reason, YooKassa didn't process this payment in time allowed (30 seconds by default). Please, contact your YooKassa manager, and ask for the reason. If it was temporary technical failure, contact the donor and ask him/her to make a donation anew.", 'leyka'),
-                'recommendation_donor' => __("The payment gateway didn't process your payment in time, and the payment was aborted. Your money are intact, but if you'd like to finish the payment, you should make it anew. If the problem persists, please contact the website technical support and tell them that you have a problem making a donation due to the gateway behavior.", 'leyka'),
+                'recommendation_admin' => __("For some reason, YooKassa didn't process this payment in time allowed (30 seconds by default). Please, contact your YooKassa manager, and ask them for the reason. If it was temporary technical failure, contact the donor and ask him/her to make a donation anew.", 'leyka'),
+                'recommendation_donor' => sprintf(__("The payment gateway didn't process your payment in time, and the payment was aborted. Your money are intact, but if you'd like to finish the payment, you should make it anew. If the problem persists, please contact the <a href='mailto:%s' target='_blank'>website technical support</a> and tell them that you have a problem making a donation due to the gateway behavior.", 'leyka'), leyka_options()->opt('tech_support_email')),
         ]) && Leyka_Donations_Errors::get_instance()->add_error(
-            'YK-7042',
-            __('The operations limit for the bank card or the shop is exceeded', 'leyka')
-        ) && Leyka_Donations_Errors::get_instance()->add_error(
-            'YK-7011',
-            __("Payer's bank card is lost, or e-wallet is blocked due to its security breach", 'leyka')
-        ) && Leyka_Donations_Errors::get_instance()->add_error(
             'YK-7043',
-            __("Can't make a rebill payment - the donor revoked the auto-payments permission for the recurring subscription", 'leyka')
-        ) && Leyka_Donations_Errors::get_instance()->add_error(
+            __("Can't make a rebill payment - the donor revoked the auto-payments permission", 'leyka'), [
+                'description' => __('Unable to make a rebill auto-payment: the donor user has revoked permission for auto payments. If the donor wants to continue with the recurring subscription, they will need to create a new subscription and confirm the initial payment.', 'leyka'),
+                'recommendation_admin' => __("Ask the donor to make a recurring donations subscription anew, as their current subscription can't proceed with its auto-payments and will be deactivated.", 'leyka'),
+                'recommendation_donor' => __("Please, make a recurring donations subscription anew, as your current subscription can't proceed with its auto-payments and will be deactivated.", 'leyka'),
+        ]) && Leyka_Donations_Errors::get_instance()->add_error(
             'YK-7050',
-            __("Can't make a payment from this mobile phone operator", 'leyka')
-        );
+            __("Can't make a payment from the selected mobile operator", 'leyka'), [
+                'description' => __("YooKassa doesn't support mobile payments from the mobile operator used.", 'leyka'),
+                'recommendation_admin' => sprintf(__('Ask the donor to make a new mobile payment using one of the mobile operators supported by YooKassa (<a href="%s" target="_blank">operators list</a>).', 'leyka'), 'https://yookassa.ru/docs/support/payments/accept-methods#carrier-billing'),
+                'recommendation_donor' => sprintf(__('Please, make a new mobile payment using one of the mobile operators supported by YooKassa (<a href="%s" target="_blank">operators list</a>).', 'leyka'), 'https://yookassa.ru/docs/support/payments/accept-methods#carrier-billing'),
+        ]);
 
     }
 
