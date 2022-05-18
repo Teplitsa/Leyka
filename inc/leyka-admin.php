@@ -227,10 +227,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         // Add donor account column to the admin Users list if needed:
         if(get_option('leyka_donor_management_available')) {
 
-            add_filter('manage_users_columns', function($column){
+            add_filter('manage_users_columns', function($columns){
 
-                $column['donor_account_available'] = __("Donor's info", 'leyka');
-                return $column;
+                $columns['donor_account_available'] = __("Donor's info", 'leyka');
+
+                return $columns;
 
             });
 
@@ -253,6 +254,43 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 } else {
                     return $value;
                 }
+
+            }, 10, 3);
+
+        }
+
+        if(get_option('leyka_campaign_categories_available')) { // Fix for the Campaign categories admin list post count column
+
+            add_filter('manage_edit-'.Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME.'_columns', function($columns){
+
+                unset($columns['posts']);
+                $columns['campaigns'] = __('Campaigns', 'leyka');
+
+                return $columns;
+
+            });
+
+            add_filter(
+                'manage_'.Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME.'_custom_column',
+                function($content, $column_id, $campaign_category_id){
+
+                if($column_id === 'campaigns') {
+
+                    $category = get_term($campaign_category_id, Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME);
+
+                    $args = [
+                        'taxonomy' => Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME,
+                        'term' => $category->slug,
+                        'post_type' => Leyka_Campaign_Management::$post_type,
+                    ];
+
+                    $content = "<a href='".esc_url( add_query_arg( $args, 'edit.php'))."'>"
+                        .number_format_i18n( $category->count )
+                        ."</a>";
+
+                }
+
+                return $content;
 
             }, 10, 3);
 
