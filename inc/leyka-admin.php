@@ -416,10 +416,12 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 		function leyka_dashboard_portlets_row_content($dashboard_row_id) {
 
 		    switch($dashboard_row_id) {
-                case 'donations-stats':
+                case 'donations-stats-main':
                     Leyka_Admin_Setup::get_instance()->show_admin_portlet(
                         'stats-donations-main', ['interval' => $_GET['interval'], 'reset' => isset($_GET['reset'])]
                     );
+                    break;
+                case 'donations-stats-recurring':
                     Leyka_Admin_Setup::get_instance()->show_admin_portlet(
                         'stats-recurring', ['interval' => $_GET['interval'], 'reset' => isset($_GET['reset'])]
                     );
@@ -582,9 +584,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         } else { // Edit Donation page
 
+            $donation = Leyka_Donations::get_instance()->get(absint($_GET['donation']));
+
             add_meta_box(
                 'leyka_donation_data',
-                __('Donation data', 'leyka'),
+                $donation->is_init_recurring_donation ? __('Subscription data', 'leyka') : __('Donation data', 'leyka'),
                 ['Leyka_Donation_Management', 'donation_data_metabox'],
                 'dashboard_page_leyka_donation_info',
                 'normal',
@@ -615,13 +619,12 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 'low'
             );
 
-            $donation = Leyka_Donations::get_instance()->get(absint($_GET['donation']));
             if($donation->is_init_recurring_donation) {
 
                 add_meta_box(
                     'leyka_donation_recurring_subscription_rebills',
-                    __('Recurring donations of this subscription', 'leyka'),
-                    ['Leyka_Donation_Management', 'subscription_resurring_donations_metabox'],
+                    __('Last donations', 'leyka'),
+                    ['Leyka_Donation_Management', 'subscription_recurring_donations_metabox'],
                     'dashboard_page_leyka_donation_info',
                     'normal',
                     'low'

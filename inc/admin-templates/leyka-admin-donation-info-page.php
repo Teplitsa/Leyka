@@ -27,7 +27,7 @@ if(empty($_GET['donation']) || !absint($_GET['donation'])) {
     </a>
     <br class="clear">
 
-    <h1 class="wp-heading-inline"><?php _e('Donation profile', 'leyka');?></h1>
+    <h1 class="wp-heading-inline"><?php $donation->is_init_recurring_donation ? _e('Subscription profile', 'leyka') : _e('Donation profile', 'leyka');?></h1>
     <hr class="wp-header-end">
 
     <?php if( !empty($_SESSION['leyka_new_donation_error']) && is_wp_error($_SESSION['leyka_new_donation_error']) ) {

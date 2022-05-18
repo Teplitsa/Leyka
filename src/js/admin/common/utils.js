@@ -143,3 +143,235 @@ function lcfirst(str) {
 function leyka_is_gutenberg_active() {
     return document.body.classList.contains('block-editor-page');
 }
+
+// Upgrade for JSON.stringify to allow arrays (used by LeykaLocalStorage class)
+(function(){
+
+    const convArrToObj = function(array){
+
+        let thisEleObj = new Object();
+
+        if(typeof array == "object"){
+            for(var i in array){
+
+                var thisEle = convArrToObj(array[i]);
+                thisEleObj[i] = thisEle;
+
+            }
+        }else {
+            thisEleObj = array;
+        }
+
+        return thisEleObj;
+
+    };
+
+    let oldJSONStringify = JSON.stringify;
+
+    JSON.stringify = function(input){
+        if(oldJSONStringify(input) == '[]')
+            return oldJSONStringify(convArrToObj(input));
+        else
+            return oldJSONStringify(input);
+    };
+
+})();
+
+/**
+ * Class to handle LocalStorage
+ */
+class LeykaLocalStorage {
+
+    static get(key) {
+        return localStorage.getItem('leyka-' + key);
+    }
+
+    static set(key, value) {
+        localStorage.setItem('leyka-' + key, value);
+    }
+
+    static remove(key) {
+        localStorage.removeItem('leyka-' + key);
+    }
+
+}
+
+/**
+ * Class to handle stored states of the DOM elements (currently only visibility)
+ */
+class LeykaDOMControl {
+
+    static state_hidden = 'hidden';
+    static state_visible = 'visible';
+    static class_hidden = 'leyka-hidden';
+    static class_closed = 'leyka-closed';
+    static class_v_c_button = 'leyka-visibility-control-button'; // "v_c" => "visibility_control"
+    static data_attribute_v_c_button_targed = 'visibility-control-target';
+
+    static storeElementVisibilityState(selector, state) {
+
+        let elements_visibility = JSON.parse(LeykaLocalStorage.get('elements-visibility')) ? JSON.parse(LeykaLocalStorage.get('elements-visibility')) : [] ;
+
+        elements_visibility[selector] = state;
+
+        LeykaLocalStorage.set('elements-visibility', JSON.stringify(elements_visibility));
+
+    }
+
+    /**
+     * Hide element
+     * @param selector
+     * @return {boolean}
+     */
+    static hideElement(selector) {
+
+        let $element = jQuery(selector);
+
+        if($element.length === 0) {
+            return false;
+        }
+
+        $element.addClass(this.class_hidden);
+        jQuery('.'+this.class_v_c_button+'[data-'+this.data_attribute_v_c_button_targed+'="'+selector+'"]').addClass(this.class_closed);
+
+        this.storeElementVisibilityState(selector, this.state_hidden);
+
+        return true;
+
+    }
+
+    /**
+     * Show element
+     * @param selector
+     * @return {boolean}
+     */
+    static showElement(selector) {
+
+        let $element = jQuery(selector);
+
+        if($element.length === 0) {
+            return false;
+        }
+
+        $element.removeClass(this.class_hidden);
+        jQuery('.'+this.class_v_c_button+'[data-'+this.data_attribute_v_c_button_targed+'="'+selector+'"]').removeClass(this.class_closed);
+
+        this.storeElementVisibilityState(selector, this.state_visible);
+
+        return true;
+
+    }
+
+    /**
+     * Toggle element visibility
+     * @param selector
+     * @return {boolean}
+     */
+    static toggleElementVisibility(selector) {
+
+        let $element = jQuery(selector);
+
+        if($element.length === 0) {
+            return false;
+        }
+
+        if(this.getElementVisibility(selector) === this.state_visible) {
+            this.hideElement(selector);
+        } else if(this.getElementVisibility(selector) === this.state_hidden) {
+            this.showElement(selector);
+        }
+
+        return true;
+
+    }
+
+    /**
+     * Get stored visibility state
+     * @param selector
+     * @return {boolean|string}
+     */
+    static getElementVisibility(selector) {
+
+        const $element = jQuery(selector);
+
+        if($element.length === 0) {
+            return false;
+        }
+
+        let elements_visibility = JSON.parse(LeykaLocalStorage.get('elements-visibility')) ? JSON.parse(LeykaLocalStorage.get('elements-visibility')) : [] ;
+
+        if(elements_visibility[selector] == null) {
+
+            elements_visibility[selector] = jQuery($element).hasClass(this.class_hidden) ? this.state_hidden : this.state_visible;
+
+            this.storeElementVisibilityState(selector, elements_visibility[selector]);
+
+        }
+
+        return elements_visibility[selector];
+
+    }
+
+    /**
+     * Apply stored visibility state to the array of elements
+     * @param selectors Array of selectors
+     * @return {boolean|*[]}
+     */
+    static applyElementsVisibility(selectors) {
+
+        if( !Array.isArray(selectors) ) {
+            return false;
+        }
+
+        let result = [];
+
+        selectors.forEach((selector) => {
+
+            let $element = jQuery(selector);
+
+            if($element.length === 0) {
+                return false;
+            }
+
+            result[selector] = this.getElementVisibility(selector);
+
+            if(result[selector] === this.state_visible) {
+                $element.removeClass(this.class_hidden);
+                jQuery('.'+this.class_v_c_button+'[data-'+this.data_attribute_v_c_button_targed+'="'+selector+'"]').removeClass(this.class_closed);
+            } else if(result[selector] === this.state_hidden){
+                $element.addClass(this.class_hidden);
+                jQuery('.'+this.class_v_c_button+'[data-'+this.data_attribute_v_c_button_targed+'="'+selector+'"]').addClass(this.class_closed);
+            }
+
+        }, this);
+
+        return result;
+
+    }
+
+    /**
+     * Bind visibility control event to all buttons on the page with the sufficient class and apply visibility states
+     */
+    static initVisibilityControlButtons() {
+
+        const $buttons = jQuery('.'+this.class_v_c_button);
+        let targets_selectors = [];
+
+        $buttons.each((idx, $button) => {
+
+            const target_selector = jQuery($button).data(this.data_attribute_v_c_button_targed);
+
+            targets_selectors.push(target_selector);
+
+            jQuery($button).off('click.LeykaDOMControl');
+            jQuery($button).on('click.LeykaDOMControl', () => {
+                this.toggleElementVisibility(target_selector);
+            })
+
+        }, this);
+
+        this.applyElementsVisibility(targets_selectors);
+
+    }
+
+}

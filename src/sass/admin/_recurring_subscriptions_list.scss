@@ -1,65 +1,377 @@
 .leyka-admin-list-page.leyka-admin-recurring-subscriptions-list {
 
-    // List table (columns & content):
-    .wp-list-table.widefat {
+    .leyka-settings-page {
 
-        // Columns width:
-        tr {
+        .leyka-header-wrap {
 
-            .column-donation_id {
-                width: 80px;
-            }
-            .column-status {
-                width: 60px;
-            }
-            .column-donor {
-                //width: 250px;
-                min-width: 180px;
-                max-width: 250px;
-            }
-            .column-campaign {
-                //width: 350px;
-                min-width: 250px;
-                max-width: 350px;
-            }
-            .column-first_donation {
-                width: 121px;
-            }
-            .column-next_donation {
-                width: 121px;
-            }
-            .column-donations_number {
-                width: 100px;
-            }
-            .column-gateway_pm {
-                //width: 230px;
-                min-width: 170px;
-                max-width: 230px;
-            }
-            .column-amount {
-                width: 150px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            padding: 0px;
+
+            .wp-heading-inline {
+
+                margin: 0 20px 0 0;
+                padding: 0;
+
             }
 
-        }
-        // Columns width - END
+            .admin-list-export {
 
-        // Columns content settings:
-        td {
+                margin: 0 20px 0 0;
 
-            font-size: 13px;
+                .submit {
 
-            &.column-next_donation {
-                .leyka-recurring-not-active {
-                    font-size: 11px;
-                    color: $color-error-message;
+                    background-color: transparent;
+                    color: $color-secondary-button;
+                    text-shadow: none;
+                    border: 1px solid $color-border-secondary-button;
+                    box-shadow: none;
+                    display: inline-block;
+                    padding: 6px 10px;
+                    min-width: unset;
+
                 }
+
+            }
+
+            .toggle-filters-button {
+
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 0px;
+                font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+                font-weight: 500;
+                font-style: normal;
+                font-size: 10px;
+                line-height: 16px;
+                color: $color-secondary-button;
+                border-bottom: 1px dashed $color-border-secondary-button;
+                cursor: pointer;
+
+                &:hover {
+                    border-bottom-color: transparent;
+                }
+
             }
 
         }
-        // Columns content settings - END
 
+        #poststuff {
+
+            padding-top: 0;
+
+            .recurring-subscriptions-list-filters.admin-list-filters {
+                padding-top: 20px;
+                border-bottom: 1px solid #C4C4C4;
+                justify-content: space-between;
+            }
+
+            .leyka-admin-tablenav {
+
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                padding: 20px 0;
+                justify-content: space-between;
+
+                &.bottom {
+                    justify-content: end;
+                }
+
+                .admin-list-filters.leyka-filter-buttons {
+
+                    display: flex;
+                    flex-direction: row;
+                    align-items: flex-start;
+                    padding: 0px;
+                    gap: 10px;
+                    border: none;
+
+                    .leyka-filter-button {
+
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        padding: 10px;
+                        border: 2px solid;
+                        border-radius: 6px;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 18px;
+                        cursor: pointer;
+
+                        &.leyka-subscriptions-all {
+
+                            border-color: #179ADB;
+                            color: #007CBA;
+
+                            &.leyka-active, &:hover {
+                                background: #D3ECF6;
+                            }
+
+                        }
+
+                        &.leyka-subscriptions-active {
+
+                            border-color: #1AA316;
+                            color: #1AA316;
+
+                            &.leyka-active, &:hover {
+                                background: #E8F9E7;
+                            }
+
+                        }
+
+
+                        &.leyka-subscriptions-problematic {
+
+                            border-color: #CC1818;
+                            color: #CC1818;
+
+                            &.leyka-active, &:hover {
+                                background: #fd9f9f63;
+                            }
+
+                        }
+
+                        &.leyka-subscriptions-non-active {
+
+                            border-color: #C4C4C4;
+                            color: #586067;
+
+                            &.leyka-active, &:hover {
+                                background: #5860671c;
+                            }
+
+                        }
+
+                    }
+
+                }
+
+                .tablenav-pages {
+
+                    display: flex;
+                    flex-direction: row;
+                    padding: 0px;
+                    align-items: center;
+                    gap: 12px;
+                    margin-left: 50px;
+
+                    .pagination-links {
+
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        padding: 0px;
+                        gap: 4px;
+
+                        .button {
+
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            width: 30px;
+                            height: 30px;
+
+                        }
+
+                        .current-page {
+
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            min-width: 35px;
+                            height: 30px;
+                            padding: 0;
+
+                        }
+
+                        .paging-input {
+
+                            display: flex;
+                            flex-direction: row;
+                            align-items: center;
+                            padding: 4px;
+                            gap: 4px;
+
+                            .tablenav-paging-text {
+
+                                display: flex;
+                                flex-direction: row;
+                                align-items: center;
+                                padding: 4px;
+                                gap: 4px;
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            .wp-list-table.widefat {
+
+                font-size: 12px;
+                line-height: 16px;
+
+                &.striped > tbody > :nth-child(odd) {
+                    background-color: unset;
+                }
+
+                th {
+
+                    font-size: 12px;
+                    padding: 20px 10px;
+
+                    a {
+
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+
+                        .sorting-indicator {
+
+                            display: block;
+                            margin-top: 4px;
+                            margin-left: 3px;
+                            width: 7px;
+                            height: unset;
+
+                        }
+                    }
+
+
+                }
+
+                tr {
+
+                    &.leyka-problematic {
+                        background-color: #F9EBEE !important;
+                    }
+
+                    &.leyka-non-active {
+                        background-color: #F1F1F1 !important;
+                    }
+
+                    .column-donation_id {
+                        width: 50px;
+                        padding-left: 20px;
+                    }
+
+                    .column-donor {
+                        min-width: 180px;
+                        max-width: 250px;
+                        overflow: hidden;
+                    }
+
+                    .column-campaign {
+                        min-width: 250px;
+                        max-width: 350px;
+                    }
+
+                    .column-first_donation {
+                        width: 100px;
+                    }
+
+                    .column-next_donation {
+                        width: 100px;
+                    }
+
+                    .column-donations_number {
+                        width: 90px;
+                    }
+
+                    .column-amount {
+                        width: 60px;
+                    }
+
+                    .column-gateway_pm {
+                        width: 80px;
+                        padding-right: 20px;
+                    }
+
+                }
+
+                td {
+
+                    &.column-next_donation {
+                        .leyka-recurring-not-active {
+
+                            font-size: 11px;
+                            color: $color-error-message;
+
+                        }
+                    }
+
+                    .leyka-content-wrapper {
+
+                        display: flex;
+                        flex-direction: column;
+
+                        :first-child {
+                            font-weight: 600;
+                            font-size: 12px;
+                        }
+
+                        :nth-child(3) {
+                            font-size: 10px;
+                        }
+
+                        .leyka-active {
+                            color: #1AA316;
+                        }
+
+                        .leyka-non-active {
+                            color: #CC1818;
+                        }
+
+                        .leyka-problematic {
+                            color: #CC1818;
+                        }
+
+                        .leyka-non-active {
+                            color: #8E8E8E;
+                        }
+
+                    }
+
+                    &.column-campaign .donation-campaign, &.column-first_donation, &.column-next_donation, &.column-donations_number {
+                        font-weight: 600;
+                    }
+
+                    &.column-gateway_pm .leyka-gateway-pm {
+
+                        display: flex;
+                        flex-flow: row nowrap;
+                        align-items: flex-start;
+                        width: 20px;
+
+                        .leyka-gateway-name {
+                            margin-right: 5px;
+                        }
+
+                        img {
+
+                            width: 35px;
+                            height: 35px;
+                            margin: 0;
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
 
     }
-    // List table (columns & content) - END
 
 }

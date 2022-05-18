@@ -186,6 +186,8 @@ jQuery(document).ready(function($){
             searching: false,
             processing: true,
             serverSide: true,
+            paging: false,
+            info: false,
 
             ajax: {
                 url: leyka.ajaxurl,
@@ -193,6 +195,8 @@ jQuery(document).ready(function($){
                 data: function(data){
                     data.action = 'leyka_get_recurring_subscription_donations';
                     data.recurring_subscription_id = $data_table.data('init-recurring-donation-id');
+                    data.length = 5,
+                    data.draw = 5
                 }
             },
 
@@ -204,6 +208,13 @@ jQuery(document).ready(function($){
                         return '<a href="'+leyka.admin_url+'admin.php?page=leyka_donation_info&donation='+donation_id+'" target="_blank">'
                             +donation_id
                             +'</a>';
+                    },
+                },
+                {
+                    data: 'type',
+                    className: 'column-type data-type',
+                    render: function(type){
+                        return '<i class="icon-payment-type icon-'+type.name+' has-tooltip" title="'+type.label+'"></i>';
                     },
                 },
                 {
@@ -219,38 +230,55 @@ jQuery(document).ready(function($){
                     }
                 },
                 {
+                    data: 'date',
+                    className: 'column-date',
+                    render: function (date) {
+                        return date.date_label+'<br>'+date.time_label;
+                    }
+                },
+                {
                     data: 'amount',
                     className: 'column-amount data-amount',
                     render: function(data_amount, type, row_data){
 
-                        let amount_html = data_amount.amount === data_amount.total ?
+                        const amount_html = data_amount.amount === data_amount.total ?
                             data_amount.formatted+'&nbsp;'+data_amount.currency_label :
                             data_amount.formatted+'&nbsp;'+data_amount.currency_label
-                            +'<span class="amount-total"> / '
+                            +'<div class="amount-total">'
                             +data_amount.total_formatted+'&nbsp;'+data_amount.currency_label
-                            +'</span>';
+                            +'</div>';
+
+                        const tooltip_html = row_data.status === 'failed' ?
+                            '<strong>Error '+row_data.status.error.id+'</strong>: '+row_data.status.error.name
+                            +'<p><a class="leyka-tooltip-error-content-more leyka-inner-tooltip leyka-tooltip-x-wide leyka-tooltip-white" title="" href="#">'
+                            +'More info'+ //TODO: Перевод
+                            +'</a></p>'
+                            +'<div class="error-full-info-tooltip-content">'+row_data.status.error.full_info+'</div>' :
+                            '<strong>'+row_data.status.label+':</strong> '+row_data.status.description;
 
                         return '<span class="leyka-amount '+(data_amount.amount < 0.0 ? 'leyka-amount-negative' : '')+'">'
                             // +'<i class="icon-leyka-donation-status icon-'+row_data.status.id+' has-tooltip leyka-tooltip-align-left" title="'+row_data.status.description+'"></i>'
                             +'<span class="leyka-amount-and-status">'
-                            +'<div class="leyka-amount-itself">'+amount_html+'</div>'
-                            +'<div class="leyka-donation-status-label label-'+row_data.status.id+'">'+row_data.status.label+'</div>'
-                            +'</span>'
-                            +'</span>';
+                            +'<div class="leyka-amount-itself" title="">'+amount_html+'</div>'
+                            +'<div class="leyka-donation-status-label label-'+row_data.status.id+' has-tooltip leyka-tooltip-align-left leyka-tooltip-on-click" title="">'+row_data.status.label+'</div>'
+                            +'<span class="leyka-tooltip-content">'+tooltip_html+'</span></span></span>';
 
                     }
                 },
-                {data: 'date', className: 'column-date',},
                 {
                     data: 'gateway_pm',
                     className: 'column-gateway_pm data-gateway_pm',
                     render: function(gateway_pm, type, row_data){
 
-                        return '<div class="leyka-gateway-name">'
-                            +'<img src="'+gateway_pm.gateway_icon_url+'" alt="'+gateway_pm.gateway_label+'">'
-                            +gateway_pm.gateway_label+','
-                            +'</div>'
-                            +'<div class="leyka-pm-name">'+gateway_pm.pm_label+'</div>';
+                        return '<span class="leyka-gateway-pm has-tooltip leyka-tooltip-align-left" title="'+gateway_pm.gateway.label+' / '+gateway_pm.pm.label+'">'
+                        +'<div class="leyka-gateway-name">'
+                            +(gateway_pm.gateway.icon_url !== '' ?
+                                '<img src="'+gateway_pm.gateway.icon_url+'" alt="'+gateway_pm.gateway.label+'">' :
+                                '<img src="'+gateway_pm.leyka_plugin_base_url+'/img/pm-icons/custom-payment-info.svg" alt="'+gateway_pm.gateway.label+'">')
+                        +'</div>'
+                        +'<div class="leyka-pm-name">'
+                            +(gateway_pm.pm.label !== '' ? '<img src="'+gateway_pm.pm.admin_icon_url+'" alt="'+gateway_pm.pm.label+'">' : '')
+                        +'</div></span>';
 
                     }
                 },
@@ -291,5 +319,7 @@ jQuery(document).ready(function($){
         });
 
     }
+
+    LeykaDOMControl.initVisibilityControlButtons();
 
 });

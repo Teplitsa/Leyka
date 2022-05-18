@@ -1,0 +1,10 @@
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 20C0 8.95431 8.95431 0 20 0C31.0457 0 40 8.95431 40 20C40 31.0457 31.0457 40 20 40C8.95431 40 0 31.0457 0 20Z" fill="white"/>
+<path d="M16.05 16.439C16.6357 15.8534 17.5852 15.8534 18.171 16.439" stroke="#007CBA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M22.05 16.439C22.6357 15.8534 23.5852 15.8534 24.171 16.439" stroke="#007CBA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M20.111 23.5V31" stroke="#007CBA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M12.611 11.325C12.6106 11.0548 12.7557 10.8054 12.9908 10.6722C13.2259 10.539 13.5145 10.5428 13.746 10.682L16.361 12.25L19.58 9.03002C19.7207 8.88926 19.9115 8.81018 20.1105 8.81018C20.3095 8.81018 20.5003 8.88926 20.641 9.03002L23.861 12.25L26.475 10.682C26.7067 10.5429 26.9953 10.5393 27.2304 10.6724C27.4656 10.8055 27.611 11.0548 27.611 11.325V16C27.611 20.1422 24.2531 23.5 20.111 23.5C15.9689 23.5 12.611 20.1422 12.611 16V11.325Z" stroke="#007CBA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M11.25 31C10.9518 31 10.6818 30.8234 10.5625 30.55C10.4432 30.2767 10.4972 29.9587 10.7 29.74C11.937 28.408 13.992 26.5 15.611 26.5C18.0963 26.5 20.111 28.5147 20.111 31H11.25Z" stroke="#007CBA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M28.971 31C29.2692 31 29.5391 30.8234 29.6585 30.55C29.7778 30.2767 29.7238 29.9587 29.521 29.74C28.284 28.408 26.229 26.5 24.611 26.5C22.1257 26.5 20.111 28.5147 20.111 31H28.971Z" stroke="#007CBA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M20 39C9.50659 39 1 30.4934 1 20H-1C-1 31.598 8.40202 41 20 41V39ZM39 20C39 30.4934 30.4934 39 20 39V41C31.598 41 41 31.598 41 20H39ZM20 1C30.4934 1 39 9.50659 39 20H41C41 8.40202 31.598 -1 20 -1V1ZM20 -1C8.40202 -1 -1 8.40202 -1 20H1C1 9.50659 9.50659 1 20 1V-1Z" fill="#E0E0E0"/>
+</svg>

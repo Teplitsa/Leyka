@@ -1,5 +1,48 @@
 .leyka-dashboard-page {
 
+    .leyka-admin-page-notice {
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 8px;
+        gap: 8px;
+        background: #F5DADF;
+        border-radius: 6px;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+
+        .leyka-content-wrapper {
+
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+
+            font-style: normal;
+            font-weight: 500;
+            font-size: 12px;
+            line-height: 16px;
+            color: #23282D;
+
+            img {
+                margin-right: 8px;
+            }
+
+            a {
+                text-decoration: none;
+                border: none;
+                margin-left: 2px;
+            }
+
+        }
+
+        .leyka-close-button {
+            cursor: pointer;
+        }
+
+    }
+
     // Stats invite:
     .send-plugin-stats-invite {
 
@@ -133,46 +176,105 @@
 
                 display: flex;
                 justify-content: space-between;
-                margin-bottom: 1.5*$leyka-base;
-
-                a {
-
-                    @include leyka-adb-link-period;
-                    @include leyka-admin-a(dashed);
-
-                    font-size: 14px;
-                    line-height: 18px;
-                    margin-right: 1.5*$leyka-base;
-
-                    &:last-of-type {
-                        margin-right: 0;
-                    }
-
-                    &.current-interval {
-                        color: $leyka-adb-color-link-active;
-                        border-bottom-style: none;
-                    }
-
-                }
-
-                .leyka-content-row {
-                    justify-content: start;
-                }
+                margin-bottom: 20px;
 
                 .plugin-data-interval-content {
-                    width: 600px;
-                    height: 50px;
+
+                    width: 400px;
                     display: flex;
                     flex-direction: column;
                     flex-wrap: wrap;
                     justify-content: space-between;
+                    position: relative;
+
+                    .plugin-data-interval-label {
+
+                        font-family: 'Roboto';
+                        font-style: normal;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 16px;
+                        display: flex;
+                        align-items: center;
+                        color: #007CBA;
+                        cursor: pointer;
+                        gap: 13px;
+
+                        .leyka-icon {
+                            transform: scale(-1, -1);
+                        }
+
+                        &.leyka-closed .leyka-icon {
+                            transform: unset;
+                        }
+
+                    }
+
+                    .leyka-content-wrapper {
+
+                        display: flex;
+                        flex-direction: row;
+                        align-items: flex-start;
+                        padding: 16px;
+                        gap: 20px;
+                        background: #FFFFFF;
+                        border: 1px solid #E0E0E0;
+                        box-shadow: inset -1px 0px 0px #C4C4C4, inset 1px 1px 0px #C4C4C4;
+                        border-radius: 6px;
+                        // transform: matrix(1, 0, 0, -1, 0, 0);
+                        z-index: 1;
+                        position: absolute;
+                        top: 20px;
+
+                        .leyka-content-column {
+
+                            display: flex;
+                            flex-direction: column-reverse;
+                            align-items: flex-start;
+                            padding: 0px;
+                            gap: 16px;
+
+                            &:first-child {
+
+                                padding-right: 20px;
+                                border-right: 1px solid #007CBA;
+
+                            }
+
+                            a {
+
+                                font-family: 'Roboto';
+                                font-style: normal;
+                                font-weight: 400;
+                                font-size: 13px;
+                                line-height: 15px;
+                                display: flex;
+                                align-items: center;
+                                color: #44444A;
+
+                                &:hover, &.current-interval {
+
+                                    color: #007CBA;
+                                    text-decoration: none;
+                                    border-bottom: 1px solid transparent;
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
                 }
 
                 .plugin-data-interval-tools {
 
                     display: flex;
-                    flex-direction: column;
-                    justify-content: space-around;
+                    flex-direction: row;
+                    align-items: center;
+                    padding: 0px;
+                    gap: 6px;
 
                     * {
                         font-size: 10px;
@@ -186,6 +288,17 @@
 
                     .plugin-data-interval-reset-btn {
                         width: fit-content;
+                        font-style: normal;
+                        font-weight: 500;
+                        font-size: 10px;
+                        line-height: 16px;
+                        color: #007CBA;
+                        border-bottom: 1px dashed #007CBA;
+
+                        &:hover {
+                            border-bottom: 1px dashed #007CBA;
+                        }
+
                     }
 
                 }
@@ -193,6 +306,19 @@
 
 
             } // Data interval - END
+
+            .leyka-portlets-wrap {
+
+                display: flex;
+                flex-direction: column;
+                padding: 0px;
+                gap: 20px;
+                flex: none;
+                order: 0;
+                align-self: stretch;
+                flex-grow: 1;
+
+            }
 
         }
 

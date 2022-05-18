@@ -1832,6 +1832,238 @@ function lcfirst(str) {
 function leyka_is_gutenberg_active() {
     return document.body.classList.contains('block-editor-page');
 }
+
+// Upgrade for JSON.stringify to allow arrays (used by LeykaLocalStorage class)
+(function(){
+
+    const convArrToObj = function(array){
+
+        let thisEleObj = new Object();
+
+        if(typeof array == "object"){
+            for(var i in array){
+
+                var thisEle = convArrToObj(array[i]);
+                thisEleObj[i] = thisEle;
+
+            }
+        }else {
+            thisEleObj = array;
+        }
+
+        return thisEleObj;
+
+    };
+
+    let oldJSONStringify = JSON.stringify;
+
+    JSON.stringify = function(input){
+        if(oldJSONStringify(input) == '[]')
+            return oldJSONStringify(convArrToObj(input));
+        else
+            return oldJSONStringify(input);
+    };
+
+})();
+
+/**
+ * Class to handle LocalStorage
+ */
+class LeykaLocalStorage {
+
+    static get(key) {
+        return localStorage.getItem('leyka-' + key);
+    }
+
+    static set(key, value) {
+        localStorage.setItem('leyka-' + key, value);
+    }
+
+    static remove(key) {
+        localStorage.removeItem('leyka-' + key);
+    }
+
+}
+
+/**
+ * Class to handle stored states of the DOM elements (currently only visibility)
+ */
+class LeykaDOMControl {
+
+    static state_hidden = 'hidden';
+    static state_visible = 'visible';
+    static class_hidden = 'leyka-hidden';
+    static class_closed = 'leyka-closed';
+    static class_v_c_button = 'leyka-visibility-control-button'; // "v_c" => "visibility_control"
+    static data_attribute_v_c_button_targed = 'visibility-control-target';
+
+    static storeElementVisibilityState(selector, state) {
+
+        let elements_visibility = JSON.parse(LeykaLocalStorage.get('elements-visibility')) ? JSON.parse(LeykaLocalStorage.get('elements-visibility')) : [] ;
+
+        elements_visibility[selector] = state;
+
+        LeykaLocalStorage.set('elements-visibility', JSON.stringify(elements_visibility));
+
+    }
+
+    /**
+     * Hide element
+     * @param selector
+     * @return {boolean}
+     */
+    static hideElement(selector) {
+
+        let $element = jQuery(selector);
+
+        if($element.length === 0) {
+            return false;
+        }
+
+        $element.addClass(this.class_hidden);
+        jQuery('.'+this.class_v_c_button+'[data-'+this.data_attribute_v_c_button_targed+'="'+selector+'"]').addClass(this.class_closed);
+
+        this.storeElementVisibilityState(selector, this.state_hidden);
+
+        return true;
+
+    }
+
+    /**
+     * Show element
+     * @param selector
+     * @return {boolean}
+     */
+    static showElement(selector) {
+
+        let $element = jQuery(selector);
+
+        if($element.length === 0) {
+            return false;
+        }
+
+        $element.removeClass(this.class_hidden);
+        jQuery('.'+this.class_v_c_button+'[data-'+this.data_attribute_v_c_button_targed+'="'+selector+'"]').removeClass(this.class_closed);
+
+        this.storeElementVisibilityState(selector, this.state_visible);
+
+        return true;
+
+    }
+
+    /**
+     * Toggle element visibility
+     * @param selector
+     * @return {boolean}
+     */
+    static toggleElementVisibility(selector) {
+
+        let $element = jQuery(selector);
+
+        if($element.length === 0) {
+            return false;
+        }
+
+        if(this.getElementVisibility(selector) === this.state_visible) {
+            this.hideElement(selector);
+        } else if(this.getElementVisibility(selector) === this.state_hidden) {
+            this.showElement(selector);
+        }
+
+        return true;
+
+    }
+
+    /**
+     * Get stored visibility state
+     * @param selector
+     * @return {boolean|string}
+     */
+    static getElementVisibility(selector) {
+
+        const $element = jQuery(selector);
+
+        if($element.length === 0) {
+            return false;
+        }
+
+        let elements_visibility = JSON.parse(LeykaLocalStorage.get('elements-visibility')) ? JSON.parse(LeykaLocalStorage.get('elements-visibility')) : [] ;
+
+        if(elements_visibility[selector] == null) {
+
+            elements_visibility[selector] = jQuery($element).hasClass(this.class_hidden) ? this.state_hidden : this.state_visible;
+
+            this.storeElementVisibilityState(selector, elements_visibility[selector]);
+
+        }
+
+        return elements_visibility[selector];
+
+    }
+
+    /**
+     * Apply stored visibility state to the array of elements
+     * @param selectors Array of selectors
+     * @return {boolean|*[]}
+     */
+    static applyElementsVisibility(selectors) {
+
+        if( !Array.isArray(selectors) ) {
+            return false;
+        }
+
+        let result = [];
+
+        selectors.forEach((selector) => {
+
+            let $element = jQuery(selector);
+
+            if($element.length === 0) {
+                return false;
+            }
+
+            result[selector] = this.getElementVisibility(selector);
+
+            if(result[selector] === this.state_visible) {
+                $element.removeClass(this.class_hidden);
+                jQuery('.'+this.class_v_c_button+'[data-'+this.data_attribute_v_c_button_targed+'="'+selector+'"]').removeClass(this.class_closed);
+            } else if(result[selector] === this.state_hidden){
+                $element.addClass(this.class_hidden);
+                jQuery('.'+this.class_v_c_button+'[data-'+this.data_attribute_v_c_button_targed+'="'+selector+'"]').addClass(this.class_closed);
+            }
+
+        }, this);
+
+        return result;
+
+    }
+
+    /**
+     * Bind visibility control event to all buttons on the page with the sufficient class and apply visibility states
+     */
+    static initVisibilityControlButtons() {
+
+        const $buttons = jQuery('.'+this.class_v_c_button);
+        let targets_selectors = [];
+
+        $buttons.each((idx, $button) => {
+
+            const target_selector = jQuery($button).data(this.data_attribute_v_c_button_targed);
+
+            targets_selectors.push(target_selector);
+
+            jQuery($button).off('click.LeykaDOMControl');
+            jQuery($button).on('click.LeykaDOMControl', () => {
+                this.toggleElementVisibility(target_selector);
+            })
+
+        }, this);
+
+        this.applyElementsVisibility(targets_selectors);
+
+    }
+
+}
 /** Additional donation form fields settings JS */
 
 jQuery(document).ready(function($){
@@ -2779,6 +3011,7 @@ jQuery(document).ready(function($){
 
 // banner
 jQuery(document).ready(function($){
+
     $('.banner-wrapper .close').on('click.leyka', function(e){
 
         e.preventDefault();
@@ -2797,6 +3030,26 @@ jQuery(document).ready(function($){
         );
 
     });
+
+    $('.plugin-data-interval-label').on('click', () => {
+        $('.plugin-data-interval-label')
+            .toggleClass('leyka-closed')
+            .next('.leyka-content-wrapper').toggleClass('leyka-hidden');
+    });
+
+    $('body').on('click.leyka', (e) => {
+        if( $('.plugin-data-interval').has($(e.target)).length === 0 ) {
+
+            $('.plugin-data-interval-label').addClass('leyka-closed');
+            $('.plugin-data-interval-content .leyka-content-wrapper').addClass('leyka-hidden');
+
+        }
+    });
+
+    $('.leyka-admin-page-notice .leyka-close-button').on('click', () => {
+        $('.leyka-admin-page-notice').addClass('leyka-hidden');
+    });
+
 });
 
 /** Admin JS - Donation adding/editing pages **/
@@ -2987,6 +3240,8 @@ jQuery(document).ready(function($){
             searching: false,
             processing: true,
             serverSide: true,
+            paging: false,
+            info: false,
 
             ajax: {
                 url: leyka.ajaxurl,
@@ -2994,6 +3249,8 @@ jQuery(document).ready(function($){
                 data: function(data){
                     data.action = 'leyka_get_recurring_subscription_donations';
                     data.recurring_subscription_id = $data_table.data('init-recurring-donation-id');
+                    data.length = 5,
+                    data.draw = 5
                 }
             },
 
@@ -3005,6 +3262,13 @@ jQuery(document).ready(function($){
                         return '<a href="'+leyka.admin_url+'admin.php?page=leyka_donation_info&donation='+donation_id+'" target="_blank">'
                             +donation_id
                             +'</a>';
+                    },
+                },
+                {
+                    data: 'type',
+                    className: 'column-type data-type',
+                    render: function(type){
+                        return '<i class="icon-payment-type icon-'+type.name+' has-tooltip" title="'+type.label+'"></i>';
                     },
                 },
                 {
@@ -3020,38 +3284,55 @@ jQuery(document).ready(function($){
                     }
                 },
                 {
+                    data: 'date',
+                    className: 'column-date',
+                    render: function (date) {
+                        return date.date_label+'<br>'+date.time_label;
+                    }
+                },
+                {
                     data: 'amount',
                     className: 'column-amount data-amount',
                     render: function(data_amount, type, row_data){
 
-                        let amount_html = data_amount.amount === data_amount.total ?
+                        const amount_html = data_amount.amount === data_amount.total ?
                             data_amount.formatted+'&nbsp;'+data_amount.currency_label :
                             data_amount.formatted+'&nbsp;'+data_amount.currency_label
-                            +'<span class="amount-total"> / '
+                            +'<div class="amount-total">'
                             +data_amount.total_formatted+'&nbsp;'+data_amount.currency_label
-                            +'</span>';
+                            +'</div>';
+
+                        const tooltip_html = row_data.status === 'failed' ?
+                            '<strong>Error '+row_data.status.error.id+'</strong>: '+row_data.status.error.name
+                            +'<p><a class="leyka-tooltip-error-content-more leyka-inner-tooltip leyka-tooltip-x-wide leyka-tooltip-white" title="" href="#">'
+                            +'More info'+ //TODO: Перевод
+                            +'</a></p>'
+                            +'<div class="error-full-info-tooltip-content">'+row_data.status.error.full_info+'</div>' :
+                            '<strong>'+row_data.status.label+':</strong> '+row_data.status.description;
 
                         return '<span class="leyka-amount '+(data_amount.amount < 0.0 ? 'leyka-amount-negative' : '')+'">'
                             // +'<i class="icon-leyka-donation-status icon-'+row_data.status.id+' has-tooltip leyka-tooltip-align-left" title="'+row_data.status.description+'"></i>'
                             +'<span class="leyka-amount-and-status">'
-                            +'<div class="leyka-amount-itself">'+amount_html+'</div>'
-                            +'<div class="leyka-donation-status-label label-'+row_data.status.id+'">'+row_data.status.label+'</div>'
-                            +'</span>'
-                            +'</span>';
+                            +'<div class="leyka-amount-itself" title="">'+amount_html+'</div>'
+                            +'<div class="leyka-donation-status-label label-'+row_data.status.id+' has-tooltip leyka-tooltip-align-left leyka-tooltip-on-click" title="">'+row_data.status.label+'</div>'
+                            +'<span class="leyka-tooltip-content">'+tooltip_html+'</span></span></span>';
 
                     }
                 },
-                {data: 'date', className: 'column-date',},
                 {
                     data: 'gateway_pm',
                     className: 'column-gateway_pm data-gateway_pm',
                     render: function(gateway_pm, type, row_data){
 
-                        return '<div class="leyka-gateway-name">'
-                            +'<img src="'+gateway_pm.gateway_icon_url+'" alt="'+gateway_pm.gateway_label+'">'
-                            +gateway_pm.gateway_label+','
-                            +'</div>'
-                            +'<div class="leyka-pm-name">'+gateway_pm.pm_label+'</div>';
+                        return '<span class="leyka-gateway-pm has-tooltip leyka-tooltip-align-left" title="'+gateway_pm.gateway.label+' / '+gateway_pm.pm.label+'">'
+                        +'<div class="leyka-gateway-name">'
+                            +(gateway_pm.gateway.icon_url !== '' ?
+                                '<img src="'+gateway_pm.gateway.icon_url+'" alt="'+gateway_pm.gateway.label+'">' :
+                                '<img src="'+gateway_pm.leyka_plugin_base_url+'/img/pm-icons/custom-payment-info.svg" alt="'+gateway_pm.gateway.label+'">')
+                        +'</div>'
+                        +'<div class="leyka-pm-name">'
+                            +(gateway_pm.pm.label !== '' ? '<img src="'+gateway_pm.pm.admin_icon_url+'" alt="'+gateway_pm.pm.label+'">' : '')
+                        +'</div></span>';
 
                     }
                 },
@@ -3092,6 +3373,8 @@ jQuery(document).ready(function($){
         });
 
     }
+
+    LeykaDOMControl.initVisibilityControlButtons();
 
 });
 /** Donations admin list page */
@@ -4255,16 +4538,11 @@ jQuery(document).ready(function($){
 
 });
 /** Recurring subscriptions list page */
-// jQuery(document).ready(function($){
-//
-//     let $page_wrapper = $('.wrap');
-//     if( !$page_wrapper.length || $page_wrapper.data('leyka-admin-page-type') !== 'recurring-subscriptions-list-page' ) {
-//         return;
-//     }
-//
-//     // ...
-//
-// });
+jQuery(document).ready(function($){
+
+    LeykaDOMControl.initVisibilityControlButtons();
+
+});
 /** Common wizards functions */
 
 // Expandable areas:

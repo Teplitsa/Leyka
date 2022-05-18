@@ -101,6 +101,7 @@ jQuery(document).ready(function($){
 
 // banner
 jQuery(document).ready(function($){
+
     $('.banner-wrapper .close').on('click.leyka', function(e){
 
         e.preventDefault();
@@ -119,4 +120,24 @@ jQuery(document).ready(function($){
         );
 
     });
+
+    $('.plugin-data-interval-label').on('click', () => {
+        $('.plugin-data-interval-label')
+            .toggleClass('leyka-closed')
+            .next('.leyka-content-wrapper').toggleClass('leyka-hidden');
+    });
+
+    $('body').on('click.leyka', (e) => {
+        if( $('.plugin-data-interval').has($(e.target)).length === 0 ) {
+
+            $('.plugin-data-interval-label').addClass('leyka-closed');
+            $('.plugin-data-interval-content .leyka-content-wrapper').addClass('leyka-hidden');
+
+        }
+    });
+
+    $('.leyka-admin-page-notice .leyka-close-button').on('click', () => {
+        $('.leyka-admin-page-notice').addClass('leyka-hidden');
+    });
+
 });

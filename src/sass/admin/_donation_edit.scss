@@ -1,149 +1,237 @@
 /** Donation Info/Edit page **/
 .leyka-admin-donation-info {
 
+    #poststuff .postbox {
+
+        h2.hndle {
+
+            margin: 0;
+            padding: 16px;
+
+        }
+
+        .inside {
+
+            margin: 0;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+            font-family: 'Roboto';
+
+        }
+
+        &.closed .inside {
+            display: none;
+        }
+
+    }
+
     .leyka-set {
 
-        margin: 20px 0 8px;
+        margin: 0;
+        width: 100%;
 
         legend {
+
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 18px;
+            color: #23282D;
             display: block;
             width: 98%;
-            color: #666;
-            font-size: 1em;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 0.5em;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 2px;
-        }
-
-        .leyka-ddata-string {
-
-            margin: 5px 0;
+            margin-bottom: 10px;
+            cursor: pointer;
 
             &:after {
-                clear: both;
-                content: '';
-                display: table;
+
+                content: "\f142";
+                font: normal 20px/1 dashicons;
+                speak: never;
+                display: inline-block;
+                padding: 0;
+                top: -4px;
+                line-height: .5;
+                position: relative;
+                vertical-align: middle;
+                color: #3c434a;
+
+            }
+
+            &.leyka-closed:after {
+                content: "\f140";
             }
 
         }
 
-        .leyka-ddata-field {
+        .leyka-content-wrapper {
 
-            float: left;
-            width: 78%;
-            margin-left: 2%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 12px;
+            gap: 16px;
+            border: 1px dashed #E0E0E0;
 
-            input, textarea {
-                width: 98%;
-                max-width: 700px;
+            .leyka-ddata-string {
+
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: flex-start;
+                padding: 0px;
+                gap: 20px;
+                font-weight: 400;
+                font-size: 14px;
+                line-height: 18px;
+                flex-wrap: wrap;
+                width: 100%;
+
+                .leyka-ddata-field {
+
+                    color: #23282D;
+
+                    input, textarea {
+                        width: 98%;
+                        max-width: 700px;
+                    }
+
+                    input[type="checkbox"], input[type="radio"] {
+                        width: unset;
+                        max-width: 700px;
+                    }
+
+                    /*
+                    .fake-input {
+                        display: inline-block;
+                        box-sizing: border-box;
+                        width: 98%;
+                        max-width: 700px;
+                        border: 1px solid #ddd;
+                        padding: 3px 5px;
+                        line-height: 20px;
+                        min-height: 27px;
+                    }
+                    */
+
+                    .text-line {
+
+                        display: flex;
+                        flex-direction: column;
+                        align-items: flex-start;
+                        padding: 0px;
+                        gap: 4px;
+                        background: #FFFFFF;
+                        border: 1px solid #FFFFFF;
+
+                    }
+
+                    .field-help {
+                        display: inline-block;
+                        padding: 2px 0 0 4px;
+                    }
+
+                    .campaign-actions {
+
+                        display: flex;
+                        flex-direction: row;
+                        align-items: flex-start;
+                        padding: 0px;
+                        gap: 20px;
+
+                        a {
+
+                            font-style: normal;
+                            font-weight: 500;
+                            font-size: 10px;
+                            line-height: 16px;
+                            color: #007CBA;
+                            text-decoration: none;
+                            border-bottom: 1px dashed;
+
+                        }
+
+                    }
+
+                    #donation-amount, #donation-amount-total, #new-donation-amount {
+                        max-width: 320px;
+                    }
+
+                    #custom-payment-info {
+                        margin-top: 10px;
+                    }
+
+                }
+
+                label {
+
+                    width: 150px;
+                    color: #586067;
+
+                }
+
             }
 
-            input[type="checkbox"], input[type="radio"] {
-                width: unset;
-                max-width: 700px;
+            .recurring-is-active-field {
+
+                width: 100%;
+                display: flex;
+                gap: 20px;
+
+                .leyka-ddata-field {
+                    padding-top: 10px;
+                }
+
             }
 
-            .fake-input {
-                display: inline-block;
-                box-sizing: border-box;
-                width: 98%;
-                max-width: 700px;
-                border: 1px solid #ddd;
-                padding: 3px 5px;
-                line-height: 20px;
-                min-height: 27px;
-            }
+            .field-error {
 
-            .text-line {
-                display: inline-block;
-                box-sizing: border-box;
-                width: 98%;
-                max-width: 700px;
-                border-bottom: 1px dashed #ddd;
-                padding: 3px 5px;
-                line-height: 20px;
-                min-height: 27px;
-            }
-
-            .field-help {
-                display: inline-block;
-                padding: 2px 0 0 4px;
-            }
-
-            .campaign-actions {
-
-                margin-left: 20px;
+                display: none;
+                background: #FFE9E9;
+                border: 1px solid #FBC4C4;
+                color: #DE5959;
+                padding: 2px 10px;
+                margin-top: 5px;
+                font-size: 12px;
+                border-radius: 3px;
 
                 a {
-                    text-transform: uppercase;
-                    font-size: 10px;
-                    margin-right: 5px;
+
+                    color: #fc001e;
+
+                    a:hover, a:focus, a:active {
+                        color: #aa363a;
+                    }
+
                 }
 
             }
 
-            #donation-amount, #donation-amount-total, #new-donation-amount {
-                max-width: 320px;
-            }
+            .set-action {
 
-            #custom-payment-info {
-                margin-top: 10px;
-            }
+                .button {
 
-        }
+                    font-family: 'Roboto';
+                    padding: 6px 10px;
+                    border: 1px solid #007CBA;
+                    border-radius: 2px;
+                    background: none;
+                    font-style: normal;
+                    font-weight: 600;
+                    font-size: 12px;
+                    line-height: 16px;
+                    color: #007CBA;
 
-        label {
-            font-weight: bold;
-            float: left;
-            width: 20%;
-            text-align: right;
-            line-height: 27px;
-        }
-
-        .recurring-is-active-field {
-
-            width: 100%;
-            float: none;
-            clear: both;
-
-            .leyka-ddata-field {
-                padding-top: 10px;
-            }
-
-        }
-
-        .field-error {
-
-            display: none;
-            background: #FFE9E9;
-            border: 1px solid #FBC4C4;
-            color: #DE5959;
-            padding: 2px 10px;
-            margin-top: 5px;
-            font-size: 12px;
-            border-radius: 3px;
-
-            a {
-
-                color: #fc001e;
-
-                a:hover, a:focus, a:active {
-                    color: #aa363a;
                 }
 
-            }
+                #campaign-select {
+                    width: 70%;
+                    max-width: 700px;
+                }
 
-        }
-
-        .set-action {
-
-            margin: 15px 0 15px 22%;
-
-            #campaign-select {
-                width: 70%;
-                max-width: 700px;
             }
 
         }
@@ -153,7 +241,48 @@
     #leyka_donation_emails_status {
 
         .leyka-ddata-string {
-            margin: 7px 0;
+
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            padding: 0px;
+            gap: 20px;
+
+            label {
+
+                display: flex;
+                flex-direction: row;
+                align-items: flex-start;
+                padding: 0px;
+                gap: 10px;
+                width: 460px;
+                height: 18px;
+                font-weight: 400;
+                font-size: 14px;
+                line-height: 18px;
+                cursor: default;
+                color: #23282D;
+
+                img {
+                    width: 16px;
+                }
+            }
+
+            &.no-thanks label {
+                color: #8E8E8E;
+            }
+
+            .leyka-ddata-field {
+
+                font-weight: 400;
+                font-size: 14px;
+                line-height: 18px;
+                display: flex;
+                align-items: center;
+                color: #586067;
+
+            }
+
         }
 
         .send-donor-thanks {
@@ -347,5 +476,75 @@
 
     }
     // Donation gateway response - Donation error details - END
+
+
+    .dataTables_wrapper {
+
+        width: 100%;
+
+        table.dataTable {
+
+            width: 100%;
+
+
+            td {
+
+                padding: 10px;
+                height: 36px;
+                font-family: 'Roboto';
+                font-style: normal;
+                font-weight: 500;
+                font-size: 12px;
+                line-height: 16px;
+
+            }
+
+            tbody td {
+                font-weight: 600;
+
+                &.column-amount .amount-total {
+                    color: #8E8E8E;
+                }
+
+                &.column-gateway_pm {
+
+                    .leyka-gateway-pm {
+
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: start;
+                        align-items: center;
+                        gap: 4px;
+
+                        div {
+
+                            display: flex;
+                            flex-flow: row nowrap;
+                            align-items: center;
+
+                            img {
+
+                                width: 30px;
+                                height: 30px;
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            tfoot {
+                display: none;
+            }
+
+        }
+
+    }
+
+
 
 }

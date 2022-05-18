@@ -1201,13 +1201,31 @@ function leyka_admin_get_recurring_subscription_donations(){
     foreach($donations as $donation) {
 
         $gateway = leyka_get_gateway_by_id($donation->gateway_id);
+        $pm = $donation->gateway_id && $donation->gateway_id !== 'correction' ?
+            leyka_get_pm_by_id($donation->pm_full_id, true) : $donation->pm_id;
+
+        if($donation->status === 'failed') {
+
+            $error = $donation->error; /** @var $error Leyka_Donation_Error */
+            $error = is_a($error, 'Leyka_Donation_Error') ?
+            $error : Leyka_Donations_Errors::get_instance()->get_error_by_id(false);
+
+        }
 
         $result['data'][] = [
             'donation_id' => $donation->id,
+            'type' => [
+                'name' => $donation->type,
+                'label' => $donation->type_label
+            ],
             'donor' => [
                 'name' => $donation->donor_name,
                 'email' => $donation->donor_email,
                 'id' => leyka_options()->opt('donor_management_available') && $donation->donor_id ? $donation->donor_id : 0,
+            ],
+            'date' => [
+                'date_label' => $donation->date_label,
+                'time_label' => $donation->time_label
             ],
             'amount' => [
                 'amount' => $donation->amount,
@@ -1220,14 +1238,24 @@ function leyka_admin_get_recurring_subscription_donations(){
                 'id' => $donation->status,
                 'label' => $donation->status_label,
                 'description' => $donation->status_description,
+                'error' => [
+                    'id' => $donation->status === 'failed' ? $error->id : '',
+                    'name' => $donation->status === 'failed' ? $error->name : '',
+                    'full_info' => $donation->status === 'failed' ? leyka_show_donation_error_full_info($error, true) : ''
+                ]
             ],
-            'date' => $donation->date_time_label,
             'gateway_pm' => [
-                'gateway_icon_url' => $gateway ? $gateway->icon_url : '',
-                'gateway_label' => $donation->gateway_id == 'correction' ?
-                    __('Custom payment info', 'leyka') : $donation->gateway_label,
-                'pm_label' => $donation->pm_label,
-            ],
+                'leyka_plugin_base_url' => LEYKA_PLUGIN_BASE_URL, // TODO: Получить в JS?
+                'gateway' => [
+                    'icon_url' => $gateway ? $gateway->icon_url : '',
+                    'label' => $donation->gateway_id == 'correction' ?
+                        __('Custom payment info', 'leyka') : $donation->gateway_label
+                ],
+                'pm' => [
+                    'label' => is_a($pm, 'Leyka_Payment_Method') ? $donation->pm_label : '',
+                    'admin_icon_url' => is_a($pm, 'Leyka_Payment_Method') ? $pm->admin_icon_url : ''
+                ]
+            ]
         ];
 
     }

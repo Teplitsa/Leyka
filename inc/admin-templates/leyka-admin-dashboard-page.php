@@ -5,6 +5,18 @@
 
 <div class="wrap leyka-admin leyka-info-sidebar-page leyka-dashboard-page">
 
+    <div class="leyka-admin-page-notice">
+
+        <div class="leyka-content-wrapper">
+            <img src="<?php echo LEYKA_PLUGIN_BASE_URL; ?>img/dashboard/icon-alert-circle.svg" />
+            <span><?php echo __('Проблемная подписка.', 'leyka'); ?></span>
+            <a href="?page=leyka_donations"><?php echo __('Перейти к платежу', 'leyka'); ?></a>
+        </div>
+
+        <img class="leyka-close-button" src="<?php echo LEYKA_PLUGIN_BASE_URL; ?>img/dashboard/icon-close.svg" />
+
+    </div>
+
     <h1><?php _e('Leyka dashboard', 'leyka');?></h1>
 
 <?php if(leyka_options()->opt('send_plugin_stats') !== 'y' && leyka_options()->opt('plugin_stats_sync_enabled')) {?>
@@ -39,11 +51,11 @@
                 $this->show_banner('admin-dashboard', 'main');        }
 
             $dashboard_stats_intervals = apply_filters('leyka_admin_dashboard_intervals', [
-                'days_365' => __('365 days', 'leyka'),
-                'days_180' => __('180 days', 'leyka'),
-                'days_90' => __('90 days', 'leyka'),
-                'days_30' => __('30 days', 'leyka'),
-                'days_7' => __('7 days', 'leyka'),
+                'days_365' => __('Last 365 days', 'leyka'),
+                'days_180' => __('Last 180 days', 'leyka'),
+                'days_90' => __('Last 90 days', 'leyka'),
+                'days_30' => __('Last 30 days', 'leyka'),
+                'days_7' => __('Last 7 days', 'leyka'),
                 'this_year' => __('From the year start', 'leyka'),
                 'this_half_year' => __('Half-year', 'leyka'),
                 'this_quarter' => __( sprintf('%d quarter of %d',ceil(date("m", time()) / 3), date("Y") ) , 'leyka'),
@@ -61,49 +73,67 @@
 
                 <div class ="plugin-data-interval-content">
 
-                    <div class="leyka-content-row">
-                        <?php foreach($dashboard_stats_intervals as $interval_id => $title) {
-                            if(strpos($interval_id, 'this') === false) { ?>
-                                <a href="<?php echo add_query_arg('interval', $interval_id, $current_url);?>" class="<?php echo $_GET['interval'] === $interval_id ? 'current-interval' : '';?>">
-                                    <?php echo esc_html($title);?>
-                                </a>
-                            <?php }
-                        }?>
-                    </div>
+                    <span class="plugin-data-interval-label leyka-closed">
+                        <span><?php echo __(isset($_GET['interval']) ? $dashboard_stats_intervals[$_GET['interval']] : 'Выбрать период', 'leyka'); ?></span>
+                        <img class="leyka-icon leyka-icon-chevron-down" src="<?php echo LEYKA_PLUGIN_BASE_URL.'/img/dashboard/icon-chevron-down.svg' ?>">
+                    </span>
 
-                    <div class="leyka-content-row">
-                        <?php foreach($dashboard_stats_intervals as $interval_id => $title) {
-                            if(strpos($interval_id, 'this') !== false) { ?>
-                                <a href="<?php echo add_query_arg('interval', $interval_id, $current_url);?>" class="<?php echo $_GET['interval'] === $interval_id ? 'current-interval' : '';?>">
-                                    <?php echo esc_html($title);?>
-                                </a>
-                            <?php }
-                        }?>
+                    <div class="leyka-content-wrapper leyka-hidden">
+
+                        <div class="leyka-content-column">
+                            <?php foreach($dashboard_stats_intervals as $interval_id => $title) {
+                                if(strpos($interval_id, 'this') === false) { ?>
+                                    <a href="<?php echo add_query_arg('interval', $interval_id, $current_url);?>" class="<?php echo $_GET['interval'] === $interval_id ? 'current-interval' : '';?>">
+                                        <?php echo esc_html($title);?>
+                                    </a>
+                                <?php }
+                            }?>
+                        </div>
+
+                        <div class="leyka-content-column">
+                            <?php foreach($dashboard_stats_intervals as $interval_id => $title) {
+                                if(strpos($interval_id, 'this') !== false) { ?>
+                                    <a href="<?php echo add_query_arg('interval', $interval_id, $current_url);?>" class="<?php echo $_GET['interval'] === $interval_id ? 'current-interval' : '';?>">
+                                        <?php echo esc_html($title);?>
+                                    </a>
+                                <?php }
+                            }?>
+                        </div>
+
                     </div>
 
                 </div>
 
                 <div class="plugin-data-interval-tools">
-                    <span class="plugin-data-interval-reset-text"><?php echo __('The data is current as</br> of ', 'leyka').$dashboard_data_cache_date; ?></span>
+                    <span class="plugin-data-interval-reset-text"><?php echo __('The data is current as of ', 'leyka').$dashboard_data_cache_date; ?></span>
                     <a class="plugin-data-interval-reset-btn" href="?page=leyka&interval=<?php echo $_GET['interval']; ?>&reset=true"><?php echo __('Renew data', 'leyka');  ?></a>
                 </div>
 
 
             </div>
 
-            <?php $row_id = 'donations-stats';?>
-            <div class="leyka-content-row leyka-<?php echo $row_id;?>">
-                <?php do_action('leyka_admin_dashboard_portlets_row', $row_id);?>
-            </div>
+            <div class="leyka-portlets-wrap">
 
-            <?php $row_id = 'donations-dynamics';?>
-            <div class="leyka-content-row leyka-<?php echo $row_id;?>">
-                <?php do_action('leyka_admin_dashboard_portlets_row', $row_id);?>
-            </div>
+                <?php $row_id = 'donations-stats-main';?>
+                <div class="leyka-content-row leyka-<?php echo $row_id;?>">
+                    <?php do_action('leyka_admin_dashboard_portlets_row', $row_id);?>
+                </div>
 
-            <?php $row_id = 'recent-donations';?>
-            <div class="leyka-content-row leyka-<?php echo $row_id;?>">
-                <?php do_action('leyka_admin_dashboard_portlets_row', $row_id);?>
+                <?php $row_id = 'donations-stats-recurring';?>
+                <div class="leyka-content-row leyka-<?php echo $row_id;?>">
+                    <?php do_action('leyka_admin_dashboard_portlets_row', $row_id);?>
+                </div>
+
+                <?php $row_id = 'donations-dynamics';?>
+                <div class="leyka-content-row leyka-<?php echo $row_id;?>">
+                    <?php do_action('leyka_admin_dashboard_portlets_row', $row_id);?>
+                </div>
+
+                <?php $row_id = 'recent-donations';?>
+                <div class="leyka-content-row leyka-<?php echo $row_id;?>">
+                    <?php do_action('leyka_admin_dashboard_portlets_row', $row_id);?>
+                </div>
+
             </div>
 
         </div>

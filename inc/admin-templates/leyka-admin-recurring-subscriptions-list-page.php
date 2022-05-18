@@ -4,14 +4,25 @@
 /** @var $this Leyka_Admin_Setup */?>
 
 <div class="leyka-admin wrap recurring-subscriptions-list leyka-settings-page" data-leyka-admin-page-type="recurring-subscriptions-list-page">
-    <h1 class="wp-heading-inline"><?php _e('Recurring subscriptions', 'leyka');?></h1>
+
+    <div class="leyka-header-wrap">
+
+        <h1 class="wp-heading-inline"><?php _e('Recurring subscriptions', 'leyka');?></h1>
+
+        <div class="recurring-subscriptions-list-export admin-list-export">
+            <input type="submit" class="submit" name="subscriptions-list-export" value="<?php _e('Export the list in CSV', 'leyka');?>">
+        </div>
+
+        <div class="toggle-filters-button leyka-visibility-control-button" data-visibility-control-target=".recurring-subscriptions-list-filters"><?php _e('Filters', 'leyka');?></div>
+
+    </div>
 
     <div id="poststuff">
         <div>
 
             <form class="recurring-subscriptions-list-controls admin-list-controls" action="#" method="get">
 
-                <div class="recurring-subscriptions-list-filters admin-list-filters">
+                <div class="recurring-subscriptions-list-filters admin-list-filters leyka-hidden">
 
                     <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']);?>">
 
@@ -23,10 +34,13 @@
                             <div class="leyka-admin-list-filter-wrapper">
                                 <select name="status" class="leyka-selector leyka-select-menu">
                                     <option value="" <?php echo !$filter_value ? 'selected="selected"' : '';?>>
-                                        --- <?php _e('All subscriptions', 'leyka');?> ---
+                                        <?php _e('All subscriptions', 'leyka');?>
                                     </option>
                                     <option value="active" <?php echo $filter_value == 'active' ? 'selected="selected"' : '';?>>
                                         <?php _e('Only active', 'leyka');?>
+                                    </option>
+                                    <option value="problematic" <?php echo $filter_value == 'problematic' ? 'selected="selected"' : '';?>>
+                                        <?php _e('Problematic', 'leyka');?>
                                     </option>
                                     <option value="non-active" <?php echo $filter_value == 'non-active' ? 'selected="selected"' : '';?>>
                                         <?php _e('Only not active', 'leyka');?>
@@ -69,7 +83,7 @@
                                 <select id="leyka-gateways-select" class="leyka-select-menu" name="gateway">
 
                                     <option value="" <?php echo $filter_value ? '' : 'selected="selected"';?>>
-                                        --- <?php _e('All gateways', 'leyka');?> ---
+                                        <?php _e('All gateways', 'leyka');?>
                                     </option>
 
                                     <?php $gateways = leyka_get_gateways();
@@ -87,6 +101,10 @@
 
                             </div>
 
+                            <div class="leyka-admin-list-filter-wrapper">
+                                <input type="number" max="30" min="1" name="day" class="leyka-day-selector leyka-selector" value="<?php echo isset($_GET['day']) ? esc_attr($_GET['day']) : '';?>" placeholder="<?php _e("Payment day (from 1 to 30)", 'leyka');?>">
+                            </div>
+
                         </div>
 
                         <div class="filters-row"><div class="filter-warning" id="leyka-filter-warning"></div></div>
@@ -100,9 +118,7 @@
 
                 </div>
 
-                <div class="recurring-subscriptions-list-export admin-list-export">
-                    <input type="submit" class="submit" name="subscriptions-list-export" value="<?php _e('Export the list in CSV', 'leyka');?>">
-                </div>
+
 
             </form>
 

@@ -1203,110 +1203,119 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         $donation_id = empty($_GET['donation']) ? false : absint($_GET['donation']);
         $donation = Leyka_Donations::get_instance()->get($donation_id);
+        $is_subscription = $donation->is_init_recurring_donation;
 
         $campaign = new Leyka_Campaign($donation->campaign_id);?>
 
 	<fieldset class="leyka-set campaign">
-		<legend><?php _e('Campaign Data', 'leyka');?></legend>
 
-        <div class="leyka-ddata-string">
+        <legend class="leyka-visibility-control-button" data-visibility-control-target="#leyka_donation_data .leyka-set.campaign .leyka-content-wrapper"><?php _e('Campaign Data', 'leyka');?></legend>
 
-			<label><?php echo _x('Campaign', 'In subjective case', 'leyka');?>:</label>
-			<div class="leyka-ddata-field">
+        <div class="leyka-content-wrapper">
 
-			<?php if($campaign->id && $campaign->status == 'publish') {?>
+            <div class="leyka-ddata-string">
 
-			<span class="text-line">
-                <span class="campaign-name"><?php echo htmlentities($campaign->title, ENT_QUOTES, 'UTF-8');?></span>
-                <span class="campaign-actions">
-                    <a href="<?php echo admin_url('/post.php?action=edit&post='.$campaign->id);?>"><?php _e('Edit campaign', 'leyka');?></a>
-                    <a href="<?php echo $campaign->url;?>" target="_blank" rel="noopener noreferrer"><?php _e('Preview campaign', 'leyka');?></a>
-                </span>
-            </span>
+                <label><?php echo _x('Campaign', 'In subjective case', 'leyka');?>:</label>
+                <div class="leyka-ddata-field">
 
-			<?php } else {
-				echo '<span class="text-line">'.__('the campaign has been removed or drafted', 'leyka').'</span>';
-			}?>
+                    <?php if($campaign->id && $campaign->status == 'publish') {?>
 
-			</div>
-		</div>
+                        <span class="text-line">
+                        <span class="campaign-name"><?php echo htmlentities($campaign->title, ENT_QUOTES, 'UTF-8');?></span>
+                        <span class="campaign-actions">
+                            <a href="<?php echo admin_url('/post.php?action=edit&post='.$campaign->id);?>"><?php _e('Edit campaign', 'leyka');?></a>
+                            <a href="<?php echo $campaign->url;?>" target="_blank" rel="noopener noreferrer"><?php _e('Preview campaign', 'leyka');?></a>
+                        </span>
+                    </span>
 
-		<div class="leyka-ddata-string">
+                    <?php } else {
+                        echo '<span class="text-line">'.__('the campaign has been removed or drafted', 'leyka').'</span>';
+                    }?>
 
-			<label><?php _e('Donation purpose', 'leyka');?>:</label>
+                </div>
+            </div>
 
-			<div class="leyka-ddata-field">
+            <div class="leyka-ddata-string">
+
+                <label><?php _e('Donation purpose', 'leyka');?>:</label>
+
+                <div class="leyka-ddata-field">
                 <span id="campaign-payment-title" class="text-line">
                     <?php echo $campaign->id ? $campaign->payment_title : $donation->title;?>
                 </span>
+                </div>
+
+            </div>
+
+            <div class="set-action">
+
+                <div id="campaign-select-trigger" class="button"><?php _e('Connect this donation to another campaign', 'leyka');?></div>
+
+                <div id="campaign-select-fields" style="display: none;">
+
+                    <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector autocomplete-input" value="<?php echo $campaign->title;?>" placeholder="<?php _e('Select a campaign', 'leyka');?>">
+                    <input type="hidden" id="campaign-id" class="leyka-campaigns-select autocomplete-select" name="campaign-id" value="<?php echo $campaign->id;?>" data-campaign-payment-title-selector="#campaign-payment-title">
+
+                    <div id="cancel-campaign-select" class="button"><?php _e('Cancel', 'leyka');?></div>
+                </div>
+
+                <div id="campaign_id-error" class="field-error"></div>
+
             </div>
 
         </div>
-
-		<div class="set-action">
-
-            <div id="campaign-select-trigger" class="button"><?php _e('Connect this donation to another campaign', 'leyka');?></div>
-
-            <div id="campaign-select-fields" style="display: none;">
-
-                <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector autocomplete-input" value="<?php echo $campaign->title;?>" placeholder="<?php _e('Select a campaign', 'leyka');?>">
-                <input type="hidden" id="campaign-id" class="leyka-campaigns-select autocomplete-select" name="campaign-id" value="<?php echo $campaign->id;?>" data-campaign-payment-title-selector="#campaign-payment-title">
-
-                <div id="cancel-campaign-select" class="button"><?php _e('Cancel', 'leyka');?></div>
-            </div>
-
-            <div id="campaign_id-error" class="field-error"></div>
-
-		</div>
 
 	</fieldset>
 
 	<fieldset class="leyka-set donor">
-		<legend><?php _e('Donor Data', 'leyka');?></legend>
 
-		<div class="leyka-ddata-string">
-            <label for="donor-name"><?php _e('Name', 'leyka');?>:</label>
-			<div class="leyka-ddata-field">
+		<legend class="leyka-visibility-control-button" data-visibility-control-target="#leyka_donation_data .leyka-set.donor .leyka-content-wrapper"><?php _e('Donor Data', 'leyka');?></legend>
 
-            <?php if($donation->type === 'correction' || leyka_options()->opt('donors_data_editable')) {?>
-                <input type="text" id="donor-name" name="donor-name" placeholder="<?php _e("Enter donor's name, or leave it empty for anonymous donation", 'leyka');?>" value="<?php echo $donation->donor_name;?>">
-            <?php } else {?>
-                <span class="fake-input">
+        <div class="leyka-content-wrapper">
+
+            <div class="leyka-ddata-string">
+                <label for="donor-name"><?php _e('Name', 'leyka');?>:</label>
+                <div class="leyka-ddata-field">
+
+                    <?php if($donation->type === 'correction' || leyka_options()->opt('donors_data_editable')) {?>
+                        <input type="text" id="donor-name" name="donor-name" placeholder="<?php _e("Enter donor's name, or leave it empty for anonymous donation", 'leyka');?>" value="<?php echo $donation->donor_name;?>">
+                    <?php } else {?>
+                        <span class="fake-input">
                     <?php echo $donation->donor_name ? $donation->donor_name : __('Anonymous', 'leyka');?>
                 </span>
-            <?php }?>
+                    <?php }?>
 
+                </div>
             </div>
-        </div>
 
-		<div class="leyka-ddata-string">
-            <label for="donor-email"><?php _e('Email', 'leyka');?>:</label>
-			<div class="leyka-ddata-field">
-            <?php if($donation->type === 'correction' || leyka_options()->opt('donors_data_editable')) {?>
+            <div class="leyka-ddata-string">
+                <label for="donor-email"><?php _e('Email', 'leyka');?>:</label>
+                <div class="leyka-ddata-field">
+                    <?php if($donation->type === 'correction' || leyka_options()->opt('donors_data_editable')) {?>
 
-                <input type="text" id="donor-email" name="donor-email" placeholder="<?php _e("Enter donor's email", 'leyka');?>" value="<?php echo $donation->donor_email;?>">
-                <div id="donor_email-error" class="field-error"></div>
+                        <input type="text" id="donor-email" name="donor-email" placeholder="<?php _e("Enter donor's email", 'leyka');?>" value="<?php echo $donation->donor_email;?>">
+                        <div id="donor_email-error" class="field-error"></div>
 
-            <?php } else {?>
+                    <?php } else {?>
 
-                <span class="fake-input">
+                        <span class="fake-input">
                     <?php echo $donation->donor_email ? htmlentities($donation->donor_email, ENT_QUOTES, 'UTF-8') : '&ndash;';?>
                 </span>
-            <?php }?>
+                    <?php }?>
+                </div>
             </div>
-        </div>
 
-        <?php if($donation->type !== 'correction') { // Additional fields
+            <?php if($donation->type !== 'correction') { // Additional fields
 
-            foreach(leyka_options()->opt('additional_donation_form_fields_library') as $field_id => $field_settings) {
+                foreach(leyka_options()->opt('additional_donation_form_fields_library') as $field_id => $field_settings) {
 
-                if(is_array($donation->additional_fields) && !empty($donation->additional_fields[$field_id])) {?>
+                    if(is_array($donation->additional_fields) && !empty($donation->additional_fields[$field_id])) {?>
 
-                    <div class="leyka-ddata-string">
+                        <div class="leyka-ddata-string">
 
-                        <label for="donor-<?php echo $field_id;?>"><?php echo $field_settings['title'];?>:</label>
+                            <label for="donor-<?php echo $field_id;?>"><?php echo $field_settings['title'];?>:</label>
 
-                        <div class="leyka-ddata-field"><span class="fake-input">
+                            <div class="leyka-ddata-field"><span class="fake-input">
                             <?php echo apply_filters(
                                 'leyka_admin_donation_info_additional_field_content',
                                 $donation->additional_fields[$field_id],
@@ -1315,182 +1324,189 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                             );?>
                         </span></div>
 
+                        </div>
+
+                    <?php }?>
+
+                <?php }
+
+            }?>
+
+            <?php if(leyka_options()->opt_template('show_donation_comment_field') || $donation->donor_comment) {?>
+                <div class="leyka-ddata-string">
+                    <label for="donor-comment"><?php _e('Comment', 'leyka');?>:</label>
+                    <div class="leyka-ddata-field">
+                        <?php if(
+                            leyka_options()->opt_template('show_donation_comment_field') &&
+                            ($donation->type === 'correction' || leyka_options()->opt('donors_data_editable'))
+                        ) {?>
+
+                            <textarea id="donor-comment" name="donor-comment"><?php echo $donation->donor_comment;?></textarea>
+                            <div id="donor_comment-error" class="field-error"></div>
+
+                        <?php } else {?>
+                            <span class="fake-input"><?php echo esc_html($donation->donor_comment);?></span>
+                        <?php }?>
                     </div>
-
-                <?php }?>
-
-            <?php }
-
-        }?>
-
-        <?php if(leyka_options()->opt_template('show_donation_comment_field') || $donation->donor_comment) {?>
-        <div class="leyka-ddata-string">
-            <label for="donor-comment"><?php _e('Comment', 'leyka');?>:</label>
-            <div class="leyka-ddata-field">
-            <?php if(
-                leyka_options()->opt_template('show_donation_comment_field') &&
-                ($donation->type === 'correction' || leyka_options()->opt('donors_data_editable'))
-            ) {?>
-
-                <textarea id="donor-comment" name="donor-comment"><?php echo $donation->donor_comment;?></textarea>
-                <div id="donor_comment-error" class="field-error"></div>
-
-            <?php } else {?>
-                <span class="fake-input"><?php echo esc_html($donation->donor_comment);?></span>
+                </div>
             <?php }?>
-            </div>
+
         </div>
-        <?php }?>
+
 	</fieldset>
 
 	<fieldset class="leyka-set donation">
 
-		<legend><?php _e('Donation Data', 'leyka');?></legend>
+		<legend class="leyka-visibility-control-button" data-visibility-control-target="#leyka_donation_data .leyka-set.donation .leyka-content-wrapper"><?php _e('Donation Data', 'leyka');?></legend>
 
-        <?php do_action('leyka_donation_info_data_pre_content', $donation);?>
+        <div class="leyka-content-wrapper">
 
-        <div class="leyka-ddata-string">
-            <label><?php _e('Amount', 'leyka');?>:</label>
-			<div class="leyka-ddata-field">
-            <?php if($donation->type === 'correction') {?>
+            <?php do_action('leyka_donation_info_data_pre_content', $donation);?>
 
-                <input type="text" id="donation-amount" name="donation-amount" placeholder="<?php _e("Enter donation amount", 'leyka');?>" value="<?php echo $donation->amount;?>"> <?php echo $donation->currency_label;?>
+            <div class="leyka-ddata-string">
+                <label><?php _e('Amount', 'leyka');?>:</label>
+                <div class="leyka-ddata-field">
+                    <?php if($donation->type === 'correction') {?>
 
-                <div id="donation_amount-error" class="field-error"></div>
+                        <input type="text" id="donation-amount" name="donation-amount" placeholder="<?php _e("Enter donation amount", 'leyka');?>" value="<?php echo $donation->amount;?>"> <?php echo $donation->currency_label;?>
 
-            <?php } else {?>
+                        <div id="donation_amount-error" class="field-error"></div>
 
-                <span class="fake-input">
+                    <?php } else {?>
+
+                        <span class="fake-input">
                     <?php echo $donation->amount ? $donation->amount.' '.$donation->currency_label : '';?>
                 </span>
 
-            <?php }?>
+                    <?php }?>
+                </div>
             </div>
-        </div>
-        <div class="leyka-ddata-string">
-            <label for="donation-amount-total"><?php _e('Total amount', 'leyka');?>:</label>
+            <div class="leyka-ddata-string">
+                <label for="donation-amount-total"><?php _e('Total amount', 'leyka');?>:</label>
 
-            <div class="leyka-ddata-field">
-            <?php if($donation->type === 'correction') {?>
+                <div class="leyka-ddata-field">
+                    <?php if($donation->type === 'correction') {?>
 
-                <input type="text" id="donation-amount-total" name="donation-amount-total" placeholder="<?php _e('Enter the donation total amount', 'leyka');?>" value="<?php echo $donation->amount_total;?>"> <?php echo leyka_get_currency_label();?><br>
+                        <input type="text" id="donation-amount-total" name="donation-amount-total" placeholder="<?php _e('Enter the donation total amount', 'leyka');?>" value="<?php echo $donation->amount_total;?>"> <?php echo leyka_get_currency_label();?><br>
 
-                <small class="field-help howto">
-                    <?php
-                    /** @todo Add a checkbox here (unckecked by default) to calculate total amount based on current commission. */
-                    _e('Leave empty to make the total amount value equal to the amount value.', 'leyka');?>
-                </small>
+                        <small class="field-help howto">
+                            <?php
+                            /** @todo Add a checkbox here (unckecked by default) to calculate total amount based on current commission. */
+                            _e('Leave empty to make the total amount value equal to the amount value.', 'leyka');?>
+                        </small>
 
-                <div id="donation_amount_total-error" class="field-error"></div>
+                        <div id="donation_amount_total-error" class="field-error"></div>
 
-            <?php } else {?>
+                    <?php } else {?>
 
-                <span class="fake-input">
+                        <span class="fake-input">
                     <?php echo $donation->amount_total ? $donation->amount_total.' '.$donation->currency_label : '';?>
                 </span>
 
-            <?php }?>
-            </div>
-        </div>
-
-        <div class="leyka-ddata-string">
-
-            <label><?php _e('Payment method', 'leyka');?>:</label>
-
-			<div class="leyka-ddata-field">
-            <?php if($donation->type === 'correction') {?>
-
-                <select id="donation-pm" name="donation-pm">
-
-                    <option value="" selected="selected"><?php _e('Select a payment method', 'leyka');?></option>
-
-                    <?php foreach(leyka_get_gateways() as $gateway) {
-
-                        /** @var Leyka_Gateway $gateway */
-                        $pm_list = $gateway->get_payment_methods();
-                        if($pm_list) {?>
-
-                            <optgroup label="<?php echo $gateway->name;?>">
-                            <?php foreach($pm_list as $pm) {?>
-                                <option value="<?php echo $pm->full_id;?>" <?php echo $donation->gateway_id === $gateway->id && $donation->pm_id === $pm->id ? 'selected="selected"' : '';?>><?php echo $pm->name;?></option>
-                            <?php }?>
-                            </optgroup>
-
-                        <?php }?>
-
                     <?php }?>
+                </div>
+            </div>
 
-                    <option value="custom" <?php echo ($donation->gw_id == 'correction' || !$donation->gw_id) && $donation->pm_id ? 'selected="selected"' : '';?>><?php _e('Custom payment info', 'leyka');?></option>
+            <div class="leyka-ddata-string">
 
-                </select>
+                <label><?php _e('Payment method', 'leyka');?>:</label>
 
-                <input type="text" id="custom-payment-info" name="custom-payment-info" placeholder="<?php _e('Enter the donation source info', 'leyka');?>" <?php echo ($donation->gw_id == 'correction' || !$donation->gw_id) && $donation->pm_id ? '' : 'style="display: none;"';?> value="<?php echo $donation->gw_id == 'correction' || !$donation->gw_id ? $donation->pm_id : '';?>">
+                <div class="leyka-ddata-field">
+                    <?php if($donation->type === 'correction') {?>
 
-            <?php } else {?>
+                        <select id="donation-pm" name="donation-pm">
 
-                <span class="fake-input">
+                            <option value="" selected="selected"><?php _e('Select a payment method', 'leyka');?></option>
+
+                            <?php foreach(leyka_get_gateways() as $gateway) {
+
+                                /** @var Leyka_Gateway $gateway */
+                                $pm_list = $gateway->get_payment_methods();
+                                if($pm_list) {?>
+
+                                    <optgroup label="<?php echo $gateway->name;?>">
+                                        <?php foreach($pm_list as $pm) {?>
+                                            <option value="<?php echo $pm->full_id;?>" <?php echo $donation->gateway_id === $gateway->id && $donation->pm_id === $pm->id ? 'selected="selected"' : '';?>><?php echo $pm->name;?></option>
+                                        <?php }?>
+                                    </optgroup>
+
+                                <?php }?>
+
+                            <?php }?>
+
+                            <option value="custom" <?php echo ($donation->gw_id == 'correction' || !$donation->gw_id) && $donation->pm_id ? 'selected="selected"' : '';?>><?php _e('Custom payment info', 'leyka');?></option>
+
+                        </select>
+
+                        <input type="text" id="custom-payment-info" name="custom-payment-info" placeholder="<?php _e('Enter the donation source info', 'leyka');?>" <?php echo ($donation->gw_id == 'correction' || !$donation->gw_id) && $donation->pm_id ? '' : 'style="display: none;"';?> value="<?php echo $donation->gw_id == 'correction' || !$donation->gw_id ? $donation->pm_id : '';?>">
+
+                    <?php } else {?>
+
+                        <span class="fake-input">
                 <?php $pm = leyka_get_pm_by_id($donation->pm_full_id, true);
                 $gateway = leyka_get_gateway_by_id($donation->gateway_id);
 
                 echo ($pm ? $pm->label : __('Unknown payment method', 'leyka'))
                     .' ('.($gateway ? $gateway->label : __('unknown gateway', 'leyka')).')';?>
 			    </span>
-            <?php }?>
-            </div>
-
-        </div>
-
-        <div class="leyka-ddata-string">
-            <label><?php _e('Payment type', 'leyka');?>:</label>
-            <div class="leyka-ddata-field">
-                <span class="fake-input"><?php echo $donation->type_label;?></span>
-            </div>
-        </div>
-
-        <div class="leyka-ddata-string">
-            <?php $gateway = leyka_get_gateway_by_id($donation->gateway_id);
-            if($gateway) {
-                $gateway->display_donation_specific_data_fields($donation);
-            }?>
-        </div>
-
-        <div class="leyka-ddata-string">
-
-            <?php if($donation->is_init_recurring_donation) {?>
-
-                <label><?php _e('Initial donation of the recurring subscription', 'leyka');?>:</label>
-                <div class="leyka-ddata-field"><?php echo 'текущее';?></div>
-
-            <?php } else if($donation->init_recurring_donation_id) {?>
-
-                <label><?php _e('Initial donation of the recurring subscription', 'leyka');?>:</label>
-                <div class="leyka-ddata-field">
-                    <a href="<?php echo admin_url('admin.php?page=leyka_donation_info&donation='.$donation->init_recurring_donation_id);?>">
-                        #<?php echo $donation->init_recurring_donation_id;?>
-                    </a>
+                    <?php }?>
                 </div>
 
-            <?php }?>
-
-        </div>
-
-        <div class="leyka-ddata-string">
-            <label for="donation-date-view"><?php _e('Donation date', 'leyka');?>:</label>
-			<div class="leyka-ddata-field">
-            <?php if($donation->type === 'correction') {?>
-
-                <input type="text" id="donation-date-view" class="leyka-datepicker" value="<?php echo $donation->date_label;?>" data-min-date="-5Y" data-max-date="+1Y" data-alt-field="#donation-date" data-alt-format="yy-mm-dd">
-                <input type="hidden" id="donation-date" name="donation_date" value="<?php echo date('Y-m-d', $donation->date_timestamp);?>">
-
-            <?php } else {?>
-                <span class="fake-input"><?php echo $donation->date_time_label;?></span>
-            <?php }?>
             </div>
-        </div>
 
-        <div class="leyka-ddata-string">
-            <label><?php _e('Donor subscription status', 'leyka');?>:</label>
-            <div class="leyka-ddata-field">
+            <div class="leyka-ddata-string">
+                <label><?php _e('Payment type', 'leyka');?>:</label>
+                <div class="leyka-ddata-field">
+                    <span class="fake-input"><?php echo $donation->type_label;?></span>
+                </div>
+            </div>
+
+            <?php $gateway = leyka_get_gateway_by_id($donation->gateway_id);
+            if($gateway && method_exists($gateway, 'display_donation_specific_data_fields')) { ?>
+                <div class="leyka-ddata-string"><?php echo $gateway->display_donation_specific_data_fields($donation); ?></div>
+            <?php }?>
+
+            <?php if ($donation->is_init_recurring_donation || $donation->init_recurring_donation_id) { ?>
+
+                <div class="leyka-ddata-string">
+
+                    <?php if($donation->is_init_recurring_donation) {?>
+
+                        <label><?php _e('Initial donation of the recurring subscription', 'leyka');?>:</label>
+                        <div class="leyka-ddata-field"><?php echo 'текущее';?></div>
+
+                    <?php } else if($donation->init_recurring_donation_id) {?>
+
+                        <label><?php _e('Initial donation of the recurring subscription', 'leyka');?>:</label>
+                        <div class="leyka-ddata-field">
+                            <a href="<?php echo admin_url('admin.php?page=leyka_donation_info&donation='.$donation->init_recurring_donation_id);?>">
+                                #<?php echo $donation->init_recurring_donation_id;?>
+                            </a>
+                        </div>
+
+                    <?php }?>
+
+                </div>
+
+            <?php } ?>
+
+            <div class="leyka-ddata-string">
+                <label for="donation-date-view"><?php _e('Donation date', 'leyka');?>:</label>
+                <div class="leyka-ddata-field">
+                    <?php if($donation->type === 'correction') {?>
+
+                        <input type="text" id="donation-date-view" class="leyka-datepicker" value="<?php echo $donation->date_label;?>" data-min-date="-5Y" data-max-date="+1Y" data-alt-field="#donation-date" data-alt-format="yy-mm-dd">
+                        <input type="hidden" id="donation-date" name="donation_date" value="<?php echo date('Y-m-d', $donation->date_timestamp);?>">
+
+                    <?php } else {?>
+                        <span class="fake-input"><?php echo $donation->date_time_label;?></span>
+                    <?php }?>
+                </div>
+            </div>
+
+            <div class="leyka-ddata-string">
+                <label><?php _e('Donor subscription status', 'leyka');?>:</label>
+                <div class="leyka-ddata-field">
                 <span class="fake-input">
                 <?php $subscription_status = __('None', 'leyka');
                 if($donation->donor_subscribed === true || $donation->donor_subscribed == 1) {
@@ -1501,17 +1517,19 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
                 echo $subscription_status;?>
                 </span>
+                </div>
             </div>
-        </div>
 
-        <div class="leyka-ddata-string">
-            <label><?php _e('Donor subscription email', 'leyka');?>:</label>
-            <div class="leyka-ddata-field">
-                <span class="fake-input"><?php echo $donation->donor_subscription_email ? $donation->donor_subscription_email : __('none');?></span>
+            <div class="leyka-ddata-string">
+                <label><?php _e('Donor subscription email', 'leyka');?>:</label>
+                <div class="leyka-ddata-field">
+                    <span class="fake-input"><?php echo $donation->donor_subscription_email ? $donation->donor_subscription_email : __('none');?></span>
+                </div>
             </div>
-        </div>
 
-        <?php do_action('leyka_donation_info_data_post_content', $donation);?>
+            <?php do_action('leyka_donation_info_data_post_content', $donation);?>
+
+        </div>
 
 	</fieldset>
 
@@ -1606,30 +1624,42 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         $donation_id = empty($_GET['donation']) ? false : absint($_GET['donation']);
         $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
-
-        $donor_thanks_date = $donation->donor_email_date;
         $manager_notification_date = $donation->get_meta('managers_emails_date');
 
 		if($donation->donor_email_date) {?>
 			<div class="leyka-ddata-string donor has-thanks">
-                <?php echo sprintf(
-                    __('Grateful email to the donor has been sent (at %s)', 'leyka'),
-                    '<time>'.date(get_option('date_format').', H:i</time>', $donation->donor_email_date).'</time>'
-                );?>
+                <label>
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/admin-boxes/email-action-blue.svg" alt="email-action">
+                    <span><?php echo __('Grateful email to the donor has been sent', 'leyka');?></span>
+                </label>
+                <div class="leyka-ddata-field"><?php echo date(get_option('date_format').' H:i', $donation->donor_email_date);?></div>
             </div>
 		<?php } else {?>
 			<div class="leyka-ddata-string donor no-thanks" data-donation-id="<?php echo $donation->id;?>" data-nonce="<?php echo wp_create_nonce('leyka_donor_email');?>">
-				<?php echo sprintf(__("Grateful email hasn't been sent %s", 'leyka'), "<div class='send-donor-thanks'>".__('(send it now)', 'leyka')."</div>");?>
+                <label>
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/admin-boxes/email-action-gray.svg" alt="email-action">
+                    <span><?php echo __("Grateful email hasn't been sent", 'leyka'); ?></span>
+                </label>
+                <div class="leyka-ddata-field"><div class='send-donor-thanks'><?php echo __('Send it now', 'leyka'); ?></div></div>
 			</div>
 		<?php }
 
-        echo $manager_notification_date ?
-            str_replace(
-                '%s',
-                '<time>'.date(get_option('date_format').', H:i', $manager_notification_date).'</time>',
-                __('Donation managers notifications has been sended (at %s)', 'leyka')
-            ) :
-            '<div class="leyka-ddata-string manager no-thanks">'.__("Donation managers' notification emails hasn't been sent", 'leyka').'</div>';
+        if($manager_notification_date) {?>
+            <div class="leyka-ddata-string donor has-thanks">
+                <label>
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/admin-boxes/email-action-blue.svg" alt="email-action">
+                    <span><?php echo __('Donation managers notifications has been sended', 'leyka');?></span>
+                </label>
+                <div class="leyka-ddata-field"><?php echo date(get_option('date_format').' H:i', $manager_notification_date);?></div>
+            </div>
+        <?php } else {?>
+            <div class="leyka-ddata-string donor no-thanks" data-donation-id="<?php echo $donation->id;?>" data-nonce="<?php echo wp_create_nonce('leyka_donor_email');?>">
+                <label>
+                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/admin-boxes/email-action-gray.svg" alt="email-action">
+                    <span><?php echo __("Donation managers' notification emails hasn't been sent", 'leyka'); ?></span>
+                </label>
+            </div>
+        <?php }
 
     }
 
@@ -1681,7 +1711,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
     <?php }
 
-    public static function subscription_resurring_donations_metabox() {
+    public static function subscription_recurring_donations_metabox() {
 
         $donation_id = empty($_GET['donation']) ? false : absint($_GET['donation']);?>
 
@@ -1690,9 +1720,10 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             <thead>
                 <tr>
                     <td><?php _e('ID', 'leyka');?></td>
+                    <td><?php _e('Type', 'leyka');?></td>
                     <td><?php _e('Donor', 'leyka');?></td>
-                    <td><?php _e('Amount', 'leyka');?></td>
                     <td><?php _e('Date', 'leyka');?></td>
+                    <td><?php _e('Amount', 'leyka');?></td>
                     <td><?php _e('Payment method', 'leyka');?></td>
                 </tr>
             </thead>
@@ -1700,9 +1731,10 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             <tfoot>
                 <tr>
                     <td><?php _e('ID', 'leyka');?></td>
+                    <td><?php _e('Type', 'leyka');?></td>
                     <td><?php _e('Donor', 'leyka');?></td>
-                    <td><?php _e('Amount', 'leyka');?></td>
                     <td><?php _e('Date', 'leyka');?></td>
+                    <td><?php _e('Amount', 'leyka');?></td>
                     <td><?php _e('Payment method', 'leyka');?></td>
                 </tr>
             </tfoot>
