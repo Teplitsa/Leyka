@@ -1508,6 +1508,8 @@ class Leyka_Campaign {
     protected $_post_object;
     protected $_campaign_meta;
 
+    const CAMPAIGNS_CATEGORIES_TAXONOMY_NAME = 'campaign_category'; // Not in the Management class - it's admin area only
+
 	public function __construct($campaign) {
 
 		if(is_object($campaign)) {

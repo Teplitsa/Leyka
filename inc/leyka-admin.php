@@ -319,6 +319,21 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             'edit.php?post_type='.Leyka_Campaign_Management::$post_type
         );
 
+        if(leyka_options()->opt('campaign_categories_available')) {
+
+            // Campaigns categories page:
+            $taxonomy = get_taxonomy(Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME);
+
+            add_submenu_page(
+                'leyka', //'edit.php?post_type='.Leyka_Campaign_Management::$post_type, // '',
+                esc_attr($taxonomy->labels->menu_name),
+                esc_attr($taxonomy->labels->menu_name),
+                $taxonomy->cap->manage_terms,
+                'edit-tags.php?taxonomy='.$taxonomy->name
+            );
+
+        }
+
         // Donations admin list page:
         $hook = add_submenu_page(
             'leyka',
@@ -367,18 +382,60 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         }
 
-        add_submenu_page('leyka', __('Leyka Settings', 'leyka'), __('Settings', 'leyka'), 'leyka_manage_options', 'leyka_settings', [$this, 'settings_screen']);
+        add_submenu_page(
+            'leyka',
+            __('Leyka Settings', 'leyka'),
+            __('Settings', 'leyka'),
+            'leyka_manage_options',
+            'leyka_settings',
+            [$this, 'settings_screen']
+        );
 
-        add_submenu_page('leyka', __('Help', 'leyka'), __('Help', 'leyka'), 'leyka_manage_donations', 'leyka_help', [$this, 'help_screen']);
+        add_submenu_page(
+            'leyka',
+            __('Help', 'leyka'),
+            __('Help', 'leyka'),
+            'leyka_manage_donations',
+            'leyka_help',
+            [$this, 'help_screen']
+        );
 
         // Fake pages:
-        add_submenu_page(NULL, __('New correctional donation', 'leyka'), _x('Add new', '[donation]', 'leyka'), 'leyka_manage_donations', 'leyka_donation_info', [$this, 'donation_info_screen']);
+        add_submenu_page(
+            NULL,
+            __('New correctional donation', 'leyka'),
+            _x('Add new', '[donation]', 'leyka'),
+            'leyka_manage_donations',
+            'leyka_donation_info',
+            [$this, 'donation_info_screen']
+        );
 
-        add_submenu_page(NULL, 'Leyka Wizard', 'Leyka Wizard', 'leyka_manage_options', 'leyka_settings_new', [$this, 'settings_new_screen']);
+        add_submenu_page(
+            NULL,
+            __('Leyka Wizard', 'leyka'),
+            __('Leyka Wizard', 'leyka'),
+            'leyka_manage_options',
+            'leyka_settings_new',
+            [$this, 'settings_new_screen']
+        );
 
-        add_submenu_page(NULL, "Donor's info", "Donor's info", 'leyka_manage_options', 'leyka_donor_info', [$this, 'donor_info_screen']);
+        add_submenu_page(
+            NULL,
+            __("Donor's info", 'leyka'),
+            __("Donor's info", 'leyka'),
+            'leyka_manage_options',
+            'leyka_donor_info',
+            [$this, 'donor_info_screen']
+        );
 
-        add_submenu_page(NULL, 'Extension settings', 'Extension settings', 'leyka_manage_options', 'leyka_extension_settings', [$this, 'leyka_extension_settings_screen']);
+        add_submenu_page(
+            NULL,
+            __('Extension settings', 'leyka'),
+            __('Extension settings', 'leyka'),
+            'leyka_manage_options',
+            'leyka_extension_settings',
+            [$this, 'leyka_extension_settings_screen']
+        );
 
         // Fake pages - END
 
