@@ -17,7 +17,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 		add_action('manage_'.self::$post_type.'_posts_custom_column', [$this, 'manage_columns_content'], 2, 2);
 		add_action('save_post', [$this, 'save_data'], 2, 2);
 
-        add_action('restrict_manage_posts', [$this, 'manage_filters']);
+        add_action('restrict_manage_posts', [$this, 'manage_admin_list_filters']);
         add_action('pre_get_posts', [$this, 'do_filtering']);
 
 		add_filter('post_row_actions', [$this, 'row_actions'], 10, 2);
@@ -86,33 +86,61 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
     }
 
-    public function manage_filters() {
+    public function manage_admin_list_filters() {
 
-        if(get_current_screen()->id == 'edit-'.self::$post_type && current_user_can('leyka_manage_donations')) {?>
+        $screen = get_current_screen();
 
-            <label for="campaign-state-select"></label>
-            <select id="campaign-state-select" name="campaign_state">
-                <option value="all" <?php echo empty($_GET['campaign_state']) ? 'selected="selected"' : '';?>>
-                    - <?php _e('Collection state', 'leyka');?> -
-                </option>
-                <option value="is_finished" <?php echo !empty($_GET['campaign_state']) && $_GET['campaign_state'] == 'is_finished' ? 'selected="selected"' : '';?>><?php _e('Closed', 'leyka');?></option>
-                <option value="is_open" <?php echo !empty($_GET['campaign_state']) && $_GET['campaign_state'] == 'is_open' ? 'selected="selected"' : '';?>><?php _e('Opened', 'leyka');?></option>
+        if( !is_admin() || !$screen || $screen->id != 'edit-'.self::$post_type || !current_user_can('leyka_manage_donations') ) {
+            return;
+        }?>
 
-            </select>
+        <label for="campaign-state-select"></label>
+        <select id="campaign-state-select" name="campaign_state">
 
-            <label for="target-state-select"></label>
-            <select id="target-state-select" name="target_state">
-                <option value="" <?php echo empty($_GET['target_state']) ? 'selected="selected"' : '';?>>
-                    - <?php _e('Target', 'leyka');?> -
-                </option>
+            <option value="all" <?php echo empty($_GET['campaign_state']) ? 'selected="selected"' : '';?>>
+                - <?php _e('Collection state', 'leyka');?> -
+            </option>
 
-                <?php foreach(Leyka::get_campaign_target_states() as $state => $label) {?>
-                <option value="<?php echo $state;?>" <?php echo !empty($_GET['target_state']) && $_GET['target_state'] == $state ? 'selected="selected"' : '';?>>
-                    <?php echo $label;?>
-                </option>
-                <?php }?>
-            </select>
-    <?php }
+            <option value="is_finished" <?php echo !empty($_GET['campaign_state']) && $_GET['campaign_state'] == 'is_finished' ? 'selected="selected"' : '';?>><?php _e('Closed', 'leyka');?></option>
+
+            <option value="is_open" <?php echo !empty($_GET['campaign_state']) && $_GET['campaign_state'] == 'is_open' ? 'selected="selected"' : '';?>><?php _e('Opened', 'leyka');?></option>
+
+        </select>
+
+        <label for="target-state-select"></label>
+        <select id="target-state-select" name="target_state">
+
+            <option value="" <?php echo empty($_GET['target_state']) ? 'selected="selected"' : '';?>>
+                - <?php _e('Target', 'leyka');?> -
+            </option>
+
+            <?php foreach(Leyka::get_campaign_target_states() as $state => $label) {?>
+
+            <option value="<?php echo $state;?>" <?php echo !empty($_GET['target_state']) && $_GET['target_state'] == $state ? 'selected="selected"' : '';?>>
+                <?php echo $label;?>
+            </option>
+
+            <?php }?>
+
+        </select>
+
+    <?php global $wp_query;
+
+        $term = isset($wp_query->query[Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME]) ?
+            $wp_query->query[Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME] : '';
+
+        wp_dropdown_categories( array(
+                'show_option_all' => __('All campaign categories', 'leyka'),
+                'taxonomy'        => Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME,
+                'name'            => Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME,
+                'orderby'         => 'name',
+                'selected'        => $term,
+                'hierarchical'    => true,
+                'depth'           => 3,
+                'show_count'      => true,
+                'hide_if_empty'   => false,
+            )
+        );
 
     }
 
@@ -142,6 +170,20 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         if(count($meta_query) > 1) {
             $query->set('meta_query', $meta_query);
+        }
+
+        if(
+            !empty($_REQUEST[Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME])
+            && absint($_REQUEST[Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME])
+        ) {
+
+            $query->set(Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME, false);
+            $query->set('tax_query', [[
+                'taxonomy' => Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME,
+                'field' => 'term_id',
+                'terms' => [absint($_REQUEST[Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME])],
+            ]]);
+
         }
 
     }
