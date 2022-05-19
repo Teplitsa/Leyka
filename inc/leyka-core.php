@@ -1797,7 +1797,7 @@ class Leyka extends Leyka_Singleton {
                         'add_new_item' => __('Add new campaigns category', 'leyka'),
                         'new_item_name'	=> __('New campaigns category name', 'leyka'),
                     ],
-                    'rewrite' => ['slug' => 'campaign_category',],
+                    'rewrite' => ['slug' => 'campaign-category',],
 //                    'query_var' => '',
 //                    'update_count_callback' => function(){ // We may have to add a custom function for it
 //                        return; // Important
