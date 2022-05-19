@@ -363,12 +363,29 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             $taxonomy = get_taxonomy(Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME);
 
             add_submenu_page(
-                'leyka', //'edit.php?post_type='.Leyka_Campaign_Management::$post_type, // '',
-                esc_attr($taxonomy->labels->menu_name),
-                esc_attr($taxonomy->labels->menu_name),
+                'leyka',
+                esc_attr($taxonomy->labels->name),
+                esc_attr($taxonomy->labels->menu_name).'<a class="leyka-add-new dashicons dashicons-plus-alt" href="'.admin_url('/edit-tags.php?taxonomy='.Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME).'"></a>',
                 $taxonomy->cap->manage_terms,
                 'edit-tags.php?taxonomy='.$taxonomy->name
             );
+
+            // Set the correct admin menu highlight for the Campaign categories admin list:
+            add_filter('parent_file', function($parent_file){
+
+                $screen = get_current_screen();
+
+                if(
+                    $screen
+                    && !empty($screen->taxonomy)
+                    && $screen->taxonomy === Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME
+                ) {
+                    $parent_file = 'leyka';
+                }
+
+                return $parent_file;
+
+            });
 
         }
 
