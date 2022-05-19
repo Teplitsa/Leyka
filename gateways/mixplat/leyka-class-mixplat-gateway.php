@@ -64,11 +64,11 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
     protected function _initialize_pm_list() {
 
-        if(empty($this->_payment_methods['pay'])) {
-            $this->_payment_methods['pay'] = Leyka_Mixplat_Apple_Google_Pay::get_instance();
-        }
         if(empty($this->_payment_methods['yandex'])) {
             $this->_payment_methods['yandex'] = Leyka_Mixplat_Yandex_Pay::get_instance();
+        }
+        if(empty($this->_payment_methods['bankcard'])) {
+            $this->_payment_methods['bankcard'] = Leyka_Mixplat_Card::get_instance();
         }
         if(empty($this->_payment_methods['mobile'])) {
             $this->_payment_methods['mobile'] = Leyka_Mixplat_Mobile::get_instance();
@@ -76,8 +76,8 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         if(empty($this->_payment_methods['sms'])) {
             $this->_payment_methods['sms'] = Leyka_Mixplat_Text::get_instance();
         }
-        if(empty($this->_payment_methods['bankcard'])) {
-            $this->_payment_methods['bankcard'] = Leyka_Mixplat_Card::get_instance();
+        if(empty($this->_payment_methods['pay'])) {
+            $this->_payment_methods['pay'] = Leyka_Mixplat_Apple_Google_Pay::get_instance();
         }
 
     }
@@ -257,7 +257,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
             if(leyka()->template_is_deprecated($donation->campaign->template)) { // Old templates (Revo & earlier)
 
-                wp_redirect(leyka_get_success_page_url());
+                wp_redirect( empty($response['redirect_url']) ? leyka_get_success_page_url() : $response['redirect_url'] );
                 exit(0);
 
             } else { // New templates (Star & further)
@@ -799,9 +799,9 @@ class Leyka_Mixplat_Card extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-jcb.svg',
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-unionpay.svg',
+#            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
+#            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-jcb.svg',
+#            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-unionpay.svg',
         ]);
 
 	$this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, []);
