@@ -1349,11 +1349,17 @@ function leyka_get_pd_terms_text() {
 }
 
 /** Default campaign ID cache invalidation */
-function leyka_flush_cache_default_campaign_id($new_status, $old_status, WP_Post $campaign) {
+function leyka_flush_cache_default_campaign_id($new_status, $old_status, $campaign) {
+
+    if(is_int($campaign) || absint($campaign)) {
+        $campaign = get_post($campaign);
+    }
 
     if(
-        $campaign->post_type !== Leyka_Campaign_Management::$post_type ||
-        ($old_status !== 'publish'  &&  $new_status !== 'publish')
+        !is_object($campaign)
+        || empty($campaign->post_type)
+        || $campaign->post_type !== Leyka_Campaign_Management::$post_type
+        || ($old_status !== 'publish'  &&  $new_status !== 'publish')
     ) {
         return;
     }
