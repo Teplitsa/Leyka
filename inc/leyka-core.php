@@ -1788,7 +1788,7 @@ class Leyka extends Leyka_Singleton {
                     'labels' => [
                         'name' => __('Campaigns categories', 'leyka'),
                         'singular_name'	=> __('Campaigns category', 'leyka'),
-                        'menu_name'	=> __('&#8594;&nbsp;Categories', 'leyka'),
+                        'menu_name'	=> __('&#9492;&nbsp;Categories', 'leyka'),
                         'search_items' => __('Search campaigns categories', 'leyka'),
                         'popular_items' => __('Popular campaigns categories', 'leyka'),
                         'all_items'	=> __('All campaigns categories', 'leyka'),
