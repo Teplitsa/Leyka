@@ -291,7 +291,92 @@ if( !function_exists('leyka_is_settings_step_valid') ) {
             }
         }
 
-        return $options_invalid ? $options_invalid : true;
+        return $options_invalid ? : true;
+
+    }
+}
+
+if( !function_exists('leyka_show_donation_error_full_info') ) {
+    function leyka_show_donation_error_full_info(Leyka_Donation_Error $error, $return = false) {
+
+        if( !!$return ) {
+            ob_start();
+        }?>
+
+        <div class="leyka-donation-error-details">
+
+            <h2 class="error-details-header error-name">
+                <i class="error-symbol"></i>
+                <span class="error-name-text"><?php echo $error->name;?></span>
+                <i class="close"></i>
+            </h2>
+
+            <div class="error-details">
+
+                <?php if($error->description) {?>
+                    <div class="error-description">
+
+                        <h3><?php _e('Error description', 'leyka');?></h3>
+
+                        <p><?php echo $error->description;?></p>
+
+                        <?php /** @todo Uncomment it when all the known errors will have descriptions on //leyka.te-st.ru/docs/donations-errors/ page */ /*?>
+                        <a href="<?php echo $error->docs_link;?>" target="_blank"><?php _e('Full description', 'leyka');?></a>
+                        <?php */?>
+
+                    </div>
+                <?php }
+
+                if($error->recommendation_admin) {?>
+                    <div class="error-recommendation error-recommendation-admin">
+
+                        <h3><?php _e('Recommendation', 'leyka');?></h3>
+
+                        <p><?php echo $error->recommendation_admin;?></p>
+
+                    </div>
+                <?php }?>
+
+                <p class="error-common-support-contact-info">
+                    <?php _e('Still has questions? Need help? Message us:', 'leyka');?>
+                    <br>
+                    <?php _e('— <a href="https://t.me/leykadev" target="_blank">Telegram-chat of the support service</a> or', 'leyka');?>
+                    <br>
+                    <?php _e('— <a href="https://leyka.te-st.ru/support/" target="_blank">make a feedaback post</a>.', 'leyka');?>
+                </p>
+
+            </div>
+
+            <div class="error-details-footer">
+
+                <div class="error-code">
+                    <?php _e('Error code:', 'leyka');?>&nbsp;<span class="leyka-copy-on-click"><?php echo $error->id;?></span>
+                </div>
+
+                <div class="errors-docs-link">
+                    <a href="<?php echo Leyka_Donations_Errors::get_instance()->all_errors_docs_link;?>" target="_blank">
+                        <?php _e('All errors', 'leyka');?>
+                    </a>
+                </div>
+
+            </div>
+
+            <div class="error-details-after-footer">
+                <button class="close"><?php _e('Understood', 'leyka');?></button>
+            </div>
+
+        </div>
+
+        <?php if( !!$return ) {
+
+            $out = ob_get_contents();
+            ob_end_clean();
+
+            return $out;
+
+        }
+
+        return NULL;
 
     }
 }

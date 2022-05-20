@@ -102,7 +102,13 @@ jQuery(document).ready(function($){
             }
 
             let widget = new cp.CloudPayments(),
-                data = {};
+                data = {donor_name: response.name};
+
+            if(response.additional_fields && !$.isEmptyObject(response.additional_fields)) {
+                $.each(response.additional_fields, function(key, value){
+                    data[key] = value;
+                });
+            }
 
             if(is_recurring) {
                 data.cloudPayments = {recurrent: {interval: 'Month', period: 1}};

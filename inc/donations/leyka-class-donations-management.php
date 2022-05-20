@@ -47,12 +47,15 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         add_action('leyka_donation_funded_status_changed', function($donation_id, $old_status, $new_status){
             if($old_status === 'funded' || $new_status === 'funded') {
 
-                if(leyka_options()->opt('donor_management_available')) {
-
-                    Leyka_Donor::create_donor_from_donation($donation_id);
-                    Leyka_Donor::order_donor_data_refreshing($donation_id);
-
+                if( !$donation_id || !leyka_options()->opt('donor_management_available') ) {
+                    return;
                 }
+
+                $donor_id = Leyka_Donor::create_donor_from_donation($donation_id);
+                $donor = new Leyka_Donor($donor_id);
+
+                Leyka_Donor::calculate_donor_metadata($donor);
+                Leyka_Donor::order_donor_data_refreshing($donation_id);
 
             }
         }, 10, 3);
@@ -123,11 +126,20 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         if($new_status === 'funded' || $old_status === 'funded') {
 
-            do_action('leyka_donation_funded_status_changed', $donation->id, $old_status, $new_status);
-
             // Campaign total funded amount refresh:
             $campaign = new Leyka_Campaign($donation->campaign_id);
             $campaign->update_total_funded_amount($donation, $old_status === 'funded' ? 'remove' : 'add');
+
+            // For non-init recurring donations only - update the recurring subscription's funded rebills number:
+            if($donation->type === 'rebill' && !$donation->is_init_recurring) {
+
+                $init_recurring_donation = $donation->init_recurring;
+
+                if($init_recurring_donation) {
+                    $init_recurring_donation->update_recurring_funded_rebills_number($old_status === 'funded' ? 'remove' : 'add');
+                }
+
+            }
 
         }
 
@@ -136,6 +148,12 @@ class Leyka_Donation_Management extends Leyka_Singleton {
     public static function send_all_emails($donation, $send_to_managers = true) {
 
         $donation = Leyka_Donations::get_instance()->get_donation($donation);
+
+        // Recreate Donation object anew, if needed, because sometimes when its donor_user_id value in the Gateways callbacks
+        // is updated in the DB, it's not updated in the object field (so new Donor ID value won't be used in the emails sending):
+        if(leyka_options()->opt('donor_management_available') && $donation->is_init_recurring && !$donation->donor_user_id) {
+            $donation = Leyka_Donations::get_instance()->get_donation($donation->id);
+        }
 
         if( !$donation ) {
             return false;
@@ -1616,16 +1634,16 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
     }
 
-    /**
-     * @param $donation WP_Post
-     */
     public static function gateway_response_metabox() {
 
         $donation_id = empty($_GET['donation']) ? false : absint($_GET['donation']);
         $donation = Leyka_Donations::get_instance()->get_donation($donation_id);?>
 
         <div>
-            <?php if( !$donation->gateway_response_formatted ) {
+
+            <?php do_action('leyka_donation_gateway_response_metabox_before_content', $donation);
+
+            if( !$donation->gateway_response_formatted ) {
                 _e('No gateway response has been received', 'leyka');
             } else {
 
@@ -1650,9 +1668,16 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                     }?>
                 </div>
 
-            <?php }
+                <?php }
+
+                if($donation->status === 'failed' && $donation->error_id) { // Donation error details sub-block
+                    leyka_show_donation_error_full_info($donation->error);
+                } // Donation error details sub-block - END
+
+                do_action('leyka_donation_gateway_response_metabox_after_content', $donation);
 
             }?>
+
         </div>
 
     <?php }
@@ -1686,6 +1711,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             <tbody><?php // All table data will be received via AJAX ?></tbody>
 
         </table>
+
         <?php
     }
 

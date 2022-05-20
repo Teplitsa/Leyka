@@ -35,4 +35,28 @@ jQuery(document).ready(function($){
 
     });
 
+    $('body').on('click.leyka', '.leyka-tooltip-error-content-more', function(e){
+
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        let $link = $(this),
+            $tooltip_wrapper = $link.parents('.ui-widget-content:first'),
+            tooltip_content_extended = $link.parents('.ui-tooltip-content').find('.error-full-info-tooltip-content').html();
+
+        $tooltip_wrapper
+            .addClass('error-full-info-tooltip leyka-tooltip-x-wide leyka-tooltip-white')
+            .html(tooltip_content_extended);
+
+    }).on('click.leyka', '.error-full-info-tooltip', function(e){
+
+        if( !$(e.target).hasClass('close') && !$(e.target).is('a') ) {
+
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+        }
+
+    });
+
 });

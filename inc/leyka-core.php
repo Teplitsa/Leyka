@@ -1096,25 +1096,25 @@ class Leyka extends Leyka_Singleton {
      * @param bool $anew
      */
     private function _add_session_errors($anew = false) {
-        if(empty($_SESSION['leyka_errors']) || $anew) {
-            $_SESSION['leyka_errors'] = $this->get_payment_form_errors();
+        if(empty($_SESSION['Leyka_Donations_Errors']) || $anew) {
+            $_SESSION['Leyka_Donations_Errors'] = $this->get_payment_form_errors();
         } else {
-            $_SESSION['leyka_errors'] = array_merge($_SESSION['leyka_errors'], $this->get_payment_form_errors());
+            $_SESSION['Leyka_Donations_Errors'] = array_merge($_SESSION['Leyka_Donations_Errors'], $this->get_payment_form_errors());
         }
     }
 
     /** @return bool */
     public function has_session_errors() {
-        return !empty($_SESSION['leyka_errors']) && count($_SESSION['leyka_errors']);
+        return !empty($_SESSION['Leyka_Donations_Errors']) && count($_SESSION['Leyka_Donations_Errors']);
     }
 
     /** @return array */
     public function get_session_errors() {
-        return empty($_SESSION['leyka_errors']) ? [] : $_SESSION['leyka_errors'];
+        return empty($_SESSION['Leyka_Donations_Errors']) ? [] : $_SESSION['Leyka_Donations_Errors'];
     }
 
     public function clear_session_errors() {
-        $_SESSION['leyka_errors'] = [];
+        $_SESSION['Leyka_Donations_Errors'] = [];
     }
 
     public static function get_donation_types() {
@@ -2131,7 +2131,7 @@ class Leyka extends Leyka_Singleton {
      */
     public function handle_donor_account_creation_error(WP_Error $donor_account_error, $donation) {
 
-        $donation = leyka_get_validated_donation($donation);
+        $donation = Leyka_Donations::get_instance()->get_donation($donation);
         $donation->donor_account = $donor_account_error;
 
         // Notify website tech. support:
@@ -2193,9 +2193,7 @@ class Leyka extends Leyka_Singleton {
             'include_deprecated' => leyka_options()->opt('allow_deprecated_form_templates')
         ], $params);
 
-        if( !$this->_templates ) {
-            $this->_templates = [];
-        }
+//        $this->_templates = $this->_templates ? : [];
 
         if( !!$params['is_service'] ) {
             $this->_templates = glob(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-*.php');
@@ -2209,10 +2207,6 @@ class Leyka extends Leyka_Singleton {
                 array_merge($custom_templates, glob(LEYKA_PLUGIN_DIR.'templates/leyka-template-*.php'))
             );
 
-        }
-
-        if( !$this->_templates ) {
-            $this->_templates = [];
         }
 
         $this->_templates = array_map([$this, '_get_template_data'], $this->_templates);

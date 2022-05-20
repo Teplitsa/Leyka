@@ -218,21 +218,26 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     protected $_payment_methods = []; // Supported PMs array
     protected $_options = []; // Gateway configs
 
+    protected $_donations_errors_ids = []; // A list of Gateway errors IDs and their respective Leyka errors IDs
+
     protected function __construct() {
 
-        // A gateway icon is an attribute that is persistent for all gateways, it's just changing values:
-        $this->_icon = apply_filters(
-            'leyka_icon_'.$this->_id,
-            file_exists(LEYKA_PLUGIN_DIR."/gateways/{$this->_id}/icons/{$this->_id}.png") ?
-                LEYKA_PLUGIN_BASE_URL."/gateways/{$this->_id}/icons/{$this->_id}.png" :
-                '' /** @todo Set an URL to the anonymous gateway icon?? */
-        );
+        parent::__construct();
 
         $this->_set_attributes(); // Initialize main Gateway's attributes
-
         $this->_set_options_defaults(); // Set configurable options in admin area
-
         $this->_set_gateway_pm_list(); // Initialize or restore Gateway's PMs list and all their options
+        $this->_set_donations_errors(); // Initialize Gateway's possible Donations errors list
+
+        // A gateway icon is an attribute that is persistent for all gateways, it's just changing values:
+        $this->_icon = !$this->_icon && file_exists(LEYKA_PLUGIN_DIR."/gateways/{$this->_id}/icons/{$this->_id}.svg") ?
+            LEYKA_PLUGIN_BASE_URL."/gateways/{$this->_id}/icons/{$this->_id}.svg" : $this->_icon;
+        $this->_icon = !$this->_icon && file_exists(LEYKA_PLUGIN_DIR."/gateways/{$this->_id}/icons/{$this->_id}.png") ?
+            LEYKA_PLUGIN_BASE_URL."/gateways/{$this->_id}/icons/{$this->_id}.png" : $this->_icon;
+        $this->_icon = apply_filters(
+            'leyka_icon_'.$this->_id,
+            $this->_icon ? : LEYKA_PLUGIN_BASE_URL.'/img/pm-icons/custom-payment-info.svg' // Unknown Gateway icon
+        );
 
         do_action('leyka_initialize_gateway', $this, $this->_id); // So one could change some of gateway's attributes
 
@@ -245,6 +250,8 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
         add_filter('leyka_'.$this->_id.'_get_unknown_donation_field', [$this, 'get_specific_data_value'], 10, 3);
         add_action('leyka_'.$this->_id.'_set_unknown_donation_field', [$this, 'set_specific_data_value'], 10, 3);
+
+        add_filter('leyka_'.$this->_id.'_get_donation_error_id', [$this, 'get_legacy_donation_error_id'], 10, 2);
 
         add_action('leyka_do_recurring_donation-'.$this->_id, [$this, 'do_recurring_donation']);
         add_filter(
@@ -276,13 +283,20 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     public function __get($param) {
 
         switch($param) {
-            case 'id': return $this->_id;
+            case 'id':
+            case 'ID':
+                return $this->_id;
+
             case 'title':
             case 'name':
-            case 'label': return $this->_title;
+            case 'label':
+                return $this->_title;
+
             case 'description': return $this->_description;
+
             case 'icon':
             case 'icon_url':
+
                 $icon = false;
                 if($this->_icon) {
                     $icon = $this->_icon;
@@ -296,6 +310,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
             case 'has_recurring':
             case 'has_recurring_support':
                 return !!$this->_may_support_recurring;
+
             case 'has_recurring_auto_cancelling':
             case 'has_recurring_auto_cancelling_support':
                 return $this->_may_support_recurring && !!$this->_recurring_auto_cancelling_supported;
@@ -306,14 +321,19 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
             case 'docs':
             case 'docs_url':
             case 'docs_href':
-            case 'docs_link': return $this->_docs_link ? $this->_docs_link : false;
+            case 'docs_link':
+                return $this->_docs_link ? : false;
+
             case 'registration_url':
             case 'registration_href':
-            case 'registration_link': return $this->_registration_link ? $this->_registration_link : false;
+            case 'registration_link':
+                return $this->_registration_link ? : false;
+
             case 'has_wizard': return !!$this->_has_wizard;
             case 'wizard_url':
             case 'wizard_href':
-            case 'wizard_link': return admin_url('admin.php?page=leyka_settings_new&screen=wizard-'.$this->_id);
+            case 'wizard_link':
+                return admin_url('admin.php?page=leyka_settings_new&screen=wizard-'.$this->_id);
 
             default:
                 return false;
@@ -370,9 +390,28 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     public function enqueue_gateway_scripts() {
     }
 
-    abstract protected function _set_attributes(); // Attributes are constant, like id, title, etc.
+    abstract protected function _set_attributes(); // Attributes are constant, like Gateway id, title, etc.
     protected function _set_options_defaults() {} // Options are admin configurable parameters
     abstract protected function _initialize_pm_list(); // PM list is specific for each Gateway
+
+    /**
+     * A service method to:
+     * 1. Add Gateway specific errors to the Donations errors library via Leyka_Donations_Errors::get_instance()->add_error();
+     * 2. Initialize $this->_donations_errors_ids array.
+     */
+    protected function _set_donations_errors() {}
+
+    /**
+     * A special method to get Donation error ID from this Donation's Gateway response data -
+     * it's intended for all old Donations which don't have a dedicated 'error_id' meta value yet.
+     *
+     * @param $error_id string|false
+     * @param $donation Leyka_Donation_Base
+     * @return string|false
+     */
+    public function get_legacy_donation_error_id($error_id, Leyka_Donation_Base $donation) {
+        return $error_id;
+    }
 
     // Handler for Gateway's service calls (activate the donations, etc.):
     public function _handle_service_calls($call_type = '') {}
@@ -392,10 +431,9 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
             return false;
         }
 
-        $init_recurring_donation_id = $donation->get_meta('init_recurring_donation_id');
+        $init_recurring_donation = $donation->init_recurring_donation;
 
-        return $init_recurring_donation_id ?
-            Leyka_Donations::get_instance()->get_donation($init_recurring_donation_id) : $donation;
+        return $init_recurring_donation ? : $donation;
 
     }
 
@@ -406,9 +444,9 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
         if($init_recurring_donation) {
 
             $cancelling_url = (
-                get_option('permalink_structure') ?
-                    home_url("leyka/service/cancel_recurring/{$donation->id}") :
-                    home_url("?page=leyka/service/cancel_recurring/{$donation->id}")
+                    get_option('permalink_structure') ?
+                        home_url("leyka/service/cancel_recurring/{$donation->id}") :
+                        home_url("?page=leyka/service/cancel_recurring/{$donation->id}")
                 ).'/'.md5($donation->id.'_'.$init_recurring_donation->id.'_leyka_cancel_recurring_subscription');
 
             return sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">click here</a>', 'leyka'), $cancelling_url);
@@ -607,7 +645,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     /** @param Leyka_Payment_Method|string $pm A PM object or it's ID to remove from gateway. */
     public function remove_payment_method($pm) {
 
-        if(is_object($pm) && $pm instanceof Leyka_Payment_Method) {
+        if($pm instanceof Leyka_Payment_Method) {
             unset($this->_payment_methods[$pm->id]);
         } else if(strlen($pm) && !empty($this->_payment_methods[$pm])) {
             unset($this->_payment_methods[$pm->id]);
@@ -672,6 +710,17 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
         return empty($this->_payment_methods[$pm_id]) ? false : $this->_payment_methods[$pm_id];
     }
 
+    /**
+     * @param $gateway_error_id string Gateway system's Donation error ID/code
+     * @return string|false Leyka system's Donation error ID, or false if no match found
+     */
+    public function get_donation_error_id($gateway_error_id) {
+
+        return empty($this->_donations_errors_ids[$gateway_error_id]) ?
+            false : $this->_donations_errors_ids[$gateway_error_id];
+
+    }
+
     /** Default filter for the donation page redirect type parameter */
     public function submission_redirect_type($redirect_type, $pm_id, $donation_id) {
         return 'auto';
@@ -708,7 +757,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     }
 
     /**
-     * @return array; list of possible values in leyka_get_gateways_filter_categories_list function
+     * @return array A list of possible values in leyka_get_gateways_filter_categories_list function
      */
     public function get_filter_categories() {
 
@@ -986,4 +1035,4 @@ abstract class Leyka_Payment_Method extends Leyka_Singleton {
     /** For PM with a static processing type, this method should display some static data. Otherwise, it may stay empty. */
     public function display_static_data() {}
 
-} // Leyka_Payment_Method end
+} // Leyka_Payment_Method - END

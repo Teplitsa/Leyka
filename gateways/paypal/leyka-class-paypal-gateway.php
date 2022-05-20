@@ -1387,6 +1387,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                         $donation->status = 'funded';
                         $donation->add_gateway_response($_POST);
+
                         $this->_add_to_payment_log($donation, 'IPN', $_POST);
 
                         Leyka_Donation_Management::send_all_emails($donation->id);

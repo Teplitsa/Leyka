@@ -2644,11 +2644,15 @@ if( !function_exists('leyka_is_email') ) {
 if( !function_exists('leyka_email_to_punycode') ) {
     function leyka_email_to_punycode($email) {
 
-        $email__array = explode('@', $email);
+        $email_array = explode('@', $email);
+
+        if( !leyka_validate_email($email) || count($email_array) < 2 ) {
+            return $email;
+        }
 
         require_once LEYKA_PLUGIN_DIR.'/lib/class-punycode.php';
 
-        return $email__array[0].'@'.(Punycode::encodeHostName($email__array[1]));
+        return $email_array[0].'@'.Punycode::encodeHostName($email_array[1]);
 
     }
 }

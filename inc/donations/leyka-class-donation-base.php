@@ -8,9 +8,7 @@ abstract class Leyka_Donation_Base {
 
     abstract public function __construct($donation);
 
-    /** @todo Add the list of possible $field values */
     abstract public function __get($field);
-    /** @todo Add the list of possible $field & $value values */
     abstract public function __set($field, $value);
 
     /**
@@ -254,6 +252,12 @@ abstract class Leyka_Donation_Base {
         return leyka_get_gateway_by_id($donation->gateway_id)->get_init_recurring_donation($donation);
 
     }
+
+    /**
+     * @param string $action Either 'add'|'+' to add +1 to Donation's cache value, or 'remove'|'-' to subtract 1 from it, or ''|false to recalculate it completely.
+     * @return boolean True if calculation/update are successful, false otherwise.
+     */
+    abstract public function update_recurring_funded_rebills_number($action = '');
 
     /** Donation metadata get & set methods are public to use them in the "gateway-specific data" hooks. */
     abstract public function get_meta($meta_key);

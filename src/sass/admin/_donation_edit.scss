@@ -334,4 +334,22 @@
         font-size: 12px;
     }
 
+    // Donation gateway response - Donation error details:
+    .leyka-donation-error-details {
+
+        @include leyka-donation-error-full-info();
+
+        h2.error-name {
+            padding: 12px !important;
+        }
+
+        background: $leyka-color-error-light-2;
+
+        i.close, .error-details-after-footer { // Hide the unneeded elements
+            display: none;
+        }
+
+    }
+    // Donation gateway response - Donation error details - END
+
 }

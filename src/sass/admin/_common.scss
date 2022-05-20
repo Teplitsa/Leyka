@@ -237,19 +237,35 @@ i.icon-leyka-donation-status {
 .leyka-donation-status-label {
     
     &.label-submitted {
+
         color: $color-border-semidark;
+
+        @include leyka-donation-status-icon($color-border-semidark);
+
     }
 
     &.label-funded {
+
         color: $color-ok-message;
+
+        @include leyka-donation-status-icon($color-ok-message);
+
     }
 
     &.label-refunded {
+
         color: $color-refunded-message;
+
+        @include leyka-donation-status-icon($color-refunded-message);
+
     }
 
     &.label-failed {
+
         color: $color-error-message;
+
+        @include leyka-donation-status-icon($color-error-message);
+
     }
 
 }
@@ -275,9 +291,15 @@ i.icon-leyka-recurring-subscription-status {
 }
 // Recurring subscription status icons - END
 
+// Donations errors full info boxes:
+.leyka-donation-error-details {
+    @include leyka-donation-error-full-info();
+}
+// Donations errors full info boxes - END
+
 // Tooltips:
 i.has-tooltip {
-    cursor: pointer;
+    //cursor: pointer;
 }
 
 .ui-tooltip {
@@ -293,15 +315,27 @@ i.has-tooltip {
     padding: 8px;
 
     &.leyka-tooltip-wide {
-        width: 300px;
-        max-width: 400px;
+        width: 400px;
+        max-width: 450px;
         font-weight: normal;
         text-align: left;
     }
 
+    &.leyka-tooltip-x-wide {
+        width: 450px;
+        max-width: 600px;
+        height: auto;
+    }
+
     &.leyka-tooltip-white {
+
         background-color: $color-white !important;
         color: $leyka-admin-color-text !important;
+
+        a {
+            color: unset;
+        }
+
     }
 
     &.leyka-tooltip-align-left {
@@ -313,8 +347,8 @@ i.has-tooltip {
 
         .leyka-li-title {
             display: inline-block;
-            width: 100px;
-            margin-right: 15px;
+            width: 190px;
+            margin-right: 5px;
             font-weight: 500;
         }
 
@@ -1048,6 +1082,11 @@ ul.ui-autocomplete {
 
     // ---- Admin lists common styles: ---- //
 
+    //.striped > tbody > :nth-child(2n+1) { /** @todo Inter-rows "zebra-like" background coloring. Check it with Nick. */
+    //    background-color: $color-white;
+    //    filter: brightness(97%);
+    //}
+
     // Filters board:
     .admin-list-filters {
 
@@ -1256,6 +1295,12 @@ ul.ui-autocomplete {
                 font-weight: normal;
             }
 
+            a.donation-edit-link {
+                font-size: 10px;
+                font-weight: 500;
+                line-height: 16px;
+            }
+
             // Common admin lists columns styles:
             &.column-id {
                 font-weight: 500;
@@ -1274,7 +1319,7 @@ ul.ui-autocomplete {
                         font-weight: 500;
                     }
 
-                    .donor-email {
+                    .donor-additional-data {
                         font-size: 11px;
                     }
 
@@ -1316,8 +1361,9 @@ ul.ui-autocomplete {
                 .leyka-amount {
 
                     display: flex;
-                    flex-flow: row nowrap;
-                    align-items: flex-start;
+                    flex-flow: column nowrap;
+                    justify-content: flex-end;
+                    align-items: flex-end;
 
                     font-weight: 500;
 

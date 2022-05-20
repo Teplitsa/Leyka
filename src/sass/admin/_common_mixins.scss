@@ -176,19 +176,37 @@
 }
 
 @mixin leyka-admin-tooltip-styles {
-    color: $color-white !important;
 
-    //background-color: $color-wizard-tooltip-bg !important;
+    color: $color-white !important;
     background: $color-wizard-tooltip-bg;
 
     font-family: $font-body !important;
-    font-size: 11px !important;
-    font-weight: 500;
-    line-height: 17px;
+    font-size: 12px !important;
+    font-weight: 400;
+    line-height: 16px;
 
     overflow-wrap: break-word;
     word-wrap: break-word;
     text-align: center;
+
+    p {
+
+        font-size: inherit !important;
+
+        &:last-of-type {
+            margin-bottom: 0;
+        }
+
+    }
+
+    a {
+        display: inline-block;
+        border-bottom: 1px dashed $color-white;
+        color: $color-white;
+        text-decoration: none;
+        line-height: 1.1;
+    }
+
 }
 
 @mixin leyka-field-title {
@@ -742,6 +760,22 @@
 
 }
 
+@mixin leyka-donation-status-icon($icon-color) {
+
+    &:before {
+        content: '';
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border: none;
+        border-radius: 50%;
+        flex: 0 0 10px;
+        margin-right: 4px;
+        background-color: $icon-color;
+    }
+
+}
+
 @mixin leyka-colored-icon($icon-url, $icon-size, $icon-color: default, $icon-height: default) {
 
     @if $icon-color != default {
@@ -1050,3 +1084,150 @@
 
 }
 // ---- Admin lists mixins - END ---- //
+
+@mixin leyka-donation-error-full-info() {
+
+    border-radius: 6px;
+    margin-top: 16px;
+
+    font-size: 14px;
+    line-height: 18px;
+
+    a {
+        color: $leyka-admin-color-link !important;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 12px;
+        text-decoration: none;
+        border-bottom: 1px solid $leyka-admin-color-link !important;
+    }
+
+    h2.error-name {
+
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+
+        margin: 0;
+        padding: 16px;
+        border-bottom: 1px solid $leyka-color-error-light-1;
+
+        font-size: 16px;
+        line-height: 20px !important;
+        font-weight: 550;
+
+        .error-name-text {
+            flex: 100% 1 1;
+        }
+
+        i.error-symbol {
+
+            display: inline-block;
+            margin-right: 8px;
+            flex: 12px 0 0;
+
+            width: 12px;
+            height: 12px;
+
+            border: 0;
+            border-radius: 50%;
+            background: $color-error-message;
+
+            //@include leyka-colored-icon('../../img/icon-info.svg', 16px, $color-error-message);
+
+        }
+
+        i.close {
+
+            flex: 12px 0 0;
+            cursor: pointer;
+
+            @include leyka-colored-icon('../../img/icon-help-close.svg', 12px, $color-text-light2);
+
+        }
+
+    }
+
+    .error-details {
+
+        padding: 0 12px 12px 12px;
+
+        h3 {
+
+            margin: 12px 0 4px 0;
+
+            font-size: 14px;
+            line-height: 18px;
+            font-weight: 550;
+
+        }
+
+        p {
+
+            margin: 0 0 4px 0;
+            font-size: 14px;
+            line-height: 18px;
+            //font-weight: 400;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+            &.error-common-support-contact-info {
+                margin-top: 12px;
+            }
+
+            a {
+                font-size: inherit;
+                font-weight: inherit;
+                border: none !important;
+            }
+
+        }
+
+    }
+
+    .error-details-footer {
+
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+
+        padding: 0 12px 12px 12px;
+
+        .error-code {
+            color: $color-text-light;
+            font-size: 12px;
+            font-weight: bold;
+            line-height: 16px;
+        }
+
+        //.errors-docs-link a {
+        //    color: $leyka-admin-color-link;
+        //    font-size: 12px;
+        //    font-weight: bold;
+        //    line-height: 16px;
+        //    text-decoration: underline;
+        //}
+
+    }
+
+    .error-details-after-footer {
+
+        padding: 0 12px 12px 12px;
+
+        button {
+
+            @include leyka-admin-btn();
+
+            width: 100%;
+            height: auto;
+            font-size: 14px;
+            line-height: 18px;
+            font-weight: 500;
+
+        }
+
+    }
+
+}

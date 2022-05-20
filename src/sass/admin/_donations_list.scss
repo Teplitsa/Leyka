@@ -24,19 +24,19 @@
     // List table (columns & content):
     .wp-list-table.widefat {
 
-        // Columns width:
         tr {
 
+            &.leyka-donation-failed-row {
+                background: $leyka-color-error-light-1;
+            }
+
+            //&.leyka-donation-funded-row { /** @todo Funded Donations rows background color. Check it w. Nick */
+            //    background: $color-ok-light;
+            //}
+
+            // Columns width:
             .column-id {
-
                 width: 80px;
-
-                a.donation-edit-link {
-                    font-size: 10px;
-                    font-weight: 500;
-                    line-height: 16px;
-                }
-
             }
 
             .column-payment_type {
@@ -44,7 +44,6 @@
             }
 
             .column-campaign {
-                //width: 350px;
                 min-width: 250px;
                 max-width: 350px;
             }
@@ -54,13 +53,17 @@
                 max-width: 250px;
             }
 
+            .column-amount {
+                width: 90px;
+            }
+
             .column-date {
                 width: 70px;
             }
 
             .column-gateway_pm {
 
-                min-width: 170px;
+                width: 85px;
                 max-width: 230px;
 
                 .leyka-gateway-pm {
@@ -69,7 +72,9 @@
                     flex-flow: row nowrap;
                     align-items: flex-start;
 
-                    cursor: pointer;
+                    //cursor: pointer;
+
+                    width: 20px; // Use the deliberately small width, so icons inside would widen only by their needs
 
                     .leyka-gateway-name {
                         margin-right: 10px;
@@ -150,5 +155,31 @@
 
     }
     // List table (columns & content) END
+
+    // Donations errors display:
+    .error-full-info-tooltip-content {
+        display: none;
+    }
+    .ui-tooltip.error-full-info-tooltip {
+        padding: 0;
+    }
+    .leyka-donation-error-details {
+
+        margin: 0;
+
+        .error-details {
+            padding: 0 20px 20px 20px;
+        }
+
+        .error-details-footer {
+            padding: 0 20px 20px 20px;
+        }
+
+        .error-details-after-footer {
+            padding: 0 20px 20px 20px;
+        }
+
+    }
+    // Donations errors display - END
 
 }
