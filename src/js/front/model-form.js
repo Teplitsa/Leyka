@@ -366,7 +366,7 @@ var leykaValidateForm,
 
     function bindNavigationEvents() {
         
-        $('.leyka-js-another-step').on('click', function(e){
+        $('.leyka-js-another-step').on('click.leyka', function(e){
             e.preventDefault();
             goAnotherStep($(this));
         });
@@ -375,14 +375,15 @@ var leykaValidateForm,
             $(this).closest('.leyka-pf').leykaForm('close');
         });
 
-        //if it's should be here
-        $('.leyka-submit-errors').on('click', function(e){
+        $('.leyka-submit-errors').on('click.leyka', function(e){
+
+            if($(e.target).is('a')) { // Click on links inside an error message shouldn't close it
+                return;
+            }
 
             e.preventDefault();
 
-            var $this = $(this);
-
-            $this.hide();
+            $(this).hide();
             goFirstStep();
 
         });
