@@ -742,7 +742,7 @@ techMessage="'.$tech_message.'"/>');
             $params = [
                 CURLOPT_URL => leyka_options()->opt('yandex_test_mode') ?
                     'https://penelope-demo.yamoney.ru/webservice/mws/api/repeatCardPayment' :
-                    'https://penelope.yamoney.ru/webservice/mws/api/repeatCardPayment',
+                    'https://shop.yookassa.ru/webservice/mws/api/repeatCardPayment',
                 CURLOPT_PORT => leyka_options()->opt('yandex_test_mode') ? 8083 : 443,
                 CURLOPT_HEADER => false,
                 CURLOPT_HTTPHEADER => ['Content-Type: application/x-www-form-urlencoded'],
