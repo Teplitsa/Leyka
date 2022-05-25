@@ -171,8 +171,18 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
         } else if(is_a($donation, 'Leyka_Donation_Base')) {
             $this->_id = $donation->id;
+        } else if( // Posts table row object
+            is_object($donation)
+            && !empty($donation->ID)
+            && !empty($donation->post_type)
+            && $donation->post_type === Leyka_Donation_Management::$post_type
+        ) {
+
+            $this->_id = absint($donation->ID);
+            $this->_main_data = $donation;
+
         } else {
-            throw new Exception(sprintf(__('Unknown donation given: %s', 'leyka'), $donation));
+            throw new Exception( sprintf(__('Unknown donation given: %s', 'leyka'), print_r($donation, 1)) );
         }
 
         if( !$this->_donation_meta ) {
