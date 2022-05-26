@@ -397,6 +397,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 'init_recurring_donation' => $init_recurring_donation->id,
                 'rbk_invoice_id' => false,
                 'rbk_payment_id' => false,
+                'date' => '' // don't copy the date
             ],
             ['recalculate_total_amount' => true,]
         );

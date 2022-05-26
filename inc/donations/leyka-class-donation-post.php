@@ -171,8 +171,18 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
         } else if(is_a($donation, 'Leyka_Donation_Base')) {
             $this->_id = $donation->id;
+        } else if( // Posts table row object
+            is_object($donation)
+            && !empty($donation->ID)
+            && !empty($donation->post_type)
+            && $donation->post_type === Leyka_Donation_Management::$post_type
+        ) {
+
+            $this->_id = absint($donation->ID);
+            $this->_main_data = $donation;
+
         } else {
-            throw new Exception(sprintf(__('Unknown donation given: %s', 'leyka'), $donation));
+            throw new Exception( sprintf(__('Unknown donation given: %s', 'leyka'), print_r($donation, 1)) );
         }
 
         if( !$this->_donation_meta ) {
@@ -740,8 +750,12 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                     return false;
                 }
 
-                $res = wp_update_post(['ID' => $this->_id, 'post_status' => $value,]);
-                if( !$res || is_wp_error($res) ) {
+                global $wpdb;
+
+                $update_query = $wpdb->prepare("UPDATE {$wpdb->prefix}posts SET post_status = '{$value}' WHERE ID = {$this->_id}");
+                $res = $wpdb->query($update_query);
+
+                if( !$res ) {
                     return false;
                 }
 
@@ -749,6 +763,11 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 $this->_main_data->post_status = $value;
 
                 do_action('leyka_donation_status_'.$old_status.'_to_'.$value, $this);
+                wp_transition_post_status($value, $old_status, $this->_main_data);
+
+                if ($value === 'funded' || $old_status === 'funded') {
+                    do_action('leyka_donation_funded_status_changed', $this->id, $old_status, $value);
+                }
 
                 $status_log = $this->get_meta('_status_log');
                 if($status_log && is_array($status_log)) {

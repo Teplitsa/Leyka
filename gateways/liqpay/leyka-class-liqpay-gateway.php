@@ -318,7 +318,10 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
 
                     $donation = Leyka_Donations::get_instance()->add_clone(
                         $donation,
-                        ['init_recurring_donation' => $donation->id,],
+                        [
+                            'init_recurring_donation' => $donation->id,
+                            'date' => '' // don't copy the date
+                        ],
                         ['recalculate_total_amount' => true,]
                     );
 

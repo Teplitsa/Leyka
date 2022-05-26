@@ -294,6 +294,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                         'init_recurring_donation' => $init_recurring_donation->id,
                         'chronopay_customer_id' => $customer_id,
                         'chronopay_transaction_id' => $transaction_id,
+                        'date' => '' // don't copy the date
                     ],
                     ['recalculate_total_amount' => true,]
                 );

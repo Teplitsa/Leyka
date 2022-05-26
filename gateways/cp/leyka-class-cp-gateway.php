@@ -64,44 +64,59 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
     public function _set_donations_errors() {
 
         $this->_donations_errors_ids = [
-            '5001' => 'L-5002', '5003' => 'L-5002', '5004' => 'L-7011', '5005' => 'L-5003', '5006' => 'L-7001',
+            '5001' => 'L-5002', '5003' => 'L-5002', '5004' => 'L-7011', '5005' => 'L-5003', '5006' => 'L-9004',
             '5007' => 'L-7011', '5012' => 'CP-6002', '5013' => 'CP-7041', '5014' => 'L-7003', '5015' => 'L-5001',
             '5019' => 'L-5003', '5030' => 'CP-8001', '5031' => 'L-5001', '5033' => 'CP-7012', '5034' => 'L-5043',
             '5036' => 'L-6001', '5041' => 'L-7011', '5043' => 'L-7021', '5051' => 'L-7005', '5054' => 'L-7004',
             '5057' => 'L-5003', '5059' => 'L-5043', '5062' => 'L-6001', '5063' => 'L-7022', '5065' => 'CP-7042',
-            '5082' => 'L-7001', '5091' => 'L-5001', '5092' => 'L-5001', '5096' => 'CP-9002', '5204' => 'CP-9002',
+            '5082' => 'L-7001', '5091' => 'L-5001', '5092' => 'L-5001', '5096' => 'L-9001', '5204' => 'L-4002',
             '5206' => 'L-7002', '5207' => 'CP-7002', '5300' => 'L-5043',
         ];
 
         // Only Gateway-specific errors are initialized & added as objects here:
         Leyka_Donations_Errors::get_instance()->add_error(
-            'CP-7002',
-            __('3-D Secure authentication is unavailable', 'leyka')
-        ) && Leyka_Donations_Errors::get_instance()->add_error(
-            'CP-7041',
-            __('The operation amount is too big or too small', 'leyka')
-        ) && Leyka_Donations_Errors::get_instance()->add_error(
-            'CP-7042',
-            __('The operation limit of bank card is exceeded', 'leyka')
-        ) && Leyka_Donations_Errors::get_instance()->add_error(
-            'CP-7051',
-            __('"Check" callback handling error - the payment amount and/or currency is mismatched', 'leyka')
-        ) && Leyka_Donations_Errors::get_instance()->add_error(
-            'CP-7052',
-            __("\"Complete\" callback handling error - can't find init recurring donation by SubscriptionId given", 'leyka')
-        ) && Leyka_Donations_Errors::get_instance()->add_error(
-            'CP-7012',
-            __('The term of card being lost has expired', 'leyka')
-        ) && Leyka_Donations_Errors::get_instance()->add_error(
             'CP-6002',
-            __("Online payments for the card aren't available", 'leyka')
-        ) && Leyka_Donations_Errors::get_instance()->add_error(
+            __("Online payments for the card aren't available", 'leyka'), [
+            'recommendation_admin' => __("Ask the donor to use another payment method (i.e., another card). If this won't help, ask the donor to contact the bank that issued the card.", 'leyka'),
+            'recommendation_donor' => __("Please, try to use another payment method (i.e., another card). If this won't help, report this issue to the bank that issued the card.", 'leyka'),
+        ]) && Leyka_Donations_Errors::get_instance()->add_error(
+            'CP-7002',
+            __('3-D Secure authentication is unavailable', 'leyka'), [
+                'recommendation_admin' => __('Ask the donor to report the issue to the bank that issued the card, or try to use another bank card, or another payment method altogether.', 'leyka'),
+                'recommendation_donor' => __('Please, report the issue to the bank that issued the card, or try to use another bank card, or another payment method altogether.', 'leyka'),
+        ]) && Leyka_Donations_Errors::get_instance()->add_error(
+            'CP-7041',
+            __('The operation amount is too big or too small', 'leyka'), [
+                'recommendation_admin' => __('Ask the donor to make a payment anew, with correct amount this time.', 'leyka'),
+                'recommendation_donor' => __('Please, try to make a payment anew, with correct amount this time.', 'leyka'),
+        ]) && Leyka_Donations_Errors::get_instance()->add_error(
+            'CP-7042',
+            __('The operation limit of bank card is exceeded', 'leyka'), [
+                'recommendation_admin' => __('Ask the donor to use another bank card or another payment method.', 'leyka'),
+                'recommendation_donor' => __('Please, use another bank card or payment method.', 'leyka'),
+        ]) && Leyka_Donations_Errors::get_instance()->add_error(
+            'CP-7051',
+            __('"Check" callback handling error - the payment amount and/or currency is mismatched', 'leyka'), [
+                'description' => __('The "check" system notification was handled with an error: the data on the amount or currency of the payment in the site database differs from the corresponding data in the system notification from CloudPayments.', 'leyka'),
+                'recommendation_admin' => __("Ask the donor to try to make a payment anew. If it won't help, the donor should use another bank card or payment method.", 'leyka'),
+                'recommendation_donor' => __("Please, try to make a payment anew. If it won't help, try to use another bank card or payment method.", 'leyka'),
+        ]) && Leyka_Donations_Errors::get_instance()->add_error(
+            'CP-7052',
+            __('"Complete" callback handling error - can\'t find initial recurring donation by SubscriptionId given', 'leyka'), [
+                'description' => __('The "complete" system notification callback handling resulted in the error: the initial recurring donation with the required SubscriptionId parameter value was not found in the website database. This may mean that the recurring subscription data in the website DB has been partially lost. This problem won\'t allow the recurring subscription to work correctly - you should contact the website system administrator ASAP to investigate the causes of the problem.', 'leyka'),
+                'recommendation_admin' => __("It's very important to contact the website system administrator ASAP and ask them to find the reason of absence of the SubscriptionId parameter needed in the website DB.", 'leyka'),
+                'recommendation_donor' => __('', 'leyka'),
+        ]) && Leyka_Donations_Errors::get_instance()->add_error(
+            'CP-7012',
+            __('The term of card being lost has expired', 'leyka'), [
+                'recommendation_admin' => __('Ask the donor to report the issue to the bank that issued the card, or try to use another bank card, or another payment method altogether.', 'leyka'),
+                'recommendation_donor' => __('Please, report the issue to the bank that issued the card, or try to use another bank card, or another payment method altogether.', 'leyka'),
+        ]) && Leyka_Donations_Errors::get_instance()->add_error(
             'CP-8001',
-            __('Acquirer side error - the transaction is formed incorrectly', 'leyka')
-        ) && Leyka_Donations_Errors::get_instance()->add_error(
-            'CP-9002',
-            __('Unknown acquirer or network error', 'leyka')
-        );
+            __('Acquirer side error - the transaction is formed incorrectly', 'leyka'), [
+                'recommendation_admin' => __("Ask the donor to use another payment method (i.e., another card). If this won't help, ask the donor to try to pay 1-2 days later. If the problem will persist, contact the gateway technical support.", 'leyka'),
+                'recommendation_donor' => __("Please, try to use another payment method (i.e., another card). If this won't help, please, try to pay 1-2 days later. If the problem will persist, ask the website administration to report this to the gateway technical support.", 'leyka'),
+        ]) && Leyka_Donations_Errors::get_instance()->add_error('CP-9002', __('Unknown acquirer or network error', 'leyka'));
 
     }
 

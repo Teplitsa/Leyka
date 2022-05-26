@@ -47,12 +47,15 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         add_action('leyka_donation_funded_status_changed', function($donation_id, $old_status, $new_status){
             if($old_status === 'funded' || $new_status === 'funded') {
 
-                if(leyka_options()->opt('donor_management_available')) {
-
-                    Leyka_Donor::create_donor_from_donation($donation_id);
-                    Leyka_Donor::order_donor_data_refreshing($donation_id);
-
+                if( !$donation_id || !leyka_options()->opt('donor_management_available') ) {
+                    return;
                 }
+
+                $donor_id = Leyka_Donor::create_donor_from_donation($donation_id);
+                $donor = new Leyka_Donor($donor_id);
+
+                Leyka_Donor::calculate_donor_metadata($donor);
+                Leyka_Donor::order_donor_data_refreshing($donation_id);
 
             }
         }, 10, 3);
@@ -122,8 +125,6 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         }
 
         if($new_status === 'funded' || $old_status === 'funded') {
-
-            do_action('leyka_donation_funded_status_changed', $donation->id, $old_status, $new_status);
 
             // Campaign total funded amount refresh:
             $campaign = new Leyka_Campaign($donation->campaign_id);

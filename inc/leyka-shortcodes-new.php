@@ -167,6 +167,7 @@ function leyka_shortcode_donations_list($atts) {
         'header_text' => apply_filters('leyka_shortcode_donations_list_header', __('Donations history', 'leyka'), $atts),
         'show_header' => 1,
         'show_name' => 1,
+        // Possible values: 0/false - don't show Donors' names at all, 1 - show names normally, 2 - show names masked
         'show_date' => 1,
         'show_time' => 1,
         'show_campaign' => 0,
@@ -223,7 +224,16 @@ function leyka_shortcode_donations_list($atts) {
             $line['donation_date'] = $donation->date_time_label;
         }
         if($atts['show_name']) {
+
             $line['donation_donor_name'] = $donation->donor_name ? : __('Anonymous', 'leyka');
+            $line['donation_donor_name'] = absint($atts['show_name']) === 1 ?
+                $line['donation_donor_name'] :
+                str_replace(
+                    mb_substr($line['donation_donor_name'], 1),
+                    str_repeat('*', mb_strlen($line['donation_donor_name']) - 1),
+                    $line['donation_donor_name']
+                );
+
         }
         if($atts['show_type_text']) {
             $line['donation_type'] = $donation->type === 'rebill' ?

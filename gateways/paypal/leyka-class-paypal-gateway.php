@@ -739,6 +739,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                             'payment_type' => 'rebill',
                             'init_recurring_donation' => $init_recurring_donation->id,
                             'paypal_sale_id' => $webhook_data['id'],
+                            'date' => '' // don't copy the date
                         ],
                         ['recalculate_total_amount' => true,]
                     );

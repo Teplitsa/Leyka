@@ -5,7 +5,7 @@ Plugin URI: http://leyka.te-st.ru
 Tags: лейка, crowdfunding, fundraising, donations, recurring donations, charity, leyka, recurring, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, yoomoney, chronopay, sms, yookassa, миксплат, mixplat, paypal, paymaster, qiwi, киви, stripe, страйп, gds, google data studio
 Requires at least: 3.6.1
 Tested up to: 5.9.3
-Stable tag: 3.25
+Stable tag: 3.26
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,24 @@ For technical support questions, please, use the [plugin support email](maillto:
 5. The plugin start page (a console)
 
 == Changelog ==
+= 3.26 =
+* New: now Donations errors full info & recommendations to fix them are displayed completely. YooKassa & CloudPayments gateways errors are added like this.
+* New: the new parameter value added for the "leyka_donations_list" shortcode. Now Donors' names may be optionally masked.
+* New: new filtering option added for Leyka_Donations::get() methods.
+* New: small functional additions & changes in the Donations' admin list table.
+* New: now Donor's name & additional fields values are passed to CP via payment widget fields.
+* Fix: Additional fields values missing in Donation export results is now fixed.
+* Fix: the rare bug when init recurring Donations' Donor thanking emails were sent without Donor account link - is fixed.
+* Fix: Donor total funded amount count bug on a new Donation fixed.
+* Fix: Liqpay callbacks responses fixed.
+* Fix: recurring subscription cancelling via link from non-init recurring Donations fixed.
+* Fix: rebills date bug fixed.
+* Fix: the "Need Help" form template behavior for smaller containers is greatly improved.
+* Fix: small fixes.
+~ Tweak: Recurring subscriptions - funded rebills number cache added.
+~ Tweak: Recurring subscriptions - funded rebills number cache added.
+~ Tweak: small optimizations.
+
 = 3.25 =
 * New: now Leyka is fully PHP 8.* compatible.
 * New: Dashboard admin page is updated.

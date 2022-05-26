@@ -320,7 +320,9 @@ if( !function_exists('leyka_show_donation_error_full_info') ) {
 
                         <p><?php echo $error->description;?></p>
 
+                        <?php /** @todo Uncomment it when all the known errors will have descriptions on //leyka.te-st.ru/docs/donations-errors/ page */ /*?>
                         <a href="<?php echo $error->docs_link;?>" target="_blank"><?php _e('Full description', 'leyka');?></a>
+                        <?php */?>
 
                     </div>
                 <?php }
@@ -328,28 +330,28 @@ if( !function_exists('leyka_show_donation_error_full_info') ) {
                 if($error->recommendation_admin) {?>
                     <div class="error-recommendation error-recommendation-admin">
 
-                        <h3><?php _e('Recommendation for a donations administrator', 'leyka');?></h3>
+                        <h3><?php _e('Recommendation', 'leyka');?></h3>
 
                         <p><?php echo $error->recommendation_admin;?></p>
 
                     </div>
-                <?php }
-
-                if($error->recommendation_donor) {?>
-                    <div class="error-recommendation error-recommendation-donor">
-
-                        <h3><?php _e('Recommendation for the donor', 'leyka');?></h3>
-
-                        <p><?php echo $error->recommendation_donor;?></p>
-
-                    </div>
                 <?php }?>
+
+                <p class="error-common-support-contact-info">
+                    <?php _e('Still has questions? Need help? Message us:', 'leyka');?>
+                    <br>
+                    <?php _e('— <a href="https://t.me/leykadev" target="_blank">Telegram-chat of the support service</a> or', 'leyka');?>
+                    <br>
+                    <?php _e('— <a href="https://leyka.te-st.ru/support/" target="_blank">make a feedaback post</a>.', 'leyka');?>
+                </p>
 
             </div>
 
             <div class="error-details-footer">
 
-                <div class="error-code"><?php echo sprintf(__('Error code: %s', 'leyka'), $error->id);?></div>
+                <div class="error-code">
+                    <?php _e('Error code:', 'leyka');?>&nbsp;<span class="leyka-copy-on-click"><?php echo $error->id;?></span>
+                </div>
 
                 <div class="errors-docs-link">
                     <a href="<?php echo Leyka_Donations_Errors::get_instance()->all_errors_docs_link;?>" target="_blank">
