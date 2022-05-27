@@ -2371,3 +2371,4 @@ __('Another modern and lightweight form template', 'leyka');
 _x('phone', 'Field type title', 'leyka');
 _x('date', 'Field type title', 'leyka');
 _x('text', 'Field type title', 'leyka');
+_x('Recurrings', 'Dashboard portlet title', 'leyka');
