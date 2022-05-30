@@ -1666,6 +1666,43 @@ class Leyka extends Leyka_Singleton {
             // Donation editing messages:
             add_filter('post_updated_messages', [Leyka_Donation_Management::get_instance(), 'set_admin_messages']);
 
+            // Post-typed Donations custom statuses:
+            register_post_status('submitted', [
+                'label'                     => _x('Submitted', '«Submitted» donation status', 'leyka'),
+                'public'                    => true,
+                'exclude_from_search'       => false,
+                'show_in_admin_all_list'    => true,
+                'show_in_admin_status_list' => true,
+                'label_count'               => _n_noop('Submitted <span class="count">(%s)</span>', 'Submitted <span class="count">(%s)</span>', 'leyka'),
+            ]);
+
+            register_post_status('funded', [
+                'label'                     => _x('Funded', '«Completed» donation status', 'leyka'),
+                'public'                    => true,
+                'exclude_from_search'       => false,
+                'show_in_admin_all_list'    => true,
+                'show_in_admin_status_list' => true,
+                'label_count'               => _n_noop('Funded <span class="count">(%s)</span>', 'Funded <span class="count">(%s)</span>', 'leyka'),
+            ]);
+
+            register_post_status('refunded', [
+                'label'                     => _x('Refunded', '«Refunded» donation status', 'leyka'),
+                'public'                    => true,
+                'exclude_from_search'       => false,
+                'show_in_admin_all_list'    => true,
+                'show_in_admin_status_list' => true,
+                'label_count'               => _n_noop('Refunded <span class="count">(%s)</span>', 'Refunded <span class="count">(%s)</span>', 'leyka'),
+            ]);
+
+            register_post_status('failed', [
+                'label'                     => _x('Failed', '«Failed» donation status', 'leyka'),
+                'public'                    => true,
+                'exclude_from_search'       => false,
+                'show_in_admin_all_list'    => true,
+                'show_in_admin_status_list' => true,
+                'label_count'               => _n_noop('Failed <span class="count">(%s)</span>', 'Failed <span class="count">(%s)</span>', 'leyka'),
+            ]);
+
         }
 
         // Campaigns:
@@ -1705,74 +1742,70 @@ class Leyka extends Leyka_Singleton {
         // Campaign editing messages:
         add_filter('post_updated_messages', [Leyka_Campaign_Management::get_instance(), 'set_admin_messages']);
 
-        register_post_status('submitted', [
-            'label'                     => _x('Submitted', '«Submitted» donation status', 'leyka'),
-            'public'                    => true,
-            'exclude_from_search'       => false,
-            'show_in_admin_all_list'    => true,
-            'show_in_admin_status_list' => true,
-            'label_count'               => _n_noop('Submitted <span class="count">(%s)</span>', 'Submitted <span class="count">(%s)</span>', 'leyka'),
-        ]);
-
-        register_post_status('funded', [
-            'label'                     => _x('Funded', '«Completed» donation status', 'leyka'),
-            'public'                    => true,
-            'exclude_from_search'       => false,
-            'show_in_admin_all_list'    => true,
-            'show_in_admin_status_list' => true,
-            'label_count'               => _n_noop('Funded <span class="count">(%s)</span>', 'Funded <span class="count">(%s)</span>', 'leyka'),
-        ]);
-
-        register_post_status('refunded', [
-            'label'                     => _x('Refunded', '«Refunded» donation status', 'leyka'),
-            'public'                    => true,
-            'exclude_from_search'       => false,
-            'show_in_admin_all_list'    => true,
-            'show_in_admin_status_list' => true,
-            'label_count'               => _n_noop('Refunded <span class="count">(%s)</span>', 'Refunded <span class="count">(%s)</span>', 'leyka'),
-        ]);
-
-        register_post_status('failed', [
-            'label'                     => _x('Failed', '«Failed» donation status', 'leyka'),
-            'public'                    => true,
-            'exclude_from_search'       => false,
-            'show_in_admin_all_list'    => true,
-            'show_in_admin_status_list' => true,
-            'label_count'               => _n_noop('Failed <span class="count">(%s)</span>', 'Failed <span class="count">(%s)</span>', 'leyka'),
-        ]);
-
         do_action('leyka_cpt_registered');
 
     }
 
     public function register_taxonomies() {
 
-        if( !leyka()->opt('donor_management_available') ) {
-            return;
+        if(leyka()->opt('donor_management_available')) {
+
+            register_taxonomy(
+                Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME,
+                'user',
+                [
+                    'public' => true,
+                    'labels' => [
+                        'name' => __('Donors tags', 'leyka'),
+                        'singular_name'	=> __('Donors tag', 'leyka'),
+                        'menu_name'	=> __('Donors tags', 'leyka'),
+                        'search_items' => __('Search donors tag', 'leyka'),
+                        'popular_items' => __('Popular donors tags', 'leyka'),
+                        'all_items'	=> __('All donors tags', 'leyka'),
+                        'edit_item'	=> __('Edit donors tag', 'leyka'),
+                        'update_item' => __('Update donors tag', 'leyka'),
+                        'add_new_item' => __('Add new donors tag', 'leyka'),
+                        'new_item_name'	=> __('New donors tag name', 'leyka'),
+                    ],
+//                    'update_count_callback' => function() { // We may have to add a custom function for it
+//                        return; // Important
+//                    }
+                ]
+            );
+
         }
 
-        register_taxonomy(
-            Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME,
-            'user',
-            [
-                'public' => true,
-                'labels' => [
-                    'name' => __('Donors tags', 'leyka'),
-                    'singular_name'	=> __('Donors tag', 'leyka'),
-                    'menu_name'	=> __('Donors tags', 'leyka'),
-                    'search_items' => __('Search donors tag', 'leyka'),
-                    'popular_items' => __('Popular donors tags', 'leyka'),
-                    'all_items'	=> __('All donors tags', 'leyka'),
-                    'edit_item'	=> __('Edit donors tag', 'leyka'),
-                    'update_item' => __('Update donors tag', 'leyka'),
-                    'add_new_item' => __('Add new donors tag', 'leyka'),
-                    'new_item_name'	=> __('New donors tag name', 'leyka'),
-                ],
-//                'update_count_callback' => function() { // We may have to add a custom function for it
-//                    return; // Important
-//                }
-            ]
-        );
+        if(leyka_options()->opt('campaign_categories_available')) {
+
+            register_taxonomy(
+                Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME,
+                Leyka_Campaign_Management::$post_type,
+                [
+                    'public' => true,
+                    'hierarchical' => true,
+                    'show_in_rest' => true,
+                    'show_admin_column' => true,
+                    'labels' => [
+                        'name' => __('Campaigns categories', 'leyka'),
+                        'singular_name'	=> __('Campaigns category', 'leyka'),
+                        'menu_name'	=> __('&#9492;&nbsp;Categories', 'leyka'),
+                        'search_items' => __('Search campaigns categories', 'leyka'),
+                        'popular_items' => __('Popular campaigns categories', 'leyka'),
+                        'all_items'	=> __('All campaigns categories', 'leyka'),
+                        'edit_item'	=> __('Edit campaigns category', 'leyka'),
+                        'update_item' => __('Update campaigns category', 'leyka'),
+                        'add_new_item' => __('Add new campaigns category', 'leyka'),
+                        'new_item_name'	=> __('New campaigns category name', 'leyka'),
+                    ],
+                    'rewrite' => ['slug' => 'campaign-category', 'with_front' => false,],
+//                    'query_var' => '',
+//                    'update_count_callback' => function(){ // We may have to add a custom function for it
+//                        return; // Important
+//                    }
+                ]
+            );
+
+        }
 
     }
 
@@ -2200,7 +2233,7 @@ class Leyka extends Leyka_Singleton {
         } else {
 
             $custom_templates = glob(STYLESHEETPATH.'/leyka-template-*.php');
-            $custom_templates = $custom_templates ? $custom_templates : [];
+            $custom_templates = $custom_templates ? : [];
 
             $this->_templates = apply_filters(
                 'leyka_templates_list',
