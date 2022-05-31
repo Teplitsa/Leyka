@@ -179,7 +179,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
         ) {
 
             $this->_id = absint($donation->ID);
-            $this->_main_data = $donation;
+            $this->_main_data = new WP_Post($donation);
 
         } else {
             throw new Exception( sprintf(__('Unknown donation given: %s', 'leyka'), print_r($donation, 1)) );
