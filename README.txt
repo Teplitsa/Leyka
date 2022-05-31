@@ -5,7 +5,7 @@ Plugin URI: http://leyka.te-st.ru
 Tags: лейка, crowdfunding, fundraising, donations, recurring donations, charity, leyka, recurring, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, yoomoney, chronopay, sms, yookassa, миксплат, mixplat, paypal, paymaster, qiwi, киви, stripe, страйп, gds, google data studio
 Requires at least: 3.6.1
 Tested up to: 6.0
-Stable tag: 3.26
+Stable tag: 3.26.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,7 @@ For technical support questions, please, use the [plugin support email](maillto:
 = 3.26.1 =
 * New: Campaigns categories feature added.
 * Fix: small Donations handling fixes.
+* Fix: conflicts with Mihdan plugins are fixed.
 
 = 3.26 =
 * New: now Donations errors full info & recommendations to fix them are displayed completely. YooKassa & CloudPayments gateways errors are added like this.
