@@ -130,7 +130,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             $wp_query->query[Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME] : '';
 
         wp_dropdown_categories( array(
-                'show_option_all' => __('All campaign categories', 'leyka'),
+                'show_option_all' => __('All campaigns categories', 'leyka'),
                 'taxonomy'        => Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME,
                 'name'            => Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME,
                 'orderby'         => 'name',
