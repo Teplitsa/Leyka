@@ -752,7 +752,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
                 global $wpdb;
 
-                $update_query = $wpdb->prepare("UPDATE {$wpdb->prefix}posts SET post_status = '{$value}' WHERE ID = {$this->_id}");
+                $update_query = $wpdb->prepare("UPDATE {$wpdb->prefix}posts SET post_status=%s WHERE ID=%d", $value, $this->_id);
                 $res = $wpdb->query($update_query);
 
                 if( !$res ) {
