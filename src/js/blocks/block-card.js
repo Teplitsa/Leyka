@@ -243,8 +243,8 @@
 		}
 
 		registerBlockType( 'leyka/card', {
-			title: thisBlock.title,
-			description: thisBlock.description,
+			title: __('Campaign Card', 'leyka'),
+			description: __('Campaign informer with configurable elements', 'leyka'),
 			icon: icon,
 			category: 'leyka',
 			keywords: [ 'campaign', 'leyka', 'form', 'payment' ],
