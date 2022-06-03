@@ -3,7 +3,7 @@
  * Leyka Gutenberg Blocks Functions
  */
 
-// Add scripts to a page if it's post_content has leyka/form block:
+// Add scripts to a page if it's post_content has leyka/block:
 function leyka_block_modern_template_displayed( $modern_template_displayed ) {
 	if ( is_singular() && ( has_block('leyka/form', get_the_ID() ) || has_block('leyka/cards', get_the_ID() ) || has_block('leyka/card', get_the_ID() ) ) ) {
 		return true;
