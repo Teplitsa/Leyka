@@ -124,23 +124,27 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         </select>
 
-    <?php global $wp_query;
+    <?php if(leyka_options()->opt('campaign_categories_available')) {
 
-        $term = isset($wp_query->query[Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME]) ?
-            $wp_query->query[Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME] : '';
+            global $wp_query;
 
-        wp_dropdown_categories( array(
-                'show_option_all' => __('All campaigns categories', 'leyka'),
-                'taxonomy'        => Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME,
-                'name'            => Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME,
-                'orderby'         => 'name',
-                'selected'        => $term,
-                'hierarchical'    => true,
-                'depth'           => 3,
-                'show_count'      => true,
-                'hide_if_empty'   => false,
-            )
-        );
+            $term = isset($wp_query->query[ Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME ]) ?
+                $wp_query->query[ Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME ] : '';
+
+            wp_dropdown_categories(array(
+                    'show_option_all' => __('All campaigns categories', 'leyka'),
+                    'taxonomy' => Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME,
+                    'name' => Leyka_Campaign::CAMPAIGNS_CATEGORIES_TAXONOMY_NAME,
+                    'orderby' => 'name',
+                    'selected' => $term,
+                    'hierarchical' => true,
+                    'depth' => 3,
+                    'show_count' => true,
+                    'hide_if_empty' => false,
+                )
+            );
+
+        }
 
     }
 
