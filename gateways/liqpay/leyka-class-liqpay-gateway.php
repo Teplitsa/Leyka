@@ -89,15 +89,20 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
     }
 
     public function get_specific_data_value($value, $field_name, Leyka_Donation_Base $donation) {
-        switch ($field_name) {
+        switch($field_name) {
             case 'recurring_id':
+            case 'liqpay_recurring_id':
                 return Leyka_Donations::get_instance()->get_donation_meta($donation->id, '_liqpay_recurring_id');
             case 'card_token':
+            case 'liqpay_card_token':
                 return Leyka_Donations::get_instance()->get_donation_meta($donation->id, '_liqpay_card_token');
+            case 'customer_id':
             case 'liqpay_customer_id':
                 return Leyka_Donations::get_instance()->get_donation_meta($donation->id, '_liqpay_customer_id');
+            case 'transaction_id':
             case 'liqpay_transaction_id':
                 return Leyka_Donations::get_instance()->get_donation_meta($donation->id, '_liqpay_transaction_id');
+            case 'order_id':
             case 'liqpay_order_id':
                 return Leyka_Donations::get_instance()->get_donation_meta($donation->id, '_liqpay_order_id');
             default:
@@ -106,22 +111,49 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
     }
 
     public function set_specific_data_value($field_name, $value, Leyka_Donation_Base $donation) {
-        switch ($field_name) {
+        switch($field_name) {
             case 'recurring_id':
             case 'liqpay_recurring_id':
                 return Leyka_Donations::get_instance()->set_donation_meta($donation->id, '_liqpay_recurring_id', $value);
             case 'card_token':
             case 'liqpay_card_token':
                 return Leyka_Donations::get_instance()->set_donation_meta($donation->id, '_liqpay_card_token', $value);
+            case 'customer_id':
             case 'liqpay_customer_id':
                 return Leyka_Donations::get_instance()->set_donation_meta($donation->id, '_liqpay_customer_id', $value);
+            case 'transaction_id':
             case 'liqpay_transaction_id':
                 return Leyka_Donations::get_instance()->set_donation_meta($donation->id, '_liqpay_transaction_id', $value);
+            case 'order_id':
             case 'liqpay_order_id':
                 return Leyka_Donations::get_instance()->set_donation_meta($donation->id, '_liqpay_order_id', $value);
             default:
                 return false;
         }
+    }
+
+    public function add_donation_specific_data($donation_id, array $params) {
+
+        if( !empty($params['liqpay_recurring_id']) ) {
+            Leyka_Donations::get_instance()->set_donation_meta($donation_id, '_liqpay_recurring_id', $params['liqpay_recurring_id']);
+        }
+
+        if( !empty($params['liqpay_card_token']) ) {
+            Leyka_Donations::get_instance()->set_donation_meta($donation_id, '_liqpay_card_token', $params['liqpay_card_token']);
+        }
+
+        if( !empty($params['liqpay_customer_id']) ) {
+            Leyka_Donations::get_instance()->set_donation_meta($donation_id, '_liqpay_customer_id', $params['liqpay_customer_id']);
+        }
+
+        if( !empty($params['liqpay_transaction_id']) ) {
+            Leyka_Donations::get_instance()->set_donation_meta($donation_id, '_liqpay_transaction_id', $params['liqpay_transaction_id']);
+        }
+
+        if( !empty($params['liqpay_order_id']) ) {
+            Leyka_Donations::get_instance()->set_donation_meta($donation_id, '_liqpay_order_id', $params['liqpay_order_id']);
+        }
+
     }
 
     public function display_donation_specific_data_fields($donation = false) {
@@ -195,17 +227,37 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
 
         <?php } else { // New donation page displayed ?>
 
-            <label for="cp-transaction-id"><?php _e('CloudPayments transaction ID', 'leyka');?>:</label>
+            <label for="liqpay-transaction-id"><?php _e('Liqpay transaction ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <input type="text" id="cp-transaction-id" name="cp-transaction-id" placeholder="<?php _e('Enter CloudPayments transaction ID', 'leyka');?>" value="">
+                <input type="text" id="liqpay-transaction-id" name="liqpay-transaction-id" placeholder="<?php _e('Enter Liqpay transaction ID', 'leyka');?>" value="">
             </div>
 
-            <label for="cp-recurring-id"><?php _e('CloudPayments subscription ID', 'leyka');?>:</label>
+            <label for="liqpay-recurring-id"><?php _e('Liqpay subscription ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <input type="text" id="cp-recurring-id" name="cp-recurring-id" placeholder="<?php _e('Enter CloudPayments subscription ID', 'leyka');?>" value="">
+                <input type="text" id="liqpay-recurring-id" name="liqpay-recurring-id" placeholder="<?php _e('Enter Liqpay subscription ID', 'leyka');?>" value="">
             </div>
 
         <?php }
+
+    }
+
+    public function save_donation_specific_data(Leyka_Donation_Base $donation) {
+
+        if(isset($_POST['liqpay-order-id']) && $donation->liqpay_order_id != $_POST['liqpay-order-id']) {
+            $donation->liqpay_order_id = $_POST['liqpay-order-id'];
+        }
+
+        if(isset($_POST['liqpay-recurring-id']) && $donation->liqpay_recurring_id != $_POST['liqpay-recurring-id']) {
+            $donation->liqpay_recurring_id = $_POST['liqpay-recurring-id'];
+        }
+
+        if(isset($_POST['liqpay-transaction-id']) && $donation->liqpay_transaction_id != $_POST['liqpay-transaction-id']) {
+            $donation->liqpay_transaction_id = $_POST['liqpay-transaction-id'];
+        }
+
+        if(isset($_POST['liqpay-card-token']) && $donation->liqpay_card_token != $_POST['liqpay-card-token']) {
+            $donation->liqpay_card_token = $_POST['liqpay-card-token'];
+        }
 
     }
 
@@ -329,19 +381,25 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
                         exit(200);
                     }
 
-                } else { // Recurring subscription callback
+                } else { // Init recurring Donation (subscription) callback
 
                     $new_status = 'funded';
                     $donation->payment_type = 'rebill';
+                    $donation->recurring_is_active = true;
 
                 }
 
                 if( !empty($data['card_token']) ) {
-
-                    $donation->recurring_id = $data['order_id'];
+                    $donation->liqpay_card_token = $data['card_token'];
+                }
+                if( !empty($data['liqpay_order_id']) ) {
                     $donation->liqpay_order_id = $data['liqpay_order_id'];
-                    $donation->card_token = $data['card_token'];
-
+                }
+                if( !empty($data['transaction_id']) ) {
+                    $donation->liqpay_transaction_id = $data['transaction_id'];
+                }
+                if( !empty($data['order_id']) ) {
+                    $donation->liqpay_recurring_id = $data['order_id'];
                 }
 
             }
@@ -350,6 +408,9 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
 
             if( !empty($data['liqpay_order_id']) ) {
                 $donation->liqpay_order_id = $data['liqpay_order_id'];
+            }
+            if( !empty($data['transaction_id']) ) {
+                $donation->liqpay_transaction_id = $data['transaction_id'];
             }
 
             switch($data['status']) {
@@ -437,7 +498,7 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
 
         $recurring_manual_cancel_link = 'https://www.liqpay.ua/api/request';
 
-        if( !$donation->liqpay_order_id ) {
+        if( !$donation->liqpay_recurring_id ) {
             return new WP_Error('recurring_cancelling__no_subscription_id', sprintf(__('<strong>Error:</strong> unknown Subscription ID for donation #%d. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
         }
 
