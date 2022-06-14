@@ -512,6 +512,12 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
                 'options' => ['admin_donations_list_amount_display',],
                 'is_default_collapsed' => true,
             ],],
+            ['section'=> [
+                'name' => 'additional_technical_options',
+                'title' => __('Additional technical options', 'leyka'),
+                'options' => ['object_caching_compatibility_mode',],
+                'is_default_collapsed' => true,
+            ],],
         ];
 
     }

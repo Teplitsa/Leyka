@@ -1252,6 +1252,13 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'title' => __('Add platform signature to donation form', 'leyka'),
                 'short_format' => true
             ],
+            'object_caching_compatibility_mode' => [
+                'type' => 'checkbox',
+                'default' => false,
+                'title' => __('Object caching compatibility mode on', 'leyka'),
+                'comment' => __('Check if you have problems with donations statuses works when object caching is active (i.e., Redis, Memcached, etc.).', 'leyka'),
+                'short_format' => true,
+            ],
         ];
     }
 

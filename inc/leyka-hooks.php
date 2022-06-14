@@ -223,6 +223,6 @@ add_filter('leyka_option_value-currency_main', function($value){
 }, 1, 9999);
 
 // Fix for the sticky posts bug - the fatal error on the /donor-account pages when there are some sticky posts on the site:
-add_filter('posts_results', function($posts, WP_Query $query){
+add_filter('posts_results', function($posts){
     return $posts === NULL ? array() : $posts;
 }, 10, 2);
