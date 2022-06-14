@@ -155,8 +155,8 @@
 
 		// Register Block Type leyka/form.
 		registerBlockType( 'leyka/form', {
-			title: thisBlock.title,
-			description: thisBlock.description,
+			title: __('Collecting donations', 'leyka'),
+			description: __('Donation form', 'leyka'),
 			icon: icon,
 			category: 'leyka',
 			keywords: [ 'campaign', 'leyka', 'form', 'payment' ],
