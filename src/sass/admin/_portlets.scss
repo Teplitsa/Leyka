@@ -164,9 +164,9 @@
                 border-radius: 6px;
                 border: 1px solid #C4C4C4;
                 color: #23282D;
-                min-width: 120px;
                 justify-content: center;
                 align-items: center;
+                cursor: default;
 
                 &.leyka-subscriptions-active {
                     border: 1px solid #C5E3C4;
@@ -179,8 +179,8 @@
                 }
 
                 &.leyka-subscriptions-non-active {
-                    border: 1px solid #FEEFC7;
-                    color: #EE7C1B;
+                    border: 1px solid #C4C4C4;
+                    color: #586067;
                 }
 
                 .row-data {
@@ -303,7 +303,7 @@
 
         .portlet-content {
 
-            width: 100%;
+            width: calc(100% - 32px);
             padding: 16px;
 
             table.recent-donations {
@@ -462,6 +462,47 @@
                             img {
                                 width: 30px;
                                 height: 30px;
+                            }
+
+                        }
+
+                        td.donation-donor-email-status {
+
+                            width: 90px;
+
+                            .donor {
+
+                                display: inline-flex;
+                                flex-direction: column;
+                                align-items: flex-start;
+                                gap: 2px;
+                                font-weight: 600;
+                                font-size: 12px;
+                                line-height: 16px;
+                                color: #23282D;
+
+                                &.no-thanks .donation-email-status {
+                                    color: #8E8E8E;
+                                }
+
+                                .donation-email-date {
+
+                                    font-weight: 500;
+                                    font-size: 10px;
+                                    line-height: 16px;
+
+                                }
+
+                                .donation-email-action {
+
+                                    font-weight: 500;
+                                    font-size: 10px;
+                                    line-height: 16px;
+                                    color: #007CBA;
+                                    cursor: pointer;
+
+                                }
+
                             }
 
                         }

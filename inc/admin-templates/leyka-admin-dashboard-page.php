@@ -5,43 +5,49 @@
 
 <div class="wrap leyka-admin leyka-info-sidebar-page leyka-dashboard-page">
 
-    <div class="leyka-admin-page-notice">
+    <?php $problematic_subscriptions_count = leyka_get_problematic_recurring_subscriptions_count();
 
-        <div class="leyka-content-wrapper">
-            <img src="<?php echo LEYKA_PLUGIN_BASE_URL; ?>img/dashboard/icon-alert-circle.svg" />
-            <span><?php echo __('Проблемная подписка.', 'leyka'); ?></span>
-            <a href="?page=leyka_donations"><?php echo __('Перейти к платежу', 'leyka'); ?></a>
+    if($problematic_subscriptions_count > 0) { ?>
+
+        <div class="leyka-admin-page-notice">
+
+            <div class="leyka-content-wrapper">
+                <img src="<?php echo LEYKA_PLUGIN_BASE_URL; ?>img/dashboard/icon-alert-circle.svg" />
+                <span><?php echo __('Problematic subscriptions.', 'leyka'); ?></span>
+                <a href="<?php echo admin_url('admin.php?page=leyka_recurring_subscriptions&recurring_subscription_status=problematic') ?>"><?php echo __('To the list', 'leyka'); ?></a>
+            </div>
+
+            <img class="leyka-close-button" src="<?php echo LEYKA_PLUGIN_BASE_URL; ?>img/dashboard/icon-close.svg" />
+
         </div>
 
-        <img class="leyka-close-button" src="<?php echo LEYKA_PLUGIN_BASE_URL; ?>img/dashboard/icon-close.svg" />
-
-    </div>
+    <?php } ?>
 
     <h1><?php _e('Leyka dashboard', 'leyka');?></h1>
 
-<?php if(leyka_options()->opt('send_plugin_stats') !== 'y' && leyka_options()->opt('plugin_stats_sync_enabled')) {?>
+    <?php if(leyka_options()->opt('send_plugin_stats') !== 'y' && leyka_options()->opt('plugin_stats_sync_enabled')) {?>
 
-    <div class="send-plugin-stats-invite">
+        <div class="send-plugin-stats-invite">
 
-        <div class="invite-text">
-            <?php _e('Please, turn on the option to send anonymous plugin usage data to help us diagnose', 'leyka');?>
-        </div>
+            <div class="invite-text">
+                <?php _e('Please, turn on the option to send anonymous plugin usage data to help us diagnose', 'leyka');?>
+            </div>
 
-        <div class="invite-link">
+            <div class="invite-link">
 
-            <button class="send-plugin-usage-stats-y"><?php _e('Allow usage statistics collection', 'leyka');?></button>
-            <?php wp_nonce_field('usage_stats_y', 'usage_stats_y');?>
+                <button class="send-plugin-usage-stats-y"><?php _e('Allow usage statistics collection', 'leyka');?></button>
+                <?php wp_nonce_field('usage_stats_y', 'usage_stats_y');?>
 
-            <div class="loading-indicator-wrap">
-                <div class="loader-wrap" style="display: none;"><span class="leyka-loader xxs"></span></div>
-                <img class="ok-icon" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/icon-check.svg" alt="">
+                <div class="loading-indicator-wrap">
+                    <div class="loader-wrap" style="display: none;"><span class="leyka-loader xxs"></span></div>
+                    <img class="ok-icon" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/icon-check.svg" alt="">
+                </div>
+
             </div>
 
         </div>
 
-    </div>
-
-<?php }?>
+    <?php }?>
 
     <div class="leyka-page-content">
 

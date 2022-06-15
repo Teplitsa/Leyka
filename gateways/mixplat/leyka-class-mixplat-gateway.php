@@ -454,6 +454,8 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                     default:
                 }
 
+                do_action('leyka_new_rebill_donation_added', $donation);
+
             }
 
         } else if($response['request'] == 'status') { // Status request

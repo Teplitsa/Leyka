@@ -348,6 +348,10 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
 
                 $donation->add_gateway_response($response);
 
+                if($donation->type === 'rebill') {
+                    do_action('leyka_new_rebill_donation_added', $donation);
+                }
+
             }
 
             if( // GUA direct integration - "purchase" event:

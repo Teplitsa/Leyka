@@ -344,6 +344,8 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
 
                 }
 
+                do_action('leyka_new_rebill_donation_added', $donation);
+
             }
 
         } else if( !empty($data['action']) && $data['action'] === 'pay' ) { // Single donation

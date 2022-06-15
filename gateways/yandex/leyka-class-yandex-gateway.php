@@ -485,6 +485,10 @@ techMessage="'.$tech_message.'"/>');
                     default: // Other possible gateway-side payment statuses: 'pending', 'waiting_for_capture'
                 }
 
+                if($donation->type === 'rebill') {
+                    do_action('leyka_new_rebill_donation_added', $donation);
+                }
+
                 exit(200);
 
             // Old API (MWS) callbacks:
@@ -580,6 +584,10 @@ techMessage="'.$tech_message.'"/>');
                 }
 
 				do_action('leyka_yandex_payment_aviso_success', $donation);
+
+                if($donation->type === 'rebill') {
+                    do_action('leyka_new_rebill_donation_added', $donation);
+                }
 
                 $this->_callback_answer(0, 'pa'); // OK for yandex money payment
                 break; // Not needed, just for my IDE could relax

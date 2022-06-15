@@ -259,6 +259,9 @@ abstract class Leyka_Donation_Base {
      */
     abstract public function update_recurring_funded_rebills_number($action = '');
 
+    abstract public function update_recurring_subscription_status();
+    abstract public function update_next_recurring_date();
+
     /** Donation metadata get & set methods are public to use them in the "gateway-specific data" hooks. */
     abstract public function get_meta($meta_key);
     abstract public function set_meta($meta_name, $value);

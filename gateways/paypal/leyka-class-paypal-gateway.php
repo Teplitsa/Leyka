@@ -728,6 +728,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     $init_recurring_donation->paypal_sale_id = $webhook_data['id']; // Sale ID, to handle the "refund" webhooks
                 }
 
+                do_action('leyka_new_rebill_donation_added', $donation);
+
             } else if(isset($webhook_data['state']) && $webhook_data['state'] === 'completed') { // Non-init recurring payments
 
                 if($webhook_event === 'completed') { // New non-init recurring donation
@@ -749,6 +751,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     }
 
                     $new_recurring_donation->add_gateway_response($webhook_data);
+
+                    do_action('leyka_new_rebill_donation_added', $new_recurring_donation);
 
                 } else if($webhook_event === 'refunded' && !empty($webhook_data['sale_id'])) { // Non-init recurring - refund
 

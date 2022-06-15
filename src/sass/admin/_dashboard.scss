@@ -197,8 +197,11 @@
                         display: flex;
                         align-items: center;
                         color: #007CBA;
-                        cursor: pointer;
                         gap: 13px;
+
+                        * {
+                            cursor: pointer;
+                        }
 
                         .leyka-icon {
                             transform: scale(-1, -1);

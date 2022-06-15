@@ -9,6 +9,13 @@ class Leyka_Recurring_Stats_Portlet_Controller extends Leyka_Portlet_Controller 
 
     public function get_template_data(array $params = []) {
 
+        $subscriptions_statuses_list = leyka_get_recurring_subscription_status_list();
+        $subscriptions_stats['all'] = ['label' => __('All subscriptions', 'leyka'), 'count' => 0];
+
+        foreach($subscriptions_statuses_list as $status_id => $status_name) {
+            $subscriptions_stats[$status_id] = ['label' => $status_name, 'count' => 0];
+        }
+
         $interval_dates = leyka_count_interval_dates($params['interval']);
 
         if($params['reset'] === true) {
@@ -31,15 +38,18 @@ class Leyka_Recurring_Stats_Portlet_Controller extends Leyka_Portlet_Controller 
             // Curr. interval recurring donations:
             $query = leyka_get_donations_storage_type() === 'post' ?
                 // Post-based donations storage:
-                "SELECT {$wpdb->prefix}posts.ID, {$wpdb->prefix}posts.post_parent
-                FROM {$wpdb->prefix}posts 
-                    JOIN {$wpdb->prefix}postmeta ON {$wpdb->prefix}posts.ID = {$wpdb->prefix}postmeta.post_id
-                WHERE {$wpdb->prefix}posts.post_type='".Leyka_Donation_Management::$post_type."'
-                AND {$wpdb->prefix}posts.post_status='funded'
-                AND {$wpdb->prefix}posts.post_date >= '".$interval_dates["curr_interval_begin_date"]."'
-                AND {$wpdb->prefix}postmeta.meta_key='leyka_payment_type'
-                AND {$wpdb->prefix}postmeta.meta_value='rebill'" :
+                "SELECT posts.ID, posts.post_parent, postmeta2.meta_value as rebilling_is_on, postmeta3.meta_value as subscription_status 
+                FROM {$wpdb->prefix}posts as posts 
+                    JOIN {$wpdb->prefix}postmeta as postmeta1 ON posts.ID = postmeta1.post_id
+                    LEFT JOIN {$wpdb->prefix}postmeta AS postmeta2 ON posts.ID = postmeta2.post_id and postmeta2.meta_key='_rebilling_is_active'
+                    LEFT JOIN {$wpdb->prefix}postmeta AS postmeta3 ON posts.ID = postmeta3.post_id and postmeta3.meta_key='leyka_recurring_subscription_status'
+                WHERE posts.post_type='".Leyka_Donation_Management::$post_type."'
+                AND posts.post_status='funded'
+                AND posts.post_date >= '".$interval_dates["curr_interval_begin_date"]."'
+                AND postmeta1.meta_key='leyka_payment_type'
+                AND postmeta1.meta_value='rebill'" :
                 // Separate donations storage:
+                //TODO Vyacheslav - fix request for a separate donations storage
                 "SELECT ID
                 FROM {$wpdb->prefix}leyka_donations
                 WHERE status='funded'
@@ -47,15 +57,25 @@ class Leyka_Recurring_Stats_Portlet_Controller extends Leyka_Portlet_Controller 
                 AND payment_type='rebill'";
 
             $curr_recurring_donations = $wpdb->get_results($query, 'ARRAY_A');
-            $curr_subscriptions = [];
+            $curr_subscriptions = $subscriptions_stats;
             $curr_recurring_donations_ids = [];
 
-            foreach ($curr_recurring_donations as $curr_recurring_donation) {
+            foreach($curr_recurring_donations as $curr_recurring_donation) {
 
                 $curr_recurring_donations_ids[] = $curr_recurring_donation['ID'];
 
                 if($curr_recurring_donation['post_parent'] === '0') {
-                    $curr_subscriptions[] = $curr_recurring_donation['ID'];
+
+                    $curr_subscriptions['all']['count']++;
+
+                    if($curr_recurring_donation['subscription_status']) {
+                        $curr_subscriptions[$curr_recurring_donation['subscription_status']]['count']++;
+                    } else if($curr_recurring_donation['rebilling_is_on']) {
+                        $curr_subscriptions['active']['count']++;
+                    } else {
+                        $curr_subscriptions['non-active']['count']++;
+                    }
+
                 }
 
             }
@@ -95,15 +115,18 @@ class Leyka_Recurring_Stats_Portlet_Controller extends Leyka_Portlet_Controller 
             // Prev. interval recurring donations:
             $query = leyka_get_donations_storage_type() === 'post' ?
                 // Post-based donations storage:
-                "SELECT {$wpdb->prefix}posts.ID, {$wpdb->prefix}posts.post_parent
-                FROM {$wpdb->prefix}posts 
-                    JOIN {$wpdb->prefix}postmeta ON {$wpdb->prefix}posts.ID = {$wpdb->prefix}postmeta.post_id
-                WHERE {$wpdb->prefix}posts.post_type='".Leyka_Donation_Management::$post_type."'
-                AND {$wpdb->prefix}posts.post_status='funded'
-                AND {$wpdb->prefix}posts.post_date BETWEEN '".$interval_dates["prev_interval_begin_date"]."' AND '".$interval_dates["curr_interval_begin_date"]."'
-                AND {$wpdb->prefix}postmeta.meta_key='leyka_payment_type'
-                AND {$wpdb->prefix}postmeta.meta_value='rebill'" :
+                "SELECT posts.ID, posts.post_parent, postmeta2.meta_value as rebilling_is_on, postmeta3.meta_value as subscription_status
+                FROM {$wpdb->prefix}posts as posts 
+                    JOIN {$wpdb->prefix}postmeta as postmeta1 ON posts.ID = postmeta1.post_id
+                    LEFT JOIN {$wpdb->prefix}postmeta AS postmeta2 ON posts.ID = postmeta2.post_id and postmeta2.meta_key='_rebilling_is_active'
+                    LEFT JOIN {$wpdb->prefix}postmeta AS postmeta3 ON posts.ID = postmeta3.post_id and postmeta3.meta_key='leyka_recurring_subscription_status'
+                WHERE posts.post_type='".Leyka_Donation_Management::$post_type."'
+                AND posts.post_status='funded'
+                AND posts.post_date BETWEEN '".$interval_dates["prev_interval_begin_date"]."' AND '".$interval_dates["curr_interval_begin_date"]."'
+                AND postmeta1.meta_key='leyka_payment_type'
+                AND postmeta1.meta_value='rebill'" :
                 // Separate donations storage:
+                //TODO Vyacheslav - fix request for a separate donations storage
                 "SELECT ID
                 FROM {$wpdb->prefix}leyka_donations
                 WHERE status='funded'
@@ -111,15 +134,25 @@ class Leyka_Recurring_Stats_Portlet_Controller extends Leyka_Portlet_Controller 
                 AND payment_type='rebill'";
 
             $prev_recurring_donations = $wpdb->get_results($query, 'ARRAY_A');
-            $prev_subscriptions = [];
+            $prev_subscriptions = $subscriptions_stats;
             $prev_recurring_donations_ids = [];
 
-            foreach ($prev_recurring_donations as $prev_recurring_donation) {
+            foreach($prev_recurring_donations as $prev_recurring_donation) {
 
                 $prev_recurring_donations_ids[] = $prev_recurring_donation['ID'];
 
                 if($prev_recurring_donation['post_parent'] === '0') {
-                    $prev_subscriptions[] = $prev_recurring_donation['ID'];
+
+                    $prev_subscriptions['all']['count']++;
+
+                    if($prev_recurring_donation['subscription_status']) {
+                        $prev_subscriptions[$prev_recurring_donation['subscription_status']]['count']++;
+                    } else if($prev_recurring_donation['rebilling_is_on']) {
+                        $prev_subscriptions['active']['count']++;
+                    } else {
+                        $prev_subscriptions['non-active']['count']++;
+                    }
+
                 }
 
             }
@@ -161,10 +194,13 @@ class Leyka_Recurring_Stats_Portlet_Controller extends Leyka_Portlet_Controller 
             round($curr_interval_data['amount']/$curr_interval_data['donations_count'], 2) : 0;
         $donations_amount_avg_delta = leyka_get_delta_percent($prev_amount_avg, $curr_amount_avg);
 
-        // Subscriptions count:
-        $prev_subscriptions_count = $prev_interval_data['subscriptions'] ? count($prev_interval_data['subscriptions']) : 0;
-        $curr_subscriptions_count = $curr_interval_data['subscriptions'] ? count($curr_interval_data['subscriptions']) : 0;
-        $subscriptions_count_delta = leyka_get_delta_percent($prev_subscriptions_count, $curr_subscriptions_count);
+        // Subscriptions count delta:
+        foreach($curr_interval_data['subscriptions'] as $status_id => $status_data) {
+
+            $delta = leyka_get_delta_percent($prev_interval_data['subscriptions'][$status_id]['count'], $curr_interval_data['subscriptions'][$status_id]['count']);
+            $curr_interval_data['subscriptions'][$status_id]['delta_percent'] = $delta === NULL ? '—' : ($delta < 0 ? '' : '+').$delta.'%';
+
+        }
 
         return [
             'recurring_donations_amount' => $curr_interval_data['amount'],
@@ -173,9 +209,7 @@ class Leyka_Recurring_Stats_Portlet_Controller extends Leyka_Portlet_Controller 
             'donations_amount_avg' => $curr_amount_avg,
             'donations_amount_avg_delta_percent' => $donations_amount_avg_delta === NULL ?
                 '—' : ($donations_amount_avg_delta < 0 ? '' : '+').$donations_amount_avg_delta.'%',
-            'subscriptions_count' => $curr_subscriptions_count,
-            'subscriptions_count_delta_percent' => $subscriptions_count_delta === NULL ?
-                '—' : ($subscriptions_count_delta < 0 ? '' : '+').$subscriptions_count_delta.'%',
+            'subscriptions_stats' => $curr_interval_data['subscriptions']
         ];
 
     }

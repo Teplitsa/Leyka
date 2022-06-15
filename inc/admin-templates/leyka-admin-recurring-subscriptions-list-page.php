@@ -9,8 +9,18 @@
 
         <h1 class="wp-heading-inline"><?php _e('Recurring subscriptions', 'leyka');?></h1>
 
+        <div class="leyka-recurring-subscriptions-check">
+            <form action="#" method="get">
+                <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']);?>">
+                <input type="submit" class="submit" name="subscriptions-update-all-statuses" value="<?php _e('Check all subscriptions') ?>" />
+            </form>
+        </div>
+
         <div class="recurring-subscriptions-list-export admin-list-export">
-            <input type="submit" class="submit" name="subscriptions-list-export" value="<?php _e('Export the list in CSV', 'leyka');?>">
+            <form action="#" method="get">
+                <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']);?>">
+                <input type="submit" class="submit" name="subscriptions-list-export" value="<?php _e('Export the list in CSV', 'leyka');?>">
+            </form>
         </div>
 
         <div class="toggle-filters-button leyka-visibility-control-button" data-visibility-control-target=".recurring-subscriptions-list-filters"><?php _e('Filters', 'leyka');?></div>
@@ -30,9 +40,9 @@
 
                         <div class="filters-row">
 
-                            <?php $filter_value = isset($_GET['status']) ? esc_attr($_GET['status']) : false;?>
+                            <?php $filter_value = isset($_GET['recurring_subscription_status']) ? esc_attr($_GET['recurring_subscription_status']) : false;?>
                             <div class="leyka-admin-list-filter-wrapper">
-                                <select name="status" class="leyka-selector leyka-select-menu">
+                                <select name="recurring_subscription_status" class="leyka-selector leyka-select-menu">
                                     <option value="" <?php echo !$filter_value ? 'selected="selected"' : '';?>>
                                         <?php _e('All subscriptions', 'leyka');?>
                                     </option>

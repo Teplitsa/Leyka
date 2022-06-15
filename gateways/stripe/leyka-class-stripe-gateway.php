@@ -445,6 +445,10 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                 break;
         }
 
+        if($donation->type === 'rebill') {
+            do_action('leyka_new_rebill_donation_added', $donation);
+        }
+
         exit(200);
 
     }

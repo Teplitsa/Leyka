@@ -29,7 +29,8 @@ class Leyka_Recent_Donations_Portlet_Controller extends Leyka_Portlet_Controller
                     'id' => $donation->donor_id ? $donation->donor_id : 0,
                     'name' => $donation->donor_name,
                     'email' => $donation->donor_email,
-                    'phone' => $donation->donor_phone
+                    'phone' => $donation->donor_phone,
+                    'email_date' => $donation->donor_email_date
                 ],
                 'date_time' => $donation->date_time_label,
                 'campaign_title' => $donation->campaign_title,

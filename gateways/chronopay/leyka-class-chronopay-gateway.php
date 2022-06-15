@@ -307,6 +307,8 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
             }
 
+            do_action('leyka_new_rebill_donation_added', $donation);
+
         } else if( // Single payment. For now, processing is just like initial rebills
             leyka_options()->opt('chronopay_card_product_id_'.$_POST['currency'])
             && $_POST['product_id'] == leyka_options()->opt('chronopay_card_product_id_'.$_POST['currency'])

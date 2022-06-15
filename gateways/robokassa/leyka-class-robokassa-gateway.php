@@ -216,6 +216,8 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
 
         curl_close($ch);
 
+        do_action('leyka_new_rebill_donation_added', $new_recurring_donation);
+
         return $new_recurring_donation;
 
     }

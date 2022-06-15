@@ -1088,4 +1088,15 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
     }
 
+
+    //TODO Vyacheslav - add code to function
+    public function update_recurring_subscription_status() {
+
+    }
+
+    //TODO Vyacheslav - add code to function
+    public function update_next_recurring_date() {
+
+    }
+
 }

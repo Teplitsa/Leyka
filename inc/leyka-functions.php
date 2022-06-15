@@ -566,6 +566,65 @@ function leyka_get_form_templates_list() {
 
 }
 
+function leyka_get_problematic_recurring_subscriptions_count() {
+
+    $query_params = [
+        'status' => 'funded',
+        'recurring_only_init' => true,
+        'recurring_subscription_status' => 'problematic',
+        'get_all' => true
+    ];
+
+    return Leyka_Donations::get_instance()->get_count($query_params);
+
+}
+
+function leyka_update_recurring_subscriptions_statuses($no_date_constraints=false) {
+
+    $query_params = [
+        'status' => 'funded',
+        'recurring_only_init' => true,
+        'get_all' => true
+    ];
+
+    if($no_date_constraints === false) {
+
+        $current_day = (int)date('j');
+        $max_days_in_month = (int)date('t');
+
+        $date_params[] = [
+            'day' => [
+                $current_day < 4 ? 1 : $current_day - 3,
+                $max_days_in_month < 31 && $current_day === $max_days_in_month ? 31 : $current_day
+            ],
+            'compare' => 'BETWEEN'
+        ];
+
+        $query_params['date_query'] =  $date_params;
+
+    }
+
+    $init_recurring_donations = Leyka_Donations::get_instance()->get($query_params);
+
+
+    foreach($init_recurring_donations as $init_recurring_donation) {
+
+        $gateway = leyka_get_gateway_by_id($init_recurring_donation->gateway_id);
+
+        if( !$gateway ) {
+            continue;
+        }
+
+        $init_recurring_donation->update_recurring_subscription_status();
+
+    }
+
+}
+
+function leyka_get_recurring_subscription_status_list() {
+    return Leyka::get_recurring_subscription_statuses();
+}
+
 
 /**
  * Get possible Donation status list as an array.

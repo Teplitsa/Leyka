@@ -1,0 +1,212 @@
+.leyka-admin-recurring-subscription-info {
+
+    .wp-heading-inline {
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 0px;
+        gap: 10px;
+        flex: none;
+        order: 1;
+        flex-grow: 0;
+        margin-top: 10px;
+
+        h1 {
+
+            font-style: normal;
+            font-weight: 400;
+            font-size: 24px;
+            line-height: 30px;
+            display: flex;
+            align-items: center;
+            color: #23282D;
+            flex: none;
+            order: 0;
+            flex-grow: 0;
+            padding: 0;
+
+        }
+
+        .leyka-subscription-status {
+
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            padding: 6px;
+            gap: 8px;
+            background: #E8F9E7;
+            border: 2px solid #1AA316;
+            border-radius: 6px;
+            font-style: normal;
+            font-weight: 600;
+            font-size: 12px;
+            line-height: 16px;
+            align-items: center;
+            text-align: center;
+            color: #1AA316;
+
+            &.leyka-subscription-problematic {
+
+                background: #F9EBEE;
+                border: 2px solid #CC1818;
+                color: #CC1818;
+
+            }
+
+            &.leyka-subscription-non-active {
+
+                background: #F9F9F9;
+                border: 2px solid #C4C4C4;
+                color: #586067;
+
+            }
+
+        }
+
+    }
+
+    #poststuff {
+
+        margin-top: 20px;
+        padding-top: 0;
+
+        #leyka_donation_data {
+
+            .leyka-subscription-error {
+
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 0px;
+                background: #F5DADF;
+                border-radius: 6px;
+                flex: none;
+                order: 0;
+                align-self: stretch;
+                flex-grow: 0;
+                z-index: 0;
+
+                .leyka-error-title {
+
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    padding: 12px;
+                    gap: 8px;
+                    flex: none;
+                    order: 0;
+                    align-self: stretch;
+                    flex-grow: 0;
+
+                    img {
+                        width: 20px;
+                        padding: 2.5px;
+                    }
+
+                    span {
+
+                        font-style: normal;
+                        font-weight: 500;
+                        font-size: 16px;
+                        line-height: 20px;
+                        display: flex;
+                        align-items: center;
+                        color: #23282D;
+
+                    }
+
+                }
+
+                .leyka-error-description-wrapper {
+
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    padding: 12px;
+                    gap: 4px;
+                    flex: none;
+                    order: 3;
+                    align-self: stretch;
+                    flex-grow: 0;
+                    border-top: 1px solid #F9EBEE;
+
+                    .leyka-error-description {
+
+                        font-style: normal;
+                        font-weight: 400;
+                        font-size: 14px;
+                        line-height: 18px;
+                        display: flex;
+                        align-items: center;
+                        color: #23282D;
+                        flex: none;
+                        align-self: stretch;
+                        flex-grow: 0;
+
+                    }
+
+                    .leyka-error-link {
+
+                        font-style: normal;
+                        font-weight: 600;
+                        font-size: 12px;
+                        line-height: 16px;
+                        color: #007CBA;
+
+                    }
+
+                }
+
+            }
+
+            .leyka-subscription-status {
+
+                display: flex;
+                flex-direction: row;
+                align-items: flex-start;
+                padding: 0px;
+                gap: 10px;
+                flex: none;
+                align-self: stretch;
+                flex-grow: 0;
+                z-index: 1;
+
+                input {
+                    margin: 0;
+                }
+
+                span {
+
+                    font-style: normal;
+                    font-weight: 500;
+                    font-size: 14px;
+                    line-height: 18px;
+                    display: flex;
+                    align-items: center;
+                    color: #23282D;
+                    flex: none;
+                    order: 0;
+                    flex-grow: 0;
+
+                }
+
+                img {
+                    width: 8px;
+                    flex: none;
+                    order: 1;
+                    align-self: stretch;
+                    flex-grow: 0;
+                    cursor: help;
+                }
+
+                &.leyka-subscription-non-active span {
+                    color: #8E8E8E;
+                }
+
+            }
+        }
+
+    }
+
+}

@@ -868,6 +868,8 @@ class Leyka extends Leyka_Singleton {
                     do_action("leyka_{$donation->gateway_id}_cancel_recurring_subscription_by_link", $donation);
                 }
 
+            } else if($request[0] === 'update_recurring_subscriptions') {
+                do_action('leyka_do_procedure', 'update-recurring-subscriptions');
             } else if($request[0] === 'do_campaigns_targets_reaching_mailout') {
 
                 // Campaigns target reached mailout shortcut URL:
@@ -887,9 +889,7 @@ class Leyka extends Leyka_Singleton {
 
                 do_action('leyka_do_procedure', $request[1], array_slice($request, 2));
 
-            }
-
-            else if($request[0] === 'get_usage_stats') {
+            } else if($request[0] === 'get_usage_stats') {
 
                 echo '';
 
@@ -1115,6 +1115,14 @@ class Leyka extends Leyka_Singleton {
 
     public function clear_session_errors() {
         $_SESSION['Leyka_Donations_Errors'] = [];
+    }
+
+    public static function get_recurring_subscription_statuses() {
+        return apply_filters('leyka_recurring_subscription_statuses', [
+            'active' => _x('Active', '"Active" recurring subscription status', 'leyka'),
+            'problematic' => _x('Problematic', '"Problematic" recurring subscription status', 'leyka'),
+            'non-active' => _x('Non-active', '"Non-active" recurring subscription status', 'leyka')
+        ]);
     }
 
     public static function get_donation_types() {

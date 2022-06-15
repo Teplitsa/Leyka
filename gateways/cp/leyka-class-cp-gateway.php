@@ -374,6 +374,8 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                         $donation->error_id = 'CP-7052'; // $donation->status will be set to "failed" automatically
                         $donation->add_gateway_response($_POST);
 
+                        do_action('leyka_new_rebill_donation_added', $donation);
+
                         // Emails will be sent only if respective options are on:
                         Leyka_Donation_Management::send_error_notifications($donation);
 
@@ -471,6 +473,10 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                     // Emails will be sent only if respective options are on:
                     Leyka_Donation_Management::send_error_notifications($donation);
 
+                }
+
+                if($donation->type === 'rebill') {
+                    do_action('leyka_new_rebill_donation_added', $donation);
                 }
 
                 die(json_encode(['code' => '0',])); // Payment completed / fail registered

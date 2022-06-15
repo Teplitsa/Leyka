@@ -519,6 +519,53 @@ class Leyka_Donations_Posts extends Leyka_Donations {
                 ['key' => 'leyka_donor_subscribed', 'compare' => 'NOT EXISTS'];
         }
 
+        if( !empty($params['recurring_subscription_status']) ) {
+
+            if($params['recurring_subscription_status'] === 'active') {
+
+                $params['meta'][] = [
+                    'relation' => 'OR',
+                    [
+                        'key' => 'leyka_recurring_subscription_status',
+                        'compare' => 'NOT EXISTS'
+                    ],
+                    [
+                        'key' => 'leyka_recurring_subscription_status',
+                        'value' => 'active'
+                    ]
+                ];
+                $params['meta'][] = [
+                    ['key' => '_rebilling_is_active', 'value' => true]
+                ];
+
+            } else if($params['recurring_subscription_status'] === 'non-active') {
+
+                $params['meta'][] = [
+                    'relation' => 'OR',
+                    [
+                        'key' => 'leyka_recurring_subscription_status',
+                        'compare' => 'NOT EXISTS'
+                    ],
+                    [
+                        'key' => 'leyka_recurring_subscription_status',
+                        'value' => 'non-active'
+                    ]
+                ];
+                $params['meta'][] = [
+                    ['key' => '_rebilling_is_active', 'value' => false]
+                ];
+
+            } else {
+                $params['meta'][] = [
+                    'key' => 'leyka_recurring_subscription_status',
+                    'value' => $params['recurring_subscription_status'],
+                    'compare' => 'IN'
+                ];
+            }
+
+
+        }
+
         if(count($params['meta'])) {
 
             if( empty($params['meta']['relation']) || !in_array($params['meta']['relation'], ['AND', 'OR']) ) {

@@ -73,6 +73,11 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 $donation_meta_fields['leyka_recurring_cancel_reason'] = $params['recurring_cancel_reason'];
             }
 
+            $donation_meta_fields['leyka_recurring_subscription_status'] = 'non-active';
+
+            $donation_meta_fields['leyka_recurring_subscription_error_id'] = false;
+
+
         }
 
         if($params['donor_subscribed']) {
@@ -258,6 +263,13 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                     $meta['leyka_cancel_recurring_requested'][0] : false,
                 'leyka_recurring_cancel_reason' => isset($meta['leyka_recurring_cancel_reason']) ?
                     $meta['leyka_recurring_cancel_reason'][0] : '',
+
+                'leyka_recurring_subscription_status' => isset($meta['leyka_recurring_subscription_status']) ?
+                    $meta['leyka_recurring_subscription_status'][0] :  (!empty($meta['_rebilling_is_active'][0]) ? 'active' : 'non-active'),
+                'leyka_recurring_subscription_error_id' => isset($meta['leyka_recurring_subscription_error_id']) ?
+                    $meta['leyka_recurring_subscription_error_id'][0] : false,
+                'leyka_next_recurring_date_timestamp'=> isset($meta['leyka_next_recurring_date_timestamp']) ?
+                    $meta['leyka_next_recurring_date_timestamp'][0] :  false,
 
                 // For web-analytics services:
                 'leyka_ga_client_id' => empty($meta['leyka_ga_client_id'][0]) ? false : $meta['leyka_ga_client_id'][0],
@@ -698,6 +710,29 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 $value = $this->payment_type === 'rebill' ? $this->_donation_meta['leyka_recurring_cancel_reason'] : false;
                 break;
 
+            case 'recurring_subscription_status':
+
+                $init_donation = $this->is_init_recurring_donation ? $this : $this->init_recurring_donation;
+                $value = !empty($init_donation->_donation_meta['leyka_recurring_subscription_status']) ?
+                    $init_donation->_donation_meta['leyka_recurring_subscription_status'] :
+                    ($this->recurring_on ? 'active' : 'non-active');
+                break;
+
+            case 'recurring_subscription_error_id':
+
+                $init_donation = $this->is_init_recurring_donation ? $this : $this->init_recurring_donation;
+                $value = $init_donation->_donation_meta['leyka_recurring_subscription_error_id'];
+                break;
+
+            case 'next_recurring_date_timestamp':
+
+                $init_donation = $this->is_init_recurring_donation ? $this : $this->init_recurring_donation;
+
+                $value = !empty($init_donation->_donation_meta['leyka_next_recurring_date_timestamp']) ?
+                    $init_donation->_donation_meta['leyka_next_recurring_date_timestamp'] :
+                    $init_donation->update_next_recurring_date();
+                break;
+
             case 'ga_client_id':
             case 'gua_client_id':
 
@@ -1051,6 +1086,54 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 $this->set_meta('leyka_recurring_cancel_reason', trim($value));
                 break;
 
+            case 'recurring_subscription_status':
+
+                if($this->type !== 'rebill') {
+                    return false;
+                }
+
+                $init_recurring_donation = $this->is_init_recurring_donation ? $this : $this->init_recurring_donation;
+
+                if( !$init_recurring_donation ) {
+                    return false;
+                }
+
+                $init_recurring_donation->set_meta('leyka_recurring_subscription_status', $value);
+
+                break;
+
+            case 'recurring_subscription_error_id':
+
+                if($this->type !== 'rebill') {
+                    return false;
+                }
+
+                $init_recurring_donation = $this->is_init_recurring_donation ? $this : $this->init_recurring_donation;
+
+                if( !$init_recurring_donation ) {
+                    return false;
+                }
+
+                $init_recurring_donation->set_meta('leyka_recurring_subscription_error_id', $value);
+
+                break;
+
+            case 'next_recurring_date_timestamp':
+
+                if($this->type !== 'rebill') {
+                    return false;
+                }
+
+                $init_recurring_donation = $this->is_init_recurring_donation ? $this : $this->init_recurring_donation;
+
+                if( !$init_recurring_donation ) {
+                    return false;
+                }
+
+                $init_recurring_donation->set_meta('leyka_next_recurring_date_timestamp', $value);
+
+                break;
+
             case 'ga_client_id':
             case 'gua_client_id':
                 $this->set_meta('leyka_ga_client_id', trim($value));
@@ -1100,6 +1183,91 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
         }
 
         return $init_recurring_donation->set_meta('leyka_recurring_funded_rebills_number', $rebills_number);
+
+    }
+
+    // TODO Vyacheslav - consider adding a new "last_subscription_rebill" meta field to remove the parameter from this function
+    public function update_recurring_subscription_status($is_new_rebill = false) {
+
+        if($this->payment_type !== 'rebill') {
+            return;
+        }
+
+        $init_donation = $this->is_init_recurring_donation ? $this : $this->init_recurring_donation;
+
+        if( !$init_donation->recurring_is_active ) {
+
+            $init_donation->recurring_subscription_status = 'non-active';
+            $init_donation->recurring_subscription_error_id = false;
+            $init_donation->leyka_next_recurring_date = false;
+
+            return;
+
+        }
+
+        if($is_new_rebill && date('n', $this->date_timestamp) === date('n')) {
+            $rebill_this_month = $this;
+        } else {
+
+            $payment_day = (int)date('j', $init_donation->date_timestamp);
+            $date_params = [
+                'relation' => 'AND',
+                [
+                    'day' => [
+                        $payment_day,
+                        min($payment_day+3, 31)
+                    ],
+                    'compare' => 'BETWEEN'
+                ],
+                ['month' => (int)date('n')],
+                ['year' => (int)date('Y')]
+            ];
+
+            $rebill_this_month = Leyka_Donations::get_instance()->get([
+                'init_recurring_donation_id' => $init_donation->id,
+                'get_single' => true,
+                'date_query' => $date_params,
+                'orderby' => ['date_timestamp' => 'DESC']
+            ]);
+
+        }
+
+        if(!$rebill_this_month) {
+
+            $init_donation->recurring_subscription_status = 'problematic';
+            $init_donation->recurring_subscription_error_id = 'L-2001';
+
+        } else if($rebill_this_month->status === 'failed') {
+
+            $init_donation->recurring_subscription_status = 'problematic';
+            $init_donation->recurring_subscription_error_id = $rebill_this_month->error->id;
+
+        } else if($rebill_this_month->status === 'funded') {
+
+            $init_donation->recurring_subscription_status = 'active';
+            $init_donation->recurring_subscription_error_id = false;
+
+        }
+
+        $init_donation->update_next_recurring_date();
+
+    }
+
+    public function update_next_recurring_date() {
+
+        $init_donation = Leyka_Donations::get_instance()->get($this->init_recurring_donation_id);
+
+        if($init_donation->recurring_on && $init_donation->recurring_subscription_status !== 'non-active') {
+
+            $payment_day = min(date('t', strtotime('+1 month')), date('d', $init_donation->date_timestamp));
+            $next_payment_date = strtotime(date('Y').'-'.date('m').'-'.$payment_day.' +1 month');
+            $init_donation->next_recurring_date_timestamp = $next_payment_date;
+
+            return $next_payment_date;
+
+        }
+
+        return false;
 
     }
 

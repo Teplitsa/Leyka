@@ -277,6 +277,10 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
             Leyka_Donation_Management::send_error_notifications($donation);
         }
 
+        if($donation->type === 'rebill') {
+            do_action('leyka_new_rebill_donation_added', $donation);
+        }
+
         if( // GUA direct integration - "purchase" event:
             $donation->status === 'funded'
             && leyka_options()->opt('use_gtm_ua_integration') === 'enchanced_ua_only'

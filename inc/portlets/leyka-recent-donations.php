@@ -16,11 +16,11 @@ $data = Leyka_Recent_Donations_Portlet_Controller::get_instance()->get_template_
         <tr>
             <th class="donation-id"><?php _e('ID', 'leyka');?></th>
             <th class="donation-type"><?php _e('Type', 'leyka');?></th>
-            <th class="donation-campaign"><?php _e('Campaign', 'leyka');?></th>
             <th class="donation-donor"><?php _e('Donor', 'leyka');?></th>
             <th class="donation-date"><?php _e('Date', 'leyka');?></th>
             <th class="donation-amount-status"><?php _e('Sum', 'leyka');?></th>
             <th class="donation-gateway-pm"><?php _e('Method', 'leyka');?></th>
+            <th class="donation-donor-email-status"><?php _e('Message', 'leyka');?></th>
         </tr>
     </thead>
     <tbody>
@@ -33,17 +33,6 @@ $data = Leyka_Recent_Donations_Portlet_Controller::get_instance()->get_template_
             </td>
             <td class="donation-type">
                 <img class="has-tooltip" src="<?php echo LEYKA_PLUGIN_BASE_URL . 'img/dashboard/icon-donation-type-'.$donation['donation_type']['id'].'.svg';?>" alt="" title="<?php echo $donation['donation_type']['label'] ?>">
-            </td>
-            <td class="donation-campaign">
-                <div class="campaign">
-                    <a href="<?php echo get_edit_post_link($donation['campaign_id']); ?>">
-                        <?php if(strlen($donation['campaign_title']) > 30) {
-                            echo mb_substr($donation['campaign_title'], 0, 30).' ...';
-                        } else {
-                            echo $donation['campaign_title'];
-                        } ?>
-                    </a>
-                </div>
             </td>
             <td class="donation-donor">
 
@@ -71,9 +60,28 @@ $data = Leyka_Recent_Donations_Portlet_Controller::get_instance()->get_template_
                     </div>
                 </div>
             </td>
-            <td class="donation-gateway-pm">
+            <td class="donation-gateway-pm has-tooltip leyka-tooltip-align-left" title='<?php echo $donation['gateway']['label'].' / '.$donation['payment_method']['category_label']; ?>'>
                 <span class="donation-gateway"><img src="<?php echo $donation['gateway']['icon'] ?>" alt="<?php echo $donation['gateway']['label'] ?>"></span>
                 <span class="donation-pm"><img src="<?php echo $donation['payment_method']['category_icon']; ?>" alt="<?php echo $donation['payment_method']['category_label'] ?>"></span>
+            </td>
+            <td class="donation-donor-email-status">
+
+                <?php if($donation['donor']['email_date']) {?>
+
+                <div class="donor has-thanks " title='".$gateway_label.' / '.$pm_label."'>
+                    <span class="donation-email-status"><?php echo __('Sent', 'leyka');?></span>
+                    <span class="donation-email-date"><?php echo date(get_option('date_format'), $donation['donor']['email_date']);?></span>
+                </div>
+
+                <?php } else {?>
+
+                <div class="donor no-thanks" data-donation-id="<?php echo $donation['id'];?>" data-nonce="<?php echo wp_create_nonce('leyka_donor_email');?>">
+                    <span class="donation-email-status"><?php echo __("Not sent", 'leyka'); ?></span>
+                    <span class="donation-email-action send-donor-thanks"><?php echo __('Send it now', 'leyka'); ?></span>
+                </div>
+
+                <?php } ?>
+
             </td>
         </tr>
         <?php }

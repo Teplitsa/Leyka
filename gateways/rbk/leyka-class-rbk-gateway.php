@@ -309,6 +309,10 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
         }
         // GUA direct integration - "purchase" event END
 
+        if($donation->type === 'rebill') {
+            do_action('leyka_new_rebill_donation_added', $donation);
+        }
+
         return $donation->add_gateway_response($data_to_log);
 
     }

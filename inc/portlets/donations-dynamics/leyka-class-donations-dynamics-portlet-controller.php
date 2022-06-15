@@ -97,6 +97,7 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
                 $amount = $wpdb->get_var($query);
 
                 $result[] = ['x' => date('d.m.Y', strtotime($sub_interval_end_date)), 'y' => $amount,];
+
                 if($sub_interval === 'month') {
                     $labels[] = date('m.y', strtotime($sub_interval_end_date));
                 } else if($sub_interval === 'week') {
