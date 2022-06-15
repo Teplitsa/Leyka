@@ -83,6 +83,8 @@ function leyka_handle_plugin_update() {
         return;
     }
 
+    global $wpdb;
+
     leyka_create_separate_donations_db_tables(); // Create plugin-specific DB tables if needed
 
     if($leyka_last_ver && version_compare($leyka_last_ver, '3.8.0.1', '<=')) { // CP IPs list fix
@@ -96,8 +98,6 @@ function leyka_handle_plugin_update() {
     }
 
     if($leyka_last_ver && version_compare($leyka_last_ver, '3.20.0.1', '<=')) {
-
-        global $wpdb;
 
         // Old (rur) to new (rub) currency ID transition:
         if(Leyka_Options_Controller::get_option_value('currency_main') == 'rur') {
@@ -249,6 +249,13 @@ function leyka_handle_plugin_update() {
 
     // Set a flag to flush permalinks (needs to be done a bit later than this activation itself):
     update_option('leyka_permalinks_flushed', 0);
+
+
+    // Clear dashboard portlets cache
+    // TODO Vyacheslav - add code to the 'separate' donations storage case
+    $wpdb->get_results(
+        "DELETE FROM `{$wpdb->prefix}options` WHERE option_name LIKE '%transient_timeout_leyka_stats_donations%' OR option_name LIKE '%transient_leyka_stats_donations%'",
+        'ARRAY_A');
 
     if( !$leyka_last_ver ) {
         update_option('leyka_init_wizard_redirect', true);

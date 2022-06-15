@@ -1612,9 +1612,9 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         <div class="leyka-subscription-status leyka-subscription-<?php echo $donation->recurring_subscription_status; ?>">
 
-            <input type="checkbox" checked="true" disabled="true">
+            <input type="checkbox" <?php echo $donation->recurring_is_active ? 'checked="true"' : ''; ?> disabled="true">
             <span><?php _e('Subscription is active', 'leyka'); ?></span>
-            <img src="<?php echo LEYKA_PLUGIN_BASE_URL; ?>/img/icon-info.svg">
+            <img class="has-tooltip leyka-tooltip-align-left" src="<?php echo LEYKA_PLUGIN_BASE_URL; ?>/img/icon-info.svg" title="<?php _e('Subscription status is managed by the payment operator. You can disable the subscription in your personal account or by contacting the support of the payment operator.','leyka') ?>">
 
         </div>
 

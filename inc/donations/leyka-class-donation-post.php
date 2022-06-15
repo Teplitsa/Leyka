@@ -1224,7 +1224,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             ];
 
             $rebill_this_month = Leyka_Donations::get_instance()->get([
-                'init_recurring_donation_id' => $init_donation->id,
+                'recurring_rebills_of' => $init_donation->id,
                 'get_single' => true,
                 'date_query' => $date_params,
                 'orderby' => ['date_timestamp' => 'DESC']
@@ -1260,7 +1260,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
         if($init_donation->recurring_on && $init_donation->recurring_subscription_status !== 'non-active') {
 
             $payment_day = min(date('t', strtotime('+1 month')), date('d', $init_donation->date_timestamp));
-            $next_payment_date = strtotime(date('Y').'-'.date('m').'-'.$payment_day.' +1 month');
+            $next_payment_date = strtotime(date('Y').'-'.date('m').'-'.$payment_day.(date('d') < $payment_day ? '' : ' +1 month'));
             $init_donation->next_recurring_date_timestamp = $next_payment_date;
 
             return $next_payment_date;

@@ -20,7 +20,7 @@ try {
 
 <div class="wrap" data-leyka-admin-page-type="recurring-subscription-info"> <!-- leyka-admin wrap single-settings donation-info -->
 
-    <a href="<?php echo admin_url('/admin.php?page=leyka_donations');?>" class="back-to-list-link">
+    <a href="<?php echo admin_url('/admin.php?page=leyka_recurring_subscriptions');?>" class="back-to-list-link">
         <?php _e('Back to the list', 'leyka');?>
     </a>
     <br class="clear">
@@ -28,7 +28,7 @@ try {
     <div class="wp-heading-inline">
         <h1><?php _e('Subscription profile', 'leyka');?></h1>
         <div class="leyka-subscription-status leyka-subscription-<?php echo $donation->recurring_subscription_status; ?>">
-            <?php _e(ucfirst($donation->recurring_subscription_status), 'leyka');?>
+            <?php _ex(ucfirst($donation->recurring_subscription_status),'Subscription details page: subscription status in header', 'leyka');?>
         </div>
     </div>
 
