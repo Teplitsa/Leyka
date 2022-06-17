@@ -1618,36 +1618,45 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         </div>
 
-        <?php if($donation->next_recurring_date_timestamp) { ?>
+        <fieldset class="leyka-set general">
 
-            <fieldset class="leyka-set general">
+            <legend class="leyka-visibility-control-button" data-visibility-control-target="#leyka_donation_data .leyka-set.general .leyka-content-wrapper"><?php _e('General data', 'leyka');?></legend>
 
-                <legend class="leyka-visibility-control-button" data-visibility-control-target="#leyka_donation_data .leyka-set.general .leyka-content-wrapper"><?php _e('General data', 'leyka');?></legend>
+            <div class="leyka-content-wrapper">
 
-                <div class="leyka-content-wrapper">
+                <div class="leyka-ddata-string">
 
-                    <?php if($donation->next_recurring_date_timestamp) {?>
+                    <label><?php _e('Initial payment date', 'leyka');?>:</label>
+                    <div class="leyka-ddata-field">
 
-                        <div class="leyka-ddata-string">
+                            <span class="text-line">
+                                <span class="initial-recurrent-date"><?php echo date('d.m.Y', $donation->date_timestamp);?></span>
+                            </span>
 
-                            <label><?php _e('Next payment date', 'leyka');?>:</label>
-                            <div class="leyka-ddata-field">
-
-                                <span class="text-line">
-                                    <span class="next-recurrent-date"><?php echo date('d.m.Y', $donation->next_recurring_date_timestamp);?></span>
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                    <?php } ?>
+                    </div>
 
                 </div>
 
-            </fieldset>
+                <?php if($donation->next_recurring_date_timestamp) {?>
 
-        <?php } ?>
+                    <div class="leyka-ddata-string">
+
+                        <label><?php _e('Next payment date', 'leyka');?>:</label>
+                        <div class="leyka-ddata-field">
+
+                            <span class="text-line">
+                                <span class="next-recurrent-date"><?php echo date('d.m.Y', $donation->next_recurring_date_timestamp);?></span>
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                <?php } ?>
+
+            </div>
+
+        </fieldset>
 
         <fieldset class="leyka-set campaign">
 
@@ -1973,19 +1982,9 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                     <td><?php _e('Date', 'leyka');?></td>
                     <td><?php _e('Amount', 'leyka');?></td>
                     <td><?php _e('Payment method', 'leyka');?></td>
+                    <td><?php _e('Message', 'leyka');?></td>
                 </tr>
             </thead>
-
-            <tfoot>
-                <tr>
-                    <td><?php _e('ID', 'leyka');?></td>
-                    <td><?php _e('Type', 'leyka');?></td>
-                    <td><?php _e('Donor', 'leyka');?></td>
-                    <td><?php _e('Date', 'leyka');?></td>
-                    <td><?php _e('Amount', 'leyka');?></td>
-                    <td><?php _e('Payment method', 'leyka');?></td>
-                </tr>
-            </tfoot>
 
             <tbody><?php // All table data will be received via AJAX ?></tbody>
 

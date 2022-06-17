@@ -540,6 +540,48 @@
 
                 }
 
+                &.column-donor_message {
+
+                    width: 90px;
+
+                    .donor {
+
+                        display: inline-flex;
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 2px;
+                        font-weight: 600;
+                        font-size: 12px;
+                        line-height: 16px;
+                        color: #23282D;
+
+                        &.no-thanks .donation-email-status {
+                            color: #8E8E8E;
+                        }
+
+                        .donation-email-date {
+
+                            font-weight: 500;
+                            font-size: 10px;
+                            line-height: 16px;
+
+                        }
+
+                        .donation-email-action {
+
+                            font-weight: 500;
+                            font-size: 10px;
+                            line-height: 16px;
+                            color: #007CBA;
+                            cursor: pointer;
+
+                        }
+
+                    }
+
+                }
+
+
             }
 
             tfoot {

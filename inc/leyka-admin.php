@@ -1386,6 +1386,10 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             'paginate_last' => __('Last', 'leyka'),
             'aria_sortAsc' => __(': activate to sort column ascending', 'leyka'),
             'aria_sortDesc' => __(': activate to sort column descending', 'leyka'),
+            'toPayment' => __('To payment', 'leyka'),
+            'sent' => __('Sent', 'leyka'),
+            'notSent' => __('Not sent', 'leyka'),
+            'sendItNow' => __('Send it now', 'leyka')
         ]);
 
         return 'jquery-dataTables';

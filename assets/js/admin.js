@@ -4425,8 +4425,8 @@ jQuery(document).ready(function($){
                 data: function(data){
                     data.action = 'leyka_get_recurring_subscription_donations';
                     data.recurring_subscription_id = $data_table.data('init-recurring-donation-id');
-                    data.length = 5,
-                        data.draw = 5
+                    data.length = 5;
+                    data.draw = 5;
                 }
             },
 
@@ -4435,9 +4435,13 @@ jQuery(document).ready(function($){
                     data: 'donation_id',
                     className: 'column-id column-donation_id',
                     render: function(donation_id){
-                        return '<a href="'+leyka.admin_url+'admin.php?page=leyka_donation_info&donation='+donation_id+'" target="_blank">'
-                            +donation_id
-                            +'</a>';
+                        return '<div>' +
+                            '<div>'+donation_id+'</div>' +
+                            '<a href="'+leyka.admin_url+'admin.php?page=leyka_donation_info&donation='+donation_id+'" target="_blank">'
+                            +leyka_dt.toPayment
+                            +'</a>'
+                            +'</div>';
+
                     },
                 },
                 {
@@ -4512,6 +4516,23 @@ jQuery(document).ready(function($){
 
                     }
                 },
+                {
+                    data: 'donor',
+                    className: 'column-donor_message',
+                    render: function(donor, donation_id) {
+                        if(donor.email_date !== '') {
+                            return '<div class="donor has-thanks">'+
+                                '<span class="donation-email-status">'+leyka_dt.sent+'</span>'+
+                                '<span class="donation-email-date">'+donor.email_date+'</span>'+
+                            '</div>';
+                        } else {
+                            return '<div className="donor no-thanks" data-donation-id="'+donation_id+'" data-nonce="'+donor.wp_nonce+'">'+
+                                '<span className="donation-email-status">'+leyka_dt.notSent+'</span>'+
+                                '<span className="donation-email-action send-donor-thanks">'+leyka_dt.sendItNow+'</span>'+
+                            '</div>';
+                        }
+                    }
+                }
             ],
 
             rowCallback: function(row, data){ // After the data loaded from server, but before row is rendered in the table

@@ -1222,6 +1222,9 @@ function leyka_admin_get_recurring_subscription_donations(){
                 'name' => $donation->donor_name,
                 'email' => $donation->donor_email,
                 'id' => leyka_options()->opt('donor_management_available') && $donation->donor_id ? $donation->donor_id : 0,
+                'email_sent' => (bool)$donation->donor_email_date,
+                'email_date' => $donation->donor_email_date ? date('d.m.Y', $donation->donor_email_date) : '',
+                'wp_nonce' => wp_create_nonce('leyka_donor_email')
             ],
             'date' => [
                 'date_label' => $donation->date_label,
