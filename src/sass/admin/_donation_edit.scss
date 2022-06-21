@@ -239,6 +239,84 @@
 
     }
 
+    &.leyka-donation-add #leyka_donation_data {
+
+        .leyka-set {
+
+            margin: 20px 0 8px;
+
+            legend {
+
+                display: block;
+                width: 98%;
+                color: #666;
+                font-size: 1em;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                margin-bottom: 0.5em;
+                border-bottom: 1px solid #eee;
+                padding-bottom: 2px;
+
+                &:after {
+                    content: none;
+                }
+
+            }
+
+            .leyka-ddata-string {
+
+                margin: 5px 0;
+                float: left;
+                width: 100%;
+
+                label {
+
+                    font-weight: bold;
+                    float: left;
+                    width: 20%;
+                    text-align: right;
+                    line-height: 27px;
+
+                }
+
+                .leyka-ddata-field {
+
+                    float: left;
+                    width: 78%;
+                    margin-left: 2%;
+
+                    input, textarea {
+
+                        width: 98%;
+                        max-width: 700px;
+
+                    }
+
+                    .text-line {
+
+                        display: inline-block;
+                        -webkit-box-sizing: border-box;
+                        box-sizing: border-box;
+                        width: 98%;
+                        max-width: 700px;
+                        border-bottom: 1px dashed #ddd;
+                        padding: 3px 5px;
+                        line-height: 20px;
+                        min-height: 27px;
+
+                    }
+
+                    #donation-amount, #donation-amount-total, #new-donation-amount {
+                        max-width: 320px;
+                    }
+
+                }
+
+            }
+        }
+
+    }
+
     #leyka_donation_emails_status {
 
         .leyka-ddata-string {
@@ -418,6 +496,7 @@
             border-bottom: 1px solid #ddd;
             margin: 0 -12px;
             padding: 5px 12px;
+            width: 100%;
 
             div {
                 float: left;
@@ -481,7 +560,6 @@
 
     }
     // Donation gateway response - Donation error details - END
-
 
     .dataTables_wrapper {
 
@@ -591,7 +669,5 @@
         }
 
     }
-
-
 
 }

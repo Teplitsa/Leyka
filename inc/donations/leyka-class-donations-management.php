@@ -76,7 +76,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         });
 
-        add_action('leyka_donation_recurring_activity_changed', function($donation_id, $is_active){
+        add_action('leyka_donation_recurring_activity_changed', function($donation_id){
 
             $donation = Leyka_Donations::get_instance()->get($donation_id);
 
@@ -1581,6 +1581,10 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
+        $gateway = leyka_get_gateway_by_id($donation->gateway);
+        $gateway_reflection = new ReflectionClass(get_class($gateway));
+        $subscription_checkbox_is_interactive = $gateway_reflection->getMethod('do_recurring_donation')->class == get_class($gateway);
+
         if($donation->recurring_subscription_status === 'problematic' && $donation->recurring_subscription_error_id !== false){?>
 
             <div class="leyka-subscription-error">
@@ -1610,11 +1614,13 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         <?php } ?>
 
-        <div class="leyka-subscription-status leyka-subscription-<?php echo $donation->recurring_subscription_status; ?>">
+        <div class="leyka-subscription-status leyka-subscription-<?php echo $donation->recurring_subscription_status; ?> recurring-is-active-field">
 
-            <input type="checkbox" <?php echo $donation->recurring_is_active ? 'checked="true"' : ''; ?> disabled="true">
+            <input type="checkbox" id="<?php echo $gateway->id; ?>-recurring-is-active" name="<?php echo $gateway->id; ?>-recurring-is-active" <?php echo $donation->recurring_is_active ? 'checked="true"' : ''; echo $subscription_checkbox_is_interactive ? '' : 'disabled="true"' ?> data-donation-id="<?php echo $donation_id; ?>">
             <span><?php _e('Subscription is active', 'leyka'); ?></span>
-            <img class="has-tooltip leyka-tooltip-align-left" src="<?php echo LEYKA_PLUGIN_BASE_URL; ?>/img/icon-info.svg" title="<?php _e('Subscription status is managed by the payment operator. You can disable the subscription in your personal account or by contacting the support of the payment operator.','leyka') ?>">
+            <?php if($subscription_checkbox_is_interactive === false) { ?>
+                <img class="has-tooltip leyka-tooltip-align-left" src="<?php echo LEYKA_PLUGIN_BASE_URL; ?>/img/icon-info.svg" title="<?php _e('Subscription status is managed by the payment operator. You can disable the subscription in your personal account or by contacting the support of the payment operator.','leyka') ?>">
+            <?php } ?>
 
         </div>
 
@@ -1905,7 +1911,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             <div class="leyka-ddata-string donor has-thanks">
                 <label>
                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/admin-boxes/email-action-blue.svg" alt="email-action">
-                    <span><?php echo __('Donation managers notifications has been sended', 'leyka');?></span>
+                    <span><?php echo __("Donation managers' notifications have been sent", 'leyka');?></span>
                 </label>
                 <div class="leyka-ddata-field"><?php echo date(get_option('date_format').' H:i', $manager_notification_date);?></div>
             </div>
@@ -1913,7 +1919,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             <div class="leyka-ddata-string donor no-thanks" data-donation-id="<?php echo $donation->id;?>" data-nonce="<?php echo wp_create_nonce('leyka_donor_email');?>">
                 <label>
                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/admin-boxes/email-action-gray.svg" alt="email-action">
-                    <span><?php echo __("Donation managers' notification emails hasn't been sent", 'leyka'); ?></span>
+                    <span><?php echo __("Donation managers' notification emails haven't been sent", 'leyka'); ?></span>
                 </label>
             </div>
         <?php }

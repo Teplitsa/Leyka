@@ -445,9 +445,9 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
 
         $donation = Leyka_Donations::get_instance()->get_donation($item['id']);
 
-        if($donation->status === 'failed') {
+        /* if($donation->status === 'failed') {
 
-            $error = $donation->error; /** @var $error Leyka_Donation_Error */
+            $error = $donation->error;
             $error = is_a($error, 'Leyka_Donation_Error') ?
                 $error : Leyka_Donations_Errors::get_instance()->get_error_by_id(false);
 
@@ -459,7 +459,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
 
         } else {
             $tooltip_content = '<strong>'.$donation->status_label.':</strong> '.mb_lcfirst($donation->status_description);
-        }
+        } */
 
         $column_content = '<span class="leyka-amount '.apply_filters('leyka_admin_recurring_subscription_amount_column_css', ($donation->amount < 0.0 ? 'leyka-amount-negative' : '')).'">'
             .'<span class="leyka-amount-and-status">'
@@ -467,7 +467,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
             .$amount
             .'</div>'
             .'</span>'
-            .'<div class="leyka-donation-status-label label-'.$donation->status.' has-tooltip leyka-tooltip-align-left leyka-tooltip-on-click" title="">'
+            /* .'<div class="leyka-donation-status-label label-'.$donation->status.' has-tooltip leyka-tooltip-align-left leyka-tooltip-on-click" title="">'
             .__(Leyka::get_donation_status_info($donation->status, 'short_label'), 'leyka')
             .'</div>'
             .'<span class="leyka-tooltip-content">'
@@ -477,7 +477,8 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
                 $item
             )
             .'</span>'
-            .'</span>';
+            .'</span>' */
+            ;
 
         return apply_filters('leyka_admin_recurring_subscription_amount_column_content', $column_content, $donation);
 
@@ -549,10 +550,10 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
 
                 <div class="admin-list-filters leyka-filter-buttons">
 
-                        <a class="leyka-filter-button leyka-subscriptions-all <?php echo !$filter_value ? 'leyka-active' : ''; ?>" href="?<?php echo $other_filters_values_string; ?>"><?php echo __('All subscriptions', 'leyka').'('.$subscriptions_stats['all'].')';?></a>
-                        <a class="leyka-filter-button leyka-subscriptions-active <?php echo $filter_value == 'active' ? 'leyka-active' : '';?>" href="?<?php echo $other_filters_values_string; ?>&recurring_subscription_status=active"><?php echo __('Only active', 'leyka').'('.$subscriptions_stats['active'].')';?></a>
-                        <a class="leyka-filter-button leyka-subscriptions-problematic <?php echo $filter_value == 'problematic' ? 'leyka-active' : '';?>" href="?<?php echo $other_filters_values_string; ?>&recurring_subscription_status=problematic"><?php echo __('Problematic', 'leyka').'('.$subscriptions_stats['problematic'].')';?></a>
-                        <a class="leyka-filter-button leyka-subscriptions-non-active <?php echo $filter_value == 'non-active' ? 'leyka-active' : '';?>" href="?<?php echo $other_filters_values_string; ?>&recurring_subscription_status=non-active"><?php echo __('Only not active', 'leyka').'('.$subscriptions_stats['non-active'].')';?></a>
+                        <a class="leyka-filter-button leyka-subscriptions-all <?php echo !$filter_value ? 'leyka-active' : ''; ?>" href="?<?php echo $other_filters_values_string; ?>"><?php echo __('All subscriptions', 'leyka').' ('.$subscriptions_stats['all'].')';?></a>
+                        <a class="leyka-filter-button leyka-subscriptions-active <?php echo $filter_value == 'active' ? 'leyka-active' : '';?>" href="?<?php echo $other_filters_values_string; ?>&recurring_subscription_status=active"><?php echo __('Only active', 'leyka').' ('.$subscriptions_stats['active'].')';?></a>
+                        <a class="leyka-filter-button leyka-subscriptions-problematic <?php echo $filter_value == 'problematic' ? 'leyka-active' : '';?>" href="?<?php echo $other_filters_values_string; ?>&recurring_subscription_status=problematic"><?php echo __('Problematic', 'leyka').' ('.$subscriptions_stats['problematic'].')';?></a>
+                        <a class="leyka-filter-button leyka-subscriptions-non-active <?php echo $filter_value == 'non-active' ? 'leyka-active' : '';?>" href="?<?php echo $other_filters_values_string; ?>&recurring_subscription_status=non-active"><?php echo __('Only not active', 'leyka').' ('.$subscriptions_stats['non-active'].')';?></a>
 
                 </div><?php
 

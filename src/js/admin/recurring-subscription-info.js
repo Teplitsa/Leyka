@@ -1,6 +1,8 @@
 /** Admin JS - Recurring Subscription Info page **/
 jQuery(document).ready(function($){
 
+    LeykaStateControl.initVisibilityControlButtons();
+
     // Recurring subscriptions Donations list data table:
     let $data_table = $('.leyka-data-table.recurring-subscription-donations-table');
 
@@ -167,6 +169,23 @@ jQuery(document).ready(function($){
 
     }
 
-    LeykaDOMControl.initVisibilityControlButtons();
+    $('.leyka-subscription-status.recurring-is-active-field input[type="checkbox"]').on('change', function() {
+
+        $.post(
+            ajaxurl,
+            {
+                name: 'action',
+                action: 'leyka_cancel_recurring_by_manager',
+                donation_id: $(this).data('donation-id'),
+                state: $(this).is(':checked')
+            },
+            null,
+            'json'
+        ).done(function(response){
+            if(response.status==='ok') {
+                location.reload();
+            }
+        });
+    })
 
 });

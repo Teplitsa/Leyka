@@ -9556,11 +9556,11 @@ msgid "No gateway response has been received"
 msgstr "Ответа от платёжного оператора не получено"
 
 #: inc/donations/leyka-class-donations-management.php:1633
-msgid "Donation managers' notification emails hasn't been sent"
+msgid "Donation managers' notification emails haven't been sent"
 msgstr "Уведомления менеджерам пожертвования не отправлялись"
 
 #: inc/donations/leyka-class-donations-management.php:1631
-msgid "Donation managers notifications has been sended (at %s)"
+msgid "Donation managers notifications have been sent (at %s)"
 msgstr "Уведомления менеджерам пожертвований отправлены (%s)"
 
 #: inc/donations/leyka-class-donations-management.php:1623

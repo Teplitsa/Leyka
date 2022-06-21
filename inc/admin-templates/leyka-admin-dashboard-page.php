@@ -13,7 +13,7 @@
 
             <div class="leyka-content-wrapper">
                 <img src="<?php echo LEYKA_PLUGIN_BASE_URL; ?>img/dashboard/icon-alert-circle.svg" />
-                <span><?php echo __('Problematic subscriptions.', 'leyka'); ?></span>
+                <span><?php echo __('Problematic subscriptions found.', 'leyka'); ?></span>
                 <a href="<?php echo admin_url('admin.php?page=leyka_recurring_subscriptions&recurring_subscription_status=problematic') ?>"><?php echo __('To the list', 'leyka'); ?></a>
             </div>
 
@@ -64,8 +64,8 @@
                 'days_7' => __('Last 7 days', 'leyka'),
                 'this_year' => __('From the year start', 'leyka'),
                 'this_half_year' => __('Half-year', 'leyka'),
-                'this_quarter' => __( sprintf('%d quarter of %d',ceil(date("m", time()) / 3), date("Y") ) , 'leyka'),
-                'this_month' => __(date("F", time()), 'leyka'),
+                'this_quarter' => sprintf(__('%d quarter %d' , 'leyka'),ceil(date("m", time()) / 3), date("Y")),
+                'this_month' => __(date("F", time())).' '.date("Y"),
                 'this_week' => __('Current week', 'leyka')
             ]);
             $_GET['interval'] = empty($_GET['interval']) ?

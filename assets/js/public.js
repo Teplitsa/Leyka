@@ -217,10 +217,10 @@ function leyka_empty(mixed_var) {
 /**
  * Number.prototype.format(decimal_length, section_length, sections_delimiter, decimal_delimiter)
  *
- * @param integer decimal_length The length of decimal
- * @param integer section_length: length of whole part
- * @param mixed   sections_delimiter: sections delimiter
- * @param mixed   decimal_delimiter: decimal delimiter
+ * @param decimal_length integer The length of decimal
+ * @param section_length integer length of whole part
+ * @param sections_delimiter mixed sections delimiter
+ * @param decimal_delimiter mixed decimal delimiter
  */
 Number.prototype.format = function(decimal_length, section_length, sections_delimiter, decimal_delimiter) {
 

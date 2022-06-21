@@ -40,15 +40,7 @@ jQuery(document).ready(function($){
         $('#how-to-setup-cron').dialog('open');
     });
 
-    // Equalize subscription statuses elements width
-    $('.portlet-stats-recurring .portlet-row.subscriptions .portlet-column').each((subscr_status_idx, $subscr_status) => {
-        $($subscr_status).css('width',
-            Math.max.apply(null, $.map(
-                $('.portlet-stats-recurring .portlet-row.subscriptions .portlet-column'),
-                ($_subscr_status) => { return Math.ceil($($_subscr_status).width()); })
-            )
-        );
-    })
+    leyka_equlize_elements_width('.portlet-stats-recurring .portlet-row.subscriptions .portlet-column');
 
 });
 

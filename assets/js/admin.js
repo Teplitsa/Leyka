@@ -1866,6 +1866,18 @@ function leyka_is_gutenberg_active() {
 
 })();
 
+function leyka_equlize_elements_width(elements_selector) {
+
+    const max_width = Math.max.apply(null, jQuery.map(
+        jQuery(elements_selector),
+        ($_element) => { return Math.ceil(parseFloat(jQuery($_element).css('width'))); })
+    );
+
+    jQuery(elements_selector).each((element_idx, $element) => {
+        jQuery($element).css('width', max_width);
+    })
+}
+
 /**
  * Class to handle LocalStorage
  */
@@ -1888,7 +1900,7 @@ class LeykaLocalStorage {
 /**
  * Class to handle stored states of the DOM elements (currently only visibility)
  */
-class LeykaDOMControl {
+class LeykaStateControl {
 
     static state_hidden = 'hidden';
     static state_visible = 'visible';
@@ -2052,8 +2064,8 @@ class LeykaDOMControl {
 
             targets_selectors.push(target_selector);
 
-            jQuery($button).off('click.LeykaDOMControl');
-            jQuery($button).on('click.LeykaDOMControl', () => {
+            jQuery($button).off('click.LeykaStateControl');
+            jQuery($button).on('click.LeykaStateControl', () => {
                 this.toggleElementVisibility(target_selector);
             })
 
@@ -2950,15 +2962,7 @@ jQuery(document).ready(function($){
         $('#how-to-setup-cron').dialog('open');
     });
 
-    // Equalize subscription statuses elements width
-    $('.portlet-stats-recurring .portlet-row.subscriptions .portlet-column').each((subscr_status_idx, $subscr_status) => {
-        $($subscr_status).css('width',
-            Math.max.apply(null, $.map(
-                $('.portlet-stats-recurring .portlet-row.subscriptions .portlet-column'),
-                ($_subscr_status) => { return Math.ceil($($_subscr_status).width()); })
-            )
-        );
-    })
+    leyka_equlize_elements_width('.portlet-stats-recurring .portlet-row.subscriptions .portlet-column');
 
 });
 
@@ -3239,7 +3243,7 @@ jQuery(document).ready(function($){
 
     });
 
-    LeykaDOMControl.initVisibilityControlButtons();
+    LeykaStateControl.initVisibilityControlButtons();
 
 });
 /** Donations admin list page */
@@ -4405,6 +4409,8 @@ jQuery(document).ready(function($){
 /** Admin JS - Recurring Subscription Info page **/
 jQuery(document).ready(function($){
 
+    LeykaStateControl.initVisibilityControlButtons();
+
     // Recurring subscriptions Donations list data table:
     let $data_table = $('.leyka-data-table.recurring-subscription-donations-table');
 
@@ -4571,13 +4577,30 @@ jQuery(document).ready(function($){
 
     }
 
-    LeykaDOMControl.initVisibilityControlButtons();
+    $('.leyka-subscription-status.recurring-is-active-field input[type="checkbox"]').on('change', function() {
+
+        $.post(
+            ajaxurl,
+            {
+                name: 'action',
+                action: 'leyka_cancel_recurring_by_manager',
+                donation_id: $(this).data('donation-id'),
+                state: $(this).is(':checked')
+            },
+            null,
+            'json'
+        ).done(function(response){
+            if(response.status==='ok') {
+                location.reload();
+            }
+        });
+    })
 
 });
 /** Recurring subscriptions list page */
 jQuery(document).ready(function($){
 
-    LeykaDOMControl.initVisibilityControlButtons();
+    LeykaStateControl.initVisibilityControlButtons();
 
     $('.problematic-subscription-alert .leyka-button-close, .problematic-subscription-alert .leyka-button-ok').on('click', () => {
         $('.problematic-subscription-alert').addClass('leyka-hidden');
@@ -4586,6 +4609,8 @@ jQuery(document).ready(function($){
     $('.column-donation_id .leyka-content-wrapper .leyka-problematic').on('click', function() {
         $(this).parent().find('.problematic-subscription-alert').removeClass('leyka-hidden');
     });
+
+    leyka_equlize_elements_width('.leyka-admin-tablenav.top .leyka-filter-button');
 
 });
 /** Common wizards functions */

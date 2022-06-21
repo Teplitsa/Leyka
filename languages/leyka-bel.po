@@ -8376,11 +8376,11 @@ msgid "No gateway response has been received"
 msgstr "Ответа от платёжной системы не получено"
 
 #: inc/leyka-class-donation.php:1328
-msgid "Donation managers' notification emails hasn't been sent"
+msgid "Donation managers' notification emails haven't been sent"
 msgstr "Уведомления менеджерам пожертвования не отправлялись"
 
 #: inc/leyka-class-donation.php:1326
-msgid "Donation managers notifications has been sended (at %s)"
+msgid "Donation managers notifications have been sent (at %s)"
 msgstr "Уведомления менеджерам пожертвований отправлены (%s)"
 
 #: inc/leyka-class-donation.php:1315 inc/leyka-class-donation.php:1504

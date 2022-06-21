@@ -175,6 +175,6 @@ jQuery(document).ready(function($){
 
     });
 
-    LeykaDOMControl.initVisibilityControlButtons();
+    LeykaStateControl.initVisibilityControlButtons();
 
 });

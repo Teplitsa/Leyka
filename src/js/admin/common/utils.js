@@ -177,6 +177,18 @@ function leyka_is_gutenberg_active() {
 
 })();
 
+function leyka_equlize_elements_width(elements_selector) {
+
+    const max_width = Math.max.apply(null, jQuery.map(
+        jQuery(elements_selector),
+        ($_element) => { return Math.ceil(parseFloat(jQuery($_element).css('width'))); })
+    );
+
+    jQuery(elements_selector).each((element_idx, $element) => {
+        jQuery($element).css('width', max_width);
+    })
+}
+
 /**
  * Class to handle LocalStorage
  */
@@ -199,7 +211,7 @@ class LeykaLocalStorage {
 /**
  * Class to handle stored states of the DOM elements (currently only visibility)
  */
-class LeykaDOMControl {
+class LeykaStateControl {
 
     static state_hidden = 'hidden';
     static state_visible = 'visible';
@@ -363,8 +375,8 @@ class LeykaDOMControl {
 
             targets_selectors.push(target_selector);
 
-            jQuery($button).off('click.LeykaDOMControl');
-            jQuery($button).on('click.LeykaDOMControl', () => {
+            jQuery($button).off('click.LeykaStateControl');
+            jQuery($button).on('click.LeykaStateControl', () => {
                 this.toggleElementVisibility(target_selector);
             })
 

@@ -748,6 +748,25 @@ function leyka_cancel_recurring_subscription(){
 add_action('wp_ajax_leyka_cancel_recurring', 'leyka_cancel_recurring_subscription'); // leyka_unsubscribe_persistent_campaign
 add_action('wp_ajax_nopriv_leyka_cancel_recurring', 'leyka_cancel_recurring_subscription');
 
+function leyka_cancel_recurring_subscription_by_manager(){
+
+    $donation_id = absint($_POST['donation_id']);
+    $init_recurring_donation = Leyka_Donations::get_instance()->get($donation_id);
+
+    if( $_POST['state'] === 'true' && !$init_recurring_donation->recurring_is_active ) {
+        $init_recurring_donation->recurring_is_active = 'true';
+    } else if( $_POST['state'] !== 'true' && $init_recurring_donation->recurring_is_active ) {
+
+        $donation_gateway = leyka_get_gateway_by_id($init_recurring_donation->gateway_id);
+        $donation_gateway->cancel_recurring_subscription($init_recurring_donation);
+
+    }
+
+    die(json_encode(['status' => 'ok']));
+
+}
+add_action('wp_ajax_leyka_cancel_recurring_by_manager', 'leyka_cancel_recurring_subscription_by_manager');
+
 function leyka_reset_campaign_attachment(){
 
     $_POST['campaign_id'] = empty($_POST['campaign_id']) ? false : absint($_POST['campaign_id']);

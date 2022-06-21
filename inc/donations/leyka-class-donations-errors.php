@@ -23,12 +23,12 @@ class Leyka_Donations_Errors extends Leyka_Singleton {
         );
 
         $this->add_error('L-1023', __('Leyka is unavailable', 'leyka'), [
-            'description' => __("Leyka wasn't available at the moment of the transaction handling", 'leyka'),
+            'description' => __("Leyka wasn't available at the moment of the transaction handling.", 'leyka'),
             'recommendation_admin' => sprintf(__("Contact the Leyka plugin technical support team via <a href='mailto:%s'>%s</a> email. It's important to attach error screenshots and description, how the error appeared.", 'leyka'), 'help@te-st.ru', 'help@te-st.ru'),
             'recommendation_donor' => sprintf(__('Please, try to pay 1-2 days later. If the problem persists then, ask the <a href="mailto:%s" target="_blank">website administration</a> to report this to the gateway technical support.', 'leyka'), leyka_options()->opt('tech_support_email')),
         ]);
         $this->add_error('L-2001', __('No recurring payments on subscription date', 'leyka'), [
-            'description' => __('Leyka received no data about recurring payments made on subscription date this month', 'leyka'),
+            'description' => __('Leyka received no data about recurring payments made on subscription date this month.', 'leyka'),
             'recommendation_admin' => __("Please check if the payment is registered in the gateway system. If it is, then check why Leyka didn't received it's data (most likely you need to set up callbacks settings correctly). If the payment isn't registered in the gateway system, then check if the recurring donations cron-job is set up properly.", 'leyka'),
             'recommendation_donor' => '',
         ]);
