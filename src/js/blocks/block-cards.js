@@ -335,8 +335,8 @@
 		};
 
 		registerBlockType( 'leyka/cards', {
-			title: thisBlock.title,
-			description: thisBlock.description,
+			title: __('Campaigns Cards', 'leyka'),
+			description: __('Campaigns informer with configurable elements', 'leyka'),
 			icon: icon,
 			category: 'leyka',
 			keywords: [ 'campaign', 'leyka', 'form', 'payment' ],
@@ -512,9 +512,9 @@
 
 								el( SelectControl,
 									{
-										label: __( 'Order by' ),
+										label: __( 'Order by', 'leyka' ),
 										options : [
-											{ value: 'date', label: __( 'Date' ) },
+											{ value: 'date', label: __( 'Date', 'leyka' ) },
 											{ value: 'post__in', label: blockI18n.includedCampaigns },
 										],
 										value: props.attributes.queryOrderBy,

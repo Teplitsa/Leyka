@@ -102,7 +102,7 @@ jQuery(document).ready(function($){
             }
 
             let widget = new cp.CloudPayments(),
-                data = {donor_name: response.name};
+                data = {name: response.name, donor_name: response.name};
 
             if(response.additional_fields && !$.isEmptyObject(response.additional_fields)) {
                 $.each(response.additional_fields, function(key, value){
@@ -126,6 +126,7 @@ jQuery(document).ready(function($){
                 currency: response.currency,
                 invoiceId: parseInt(response.donation_id),
                 accountId: response.donor_email,
+                // name: response.name,
                 email: response.donor_email,
                 data: data
             }, function(options){ // success callback

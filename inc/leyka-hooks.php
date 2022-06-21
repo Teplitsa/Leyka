@@ -221,3 +221,8 @@ add_filter('pre_get_document_title', 'leyka_yoast_seo_title_workaround', 999, 1)
 add_filter('leyka_option_value-currency_main', function($value){
     return $value == 'rur' ? 'rub' : $value;
 }, 1, 9999);
+
+// Fix for the sticky posts bug - the fatal error on the /donor-account pages when there are some sticky posts on the site:
+add_filter('posts_results', function($posts){
+    return $posts === NULL ? array() : $posts;
+}, 10, 2);

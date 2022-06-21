@@ -332,7 +332,8 @@
 
 // Dashboard footer
 .leyka-dashboard-footer {
-    margin-top: 2*$leyka-base;
+
+    margin-top: 0;// 2*$leyka-base;
     margin-left: 12px;
 
     &.leyka-wizard-footer {
@@ -345,6 +346,7 @@
         margin-left: 72px;
         margin-bottom: -20px;
     }
+
 }
 
 // donations dynamics

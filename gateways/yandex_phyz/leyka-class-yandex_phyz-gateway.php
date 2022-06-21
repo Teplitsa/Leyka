@@ -295,6 +295,7 @@ class Leyka_Yandex_Phyz_Money extends Leyka_Payment_Method {
 
         $this->_id = 'yandex_phyz_money';
         $this->_gateway_id = 'yandex_phyz';
+        $this->_category = 'digital_currencies';
 
         $this->_description = apply_filters(
             'leyka_pm_description',
@@ -327,6 +328,7 @@ class Leyka_Yandex_Phyz_Card extends Leyka_Payment_Method {
 
         $this->_id = 'yandex_phyz_card';
         $this->_gateway_id = 'yandex_phyz';
+        $this->_category = 'bank_cards';
 
         $this->_description = apply_filters(
             'leyka_pm_description',

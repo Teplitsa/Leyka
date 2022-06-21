@@ -124,5 +124,7 @@ function leyka_enqueue_block_editor_assets() {
 
 	wp_localize_script('leyka-blocks', 'leykaBlock', $leyka_block); // Variables for blocks
 
+	wp_set_script_translations( 'leyka-blocks', 'leyka' );
+
 }
 add_action('enqueue_block_editor_assets', 'leyka_enqueue_block_editor_assets');

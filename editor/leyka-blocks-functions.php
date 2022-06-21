@@ -3,9 +3,12 @@
  * Leyka Gutenberg Blocks Functions
  */
 
-// Add scripts to a page if it's post_content has leyka/form block:
-function leyka_block_modern_template_displayed($modern_template_displayed) {
-    return is_singular() && has_block('leyka/form', get_the_ID()) ? true : $modern_template_displayed;
+// Add scripts to a page if it's post_content has leyka/block:
+function leyka_block_modern_template_displayed( $modern_template_displayed ) {
+	if ( is_singular() && ( has_block('leyka/form', get_the_ID() ) || has_block('leyka/cards', get_the_ID() ) || has_block('leyka/card', get_the_ID() ) ) ) {
+		return true;
+	}
+	return $modern_template_displayed;
 }
 add_filter('leyka_modern_template_displayed', 'leyka_block_modern_template_displayed');
 

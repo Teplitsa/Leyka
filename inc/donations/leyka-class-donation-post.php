@@ -184,7 +184,18 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
         ) {
 
             $this->_id = absint($donation->ID);
-            $this->_main_data = $donation;
+
+            if(leyka_options()->opt('object_caching_compatibility_mode')) {
+
+                global $wpdb;
+
+                $this->_main_data = $wpdb->get_row($wpdb->prepare(
+                    "SELECT * FROM $wpdb->posts WHERE ID = %d LIMIT 1", $donation->ID
+                ));
+
+            } else {
+                $this->_main_data = new WP_Post($donation);
+            }
 
         } else {
             throw new Exception( sprintf(__('Unknown donation given: %s', 'leyka'), print_r($donation, 1)) );
@@ -787,7 +798,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
                 global $wpdb;
 
-                $update_query = $wpdb->prepare("UPDATE {$wpdb->prefix}posts SET post_status = '{$value}' WHERE ID = {$this->_id}");
+                $update_query = $wpdb->prepare("UPDATE {$wpdb->prefix}posts SET post_status=%s WHERE ID=%d", $value, $this->_id);
                 $res = $wpdb->query($update_query);
 
                 if( !$res ) {

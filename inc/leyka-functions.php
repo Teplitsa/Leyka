@@ -1410,7 +1410,7 @@ function leyka_get_pd_terms_text() {
 /** Default campaign ID cache invalidation */
 function leyka_flush_cache_default_campaign_id($new_status, $old_status, $campaign) {
 
-    if(is_int($campaign) || absint($campaign)) {
+    if((is_int($campaign) || is_string($campaign)) && absint($campaign)) {
         $campaign = get_post($campaign);
     }
 
@@ -2741,7 +2741,7 @@ if( !function_exists('leyka_get_active_recurring_setup_help_content') ) {
 /** Static text options fields content - END */
 
 function leyka_url_exists($url) {
-    return str_contains(get_headers($url)[0], '200 OK');
+    return stripos(get_headers($url)[0], '200 OK') !== false;
 }
 
 /** Count interval dates for portlets */

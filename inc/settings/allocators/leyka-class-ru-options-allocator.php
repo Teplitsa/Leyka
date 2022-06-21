@@ -43,11 +43,11 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
             return [];
         }
 
-        $payments_options = [
+        return [
             'single' => [
                 'title' => __('Single payment', 'leyka'),
                 'sections' => [
-                    ['title' => '', 'options' => ["payments_single_tab_title"]],
+                    ['title' => '', 'options' => ['payments_single_tab_title']],
                     ['title' => '', 'options' => ["payments_single_amounts_options_{$main_currency_id}"]]
                 ]
             ],
@@ -72,7 +72,6 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
             ]
         ];
 
-        return $payments_options;
     }
 
     protected function _get_secondary_currencies_options_tabs() {
@@ -513,6 +512,12 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
                 'options' => ['admin_donations_list_amount_display',],
                 'is_default_collapsed' => true,
             ],],
+            ['section'=> [
+                'name' => 'additional_technical_options',
+                'title' => __('Additional technical options', 'leyka'),
+                'options' => ['object_caching_compatibility_mode',],
+                'is_default_collapsed' => true,
+            ],],
         ];
 
     }
@@ -558,7 +563,7 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
                     'show_donation_comments_in_frontend', 'success_page', 'failure_page', 'load_scripts_if_need',
                     'admin_donors_data_editable', 'allow_deprecated_form_templates', 'check_nonce_on_public_donor_actions',
                     'plugin_demo_mode', 'plugin_debug_mode', 'plugin_stats_sync_enabled',
-                    'platform_signature_on_form_enabled' //,'data_export_files_encoding',
+                    'platform_signature_on_form_enabled', 'campaign_categories_available', //,'data_export_files_encoding',
                 ]
             ],],
             ['section' => [

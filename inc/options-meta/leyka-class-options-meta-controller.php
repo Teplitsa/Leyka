@@ -194,7 +194,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'type' => 'checkbox',
                 'default' => false,
                 'title' => __('Donor management available', 'leyka'),
-                'comment' => __("Check to turn on the donors logging for all donations. It allows CRM functions and adds additional donors management pages to the plugin administation area.", 'leyka'),
+                'comment' => __('Check to turn on the donors logging for all donations. It allows CRM functions and adds additional donors management pages to the plugin administation area.', 'leyka'),
                 'short_format' => true,
             ],
             'donor_accounts_available' => [
@@ -216,6 +216,13 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'default' => true,
                 'title' => __("On each donor's action, check if its submit request is unique", 'leyka'),
                 'comment' => __('WARNING: unchecking this option may compromise yor website security. Unckeck it ONLY if your website uses caching plugins, and your donors systematically encounter nonce check errors while trying to submit a donation.', 'leyka'),
+                'short_format' => true,
+            ],
+            'campaign_categories_available' => [
+                'type' => 'checkbox',
+                'default' => false,
+                'title' => __('Campaigns categories available', 'leyka'),
+                'comment' => __('Check to turn on the campaigns categories taxonomy. Categories will be available both in the admin and public website areas.', 'leyka'),
                 'short_format' => true,
             ],
         ];
@@ -347,29 +354,29 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
             return [];
         }
 
-        $options = [
-            "payments_single_tab_title" => [
+        return [
+            'payments_single_tab_title' => [
                 'type' => 'text',
-                'default' => __('Single payments'),
+                'default' => __('Single payments', 'leyka'),
                 'title' => __('Donation form tab title', 'leyka'),
                 'required' => true,
-                'placeholder' => __('Single payments')
+                'placeholder' => __('Single payments', 'leyka'),
             ],
-            "payments_single_amounts_options_".$main_currency_id => [
+            'payments_single_amounts_options_'.$main_currency_id => [
                 'type' => 'custom_payments_amounts_options',
                 'title' => __('Amounts options', 'leyka'),
                 'field_classes' => ['payments-amounts-options'],
                 'default' => [],
                 'payment_type' => 'single'
             ],
-            "payments_recurring_tab_title" => [
+            'payments_recurring_tab_title' => [
                 'type' => 'text',
-                'default' => __('Recurring payments'),
+                'default' => __('Recurring payments', 'leyka'),
                 'title' => __('Donation form tab title', 'leyka'),
                 'required' => true,
-                'placeholder' => __('Recurring payments')
+                'placeholder' => __('Recurring payments', 'leyka'),
             ],
-            "payments_recurring_amounts_options_".$main_currency_id => [
+            'payments_recurring_amounts_options_'.$main_currency_id => [
                 'type' => 'custom_payments_amounts_options',
                 'title' => __('Amounts options', 'leyka'),
                 'field_classes' => ['payments-amounts-options'],
@@ -377,8 +384,6 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'payment_type' => 'recurring'
             ]
         ];
-
-        return $options;
 
     }
 
@@ -1246,6 +1251,13 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'default' => true,
                 'title' => __('Add platform signature to donation form', 'leyka'),
                 'short_format' => true
+            ],
+            'object_caching_compatibility_mode' => [
+                'type' => 'checkbox',
+                'default' => false,
+                'title' => __('Object caching compatibility mode on', 'leyka'),
+                'comment' => __('Check if you have problems with donations statuses works when object caching is active (i.e., Redis, Memcached, etc.).', 'leyka'),
+                'short_format' => true,
             ],
         ];
     }
