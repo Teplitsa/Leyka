@@ -1174,7 +1174,7 @@ function leyka_render_additional_fields_library_settings($option_id, $data = [])
         $_COOKIE['leyka-additional-fields-boxes-closed'] = empty($_COOKIE['leyka-additional-fields-boxes-closed']) ?
             [] : json_decode(stripslashes('[\"someline\"]'));?>
 
-        <div id="<?php echo $placeholders['id'] ? $placeholders['id'] : 'item-'.leyka_get_random_string(4);?>" class="multi-valued-item-box field-box <?php echo $is_template ? 'item-template' : '';?> <?php echo !$is_template && !empty($_COOKIE['leyka-additional-fields-boxes-closed']) && !empty($placeholders['id']) && in_array($placeholders['id'], $_COOKIE['leyka-additional-fields-boxes-closed']) ? 'closed' : '';?>" <?php echo $is_template ? 'style="display: none;"' : '';?>>
+        <div id="<?php echo $placeholders['id'] ? : 'item-'.leyka_get_random_string(4);?>" class="multi-valued-item-box field-box <?php echo $is_template ? 'item-template' : '';?> <?php echo !$is_template && !empty($_COOKIE['leyka-additional-fields-boxes-closed']) && !empty($placeholders['id']) && in_array($placeholders['id'], $_COOKIE['leyka-additional-fields-boxes-closed']) ? 'closed' : '';?>" <?php echo $is_template ? 'style="display: none;"' : '';?>>
 
             <h3 class="item-box-title ui-sortable-handle">
 
@@ -1202,8 +1202,15 @@ function leyka_render_additional_fields_library_settings($option_id, $data = [])
                 ]);?>
 
                 <ul class="notes-and-errors">
+
                     <li class="any-field-note"><?php _e('When you edit a field, you will change it for all campaigns that use it', 'leyka');?></li>
+
+                    <?php if($placeholders['id']) {?>
+                    <li class="any-field-note email-placeholder-note"><?php echo sprintf(__('Placeholder for this field value in emails: <span class="email-placeholder-value">%s</span>', 'leyka'), '#ADDITIONAL_FIELD_'.$placeholders['id'].'#');?></li>
+                    <?php }?>
+
                     <li class="phone-field-note" <?php echo $placeholders['type'] === 'phone' ? '' : 'style="display: none;"'?>><?php _e("Don't forget to put a point for processing telephone numbers to your Personal data usage terms", 'leyka');?></li>
+
                 </ul>
 
                 <div class="box-footer">
