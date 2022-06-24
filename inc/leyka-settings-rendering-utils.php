@@ -1206,10 +1206,18 @@ function leyka_render_additional_fields_library_settings($option_id, $data = [])
                     <li class="any-field-note"><?php _e('When you edit a field, you will change it for all campaigns that use it', 'leyka');?></li>
 
                     <?php if($placeholders['id']) {?>
-                    <li class="any-field-note email-placeholder-note"><?php echo sprintf(__('Placeholder for this field value in emails: <span class="email-placeholder-value">%s</span>', 'leyka'), '#ADDITIONAL_FIELD_'.$placeholders['id'].'#');?></li>
+                    <li class="any-field-note email-placeholder-note">
+
+                        <?php _e('Placeholder for this field value in emails:', 'leyka');?>
+                        <span class="email-placeholder-value leyka-copy-on-click">
+                            <?php echo '#ADDITIONAL_FIELD_'.$placeholders['id'].'#';?>
+                        </span>
+
                     <?php }?>
 
-                    <li class="phone-field-note" <?php echo $placeholders['type'] === 'phone' ? '' : 'style="display: none;"'?>><?php _e("Don't forget to put a point for processing telephone numbers to your Personal data usage terms", 'leyka');?></li>
+                    <li class="phone-field-note" <?php echo $placeholders['type'] === 'phone' ? '' : 'style="display: none;"'?>>
+                        <?php _e("Don't forget to put a point for processing telephone numbers to your Personal data usage terms", 'leyka');?>
+                    </li>
 
                 </ul>
 

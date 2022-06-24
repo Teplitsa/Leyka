@@ -371,6 +371,55 @@ jQuery(document).ready(function($){
 
     });
 
+    // "Copy 2 clipboard" universal feature:
+    function leyka_copy_text2clipboard(text2copy) {
+
+        let $copy_buffer_input = $('<input>').appendTo('body');
+        // $('body').append($copy_buffer_input);
+        $copy_buffer_input.val(text2copy).select();
+        document.execCommand('copy');
+        $copy_buffer_input.remove();
+
+    }
+
+    function leyka_add_copy_controls($text2copy_container) {
+
+        let $copy_link = $('<span>');
+        $copy_link
+            .addClass('copy-control')
+            .addClass('copy-link')
+            .text('Copy 2 clipboard')
+            .appendTo($text2copy_container);
+
+        // $text2copy_container.append($copy_link);
+
+        let $copy_done = $('<span>');
+        $copy_done
+            .addClass('copy-control')
+            .addClass('copy-done')
+            .text('Copied! :)')
+            .appendTo($copy_done);
+
+        // $text2copy_container.append($copy_done);
+
+    }
+
+    // $('.leyka-copy-on-click').on('click.leyka', function(e){
+    //
+    //     e.preventDefault();
+    //
+    //     let $text_wrapper = $(this);
+    //     leyka_copy_text2clipboard($text_wrapper.text().trim());
+    //
+    // }).each(function(){
+    //
+    //     let $text_wrapper = $(this);
+    //
+    //     leyka_add_copy_controls($text_wrapper);
+    //
+    // });
+    // "Copy 2 clipboard" universal feature - END
+
     // Delete fields comments:
     // $('.leyka-admin .leyka-options-section .field-component.help').contents().filter(function(){
     //     return this.nodeType === 1 || this.nodeType === 3; // 1 is for links, 3 - for plain text

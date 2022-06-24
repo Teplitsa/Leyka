@@ -1018,7 +1018,12 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                                     </li>
 
                                     <li class="email-placeholder-field-note">
-                                        <?php echo sprintf(__('Placeholder for this field value in emails: <span class="email-placeholder-value">%s</span>', 'leyka'), '#ADDITIONAL_FIELD_'.$placeholders['id'].'#');?>
+
+                                        <?php _e('Placeholder for this field value in emails:', 'leyka');?>
+                                        <span class="email-placeholder-value leyka-copy-on-click">
+                                            <?php echo '#ADDITIONAL_FIELD_'.$placeholders['id'].'#';?>
+                                        </span>
+
                                     </li>
 
                                 <?php if($placeholders['for_all_campaigns']) {?>

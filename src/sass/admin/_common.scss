@@ -503,6 +503,17 @@ ul.ui-autocomplete {
 }
 // Autocomplete fields - END
 
+// "Copy 2 clipboard" universal feature:
+.leyka-copy-on-click {
+
+    //&:after {
+    //    content: '';
+    //
+    //}
+
+}
+// "Copy 2 clipboard" universal feature - END
+
 .leyka-admin {
 
     @include body-text();
