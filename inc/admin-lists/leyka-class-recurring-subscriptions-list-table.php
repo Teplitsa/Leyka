@@ -42,6 +42,10 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
         $params['recurring_only_init'] = true;
         $params['status'] = ['funded'];
 
+        if( !empty($_GET['get-params']) ) {
+            parse_str($_GET['get-params'], $_GET);
+        }
+
         if( !empty($_GET['recurring_subscription_status']) ) {
             $params['recurring_subscription_status'] = $_GET['recurring_subscription_status'];
         }
