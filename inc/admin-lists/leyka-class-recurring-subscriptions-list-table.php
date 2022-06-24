@@ -211,7 +211,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
     public function get_sortable_columns() {
         return [
             'donation_id' => ['donation_id', true],
-            'donor' => ['donor', false],
+            'donor' => ['donor_name', false],
             'first_donation' => ['first_donation', true],
             'donations_number' => ['donations_number', true],
             'amount' => ['amount', true],
@@ -541,8 +541,13 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
 
                 foreach($_GET as $param_name => $param_value) {
 
+                    if($param_name === 'first-date' && is_array($param_value)) {
+                        $param_value = $param_value[0].'-'.$param_value[1];
+                    }
+
                     $other_filters_values_string .= $other_filters_values_string === '' ? '' : '&';
-                    $other_filters_values_string .= $param_name === 'recurring_subscription_status' ?  '' : $param_name.'='.$param_value;
+                    $other_filters_values_string .= in_array($param_name, ['recurring_subscription_status', 'paged']) ?
+                        '' : $param_name.'='.$param_value;
 
                 }
 

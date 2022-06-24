@@ -1216,7 +1216,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
         }
 
-        if($is_new_rebill && date('n', $this->date_timestamp) === date('n')) {
+        if(($is_new_rebill || $init_donation === $this) && date('n', $this->date_timestamp) === date('n')) {
             $rebill_this_month = $this;
         } else {
 

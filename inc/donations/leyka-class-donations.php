@@ -316,24 +316,23 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
         if(isset($params['date_from'])) {
 
-            $date = DateTime::createFromFormat('d.m.Y', $params['date_from']);
-            $date = $date ? $date : DateTime::createFromFormat('Y-m-d', $params['date_from']);
+            $date = date('Y-m-d 00:00:00', strtotime($params['date_from']));
 
             if($date) {
-                $query_params['date_query'][] = ['after' => $date->format('Y-m-d 00:00:00'), 'inclusive' => true,];
+                $query_params['date_query'][] = ['after' => $date, 'inclusive' => true,];
             }
 
         }
         if(isset($params['date_to'])) {
 
-            $date = DateTime::createFromFormat('d.m.Y', $params['date_to']);
-            $date = $date ? $date : DateTime::createFromFormat('Y-m-d', $params['date_to']);
+            $date = date('Y-m-d 00:00:00', strtotime($params['date_to']));
 
             if($date) {
-                $query_params['date_query'][] = ['before' => $date->format('Y-m-d 23:59:59'), 'inclusive' => true,];
+                $query_params['date_query'][] = ['before' => $date, 'inclusive' => true,];
             }
 
         }
+
         // Donation date filtering - END
 
         if( !empty($params['recurring_only_init']) ) {
