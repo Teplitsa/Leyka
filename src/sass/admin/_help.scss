@@ -1,7 +1,14 @@
 .leyka-help-page {
 
-    .wizards-row :last-child {
-        margin-left: 0;
+    .wizards-row {
+
+        gap: 24px;
+        margin-bottom: 24px;
+
+        :last-child {
+            margin-left: 0;
+        }
+
     }
 
 }

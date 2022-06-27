@@ -1,6 +1,41 @@
 /* Portlets: */
 .leyka-admin-portlet {
 
+    &.portlet-wizard-inner-ad {
+
+        background-color: #ffffff;
+        min-width: 304px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        border-radius: 6px;
+        flex: calc(50% - 24px) 1 1;
+        border: none;
+
+        .portlet-header {
+
+            font-weight: 400;
+            height: 78px;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #f1f1f1;
+            line-height: 16px;
+            padding: 0;
+            gap: 0;
+
+            img {
+                margin-left: 16px;
+                margin-right: 12px;
+            }
+
+        }
+
+        .portlet-content {
+            padding: 16px 24px 24px 24px;
+        }
+
+    }
+
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -514,8 +549,6 @@
             }
 
         }
-
-
 
     }
 
