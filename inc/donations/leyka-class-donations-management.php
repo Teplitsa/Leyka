@@ -145,6 +145,59 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
     }
 
+    /**
+     * @param array $placeholders An array of email placeholders
+     * @return array An array of email placeholders with Additional fields placeholders added
+     */
+    public static function _add_additional_fields_placeholders(array $placeholders) {
+
+        $additional_fields_library = leyka_options()->opt('additional_donation_form_fields_library');
+
+        if( !$additional_fields_library ) {
+            return $placeholders;
+        }
+
+        foreach($additional_fields_library as $field_id => $settings) {
+
+            if(
+                !in_array('#ADDITIONAL_FIELD_TITLE_'.$field_id.'#', $placeholders)
+                && !in_array('#ADDITIONAL_FIELD_VALUE_'.$field_id.'#', $placeholders)
+            ) {
+
+                $placeholders[] = '#ADDITIONAL_FIELD_TITLE_'.$field_id.'#';
+                $placeholders[] = '#ADDITIONAL_FIELD_VALUE_'.$field_id.'#';
+
+            }
+
+        }
+
+        return $placeholders;
+
+    }
+
+    /**
+     * @param array $values An array of email placeholders
+     * @return array An array of email placeholders with Additional fields placeholders added
+     */
+    public static function _add_additional_fields_placeholders_values(array $values, Leyka_Donation_Base $donation) {
+
+        $additional_fields_library = leyka_options()->opt('additional_donation_form_fields_library');
+
+        if( !$additional_fields_library ) {
+            return $values;
+        }
+
+        foreach($additional_fields_library as $field_id => $settings) {
+
+            $values[] = $settings['title'];
+            $values[] = empty($donation->additional_fields[$field_id]) ? '' : $donation->additional_fields[$field_id];
+
+        }
+
+        return $values;
+
+    }
+
     public static function send_all_emails($donation, $send_to_managers = true) {
 
         $donation = Leyka_Donations::get_instance()->get_donation($donation);
@@ -305,6 +358,9 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         } else {
             $email_placeholder_values[] = ''; // Replace '#DONOR_ACCOUNT_LOGIN_LINK#' with empty string
         }
+
+        $email_placeholders = self::_add_additional_fields_placeholders($email_placeholders);
+        $email_placeholder_values = self::_add_additional_fields_placeholders_values($email_placeholder_values, $donation);
 
         add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
