@@ -1153,7 +1153,7 @@ jQuery(document).ready(function($){
     function leyka_copy_text2clipboard(text2copy) {
 
         let $copy_buffer_input = $('<input>').appendTo('body');
-        // $('body').append($copy_buffer_input);
+
         $copy_buffer_input.val(text2copy).select();
         document.execCommand('copy');
         $copy_buffer_input.remove();
@@ -1166,36 +1166,67 @@ jQuery(document).ready(function($){
         $copy_link
             .addClass('copy-control')
             .addClass('copy-link')
-            .text('Copy 2 clipboard')
+            .text(leyka.copy2clipboard_text)
             .appendTo($text2copy_container);
-
-        // $text2copy_container.append($copy_link);
 
         let $copy_done = $('<span>');
         $copy_done
             .addClass('copy-control')
             .addClass('copy-done')
-            .text('Copied! :)')
-            .appendTo($copy_done);
-
-        // $text2copy_container.append($copy_done);
+            .text(leyka.copied2clipboard_text)
+            .appendTo($text2copy_container);
 
     }
 
-    // $('.leyka-copy-on-click').on('click.leyka', function(e){
-    //
-    //     e.preventDefault();
-    //
-    //     let $text_wrapper = $(this);
-    //     leyka_copy_text2clipboard($text_wrapper.text().trim());
-    //
-    // }).each(function(){
-    //
-    //     let $text_wrapper = $(this);
-    //
-    //     leyka_add_copy_controls($text_wrapper);
-    //
-    // });
+    function leyka_collect_text2copy($copy_link) {
+
+        let $wrapper = $copy_link.parents('.leyka-copy-on-click'),
+            $text = $wrapper.find('.copy-content');
+
+        if($text.length) {
+            return $.trim($text.text());
+        }
+
+        $wrapper = $wrapper.clone();
+        $wrapper.find('.copy-link, .copy-done').remove();
+
+        let $inner_control = $wrapper.find('input[type="text"], input[type="color"], input[type="date"], input[type="datetime-local"], input[type="month"], input[type="email"], input[type="number"], input[type="search"], input[type="range"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], input[type="week"], textarea');
+
+        return $.trim($inner_control.length ? $inner_control.val() : $wrapper.text());
+
+    }
+
+    $('.leyka-copy-on-click').each(function(){
+
+        let $wrapper = $(this),
+            tmp_content = $wrapper.text();
+
+        $wrapper.text('').append('&nbsp;<span class="copy-content">' + tmp_content + '</span>');
+
+        leyka_add_copy_controls($wrapper);
+
+    });
+
+    $('.copy-link').on('click.leyka', function(e){
+
+        e.preventDefault();
+
+        let $copy_link = $(this);
+
+        leyka_copy_text2clipboard(leyka_collect_text2copy($copy_link));
+
+        $copy_link.fadeOut(function(){
+
+            $copy_link.siblings('.copy-done').show();
+
+            setTimeout(function(){
+                $copy_link.siblings('.copy-done').hide();
+                $copy_link.show();
+            }, 2000);
+
+        });
+
+    });
     // "Copy 2 clipboard" universal feature - END
 
     // Delete fields comments:
@@ -4410,7 +4441,7 @@ jQuery(document).ready(function($){
 
 // copy2clipboard
 jQuery(document).ready(function($){
-    
+
     function copyText2Clipboard(copyText) {
         var $copyBufferInput = $('<input>');
         $("body").append($copyBufferInput);
@@ -4418,23 +4449,24 @@ jQuery(document).ready(function($){
         document.execCommand("copy");
         $copyBufferInput.remove();
     }
-    
+
     function collectText2Copy($copyLink) {
-        var $clone = $copyLink.parent().clone();
+
+        let $clone = $copyLink.parent().clone();
         $clone.find('.copy-link').remove();
         $clone.find('.copy-done').remove();
-        
-        var text = '';
-        var $innerControl = $clone.find('input[type=text], input[type=color], input[type=date], input[type=datetime-local], input[type=month], input[type=email], input[type=number], input[type=search], input[type=range], input[type=search], input[type=tel], input[type=time], input[type=url], input[type=week], textarea');
-        
-        if($innerControl.length > 0) {
-            text = $innerControl.val();
-        }
-        else {
+
+        let text = '';
+        let $inner_control = $clone.find('input[type="text"], input[type="color"], input[type="date"], input[type="datetime-local"], input[type="month"], input[type="email"], input[type="number"], input[type="search"], input[type="range"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], input[type="week"], textarea');
+
+        if($inner_control.length > 0) {
+            text = $inner_control.val();
+        } else {
             text = $clone.text();
         }
-        
+
         return $.trim(text);
+
     }
     
     function addCopyControls($copyContainer) {

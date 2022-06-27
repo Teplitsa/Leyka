@@ -1203,15 +1203,28 @@ function leyka_render_additional_fields_library_settings($option_id, $data = [])
 
                 <ul class="notes-and-errors">
 
-                    <li class="any-field-note"><?php _e('When you edit a field, you will change it for all campaigns that use it', 'leyka');?></li>
+                    <li class="any-field-note">
+                        <?php _e('When you edit a field, you will change it for all campaigns that use it', 'leyka');?>
+                    </li>
 
                     <?php if($placeholders['id']) {?>
+
+                    <li class="any-field-note email-placeholder-note">
+
+                        <?php _e('Placeholder for this field title in emails:', 'leyka');?>
+                        <span class="email-placeholder-value leyka-copy-on-click">
+                            <?php echo '#ADDITIONAL_FIELD_TITLE_'.$placeholders['id'].'#';?>
+                        </span>
+
+                    </li>
                     <li class="any-field-note email-placeholder-note">
 
                         <?php _e('Placeholder for this field value in emails:', 'leyka');?>
                         <span class="email-placeholder-value leyka-copy-on-click">
-                            <?php echo '#ADDITIONAL_FIELD_'.$placeholders['id'].'#';?>
+                            <?php echo '#ADDITIONAL_FIELD_VALUE_'.$placeholders['id'].'#';?>
                         </span>
+
+                    </li>
 
                     <?php }?>
 

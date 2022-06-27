@@ -94,7 +94,7 @@ jQuery(document).ready(function($){
 
 // copy2clipboard
 jQuery(document).ready(function($){
-    
+
     function copyText2Clipboard(copyText) {
         var $copyBufferInput = $('<input>');
         $("body").append($copyBufferInput);
@@ -102,23 +102,24 @@ jQuery(document).ready(function($){
         document.execCommand("copy");
         $copyBufferInput.remove();
     }
-    
+
     function collectText2Copy($copyLink) {
-        var $clone = $copyLink.parent().clone();
+
+        let $clone = $copyLink.parent().clone();
         $clone.find('.copy-link').remove();
         $clone.find('.copy-done').remove();
-        
-        var text = '';
-        var $innerControl = $clone.find('input[type=text], input[type=color], input[type=date], input[type=datetime-local], input[type=month], input[type=email], input[type=number], input[type=search], input[type=range], input[type=search], input[type=tel], input[type=time], input[type=url], input[type=week], textarea');
-        
-        if($innerControl.length > 0) {
-            text = $innerControl.val();
-        }
-        else {
+
+        let text = '';
+        let $inner_control = $clone.find('input[type="text"], input[type="color"], input[type="date"], input[type="datetime-local"], input[type="month"], input[type="email"], input[type="number"], input[type="search"], input[type="range"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], input[type="week"], textarea');
+
+        if($inner_control.length > 0) {
+            text = $inner_control.val();
+        } else {
             text = $clone.text();
         }
-        
+
         return $.trim(text);
+
     }
     
     function addCopyControls($copyContainer) {
