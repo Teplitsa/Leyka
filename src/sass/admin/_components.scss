@@ -168,7 +168,7 @@
     .ui-dialog-content {
         @include body-text();
         text-align: center;
-        padding: 32px 0px;
+        padding: 32px 0;
         
         h3 {
             @include wizard-h3();
@@ -176,7 +176,7 @@
         
         p {
             @include body-text();
-            padding: 0px 70px;
+            padding: 0 70px;
             margin: 1rem 0;
         }
         
@@ -188,7 +188,7 @@
         
         &#cp-documents-sent {
             h3:first-child {
-                margin-top: 0px;
+                margin-top: 0;
             }
         }
     }
@@ -196,31 +196,34 @@
 
 
 // copy2clipboard
+/** @todo Remove this code in favor of the one for ".leyka-copy-on-click" component (in _common.scss). Apply that code to the wizards' copy2clipboard components (it should be compatible already). */
 .leyka-wizard-copy2clipboard {
-    
+
     &.field-text {
         width: max-content;
     }
-    
+
     position: relative;
     overflow: visible;
-    
+
     .copy-control {
+
         @include copy2clipborad-link();
+
         color: $color-wizard-link;
         width: 150px;
-        
+
         position: absolute;
         display: block;
         top: calc(50%);
-        right: 0px;
+        right: 0;
         transform: translate(100%, -50%);
         height: 15px;
         cursor: pointer;
     
         &:before {
             @include copy2clipborad-link();
-            content: " ";
+            content: ' ';
             background-image: url('../../img/icon-copy2clipboard.svg');
             background-repeat: no-repeat;
             width: 17px;
@@ -234,15 +237,18 @@
     }
 
     .copy-link {
+
         &:before {
             background-image: url('../../img/icon-copy2clipboard.svg');
             background-size: 17px 15px;
             width: 17px;
             height: 15px;
         }
+
     }
-    
+
     .copy-done {
+
         display: none;
         
         &:before {
@@ -251,17 +257,18 @@
             width: 16px;
             height: 16px;
         }
+
     }
-    
-    &.short {
-        .copy-control {
-            width: 25px !important;
-            overflow: hidden;
-            
-            &:before {
-                margin-left: 5px;
-            }
+
+    &.short .copy-control {
+
+        width: 25px !important;
+        overflow: hidden;
+
+        &:before {
+            margin-left: 5px;
         }
+
     }
     
 }

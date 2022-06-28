@@ -1600,6 +1600,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             'extensions_list_page_url' => admin_url('admin.php?page=leyka_extensions'),
             'extension_colors_reset' => __('Reset settings', 'leyka'),
             'extension_colors_make_change' => __('Make changes', 'leyka'),
+            'copy2clipboard_text' => __('Copy to clipboard', 'leyka'),
+            'copied2clipboard_text' => __('Copied! :)', 'leyka'),
         ]);
 
         if(isset($_GET['page']) && $_GET['page'] === 'leyka') {

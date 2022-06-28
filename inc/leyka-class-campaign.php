@@ -1017,6 +1017,15 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                                         <?php echo sprintf(__('If you wish to edit the field settings, you may do it in <a href="%s" target="_blank">fields library</a>.', 'leyka'), admin_url('admin.php?page=leyka_settings&stage=view#'.$placeholders['id']));?>
                                     </li>
 
+                                    <li class="email-placeholder-field-note">
+
+                                        <?php _e('Placeholder for this field value in emails:', 'leyka');?>
+                                        <span class="email-placeholder-value leyka-copy-on-click">
+                                            <?php echo '#ADDITIONAL_FIELD_'.$placeholders['id'].'#';?>
+                                        </span>
+
+                                    </li>
+
                                 <?php if($placeholders['for_all_campaigns']) {?>
                                     <li class="no-delete-for-all-campaigns-field-note">
                                         <?php echo sprintf(__('The field cannot be removed from the campaign - it is marked "for all campaigns" in the <a href="%s" target="_blank">fields library</a>.', 'leyka'), admin_url('admin.php?page=leyka_settings&stage=view#'.$placeholders['id']));?>
