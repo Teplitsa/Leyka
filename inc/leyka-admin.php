@@ -491,8 +491,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         add_submenu_page(
             NULL, 
-            __("Recurring subscription info", 'leyka'), 
-            __("Recurring subscription info", 'leyka'),  
+            __('Recurring subscription info', 'leyka'),
+            __('Recurring subscription info', 'leyka'),
             'leyka_manage_donations', 
             'leyka_recurring_subscription_info', 
             [$this, 'recurring_subscription_info_screen']
@@ -729,7 +729,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         } else { // Edit Donation page
 
-            $donation = Leyka_Donations::get_instance()->get(absint($_GET['donation']));
+//            $donation = Leyka_Donations::get_instance()->get(absint($_GET['donation']));
 
             add_meta_box(
                 'leyka_donation_data',
@@ -1001,9 +1001,6 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
     public function recurring_subscription_info_screen() {
 
         do_action('leyka_pre_recurring_subscription_info_actions'); // Add collapsible to metaboxes
-
-        // TODO: Remove if no need
-        //$donation = Leyka_Donations::get_instance()->get(absint($_GET['donation']));
 
         add_meta_box(
             'leyka_donation_data',

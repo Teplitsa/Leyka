@@ -568,26 +568,20 @@ function leyka_get_form_templates_list() {
 
 function leyka_get_problematic_recurring_subscriptions_count() {
 
-    $query_params = [
+    return Leyka_Donations::get_instance()->get_count([
         'status' => 'funded',
         'recurring_only_init' => true,
         'recurring_subscription_status' => 'problematic',
         'get_all' => true
-    ];
-
-    return Leyka_Donations::get_instance()->get_count($query_params);
+    ]);
 
 }
 
-function leyka_update_recurring_subscriptions_statuses($no_date_constraints=false) {
+function leyka_update_recurring_subscriptions_statuses($no_date_constraints = false) {
 
-    $query_params = [
-        'status' => 'funded',
-        'recurring_only_init' => true,
-        'get_all' => true
-    ];
+    $params = ['status' => 'funded', 'recurring_only_init' => true, 'get_all' => true,];
 
-    if($no_date_constraints === false) {
+    if( !$no_date_constraints ) {
 
         $current_day = (int)date('j');
         $max_days_in_month = (int)date('t');
@@ -600,11 +594,11 @@ function leyka_update_recurring_subscriptions_statuses($no_date_constraints=fals
             'compare' => 'BETWEEN'
         ];
 
-        $query_params['date_query'] =  $date_params;
+        $params['date_query'] =  $date_params;
 
     }
 
-    $init_recurring_donations = Leyka_Donations::get_instance()->get($query_params);
+    $init_recurring_donations = Leyka_Donations::get_instance()->get($params);
 
 
     foreach($init_recurring_donations as $init_recurring_donation) {

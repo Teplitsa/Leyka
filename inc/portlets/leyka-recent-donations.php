@@ -68,7 +68,7 @@ $data = Leyka_Recent_Donations_Portlet_Controller::get_instance()->get_template_
 
                 <?php if($donation['donor']['email_date']) {?>
 
-                <div class="donor has-thanks " title='".$gateway_label.' / '.$pm_label."'>
+                <div class="donor has-thanks">
                     <span class="donation-email-status"><?php echo __('Sent', 'leyka');?></span>
                     <span class="donation-email-date"><?php echo date(get_option('date_format'), $donation['donor']['email_date']);?></span>
                 </div>
