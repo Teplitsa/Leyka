@@ -83,6 +83,16 @@ For technical support questions, please, use the [plugin support email](maillto:
 5. The plugin start page (a console)
 
 == Changelog ==
+= 3.27 =
+* New: new Recurring Health engine (v.1b) is added.
+* New: now Additional fields placeholders can be used in the Donations notifications emails.
+* New: Redis & other object caching systems compatibility mode added for post-based Donations storage.
+* Fix: YooMoney for Physical persons Gateway behavior fixed.
+* Fix: Liqpay - fixes.
+* Fix: "sticky posts" incompatibility bug fixed.
+* Fix: the rare str_contains() error fixed.
+* Fix: small fixes.
+
 = 3.26.1 =
 * New: Campaigns categories feature added.
 * Fix: small Donations handling fixes.
