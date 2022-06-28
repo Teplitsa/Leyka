@@ -12,7 +12,7 @@
         <div class="leyka-recurring-subscriptions-check">
             <form action="#" method="get">
                 <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']);?>">
-                <input type="submit" class="submit" name="subscriptions-update-all-statuses" value="<?php _e('Check all subscriptions') ?>" />
+                <input type="submit" class="submit" name="subscriptions-update-all-statuses" value="<?php _e('Check all subscriptions', 'leyka');?>" />
             </form>
         </div>
 

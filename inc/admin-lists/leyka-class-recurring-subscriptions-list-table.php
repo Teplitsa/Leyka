@@ -561,18 +561,19 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
                 <div class="admin-list-filters leyka-filter-buttons">
 
                         <a class="leyka-filter-button leyka-subscriptions-all <?php echo !$filter_value ? 'leyka-active' : ''; ?>" href="?<?php echo $other_filters_values_string; ?>">
-                            <?php _e('All subscriptions', 'leyka').' ('.$subscriptions_stats['all'].')';?>
+                            <?php echo __('All subscriptions', 'leyka').' ('.$subscriptions_stats['all'].')';?>
                         </a>
 
                         <a class="leyka-filter-button leyka-subscriptions-active <?php echo $filter_value == 'active' ? 'leyka-active' : '';?>" href="?<?php echo $other_filters_values_string; ?>&recurring_subscription_status=active">
-                            <?php _ex('Only active', 'Multiple case', 'leyka').' ('.$subscriptions_stats['active'].')';?>
+                            <?php echo _x('Only active', 'Multiple case', 'leyka').' ('.$subscriptions_stats['active'].')';?>
                         </a>
 
                         <a class="leyka-filter-button leyka-subscriptions-problematic <?php echo $filter_value == 'problematic' ? 'leyka-active' : '';?>" href="?<?php echo $other_filters_values_string; ?>&recurring_subscription_status=problematic">
-                            <?php _ex('Only problematic', 'Multiple case', 'leyka').' ('.$subscriptions_stats['problematic'].')';?>
+                            <?php echo _x('Only problematic', 'Multiple case', 'leyka').' ('.$subscriptions_stats['problematic'].')';?>
                         </a>
 
-                        <a class="leyka-filter-button leyka-subscriptions-non-active <?php echo $filter_value == 'non-active' ? 'leyka-active' : '';?>" href="?<?php echo $other_filters_values_string; ?>&recurring_subscription_status=non-active"><?php _ex('Only not active', 'Multiple case', 'leyka').' ('.$subscriptions_stats['non-active'].')';?>
+                        <a class="leyka-filter-button leyka-subscriptions-non-active <?php echo $filter_value == 'non-active' ? 'leyka-active' : '';?>" href="?<?php echo $other_filters_values_string; ?>&recurring_subscription_status=non-active">
+                            <?php echo _x('Only not active', 'Multiple case', 'leyka').' ('.$subscriptions_stats['non-active'].')';?>
                         </a>
 
                 </div>
