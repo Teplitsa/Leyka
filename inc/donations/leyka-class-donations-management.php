@@ -492,6 +492,9 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             $email_placeholder_values[] = ''; // Replace '#DONOR_ACCOUNT_LOGIN_LINK#' with empty string
         }
 
+        $email_placeholders = self::_add_additional_fields_placeholders($email_placeholders);
+        $email_placeholder_values = self::_add_additional_fields_placeholders_values($email_placeholder_values, $donation);
+
         add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
         $res = wp_mail(
@@ -635,6 +638,9 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         } else {
             $email_placeholder_values[] = ''; // Replace '#DONOR_ACCOUNT_LOGIN_LINK#' with empty string
         }
+
+        $email_placeholders = self::_add_additional_fields_placeholders($email_placeholders);
+        $email_placeholder_values = self::_add_additional_fields_placeholders_values($email_placeholder_values, $donation);
 
         add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
@@ -841,7 +847,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         $campaign = new Leyka_Campaign($donation->campaign_id);
 
-        $placeholders = apply_filters(
+        $email_placeholders = apply_filters(
             'leyka_email_manager_notification_placeholders', [
                 '#SITE_NAME#',
                 '#ORG_NAME#',
@@ -859,7 +865,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             ],
             $donation
         );
-        $placeholders_values = apply_filters(
+        $email_placeholder_values = apply_filters(
             'leyka_email_manager_notification_placeholders_values', [
                 get_bloginfo('name'),
                 leyka_options()->opt('org_full_name'),
@@ -875,9 +881,12 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 $donation->amount.' '.$donation->currency_label,
                 $donation->date,
             ],
-            $placeholders,
+            $email_placeholders,
             $donation
         );
+
+        $email_placeholders = self::_add_additional_fields_placeholders($email_placeholders);
+        $email_placeholder_values = self::_add_additional_fields_placeholders_values($email_placeholder_values, $donation);
 
         $email_title = apply_filters(
             'leyka_email_notification_title',
@@ -885,8 +894,8 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             $donation, $campaign
         );
         $email_content = wpautop(str_replace(
-            $placeholders,
-            $placeholders_values,
+            $email_placeholders,
+            $email_placeholder_values,
             apply_filters(
                 'leyka_email_notification_text',
                 leyka_options()->opt('email_notification_text'),
