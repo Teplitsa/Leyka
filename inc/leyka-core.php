@@ -2413,3 +2413,6 @@ _x('phone', 'Field type title', 'leyka');
 _x('date', 'Field type title', 'leyka');
 _x('text', 'Field type title', 'leyka');
 _x('Recurrings', 'Dashboard portlet title', 'leyka');
+_x('Active', 'Recurring subscription status, singular (like [subscription is] "Active/Non-active/Problematic")', 'leyka');
+_x('Non-active', 'Recurring subscription status, singular (like [subscription is] "Active/Non-active/Problematic")', 'leyka');
+_x('Problematic', 'Recurring subscription status, singular (like [subscription is] "Active/Non-active/Problematic")', 'leyka');

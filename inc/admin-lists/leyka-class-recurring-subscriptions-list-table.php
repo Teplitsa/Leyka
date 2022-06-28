@@ -261,7 +261,9 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
                 $content = '<div class="leyka-content-wrapper">
                     <span>'.$item['id'].'</span>
                     <a href="'.admin_url('admin.php?page=leyka_recurring_subscription_info&donation='.$item['id']).'" class="donation-edit-link">'.__('Details', 'leyka').'</a>
-                    <span class="leyka-'.($item['recurring_subscription_status']).'">'.ucfirst($item['recurring_subscription_status']).'</span>'.
+                    <span class="leyka-'.($item['recurring_subscription_status']).'">'
+                        ._x(ucfirst($item['recurring_subscription_status']), 'Recurring subscription status, singular (like [subscription is] "Active/Non-active/Problematic")', 'leyka') /** @todo Fix this ambiguous l10n string formulation! */
+                    .'</span>'.
                     ($item['recurring_subscription_status'] !== 'problematic' ? '' : '<div class="problematic-subscription-alert leyka-subscription-error leyka-hidden">
                         <img class="leyka-button-close" src="'.LEYKA_PLUGIN_BASE_URL.'img/star-icon-close.svg">
                         <div class="leyka-error-title">
@@ -293,9 +295,9 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
         $donor_data_html = apply_filters(
             'leyka_admin_recurring_subscription_donor_column_content',
             '<div class="donor-name">'
-            .(leyka_options()->opt('donor_management_available') && $donation->donor_id ? '<a href="'.admin_url('?page=leyka_donor_info&donor='.$donation->donor_id).'">' : '')
-            .$donation->donor_name
-            .(leyka_options()->opt('donor_management_available') ? '</a>' : '')
+                .(leyka_options()->opt('donor_management_available') && $donation->donor_id ? '<a href="'.admin_url('?page=leyka_donor_info&donor='.$donation->donor_id).'">' : '')
+                .$donation->donor_name
+                .(leyka_options()->opt('donor_management_available') ? '</a>' : '')
             .'</div>'
             .'<div class="donor-additional-data donor-email">'.$donation->donor_email.'</div>'
             .($donor_phone ? '<div class="donor-additional-data donor-phone">'.$donor_phone.'</div>' : ''),
@@ -513,13 +515,13 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
 
     protected function display_tablenav( $which ) {
 
-        if ( 'top' === $which ) {
-            wp_nonce_field( 'bulk-' . $this->_args['plural'] );
-        }
-        ?>
-        <div class="leyka-admin-tablenav <?php echo esc_attr( $which ); ?>">
+        if($which === 'top') {
+            wp_nonce_field('bulk-'.$this->_args['plural']);
+        }?>
 
-            <?php if ($which === 'top') {
+        <div class="leyka-admin-tablenav <?php echo esc_attr($which);?>">
+
+            <?php if($which === 'top') {
 
                 $subscriptions_statuses_list = leyka_get_recurring_subscription_status_list();
                 $subscriptions_stats['all'] = 0;
@@ -540,7 +542,8 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
 
                 };
 
-                $filter_value = isset($_GET['recurring_subscription_status']) ? esc_attr($_GET['recurring_subscription_status']) : false;
+                $filter_value = isset($_GET['recurring_subscription_status']) ?
+                    esc_attr($_GET['recurring_subscription_status']) : false;
                 $other_filters_values_string = '';
 
                 foreach($_GET as $param_name => $param_value) {
@@ -553,32 +556,44 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
                     $other_filters_values_string .= in_array($param_name, ['recurring_subscription_status', 'paged']) ?
                         '' : $param_name.'='.$param_value;
 
-                }
-
-                ?>
+                }?>
 
                 <div class="admin-list-filters leyka-filter-buttons">
 
-                        <a class="leyka-filter-button leyka-subscriptions-all <?php echo !$filter_value ? 'leyka-active' : ''; ?>" href="?<?php echo $other_filters_values_string; ?>"><?php echo __('All subscriptions', 'leyka').' ('.$subscriptions_stats['all'].')';?></a>
-                        <a class="leyka-filter-button leyka-subscriptions-active <?php echo $filter_value == 'active' ? 'leyka-active' : '';?>" href="?<?php echo $other_filters_values_string; ?>&recurring_subscription_status=active"><?php echo __('Only active', 'leyka').' ('.$subscriptions_stats['active'].')';?></a>
-                        <a class="leyka-filter-button leyka-subscriptions-problematic <?php echo $filter_value == 'problematic' ? 'leyka-active' : '';?>" href="?<?php echo $other_filters_values_string; ?>&recurring_subscription_status=problematic"><?php echo __('Problematic', 'leyka').' ('.$subscriptions_stats['problematic'].')';?></a>
-                        <a class="leyka-filter-button leyka-subscriptions-non-active <?php echo $filter_value == 'non-active' ? 'leyka-active' : '';?>" href="?<?php echo $other_filters_values_string; ?>&recurring_subscription_status=non-active"><?php echo __('Only not active', 'leyka').' ('.$subscriptions_stats['non-active'].')';?></a>
+                        <a class="leyka-filter-button leyka-subscriptions-all <?php echo !$filter_value ? 'leyka-active' : ''; ?>" href="?<?php echo $other_filters_values_string; ?>">
+                            <?php _e('All subscriptions', 'leyka').' ('.$subscriptions_stats['all'].')';?>
+                        </a>
 
-                </div><?php
+                        <a class="leyka-filter-button leyka-subscriptions-active <?php echo $filter_value == 'active' ? 'leyka-active' : '';?>" href="?<?php echo $other_filters_values_string; ?>&recurring_subscription_status=active">
+                            <?php _ex('Only active', 'Multiple case', 'leyka').' ('.$subscriptions_stats['active'].')';?>
+                        </a>
 
-                $this->extra_tablenav( $which );
-                $this->pagination( $which );
+                        <a class="leyka-filter-button leyka-subscriptions-problematic <?php echo $filter_value == 'problematic' ? 'leyka-active' : '';?>" href="?<?php echo $other_filters_values_string; ?>&recurring_subscription_status=problematic">
+                            <?php _ex('Only problematic', 'Multiple case', 'leyka').' ('.$subscriptions_stats['problematic'].')';?>
+                        </a>
+
+                        <a class="leyka-filter-button leyka-subscriptions-non-active <?php echo $filter_value == 'non-active' ? 'leyka-active' : '';?>" href="?<?php echo $other_filters_values_string; ?>&recurring_subscription_status=non-active"><?php _ex('Only not active', 'Multiple case', 'leyka').' ('.$subscriptions_stats['non-active'].')';?>
+                        </a>
+
+                </div>
+
+                <?php $this->extra_tablenav($which);
+                $this->pagination($which);
 
             } ?>
+
         </div>
+
         <?php
 
     }
 
-    public function single_row( $item ) {
+    public function single_row($item) {
+
         echo '<tr class="leyka-'.($item['recurring_subscription_status']).'">';
-        $this->single_row_columns( $item );
+        $this->single_row_columns($item);
         echo '</tr>';
+
     }
 
 //    public function process_bulk_action() {

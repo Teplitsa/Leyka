@@ -14,9 +14,7 @@ try {
 
 } catch(Exception $e) {
     wp_die($e->getMessage());
-}
-
-?>
+}?>
 
 <div class="wrap" data-leyka-admin-page-type="recurring-subscription-info"> <!-- leyka-admin wrap single-settings donation-info -->
 
@@ -28,7 +26,7 @@ try {
     <div class="wp-heading-inline">
         <h1><?php _e('Subscription profile', 'leyka');?></h1>
         <div class="leyka-subscription-status leyka-subscription-<?php echo $donation->recurring_subscription_status; ?>">
-            <?php _ex(ucfirst($donation->recurring_subscription_status),'Subscription details page: subscription status in header', 'leyka');?>
+            <?php _ex($donation->recurring_subscription_status, 'Recurring subscription status, singular (like [subscription is] "Active/Non-active/Problematic")', 'leyka'); /** @todo Fix this ambiguous l10n string formulation! */?>
         </div>
     </div>
 
