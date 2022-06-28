@@ -62,7 +62,7 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
         switch($pm_id) {
             case 'yandex_phyz_money':
             case 'yandex_phyz_card':
-                return 'https://money.yandex.ru/quickpay/confirm.xml';
+                return 'https://yoomoney.ru/quickpay/confirm.xml';
             default:
                 return $current_url;
         }
