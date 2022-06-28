@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Leyka - Development (trunk) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2022-06-28 21:28:33+0000\n"
+"PO-Revision-Date: 2022-06-28 22:34:16+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -10,6 +10,40 @@ msgstr ""
 "X-Generator: GlotPress/4.0.0-alpha.1\n"
 "Language: ru\n"
 "Project-Id-Version: Plugins - Leyka - Development (trunk)\n"
+
+#: inc/leyka-core.php:2418
+msgctxt "Recurring subscription status, singular (like [subscription is] \"Active/Non-active/Problematic\")"
+msgid "Problematic"
+msgstr "Проблемная"
+
+#: inc/leyka-core.php:2417
+msgctxt "Recurring subscription status, singular (like [subscription is] \"Active/Non-active/Problematic\")"
+msgid "Non-active"
+msgstr "Неактивная"
+
+#: inc/leyka-core.php:2416
+msgctxt "Recurring subscription status, singular (like [subscription is] \"Active/Non-active/Problematic\")"
+msgid "Active"
+msgstr "Активная"
+
+#: inc/donations/leyka-class-donations-management.php:1979
+msgid "Donation managers' notifications have been sent"
+msgstr "Уведомления менеджерам пожертвований отправлены"
+
+#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:575
+msgctxt "Multiple case"
+msgid "Only not active"
+msgstr "Только неактивные"
+
+#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:572
+msgctxt "Multiple case"
+msgid "Only problematic"
+msgstr "Только проблемные"
+
+#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:568
+msgctxt "Multiple case"
+msgid "Only active"
+msgstr "Только активные"
 
 #: inc/settings/allocators/leyka-class-ru-options-allocator.php:517
 msgid "Additional technical options"
@@ -129,7 +163,7 @@ msgstr "Фильтры"
 msgid "Check all subscriptions"
 msgstr "Отметить все подписки"
 
-#: inc/admin-templates/leyka-admin-recurring-subscription-info-page.php:29
+#: inc/admin-templates/leyka-admin-recurring-subscription-info-page.php:27
 msgid "Subscription profile"
 msgstr "Детали рекуррентной подписки"
 
@@ -165,17 +199,16 @@ msgstr "К списку"
 msgid "Problematic subscriptions found."
 msgstr "Обнаружены проблемные рекуррентные подписки."
 
-#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:564
 #: inc/admin-templates/leyka-admin-recurring-subscriptions-list-page.php:66
 msgid "Problematic"
 msgstr "Проблемная"
 
-#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:274
+#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:276
 msgctxt "Problematic subscription alert OK button"
 msgid "OK"
 msgstr "ОК"
 
-#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:269
+#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:271
 #: inc/donations/leyka-class-donations-management.php:1659
 msgid "Problematic subscription"
 msgstr "Проблемная подписка"
@@ -1550,7 +1583,7 @@ msgid "From:"
 msgstr "От:"
 
 #: inc/admin-templates/leyka-admin-donation-info-page.php:42
-#: inc/admin-templates/leyka-admin-recurring-subscription-info-page.php:46
+#: inc/admin-templates/leyka-admin-recurring-subscription-info-page.php:44
 msgid "Donation added."
 msgstr "Пожертвование добавлено."
 
@@ -1587,24 +1620,24 @@ msgid "Send it"
 msgstr "Отправить"
 
 #: inc/admin-lists/leyka-class-donations-list-table.php:307
-#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:325
+#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:327
 msgctxt "Donor's comment. Should be short."
 msgid "Comment"
 msgstr "Комментарий"
 
 #: inc/admin-lists/leyka-class-donations-list-table.php:302
-#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:320
+#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:322
 #: inc/admin-templates/leyka-admin-donations-list-page.php:144
 msgid "Email subscription"
 msgstr "Подписка на рассылку"
 
 #: inc/admin-lists/leyka-class-donations-list-table.php:298
-#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:316
+#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:318
 msgid "Sent on %s"
 msgstr "Отправлено %s"
 
 #: inc/admin-lists/leyka-class-donations-list-table.php:291
-#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:309
+#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:311
 msgid "Recurring is active"
 msgstr "Рекуррентная подписка активна"
 
@@ -3316,17 +3349,15 @@ msgstr "Вы можете отправлять своим донорам спе�
 msgid "Recurring canceling emails options"
 msgstr "Письма для доноров, отменивших рекуррентную подписку"
 
-#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:565
 #: inc/admin-templates/leyka-admin-recurring-subscriptions-list-page.php:69
 msgid "Only not active"
 msgstr "Только неактивные"
 
-#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:563
 #: inc/admin-templates/leyka-admin-recurring-subscriptions-list-page.php:63
 msgid "Only active"
 msgstr "Только активные"
 
-#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:562
+#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:564
 #: inc/admin-templates/leyka-admin-recurring-subscriptions-list-page.php:60
 #: inc/portlets/stats-recurring/leyka-class-stats-recurring-portlet-controller.php:13
 msgid "All subscriptions"
@@ -3353,7 +3384,7 @@ msgstr "Удалить метки"
 msgid "Add tags"
 msgstr "Добавить метки"
 
-#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:385
+#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:387
 msgid "The subscription is not active"
 msgstr "Подписка неактивна"
 
@@ -4415,7 +4446,7 @@ msgstr "Добавить комментарий"
 
 #: inc/admin-templates/leyka-admin-donation-info-page.php:26
 #: inc/admin-templates/leyka-admin-donor-info-page.php:19
-#: inc/admin-templates/leyka-admin-recurring-subscription-info-page.php:24
+#: inc/admin-templates/leyka-admin-recurring-subscription-info-page.php:22
 #: inc/settings-pages/leyka-settings-extensions-extension.php:19
 msgid "Back to the list"
 msgstr "Вернуться к списку"
@@ -5147,10 +5178,10 @@ msgstr "Ваш пароль сохранён. Добро пожаловать в
 #: inc/admin-lists/leyka-class-donations-list-table.php:308
 #: inc/admin-lists/leyka-class-donors-list-table.php:466
 #: inc/admin-lists/leyka-class-donors-list-table.php:468
-#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:310
-#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:316
-#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:321
-#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:326
+#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:312
+#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:318
+#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:323
+#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:328
 #: inc/leyka-admin.php:263
 msgid "no"
 msgstr "нет"
@@ -5165,8 +5196,8 @@ msgstr "нет"
 #: gateways/tinkoff/leyka-class-tinkoff-gateway.php:191
 #: inc/admin-lists/leyka-class-donations-list-table.php:292
 #: inc/admin-lists/leyka-class-donations-list-table.php:303
-#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:310
-#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:321
+#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:312
+#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:323
 #: inc/leyka-admin.php:263
 msgid "yes"
 msgstr "да"
@@ -9774,11 +9805,11 @@ msgstr "Уведомления менеджерам пожертвования �
 
 #: inc/donations/leyka-class-donations-management.php:1969
 msgid "Grateful email hasn't been sent"
-msgstr "Благодарственное письмо донору не отправлялось %s"
+msgstr "Благодарственное письмо донору не отправлялось"
 
 #: inc/donations/leyka-class-donations-management.php:1961
 msgid "Grateful email to the donor has been sent"
-msgstr "Благодарственное письмо донору отправлено (%s)"
+msgstr "Благодарственное письмо донору отправлено"
 
 #: inc/donations/leyka-class-donations-management.php:1944
 msgid "Last status change: none logged"
@@ -9897,7 +9928,7 @@ msgid "Enter donor's email"
 msgstr "Укажите email донора"
 
 #: inc/admin-lists/leyka-class-donations-list-table.php:297
-#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:315
+#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:317
 #: inc/admin-templates/leyka-admin-metabox-donor-data.php:99
 #: inc/donations/leyka-class-donations-management.php:1183
 #: inc/donations/leyka-class-donations-management.php:1381
@@ -10029,7 +10060,7 @@ msgid "Width"
 msgstr "Ширина"
 
 #: inc/admin-lists/leyka-class-donations-list-table.php:419
-#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:417
+#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:419
 #: inc/donations/leyka-class-donations-management.php:1259
 #: inc/donations/leyka-class-donations-management.php:1526
 #: inc/leyka-ajax.php:1163 inc/leyka-ajax.php:1274
