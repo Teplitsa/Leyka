@@ -4,6 +4,10 @@
 
         .leyka-header-wrap {
 
+            & > :not(.wp-heading-inline):not(.leyka-recurring-subscriptions-check):not(.recurring-subscriptions-list-export):not(.toggle-filters-button) {
+                display: none;
+            }
+
             display: flex;
             flex-direction: row;
             align-items: center;
