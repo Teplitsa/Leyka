@@ -210,6 +210,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
                 }
 
+                $donation->update_recurring_subscription_status();
+
             }
 
             return $admin_title;
