@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Leyka - Development (trunk) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2022-06-28 22:34:16+0000\n"
+"PO-Revision-Date: 2022-06-30 20:33:05+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -10,6 +10,10 @@ msgstr ""
 "X-Generator: GlotPress/4.0.0-alpha.1\n"
 "Language: ru\n"
 "Project-Id-Version: Plugins - Leyka - Development (trunk)\n"
+
+#: inc/admin-templates/leyka-admin-dashboard-page.php:115
+msgid "The data is actual as of&nbsp;%s"
+msgstr "Данные актуальны на&nbsp;%s"
 
 #: inc/leyka-core.php:2418
 msgctxt "Recurring subscription status, singular (like [subscription is] \"Active/Non-active/Problematic\")"
@@ -30,7 +34,7 @@ msgstr "Активная"
 msgid "Donation managers' notifications have been sent"
 msgstr "Уведомления менеджерам пожертвований отправлены"
 
-#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:575
+#: inc/admin-lists/leyka-class-recurring-subscriptions-list-table.php:576
 msgctxt "Multiple case"
 msgid "Only not active"
 msgstr "Только неактивные"
@@ -804,15 +808,9 @@ msgstr "Средний размер рекуррента"
 msgid "LTV"
 msgstr "LTV"
 
-#: inc/admin-templates/leyka-admin-dashboard-page.php:115
+#: inc/admin-templates/leyka-admin-dashboard-page.php:118
 msgid "Renew data"
 msgstr "Обновить данные"
-
-#: inc/admin-templates/leyka-admin-dashboard-page.php:114
-msgid "The data is current as of "
-msgstr ""
-"Данные актуальны\n"
-"</br>на"
 
 #: inc/admin-templates/leyka-admin-dashboard-page.php:69
 msgid "Current week"
