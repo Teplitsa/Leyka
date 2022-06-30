@@ -111,8 +111,12 @@
                 </div>
 
                 <div class="plugin-data-interval-tools">
-                    <span class="plugin-data-interval-reset-text"><?php echo __('The data is current as of ', 'leyka').$dashboard_data_cache_date; ?></span>
-                    <a class="plugin-data-interval-reset-btn" href="?page=leyka&interval=<?php echo $_GET['interval']; ?>&reset=true"><?php echo __('Renew data', 'leyka');  ?></a>
+                    <span class="plugin-data-interval-reset-text">
+                        <?php echo sprintf(__('The data is actual as of&nbsp;%s', 'leyka'), $dashboard_data_cache_date);?>
+                    </span>
+                    <a class="plugin-data-interval-reset-btn" href="?page=leyka&interval=<?php echo $_GET['interval']; ?>&reset=true">
+                        <?php _e('Renew data', 'leyka');?>
+                    </a>
                 </div>
 
 
