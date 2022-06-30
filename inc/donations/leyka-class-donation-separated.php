@@ -784,7 +784,9 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
                 if($this->_set_data('payment_type', $value) && ($old_value === 'rebill' || $value === 'rebill')) {
 
-                    $this->update_recurring_funded_rebills_number($old_value === 'rebill' ? 'remove' : 'add');
+                    if ( !$this->is_init_recurring_donation ) {
+                        $this->update_recurring_funded_rebills_number($old_value === 'rebill' ? 'remove' : 'add');
+                    }
 
                     if($value === 'rebill') {
                         $this->set_meta('init_recurring_donation_id', 0);

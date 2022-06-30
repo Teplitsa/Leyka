@@ -245,6 +245,15 @@ function leyka_handle_plugin_update() {
 
     }
 
+    if($leyka_last_ver && version_compare($leyka_last_ver, '3.26.1', '<=')) {
+
+        //Delete 'leyka_recurring_funded_rebills_number' meta field for all subscriptions, in order to recalc it correctly on the next request
+        $wpdb->delete($wpdb->prefix.'postmeta',
+            ['meta_key' => 'leyka_recurring_funded_rebills_number']
+        );
+
+    }
+
     do_action('leyka_plugin_update', $leyka_last_ver); // Warning: Extensions can't use this hook, as they are initialized later
 
     // Set a flag to flush permalinks (needs to be done a bit later than this activation itself):
