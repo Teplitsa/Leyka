@@ -1017,11 +1017,20 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                                         <?php echo sprintf(__('If you wish to edit the field settings, you may do it in <a href="%s" target="_blank">fields library</a>.', 'leyka'), admin_url('admin.php?page=leyka_settings&stage=view#'.$placeholders['id']));?>
                                     </li>
 
-                                    <li class="email-placeholder-field-note">
+                                    <li class="any-field-note email-placeholder-note">
+
+                                        <?php _e('Placeholder for this field title in emails:', 'leyka');?>
+                                        <span class="email-placeholder-value leyka-copy-on-click">
+                                            <?php echo '#ADDITIONAL_FIELD_TITLE_'.$placeholders['id'].'#';?>
+                                        </span>
+
+                                    </li>
+
+                                    <li class="any-field-note email-placeholder-note">
 
                                         <?php _e('Placeholder for this field value in emails:', 'leyka');?>
                                         <span class="email-placeholder-value leyka-copy-on-click">
-                                            <?php echo '#ADDITIONAL_FIELD_'.$placeholders['id'].'#';?>
+                                            <?php echo '#ADDITIONAL_FIELD_VALUE_'.$placeholders['id'].'#';?>
                                         </span>
 
                                     </li>
