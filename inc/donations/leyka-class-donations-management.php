@@ -47,7 +47,17 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         add_action('leyka_donation_funded_status_changed', function($donation_id, $old_status, $new_status){
             if($old_status === 'funded' || $new_status === 'funded') {
 
-                if( !$donation_id || !leyka_options()->opt('donor_management_available') ) {
+                if( !$donation_id ) {
+                    return;
+                }
+
+                $donation = Leyka_Donations::get_instance()->get($donation_id);
+
+                if($donation->type === 'rebill') {
+                    $donation->update_recurring_subscription_status();
+                }
+
+                if( !leyka_options()->opt('donor_management_available') ) {
                     return;
                 }
 
@@ -56,12 +66,6 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
                 Leyka_Donor::calculate_donor_metadata($donor);
                 Leyka_Donor::order_donor_data_refreshing($donation_id);
-
-                $donation = Leyka_Donations::get_instance()->get($donation_id);
-
-                if($donation->type === 'rebill') {
-                    $donation->update_recurring_subscription_status();
-                }
 
             }
         }, 10, 3);
