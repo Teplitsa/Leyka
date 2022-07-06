@@ -172,16 +172,19 @@ class Leyka_Payment_Form {
 
 	}
 
-	public function get_recurring_field() {
+	public function get_recurring_field($campaign = null) {
 
         if( !$this->is_field_supported('recurring') ) {
             return '';
+        }
+        if ( $campaign ) {
+            $is_recurring_campaign = ( $campaign->donations_type_default == 'recurring' ) ? true : false;
         }
 
         ob_start();?>
 
         <label class="checkbox leyka-recurring-field">
-            <input type="checkbox" class="leyka-recurring" name="leyka_recurring" value="1">
+            <input type="checkbox" class="leyka-recurring" name="leyka_recurring" value="1" <?php echo $is_recurring_campaign?'checked="checked"':''; ?>>
             <span class="leyka-checkbox-label"><?php _e('Monthly donations', 'leyka');?></span>
         </label>
 
@@ -730,11 +733,13 @@ function leyka_pf_get_hidden_fields($campaign = null, $include_common_fields = t
             .$leyka_current_pm->get_hidden_fields($campaign);
 }
 
-function leyka_pf_get_recurring_field() {
+function leyka_pf_get_recurring_field($campaign = null) {
     /** @var Leyka_Payment_Form $leyka_current_pm */
     global $leyka_current_pm;
 
-    return $leyka_current_pm->get_recurring_field();
+    $campaign = leyka_get_validated_campaign($campaign);
+
+    return $leyka_current_pm->get_recurring_field($campaign);
 
 }
 

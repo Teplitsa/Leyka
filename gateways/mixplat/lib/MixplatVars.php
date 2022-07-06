@@ -78,30 +78,35 @@ class MixplatVars
     const PAYMENT_SYSTEM_MOBILE_RU_YOTA = 'mobile_ru_yota';
     const PAYMENT_SYSTEM_MOBILE_OTHER = 'mobile_other';
     /* для payment_method = card (банковские карты)	*/
-    const PAYMENT_SYSTEM_VISA = 'visa';
-    const PAYMENT_SYSTEM_MASTERCARD = 'mastercard';
-    const PAYMENT_SYSTEM_MIR = 'mir';
-    const PAYMENT_SYSTEM_UNIONPAY = 'unionpay';
-    const PAYMENT_SYSTEM_JCB = 'jcb';
-    const PAYMENT_SYSTEM_APPLE_PAY = 'apple_pay';
-    const PAYMENT_SYSTEM_GOOGLE_PAY = 'google_pay';
-    const PAYMENT_SYSTEM_OTHER = 'other';
+    const PAYMENT_SYSTEM_VISA = 'card_visa';
+    const PAYMENT_SYSTEM_MASTERCARD = 'card_mastercard';
+    const PAYMENT_SYSTEM_MIR = 'card_mir';
+    const PAYMENT_SYSTEM_UNIONPAY = 'card_unionpay';
+    const PAYMENT_SYSTEM_JCB = 'card_jcb';
+    const PAYMENT_SYSTEM_OTHER = 'card_other';
     /* для payment_method = wallet (электронные кошельки) */
-    const PAYMENT_SYSTEM_YANDEX_MONEY = 'yandex_money';
-    const PAYMENT_SYSTEM_WEBMONEY = 'webmoney';
-    const PAYMENT_SYSTEM_QIWI = 'qiwi';
+    const PAYMENT_SYSTEM_YANDEX_MONEY = 'wallet_yandex_money';
+    const PAYMENT_SYSTEM_WEBMONEY = 'wallet_webmoney';
+    const PAYMENT_SYSTEM_QIWI = 'wallet_qiwi';
     /* для payment_method = bank (банк-клиент) */
-    const PAYMENT_SYSTEM_SBERBANK_ONLINE = 'sberbank_online';
-    const PAYMENT_SYSTEM_ALFA_CLICK = 'alfa_click';
+    const PAYMENT_SYSTEM_SBP = 'bank_sbp';
+    const PAYMENT_SYSTEM_SBERBANK_ONLINE = 'bank_sberbank_online';
+    const PAYMENT_SYSTEM_ALFA_CLICK = 'bank_alfa_click';
 
     /* Тип биллинга (billing_type) */
     /* для payment_method = mobile (оплата с телефона)	 */
     const BILLING_TYPE_MC = 'mc';
     const BILLING_TYPE_CPA = 'cpa';
+    /* для payment_method = card (оплата по карте) */
+    const BILLING_TYPE_BANK_CARD = 'bank_card';
+    const BILLING_TYPE_APPLE_PAY = 'apple_pay';
+    const BILLING_TYPE_GOOGLE_PAY = 'google_pay';
+    const BILLING_TYPE_YANDEX_PAY = 'yandex_pay';
+    const BILLING_TYPE_SAMSUNG_PAY = 'samsung_pay';
 
     /* Схема проведения платежа по банковским картам */
-    const CARD_SHEME_SMS = 'sms';
-    const CARD_SHEME_DMS = 'dms';
+    const CARD_SHEME_SMS = 'single';
+    const CARD_SHEME_DMS = 'double';
 
 
     /* Фискализация */

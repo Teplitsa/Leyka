@@ -11023,3 +11023,19 @@ msgstr "Пожалуйста, укажите ваше значение пара�
 #: gateways/chronopay/leyka-class-chronopay-gateway.php:13
 msgid "Chronopay"
 msgstr "Хронопей"
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "MIXPLAT widget key"
+msgstr "Ключ виджета в системе MIXPLAT"
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "Enter your widget key. It can be found in your MIXPLAT project settings page on MIXPLAT site."
+msgstr "Укажите ваш ключ виджета в системе MIXPLAT. Его можно найти в настройках проекта в вашем Личном кабинете на сайте Mixplat."
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "SBP"
+msgstr "СБП"
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "Enable SBP payment method"
+msgstr "Система Быстрых Платежей"
