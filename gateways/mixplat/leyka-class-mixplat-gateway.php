@@ -431,7 +431,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             }
 
             status_header(500);
-            die('Payment callback error 1');
+            die('Payment callback error');
 
         }
 
@@ -475,7 +475,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                     }
 
                     status_header(500);
-                    die('Payment callback error 2');
+                    die('Payment callback error');
 
                 }
 
