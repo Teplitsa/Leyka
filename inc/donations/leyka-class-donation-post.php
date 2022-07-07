@@ -1199,15 +1199,16 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
     }
 
     // TODO Vyacheslav - consider adding a new "last_subscription_rebill" meta field to remove the parameter from this function
-    public function update_recurring_subscription_status($is_new_rebill = false) {
+    public function update_recurring_subscription_status($is_new_rebill = false)
+    {
 
-        if($this->payment_type !== 'rebill') {
+        if ($this->payment_type !== 'rebill') {
             return;
         }
 
         $init_donation = $this->is_init_recurring_donation ? $this : $this->init_recurring_donation;
 
-        if( !$init_donation->recurring_is_active ) {
+        if (!$init_donation->recurring_is_active) {
 
             $init_donation->recurring_subscription_status = 'non-active';
             $init_donation->recurring_subscription_error_id = false;
@@ -1217,17 +1218,18 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
         }
 
-        if(($is_new_rebill || $init_donation === $this) && date('n', $this->date_timestamp) === date('n')) {
+        $payment_day = (int)date('j', $init_donation->date_timestamp);
+
+        if (($is_new_rebill || $init_donation === $this) && date('n', $this->date_timestamp) === date('n')) {
             $rebill_this_month = $this;
         } else {
 
-            $payment_day = (int)date('j', $init_donation->date_timestamp);
             $date_params = [
                 'relation' => 'AND',
                 [
                     'day' => [
                         $payment_day,
-                        min($payment_day+3, 31)
+                        min($payment_day + 3, 31)
                     ],
                     'compare' => 'BETWEEN'
                 ],
@@ -1244,10 +1246,22 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
         }
 
-        if(!$rebill_this_month) {
+        $payment_day_passed = $payment_day > date('t') ? date('t') == (int)date('j') : $payment_day < (int)date('j');
 
-            $init_donation->recurring_subscription_status = 'problematic';
-            $init_donation->recurring_subscription_error_id = 'L-2001';
+        if ( !$rebill_this_month ) {
+
+            if ( !$payment_day_passed && date('n', strtotime('-1 month')) === date('n', $init_donation->date_timestamp) ) {
+
+                $init_donation->recurring_subscription_status = 'active';
+                $init_donation->recurring_subscription_error_id = false;
+
+
+            }  else {
+
+                $init_donation->recurring_subscription_status = 'problematic';
+                $init_donation->recurring_subscription_error_id = 'L-2001';
+
+            }
 
         } else if($rebill_this_month->status === 'failed') {
 
