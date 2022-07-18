@@ -201,6 +201,10 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             throw new Exception( sprintf(__('Unknown donation given: %s', 'leyka'), print_r($donation, 1)) );
         }
 
+        if( !is_a($this->_main_data, 'WP_Post') ) {
+            $this->_main_data = new WP_Post($this->_main_data);
+        }
+
         if( !$this->_donation_meta ) {
 
             $meta = get_post_meta($this->_id, '', true);
