@@ -190,39 +190,176 @@
         }
 
     }
-    
+
+    &#cryptocurrencies_options {
+
+        .content {
+
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+
+            #leyka_cryptocurrencies_text-wrapper {
+                width: 100%;
+            }
+
+            #leyka_cryptocurrencies_wallets-wrapper {
+
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 0px;
+                gap: 16px;
+                max-width: none;
+                width: 100%;
+
+                .leyka-block-header {
+
+                    display: flex;
+                    flex-direction: row;
+                    align-items: flex-end;
+                    padding: 0px;
+                    gap: 20px;
+                    width: 100%;
+
+                    span {
+
+                        min-width: 150px;
+                        font-style: normal;
+                        font-weight: 400;
+                        font-size: 14px;
+                        line-height: 18px;
+                        color: #23282D;
+
+                    }
+
+                }
+
+                .leyka-main-cryptocurrencies-wallets {
+
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    padding: 0px;
+                    gap: 16px;
+                    width: 100%;
+
+                    .cryptocurrency-wallet-option {
+
+                        border: none;
+                        margin: 0;
+                        background-color: transparent;
+                        color: #586067;
+
+                        .box-content {
+
+                            padding: 0;
+
+                            .single-line {
+
+                                display: flex;
+                                flex-direction: row;
+                                align-items: center;
+                                padding: 0px;
+                                gap: 20px;
+                                margin-bottom: 0;
+
+                                .option-block {
+
+                                    margin: 0;
+
+                                    input {
+
+                                        display: flex;
+                                        flex-direction: row;
+                                        align-items: center;
+                                        padding: 6px 10px;
+                                        gap: 10px;
+                                        background: #FFFFFF;
+                                        border: 1px solid #C4C4C4;
+                                        border-radius: 2px;
+                                        font-style: normal;
+                                        font-weight: 400;
+                                        font-size: 14px;
+                                        line-height: 18px;
+                                        color: #586067;
+
+                                    }
+
+                                    .cryptocurrency-wallet-option-title input {
+                                        width: 150px;
+                                    }
+
+                                    .cryptocurrency-wallet-option-link input {
+                                        width: 435px;
+                                    }
+
+                                    .field-errors {
+                                        display: none;
+                                    }
+
+                                    .delete-additional-field.delete-item {
+                                        margin-top: 6px;
+                                        cursor: pointer;
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+                .add-item {
+                    padding: 0;
+                }
+
+            }
+
+        }
+
+        .submit {
+            padding-top: 16px;
+        }
+
+    }
+
     &#currency_options {
         .section-tabs-wrapper {
             .section-tab-content {
                 .tab-content-options-wrapper {
                     .tab-section-options {
-                        
+
                         .field-component.field {
                             input:not([type=checkbox]):not([type=radio]), select, textarea {
                                 width: 248px;
                             }
                         }
-                        
+
                         .field-component.title {
                             display: block;
                         }
-                        
+
                         #leyka_auto_refresh_currency_rates-wrapper,
                         #leyka_auto_refresh_currency_rate_usd-wrapper, #leyka_auto_refresh_currency_rate_eur-wrapper {
                             .field-component.title {
                                 display: none;
                             }
                         }
-                        
+
                         //#leyka_currency_rur2usd-wrapper {
                         //    display: none;
                         //}
-                        
+
                     }
                 }
             }
         }
-        
+
     }
 
     &#donor_accounts {

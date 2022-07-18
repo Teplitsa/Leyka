@@ -751,22 +751,25 @@ function leyka_render_rich_html_field($option_id, $data){
 
         <label for="<?php echo $option_id;?>">
 
-            <span class="field-component title">
-                <span class="text"><?php echo $data['title'];?></span>
-                <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
-                <?php if( !empty($data['comment'])) {?>
-                <span class="field-q">
-                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-q.svg" alt="">
-                    <span class="field-q-tooltip"><?php echo $data['comment']?></span>
+            <?php if(empty($data['short_format'])) { ?>
+                <span class="field-component title">
+                    <span class="text"><?php echo $data['title'];?></span>
+                    <?php echo empty($data['required']) ? '' : '<span class="required">*</span>';?>
+                        <?php if( !empty($data['comment'])) {?>
+                            <span class="field-q">
+                        <img src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-q.svg" alt="">
+                        <span class="field-q-tooltip"><?php echo $data['comment']?></span>
+                    </span>
+                        <?php }?>
                 </span>
-                <?php }?>
-            </span>
+            <?php } ?>
 
             <?php wp_editor($data['value'], $option_id.'-field', [
                 'media_buttons' => false,
                 'textarea_name' => $option_id,
                 'tinymce' => true,
                 'teeny' => true, // For rich HTML editor
+                'textarea_rows' => 5
             ]);
 
             if( !empty($data['description']) ) {?>
@@ -1292,6 +1295,7 @@ function leyka_save_additional_fields_library_settings() {
     $_POST['leyka_additional_donation_form_fields_library'] = json_decode(
         urldecode($_POST['leyka_additional_donation_form_fields_library'])
     );
+
     $result = [];
 
     foreach($_POST['leyka_additional_donation_form_fields_library'] as $field) {
@@ -1505,4 +1509,143 @@ function leyka_save_payments_amounts_options() {
 
 }
 // [Special field] Payments amounts options - END
+
+// [Special field] Cryptocurrencies wallets options:
+function leyka_cryptocurrencies_wallets_options_html($is_template = false, array $placeholders = []) { ?>
+
+    <div id="<?php echo 'item-'.$placeholders['option_id'];?>" class="multi-valued-item-box cryptocurrency-wallet-option field-box <?php echo $is_template ? 'item-template' : '';?>" <?php echo $is_template ? 'style="display: none;"' : '';?>>
+
+        <div class="box-content">
+
+            <div class="single-line">
+
+                <div class="option-block type-text">
+                    <div class="leyka-text-field-wrapper">
+                        <?php leyka_render_text_field('cryptocurrency_wallet_title_'.$placeholders['option_id'], [
+                            'option_id' => $placeholders['option_id'],
+                            'title' => '',
+                            'required' => false,
+                            'placeholder' => __('E.g., Bitcoin', 'leyka'),
+                            'value' => $placeholders['title'],
+                            'field_classes' => ['cryptocurrency-wallet-option-title'],
+                            'hide_title' => true
+                        ]);?>
+                    </div>
+                    <div class="field-errors"></div>
+                </div>
+
+                <div class="option-block type-text">
+                    <div class="leyka-text-field-wrapper">
+                        <?php leyka_render_text_field('cryptocurrency_wallet_link_'.$placeholders['option_id'], [
+                            'option_id' => $placeholders['option_id'],
+                            'title' => '',
+                            'required' => false,
+                            'value' => $placeholders['link'],
+                            'field_classes' => ['cryptocurrency-wallet-option-link'],
+                            'hide_title' => true
+                        ]);?>
+                    </div>
+                    <div class="field-errors"></div>
+                </div>
+
+                <div class="option-block type-text">
+                    <div class="leyka-field-wrapper">
+                        <div class="delete-additional-field delete-item"><img class="leyka-button-close" src="<?php echo LEYKA_PLUGIN_BASE_URL; ?>img/icon-x.svg"></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+<?php }
+
+add_action('leyka_render_custom_cryptocurrencies_wallets_options', 'leyka_render_custom_cryptocurrencies_wallets_options_settings', 10, 2);
+function leyka_render_custom_cryptocurrencies_wallets_options_settings($option_id, $data = []){
+
+    $option_id = mb_stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
+    $data = $data ? : leyka_options()->get_info_of($option_id);
+
+    //var_dump($data);
+
+    ?>
+
+    <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-<?php echo $option_id;?>-field-wrapper multi-valued-items-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) ? '' : implode(' ', $data['field_classes']);?>">
+
+        <div class="leyka-block-header">
+            <span><?php _e('Currency name'); ?></span>
+            <span><?php _e('Link to the wallet'); ?></span>
+        </div>
+
+        <div class="leyka-main-multi-items leyka-main-cryptocurrencies-wallets" data-max-items="10" data-min-items="0" data-item-inputs-names-prefix="leyka_field_" data-show-new-item-if-empty="1">
+
+            <?php
+
+            $data['value'] = (empty($data['value']) || !is_array($data['value'])) && ( !empty($data['default']) && is_array($data['default'])) ?
+                $data['default'] : $data['value'];
+
+            if($data['value'] && is_array($data['value'])) {
+                foreach($data['value'] as $wallet_option_id => $wallet_option_data) {
+                    leyka_cryptocurrencies_wallets_options_html(false, [
+                        'option_id' => $wallet_option_id,
+                        'title' => $wallet_option_data['title'],
+                        'link' => $wallet_option_data['link']
+                    ]);
+                }
+            } else {
+                leyka_cryptocurrencies_wallets_options_html(false, [
+                    'option_id' => leyka_get_random_string(4),
+                    'title' => '',
+                    'link' => ''
+                ]);
+            }
+
+            ?>
+
+        </div>
+
+        <?php leyka_cryptocurrencies_wallets_options_html(true, [
+            'option_id' => leyka_get_random_string(4),
+            'title' => '',
+            'link' => ''
+        ]); // Additional field box template ?>
+
+        <div class="add-field add-item bottom"><?php _e('Add field', 'leyka');?></div>
+
+        <input type="hidden" class="leyka-items-options" name="<?php echo $option_id; ?>" value="">
+
+    </div>
+
+    <?php
+
+}
+
+add_action("leyka_save_custom_option-cryptocurrencies_wallets", 'leyka_save_cryptocurrencies_wallets_options');
+function leyka_save_cryptocurrencies_wallets_options() {
+
+    $cryptocurrencies_wallets_options = json_decode(urldecode($_POST['leyka_cryptocurrencies_wallets']), true);
+
+    $result = [];
+
+    foreach($cryptocurrencies_wallets_options as $option) {
+
+        $option_id = str_replace('item-', '', $option['id']);
+
+        $data = [
+            'title' => wp_strip_all_tags($option['leyka_cryptocurrency_wallet_title_'.$option_id], true),
+            'link' => wp_strip_all_tags($option['leyka_cryptocurrency_wallet_link_'.$option_id], true)
+        ];
+
+        if($data['title'] && $data['link']) {
+            $result[$option_id] = $data;
+        }
+
+    }
+
+    leyka_options()->opt('cryptocurrencies_wallets', $result);
+
+}
+// [Special field] Cryptocurrencies wallets options - END
 
