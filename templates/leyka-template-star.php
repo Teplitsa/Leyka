@@ -49,6 +49,8 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 
         </div>
 
+        <?php if( !empty($template_data['cryptocurrencies_wallets']) ) { ?>
+
         <div class="section section--currencies leyka-hidden">
 
             <div class="section-title-container">
@@ -66,6 +68,8 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
             </div>
 
         </div>
+
+        <?php } ?>
 
         <div class="currency-tab currency-<?php echo $template_data['currency_id'];?>">
 
@@ -496,6 +500,8 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 
         </div>
 
+        <?php if( !empty($template_data['cryptocurrencies_wallets']) ) { ?>
+
         <div class="currency-tab currency-crypto leyka-hidden">
 
             <div class="section section--crypto-wallets">
@@ -509,9 +515,13 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 
                 </div>
 
+                <?php if( !empty($template_data['cryptocurrencies_text']) ) { ?>
+
                 <div class="section__fields cryptocurrencies_text">
                     <?php echo $template_data['cryptocurrencies_text']; ?>
                 </div>
+
+                <?php } ?>
 
                 <div class="section__fields cryptocurrencies_wallets">
 
@@ -536,6 +546,8 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 
 
         </div>
+
+        <?php } ?>
 
 
     </form>
