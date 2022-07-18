@@ -212,6 +212,8 @@
 @mixin leyka-field-title {
 
     @include wizard-field-label();
+
+    font-size: 14px;
     display: flex;
     margin-bottom: 5px;
     position: relative;
