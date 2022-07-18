@@ -938,8 +938,13 @@ ul.ui-autocomplete {
             }
 
             & > div {
+
                 max-width: 544px;
-                //margin-top: 1rem;
+
+                &:not(:last-of-type) {
+                    margin-bottom: 20px;
+                }
+
             }
 
             .submit {
@@ -1087,7 +1092,6 @@ ul.ui-autocomplete {
 
             #leyka_org_inn-wrapper {
                 width: 248px;
-                padding-top: 1rem;
                 margin-top: 0;
                 float: none;
                 clear: both;
