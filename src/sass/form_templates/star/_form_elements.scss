@@ -896,7 +896,7 @@
 
     }
 
-    .section.section--currencies {
+    .section--currencies {
 
         .section__fields.currencies {
 
@@ -1000,6 +1000,29 @@
 
                     display: flex;
                     cursor: pointer;
+                    align-items: center;
+                    overflow: hidden;
+
+                    span {
+
+                        display: flex;
+                        flex-direction: row;
+                        align-items: flex-start;
+                        justify-content: center;
+                        padding: 6px 10px;
+                        gap: 10px;
+                        background: #75BA45;
+                        border-radius: 4px;
+                        font-weight: 500;
+                        font-size: 11px;
+                        line-height: 12px;
+                        letter-spacing: 0.03em;
+                        color: #FFFFFF;
+                        width: 135px;
+                        margin-right: -135px;
+                        height: 24px;
+
+                    }
 
                 }
 

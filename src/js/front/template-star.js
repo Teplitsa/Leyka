@@ -270,16 +270,32 @@ jQuery(document).ready(function($){
 
         $('.leyka-tpl-star-form .currency-tab .leyka-button-copy').on('click.leyka', function(e){
 
+            const $btn = $(this);
+
+            $btn.css('pointer-events', 'none');
+
             const $tmp = $("<textarea>");
 
             $("body").append($tmp);
 
-            $tmp.val($(this).parent('.leyka-cryptocurrency-data-wrapper').find('.leyka-cryptocurrency-link').text())
+            $tmp.val($btn.parent('.leyka-cryptocurrency-data-wrapper').find('.leyka-cryptocurrency-link').text())
                 .select();
 
             document.execCommand("copy");
 
             $tmp.remove();
+
+            const $img = $btn.find('img'),
+                $span = $btn.find('span');
+
+            $img.addClass('leyka-hidden');
+
+            $span.animate({ marginRight: '0'}, 200);
+            $span.delay(1200)
+                .animate({ marginRight: '-135px'}, 200, function () {
+                    $img.removeClass('leyka-hidden');
+                    $btn.css('pointer-events', 'all');
+                });
 
         });
 

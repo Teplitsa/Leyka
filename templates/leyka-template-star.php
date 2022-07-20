@@ -36,8 +36,6 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 
 <div class="leyka-payment-form leyka-tpl-star-form" data-template="star">
 
-
-
     <form id="<?php echo leyka_pf_get_form_id($campaign->id).'-star-form';?>" class="leyka-pm-form leyka-no-validation" action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate">
 
         <div class="section section--periodicity <?php if( !in_array('recurring', $campaign->donations_types_available) ) {?>hidden<?php }?>">
@@ -534,7 +532,10 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                             <div class="leyka-cryptocurrency-link"><?php echo $wallet['link']; ?></div>
                         </div>
 
-                        <div class="leyka-button-copy"><img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-copy.svg" alt="icon-copy"></div>
+                        <div class="leyka-button-copy">
+                            <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-copy.svg" alt="icon-copy">
+                            <span>Ссылка скопировна</span>
+                        </div>
 
                     </div>
 
@@ -549,10 +550,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 
         <?php } ?>
 
-
     </form>
-
-
 
     <?php if($template_data['platform_signature_on_form_enabled']) {?>
         <div class="section section--signature">
