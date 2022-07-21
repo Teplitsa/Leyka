@@ -412,6 +412,22 @@ class Leyka_Donations_Posts extends Leyka_Donations {
                 $query_params['post_parent'] = 0;
                 $params['payment_type'] = 'rebill';
 
+            } else if($params['payment_type'] == 'rebill-auto-payment') {
+
+                add_filter('posts_where', function ($where) {
+
+                    global $wpdb;
+
+                    if ( strpos($where, " AND ".$wpdb->prefix."posts.post_parent > 0 ") === false) {
+                        $where .= " AND ".$wpdb->prefix."posts.post_parent > 0 ";
+                    }
+
+                    return $where;
+
+                }, 10, 1);
+
+                $params['payment_type'] = 'rebill';
+
             }
 
             $values_list = $this->_get_multiple_filter_values($params['payment_type'], leyka_get_payment_types_list());
@@ -900,6 +916,22 @@ class Leyka_Donations_Separated extends Leyka_Donations {
 
                 $params['payment_type'] = 'rebill';
                 $params['meta'][] = ['key' => 'init_recurring_donation_id', 'value' => 0,];
+
+            } else if($params['payment_type'] == 'rebill-auto-payment') {
+
+                $params['payment_type'] = 'rebill';
+
+                add_filter('posts_where', function ($where) {
+
+                    global $wpdb;
+
+                    if ( strpos($where, " AND ".$wpdb->prefix."posts.post_parent > 0 ") === false) {
+                        $where .= " AND ".$wpdb->prefix."posts.post_parent > 0 ";
+                    }
+
+                    return $where;
+
+                }, 10, 1);
 
             }
 
