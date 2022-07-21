@@ -325,7 +325,7 @@ class Leyka_Donations_Posts extends Leyka_Donations {
         }
         if(isset($params['date_to'])) {
 
-            $date = date('Y-m-d 00:00:00', strtotime($params['date_to']));
+            $date = date('Y-m-d 23:59:59', strtotime($params['date_to']));
 
             if($date) {
                 $query_params['date_query'][] = ['before' => $date, 'inclusive' => true,];
@@ -641,9 +641,11 @@ class Leyka_Donations_Posts extends Leyka_Donations {
             default:
         }
 
-        // TODO: При очень большом кол-ве записей о пожертвованиях WP_Query отдает ошибку если
-        //  $query_params['posts_per_page'] === -1. Разобраться, ограничение ли это WP, баг или бутылочное горлышко
-        //  производительности серверов.
+        /**
+         * @todo При очень большом кол-ве записей о пожертвованиях WP_Query отдает ошибку,
+         * если $query_params['posts_per_page'] === -1. Разобраться, ограничение ли это WP, баг или бутылочное горлышко
+         * производительности серверов.
+         */
         $query_params['posts_per_page'] = $query_params['posts_per_page'] === -1 ? 9999 : $query_params['posts_per_page'];
 
         return new WP_Query($query_params);
