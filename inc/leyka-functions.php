@@ -229,14 +229,24 @@ function leyka_get_validated_campaign($campaign) {
 }
 
 /** Get WP pages list as an array. Used mainly to form a dropdowns. */
-function leyka_get_pages_list() {
+function leyka_get_posts_list($post_types = ['post']) {
 
     global $wpdb;
 
-    $params = apply_filters('leyka_pages_list_query', ['post_status' => 'publish', 'post_type' => 'page',]);
+    $params = apply_filters('leyka_pages_list_query', ['post_status' => 'publish', 'post_type' => $post_types,]);
     foreach($params as $name => &$value) {
-        $value = "`$name` = '$value'";
+
+        if(is_array($value)) {
+
+            $value_string = "'".implode("','", $value)."'";
+            $value = "`$name` IN ($value_string)";
+
+        } else {
+            $value = "`$name` = '$value'";
+        }
+
     }
+
     $res = $wpdb->get_results("SELECT ID, post_title FROM $wpdb->posts WHERE ".implode(' AND ', $params));
 
     $pages = [0 => __('Website main page', 'leyka'),];

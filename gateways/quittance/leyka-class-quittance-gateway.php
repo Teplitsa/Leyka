@@ -19,7 +19,7 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
                 'default' => leyka_get_default_success_page(),
                 'title' => __('Page to redirect a donor after a donation', 'leyka'),
                 'comment' => __('Select a page for donor to redirect to after he has acquired a quittance.', 'leyka'),
-                'list_entries' => leyka_get_pages_list(),
+                'list_entries' => leyka_get_posts_list(['page']),
             ],
         ];
 

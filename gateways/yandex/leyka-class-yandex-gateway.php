@@ -93,6 +93,13 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'is_password' => true,
                 'field_classes' => ['new-api',],
             ],
+            $this->_id.'_return_url' => [
+                'type' => 'select',
+                'default' => '0',
+                'title' => __("Return page", 'leyka'),
+                'description' => __('A page to return from the gateway process page', 'leyka'),
+                'list_entries' => leyka_get_posts_list(['page', 'post', 'leyka_campaign']),
+            ],
             $this->_id.'_test_mode' => [
                 'type' => 'checkbox',
                 'default' => true,
@@ -255,8 +262,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                     ],
                     'confirmation' => [
                         'type' => 'redirect',
-                        'return_url' => empty($form_data['leyka_success_page_url']) ?
-                            leyka_get_success_page_url() : $form_data['leyka_success_page_url'],
+                        'return_url' => get_post_permalink(leyka_options()->opt('yandex_return_url')),
                     ],
                     'capture' => true, // Make payment at once, don't wait for shop confirmation
                     'description' => leyka_get_donation_gateway_description($donation, 128),
@@ -273,7 +279,10 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                     $payment_data['payment_method_data'] = ['type' => $this->_get_gateway_pm_id($pm_id),];
                 }
 
-                $payment = $client->createPayment($payment_data, uniqid('', true));
+                $payment = $client->createPayment(
+                        apply_filters('leyka_yandex_custom_payment_data', $payment_data, $pm_id, $donation_id),
+                        uniqid('', true)
+                );
 
                 $donation->add_gateway_response($payment); // On callback the response will be re-written
 
