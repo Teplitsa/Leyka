@@ -43,7 +43,7 @@ $data = Leyka_Donations_Dynamics_Portlet_Controller::get_instance()->get_templat
                     mode: 'x',
                     callbacks: {
                         label: (tooltipItem) => {
-                            return typeof tooltipItem.value ==='string' ? tooltipItem.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") : tooltipItem.value;
+                            return typeof tooltipItem.value ==='string' ? tooltipItem.value.toString().replace(/\.(\d+)/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, " ") : tooltipItem.value.toFixed(0);
                         }
                     },
                     backgroundColor: 'rgba(0, 103, 153, 1)',
