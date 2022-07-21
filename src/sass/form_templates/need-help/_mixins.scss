@@ -62,21 +62,3 @@
     }
 
 }
-
-@mixin need-help-upto($media) {
-    @if $media == small-screens {
-        @media screen and (max-width: 320px + 20 - 1) { @content; }
-    }
-    @else if $media == medium-screens {
-        @media screen and (max-width: 600px + 20 - 1) { @content; }
-    }
-    @else if $media == large-screens {
-        @media screen and (max-width: 760px + 20 - 1) { @content; }
-    }
-    @else if $media == exlarge-screens {
-        @media screen and (max-width: 1020px + 20 - 1) { @content; }
-    }
-    @else if $media == xxlarge-screens {
-        @media screen and (max-width: 1280px + 20 - 1) { @content; }
-    }
-}
