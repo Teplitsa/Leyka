@@ -181,14 +181,14 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'default' => leyka_get_default_success_page(),
                 'title' => __('Page of successful donation', 'leyka'),
                 'comment' => __('Select a page for donor to redirect to when payment is successful.', 'leyka'),
-                'list_entries' => 'leyka_get_pages_list',
+                'list_entries' => leyka_get_posts_list(['page']),
             ],
             'failure_page' => [
                 'type' => 'select',
                 'default' => leyka_get_default_failure_page(),
                 'title' => __('Page of failed donation', 'leyka'),
                 'comment' => __('Select a page for donor to redirect to when payment is failed for some reason.', 'leyka'),
-                'list_entries' => 'leyka_get_pages_list',
+                'list_entries' => leyka_get_posts_list(['page']),
             ],
             'donor_management_available' => [
                 'type' => 'checkbox',
@@ -1103,7 +1103,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'default' => leyka_get_default_service_terms_page(),
                 'title' => __("Page of terms of service text", 'leyka'),
                 'description' => __('Select a page with terms of the donation service full text.', 'leyka'),
-                'list_entries' => 'leyka_get_pages_list',
+                'list_entries' => leyka_get_posts_list(['page']),
             ],
             'agree_to_terms_link_action' => [
                 'type' => 'radio',
@@ -1160,7 +1160,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'default' => leyka_get_default_pd_terms_page(),
                 'title' => __("Page of personal data usage terms and policy", 'leyka'),
                 'description' => __('Select a page with personal data usage terms and policy full text.', 'leyka'),
-                'list_entries' => 'leyka_get_pages_list',
+                'list_entries' => leyka_get_posts_list(['page']),
             ],
             'agree_to_pd_terms_link_action' => [
                 'type' => 'radio',
