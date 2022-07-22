@@ -285,16 +285,22 @@ jQuery(document).ready(function($){
 
             $tmp.remove();
 
-            const $img = $btn.find('img'),
-                $span = $btn.find('span');
+            const $btn_img = $btn.find('img'),
+                $btn_span = $btn.find('span'),
+                $wallet_link = $btn.parents('.leyka-cryptocurrency-data-wrapper').find('.leyka-cryptocurrency-link');
 
-            $img.addClass('leyka-hidden');
+            $btn_img.addClass('leyka-hidden');
 
-            $span.animate({ marginRight: '0'}, 200);
-            $span.delay(1200)
+            $wallet_link.css('opacity', 0.3);
+
+            $btn_span.animate({ marginRight: '0'}, 200);
+            $btn_span.delay(1200)
                 .animate({ marginRight: '-135px'}, 200, function () {
-                    $img.removeClass('leyka-hidden');
+
+                    $btn_img.removeClass('leyka-hidden');
                     $btn.css('pointer-events', 'all');
+                    $wallet_link.css('opacity', 1);
+
                 });
 
         });

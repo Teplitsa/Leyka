@@ -971,9 +971,11 @@
                 border-radius: 8px;
                 padding: 12px;
                 display: flex;
-                justify-content: space-between;
+                position: relative;
 
                 .leyka-cryptocurrency-data {
+
+                    flex-basis: calc( 100% - 36px);
 
                     .leyka-cryptocurrency-title {
 
@@ -1002,6 +1004,9 @@
                     cursor: pointer;
                     align-items: center;
                     overflow: hidden;
+                    position: absolute;
+                    right: 12px;
+                    height: calc(100% - 24px);
 
                     span {
 
