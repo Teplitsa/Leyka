@@ -177,14 +177,14 @@ class Leyka_Payment_Form {
         if( !$this->is_field_supported('recurring') ) {
             return '';
         }
-        if ( $campaign ) {
-            $is_recurring_campaign = ( $campaign->donations_type_default == 'recurring' ) ? true : false;
+        if($campaign) {
+            $is_recurring_campaign = $campaign->donations_type_default == 'recurring';
         }
 
         ob_start();?>
 
         <label class="checkbox leyka-recurring-field">
-            <input type="checkbox" class="leyka-recurring" name="leyka_recurring" value="1" <?php echo $is_recurring_campaign?'checked="checked"':''; ?>>
+            <input type="checkbox" class="leyka-recurring" name="leyka_recurring" value="1" <?php echo empty($is_recurring_campaign) ? '' : 'checked="checked"';?>>
             <span class="leyka-checkbox-label"><?php _e('Monthly donations', 'leyka');?></span>
         </label>
 
