@@ -1026,9 +1026,10 @@ class Leyka_Mixplat_SBP extends Leyka_Payment_Method {
 
     }
 
-    public function has_recurring_support() {
-        return 'passive';
-    }
+    /** @todo By the 22.07.2022, SBP recurring isn't debugged completely (on the Banks Clients side, not on the Leyka or Mixplat side) */
+//    public function has_recurring_support() {
+//        return 'passive';
+//    }
 
 }
 
