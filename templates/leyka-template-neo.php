@@ -84,7 +84,7 @@ leyka_pf_submission_errors();?>
 
                     <?php }
 
-                    echo leyka_pf_get_recurring_field();
+                    echo leyka_pf_get_recurring_field(empty($campaign) ? false : $campaign->id);
 
                     echo leyka_pf_get_hidden_fields(empty($campaign) ? false : $campaign->id);?>
 
