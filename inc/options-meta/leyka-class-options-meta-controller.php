@@ -63,7 +63,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
 
         if($options_group === 'all') {
             return $this->_get_options_meta(
-                ['main', 'org', 'person', 'payments', 'currency', 'email', 'templates', 'analytics', 'terms', 'admin',]
+                ['main', 'org', 'person', 'payments', 'currency', 'cryptocurrencies', 'email', 'templates', 'analytics', 'terms', 'admin',]
             );
         } else if(is_array($options_group)) {
 
@@ -84,6 +84,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
             case 'person': return $this->_get_meta_person();
             case 'payments': return $this->_get_meta_payments();
             case 'currency': return $this->_get_meta_currency();
+            case 'cryptocurrencies': return $this->_get_meta_cryptocurrencies();
             case 'email':
             case 'emails':
                return $this->_get_meta_emails();
@@ -468,6 +469,26 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
         }
 
         return $currencies_options_meta;
+
+    }
+
+    protected function _get_meta_cryptocurrencies() {
+
+        return [
+            'cryptocurrencies_text' => [
+                'title' => '',
+                'type' => 'rich_html',
+                'default' => __('<b>We also accept donations in cryptocurrencies</b>', 'leyka'),
+                'field_classes' => ['type-rich_html'],
+                'short_format' => true
+            ],
+            'cryptocurrencies_wallets' => [
+                'title' => '',
+                'type' => 'custom_cryptocurrencies_wallets_options',
+                'field_classes' => ['cryptocurrencies-wallets-options'],
+                'default' => []
+            ]
+        ];
 
     }
 

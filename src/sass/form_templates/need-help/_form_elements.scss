@@ -6,7 +6,7 @@
     font-family: var(--leyka-need-help-font-family-main);
     line-height: 21px;
 
-    &.periodicity {
+    &.periodicity, &.currencies {
 
         .leyka-width-small & {
             width: calc(100% + 10px);

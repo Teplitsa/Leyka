@@ -896,6 +896,147 @@
 
     }
 
+    .section--currencies {
+
+        .section__fields.currencies {
+
+            display: flex;
+            font-family: $leyka-font-main;
+
+            a {
+
+                @include star-control-frame();
+                @include star-text-periodicity();
+
+                display: flex;
+                box-shadow: none;
+                background-color: $leyka-star-color-white;
+                color: $leyka-star-color-gray-semi-dark;
+                text-decoration: none;
+                width: calc(50% + 8px);
+                height: 56px;
+                text-align: center;
+                justify-content: center;
+                align-items: center;
+                z-index: 10;
+                margin-left: -8px;
+
+                &:active, &:hover, &:focus {
+                    text-decoration: none;
+                }
+
+                &:first-of-type {
+                    margin-left: 0;
+                }
+
+                &.active {
+                    background-color: $leyka-star-color-main;
+                    color: $leyka-star-color-text-light;
+                    border-color: $leyka-star-color-main;
+                    z-index: 11;
+                }
+
+                &.invisible {
+                    pointer-events: none;
+                    color: $leyka-star-color-gray-superlight;
+                    border-color: $leyka-star-color-gray-superlight;
+                }
+
+            }
+
+        }
+
+    }
+
+    .currency-tab.currency-crypto {
+
+        .cryptocurrencies_text {
+
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+
+        }
+
+        .cryptocurrencies_wallets {
+
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+
+            .leyka-cryptocurrency-data-wrapper {
+
+                background: #FFFFFF;
+                border: 2px solid #EAECF1;
+                border-radius: 8px;
+                padding: 12px;
+                display: flex;
+                position: relative;
+
+                .leyka-cryptocurrency-data {
+
+                    flex-basis: calc( 100% - 36px);
+
+                    .leyka-cryptocurrency-title {
+
+                        font-weight: 500;
+                        font-size: 11px;
+                        line-height: 12px;
+                        letter-spacing: 0.03em;
+                        color: #68748D;
+
+                    }
+
+                    .leyka-cryptocurrency-link {
+
+                        font-weight: 400;
+                        font-size: 16px;
+                        line-height: 24px;
+                        color: #172136;
+
+                    }
+
+                }
+
+                .leyka-button-copy {
+
+                    display: flex;
+                    cursor: pointer;
+                    align-items: center;
+                    overflow: hidden;
+                    position: absolute;
+                    right: 12px;
+                    height: calc(100% - 24px);
+
+                    span {
+
+                        display: flex;
+                        flex-direction: row;
+                        align-items: flex-start;
+                        justify-content: center;
+                        padding: 6px 10px;
+                        gap: 10px;
+                        background: #75BA45;
+                        border-radius: 4px;
+                        font-weight: 500;
+                        font-size: 11px;
+                        line-height: 12px;
+                        letter-spacing: 0.03em;
+                        color: #FFFFFF;
+                        width: 135px;
+                        margin-right: -135px;
+                        height: 24px;
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
 }
 
 .leyka-screen-thankyou .leyka-pf-star .leyka-screen-form,

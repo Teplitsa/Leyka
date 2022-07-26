@@ -1540,7 +1540,7 @@ jQuery(document).ready(function($){
             }
 
             // Generate & set the new item ID:
-            let new_item_id = '';
+            let new_item_id = leyka_get_random_string(4);
             do {
                 new_item_id = leyka_get_random_string(4);
             } while($items_wrapper.find('#item-'+new_item_id).length);
@@ -1552,11 +1552,29 @@ jQuery(document).ready(function($){
                 .prop('id', 'item-'+new_item_id)
                 .show();
 
+            const template_item_id = $item_template.prop('id').replace('item-', '');
+
             if($items_wrapper.find('#item-'+new_item_id)) {
 
                 $items_wrapper.sortable('option', 'update')();
 
                 const $new_item = $('#item-'+new_item_id);
+
+                $.each($new_item.find('*'), function(key, new_item_child_element){
+
+                    $(new_item_child_element).prop(
+                        'id',
+                        $(new_item_child_element).prop('id').replace(template_item_id, new_item_id)
+                    );
+
+                    if($(new_item_child_element).prop('name')) {
+                        $(new_item_child_element).prop(
+                            'name',
+                            $(new_item_child_element).prop('name').replace(template_item_id, new_item_id)
+                        );
+                    }
+
+                });
 
                 if($new_item && $new_item.hasClass('payment-amount-option')) {
 

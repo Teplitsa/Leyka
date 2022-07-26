@@ -223,6 +223,7 @@ jQuery(document).ready(function($){
 			$this.addClass('active');
 
             setupPeriodicity($_form);
+            setupCurrencies($_form);
             setupSwiperWidth($_form);
 
             const amount_mode = $('.section--amount .section__fields.amount').data('amount-mode');
@@ -235,9 +236,62 @@ jQuery(document).ready(function($){
             }
 
         });
-        
+
+        $('.leyka-tpl-star-form .section__fields.currencies').on('click.leyka', 'a', function(e){
+
+            e.preventDefault();
+
+            let $this = $(this),
+                $_form = $(this).closest('form.leyka-pm-form');
+
+            $this.closest('.section__fields').find('a').removeClass('active');
+            $this.addClass('active');
+
+            $_form.find('.currency-tab').addClass('leyka-hidden');
+            $_form.find('.currency-tab.currency-'+$this.data('currency')).removeClass('leyka-hidden');
+
+        });
+
+        $('.leyka-tpl-star-form .currency-tab .leyka-button-copy').on('click.leyka', function(e){
+
+            const $btn = $(this);
+
+            $btn.css('pointer-events', 'none');
+
+            const $tmp = $("<textarea>");
+
+            $("body").append($tmp);
+
+            $tmp.val($btn.parent('.leyka-cryptocurrency-data-wrapper').find('.leyka-cryptocurrency-link').text())
+                .select();
+
+            document.execCommand("copy");
+
+            $tmp.remove();
+
+            const $btn_img = $btn.find('img'),
+                $btn_span = $btn.find('span'),
+                $wallet_link = $btn.parents('.leyka-cryptocurrency-data-wrapper').find('.leyka-cryptocurrency-link');
+
+            $btn_img.addClass('leyka-hidden');
+
+            $wallet_link.css('opacity', 0.3);
+
+            $btn_span.animate({ marginRight: '0'}, 200);
+            $btn_span.delay(1200)
+                .animate({ marginRight: '-135px'}, 200, function () {
+
+                    $btn_img.removeClass('leyka-hidden');
+                    $btn.css('pointer-events', 'all');
+                    $wallet_link.css('opacity', 1);
+
+                });
+
+        });
+
         $('.leyka-tpl-star-form form.leyka-pm-form').each(function(){
             setupPeriodicity($(this));
+            setupCurrencies($(this));
             setupSwiperWidth($(this));
         });
     }
@@ -373,6 +427,24 @@ jQuery(document).ready(function($){
         }
         
         checkFormFillCompletion($_form);
+
+    }
+
+    function setupCurrencies($form) {
+
+        const periodicity = $form.find('.section__fields.periodicity a.active').data('periodicity');
+
+        if(periodicity === 'once') {
+            $('.section.section--currencies').removeClass('leyka-hidden');
+        } else {
+            $('.section.section--currencies').addClass('leyka-hidden');
+        }
+
+        $form.find('.section__fields.currencies a').removeClass('active');
+        $form.find('.currency-tab').addClass('leyka-hidden');
+
+        $form.find('.section__fields.currencies a:not([data-currency="crypto"]):first-child').addClass('active');
+        $form.find('.currency-tab:not(.currency-crypto)').first().removeClass('leyka-hidden');
 
     }
 

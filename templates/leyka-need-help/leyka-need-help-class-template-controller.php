@@ -81,7 +81,9 @@ class Leyka_Need_Help_Template_Controller extends Leyka_Template_Controller {
                 [$campaign->daily_rouble_pm] : leyka_get_pm_list(true, $main_currency_id),
             'amount_mode' => $amount_mode,
             'amount_variants' => $amount_variants,
-            'platform_signature_on_form_enabled' => leyka_options()->opt('platform_signature_on_form_enabled')
+            'platform_signature_on_form_enabled' => leyka_options()->opt('platform_signature_on_form_enabled'),
+            'cryptocurrencies_wallets' => leyka_options()->opt('cryptocurrencies_wallets'),
+            'cryptocurrencies_text' => leyka_options()->opt('cryptocurrencies_text')
         ];
 
     }

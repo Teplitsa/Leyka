@@ -464,6 +464,16 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
             ],
             [
                 'section' => [
+                    'name' => 'cryptocurrencies_options',
+                    'title' => __('Cryptocurrencies', 'leyka'),
+                    'is_default_collapsed' => false,
+                    'options' => [
+                        'cryptocurrencies_text', 'cryptocurrencies_wallets'
+                    ]
+                ]
+            ],
+            [
+                'section' => [
                     'name' => 'additional_fields_library_settings',
                     'title' => __('Additional fields library', 'leyka'),
                     'is_default_collapsed' => false,

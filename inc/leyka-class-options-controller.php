@@ -156,6 +156,8 @@ class Leyka_Options_Controller extends Leyka_Singleton {
             $new_options_group_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta('payments');
         } else if(stripos($option_id, 'currency') !== false) {
             $new_options_group_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta('currency');
+        } else if(stripos($option_id, 'cryptocurrencies') !== false) {
+                $new_options_group_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta('cryptocurrencies');
         } else if(stripos($option_id, 'email') !== false || stripos($option_id, 'notify') !== false) {
             $new_options_group_meta = Leyka_Options_Meta_Controller::get_instance()->get_options_meta('emails');
         } else if(
