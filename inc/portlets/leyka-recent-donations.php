@@ -37,8 +37,8 @@ $data = Leyka_Recent_Donations_Portlet_Controller::get_instance()->get_template_
             <td class="donation-donor">
 
                 <?php $edit_url = empty($donation['donor']['id']) ?
-                    admin_url('admin.php?page=leyka_donor_info&donor='.$donation['donor']['id']) :
-                    admin_url('admin.php?page=leyka_donation_info&donation='.$donation['id'])?>
+                    admin_url('admin.php?page=leyka_donation_info&donation='.$donation['id']) :
+                    admin_url('admin.php?page=leyka_donor_info&donor='.$donation['donor']['id']) ?>
 
                 <a href="<?php echo $edit_url;?>" target="_blank"><?php echo $donation['donor']['name'];?></a>
                 <div class="donor-contact"><?php echo $donation['donor']['email'];?></div>
