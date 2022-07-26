@@ -101,12 +101,12 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             'meta_input' => $donation_meta_fields,
         ], true);
 
-        if($params['gateway_id']) {
-            do_action("leyka_{$params['gateway_id']}_add_donation_specific_data", $donation_id, $params);
-        }
-
         if(is_wp_error($donation_id)) {
             return $donation_id;
+        }
+
+        if($params['gateway_id']) {
+            do_action("leyka_{$params['gateway_id']}_add_donation_specific_data", $donation_id, $params);
         }
 
         if(isset($donation_meta_fields['_rebilling_is_active'])) {

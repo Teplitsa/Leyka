@@ -135,14 +135,12 @@ abstract class Leyka_Donation_Base {
         }
 
         $pm_data = leyka_pf_get_payment_method_value();
-        $pm_data = $pm_data ?
-            $pm_data :
-            [
-                'payment_method_id' => empty($params['pm_id']) ?
-                    (empty($params['payment_method_id']) ? '' : $params['payment_method_id']) :
-                    $params['pm_id'],
-                'gateway_id' => empty($params['gateway_id']) ? '' : $params['gateway_id'],
-            ];
+        $pm_data = $pm_data ? : [
+            'payment_method_id' => empty($params['pm_id']) ?
+                (empty($params['payment_method_id']) ? '' : $params['payment_method_id']) :
+                $params['pm_id'],
+            'gateway_id' => empty($params['gateway_id']) ? '' : $params['gateway_id'],
+        ];
 
         $pm_full_id = $pm_data['gateway_id'].'-'.$pm_data['payment_method_id'];
 
@@ -159,7 +157,7 @@ abstract class Leyka_Donation_Base {
         // Currency:
         $params['currency_id'] = empty($params['currency_id']) ?
             (empty($params['currency']) ? '' : mb_strtolower($params['currency'])) : mb_strtolower($params['currency_id']);
-        $params['currency_id'] = $params['currency_id'] ? $params['currency_id'] : leyka_pf_get_currency_value();
+        $params['currency_id'] = $params['currency_id'] ? : leyka_pf_get_currency_value();
 
         $params['currency_id'] = empty($params['currency_id']) || !leyka_get_currencies_data($params['currency_id']) ?
             'RUB' : mb_strtoupper($params['currency_id']);
