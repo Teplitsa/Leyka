@@ -121,29 +121,63 @@ function leyka_shortcode_donors_count($atts) {
         'unstyled' => 0, // True/1 to use Leyka styling for the output, false/0 otherwise
     ], $atts);
 
-    $donors_params = ['role__in' => [Leyka_Donor::DONOR_USER_ROLE,], 'number' => -1, 'fields' => 'id', 'meta_query' => [],];
+    $atts['campaign_id'] = $atts['campaign_id'] === 'current' ?
+        (get_post() && get_post()->post_type === Leyka_Campaign_Management::$post_type ? get_the_ID() : false) :
+        ($atts['campaign_id'] === 'all' ? false : absint($atts['campaign_id']));
 
-    if($atts['campaign_id']) {
+    if(leyka_options()->opt('donor_management_available')) {
 
-        $atts['campaign_id'] = $atts['campaign_id'] === 'current' ?
-            (get_post() && get_post()->post_type === Leyka_Campaign_Management::$post_type ? get_the_ID() : false) :
-            ($atts['campaign_id'] === 'all' ? false : absint($atts['campaign_id']));
+        $donors_params = ['role__in' => [Leyka_Donor::DONOR_USER_ROLE,], 'number' => -1, 'fields' => 'id', 'meta_query' => [],];
 
         if($atts['campaign_id']) {
             $donors_params['meta_query'][] = [
                 'key' => 'leyka_donor_campaigns',
-                'value' => 'i:'.absint($atts['campaign_id']).';', // A little freaky, I know, but it's the best we could think of
+                'value' => 'i:'.absint($atts['campaign_id']).';', // A little freaky, I know, but it's all we could think of
                 'compare' => 'LIKE',
             ];
         }
 
-    }
-    if($atts['recurring']) {
-        $donors_params['meta_query'][] = ['key' => 'leyka_donor_type', 'value' => 'regular',];
-    }
+        if($atts['recurring']) {
+            $donors_params['meta_query'][] = ['key' => 'leyka_donor_type', 'value' => 'regular',];
+        }
 
-    $query = new WP_User_Query($donors_params);
-    $donors_count = $query->get_total();
+        $query = new WP_User_Query($donors_params);
+        $donors_count = $query->get_total();
+
+    } else { // If Donors management is off, Donors count is just unique Donations' Donors emails count
+
+        // We're going to need meta_value DISTINCT here. It's very rare case, so we are not using Leyka_Donations here:
+        global $wpdb;
+
+        if(in_array(get_option('leyka_donations_storage_type'), ['sep', 'sep-incompleted'])) { // Separated Donations storage
+
+            /** @todo Add the counting for the sep-based Donations storage */
+
+        } else { // Post-based Donations storage
+
+            $query_clauses = [
+                'campaign_id_join' => $atts['campaign_id'] ? "LEFT JOIN {$wpdb->postmeta} pm_2 ON p.ID = pm_2.post_id" : '',
+                'campaign_id_where' => $atts['campaign_id'] ?
+                    "AND pm_2.meta_key = 'leyka_campaign_id' AND pm_2.meta_value = ".absint($atts['campaign_id']) : '',
+                'recurring_join' => $atts['recurring'] ? "LEFT JOIN {$wpdb->postmeta} pm_3 ON p.ID = pm_3.post_id" : '',
+                'recurring_where' => $atts['recurring'] ?
+                    "AND p.post_parent = 0 AND pm_3.meta_key = 'leyka_payment_type' AND pm_3.meta_value = 'rebill'" : '',
+            ];
+
+            $query = "SELECT COUNT(DISTINCT pm_1.meta_value) FROM {$wpdb->postmeta} pm_1
+			LEFT JOIN {$wpdb->posts} p ON p.ID = pm_1.post_id
+            {$query_clauses['campaign_id_join']}
+            {$query_clauses['recurring_join']}
+            WHERE p.post_status = 'funded'
+			    AND pm_1.meta_key = 'leyka_donor_email'
+			    {$query_clauses['campaign_id_where']}
+			    {$query_clauses['recurring_where']}";
+
+            $donors_count = $wpdb->get_var($query);
+
+        }
+
+    }
 
     return apply_filters(
         'leyka_shortcode_donors_count',
