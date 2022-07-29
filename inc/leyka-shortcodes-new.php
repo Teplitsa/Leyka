@@ -144,14 +144,26 @@ function leyka_shortcode_donors_count($atts) {
         $query = new WP_User_Query($donors_params);
         $donors_count = $query->get_total();
 
-    } else { // If Donors management is off, Donors count is just unique Donations' Donors emails count
+    } else { // If Donors management option is off, Donors count is just unique Donations' Donors emails count
 
-        // We're going to need meta_value DISTINCT here. It's very rare case, so we are not using Leyka_Donations here:
+        // We're going to need meta_value DISTINCT here. It's very rare case, so we are not using Leyka_Donations:
         global $wpdb;
 
         if(in_array(get_option('leyka_donations_storage_type'), ['sep', 'sep-incompleted'])) { // Separated Donations storage
 
-            /** @todo Add the counting for the sep-based Donations storage */
+            $query_clauses = [
+                'campaign_id_where' => $atts['campaign_id'] ? "AND d.campaign_id = ".absint($atts['campaign_id']) : '',
+                'recurring_join' => $atts['recurring'] ?
+                    "LEFT JOIN {$wpdb->prefix}leyka_donations_meta dm ON d.ID = dm.donation_id" : '',
+                'recurring_where' => $atts['recurring'] ?
+                    "AND d.payment_type = 'rebill' AND dm.init_recurring_donation_id = 0" : '',
+            ];
+
+            $query = "SELECT COUNT(DISTINCT d.donor_email)
+            FROM {$wpdb->prefix}leyka_donations d
+            WHERE d.status = 'funded'
+                {$query_clauses['campaign_id_where']}
+                {$query_clauses['recurring_where']}";
 
         } else { // Post-based Donations storage
 
@@ -173,9 +185,9 @@ function leyka_shortcode_donors_count($atts) {
 			    {$query_clauses['campaign_id_where']}
 			    {$query_clauses['recurring_where']}";
 
-            $donors_count = $wpdb->get_var($query);
-
         }
+
+        $donors_count = $wpdb->get_var($query);
 
     }
 
