@@ -525,9 +525,9 @@ jQuery(document).ready(function($){
                 $nextItem = null;
 
 			if($this.hasClass('swipe-right')) {
-				$nextItem = $activeItem.next('.swiper-item:not(.disabled)');
+				$nextItem = $activeItem.nextAll('.swiper-item:not(.disabled)').first();
 			} else {
-				$nextItem = $activeItem.prev('.swiper-item:not(.disabled)');
+				$nextItem = $activeItem.prevAll('.swiper-item:not(.disabled)').first();
 			}
 
 			if( !$nextItem.length ) {

@@ -1442,8 +1442,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                 leyka_options()->opt('additional_donation_form_fields_library', $fields_library);
             }
 
-            if($updated_additional_fields_settings != $campaign->additional_fields_settings) {
-
+            if($updated_additional_fields_settings != $campaign->additional_fields_settings && !empty($fields_library) ) {
                 // If some Additional fields are removed from Campaign, remove the Campaign ID from their settings in the Library:
                 $fields_removed = false;
                 foreach($campaign->additional_fields_settings as $field_id) {
