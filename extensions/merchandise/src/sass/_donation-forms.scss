@@ -2,6 +2,11 @@
 
     &.merchandise-grid {
 
+        .merchandise-swiper {
+            display: flex;
+            flex-direction: row;
+        }
+
         .merchandise-label {
             font-family: var(--leyka-font-main);
             font-size: 20px;
