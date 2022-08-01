@@ -2,9 +2,9 @@
 
     &.merchandise-grid {
 
-        .merchandise-swiper {
-            display: flex;
-            flex-direction: row;
+        .merchandise-item {
+            margin-left: 0;
+            padding: 10px;
         }
 
         .merchandise-label {
