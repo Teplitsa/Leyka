@@ -4,7 +4,7 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: лейка, crowdfunding, fundraising, donations, recurring donations, charity, leyka, recurring, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, yoomoney, chronopay, sms, yookassa, миксплат, mixplat, paypal, paymaster, qiwi, киви, stripe, страйп, gds, google data studio
 Requires at least: 3.6.1
-Tested up to: 6.0
+Tested up to: 6.0.1
 Stable tag: 3.27
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -83,6 +83,15 @@ For technical support questions, please, use the [plugin support email](maillto:
 5. The plugin start page (a console)
 
 == Changelog ==
+= 3.28 =
+* New: SBP system for Mixplat added.
+* New: cryptocurrencies support added.
+* New: return page option for Yookassa gateway added.
+* Fix: recurrents health module subscriptions status update fixed.
+* Fix: donation hooks now work correctly.
+* Fix: admin donations list filters fix.
+* Fix: small fixes.
+
 = 3.27 =
 * New: new Recurring Health engine (v.1b) is added.
 * New: now Additional fields placeholders can be used in the Donations notifications emails.
