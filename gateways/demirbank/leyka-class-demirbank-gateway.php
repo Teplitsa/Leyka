@@ -110,7 +110,7 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
             'trantype'=> 'Auth',
             'instalment' => '',
             'rnd' => microtime(),
-            'lang' => 'en',
+            'lang' => 'ru',
             'currency' => '417',
             'refreshtime' => 5
         ];
