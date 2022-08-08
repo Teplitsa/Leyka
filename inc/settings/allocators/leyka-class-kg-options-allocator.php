@@ -34,7 +34,7 @@ class Leyka_Kg_Options_Allocator extends Leyka_Ru_Options_Allocator {
                 'name' => 'receiver_country',
                 'title' => __('Country', 'leyka'),
                 'is_default_collapsed' => false,
-                'options' => ['receiver_country', 'currency_main',],
+                'options' => ['receiver_country', 'currency_main', 'phone_format'],
             ],],
             ['section' => [
                 'name' => 'beneficiary_org_name',

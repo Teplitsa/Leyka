@@ -135,6 +135,13 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'required' => true,
                 'list_entries' => leyka_get_countries_list(),
             ],
+            'phone_format' => [
+                'type' => 'select',
+                'default' => leyka_get_default_phone_format_id(),
+                'title' => __('Select phone format', 'leyka'),
+                'list_entries' => leyka_get_phone_formats_list(),
+                'description' => __('Select a phone number format suitable for the selected country', 'leyka'),
+            ],
             'receiver_legal_type' => [
                 'type' => 'radio',
                 'title' => __('Donations receiver legal type', 'leyka'),

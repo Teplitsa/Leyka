@@ -1057,6 +1057,42 @@ function leyka_get_countries_full_info($country_id = null) {
 
 }
 
+function leyka_get_phone_formats_full_info($phone_format_id = null) {
+
+    $phone_formats = apply_filters('leyka_phone_formats_full_info', [
+        'ru' => ['title' => '+_ ( _ _ _ ) _ _ _ - _ _ - _ _', 'mask' => '+9(999)999-99-99'],
+        'kg' => ['title' => '+_ _ _ ( _ _ _ ) _ _ - _ _ - _ _', 'mask' => '+999(999)99-99-99']
+    ]);
+
+    if(empty($phone_format_id)) {
+        return $phone_formats;
+    }
+
+    return empty($phone_formats[$phone_format_id]) ? false : $phone_formats[$phone_format_id];
+
+}
+
+/**
+ * A service function to get phone formats list as an array.
+ *
+ * @return array
+ */
+function leyka_get_phone_formats_list() {
+
+    $phone_formats_list = [];
+    foreach(leyka_get_phone_formats_full_info() as $phone_format_id => $info) {
+        $phone_formats_list[$phone_format_id] = $info['title'];
+    }
+
+    return apply_filters('leyka_phone_formats_list', $phone_formats_list);
+
+}
+
+/** A service function to get the default phone format ID */
+function leyka_get_default_phone_format_id() {
+    return 'ru';
+}
+
 /**
  * A service function to get countries list as a simple array of [country_id => country_title] pairs.
  *
