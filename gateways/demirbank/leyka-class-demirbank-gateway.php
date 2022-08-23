@@ -167,6 +167,10 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
 //            wp_mail(get_option('admin_email'), __('Demirbank callback hash check failed!', 'leyka'), $message);
 //        }
 
+        if (empty($_POST['donation_id'])) {
+            exit(200);
+        }
+
         $donation = Leyka_Donations::get_instance()->get_donation((int)$_POST['donation_id']);
 
         if($_POST['ProcReturnCode'] === '00') {
