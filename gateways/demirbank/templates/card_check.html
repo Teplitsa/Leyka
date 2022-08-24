@@ -1,4 +1,155 @@
+<style>
+
+    #card-check-tools {
+        width: 320px;
+        float: left;
+        padding: 15px;
+        clear: both;
+    }
+
+    #card-check-tools input[type="button"] {
+        font-size: 14px;
+    }
+
+    #card-check-tools .leyka-pf__overlay {
+        display: none;
+        opacity: 0;
+        -webkit-transition: opacity 0.35s;
+        -o-transition: opacity 0.35s;
+        transition: opacity 0.35s;
+    }
+
+    #card-check-tools.leyka-pf--notice-open .leyka-pf__overlay {
+        display: block;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 10000;
+        opacity: 1;
+    }
+
+
+    #card-check-tools .leyka-pf__notice .notice__frame {
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        overflow-y: auto;
+    }
+
+    #card-check-tools .leyka-pf__notice .notice__flow {
+        font-weight: normal;
+        font-style: normal;
+        line-height: normal;
+        font-size: 16px;
+        padding-bottom: 0;
+        text-align: center;
+    }
+
+    #card-check-tools .leyka-pf__notice .notice__close {
+        text-decoration: none;
+        box-shadow: none;
+        outline: none;
+        position: absolute;
+        bottom: 12px;
+        right: calc(50% - 32px);
+        display: block;
+        z-index: 10120;
+        text-align: center;
+        padding: 5px 20px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    #card-check-tools.leyka-pf--notice-open .leyka-pf__notice {
+        display: block;
+    }
+
+    @media screen and (min-width: 480px) {
+        #card-check-tools .leyka-pf__notice {
+            left: 64px;
+            width: calc(100% - 64px);
+            margin-left: -32px;
+        }
+    }
+
+    @media screen and (min-width: 960px) {
+        #card-check-tools .leyka-pf__notice {
+            left: 35%;
+            width: 30%;
+        }
+    }
+
+    #card-check-tools .leyka-pf__notice {
+        display: none;
+        position: fixed;
+        top: 64px;
+        z-index: 10015;
+        border-radius: 4px;
+        margin-bottom: 32px;
+        background: #ffffff;
+        font-size: 14px;
+        padding: 40px 32px 80px 32px;
+    }
+
+</style>
+
 <div id="card-check" style="font-size: 12px;">
     #CARD_CHECK_TEXT_TMPL#
     #CARD_CHECK_TOOLS_TMPL#
 </div>
+
+<script type="application/javascript">
+
+    function printCardCheck() {
+
+        const printContent = document.getElementById('card-check-text').innerHTML;
+        const originalContent = document.body.innerHTML;
+
+        document.body.innerHTML = printContent;
+
+        window.print();
+
+        document.body.innerHTML = originalContent;
+
+    }
+
+    function sendCardCheck(donationId) {
+
+        const ajaxUrl = '/wp-admin/admin-ajax.php';
+        const request = new XMLHttpRequest();
+        const params = "action=send-card-check&donation_id="+donationId;
+
+        request.open("POST", ajaxUrl, true);
+
+        request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+        request.addEventListener("readystatechange", () => {
+
+            if(request.readyState === 4 && request.status === 200) {
+
+                if (request.responseText === '1') {
+
+                    let $tools = document.getElementById('card-check-tools');
+
+                    $tools.classList.add('leyka-pf--notice-open');
+
+                }
+
+            }
+
+        });
+
+        request.send(params);
+
+    }
+
+    function noticeClose() {
+        document.getElementById('card-check-tools').classList.remove('leyka-pf--notice-open');
+    }
+
+</script>
