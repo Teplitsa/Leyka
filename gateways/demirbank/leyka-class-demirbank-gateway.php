@@ -191,9 +191,9 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
 
         add_filter('the_content', function ($content){
 
-            global $wp;
+            global $wp_query;
 
-            if((leyka_get_success_page_url() !== home_url( add_query_arg( array(), $wp->request ) ).'/') || empty($_POST)) {
+            if((url_to_postid(leyka_get_success_page_url()) !== $wp_query->post->ID) || empty($_POST)) {
                 return $content;
             }
 
