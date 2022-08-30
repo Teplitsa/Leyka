@@ -311,13 +311,20 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                     $init_recurring_donation = $this->get_init_recurring_donation($_POST['SubscriptionId']);
 
                     if( !$init_recurring_donation || !$init_recurring_donation->id || is_wp_error($init_recurring_donation) ) {
-                        die(json_encode([
-                            'code' => '11',
-                            'reason' => sprintf(
-                                __('Init recurring payment is not found. POST SubscriptionId: %s', 'leyka'),
-                                $_POST['SubscriptionId']
-                            )
-                        ]));
+
+                        if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
+
+                            $message = __("This message has been sent because CloudPayments recurrent callback was sent to your website (CP recurring ID: ".$_POST['SubscriptionId']."), but Leyka couldn't find the according Recurring Subscription in its database. The donor's funds were taken off his account as normal, but Leyka will not save the recurring donation info in its database.\n\r\n\rTo fix this, please check your Leyka database for <a href='".admin_url('admin.php?page=leyka_recurring_subscriptions')."'>the recurring subscription</a> with CP recurring ID of ".$_POST['SubscriptionId'].". The details of the call are below.", 'leyka')."\n\r\n\r".
+                                "POST:\n\r".print_r($_POST, true)."\n\r\n\r".
+                                "GET:\n\r".print_r($_GET, true)."\n\r\n\r".
+                                "SERVER:\n\r".print_r(apply_filters('leyka_notification_server_data', $_SERVER), true)."\n\r\n\r";
+
+                            wp_mail(leyka_get_website_tech_support_email(), __('CloudPayments recurring donation warning: subscription data not found!', 'leyka'), $message);
+
+                        }
+
+                        die(json_encode(['code' => '0',]));
+
                     }
 
                 } else if($_POST['InvoiceId'] !== 'leyka-test-donation') { // Single or init recurring donation
