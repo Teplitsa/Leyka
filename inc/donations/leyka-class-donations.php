@@ -367,14 +367,20 @@ class Leyka_Donations_Posts extends Leyka_Donations {
             } else if(mb_stripos($params['amount_filter'], '>=') !== false) {
                 $params['meta'][] = [
                     'key' => 'leyka_donation_amount',
-                    'value' => (int)str_replace('>=', '', $params['amount_filter']),
+                    'value' => round(str_replace('>=', '', $params['amount_filter']), 2),
                     'compare' => '>=',
                 ];
             } else if(mb_stripos($params['amount_filter'], '<=') !== false) {
                 $params['meta'][] = [
                     'key' => 'leyka_donation_amount',
-                    'value' => (int)str_replace('<=', '', $params['amount_filter']),
+                    'value' => round(str_replace('<=', '', $params['amount_filter']), 2),
                     'compare' => '<=',
+                ];
+            } else if(mb_stripos($params['amount_filter'], '=') !== false) {
+                $params['meta'][] = [
+                    'key' => 'leyka_donation_amount',
+                    'value' => round(str_replace('=', '', $params['amount_filter']), 2),
+                    'compare' => '=',
                 ];
             }
 
@@ -1147,6 +1153,10 @@ class Leyka_Donations_Separated extends Leyka_Donations {
             } else if(stripos($params['amount_filter'], '<=') !== false) {
                 $where['amount'] = $wpdb->prepare(
                     "{$wpdb->prefix}leyka_donations.amount <= %f", round(str_replace('<=', '', $params['amount_filter']), 2)
+                );
+            } else if(mb_stripos($params['amount_filter'], '=') !== false) {
+                $where['amount'] = $wpdb->prepare(
+                    "{$wpdb->prefix}leyka_donations.amount = %f", round(str_replace('=', '', $params['amount_filter']), 2)
                 );
             }
 

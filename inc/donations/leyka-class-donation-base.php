@@ -30,7 +30,7 @@ abstract class Leyka_Donation_Base {
         $params['force_insert'] = !empty($params['force_insert']);
 
         $params['amount'] = empty($params['amount']) ? leyka_pf_get_amount_value() : round((float)$params['amount'], 2);
-        $params['amount'] = $params['amount'] ? $params['amount'] : 0.0;
+        $params['amount'] = $params['amount'] ? : 0.0;
         if( !$params['amount'] && !$params['force_insert'] ) {
             return new WP_Error('incorrect_amount_given', __('Empty or incorrect amount given while trying to add a donation', 'leyka'));
         }
