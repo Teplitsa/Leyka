@@ -103,8 +103,8 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         ]) && Leyka_Donations_Errors::get_instance()->add_error(
             'CP-7052',
             __('"Complete" callback handling error - can\'t find initial recurring donation by SubscriptionId given', 'leyka'), [
-                'description' => __('The "complete" system notification callback handling resulted in the error: the initial recurring donation with the required SubscriptionId parameter value was not found in the website database. This may mean that the recurring subscription data in the website DB has been partially lost. This problem won\'t allow the recurring subscription to work correctly - you should contact the website system administrator ASAP to investigate the causes of the problem.', 'leyka'),
-                'recommendation_admin' => __("It's very important to contact the website system administrator ASAP and ask them to find the reason of absence of the SubscriptionId parameter needed in the website DB.", 'leyka'),
+                'description' => __('The "complete" system notification callback handling resulted in the error: the initial recurring donation with the required SubscriptionId parameter value was not found in the website database. This may mean that the recurring subscription data in the website DB has been lost. While this problem won\'t stop the donor\'s funds to be taken as usually (and the donor\'s recurring subscription will continue to work), but this recurring subscription donations won\'t be saved in the website DB correctly. You should contact the website system administrator ASAP to investigate the cause of the problem.', 'leyka'),
+                'recommendation_admin' => __("It's very important to contact the website system administrator ASAP and ask them to find the reason of absence of the SubscriptionId parameter needed in the website DB. Check the donation's Gateway Response data for the \"Recurrent subscription ID\" value for you to check.", 'leyka'),
                 'recommendation_donor' => __('', 'leyka'),
         ]) && Leyka_Donations_Errors::get_instance()->add_error(
             'CP-7012',
@@ -319,7 +319,11 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                                 "GET:\n\r".print_r($_GET, true)."\n\r\n\r".
                                 "SERVER:\n\r".print_r(apply_filters('leyka_notification_server_data', $_SERVER), true)."\n\r\n\r";
 
+                            add_filter('wp_mail_content_type', 'leyka_set_html_content_type');
+
                             wp_mail(leyka_get_website_tech_support_email(), __('CloudPayments recurring donation warning: subscription data not found!', 'leyka'), $message);
+
+                            remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
                         }
 
@@ -373,11 +377,29 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                         die(json_encode(['code' => '0',]));
                     }
 
+                    $donation->payment_type = 'rebill';
+
                     $init_recurring_donation = $this->get_init_recurring_donation($_POST['SubscriptionId']);
 
                     if( !$init_recurring_donation || !$init_recurring_donation->id || is_wp_error($init_recurring_donation) ) {
 
-                        $donation->payment_type = 'rebill';
+                        $donor_name = explode('@', $_POST['Email']);
+
+                        if( !empty($_POST['Description']) ) {
+
+                            $campaign_id = leyka_get_campaign_by_title($_POST['Description']);
+                            $donation->campaign_id = $campaign_id ? $campaign_id->ID : false;
+
+                        }
+
+                        $donation->donor_name = empty($_POST['AccountId']) ? $donor_name[0] : $_POST['AccountId'];
+                        $donation->donor_email = $_POST['Email'];
+                        $donation->amount = round($_POST['Amount'], 2);
+                        $donation->currency_id = leyka_get_currency_id_by_symbol($_POST['Currency']);
+                        // WARNING: we shouldn't save the $donation->cp_recurring_id value here - it will mess up the possible
+                        // future rebills of this Subscription. Instead, $_POST['SubscriptionId'] should be saved
+                        // in $donation->gateway_response only
+
                         $donation->error_id = 'CP-7052'; // $donation->status will be set to "failed" automatically
                         $donation->add_gateway_response($_POST);
 
@@ -390,7 +412,6 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                     }
 
-                    $donation->payment_type = 'rebill';
                     $donation->init_recurring_donation_id = $init_recurring_donation->id;
                     $donation->payment_title = $init_recurring_donation->title;
                     $donation->campaign_id = $init_recurring_donation->campaign_id;

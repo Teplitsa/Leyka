@@ -331,7 +331,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'purpose_text':
             case 'payment_title':
             case 'campaign_payment_title':
-                $value = $this->_donation_meta['payment_title'] ? : $this->campaign->payment_title;
+                $value = $this->_donation_meta['payment_title'] ? : ($this->campaign_id ? $this->campaign->payment_title : '');
                 break;
 
             case 'status':

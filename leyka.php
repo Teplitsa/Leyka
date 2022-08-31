@@ -187,3 +187,10 @@ add_action('init', function(){
 });
 
 leyka(); // All systems, go
+
+add_action('init', function(){
+
+    if(isset($_GET['tst'])) {
+        echo '<pre>'.print_r(leyka_get_campaign_by_title('Пожертвование'), 1).'</pre>';
+    }
+});
