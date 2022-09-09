@@ -9,6 +9,8 @@
 <?php $gateway = leyka_get_gateway_by_id($_GET['gateway']); /** @var $gateway Leyka_Gateway */
 $pm_available = leyka_options()->opt('pm_available');
 
+$active_currencies = $gateway->get_active_currencies();
+
 if( !$gateway ) {?>
     <p class="error"><?php _e('Unknown gateway.', 'leyka');?></p>
 <?php } else { // Gateway settings area ?>
@@ -85,55 +87,91 @@ if( !$gateway ) {?>
 
         </div>
 
-        <div class="gateway-pm-list">
+        <div class="gateway-right-sidebar">
 
-            <h3><?php _e('Payment methods', 'leyka');?></h3>
+            <?php if ($gateway->supported_currencies) { ?>
 
-            <?php $pm_list_by_categories = $gateway->get_payment_methods(null, false, true);
-            $commissions = leyka_options()->opt('commission');
+                <div class="gateway-currencies-list">
 
-            foreach($pm_list_by_categories as $category_id => $pm_list) {
+                    <h3><?php _e('Currencies', 'leyka');?></h3>
 
-                if( !$pm_list ) {
-                    continue;
-                }?>
+                    <div class="gateway-currencies-wrapper">
 
-                <?php if(count($pm_list_by_categories) > 1) {?>
-                <h4><?php echo leyka_get_pm_category_label($category_id);?></h4>
-                <?php }?>
+                        <?php foreach ($gateway->supported_currencies as $currency) {?>
 
-                <?php foreach($pm_list as $pm) { /** @var $pm Leyka_Payment_Method */ ?>
+                            <div id="<?php echo $gateway->id."-".$currency;?>" class="settings-block option-block type-checkbox">
 
-                <div id="<?php echo $pm->full_id;?>" class="settings-block option-block type-checkbox">
+                                <div id="<?php echo $gateway->id."-".$currency.'-wrapper';?>">
 
-                    <div id="<?php echo $pm->full_id.'-wrapper';?>">
+                                    <label>
+                                        <span class="field-component field">
+                                            <input type="checkbox" id="<?php echo $gateway->id."-".$currency;?>" class="gw-active-currency" name="leyka_gw_active_currency[]" value="<?php echo $currency;?>" data-pm-label="<?php echo $gateway->id."-".$currency;?>" data-pm-label-backend="<?php echo $currency;?>" <?php echo in_array($currency, $active_currencies) ? 'checked="checked"' : '';?>> <?php echo strtoupper($currency);?>
+                                        </span>
+                                    </label>
 
-                        <label>
-                            <span class="field-component field">
-                                <input type="checkbox" id="<?php echo $pm->full_id;?>" class="pm-available" name="leyka_pm_available[]" value="<?php echo $pm->full_id;?>" data-pm-label="<?php echo $pm->title_backend;?>" data-pm-label-backend="<?php echo $pm->label_backend;?>" <?php echo in_array($pm->full_id, $pm_available) ? 'checked="checked"' : '';?>> <?php echo $pm->title_backend;?>
-                            </span>
-                        </label>
+                                </div>
 
-                        <?php if($pm->description) {?>
-                        <span class="field-q">
-                            <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
-                            <span class="field-q-tooltip"><?php echo $pm->description;?></span>
-                        </span>
-                        <?php }?>
+                            </div>
 
-                    </div>
+                        <?php } ?>
 
-                    <div id="<?php echo $pm->full_id.'-commission-wrapper';?>" class="pm-commission-wrapper" <?php echo in_array($pm->full_id, $pm_available) ? '' : 'style="display:none;"';?>>
-                        <label>
-                            <input type="number" class="leyka-commission-field" name="leyka_commission[<?php echo $pm->full_id;?>]" value="<?php echo empty($commissions[$pm->full_id]) ? '' : (float)$commissions[$pm->full_id];?>" step="0.01" min="0.0" max="100.0" id="leyka_commission_<?php echo $pm->full_id;?>" placeholder="<?php esc_attr_e('Commission size', 'leyka');?>">
-                        </label>%
                     </div>
 
                 </div>
 
-                <?php }
+            <?php } ?>
 
-            }?>
+            <div class="gateway-pm-list">
+
+                <h3><?php _e('Payment methods', 'leyka');?></h3>
+
+                <?php $pm_list_by_categories = $gateway->get_payment_methods(null, false, true);
+                $commissions = leyka_options()->opt('commission');
+
+                foreach($pm_list_by_categories as $category_id => $pm_list) {
+
+                    if( !$pm_list ) {
+                        continue;
+                    }?>
+
+                    <?php if(count($pm_list_by_categories) > 1) {?>
+                        <h4><?php echo leyka_get_pm_category_label($category_id);?></h4>
+                    <?php }?>
+
+                    <?php foreach($pm_list as $pm) { /** @var $pm Leyka_Payment_Method */ ?>
+
+                        <div id="<?php echo $pm->full_id;?>" class="settings-block option-block type-checkbox">
+
+                            <div id="<?php echo $pm->full_id.'-wrapper';?>">
+
+                                <label>
+                            <span class="field-component field">
+                                <input type="checkbox" id="<?php echo $pm->full_id;?>" class="pm-available" name="leyka_pm_available[]" value="<?php echo $pm->full_id;?>" data-pm-label="<?php echo $pm->title_backend;?>" data-pm-label-backend="<?php echo $pm->label_backend;?>" <?php echo in_array($pm->full_id, $pm_available) ? 'checked="checked"' : '';?>> <?php echo $pm->title_backend;?>
+                            </span>
+                                </label>
+
+                                <?php if($pm->description) {?>
+                                    <span class="field-q">
+                            <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
+                            <span class="field-q-tooltip"><?php echo $pm->description;?></span>
+                        </span>
+                                <?php }?>
+
+                            </div>
+
+                            <div id="<?php echo $pm->full_id.'-commission-wrapper';?>" class="pm-commission-wrapper" <?php echo in_array($pm->full_id, $pm_available) ? '' : 'style="display:none;"';?>>
+                                <label>
+                                    <input type="number" class="leyka-commission-field" name="leyka_commission[<?php echo $pm->full_id;?>]" value="<?php echo empty($commissions[$pm->full_id]) ? '' : (float)$commissions[$pm->full_id];?>" step="0.01" min="0.0" max="100.0" id="leyka_commission_<?php echo $pm->full_id;?>" placeholder="<?php esc_attr_e('Commission size', 'leyka');?>">
+                                </label>%
+                            </div>
+
+                        </div>
+
+                    <?php }
+
+                }?>
+            </div>
+
         </div>
 
     </div>

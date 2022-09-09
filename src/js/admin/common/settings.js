@@ -1006,4 +1006,17 @@ jQuery(document).ready(function($){
 
     }).change();
 
+    $('.leyka-tab-title').on('click', function () {
+
+        $(this).parents('.leyka-tabs-titles').find('.leyka-tab-title').removeClass('leyka-active');
+        $(this).addClass('leyka-active');
+
+        $(this).parents('.leyka-tabs').find('.leyka-tab-content').addClass('leyka-hidden');
+
+        const tab_content_id = $(this).attr('id').replace('tab', 'wrapper');
+
+        $('#'+tab_content_id).parents('.leyka-tab-content').removeClass('leyka-hidden');
+
+    });
+
 });

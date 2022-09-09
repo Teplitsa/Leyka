@@ -25,7 +25,6 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
         $this->_min_commission = 2.8;
         $this->_receiver_types = ['legal'];
         $this->_may_support_recurring = true;
-        $this->_countries = ['by',];
 
     }
 

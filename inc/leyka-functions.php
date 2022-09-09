@@ -977,7 +977,7 @@ function leyka_scale_ultra($campaign) {
         <?php $target_f = number_format($target, ($target - round($target) > 0.0 ? 2 : 0), '.', ' ');
         $collected_f = number_format($campaign->total_funded, ($campaign->total_funded - round($campaign->total_funded) > 0.0 ? 2 : 0), '.', ' ');
 
-        printf(esc_html_x('%s of %s %s', 'Label on ultra-compact scale', 'leyka'), '<b>'.$collected_f.'</b>', '<b>'.$target_f.'</b>', leyka_get_currency_label());?>
+        printf(esc_html_x('%s of %s %s', 'Label on ultra-compact scale', 'leyka'), '<b>'.$collected_f.'</b>', '<b>'.$target_f.'</b>', leyka_get_currency_label($campaign->currency));?>
 
         </span>
     </div>
@@ -991,7 +991,7 @@ function leyka_fake_scale_ultra($campaign) {
         $campaign = new Leyka_Campaign($campaign);
     }
 
-    $curr_label = leyka_get_currency_label();
+    $curr_label = leyka_get_currency_label($campaign->currency);
     $collected_f = number_format($campaign->total_funded, ($campaign->total_funded - round($campaign->total_funded) > 0.0 ? 2 : 0), '.', ' ');?>
 
 <div class="leyka-scale-ultra-fake">
@@ -1183,6 +1183,14 @@ function leyka_get_main_currencies_full_info() {
             'flexible_default_amount' => 500,
             'fixed_amounts' => '100,300,500,1000',
         ],
+        'usd' => [
+            'title' => __('US Dollar', 'leyka'),
+            'label' => __('$', 'leyka'),
+            'min_amount' => 1,
+            'max_amount' => 1000,
+            'flexible_default_amount' => 10,
+            'fixed_amounts' => '1,3,5,10,15,50',
+        ],
         'eur' => [
             'title' => __('Euro', 'leyka'),
             'label' => __('€', 'leyka'),
@@ -1202,24 +1210,6 @@ function leyka_get_main_currencies_full_info() {
     ]);
 }
 
-function leyka_get_secondary_currencies_full_info($country_id = null) {
-
-    return apply_filters(
-        'leyka_secondary_currencies_list', [
-            'usd' => [
-                'title' => __('US Dollar', 'leyka'),
-                'label' => __('$', 'leyka'),
-                'min_amount' => 1,
-                'max_amount' => 1000,
-                'flexible_default_amount' => 10,
-                'fixed_amounts' => '1,3,5,10,15,50',
-            ]
-        ],
-        $country_id
-    );
-
-}
-
 /**
  * A low-level function to get all supported currencies & their default settings for all supported countries.
  *
@@ -1229,7 +1219,7 @@ function leyka_get_secondary_currencies_full_info($country_id = null) {
  */
 function leyka_get_currencies_full_info($currency_id = null) {
 
-    $currencies = leyka_get_main_currencies_full_info() + leyka_get_secondary_currencies_full_info();
+    $currencies = leyka_get_main_currencies_full_info();
 
     if(empty($currency_id)) {
         return $currencies;
@@ -1255,6 +1245,17 @@ function leyka_get_country_currency($country_id = null) {
 
     return $country && !empty($country['currency']) ? $country['currency'] : false;
 
+}
+
+/**
+ * Get the main currency.
+ *
+ * @return mixed string Country ID
+ */
+function leyka_get_main_currency() {
+    return is_string(Leyka_Options_Controller::get_option_value('currency_main')) ?
+        strtolower(Leyka_Options_Controller::get_option_value('currency_main')) :
+        Leyka_Options_Controller::get_option_value('currency_main');
 }
 
 /**
@@ -2889,5 +2890,113 @@ function leyka_set_transient($name, $value, $expiration_date = null) {
     $expiration = $expiration_date ? strtotime($expiration_date) - time() : strtotime('tomorrow') - time();
 
     return set_transient($name, $value, $expiration);
+
+}
+
+function leyka_get_currencies_rates($currencies_ids = []) {
+
+    if (empty($currencies_ids)) {
+        $currencies_ids = array_keys(leyka_get_main_currencies_full_info());
+    }
+
+    $rates = [];
+
+    foreach ($currencies_ids as $currency_id) {
+        $rates[$currency_id] = leyka_options()->opt("leyka_currency_{$currency_id}_exchange_rate");
+    }
+
+    return $rates;
+
+}
+
+function leyka_get_currency_rate($currency_id) {
+
+    $result = leyka_get_currencies_rates([$currency_id]);
+
+    return $result[$currency_id];
+
+}
+
+function leyka_currency_convert($currency_amount, $from_currency_id, $to_currency_id = null) {
+
+    $amount = $currency_amount / leyka_get_currency_rate(strtolower($from_currency_id));
+
+    if($to_currency_id) {
+        $amount = $amount * leyka_get_currency_rate(strtolower($to_currency_id));
+    }
+
+    return $amount;
+
+}
+
+function leyka_refresh_currencies_rates() {
+
+    $currencies_info = leyka_get_main_currencies_full_info();
+    $currencies_list = strtoupper(implode(',', array_keys($currencies_info)));
+    $main_currency = leyka_get_main_currency();
+
+    $req_url = 'https://api.exchangerate.host/latest?base='.$main_currency.'&symbols='.$currencies_list;
+    $response_json = file_get_contents($req_url);
+
+    if(false !== $response_json) {
+        try {
+
+            $response = json_decode($response_json, true);
+
+            if($response['success'] === true) {
+
+                foreach ($response['rates'] as $currency_id => $currency_rate) {
+                    leyka_options()->opt("leyka_currency_".strtolower($currency_id)."_exchange_rate", $currency_rate);
+                }
+
+                return $response['rates'];
+
+            } else {
+                return false;
+            }
+
+        } catch(Exception $e) {
+            return false;
+        }
+    }
+
+}
+
+
+function leyka_actualize_campaigns_money_values($real_recount = false) {
+
+    $query_params = [
+        'post_type' => Leyka_Campaign_Management::$post_type,
+        'posts_per_page' => -1,
+        'post_status' => 'any'
+    ];
+
+    $campaigns_data = new WP_Query($query_params);
+
+    foreach ($campaigns_data->posts as $campaign_data) {
+        leyka_actualize_campaign_money_values($campaign_data->ID, $real_recount);
+    }
+
+}
+
+function leyka_actualize_campaign_money_values($campaign_id, $real_recount = false) {
+
+    $campaign = new Leyka_Campaign($campaign_id);
+
+    if( !$campaign || $campaign->currency === leyka_get_main_currency() ){
+        return false;
+    }
+
+    if( !empty($campaign->target) || $campaign->target !== 'no_target' ) {
+        $campaign->target = round(leyka_currency_convert($campaign->target, $campaign->currency));
+    }
+
+    $campaign->currency = leyka_get_main_currency();
+
+    if($real_recount) {
+        $campaign->update_total_funded_amount();
+    } else {
+        $campaign->total_funded = round(leyka_currency_convert($campaign->total_funded, $campaign->currency), 2);
+    }
 
 }

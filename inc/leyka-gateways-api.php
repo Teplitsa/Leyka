@@ -207,7 +207,6 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     protected $_docs_link = ''; // Gateways user manual page URL
     protected $_registration_link = ''; // Gateway registration page URL
     protected $_has_wizard = false;
-    protected $_countries = ['ru',];
 
     protected $_min_commission = 0.0;
     protected $_receiver_types = ['legal']; // legal|physical
@@ -215,6 +214,7 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     protected $_may_support_recurring = false; // Are recurring payments possible via gateway at all
     protected $_recurring_auto_cancelling_supported = true; // Is it possible to cancel recurring payments via Gateway API
 
+    protected $_active_currencies = [];
     protected $_payment_methods = []; // Supported PMs array
     protected $_options = []; // Gateway configs
 
@@ -334,6 +334,12 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
             case 'wizard_href':
             case 'wizard_link':
                 return admin_url('admin.php?page=leyka_settings_new&screen=wizard-'.$this->_id);
+
+            case 'supported_currencies':
+                return $this->get_supported_currencies();
+
+            case 'active_currencies':
+                return $this->get_active_currencies();
 
             default:
                 return false;
@@ -790,21 +796,31 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
     }
 
-    /**
-     * Get Gateway supported countries IDs as an array of countries IDs.
-     * @return mixed Either an array of supported countries IDs, or NULL if all countries supported.
-     */
-    public function get_countries() {
-        return empty($this->_countries) && !is_array($this->_countries) ? NULL : $this->_countries;
+    public function get_supported_currencies() {
+
+        $pms = $this->get_payment_methods(true);
+
+        $supported_currencies = [];
+
+
+        /** @var $pm Leyka_Payment_Method */
+        foreach ($pms as $pm) {
+
+            foreach ($pm->currencies as $currency) {
+                $supported_currencies[] = $currency;
+            }
+
+        }
+
+        return array_unique($supported_currencies);
     }
 
-    public function is_country_supported($country_id = false) {
+    public function get_active_currencies() {
+        return !empty($this->_active_currencies) ? $this->_active_currencies : $this->supported_currencies;
+    }
 
-        $country_id = $country_id ? trim(esc_attr($country_id)) : leyka_options()->opt_safe('receiver_country');
-        $countries = $this->get_countries();
-
-        return $countries ? in_array($country_id, $countries) : true;
-
+    public function set_active_currencies($currencies) {
+        $this->_active_currencies = $currencies;
     }
 
 }

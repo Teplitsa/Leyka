@@ -261,31 +261,54 @@
 
                     }
 
-                    .gateway-pm-list {
+                    .gateway-right-sidebar {
 
                         flex: 1 1 50%;
-
                         padding-left: 24px;
                         margin-left: -1px;
                         border-left: 1px solid $color-border-light;
+                        display: flex;
+                        flex-direction: column;
 
-                        .option-block.type-checkbox input {
-                            margin-right: 8px;
+                        .gateway-currencies-list {
+                            .gateway-currencies-wrapper {
+
+                                display: flex;
+                                flex-direction: row;
+                                flex-wrap: wrap;
+
+                                .settings-block {
+                                    flex-basis: 25%;
+                                }
+
+                            }
                         }
 
-                        .pm-commission-wrapper {
+                        .gateway-pm-list {
 
-                            margin-top: 8px;
+                            flex: 1 1 50%;
 
-                            input.leyka-commission-field {
-                                margin-left: 0;
-                                font-size: 13px;
-                                width: 140px;
+                            .option-block.type-checkbox input {
+                                margin-right: 8px;
+                            }
+
+                            .pm-commission-wrapper {
+
+                                margin-top: 8px;
+
+                                input.leyka-commission-field {
+                                    margin-left: 0;
+                                    font-size: 13px;
+                                    width: 140px;
+                                }
+
                             }
 
                         }
 
                     }
+
+
 
                 }
 

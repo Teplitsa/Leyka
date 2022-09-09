@@ -27,7 +27,6 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
         $this->_min_commission = '2.2';
         $this->_receiver_types = ['legal'];
         $this->_may_support_recurring = true;
-        $this->_countries = ['eu'];
 
     }
 
@@ -167,7 +166,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
     }
 
     public function submission_form_data($form_data, $pm_id, $donation_id) {
-        return [];
+        return $form_data;
     }
 
     public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {

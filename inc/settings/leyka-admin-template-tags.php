@@ -94,7 +94,24 @@ if( !function_exists('leyka_pm_sortable_option_html_new') ) {
         $is_hidden = !!$is_hidden;
 
         $pm = leyka_get_pm_by_id($pm_full_id, true);
-        $gateway = $pm ? $pm->gateway : false;?>
+        $gateway = $pm ? $pm->gateway : false;
+
+        if ($gateway) {
+
+            $available_currencies = [];
+
+            foreach ($gateway->active_currencies as $gw_active_currency) {
+                if ($pm->has_currency_support($gw_active_currency)) {
+
+                    $currency_data = leyka_get_currencies_data($gw_active_currency);
+                    $available_currencies[] = $currency_data['label'];
+
+                }
+            }
+
+            $available_currencies_list = implode(',', $available_currencies);
+
+        } ?>
 
         <li class="pm-order" data-pm-id="<?php echo $pm_full_id;?>" <?php echo $is_hidden ? 'style="display:none;"' : '';?>>
 
@@ -116,7 +133,7 @@ if( !function_exists('leyka_pm_sortable_option_html_new') ) {
 
                 <div class="pm-label-wrapper">
 
-                    <span class="pm-label" id="pm-label-<?php echo $pm_full_id;?>"><?php echo $pm_label;?></span>
+                    <span class="pm-label" id="pm-label-<?php echo $pm_full_id;?>" data-currencies-list="<?php echo '('.$available_currencies_list.')';?>"><?php echo $pm->label;?> <b><?php echo '('.$available_currencies_list.')';?></b></span>
 
                     <span class="pm-label-fields" style="display:none;">
 

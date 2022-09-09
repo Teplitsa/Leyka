@@ -40,8 +40,14 @@ jQuery(document).ready(function($){
         // Donation form validation already passed in the main script (public.js)
 
         let is_recurring = $form.find('.leyka-recurring').prop('checked') ||
-                           $form.find('.is-recurring-chosen').val() > 0, // For Revo template
-            data_array = $form.serializeArray(),
+                           $form.find('.is-recurring-chosen').val() > 0; // For Revo template;
+
+        const $_form = $form.clone(),
+            currency = $('.section__fields.currencies a.active').data('currency');
+
+        $_form.find(`.currency-tab:not(.currency-${currency})`).remove();
+
+        let data_array = $_form.serializeArray(),
             data = {action: 'leyka_ajax_get_gateway_redirect_data'};
 
         for(let i = 0; i < data_array.length; i++) {

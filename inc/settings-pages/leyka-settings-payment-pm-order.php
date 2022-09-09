@@ -47,7 +47,7 @@ array_shift($pm_order);?>
 
         $gateway = leyka_get_gateway_by_id($pm->gateway_id);
 
-        if(in_array($pm_full_id, $pm_available) && $gateway->is_country_supported()) {
+        if(in_array($pm_full_id, $pm_available)) {
             leyka_pm_sortable_option_html_new(false, $pm_full_id, $pm->label);
         } else {
             unset($pm_order[$i]);

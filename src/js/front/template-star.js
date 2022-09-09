@@ -181,11 +181,14 @@ jQuery(document).ready(function($){
 
     function showAmountOptionsByPaymentType($form, payment_type) {
 
-        $form.find(`.section--amount .swiper-item`).removeClass('selected');
-        $form.find(`.section--amount .swiper-item:not(.flex-amount-item)`).css('display', 'none');
-        $form.find(`.section--amount .swiper-item[data-payment-type="${payment_type}"]`).css('display', 'block');
+        const currency = $('.section__fields.currencies a.active').data('currency'),
+            $currency_tab = $(`.currency-tab.currency-${currency}`),
+            $swiper_first_item = $currency_tab.find(`.section--amount .swiper-item[data-payment-type="${payment_type}"]`).first();
 
-        let $swiper_first_item = $(`.section--amount .swiper-item[data-payment-type="${payment_type}"]`).first();
+        $currency_tab.find(`.section--amount .swiper-item`).removeClass('selected');
+        $currency_tab.find(`.section--amount .swiper-item:not(.flex-amount-item)`).css('display', 'none');
+        $currency_tab.find(`.section--amount .swiper-item[data-payment-type="${payment_type}"]`).css('display', 'block');
+
         $swiper_first_item.first().addClass('selected');
 
         setAmountInputValue($form, $swiper_first_item.find('.amount').text());
@@ -194,6 +197,8 @@ jQuery(document).ready(function($){
     }
 
     function showSelectedAmountDescription($form, amount_option_id) {
+
+        $form.find('.section__fields.amount-description').css('display', 'none');
 
         $amount_option_description = $form.find(`.section__fields.amount-description span[data-payment-amount-option-id = "${amount_option_id}"]`);
 
@@ -204,8 +209,6 @@ jQuery(document).ready(function($){
 
             $amount_option_description.css('display', 'block');
 
-        } else {
-            $form.find('.section__fields.amount-description').css('display', 'none');
         }
 
     }
@@ -242,13 +245,31 @@ jQuery(document).ready(function($){
             e.preventDefault();
 
             let $this = $(this),
-                $_form = $(this).closest('form.leyka-pm-form');
+                $_form = $(this).closest('form.leyka-pm-form'),
+                currency = $(this).data('currency');
 
             $this.closest('.section__fields').find('a').removeClass('active');
             $this.addClass('active');
 
             $_form.find('.currency-tab').addClass('leyka-hidden');
             $_form.find('.currency-tab.currency-'+$this.data('currency')).removeClass('leyka-hidden');
+
+            $_form.find('#selected_currency').val(currency);
+
+            if ($(this).data('currency') !== 'crypto') {
+                $_form.find('.section--person').removeClass('leyka-hidden');
+            } else {
+                $_form.find('.section--person').addClass('leyka-hidden');
+            }
+
+            const amount_mode = $('.section--amount .section__fields.amount').data('amount-mode');
+            const payment_type = $('.section__fields.periodicity a.active').data('periodicity') === 'once' ? 'single' : 'recurring';
+
+            if(amount_mode === 'flexible') {
+                setAmountInputValue($_form, $('.flex-amount-item input').val());
+            } else {
+                showAmountOptionsByPaymentType($_form, payment_type);
+            }
 
         });
 
@@ -290,9 +311,21 @@ jQuery(document).ready(function($){
         });
 
         $('.leyka-tpl-star-form form.leyka-pm-form').each(function(){
+
             setupPeriodicity($(this));
             setupCurrencies($(this));
             setupSwiperWidth($(this));
+
+            const $_form = $(this).closest('form.leyka-pm-form');
+            const amount_mode = $('.section--amount .section__fields.amount').data('amount-mode');
+            const payment_type = $('.section__fields.periodicity a.active').data('periodicity') === 'once' ? 'single' : 'recurring';
+
+            if(amount_mode === 'flexible') {
+                setAmountInputValue($_form, $('.flex-amount-item input').val());
+            } else {
+                showAmountOptionsByPaymentType($_form, payment_type);
+            }
+
         });
     }
 
@@ -434,11 +467,14 @@ jQuery(document).ready(function($){
 
         const periodicity = $form.find('.section__fields.periodicity a.active').data('periodicity');
 
+        $('.section.section--currencies').removeClass('leyka-hidden');
+
         if(periodicity === 'once') {
-            $('.section.section--currencies').removeClass('leyka-hidden');
+            $('.section.section--currencies a[data-currency="crypto"]').removeClass('leyka-hidden');
         } else {
-            $('.section.section--currencies').addClass('leyka-hidden');
+            $('.section.section--currencies a[data-currency="crypto"]').addClass('leyka-hidden');
         }
+
 
         $form.find('.section__fields.currencies a').removeClass('active');
         $form.find('.currency-tab').addClass('leyka-hidden');
@@ -508,9 +544,17 @@ jQuery(document).ready(function($){
 
         });
 
-        $('.leyka-tpl-star-form .star-swiper .swiper-item:first').click();
 
-        $('.leyka-tpl-star-form .star-swiper .swiper-item.selected')
+        const currency = $('.section__fields.currencies a.active').data('currency'),
+            $currency_tab = $(`.currency-tab.currency-${currency}`),
+            payment_type = $('.section__fields.periodicity a.active').data('periodicity') === 'once' ? 'single' : 'recurring',
+            $swiper_amount_first_item = $currency_tab.find(`.section--amount .swiper-item[data-payment-type="${payment_type}"]`).first(),
+            $swiper_cards_first_item = $currency_tab.find(`.section--cards .swiper-item`).first();
+
+        $swiper_amount_first_item.click();
+        $swiper_cards_first_item.click();
+
+        $currency_tab.find('.star-swiper .swiper-item.selected')
             .find('input[type="radio"]')
                 .prop('checked', true)
                 .change();
@@ -590,7 +634,6 @@ jQuery(document).ready(function($){
             left = -dif;
         } else {
             left = $swiper.width() / 2 - ($activeItem.offset().left - $list.offset().left) - $activeItem.width() / 2;
-            // console.log(parseInt($activeItem.css('margin-right')))
             left -= parseInt($activeItem.css('margin-right')) * 1.5; //24; // minus margin * 1.5
         }
         
@@ -751,8 +794,12 @@ jQuery(document).ready(function($){
         $('.leyka-tpl-star-form').on('submit.leyka', 'form.leyka-pm-form', function(e){
 
             var $form = $(this),
+                $currency_tab = $form.find('.currency-tab:not(.leyka-hidden)'),
                 $errors = $form.parents('.leyka-payment-form').siblings('.leyka-submit-errors'),
-                $pm_selected = $form.find('input[name="leyka_payment_method"]:checked');
+                $pm_selected = $form.find('input[name="leyka_payment_method"]:checked'),
+                currency = $('.section__fields.currencies a.active').data('currency');
+
+            $form.find(`.currency-tab:not(.currency-${currency})`).remove();
 
 			e.preventDefault();
 
@@ -899,7 +946,10 @@ jQuery(document).ready(function($){
 
         });
 
-        $('.leyka-tpl-star-form .payments-grid .swiper-item.selected').each(function(i, el){
+        const currency = $('.section__fields.currencies a.active').data('currency'),
+            $currency_tab = $(`.currency-tab.currency-${currency}`);
+
+        $currency_tab.find('.payments-grid .swiper-item.selected').each(function(i, el){
             $(this).click();
         });
 

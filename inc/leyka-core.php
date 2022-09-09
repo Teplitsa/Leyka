@@ -870,6 +870,8 @@ class Leyka extends Leyka_Singleton {
 
             } else if($request[0] === 'update_recurring_subscriptions') {
                 do_action('leyka_do_procedure', 'update-recurring-subscriptions');
+            } else if($request[0] === 'refresh_currencies_rates') {
+                do_action('leyka_do_procedure', 'refresh-currencies-rates');
             } else if($request[0] === 'do_campaigns_targets_reaching_mailout') {
 
                 // Campaigns target reached mailout shortcut URL:
@@ -1300,14 +1302,6 @@ class Leyka extends Leyka_Singleton {
         foreach($this->_gateways as $gateway) { /** @var $gateway Leyka_Gateway */
 
             if($params['activation_status'] && $gateway->get_activation_status() !== $params['activation_status']) {
-                continue;
-            }
-
-            if(
-                $params['country_id']
-                && $gateway->get_countries()
-                && !in_array($params['country_id'], $gateway->get_countries())
-            ) {
                 continue;
             }
 

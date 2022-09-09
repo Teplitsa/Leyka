@@ -13,9 +13,10 @@ var leykaValidateForm,
 
 	leykaValidateForm = function($_form){
 
-		var is_valid = true,
+		let $currency_tab = $_form.find('.currency-tab:not(.leyka-hidden)'),
+            is_valid = true,
 			email = $.trim($_form.find('.donor__textfield--email input').val()),
-			$amount_field = $_form.find('.amount__figure input.leyka_donation_amount'),
+			$amount_field = $currency_tab.find('.amount__figure input.leyka_donation_amount'),
 			amount = parseInt($amount_field.val().replace(/\s/g, '')),
 			$comment_filed = $_form.find(':input.leyka-donor-comment'),
 			$agree_terms = $_form.find('.donor__oferta input[name="leyka_agree"]'),
@@ -25,14 +26,14 @@ var leykaValidateForm,
 		if($current_field.val().length === 0 || !leyka_validate_donor_name($current_field.val())) {
 
             is_valid = false;
-			$_form.find('.donor__textfield--name').addClass('invalid');
+            $_form.find('.donor__textfield--name').addClass('invalid');
 
 		}
 
 		if(email.length === 0 || !is_email(email)) {
 
             is_valid = false;
-			$_form.find('.donor__textfield--email').addClass('invalid');
+            $_form.find('.donor__textfield--email').addClass('invalid');
 
 		}
 
@@ -43,7 +44,7 @@ var leykaValidateForm,
 		) {
 
             is_valid = false;
-			$_form.find('.donor__textfield--comment').addClass('invalid');
+            $_form.find('.donor__textfield--comment').addClass('invalid');
 
 		}
 
@@ -53,7 +54,7 @@ var leykaValidateForm,
 		) {
 
             is_valid = false;
-			$_form.find('.donor__oferta').addClass('invalid');
+            $_form.find('.donor__oferta').addClass('invalid');
 
 		}
 

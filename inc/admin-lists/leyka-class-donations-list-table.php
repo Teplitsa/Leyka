@@ -419,18 +419,27 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
             $donation->gateway_label : __('Custom payment info', 'leyka');
         $pm_label = is_a($pm, 'Leyka_Payment_Method') ? $donation->pm_label : $donation->pm;
 
+        $currency_exchange_tooltip = $donation->main_currency_amount." ".$donation->main_currency_id
+            .( $donation->main_currency_amount !== $donation->main_currency_amount_total ? " / ".$donation->main_currency_amount_total." ".$donation->main_currency_id : "")
+            ." </br> 1 ".$donation->main_currency_id." = ".$donation->main_currency_rate." ".$donation->currency_id;
+
         return apply_filters(
             'leyka_admin_donation_gateway_pm_column_content',
-            "<span class='leyka-gateway-pm has-tooltip leyka-tooltip-align-left' title='".$gateway_label.' / '.$pm_label."'>
-                <div class='leyka-gateway-name'>"
+            "<span class='leyka-gateway-pm '>
+                <div class='leyka-gateway-name has-tooltip leyka-tooltip-align-left' title='".$gateway_label.' / '.$pm_label."'>"
                     .($gateway ?
                         '<img src="'.$gateway->icon_url.'" alt="'.$gateway_label.'">' :
                         '<img src="'.LEYKA_PLUGIN_BASE_URL.'/img/pm-icons/custom-payment-info.svg" alt="'.$pm.'">')
                 ."</div>
-                <div class='leyka-pm-name'>"
+                <div class='leyka-pm-name has-tooltip leyka-tooltip-align-left' title='".$gateway_label.' / '.$pm_label."'>"
                     .(is_a($pm, 'Leyka_Payment_Method') ? "<img src='".$pm->admin_icon_url."' alt='$pm_label'>" : '')
-                ."</div>
-            </span>",
+                ."</div>"
+                .($donation->currency_id !== $donation->main_currency_id ?
+                    "<div class='leyka-currency-exchange has-tooltip leyka-tooltip-align-left' title='".$currency_exchange_tooltip."' >"
+                    ."<img src='".LEYKA_PLUGIN_BASE_URL."/img/icon-currency-exchange.svg' alt='currency-exchange'>"
+                    ."</div>"
+                    : "")
+            ."</span>",
             $donation
         );
 

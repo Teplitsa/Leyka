@@ -18,8 +18,6 @@ class Leyka_Text_Gateway extends Leyka_Gateway {
             $this->_id
         );
 
-        $this->_countries = NULL; // The Text gateway is available for all countries
-
         $this->_docs_link = '';
         $this->_registration_link = '';
 

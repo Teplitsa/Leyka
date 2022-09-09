@@ -22,7 +22,7 @@ if(count($campaign->donations_types_available) > 1) {
 }
 
 $another_amount_title = count($template_data['amount_variants']) > 0 ?
-    __('Another amount', 'leyka') : __('Enter the amount', 'leyka');?>
+    __('Another amount', 'leyka') : __('Enter the amount', 'leyka'); ?>
 
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
 	<symbol width="12" height="9" viewBox="0 0 12 9" id="icon-checkbox-check">
@@ -176,7 +176,26 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                         <div class="star-swiper no-swipe">
                             <div class="full-list equalize-elements-width">
 
-                            <?php foreach($template_data['pm_list'] as $number => $pm) { /** @var $pm Leyka_Payment_Method */?>
+                            <?php foreach($template_data['pm_list'] as $number => $pm) { /** @var $pm Leyka_Payment_Method */
+
+                                $gateway = $pm ? $pm->gateway : false;
+
+                                if ($gateway) {
+
+                                    $available_currencies = [];
+
+                                    foreach ($gateway->active_currencies as $gw_active_currency) {
+                                        if ($pm->has_currency_support($gw_active_currency)) {
+
+                                            $currency_data = leyka_get_currencies_data($gw_active_currency);
+                                            $available_currencies[] = $currency_data['label'];
+
+                                        }
+                                    }
+
+                                    $available_currencies_list = implode('|', $available_currencies);
+
+                                } ?>
 
                                 <div class="payment-opt swiper-item <?php echo $number ? "" : "selected";?>">
                                     <div class="swiper-item-inner">
@@ -188,7 +207,7 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
                                             <?php }?>
                                             </span>
                                         </label>
-                                        <span class="payment-opt__label"><?php echo $pm->label;?></span>
+                                        <span class="payment-opt__label"><?php echo $pm->label;?> <b><?php echo '('.$available_currencies_list.')';?></b></span>
                                     </div>
                                 </div>
                             <?php }?>

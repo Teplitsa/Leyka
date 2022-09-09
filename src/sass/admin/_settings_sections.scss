@@ -164,6 +164,41 @@
                 .tab-content-options-wrapper {
                     .tab-section-options {
 
+                        .leyka-tabs-titles {
+
+                            display: flex;
+                            flex-direction: row;
+                            align-items: flex-start;
+                            padding: 0px;
+                            gap: 10px;
+                            margin-bottom: 16px;
+
+                            .leyka-tab-title {
+
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                padding: 6px 10px;
+                                gap: 6px;
+                                border: 1px solid #DDDDDD;
+                                border-radius: 6px;
+                                font-style: normal;
+                                font-weight: 500;
+                                font-size: 14px;
+                                line-height: 18px;
+                                text-align: center;
+                                color: #565656;
+                                cursor: pointer;
+
+                                &.leyka-active {
+                                    background: #E5E5E5;
+                                }
+
+                            }
+
+
+                        }
+
                         .field-component.field {
                             input:not([type=checkbox]):not([type=radio]), select, textarea {
                                 width: 248px;
@@ -185,6 +220,14 @@
 
                 .field-component.title .required {
                     display: block;
+                }
+
+                &.tab-miscellaneous {
+                    .leyka-currencies-miscs-tabs {
+                        .field-wrapper {
+                            margin-bottom: 0.9rem;
+                        }
+                    }
                 }
             }
         }
