@@ -11,6 +11,91 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: Plugins - Leyka - Development (trunk)\n"
 
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "Enable SBP subscriptions"
+msgstr "Разрешить рекуррентные подписки в СБП"
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "Not all banks have implemented SBP subscriptions so far. Banks are to enable SBP recurrent support in their apps, but the process will take some time. Enable option to allow users to make subscriptions via SPB."
+msgstr "Пока ещё не все банки внедрили у себя поддержку подписок в СБП. Банки постепенно добавляют возможность рекуррентых подписок в свои приложения, но этот процесс может занять время. Подключите опцию, чтобы те пользователи, которым эта функция уже доступна, могли оформить подписки по СБП."
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "Payments via SBP"
+msgstr "Платежи по СБП"
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "Mixplat offers special conditions: 0% commission for SPB payments till Dec 2023.<br><a href=\"mailto:sbp@mixplat.ru\" target=_blank>Check details</a> with your manager."
+msgstr "Миксплат предлагает специальные условия: 0% комиссии для платежей по СБП до конца 2023г.<br><a href=\"mailto:sbp@mixplat.ru\" target=_blank>Уточняйте подробности</a> у вашего менеджера."
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "Project ID is shown on your <a href=\"http://stat.mixplat.ru/projects\" target=_blank>MIXPLAT project settings page</a>"
+msgstr "ID проекта указан в вашем <a href=\"http://stat.mixplat.ru/projects\" target=_blank>личном кабинете Миксплат</a>"
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "API key and Widget key are shown on your <a href=\"http://stat.mixplat.ru/projects\" target=_blank>MIXPLAT project settings page</a>"
+msgstr "Ключ API и ключ виджета указаны в настройках проекта в <a href=\"http://stat.mixplat.ru/projects\" target=_blank>личном кабинете Миксплат</a>"
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "Attention! Test mode on."
+msgstr "Внимание! Тестовый режим."
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "Test mode is dedicated for initial setup only and must be switched off as soon as launch confirmation is received from your manager. There is no real charges during the test mode. For testing purposes you should use special test cards numbers:<li><b>4242424242424242</b> – all payments will be successful</li><li><b>5555555555554444</b> – all payments will be unsuccessful</li><li><b>2201382000000013</b> – payment status is random</li>Use any date and CVC code. Real cards give unsuccessful statuses while test mode is on."
+msgstr "Тестовый режим предназначен только для первоначальной настройки подключения и должен быть отключен после получения подтверждения от менеджера Миксплат, что настройки платежей для вашего проекта выполнены. На этапе тестирования списания денежных средств не производится, используйте следующие номера тестовых карт:<li><b>4242424242424242</b> – платежи успешные</li><li><b>5555555555554444</b> – платежи неуспешные</li><li><b>2201382000000013</b> – случайный статус</li>Дата и CVC - любые. Реальные карты будут давать неуспешный статус платёжа."
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "Donation split mode"
+msgstr "Режим дробления пожертвований"
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "When split mode is on, a certain percent from every donation is credited to special campaign, e.g. \"Administrative expenses\""
+msgstr "При включенном режиме дробления оригинальное пожертвование будет уменьшено и определённый процент будет зачислен на другую кампанию (например, на \"Административные расходы\")"
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "What does \"donation split\" mean:"
+msgstr "Что такое дробление пожертвований:"
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "It means every donation is divided into two campaigns, e.g. 80% is credited to original campaign and 20% is credited to \"Administrative expenses\". Here you define percent to deduct and choose appropriate campaign to credit it on."
+msgstr "Это разбивка всех поступающих платежей между двумя кампаниями Лейки (например, 80% идёт на выбранный донором адресный сбор и 20% – на административные расходы НКО). Вы указываете процент, который требуется отделить, и кампанию для отчислений. В списке пожертвований каждый платёж будет разделён на два."
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "Split percent"
+msgstr "Процент отчислений с пожертований"
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "Permissible range: from 0% to 50%."
+msgstr "Допустимые значения: от 0% до 50%."
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "Split to campaign"
+msgstr "Кампания для отчислений"
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "Choose campaign to be credited with percent from every transaction"
+msgstr "Выберите кампанию, на счёт которой будет отчисляться процент"
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "This campaign receives percent share deducted from the incoming donations."
+msgstr "На счёт этой кампании будет отчисляться указанный процент от всех поступающих пожертований."
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "Split:"
+msgstr "Дробление:"
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "transferred to"
+msgstr "перечислено на"
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "Original donation"
+msgstr "Основное пожертвование"
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:0
+msgid "In order to accept SMS payments you should choose and register the keyword and shortnumber in your MIXPLAT account, as well as compose description text for the donors how to send SMS, including your keyword. Keyword registration is provided free of charge on your <a href=\"http://stat.mixplat.ru/sn\" target=_blank>MIXPLAT account page</a>."
+msgstr "Чтобы принимать платежи по SMS на короткий номер, вы должны выбрать и зарегистрировать ключевое слово на одном из доступных коротких номеров Миксплат, а также отредактировать текст пояснения для донора, указав ваше ключевое слово и сопроводительный текст. Ключевое слово подключается бесплатно в <a href=\"http://stat.mixplat.ru/sn\" target=_blank>личном кабинете Миксплат</a>."
+
 #: templates/leyka-template-need-help.php:478
 #: templates/leyka-template-star.php:511
 msgid "crypto wallets addresses"
@@ -87,7 +172,7 @@ msgstr "Введите свой ключ виджета. Его можно на�
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:56
 msgid "MIXPLAT widget key"
-msgstr "ключ виджета MIXPLAT"
+msgstr "Ключ виджета в системе MIXPLAT"
 
 #: inc/admin-templates/leyka-admin-dashboard-page.php:115
 msgid "The data is actual as of&nbsp;%s"
