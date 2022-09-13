@@ -111,7 +111,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             'line_items' => [[
                 'price_data' => [
                     'unit_amount' => 100*$form_data['leyka_donation_amount'],
-                    'currency' => 'eur',
+                    'currency' => $form_data['leyka_donation_currency'],
                     'product' => leyka_options()->opt('stripe_product_id')
                 ],
                 'quantity' => 1
@@ -677,7 +677,7 @@ class Leyka_Stripe_Card extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
         ]);
 
-        $this->_supported_currencies[] = 'eur';
+        $this->_supported_currencies = ['eur', 'usd', 'rub', 'uah', 'kgs'];
         $this->_default_currency = 'eur';
 
     }

@@ -94,26 +94,24 @@ if( !function_exists('leyka_pm_sortable_option_html_new') ) {
         $is_hidden = !!$is_hidden;
 
         $pm = leyka_get_pm_by_id($pm_full_id, true);
-        $gateway = $pm ? $pm->gateway : false;
 
-        $available_currencies_list = '';
+        if( !$pm ) {
+            return false;
+        }
 
-        if($gateway) {
+        $gateway = $pm->gateway;
+        $available_currencies = [];
 
-            $available_currencies = [];
+        foreach($gateway->active_currencies as $gw_active_currency) {
+            if($pm->has_currency_support($gw_active_currency)) {
 
-            foreach($gateway->active_currencies as $gw_active_currency) {
-                if($pm->has_currency_support($gw_active_currency)) {
+                $currency_data = leyka_get_currencies_data($gw_active_currency);
+                $available_currencies[] = $currency_data['label'];
 
-                    $currency_data = leyka_get_currencies_data($gw_active_currency);
-                    $available_currencies[] = $currency_data['label'];
-
-                }
             }
+        }
 
-            $available_currencies_list = implode(',', $available_currencies);
-
-        } ?>
+        $available_currencies_list = !empty($available_currencies) ? implode(',', $available_currencies) : '';?>
 
         <li class="pm-order" data-pm-id="<?php echo $pm_full_id;?>" <?php echo $is_hidden ? 'style="display:none;"' : '';?>>
 
@@ -122,15 +120,13 @@ if( !function_exists('leyka_pm_sortable_option_html_new') ) {
             <div class="pm-info">
 
                 <div class="pm-icons">
-                <?php if($pm) {
-                    if($pm->icons) {
-                        foreach($pm->icons as $icon_url) {?>
-                            <img class="pm-icon <?php echo $pm->full_id.' '.basename($icon_url, '.svg');?>" src="<?php echo $icon_url;?>" alt="">
-                        <?php }
-                    } else if($pm->main_icon) {?>
-                        <img class="pm-icon <?php echo $pm->full_id.' '.basename($pm->main_icon_url, '.svg');?>" src="<?php echo $pm->main_icon_url;?>" alt="">
+                <?php if($pm->icons) {
+                    foreach($pm->icons as $icon_url) {?>
+                        <img class="pm-icon <?php echo $pm->full_id.' '.basename($icon_url, '.svg');?>" src="<?php echo $icon_url;?>" alt="">
                     <?php }
-                }?>
+                } else if($pm->main_icon) {?>
+                    <img class="pm-icon <?php echo $pm->full_id.' '.basename($pm->main_icon_url, '.svg');?>" src="<?php echo $pm->main_icon_url;?>" alt="">
+                <?php }?>
                 </div>
 
                 <div class="pm-label-wrapper">
