@@ -83,11 +83,11 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
             $curr_amount = 0;
             if($curr_interval_donations) {
 
-                foreach ($curr_interval_donations_data as $curr_interval_donation_id => $curr_interval_donation_currency) {
+                foreach($curr_interval_donations_data as $curr_interval_donation_id => $curr_interval_donation_currency) {
                     $curr_interval_donations_by_currency[$curr_interval_donation_currency][] = $curr_interval_donation_id;
                 }
 
-                foreach ($curr_interval_donations_by_currency as $currency => $donations) {
+                foreach($curr_interval_donations_by_currency as $currency => $donations) {
 
                     $query = leyka_get_donations_storage_type() === 'post' ?
                         // Post-based donations storage:
@@ -136,7 +136,7 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
                     'ARRAY_A'
                 );
 
-                foreach ($prev_interval_donations_data_raw as $prev_interval_donation_data_raw) {
+                foreach($prev_interval_donations_data_raw as $prev_interval_donation_data_raw) {
                     $prev_interval_donations_data[$prev_interval_donation_data_raw['post_id']] = strtolower($prev_interval_donation_data_raw['meta_value']);
                 }
 
@@ -160,7 +160,7 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
                     WHERE status='funded'
                     AND date_created >= '" . $interval_dates["prev_interval_begin_date"] . "' AND date_created < '" . $interval_dates["curr_interval_begin_date"] . "'"
                 );
-                foreach ($tmp as $line) {
+                foreach($tmp as $line) {
 
                     $prev_interval_donations[] = $line->ID;
                     $donors_emails[] = $line->donor_email;
@@ -174,11 +174,11 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
             $prev_amount = 0;
             if($prev_interval_donations) {
 
-                foreach ($prev_interval_donations_data as $prev_interval_donation_id => $prev_interval_donation_currency) {
+                foreach($prev_interval_donations_data as $prev_interval_donation_id => $prev_interval_donation_currency) {
                     $prev_interval_donations_by_currency[$prev_interval_donation_currency][] = $prev_interval_donation_id;
                 }
 
-                foreach ($prev_interval_donations_by_currency as $currency => $donations) {
+                foreach($prev_interval_donations_by_currency as $currency => $donations) {
 
                     $query = leyka_get_donations_storage_type() === 'post' ?
                         // Post-based donations storage:

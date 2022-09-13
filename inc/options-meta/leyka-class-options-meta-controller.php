@@ -393,7 +393,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
 
         ];
 
-        foreach ($currencies as $currency_id => $currency_data) {
+        foreach($currencies as $currency_id => $currency_data) {
 
             $options['payments_single_amounts_options_'.$currency_id] = [
                 'type' => 'custom_payments_amounts_options',

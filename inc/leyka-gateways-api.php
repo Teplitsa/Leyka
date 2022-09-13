@@ -45,7 +45,10 @@ function leyka_get_pm_list($activity = null, $currency = false, $sorted = true) 
                 continue;
             }
 
-            if( ( !$activity || $pm->active == $activity ) && ( !$currency || $pm->has_currency_support($currency) ) ) {
+            $gw = leyka_get_gateway_by_id($pm->gateway_id);
+
+            if( ( !$activity || $pm->active == $activity ) &&
+                ( !$currency || ($gw->is_currency_active($currency) && $pm->has_currency_support($currency)) ) ) {
                 $pm_list[] = $pm;
             }
 
@@ -196,6 +199,34 @@ function leyka_gateway_setup_wizard($gateway) {
     return $gateway->has_wizard ? $gateway->id : false;
 }
 
+
+function leyka_gw_is_currency_active($currency_id, $gw_id = null) {
+
+    if( !$gw_id ) {
+
+        $gws = leyka_get_gateways();
+
+        /** @var Leyka_Gateway $gw */
+        foreach($gws as $gw) {
+            if($gw->is_currency_active($currency_id)){
+                return true;
+            };
+        }
+
+        return false;
+
+    } else {
+
+        $gw = leyka_get_gateway_by_id($gw_id);
+
+        return $gw->is_currency_active($currency_id);
+
+    }
+
+}
+
+
+
 abstract class Leyka_Gateway extends Leyka_Singleton {
 
     protected static $_instance;
@@ -263,6 +294,8 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
             "leyka_{$this->_id}_cancel_recurring_subscription_by_link",
             [$this, 'cancel_recurring_subscription_by_link']
         );
+
+        add_action("leyka_save_custom_option-{$this->_id}_active_currencies", [$this, "set_active_currencies"], 2, 10);
 
         $this->_initialize_options();
 
@@ -338,8 +371,11 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
             case 'supported_currencies':
                 return $this->get_supported_currencies();
 
+            case 'supported_currencies_all':
+                return $this->get_supported_currencies(false);
+
             case 'active_currencies':
-                return $this->get_active_currencies();
+                return $this->_active_currencies;
 
             default:
                 return false;
@@ -369,6 +405,8 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
         }
 
         $gateway_options_names = $this->get_options_names();
+        $gateway_options_names[] = $this->_id.'_active_currencies';
+
         if($gateway_section_index < 0) {
             $options[] = ['section' => [
                 'name' => $this->_id,
@@ -532,6 +570,17 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     }
 
     protected function _initialize_options() {
+
+        if( !leyka_options()->option_exists($this->_id.'_active_currencies') ) {
+
+            leyka_options()->add_option($this->_id.'_active_currencies', 'custom_gw_active_currencies', [
+                'default' => $this->get_supported_currencies(),
+                'title' => __('Gateway supported currencies', 'leyka')
+            ]);
+
+        }
+
+        $this->_active_currencies = leyka_options()->opt_safe($this->_id.'_active_currencies') ?: [] ;
 
         foreach($this->_options as $option_name => $params) {
             if( !leyka_options()->option_exists($option_name) ) {
@@ -796,17 +845,16 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
 
     }
 
-    public function get_supported_currencies() {
+    public function get_supported_currencies($only_active_pms = false) {
 
-        $pms = $this->get_payment_methods(true);
+        $pms = $this->get_payment_methods($only_active_pms);
 
         $supported_currencies = [];
 
-
         /** @var $pm Leyka_Payment_Method */
-        foreach ($pms as $pm) {
+        foreach($pms as $pm) {
 
-            foreach ($pm->currencies as $currency) {
+            foreach($pm->currencies as $currency) {
                 $supported_currencies[] = $currency;
             }
 
@@ -815,12 +863,18 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
         return array_unique($supported_currencies);
     }
 
-    public function get_active_currencies() {
-        return !empty($this->_active_currencies) ? $this->_active_currencies : $this->supported_currencies;
+    public function set_active_currencies($data, $setting_id) {
+
+        if( !is_array($data) ) {
+            $data = [];
+        }
+
+        leyka_options()->opt($this->_id.'_active_currencies', $data);
+
     }
 
-    public function set_active_currencies($currencies) {
-        $this->_active_currencies = $currencies;
+    public function is_currency_active($currency_id) {
+        return in_array($currency_id, $this->_active_currencies);
     }
 
 }

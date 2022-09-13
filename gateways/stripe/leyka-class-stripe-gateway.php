@@ -166,7 +166,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
     }
 
     public function submission_form_data($form_data, $pm_id, $donation_id) {
-        return $form_data;
+        return [];
     }
 
     public function get_gateway_response_formatted(Leyka_Donation_Base $donation) {

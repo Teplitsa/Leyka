@@ -77,7 +77,7 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
                 $sub_interval_begin_date = $sub_interval_begin_date < $interval_dates['curr_interval_begin_date'] ?
                     $interval_dates['curr_interval_begin_date'] : $sub_interval_begin_date;
 
-                if (leyka_get_donations_storage_type() === 'post') { // Post-based donations storage:
+                if(leyka_get_donations_storage_type() === 'post') { // Post-based donations storage:
 
                     $donations_post_type = Leyka_Donation_Management::$post_type;
 
@@ -91,7 +91,7 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
                     );
 
                     $donations_data = [];
-                    foreach ($donations_data_raw as $donation_data_raw) {
+                    foreach($donations_data_raw as $donation_data_raw) {
                         $donations_data[$donation_data_raw['post_id']] = strtolower($donation_data_raw['meta_value']);
                     }
 
@@ -102,11 +102,11 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
 
                         $donations_by_currency = [];
 
-                        foreach ($donations_data as $donation_id => $donation_currency) {
+                        foreach($donations_data as $donation_id => $donation_currency) {
                             $donations_by_currency[$donation_currency][] = $donation_id;
                         }
 
-                        foreach ($donations_by_currency as $currency => $donations) {
+                        foreach($donations_by_currency as $currency => $donations) {
 
                             $query = "SELECT SUM(meta_value)
                                 FROM {$wpdb->prefix}postmeta

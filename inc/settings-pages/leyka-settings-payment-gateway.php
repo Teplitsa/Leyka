@@ -9,7 +9,7 @@
 <?php $gateway = leyka_get_gateway_by_id($_GET['gateway']); /** @var $gateway Leyka_Gateway */
 $pm_available = leyka_options()->opt('pm_available');
 
-$active_currencies = $gateway->get_active_currencies();
+$active_currencies = $gateway->active_currencies;
 
 if( !$gateway ) {?>
     <p class="error"><?php _e('Unknown gateway.', 'leyka');?></p>
@@ -89,7 +89,7 @@ if( !$gateway ) {?>
 
         <div class="gateway-right-sidebar">
 
-            <?php if ($gateway->supported_currencies) { ?>
+            <?php if($gateway->supported_currencies_all) { ?>
 
                 <div class="gateway-currencies-list">
 
@@ -97,7 +97,7 @@ if( !$gateway ) {?>
 
                     <div class="gateway-currencies-wrapper">
 
-                        <?php foreach ($gateway->supported_currencies as $currency) {?>
+                        <?php foreach($gateway->supported_currencies_all as $currency) {?>
 
                             <div id="<?php echo $gateway->id."-".$currency;?>" class="settings-block option-block type-checkbox">
 
@@ -105,7 +105,7 @@ if( !$gateway ) {?>
 
                                     <label>
                                         <span class="field-component field">
-                                            <input type="checkbox" id="<?php echo $gateway->id."-".$currency;?>" class="gw-active-currency" name="leyka_gw_active_currency[]" value="<?php echo $currency;?>" data-pm-label="<?php echo $gateway->id."-".$currency;?>" data-pm-label-backend="<?php echo $currency;?>" <?php echo in_array($currency, $active_currencies) ? 'checked="checked"' : '';?>> <?php echo strtoupper($currency);?>
+                                            <input type="checkbox" id="<?php echo $gateway->id."-".$currency;?>" class="gw-active-currencies" name="leyka_<?php echo $gateway->id?>_active_currencies[]" value="<?php echo $currency;?>" data-pm-label="<?php echo $gateway->id."-".$currency;?>" data-pm-label-backend="<?php echo $currency;?>" <?php echo in_array($currency, $active_currencies) ? 'checked="checked"' : '';?>> <?php echo strtoupper($currency);?>
                                         </span>
                                     </label>
 

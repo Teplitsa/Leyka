@@ -1380,7 +1380,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
                 }
 
-                foreach ($currencies as $currency_id) {
+                foreach($currencies as $currency_id) {
 
                     if(isset($_REQUEST['leyka_payments_single_amounts_options_'.$currency_id])) {
                         $meta['payments_single_amounts_options_'.$currency_id] = prepare_payment_amounts_options(
@@ -1403,7 +1403,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                 delete_post_meta($campaign_id, 'payments_single_tab_title');
                 delete_post_meta($campaign_id, 'payments_recurring_tab_title');
 
-                foreach ($currencies as $currency_id) {
+                foreach($currencies as $currency_id) {
 
                     delete_post_meta($campaign_id, ['payments_single_amounts_options_'.$currency_id]);
                     delete_post_meta($campaign_id, ['payments_recurring_amounts_options_'.$currency_id]);
@@ -1773,7 +1773,7 @@ class Leyka_Campaign {
 
             $currencies = array_keys(leyka_get_currencies_full_info());
 
-            foreach ($currencies as $currency_id) {
+            foreach($currencies as $currency_id) {
 
                 $campaign_meta['payments_single_amounts_options_'.$currency_id] = empty($meta['payments_single_amounts_options_'.$currency_id]) ?
                     [] : maybe_unserialize($meta['payments_single_amounts_options_'.$currency_id][0]);
@@ -1880,11 +1880,11 @@ class Leyka_Campaign {
 
         $currencies = array_keys(leyka_get_currencies_full_info());
 
-        foreach ($currencies as $currency_id) {
+        foreach($currencies as $currency_id) {
 
-            if ($field === 'payments_single_amounts_options_'.$currency_id) {
+            if($field === 'payments_single_amounts_options_'.$currency_id) {
                 return $this->_campaign_meta['payments_single_amounts_options_'.$currency_id];
-            } else if ($field === 'payments_recurring_amounts_options_'.$currency_id) {
+            } else if($field === 'payments_recurring_amounts_options_'.$currency_id) {
                 return $this->_campaign_meta['payments_recurring_amounts_options_'.$currency_id];
             }
 
@@ -2309,7 +2309,6 @@ class Leyka_Campaign {
             $total_amount += round(strtolower($donation->main_currency) === leyka_get_main_currency() ?
                 $donation->main_currency_total_amount ?: $donation->main_currency_amount :
                 leyka_currency_convert($donation->total_amount ?: $donation->amount, strtolower($donation->currency)), 2);
-
         }
 
         return $total_amount;
@@ -2334,12 +2333,7 @@ class Leyka_Campaign {
     public function update_total_funded_amount($donation = false, $action = '', $old_sum = false) {
 
         if( !$donation ) { // Recalculate total collected amount for a campaign and recache it
-
-            $sum = $this->_get_calculated_total_funded_amount();
-
-            $this->_campaign_meta['total_funded'] = $sum;
-            update_post_meta($this->_id, 'total_funded', $this->_campaign_meta['total_funded']);
-
+            $this->total_funded = $this->_get_calculated_total_funded_amount();
         } else { // Add/subtract a sum of a donation from its campaign metadata
 
             $donation = Leyka_Donations::get_instance()->get_donation($donation);

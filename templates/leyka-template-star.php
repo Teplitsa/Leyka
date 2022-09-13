@@ -69,7 +69,6 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                 <?php } ?>
 
                 <a href="#" data-currency="crypto" role="tab" aria-selected="true">Crypto</a>
-                <input id="selected_currency" name="selected_currency" type="hidden" value="<?php echo $template_data['main_currency_id']; ?>">
             </div>
 
         </div>
@@ -217,12 +216,12 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
 
                                 $gateway = $pm ? $pm->gateway : false;
 
-                                if ($gateway) {
+                                if($gateway) {
 
                                     $available_currencies = [];
 
-                                    foreach ($gateway->active_currencies as $gw_active_currency) {
-                                        if ($pm->has_currency_support($gw_active_currency)) {
+                                    foreach($gateway->active_currencies as $gw_active_currency) {
+                                        if($pm->has_currency_support($gw_active_currency)) {
 
                                             $active_currency_data = leyka_get_currencies_data($gw_active_currency);
                                             $available_currencies[] = $active_currency_data['label'];

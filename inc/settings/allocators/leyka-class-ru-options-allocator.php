@@ -40,8 +40,8 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
         $currencies = leyka_get_main_currencies_full_info();
 
         $currencies_rates_options = [];
-        foreach (array_keys(leyka_get_main_currencies_full_info()) as $currency_id) {
-            if ($currency_id !== $main_currency_id) {
+        foreach(array_keys(leyka_get_main_currencies_full_info()) as $currency_id) {
+            if($currency_id !== $main_currency_id) {
                 $currencies_rates_options[] = "currency_{$currency_id}_exchange_rate";
             }
         };

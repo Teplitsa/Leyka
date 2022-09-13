@@ -2401,17 +2401,16 @@ jQuery(document).ready(function($){
 
             let $this = $(this),
                 $_form = $(this).closest('form.leyka-pm-form'),
-                currency = $(this).data('currency');
+                currency = $(this).data('currency'),
+                $currency_tab = $_form.find(`.currency-tab.currency-${currency}`);
 
             $this.closest('.section__fields').find('a').removeClass('active');
             $this.addClass('active');
 
             $_form.find('.currency-tab').addClass('leyka-hidden');
-            $_form.find('.currency-tab.currency-'+$this.data('currency')).removeClass('leyka-hidden');
+            $currency_tab.removeClass('leyka-hidden');
 
-            $_form.find('#selected_currency').val(currency);
-
-            if ($(this).data('currency') !== 'crypto') {
+            if (currency !== 'crypto') {
                 $_form.find('.section--person').removeClass('leyka-hidden');
             } else {
                 $_form.find('.section--person').addClass('leyka-hidden');
@@ -2425,6 +2424,8 @@ jQuery(document).ready(function($){
             } else {
                 showAmountOptionsByPaymentType($_form, payment_type);
             }
+
+            $currency_tab.find('.payments-grid .swiper-item.selected .payment-opt__button').click();
 
         });
 

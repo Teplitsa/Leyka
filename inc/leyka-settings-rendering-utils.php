@@ -1404,7 +1404,7 @@ function leyka_render_custom_payments_amounts_options_settings($option_id, $data
 
     $option_id = mb_stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
 
-    if (is_array($data) && array_keys($data) === ['value']) {
+    if(is_array($data) && array_keys($data) === ['value']) {
         $data = array_merge(leyka_options()->get_info_of($option_id), $data);
     } else {
         $data = $data ? : leyka_options()->get_info_of($option_id);
@@ -1493,7 +1493,7 @@ function leyka_render_custom_payments_amounts_options_tabs_settings($option_id, 
 
             <div class="leyka-tabs-titles">
 
-                <?php foreach ($currencies as $currency_id => $currency_data) { ?>
+                <?php foreach($currencies as $currency_id => $currency_data) { ?>
 
                     <div id="<?php echo $option_id;?>_<?php echo $currency_id;?>-tab" class="leyka-tab-title <?php echo $main_currency_id === $currency_id ? 'leyka-active' : '' ?>">
                         <?php echo strtoupper($currency_id);?>
@@ -1505,7 +1505,7 @@ function leyka_render_custom_payments_amounts_options_tabs_settings($option_id, 
 
             <div class="leyka-tabs-content">
 
-                <?php foreach ($currencies as $currency_id => $currency_data) { ?>
+                <?php foreach($currencies as $currency_id => $currency_data) { ?>
 
                 <div class="leyka-tab-content <?php echo $main_currency_id === $currency_id ? '' : 'leyka-hidden' ?>">
 
@@ -1527,7 +1527,7 @@ function leyka_render_custom_payments_amounts_options_tabs_settings($option_id, 
 
     </div>
 
-    <?
+    <?php
 
 }
 
@@ -1538,7 +1538,7 @@ function leyka_save_payments_amounts_options($data=[], $option_id) {
     $data = $data ? : leyka_options()->get_info_of($option_id);
     $currencies = leyka_get_main_currencies_full_info();
 
-    foreach ($currencies as $currency_id => $currency_data) {
+    foreach($currencies as $currency_id => $currency_data) {
 
         $payments_amounts_attr = 'leyka_payments_'.$data['payment_type'].'_amounts_options_'.$currency_id;
 
@@ -1724,7 +1724,7 @@ function leyka_render_custom_currencies_miscs_tabs_settings($option_id, $data = 
 
             <div class="leyka-tabs-titles">
 
-                <?php foreach ($currencies as $currency_id => $currency_data) { ?>
+                <?php foreach($currencies as $currency_id => $currency_data) { ?>
 
                     <div id="<?php echo $option_id;?>_<?php echo $currency_id;?>-tab" class="leyka-tab-title <?php echo $main_currency_id === $currency_id ? 'leyka-active' : '' ?>">
                         <?php echo strtoupper($currency_id);?>
@@ -1736,7 +1736,7 @@ function leyka_render_custom_currencies_miscs_tabs_settings($option_id, $data = 
 
             <div class="leyka-tabs-content">
 
-                <?php foreach ($currencies as $currency_id => $currency_data) { ?>
+                <?php foreach($currencies as $currency_id => $currency_data) { ?>
 
                     <div class="leyka-tab-content <?php echo $main_currency_id === $currency_id ? '' : 'leyka-hidden' ?>">
 
@@ -1747,7 +1747,7 @@ function leyka_render_custom_currencies_miscs_tabs_settings($option_id, $data = 
 
                                 $fields = ["currency_{$currency_id}_label", "currency_{$currency_id}_flexible_default_amount", "currency_{$currency_id}_min_sum", "currency_{$currency_id}_max_sum"];
 
-                                foreach ($fields as $field) {
+                                foreach($fields as $field) {
 
                                     $field_data = leyka_options()->get_info_of($field);
 
@@ -1781,11 +1781,11 @@ function leyka_save_currencies_miscs_tabs_options() {
 
     $currencies = leyka_get_main_currencies_full_info();
 
-    foreach ($currencies as $currency_id => $currency_data) {
+    foreach($currencies as $currency_id => $currency_data) {
 
         $fields = ["currency_{$currency_id}_label", "currency_{$currency_id}_flexible_default_amount", "currency_{$currency_id}_min_sum", "currency_{$currency_id}_max_sum"];
 
-        foreach ($fields as $field) {
+        foreach($fields as $field) {
 
             leyka_options()->opt($field, $_POST['leyka_'.$field]);
 
@@ -1794,5 +1794,4 @@ function leyka_save_currencies_miscs_tabs_options() {
     }
 
 }
-
 // [Special field] Currencies miscs tabs -END

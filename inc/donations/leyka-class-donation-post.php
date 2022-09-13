@@ -240,8 +240,8 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             $donation_currency = empty($meta['leyka_donation_currency']) ?
                 leyka_options()->opt('currency_main') : $meta['leyka_donation_currency'][0];
             $main_currency = leyka_get_main_currency();
-            $old_donation_main_currency = empty($meta['leyka_donation_main_currency']) ?
-                $main_currency : (string)$meta['leyka_donation_main_currency'][0];
+            $old_donation_main_currency = empty($meta['leyka_donation_main_currency_id']) ?
+                $main_currency : (string)$meta['leyka_donation_main_currency_id'][0];
             $donation_main_currency_amount = $old_donation_main_currency === $main_currency
                 && !empty($meta['leyka_donation_main_currency_amount']) ?
                 round((float)$meta['leyka_donation_main_currency_amount'][0],2) :
@@ -271,7 +271,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                     leyka_options()->opt('currency_main') : $meta['leyka_donation_currency'][0],
                 'leyka_donation_amount' => $donation_amount,
                 'leyka_donation_amount_total' => $donation_amount_total,
-                'leyka_donation_main_currency_id' => leyka_get_main_currency(),
+                'leyka_donation_main_currency_id' => $main_currency,
                 'leyka_donation_main_currency_amount' => $donation_main_currency_amount,
                 'leyka_donation_main_currency_amount_total' => $donation_main_currency_amount_total,
                 'leyka_donation_main_currency_rate' => $donation_main_currency_rate,

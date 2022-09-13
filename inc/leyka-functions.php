@@ -2895,13 +2895,13 @@ function leyka_set_transient($name, $value, $expiration_date = null) {
 
 function leyka_get_currencies_rates($currencies_ids = []) {
 
-    if (empty($currencies_ids)) {
+    if(empty($currencies_ids)) {
         $currencies_ids = array_keys(leyka_get_main_currencies_full_info());
     }
 
     $rates = [];
 
-    foreach ($currencies_ids as $currency_id) {
+    foreach($currencies_ids as $currency_id) {
         $rates[$currency_id] = leyka_options()->opt("leyka_currency_{$currency_id}_exchange_rate");
     }
 
@@ -2945,7 +2945,7 @@ function leyka_refresh_currencies_rates() {
 
             if($response['success'] === true) {
 
-                foreach ($response['rates'] as $currency_id => $currency_rate) {
+                foreach($response['rates'] as $currency_id => $currency_rate) {
                     leyka_options()->opt("leyka_currency_".strtolower($currency_id)."_exchange_rate", $currency_rate);
                 }
 
@@ -2973,7 +2973,7 @@ function leyka_actualize_campaigns_money_values($real_recount = false) {
 
     $campaigns_data = new WP_Query($query_params);
 
-    foreach ($campaigns_data->posts as $campaign_data) {
+    foreach($campaigns_data->posts as $campaign_data) {
         leyka_actualize_campaign_money_values($campaign_data->ID, $real_recount);
     }
 
@@ -2991,12 +2991,23 @@ function leyka_actualize_campaign_money_values($campaign_id, $real_recount = fal
         $campaign->target = round(leyka_currency_convert($campaign->target, $campaign->currency));
     }
 
-    $campaign->currency = leyka_get_main_currency();
-
     if($real_recount) {
         $campaign->update_total_funded_amount();
     } else {
         $campaign->total_funded = round(leyka_currency_convert($campaign->total_funded, $campaign->currency), 2);
     }
+
+    $campaign->currency = leyka_get_main_currency();
+
+}
+
+function leyka_clear_dashboard_cache() {
+
+    global $wpdb;
+
+    // TODO Vyacheslav - add code to the 'separate' donations storage case
+    $wpdb->get_results(
+        "DELETE FROM `{$wpdb->prefix}options` WHERE option_name LIKE '%transient_timeout_leyka_stats_donations%' OR option_name LIKE '%transient_leyka_stats_donations%'",
+        'ARRAY_A');
 
 }

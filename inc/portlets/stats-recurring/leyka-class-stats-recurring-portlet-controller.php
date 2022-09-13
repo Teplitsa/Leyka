@@ -84,11 +84,11 @@ class Leyka_Recurring_Stats_Portlet_Controller extends Leyka_Portlet_Controller 
             $curr_recurring_amount = 0;
             if($curr_recurring_donations) {
 
-                foreach ($curr_recurring_donations as $curr_recurring_donation) {
+                foreach($curr_recurring_donations as $curr_recurring_donation) {
                     $curr_recurring_donations_by_currency[strtolower($curr_recurring_donation['currency'])][] = $curr_recurring_donation['ID'];
                 }
 
-                foreach ($curr_recurring_donations_by_currency as $currency => $donations) {
+                foreach($curr_recurring_donations_by_currency as $currency => $donations) {
 
                     $query = leyka_get_donations_storage_type() === 'post' ?
                         // Post-based donations storage:
@@ -170,11 +170,11 @@ class Leyka_Recurring_Stats_Portlet_Controller extends Leyka_Portlet_Controller 
             $prev_recurring_amount = 0;
             if($prev_recurring_donations) {
 
-                foreach ($prev_recurring_donations as $prev_recurring_donation) {
+                foreach($prev_recurring_donations as $prev_recurring_donation) {
                     $prev_recurring_donations_by_currency[strtolower($prev_recurring_donation['currency'])][] = $prev_recurring_donation['ID'];
                 }
 
-                foreach ($prev_recurring_donations_by_currency as $currency => $donations) {
+                foreach($prev_recurring_donations_by_currency as $currency => $donations) {
 
                     $query = leyka_get_donations_storage_type() === 'post' ?
                         // Post-based donations storage:

@@ -23,9 +23,9 @@ class Leyka_Star_Template_Controller extends Leyka_Template_Controller {
         ];
         $currencies = leyka_get_currencies_data();
 
-        foreach ($currencies as $currency_id => $currency_data) {
+        foreach($currencies as $currency_id => $currency_data) {
 
-            if ( !leyka_get_pm_list(true, $currency_id) ) {
+            if( !leyka_get_pm_list(true, $currency_id) || !leyka_gw_is_currency_active($currency_id)) {
                 continue;
             }
 

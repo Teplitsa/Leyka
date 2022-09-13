@@ -619,6 +619,7 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
         ]);
 
         $this->_submit_label = __('Donate', 'leyka');
+        $this->_supported_currencies = [];
         $this->_default_currency = 'rub';
 
     }

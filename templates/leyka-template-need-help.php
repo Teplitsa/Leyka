@@ -180,12 +180,12 @@ $another_amount_title = count($template_data['amount_variants']) > 0 ?
 
                                 $gateway = $pm ? $pm->gateway : false;
 
-                                if ($gateway) {
+                                if($gateway) {
 
                                     $available_currencies = [];
 
-                                    foreach ($gateway->active_currencies as $gw_active_currency) {
-                                        if ($pm->has_currency_support($gw_active_currency)) {
+                                    foreach($gateway->active_currencies as $gw_active_currency) {
+                                        if($pm->has_currency_support($gw_active_currency)) {
 
                                             $currency_data = leyka_get_currencies_data($gw_active_currency);
                                             $available_currencies[] = $currency_data['label'];

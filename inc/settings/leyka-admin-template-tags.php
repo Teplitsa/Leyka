@@ -96,12 +96,14 @@ if( !function_exists('leyka_pm_sortable_option_html_new') ) {
         $pm = leyka_get_pm_by_id($pm_full_id, true);
         $gateway = $pm ? $pm->gateway : false;
 
-        if ($gateway) {
+        $available_currencies_list = '';
+
+        if($gateway) {
 
             $available_currencies = [];
 
-            foreach ($gateway->active_currencies as $gw_active_currency) {
-                if ($pm->has_currency_support($gw_active_currency)) {
+            foreach($gateway->active_currencies as $gw_active_currency) {
+                if($pm->has_currency_support($gw_active_currency)) {
 
                     $currency_data = leyka_get_currencies_data($gw_active_currency);
                     $available_currencies[] = $currency_data['label'];

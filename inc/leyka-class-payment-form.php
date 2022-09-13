@@ -345,7 +345,7 @@ class Leyka_Payment_Form {
 
         $currencies = $currency_id ? [ $currency_id => leyka_get_currencies_data($currency_id)] : $this->get_supported_currencies();
 
-        foreach ($currencies as $currency_id => $data) {
+        foreach($currencies as $currency_id => $data) {
             $hiddens[] = '<input type="hidden" name="top_' . esc_attr($currency_id) . '" value="' . esc_attr($data['top']) . '">
             <input type="hidden" name="bottom_' . esc_attr($currency_id) . '" value="' . esc_attr($data['bottom']) . '">';
         }

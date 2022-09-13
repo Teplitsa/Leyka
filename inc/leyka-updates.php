@@ -259,12 +259,8 @@ function leyka_handle_plugin_update() {
     // Set a flag to flush permalinks (needs to be done a bit later than this activation itself):
     update_option('leyka_permalinks_flushed', 0);
 
-
     // Clear dashboard portlets cache
-    // TODO Vyacheslav - add code to the 'separate' donations storage case
-    $wpdb->get_results(
-        "DELETE FROM `{$wpdb->prefix}options` WHERE option_name LIKE '%transient_timeout_leyka_stats_donations%' OR option_name LIKE '%transient_leyka_stats_donations%'",
-        'ARRAY_A');
+    leyka_clear_dashboard_cache();
 
     if( !$leyka_last_ver ) {
         update_option('leyka_init_wizard_redirect', true);
