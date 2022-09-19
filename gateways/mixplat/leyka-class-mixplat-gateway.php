@@ -927,6 +927,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
     				'campaign_id' => leyka_options()->opt('mixplat_split_campaign'),
             'amount' => $amount,
             'amount_total' => $amount,
+            'force_insert' => true, // SMS payments don't have Donor emails, so to avoid the error, insert a Donation forcefully
             ]
         );
 
@@ -935,6 +936,9 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         }
        
         $donation->add_gateway_response(['payment_id'=>$orig_donation->mixplat_payment_id,'mixplat_split_from'=>$orig_donation->id]);
+				if( $orig_donation->mixplat_phone ) {
+					$donation->mixplat_phone = $orig_donation->mixplat_phone;
+				}
 
         return $donation->id;
     }
