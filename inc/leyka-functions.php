@@ -1143,20 +1143,20 @@ function leyka_get_currencies_list() {
 
     $currencies_simple_list = [];
 
-    foreach(leyka_get_main_currencies_full_info() as $currency_id => $data) { // Can't use leyka_get_currencies_data() here
-
-        if( !leyka_get_currency_country($currency_id) ) {
-            continue;
-        }
-
+    foreach(leyka_get_main_currencies_full_info() as $currency_id => $data) {
         $currencies_simple_list[$currency_id] = $data['title'].' ('.$data['label'].')';
-
     }
 
     return apply_filters('leyka_supported_currencies_list', $currencies_simple_list);
 
 }
 
+
+/**
+ * A service function to get all currencies data.
+ *
+ * @return mixed
+ */
 function leyka_get_main_currencies_full_info() {
     return apply_filters('leyka_main_currencies_list', [
         'rub' => [
@@ -1253,9 +1253,56 @@ function leyka_get_country_currency($country_id = null) {
  * @return mixed string Country ID
  */
 function leyka_get_main_currency() {
+
+    if( !Leyka_Options_Controller::get_option_value('currency_main') ) {
+        leyka_set_main_currency();
+    }
+
     return is_string(Leyka_Options_Controller::get_option_value('currency_main')) ?
         strtolower(Leyka_Options_Controller::get_option_value('currency_main')) :
         Leyka_Options_Controller::get_option_value('currency_main');
+
+}
+
+/**
+ * Service function to set 'currency_main' option and make sure that it will not be empty
+ *
+ * @param $currency_id
+ * @return void
+ */
+function leyka_set_main_currency($currency_id = null) {
+
+    if( !$currency_id && !Leyka_Options_Controller::get_option_value('currency_main') ) {
+
+        $country = Leyka_Options_Controller::get_option_value('receiver_country') ?: 'ru';
+
+        switch ($country){
+            case 'ru':
+                $currency_id = 'rub';
+                break;
+
+            case 'ua':
+                $currency_id = 'uah';
+                break;
+
+            case 'by':
+                $currency_id = 'byn';
+                break;
+
+            case 'eu':
+                $currency_id = 'eur';
+                break;
+
+            case 'kg':
+                $currency_id = 'kgs';
+                break;
+
+        }
+
+    }
+
+    Leyka_Options_Controller::set_option_value('currency_main', $currency_id);
+
 }
 
 /**
@@ -1664,7 +1711,7 @@ function leyka_modern_template_displayed($template_id = false) {
 
                         $get = str_replace(' ', '&', $matches[3][$key]);
                         parse_str($get, $atts);
-                        
+
                         if(array_key_exists('id', $atts)) {
 
                             $campaign_id = preg_match_all("/(\d+)/", $atts['id'], $attr_id_match);
@@ -1673,7 +1720,7 @@ function leyka_modern_template_displayed($template_id = false) {
                             if( !$campaign_id ) {
                                 continue;
                             }
-                            
+
                             $campaign = new Leyka_Campaign($campaign_id);
                             if(in_array($campaign->template, $modern_templates)) {
 
@@ -1687,7 +1734,7 @@ function leyka_modern_template_displayed($template_id = false) {
                 }
 
             }
-            
+
         }
 
     }
@@ -1699,18 +1746,18 @@ function leyka_modern_template_displayed($template_id = false) {
 function leyka_persistent_campaign_donated() {
 
     $result = is_page(leyka_options()->opt('success_page')) || is_page(leyka_options()->opt('failure_page'));
-    
+
     if($result) {
 
         $donation_id = leyka_remembered_data('donation_id');
         $donation = $donation_id ? Leyka_Donations::get_instance()->get($donation_id) : null;
         $campaign_id = $donation ? $donation->campaign_id : null;
         $campaign = $campaign_id ? new Leyka_Campaign($campaign_id) : null;
-        
+
         $result = $campaign && $campaign->campaign_type === 'persistent' && $campaign->template == 'star';
 
     }
-    
+
     return $result;
 
 }
@@ -1983,19 +2030,19 @@ function humanaize_debug_data($debug_data) {
         $humanized_options[$option_title] = $v;
     }
     $debug_data['options'] = $humanized_options;
-    
+
     foreach(array_keys($debug_data['plugins']) as $status) {
 
         $humanized_options = [];
-        
+
         foreach($debug_data['plugins'][$status] as $plugin) {
             $humanized_options[] = sprintf("%s %s", $plugin['name'], $plugin['ver']);
         }
-        
+
         $debug_data['plugins'][$status] = $humanized_options;
 
     }
-    
+
     return $debug_data;
 
 }
@@ -2003,11 +2050,11 @@ function humanaize_debug_data($debug_data) {
 function format_debug_data($list, $level = 0) {
 
     $fomatted_ret = '';
-    
+
     if($level > 0) {
         ksort($list);
     }
-    
+
     foreach($list as $k => $v) {
         $fomatted_ret .= str_repeat("    ", $level) . "<strong>$k:</strong> ";
         if(is_array($v)) {
@@ -2017,7 +2064,7 @@ function format_debug_data($list, $level = 0) {
             $fomatted_ret .= trim($v) . "\n";
         }
     }
-    
+
     return $fomatted_ret;
 
 }
@@ -2026,7 +2073,7 @@ function format_debug_data($list, $level = 0) {
 function leyka_get_db_stats() {
 
     global $wpdb;
-    
+
     $query_time_start = microtime(true);
 
     $payments_count = $wpdb->get_var(
@@ -2034,7 +2081,7 @@ function leyka_get_db_stats() {
     );
 
     $all_posts_count = $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->posts");
-    
+
     return [
         'db_stats' => [
             'all_posts_count' => $all_posts_count,
@@ -2484,7 +2531,7 @@ function leyka_get_dm_list_or_alternatives() {
             $dm_list[] = $email;
         }
     }
-    
+
     if( !$dm_list ) {
 
         $alt_emails = [leyka()->opt('tech_support_email'), get_bloginfo('admin_email'),];
@@ -2893,6 +2940,12 @@ function leyka_set_transient($name, $value, $expiration_date = null) {
 
 }
 
+/**
+ * Function to get rates for one or all currencies
+ *
+ * @param $currencies_ids
+ * @return array
+ */
 function leyka_get_currencies_rates($currencies_ids = []) {
 
     if(empty($currencies_ids)) {
@@ -2909,6 +2962,12 @@ function leyka_get_currencies_rates($currencies_ids = []) {
 
 }
 
+/**
+ * Higl-level function to get currency rate
+ *
+ * @param $currency_id
+ * @return mixed
+ */
 function leyka_get_currency_rate($currency_id) {
 
     $result = leyka_get_currencies_rates([$currency_id]);
@@ -2917,7 +2976,20 @@ function leyka_get_currency_rate($currency_id) {
 
 }
 
+
+/**
+ * Function to convert amount from one currency to another (to main if not specified)
+ *
+ * @param $currency_amount
+ * @param $from_currency_id
+ * @param $to_currency_id
+ * @return false|float|int
+ */
 function leyka_currency_convert($currency_amount, $from_currency_id, $to_currency_id = null) {
+
+    if (empty($currency_amount) || empty($from_currency_id)) {
+        return false;
+    }
 
     $amount = $currency_amount / leyka_get_currency_rate(strtolower($from_currency_id));
 
@@ -2929,6 +3001,11 @@ function leyka_currency_convert($currency_amount, $from_currency_id, $to_currenc
 
 }
 
+/**
+ * Function to refresh currencies rates from "exchangerate" service
+ *
+ * @return false|mixed|void
+ */
 function leyka_refresh_currencies_rates() {
 
     $currencies_info = leyka_get_main_currencies_full_info();
@@ -2962,7 +3039,12 @@ function leyka_refresh_currencies_rates() {
 
 }
 
-
+/**
+ * Service function to update all campaigns numbers taking actual currency
+ *
+ * @param $real_recount
+ * @return void
+ */
 function leyka_actualize_campaigns_money_values($real_recount = false) {
 
     $query_params = [
@@ -2979,6 +3061,13 @@ function leyka_actualize_campaigns_money_values($real_recount = false) {
 
 }
 
+/**
+ * Service function to update single campaign numbers taking actual currency
+ *
+ * @param $campaign_id
+ * @param $real_recount
+ * @return false|void
+ */
 function leyka_actualize_campaign_money_values($campaign_id, $real_recount = false) {
 
     $campaign = new Leyka_Campaign($campaign_id);
@@ -3001,6 +3090,11 @@ function leyka_actualize_campaign_money_values($campaign_id, $real_recount = fal
 
 }
 
+/**
+ * Service function to drop all dashboard portlets cache
+ *
+ * @return void
+ */
 function leyka_clear_dashboard_cache() {
 
     global $wpdb;

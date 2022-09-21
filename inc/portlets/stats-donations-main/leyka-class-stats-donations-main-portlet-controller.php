@@ -136,11 +136,13 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
                     'ARRAY_A'
                 );
 
+                $prev_interval_donations_data = [];
+
                 foreach($prev_interval_donations_data_raw as $prev_interval_donation_data_raw) {
                     $prev_interval_donations_data[$prev_interval_donation_data_raw['post_id']] = strtolower($prev_interval_donation_data_raw['meta_value']);
                 }
 
-                $prev_interval_donations = array_keys($prev_interval_donations_data);
+                $prev_interval_donations = !empty($prev_interval_donations_data) ? array_keys($prev_interval_donations_data) : [];
 
                 // Donors (unique donors' emails) count:
                 $prev_donors_count = $prev_interval_donations ? count($wpdb->get_col(

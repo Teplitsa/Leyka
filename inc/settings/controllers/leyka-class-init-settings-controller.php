@@ -48,6 +48,12 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
         ]))->add_block(new Leyka_Option_Block([
             'id' => 'receiver_country',
             'option_id' => 'receiver_country',
+        ]))->add_block(new Leyka_Option_Block([
+            'id' => 'currency_main',
+            'option_id' => 'currency_main',
+        ]))->add_block(new Leyka_Option_Block([
+            'id' => 'phone_format',
+            'option_id' => 'phone_format',
         ]))->add_handler([$this, 'handle_init_section'])
             ->add_to($stage);
 
@@ -817,24 +823,11 @@ class Leyka_Init_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Contro
             || $section_settings['receiver_country'] === '-' ?
             'ru' : $section_settings['receiver_country'];
 
-        switch($section_settings['receiver_country']) {
-            case 'ua':
-
-                leyka_options()->opt('currency_main', 'uah');
-                leyka_options()->opt('receiver_legal_type', 'legal');
-                wp_redirect(admin_url('admin.php?page=leyka_settings&stage=beneficiary'));
-                exit;
-
-            case 'by':
-
-                leyka_options()->opt('currency_main', 'byn');
-                leyka_options()->opt('receiver_legal_type', 'legal');
-                wp_redirect(admin_url('admin.php?page=leyka_settings&stage=beneficiary'));
-                exit;
-
-            case 'ru':
-            default:
+        if($section_settings['receiver_country'] !== 'ru') {
+            leyka_options()->opt('receiver_legal_type', 'legal');
         }
+
+        leyka_refresh_currencies_rates();
 
         return true;
 

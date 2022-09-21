@@ -506,8 +506,6 @@ class Leyka extends Leyka_Singleton {
         // Plugin data placeholders in the Terms of service / Terms of PD pages content:
         add_filter('the_content', [$this, 'apply_terms_pages_content_placeholders'], 100);
 
-        // Currency rates auto refreshment - disabled for now
-
         if(class_exists('Leyka_Options_Controller')) {
             add_action('leyka_do_procedure', [$this, '_do_procedure'], 10, 2);
         }

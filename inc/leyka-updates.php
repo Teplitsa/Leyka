@@ -254,6 +254,10 @@ function leyka_handle_plugin_update() {
 
     }
 
+    if($leyka_last_ver && version_compare($leyka_last_ver, '3.28', '<=')) {
+        leyka_refresh_currencies_rates();
+    }
+
     do_action('leyka_plugin_update', $leyka_last_ver); // Warning: Extensions can't use this hook, as they are initialized later
 
     // Set a flag to flush permalinks (needs to be done a bit later than this activation itself):
