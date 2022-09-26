@@ -50,7 +50,6 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
             return [];
         }
 
-
         return [
             'single' => [
                 'title' => __('Single payment', 'leyka'),

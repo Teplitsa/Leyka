@@ -49,7 +49,7 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
 
         </div>
 
-        <?php if( !empty($template_data['cryptocurrencies_wallets']) ) { ?>
+        <?php if( sizeof($template_data['currencies']) > 1 || !empty($template_data['cryptocurrencies_wallets']) ) { ?>
 
         <div class="section section--currencies leyka-hidden">
 
@@ -68,7 +68,10 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                 <a href="#" class="active" data-currency="<?php echo $currency_id;?>" role="tab" aria-selected="true"><?php echo $currency_data['currency_label']; ?></a>
                 <?php } ?>
 
+                <?php if ( !empty($template_data['cryptocurrencies_wallets']) ) { ?>
                 <a href="#" data-currency="crypto" role="tab" aria-selected="true">Crypto</a>
+                <?php } ?>
+
             </div>
 
         </div>

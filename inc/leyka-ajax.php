@@ -1498,3 +1498,8 @@ function leyka_support_packages_set_no_campaign_behavior(){
 
 }
 add_action('wp_ajax_leyka_support_packages_set_no_campaign_behavior', 'leyka_support_packages_set_no_campaign_behavior');
+
+function leyka_ajax_get_currencies_rates() {
+    die(json_encode(leyka_get_currencies_rates()));
+}
+add_action('wp_ajax_leyka_get_currencies_rates', 'leyka_ajax_get_currencies_rates');
