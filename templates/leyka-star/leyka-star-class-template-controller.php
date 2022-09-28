@@ -41,7 +41,6 @@ class Leyka_Star_Template_Controller extends Leyka_Template_Controller {
 
                 // TODO: remove these checks when validation on the campaign edit page will be fixed
                 foreach($amount_variants['single'] as $variant_idx => $variant_data) {
-
                     if(
                         empty($variant_data['amount'])
                         || $variant_data['amount'] < $currency_data['bottom']
@@ -49,11 +48,9 @@ class Leyka_Star_Template_Controller extends Leyka_Template_Controller {
                     ) {
                         unset($amount_variants['single'][$variant_idx]);
                     }
-
                 }
 
                 foreach($amount_variants['recurring'] as $variant_idx => $variant_data) {
-
                     if(
                         empty($variant_data['amount'])
                         || $variant_data['amount'] < $currency_data['bottom']
@@ -61,7 +58,6 @@ class Leyka_Star_Template_Controller extends Leyka_Template_Controller {
                     ) {
                         unset($amount_variants['recurring'][$variant_idx]);
                     }
-
                 }
 
             } else {

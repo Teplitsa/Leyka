@@ -104,9 +104,7 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                     ]);
 
                     $form_api = new Leyka_Payment_Form();
-                    echo $form_api->get_hidden_amount_fields($currency_id);
-
-                    ?>
+                    echo $form_api->get_hidden_amount_fields($currency_id); ?>
 
                     <div class="amount__figure star-swiper <?php if( !$is_swipe_amount_variants ){?>no-swipe<?php }?>">
 
@@ -139,7 +137,7 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                                         <div class="swiper-item-inner">
 
                                             <span class="amount"><?php echo absint($amount_option['amount']);?></span>
-                                            <span class="currency"><?php echo $template_data['currencies'][$currency_id]['currency_label'];?></span>
+                                            <span class="currency"><?php echo $currency_data['currency_label'];?></span>
 
                                         </div>
 
@@ -245,10 +243,12 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                                             <input class="payment-opt__radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="radio" data-processing="<?php echo $pm->processing_type;?>" data-has-recurring="<?php echo $pm->has_recurring_support() ? '1' : '0';?>" data-ajax-without-form-submission="<?php echo $pm->ajax_without_form_submission ? '1' : '0';?>" aria-label="<?php echo $pm->label;?>">
 
                                             <span class="payment-opt__icon">
-                                    <?php foreach($pm->icons ? $pm->icons : [$pm->main_icon_url] as $icon_url) {?>
-                                        <img class="pm-icon <?php echo $pm->full_id.' '.basename($icon_url, '.svg');?>" src="<?php echo $icon_url;?>" alt="">
-                                    <?php }?>
-                                </span>
+
+                                            <?php foreach($pm->icons ? $pm->icons : [$pm->main_icon_url] as $icon_url) {?>
+                                                <img class="pm-icon <?php echo $pm->full_id.' '.basename($icon_url, '.svg');?>" src="<?php echo $icon_url;?>" alt="">
+                                            <?php }?>
+
+                                            </span>
 
                                         </label>
 
@@ -273,7 +273,9 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                 }?>
 
                 <div class="section section--static <?php echo $pm->full_id;?>">
-                    <div class="section__fields static-text"><?php $pm->display_static_data();?></div>
+                    <div class="section__fields static-text">
+                        <?php $pm->display_static_data();?>
+                    </div>
                 </div>
 
             <?php }?>
