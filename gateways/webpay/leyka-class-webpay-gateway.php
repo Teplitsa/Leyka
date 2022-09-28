@@ -102,7 +102,8 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
 
         $seed = time();
         $is_test_mode = leyka_options()->opt('webpay_test_mode') ? '1' : '0';
-        $currency_id = mb_strtoupper(leyka_options()->opt('currency_main'));
+        $currency_id = !empty($_POST['leyka_donation_currency']) ?
+            strtoupper($_POST['leyka_donation_currency']) : strtoupper($this->get_supported_currencies()[0]);
 
         $data = [];
 
@@ -607,7 +608,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
 
         $seed = time();
         $is_test_mode = leyka_options()->opt('webpay_test_mode') ? '1' : '0';
-        $currency_id = mb_strtoupper(leyka_options()->opt('currency_main'));
+        $currency_id = mb_strtoupper($init_recurring_donation->currency_id);
 
         $signature = sha1(
             $seed.leyka_options()->opt($this->_id.'_store_id').$init_recurring_donation->webpay_customer_id
@@ -704,7 +705,7 @@ class Leyka_Webpay_Card extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
         ]);
 
-        $this->_supported_currencies[] = 'byn';
+        $this->_supported_currencies = ['byn', 'usd', 'eur', 'rub'];
         $this->_default_currency = 'byn';
 
     }

@@ -1166,6 +1166,7 @@ function leyka_get_main_currencies_full_info() {
             'max_amount' => 30000,
             'flexible_default_amount' => 500,
             'fixed_amounts' => '100,300,500,1000',
+            'iso_code' => 643
         ],
         'byn' => [
             'title' => __('Belarus Rouble', 'leyka'),
@@ -1174,6 +1175,7 @@ function leyka_get_main_currencies_full_info() {
             'max_amount' => 30000,
             'flexible_default_amount' => 10,
             'fixed_amounts' => '5,10,20,50',
+            'iso_code' => 933
         ],
         'uah' => [
             'title' => __('Ukraine Hryvnia', 'leyka'),
@@ -1182,6 +1184,7 @@ function leyka_get_main_currencies_full_info() {
             'max_amount' => 30000,
             'flexible_default_amount' => 500,
             'fixed_amounts' => '100,300,500,1000',
+            'iso_code' => 980
         ],
         'usd' => [
             'title' => __('US Dollar', 'leyka'),
@@ -1190,6 +1193,7 @@ function leyka_get_main_currencies_full_info() {
             'max_amount' => 1000,
             'flexible_default_amount' => 10,
             'fixed_amounts' => '1,3,5,10,15,50',
+            'iso_code' => 840
         ],
         'eur' => [
             'title' => __('Euro', 'leyka'),
@@ -1198,6 +1202,7 @@ function leyka_get_main_currencies_full_info() {
             'max_amount' => 650,
             'flexible_default_amount' => 5,
             'fixed_amounts' => '1,3,5,10,100',
+            'iso_code' => 978
         ],
         'kgs' => [
             'title' => __('Kyrgyzstani som', 'leyka'),
@@ -1206,6 +1211,7 @@ function leyka_get_main_currencies_full_info() {
             'max_amount' => 30000,
             'flexible_default_amount' => 500,
             'fixed_amounts' => '100,300,500,1000',
+            'iso_code' => 417
         ]
     ]);
 }

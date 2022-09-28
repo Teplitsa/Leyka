@@ -258,6 +258,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
         $donation = Leyka_Donations::get_instance()->get($donation_id);
+        $currency = !empty($_POST['leyka_donation_currency']) ?
+            strtoupper($_POST['leyka_donation_currency']) : strtoupper($this->get_supported_currencies()[0]);
 
         $payment_description = $donation->payment_title." (№ $donation_id)";
         if(mb_strlen($payment_description) > 127) { // 127 chars length is a PayPal restriction
@@ -288,7 +290,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                 // Set transaction object:
                 $transaction = new \PayPal\Api\Transaction([
-                    'amount' => new \PayPal\Api\Amount(['total' => $donation->amount, 'currency' => 'RUB',]),
+                    'amount' => new \PayPal\Api\Amount(['total' => $donation->amount, 'currency' => $currency,]),
                     'description' => $payment_description,
                 ]);
 
@@ -334,7 +336,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 // 1. Create a "billing plan" (BP) for the recurring subscription.
                 // BP defines details for subscription payments, like their amount and frequency:
 
-                $recurring_amount = new \PayPal\Api\Currency(['value' => $donation->amount, 'currency' => 'RUB',]);
+                $recurring_amount = new \PayPal\Api\Currency(['value' => $donation->amount, 'currency' => $currency,]);
 
                 // "Payment definition" - the 1st part of the recurring subscription settings:
                 $payment_definition = new \PayPal\Api\PaymentDefinition([
@@ -477,7 +479,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 'PAYMENTREQUEST_0_PAYMENTACTION' => 'Sale',
                 'PAYMENTREQUEST_0_AMT' => $donation->amount,
                 'PAYMENTREQUEST_0_ITEMAMT' => $donation->amount,
-                'PAYMENTREQUEST_0_CURRENCYCODE' => 'RUB',
+                'PAYMENTREQUEST_0_CURRENCYCODE' => $currency,
                 'PAYMENTREQUEST_0_DESC' => $payment_description,
                 'L_PAYMENTREQUEST_0_NAME0' => $donation->payment_title,
                 'L_PAYMENTREQUEST_0_ITEMURL0' => get_permalink($campaign_post),
@@ -518,7 +520,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 'PAYMENTREQUEST_0_PAYMENTACTION' => 'Sale',
                 'PAYMENTREQUEST_0_AMT' => $donation->amount,
                 'PAYMENTREQUEST_0_ITEMAMT' => $donation->amount,
-                'PAYMENTREQUEST_0_CURRENCYCODE' => 'RUB',
+                'PAYMENTREQUEST_0_CURRENCYCODE' => $currency,
                 'PAYMENTREQUEST_0_DESC' => $payment_description,
                 'L_PAYMENTREQUEST_0_NAME0' => $donation->payment_title,
                 'L_PAYMENTREQUEST_0_ITEMURL0' => get_permalink($campaign_post),
@@ -1169,7 +1171,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                             'TOKEN' => $_GET['token'],
                             'PAYERID' => $_GET['PayerID'],
                             'AMT' => $donation->amount,
-                            'CURRENCYCODE' => 'RUB',
+                            'CURRENCYCODE' => strtoupper($donation->currency_id),
                             'DESC' => $payment_description,
                             'BILLINGPERIOD' => 'Month',
                             'BILLINGFREQUENCY' => '1',
@@ -1240,7 +1242,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                         'PAYMENTREQUEST_0_PAYMENTACTION' => 'Sale',
                         'PAYMENTREQUEST_0_AMT' => $donation->amount,
                         'PAYMENTREQUEST_0_ITEMAMT' => $donation->amount,
-                        'PAYMENTREQUEST_0_CURRENCYCODE' => 'RUB',
+                        'PAYMENTREQUEST_0_CURRENCYCODE' => strtoupper($donation->currency_id),
                         'PAYMENTREQUEST_0_DESC' => $payment_description,
                         'L_PAYMENTREQUEST_0_NAME0' => $donation->payment_title,
                         'L_PAYMENTREQUEST_0_ITEMURL0' => get_permalink($campaign_post),
@@ -2020,8 +2022,8 @@ class Leyka_Paypal_All extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'gateways/paypal/icons/paypal-frontend.svg',
         ]);
 
-        $this->_supported_currencies[] = 'rub';
-        $this->_default_currency = 'rub';
+        $this->_supported_currencies = ['rub', 'eur', 'usd'];
+        $this->_default_currency = 'usd';
 
     }
 

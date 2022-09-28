@@ -194,18 +194,14 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
         $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
 
-        $cp_currency = 'RUB';
-        switch($_POST['leyka_donation_currency']) {
-            case 'usd': $cp_currency = 'USD'; break;
-            case 'eur': $cp_currency = 'EUR'; break;
-            default:
-        }
+        $currency = !empty($_POST['leyka_donation_currency']) ?
+            strtoupper($_POST['leyka_donation_currency']) : strtoupper($this->get_supported_currencies()[0]);
 
         $response = [
             'public_id' => trim(leyka_options()->opt('cp_public_id')),
             'donation_id' => $donation_id,
             'amount' => number_format(floatval($donation->amount), 2, '.', ''),
-            'currency' => $cp_currency,
+            'currency' => $currency,
             'payment_title' => $donation->payment_title,
             'name' => $donation->donor_name,
             'donor_email' => $donation->donor_email,
@@ -856,7 +852,7 @@ class Leyka_CP_Card extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
         ]);
 
-        $this->_supported_currencies[] = 'rub';
+        $this->_supported_currencies = ['rub', 'eur', 'usd', 'uah', 'byn', 'kgs'];
         $this->_default_currency = 'rub';
 
         $this->_processing_type = 'custom-process-submit-event';

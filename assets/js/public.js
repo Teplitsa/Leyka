@@ -2621,22 +2621,22 @@ jQuery(document).ready(function($){
 
     function setupCurrencies($form) {
 
-        const periodicity = $form.find('.section__fields.periodicity a.active').data('periodicity');
+        const $section_currencies = $form.find('.section.section--currencies'),
+            periodicity = $form.find('.section__fields.periodicity a.active').data('periodicity'),
+            main_currency = $section_currencies.data('main-currency');
 
-        $('.section.section--currencies').removeClass('leyka-hidden');
+        $section_currencies.removeClass('leyka-hidden');
 
         if(periodicity === 'once') {
-            $('.section.section--currencies a[data-currency="crypto"]').removeClass('leyka-hidden');
+            $section_currencies.find('a[data-currency="crypto"]').removeClass('leyka-hidden');
         } else {
-            $('.section.section--currencies a[data-currency="crypto"]').addClass('leyka-hidden');
+            $section_currencies.find('a[data-currency="crypto"]').addClass('leyka-hidden');
         }
-
 
         $form.find('.section__fields.currencies a').removeClass('active');
         $form.find('.currency-tab').addClass('leyka-hidden');
-
-        $form.find('.section__fields.currencies a:not([data-currency="crypto"]):first-child').addClass('active');
-        $form.find('.currency-tab:not(.currency-crypto)').first().removeClass('leyka-hidden');
+        $form.find(`.section__fields.currencies a[data-currency="${main_currency}"]`).addClass('active');
+        $form.find(`.currency-tab.currency-${main_currency}`).removeClass('leyka-hidden');
 
     }
 

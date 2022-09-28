@@ -51,7 +51,7 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
 
         <?php if( sizeof($template_data['currencies']) > 1 || !empty($template_data['cryptocurrencies_wallets']) ) { ?>
 
-        <div class="section section--currencies leyka-hidden">
+        <div class="section section--currencies leyka-hidden" data-main-currency="<?php echo $template_data['main_currency_id']; ?>">
 
             <div class="section-title-container">
 
@@ -65,7 +65,7 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
             <div class="section__fields currencies">
 
                 <?php foreach ($template_data['currencies'] as $currency_id => $currency_data) { ?>
-                <a href="#" class="active" data-currency="<?php echo $currency_id;?>" role="tab" aria-selected="true"><?php echo $currency_data['currency_label']; ?></a>
+                <a href="#" class="<?php echo $currency_id === $template_data['main_currency_id'] ? 'active' : ''; ?>" data-currency="<?php echo $currency_id;?>" role="tab" aria-selected="true"><?php echo $currency_data['currency_label']; ?></a>
                 <?php } ?>
 
                 <?php if ( !empty($template_data['cryptocurrencies_wallets']) ) { ?>
@@ -80,7 +80,7 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
 
         <?php foreach ($template_data['currencies'] as $currency_id => $currency_data) { ?>
 
-        <div class="currency-tab currency-<?php echo $currency_id;?>">
+        <div class="currency-tab currency-<?php echo $currency_id;?> <?php echo $currency_id !== $template_data['main_currency_id'] ? 'leyka-hidden' : ''; ?>">
 
             <?php if(in_array('recurring', $campaign->donations_types_available)) {?>
                 <div class="section section--description"><?php echo leyka_options()->opt_template('recurring_donation_benefits_text', 'star');?></div>
@@ -279,6 +279,58 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
             <?php }?>
 
         </div>
+
+        <?php } ?>
+
+        <?php if( !empty($template_data['cryptocurrencies_wallets']) ) { ?>
+
+            <div class="currency-tab currency-crypto leyka-hidden">
+
+                <div class="section section--crypto-wallets">
+
+                    <div class="section-title-container">
+
+                        <div class="section-title-line"></div>
+                        <div class="section-title-text" role="heading" aria-level="3">
+                            <?php _e('crypto wallets addresses', 'leyka'); ?>
+                        </div>
+
+                    </div>
+
+                    <?php if( !empty($template_data['cryptocurrencies_text']) ) { ?>
+
+                        <div class="section__fields cryptocurrencies_text">
+                            <?php echo $template_data['cryptocurrencies_text']; ?>
+                        </div>
+
+                    <?php } ?>
+
+                    <div class="section__fields cryptocurrencies_wallets">
+
+                        <?php foreach($template_data['cryptocurrencies_wallets'] as $wallet) { ?>
+
+                            <div class="leyka-cryptocurrency-data-wrapper">
+
+                                <div class="leyka-cryptocurrency-data">
+                                    <div class="leyka-cryptocurrency-title"><?php echo $wallet['title']; ?></div>
+                                    <div class="leyka-cryptocurrency-link"><?php echo $wallet['link']; ?></div>
+                                </div>
+
+                                <div class="leyka-button-copy">
+                                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-copy.svg" alt="icon-copy">
+                                    <span>Ссылка скопировна</span>
+                                </div>
+
+                            </div>
+
+                        <?php } ?>
+
+                    </div>
+
+                </div>
+
+
+            </div>
 
         <?php } ?>
 
@@ -534,58 +586,6 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
             </div>
 
         </div>
-
-        <?php if( !empty($template_data['cryptocurrencies_wallets']) ) { ?>
-
-        <div class="currency-tab currency-crypto leyka-hidden">
-
-            <div class="section section--crypto-wallets">
-
-                <div class="section-title-container">
-
-                    <div class="section-title-line"></div>
-                    <div class="section-title-text" role="heading" aria-level="3">
-                        <?php _e('crypto wallets addresses', 'leyka'); ?>
-                    </div>
-
-                </div>
-
-                <?php if( !empty($template_data['cryptocurrencies_text']) ) { ?>
-
-                <div class="section__fields cryptocurrencies_text">
-                    <?php echo $template_data['cryptocurrencies_text']; ?>
-                </div>
-
-                <?php } ?>
-
-                <div class="section__fields cryptocurrencies_wallets">
-
-                    <?php foreach($template_data['cryptocurrencies_wallets'] as $wallet) { ?>
-
-                    <div class="leyka-cryptocurrency-data-wrapper">
-
-                        <div class="leyka-cryptocurrency-data">
-                            <div class="leyka-cryptocurrency-title"><?php echo $wallet['title']; ?></div>
-                            <div class="leyka-cryptocurrency-link"><?php echo $wallet['link']; ?></div>
-                        </div>
-
-                        <div class="leyka-button-copy">
-                            <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-copy.svg" alt="icon-copy">
-                            <span>Ссылка скопировна</span>
-                        </div>
-
-                    </div>
-
-                    <?php } ?>
-
-                </div>
-
-            </div>
-
-
-        </div>
-
-        <?php } ?>
 
     </form>
 

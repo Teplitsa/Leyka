@@ -96,6 +96,10 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
 
     public function submission_form_data($form_data, $pm_id, $donation_id) {
 
+        $currency_id = !empty($_POST['leyka_donation_currency']) ?
+            $_POST['leyka_donation_currency'] : leyka_get_main_currency();
+        $currency_data = leyka_get_currencies_full_info($currency_id);
+
         $data = [
             'clientid' => str_replace(' ', '', leyka_options()->opt('demirbank_client_id')),
             'oid' => '',
@@ -110,7 +114,7 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
             'instalment' => '',
             'rnd' => microtime(),
             'lang' => 'ru',
-            'currency' => '417',
+            'currency' => $currency_data['iso_code'],
             'refreshtime' => 5
         ];
         $storekey = str_replace(' ', '', leyka_options()->opt('demirbank_store_key'));
