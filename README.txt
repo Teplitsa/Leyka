@@ -4,7 +4,7 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: лейка, crowdfunding, fundraising, donations, recurring donations, charity, leyka, recurring, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, yoomoney, chronopay, sms, yookassa, миксплат, mixplat, paypal, paymaster, qiwi, киви, stripe, страйп, gds, google data studio
 Requires at least: 3.6.1
-Tested up to: 6.0.1
+Tested up to: 6.0.2
 Stable tag: 3.28
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -83,6 +83,12 @@ For technical support questions, please, use the [plugin support email](maillto:
 5. The plugin start page (a console)
 
 == Changelog ==
+= 3.29 =
+* New: Muli-currencies system added.
+* New: CloudPayments - subscriptions import support feature added.
+* Fix: DemirBank gateway support.
+* Fix: small fixes.
+
 = 3.28 =
 * New: SBP system for Mixplat added.
 * New: cryptocurrencies support added.
