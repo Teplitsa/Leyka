@@ -1086,9 +1086,9 @@ function leyka_admin_get_donor_donations(){
                 'pm_label' => $donation->pm_label,
             ],
             'amount' => [
-                'amount_formatted' => $donation->amount_formatted,
-                'amount_total_formatted' => $donation->amount_total_formatted,
-                'currency_label' => $donation->currency_label,
+                'amount_formatted' => $donation->main_currency_amount,
+                'amount_total_formatted' => $donation->main_currency_amount_total,
+                'currency_label' => leyka_get_currency_label(),
             ],
         ];
 

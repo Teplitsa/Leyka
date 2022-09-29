@@ -699,7 +699,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
                     )
                 .'</span>'
                 .'<div class="first-sub-row">'
-                    .'<span class="leyka-donation-amount">'.leyka_format_amount($donation->amount).'&nbsp;'.$donation->currency_label.',</span>'
+                    .'<span class="leyka-donation-amount">'.leyka_format_amount($donation->main_currency_amount).'&nbsp;'.leyka_get_currency_label().',</span>'
                     .'<span class="leyka-donation-date">'.$donation->date_time_label.'</span>'
                 .'</div>'
                 .'<div class="second-sub-row">«'.$donation->campaign_title.'»</div>';
