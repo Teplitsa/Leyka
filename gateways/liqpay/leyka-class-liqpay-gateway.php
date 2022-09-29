@@ -25,7 +25,6 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
         $this->_min_commission = 2.75;
         $this->_receiver_types = ['legal'];
         $this->_may_support_recurring = true;
-        $this->_countries = ['ua',];
 
     }
 
@@ -533,7 +532,7 @@ class Leyka_Liqpay extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'gateways/liqpay/icons/Liqpay_logo_full.svg',
         ]);
 
-        $this->_supported_currencies = ['rub', 'uah', 'usd', 'eur',];
+        $this->_supported_currencies = ['uah', 'usd', 'eur'];
         $this->_default_currency = 'uah';
 
     }
@@ -567,7 +566,7 @@ class Leyka_Liqpay_Card extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-maestro.svg',
         ]);
 
-        $this->_supported_currencies = ['rub', 'uah', 'usd', 'eur',];
+        $this->_supported_currencies = ['uah', 'usd', 'eur'];
         $this->_default_currency = 'uah';
 
     }
@@ -603,7 +602,7 @@ class Leyka_Liqpay_Privat24 extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'gateways/liqpay/icons/privat_logo_short.svg',
         ]);
 
-        $this->_supported_currencies = ['rub', 'uah', 'usd', 'eur',];
+        $this->_supported_currencies = ['uah', 'usd', 'eur'];
         $this->_default_currency = 'uah';
 
     }

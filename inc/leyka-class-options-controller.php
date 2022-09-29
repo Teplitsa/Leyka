@@ -59,15 +59,27 @@ class Leyka_Options_Controller extends Leyka_Singleton {
         });
         // Additional Donation form fields Library - END
 
-        $main_currency_id = leyka_get_country_currency();
+        $currencies = array_keys(leyka_get_main_currencies_full_info());
 
-        add_filter('leyka_option_default-payments_single_amounts_options_'.$main_currency_id, function($option_value){
-            return leyka_get_payments_amounts_options('single');
+        foreach($currencies as $currency_id) {
+
+            add_filter('leyka_option_default-payments_single_amounts_options_'.$currency_id, function($option_value) use ($currency_id){
+                return leyka_get_fixed_payments_amounts_options($currency_id);
+            });
+
+            add_filter('leyka_option_default-payments_recurring_amounts_options_'.$currency_id, function($option_value) use ($currency_id){
+                return leyka_get_fixed_payments_amounts_options($currency_id);
+            });
+
+        }
+
+        add_action('leyka_set_currency_main_option_value', function (){
+
+            leyka_refresh_currencies_rates();
+            leyka_actualize_campaigns_money_values();
+            leyka_clear_dashboard_cache();
+
         });
-
-        add_filter('leyka_option_default-payments_recurring_amounts_options_'.$main_currency_id, function($option_value){
-            return leyka_get_payments_amounts_options('recurring');
-        }, 10, 2);
 
         // If Country option value changes, clear active PM lists:
         add_action('leyka_set_receiver_country_option_value', function($option_value){
@@ -99,7 +111,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
      * @package $use_option_value_filters boolean
      * @return mixed
      */
-    public static function get_option_value($option_id, $use_option_value_filters = true) {
+    public static function get_option_value($option_id, $use_option_value_filters = true) {;
 
         // Don't use $this->_get_filtered_option_id() here:
         $option_id = stripos($option_id, 'leyka_') === false ? 'leyka_'.$option_id : $option_id;

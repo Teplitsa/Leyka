@@ -885,7 +885,7 @@ function leyka_render_campaign_select_field($option_id, $data) {
 function leyka_render_tabbed_section_options_area($section, $forced_data = []) {
 
     $default_active_tab_index = 0;
-    
+
     if( !empty($section['tabs']) ) {?>
 
         <div class="section-tabs-wrapper">
@@ -1403,7 +1403,12 @@ add_action('leyka_render_custom_payments_amounts_options', 'leyka_render_custom_
 function leyka_render_custom_payments_amounts_options_settings($option_id, $data = []){
 
     $option_id = mb_stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
-    $data = $data ? : leyka_options()->get_info_of($option_id);
+
+    if(is_array($data) && array_keys($data) === ['value']) {
+        $data = array_merge(leyka_options()->get_info_of($option_id), $data);
+    } else {
+        $data = $data ? : leyka_options()->get_info_of($option_id);
+    }
 
     ?>
 
@@ -1416,10 +1421,9 @@ function leyka_render_custom_payments_amounts_options_settings($option_id, $data
             $data['value'] = (empty($data['value']) || !is_array($data['value'])) && ( !empty($data['default']) && is_array($data['default'])) ?
                 $data['default'] : $data['value'];
 
-            $currency_id = leyka_options()->opt_safe("currency_main");
-            $currency_label = leyka_options()->opt_safe("currency_{$currency_id}_label");
-            $currency_min_sum = leyka_options()->opt_safe("currency_{$currency_id}_min_sum");
-            $currency_max_sum = leyka_options()->opt_safe("currency_{$currency_id}_max_sum");
+            $currency_label = leyka_options()->opt_safe("currency_{$data['currency_id']}_label");
+            $currency_min_sum = leyka_options()->opt_safe("currency_{$data['currency_id']}_min_sum");
+            $currency_max_sum = leyka_options()->opt_safe("currency_{$data['currency_id']}_max_sum");
 
             if($data['value'] && is_array($data['value'])) {
                 foreach($data['value'] as $amount_option_id => $amount_option_data) {
@@ -1472,39 +1476,93 @@ function leyka_render_custom_payments_amounts_options_settings($option_id, $data
 
 }
 
-$main_currency_id = leyka_options()->opt_safe('currency_main');
-add_action("leyka_save_custom_option-payments_single_amounts_options_".$main_currency_id, 'leyka_save_payments_amounts_options');
-function leyka_save_payments_amounts_options() {
+add_action('leyka_render_custom_payments_amounts_options_tabs', 'leyka_render_custom_payments_amounts_options_tabs_settings', 10, 2);
+function leyka_render_custom_payments_amounts_options_tabs_settings($option_id, $data = []){
 
-    function save_payment_amounts_options($amounts_options, $payment_type, $currency_id) {
+    $option_id = mb_stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
+    $data = $data ? : leyka_options()->get_info_of($option_id);
 
-        $result = [];
+    $main_currency_id = leyka_get_main_currency();
+    $currencies = leyka_get_main_currencies_full_info();
 
-        foreach($amounts_options as $amount_option) {
+    ?>
 
-            $amount_option_id = str_replace('item-', '', $amount_option['id']);
+    <div class="leyka-tabs">
 
-            $result[$amount_option_id] = [
-                'amount' => $amount_option['leyka_payment_'.$payment_type.'_amount_'.$amount_option_id],
-                'description' => wp_strip_all_tags($amount_option['leyka_payment_'.$payment_type.'_description_'.$amount_option_id], true),
-            ];
+        <div id="leyka-<?php echo $option_id;?>-tabs" class="leyka-payments-amounts-options-tabs">
+
+            <div class="leyka-tabs-titles">
+
+                <?php foreach($currencies as $currency_id => $currency_data) { ?>
+
+                    <div id="<?php echo $option_id;?>_<?php echo $currency_id;?>-tab" class="leyka-tab-title <?php echo $main_currency_id === $currency_id ? 'leyka-active' : '' ?>">
+                        <?php echo strtoupper($currency_id);?>
+                    </div>
+
+                <?php } ?>
+
+            </div>
+
+            <div class="leyka-tabs-content">
+
+                <?php foreach($currencies as $currency_id => $currency_data) { ?>
+
+                <div class="leyka-tab-content <?php echo $main_currency_id === $currency_id ? '' : 'leyka-hidden' ?>">
+
+                    <?php leyka_render_custom_payments_amounts_options_settings(
+                            'payments_'.$data['payment_type'].'_amounts_options_'.$currency_id,
+                            isset($data['value']['payments_'.$data['payment_type'].'_amounts_options_'.$currency_id]) ?
+                                $data['value']['payments_'.$data['payment_type'].'_amounts_options_'.$currency_id] : []
+                    ); ?>
+
+                </div>
+
+                <?php } ?>
+
+                <input type="hidden" name="leyka_payments_<?php echo $data['payment_type']; ?>_amounts_options" value="">
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <?php
+
+}
+
+add_action("leyka_save_custom_option-payments_single_amounts_options", 'leyka_save_payments_amounts_options', 20, 2);
+add_action("leyka_save_custom_option-payments_recurring_amounts_options", 'leyka_save_payments_amounts_options', 20, 2);
+function leyka_save_payments_amounts_options($data=[], $option_id) {
+
+    $data = $data ? : leyka_options()->get_info_of($option_id);
+    $currencies = leyka_get_main_currencies_full_info();
+
+    foreach($currencies as $currency_id => $currency_data) {
+
+        $payments_amounts_attr = 'leyka_payments_'.$data['payment_type'].'_amounts_options_'.$currency_id;
+
+        if(isset($_POST[$payments_amounts_attr])) {
+
+            $result = [];
+
+            $amounts_options = json_decode(urldecode($_POST[$payments_amounts_attr]), true);
+
+            foreach($amounts_options as $amount_option) {
+
+                $amount_option_id = str_replace('item-', '', $amount_option['id']);
+
+                $result[$amount_option_id] = [
+                    'amount' => $amount_option['leyka_payment_'.$data['payment_type'].'_amount_'.$amount_option_id],
+                    'description' => wp_strip_all_tags($amount_option['leyka_payment_'.$data['payment_type'].'_description_'.$amount_option_id], true),
+                ];
+
+            }
+
+            leyka_options()->opt('payments_'.$data['payment_type'].'_amounts_options_'.$currency_id, $result);
 
         }
 
-        leyka_options()->opt('payments_'.$payment_type.'_amounts_options_'.$currency_id, $result);
-
-    }
-
-    $currency_id = leyka_options()->opt_safe('currency_main');
-    $payments_single_amounts_attr = 'leyka_payments_single_amounts_options_'.$currency_id;
-    $payments_recurring_amounts_attr = 'leyka_payments_recurring_amounts_options_'.$currency_id;
-
-    if(isset($_POST[$payments_single_amounts_attr])) {
-        save_payment_amounts_options(json_decode(urldecode($_POST[$payments_single_amounts_attr]), true), 'single', $currency_id);
-    }
-
-    if(isset($_POST[$payments_recurring_amounts_attr])) {
-        save_payment_amounts_options(json_decode(urldecode($_POST[$payments_recurring_amounts_attr]), true), 'recurring', $currency_id);
     }
 
 }
@@ -1567,8 +1625,6 @@ function leyka_render_custom_cryptocurrencies_wallets_options_settings($option_i
 
     $option_id = mb_stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
     $data = $data ? : leyka_options()->get_info_of($option_id);
-
-    //var_dump($data);
 
     ?>
 
@@ -1649,3 +1705,93 @@ function leyka_save_cryptocurrencies_wallets_options() {
 }
 // [Special field] Cryptocurrencies wallets options - END
 
+// [Special field] Currencies miscs tabs
+
+add_action('leyka_render_custom_currencies_miscs_tabs', 'leyka_render_custom_currencies_miscs_tabs_settings', 10, 2);
+function leyka_render_custom_currencies_miscs_tabs_settings($option_id, $data = []){
+
+    $option_id = mb_stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
+    $data = $data ? : leyka_options()->get_info_of($option_id);
+
+    $main_currency_id = leyka_get_main_currency();
+    $currencies = leyka_get_main_currencies_full_info();
+
+    ?>
+
+    <div class="leyka-tabs">
+
+        <div id="leyka-<?php echo $option_id;?>-tabs" class="leyka-currencies-miscs-tabs">
+
+            <div class="leyka-tabs-titles">
+
+                <?php foreach($currencies as $currency_id => $currency_data) { ?>
+
+                    <div id="<?php echo $option_id;?>_<?php echo $currency_id;?>-tab" class="leyka-tab-title <?php echo $main_currency_id === $currency_id ? 'leyka-active' : '' ?>">
+                        <?php echo strtoupper($currency_id);?>
+                    </div>
+
+                <?php } ?>
+
+            </div>
+
+            <div class="leyka-tabs-content">
+
+                <?php foreach($currencies as $currency_id => $currency_data) { ?>
+
+                    <div class="leyka-tab-content <?php echo $main_currency_id === $currency_id ? '' : 'leyka-hidden' ?>">
+
+                        <div class="option-block type-text">
+
+                            <div id="<?php echo $option_id;?>_<?php echo $currency_id;?>-wrapper" class="leyka-text-field-wrapper">
+                                <?php
+
+                                $fields = ["currency_{$currency_id}_label", "currency_{$currency_id}_flexible_default_amount", "currency_{$currency_id}_min_sum", "currency_{$currency_id}_max_sum"];
+
+                                foreach($fields as $field) {
+
+                                    $field_data = leyka_options()->get_info_of($field);
+
+                                    leyka_render_text_field($field, $field_data);
+
+                                }
+
+                                ?>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                <?php } ?>
+
+                <input type="hidden" name="leyka_currencies_miscs" value="">
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <?php
+
+}
+
+add_action("leyka_save_custom_option-currencies_miscs", 'leyka_save_currencies_miscs_tabs_options');
+function leyka_save_currencies_miscs_tabs_options() {
+
+    $currencies = leyka_get_main_currencies_full_info();
+
+    foreach($currencies as $currency_id => $currency_data) {
+
+        $fields = ["currency_{$currency_id}_label", "currency_{$currency_id}_flexible_default_amount", "currency_{$currency_id}_min_sum", "currency_{$currency_id}_max_sum"];
+
+        foreach($fields as $field) {
+
+            leyka_options()->opt($field, $_POST['leyka_'.$field]);
+
+        }
+
+    }
+
+}
+// [Special field] Currencies miscs tabs -END

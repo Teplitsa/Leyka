@@ -158,31 +158,28 @@ abstract class Leyka_Donation_Base {
         $params['currency_id'] = empty($params['currency_id']) ?
             (empty($params['currency']) ? '' : mb_strtolower($params['currency'])) : mb_strtolower($params['currency_id']);
         $params['currency_id'] = $params['currency_id'] ? : leyka_pf_get_currency_value();
-
         $params['currency_id'] = empty($params['currency_id']) || !leyka_get_currencies_data($params['currency_id']) ?
-            'RUB' : mb_strtoupper($params['currency_id']);
+            leyka_get_main_currency() : $params['currency_id'];
 
-        $currency_rate = $params['currency_id'] == 'RUB' ?
-            1.0 : (float)leyka_options()->opt('currency_rur2'.mb_strtolower($params['currency_id']));
-        if( !$currency_rate || $currency_rate <= 0.0 ) {
-            $currency_rate = 1.0;
-        }
+        $params['main_currency_id'] = leyka_get_main_currency();
+
+        $params['main_currency_rate'] = leyka_get_currency_rate(strtolower($params['currency_id']));
+
         // Currency - END
 
         // Donation total amount (with commission subtracted):
         $params['amount_total'] = empty($params['amount_total']) || !is_numeric($params['amount_total']) ?
             'auto' : round((float)$params['amount_total'], 2);
-        if(
-            (empty($params['amount_total']) || $params['amount_total'] === 'auto')
+
+        if((empty($params['amount_total']) || $params['amount_total'] === 'auto')
             && ( !empty($pm_data['payment_method_id']) && !empty($pm_data['gateway_id']) )
         ) {
             $params['amount_total'] = leyka_calculate_donation_total_amount(false, $params['amount'], $pm_full_id);
         }
 
-        $params['amount_in_main_currency'] = empty($params['amount_in_main_currency']) ?
-            $params['amount']*$currency_rate : round((float)$params['amount_in_main_currency'], 2);
-        $params['amount_total_in_main_currency'] = empty($params['amount_total_in_main_currency']) ?
-            $params['amount_total']*$currency_rate : round((float)$params['amount_total_in_main_currency'], 2);
+        $params['main_currency_amount'] = round((float)($params['amount']/$params['main_currency_rate']), 2);
+
+        $params['main_currency_amount_total'] = round((float)($params['amount_total']/$params['main_currency_rate']), 2);
         // Donation total amount - END
 
         // Additional fields:

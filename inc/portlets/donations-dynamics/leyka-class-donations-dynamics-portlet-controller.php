@@ -77,24 +77,58 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
                 $sub_interval_begin_date = $sub_interval_begin_date < $interval_dates['curr_interval_begin_date'] ?
                     $interval_dates['curr_interval_begin_date'] : $sub_interval_begin_date;
 
-                $query = leyka_get_donations_storage_type() === 'post' ?
-                    // Post-based donations storage:
-                    "SELECT SUM({$wpdb->prefix}postmeta.meta_value)
-                    FROM {$wpdb->prefix}postmeta
-                    WHERE {$wpdb->prefix}postmeta.meta_key='leyka_donation_amount'
-                    AND {$wpdb->prefix}postmeta.post_id IN (
-                        SELECT {$wpdb->prefix}posts.ID 
-                            FROM {$wpdb->posts} WHERE post_type='".Leyka_Donation_Management::$post_type."'
-                            AND post_status='funded'
-                            AND post_date BETWEEN '$sub_interval_begin_date' AND '$sub_interval_end_date'
-                    )" :
-                    // Separate donations storage:
-                    "SELECT SUM(amount)
-                FROM {$wpdb->prefix}leyka_donations
-                WHERE status='funded'
-                    AND date_created BETWEEN '$sub_interval_begin_date' AND '$sub_interval_end_date'";
+                if(leyka_get_donations_storage_type() === 'post') { // Post-based donations storage:
 
-                $amount = $wpdb->get_var($query);
+                    $donations_post_type = Leyka_Donation_Management::$post_type;
+
+                    $donations_data_raw = $wpdb->get_results(
+                        "SELECT t1.post_id, t1.meta_value FROM {$wpdb->prefix}postmeta t1
+                        WHERE t1.meta_key='leyka_donation_currency' AND t1.post_id IN (
+                            SELECT t2.ID 
+                            FROM {$wpdb->prefix}posts t2
+                            WHERE t2.post_type='{$donations_post_type}' AND t2.post_status='funded' AND t2.post_date BETWEEN '$sub_interval_begin_date' AND '$sub_interval_end_date')",
+                            'ARRAY_A'
+                    );
+
+                    $donations_data = [];
+                    foreach($donations_data_raw as $donation_data_raw) {
+                        $donations_data[$donation_data_raw['post_id']] = strtolower($donation_data_raw['meta_value']);
+                    }
+
+                    $donations = array_keys($donations_data);
+
+                    $amount = 0;
+                    if($donations) {
+
+                        $donations_by_currency = [];
+
+                        foreach($donations_data as $donation_id => $donation_currency) {
+                            $donations_by_currency[$donation_currency][] = $donation_id;
+                        }
+
+                        foreach($donations_by_currency as $currency => $donations) {
+
+                            $query = "SELECT SUM(meta_value)
+                                FROM {$wpdb->prefix}postmeta
+                                WHERE post_id IN (" . implode(',', $donations) . ")
+                                AND meta_key='leyka_donation_amount'";
+
+                            $amount += leyka_currency_convert($wpdb->get_var($query), $currency);
+
+                        }
+
+                    }
+
+                } else { // Separate donations storage:
+
+                    $query = "SELECT SUM(amount)
+                        FROM {$wpdb->prefix}leyka_donations
+                        WHERE status='funded'
+                            AND date_created BETWEEN '$sub_interval_begin_date' AND '$sub_interval_end_date'";
+
+                    $amount = $wpdb->get_var($query);
+
+                }
 
                 $result[] = ['x' => date('d.m.Y', strtotime($sub_interval_end_date)), 'y' => $amount,];
 

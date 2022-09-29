@@ -1500,6 +1500,63 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 </div>
             </div>
 
+            <?php if($donation->currency_id !== $donation->main_currency_id) { ?>
+
+            <div class="leyka-ddata-string">
+                <label><?php echo sprintf(__('%s to %s exchange rate', 'leyka'),  strtoupper($donation->main_currency_id), strtoupper($donation->currency_id)); ?>:</label>
+                <div class="leyka-ddata-field">
+                    <span class="fake-input">
+                        <?php echo $donation->main_currency_rate;?>
+                    </span>
+                </div>
+            </div>
+
+            <div class="leyka-ddata-string">
+                <label><?php _e('Amount in main currency', 'leyka');?>:</label>
+                <div class="leyka-ddata-field">
+                    <?php if($donation->type === 'correction') {?>
+
+                        <input type="text" id="donation-main-currency-amount" name="donation-main-currency-amount" placeholder="<?php _e("Enter donation amount in main currency", 'leyka');?>" value="<?php echo $donation->main_currency_amount;?>"> <?php echo $donation->main_currency;?>
+
+                        <div id="donation_main_currency_amount-error" class="field-error"></div>
+
+                    <?php } else {?>
+
+                        <span class="fake-input">
+                            <?php echo $donation->main_currency_amount ? $donation->main_currency_amount.' '.strtolower($donation->main_currency)  : '';?>
+                        </span>
+
+                    <?php }?>
+                </div>
+            </div>
+
+            <div class="leyka-ddata-string">
+                <label for="donation-main-currency-amount-total"><?php _e('Total amount in main currency', 'leyka');?>:</label>
+
+                <div class="leyka-ddata-field">
+                    <?php if($donation->type === 'correction') {?>
+
+                        <input type="text" id="donation-main-currency-amount-total" name="donation-main-currency-amount-total" placeholder="<?php _e('Enter the donation total amount in main currency', 'leyka');?>" value="<?php echo $donation->main_currency_amount_total;?>"> <?php echo leyka_get_currency_label();?><br>
+
+                        <small class="field-help howto">
+                            <?php
+                            _e('Leave empty to make the total amount value equal to the amount value.', 'leyka');?>
+                        </small>
+
+                        <div id="donation_main_currency_amount_total-error" class="field-error"></div>
+
+                    <?php } else {?>
+
+                        <span class="fake-input">
+                            <?php echo $donation->main_currency_amount_total ? $donation->main_currency_amount_total.' '.strtolower($donation->main_currency) : '';?>
+                        </span>
+
+                    <?php }?>
+                </div>
+            </div>
+
+            <?php } ?>
+
             <div class="leyka-ddata-string">
 
                 <label><?php _e('Payment method', 'leyka');?>:</label>

@@ -38,11 +38,12 @@ class Leyka_Recurring_Stats_Portlet_Controller extends Leyka_Portlet_Controller 
             // Curr. interval recurring donations:
             $query = leyka_get_donations_storage_type() === 'post' ?
                 // Post-based donations storage:
-                "SELECT posts.ID, posts.post_parent, postmeta2.meta_value as rebilling_is_on, postmeta3.meta_value as subscription_status 
+                "SELECT posts.ID, posts.post_parent, postmeta2.meta_value as rebilling_is_on, postmeta3.meta_value as subscription_status, postmeta4.meta_value as currency  
                 FROM {$wpdb->prefix}posts as posts 
                     JOIN {$wpdb->prefix}postmeta as postmeta1 ON posts.ID = postmeta1.post_id
                     LEFT JOIN {$wpdb->prefix}postmeta AS postmeta2 ON posts.ID = postmeta2.post_id and postmeta2.meta_key='_rebilling_is_active'
                     LEFT JOIN {$wpdb->prefix}postmeta AS postmeta3 ON posts.ID = postmeta3.post_id and postmeta3.meta_key='leyka_recurring_subscription_status'
+                    LEFT JOIN {$wpdb->prefix}postmeta AS postmeta4 ON posts.ID = postmeta4.post_id and postmeta4.meta_key='leyka_donation_currency'
                 WHERE posts.post_type='".Leyka_Donation_Management::$post_type."'
                 AND posts.post_status='funded'
                 AND posts.post_date >= '".$interval_dates["curr_interval_begin_date"]."'
@@ -83,18 +84,26 @@ class Leyka_Recurring_Stats_Portlet_Controller extends Leyka_Portlet_Controller 
             $curr_recurring_amount = 0;
             if($curr_recurring_donations) {
 
-                $query = leyka_get_donations_storage_type() === 'post' ?
-                    // Post-based donations storage:
-                    "SELECT SUM(meta_value)
-                    FROM {$wpdb->prefix}postmeta
-                    WHERE post_id IN (".implode(',', $curr_recurring_donations_ids).")
-                    AND meta_key='leyka_donation_amount'" :
-                    // Separate donations storage:
-                    "SELECT SUM(amount)
-                    FROM {$wpdb->prefix}leyka_donations
-                    WHERE ID IN (".implode(',', $curr_recurring_donations_ids).')';
+                foreach($curr_recurring_donations as $curr_recurring_donation) {
+                    $curr_recurring_donations_by_currency[strtolower($curr_recurring_donation['currency'])][] = $curr_recurring_donation['ID'];
+                }
 
-                $curr_recurring_amount = $wpdb->get_var($query);
+                foreach($curr_recurring_donations_by_currency as $currency => $donations) {
+
+                    $query = leyka_get_donations_storage_type() === 'post' ?
+                        // Post-based donations storage:
+                        "SELECT SUM(meta_value)
+                        FROM {$wpdb->prefix}postmeta
+                        WHERE post_id IN (" . implode(',', $donations) . ")
+                        AND meta_key='leyka_donation_amount'" :
+                        // Separate donations storage:
+                        "SELECT SUM(amount)
+                        FROM {$wpdb->prefix}leyka_donations
+                        WHERE ID IN (" . implode(',', $donations) . ')';
+
+                    $curr_recurring_amount = leyka_currency_convert($wpdb->get_var($query), $currency);
+
+                }
 
             }
 
@@ -115,11 +124,12 @@ class Leyka_Recurring_Stats_Portlet_Controller extends Leyka_Portlet_Controller 
             // Prev. interval recurring donations:
             $query = leyka_get_donations_storage_type() === 'post' ?
                 // Post-based donations storage:
-                "SELECT posts.ID, posts.post_parent, postmeta2.meta_value as rebilling_is_on, postmeta3.meta_value as subscription_status
+                "SELECT posts.ID, posts.post_parent, postmeta2.meta_value as rebilling_is_on, postmeta3.meta_value as subscription_status, postmeta4.meta_value as currency  
                 FROM {$wpdb->prefix}posts as posts 
                     JOIN {$wpdb->prefix}postmeta as postmeta1 ON posts.ID = postmeta1.post_id
                     LEFT JOIN {$wpdb->prefix}postmeta AS postmeta2 ON posts.ID = postmeta2.post_id and postmeta2.meta_key='_rebilling_is_active'
                     LEFT JOIN {$wpdb->prefix}postmeta AS postmeta3 ON posts.ID = postmeta3.post_id and postmeta3.meta_key='leyka_recurring_subscription_status'
+                    LEFT JOIN {$wpdb->prefix}postmeta AS postmeta4 ON posts.ID = postmeta4.post_id and postmeta4.meta_key='leyka_donation_currency'
                 WHERE posts.post_type='".Leyka_Donation_Management::$post_type."'
                 AND posts.post_status='funded'
                 AND posts.post_date BETWEEN '".$interval_dates["prev_interval_begin_date"]."' AND '".$interval_dates["curr_interval_begin_date"]."'
@@ -160,18 +170,26 @@ class Leyka_Recurring_Stats_Portlet_Controller extends Leyka_Portlet_Controller 
             $prev_recurring_amount = 0;
             if($prev_recurring_donations) {
 
-                $query = leyka_get_donations_storage_type() === 'post' ?
-                    // Post-based donations storage:
-                    "SELECT SUM(meta_value)
-                    FROM {$wpdb->prefix}postmeta
-                    WHERE post_id IN (".implode(',', $prev_recurring_donations_ids).")
-                    AND meta_key='leyka_donation_amount'" :
-                    // Separate donations storage:
-                    "SELECT SUM(amount)
-                    FROM {$wpdb->prefix}leyka_donations
-                    WHERE ID IN (".implode(',', $prev_recurring_donations_ids).')';
+                foreach($prev_recurring_donations as $prev_recurring_donation) {
+                    $prev_recurring_donations_by_currency[strtolower($prev_recurring_donation['currency'])][] = $prev_recurring_donation['ID'];
+                }
 
-                $prev_recurring_amount = $wpdb->get_var($query);
+                foreach($prev_recurring_donations_by_currency as $currency => $donations) {
+
+                    $query = leyka_get_donations_storage_type() === 'post' ?
+                        // Post-based donations storage:
+                        "SELECT SUM(meta_value)
+                        FROM {$wpdb->prefix}postmeta
+                        WHERE post_id IN (" . implode(',', $donations) . ")
+                        AND meta_key='leyka_donation_amount'" :
+                        // Separate donations storage:
+                        "SELECT SUM(amount)
+                        FROM {$wpdb->prefix}leyka_donations
+                        WHERE ID IN (" . implode(',', $donations) . ')';
+
+                    $prev_recurring_amount = leyka_currency_convert($wpdb->get_var($query), $currency);
+
+                }
 
             }
 

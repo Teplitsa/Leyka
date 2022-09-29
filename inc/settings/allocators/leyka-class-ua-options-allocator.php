@@ -4,34 +4,13 @@ class Leyka_Ua_Options_Allocator extends Leyka_Ru_Options_Allocator {
 
     protected static $_instance;
 
-    protected function _get_main_currency_options_tabs() {
-
-        $main_currency_id = leyka_options()->opt_safe('currency_main');
-        $main_currency_info = leyka_get_currencies_full_info($main_currency_id);
-
-        return [
-            $main_currency_id.'_currency' => [
-                'title' => $main_currency_info['title'],
-                'sections' => [
-                    [
-                        'title' => '',
-                        'options' => [
-                            "currency_{$main_currency_id}_label", "currency_{$main_currency_id}_min_sum",
-                            "currency_{$main_currency_id}_max_sum", "currency_{$main_currency_id}_flexible_default_amount",
-                            "currency_{$main_currency_id}_fixed_amounts",
-                        ],
-                    ],
-                ],
-        ],];
-    }
-
     public function get_beneficiary_options() {
         return [
             ['section' => [
                 'name' => 'receiver_country',
                 'title' => __('Country', 'leyka'),
                 'is_default_collapsed' => false,
-                'options' => ['receiver_country', 'currency_main', 'phone_format'],
+                'options' => ['receiver_country', 'phone_format'],
             ],],
             ['section' => [
                 'name' => 'beneficiary_org_name',

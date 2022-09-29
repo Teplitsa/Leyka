@@ -900,8 +900,17 @@
 
         .section__fields.currencies {
 
-            display: flex;
             font-family: $leyka-font-main;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            padding: 0px;
+            gap: 16px;
+            flex: none;
+            order: 1;
+            align-self: stretch;
+            flex-grow: 0;
+            flex-wrap: wrap;
 
             a {
 
@@ -909,15 +918,25 @@
                 @include star-text-periodicity();
 
                 display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 16px;
+                gap: 10px;
+                width: 123px;
+                height: 60px;
+                border: 2px solid #EAECF1;
+                border-radius: 8px;
+                flex: none;
+                order: 0;
+                flex-grow: 1;
+
                 box-shadow: none;
                 background-color: $leyka-star-color-white;
                 color: $leyka-star-color-gray-semi-dark;
                 text-decoration: none;
-                width: calc(50% + 8px);
-                height: 56px;
+                //width: calc(50% + 8px);
                 text-align: center;
                 justify-content: center;
-                align-items: center;
                 z-index: 10;
                 margin-left: -8px;
 

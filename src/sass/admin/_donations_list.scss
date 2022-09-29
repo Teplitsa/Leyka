@@ -63,7 +63,7 @@
 
             .column-gateway_pm {
 
-                width: 85px;
+                width: 125px;
                 max-width: 230px;
 
                 .leyka-gateway-pm {
@@ -76,7 +76,7 @@
 
                     width: 20px; // Use the deliberately small width, so icons inside would widen only by their needs
 
-                    .leyka-gateway-name {
+                    div:not(:last-child) {
                         margin-right: 10px;
                     }
 

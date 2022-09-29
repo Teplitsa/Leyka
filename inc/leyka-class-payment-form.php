@@ -339,12 +339,15 @@ class Leyka_Payment_Form {
 
 	}
 
-	public function get_hidden_amount_fields() {
+	public function get_hidden_amount_fields($currency_id = null) {
 
         $hiddens = [];
-        foreach($this->get_supported_currencies() as $currency_id => $data) {
-            $hiddens[] = '<input type="hidden" name="top_'.esc_attr($currency_id).'" value="'.esc_attr($data['top']).'">
-			              <input type="hidden" name="bottom_'.esc_attr($currency_id).'" value="'.esc_attr($data['bottom']).'">';
+
+        $currencies = $currency_id ? [ $currency_id => leyka_get_currencies_data($currency_id)] : $this->get_supported_currencies();
+
+        foreach($currencies as $currency_id => $data) {
+            $hiddens[] = '<input type="hidden" name="top_' . esc_attr($currency_id) . '" value="' . esc_attr($data['top']) . '">
+            <input type="hidden" name="bottom_' . esc_attr($currency_id) . '" value="' . esc_attr($data['bottom']) . '">';
         }
 
         return implode("\n", $hiddens);
@@ -535,7 +538,7 @@ class Leyka_Payment_Form {
         return $this->_pm->description ? apply_filters('leyka_pm_description', $this->_pm->description, $this->_pm_name) : '';
 	}
 
-    public function get_supported_currencies() {
+    public function get_supported_currencies($currency_id = null) {
 
 		$supported_curr = $this->_pm ? $this->_pm->currencies : [leyka_options()->opt('currency_main')];
 		$active_curr = leyka_get_currencies_data();
@@ -760,7 +763,7 @@ function leyka_pf_get_amount_value() {
 }
 
 function leyka_pf_get_currency_value() {
-    return empty($_POST['leyka_donation_currency']) ? '' : $_POST['leyka_donation_currency'];
+    return empty($_POST['leyka_donation_currency']) ? '' : strtolower($_POST['leyka_donation_currency']);
 }
 
 function leyka_pf_get_donor_name_value() {

@@ -1006,4 +1006,78 @@ jQuery(document).ready(function($){
 
     }).change();
 
+    $('.leyka-tab-title').on('click', function () {
+
+        $(this).parents('.leyka-tabs-titles').find('.leyka-tab-title').removeClass('leyka-active');
+        $(this).addClass('leyka-active');
+
+        $(this).parents('.leyka-tabs').find('.leyka-tab-content').addClass('leyka-hidden');
+
+        const tab_content_id = $(this).attr('id').replace('tab', 'wrapper');
+
+        $('#'+tab_content_id).parents('.leyka-tab-content').removeClass('leyka-hidden');
+
+    });
+
+    $('#payments_options .section-tab-nav-item[data-target="rates"]').on('click', () => {
+
+        $.get(leyka.ajaxurl, {
+            action: 'leyka_get_currencies_rates'
+        }, function(resp){
+
+            const currencies = JSON.parse(resp);
+
+            let main_currency = '';
+
+            for(let id in currencies) {
+                if(currencies[id] === '1') {
+
+                    main_currency = id;
+                    break;
+
+                }
+            }
+
+            const $currencies_elements_section = $('#payments_options .tab-rates .tab-section-options:nth-child(2)');
+
+            $currencies_elements_section.html('');
+
+            const main_currency_label = main_currency.toUpperCase();
+
+            for(let id in currencies) {
+
+                if(id === main_currency) {
+                    continue;
+                }
+
+                let currency_val = currencies[id],
+                    currency_label = id.toUpperCase();
+
+                $currencies_elements_section.append(`
+                    <div id="leyka_currency_${id}_exchange_rate-wrapper" 
+                        class="leyka-field-inner-wrapper leyka-number-field-wrapper" 
+                        data-field-title="${main_currency_label}-${currency_label}}">
+                        <label>
+                            <span class="field-component title">
+                                <span class="text">${main_currency_label}-${currency_label}</span>
+                                <span class="required">*</span>                                
+                                <span class="field-q">
+                                    <img src="http://leyka.local/wp-content/plugins/Leyka/img/icon-q.svg" alt="">
+                                    <span class="field-q-tooltip">${main_currency_label} to ${currency_label} exchange rate.</span>
+                                </span>
+                            </span>
+                            <span class="field-component field">
+                                <input type="number" id="leyka_currency_${id}_exchange_rate-field" name="leyka_currency_${id}_exchange_rate"
+                                       value="${currency_val}" placeholder="Enter rate value (e.g., 70)" maxLength="9" min="0" step="0.000000001">
+                            </span>
+                        </label>
+                    </div>
+                `);
+
+            }
+
+        });
+
+    });
+
 });

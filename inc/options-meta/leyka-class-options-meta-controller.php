@@ -355,14 +355,13 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
 
     protected function _get_meta_payments() {
 
-        $main_currency_id = leyka_get_country_currency();
-        $main_currencies = leyka_get_main_currencies_full_info();
+        $currencies = leyka_get_main_currencies_full_info();
 
-        if(empty($main_currencies[$main_currency_id])) {
+        if(empty($currencies)) {
             return [];
         }
 
-        return [
+        $options = [
             'payments_single_tab_title' => [
                 'type' => 'text',
                 'default' => __('Single payments', 'leyka'),
@@ -370,10 +369,10 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'required' => true,
                 'placeholder' => __('Single payments', 'leyka'),
             ],
-            'payments_single_amounts_options_'.$main_currency_id => [
-                'type' => 'custom_payments_amounts_options',
-                'title' => __('Amounts options', 'leyka'),
-                'field_classes' => ['payments-amounts-options'],
+            'payments_single_amounts_options' => [
+                'type' => 'custom_payments_amounts_options_tabs',
+                'title' => __('Amounts options tabs', 'leyka'),
+                'field_classes' => ['payments-amounts-options-tab'],
                 'default' => [],
                 'payment_type' => 'single'
             ],
@@ -384,14 +383,39 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                 'required' => true,
                 'placeholder' => __('Recurring payments', 'leyka'),
             ],
-            'payments_recurring_amounts_options_'.$main_currency_id => [
+            'payments_recurring_amounts_options' => [
+                'type' => 'custom_payments_amounts_options_tabs',
+                'title' => __('Amounts options tabs', 'leyka'),
+                'field_classes' => ['payments-amounts-options-tab'],
+                'default' => [],
+                'payment_type' => 'recurring'
+            ]
+
+        ];
+
+        foreach($currencies as $currency_id => $currency_data) {
+
+            $options['payments_single_amounts_options_'.$currency_id] = [
                 'type' => 'custom_payments_amounts_options',
                 'title' => __('Amounts options', 'leyka'),
                 'field_classes' => ['payments-amounts-options'],
                 'default' => [],
-                'payment_type' => 'recurring'
-            ]
-        ];
+                'payment_type' => 'single',
+                'currency_id' => $currency_id
+            ];
+
+            $options['payments_recurring_amounts_options_'.$currency_id] = [
+                'type' => 'custom_payments_amounts_options',
+                'title' => __('Amounts options', 'leyka'),
+                'field_classes' => ['payments-amounts-options'],
+                'default' => [],
+                'payment_type' => 'recurring',
+                'currency_id' => $currency_id
+            ];
+
+        }
+
+        return $options;
 
     }
 
@@ -400,29 +424,29 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
         $currencies_options_meta = [
             'currency_main' => [
                 'type' => 'select',
-                'default' => leyka_get_country_currency(),
+                'default' => 'rub',
                 'title' => __('The main currency', 'leyka'),
                 'required' => true,
                 'description' => __("Select the main currency of your donations. Most of the times it's going to be the official currency of your country.", 'leyka'),
                 'list_entries' => leyka_get_currencies_list(),
             ],
-//            'auto_refresh_currency_rates' => [
-//                'type' => 'checkbox',
-//                'default' => '1',
-//                'title' => __('Automatically refresh currency rates', 'leyka'),
-//                'description' => __('Check to enable auto-refresh of currency rates. It will be performed every 24 hours and will require connection with http://cbr.ru website.', 'leyka'),
-//            ],
-//            'currency_rur2usd' => [
-//                'type' => 'number',
-//                'title' => __('Exchange rate', 'leyka'),
-//                'description' => __('Please set the RUB to USD currency rate here.', 'leyka'),
-//                'required' => true,
-//                'placeholder' => __('Enter rate value (e.g., 70)', 'leyka'),
-//                'length' => 6,
-//            ],
+            'currencies_rates_auto_refresh' => [
+                'type' => 'checkbox',
+                'default' => '1',
+                'title' => __('Automatically refresh currency rates', 'leyka'),
+                'comment' => __('Check to allow auto-refresh of currency rates. This feature will require a cron job created on your server. Rates data will be taken from https://api.exchangerate.host website.', 'leyka'),
+                'short_format' => true
+            ],
+            'currencies_miscs' => [
+                'type' => 'custom_currencies_miscs_tabs',
+                'title' => '',
+                'field_classes' => ['currencies-miscs-tabs']
+            ]
         ];
 
-        $currencies_defaults = leyka_get_main_currencies_full_info() + leyka_get_secondary_currencies_full_info();
+        $currencies_defaults = leyka_get_main_currencies_full_info();
+        $main_currency_id = leyka_get_main_currency();
+
         foreach($currencies_defaults as $currency_id => $data) {
 
             $currencies_options_meta = $currencies_options_meta + [
@@ -470,6 +494,16 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                     'required' => true,
                     'placeholder' => sprintf(__('E.g., %s', 'leyka'), $data['fixed_amounts']),
                     'length' => 75,
+                ],
+                "currency_{$currency_id}_exchange_rate" => [
+                    'type' => 'number',
+                    'default' => 1,
+                    'title' => strtoupper($main_currency_id.'-'.$currency_id),
+                    'placeholder' => __('Enter rate value (e.g., 70)', 'leyka'),
+                    'comment' => sprintf(__('%s to %s exchange rate.', 'leyka'),  strtoupper($main_currency_id), strtoupper($currency_id)),
+                    'required' => true,
+                    'length' => 9,
+                    'step' => '0.000000001'
                 ],
             ];
 
