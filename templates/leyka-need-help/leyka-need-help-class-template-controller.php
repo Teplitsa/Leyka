@@ -26,6 +26,10 @@ class Leyka_Need_Help_Template_Controller extends Leyka_Template_Controller {
 
         foreach($currencies as $currency_id => $currency_data) {
 
+            if( !leyka_get_pm_list(true, $currency_id) || !leyka_gw_is_currency_active($currency_id)) {
+                continue;
+            }
+
             if ($campaign->daily_rouble_mode_on_and_valid) {
 
                 $amount_mode = 'fixed';

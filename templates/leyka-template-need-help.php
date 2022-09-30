@@ -50,34 +50,32 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
 
             </div>
 
-            <?php if( sizeof($template_data['currencies']) > 1 || !empty($template_data['cryptocurrencies_wallets']) ) { ?>
+            <div class="section section--currencies leyka-hidden <?php echo sizeof($template_data['currencies']) === 1 && empty($template_data['cryptocurrencies_wallets']) ? 'leyka-hidden' : '' ?>"
+                 data-main-currency="<?php echo $template_data['main_currency_id']; ?>" data-currencies-count="<?php echo sizeof($template_data['currencies']); ?>"
+                 data-is-crypto-enabled="<?php echo empty($template_data['cryptocurrencies_wallets']) ? 0 : 1; ?>" >
 
-                <div class="section section--currencies leyka-hidden" data-main-currency="<?php echo $template_data['main_currency_id']; ?>">
+                <div class="section-title-container">
 
-                    <div class="section-title-container">
-
-                        <div class="section-title-line"></div>
-                        <div class="section-title-text" role="heading" aria-level="3">
-                            <?php _e('donation currency', 'leyka'); ?>
-                        </div>
-
-                    </div>
-
-                    <div class="section__fields currencies">
-
-                        <?php foreach ($template_data['currencies'] as $currency_id => $currency_data) { ?>
-                            <a href="#" class="<?php echo $currency_id === $template_data['main_currency_id'] ? 'active' : ''; ?>" data-currency="<?php echo $currency_id;?>" role="tab" aria-selected="true"><?php echo $currency_data['currency_label']; ?></a>
-                        <?php } ?>
-
-                        <?php if ( !empty($template_data['cryptocurrencies_wallets']) ) { ?>
-                            <a href="#" data-currency="crypto" role="tab" aria-selected="true">Crypto</a>
-                        <?php } ?>
-
+                    <div class="section-title-line"></div>
+                    <div class="section-title-text" role="heading" aria-level="3">
+                        <?php _e('donation currency', 'leyka'); ?>
                     </div>
 
                 </div>
 
-            <?php } ?>
+                <div class="section__fields currencies">
+
+                    <?php foreach ($template_data['currencies'] as $currency_id => $currency_data) { ?>
+                        <a href="#" class="<?php echo $currency_id === $template_data['main_currency_id'] ? 'active' : ''; ?>" data-currency="<?php echo $currency_id;?>" role="tab" aria-selected="true"><?php echo $currency_data['currency_label']; ?></a>
+                    <?php } ?>
+
+                    <?php if ( !empty($template_data['cryptocurrencies_wallets']) ) { ?>
+                        <a href="#" data-currency="crypto" role="tab" aria-selected="true">Crypto</a>
+                    <?php } ?>
+
+                </div>
+
+            </div>
 
             <?php foreach ($template_data['currencies'] as $currency_id => $currency_data) { ?>
 

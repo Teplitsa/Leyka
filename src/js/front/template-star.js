@@ -468,9 +468,13 @@ jQuery(document).ready(function($){
 
         const $section_currencies = $form.find('.section.section--currencies'),
             periodicity = $form.find('.section__fields.periodicity a.active').data('periodicity'),
-            main_currency = $section_currencies.data('main-currency');
+            main_currency = $section_currencies.data('main-currency'),
+            currencies_count = parseInt($section_currencies.data('currencies-count'), 10),
+            is_crypto_enabled = $section_currencies.data('is-crypto-enabled');
 
-        $section_currencies.removeClass('leyka-hidden');
+        if(currencies_count > 1 || is_crypto_enabled == 1) {
+            $section_currencies.removeClass('leyka-hidden');
+        }
 
         if(periodicity === 'once') {
             $section_currencies.find('a[data-currency="crypto"]').removeClass('leyka-hidden');

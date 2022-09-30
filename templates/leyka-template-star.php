@@ -49,9 +49,9 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
 
         </div>
 
-        <?php if( sizeof($template_data['currencies']) > 1 || !empty($template_data['cryptocurrencies_wallets']) ) { ?>
-
-        <div class="section section--currencies leyka-hidden" data-main-currency="<?php echo $template_data['main_currency_id']; ?>">
+        <div class="section section--currencies <?php echo sizeof($template_data['currencies']) === 1 && empty($template_data['cryptocurrencies_wallets']) ? 'leyka-hidden' : '' ?>"
+             data-main-currency="<?php echo $template_data['main_currency_id']; ?>" data-currencies-count="<?php echo sizeof($template_data['currencies']); ?>"
+             data-is-crypto-enabled="<?php echo empty($template_data['cryptocurrencies_wallets']) ? 0 : 1; ?>" >
 
             <div class="section-title-container">
 
@@ -75,8 +75,6 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
             </div>
 
         </div>
-
-        <?php } ?>
 
         <?php foreach ($template_data['currencies'] as $currency_id => $currency_data) { ?>
 
