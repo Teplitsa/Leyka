@@ -1030,7 +1030,7 @@ jQuery(document).ready(function($){
             let main_currency = '';
 
             for(let id in currencies) {
-                if(currencies[id] === '1') {
+                if(currencies[id] == '1') {
 
                     main_currency = id;
                     break;
@@ -1062,7 +1062,7 @@ jQuery(document).ready(function($){
                                 <span class="text">${main_currency_label}-${currency_label}</span>
                                 <span class="required">*</span>                                
                                 <span class="field-q">
-                                    <img src="http://leyka.local/wp-content/plugins/Leyka/img/icon-q.svg" alt="">
+                                    <img src="/wp-content/plugins/leyka/img/icon-q.svg" alt="">
                                     <span class="field-q-tooltip">${main_currency_label} to ${currency_label} exchange rate.</span>
                                 </span>
                             </span>
