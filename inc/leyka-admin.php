@@ -483,7 +483,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         // Fake pages:
         add_submenu_page(
-            NULL,
+            'leyka_donations',
             __('New correctional donation', 'leyka'),
             _x('Add new', '[donation]', 'leyka'),
             'leyka_manage_donations',
@@ -492,7 +492,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         );
 
         add_submenu_page(
-            NULL, 
+            'leyka_recurring_subscriptions',
             __('Recurring subscription info', 'leyka'),
             __('Recurring subscription info', 'leyka'),
             'leyka_manage_donations', 
@@ -501,7 +501,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         );
 
         add_submenu_page(
-            NULL,
+            'leyka_settings',
             __('Leyka Wizard', 'leyka'),
             __('Leyka Wizard', 'leyka'),
             'leyka_manage_options',
@@ -510,7 +510,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         );
 
         add_submenu_page(
-            NULL,
+            'leyka_donors',
             __("Donor's info", 'leyka'),
             __("Donor's info", 'leyka'),
             'leyka_manage_options',
@@ -519,7 +519,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         );
 
         add_submenu_page(
-            NULL,
+            'leyka_settings',
             __('Extension settings', 'leyka'),
             __('Extension settings', 'leyka'),
             'leyka_manage_options',
