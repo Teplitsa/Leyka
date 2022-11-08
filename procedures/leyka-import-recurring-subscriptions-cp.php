@@ -47,13 +47,13 @@ while( ($subscription_data = fgetcsv($csv_file_handle, null, ";")) !== FALSE ) {
     if(mb_stripos($subscription_data[0], '_') === false) { // The first CSV line is of columns names, so skip it
         continue;
     }
-    if( !in_array($subscription_data[2], ['Работает',]) ) {
-        continue;
+    if( !in_array($subscription_data[2], ['Работает','Просрочена',]) ) {
+        continue; /** @todo Mb, we should import all non-active subscriptions also, just for Donations admin info */
     }
 
 //    $subscription_data[0] - CP subscription ID
 //    $subscription_data[1] - Date/time of subscription creation (and for it's rebills)
-//    $subscription_data[2] - Subscription status (in russian, i.e. "Работает")
+//    $subscription_data[2] - Subscription status (in russian, i.e. "Работает/Просрочена")
 //    $subscription_data[3] - Subscription amount
 //    $subscription_data[4] - Subscription currency (CP symbols, i.e. "₽")
 //    $subscription_data[5] - Subscription period (in russian, i.e. "Раз в месяц")

@@ -255,6 +255,12 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
             try {
 
+                $return_page_id = leyka_options()->opt('yandex_return_url');
+                $home_url = home_url();
+                $return_url = $return_page_id ? // Due to strange YooKassa SDK bug - it doesn't accept URLs w/o "/" at the end
+                    get_post_permalink($return_page_id) :
+                    (mb_substr($home_url, -1, 1) === '/' ? $home_url : $home_url.'/');
+
                 $payment_data = [
                     'amount' => [
                         'value' => round($form_data['leyka_donation_amount'], 2),
@@ -262,7 +268,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                     ],
                     'confirmation' => [
                         'type' => 'redirect',
-                        'return_url' => get_post_permalink(leyka_options()->opt('yandex_return_url')),
+                        'return_url' => $return_url,
                     ],
                     'capture' => true, // Make payment at once, don't wait for shop confirmation
                     'description' => leyka_get_donation_gateway_description($donation, 128),
