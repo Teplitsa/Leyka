@@ -47,8 +47,8 @@ while( ($subscription_data = fgetcsv($csv_file_handle, null, ";")) !== FALSE ) {
     if(mb_stripos($subscription_data[0], '_') === false) { // The first CSV line is of columns names, so skip it
         continue;
     }
-    if( !in_array($subscription_data[2], ['Работает','Просрочена',]) ) {
-        continue; /** @todo Mb, we should import all non-active subscriptions also, just for Donations admin info */
+    if( !in_array($subscription_data[2], ['Работает','Просрочена',]) ) { // "Просроченные" subscriptions are still active
+        continue;
     }
 
 //    $subscription_data[0] - CP subscription ID
