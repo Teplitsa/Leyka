@@ -222,8 +222,8 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
                     '#OK_TEXT#'
                 ],
                 [
-                    __("Save", 'leyka'),
-                    __("Send", 'leyka'),
+                    __('Save', 'leyka'),
+                    __('Send', 'leyka'),
                     $donation->id,
                     sprintf(__("Card-check has been sent to <b> %s </b>", 'leyka'), $donation->donor_email),
                     __("OK", 'leyka'),
