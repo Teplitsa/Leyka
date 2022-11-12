@@ -1024,7 +1024,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         $this->_show_admin_template('recurring-subscription-info-page');
 
-        do_action('leyka_post_donation_info_actions');
+        do_action('leyka_post_recurring_subscription_info_actions');
         do_action('leyka_post_admin_actions');
 
     }
