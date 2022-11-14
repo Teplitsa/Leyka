@@ -197,7 +197,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
      * @return array
      */
     function get_columns() {
-        return [
+        return apply_filters('leyka_admin_recurring_subscriptions_list_columns', [
             'donation_id' => __('ID'),
             'campaign' => __('Campaign', 'leyka'),
             'donor' => __('Donor', 'leyka'),
@@ -206,21 +206,21 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
             'donations_number' => __('Payments total', 'leyka'),
             'amount' => __('Amount', 'leyka'),
             'gateway_pm' => _x('Method', 'Recurring subscriptions list page: table column', 'leyka')
-        ];
+        ]);
     }
 
     /**
      * @return array
      */
     public function get_sortable_columns() {
-        return [
+        return apply_filters('leyka_admin_recurring_subscriptions_list_sortable_columns', [
             'donation_id' => ['donation_id', true],
             'donor' => ['donor_name', false],
             'first_donation' => ['first_donation', true],
             'donations_number' => ['donations_number', true],
             'amount' => ['amount', true],
             'gateway_pm' => ['gateway_pm', true]
-        ];
+        ]);
     }
 
     /**
@@ -281,9 +281,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
                 return apply_filters('leyka_admin_recurring_subscription_donation_id_column_content', $content, $item['first_donation']);
 
             default: // Show the whole item array for troubleshooting purposes
-                return leyka_options()->opt('plugin_debug_mode') ?
-                    '<pre>'.print_r($item, true).'</pre>' : // Show the whole array for troubleshooting purposes
-                    apply_filters("leyka_admin_recurring_subscription_{$column_name}_column_content", '', $item);
+                return apply_filters("leyka_admin_recurring_subscription_{$column_name}_column_content", '', $item);
         }
     }
 
