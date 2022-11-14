@@ -260,7 +260,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                     if(leyka_user_has_role(Leyka_Donor::DONOR_USER_ROLE, false, $user_id)) {
 
                         $donor_user = new Leyka_Donor($user_id);
-                        $donor_info_page_link = '<a href="'.admin_url('?page=leyka_donor_info&donor='.$user_id).'">'.__('Info', 'leyka').'</a>';
+                        $donor_info_page_link = '<a href="'.admin_url('admin.php?page=leyka_donor_info&donor='.$user_id).'">'.__('Info', 'leyka').'</a>';
 
                         return ($donor_user->has_account_access ? __('yes', 'leyka') : __('no', 'leyka'))
                             .' | '.$donor_info_page_link;
@@ -450,6 +450,15 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             );
             add_action("load-$hook", [$this, 'donors_list_screen_options']);
 
+            add_submenu_page(
+                'leyka_donors',
+                __("Donor's info", 'leyka'),
+                __("Donor's info", 'leyka'),
+                'leyka_manage_options',
+                'leyka_donor_info',
+                [$this, 'donor_info_screen']
+            );
+
             // Donors tags page:
             $taxonomy = get_taxonomy(Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME);
 
@@ -507,15 +516,6 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             'leyka_manage_options',
             'leyka_settings_new',
             [$this, 'settings_new_screen']
-        );
-
-        add_submenu_page(
-            'leyka_donors',
-            __("Donor's info", 'leyka'),
-            __("Donor's info", 'leyka'),
-            'leyka_manage_options',
-            'leyka_donor_info',
-            [$this, 'donor_info_screen']
         );
 
         add_submenu_page(
@@ -1067,28 +1067,28 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             'leyka_donor_info',
             __("Donor's data", 'leyka'),
             [$this, 'donor_data_metabox'],
-            'dashboard_page_leyka_donor_info',
+            'admin_page_leyka_donor_info',
             'normal'
         );
         add_meta_box(
             'leyka_donor_admin_comments',
             __('Comments', 'leyka'),
             [$this, 'donor_comments_metabox'],
-            'dashboard_page_leyka_donor_info',
+            'admin_page_leyka_donor_info',
             'normal'
         );
         add_meta_box(
             'leyka_donor_tags',
             __('Tags'),
             [$this, 'donor_tags_metabox'],
-            'dashboard_page_leyka_donor_info',
+            'admin_page_leyka_donor_info',
             'normal'
         );
         add_meta_box(
             'leyka_donor_donations',
             __('Donations', 'leyka'),
             [$this, 'donor_donations_metabox'],
-            'dashboard_page_leyka_donor_info',
+            'admin_page_leyka_donor_info',
             'normal'
         );
 
@@ -1560,7 +1560,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         $dependencies[] = 'tags-box';
 
         if(in_array($current_screen->id, ['admin_page_leyka_donation_info',
-            'admin_page_leyka_recurring_subscription_info', 'dashboard_page_leyka_donor_info',])) {
+            'admin_page_leyka_recurring_subscription_info', 'admin_page_leyka_donor_info',])) {
             $dependencies[] = $this->_load_data_tables();
         }
 

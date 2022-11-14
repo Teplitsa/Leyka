@@ -28,7 +28,7 @@ try {
 
             	<input type="hidden" value="<?php echo $donor->id;?>" id="leyka_donor_id">
 
-                <?php $metaboxes_area_id = 'dashboard_page_leyka_donor_info';?>
+                <?php $metaboxes_area_id = 'admin_page_leyka_donor_info';?>
                 <input type="hidden" class="leyka-support-metabox-area" value="<?php echo $metaboxes_area_id;?>">
 
                 <?php do_meta_boxes($metaboxes_area_id, 'normal', null);?>

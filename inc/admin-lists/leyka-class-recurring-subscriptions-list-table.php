@@ -293,7 +293,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
         $donor_data_html = apply_filters(
             'leyka_admin_recurring_subscription_donor_column_content',
             '<div class="donor-name">'
-                .(leyka_options()->opt('donor_management_available') && $donation->donor_id ? '<a href="'.admin_url('?page=leyka_donor_info&donor='.$donation->donor_id).'">' : '')
+                .(leyka_options()->opt('donor_management_available') && $donation->donor_id ? '<a href="'.admin_url('admin.php?page=leyka_donor_info&donor='.$donation->donor_id).'">' : '')
                 .$donation->donor_name
                 .(leyka_options()->opt('donor_management_available') ? '</a>' : '')
             .'</div>'

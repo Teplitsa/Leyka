@@ -321,7 +321,7 @@ jQuery(document).ready(function($){
                     className: 'column-donor',
                     render: function(donor, type, row_data){
                         return '<div class="donor-name">'
-                            +(donor.id ? '<a href="'+leyka.admin_url+'?page=leyka_donor_info&donor='+donor.id+'">' : '')
+                            +(donor.id ? '<a href="'+leyka.admin_url+'admin.php?page=leyka_donor_info&donor='+donor.id+'">' : '')
                             +donor.name
                             +(donor.id ? '</a>' : '')
                         +'</div>'
