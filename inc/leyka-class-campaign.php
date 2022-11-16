@@ -2305,14 +2305,20 @@ class Leyka_Campaign {
 
         $total_amount = 0.0;
 
-        foreach($this->get_donations(['funded']) as $donation) { // Old ver. Ineffective in case of MANY Donations
-            $total_amount += round(strtolower($donation->main_currency) === leyka_get_main_currency() ?
-                $donation->main_currency_total_amount ?: $donation->main_currency_amount :
-                leyka_currency_convert($donation->total_amount ?: $donation->amount, strtolower($donation->currency)), 2);
+        // Old version of calculation. WARNING: ineffective in case of MANY Donations:
+        foreach($this->get_donations(['funded']) as $donation) {
+
+            $donation_amount = $donation->main_currency_id === leyka_get_main_currency(true) ?
+                ($donation->main_currency_total_amount ?: $donation->main_currency_amount) :
+                leyka_currency_convert($donation->total_amount ?: $donation->amount, $donation->currency_id);
+
+            $total_amount += round($donation_amount, 2);
+
         }
 
         return $total_amount;
 
+        // New version of calculation:
         /** @todo The MySQL functions are ready (see /private/leyka_mysql_functions.sql), but need to add & debug dbDelta() call for their creation on plugin update to 4.0. */
 
 //        global $wpdb;

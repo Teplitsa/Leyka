@@ -1256,17 +1256,19 @@ function leyka_get_country_currency($country_id = null) {
 /**
  * Get the main currency.
  *
- * @return mixed string Country ID
+ * @return mixed string Currency ID
  */
-function leyka_get_main_currency() {
+function leyka_get_main_currency($to_upper_case = false) {
 
     if( !Leyka_Options_Controller::get_option_value('currency_main') ) {
         leyka_set_main_currency();
     }
 
-    return is_string(Leyka_Options_Controller::get_option_value('currency_main')) ?
+    $main_currency_id = is_string(Leyka_Options_Controller::get_option_value('currency_main')) ?
         strtolower(Leyka_Options_Controller::get_option_value('currency_main')) :
         Leyka_Options_Controller::get_option_value('currency_main');
+
+    return $to_upper_case ? mb_strtoupper($main_currency_id) : $main_currency_id;
 
 }
 

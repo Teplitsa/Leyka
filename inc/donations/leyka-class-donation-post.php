@@ -584,10 +584,22 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                     $this->amount : $this->_donation_meta['leyka_donation_amount_total'];
                 break;
 
+            case 'main_currency_total_amount':
             case 'main_currency_amount_total':
 
-                $value = empty($this->_donation_meta['leyka_donation_main_currency_amount_total']) ?
-                    $this->main_currency_amount : $this->_donation_meta['leyka_donation_main_currency_amount_total'];
+                if(empty($this->_donation_meta['leyka_donation_main_currency_amount_total'])) {
+                    $value = $this->main_currency_amount;
+                } else if(
+                    leyka_get_main_currency(true) === $this->currency_id
+                    && $this->amount_total !== $this->_donation_meta['leyka_donation_main_currency_amount_total']
+                ) {
+
+                    $this->main_currency_amount_total = $this->amount_total;
+                    $value = $this->amount_total;
+
+                } else {
+                    $value = $this->_donation_meta['leyka_donation_main_currency_amount_total'];
+                }
                 break;
 
             case 'total_sum_formatted':
@@ -600,7 +612,18 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'main_curr_amount':
             case 'main_currency_amount':
             case 'amount_equiv':
-                $value = $this->_donation_meta['leyka_donation_main_currency_amount'];
+
+                if(
+                    leyka_get_main_currency(true) === $this->currency_id
+                    && $this->amount !== $this->_donation_meta['leyka_donation_main_currency_amount']
+                ) {
+
+                    $this->main_currency_amount = $this->amount;
+                    $value = $this->amount;
+
+                } else {
+                    $value = $this->_donation_meta['leyka_donation_main_currency_amount'];
+                }
                 break;
 
             case 'donor_name':
