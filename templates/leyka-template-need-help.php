@@ -23,7 +23,7 @@ if(count($campaign->donations_types_available) > 1) {
 
 $currency_id = $template_data['main_currency_id'];
 $another_amount_title = count($template_data['currencies'][$currency_id]['amount_variants']) > 0 ?
-    __('Another amount', 'leyka') : __('Enter the amount', 'leyka'); ?>
+    __('Another amount', 'leyka') : __('Enter the amount', 'leyka');?>
 
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
 	<symbol width="12" height="9" viewBox="0 0 12 9" id="icon-checkbox-check">
@@ -44,8 +44,25 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                 </div>
 
                 <div class="section__fields periodicity">
-                    <a href="#" class="<?php echo $campaign->donations_type_default === 'recurring' || $campaign->daily_rouble_mode_on_and_valid ? 'active' : '';?> <?php echo $campaign->daily_rouble_mode_on_and_valid || in_array('recurring', $campaign->donations_types_available) ? '' : 'invisible';?>" data-periodicity="monthly" role="tab" aria-selected="<?php echo $campaign->donations_type_default === 'recurring' || $campaign->daily_rouble_mode_on_and_valid ? 'true' : 'false';?>"><?php esc_html_e($template_data['payments_amounts_tab_titles']['recurring'], 'leyka');?></a>
-                    <a href="#" class="<?php echo $campaign->donations_type_default === 'single' ? 'active' : '';?> <?php echo !in_array('single', $campaign->donations_types_available) ? 'invisible' : '';?>" data-periodicity="once" role="tab" aria-selected="<?php echo $campaign->donations_type_default === 'single' ? 'true' : 'false';?>"><?php esc_html_e($template_data['payments_amounts_tab_titles']['single'], 'leyka');?></a>
+
+                    <a
+                        href="#"
+                        class="<?php echo $campaign->donations_type_default === 'recurring' || $campaign->daily_rouble_mode_on_and_valid ? 'active' : '';?> <?php echo $campaign->daily_rouble_mode_on_and_valid || in_array('recurring', $campaign->donations_types_available) ? '' : 'invisible';?>"
+                        data-periodicity="monthly"
+                        role="tab"
+                        aria-selected="<?php echo $campaign->donations_type_default === 'recurring' || $campaign->daily_rouble_mode_on_and_valid ? 'true' : 'false';?>">
+                        <?php esc_html_e($template_data['payments_amounts_tab_titles']['recurring'], 'leyka');?>
+                    </a>
+
+                    <a
+                        href="#"
+                        class="<?php echo $campaign->donations_type_default === 'single' ? 'active' : '';?> <?php echo !in_array('single', $campaign->donations_types_available) ? 'invisible' : '';?>"
+                        data-periodicity="once"
+                        role="tab"
+                        aria-selected="<?php echo $campaign->donations_type_default === 'single' ? 'true' : 'false';?>">
+                        <?php esc_html_e($template_data['payments_amounts_tab_titles']['single'], 'leyka');?>
+                    </a>
+
                 </div>
 
             </div>
@@ -65,7 +82,7 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
 
                 <div class="section__fields currencies">
 
-                    <?php foreach ($template_data['currencies'] as $currency_id => $currency_data) { ?>
+                    <?php foreach($template_data['currencies'] as $currency_id => $currency_data) { ?>
                         <a href="#" class="<?php echo $currency_id === $template_data['main_currency_id'] ? 'active' : ''; ?>" data-currency="<?php echo $currency_id;?>" role="tab" aria-selected="true"><?php echo $currency_data['currency_label']; ?></a>
                     <?php } ?>
 
@@ -77,7 +94,7 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
 
             </div>
 
-            <?php foreach ($template_data['currencies'] as $currency_id => $currency_data) { ?>
+            <?php foreach($template_data['currencies'] as $currency_id => $currency_data) {?>
 
                 <div class="currency-tab currency-<?php echo $currency_id;?> <?php echo $currency_id !== $template_data['main_currency_id'] ? 'leyka-hidden' : ''; ?>">
 
@@ -104,48 +121,61 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                             <div class="full-list equalize-elements-width" data-equalize-elements-exceptions=".flex-amount-item">
 
                             <?php if($campaign->daily_rouble_mode_on_and_valid) {
+
                                 foreach($currency_data['amount_variants'] as $i => $amount) {?>
+
                                     <div class="swiper-item <?php echo $i ? '' : 'selected';?>" data-value="<?php echo absint($amount);?>" style="" role="button" tabindex="0">
                                         <div class="swiper-item-inner">
                                             <span class="amount"><?php echo leyka_format_amount(absint($amount));?></span>
-                                            <span class="currency"><?php echo $template_data['currency_label'];?></span>
+                                            <span class="currency">
+                                                <?php echo $template_data['currencies'][$template_data['main_currency_id']]['currency_label'];?>
+                                            </span>
                                         </div>
                                     </div>
+
                                 <?php }
+
                             } else if($template_data['amount_mode'] != 'flexible') {
 
                                 foreach($currency_data['amount_variants']['single'] as $i => $amount_option) {?>
+
                                     <div class="swiper-item <?php echo $i ? '' : 'selected';?>" style="<?php echo 'single' === $campaign->donations_type_default ? '' : 'display: none';?>" data-payment-type="single" data-payment-amount-option-id="<?php echo $i; ?>" data-value="<?php echo absint($amount_option['amount']);?>" role="button" tabindex="0">
                                         <div class="swiper-item-inner">
                                             <span class="amount"><?php echo absint($amount_option['amount']);?></span>
                                             <span class="currency"><?php echo $currency_data['currency_label'];?></span>
                                         </div>
                                     </div>
+
                                 <?php }
 
                                 foreach($currency_data['amount_variants']['recurring'] as $i => $amount_option) {?>
+
                                     <div class="swiper-item <?php echo $i ? '' : 'selected';?>" style="<?php echo 'recurring' === $campaign->donations_type_default ? '' : 'display: none';?>" data-payment-type="recurring" data-payment-amount-option-id="<?php echo $i; ?>" data-value="<?php echo absint($amount_option['amount']);?>" role="button" tabindex="0">
                                         <div class="swiper-item-inner">
                                             <span class="amount"><?php echo absint($amount_option['amount']);?></span>
                                             <span class="currency"><?php echo $currency_data['currency_label'];?></span>
                                         </div>
                                     </div>
+
                                 <?php }
 
                             }?>
 
                             <?php if($template_data['amount_mode'] !== 'fixed') {?>
+
                                 <label class="swiper-item flex-amount-item <?php echo empty($currency_data['amount_variants']) ? 'selected' : '';?>">
                                     <span class="swiper-item-inner">
                                         <input type="number" title="<?php _e('Enter your amount', 'leyka');?>" placeholder="<?php _e('Enter your amount', 'leyka');?>" data-desktop-ph="<?php echo $another_amount_title;?>" data-mobile-ph="<?php _e('Enter your amount', 'leyka');?>" name="donate_amount_flex" class="donate_amount_flex" value="<?php echo esc_attr($currency_data['amount_default']);?>" min="1" max="999999">
                                         <span aria-hidden="true"><?php echo $currency_data['currency_label'];?></span>
                                     </span>
                                 </label>
+
                             <?php }?>
 
                             </div>
 
                             <?php if($campaign->daily_rouble_mode_on_and_valid) {?>
+
                                 <div class="daily-rouble-comment">
                                     <?php echo sprintf(
                                         '<span class="daily-rouble-text">'.__('You are making a monthly donation in the amount of %s', 'leyka').'</span>',
@@ -153,6 +183,7 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                                         .'<span class="daily-rouble-currency">'.$currency_data['currency_label'].'</span>'
                                     );?>
                                 </div>
+
                             <?php }?>
 
                             <input type="hidden" class="leyka_donation_amount" name="leyka_donation_amount" value="">
@@ -164,7 +195,8 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
 
                     </div>
 
-                    <?php if( $template_data['amount_mode'] != 'flexible' && !$campaign->daily_rouble_mode_on_and_valid ) { ?>
+                    <?php if($template_data['amount_mode'] != 'flexible' && !$campaign->daily_rouble_mode_on_and_valid ) {?>
+
                         <div class="section__fields amount-description">
                             <?php $all_amount_options = array_merge($currency_data['amount_variants']['single'], $currency_data['amount_variants']['recurring']);
                             $showed_amount_option_id = $campaign->donations_type_default === 'single' ?
@@ -175,7 +207,8 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                                 <span data-payment-amount-option-id="<?php echo $i; ?>" style="<?php echo $i !== $showed_amount_option_id ? 'display: none' : '';?>"><?php echo $amount_option['description'] ?></span>
                             <?php } ?>
                         </div>
-                    <?php } ?>
+
+                    <?php }?>
 
                 </div>
 
@@ -304,7 +337,7 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
 
             </div>
 
-            <?php } ?>
+            <?php }?>
 
             <!-- donor data -->
             <div class="section section--person">
@@ -541,12 +574,12 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                             .($campaign->daily_rouble_mode_on_and_valid ?
                                 sprintf(
                                     __('Make a monthly donation of %s %s', 'leyka'),
-                                    30 * reset($template_data['amount_variants']),
-                                    $template_data['currency_label']
+                                    30 * reset($template_data['currencies'][$template_data['main_currency_id']]['amount_variants']),
+                                    $template_data['currencies'][$template_data['main_currency_id']]['currency_label']
                                 ) :
                                 leyka_options()->opt_template('donation_submit_text', 'need-help'))
                             .'" data-submit-text-template="'
-                            .sprintf(__('Make a monthly donation of #DAILY_ROUBLE_AMOUNT# %s', 'leyka'), $currency_data['currency_label'])
+                            .sprintf(__('Make a monthly donation of #DAILY_ROUBLE_AMOUNT# %s', 'leyka'), $template_data['currencies'][$template_data['main_currency_id']]['currency_label'])
                             .'">'
                         );?>
                     </div>

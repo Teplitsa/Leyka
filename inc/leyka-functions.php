@@ -1403,8 +1403,7 @@ function leyka_get_currency_data($currency_id = null) {
     $currency_id = empty($currency_id) ? leyka_options()->opt_safe('currency_main') : mb_strtolower($currency_id);
     $currency = leyka_get_currencies_data($currency_id);
 
-    return empty($currency[$currency_id]) ?
-        false : apply_filters('leyka_'.$currency_id.'_currency_data', $currency[$currency_id]);
+    return empty($currency) ? false : apply_filters('leyka_'.$currency_id.'_currency_data', $currency);
 
 }
 

@@ -398,7 +398,7 @@ jQuery(document).ready(function($){
             }
 
         }
-        
+
         toggleSwiperArrows($swiper);
         swipeList($swiper, $active_item);
 
