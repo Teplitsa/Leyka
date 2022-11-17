@@ -133,7 +133,7 @@ class Leyka extends Leyka_Singleton {
         }
 
         // Change the new recurring Donation purpose if it's Campaign is closed:
-        add_action('leyka_donation_funded_status_changed', function($donation_id){
+        add_action('leyka_donation_funded_status_changed', function($donation_id, $old_status, $new_status){
 
             $donation = Leyka_Donations::get_instance()->get($donation_id);
             if($donation->type !== 'rebill') {
@@ -142,15 +142,17 @@ class Leyka extends Leyka_Singleton {
 
             $campaign = new Leyka_Campaign($donation->campaign_id);
             if($campaign->is_finished) {
+
                 $donation->payment_title = apply_filters(
                     'leyka_finished_campaign_new_recurring_donation_purpose',
                     __('Charity donation', 'leyka'),
                     $donation,
                     $campaign
                 );
+
             }
 
-        }, 10);
+        }, 10, 3);
 
         add_action('admin_bar_menu', [$this, 'add_toolbar_menu'], 999);
 

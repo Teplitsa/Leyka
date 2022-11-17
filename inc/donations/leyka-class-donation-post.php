@@ -857,8 +857,13 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                     return false;
                 }
 
-                $res = wp_update_post(['ID' => $this->_id, 'post_title' => $value,]);
-                if( !$res || is_wp_error($res) ) {
+                // TODO Changing the post_title doesn't work - the payment_title ATM is always taken from the Campaign title. Fix it in the Leyka_Donation_Post constructor - the Campaign should be used only if Donation's post_title is empty
+                global $wpdb;
+
+                $update_query = $wpdb->prepare("UPDATE {$wpdb->prefix}posts SET post_title=%s WHERE ID=%d", $value, $this->_id);
+                $res = $wpdb->query($update_query);
+
+                if( !$res ) {
                     return false;
                 }
 

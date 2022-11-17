@@ -666,7 +666,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                 Leyka_Donation_Management::get_instance()->donation_status_changed($value, $old_status, $this);
                 do_action('leyka_donation_status_'.$old_status.'_to_'.$value, $this);
 
-                if ($value === 'funded' || $old_status === 'funded') {
+                if($value === 'funded' || $old_status === 'funded') {
                     do_action('leyka_donation_funded_status_changed', $this->id, $old_status, $value);
                 }
 
