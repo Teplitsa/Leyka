@@ -84,13 +84,21 @@ jQuery(document).ready(function($){
 
     $('form.leyka-pm-form').each(function(){ // Setup merchandise on initial page load
 
-        let $donation_form = $(this),
-            $merchandise_slider = leyka_create_merchandise_slider($donation_form.find('ul.merchandise-swiper'));
+        /** @var leyka_merchandise_front array */
 
-        leyka_setup_merchandise_slider($donation_form, $merchandise_slider);
+        let $donation_form = $(this);
+
+        // The Merchandise is currently only for the main currency,
+        // so hide the Merchandise wrapper for all non-main currency wrappers:
+        $donation_form.find('.currency-tab:not(.currency-'+leyka_merchandise_front.currency_main).hide();
+
+        let $form_fields_wrapper = $donation_form.find('.currency-tab.currency-'+leyka_merchandise_front.currency_main),
+            $merchandise_slider = leyka_create_merchandise_slider($form_fields_wrapper.find('ul.merchandise-swiper'));
+
+        leyka_setup_merchandise_slider($form_fields_wrapper, $merchandise_slider);
 
         $donation_form.find('input.leyka_donation_amount').on('change.leyka', function(){
-            leyka_setup_merchandise_slider($donation_form, $merchandise_slider);
+            leyka_setup_merchandise_slider($form_fields_wrapper, $merchandise_slider);
         });
 
     });
