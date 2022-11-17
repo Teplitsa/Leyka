@@ -94,7 +94,10 @@ jQuery(document).ready(function($){
 
         // The Merchandise is currently only for the main currency,
         // so hide the Merchandise wrapper for all non-main currency wrappers:
-        $donation_form.find('.currency-tab:not(.currency-'+leyka_merchandise_front.currency_main).hide();
+        $donation_form
+            .find('.currency-tab:not(.currency-'+leyka_merchandise_front.currency_main+')')
+            .find('.section--merchandise')
+                .hide();
 
         let $form_fields_wrapper = $donation_form.find('.currency-tab.currency-'+leyka_merchandise_front.currency_main),
             $merchandise_slider = leyka_create_merchandise_slider($form_fields_wrapper.find('ul.merchandise-swiper'));

@@ -2355,7 +2355,7 @@ jQuery(document).ready(function($){
 
         $form.find('.section__fields.amount-description').css('display', 'none');
 
-        $amount_option_description = $form.find(`.section__fields.amount-description span[data-payment-amount-option-id = "${amount_option_id}"]`);
+        let $amount_option_description = $form.find(`.section__fields.amount-description span[data-payment-amount-option-id = "${amount_option_id}"]`);
 
         if(amount_option_id && $amount_option_description && $amount_option_description.text() !== '') {
 
@@ -2408,16 +2408,18 @@ jQuery(document).ready(function($){
             $this.addClass('active');
 
             $_form.find('.currency-tab').addClass('leyka-hidden');
-            $currency_tab.removeClass('leyka-hidden');
+            $currency_tab.removeClass('leyka-hidden').show();
+            setupSwiperWidth($currency_tab);
 
-            if (currency !== 'crypto') {
+            if(currency !== 'crypto') {
                 $_form.find('.section--person').removeClass('leyka-hidden');
             } else {
                 $_form.find('.section--person').addClass('leyka-hidden');
             }
 
             const amount_mode = $('.section--amount .section__fields.amount').data('amount-mode');
-            const payment_type = $('.section__fields.periodicity a.active').data('periodicity') === 'once' ? 'single' : 'recurring';
+            const payment_type = $('.section__fields.periodicity a.active').data('periodicity') === 'once' ?
+                'single' : 'recurring';
 
             if(amount_mode === 'flexible') {
                 setAmountInputValue($_form, $('.flex-amount-item input').val());
@@ -2437,12 +2439,12 @@ jQuery(document).ready(function($){
 
             const $tmp = $("<textarea>");
 
-            $("body").append($tmp);
+            $('body').append($tmp);
 
             $tmp.val($btn.parent('.leyka-cryptocurrency-data-wrapper').find('.leyka-cryptocurrency-link').text())
                 .select();
 
-            document.execCommand("copy");
+            document.execCommand('copy');
 
             $tmp.remove();
 
@@ -2454,9 +2456,10 @@ jQuery(document).ready(function($){
 
             $wallet_link.css('opacity', 0.3);
 
-            $btn_span.animate({ marginRight: '0'}, 200);
-            $btn_span.delay(1200)
-                .animate({ marginRight: '-135px'}, 200, function () {
+            $btn_span
+                .animate({ marginRight: '0'}, 200)
+                .delay(1200)
+                .animate({ marginRight: '-135px'}, 200, function(){
 
                     $btn_img.removeClass('leyka-hidden');
                     $btn.css('pointer-events', 'all');
@@ -2488,7 +2491,7 @@ jQuery(document).ready(function($){
     function setupSwiperWidth($_form) {
 
         // Amount swiper setup:
-        $('.amount__figure.star-swiper .swiper-list .swiper-item').last().css('margin-right', '0px');
+        $_form.find('.amount__figure.star-swiper .swiper-list .swiper-item').last().css('margin-right', '0px');
 
         // PM swiper setup:
         let $swiper = $_form.find('.payments-grid .star-swiper'),
@@ -2554,6 +2557,30 @@ jQuery(document).ready(function($){
         toggleSwiperArrows($swiper);
         swipeList($swiper, $active_item);
 
+        setupSinglePMBlock($_form);
+
+    }
+
+    function setupSinglePMBlock($_form) {
+
+        $_form = $_form.hasClass('currency-tab') ? $_form.parents('form.leyka-pm-form') : $_form;
+
+        let $available_pm_blocks = $_form.find('.currency-tab:visible').find('.payments-grid .swiper-item:not(.disabled)'),
+            $single_pm_icon_block = $_form.find('.single-pm-icon'),
+            $pm_form_section = $_form.find('.currency-tab:visible').find('.section--cards');
+
+        if($available_pm_blocks.length === 1) {
+
+            $single_pm_icon_block.html($available_pm_blocks.find('.payment-opt__icon').html()).show();
+            $pm_form_section.hide();
+
+        } else {
+
+            $single_pm_icon_block.hide();
+            $pm_form_section.show();
+
+        }
+
     }
 
     function setupPeriodicity($_form) {
@@ -2592,29 +2619,16 @@ jQuery(document).ready(function($){
             $_form.find('.section__fields.periodicity a[data-periodicity="once"]').addClass('active');
             $_form.find('input.is-recurring-chosen').val('0').trigger('change');
             $_form.find('.payments-grid .swiper-item').each(function(i, element){
+
                 if($(element).find('input[data-has-recurring="0"]').length > 0) {
                     $(element).removeClass('disabled');
                 }
+
             });
 
         }
 
-        let $available_pm_blocks = $_form.find('.payments-grid .swiper-item:not(.disabled)'),
-            $single_pm_icon_block = $_form.find('.single-pm-icon'),
-            $pm_form_section = $_form.find('.section--cards');
-
-        if($available_pm_blocks.length === 1) {
-
-            $single_pm_icon_block.html($available_pm_blocks.find('.payment-opt__icon').html()).show();
-            $pm_form_section.hide();
-
-        } else {
-
-            $single_pm_icon_block.hide();
-            $pm_form_section.show();
-
-        }
-        
+        setupSinglePMBlock($_form);
         checkFormFillCompletion($_form);
 
     }
@@ -2684,7 +2698,7 @@ jQuery(document).ready(function($){
 
             }
 
-            if ($this.parents('.section--amount').length > 0) {
+            if($this.parents('.section--amount').length > 0) {
                 showSelectedAmountDescription($form, $this.data('payment-amount-option-id'));
             }
 
@@ -2704,11 +2718,12 @@ jQuery(document).ready(function($){
 
         });
 
-
         const currency = $('.section__fields.currencies a.active').data('currency'),
             $currency_tab = $(`.currency-tab.currency-${currency}`),
             payment_type = $('.section__fields.periodicity a.active').data('periodicity') === 'once' ? 'single' : 'recurring',
-            $swiper_amount_first_item = $currency_tab.find(`.section--amount .swiper-item[data-payment-type="${payment_type}"]`).first(),
+            $swiper_amount_first_item = $currency_tab
+                .find(`.section--amount .swiper-item[data-payment-type="${payment_type}"]`)
+                    .first(),
             $swiper_cards_first_item = $currency_tab.find(`.section--cards .swiper-item`).first();
 
         $swiper_amount_first_item.click();
@@ -2723,7 +2738,7 @@ jQuery(document).ready(function($){
 
             e.preventDefault();
 
-			var $this = $(this),
+			let $this = $(this),
                 $swiper = $this.closest('.star-swiper'),
                 $activeItem = $swiper.find('.swiper-item.selected:not(.disabled)'),
                 $nextItem = null;
@@ -2735,25 +2750,31 @@ jQuery(document).ready(function($){
 			}
 
 			if( !$nextItem.length ) {
+
 				if($this.hasClass('swipe-right')) {
 					$nextItem = $swiper.find('.swiper-item:not(.disabled)').first();
 				} else {
 					$nextItem = $swiper.find('.swiper-item:not(.disabled)').last();
 				}
+
 			}
 
 			if($nextItem.length) {
+
 				$activeItem.removeClass('selected');
 				$nextItem.addClass('selected');
                 $nextItem.find('input[type="radio"]').prop('checked', true).change();
+
 			}
 
             swipeList($swiper, $nextItem);
             toggleSwiperArrows($swiper);
 
             if($nextItem.hasClass('flex-amount-item')) {
+
                 $nextItem.find('input[type=number]').focus();
                 $nextItem.addClass('focus').removeClass('empty');
+
             }
 
             if($swiper.hasClass('amount__figure')) {
