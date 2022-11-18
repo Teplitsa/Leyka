@@ -179,20 +179,30 @@ jQuery(document).ready(function($){
 
     }
 
-    function showAmountOptionsByPaymentType($form, payment_type) {
+    function showAmountOptionsByPaymentType($_form, payment_type) {
+
+        if($_form.find('.daily-rouble-comment:visible').length) {
+            payment_type = 'daily_rouble';
+        }
 
         const currency = $('.section__fields.currencies a.active').data('currency'),
             $currency_tab = $(`.currency-tab.currency-${currency}`),
-            $swiper_first_item = $currency_tab.find(`.section--amount .swiper-item[data-payment-type="${payment_type}"]`).first();
+            $swiper_first_item = payment_type === 'daily_rouble' ?
+                $currency_tab.find('.section--amount .swiper-item:first') :
+                $currency_tab.find(`.section--amount .swiper-item[data-payment-type="${payment_type}"]`).first();
 
-        $currency_tab.find(`.section--amount .swiper-item`).removeClass('selected');
-        $currency_tab.find(`.section--amount .swiper-item:not(.flex-amount-item)`).css('display', 'none');
-        $currency_tab.find(`.section--amount .swiper-item[data-payment-type="${payment_type}"]`).css('display', 'block');
+        if(payment_type !== 'daily_rouble') {
+
+            $currency_tab.find(`.section--amount .swiper-item`).removeClass('selected');
+            $currency_tab.find(`.section--amount .swiper-item:not(.flex-amount-item)`).css('display', 'none');
+            $currency_tab.find(`.section--amount .swiper-item[data-payment-type="${payment_type}"]`).css('display', 'block');
+
+        }
 
         $swiper_first_item.first().addClass('selected');
 
-        setAmountInputValue($form, $swiper_first_item.find('.amount').text());
-        showSelectedAmountDescription($form, $swiper_first_item.data('payment-amount-option-id'));
+        setAmountInputValue($_form, $swiper_first_item.find('.amount').text());
+        showSelectedAmountDescription($_form, $swiper_first_item.data('payment-amount-option-id'));
 
     }
 
