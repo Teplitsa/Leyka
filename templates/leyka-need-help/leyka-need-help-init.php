@@ -16,7 +16,7 @@ add_action('pre_get_posts', function(WP_Query $query){
 
         remove_filter('the_content', 'leyka_print_donation_elements');
 
-        if( !leyka_options()->opt_template('do_not_display_donation_form')) {
+        if( !leyka_options()->opt_template('do_not_display_donation_form', 'need-help')) {
             add_filter('the_content', 'leyka_need_help_template_campaign_page');
         }
 
