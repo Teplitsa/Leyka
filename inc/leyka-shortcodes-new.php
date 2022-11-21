@@ -45,7 +45,7 @@ function leyka_shortcode_amount_collected($atts) {
     }
 
     foreach(Leyka_Donations::get_instance()->get($donation_params) as $donation) {
-        $amount_collected += $atts['total_funded'] ? $donation->amount_total : $donation->amount;
+        $amount_collected += $atts['total_funded'] ? $donation->main_currency_amount_total : $donation->main_currency_amount;
     }
 
     return apply_filters(
