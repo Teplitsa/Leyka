@@ -83,6 +83,17 @@ For technical support questions, please, use the [plugin support email](maillto:
 5. The plugin start page (a console)
 
 == Changelog ==
+= 3.29.2 =
+* Fix: Daily Rouble mode is now working correctly (only with main currency).
+* Fix: Merchandise + Multicurrency bug fixed.
+* Fix: Donor details admin page bug fixed.
+* Fix: "Do not display" checkbox for the Need Help template bug fixed.
+* Fix: now finished Campaigns' recurring auto-payments change their status correctly.
+* Fix: Payment Methods swiper in the cases when non-main currency is selected - fixed.
+* Fix: Multi-currency + Campaign total funded amount recalculation fixed.
+* Fix: incorrect amount of the [leyka_amount_collected] shortcode in cases of many Donations currencies fixed.
+* Fix: small fixes.
+
 = 3.29.1 =
 * Fix: YooKassa compatibility fix for WP 6.1.
 * Fix: Demirbank notices bug fixed.
