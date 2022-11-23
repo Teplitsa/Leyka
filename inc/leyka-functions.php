@@ -306,6 +306,36 @@ function leyka_get_default_email_from() {
 //    return get_bloginfo('admin_email').',';
 //}
 
+/** Get WP pages list as an array. Used mainly to form a dropdowns. */
+function leyka_get_posts_list($post_types = ['post']) {
+
+    global $wpdb;
+
+    $params = apply_filters('leyka_pages_list_query', ['post_status' => 'publish', 'post_type' => $post_types,]);
+    foreach($params as $name => &$value) {
+
+        if(is_array($value)) {
+
+            $value_string = "'".implode("','", $value)."'";
+            $value = "`$name` IN ($value_string)";
+
+        } else {
+            $value = "`$name` = '$value'";
+        }
+
+    }
+
+    $res = $wpdb->get_results("SELECT ID, post_title FROM $wpdb->posts WHERE ".implode(' AND ', $params));
+
+    $pages = [0 => __('Website main page', 'leyka'),];
+    foreach($res as $page) {
+        $pages[$page->ID] = $page->post_title;
+    }
+
+    return $pages;
+
+}
+
 function leyka_get_default_pd_terms_page() {
 
     $default_page = get_option('leyka_pd_terms_page');

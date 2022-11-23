@@ -93,6 +93,13 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'is_password' => true,
                 'field_classes' => ['new-api',],
             ],
+            $this->_id.'_return_url' => [
+                'type' => 'select',
+                'default' => '0',
+                'title' => __("Return page", 'leyka'),
+                'description' => __('A page to return from the gateway process page', 'leyka'),
+                'list_entries' => leyka_get_posts_list(['page', 'post', 'leyka_campaign']),
+            ],
             $this->_id.'_test_mode' => [
                 'type' => 'checkbox',
                 'default' => true,
@@ -100,13 +107,6 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'comment' => __('Check if the gateway integration is in test mode.', 'leyka'),
                 'short_format' => true,
                 'field_classes' => ['old-api',],
-            ],
-            $this->_id.'_return_url' => [
-                'type' => 'select',
-                'default' => '0',
-                'title' => __("Return page", 'leyka'),
-                'description' => __('A page to return from the gateway process page', 'leyka'),
-                'list_entries' => leyka_get_posts_list(['page', 'post', 'leyka_campaign']),
             ],
         ];
 
