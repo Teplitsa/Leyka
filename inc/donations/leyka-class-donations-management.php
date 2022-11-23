@@ -1226,7 +1226,12 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             </span>
 
 			<?php } else {
-				echo '<span class="text-line">'.__('the campaign has been removed or drafted', 'leyka').'</span>';
+				echo apply_filters(
+                    'leyka_donation_info_campaign_not_found_content',
+                    '<span class="text-line">'.__('the campaign has been removed or drafted', 'leyka').'</span>',
+                    $donation,
+                    $campaign
+                );
 			}?>
 
 			</div>
