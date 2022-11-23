@@ -101,6 +101,13 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'short_format' => true,
                 'field_classes' => ['old-api',],
             ],
+            $this->_id.'_return_url' => [
+                'type' => 'select',
+                'default' => '0',
+                'title' => __("Return page", 'leyka'),
+                'description' => __('A page to return from the gateway process page', 'leyka'),
+                'list_entries' => leyka_get_posts_list(['page', 'post', 'leyka_campaign']),
+            ],
         ];
 
     }
