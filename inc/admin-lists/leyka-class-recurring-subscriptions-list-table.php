@@ -184,7 +184,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
      * @return array
      */
     function get_columns() {
-        return [
+        return apply_filters('leyka_admin_recurring_subscriptions_list_columns', [
             'donation_id' => __('ID'),
             'status' => __('Status', 'leyka'),
             'donor' => __('Donor', 'leyka'),
@@ -194,20 +194,20 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
             'donations_number' => __('Donations total', 'leyka'),
             'gateway_pm' => __('Gateway', 'leyka'),
             'amount' => __('Amount', 'leyka'),
-        ];
+        ]);
     }
 
     /**
      * @return array
      */
     public function get_sortable_columns() {
-        return [
+        return apply_filters('leyka_admin_recurring_subscriptions_list_sortable_columns', [
             'donation_id' => ['donation_id', true],
             'status' => ['status', true],
             'donor' => ['donor', false],
             'first_donation' => ['first_donation', true],
             'amount' => ['amount', true],
-        ];
+        ]);
     }
 
     /**
@@ -218,7 +218,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
      * @return mixed
      */
     public function column_default($item, $column_name) {
-        switch ($column_name) {
+        switch($column_name) {
             case 'donation_id':
                 return apply_filters(
                     'leyka_admin_recurring_subscription_donation_id_column_content',
@@ -226,9 +226,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
                     $item['first_donation']
                 );
             default: // Show the whole item array for troubleshooting purposes
-                return leyka_options()->opt('plugin_debug_mode') ?
-                    '<pre>'.print_r($item, true).'</pre>' : // Show the whole array for troubleshooting purposes
-                    apply_filters("leyka_admin_recurring_subscription_{$column_name}_column_content", '', $item);
+                return apply_filters("leyka_admin_recurring_subscription_{$column_name}_column_content", '', $item);
         }
     }
 

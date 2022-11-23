@@ -672,6 +672,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         do_action('leyka_pre_donation_info_actions'); // Add collapsible to metaboxes
 
+        $donation = Leyka_Donations::get_instance()->get(absint($_GET['donation']));
+
         // Add all metaboxes:
         if(empty($_GET['donation']) || !absint($_GET['donation'])) { // New Donation page
 
@@ -727,7 +729,6 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 'low'
             );
 
-            $donation = Leyka_Donations::get_instance()->get(absint($_GET['donation']));
             if($donation->is_init_recurring_donation) {
 
                 add_meta_box(
@@ -744,6 +745,10 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         }
 
         $this->_show_admin_template('donation-info-page');
+
+        if($donation->is_init_recurring_donation) {
+            do_action('leyka_post_recurring_subscription_info_actions');
+        }
 
         do_action('leyka_post_donation_info_actions');
         do_action('leyka_post_admin_actions');
