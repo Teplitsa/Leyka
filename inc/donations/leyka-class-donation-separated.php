@@ -573,8 +573,11 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
                     break;
                 }
 
-                if($this->get_meta('recurring_funded_rebills_number') === false) { // The rebills cache is empty
-                    $this->update_recurring_funded_rebills_number(); // ... so recalculate the funded rebills number
+                $recurring_funded_rebills_number = $this->get_meta('recurring_funded_rebills_number');
+
+                // The rebills cache is empty:
+                if($recurring_funded_rebills_number === NULL || $recurring_funded_rebills_number === false) {
+                    $this->update_recurring_funded_rebills_number(); // Recalculate the funded rebills number & save it as a meta
                 }
 
                 $value = absint($this->_donation_meta['recurring_funded_rebills_number']);
@@ -1079,7 +1082,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
             $rebills_number = Leyka_Donations::get_instance()->get_count([
                 'status' => 'funded',
-                'recurring_rebills_of' => $this->id,
+                'recurring_rebills_of' => $init_recurring_donation->id,
             ]);
 
         }
