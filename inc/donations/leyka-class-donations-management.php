@@ -17,16 +17,33 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             add_action('add_meta_boxes', [$this, 'add_metaboxes']); // Add Donation PT metaboxes
             add_action('transition_post_status',  [$this, 'donation_status_changed'], 10, 3);
 
-            // If Donation is deleted permanently, trigger donation_status_changed() manually:
-            add_action('before_delete_post', function($post_id, $donation_post){
+            if(version_compare(get_bloginfo('version'), '5.5.0') < 0) { // WP is <= 5.5.0
 
-                if(is_a($donation_post, 'WP_Post') && $donation_post->post_type !== self::$post_type) {
-                    return;
-                }
+                add_action('before_delete_post', function($post_id){
 
-                $this->donation_status_changed('deleted', $donation_post->post_status, $donation_post);
+                    $donation_post = get_post($post_id);
 
-            }, 10, 2);
+                    if( !$donation_post || (is_a($donation_post, 'WP_Post') && $donation_post->post_type !== self::$post_type) ) {
+                        return;
+                    }
+
+                    $this->donation_status_changed('deleted', $donation_post->post_status, $donation_post);
+
+                }, 10);
+
+            } else { // WP is >= 5.5.0
+
+                add_action('before_delete_post', function($post_id, $donation_post){
+
+                    if(is_a($donation_post, 'WP_Post') && $donation_post->post_type !== self::$post_type) {
+                        return;
+                    }
+
+                    $this->donation_status_changed('deleted', $donation_post->post_status, $donation_post);
+
+                }, 10, 2);
+
+            }
 
         }
 
