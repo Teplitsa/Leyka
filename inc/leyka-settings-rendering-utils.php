@@ -1533,7 +1533,7 @@ function leyka_render_custom_payments_amounts_options_tabs_settings($option_id, 
 
 add_action("leyka_save_custom_option-payments_single_amounts_options", 'leyka_save_payments_amounts_options', 20, 2);
 add_action("leyka_save_custom_option-payments_recurring_amounts_options", 'leyka_save_payments_amounts_options', 20, 2);
-function leyka_save_payments_amounts_options($data=[], $option_id) {
+function leyka_save_payments_amounts_options($data=[], $option_id = '') {
 
     $data = $data ? : leyka_options()->get_info_of($option_id);
     $currencies = leyka_get_main_currencies_full_info();
