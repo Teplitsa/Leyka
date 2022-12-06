@@ -439,6 +439,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
             case 'main_curr_amount':
             case 'main_currency_amount':
+            case 'amount_in_main_currency':
             case 'amount_equiv':
                 $value = $this->_main_data->amount_in_main_currency ? : $this->amount;
                 break;
