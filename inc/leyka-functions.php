@@ -1231,6 +1231,41 @@ function leyka_get_active_currencies($currency_id = null) {
     return leyka_get_currencies_data($currency_id);
 }
 
+function leyka_get_currency_id_by_symbol($currency_symbol) {
+
+    $currency_symbol = trim($currency_symbol);
+    $currency_id = false;
+
+    switch(trim(mb_strtoupper($currency_symbol), '.')) {
+        case '₽':
+        case 'RUR':
+        case 'Р':
+        case 'РУБ':
+        case 'RUB':
+            $currency_id = 'RUB'; break;
+        case '$':
+        case 'USD':
+            $currency_id = 'USD';
+            break;
+        case '€':
+        case 'EUR':
+            $currency_id = 'EUR'; break;
+        case '₴':
+        case 'UAH':
+            $currency_id = 'UAH'; break;
+        case 'Br':
+        case 'BYN':
+            $currency_id = 'BYN'; break;
+        case 'лв':
+        case 'KGS':
+            $currency_id = 'KGS'; break;
+        default:
+    }
+
+    return apply_filters('leyka_currency_id_by_symbol', $currency_id, $currency_symbol);
+
+}
+
 /**
  * A high-level function to get all current settings of given currency ID.
  *
@@ -1342,6 +1377,58 @@ function leyka_get_campaigns_list($params = [], $simple_format = true) {
     }
 
     return $list;
+
+}
+
+/**
+ * Search for Campaign by its post title (or payment title, if needed).
+ *
+ * @param $campaign_title string
+ * @param bool $get_default_if_not_found
+ * @return WP_Post|false Campaign post if found, false otherwise.
+ */
+function leyka_get_campaign_by_title($campaign_title, $get_default_if_not_found = true) {
+
+    $campaign_title = trim($campaign_title);
+
+    $campaign = get_posts([ // Try to find Campaign by its post title
+        'post_type' => Leyka_Campaign_Management::$post_type,
+        'post_status' => 'publish',
+        's' => $campaign_title,
+        'posts_per_page' => 1,
+    ]);
+
+    if($campaign) {
+        return $campaign[0];
+    }
+
+    $campaign = get_posts([ // Try to find Campaign by its payment title meta value
+        'post_type' => Leyka_Campaign_Management::$post_type,
+        'post_status' => 'publish',
+        'meta_query' => [
+            'relation' => 'OR',
+            ['key' => 'payment_title', 'value' => $campaign_title, 'compare' => 'LIKE',],
+            ['key' => 'payment_title', 'value' => htmlentities($campaign_title, ENT_COMPAT, 'UTF-8'), 'compare' => 'LIKE',],
+        ],
+        'posts_per_page' => 1,
+    ]);
+
+    if($campaign) {
+        return $campaign[0];
+    }
+
+    if( !$get_default_if_not_found ) {
+        return false;
+    }
+
+    $campaign = get_posts([ // Try to find any published Campaign
+        'post_type' => Leyka_Campaign_Management::$post_type,
+        'post_status' => 'publish',
+        'order' => 'ASC',
+        'posts_per_page' => 1,
+    ]);
+
+    return $campaign ? $campaign[0] : false;
 
 }
 
