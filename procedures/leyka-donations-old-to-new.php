@@ -130,7 +130,7 @@ if($procedure_options['only_funded'] && $procedure_options['delete_old_donations
 //} else {
 //    update_option('leyka_donations_storage_type', 'sep-incompleted');
 //}
-update_option('leyka_donations_storage_type', 'sep'); // TODO TMP, 4 dbg only
+//update_option('leyka_donations_storage_type', 'sep'); // TODO TMP, 4 dbg only
 
 leyka_procedures_print('Donations transferring finished.');
 
