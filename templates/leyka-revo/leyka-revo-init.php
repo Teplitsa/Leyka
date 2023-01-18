@@ -26,14 +26,15 @@ add_action('pre_get_posts', function(WP_Query $query){
 
 function leyka_revo_template_campaign_page($content) {
 
-    if( !is_singular(Leyka_Campaign_Management::$post_type) ) {
+    $post_id = get_the_ID();
+    if( get_post_type($post_id) != Leyka_Campaign_Management::$post_type ) {
         return $content;
     }
 
-    $campaign_id = get_queried_object_id();
+    $campaign = new Leyka_Campaign( $post_id );
 
-    $before = leyka_inline_campaign(['id' => $campaign_id, 'template' => 'revo']);
-    $after = leyka_inline_campaign_small($campaign_id);
+    $before = leyka_inline_campaign(['id' => $campaign->id, 'template' => 'revo']);
+    $after = leyka_inline_campaign_small($campaign->id);
 
     return $before.$content.$after;
 
