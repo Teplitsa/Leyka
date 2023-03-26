@@ -67,7 +67,7 @@ class HttpClientTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockPromise->expects($this->exactly(4))
+        $mockPromise->expects($this->exactly(3))
             ->method('wait')
             ->will($this->returnValue($mockResponse));
 
@@ -128,10 +128,6 @@ class HttpClientTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('GuzzleHttp\Promise\PromiseInterface', $responseAsync);
 
         $response = $this->httpClient->post('http://test-collector.com/collect?v=1', ['timeout' => 3]);
-
-        $this->assertInstanceOf('TheIconic\Tracking\GoogleAnalytics\AnalyticsResponse', $response);
-
-        $response = $this->httpClient->batch('http://test-collector.com/collect?v=1', [], ['timeout' => 3]);
 
         $this->assertInstanceOf('TheIconic\Tracking\GoogleAnalytics\AnalyticsResponse', $response);
 
