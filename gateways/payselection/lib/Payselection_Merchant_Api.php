@@ -87,7 +87,7 @@ class Payselection_Merchant_Api
      * @param  string $secretKey
      * @return string
      */
-    protected function getSignature(string $body, string $secretKey)
+    protected static function getSignature(string $body, string $secretKey)
     {
         if (empty($body)) {
             return ";";
@@ -188,7 +188,8 @@ class Payselection_Merchant_Api
         }
         
         // Check signature
-        $signBody = $_SERVER['REQUEST_METHOD'] . PHP_EOL . home_url('/leyka/service/payselection/response') . PHP_EOL . $site_id . PHP_EOL . $request;
+        $request_method = isset($_SERVER['REQUEST_METHOD']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_METHOD'])) : '';
+        $signBody = $request_method . PHP_EOL . home_url('/leyka/service/payselection/response') . PHP_EOL . $site_id . PHP_EOL . $request;
         $signCalculated = self::getSignature($signBody, $secret_key);
 
         if ($headers['X-WEBHOOK-SIGNATURE'] !== $signCalculated) {

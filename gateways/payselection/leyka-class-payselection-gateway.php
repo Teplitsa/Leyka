@@ -259,13 +259,13 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
 
     }
 
-    protected function _handle_callback_error($error_message = '', Leyka_Donation_Base $donation = null) {
+    protected function _handle_callback_error($error_message = '', $response, Leyka_Donation_Base $donation = null) {
 
         if($donation) {
     
-            $_POST['failure_reason'] = $error_message;
+            $response['failure_reason'] = $error_message;
     
-            $donation->add_gateway_response($_POST);
+            $donation->add_gateway_response($response);
             $donation->status = 'failed';
     
             if($donation->is_init_recurring_donation) {
@@ -294,7 +294,7 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
         }
 
         if(empty($response['Event']) || !is_string($response['Event'])) {
-            $this->_handle_callback_error(__('Webhook error: Event field is not found or have incorrect value', 'leyka'), $donation);
+            $this->_handle_callback_error(__('Webhook error: Event field is not found or have incorrect value', 'leyka'), $response, $donation);
             wp_die(__('Webhook error: Event field is not found or have incorrect value', 'leyka'));
         }
 
@@ -306,7 +306,7 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
 
             if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
 
-                $message = sprintf(__('This message has been sent because %s The details of the call are below:', 'leyka'), $check->get_error_message)."\n\r\n\r"
+                $message = sprintf(__('This message has been sent because %s The details of the call are below:', 'leyka'), $check->get_error_message())."\n\r\n\r"
                 .esc_html($check->get_error_message())."\n\r\n\r"
                 ."POST:\n\r".print_r($_POST, true)."\n\r\n\r"
                 ."GET:\n\r".print_r($_GET, true)."\n\r\n\r"
@@ -320,7 +320,7 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
 
             }
 
-            $this->_handle_callback_error($check->get_error_message, $donation);
+            $this->_handle_callback_error($check->get_error_message(), $response, $donation);
 
             die();
 
@@ -494,7 +494,7 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
         $new_recurring_donation->add_gateway_response($response);
 
         if (is_wp_error($response)) {
-            $this->_handle_callback_error(sprintf(__("Rebilling request to the Payselection couldn't be made due to some error.\n\nThe error: %s", 'leyka'), $response->get_error_message(), $new_recurring_donation));
+            $this->_handle_callback_error(sprintf(__("Rebilling request to the Payselection couldn't be made due to some error.\n\nThe error: %s", 'leyka'), $response->get_error_message(), $response, $new_recurring_donation));
             Leyka_Donation_Management::send_error_notifications($new_recurring_donation); // Emails will be sent only if respective options are on
             return false;
         }

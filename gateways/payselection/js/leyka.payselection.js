@@ -112,7 +112,7 @@
                         if (res === 'PAY_WIDGET:CLOSE_AFTER_FAIL') {
                             window.location.href = response.failure_page;
                         }
-                        addError($errors, leyka.payselection_error + res);
+                        addError($errors, leyka.payselection_error + res.code);
                     },
                     onClose: () => {
                     }
