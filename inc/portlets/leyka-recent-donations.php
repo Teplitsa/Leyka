@@ -75,7 +75,7 @@ $data = Leyka_Recent_Donations_Portlet_Controller::get_instance()->get_template_
 
                 <?php } else {?>
 
-                <div class="donor no-thanks" data-donation-id="<?php echo $donation['id'];?>" data-nonce="<?php echo wp_create_nonce('leyka_donor_email');?>">
+                <div class="leyka-no-donor-thanks donor no-thanks" data-donation-id="<?php echo $donation['id'];?>" data-nonce="<?php echo wp_create_nonce('leyka_donor_email');?>">
                     <span class="donation-email-status"><?php echo __("Not sent", 'leyka'); ?></span>
                     <span class="donation-email-action send-donor-thanks"><?php echo __('Send it now', 'leyka'); ?></span>
                 </div>

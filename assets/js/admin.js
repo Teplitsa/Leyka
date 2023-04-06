@@ -4704,7 +4704,7 @@ jQuery(document).ready(function($){
                                 '<span class="donation-email-date">'+donor.email_date+'</span>'+
                             '</div>';
                         } else {
-                            return '<div className="donor no-thanks" data-donation-id="'+donation_id+'" data-nonce="'+donor.wp_nonce+'">'+
+                            return '<div className="leyka-no-donor-thanks donor no-thanks" data-donation-id="'+donation_id+'" data-nonce="'+donor.wp_nonce+'">'+
                                 '<span className="donation-email-status">'+leyka_dt.notSent+'</span>'+
                                 '<span className="donation-email-action send-donor-thanks">'+leyka_dt.sendItNow+'</span>'+
                             '</div>';
