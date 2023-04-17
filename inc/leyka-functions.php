@@ -1519,7 +1519,7 @@ function leyka_get_campaign_by_title($campaign_title, $get_default_if_not_found 
     $campaign = get_posts([ // Try to find Campaign by its post title
         'post_type' => Leyka_Campaign_Management::$post_type,
         'post_status' => 'publish',
-        's' => $campaign_title,
+        'title' => $campaign_title,
         'posts_per_page' => 1,
     ]);
 
