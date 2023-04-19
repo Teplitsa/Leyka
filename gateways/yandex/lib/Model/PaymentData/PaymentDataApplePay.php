@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -51,6 +51,7 @@ class PaymentDataApplePay extends AbstractPaymentData
     }
 
     /**
+     * Возвращает содержимое поля paymentData объекта PKPaymentToken, закодированное в Base64
      * @return string содержимое поля paymentData объекта PKPaymentToken, закодированное в Base64
      */
     public function getPaymentData()
@@ -59,6 +60,7 @@ class PaymentDataApplePay extends AbstractPaymentData
     }
 
     /**
+     * Устанавливает содержимое поля paymentData объекта PKPaymentToken, закодированное в Base64
      * @param string $value содержимое поля paymentData объекта PKPaymentToken, закодированное в Base64
      */
     public function setPaymentData($value)

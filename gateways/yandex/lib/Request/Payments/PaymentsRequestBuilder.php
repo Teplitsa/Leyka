@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,9 +34,9 @@ use YooKassa\Common\Exceptions\InvalidPropertyValueException;
 use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
 
 /**
- * Билдер объектов запросов к API для пролучения списка платежей магазина
+ * Класс билдера запросов к API для получения списка платежей магазина
  *
- * @package YooKassa\Request\Payments
+ * @package YooKassa
  */
 class PaymentsRequestBuilder extends AbstractRequestBuilder
 {
@@ -56,7 +56,7 @@ class PaymentsRequestBuilder extends AbstractRequestBuilder
 
     /**
      * Устанавливает страница выдачи результатов
-     * @param string|null $value Страница выдачи результатов или null чтобы удалить значение
+     * @param string|null $value Страница выдачи результатов или null, чтобы удалить значение
      * @return PaymentsRequestBuilder Инстанс текущего билдера
      *
      * @throws InvalidPropertyValueTypeException Выбрасывается если в метод была передана не строка
@@ -69,7 +69,7 @@ class PaymentsRequestBuilder extends AbstractRequestBuilder
 
     /**
      * Устанавливает дату создания от которой выбираются платежи
-     * @param DateTime|string|int|null $value Время создания, от (не включая) или null чтобы удалить значение
+     * @param DateTime|string|int|null $value Время создания, от (не включая) или null, чтобы удалить значение
      * @return PaymentsRequestBuilder Инстанс текущего билдера
      *
      * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
@@ -85,7 +85,7 @@ class PaymentsRequestBuilder extends AbstractRequestBuilder
 
     /**
      * Устанавливает дату создания от которой выбираются платежи
-     * @param DateTime|string|int|null $value Время создания, от (включительно) или null чтобы удалить значение
+     * @param DateTime|string|int|null $value Время создания, от (включительно) или null, чтобы удалить значение
      * @return PaymentsRequestBuilder Инстанс текущего билдера
      *
      * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
@@ -101,7 +101,7 @@ class PaymentsRequestBuilder extends AbstractRequestBuilder
 
     /**
      * Устанавливает дату создания до которой выбираются платежи
-     * @param DateTime|string|int|null $value Время создания, до (не включая) или null чтобы удалить значение
+     * @param DateTime|string|int|null $value Время создания, до (не включая) или null, чтобы удалить значение
      * @return PaymentsRequestBuilder Инстанс текущего билдера
      *
      * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
@@ -117,7 +117,7 @@ class PaymentsRequestBuilder extends AbstractRequestBuilder
 
     /**
      * Устанавливает дату создания до которой выбираются платежи
-     * @param DateTime|string|int|null $value Время создания, до (включительно) или null чтобы удалить значение
+     * @param DateTime|string|int|null $value Время создания, до (включительно) или null, чтобы удалить значение
      * @return PaymentsRequestBuilder Инстанс текущего билдера
      *
      * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
@@ -133,7 +133,7 @@ class PaymentsRequestBuilder extends AbstractRequestBuilder
 
     /**
      * Устанавливает дату подтверждения от которой выбираются платежи
-     * @param DateTime|string|int|null $value Время создания, до (включительно) или null чтобы удалить значение
+     * @param DateTime|string|int|null $value Время создания, до (включительно) или null, чтобы удалить значение
      * @return PaymentsRequestBuilder Инстанс текущего билдера
      *
      * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
@@ -149,7 +149,7 @@ class PaymentsRequestBuilder extends AbstractRequestBuilder
 
     /**
      * Устанавливает дату подтверждения от которой выбираются платежи
-     * @param DateTime|string|int|null $value Время подтверждения, от (включительно) или null чтобы удалить значение
+     * @param DateTime|string|int|null $value Время подтверждения, от (включительно) или null, чтобы удалить значение
      * @return PaymentsRequestBuilder Инстанс текущего билдера
      *
      * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
@@ -165,7 +165,7 @@ class PaymentsRequestBuilder extends AbstractRequestBuilder
 
     /**
      * Устанавливает дату подтверждения до которой выбираются платежи
-     * @param DateTime|string|int|null $value Время подтверждения, до (включительно) или null чтобы удалить значение
+     * @param DateTime|string|int|null $value Время подтверждения, до (включительно) или null, чтобы удалить значение
      * @return PaymentsRequestBuilder Инстанс текущего билдера
      *
      * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
@@ -181,7 +181,7 @@ class PaymentsRequestBuilder extends AbstractRequestBuilder
 
     /**
      * Устанавливает дату подтверждения до которой выбираются платежи
-     * @param DateTime|string|int|null $value Время подтверждения, до (включительно) или null чтобы удалить значение
+     * @param DateTime|string|int|null $value Время подтверждения, до (включительно) или null, чтобы удалить значение
      * @return PaymentsRequestBuilder Инстанс текущего билдера
      *
      * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
@@ -197,7 +197,7 @@ class PaymentsRequestBuilder extends AbstractRequestBuilder
 
     /**
      * Устанавливает ограничение количества объектов платежа
-     * @param string $value Ограничение количества объектов платежа или null чтобы удалить значение
+     * @param string $value Ограничение количества объектов платежа или null, чтобы удалить значение
      * @return PaymentsRequestBuilder Инстанс текущего билдера
      *
      * @throws InvalidPropertyValueTypeException Выбрасывается если в метод было передана не целое число
@@ -210,7 +210,7 @@ class PaymentsRequestBuilder extends AbstractRequestBuilder
 
     /**
      * Устанавливает статус выбираемых платежей
-     * @param string $value Статус выбираемых платежей или null чтобы удалить значение
+     * @param string $value Статус выбираемых платежей или null, чтобы удалить значение
      * @return PaymentsRequestBuilder Инстанс текущего билдера
      *
      * @throws InvalidPropertyValueException Выбрасывается если переданное значение не является валидным статусом
@@ -224,7 +224,7 @@ class PaymentsRequestBuilder extends AbstractRequestBuilder
 
     /**
      * Устанавливает платежный метод выбираемых платежей
-     * @param string $value Платежный метод выбираемых платежей или null чтобы удалить значение
+     * @param string $value Платежный метод выбираемых платежей или null, чтобы удалить значение
      * @return PaymentsRequestBuilder Инстанс текущего билдера
      *
      * @throws InvalidPropertyValueException Выбрасывается если переданное значение не является валидным статусом

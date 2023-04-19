@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,8 +31,8 @@ use YooKassa\Model\AmountInterface;
 use YooKassa\Model\AuthorizationDetails;
 use YooKassa\Model\CancellationDetails;
 use YooKassa\Model\Confirmation\ConfirmationCodeVerification;
-use YooKassa\Model\Confirmation\ConfirmationDeepLink;
 use YooKassa\Model\Confirmation\ConfirmationEmbedded;
+use YooKassa\Model\Confirmation\ConfirmationMobileApplication;
 use YooKassa\Model\Confirmation\ConfirmationQr;
 use YooKassa\Model\Confirmation\ConfirmationRedirect;
 use YooKassa\Model\Confirmation\ConfirmationExternal;
@@ -49,7 +49,7 @@ use YooKassa\Model\Transfer;
 /**
  * Абстрактный класс ответа от API, возвращающего информацию о платеже
  *
- * @package YooKassa\Request\Payments
+ * @package YooKassa
  */
 abstract class AbstractPaymentResponse extends Payment implements PaymentInterface
 {
@@ -89,13 +89,17 @@ abstract class AbstractPaymentResponse extends Payment implements PaymentInterfa
             $this->setRecipient($recipient);
         }
         if (!empty($sourceArray['captured_at'])) {
-            $this->setCapturedAt(strtotime($sourceArray['captured_at']));
+            $this->setCapturedAt($sourceArray['captured_at']);
         }
         if (!empty($sourceArray['expires_at'])) {
             $this->setExpiresAt($sourceArray['expires_at']);
         }
         if (!empty($sourceArray['confirmation'])) {
-            $confirmationType = $sourceArray['confirmation']['type'];
+            $confirmationType = null;
+            if (!empty($sourceArray['confirmation']['type'])) {
+                $confirmationType = $sourceArray['confirmation']['type'];
+            }
+
             switch ($confirmationType) {
                 case ConfirmationType::REDIRECT:
                     $confirmation = new ConfirmationRedirect();
@@ -127,16 +131,22 @@ abstract class AbstractPaymentResponse extends Payment implements PaymentInterfa
                     $confirmation = new ConfirmationCodeVerification();
                     break;
 
-                case ConfirmationType::DEEPLINK:
-                    $confirmation = new ConfirmationDeepLink();
-                    break;
-
                 case ConfirmationType::QR:
                     $confirmation = new ConfirmationQr();
                     if (!empty($sourceArray['confirmation']['confirmation_data'])) {
                         $confirmation->setConfirmationData($sourceArray['confirmation']['confirmation_data']);
                     }
                     break;
+                case ConfirmationType::MOBILE_APPLICATION:
+                    $confirmation = new ConfirmationMobileApplication();
+                    if (!empty($sourceArray['confirmation']['confirmation_url'])) {
+                        $confirmation->setConfirmationUrl($sourceArray['confirmation']['confirmation_url']);
+                    }
+                    if (!empty($sourceArray['confirmation']['return_url'])) {
+                        $confirmation->setReturnUrl($sourceArray['confirmation']['return_url']);
+                    }
+                    break;
+
             }
 
             if (isset($confirmation)) {
@@ -165,10 +175,7 @@ abstract class AbstractPaymentResponse extends Payment implements PaymentInterfa
             $this->setCancellationDetails(new CancellationDetails($party, $reason));
         }
         if (!empty($sourceArray['authorization_details'])) {
-            $authorizationDetails = $sourceArray['authorization_details'];
-            $rrn                  = isset($authorizationDetails['rrn']) ? $authorizationDetails['rrn'] : null;
-            $authCode             = isset($authorizationDetails['auth_code']) ? $authorizationDetails['auth_code'] : null;
-            $this->setAuthorizationDetails(new AuthorizationDetails($rrn, $authCode));
+            $this->setAuthorizationDetails(new AuthorizationDetails($sourceArray['authorization_details']));
         }
         if (!empty($sourceArray['transfers'])) {
             $transfers = array();
@@ -181,8 +188,11 @@ abstract class AbstractPaymentResponse extends Payment implements PaymentInterfa
         if (!empty($sourceArray['income_amount'])) {
             $this->setIncomeAmount($this->factoryAmount($sourceArray['income_amount']));
         }
-        if (!empty($sourceArray['requestor'])) {
-            $this->setRequestor($sourceArray['requestor']);
+        if (!empty($sourceArray['deal'])) {
+            $this->setDeal($sourceArray['deal']);
+        }
+        if (!empty($sourceArray['merchant_customer_id'])) {
+            $this->setMerchantCustomerId($sourceArray['merchant_customer_id']);
         }
     }
 

@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,12 +26,13 @@
 
 namespace YooKassa\Request\Refunds;
 
+use Exception;
 use YooKassa\Model\RefundInterface;
 
 /**
  * Класс объекта ответа от API со списком возвратов магазина
  *
- * @package YooKassa\Request\Refunds
+ * @package YooKassa
  */
 class RefundsResponse
 {
@@ -48,6 +49,7 @@ class RefundsResponse
     /**
      * Конструктор, устанавливает свойства объекта из пришедшего из API ассоциативного массива
      * @param array $options Массив настроек, пришедший от API
+     * @throws Exception
      */
     public function __construct(array $options)
     {

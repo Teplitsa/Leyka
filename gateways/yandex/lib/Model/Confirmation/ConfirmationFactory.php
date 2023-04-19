@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,21 +31,23 @@ use YooKassa\Model\ConfirmationType;
 /**
  * Class ConfirmationFactory
  *
- * @package YooKassa\Model\Confirmation
+ * @package YooKassa
  */
 class ConfirmationFactory
 {
     private $typeClassMap = array(
-        ConfirmationType::CODE_VERIFICATION => 'ConfirmationCodeVerification',
-        ConfirmationType::DEEPLINK          => 'ConfirmationDeepLink',
-        ConfirmationType::EXTERNAL          => 'ConfirmationExternal',
-        ConfirmationType::REDIRECT          => 'ConfirmationRedirect',
-        ConfirmationType::EMBEDDED          => 'ConfirmationEmbedded',
-        ConfirmationType::QR                => 'ConfirmationQr',
+        ConfirmationType::CODE_VERIFICATION  => 'ConfirmationCodeVerification',
+        ConfirmationType::EXTERNAL           => 'ConfirmationExternal',
+        ConfirmationType::REDIRECT           => 'ConfirmationRedirect',
+        ConfirmationType::EMBEDDED           => 'ConfirmationEmbedded',
+        ConfirmationType::QR                 => 'ConfirmationQr',
+        ConfirmationType::MOBILE_APPLICATION => 'ConfirmationMobileApplication',
     );
 
     /**
-     * @param string $type
+     * Возвращает объект, соответствующий типу подтверждения платежа
+     *
+     * @param string $type Тип подтверждения платежа
      *
      * @return AbstractConfirmation
      */
@@ -63,8 +65,10 @@ class ConfirmationFactory
     }
 
     /**
-     * @param array $data
-     * @param string|null $type
+     * Возвращает объект, соответствующий типу подтверждения платежа, из массива данных
+     *
+     * @param array $data Массив данных подтверждения платежа
+     * @param string|null $type Тип подтверждения платежа
      *
      * @return AbstractConfirmation
      */

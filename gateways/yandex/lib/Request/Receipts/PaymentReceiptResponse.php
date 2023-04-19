@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,14 +31,16 @@ use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
 use YooKassa\Helpers\TypeCast;
 
 /**
- * Class PaymentReceipt
- * @package YooKassa\Model
+ * Класс описывающий чек, привязанный к платежу
  *
- * @property string $payment_id Идентификатор платежа в ЮKassa.
- * @property string $paymentId Идентификатор платежа в ЮKassa.
+ * @package YooKassa
+ *
+ * @property string $payment_id Идентификатор платежа в ЮKassa
+ * @property string $paymentId Идентификатор платежа в ЮKassa
  */
 class PaymentReceiptResponse extends AbstractReceiptResponse
 {
+    /** Длина идентификатора платежа */
     const LENGTH_PAYMENT_ID = 36;
 
     private $_payment_id;
@@ -56,7 +58,9 @@ class PaymentReceiptResponse extends AbstractReceiptResponse
     }
 
     /**
-     * @return string
+     * Возвращает идентификатор платежа
+     *
+     * @return string Идентификатор платежа
      */
     public function getPaymentId()
     {

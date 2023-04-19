@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,9 +28,9 @@ namespace YooKassa\Model;
 
 /**
  * Interface ReceiptInterface
- * 
- * @package YooKassa\Model
- * 
+ *
+ * @package YooKassa
+ *
  * @property-read ReceiptCustomerInterface $customer Информация о плательщике
  * @property-read ReceiptItemInterface[] $items Список товаров в заказе
  * @property-read int $taxSystemCode Код системы налогообложения. Число 1-6.

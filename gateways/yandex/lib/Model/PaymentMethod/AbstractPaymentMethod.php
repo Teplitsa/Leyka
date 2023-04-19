@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,6 +34,8 @@ use YooKassa\Helpers\TypeCast;
 use YooKassa\Model\PaymentMethodType;
 
 /**
+ * Абстрактный класс, описывающий основные свойства и методы платежных методов
+ *
  * @property string $id Идентификатор записи о сохраненных платежных данных
  * @property bool $saved Возможность многократного использования
  * @property string $title Название метода оплаты
@@ -61,6 +63,7 @@ abstract class AbstractPaymentMethod extends AbstractObject
     private $_title;
 
     /**
+     * Возвращает тип объекта
      * @return string Тип объекта
      */
     public function getType()
@@ -69,6 +72,7 @@ abstract class AbstractPaymentMethod extends AbstractObject
     }
 
     /**
+     * Устанавливает тип объекта
      * @param string $value Тип объекта
      */
     protected function _setType($value)
@@ -93,6 +97,7 @@ abstract class AbstractPaymentMethod extends AbstractObject
     }
 
     /**
+     * Устанавливает идентификатор записи о сохраненных платежных данных
      * @return string Идентификатор записи о сохраненных платежных данных
      */
     public function getId()
@@ -101,6 +106,7 @@ abstract class AbstractPaymentMethod extends AbstractObject
     }
 
     /**
+     * Возвращает идентификатор записи о сохраненных платежных данных
      * @param string $value Идентификатор записи о сохраненных платежных данных
      */
     public function setId($value)
@@ -115,6 +121,7 @@ abstract class AbstractPaymentMethod extends AbstractObject
     }
 
     /**
+     * Возвращает признак возможности многократного использования
      * @return bool Возможность многократного использования
      */
     public function getSaved()
@@ -123,6 +130,7 @@ abstract class AbstractPaymentMethod extends AbstractObject
     }
 
     /**
+     * Устанавливает признак возможности многократного использования
      * @param bool $value Возможность многократного использования
      */
     public function setSaved($value)
@@ -139,6 +147,7 @@ abstract class AbstractPaymentMethod extends AbstractObject
     }
 
     /**
+     * Возвращает название метода оплаты
      * @return string|null Название метода оплаты
      */
     public function getTitle()
@@ -147,6 +156,7 @@ abstract class AbstractPaymentMethod extends AbstractObject
     }
 
     /**
+     * Устанавливает название метода оплаты
      * @param string $value Название метода оплаты
      */
     public function setTitle($value)

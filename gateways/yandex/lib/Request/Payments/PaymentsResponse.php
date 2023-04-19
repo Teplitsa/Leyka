@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ use YooKassa\Model\PaymentInterface;
 /**
  * Класс объекта ответа от API со списком платежей магазина
  *
- * @package YooKassa\Request\Payments
+ * @package YooKassa
  */
 class PaymentsResponse extends AbstractObject
 {
@@ -57,8 +57,7 @@ class PaymentsResponse extends AbstractObject
     {
         $this->items = array();
         foreach ($sourceArray['items'] as $paymentInfo) {
-            $payment = new PaymentResponse($paymentInfo);
-            $this->items[] = $payment;
+            $this->items[] = new PaymentResponse($paymentInfo);
         }
         if (!empty($sourceArray['next_cursor'])) {
             $this->nextCursor = $sourceArray['next_cursor'];
@@ -84,7 +83,7 @@ class PaymentsResponse extends AbstractObject
     }
 
     /**
-     * Проверяет имееотся ли в ответе токен следующей страницы
+     * Проверяет, имеется ли в ответе токен следующей страницы
      * @return bool True если токен следующей страницы есть, false если нет
      */
     public function hasNextCursor()

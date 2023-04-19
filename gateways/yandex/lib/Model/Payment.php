@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,6 +31,7 @@ use YooKassa\Common\Exceptions\EmptyPropertyValueException;
 use YooKassa\Common\Exceptions\InvalidPropertyValueException;
 use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
 use YooKassa\Helpers\TypeCast;
+use YooKassa\Model\Deal\PaymentDealInfo;
 use YooKassa\Model\PaymentMethod\AbstractPaymentMethod;
 
 /**
@@ -40,7 +41,7 @@ use YooKassa\Model\PaymentMethod\AbstractPaymentMethod;
  * @property string $status Текущее состояние платежа
  * @property RecipientInterface $recipient  Получатель платежа
  * @property AmountInterface $amount Сумма заказа
- * @property string $description Описание транзакци
+ * @property string $description Описание транзакции
  * @property AbstractPaymentMethod $paymentMethod Способ проведения платежа
  * @property AbstractPaymentMethod $payment_method Способ проведения платежа
  * @property \DateTime $createdAt Время создания заказа
@@ -57,15 +58,25 @@ use YooKassa\Model\PaymentMethod\AbstractPaymentMethod;
  * @property string $receiptRegistration Состояние регистрации фискального чека
  * @property string $receipt_registration Состояние регистрации фискального чека
  * @property Metadata $metadata Метаданные платежа указанные мерчантом
+ * @property bool $test Признак тестовой операции
  * @property CancellationDetailsInterface $cancellationDetails Комментарий к отмене платежа
  * @property CancellationDetailsInterface $cancellation_details Комментарий к отмене платежа
  * @property AuthorizationDetailsInterface $authorizationDetails Данные об авторизации платежа
  * @property AuthorizationDetailsInterface $authorization_details Данные об авторизации платежа
  * @property TransferInterface[] $transfers Данные о распределении платежа между магазинами
+ * @property AmountInterface $incomeAmount Сумма платежа, которую получит магазин
+ * @property AmountInterface $income_amount Сумма платежа, которую получит магазин
+ * @property PaymentDealInfo $deal Данные о сделке, в составе которой проходит платеж
+ * @property string $merchantCustomerId Идентификатор покупателя в вашей системе, например электронная почта или номер телефона
+ * @property string $merchant_customer_id Идентификатор покупателя в вашей системе, например электронная почта или номер телефона
  */
 class Payment extends AbstractObject implements PaymentInterface
 {
+    /** Максимальная длина строки описания платежа */
     const MAX_LENGTH_DESCRIPTION = 128;
+
+    /** Максимальная длина строки идентификатора покупателя в вашей системе */
+    const MAX_LENGTH_MERCHANT_CUSTOMER_ID = 200;
 
     /**
      * @var string Идентификатор платежа
@@ -171,9 +182,15 @@ class Payment extends AbstractObject implements PaymentInterface
     private $_incomeAmount;
 
     /**
-     * @var RequestorInterface
+     * @var PaymentDealInfo Данные о сделке, в составе которой проходит платеж. Необходимо передавать, если вы проводите Безопасную сделку
      */
-    private $_requestor;
+    private $_deal;
+
+    /**
+     * @var string Идентификатор покупателя в вашей системе, например электронная почта или номер телефона. Не более 200 символов.
+     * Присутствует, если вы хотите запомнить банковскую карту и отобразить ее при повторном платеже в виджете ЮKassa
+     */
+    private $_merchant_customer_id;
 
     /**
      * Признак тестовой операции.
@@ -244,7 +261,7 @@ class Payment extends AbstractObject implements PaymentInterface
 
     /**
      * Возвращает получателя платежа
-     * @return RecipientInterface|null Получатель платежа или null если получатель не задан
+     * @return RecipientInterface|null Получатель платежа или null, если получатель не задан
      */
     public function getRecipient()
     {
@@ -302,7 +319,10 @@ class Payment extends AbstractObject implements PaymentInterface
             $length = mb_strlen((string)$value, 'utf-8');
             if ($length > self::MAX_LENGTH_DESCRIPTION) {
                 throw new InvalidPropertyValueException(
-                    'Invalid description value', 0, 'CreatePaymentRequest.description', $value
+                    'The value of the description parameter is too long. Max length is ' . self::MAX_LENGTH_DESCRIPTION,
+                    0,
+                    'CreatePaymentRequest.description',
+                    $value
                 );
             }
             $this->_description = (string)$value;
@@ -323,7 +343,8 @@ class Payment extends AbstractObject implements PaymentInterface
     }
 
     /**
-     * @param AbstractPaymentMethod $value
+     * Устанавливает используемый способ проведения платежа
+     * @param AbstractPaymentMethod $value Способ проведения платежа
      */
     public function setPaymentMethod(AbstractPaymentMethod $value)
     {
@@ -344,7 +365,7 @@ class Payment extends AbstractObject implements PaymentInterface
      * @param \DateTime|string|int $value Время создания заказа
      *
      * @throws EmptyPropertyValueException Выбрасывается если в метод была передана пустая дата
-     * @throws InvalidPropertyValueException Выбрасвается если передали строку, которую не удалось привести к дате
+     * @throws InvalidPropertyValueException Выбрасывается если передали строку, которую не удалось привести к дате
      * @throws InvalidPropertyValueTypeException|\Exception Выбрасывается если был передан аргумент, который невозможно
      * интерпретировать как дату или время
      */
@@ -364,7 +385,7 @@ class Payment extends AbstractObject implements PaymentInterface
     }
 
     /**
-     * Возвращает время подтверждения платежа магазином или null если если время не задано
+     * Возвращает время подтверждения платежа магазином или null, если время не задано
      * @return \DateTime|null Время подтверждения платежа магазином
      */
     public function getCapturedAt()
@@ -432,7 +453,7 @@ class Payment extends AbstractObject implements PaymentInterface
     }
 
     /**
-     * Проверяет был ли уже оплачен заказ
+     * Проверяет, был ли уже оплачен заказ
      * @return bool Признак оплаты заказа, true если заказ оплачен, false если нет
      */
     public function getPaid()
@@ -543,7 +564,7 @@ class Payment extends AbstractObject implements PaymentInterface
     }
 
     /**
-     * Возвращает время до которого можно бесплатно отменить или подтвердить платеж или null если оно не задано
+     * Возвращает время до которого можно бесплатно отменить или подтвердить платеж, или null, если оно не задано
      * @return \DateTime|null Время, до которого можно бесплатно отменить или подтвердить платеж
      *
      * @since 1.0.2
@@ -616,8 +637,8 @@ class Payment extends AbstractObject implements PaymentInterface
     }
 
     /**
-     * Устанавливает transfers (массив распределения денег между магазинами)
-     * @param $value
+     * Устанавливает массив распределения денег между магазинами
+     * @param TransferInterface[] $value
      */
     public function setTransfers($value)
     {
@@ -636,12 +657,17 @@ class Payment extends AbstractObject implements PaymentInterface
         $this->_transfers = $value;
     }
 
+    /**
+     * Возвращает массив распределения денег между магазинами
+     * @return TransferInterface[]
+     */
     public function getTransfers()
     {
         return $this->_transfers;
     }
 
     /**
+     * Устанавливает сумму платежа, которую получит магазин, значение `amount` за вычетом комиссии ЮKassa
      * @param MonetaryAmount $amount
      */
     public function setIncomeAmount(MonetaryAmount $amount)
@@ -649,37 +675,36 @@ class Payment extends AbstractObject implements PaymentInterface
         $this->_incomeAmount = $amount;
     }
 
+    /**
+     * Возвращает сумму платежа, которую получит магазин, значение `amount` за вычетом комиссии ЮKassa
+     * @return MonetaryAmount Сумма платежа, которую получит магазин
+     */
     public function getIncomeAmount()
     {
         return $this->_incomeAmount;
     }
 
     /**
-     * @param $value
+     * Устанавливает инициатора платежа
+     * @deprecated Не используется. Будет удален в следующих версиях
+     * @param RequestorInterface|array $value
      */
     public function setRequestor($value)
-    {
-        if (is_array($value)) {
-            $value = new Requestor($value);
-        }
-
-        if (!($value instanceof RequestorInterface)) {
-            throw new InvalidPropertyValueTypeException('Invalid Requestor type', 0, 'Payment.requestor', $value);
-        }
-
-        $this->_requestor = $value;
-    }
+    {}
 
     /**
+     * Возвращает инициатора платежа
+     * @deprecated Не используется. Будет удален в следующих версиях
      * @return RequestorInterface
      */
     public function getRequestor()
     {
-        return $this->_requestor;
+        return null;
     }
 
     /**
-     * @return bool
+     * Возвращает признак тестовой операции
+     * @return bool Признак тестовой операции
      */
     public function getTest()
     {
@@ -687,7 +712,8 @@ class Payment extends AbstractObject implements PaymentInterface
     }
 
     /**
-     * @param bool $test
+     * Устанавливает признак тестовой операции
+     * @param bool $test Признак тестовой операции
      */
     public function setTest($test)
     {
@@ -698,6 +724,73 @@ class Payment extends AbstractObject implements PaymentInterface
         } else {
             throw new InvalidPropertyValueTypeException(
                 'Invalid payment test flag value type', 0, 'Payment.test', $test
+            );
+        }
+    }
+
+    /**
+     * Возвращает данные о сделке, в составе которой проходит платеж
+     * @return PaymentDealInfo Данные о сделке, в составе которой проходит платеж.
+     */
+    public function getDeal()
+    {
+        return $this->_deal;
+    }
+
+    /**
+     * Устанавливает данные о сделке, в составе которой проходит платеж
+     * @param PaymentDealInfo|array|null $value Данные о сделке, в составе которой проходит платеж
+     *
+     * @throws InvalidPropertyValueTypeException Выбрасывается если переданные данные не удалось интерпретировать как данные сделки
+     */
+    public function setDeal($value)
+    {
+        if ($value === null || (is_array($value) && empty($value))) {
+            $this->_deal = null;
+        } elseif ($value instanceof PaymentDealInfo) {
+            $this->_deal = $value;
+        } elseif (is_array($value)) {
+            $this->_deal = new PaymentDealInfo($value);
+        } else {
+            throw new InvalidPropertyValueTypeException(
+                'Invalid deal value type in Payment', 0, 'Payment.deal', $value
+            );
+        }
+    }
+
+    /**
+     * Возвращает идентификатор покупателя в вашей системе
+     * @return string Идентификатор покупателя в вашей системе
+     */
+    public function getMerchantCustomerId()
+    {
+        return $this->_merchant_customer_id;
+    }
+
+    /**
+     * Устанавливает идентификатор покупателя в вашей системе
+     * @param string $value Идентификатор покупателя в вашей системе, например электронная почта или номер телефона. Не более 200 символов
+     *
+     * @throws InvalidPropertyValueTypeException Выбрасывается если переданный аргумент не является строкой
+     */
+    public function setMerchantCustomerId($value)
+    {
+        if ($value === null || $value === '') {
+            $this->_merchant_customer_id = null;
+        } elseif (TypeCast::canCastToString($value)) {
+            $length = mb_strlen((string)$value, 'utf-8');
+            if ($length > Payment::MAX_LENGTH_MERCHANT_CUSTOMER_ID) {
+                throw new InvalidPropertyValueException(
+                    'The value of the merchant_customer_id parameter is too long. Max length is ' . Payment::MAX_LENGTH_MERCHANT_CUSTOMER_ID,
+                    0,
+                    'Payment.merchant_customer_id',
+                    $value
+                );
+            }
+            $this->_merchant_customer_id = (string)$value;
+        } else {
+            throw new InvalidPropertyValueTypeException(
+                'Invalid merchant_customer_id value type in Payment', 0, 'Payment.merchant_customer_id', $value
             );
         }
     }

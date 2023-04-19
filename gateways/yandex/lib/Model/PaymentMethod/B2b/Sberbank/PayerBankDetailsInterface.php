@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ namespace YooKassa\Model\PaymentMethod\B2b\Sberbank;
 /**
  * Interface PayerBankDetailsInterface
  *
- * @package YooKassa\Model
+ * @package YooKassa
  *
  * @property-read string $fullName Полное наименование организации
  * @property-read string $shortName Сокращенное наименование организации

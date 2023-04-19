@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,8 +41,11 @@ use YooKassa\Model\Settlement;
 use YooKassa\Model\SettlementInterface;
 
 /**
- * Class AbstractPostReceiptRequest
- * @package YooKassa\Request\Receipts
+ * Класс объекта запроса к API на создание чека
+ *
+ * @example 02-builder.php 91 56 Пример использования билдера
+ *
+ * @package YooKassa
  */
 class CreatePostReceiptRequest extends AbstractRequest implements CreatePostReceiptRequestInterface
 {
@@ -67,12 +70,15 @@ class CreatePostReceiptRequest extends AbstractRequest implements CreatePostRece
     /** @var string Идентификатор объекта оплаты */
     private $_object_id;
 
+    /** @var string Тип объекта: приход "payment" или возврат "refund". */
+    private $_object_type;
+
     /** @var string Идентификатор магазина в ЮKassa */
     private $_onBehalfOf;
 
     /**
      * Возвращает билдер объектов запросов создания платежа
-     * @return CreatePostReceiptRequestBuilder Инстанс билдера объектов запрсов
+     * @return CreatePostReceiptRequestBuilder Инстанс билдера объектов запросов
      */
     public static function builder()
     {
@@ -92,7 +98,7 @@ class CreatePostReceiptRequest extends AbstractRequest implements CreatePostRece
     /**
      * Устанавливает Id объекта чека
      *
-     * @param string $value
+     * @param string $value Id объекта чека
      */
     public function setObjectId($value)
     {
@@ -100,6 +106,28 @@ class CreatePostReceiptRequest extends AbstractRequest implements CreatePostRece
     }
 
     /**
+     * Возвращает тип объекта чека
+     *
+     * @return string Тип объекта чека
+     */
+    public function getObjectType()
+    {
+        return $this->_object_type;
+    }
+
+    /**
+     * Устанавливает тип объекта чека
+     *
+     * @param string $value Тип объекта чека
+     */
+    public function setObjectType($value)
+    {
+        $this->_object_type = $value;
+    }
+
+    /**
+     * Проверяет наличие данных о плательщике
+     *
      * @return bool
      */
     public function hasCustomer()
@@ -110,7 +138,7 @@ class CreatePostReceiptRequest extends AbstractRequest implements CreatePostRece
     /**
      * Возвращает информацию о плательщике
      *
-     * @return ReceiptCustomerInterface информация о плательщике
+     * @return ReceiptCustomerInterface Информация о плательщике
      */
     public function getCustomer()
     {
@@ -152,8 +180,9 @@ class CreatePostReceiptRequest extends AbstractRequest implements CreatePostRece
      * позиций. Все передаваемые значения в массиве позиций должны быть объектами класса, реализующего интерфейс
      * ReceiptItemInterface, в противном случае будет выброшено исключение InvalidPropertyValueTypeException.
      *
-     * @param ReceiptItemInterface[] $value Список товаров в заказе
+     * @param ReceiptItemInterface[]|array $value Список товаров в заказе
      *
+     * @return CreatePostReceiptRequest
      * @throws EmptyPropertyValueException Выбрасывается если передали пустой массив значений
      * @throws InvalidPropertyValueTypeException Выбрасывается если в качестве значения был передан не массив и не
      * итератор, либо если одно из переданных значений не реализует интерфейс ReceiptItemInterface
@@ -169,27 +198,32 @@ class CreatePostReceiptRequest extends AbstractRequest implements CreatePostRece
             );
         }
         $this->_items = array();
-        foreach ($value as $key => $val) {
-            if (is_array($val)) {
-                $this->addItem(new ReceiptItem($val));
-            } elseif (is_object($val) && $val instanceof ReceiptItemInterface) {
-                $this->addItem($val);
+        foreach ($value as $key => $item) {
+            if (is_array($item)) {
+                $this->addItem(new ReceiptItem($item));
+            } elseif (is_object($item) && $item instanceof ReceiptItemInterface) {
+                $this->addItem($item);
             } else {
                 throw new InvalidPropertyValueTypeException(
-                    'Invalid item value type in receipt', 0, 'Receipt.items['.$key.']', $val
+                    'Invalid item value type in receipt', 0, 'Receipt.items['.$key.']', $item
                 );
             }
         }
+
+        return $this;
     }
 
     /**
      * Добавляет товар в чек
      *
-     * @param ReceiptItemInterface $value Объект добавляемой в чек позиции
+     * @param ReceiptItemInterface|array $value Объект добавляемой в чек позиции
+     * @return CreatePostReceiptRequest
      */
     public function addItem($value)
     {
         $this->_items[] = $value;
+
+        return $this;
     }
 
     /**
@@ -251,6 +285,9 @@ class CreatePostReceiptRequest extends AbstractRequest implements CreatePostRece
                 throw new InvalidPropertyValueException('Invalid receipt type value', 0, 'Receipt.type', $value);
             }
             $this->_type = (string)$value;
+            if (!$this->_object_type) {
+                $this->_object_type = $this->_type;
+            }
         } else {
             throw new InvalidPropertyValueTypeException(
                 'Invalid receipt type value type', 0, 'Receipt.type', $value
@@ -296,7 +333,7 @@ class CreatePostReceiptRequest extends AbstractRequest implements CreatePostRece
     /**
      * Устанавливает массив оплат, обеспечивающих выдачу товара.
      *
-     * @param SettlementInterface[] $value Массив оплат, обеспечивающих выдачу товара.
+     * @param SettlementInterface[]|array $value Массив оплат, обеспечивающих выдачу товара.
      */
     public function setSettlements($value)
     {
@@ -312,7 +349,7 @@ class CreatePostReceiptRequest extends AbstractRequest implements CreatePostRece
         foreach ($value as $key => $val) {
             if (is_array($val) && !empty($val['type']) && !empty($val['amount'])) {
                 $this->addSettlement(new Settlement($val));
-            } elseif (is_object($val) && $val instanceof SettlementInterface) {
+            } elseif ($val instanceof SettlementInterface) {
                 $this->addSettlement($val);
             } else {
                 throw new InvalidPropertyValueTypeException(
@@ -333,6 +370,10 @@ class CreatePostReceiptRequest extends AbstractRequest implements CreatePostRece
     }
 
     /**
+     * Возвращает идентификатор магазина, от имени которого нужно отправить чек.
+     * Выдается ЮKassa, отображается в разделе Продавцы личного кабинета (столбец shopId).
+     * Необходимо передавать, если вы используете решение ЮKassa для платформ.
+     *
      * @return string
      */
     public function getOnBehalfOf()
@@ -341,6 +382,10 @@ class CreatePostReceiptRequest extends AbstractRequest implements CreatePostRece
     }
 
     /**
+     * Устанавливает идентификатор магазина, от имени которого нужно отправить чек.
+     * Выдается ЮKassa, отображается в разделе Продавцы личного кабинета (столбец shopId).
+     * Необходимо передавать, если вы используете решение ЮKassa для платформ.
+     *
      * @param string $value
      */
     public function setOnBehalfOf($value)
@@ -410,6 +455,16 @@ class CreatePostReceiptRequest extends AbstractRequest implements CreatePostRece
 
         if (empty($this->_type) || !ReceiptType::valueExists($this->_type)) {
             $this->setValidationError('Receipt type not specified');
+            return false;
+        }
+
+        if (empty($this->_object_type)) {
+            $this->setValidationError('Receipt object_type not specified');
+            return false;
+        }
+
+        if (empty($this->_object_id)) {
+            $this->setValidationError('Receipt object_id not specified');
             return false;
         }
 

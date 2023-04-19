@@ -2,7 +2,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,6 @@
 
 namespace YooKassa\Client;
 
-
 use Exception;
 use Psr\Log\LoggerInterface;
 use YooKassa\Common\Exceptions\ApiConnectionException;
@@ -44,18 +43,32 @@ use YooKassa\Common\LoggerWrapper;
 use YooKassa\Common\ResponseObject;
 use YooKassa\Helpers\Config\ConfigurationLoader;
 use YooKassa\Helpers\Config\ConfigurationLoaderInterface;
+use YooKassa\Helpers\SecurityHelper;
 
 class BaseClient
 {
-    const PAYMENTS_PATH = '/payments';
-    const REFUNDS_PATH = '/refunds';
-    const WEBHOOKS_PATH = '/webhooks';
-    const RECEIPTS_PATH = '/receipts';
+    /** Точка входа для запроса к API по магазину */
     const ME_PATH = '/me';
 
-    /**
-     * Имя HTTP заголовка, используемого для передачи idempotence key
-     */
+    /** Точка входа для запросов к API по платежам */
+    const PAYMENTS_PATH = '/payments';
+
+    /** Точка входа для запросов к API по возвратам */
+    const REFUNDS_PATH = '/refunds';
+
+    /** Точка входа для запросов к API по вебхукам */
+    const WEBHOOKS_PATH = '/webhooks';
+
+    /** Точка входа для запросов к API по чекам */
+    const RECEIPTS_PATH = '/receipts';
+
+    /** Точка входа для запросов к API по сделкам */
+    const DEALS_PATH = '/deals';
+
+    /** Точка входа для запросов к API по выплатам */
+    const PAYOUTS_PATH = '/payouts';
+
+    /** Имя HTTP заголовка, используемого для передачи idempotence key */
     const IDEMPOTENCY_KEY_HEADER = 'Idempotence-Key';
 
     /**
@@ -64,51 +77,61 @@ class BaseClient
      */
     const DEFAULT_DELAY = 1800;
 
-    /**
-     * Значение по умолчанию количества попыток получения информации от API если пришёл ответ с HTTP статусом 202
-     */
+    /** Значение по умолчанию количества попыток получения информации от API если пришёл ответ с HTTP статусом 202 */
     const DEFAULT_TRIES_COUNT = 3;
 
-    /**
-     * Значение по умолчанию количества попыток получения информации от API если пришёл ответ с HTTP статусом 202
-     */
+    /** Значение по умолчанию количества попыток получения информации от API если пришёл ответ с HTTP статусом 202 */
     const DEFAULT_ATTEMPTS_COUNT = 3;
 
     /**
+     * CURL клиент
+     *
      * @var null|ApiClientInterface
      */
     protected $apiClient;
 
     /**
-     * @var string
+     * shopId магазина
+     *
+     * @var string|int
      */
     protected $login;
 
     /**
+     * Секретный ключ магазина
+     *
      * @var string
      */
     protected $password;
 
     /**
+     * Настройки для CURL клиента
+     *
      * @var array
      */
     protected $config;
 
     /**
      * Время через которое будут осуществляться повторные запросы
+     *
      * Значение по умолчанию - 1800 миллисекунд.
-     * @var int значение в миллисекундах
+     *
+     * @var int Значение в миллисекундах
      */
     protected $timeout;
 
     /**
      * Количество повторных запросов при ответе API статусом 202
+     *
      * Значение по умолчанию 3
+     *
      * @var int
      */
     protected $attempts;
 
     /**
+     * Объект для логирования работы SDK
+     *
      * @var LoggerInterface|null
      */
     protected $logger;
@@ -128,19 +151,23 @@ class BaseClient
         if ($configLoader === null) {
             $configLoader = new ConfigurationLoader();
         }
-        $config       = $configLoader->load()->getConfig();
+        $config = $configLoader->load()->getConfig();
         $this->setConfig($config);
         $apiClient->setConfig($config);
 
-        $this->attempts  = self::DEFAULT_ATTEMPTS_COUNT;
+        $this->attempts = self::DEFAULT_ATTEMPTS_COUNT;
         $this->apiClient = $apiClient;
     }
 
     /**
-     * @param $login
-     * @param $password
+     * Устанавливает авторизацию по логин/паролю
      *
-     * @return static $this
+     * @example 01-client.php 7 1 Пример авторизации
+     *
+     * @param string $login
+     * @param string $password
+     *
+     * @return $this
      */
     public function setAuth($login, $password)
     {
@@ -156,7 +183,11 @@ class BaseClient
     }
 
     /**
-     * @param $token
+     * Устанавливает авторизацию по Oauth-токену
+     *
+     * @example 01-client.php 9 1 Пример авторизации
+     *
+     * @param string $token
      *
      * @return $this
      */
@@ -171,6 +202,8 @@ class BaseClient
     }
 
     /**
+     * Возвращает CURL клиента для работы с API
+     *
      * @return ApiClientInterface
      */
     public function getApiClient()
@@ -179,9 +212,11 @@ class BaseClient
     }
 
     /**
+     * Устанавливает CURL клиента для работы с API
+     *
      * @param ApiClientInterface $apiClient
      *
-     * @return static $this
+     * @return $this
      */
     public function setApiClient(ApiClientInterface $apiClient)
     {
@@ -210,6 +245,8 @@ class BaseClient
     }
 
     /**
+     * Возвращает настройки клиента
+     *
      * @return array
      */
     public function getConfig()
@@ -218,6 +255,8 @@ class BaseClient
     }
 
     /**
+     * Устанавливает настройки клиента
+     *
      * @param array $config
      */
     public function setConfig($config)
@@ -226,11 +265,11 @@ class BaseClient
     }
 
     /**
-     * Установка значение задержки между повторными запросами
+     * Установка значения задержки между повторными запросами
      *
      * @param int $timeout
      *
-     * @return static
+     * @return $this
      */
     public function setRetryTimeout($timeout)
     {
@@ -244,7 +283,7 @@ class BaseClient
      *
      * @param int $attempts
      *
-     * @return static
+     * @return $this
      */
     public function setMaxRequestAttempts($attempts)
     {
@@ -253,8 +292,26 @@ class BaseClient
         return $this;
     }
 
+
     /**
-     * @param $serializedData
+     * Метод проверяет, находится ли IP адрес среди IP адресов Юkassa, с которых отправляются уведомления
+     *
+     * @param string $ip - IPv4 или IPv6 адрес webhook уведомления
+     * @return bool
+     *
+     * @throws Exception - исключение будет выброшено, если будет передан IP адрес неверного формата
+     */
+    public function isNotificationIPTrusted($ip)
+    {
+        $securityHelper = new SecurityHelper();
+
+        return $securityHelper->isIPTrusted($ip);
+    }
+
+    /**
+     * Кодирует массив данных в JSON строку
+     *
+     * @param array $serializedData
      *
      * @return string
      * @throws Exception
@@ -265,7 +322,7 @@ class BaseClient
             return '{}';
         }
 
-        if (defined('JSON_UNESCAPED_UNICODE')) {
+        if (defined('JSON_UNESCAPED_UNICODE') && defined('JSON_UNESCAPED_SLASHES')) {
             $encoded = json_encode($serializedData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         } else {
             $encoded = self::_unescaped(json_encode($serializedData));
@@ -280,6 +337,10 @@ class BaseClient
     }
 
     /**
+     * Убирает лишние обратные слэши, а также декодирует строку UTF-8 в нормальный вид
+     *
+     * Вспомогательная функция для старых версий PHP
+     *
      * @param string $json
      * @return string|false
      */
@@ -297,6 +358,8 @@ class BaseClient
     }
 
     /**
+     * Декодирует JSON строку в массив данных
+     *
      * @param ResponseObject $response
      *
      * @return array
@@ -312,6 +375,8 @@ class BaseClient
     }
 
     /**
+     * Выбрасывает исключение по коду ошибки
+     *
      * @param ResponseObject $response
      *
      * @throws ApiException
@@ -362,7 +427,7 @@ class BaseClient
     /**
      * Задержка между повторными запросами
      *
-     * @param $response
+     * @param ResponseObject $response
      */
     protected function delay($response)
     {
@@ -383,9 +448,9 @@ class BaseClient
     /**
      * Выполнение запроса и обработка 202 статуса
      *
-     * @param $path
-     * @param $method
-     * @param $queryParams
+     * @param string $path
+     * @param string $method
+     * @param array $queryParams
      * @param null $httpBody
      * @param array $headers
      *

@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,12 +26,11 @@
 
 namespace YooKassa\Request\Refunds;
 
-use YooKassa\Common\AbstractPaymentRequest;
-use YooKassa\Common\Exceptions\EmptyPropertyValueException;
-use YooKassa\Common\Exceptions\InvalidPropertyValueException;
+use YooKassa\Common\AbstractRefundRequest;
 use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
 use YooKassa\Helpers\TypeCast;
 use YooKassa\Model\AmountInterface;
+use YooKassa\Model\Deal\RefundDealData;
 use YooKassa\Model\ReceiptInterface;
 use YooKassa\Model\Source;
 use YooKassa\Model\SourceInterface;
@@ -39,17 +38,17 @@ use YooKassa\Model\SourceInterface;
 /**
  * Класс объекта запроса для создания возврата
  *
+ * @example 02-builder.php 148 35 Пример использования билдера
+ *
  * @property string $paymentId Айди платежа для которого создаётся возврат
  * @property AmountInterface $amount Сумма возврата
  * @property string $description Комментарий к операции возврата, основание для возврата средств покупателю.
  * @property ReceiptInterface|null $receipt Инстанс чека или null
+ * @property SourceInterface[]|null $sources Информация о распределении денег — сколько и в какой магазин нужно перевести
+ * @property RefundDealData|null $deal Информация о сделке
  */
-class CreateRefundRequest extends AbstractPaymentRequest implements CreateRefundRequestInterface
+class CreateRefundRequest extends AbstractRefundRequest implements CreateRefundRequestInterface
 {
-    /**
-     * @var string Айди платежа для которого создаётся возврат
-     */
-    private $_paymentId;
 
     /**
      * @var string Комментарий к операции возврата, основание для возврата средств покупателю.
@@ -62,43 +61,9 @@ class CreateRefundRequest extends AbstractPaymentRequest implements CreateRefund
     private $_sources;
 
     /**
-     * Возвращает айди платежа для которого создаётся возврат средств
-     * @return string Айди платежа для которого создаётся возврат
+     * @var RefundDealData
      */
-    public function getPaymentId()
-    {
-        return $this->_paymentId;
-    }
-
-    /**
-     * Устанавливает айди платежа для которого создаётся возврат
-     * @param string $value Айди платежа
-     *
-     * @throws EmptyPropertyValueException Выбрасывается если передано пустое значение айди платежа
-     * @throws InvalidPropertyValueException Выбрасывается если переданное значение является строкой, но не является
-     * валидным значением айди платежа
-     * @throws InvalidPropertyValueTypeException Выбрасывается если передано значение не валидного типа
-     */
-    public function setPaymentId($value)
-    {
-        if ($value === null || $value === '') {
-            throw new EmptyPropertyValueException(
-                'Empty payment id value in CreateRefundRequest', 0, 'CreateRefundRequest.paymentId'
-            );
-        } elseif (TypeCast::canCastToString($value)) {
-            $length = mb_strlen($value, 'utf-8');
-            if ($length != 36) {
-                throw new InvalidPropertyValueException(
-                    'Invalid payment id value in CreateRefundRequest', 0, 'CreateRefundRequest.paymentId', $value
-                );
-            }
-            $this->_paymentId = (string)$value;
-        } else {
-            throw new InvalidPropertyValueException(
-                'Invalid payment id value type in CreateRefundRequest', 0, 'CreateRefundRequest.paymentId', $value
-            );
-        }
-    }
+    private $_deal;
 
     /**
      * Возвращает комментарий к возврату или null, если комментарий не задан
@@ -138,8 +103,16 @@ class CreateRefundRequest extends AbstractPaymentRequest implements CreateRefund
     }
 
     /**
-     * Устанавливает transfers (массив распределения денег между магазинами)
-     * @param SourceInterface[]|array $value
+     * Удаляет чек из запроса
+     */
+    public function removeReceipt()
+    {
+        $this->setReceipt(null);
+    }
+
+    /**
+     * Устанавливает sources (массив распределения денег между магазинами)
+     * @param SourceInterface[]|array $value Массив распределения денег между магазинами
      */
     public function setSources($value)
     {
@@ -160,12 +133,13 @@ class CreateRefundRequest extends AbstractPaymentRequest implements CreateRefund
             }
             $sources[] = $item;
         }
-        
+
         $this->_sources = $sources;
     }
 
     /**
-     * @return SourceInterface[]
+     * Возвращает информацию о распределении денег — сколько и в какой магазин нужно перевести
+     * @return SourceInterface[] Информация о распределении денег
      */
     public function getSources()
     {
@@ -173,6 +147,7 @@ class CreateRefundRequest extends AbstractPaymentRequest implements CreateRefund
     }
 
     /**
+     * Проверяет наличие информации о распределении денег
      * @return bool
      */
     public function hasSources()
@@ -181,28 +156,50 @@ class CreateRefundRequest extends AbstractPaymentRequest implements CreateRefund
     }
 
     /**
-     * Валидирует текущий объект запроса
-     * @return bool True если текущий объект запроса валиден, false если нет
-     */
-    public function validate()
-    {
-        if (!parent::validate()) {
-            return false;
-        }
-
-        if (empty($this->_paymentId)) {
-            $this->setValidationError('Payment id not specified');
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * Возвращает билдер объектов текущего типа
-     * @return CreateRefundRequestBuilder Инстанс билдера запрсов
+     * @return CreateRefundRequestBuilder Инстанс билдера запросов
      */
     public static function builder()
     {
         return new CreateRefundRequestBuilder();
+    }
+
+    /**
+     * Возвращает данные о сделке, в составе которой проходит возврат
+     * @return RefundDealData Данные о сделке, в составе которой проходит возврат
+     */
+    public function getDeal()
+    {
+        return $this->_deal;
+    }
+
+    /**
+     * Проверяет, были ли установлены данные о сделке
+     * @return bool True если данные о сделке были установлены, false если нет
+     */
+    public function hasDeal()
+    {
+        return !empty($this->_deal);
+    }
+
+    /**
+     * Устанавливает данные о сделке, в составе которой проходит возврат
+     * @param RefundDealData|array|null $value Данные о сделке, в составе которой проходит возврат
+     *
+     * @throws InvalidPropertyValueTypeException Выбрасывается если переданные данные не удалось интерпретировать как данные сделки
+     */
+    public function setDeal($value)
+    {
+        if ($value === null || $value === '' || (is_array($value) && empty($value))) {
+            $this->_deal = null;
+        } elseif ($value instanceof RefundDealData) {
+            $this->_deal = $value;
+        } elseif (is_array($value)) {
+            $this->_deal = new RefundDealData($value);
+        } else {
+            throw new InvalidPropertyValueTypeException(
+                'Invalid deal value type in CreateRefundRequest', 0, 'CreateRefundRequest.deal', $value
+            );
+        }
     }
 }

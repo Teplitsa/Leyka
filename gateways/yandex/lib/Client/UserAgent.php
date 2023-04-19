@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,24 +30,41 @@ namespace YooKassa\Client;
 use YooKassa\Client;
 
 /**
- * Class UserAgent
- * @package YooKassa\Client
+ * Класс для создания заголовка User-Agent в запросах к API
+ *
+ * @package YooKassa
  */
 class UserAgent
 {
+    /** Имя заголовка для User-Agent */
     const HEADER            = 'YM-User-Agent';
+
+    /** Разделитель части заголовка и её версии */
     const VERSION_DELIMITER = '/';
+
+    /** Разделитель между частями заголовка */
     const PART_DELIMITER    = ' ';
 
+    /** @var string|null Версия операционной системы */
     private $_os = null;
+
+    /** @var string|null Версия PHP */
     private $_php = null;
+
+    /** @var string|null Версия фреймворка */
     private $_framework = null;
+
+    /** @var string|null Версия CMS */
     private $_cms = null;
+
+    /** @var string|null Версия модуля */
     private $_module = null;
+
+    /** @var string|null Версия SDK */
     private $_sdk = null;
 
     /**
-     * UserAgent constructor.
+     * Конструктор UserAgent
      */
     public function __construct()
     {
@@ -61,6 +78,7 @@ class UserAgent
     }
 
     /**
+     * Формирует конечную строку из составных частей
      * @return string
      */
     public function getHeaderString()
@@ -86,6 +104,7 @@ class UserAgent
     }
 
     /**
+     * Возвращает версию операционной системы
      * @return string
      */
     public function getOs()
@@ -94,6 +113,7 @@ class UserAgent
     }
 
     /**
+     * Устанавливает версию операционной системы
      * @param string $name
      * @param string $version
      */
@@ -103,6 +123,7 @@ class UserAgent
     }
 
     /**
+     * Возвращает версию PHP
      * @return string
      */
     public function getPhp()
@@ -111,6 +132,7 @@ class UserAgent
     }
 
     /**
+     * Устанавливает версию PHP
      * @param string $name
      * @param string $version
      */
@@ -120,6 +142,7 @@ class UserAgent
     }
 
     /**
+     * Возвращает версию фреймворка
      * @return string|null
      */
     public function getFramework()
@@ -128,6 +151,7 @@ class UserAgent
     }
 
     /**
+     * Устанавливает версию фреймворка
      * @param string $name
      * @param string $version
      */
@@ -137,6 +161,7 @@ class UserAgent
     }
 
     /**
+     * Возвращает версию CMS
      * @return null
      */
     public function getCms()
@@ -145,6 +170,7 @@ class UserAgent
     }
 
     /**
+     * Устанавливает версию CMS
      * @param string $name
      * @param string $version
      */
@@ -154,6 +180,7 @@ class UserAgent
     }
 
     /**
+     * Возвращает версию модуля
      * @return string
      */
     public function getModule()
@@ -162,6 +189,7 @@ class UserAgent
     }
 
     /**
+     * Устанавливает версию модуля
      * @param string $name
      * @param string $version
      */
@@ -171,6 +199,7 @@ class UserAgent
     }
 
     /**
+     * Возвращает версию SDK
      * @return string
      */
     public function getSdk()
@@ -179,6 +208,7 @@ class UserAgent
     }
 
     /**
+     * Устанавливает версию SDK
      * @param string $name
      * @param string $version
      */

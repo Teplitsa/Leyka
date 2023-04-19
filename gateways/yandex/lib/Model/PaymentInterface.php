@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,23 +26,27 @@
 
 namespace YooKassa\Model;
 
+use YooKassa\Model\Deal\PaymentDealInfo;
 use YooKassa\Model\PaymentMethod\AbstractPaymentMethod;
 
 /**
  * Interface PaymentInterface
  *
- * @package YooKassa\Model
+ * @package YooKassa
  *
  * @property-read string $id Идентификатор платежа
  * @property-read string $status Текущее состояние платежа
  * @property-read RecipientInterface $recipient Получатель платежа
  * @property-read AmountInterface $amount Сумма заказа
+ * @property-read string $description Описание транзакции
  * @property-read AbstractPaymentMethod $paymentMethod Способ проведения платежа
  * @property-read AbstractPaymentMethod $payment_method Способ проведения платежа
  * @property-read \DateTime $createdAt Время создания заказа
  * @property-read \DateTime $created_at Время создания заказа
  * @property-read \DateTime $capturedAt Время подтверждения платежа магазином
  * @property-read \DateTime $captured_at Время подтверждения платежа магазином
+ * @property-read \DateTime $expiresAt Время, до которого можно бесплатно отменить или подтвердить платеж
+ * @property-read \DateTime $expires_at Время, до которого можно бесплатно отменить или подтвердить платеж
  * @property-read Confirmation\AbstractConfirmation $confirmation Способ подтверждения платежа
  * @property-read AmountInterface $refundedAmount Сумма возвращенных средств платежа
  * @property-read AmountInterface $refunded_amount Сумма возвращенных средств платежа
@@ -51,6 +55,14 @@ use YooKassa\Model\PaymentMethod\AbstractPaymentMethod;
  * @property-read string $receiptRegistration Состояние регистрации фискального чека
  * @property-read string $receipt_registration Состояние регистрации фискального чека
  * @property-read Metadata $metadata Метаданные платежа указанные мерчантом
+ * @property-read bool $test Признак тестовой операции
+ * @property-read CancellationDetailsInterface $cancellationDetails Комментарий к отмене платежа
+ * @property-read CancellationDetailsInterface $cancellation_details Комментарий к отмене платежа
+ * @property-read AuthorizationDetailsInterface $authorizationDetails Данные об авторизации платежа
+ * @property-read AuthorizationDetailsInterface $authorization_details Данные об авторизации платежа
+ * @property-read TransferInterface[] $transfers Данные о распределении платежа между магазинами
+ * @property-read AmountInterface $incomeAmount Сумма платежа, которую получит магазин
+ * @property-read AmountInterface $income_amount Сумма платежа, которую получит магазин
  */
 interface PaymentInterface
 {
@@ -68,7 +80,7 @@ interface PaymentInterface
 
     /**
      * Возвращает получателя платежа
-     * @return RecipientInterface|null Получатель платежа или null если получатель не задан
+     * @return RecipientInterface|null Получатель платежа или null, если получатель не задан
      */
     public function getRecipient();
 
@@ -91,7 +103,7 @@ interface PaymentInterface
     public function getCreatedAt();
 
     /**
-     * Возвращает время подтверждения платежа магазином или null если если время не задано
+     * Возвращает время подтверждения платежа магазином или null, если время не задано
      * @return \DateTime|null Время подтверждения платежа магазином
      */
     public function getCapturedAt();
@@ -109,7 +121,7 @@ interface PaymentInterface
     public function getRefundedAmount();
 
     /**
-     * Проверяет был ли уже оплачен заказ
+     * Проверяет, был ли уже оплачен заказ
      * @return bool Признак оплаты заказа, true если заказ оплачен, false если нет
      */
     public function getPaid();
@@ -133,7 +145,7 @@ interface PaymentInterface
     public function getMetadata();
 
     /**
-     * Возвращает время до которого можно бесплатно отменить или подтвердить платеж или null если оно не задано
+     * Возвращает время до которого можно бесплатно отменить или подтвердить платеж, или null, если оно не задано
      * @return \DateTime|null Время, до которого можно бесплатно отменить или подтвердить платеж
      * @since 1.0.2
      */
@@ -166,7 +178,9 @@ interface PaymentInterface
     public function getIncomeAmount();
 
     /**
-     * @return RequestorInterface
+     * Возвращает сделку, в рамках которой нужно провести платеж.
+     *
+     * @return PaymentDealInfo Сделка, в рамках которой нужно провести платеж
      */
-    public function getRequestor();
+    public function getDeal();
 }

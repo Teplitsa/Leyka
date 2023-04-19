@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,11 @@ namespace YooKassa\Model\PaymentMethod;
 
 use YooKassa\Model\PaymentMethodType;
 
+/**
+ * Фабрика создания объекта платежных методов из массива
+ *
+ * @package YooKassa
+ */
 class PaymentMethodFactory
 {
     private $typeClassMap = array(
@@ -46,6 +51,7 @@ class PaymentMethodFactory
         PaymentMethodType::TINKOFF_BANK   => 'PaymentMethodTinkoffBank',
         PaymentMethodType::PSB            => 'PaymentMethodPsb',
         PaymentMethodType::WECHAT         => 'PaymentMethodWechat',
+        PaymentMethodType::SBP            => 'PaymentMethodSbp',
     );
 
     private $optionsMap = array(
@@ -56,7 +62,9 @@ class PaymentMethodFactory
     );
 
     /**
-     * @param string $type
+     * Фабричный метод создания объекта платежных данных по типу
+     *
+     * @param string $type Тип платежного метода
      *
      * @return AbstractPaymentMethod
      */
@@ -74,8 +82,10 @@ class PaymentMethodFactory
     }
 
     /**
-     * @param array $data
-     * @param string|null $type
+     * Фабричный метод создания объекта платежных данных из массива
+     *
+     * @param array $data Массив платежных данных
+     * @param string|null $type Тип платежного метода
      *
      * @return AbstractPaymentMethod
      */

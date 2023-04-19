@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,10 +33,10 @@ use YooKassa\Helpers\TypeCast;
 use YooKassa\Model\PaymentMethodType;
 
 /**
- * PaymentMethodSberbank
- * Объект, описывающий метод оплаты, при оплате через Сбербанк Онлайн
+ * Класс, описывающий метод оплаты, при оплате через Сбербанк Онлайн
+ *
  * @property string $type Тип объекта
- * @property string $phone
+ * @property string $phone Телефон пользователя
  */
 class PaymentMethodSberbank extends AbstractPaymentMethod
 {
@@ -56,7 +56,8 @@ class PaymentMethodSberbank extends AbstractPaymentMethod
     }
 
     /**
-     * @return string
+     * Возвращает номер телефона в формате ITU-T E.164
+     * @return string Номер телефона в формате ITU-T E.164
      */
     public function getPhone()
     {
@@ -64,7 +65,8 @@ class PaymentMethodSberbank extends AbstractPaymentMethod
     }
 
     /**
-     * @param string $value
+     * Устанавливает номер телефона в формате ITU-T E.164
+     * @param string $value Номер телефона в формате ITU-T E.164
      */
     public function setPhone($value)
     {

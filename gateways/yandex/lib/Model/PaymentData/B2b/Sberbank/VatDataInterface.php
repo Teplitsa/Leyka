@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ use YooKassa\Model\AmountInterface;
 /**
  * Interface VatDataInterface
  *
- * @package YooKassa\Model
+ * @package YooKassa
  *
  * @property-read string $type Способ расчёта НДС
  * @property-read string $rate Данные об НДС в случае, если сумма НДС включена в сумму платежа

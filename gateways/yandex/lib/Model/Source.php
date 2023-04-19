@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,10 @@ use YooKassa\Helpers\TypeCast;
 
 /**
  * Класс объекта распределения денег в магазин
+ *
+ * @property AmountInterface $amount Сумма возврата
+ * @property AmountInterface $platform_fee_amount Комиссия, которую вы удержали при оплате, и хотите вернуть
+ * @property string $accountId Идентификатор магазина, для которого вы хотите провести возврат
  */
 class Source extends AbstractObject implements SourceInterface
 {
@@ -50,25 +54,6 @@ class Source extends AbstractObject implements SourceInterface
      * @var AmountInterface
      */
     private $_platform_fee_amount;
-
-    /**
-     * Transfer constructor.
-     * @param array $data
-     */
-    public function __construct($data = null)
-    {
-        if (isset($data) && is_array($data)) {
-            if (!empty($data['account_id'])) {
-                $this->setAccountId($data['account_id']);
-            }
-            if (!empty($data['amount'])) {
-                $this->setAmount($this->factoryAmount($data['amount']));
-            }
-            if (!empty($data['platform_fee_amount'])) {
-                $this->setPlatformFeeAmount($this->factoryAmount($data['platform_fee_amount']));
-            }
-        }
-    }
 
     /**
      * @inheritDoc

@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,8 +29,8 @@ namespace YooKassa\Model\PaymentMethod;
 use YooKassa\Model\PaymentMethodType;
 
 /**
- * PaymentMethodGooglePay
- * Объект, описывающий метод оплаты, при оплате через Google Pay
+ * Класс, описывающий метод оплаты, при оплате через Google Pay
+ *
  * @property string $type Тип объекта
  */
 class PaymentMethodGooglePay extends AbstractPaymentMethod

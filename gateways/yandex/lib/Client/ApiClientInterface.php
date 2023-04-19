@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,52 +27,69 @@
 namespace YooKassa\Client;
 
 use Psr\Log\LoggerInterface;
+use YooKassa\Common\ResponseObject;
 
 /**
  * Interface ApiClientInterface
- * @package YooKassa\Client
+ *
+ * @package YooKassa
  */
 interface ApiClientInterface
 {
     /**
-     * @param $path
-     * @param $method
-     * @param $queryParams
-     * @param $httpBody
-     * @param $headers
-     * @return mixed
+     * Создает CURL запрос, получает и возвращает обработанный ответ
+     *
+     * @param string $path URL запроса
+     * @param string $method HTTP метод
+     * @param array $queryParams Массив GET параметров запроса
+     * @param string|null $httpBody Тело запроса
+     * @param array $headers Массив заголовков запроса
+     *
+     * @return ResponseObject
      */
     public function call($path, $method, $queryParams, $httpBody = null, $headers = array());
 
     /**
-     * @param LoggerInterface|null $logger
+     * Устанавливает объект для логирования
+     *
+     * @param LoggerInterface|null $logger Объект для логирования
      */
     public function setLogger($logger);
 
     /**
+     * Возвращает UserAgent
+     *
      * @return UserAgent
      */
     public function getUserAgent();
 
     /**
-     * @param $shopId
+     * Устанавливает shopId магазина
+     *
+     * @param string|int $shopId shopId магазина
      * @return mixed
      */
     public function setShopId($shopId);
 
     /**
-     * @param $shopPassword
+     * Устанавливает секретный ключ магазина
+     *
+     * @param string $shopPassword
      * @return mixed
      */
     public function setShopPassword($shopPassword);
 
     /**
-     * @param $bearerToken
+     * Устанавливает OAuth-токен магазина
+     *
+     * @param string $bearerToken
      * @return mixed
      */
     public function setBearerToken($bearerToken);
 
     /**
+     * Устанавливает настройки
+     *
      * @param array $config
      */
     public function setConfig($config);
