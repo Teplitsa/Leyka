@@ -411,7 +411,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'date':
             case 'date_label':
 
-                $date_format = get_option('date_format');
+                $date_format = date_i18n(get_option('date_format'));
                 $donation_timestamp = $this->date_timestamp;
 
                 $value = apply_filters(
@@ -437,7 +437,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'date_time':
             case 'date_time_label':
 
-                $date_format = get_option('date_format');
+                $date_format = date_i18n(get_option('date_format'));
                 $time_format = get_option('time_format');
                 $donation_timestamp = $this->date_timestamp;
 
