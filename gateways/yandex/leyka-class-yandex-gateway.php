@@ -32,7 +32,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
         $this->_docs_link = '//leyka.te-st.ru/docs/yandex-dengi/';
         $this->_registration_link = 'https://kassa.yandex.ru/joinups';
-        $this->_has_wizard = true;
+        $this->_has_wizard = false; // For now; the Wizard is outdated
 
         $this->_min_commission = 2.8;
         $this->_receiver_types = ['legal'];
