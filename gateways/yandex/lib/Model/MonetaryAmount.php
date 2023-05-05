@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,9 @@ use YooKassa\Helpers\TypeCast;
 /**
  * MonetaryAmount - Сумма определенная в валюте
  *
- * @property string $value Сумма
+ * @package YooKassa
+ *
+ * @property int $value Сумма
  * @property string $currency Код валюты
  */
 class MonetaryAmount extends AbstractObject implements AmountInterface
@@ -52,16 +54,20 @@ class MonetaryAmount extends AbstractObject implements AmountInterface
 
     /**
      * MonetaryAmount constructor.
-     * @param string|null $value Сумма
+     * @param array|numeric|null $value Сумма
      * @param string|null $currency Код валюты
      */
     public function __construct($value = null, $currency = null)
     {
-        if ($value !== null && $value > 0.0) {
-            $this->setValue($value);
-        }
-        if ($currency !== null) {
-            $this->setCurrency($currency);
+        if (is_array($value)) {
+            parent::__construct($value);
+        } else {
+            if ($value !== null && $value > 0.0) {
+                $this->setValue($value);
+            }
+            if ($currency !== null) {
+                $this->setCurrency($currency);
+            }
         }
     }
 
@@ -186,7 +192,7 @@ class MonetaryAmount extends AbstractObject implements AmountInterface
 
     /**
      * Увеличивает сумму на указанное значение
-     * @param int $value Значение которое будет прибавлено к текущему
+     * @param int $value Значение, которое будет прибавлено к текущему
      *
      * @throws EmptyPropertyValueException Выбрасывается если передано пустое значение
      * @throws InvalidPropertyValueTypeException Выбрасывается если было передано не число
@@ -217,7 +223,7 @@ class MonetaryAmount extends AbstractObject implements AmountInterface
     public function jsonSerialize()
     {
         return array(
-            'value' => sprintf('%.2f',$this->_value / 100.0),
+            'value' => number_format($this->_value / 100.0, 2, '.', ''),
             'currency' => $this->_currency,
         );
     }

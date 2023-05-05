@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ use YooKassa\Model\Refund;
 /**
  * Абстрактный класс ответа от API с информацией о возврате
  *
- * @package YooKassa\Request\Refunds
+ * @package YooKassa
  */
 abstract class AbstractRefundResponse extends Refund
 {
@@ -49,10 +49,6 @@ abstract class AbstractRefundResponse extends Refund
         $this->setCreatedAt(empty($options['created_at']) ? null : $options['created_at']);
         $this->setAmount(new MonetaryAmount($options['amount']['value'], $options['amount']['currency']));
 
-        if (!empty($options['requestor'])) {
-            $this->setRequestor($options['requestor']);
-        }
-
         if (!empty($options['sources'])) {
             $this->setSources($options['sources']);
         }
@@ -63,6 +59,10 @@ abstract class AbstractRefundResponse extends Refund
 
         if (!empty($options['description'])) {
             $this->setDescription($options['description']);
+        }
+
+        if (!empty($options['deal'])) {
+            $this->setDeal($options['deal']);
         }
     }
 }

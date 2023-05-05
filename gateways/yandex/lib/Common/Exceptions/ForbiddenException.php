@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,11 @@
 
 namespace YooKassa\Common\Exceptions;
 
+/**
+ * Секретный ключ или OAuth-токен верный, но не хватает прав для совершения операции.
+ *
+ * @package YooKassa
+ */
 class ForbiddenException extends ApiException
 {
     const HTTP_CODE = 403;

@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,8 +32,13 @@ use YooKassa\Model\PaymentMethod\B2b\Sberbank\PayerBankDetails;
 use YooKassa\Model\PaymentMethodType;
 
 /**
- * PaymentMethodB2bSberbank
- * Объект, описывающий метод оплаты, при оплате через Сбербанк Бизнес Онлайн
+ * Класс, описывающий метод оплаты, при оплате через Сбербанк Бизнес Онлайн
+ *
+ * @property string $paymentPurpose Назначение платежа
+ * @property string $payment_purpose Назначение платежа
+ * @property VatData $vatData Данные об НДС
+ * @property PayerBankDetails $payerBankDetails Банковские реквизиты плательщика
+ * @property PayerBankDetails $payer_bank_details Банковские реквизиты плательщика
  */
 class PaymentMethodB2bSberbank extends AbstractPaymentMethod
 {
@@ -48,7 +53,7 @@ class PaymentMethodB2bSberbank extends AbstractPaymentMethod
     private $_vatData;
 
     /**
-     * @var PayerBankDetails
+     * @var PayerBankDetails Банковские реквизиты плательщика (юридического лица или ИП).
      */
     private $_payerBankDetails;
 
@@ -58,7 +63,8 @@ class PaymentMethodB2bSberbank extends AbstractPaymentMethod
     }
 
     /**
-     * @return string
+     * Возвращает назначение платежа
+     * @return string Назначение платежа
      */
     public function getPaymentPurpose()
     {
@@ -66,7 +72,8 @@ class PaymentMethodB2bSberbank extends AbstractPaymentMethod
     }
 
     /**
-     * @param string $paymentPurpose
+     * Устанавливает назначение платежа
+     * @param string $paymentPurpose Назначение платежа
      */
     public function setPaymentPurpose($paymentPurpose)
     {
@@ -74,7 +81,8 @@ class PaymentMethodB2bSberbank extends AbstractPaymentMethod
     }
 
     /**
-     * @return VatData
+     * Возвращает назначение платежа
+     * @return VatData Данные об НДС
      */
     public function getVatData()
     {
@@ -82,7 +90,8 @@ class PaymentMethodB2bSberbank extends AbstractPaymentMethod
     }
 
     /**
-     * @param VatData $vatData
+     * Устанавливает назначение платежа
+     * @param VatData $vatData Данные об НДС
      */
     public function setVatData($vatData)
     {
@@ -99,7 +108,8 @@ class PaymentMethodB2bSberbank extends AbstractPaymentMethod
     }
 
     /**
-     * @return PayerBankDetails
+     * Возвращает банковские реквизиты плательщика (юридического лица или ИП)
+     * @return PayerBankDetails Банковские реквизиты плательщика
      */
     public function getPayerBankDetails()
     {
@@ -107,7 +117,8 @@ class PaymentMethodB2bSberbank extends AbstractPaymentMethod
     }
 
     /**
-     * @param $payerBankDetails
+     * Устанавливает Банковские реквизиты плательщика (юридического лица или ИП).
+     * @param PayerBankDetails|array $payerBankDetails Банковские реквизиты плательщика
      */
     public function setPayerBankDetails($payerBankDetails)
     {

@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,17 +29,38 @@ namespace YooKassa\Model;
 interface LegInterface
 {
     /**
+     * Возвращает трёхбуквенный IATA-код аэропорта вылета
      * @return string Трёхбуквенный IATA-код аэропорта вылета
      */
     public function getDepartureAirport();
 
     /**
+     * Возвращает трёхбуквенный IATA-код аэропорта прилёта
      * @return string Трёхбуквенный IATA-код аэропорта прилёта
      */
     public function getDestinationAirport();
 
     /**
+     * Возвращает дату вылета в формате YYYY-MM-DD ISO 8601:2004
      * @return string Дата вылета в формате YYYY-MM-DD ISO 8601:2004
      */
     public function getDepartureDate();
+
+    /**
+     * Устанавливает трёхбуквенный IATA-код аэропорта вылета
+     * @param string $value Трёхбуквенный IATA-код аэропорта вылета
+     */
+    public function setDepartureAirport($value);
+
+    /**
+     * Устанавливает трёхбуквенный IATA-код аэропорта прилёта
+     * @param string $value Трёхбуквенный IATA-код аэропорта прилёта
+     */
+    public function setDestinationAirport($value);
+
+    /**
+     * Устанавливает дату вылета в формате YYYY-MM-DD ISO 8601:2004
+     * @param \DateTime|string $value Дата вылета в формате YYYY-MM-DD ISO 8601:2004
+     */
+    public function setDepartureDate($value);
 }

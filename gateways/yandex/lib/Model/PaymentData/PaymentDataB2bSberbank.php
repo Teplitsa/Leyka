@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -57,6 +57,7 @@ class PaymentDataB2bSberbank extends AbstractPaymentData
     }
 
     /**
+     * Возвращает назначение платежа
      * @return string Назначение платежа
      */
     public function getPaymentPurpose()
@@ -65,6 +66,7 @@ class PaymentDataB2bSberbank extends AbstractPaymentData
     }
 
     /**
+     * Устанавливает назначение платежа
      * @param string $value Назначение платежа
      */
     public function setPaymentPurpose($value)
@@ -88,6 +90,7 @@ class PaymentDataB2bSberbank extends AbstractPaymentData
     }
 
     /**
+     * Возвращает назначение платежа
      * @return VatData Данные об НДС
      */
     public function getVatData()
@@ -96,6 +99,7 @@ class PaymentDataB2bSberbank extends AbstractPaymentData
     }
 
     /**
+     * Устанавливает назначение платежа
      * @param VatData|array|null $value Данные об НДС
      */
     public function setVatData($value)

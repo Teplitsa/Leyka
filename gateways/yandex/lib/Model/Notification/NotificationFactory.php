@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +29,13 @@ namespace YooKassa\Model\Notification;
 use YooKassa\Model\Notification\AbstractNotification;
 use YooKassa\Model\NotificationEventType;
 
+/**
+ * Фабрика для получения конкретного объекта уведомления.
+ *
+ * @example 03-notification.php 3 Пример скрипта обработки уведомления
+ *
+ * @package YooKassa
+ */
 class NotificationFactory
 {
     private $typeClassMap = array(
@@ -36,6 +43,10 @@ class NotificationFactory
         NotificationEventType::REFUND_SUCCEEDED            => 'NotificationRefundSucceeded',
         NotificationEventType::PAYMENT_SUCCEEDED           => 'NotificationSucceeded',
         NotificationEventType::PAYMENT_WAITING_FOR_CAPTURE => 'NotificationWaitingForCapture',
+
+        NotificationEventType::DEAL_CLOSED                 => 'NotificationDealClosed',
+        NotificationEventType::PAYOUT_CANCELED             => 'NotificationPayoutCanceled',
+        NotificationEventType::PAYOUT_SUCCEEDED            => 'NotificationPayoutSucceeded',
     );
 
     /**

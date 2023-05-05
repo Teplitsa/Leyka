@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,44 +31,35 @@ use YooKassa\Common\AbstractObject;
 use YooKassa\Model\NotificationEventType;
 
 /**
- * Class Webhook
+ * Класс Webhook содержит информацию о подписке на одно событие
+ *
+ * @property string $id Идентификатор webhook
+ * @property string $event Событие, о котором уведомляет ЮKassa
+ * @property string $url URL, на который ЮKassa будет отправлять уведомления
+ *
+ * @package YooKassa
  */
 class Webhook extends AbstractObject
 {
     /**
-     * Идентификатор webhook
      * @var string
      */
     private $id;
 
     /**
-     * Событие, о котором уведомляет ЮKassa
-     * @see NotificationEventType
      * @var string
+     * @see NotificationEventType
      */
     private $event;
 
     /**
-     * URL, на который ЮKassa будет отправлять уведомления
      * @var string
      */
     private $url;
 
     /**
-     * Webhook constructor.
-     *
-     * @param $initData
-     */
-    public function __construct($initData = null)
-    {
-        if(!empty($initData)) {
-            $this->fromArray($initData);
-        }
-    }
-
-
-    /**
-     * @return mixed
+     * Возвращает идентификатор webhook
+     * @return string Идентификатор webhook
      */
     public function getId()
     {
@@ -76,7 +67,8 @@ class Webhook extends AbstractObject
     }
 
     /**
-     * @param mixed $id
+     * Устанавливает идентификатор webhook
+     * @param mixed $id Идентификатор webhook
      */
     public function setId($id)
     {
@@ -84,7 +76,8 @@ class Webhook extends AbstractObject
     }
 
     /**
-     * @return mixed
+     * Возвращает событие, о котором уведомляет ЮKassa
+     * @return string Событие, о котором уведомляет ЮKassa
      */
     public function getEvent()
     {
@@ -92,7 +85,8 @@ class Webhook extends AbstractObject
     }
 
     /**
-     * @param mixed $event
+     * Устанавливает событие, о котором уведомляет ЮKassa
+     * @param string $event Событие, о котором уведомляет ЮKassa
      */
     public function setEvent($event)
     {
@@ -100,7 +94,8 @@ class Webhook extends AbstractObject
     }
 
     /**
-     * @return mixed
+     * Возвращает URL, на который ЮKassa будет отправлять уведомления
+     * @return string URL, на который ЮKassa будет отправлять уведомления
      */
     public function getUrl()
     {
@@ -108,7 +103,8 @@ class Webhook extends AbstractObject
     }
 
     /**
-     * @param mixed $url
+     * Устанавливает URL, на который ЮKassa будет отправлять уведомления
+     * @param string $url URL, на который ЮKassa будет отправлять уведомления
      */
     public function setUrl($url)
     {

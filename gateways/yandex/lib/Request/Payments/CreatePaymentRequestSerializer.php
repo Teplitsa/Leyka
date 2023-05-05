@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -47,15 +47,16 @@ use YooKassa\Model\TransferInterface;
 /**
  * Класс сериалайзера объекта запроса к API на проведение платежа
  *
- * @package YooKassa\Request\Payments
+ * @package YooKassa
  */
 class CreatePaymentRequestSerializer
 {
     private static $propertyMap = array(
-        'reference_id'      => 'referenceId',
-        'payment_token'     => 'paymentToken',
-        'payment_method_id' => 'paymentMethodId',
-        'client_ip'         => 'clientIp',
+        'reference_id'          => 'referenceId',
+        'payment_token'         => 'paymentToken',
+        'payment_method_id'     => 'paymentMethodId',
+        'client_ip'             => 'clientIp',
+        'merchant_customer_id'  => 'merchantCustomerId',
     );
 
     private static $paymentDataSerializerMap = array(
@@ -73,8 +74,15 @@ class CreatePaymentRequestSerializer
         PaymentMethodType::B2B_SBERBANK   => 'serializePaymentDataB2BSberbank',
         PaymentMethodType::TINKOFF_BANK   => 'serializePaymentData',
         PaymentMethodType::WECHAT         => 'serializePaymentData',
+        PaymentMethodType::SBP            => 'serializePaymentData',
     );
 
+    /**
+     * Формирует ассоциативный массив данных из объекта запроса
+     *
+     * @param CreatePaymentRequestInterface $request Объект запроса
+     * @return array Массив данных для дальнейшего кодирования в JSON
+     */
     public function serialize(CreatePaymentRequestInterface $request)
     {
         $result = array();
@@ -144,6 +152,10 @@ class CreatePaymentRequestSerializer
                     'departure_date'      => $leg->getDepartureDate(),
                 );
             }
+        }
+
+        if ($request->hasDeal()) {
+            $result['deal'] = $request->getDeal()->toArray();
         }
 
         foreach (self::$propertyMap as $name => $property) {
@@ -346,10 +358,18 @@ class CreatePaymentRequestSerializer
     {
         $result = array();
         foreach ($transfers as $transfer) {
-            $result[] = array(
+            $item = array(
                 'account_id' => $transfer->getAccountId(),
-                'amount' => $this->serializeAmount($transfer->getAmount())
+                'amount' => $this->serializeAmount($transfer->getAmount()),
+                'status' => $transfer->getStatus(),
             );
+            if ($transfer->hasPlatformFeeAmount()) {
+                $item['platform_fee_amount'] = $this->serializeAmount($transfer->getPlatformFeeAmount());
+            }
+            if ($transfer->hasMetadata()) {
+                $item['metadata'] = $transfer->getMetadata()->toArray();
+            }
+            $result[] = $item;
         }
 
         return $result;

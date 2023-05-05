@@ -3,8 +3,8 @@
 
 /** @var $this Leyka_Admin_Setup */
 
-$current_stage = $this->get_current_settings_tab();
-$is_separate_sections_forms = $this->is_separate_forms_stage($current_stage);?>
+$current_settings_stage_id = $this->get_current_settings_tab();
+$is_separate_sections_forms = $this->is_separate_forms_stage($current_settings_stage_id);?>
 
 <div class="wrap leyka-admin leyka-settings-page">
     <!-- data-leyka-admin-page-type="extensions-list-page" -->
@@ -26,7 +26,7 @@ $is_separate_sections_forms = $this->is_separate_forms_stage($current_stage);?>
 
     <div id="tab-container">
 
-        <?php $admin_page_args = ['stage' => $current_stage, 'gateway' => empty($_GET['gateway']) ? '' : $_GET['gateway']];
+        <?php $admin_page_args = ['stage' => $current_settings_stage_id, 'gateway' => empty($_GET['gateway']) ? '' : $_GET['gateway']];
 
         $admin_page = 'admin.php?page=leyka_settings';
         foreach($admin_page_args as $arg_name => $value) {
@@ -38,18 +38,16 @@ $is_separate_sections_forms = $this->is_separate_forms_stage($current_stage);?>
         if( !$is_separate_sections_forms ) {?>
 
         <form method="post" action="<?php echo admin_url($admin_page);?>" id="leyka-settings-form">
-
-            <?php wp_nonce_field("leyka_settings_{$current_stage}", '_leyka_nonce');
-
+            <?php wp_nonce_field("leyka_settings_{$current_settings_stage_id}", '_leyka_nonce');
         }
 
-        if(file_exists(LEYKA_PLUGIN_DIR."inc/settings-pages/leyka-settings-{$current_stage}.php")) {
-            require_once(LEYKA_PLUGIN_DIR."inc/settings-pages/leyka-settings-{$current_stage}.php");
+        if(file_exists(LEYKA_PLUGIN_DIR."inc/settings-pages/leyka-settings-{$current_settings_stage_id}.php")) {
+            require_once(LEYKA_PLUGIN_DIR."inc/settings-pages/leyka-settings-{$current_settings_stage_id}.php");
         } else {
 
-            do_action("leyka_settings_pre_{$current_stage}_fields");
+            do_action("leyka_settings_pre_{$current_settings_stage_id}_fields");
 
-            foreach(leyka_opt_alloc()->get_tab_options($current_stage) as $option) { // Render each option/section
+            foreach(leyka_opt_alloc()->get_tab_options($current_settings_stage_id) as $option) { // Render each option/section
 
                 if($is_separate_sections_forms) {?>
 
@@ -59,15 +57,15 @@ $is_separate_sections_forms = $this->is_separate_forms_stage($current_stage);?>
                         <input type="hidden" name="leyka_options_section" value="<?php echo $option['section']['name'];?>">
                     <?php }?>
 
-                    <?php wp_nonce_field("leyka_settings_{$current_stage}", '_leyka_nonce');
-                    do_action("leyka_settings_pre_{$current_stage}_fields");
+                    <?php wp_nonce_field("leyka_settings_{$current_settings_stage_id}", '_leyka_nonce');
+                    do_action("leyka_settings_pre_{$current_settings_stage_id}_fields");
 
                 }
 
                 if(is_array($option) && !empty($option['section'])) {
 
                     $option['section']['is_separate_sections_forms'] = $is_separate_sections_forms;
-                    $option['section']['current_stage'] = $current_stage;
+                    $option['section']['current_stage'] = $current_settings_stage_id;
 
                     do_action('leyka_render_section', $option['section']);
 
@@ -84,11 +82,11 @@ $is_separate_sections_forms = $this->is_separate_forms_stage($current_stage);?>
 
             }
 
-            do_action("leyka_settings_post_{$current_stage}_fields");?>
+            do_action("leyka_settings_post_{$current_settings_stage_id}_fields");?>
 
             <?php if( !$is_separate_sections_forms ) {?>
                 <p class="submit">
-                    <input type="submit" name="<?php echo "leyka_settings_{$current_stage}";?>_submit" value="<?php _e('Save settings', 'leyka');?>" class="button-primary">
+                    <input type="submit" name="<?php echo "leyka_settings_{$current_settings_stage_id}";?>_submit" value="<?php _e('Save settings', 'leyka');?>" class="button-primary">
                 </p>
             <?php }
 

@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,40 +29,51 @@ namespace YooKassa\Model;
 /**
  * Interface SupplierInterface
  *
- * Информация о поставщике товара или услуги. Можно передавать,
- * если вы отправляете данные для формирования чека по сценарию - сначала платеж, потом чек.
+ * Информация о поставщике товара или услуги.
  *
- * @package YooKassa\Model
+ * Можно передавать, если вы отправляете данные для формирования чека по сценарию - сначала платеж, потом чек.
+
+ * @property string $name Наименование поставщика
+ * @property string $phone Телефон пользователя. Указывается в формате ITU-T E.164
+ * @property string $inn ИНН пользователя (10 или 12 цифр)
+ *
+ * @package YooKassa
  */
 interface SupplierInterface
 {
     /**
+     * Возвращает наименование поставщика
      * @return string|null
      */
     public function getName();
 
     /**
-     * @param string|null $value
+     * Устанавливает наименование поставщика
+     * @param string|null $value Наименование поставщика
      */
     public function setName($value);
 
     /**
-     * @return string|null
+     * Возвращает Телефон пользователя. Указывается в формате ITU-T E.164
+     * @return string|null Телефон пользователя
      */
     public function getPhone();
 
     /**
-     * @param $value
+     * Устанавливает Телефон пользователя. Указывается в формате ITU-T E.164
+     * @param string|null $value Телефон пользователя
      */
     public function setPhone($value);
 
     /**
-     * @return string|null
+     * Возвращает ИНН пользователя (10 или 12 цифр)
+     * @return string|null ИНН пользователя
      */
     public function getInn();
 
     /**
-     * @param $value
+     * Устанавливает ИНН пользователя (10 или 12 цифр)
+     * @param $value ИНН пользователя
      */
     public function setInn($value);
 }

@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,33 +40,55 @@ use YooKassa\Common\AbstractEnum;
  * |apple_pay|Платеж ApplePay|
  * |google_pay|Платеж Google Pay|
  * |qiwi|Платеж из кошелька Qiwi|
- * |installments|Заплатить по частям|
+ * |webmoney|Платеж из кошелька Webmoney|
+ * |alfabank|Платеж через Альфа-Клик|
  * |b2b_sberbank|Сбербанк Бизнес Онлайн|
  * |tinkoff_bank|Интернет-банк Тинькофф|
  * |psb|ПромсвязьБанк|
+ * |installments|Заплатить по частям|
  * |wechat|Платеж через WeChat|
+ * |wechat|Платеж через через сервис быстрых платежей|
  */
 class PaymentMethodType extends AbstractEnum
 {
+    /** Платеж из кошелька ЮMoney */
     const YOO_MONEY      = 'yoo_money';
+    /** Платеж с произвольной банковской карты */
     const BANK_CARD      = 'bank_card';
+    /** Платеж СбербанкОнлайн */
     const SBERBANK       = 'sberbank';
+    /** Платеж наличными */
     const CASH           = 'cash';
+    /** Платеж с баланса мобильного телефона */
     const MOBILE_BALANCE = 'mobile_balance';
+    /** латеж ApplePay */
     const APPLE_PAY      = 'apple_pay';
+    /** Платеж Google Pay */
     const GOOGLE_PAY     = 'google_pay';
+    /** Платеж из кошелька Qiwi */
     const QIWI           = 'qiwi';
+    /** Платеж из кошелька Webmoney */
     const WEBMONEY       = 'webmoney';
+    /** Платеж через Альфа-Клик */
     const ALFABANK       = 'alfabank';
-    const INSTALLMENTS   = 'installments';
+    /** Сбербанк Бизнес Онлайн */
     const B2B_SBERBANK   = 'b2b_sberbank';
+    /** Интернет-банк Тинькофф */
     const TINKOFF_BANK   = 'tinkoff_bank';
+    /** ПромсвязьБанк */
     const PSB            = 'psb';
-    /** @deprecated Будет удален в следующих версиях */
+    /** Заплатить по частям */
+    const INSTALLMENTS   = 'installments';
+    /**
+     * Оплата через WeChat
+     * @deprecated Будет удален в следующих версиях
+     */
     const WECHAT         = 'wechat';
+    /** Оплата через сервис быстрых платежей */
+    const SBP            = 'sbp';
 
     protected static $validValues = array(
-        self::YOO_MONEY   => true,
+        self::YOO_MONEY      => true,
         self::BANK_CARD      => true,
         self::SBERBANK       => true,
         self::CASH           => true,
@@ -80,6 +102,7 @@ class PaymentMethodType extends AbstractEnum
         self::INSTALLMENTS   => true,
         self::B2B_SBERBANK   => true,
         self::PSB            => false,
-        self::WECHAT         => true,
+        self::WECHAT         => false,
+        self::SBP            => true,
     );
 }

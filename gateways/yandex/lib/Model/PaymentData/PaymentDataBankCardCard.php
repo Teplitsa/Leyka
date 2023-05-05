@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -71,6 +71,7 @@ class PaymentDataBankCardCard extends AbstractObject
     private $_cardholder;
 
     /**
+     * Возвращает номер банковской карты
      * @return string Номер банковской карты
      */
     public function getNumber()
@@ -79,6 +80,7 @@ class PaymentDataBankCardCard extends AbstractObject
     }
 
     /**
+     * Устанавливает номер банковской карты
      * @param string $value Номер банковской карты
      */
     public function setNumber($value)
@@ -101,6 +103,7 @@ class PaymentDataBankCardCard extends AbstractObject
     }
 
     /**
+     * Возвращает год срока действия карты
      * @return string Срок действия, год, YYYY
      */
     public function getExpiryYear()
@@ -109,6 +112,7 @@ class PaymentDataBankCardCard extends AbstractObject
     }
 
     /**
+     * Устанавливает год срока действия карты
      * @param string $value Срок действия, год, YYYY
      */
     public function setExpiryYear($value)
@@ -132,6 +136,7 @@ class PaymentDataBankCardCard extends AbstractObject
     }
 
     /**
+     * Возвращает месяц срока действия карты
      * @return string Срок действия, месяц, MM
      */
     public function getExpiryMonth()
@@ -140,6 +145,7 @@ class PaymentDataBankCardCard extends AbstractObject
     }
 
     /**
+     * Устанавливает месяц срока действия карты
      * @param string $value Срок действия, месяц, MM
      */
     public function setExpiryMonth($value)
@@ -174,6 +180,7 @@ class PaymentDataBankCardCard extends AbstractObject
     }
 
     /**
+     * Возвращает CVV2/CVC2 код
      * @return string CVV2/CVC2 код
      */
     public function getCsc()
@@ -182,6 +189,7 @@ class PaymentDataBankCardCard extends AbstractObject
     }
 
     /**
+     * Устанавливает CVV2/CVC2 код
      * @param string $value CVV2/CVC2 код
      */
     public function setCsc($value)
@@ -206,6 +214,7 @@ class PaymentDataBankCardCard extends AbstractObject
     }
 
     /**
+     * Возвращает имя держателя карты
      * @return string Имя держателя карты
      */
     public function getCardholder()
@@ -214,6 +223,7 @@ class PaymentDataBankCardCard extends AbstractObject
     }
 
     /**
+     * Устанавливает имя держателя карты
      * @param string $value Имя держателя карты
      */
     public function setCardholder($value)

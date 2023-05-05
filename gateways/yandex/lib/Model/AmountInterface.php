@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ namespace YooKassa\Model;
 /**
  * Interface AmountInterface
  *
- * @package YooKassa\Model
+ * @package YooKassa
  *
  * @property-read string $value Сумма
  * @property-read string $currency Код валюты
@@ -43,7 +43,8 @@ interface AmountInterface
     public function getValue();
 
     /**
-     * @param $value
+     * Устанавливает значение суммы
+     * @param numeric $value Сумма
      */
     public function setValue($value);
 

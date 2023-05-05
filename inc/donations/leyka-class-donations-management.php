@@ -2041,7 +2041,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 <div class="leyka-ddata-field"><?php echo date(get_option('date_format').' H:i', $donation->donor_email_date);?></div>
             </div>
 		<?php } else {?>
-			<div class="leyka-ddata-string donor no-thanks" data-donation-id="<?php echo $donation->id;?>" data-nonce="<?php echo wp_create_nonce('leyka_donor_email');?>">
+			<div class="leyka-ddata-string leyka-no-donor-thanks donor no-thanks" data-donation-id="<?php echo $donation->id;?>" data-nonce="<?php echo wp_create_nonce('leyka_donor_email');?>">
                 <label>
                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/admin-boxes/email-action-gray.svg" alt="email-action">
                     <span><?php _e("Grateful email hasn't been sent", 'leyka');?></span>
@@ -2059,7 +2059,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 <div class="leyka-ddata-field"><?php echo date(get_option('date_format').' H:i', $manager_notification_date);?></div>
             </div>
         <?php } else {?>
-            <div class="leyka-ddata-string donor no-thanks" data-donation-id="<?php echo $donation->id;?>" data-nonce="<?php echo wp_create_nonce('leyka_donor_email');?>">
+            <div class="leyka-ddata-string leyka-no-donor-thanks donor no-thanks" data-donation-id="<?php echo $donation->id;?>" data-nonce="<?php echo wp_create_nonce('leyka_donor_email');?>">
                 <label>
                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/admin-boxes/email-action-gray.svg" alt="email-action">
                     <span><?php _e("Donation managers' notification emails haven't been sent", 'leyka'); ?></span>

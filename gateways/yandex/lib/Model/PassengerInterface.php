@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,12 +30,26 @@ namespace YooKassa\Model;
 interface PassengerInterface
 {
     /**
+     * Возвращает имя пассажира
      * @return string
      */
     public function getFirstName();
 
     /**
+     * Устанавливает имя пассажира
+     * @param string $value Имя пассажира
+     */
+    public function setFirstName($value);
+
+    /**
+     * Возвращает фамилию пассажира
      * @return string
      */
     public function getLastName();
+
+    /**
+     * Устанавливает фамилию пассажира
+     * @param string $value Фамилия пассажира
+     */
+    public function setLastName($value);
 }

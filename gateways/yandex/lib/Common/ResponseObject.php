@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,10 +26,27 @@
 
 namespace YooKassa\Common;
 
+/**
+ * Класс HTTP ответа
+ *
+ * @package YooKassa
+ */
 class ResponseObject
 {
+    /**
+     * HTTP код ответа
+     * @var int|string
+     */
     protected $code;
+    /**
+     * Массив заголовков ответа
+     * @var array
+     */
     protected $headers;
+    /**
+     * Тело ответа
+     * @var mixed
+     */
     protected $body;
 
     public function __construct($config = null)
@@ -48,7 +65,9 @@ class ResponseObject
     }
 
     /**
-     * @return mixed
+     * Возвращает массив заголовков ответа
+     *
+     * @return array Массив заголовков ответа
      */
     public function getHeaders()
     {
@@ -56,7 +75,9 @@ class ResponseObject
     }
 
     /**
-     * @return mixed
+     * Возвращает тело ответа
+     *
+     * @return mixed Тело ответа
      */
     public function getBody()
     {
@@ -64,7 +85,9 @@ class ResponseObject
     }
 
     /**
-     * @return mixed
+     * Возвращает HTTP код ответа
+     *
+     * @return int|string HTTP код ответа
      */
     public function getCode()
     {

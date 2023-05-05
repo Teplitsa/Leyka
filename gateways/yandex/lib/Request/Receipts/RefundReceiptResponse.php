@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,14 +31,16 @@ use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
 use YooKassa\Helpers\TypeCast;
 
 /**
- * Class RefundReceipt
- * @package YooKassa\Model
+ * Класс описывающий чек, привязанный к возврату
+ *
+ * @package YooKassa
  *
  * @property string $refund_id Идентификатор возврата в ЮKassa.
  * @property string $refundId Идентификатор возврата в ЮKassa.
  */
 class RefundReceiptResponse extends AbstractReceiptResponse
 {
+    /** Длина идентификатора возврата */
     const LENGTH_REFUND_ID = 36;
 
     private $_refund_id;
@@ -56,7 +58,9 @@ class RefundReceiptResponse extends AbstractReceiptResponse
     }
 
     /**
-     * @return string
+     * Возвращает идентификатор возврата
+     *
+     * @return string Идентификатор возврата
      */
     public function getRefundId()
     {
@@ -66,7 +70,7 @@ class RefundReceiptResponse extends AbstractReceiptResponse
     /**
      * Устанавливает идентификатор возврата в ЮKassa
      *
-     * @param string $value идентификатор возврата в ЮKassa
+     * @param string $value Идентификатор возврата в ЮKassa
      *
      * @throws InvalidPropertyValueTypeException Выбрасывается если в качестве значения была передана не строка
      * @throws InvalidPropertyValueException Выбрасывается если длина переданной строки не равна 36

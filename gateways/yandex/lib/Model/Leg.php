@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,9 +32,25 @@ use YooKassa\Common\Exceptions\InvalidPropertyValueException;
 use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
 use YooKassa\Helpers\TypeCast;
 
+/**
+ * Класс, описывающий маршрут
+ *
+ * @package YooKassa
+ *
+ * @property string $departureAirport Трёхбуквенный IATA-код аэропорта вылета
+ * @property string $departure_airport Трёхбуквенный IATA-код аэропорта вылета
+ * @property string $destinationAirport Трёхбуквенный IATA-код аэропорта прилёта
+ * @property string $destination_airport Трёхбуквенный IATA-код аэропорта прилёта
+ * @property string $departureDate Дата вылета в формате YYYY-MM-DD ISO 8601:2004
+ * @property string $departure_date Дата вылета в формате YYYY-MM-DD ISO 8601:2004
+ */
 class Leg extends AbstractObject implements LegInterface
 {
+    /**
+     * Формат даты
+     */
     const ISO8601 = 'Y-m-d';
+
     /**
      * @var string Трёхбуквенный IATA-код аэропорта вылета
      */
@@ -59,6 +75,7 @@ class Leg extends AbstractObject implements LegInterface
     }
 
     /**
+     * @inheritdoc
      * @param string $value
      */
     public function setDepartureAirport($value)
@@ -83,6 +100,7 @@ class Leg extends AbstractObject implements LegInterface
     }
 
     /**
+     * @inheritdoc
      * @param string $value
      */
     public function setDestinationAirport($value)
@@ -107,6 +125,7 @@ class Leg extends AbstractObject implements LegInterface
     }
 
     /**
+     * @inheritdoc
      * @param \DateTime|string $value
      * @throws \Exception
      */

@@ -9,6 +9,23 @@ use YooKassa\Common\Exceptions\EmptyPropertyValueException;
 use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
 use YooKassa\Helpers\TypeCast;
 
+/**
+ * Инициатор платежа или возврата.
+ *
+ * Инициатором может быть магазин, подключенный к ЮKassa, `merchant` или приложение, которому владелец магазина
+ * [разрешил](https://yookassa.ru/developers/partners-api/basics) совершать операции от своего имени `third_party_client`.
+ *
+ * @package YooKassa
+ * @deprecated Не используется. Будет удален в следующих версиях
+ *
+ * @property string $type Тип инициатора
+ * @property string $accountId Идентификатор магазина
+ * @property string $account_id Идентификатор магазина
+ * @property string $clientId Идентификатор приложения
+ * @property string $client_id Идентификатор приложения
+ * @property string $clientName Название приложения (только для type = RequestorThirdPartyService)
+ * @property string $client_name Название приложения (только для type = RequestorThirdPartyService)
+ */
 class Requestor extends AbstractObject implements RequestorInterface
 {
     /**
@@ -32,16 +49,8 @@ class Requestor extends AbstractObject implements RequestorInterface
     private $_clientName;
 
     /**
-     * Requestor constructor.
-     * @param null|array $data
-     */
-    public function __construct($data = null)
-    {
-        $this->fromArray($data);
-    }
-
-    /**
-     * @param $value
+     * @inheritdoc
+     * @param string $value Тип инициатора
      */
     public function setType($value)
     {
@@ -59,6 +68,7 @@ class Requestor extends AbstractObject implements RequestorInterface
     }
 
     /**
+     * @inheritdoc
      * @return string
      */
     public function getType()
@@ -67,7 +77,8 @@ class Requestor extends AbstractObject implements RequestorInterface
     }
 
     /**
-     * @param $value
+     * @inheritdoc
+     * @param string $value Идентификатор магазина
      */
     public function setAccountId($value)
     {
@@ -83,6 +94,7 @@ class Requestor extends AbstractObject implements RequestorInterface
     }
 
     /**
+     * @inheritdoc
      * @return string|null
      */
     public function getAccountId()
@@ -91,7 +103,8 @@ class Requestor extends AbstractObject implements RequestorInterface
     }
 
     /**
-     * @param string $value
+     * @inheritdoc
+     * @param string $value Идентификатор приложения
      */
     public function setClientId($value)
     {
@@ -107,6 +120,7 @@ class Requestor extends AbstractObject implements RequestorInterface
     }
 
     /**
+     * @inheritdoc
      * @return string|null
      */
     public function getClientId()
@@ -115,7 +129,8 @@ class Requestor extends AbstractObject implements RequestorInterface
     }
 
     /**
-     * @param string $value
+     * @inheritdoc
+     * @param string $value Название приложения
      */
     public function setClientName($value)
     {
@@ -131,6 +146,7 @@ class Requestor extends AbstractObject implements RequestorInterface
     }
 
     /**
+     * @inheritdoc
      * @return string|null
      */
     public function getClientName()

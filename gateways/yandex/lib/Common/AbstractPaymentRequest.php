@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,7 @@ namespace YooKassa\Common;
 
 use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
 use YooKassa\Model\AmountInterface;
+use YooKassa\Model\Deal\PaymentDealInfo;
 use YooKassa\Model\Receipt;
 use YooKassa\Model\ReceiptInterface;
 use YooKassa\Model\Transfer;
@@ -47,17 +48,17 @@ class AbstractPaymentRequest extends AbstractRequest
     /**
      * @var AmountInterface Сумма оплаты
      */
-    protected $_amount;
+    private $_amount;
 
     /**
      * @var Receipt Данные фискального чека 54-ФЗ
      */
-    protected $_receipt;
+    private $_receipt;
 
     /**
      * @var TransferInterface[]
      */
-    protected $_transfers = array();
+    private $_transfers = array();
 
     /**
      * Возвращает сумму оплаты
@@ -69,7 +70,7 @@ class AbstractPaymentRequest extends AbstractRequest
     }
 
     /**
-     * Проверяет была ли установлена сумма оплаты
+     * Проверяет, была ли установлена сумма оплаты
      * @return bool True если сумма оплаты была установлена, false если нет
      */
     public function hasAmount()
@@ -88,7 +89,7 @@ class AbstractPaymentRequest extends AbstractRequest
 
     /**
      * Возвращает чек, если он есть
-     * @return ReceiptInterface|null Данные фискального чека 54-ФЗ или null если чека нет
+     * @return ReceiptInterface|null Данные фискального чека 54-ФЗ или null, если чека нет
      */
     public function getReceipt()
     {
@@ -127,31 +128,54 @@ class AbstractPaymentRequest extends AbstractRequest
     }
 
     /**
+     * Проверяет наличие данных о распределении денег
+     * @return bool
+     */
+    public function hasTransfers()
+    {
+        return !empty($this->_transfers);
+    }
+
+    /**
+     * Возвращает данные о распределении денег — сколько и в какой магазин нужно перевести.
+     * Присутствует, если вы используете решение ЮKassa для платформ.
+     * (https://yookassa.ru/developers/special-solutions/checkout-for-platforms/basics)
+     *
+     * @return TransferInterface[] Данные о распределении денег
+     */
+    public function getTransfers()
+    {
+        return $this->_transfers;
+    }
+
+    /**
      * Устанавливает transfers (массив распределения денег между магазинами)
-     * @param TransferInterface[]|array $value
+     * @param TransferInterface[]|array|null $value
      */
     public function setTransfers($value)
     {
-        if (!is_array($value)) {
+        if ($value === null || is_array($value)) {
+            if (is_array($value)) {
+                $transfers = array();
+                foreach ($value as $item) {
+                    if (is_array($item)) {
+                        $item = new Transfer($item);
+                    }
+                    if (!($item instanceof TransferInterface)) {
+                        $message = 'Transfers must be an array of TransferInterface';
+                        throw new InvalidPropertyValueTypeException($message, 0, 'Payment.transfers', $value);
+                    }
+
+                    $transfers[] = $item;
+                }
+                $this->_transfers = $transfers;
+            } else {
+                $this->_transfers = $value;
+            }
+        } else {
             $message = 'Transfers must be an array of TransferInterface';
             throw new InvalidPropertyValueTypeException($message, 0, 'Payment.transfers', $value);
         }
-
-        $transfers = array();
-        foreach ($value as $item) {
-            if (is_array($item)) {
-                $item = new Transfer($item);
-            }
-
-            if (!($item instanceof TransferInterface)) {
-                $message = 'Transfers must be an array of TransferInterface';
-                throw new InvalidPropertyValueTypeException($message, 0, 'Payment.transfers', $value);
-            }
-
-            $transfers[] = $item;
-        }
-
-        $this->_transfers = $transfers;
     }
 
     /**
@@ -211,13 +235,4 @@ class AbstractPaymentRequest extends AbstractRequest
         return true;
     }
 
-    public function hasTransfers()
-    {
-        return !empty($this->_transfers);
-    }
-
-    public function getTransfers()
-    {
-        return $this->_transfers;
-    }
 }

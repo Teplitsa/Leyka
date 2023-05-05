@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -39,9 +39,13 @@ use YooKassa\Common\AbstractEnum;
  */
 class VatDataRate extends AbstractEnum
 {
+    /** 7% */
     const RATE_7  = '7';
+    /** 10% */
     const RATE_10 = '10';
+    /** 18% */
     const RATE_18 = '18';
+    /** 20% */
     const RATE_20 = '20';
 
     protected static $validValues = array(

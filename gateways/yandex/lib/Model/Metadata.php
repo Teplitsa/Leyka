@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,16 +32,22 @@ use YooKassa\Common\AbstractObject;
  * Metadata - Метаданные платежа указанные мерчантом.
  * Мерчант может добавлять произвольные данные к платежам в виде набора пар ключ-значение.
  * Имена ключей уникальны.
- * 
+ *
  */
 class Metadata extends AbstractObject implements \IteratorAggregate, \Countable
 {
+    /**
+     * @inheritdoc
+     *
+     * @return array
+     */
     public function toArray()
     {
         return $this->getUnknownProperties();
     }
 
     /**
+     * Возвращает объект ArrayIterator для метаданных
      * @return \Iterator
      */
     public function getIterator()
@@ -50,6 +56,7 @@ class Metadata extends AbstractObject implements \IteratorAggregate, \Countable
     }
 
     /**
+     * Возвращает количество метаданных
      * @return int
      */
     public function count()

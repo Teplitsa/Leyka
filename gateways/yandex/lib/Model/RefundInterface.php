@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,10 +26,12 @@
 
 namespace YooKassa\Model;
 
+use YooKassa\Model\Deal\RefundDealInfo;
+
 /**
  * Interface RefundInterface
  *
- * @package YooKassa\Model
+ * @package YooKassa
  *
  * @property-read string $id Идентификатор возврата платежа
  * @property-read string $paymentId Идентификатор платежа
@@ -41,6 +43,7 @@ namespace YooKassa\Model;
  * @property-read string $receiptRegistration Статус регистрации чека
  * @property-read string $receipt_registration Статус регистрации чека
  * @property-read string $description Комментарий, основание для возврата средств покупателю
+ * @property-read RefundDealInfo $deal Данные о сделке, в составе которой проходит возврат
  */
 interface RefundInterface
 {
@@ -87,14 +90,15 @@ interface RefundInterface
     function getDescription();
 
     /**
-     * Возвращает информацию об инициаторе платежа или возврата
-     * @return RequestorInterface
-     */
-    function getRequestor();
-
-    /**
      * Возвращает информацию о распределении денег — сколько и в какой магазин нужно перевести
      * @return SourceInterface[]
      */
     function getSources();
+
+    /**
+     * Возвращает сделку, в рамках которой нужно провести возврат.
+     *
+     * @return RefundDealInfo Сделка, в рамках которой нужно провести возврат
+     */
+    public function getDeal();
 }

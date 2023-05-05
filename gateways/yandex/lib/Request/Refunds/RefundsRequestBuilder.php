@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,7 @@
 
 namespace YooKassa\Request\Refunds;
 
+use YooKassa\Common\AbstractRequest;
 use YooKassa\Common\AbstractRequestBuilder;
 use YooKassa\Common\Exceptions\InvalidPropertyValueException;
 use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
@@ -33,7 +34,7 @@ use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
 /**
  * Класс билдера объектов запросов к API списка возвратов
  *
- * @package YooKassa\Request\Refunds
+ * @package YooKassa
  */
 class RefundsRequestBuilder extends AbstractRequestBuilder
 {
@@ -52,7 +53,7 @@ class RefundsRequestBuilder extends AbstractRequestBuilder
     }
 
     /**
-     * Устанавливает идентификатор платежа или null если требуется его удалить
+     * Устанавливает идентификатор платежа или null, если требуется его удалить
      * @param string|null $value Идентификатор платежа
      * @return RefundsRequestBuilder Инстанс текущего объекта билдера
      *
@@ -67,7 +68,7 @@ class RefundsRequestBuilder extends AbstractRequestBuilder
 
     /**
      * Устанавливает статус выбираемых возвратов
-     * @param string $value Статус выбираемых платежей или null чтобы удалить значение
+     * @param string $value Статус выбираемых платежей или null, чтобы удалить значение
      * @return RefundsRequestBuilder Инстанс текущего объекта билдера
      *
      * @throws InvalidPropertyValueException Выбрасывается если переданное значение не является валидным статусом
@@ -81,7 +82,7 @@ class RefundsRequestBuilder extends AbstractRequestBuilder
 
     /**
      * Устанавливает ограничение количества объектов возвратов
-     * @param string $value Ограничение количества объектов возвратов или null чтобы удалить значение
+     * @param string $value Ограничение количества объектов возвратов или null, чтобы удалить значение
      * @return RefundsRequestBuilder Инстанс текущего билдера
      *
      * @throws InvalidPropertyValueTypeException Выбрасывается если в метод было передана не целое число
@@ -94,7 +95,7 @@ class RefundsRequestBuilder extends AbstractRequestBuilder
 
     /**
      * Устанавливает токен следующей страницы выборки
-     * @param string $value Токен следующей страницы выборки или null чтобы удалить значение
+     * @param string $value Токен следующей страницы выборки или null, чтобы удалить значение
      * @return RefundsRequestBuilder Инстанс текущего объекта билдера
      *
      * @throws InvalidPropertyValueTypeException Выбрасывается если в метод была передана не строка
@@ -107,7 +108,7 @@ class RefundsRequestBuilder extends AbstractRequestBuilder
 
     /**
      * Устанавливает дату создания от которой выбираются возвраты
-     * @param \DateTime|string|int|null $value Время создания, от (не включая) или null чтобы удалить значение
+     * @param \DateTime|string|int|null $value Время создания, от (не включая) или null, чтобы удалить значение
      * @return RefundsRequestBuilder Инстанс текущего объекта билдера
      *
      * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
@@ -123,7 +124,7 @@ class RefundsRequestBuilder extends AbstractRequestBuilder
 
     /**
      * Устанавливает дату создания от которой выбираются возвраты
-     * @param \DateTime|string|int|null $value Время создания, от (включительно) или null чтобы удалить значение
+     * @param \DateTime|string|int|null $value Время создания, от (включительно) или null, чтобы удалить значение
      * @return RefundsRequestBuilder Инстанс текущего объекта билдера
      *
      * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
@@ -139,7 +140,7 @@ class RefundsRequestBuilder extends AbstractRequestBuilder
 
     /**
      * Устанавливает дату создания до которой выбираются возвраты
-     * @param \DateTime|string|int|null $value Время создания, до (не включая) или null чтобы удалить значение
+     * @param \DateTime|string|int|null $value Время создания, до (не включая) или null, чтобы удалить значение
      * @return RefundsRequestBuilder Инстанс текущего объекта билдера
      *
      * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
@@ -155,7 +156,7 @@ class RefundsRequestBuilder extends AbstractRequestBuilder
 
     /**
      * Устанавливает дату создания до которой выбираются возвраты
-     * @param \DateTime|string|int|null $value Время создания, до (включительно) или null чтобы удалить значение
+     * @param \DateTime|string|int|null $value Время создания, до (включительно) или null, чтобы удалить значение
      * @return RefundsRequestBuilder Инстанс текущего объекта билдера
      *
      * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
@@ -172,7 +173,7 @@ class RefundsRequestBuilder extends AbstractRequestBuilder
     /**
      * Собирает и возвращает объект запроса списка возвратов магазина
      * @param array|null $options Массив с настройками запроса
-     * @return RefundsRequestInterface Инстанс объекта запроса к API для получения списка возвратов магазина
+     * @return RefundsRequestInterface|AbstractRequest Инстанс объекта запроса к API для получения списка возвратов магазина
      */
     public function build(array $options = null)
     {

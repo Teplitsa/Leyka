@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,6 +35,15 @@ use YooKassa\Model\Payment;
 use YooKassa\Model\PaymentInterface;
 use YooKassa\Request\Payments\PaymentResponse;
 
+/**
+ * Класс объекта, присылаемого API при изменении статуса платежа на "canceled"
+ *
+ * @example 03-notification.php 3 Пример скрипта обработки уведомления
+ *
+ * @package YooKassa
+ *
+ * @property-read PaymentInterface $object Объект с информацией о платеже
+ */
 class NotificationCanceled extends AbstractNotification
 {
     /**
@@ -53,13 +62,13 @@ class NotificationCanceled extends AbstractNotification
      * тела пришедшего запроса. При конструировании проверяется валидность типа передаваемого уведомления, если
      * передать уведомление не того типа, будет сгенерировано исключение типа {@link InvalidPropertyValueException}
      *
-     * @param array $source Ассоциативный массив с информацией о уведомлении
+     * @param array $source Ассоциативный массив с информацией об уведомлении
      *
      * @throws InvalidPropertyValueException Генерируется если значение типа нотификации или события не равны
      * "notification" и "payment.canceled" соответственно, что может говорить о том, что переданные в
      * конструктор данные не являются уведомлением нужного типа.
      */
-    public function __construct(array $source)
+    public function fromArray($source)
     {
         $this->_setType(NotificationType::NOTIFICATION);
         $this->_setEvent(NotificationEventType::PAYMENT_CANCELED);
@@ -78,7 +87,7 @@ class NotificationCanceled extends AbstractNotification
             }
         }
         if (empty($source['object'])) {
-            throw new EmptyPropertyValueException('Parameter object in NotificationSucceeded is empty');
+            throw new EmptyPropertyValueException('Parameter object in NotificationCanceled is empty');
         }
         $this->_object = new PaymentResponse($source['object']);
     }

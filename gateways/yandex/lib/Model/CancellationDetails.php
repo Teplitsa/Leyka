@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -82,17 +82,6 @@ class CancellationDetails extends AbstractObject implements CancellationDetailsI
     public function getReason()
     {
         return $this->_reason;
-    }
-
-    /**
-     * @return array
-     */
-    public function jsonSerialize()
-    {
-        return array(
-            'party'    => $this->_party,
-            'reason' => $this->_reason,
-        );
     }
 
     /**

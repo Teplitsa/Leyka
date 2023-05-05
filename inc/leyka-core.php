@@ -2013,7 +2013,7 @@ class Leyka extends Leyka_Singleton {
 
         // Saving values of Additional form fields:
         foreach($campaign->get_calculated_additional_fields_settings() as $field_slug => $field) {
-            $params['additional_fields'][$field_slug] = $_POST['leyka_'.$field_slug];
+            $params['additional_fields'][$field_slug] = esc_attr(strip_tags($_POST['leyka_'.$field_slug]));
         }
 
         $donation_id = Leyka_Donations::get_instance()->add(apply_filters('leyka_new_donation_data', $params));

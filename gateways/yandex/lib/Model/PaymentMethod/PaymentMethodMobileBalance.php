@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,15 +33,15 @@ use YooKassa\Helpers\TypeCast;
 use YooKassa\Model\PaymentMethodType;
 
 /**
- * PaymentMethodMobileBalance
- * Объект, описывающий метод оплаты, при оплате с баланса мобильного телефона.
+ * Класс, описывающий метод оплаты, при оплате с баланса мобильного телефона
+ *
  * @property string $type Тип объекта
- * @property string $phone
+ * @property string $phone Номер телефона в формате ITU-T E.164 с которого плательщик собирается произвести оплату
  */
 class PaymentMethodMobileBalance extends AbstractPaymentMethod
 {
     /**
-     * Номер телефона в формате ITU-T E.164 с которого плательщик собирается произвести оплату.
+     * Номер телефона в формате ITU-T E.164 с которого плательщик собирается произвести оплату
      * @var string
      */
     private $_phone;
@@ -52,6 +52,7 @@ class PaymentMethodMobileBalance extends AbstractPaymentMethod
     }
 
     /**
+     * Возвращает номер телефона в формате ITU-T E.164
      * @return string
      */
     public function getPhone()
@@ -60,6 +61,7 @@ class PaymentMethodMobileBalance extends AbstractPaymentMethod
     }
 
     /**
+     * Устанавливает номер телефона в формате ITU-T E.164
      * @param string $value
      */
     public function setPhone($value)
