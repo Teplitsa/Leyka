@@ -4,6 +4,7 @@ class Leyka_Qiwi_Gateway_Helper {
 
     public static $map_status = [
         'PAID' => 'funded',
+        'SUCCESS' => 'funded',
         'WAITING' => 'submitted',
         'REJECTED' => 'failed',
         'PARTIAL' => 'refunded',
@@ -13,7 +14,7 @@ class Leyka_Qiwi_Gateway_Helper {
 
     public function __construct() {
         /** @todo Refunds handling is commented out - further debugging/testing needed. WTF is $this->salt ??? */
-//        add_action('leyka_donation_status_funded_to_refunded', [$this, 'create_refund'], 10);
+        add_action('leyka_donation_status_funded_to_refunded', [$this, 'create_refund'], 10);
     }
 
     public function create_refund(Leyka_Donation_Base $donation) {
@@ -22,7 +23,7 @@ class Leyka_Qiwi_Gateway_Helper {
 
     public function refund($bill_id, $amount) {
 
-        $bill_id .= "-{$this->salt}";
+//        $bill_id .= "-{$this->salt}";
 
         return wp_remote_request(
             "https://api.qiwi.com/partner/bill/v1/bills/{$bill_id}/refunds/refund_{$bill_id}",
@@ -60,7 +61,7 @@ class Leyka_Qiwi_Gateway_Helper {
         $args['amount']['value'] = $amount;
 
         return wp_remote_request(
-            'https://api.qiwi.com/partner/bill/v1/bills/'.$bill_id."-{$this->salt}",
+            'https://api.qiwi.com/partner/bill/v1/bills/'.$bill_id, //."-{$this->salt}",
             [
                 'method' => 'PUT',
                 'headers' => [
