@@ -133,41 +133,47 @@ class Leyka_Dashamail_Extension extends Leyka_Extension {
     }
 
 
-    protected function _get_donor_lists() { // get all user's lists via DashaMail API-method
+    protected function _get_donor_lists() { // Get all user's lists via DashaMail API-method
 
-        $apiClass = new \Dashamail\ApiWrapper\DashamailApi(leyka_options()->get_option_value($this->_id.'_api_key'));
-        $json_lists = $apiClass->getLists([]);
-        $full_lists = json_decode($json_lists, true)['response']['data'];
-        $error_code = json_decode($json_lists, true)['response']['msg']['err_code'];
-        $error_text = json_decode($json_lists, true)['response']['msg']['text'];
+        $empty_result = ['res' => 'Пусто'];
 
-        $error_result = [$error_code => $error_text];
+        if( !leyka_options()->get_option_value($this->_id.'_api_key') ) {
+            return $empty_result;
+        }
+
+        $api = new \Dashamail\ApiWrapper\DashamailApi(leyka_options()->get_option_value($this->_id.'_api_key'));
+        $json_lists = $api->getLists([]);
+        $json_lists = $json_lists ? json_decode($json_lists, true) : [];
+
+        if(empty($json_lists['response']['data'])) {
+            return $empty_result;
+        }
+
+        $full_lists = $json_lists['response']['data'];
+        $full_lists = is_array($full_lists) ? $full_lists : [];
+
         $error_result = [
-                'error_date' => date('d.m.Y H:i'),
-                'error_code' => $error_code,
-                'error_text' => $error_text,
+            'error_date' => date('d.m.Y H:i'),
+            'error_code' => $json_lists['response']['msg']['err_code'],
+            'error_text' => $json_lists['response']['msg']['text'],
         ];
 
         $this->_error_handle($error_result);
 
         $lists = [];
 
-        foreach ($full_lists as $lists_item) {
+        foreach($full_lists as $lists_item) {
             $lists[$lists_item['id']] = $lists_item['name'];
         }
 
-        if ($lists == []) {
-            return ['res' => 'Пусто'];
-        } else {
-            
-            return $lists;
-        }
+        return $lists ? : $empty_result;
+
     }
 
     protected function _error_handle($error_data) {
 
         $result_array = $error_data;
-        $error_log = !get_option('leyka_dashamail_error_log') ? [] : get_option('leyka_dashamail_error_log');
+        $error_log = get_option('leyka_dashamail_error_log') ? : [];
         $error_log[] = json_encode($result_array);
 
         if(sizeof($error_log) > 10) {
