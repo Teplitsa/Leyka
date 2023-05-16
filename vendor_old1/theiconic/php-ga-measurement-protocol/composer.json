@@ -1,0 +1,25 @@
+{
+    "name": "theiconic/php-ga-measurement-protocol",
+    "description": "Send data to Google Analytics from the server using PHP. This library fully implements GA measurement protocol.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "THE ICONIC ENGINEERING TEAM",
+            "email": "engineering@theiconic.com.au"
+        }
+    ],
+    "require": {
+        "php": ">=5.5",
+        "guzzlehttp/guzzle": "^6.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.7.*",
+        "satooshi/php-coveralls": "1.0.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "TheIconic\\Tracking\\GoogleAnalytics\\": "src/"
+        }
+    }
+}
