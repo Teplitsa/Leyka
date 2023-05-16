@@ -4401,6 +4401,49 @@ jQuery(document).ready(function($){
 
 });
 
+// MIXPLAT custom settings:
+jQuery(document).ready(function($){
+
+    let $gateway_settings = $('.single-gateway-settings.gateway-mixplat'),
+        $split_used = $gateway_settings.find('input[name="leyka_mixplat_split_enabled"]');
+
+    if( !$gateway_settings.length || !$split_used.length ) {
+        return;
+    }
+
+    $split_used.on('change.leyka', function(){
+
+        if($split_used.prop('checked')) {
+            $gateway_settings.find('.split').show();
+        } else {
+            $gateway_settings.find('.split').hide();
+        }
+
+    }).change();
+
+});
+
+jQuery(document).ready(function($){
+
+    let $gateway_settings = $('.single-gateway-settings.gateway-mixplat'),
+        $test_mode_used = $gateway_settings.find('input[name="leyka_mixplat_test_mode"]');
+
+    if( !$gateway_settings.length || !$test_mode_used.length ) {
+        return;
+    }
+
+    $test_mode_used.on('change.leyka', function(){
+
+        if($test_mode_used.prop('checked')) {
+            $gateway_settings.find('.test_mode').show();
+        } else {
+            $gateway_settings.find('.test_mode').hide();
+        }
+
+    }).change();
+
+});
+
 // PM list scroll in gateways cards:
 jQuery(document).ready(function($){
 
