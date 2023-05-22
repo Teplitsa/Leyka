@@ -557,20 +557,26 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
 
           if( !$is_error ) {
+
             $campaign_url = get_the_permalink($donation->campaign_id);
-            if( $donor_email !== $donation->donor_email ) {
+            if($donor_email !== $donation->donor_email) {
                $is_error = true;
                $error_description = "Email mismatch";
             }
+
           }
 
 
           if( !$is_error ) {
-            $widgetKey = trim(leyka_options()->opt('mixplat_widget_key'));
-            if( empty($widgetKey) ) {
+
+            $widget_key = trim(leyka_options()->opt('mixplat_widget_key'));
+            if(empty($widget_key)) {
+
                $is_error = true;
                $error_description = "widget_key not set";
+
             }
+
           }
 
 
@@ -580,7 +586,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 </head><body style="margin:0px;padding:0px;overflow:hidden"><iframe src="'.$campaign_url.'" frameborder="0" scrolling="yes" seamless="seamless" style="display:block; width:100%; height:100vh;"></iframe><script type="text/javascript">
  document.addEventListener("DOMContentLoaded", function(){
   let options = {
-    "widget_key": "'.$widgetKey.'",
+    "widget_key": "'.$widget_key.'",
     "description": "'.$donation->payment_title.'",
     "amount": '.((int)round((float)$donation->amount * 100)).',
     "user_name": "'.$donation->donor_name.'",
@@ -597,9 +603,11 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 </script></body></html>';
           }
 
-          if( $is_error ) {
-            header("Location: ".$campaign_url,TRUE,307);
+          if($is_error) {
+
+            header('Location: '.$campaign_url, true, 307);
             die();
+
           }
 
           status_header(200);
@@ -643,17 +651,20 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
         if( $is_error ) {
 
-            if(!empty($response['merchant_payment_id'])) { // If existing donation - store response data
+            if( !empty($response['merchant_payment_id']) ) { // If existing donation - store response data
+
                 $donation = Leyka_Donations::get_instance()->get(absint($response['merchant_payment_id']));
-                if( $donation ) {
-                   if ( $donation->id ) {
+                if($donation && $donation->id) {
+
                     $donation->status = 'failed';
                     $donation->add_gateway_response($response);
-                   }
+
                 }
+
             }
 
             if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
+
                 $message .= "CALLBACK TYPE: ".print_r(empty($response['request']) ? '-' : $response['request'], true)."\n\r\n\r";
                 $message .= "THEIR POST:\n\r".print_r($_POST, true)."\n\r\n\r";
                 $message .= "GET:\n\r".print_r($_GET, true)."\n\r\n\r";
@@ -661,13 +672,13 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                 $message .= "THEIR JSON:\n\r".print_r($json_string, true)."\n\r\n\r";
                 $message .= "THEIR JSON DECODED:\n\r".print_r(json_decode($json_string), true)."\n\r\n\r";
                 wp_mail(leyka_get_website_tech_support_email(), __('MIXPLAT - payment callback error occured', 'leyka'), $message);
+
             }
 
             status_header(200);
             die(json_encode(array_merge( ['result' => 'ok'], $error_description ? ['error_description' => $error_description ] : [], $json_items )));
+
         }
-
-
 
         if($response['request'] === 'refund_status') {
 
@@ -717,69 +728,113 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
              $error_description = "Mandatory parameter status is missing";
           }
 
-          if(!$is_error) {
+          if( !$is_error ) {
+
              $donation = Leyka_Donations::get_instance()->get(absint($response['merchant_init_payment_id']));
              if( !$donation || !$donation->id ) { // Unknown donation_id
                $is_error = true;
                $error_description = "Unknown donation ID";
              }
+
           }
 
-          if(!$is_error) {
+          if( !$is_error ) {
+
              if(in_array($status, ['stopped','suspended'] )) {
                 $donation->recurring_is_active = false;
              } else if( $status === 'active' ) {
                 $donation->recurring_is_active = true;
              } else {
                 $is_error = true;
-                $error_description = "Unknown status";
+                $error_description = 'Unknown status';
              }
+
           }
 
         } else if($response['request'] === 'campaigns_list') {
 
-            $cmplist = leyka_get_campaigns_list(['orderby' => 'id', 'order' => 'desc', 'posts_per_page' => 1000,], false);
-            foreach($cmplist as $campaign ) {
+            $campaigns_list = leyka_get_campaigns_list(['orderby' => 'id', 'order' => 'desc', 'posts_per_page' => 1000,], false);
+            $cmp = [];
+            foreach($campaigns_list as $campaign ) {
+
                 $campaign = leyka_get_validated_campaign($campaign);
-                if( !$campaign ) { next; }
-                $cmp[] = [ 'id' => $campaign->id, 'title' => $campaign->title, 'payment_title' => $campaign->payment_title,
-                'target' => $campaign->target, 'donations_types_available' => $campaign->donations_types_available,
-                'donations_type_default' => $campaign->donations_type_default, 'url' => $campaign->url, 'type' => $campaign->type,
-                'amount' => $campaign->total_funded, 'status' => $campaign->status, 'template' => $campaign->template,
-                'post_name' => $campaign->post_name, 'campaign_type' => $campaign->campaign_type, 'is_finished' => $campaign->is_finished,
-                'views_count' => $campaign->views_count, 'submits_count' => $campaign->submits_count, 'target_state' => $campaign->target_state,
-                'date_target_reached' => $campaign->date_target_reached, ];
+                if( !$campaign ) {
+                    continue;
+                }
+
+                $cmp[] = [
+                    'id' => $campaign->id,
+                    'title' => $campaign->title,
+                    'payment_title' => $campaign->payment_title,
+                    'target' => $campaign->target,
+                    'donations_types_available' => $campaign->donations_types_available,
+                    'donations_type_default' => $campaign->donations_type_default,
+                    'url' => $campaign->url,
+                    'type' => $campaign->type,
+                    'amount' => $campaign->total_funded,
+                    'status' => $campaign->status,
+                    'template' => $campaign->template,
+                    'post_name' => $campaign->post_name,
+                    'campaign_type' => $campaign->campaign_type,
+                    'is_finished' => $campaign->is_finished,
+                    'views_count' => $campaign->views_count,
+                    'submits_count' => $campaign->submits_count,
+                    'target_state' => $campaign->target_state,
+                    'date_target_reached' => $campaign->date_target_reached,
+                ];
+
             }
-            $json_items['cms']='leyka';
-            $json_items['campaigns']=$cmp;
+
+            $json_items['cms'] = 'leyka';
+            $json_items['campaigns'] = $cmp;
 
         } else if($response['request'] === 'subscriptions_list') {
 
-            $init_donations = Leyka_Donations::get_instance()->get( apply_filters('', ['orderby' => 'id', 'order' => 'desc', 'get_all' => true, 'recurring_only_init' => true ]) );
+            $init_donations = Leyka_Donations::get_instance()->get(
+                ['orderby' => 'id', 'order' => 'desc', 'get_all' => true, 'recurring_only_init' => true,]
+            );
+            $slist = [];
 
             foreach($init_donations as $init_donation) {
-              try {
-                $donor = new Leyka_Donor(absint($init_donation->donor_id));
-              } catch(Exception $e) {
-                $donor = false;
-              }
-              $item = [
-                'id' => $init_donation->id, 'status' => $init_donation->recurring_subscription_status, 'error' => $init_donation->recurring_subscription_error_id,
-                'user_id' => $init_donation->donor_id, 'user_name' => $init_donation->donor_name, 'user_email' => $init_donation->donor_email,
-                'campaign' => $init_donation->campaign_id, 'date' => $init_donation->date_timestamp, 'next_date' => $init_donation->update_next_recurring_date(),
-                'rebills' => $init_donation->successful_rebills_number + 1, 'pm' => $init_donation->pm_full_id, 'amount' => $init_donation->amount, 'amount_total' => $init_donation->amount_total,
-                'cancel_date' => $init_donation->recurring_cancel_date,
-               ];
-              if($donor) {
-                $item['donor_amount_total'] = $donor->amount_donated;
-                $item['donor_pay_total'] = $donor->get_donations_count();
-                $item['donor_first_date'] = $donor->first_donation_date_timestamp;
-                $item['donor_last_date'] = $donor->last_donation_date_timestamp;
-              }
-              $slist[] = $item;
+
+                try {
+                    $donor = new Leyka_Donor(absint($init_donation->donor_id));
+                } catch(Exception $e) {
+                    $donor = false;
+                }
+
+                $item = [
+                    'id' => $init_donation->id,
+                    'status' => $init_donation->recurring_subscription_status,
+                    'error' => $init_donation->recurring_subscription_error_id,
+                    'user_id' => $init_donation->donor_id,
+                    'user_name' => $init_donation->donor_name,
+                    'user_email' => $init_donation->donor_email,
+                    'campaign' => $init_donation->campaign_id,
+                    'date' => $init_donation->date_timestamp,
+                    'next_date' => $init_donation->update_next_recurring_date(),
+                    'rebills' => $init_donation->successful_rebills_number + 1,
+                    'pm' => $init_donation->pm_full_id,
+                    'amount' => $init_donation->amount,
+                    'amount_total' => $init_donation->amount_total,
+                    'cancel_date' => $init_donation->recurring_cancel_date,
+                ];
+
+                if($donor) {
+
+                    $item['donor_amount_total'] = $donor->amount_donated;
+                    $item['donor_pay_total'] = $donor->get_donations_count();
+                    $item['donor_first_date'] = $donor->first_donation_date_timestamp;
+                    $item['donor_last_date'] = $donor->last_donation_date_timestamp;
+
+                }
+
+                $slist[] = $item;
+
             }
-            $json_items['cms']='leyka';
-            $json_items['subscriptions']=$slist;
+
+            $json_items['cms'] = 'leyka';
+            $json_items['subscriptions'] = $slist;
 
         } else if($response['request'] === 'payment_status') {
 
@@ -800,7 +855,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
                 $donation = Leyka_Donations::get_instance()->get(absint($response['merchant_payment_id']));
 
-                if( !$donation || !$donation->id ) { // Unknown donation_id, store it anyways
+                if( !$donation || !$donation->id ) { // Unknown donation_id, store it anyway
                     $is_error = true;
                     $error_description = "Unknown donation ID";
                     $new_donation_id = $this->_handle_new_donation_callback($response);
@@ -823,7 +878,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                 }
 
                 if( !$donation->donor_email || !leyka_validate_email($donation->donor_email)) { // E.g. in case we have mobile subscription
-                  $donor_email = ($donation->id)."@anonymous.user"; // Without email we get error on status change
+                  $donor_email = ($donation->id)."@anonymous.user"; // Without email, we get error on status change
                 }
 
                 $new_payment_method_id = !empty($response['payment_method']) ? $this->_get_gateway_pm_id($response['payment_method']) : $donation->payment_method_id;
@@ -866,39 +921,40 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
         }
 
-      status_header(200);
-      die(json_encode(array_merge( ['result' => 'ok'], $error_description ? ['error_description' => $error_description ] : [], $json_items )));
+        status_header(200);
+        die(json_encode(array_merge(
+            ['result' => 'ok'],
+            $error_description ? ['error_description' => $error_description ] : [], $json_items
+        )));
+
     }
-
-
 
     protected function _handle_new_donation_callback($response) {
 
        if( !empty($response['recurrent_id']) ) { // Recurring payment
 
-          $init_donation = !empty($response['merchant_init_payment_id']) ? Leyka_Donations::get_instance()->get($response['merchant_init_payment_id']) : ( !empty($response['merchant_data']) ? Leyka_Donations::get_instance()->get($response['merchant_data']) : 0 );
+          $init_donation = !empty($response['merchant_init_payment_id']) ?
+              Leyka_Donations::get_instance()->get($response['merchant_init_payment_id']) :
+              ( !empty($response['merchant_data']) ? Leyka_Donations::get_instance()->get($response['merchant_data']) : 0 );
 
           if($init_donation) { // Rebill with information about init_donation
-
             return $this->_handle_rebill_donation_callback($response,$init_donation);
-
           } else { // Rebill but without init_donation
-
             return $this->_handle_single_donation_callback($response);
-
           }
 
         } else { // Single payment
-
           return $this->_handle_single_donation_callback($response);
-
         }
 
     }
 
     // Split option divides donation by two in different campaigns only
     protected function _is_split_required($campaign_id = false) {
-        return ( !leyka_options()->opt('mixplat_split_enabled') || !leyka_options()->opt('mixplat_split_percent') || leyka_options()->opt('mixplat_split_percent')<0.1 || ($campaign_id && $campaign_id===leyka_options()->opt('mixplat_split_campaign')) ) ? false : true;
+        return leyka_options()->opt('mixplat_split_enabled')
+            && leyka_options()->opt('mixplat_split_percent')
+            && leyka_options()->opt('mixplat_split_percent') > 0.1
+            && ($campaign_id && $campaign_id !== leyka_options()->opt('mixplat_split_campaign'));
     }
 
     // Total amount will be deducted by the standard commission of pm_id as well as split_percent
@@ -909,7 +965,8 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
       $commission = leyka_options()->opt('commission');
       $commission = empty($commission[$pm_full_id]) ? 0.0 : $commission[$pm_full_id]/100.0;
 
-      return (($commission && $commission > 0.0)||($split_percent && $split_percent > 0.0)) ? $amount - round($amount*$split_percent, 2) - round($amount*$commission, 2) : $amount;
+      return (($commission && $commission > 0.0) || ($split_percent && $split_percent > 0.0)) ?
+          $amount - round($amount*$split_percent, 2) - round($amount*$commission, 2) : $amount;
 
     }
 
@@ -931,26 +988,30 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             'amount' => $amount,
             'amount_total' => $amount,
             'force_insert' => true, // SMS payments don't have Donor emails, so to avoid the error, insert a Donation forcefully
-            ]
-        );
+        ]);
 
         if(is_wp_error($donation)) {
             return false;
         }
 
-        $donation->add_gateway_response(['payment_id'=>$orig_donation->mixplat_payment_id,'mixplat_split_from'=>$orig_donation->id]);
-        if( $orig_donation->mixplat_phone ) {
-          $donation->mixplat_phone = $orig_donation->mixplat_phone;
+        $donation->add_gateway_response([
+            'payment_id' => $orig_donation->mixplat_payment_id,
+            'mixplat_split_from' => $orig_donation->id
+        ]);
+
+        if($orig_donation->mixplat_phone) {
+            $donation->mixplat_phone = $orig_donation->mixplat_phone;
         }
-        if( $orig_donation->mixplat_recurrent_id ) {
-          $donation->mixplat_recurrent_id = $orig_donation->mixplat_recurrent_id;
+        if($orig_donation->mixplat_recurrent_id) {
+            $donation->mixplat_recurrent_id = $orig_donation->mixplat_recurrent_id;
         }
 
         return $donation->id;
+
     }
 
-
     protected function _split_set_status($orig_donation = false) {
+
         if( !$orig_donation || !$orig_donation->mixplat_split_to ) {
           return;
         }
@@ -969,8 +1030,6 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         $donation->add_gateway_response(['payment_id'=>$orig_donation->mixplat_payment_id,'recurrent_id'=>$orig_donation->mixplat_recurrent_id,'mixplat_split_from'=>$orig_donation->id]);
 
     }
-
-
 
     protected function _handle_single_donation_callback($response) {
 
@@ -996,9 +1055,9 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         }
 
         // amount, split
-        $pm_id = $this->_get_gateway_pm_id ( $response['payment_method'] );
+        $pm_id = $this->_get_gateway_pm_id($response['payment_method']);
         $amount = round($response['amount']/100.0, 2);
-        $amount_total = $this->_split_calculate_total_amount($amount, "mixplat-".$pm_id, $campaign_id);
+        $amount_total = $this->_split_calculate_total_amount($amount, 'mixplat-'.$pm_id, $campaign_id);
 
         $donation_id = Leyka_Donations::get_instance()->add([
             'gateway_id' => $this->_id,
@@ -1038,9 +1097,8 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         }
 
         return $donation->id;
+
     }
-
-
 
     protected function _handle_rebill_donation_callback($response,$init_donation) {
 
@@ -1149,7 +1207,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         }
 
         if( !$donation->mixplat_recurrent_id ) {
-            return new WP_Error('recurring_cancelling__no_subscription_id', sprintf(__('<strong>Error:</strong> unknown Subscription ID for donation #%d. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
+            return new WP_Error('recurring_cancelling__no_subscription_id', sprintf(__('<strong>Error:</strong> unknown Subscription ID for donation #%d. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email()));
         }
 
         require_once LEYKA_PLUGIN_DIR.'gateways/mixplat/lib/autoload.php';
@@ -1169,7 +1227,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
         } else { // Unsubscribe failed
 
-            return new WP_Error('recurring_cancelling__cannot_cancel_recurring', sprintf(__('<strong>Error:</strong> we cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="mailto:%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
+            return new WP_Error('recurring_cancelling__cannot_cancel_recurring', sprintf(__('<strong>Error:</strong> we cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="mailto:%s" target="_blank">website tech. support</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email()));
 
         }
 
