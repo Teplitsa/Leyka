@@ -538,7 +538,7 @@ jQuery(document).ready(function($){
         e.preventDefault();
 
         let $this = $(this),
-            $wrap = $this.parent(),
+            $wrap = $this.parents('.leyka-no-donor-thanks'),
             donation_id = $wrap.data('donation-id');
 
         $this.fadeOut(100, function(){

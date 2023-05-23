@@ -257,12 +257,14 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             return false;
         }
 
+        $res = true;
+
         if($donation->type === 'single' || $donation->type === 'correction') {
-            Leyka_Donation_Management::send_donor_thanking_email_on_single($donation);
+            $res = Leyka_Donation_Management::send_donor_thanking_email_on_single($donation);
         } else if($donation->is_init_recurring_donation) { // Init recurring
-            Leyka_Donation_Management::send_donor_thanking_email_on_recurring_init($donation);
+            $res = Leyka_Donation_Management::send_donor_thanking_email_on_recurring_init($donation);
         } else if($donation->type === 'rebill') { // Non-init recurring
-            Leyka_Donation_Management::send_donor_thanking_email_on_recurring_ongoing($donation);
+            $res = Leyka_Donation_Management::send_donor_thanking_email_on_recurring_ongoing($donation);
         }
 
         if( !!$send_to_managers && leyka()->opt('donations_managers_emails') ) {
@@ -271,11 +273,11 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 ($donation->payment_type === 'single' && leyka()->opt('notify_donations_managers')) ||
                 ($donation->payment_type === 'rebill' && leyka()->opt('notify_managers_on_recurrents'))
             ) {
-                Leyka_Donation_Management::send_managers_notifications($donation);
+                $res &= Leyka_Donation_Management::send_managers_notifications($donation);
             }
         }
 
-        return true;
+        return $res;
 
     }
 
@@ -283,7 +285,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
     public function ajax_send_donor_email() {
 
         if(empty($_POST['donation_id']) || !wp_verify_nonce($_POST['nonce'], 'leyka_donor_email')) {
-            return;
+            die(__("For some reason, we can't send this email right now :( Please, try again later.", 'leyka'));
         }
 
         $donation = Leyka_Donations::get_instance()->get_donation($_POST['donation_id']);
