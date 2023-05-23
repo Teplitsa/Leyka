@@ -1149,7 +1149,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
             ],
             'person_terms_of_service_text' => [
                 'type' => 'rich_html',
-                'default' => __('Person Terms of service text'),
+                'default' => __('Person Terms of service text', 'leyka'),
                 'title' => __('A text of Terms of donation service', 'leyka'),
                 'required' => true,
                 'field_classes' => ['type-rich_html'],
