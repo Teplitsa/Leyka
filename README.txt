@@ -4,7 +4,7 @@ Author URI: http://te-st.ru
 Plugin URI: http://leyka.te-st.ru
 Tags: лейка, crowdfunding, fundraising, donations, recurring donations, charity, leyka, recurring, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, yoomoney, chronopay, sms, yookassa, миксплат, mixplat, paypal, paymaster, qiwi, киви, stripe, страйп, gds, google data studio
 Requires at least: 3.6.1
-Tested up to: 6.1.1
+Tested up to: 6.2.2
 Stable tag: 3.29.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -83,6 +83,27 @@ For technical support questions, please, use the [plugin support email](maillto:
 5. The plugin start page (a console)
 
 == Changelog ==
+= 3.30 =
+* New: now YooKassa accepts SBP via "smart payment" payment method.
+* New: expanded payment descriptions added for Mixplat.
+* New: UTM parameters support added for Mixplat.
+* New: SBP recurring mode feature added for Mixplat.
+* New: split payments between two campaigns feature added for Mixplat.
+* New: the switch between redirect and payment widget feature added for Mixplat.
+* Fix: the compatibility bug on WP core ver. lesser than 5.5.0 fixed.
+* Fix: the bug of duplication of campaign data in nested posts fixed.
+* Fix: the bug of Terms of service & PD usage when displayed on the custom page fixed.
+* Fix: the "get_page_by_title() function is deprecated" in WP 6.2 bug fixed.
+* Fix: the XSS vulnerability from the recent WordFence report fixed.
+* Fix: the CSRF vulnerability from the recent WordFence report fixed.
+* Fix: the bug of eng. date format used sometime fixed.
+* Fix: new mts icon for Mixplat.
+* Fix: Qiwi payments fixed - now callbacks are handled correctly.
+* Fix: fix for the manual donor's email sending not working.
+* Fix: now manual donor email notifications are sent in accordance with donation status (if donation is failed, then error notification is sent: otherwise, success email is sent).
+* Fix: the Person default terms of service text fixed.
+* Removed: YooKassa Wizard tmp. removed (it's outdated).
+
 = 3.29.2 =
 * Fix: Daily Rouble mode is now working correctly (only with main currency).
 * Fix: Merchandise + Multicurrency bug fixed.
