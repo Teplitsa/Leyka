@@ -437,13 +437,13 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'date_time':
             case 'date_time_label':
 
-                $date_format = date_i18n(get_option('date_format'));
+                $date_format = get_option('date_format');
                 $time_format = get_option('time_format');
                 $donation_timestamp = $this->date_timestamp;
 
                 $value = apply_filters(
                     'leyka_admin_donation_date_time',
-                    date("$date_format, $time_format", $donation_timestamp),
+                    date_i18n("$date_format, $time_format", $donation_timestamp),
                     $donation_timestamp, $date_format, $time_format
                 );
                 break;
@@ -1465,7 +1465,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             }
         }
 
-        return $last_date_funded ? $last_date_funded : false;
+        return $last_date_funded ? : false;
 
     }
 

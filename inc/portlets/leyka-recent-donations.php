@@ -45,8 +45,8 @@ $data = Leyka_Recent_Donations_Portlet_Controller::get_instance()->get_template_
                 <div class="donor-contact"><?php echo $donation['donor']['phone'];?></div>
             </td>
             <td class="donation-date">
-                <div class="date"><?php echo date('Y.m.d', strtotime($donation['date_time']) ) ;?></div>
-                <div class="time"><?php echo date('H:i', strtotime($donation['date_time']) ) ;?></div>
+                <div class="date"><?php echo $donation['date_label'];?></div>
+                <div class="time"><?php echo $donation['time_label'];?></div>
             </td>
             <td class="donation-amount-status">
                 <div class="wrapper-donation-amount-status">
@@ -69,8 +69,10 @@ $data = Leyka_Recent_Donations_Portlet_Controller::get_instance()->get_template_
                 <?php if($donation['donor']['email_date']) {?>
 
                 <div class="donor has-thanks">
-                    <span class="donation-email-status"><?php echo __('Sent', 'leyka');?></span>
-                    <span class="donation-email-date"><?php echo date(get_option('date_format'), $donation['donor']['email_date']);?></span>
+                    <span class="donation-email-status"><?php _e('Sent', 'leyka');?></span>
+                    <span class="donation-email-date">
+                        <?php echo date_i18n(get_option('date_format'), $donation['donor']['email_date']);?>
+                    </span>
                 </div>
 
                 <?php } else {?>
