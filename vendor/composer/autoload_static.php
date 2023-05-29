@@ -4,19 +4,29 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit496f19c6daeadc330740f9a276af3a73
+class ComposerStaticInit3480d0229948859a5b7ecbd6d98f301a
 {
     public static $files = array (
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
-        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
+        'e69f7f6ee287b969198c3c9d6777bd38' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/bootstrap.php',
+        '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
+        'f598d06aa772fa33d905e87be6398fb1' => __DIR__ . '/..' . '/symfony/polyfill-intl-idn/bootstrap.php',
+        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
     );
 
     public static $prefixLengthsPsr4 = array (
         'T' => 
         array (
             'TheIconic\\Tracking\\GoogleAnalytics\\' => 35,
+        ),
+        'S' => 
+        array (
+            'Symfony\\Polyfill\\Php72\\' => 23,
+            'Symfony\\Polyfill\\Mbstring\\' => 26,
+            'Symfony\\Polyfill\\Intl\\Normalizer\\' => 33,
+            'Symfony\\Polyfill\\Intl\\Idn\\' => 26,
         ),
         'P' => 
         array (
@@ -36,10 +46,26 @@ class ComposerStaticInit496f19c6daeadc330740f9a276af3a73
         array (
             0 => __DIR__ . '/..' . '/theiconic/php-ga-measurement-protocol/src',
         ),
+        'Symfony\\Polyfill\\Php72\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php72',
+        ),
+        'Symfony\\Polyfill\\Mbstring\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
+        ),
+        'Symfony\\Polyfill\\Intl\\Normalizer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer',
+        ),
+        'Symfony\\Polyfill\\Intl\\Idn\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-intl-idn',
+        ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -61,14 +87,15 @@ class ComposerStaticInit496f19c6daeadc330740f9a276af3a73
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'Normalizer' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/Resources/stubs/Normalizer.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit496f19c6daeadc330740f9a276af3a73::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit496f19c6daeadc330740f9a276af3a73::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit496f19c6daeadc330740f9a276af3a73::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit3480d0229948859a5b7ecbd6d98f301a::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit3480d0229948859a5b7ecbd6d98f301a::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit3480d0229948859a5b7ecbd6d98f301a::$classMap;
 
         }, null, ClassLoader::class);
     }
