@@ -224,7 +224,7 @@ function leyka_get_validated_campaign($campaign) {
         return false;
     }
 
-    return $campaign ? $campaign : false;
+    return $campaign ? : false;
 
 }
 
