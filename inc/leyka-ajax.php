@@ -411,14 +411,37 @@ function leyka_setup_donor_password(){
         empty($_POST['leyka_donor_pass'])
         || empty($_POST['leyka_donor_pass2'])
         || $_POST['leyka_donor_pass'] !== $_POST['leyka_donor_pass2']
-        || empty($_POST['donor_account_id'])
-        || absint($_POST['donor_account_id']) <= 0
+        || empty($_POST['donor_account_email'])
+        || !leyka_is_email($_POST['donor_account_email'])
     ) {
         $res = ['status' => 'error', 'message' => sprintf(__('Wrong request data. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_get_website_tech_support_email())];
     } else {
 
+        $donor_account = get_user_by('email', $_POST['donor_account_email']);
+        if( !$donor_account ) {
+
+            die(json_encode([
+                'status' => 'error',
+                'message' => sprintf(__('Wrong request data. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_get_website_tech_support_email())
+            ]));
+
+        } else if(
+            isset($_POST['donor_account_password_reset_code'])
+            && (
+                !$donor_account->user_login
+                || !is_a(check_password_reset_key($_POST['donor_account_password_reset_code'], $donor_account->user_login), 'WP_User')
+            )
+        ) {
+
+            die(json_encode([
+                'status' => 'error',
+                'message' => sprintf(__('Wrong request data. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_get_website_tech_support_email())
+            ]));
+
+        }
+
         try {
-            $donor = new Leyka_Donor(absint($_POST['donor_account_id']));
+            $donor = new Leyka_Donor($_POST['donor_account_email']);
         } catch(Exception $e) {
             die(json_encode(['status' => 'error', 'message' => __('Wrong Donor ID given', 'leyka')]));
         }

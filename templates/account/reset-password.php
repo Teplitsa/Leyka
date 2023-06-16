@@ -130,7 +130,8 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php'); ?>
                                                 </div>
                                             </div>
 
-                                            <input type="hidden" name="donor_account_id" value="<?php echo $donor_account->ID;?>">
+                                            <input type="hidden" name="donor_account_email" value="<?php echo esc_attr($_GET['donor']);?>">
+                                            <input type="hidden" name="donor_account_password_reset_code" value="<?php echo esc_attr($_GET['code']);?>">
                                             <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('leyka_account_password_setup');?>">
 
                                         </div>

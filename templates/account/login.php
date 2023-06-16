@@ -134,7 +134,8 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php'); ?>
 
                                 <?php } else { // Password setup form
 
-                                    $donor_account = reset($donor_account);?>
+                                    $donor_account = reset($donor_account);
+                                    $password_reset_key = get_password_reset_key($donor_account);?>
 
                                 <div class="section__fields donor">
 
@@ -168,7 +169,8 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php'); ?>
                                         </div>
                                     </div>
 
-                                    <input type="hidden" name="donor_account_id" value="<?php echo $donor_account->ID;?>">
+                                    <input type="hidden" name="donor_account_email" value="<?php echo $donor_account->user_email;?>">
+                                    <input type="hidden" name="donor_account_password_reset_code" value="<?php echo esc_attr($password_reset_key);?>">
                                     <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('leyka_account_password_setup');?>">
 
                                 </div>
