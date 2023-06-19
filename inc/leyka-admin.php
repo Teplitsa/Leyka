@@ -1307,7 +1307,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	public function get_current_settings_tab() {
 		return empty($_GET['stage']) ?
             $this->get_default_settings_tab() :
-            str_replace( '>', '', wp_strip_all_tags(trim($_GET['stage'])) );
+            esc_attr( str_replace('>', '', wp_strip_all_tags(trim($_GET['stage']))) );
 	}
 
 	public function settings_tabs_menu() {
