@@ -1706,6 +1706,7 @@ function leyka_form_is_displayed($widgets_also = true) {
     $template = get_page_template_slug();
 
     $content_has_shortcode = false;
+    $content_has_block     = false;
     if(get_post()) {
         foreach(leyka_get_shortcodes() as $shortcode_tag) {
             if(has_shortcode(get_post()->post_content, $shortcode_tag)) {
@@ -1715,6 +1716,9 @@ function leyka_form_is_displayed($widgets_also = true) {
 
             }
         }
+        if(has_block('leyka/form', get_post()->ID)) {
+            $content_has_block = true;
+        }
     }
 
     return leyka()->form_is_screening ||
@@ -1722,6 +1726,7 @@ function leyka_form_is_displayed($widgets_also = true) {
         stristr($template, 'home-campaign_one') !== false ||
         stripos($template, 'leyka') !== false ||
         $content_has_shortcode ||
+        $content_has_block ||
         ( !!$widgets_also && leyka_is_widget_active() );
 
 }
