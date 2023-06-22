@@ -1007,7 +1007,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
                     <?php } else { // An existing field ?>
 
-                        <div id="<?php echo $placeholders['id'] ? $placeholders['id'] : 'item-'.leyka_get_random_string(4);?>" class="multi-valued-item-box field-box closed">
+                        <div id="<?php echo $placeholders['id'] ? : 'item-'.leyka_get_random_string(4);?>" class="multi-valued-item-box field-box closed">
 
                             <h3 class="item-box-title ui-sortable-handle">
                                 <span class="draggable"></span>
@@ -1361,7 +1361,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                     $meta['payments_recurring_tab_title'] = esc_attr($_REQUEST['leyka_payments_recurring_tab_title']);
                 }
 
-                function prepare_payment_amounts_options($amounts_options, $payment_type) {
+                function leyka_prepare_payment_amounts_options($amounts_options, $payment_type) {
 
                     $result = [];
 
@@ -1383,14 +1383,14 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                 foreach($currencies as $currency_id) {
 
                     if(isset($_REQUEST['leyka_payments_single_amounts_options_'.$currency_id])) {
-                        $meta['payments_single_amounts_options_'.$currency_id] = prepare_payment_amounts_options(
+                        $meta['payments_single_amounts_options_'.$currency_id] = leyka_prepare_payment_amounts_options(
                             json_decode(urldecode($_REQUEST['leyka_payments_single_amounts_options_'.$currency_id]), true),
                             'single'
                         );
                     }
 
                     if(isset($_REQUEST['leyka_payments_recurring_amounts_options_'.$currency_id])) {
-                        $meta['payments_recurring_amounts_options_'.$currency_id] = prepare_payment_amounts_options(
+                        $meta['payments_recurring_amounts_options_'.$currency_id] = leyka_prepare_payment_amounts_options(
                             json_decode(urldecode($_REQUEST['leyka_payments_recurring_amounts_options_'.$currency_id]), true),
                             'recurring'
                         );
@@ -1405,8 +1405,8 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
                 foreach($currencies as $currency_id) {
 
-                    delete_post_meta($campaign_id, ['payments_single_amounts_options_'.$currency_id]);
-                    delete_post_meta($campaign_id, ['payments_recurring_amounts_options_'.$currency_id]);
+                    delete_post_meta($campaign_id, 'payments_single_amounts_options_'.$currency_id);
+                    delete_post_meta($campaign_id, 'payments_recurring_amounts_options_'.$currency_id);
 
                 }
 
@@ -1519,7 +1519,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
 		}
 
-		$columns['ID'] = 'ID';
+		$columns['id'] = 'ID';
 
 		if(isset($unsort['title'])) {
 
@@ -1556,9 +1556,9 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
 		$campaign = new Leyka_Campaign($campaign_id);
 
-		if($column_name === 'ID') {
-			echo (int)$campaign->id;
-		} else if($column_name === 'payment_title') {
+		/*if($column_name === 'id') {
+			(int)$campaign->id; // To avoid doubling of the ID value in the column
+		} else*/ if($column_name === 'payment_title') {
             echo $campaign->payment_title;
         } else if($column_name === 'coll_state') {
 
@@ -1578,7 +1578,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 		<?php }
 
 		} else if($column_name === 'shortcode') {?>
-            <input type="text" class="embed-code read-only campaign-shortcode" value="<?php echo esc_attr(self::get_campaign_form_shortcode($campaign->ID));?>">
+            <input type="text" class="embed-code read-only campaign-shortcode" value="<?php echo esc_attr(self::get_campaign_form_shortcode($campaign_id));?>">
         <?php }
 
 	}
