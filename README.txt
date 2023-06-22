@@ -1,12 +1,12 @@
 === Leyka ===
 Contributors: Ahaenor, oleinikv89, foralien, denis.cherniatev, burdianov
-Author URI: http://te-st.ru
-Plugin URI: http://leyka.te-st.ru
+Author URI: http://te-st.org
+Plugin URI: http://leyka.org
 Tags: лейка, crowdfunding, fundraising, donations, recurring donations, charity, leyka, recurring, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, yoomoney, chronopay, sms, yookassa, миксплат, mixplat, paypal, paymaster, qiwi, киви, stripe, страйп, gds, google data studio
 Requires at least: 3.6.1
 Requires PHP: 7.2.5
 Tested up to: 6.2.2
-Stable tag: 3.30.1
+Stable tag: 3.30.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -47,7 +47,7 @@ The plugin is designed for any website that wants to collect money online – NG
 
 The plugin manual is avaliable at [official website](https://leyka.te-st.ru/instruction/). Intallation and usage are illustrated with [screencasts course](https://te-st.ru/2020/04/07/leyka-online-course/). 
 
-PHP at least 5.6 is required for plugin to work correctly.
+PHP at least 7.2.5 is required for plugin to work correctly.
 
 **Help the project**
 
@@ -66,7 +66,7 @@ The plugin manual is avaliable at [official website](//leyka.te-st.ru/instructio
 * [basic features](//leyka.te-st.ru/docs/videourok-kak-ustanovit-i-nastroit-plagin-lejka/),
 * [extended features](//leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/).
 
-PHP version required: 5.6+
+PHP version required: 7.2.5+
 
 
 == Frequently Asked Questions ==
@@ -84,6 +84,11 @@ For technical support questions, please, use the [plugin support email](maillto:
 5. The plugin start page (a console)
 
 == Changelog ==
+= 3.30.2 =
+* Fix: the 2 recently found vulnerabilities are fixed.
+* Fix: the CP recurring subscriptions import procedure fixed.
+* Fix: different fixes.
+
 = 3.30.1 =
 * Fix: different fixes.
 

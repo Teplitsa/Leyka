@@ -2410,3 +2410,4 @@ _x('Recurrings', 'Dashboard portlet title', 'leyka');
 _x('Active', 'Recurring subscription status, singular (like [subscription is] "Active/Non-active/Problematic")', 'leyka');
 _x('Non-active', 'Recurring subscription status, singular (like [subscription is] "Active/Non-active/Problematic")', 'leyka');
 _x('Problematic', 'Recurring subscription status, singular (like [subscription is] "Active/Non-active/Problematic")', 'leyka');
+_x('Recurrings', '"Recurring donations" with one multiple-case word', 'leyka');
