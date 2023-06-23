@@ -525,10 +525,10 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
                 }
 
-                if(count($values_list) > 1) {
-                    $params['meta'][] = $values_list;
-                }
+            }
 
+            if(count($values_list) > 1) {
+                $params['meta'][] = $values_list;
             }
 
         }
