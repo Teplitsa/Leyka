@@ -1003,6 +1003,10 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             return false;
         }
 
+        if( !apply_filters('leyka_send_error_email_notification', true, $donation) ) {
+            return true;
+        }
+
         $res = true;
 
         if(leyka_options()->opt('notify_tech_support_on_failed_donations')) { // Notification to Donations managers, if needed
