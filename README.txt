@@ -6,7 +6,7 @@ Tags: лейка, crowdfunding, fundraising, donations, recurring donations, cha
 Requires at least: 3.6.1
 Requires PHP: 7.2.5
 Tested up to: 6.2.2
-Stable tag: 3.30.1
+Stable tag: 3.30.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -85,7 +85,7 @@ For technical support questions, please, use the [plugin support email](maillto:
 
 == Changelog ==
 = 3.30.2 =
-* Fix: the 2 recently found vulnerabilities are fixed.
+* Fix: one recently found vulnerability fixed.
 * Fix: the CP recurring subscriptions import procedure fixed.
 * Fix: different fixes.
 
