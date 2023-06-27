@@ -5,7 +5,7 @@ namespace TheIconic\Tracking\GoogleAnalytics\Network;
 use TheIconic\Tracking\GoogleAnalytics\AnalyticsResponse;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Promise;
+use GuzzleHttp\Promise\Utils;
 use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -48,7 +48,7 @@ class HttpClient
      */
     public function __destruct()
     {
-        Promise\unwrap(self::$promises);
+        Utils::unwrap(self::$promises);
     }
 
     /**
