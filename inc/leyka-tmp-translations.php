@@ -161,6 +161,7 @@ __('We are deeply sorry, but for some technical reason we failed to receive your
 __('Main statistics', 'leyka');
 __('Recurring', 'leyka');
 __('Donations dynamics', 'leyka');
+__('Recurrings', 'leyka');
 __('Recent donations', 'leyka');
 __('Donation funded', 'leyka');
 __('Donation refunded', 'leyka');
