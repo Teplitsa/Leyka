@@ -134,7 +134,13 @@ jQuery(document).ready(function($){
                 accountId: response.donor_email,
                 // name: response.name,
                 email: response.donor_email,
-                data: data
+                data: data,
+                configuration: {
+                    common: {
+                        successRedirectUrl: response.success_page,
+                        failRedirectUrl: response.failure_page
+                    }
+                }
             }, function(options){ // success callback
 
                 window.location.href = response.success_page;
