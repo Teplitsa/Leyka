@@ -426,11 +426,11 @@ function leyka_setup_donor_password(){
             ]));
 
         } else if(
-            isset($_POST['donor_account_password_reset_code'])
-            && (
-                !$donor_account->user_login
-                || !is_a(check_password_reset_key($_POST['donor_account_password_reset_code'], $donor_account->user_login), 'WP_User')
-            )
+            !$donor_account->user_login
+            || !is_a(check_password_reset_key(
+                (empty($_POST['donor_account_password_reset_code']) ? '' : $_POST['donor_account_password_reset_code']),
+                $donor_account->user_login
+            ), 'WP_User')
         ) {
 
             die(json_encode([
