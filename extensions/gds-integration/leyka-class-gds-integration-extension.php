@@ -10,7 +10,7 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
 
     protected static $_instance;
 
-    protected static $_max_gds_allowed_data_lines = 100000;
+    protected static $_max_gds_allowed_data_lines = 150000;
 
     protected function _set_attributes() {
 
