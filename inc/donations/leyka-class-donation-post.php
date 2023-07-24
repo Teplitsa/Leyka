@@ -255,11 +255,6 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 (float)$meta['leyka_donation_main_currency_rate'][0] :
                 leyka_get_currency_rate($donation_currency);
 
-            $this->set_meta('leyka_donation_main_currency_id', $main_currency);
-            $this->set_meta('leyka_donation_main_currency_amount', $donation_main_currency_amount);
-            $this->set_meta('leyka_donation_main_currency_amount_total', $donation_main_currency_amount_total);
-            $this->set_meta('leyka_donation_main_currency_rate', $donation_main_currency_rate);
-
             do_action('leyka_donation_constructor_meta', $meta, $this->_id);
 
             $this->_donation_meta = apply_filters('leyka_donation_constructor_meta', [
