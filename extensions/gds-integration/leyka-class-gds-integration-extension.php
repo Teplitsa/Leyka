@@ -172,7 +172,7 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
 
         $wpdb->query("DROP TABLE IF EXISTS `{$wpdb->prefix}leyka_gds_integration_donations_data`;");
         $wpdb->query("CREATE TABLE `{$wpdb->prefix}leyka_gds_integration_donations_data` (
-          `ID` bigint(20) UNSIGNED NOT NULL,
+          `ID` bigint(20) UNSIGNED PRIMARY KEY NOT NULL,
           `donation_date` datetime NOT NULL,
           `payment_type` varchar(40) COLLATE utf8mb4_unicode_ci NOT NULL,
           `gateway_title` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
