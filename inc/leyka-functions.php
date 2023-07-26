@@ -1578,7 +1578,8 @@ function leyka_get_terms_text() {
     return apply_filters(
         'leyka_terms_of_service_text',
         leyka_options()->opt('receiver_legal_type') === 'legal' ?
-            leyka_options()->opt('terms_of_service_text') : leyka_options()->opt('person_terms_of_service_text')
+            leyka_options()->opt('terms_of_service_text') :
+            leyka_options()->opt('person_terms_of_service_text')
     );
 }
 

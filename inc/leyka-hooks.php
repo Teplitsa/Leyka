@@ -6,6 +6,8 @@ function leyka_terms_of_service_text($text) {
 
     $is_legal = leyka_options()->opt('receiver_legal_type') === 'legal';
 
+    $text = strip_tags($text, '<p><br><strong><b><em><i><u><blockquote><del><ul><ol><li><a>'); // Remove possible XSS attacks
+
     return wpautop(str_replace(
         [
             '#SITE_URL#',
@@ -55,6 +57,10 @@ function leyka_terms_of_service_text($text) {
 add_filter('leyka_terms_of_service_text', 'leyka_terms_of_service_text');
 
 function leyka_service_terms_page_text($page_content) {
+
+    // Remove possible XSS attacks:
+    $page_content = strip_tags($page_content, '<p><br><strong><b><em><i><u><blockquote><del><ul><ol><li><a>');
+
     return leyka_options()->opt('terms_of_service_page') && is_page(leyka_options()->opt('terms_of_service_page')) ?
         apply_filters('leyka_terms_of_service_text', do_shortcode($page_content)) : $page_content;
 }
@@ -63,6 +69,8 @@ add_filter('the_content', 'leyka_service_terms_page_text');
 function leyka_terms_of_pd_usage_text($text) {
 
     $is_legal = leyka_options()->opt('receiver_legal_type') === 'legal';
+
+    $text = strip_tags($text, '<p><br><strong><b><em><i><u><blockquote><del><ul><ol><li><a>'); // Remove possible XSS attacks
 
     return wpautop(str_replace(
         [
@@ -97,6 +105,10 @@ function leyka_terms_of_pd_usage_text($text) {
 add_filter('leyka_terms_of_pd_usage_text', 'leyka_terms_of_pd_usage_text');
 
 function leyka_terms_of_pd_usage_page_text($page_content) {
+
+    // Remove possible XSS attacks:
+    $page_content = strip_tags($page_content, '<p><br><strong><b><em><i><u><blockquote><del><ul><ol><li><a>');
+
     return leyka_options()->opt('pd_terms_page') && is_page(leyka_options()->opt('pd_terms_page')) ?
         apply_filters('leyka_terms_of_pd_usage_text', do_shortcode($page_content)) : $page_content;
 }
