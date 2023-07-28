@@ -1469,7 +1469,10 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                 $fields_removed = false;
                 foreach($campaign->additional_fields_settings as $field_id) {
 
-                    if( !in_array($field_id, $updated_additional_fields_settings) ) { // The field is removed
+                    if( // The field is removed
+                        !empty($fields_library[$field_id])
+                        && !in_array($field_id, $updated_additional_fields_settings)
+                    ) {
 
                         $fields_removed = true;
                         $campaign_key_in_array = array_search($campaign_id, $fields_library[$field_id]['campaigns']);
