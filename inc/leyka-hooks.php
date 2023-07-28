@@ -58,11 +58,18 @@ add_filter('leyka_terms_of_service_text', 'leyka_terms_of_service_text');
 
 function leyka_service_terms_page_text($page_content) {
 
-    // Remove possible XSS attacks:
-    $page_content = strip_tags($page_content, '<p><br><strong><b><em><i><u><blockquote><del><ul><ol><li><a>');
+    if( leyka_options()->opt('terms_of_service_page') && is_page(leyka_options()->opt('terms_of_service_page')) ) {
 
-    return leyka_options()->opt('terms_of_service_page') && is_page(leyka_options()->opt('terms_of_service_page')) ?
-        apply_filters('leyka_terms_of_service_text', do_shortcode($page_content)) : $page_content;
+        // Remove possible XSS attacks:
+        $page_content = apply_filters(
+            'leyka_terms_of_service_text',
+            do_shortcode(strip_tags($page_content, '<p><br><strong><b><em><i><u><blockquote><del><ul><ol><li><a>')),
+            $page_content
+        );
+    }
+
+    return $page_content;
+
 }
 add_filter('the_content', 'leyka_service_terms_page_text');
 
@@ -106,11 +113,18 @@ add_filter('leyka_terms_of_pd_usage_text', 'leyka_terms_of_pd_usage_text');
 
 function leyka_terms_of_pd_usage_page_text($page_content) {
 
-    // Remove possible XSS attacks:
-    $page_content = strip_tags($page_content, '<p><br><strong><b><em><i><u><blockquote><del><ul><ol><li><a>');
+    if( leyka_options()->opt('pd_terms_page') && is_page(leyka_options()->opt('pd_terms_page')) ) {
 
-    return leyka_options()->opt('pd_terms_page') && is_page(leyka_options()->opt('pd_terms_page')) ?
-        apply_filters('leyka_terms_of_pd_usage_text', do_shortcode($page_content)) : $page_content;
+        // Remove possible XSS attacks:
+        $page_content = apply_filters(
+            'leyka_terms_of_pd_usage_text',
+            do_shortcode(strip_tags($page_content, '<p><br><strong><b><em><i><u><blockquote><del><ul><ol><li><a>'))
+        );
+
+    }
+
+    return $page_content;
+
 }
 add_filter('the_content', 'leyka_terms_of_pd_usage_page_text');
 
