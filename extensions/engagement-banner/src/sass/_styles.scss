@@ -2,7 +2,7 @@
 .engb {
     @include body-text();
     position: fixed;
-    width: 100vw;
+    width: 100%;
     left: 0;
     padding: 2em 0;
     background: $color-body-bg;
