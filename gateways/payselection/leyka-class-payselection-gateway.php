@@ -82,8 +82,9 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
                 'type' => 'text',
                 'title' => __('Secret Key', 'leyka'),
                 'comment' => __('Your Key on Payselection.', 'leyka'),
+                'is_password' => true,
                 'required' => true,
-                'default' => '',
+                'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'tMZZQyyzY4NV9Cft'),
             ],
             'payselection_widget_url' => [
                 'type' => 'text',
@@ -259,16 +260,26 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
 
     }
 
-    protected function _handle_callback_error($error_message = '', $response, Leyka_Donation_Base $donation = null) {
+    protected function _handle_callback_error($response, $error_message = '', Leyka_Donation_Base $donation = null) {
 
         if($donation) {
+
+            $error_code = '';
     
-            $response['failure_reason'] = $error_message;
-    
-            $donation->add_gateway_response($response);
+            if (is_wp_error($response)) {
+                $error_response['failure_reason'] = $error_message;
+                $donation->add_gateway_response($error_response);
+                $error_code = $response->get_error_code();
+            } else {
+                $response['failure_reason'] = $error_message;
+                $donation->add_gateway_response($response);
+            }
+
             $donation->status = 'failed';
     
-            if($donation->is_init_recurring_donation) {
+            if ($donation->type === 'rebill' && 
+                ($donation->is_init_recurring_donation || $error_code === 'RecurrentInactiveError')) {
+
                 $donation->recurring_is_active = false;
             }
     
@@ -293,14 +304,14 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
             error_log($ex);
         }
 
-        if(empty($response['Event']) || !is_string($response['Event'])) {
-            $this->_handle_callback_error(__('Webhook error: Event field is not found or have incorrect value', 'leyka'), $response, $donation);
-            wp_die(__('Webhook error: Event field is not found or have incorrect value', 'leyka'));
-        }
-
         $donation_string = explode('-', $response['OrderId']);
 
         $donation = Leyka_Donations::get_instance()->get_donation((int)$donation_string[0]);
+
+        if(empty($response['Event']) || !is_string($response['Event'])) {
+            $this->_handle_callback_error($response, __('Webhook error: Event field is not found or have incorrect value', 'leyka'), $donation);
+            wp_die(__('Webhook error: Event field is not found or have incorrect value', 'leyka'));
+        }
 
         if (is_wp_error($check)) {
 
@@ -320,7 +331,7 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
 
             }
 
-            $this->_handle_callback_error($check->get_error_message(), $response, $donation);
+            $this->_handle_callback_error($response, $check->get_error_message(), $donation);
 
             die();
 
@@ -357,16 +368,17 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
                 break;
             case 'Payment': 
                 $new_status = 'funded'; 
-                if (!empty($response['RebillId'])) {
-                    if (empty($donation->payselection_recurring_id)) {
-                        $donation->recurring_is_active = true;
+                
+                if ($donation->type === 'rebill') {
+                    if (!empty($response['RebillId'])) {
+                        if (empty($donation->payselection_recurring_id) || !$donation->recurring_is_active) {
+                            $donation->recurring_is_active = true;
+                        }
+                    } else {
+                        if ($donation->is_init_recurring_donation) {
+                            $donation->type = 'single';
+                        }
                     }
-                }
-                if ($donation->type === 'rebill' 
-                    && $donation->is_init_recurring_donation
-                    && empty($response['RebillId'])) {
-
-                        $donation->type = 'single';
                 }
                 break;
             case 'Refund': 
@@ -389,8 +401,7 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
 
             $donation->status = $new_status;
 
-            // No emails for non-init recurring donations - the active recurring procedure do mailouts for them:
-            if($donation->status === 'funded' && ($donation->type === 'single' || $donation->is_init_recurring_donation)) {
+            if($donation->status === 'funded') {
                 Leyka_Donation_Management::send_all_emails($donation);
             }
 
@@ -491,13 +502,13 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
 
         $response = $api->rebill($data);
 
-        $new_recurring_donation->add_gateway_response($response);
-
         if (is_wp_error($response)) {
-            $this->_handle_callback_error(sprintf(__("Rebilling request to the Payselection couldn't be made due to some error.\n\nThe error: %s", 'leyka'), $response->get_error_message(), $response, $new_recurring_donation));
+            $this->_handle_callback_error($response, sprintf(__("Rebilling request to the Payselection couldn't be made due to some error.\n\nThe error: %s", 'leyka'), $response->get_error_message()), $new_recurring_donation);
             Leyka_Donation_Management::send_error_notifications($new_recurring_donation); // Emails will be sent only if respective options are on
             return false;
         }
+
+        $new_recurring_donation->add_gateway_response($response);
 
         return $new_recurring_donation;
 
@@ -528,14 +539,20 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
         );
         $response = $api->unsubscribe(['RebillId' => $donation->payselection_recurring_id]);
         if (is_wp_error($response)) {
+            if ($response->get_error_code() === 'RecurrentStatusError') {
+                $donation->recurring_is_active = false;
+                return new WP_Error(
+                    'payselection_error_cancel_subscription',
+                    sprintf(__('The recurring subsciption cancelling request returned error: %s', 'leyka'), $response->get_error_message())
+                );
+            }
             return new WP_Error(
                 'payselection_error_cancel_subscription',
-                sprintf(__('The recurring subsciption cancelling request returned unexpected result. We cannot cancel the recurring subscription automatically. Error: %s', 'leyka'), $response->get_error_message())
+                sprintf(__('The recurring subsciption cancelling request returned unexpected result. We cannot cancel the recurring subscription automatically. Error: %s', 'leyka'), $response->get_error_code())
             );
         }
 
-        $response = json_decode($response);
-        if ($response['TransactionState'] === 'false') {
+        if ($response['TransactionState'] === 'false' && $response['Error']['Code'] !== 'RecurrentStatusError') {
             return new WP_Error(
                 'payselection_error_false_subscription',
                 sprintf(__('The recurring subsciption cancelling request returned unexpected result. We cannot cancel the recurring subscription automatically. Error: %s', 'leyka'), $response['Error']['Description']())
