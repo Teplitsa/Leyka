@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ namespace YooKassa\Request\Payments;
 /**
  * Interface PaymentsRequestInterface
  *
- * @package YooKassa\Request\Payments
+ * @package YooKassa
  *
  * @property-read string|null $cursor Страница выдачи результатов, которую необходимо отобразить
  * @property-read \DateTime|null $createdAtGte Время создания, от (включительно)
@@ -47,13 +47,13 @@ namespace YooKassa\Request\Payments;
 interface PaymentsRequestInterface
 {
     /**
-     * Возвращает страницу выдачи результатов или null если она до этого не была установлена
+     * Возвращает страницу выдачи результатов или null, если она до этого не была установлена
      * @return string|null Страница выдачи результатов
      */
     function getCursor();
 
     /**
-     * Проверяет была ли установлена страница выдачи результатов
+     * Проверяет, была ли установлена страница выдачи результатов
      * @return bool True если страница выдачи результатов была установлена, false если нет
      */
     function hasCursor();
@@ -66,89 +66,13 @@ interface PaymentsRequestInterface
     function setCursor($value);
 
     /**
-     * Возвращает дату создания от которой будут возвращены платежи или null если дата не была установлена
-     * @return \DateTime|null Время создания, от (включительно)
-     */
-    function getCreatedAtGte();
-
-    /**
-     * Проверяет была ли установлена дата создания от которой выбираются платежи
-     * @return bool True если дата была установлена, false если нет
-     */
-    function hasCreatedAtGte();
-
-    /**
-     * Устанавливает дату создания от которой выбираются платежи
-     * @param \DateTime $value Дата
-     * @return void
-     */
-    function setCreatedAtGte($value);
-
-    /**
-     * Возвращает дату создания от которой будут возвращены платежи или null если дата не была установлена
-     * @return \DateTime|null Время создания, от (не включая)
-     */
-    function getCreatedAtGt();
-
-    /**
-     * Проверяет была ли установлена дата создания от которой выбираются платежи
-     * @return bool True если дата была установлена, false если нет
-     */
-    function hasCreatedAtGt();
-
-    /**
-     * Устанавливает дату создания от которой выбираются платежи
-     * @param \DateTime $value Дата
-     * @return void
-     */
-    function setCreatedAtGt($value);
-
-    /**
-     * Возвращает дату создания до которой будут возвращены платежи или null если дата не была установлена
-     * @return \DateTime|null Время создания, до (включительно)
-     */
-    function getCreatedAtLte();
-
-    /**
-     * Проверяет была ли установлена дата создания до которой выбираются платежи
-     * @return bool True если дата была установлена, false если нет
-     */
-    function hasCreatedAtLte();
-
-    /**
-     * Устанавливает дату создания до которой выбираются платежи
-     * @param \DateTime $value Дата
-     * @return void
-     */
-    function setCreatedAtLte($value);
-
-    /**
-     * Возвращает дату создания до которой будут возвращены платежи или null если дата не была установлена
-     * @return \DateTime|null Время создания, до (не включая)
-     */
-    function getCreatedAtLt();
-
-    /**
-     * Проверяет была ли установлена дата создания до которой выбираются платежи
-     * @return bool True если дата была установлена, false если нет
-     */
-    function hasCreatedAtLt();
-
-    /**
-     * Устанавливает дату создания до которой выбираются платежи
-     * @param \DateTime $value Дата
-     * @return void
-     */
-    function setCreatedAtLt($value);
-
-    /**
-     * Возвращает ограничение количества объектов платежа или null если оно до этого не было установлено
+     * Возвращает ограничение количества объектов платежа или null, если оно до этого не было установлено
      * @return string|null Ограничение количества объектов платежа
      */
     function getLimit();
 
     /**
-     * Проверяет было ли установлено ограничение количества объектов платежа
+     * Проверяет, было ли установлено ограничение количества объектов платежа
      * @return bool True если ограничение количества объектов платежа было установлено, false если нет
      */
     function hasLimit();
@@ -161,13 +85,165 @@ interface PaymentsRequestInterface
     function setLimit($value);
 
     /**
-     * Возвращает статус выбираемых платежей или null если он до этого не был установлен
+     * Возвращает дату создания от которой будут возвращены платежи или null, если дата не была установлена
+     * @return \DateTime|null Время создания, от (включительно)
+     */
+    function getCreatedAtGte();
+
+    /**
+     * Проверяет, была ли установлена дата создания от которой выбираются платежи
+     * @return bool True если дата была установлена, false если нет
+     */
+    function hasCreatedAtGte();
+
+    /**
+     * Устанавливает дату создания от которой выбираются платежи
+     * @param \DateTime $value Дата
+     * @return void
+     */
+    function setCreatedAtGte($value);
+
+    /**
+     * Возвращает дату создания от которой будут возвращены платежи или null, если дата не была установлена
+     * @return \DateTime|null Время создания, от (не включая)
+     */
+    function getCreatedAtGt();
+
+    /**
+     * Проверяет, была ли установлена дата создания от которой выбираются платежи
+     * @return bool True если дата была установлена, false если нет
+     */
+    function hasCreatedAtGt();
+
+    /**
+     * Устанавливает дату создания от которой выбираются платежи
+     * @param \DateTime $value Дата
+     * @return void
+     */
+    function setCreatedAtGt($value);
+
+    /**
+     * Возвращает дату создания до которой будут возвращены платежи или null, если дата не была установлена
+     * @return \DateTime|null Время создания, до (включительно)
+     */
+    function getCreatedAtLte();
+
+    /**
+     * Проверяет, была ли установлена дата создания до которой выбираются платежи
+     * @return bool True если дата была установлена, false если нет
+     */
+    function hasCreatedAtLte();
+
+    /**
+     * Устанавливает дату создания до которой выбираются платежи
+     * @param \DateTime $value Дата
+     * @return void
+     */
+    function setCreatedAtLte($value);
+
+    /**
+     * Возвращает дату создания до которой будут возвращены платежи или null, если дата не была установлена
+     * @return \DateTime|null Время создания, до (не включая)
+     */
+    function getCreatedAtLt();
+
+    /**
+     * Проверяет, была ли установлена дата создания до которой выбираются платежи
+     * @return bool True если дата была установлена, false если нет
+     */
+    function hasCreatedAtLt();
+
+    /**
+     * Устанавливает дату создания до которой выбираются платежи
+     * @param \DateTime $value Дата
+     * @return void
+     */
+    function setCreatedAtLt($value);
+
+    /**
+     * Возвращает дату создания от которой будут возвращены платежи или null, если дата не была установлена
+     * @return \DateTime|null Время создания, от (включительно)
+     */
+    function getCapturedAtGte();
+
+    /**
+     * Проверяет, была ли установлена дата создания от которой выбираются платежи
+     * @return bool True если дата была установлена, false если нет
+     */
+    function hasCapturedAtGte();
+
+    /**
+     * Устанавливает дату создания от которой выбираются платежи
+     * @param \DateTime $value Дата
+     * @return void
+     */
+    function setCapturedAtGte($value);
+
+    /**
+     * Возвращает дату создания от которой будут возвращены платежи или null, если дата не была установлена
+     * @return \DateTime|null Время создания, от (не включая)
+     */
+    function getCapturedAtGt();
+
+    /**
+     * Проверяет, была ли установлена дата создания от которой выбираются платежи
+     * @return bool True если дата была установлена, false если нет
+     */
+    function hasCapturedAtGt();
+
+    /**
+     * Устанавливает дату создания от которой выбираются платежи
+     * @param \DateTime $value Дата
+     * @return void
+     */
+    function setCapturedAtGt($value);
+
+    /**
+     * Возвращает дату создания до которой будут возвращены платежи или null, если дата не была установлена
+     * @return \DateTime|null Время создания, до (включительно)
+     */
+    function getCapturedAtLte();
+
+    /**
+     * Проверяет, была ли установлена дата создания до которой выбираются платежи
+     * @return bool True если дата была установлена, false если нет
+     */
+    function hasCapturedAtLte();
+
+    /**
+     * Устанавливает дату создания до которой выбираются платежи
+     * @param \DateTime $value Дата
+     * @return void
+     */
+    function setCapturedAtLte($value);
+
+    /**
+     * Возвращает дату создания до которой будут возвращены платежи или null, если дата не была установлена
+     * @return \DateTime|null Время создания, до (не включая)
+     */
+    function getCapturedAtLt();
+
+    /**
+     * Проверяет, была ли установлена дата создания до которой выбираются платежи
+     * @return bool True если дата была установлена, false если нет
+     */
+    function hasCapturedAtLt();
+
+    /**
+     * Устанавливает дату создания до которой выбираются платежи
+     * @param \DateTime $value Дата
+     * @return void
+     */
+    function setCapturedAtLt($value);
+
+    /**
+     * Возвращает статус выбираемых платежей или null, если он до этого не был установлен
      * @return string|null Статус выбираемых платежей
      */
     function getStatus();
 
     /**
-     * Проверяет был ли установлен статус выбираемых платежей
+     * Проверяет, был ли установлен статус выбираемых платежей
      * @return bool True если статус был установлен, false если нет
      */
     function hasStatus();
@@ -178,4 +254,23 @@ interface PaymentsRequestInterface
      * @return void
      */
     function setStatus($value);
+
+    /**
+     * Возвращает код способа оплаты выбираемых платежей или null, если он до этого не был установлен
+     * @return string|null Код способа оплаты выбираемых платежей
+     */
+    function getPaymentMethod();
+
+    /**
+     * Проверяет, был ли установлен код способа оплаты выбираемых платежей
+     * @return bool True если код способа оплаты был установлен, false если нет
+     */
+    function hasPaymentMethod();
+
+    /**
+     * Устанавливает код способа оплаты выбираемых платежей
+     * @param string $value Код способа оплаты
+     * @return void
+     */
+    function setPaymentMethod($value);
 }

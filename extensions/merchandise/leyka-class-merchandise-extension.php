@@ -797,7 +797,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
             }
 
             // $merchandise->add or $merchandise->id is a merchandise ID/slug:
-            $updated_merchandise_settings[] = $merchandise->add ? : $merchandise->id;
+            $updated_merchandise_settings[] = isset($merchandise->add) ? $merchandise->add : $merchandise->id;
 
         }
 

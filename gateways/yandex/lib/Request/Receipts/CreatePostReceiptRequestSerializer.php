@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,13 +33,15 @@ use YooKassa\Model\Settlement;
 /**
  * Класс сериалайзера объекта запроса к API создание чека
  *
- * @package YooKassa\Request\Receipts
+ * @package YooKassa
  */
 class CreatePostReceiptRequestSerializer
 {
     /**
-     * @param CreatePostReceiptRequestInterface $request
-     * @return array
+     * Сериализует объект запроса к API для дальнейшей его отправки
+     *
+     * @param CreatePostReceiptRequestInterface $request Сериализуемый объект
+     * @return array Массив с информацией, отправляемый в дальнейшем в API
      */
     public function serialize(CreatePostReceiptRequestInterface $request)
     {
@@ -84,9 +86,9 @@ class CreatePostReceiptRequestSerializer
     {
         $result = array();
 
-        if ($request->getType() === ReceiptType::PAYMENT) {
+        if ($request->getObjectType() === ReceiptType::PAYMENT) {
             $result['payment_id'] = $request->getObjectId();
-        } elseif ($request->getType() === ReceiptType::REFUND) {
+        } elseif ($request->getObjectType() === ReceiptType::REFUND) {
             $result['refund_id'] = $request->getObjectId();
         }
 

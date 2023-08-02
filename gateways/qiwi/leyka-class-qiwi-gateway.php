@@ -66,7 +66,7 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
 
         $donation = Leyka_Donations::get_instance()->get($donation_id);
 
-        $campaign = new Leyka_Campaign($form_data['leyka_campaign_id']);
+//        $campaign = new Leyka_Campaign($form_data['leyka_campaign_id']);
         $amount = absint($donation->amount);
 
         $bill = new Leyka_Qiwi_Gateway_Helper();
@@ -88,6 +88,13 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
         }
 
         $this->_qiwi_response = json_decode(wp_remote_retrieve_body($response));
+
+        if(empty($this->_qiwi_response->payUrl)) {
+            leyka()->add_payment_form_error(new WP_Error(
+                'gateway_settings_incorrect',
+                __('The gateway you used has incorrect or missing settings', 'leyka')
+            ));
+        }
 
         return $this->_qiwi_response;
 
@@ -127,7 +134,7 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
                 break;
             case 'redirect':
                 $url = add_query_arg(
-                    ['successUrl' => urlencode(get_permalink(leyka_options()->opt('quittance_redirect_page')))],
+                    ['successUrl' => urlencode(leyka_get_success_page_url())],
                     urldecode($_GET['url'])
                 );
                 wp_redirect($url, 302);

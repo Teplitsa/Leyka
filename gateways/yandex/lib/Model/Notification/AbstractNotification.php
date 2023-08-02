@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,16 +33,20 @@ use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
 use YooKassa\Helpers\TypeCast;
 use YooKassa\Model\NotificationEventType;
 use YooKassa\Model\NotificationType;
+use YooKassa\Model\PaymentInterface;
+use YooKassa\Model\RefundInterface;
 
 /**
  * Базовый класс уведомлений
  *
- * @package YooKassa\Model\Notification
+ * @example 03-notification.php 3 Пример скрипта обработки уведомления
+ *
+ * @package YooKassa
  *
  * @property-read string $type Тип уведомления в виде строки
  * @property-read string $event Тип события
  */
-abstract class AbstractNotification extends AbstractObject
+abstract class AbstractNotification extends AbstractObject implements NotificationInterface
 {
     /**
      * @var string Тип уведомления
@@ -134,5 +138,19 @@ abstract class AbstractNotification extends AbstractObject
                 'Invalid value type for "event" parameter in Notification', 0, 'notification.event', $value
             );
         }
+    }
+
+    /**
+     * Возвращает объект с информацией о платеже или возврате, уведомление о котором хранится в текущем объекте
+     *
+     * Так как нотификация может быть сгенерирована и поставлена в очередь на отправку гораздо раньше, чем она будет
+     * получена на сайте, то опираться на статус пришедшего платежа не стоит, лучше запросить текущую информацию о
+     * платеже у API.
+     *
+     * @return PaymentInterface|RefundInterface Объект с информацией о платеже
+     */
+    public function getObject()
+    {
+        return null;
     }
 }

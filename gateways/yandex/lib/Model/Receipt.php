@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -81,6 +81,7 @@ class Receipt extends AbstractObject implements ReceiptInterface
     }
 
     /**
+     * Устанавливает информацию о плательщике
      * @param ReceiptCustomer $customer
      */
     public function setCustomer($customer)
@@ -148,7 +149,7 @@ class Receipt extends AbstractObject implements ReceiptInterface
     }
 
     /**
-     * Возвращает массив оплат, обеспечивающих выдачу товара.
+     * Возвращает массив оплат, обеспечивающих выдачу товара
      *
      * @return SettlementInterface[] Массив оплат, обеспечивающих выдачу товара.
      */
@@ -158,7 +159,8 @@ class Receipt extends AbstractObject implements ReceiptInterface
     }
 
     /**
-     * Возвращает массив оплат, обеспечивающих выдачу товара.
+     * Возвращает массив оплат, обеспечивающих выдачу товара
+     *
      * @param SettlementInterface[] $value
      */
     public function setSettlements($value)
@@ -173,7 +175,9 @@ class Receipt extends AbstractObject implements ReceiptInterface
         }
         $this->_settlements = array();
         foreach ($value as $key => $val) {
-            if (is_object($val) && $val instanceof SettlementInterface) {
+            if (is_array($val)) {
+                $this->addSettlement(new Settlement($val));
+            } elseif ($val instanceof SettlementInterface) {
                 $this->addSettlement($val);
             } else {
                 throw new InvalidPropertyValueTypeException(
@@ -261,6 +265,7 @@ class Receipt extends AbstractObject implements ReceiptInterface
 
     /**
      * Возвращает стоимость доставки исходя из состава чека
+     *
      * @return int Стоимость доставки из состава чека в центах/копейках
      */
     public function getShippingAmountValue()
@@ -365,8 +370,9 @@ class Receipt extends AbstractObject implements ReceiptInterface
     }
 
     /**
-     * @deprecated 1.3.0 Устарел — данные рекомендуется брать в параметре receipt.customer.phone.
      * Возвращает номер телефона плательщика в формате ITU-T E.164 на который будет выслан чек
+     *
+     * @deprecated 1.3.0 Устарел — данные рекомендуется брать в параметре receipt.customer.phone.
      *
      * @return string Номер телефона плательщика
      */
@@ -376,8 +382,9 @@ class Receipt extends AbstractObject implements ReceiptInterface
     }
 
     /**
+     * Устанавливает номер телефона плательщика в формате ITU-T E.164 на который будет выслан чек
+     *
      * @deprecated 1.3.0 Устарел — данные рекомендуется передавать в параметре receipt.customer.phone.
-     * Устанавливливает номер телефона плательщика в формате ITU-T E.164 на который будет выслан чек
      *
      * @param string $value Номер телефона плательщика в формате ITU-T E.164
      *
@@ -392,8 +399,9 @@ class Receipt extends AbstractObject implements ReceiptInterface
     }
 
     /**
-     * @deprecated 1.3.0 Устарел — данные рекомендуется брать в параметре receipt.customer.email.
      * Возвращает адрес электронной почты на который будет выслан чек
+     *
+     * @deprecated 1.3.0 Устарел — данные рекомендуется брать в параметре receipt.customer.email.
      *
      * @return string E-mail адрес плательщика
      */
@@ -403,8 +411,9 @@ class Receipt extends AbstractObject implements ReceiptInterface
     }
 
     /**
-     * @deprecated 1.3.0 Устарел — данные рекомендуется передавать в параметре receipt.customer.email.
      * Устанавливает адрес электронной почты на который будет выслан чек
+     *
+     * @deprecated 1.3.0 Устарел — данные рекомендуется передавать в параметре receipt.customer.email.
      *
      * @param string $value E-mail адрес плательщика
      *
@@ -420,6 +429,7 @@ class Receipt extends AbstractObject implements ReceiptInterface
 
     /**
      * Устанавливает значения свойств текущего объекта из массива
+     *
      * @param array|\Traversable $sourceArray Ассоциативный массив с настройками
      */
     public function fromArray($sourceArray)

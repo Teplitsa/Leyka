@@ -257,12 +257,14 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             return false;
         }
 
+        $res = true;
+
         if($donation->type === 'single' || $donation->type === 'correction') {
-            Leyka_Donation_Management::send_donor_thanking_email_on_single($donation);
+            $res = Leyka_Donation_Management::send_donor_thanking_email_on_single($donation);
         } else if($donation->is_init_recurring_donation) { // Init recurring
-            Leyka_Donation_Management::send_donor_thanking_email_on_recurring_init($donation);
+            $res = Leyka_Donation_Management::send_donor_thanking_email_on_recurring_init($donation);
         } else if($donation->type === 'rebill') { // Non-init recurring
-            Leyka_Donation_Management::send_donor_thanking_email_on_recurring_ongoing($donation);
+            $res = Leyka_Donation_Management::send_donor_thanking_email_on_recurring_ongoing($donation);
         }
 
         if( !!$send_to_managers && leyka()->opt('donations_managers_emails') ) {
@@ -271,11 +273,11 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 ($donation->payment_type === 'single' && leyka()->opt('notify_donations_managers')) ||
                 ($donation->payment_type === 'rebill' && leyka()->opt('notify_managers_on_recurrents'))
             ) {
-                Leyka_Donation_Management::send_managers_notifications($donation);
+                $res &= Leyka_Donation_Management::send_managers_notifications($donation);
             }
         }
 
-        return true;
+        return $res;
 
     }
 
@@ -283,13 +285,23 @@ class Leyka_Donation_Management extends Leyka_Singleton {
     public function ajax_send_donor_email() {
 
         if(empty($_POST['donation_id']) || !wp_verify_nonce($_POST['nonce'], 'leyka_donor_email')) {
-            return;
+            die(__("For some reason, we can't send this email right now :( Please, try again later.", 'leyka'));
         }
 
         $donation = Leyka_Donations::get_instance()->get_donation($_POST['donation_id']);
 
-        if($donation && Leyka_Donation_Management::send_all_emails($donation, false)) {
-            die(__('Grateful email has been sent to the donor', 'leyka'));
+        if($donation) {
+
+            $res = $donation->status === 'failed' ?
+                Leyka_Donation_Management::send_error_notifications($donation) :
+                Leyka_Donation_Management::send_all_emails($donation, false);
+
+            if($res) {
+                die(__('Email notification has been sent to the donor', 'leyka'));
+            } else {
+                die(__("For some reason, we can't send this email right now :( Please, try again later.", 'leyka'));
+            }
+
         } else {
             die(__("For some reason, we can't send this email right now :( Please, try again later.", 'leyka'));
         }
@@ -991,6 +1003,10 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             return false;
         }
 
+        if( !apply_filters('leyka_send_error_email_notification', true, $donation) ) {
+            return true;
+        }
+
         $res = true;
 
         if(leyka_options()->opt('notify_tech_support_on_failed_donations')) { // Notification to Donations managers, if needed
@@ -1132,6 +1148,10 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             );
 
             remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
+
+            if($res) {
+                $donation->donor_email_date = current_time('timestamp');
+            }
 
         }
 
@@ -2036,15 +2056,15 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 			<div class="leyka-ddata-string donor has-thanks">
                 <label>
                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/admin-boxes/email-action-blue.svg" alt="email-action">
-                    <span><?php echo __('Grateful email to the donor has been sent', 'leyka');?></span>
+                    <span><?php echo __('Email notification to the donor has been sent', 'leyka');?></span>
                 </label>
                 <div class="leyka-ddata-field"><?php echo date(get_option('date_format').' H:i', $donation->donor_email_date);?></div>
             </div>
 		<?php } else {?>
-			<div class="leyka-ddata-string donor no-thanks" data-donation-id="<?php echo $donation->id;?>" data-nonce="<?php echo wp_create_nonce('leyka_donor_email');?>">
+			<div class="leyka-ddata-string leyka-no-donor-thanks donor no-thanks" data-donation-id="<?php echo $donation->id;?>" data-nonce="<?php echo wp_create_nonce('leyka_donor_email');?>">
                 <label>
                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/admin-boxes/email-action-gray.svg" alt="email-action">
-                    <span><?php _e("Grateful email hasn't been sent", 'leyka');?></span>
+                    <span><?php _e("Email notification to the donor hasn't been sent", 'leyka');?></span>
                 </label>
                 <div class="leyka-ddata-field"><div class='send-donor-thanks'><?php echo __('Send it now', 'leyka'); ?></div></div>
 			</div>
@@ -2059,7 +2079,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 <div class="leyka-ddata-field"><?php echo date(get_option('date_format').' H:i', $manager_notification_date);?></div>
             </div>
         <?php } else {?>
-            <div class="leyka-ddata-string donor no-thanks" data-donation-id="<?php echo $donation->id;?>" data-nonce="<?php echo wp_create_nonce('leyka_donor_email');?>">
+            <div class="leyka-ddata-string leyka-no-donor-thanks donor no-thanks" data-donation-id="<?php echo $donation->id;?>" data-nonce="<?php echo wp_create_nonce('leyka_donor_email');?>">
                 <label>
                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/admin-boxes/email-action-gray.svg" alt="email-action">
                     <span><?php _e("Donation managers' notification emails haven't been sent", 'leyka'); ?></span>

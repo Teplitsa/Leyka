@@ -1316,7 +1316,7 @@ jQuery(document).ready(function($){
         e.preventDefault();
 
         let $this = $(this),
-            $wrap = $this.parent(),
+            $wrap = $this.parents('.leyka-no-donor-thanks'),
             donation_id = $wrap.data('donation-id');
 
         $this.fadeOut(100, function(){
@@ -4463,6 +4463,49 @@ jQuery(document).ready(function($){
     
 });
 
+// MIXPLAT custom settings:
+jQuery(document).ready(function($){
+
+    let $gateway_settings = $('.single-gateway-settings.gateway-mixplat'),
+        $split_used = $gateway_settings.find('input[name="leyka_mixplat_split_enabled"]');
+
+    if( !$gateway_settings.length || !$split_used.length ) {
+        return;
+    }
+
+    $split_used.on('change.leyka', function(){
+
+        if($split_used.prop('checked')) {
+            $gateway_settings.find('.split').show();
+        } else {
+            $gateway_settings.find('.split').hide();
+        }
+
+    }).change();
+
+});
+
+jQuery(document).ready(function($){
+
+    let $gateway_settings = $('.single-gateway-settings.gateway-mixplat'),
+        $test_mode_used = $gateway_settings.find('input[name="leyka_mixplat_test_mode"]');
+
+    if( !$gateway_settings.length || !$test_mode_used.length ) {
+        return;
+    }
+
+    $test_mode_used.on('change.leyka', function(){
+
+        if($test_mode_used.prop('checked')) {
+            $gateway_settings.find('.test_mode').show();
+        } else {
+            $gateway_settings.find('.test_mode').hide();
+        }
+
+    }).change();
+
+});
+
 jQuery(document).ready(function($){
 
     // import { registerBlockType } from '@wordpress/blocks';
@@ -4704,7 +4747,7 @@ jQuery(document).ready(function($){
                                 '<span class="donation-email-date">'+donor.email_date+'</span>'+
                             '</div>';
                         } else {
-                            return '<div className="donor no-thanks" data-donation-id="'+donation_id+'" data-nonce="'+donor.wp_nonce+'">'+
+                            return '<div className="leyka-no-donor-thanks donor no-thanks" data-donation-id="'+donation_id+'" data-nonce="'+donor.wp_nonce+'">'+
                                 '<span className="donation-email-status">'+leyka_dt.notSent+'</span>'+
                                 '<span className="donation-email-action send-donor-thanks">'+leyka_dt.sendItNow+'</span>'+
                             '</div>';

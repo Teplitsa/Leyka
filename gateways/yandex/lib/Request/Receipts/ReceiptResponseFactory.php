@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,8 +30,9 @@ namespace YooKassa\Request\Receipts;
 use YooKassa\Model\ReceiptType;
 
 /**
- * Class ReceiptResponseFactory
- * @package YooKassa\Request\Receipts
+ * Фабричный класс для работы с чеками
+ *
+ * @package YooKassa
  */
 class ReceiptResponseFactory
 {
@@ -42,13 +43,21 @@ class ReceiptResponseFactory
     );
 
     /**
-     * @param array $data
+     * Фабричный метод для работы с чеками
      *
-     * @return AbstractReceiptResponse
+     * @param array $data Массив с данными чека
+     *
+     * @return AbstractReceiptResponse|SimpleReceiptResponse|PaymentReceiptResponse|RefundReceiptResponse Объект чека определенного типа
      */
     public function factory($data)
     {
         if (array_key_exists('type', $data)) {
+            if (!is_string($data['type'])) {
+                throw new \InvalidArgumentException('Invalid receipt type value in receipt factory');
+            }
+            if (!in_array($data['type'], ReceiptType::getEnabledValues())) {
+                throw new \InvalidArgumentException('Invalid receipt data type "' . $data['type'] . '"');
+            }
             if (array_key_exists('refund_id', $data)) {
                 $type = ReceiptType::REFUND;
             } elseif (array_key_exists('payment_id', $data)) {
@@ -61,12 +70,7 @@ class ReceiptResponseFactory
                 'Parameter type not specified in ReceiptResponseFactory.factory()'
             );
         }
-        if (!is_string($type)) {
-            throw new \InvalidArgumentException('Invalid receipt type value in receipt factory');
-        }
-        if (!in_array($type, ReceiptType::getValidValues())) {
-            throw new \InvalidArgumentException('Invalid receipt data type "' . $type . '"');
-        }
+
         $className = __NAMESPACE__ . '\\' . $this->typeClassMap[$type];
 
         return new $className($data);

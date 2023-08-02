@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,9 @@
 namespace YooKassa\Request\Payments\Payment;
 
 use YooKassa\Common\AbstractPaymentRequest;
+use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
 use YooKassa\Model\AmountInterface;
+use YooKassa\Model\Deal\CaptureDealData;
 use YooKassa\Model\ReceiptInterface;
 
 /**
@@ -35,9 +37,51 @@ use YooKassa\Model\ReceiptInterface;
  *
  * @property AmountInterface $amount Подтверждаемая сумма оплаты
  * @property ReceiptInterface $receipt Данные фискального чека 54-ФЗ
+ * @property CaptureDealData $deal Данные о сделке, в составе которой проходит платеж
  */
 class CreateCaptureRequest extends AbstractPaymentRequest implements CreateCaptureRequestInterface
 {
+    /** @var CaptureDealData */
+    private $_deal;
+
+    /**
+     * Возвращает данные о сделке, в составе которой проходит платеж
+     * @return CaptureDealData Данные о сделке, в составе которой проходит платеж
+     */
+    public function getDeal()
+    {
+        return $this->_deal;
+    }
+
+    /**
+     * Проверяет, были ли установлены данные о сделке
+     * @return bool True если данные о сделке были установлены, false если нет
+     */
+    public function hasDeal()
+    {
+        return !empty($this->_deal);
+    }
+
+    /**
+     * Устанавливает данные о сделке, в составе которой проходит платеж.
+     * @param CaptureDealData|array|null $value Данные о сделке, в составе которой проходит платеж
+     *
+     * @throws InvalidPropertyValueTypeException Выбрасывается если переданные данные не удалось интерпретировать как метаданные платежа
+     */
+    public function setDeal($value)
+    {
+        if ($value === null || (is_array($value) && empty($value))) {
+            $this->_deal = null;
+        } elseif ($value instanceof CaptureDealData) {
+            $this->_deal = $value;
+        } elseif (is_array($value)) {
+            $this->_deal = new CaptureDealData($value);
+        } else {
+            throw new InvalidPropertyValueTypeException(
+                'Invalid deal value type in CreateCaptureRequest', 0, 'CreateCaptureRequest.deal', $value
+            );
+        }
+    }
 
     /**
      * Валидирует объект запроса
@@ -45,14 +89,14 @@ class CreateCaptureRequest extends AbstractPaymentRequest implements CreateCaptu
      */
     public function validate()
     {
-        if ($this->_amount !== null) {
-            $value = $this->_amount->getValue();
+        if ($this->hasAmount()) {
+            $value = $this->getAmount()->getValue();
             if (empty($value) || $value <= 0.0) {
                 $this->setValidationError('Invalid amount value: ' . $value);
                 return false;
             }
         }
-        if ($this->getReceipt() && $this->getReceipt()->notEmpty()) {
+        if ($this->hasReceipt() && $this->getReceipt()->notEmpty()) {
             $email = $this->getReceipt()->getCustomer()->getEmail();
             $phone = $this->getReceipt()->getCustomer()->getPhone();
             if (empty($email) && empty($phone)) {

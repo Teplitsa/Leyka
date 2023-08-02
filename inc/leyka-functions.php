@@ -224,7 +224,7 @@ function leyka_get_validated_campaign($campaign) {
         return false;
     }
 
-    return $campaign ? $campaign : false;
+    return $campaign ? : false;
 
 }
 
@@ -1519,7 +1519,7 @@ function leyka_get_campaign_by_title($campaign_title, $get_default_if_not_found 
     $campaign = get_posts([ // Try to find Campaign by its post title
         'post_type' => Leyka_Campaign_Management::$post_type,
         'post_status' => 'publish',
-        's' => $campaign_title,
+        'title' => $campaign_title,
         'posts_per_page' => 1,
     ]);
 
@@ -1578,7 +1578,8 @@ function leyka_get_terms_text() {
     return apply_filters(
         'leyka_terms_of_service_text',
         leyka_options()->opt('receiver_legal_type') === 'legal' ?
-            leyka_options()->opt('terms_of_service_text') : leyka_options()->opt('person_terms_of_service_text')
+            leyka_options()->opt('terms_of_service_text') :
+            leyka_options()->opt('person_terms_of_service_text')
     );
 }
 
@@ -1706,6 +1707,7 @@ function leyka_form_is_displayed($widgets_also = true) {
     $template = get_page_template_slug();
 
     $content_has_shortcode = false;
+    $content_has_block     = false;
     if(get_post()) {
         foreach(leyka_get_shortcodes() as $shortcode_tag) {
             if(has_shortcode(get_post()->post_content, $shortcode_tag)) {
@@ -1715,6 +1717,9 @@ function leyka_form_is_displayed($widgets_also = true) {
 
             }
         }
+        if(has_block('leyka/form', get_post()->ID)) {
+            $content_has_block = true;
+        }
     }
 
     return leyka()->form_is_screening ||
@@ -1722,6 +1727,7 @@ function leyka_form_is_displayed($widgets_also = true) {
         stristr($template, 'home-campaign_one') !== false ||
         stripos($template, 'leyka') !== false ||
         $content_has_shortcode ||
+        $content_has_block ||
         ( !!$widgets_also && leyka_is_widget_active() );
 
 }

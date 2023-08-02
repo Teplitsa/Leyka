@@ -829,7 +829,7 @@ jQuery(document).ready(function($){
 
         $('.leyka-tpl-star-form').on('submit.leyka', 'form.leyka-pm-form', function(e){
 
-            var $form = $(this),
+            let $form = $(this),
                 $currency_tab = $form.find('.currency-tab:not(.leyka-hidden)'),
                 $errors = $form.parents('.leyka-payment-form').siblings('.leyka-submit-errors'),
                 $pm_selected = $form.find('input[name="leyka_payment_method"]:checked'),
@@ -857,17 +857,19 @@ jQuery(document).ready(function($){
             }
 
             // Open "waiting" form section:
-            var $redirect_section = $form.closest('.leyka-pf').find('.leyka-pf__redirect'),
+            let $redirect_section = $form.closest('.leyka-pf').find('.leyka-pf__redirect'),
                 data_array = $form.serializeArray(),
                 data = {action: 'leyka_ajax_get_gateway_redirect_data'};
 
-            for(var i = 0; i < data_array.length; i++) {
+            for(let i = 0; i < data_array.length; i++) {
                 data[data_array[i].name] = data_array[i].value;
             }
 
             if($pm_selected.data('ajax-without-form-submission')) {
                 data['without_form_submission'] = true;
             }
+
+            let $form_submit = $form.find('.leyka-default-submit').prop('disabled', 'disabled'); // To prevent multiple clicks
 
             // Get gateway redirection form and submit it manually:
             $.post(leyka_get_ajax_url(), data).done(function(response){
@@ -883,7 +885,7 @@ jQuery(document).ready(function($){
                     return false;
                 }
 
-                var redirect_form_html = '<form class="leyka-auto-submit" action="'+response.payment_url+'" method="post">';
+                let redirect_form_html = '<form class="leyka-auto-submit" action="'+response.payment_url+'" method="post">';
 
                 $.each(response, function(field_name, value){
                     if(field_name !== 'payment_url') {
@@ -899,6 +901,8 @@ jQuery(document).ready(function($){
                 } else if(response.submission_redirect_type === 'redirect') {
                     window.location.href = $redirect_section.find('.leyka-auto-submit').attr('action'); // Don't use prop() here
                 }
+
+                $form_submit.removeProp('disabled');
 
             });
 

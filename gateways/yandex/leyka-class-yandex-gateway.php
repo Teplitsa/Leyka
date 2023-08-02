@@ -32,7 +32,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
         $this->_docs_link = '//leyka.te-st.ru/docs/yandex-dengi/';
         $this->_registration_link = 'https://kassa.yandex.ru/joinups';
-        $this->_has_wizard = true;
+        $this->_has_wizard = false; // For now; the Wizard is outdated
 
         $this->_min_commission = 2.8;
         $this->_receiver_types = ['legal'];
@@ -206,6 +206,11 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         if(empty($this->_payment_methods['yandex_pb'])) {
             $this->_payment_methods['yandex_pb'] = Leyka_Yandex_Promvzyazbank::get_instance();
         }
+        //TODO добавление связки с классом
+        if(empty($this->_payment_methods['yandex_sbp'])) {
+            $this->_payment_methods['yandex_sbp'] = Leyka_Yandex_SBP::get_instance();
+        }
+        //TODO конец
 
     }
 
@@ -931,6 +936,7 @@ techMessage="'.$tech_message.'"/>');
             'yandex_sb' => 'sberbank',
             'yandex_ab' => 'alfabank',
             'yandex_pb' => 'psb',
+            'yandex_sbp' => 'sbp', // TODO добавляю тип sbp
         ] : [
             'yandex_all' => '',
             'yandex_card' => 'AC',
@@ -939,6 +945,7 @@ techMessage="'.$tech_message.'"/>');
             'yandex_sb' => 'SB',
             'yandex_ab' => 'AB',
             'yandex_pb' => 'PB',
+            'yandex_sbp' => 'sbp',// TODO добавляю тип sbp
         ];
 
         if(array_key_exists($pm_id, $all_pm_ids)) {
@@ -1287,6 +1294,41 @@ class Leyka_Yandex_Promvzyazbank extends Leyka_Payment_Method {
     }
 
 }
+
+class Leyka_Yandex_SBP extends Leyka_Payment_Method { //TODO расширение от базового метода
+
+    protected static $_instance = null;
+
+    public function _set_attributes() {
+
+        $this->_id = 'yandex_sbp';
+        $this->_gateway_id = 'yandex';
+        $this->_category = 'online_banking';
+
+        $this->_description = apply_filters(
+            'leyka_pm_description',//TODO описание продумать
+            __('<a href="https://api.yookassa.ru/v3/payments">SBP-YooKassa</a>. It allows you to make many banking operations at any moment without applying to the bank department, using your computer.', 'leyka'),
+            $this->_id,
+            $this->_gateway_id,
+            $this->_category
+        );
+
+        $this->_label_backend = __('СБП ЮКасса', 'leyka'); //TODO название в админке
+        $this->_label = __('SBP YooKassa', 'leyka');
+
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, [
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/sbp.svg', //TODO проверить есть ли файл
+        ]);
+
+        $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, []);
+
+        $this->_supported_currencies[] = 'rub';
+        $this->_default_currency = 'rub';
+
+    }
+
+}
+// TODO конец
 
 function leyka_add_gateway_yandex() { // Use named function to leave a possibility to remove/replace it on the hook
     leyka()->add_gateway(Leyka_Yandex_Gateway::get_instance());

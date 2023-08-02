@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -76,6 +76,7 @@ class VatData extends AbstractObject implements VatDataInterface
     }
 
     /**
+     * Возвращает способ расчёта НДС
      * @return string Способ расчёта НДС
      */
     public function getType()
@@ -106,6 +107,7 @@ class VatData extends AbstractObject implements VatDataInterface
     }
 
     /**
+     * Возвращает налоговую ставку НДС
      * @return string Налоговая ставка НДС
      */
     public function getRate()

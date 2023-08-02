@@ -759,32 +759,32 @@ function leyka_pf_get_honeypot_value() {
 }
 
 function leyka_pf_get_amount_value() {
-    return empty($_POST['leyka_donation_amount']) ? '' : $_POST['leyka_donation_amount'];
+    return empty($_POST['leyka_donation_amount']) ? '' : round((float)$_POST['leyka_donation_amount'], 2);
 }
 
 function leyka_pf_get_currency_value() {
-    return empty($_POST['leyka_donation_currency']) ? '' : strtolower($_POST['leyka_donation_currency']);
+    return empty($_POST['leyka_donation_currency']) ? '' : strtolower(strip_tags($_POST['leyka_donation_currency']));
 }
 
 function leyka_pf_get_donor_name_value() {
-    return empty($_POST['leyka_donor_name']) ? '' : stripslashes($_POST['leyka_donor_name']);
+    return empty($_POST['leyka_donor_name']) ? '' : stripslashes(strip_tags($_POST['leyka_donor_name']));
 }
 
 function leyka_pf_get_donor_email_value() {
-    return empty($_POST['leyka_donor_email']) ? '' : $_POST['leyka_donor_email'];
+    return empty($_POST['leyka_donor_email']) ? '' : strip_tags($_POST['leyka_donor_email']);
 }
 
 function leyka_pf_get_donor_comment_value() {
-    return empty($_POST['leyka_donor_comment']) ? '' : $_POST['leyka_donor_comment'];
+    return empty($_POST['leyka_donor_comment']) ? '' : strip_tags($_POST['leyka_donor_comment']);
 }
 
 function leyka_pf_get_campaign_id_value() {
-    return empty($_POST['leyka_campaign_id']) ? 0 : $_POST['leyka_campaign_id'];
+    return empty($_POST['leyka_campaign_id']) ? 0 : absint($_POST['leyka_campaign_id']);
 }
 
 function leyka_pf_get_payment_method_value() {
 
-    $pm = empty($_POST['leyka_payment_method']) ? '' : explode('-', $_POST['leyka_payment_method']);
+    $pm = empty($_POST['leyka_payment_method']) ? '' : explode('-', strip_tags($_POST['leyka_payment_method']));
 
     return $pm ? ['gateway_id' => $pm[0], 'payment_method_id' => implode('-', array_slice($pm, 1))] : [];
 
@@ -954,7 +954,7 @@ function leyka_print_donation_elements($content) {
     }
 
 	$campaign = new Leyka_Campaign($current_campaign_post);
-	if($campaign->ignore_global_template_settings) {
+	if($campaign->status === 'publish' && $campaign->ignore_global_template_settings) {
 		return $content;
     }
 
@@ -963,10 +963,13 @@ function leyka_print_donation_elements($content) {
 
 	// Scale on top of form:
 	if(
-	    leyka_options()->opt_template('scale_widget_place') === 'top'
-        || leyka_options()->opt_template('scale_widget_place') === 'both'
+        !leyka_modern_template_displayed()
+	    && (
+            leyka_options()->opt_template('scale_widget_place') === 'top'
+            || leyka_options()->opt_template('scale_widget_place') === 'both'
+        )
     ) {
-        $content .= do_shortcode("[leyka_scale show_button='1']");
+        $content .= do_shortcode('[leyka_scale show_button="1"]');
     }
 
 	$content .= $post_content;
@@ -979,7 +982,7 @@ function leyka_print_donation_elements($content) {
             || leyka_options()->opt_template('scale_widget_place') === 'both'
         )
     ) {
-        $content .= do_shortcode("[leyka_scale show_button='0']");
+        $content .= do_shortcode('[leyka_scale show_button="0"]');
     }
 
     $content .= get_leyka_payment_form_template_html($current_campaign_post); // Payment form

@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,12 +32,12 @@ use YooKassa\Model\ConfirmationType;
  * Сценарий при котором необходимо ожидать пока пользователь самостоятельно подтвердит платеж. Например,
  * пользователь подтверждает платеж ответом на SMS или в приложении партнера
  *
- * @package YooKassa\Model\Confirmation
+ * @package YooKassa
  */
 class ConfirmationExternal extends AbstractConfirmation
 {
     public function __construct()
     {
-        $this->_setType(ConfirmationType::EXTERNAL);
+        $this->setType(ConfirmationType::EXTERNAL);
     }
 }

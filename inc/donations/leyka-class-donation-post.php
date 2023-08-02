@@ -255,11 +255,6 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                 (float)$meta['leyka_donation_main_currency_rate'][0] :
                 leyka_get_currency_rate($donation_currency);
 
-            $this->set_meta('leyka_donation_main_currency_id', $main_currency);
-            $this->set_meta('leyka_donation_main_currency_amount', $donation_main_currency_amount);
-            $this->set_meta('leyka_donation_main_currency_amount_total', $donation_main_currency_amount_total);
-            $this->set_meta('leyka_donation_main_currency_rate', $donation_main_currency_rate);
-
             do_action('leyka_donation_constructor_meta', $meta, $this->_id);
 
             $this->_donation_meta = apply_filters('leyka_donation_constructor_meta', [
@@ -416,7 +411,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
                 $value = apply_filters(
                     'leyka_admin_donation_date',
-                    date($date_format, $donation_timestamp),
+                    date_i18n($date_format, $donation_timestamp),
                     $donation_timestamp, $date_format
                 );
                 break;
@@ -443,7 +438,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
                 $value = apply_filters(
                     'leyka_admin_donation_date_time',
-                    date("$date_format, $time_format", $donation_timestamp),
+                    date_i18n("$date_format, $time_format", $donation_timestamp),
                     $donation_timestamp, $date_format, $time_format
                 );
                 break;
@@ -1465,7 +1460,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             }
         }
 
-        return $last_date_funded ? $last_date_funded : false;
+        return $last_date_funded ? : false;
 
     }
 

@@ -10,7 +10,7 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
 
     protected static $_instance;
 
-    protected static $_max_gds_allowed_data_lines = 100000;
+    protected static $_max_gds_allowed_data_lines = 150000;
 
     protected function _set_attributes() {
 
@@ -172,7 +172,7 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
 
         $wpdb->query("DROP TABLE IF EXISTS `{$wpdb->prefix}leyka_gds_integration_donations_data`;");
         $wpdb->query("CREATE TABLE `{$wpdb->prefix}leyka_gds_integration_donations_data` (
-          `ID` bigint(20) UNSIGNED NOT NULL,
+          `ID` bigint(20) UNSIGNED PRIMARY KEY NOT NULL,
           `donation_date` datetime NOT NULL,
           `payment_type` varchar(40) COLLATE utf8mb4_unicode_ci NOT NULL,
           `gateway_title` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,

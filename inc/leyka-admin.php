@@ -1175,7 +1175,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
      */
     public function save_user_profile_donor_fields($donor_user_id) {
 
-        if( !current_user_can('administrator') || !is_array($_POST['leyka_donor_tags']) ) {
+        if( !current_user_can('administrator') || empty($_POST['leyka_donor_tags']) || !is_array($_POST['leyka_donor_tags']) ) {
             return false;
         }
 
@@ -1305,7 +1305,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	}
 
 	public function get_current_settings_tab() {
-		return empty($_GET['stage']) ? $this->get_default_settings_tab() : trim($_GET['stage']);
+		return empty($_GET['stage']) ?
+            $this->get_default_settings_tab() :
+            esc_attr( str_replace('>', '', wp_strip_all_tags(trim($_GET['stage']))) );
 	}
 
 	public function settings_tabs_menu() {

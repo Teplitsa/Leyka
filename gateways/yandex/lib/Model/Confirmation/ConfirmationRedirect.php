@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,13 +35,11 @@ use YooKassa\Model\ConfirmationType;
  * подтверждения платежа
  *
  * @property bool $enforce Требование принудительного подтверждения платежа покупателем, требование 3-D Secure для
- * оплаты банковскими картами. По умолчанию определяется политикой платежной системы.
- * @property string $returnUrl URL на который вернется плательщик после подтверждения или отмены платежа на
- * странице партнера.
- * @property string $return_url URL на который вернется плательщик после подтверждения или отмены платежа на
- * странице партнера.
- * @property string $confirmationUrl URL на который необходимо перенаправить плательщика для подтверждения оплаты.
- * @property string $confirmation_url URL на который необходимо перенаправить плательщика для подтверждения оплаты.
+ * оплаты банковскими картами. По умолчанию определяется политикой платежной системы
+ * @property string $returnUrl URL на который вернется плательщик после подтверждения или отмены платежа на странице партнера
+ * @property string $return_url URL на который вернется плательщик после подтверждения или отмены платежа на странице партнера
+ * @property string $confirmationUrl URL на который необходимо перенаправить плательщика для подтверждения оплаты
+ * @property string $confirmation_url URL на который необходимо перенаправить плательщика для подтверждения оплаты
  */
 class ConfirmationRedirect extends AbstractConfirmation
 {
@@ -63,7 +61,7 @@ class ConfirmationRedirect extends AbstractConfirmation
 
     public function __construct()
     {
-        $this->_setType(ConfirmationType::REDIRECT);
+        $this->setType(ConfirmationType::REDIRECT);
     }
 
     /**

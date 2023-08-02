@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,28 +29,32 @@ namespace YooKassa\Model;
 /**
  * Interface TransferInterface
  *
- * @package YooKassa\Model
+ * Данные о распределении денег — сколько и в какой магазин нужно перевести.
+ * Присутствует, если вы используете решение ЮKassa для платформ.
  *
- * @property AmountInterface $amount
- * @property AmountInterface $platform_fee_amount
- * @property string $accountId
- * @property string $status
+ * @property AmountInterface $amount Сумма, которую необходимо перечислить магазину
+ * @property AmountInterface $platform_fee_amount Комиссия за проданные товары и услуги, которая удерживается с магазина в вашу пользу
+ * @property string $accountId Идентификатор магазина, в пользу которого вы принимаете оплату
+ * @property string $status Статус распределения денег между магазинами. Возможные значения: `pending`, `waiting_for_capture`, `succeeded`, `canceled`
+ * @property Metadata $metadata Любые дополнительные данные, которые нужны вам для работы с платежами (например, номер заказа)
+ *
+ * @package YooKassa
  */
 interface TransferInterface
 {
     /**
-     * Устаналивает id магазина-получателя средств
+     * Устанавливает идентификатор магазина-получателя средств
      *
-     * @param string $value
+     * @param string $value Идентификатор магазина-получателя средств
      *
      * @return void
      */
     public function setAccountId($value);
 
     /**
-     * Возвращает id магазина-получателя средств
+     * Возвращает идентификатор магазина-получателя средств
      *
-     * @return string|null
+     * @return string|null Идентификатор магазина-получателя средств
      */
     public function getAccountId();
 
@@ -62,7 +66,7 @@ interface TransferInterface
     public function getAmount();
 
     /**
-     * Проверяет была ли установлена сумма оплаты
+     * Проверяет, была ли установлена сумма оплаты
      *
      * @return bool True если сумма оплаты была установлена, false если нет
      */
@@ -82,7 +86,7 @@ interface TransferInterface
     public function getPlatformFeeAmount();
 
     /**
-     * Проверяет была ли установлена комиссия за проданные товары и услуги, которая удерживается с магазина в вашу пользу
+     * Проверяет, была ли установлена комиссия за проданные товары и услуги, которая удерживается с магазина в вашу пользу
      *
      * @return bool True если комиссия была установлена, false если нет
      */
@@ -95,7 +99,33 @@ interface TransferInterface
     public function setPlatformFeeAmount($value);
 
     /**
-     * @return string|null статус операции распределения средств конечному получателю
+     * Возвращает статус операции распределения средств конечному получателю
+     * @return string|null Статус операции распределения средств конечному получателю
      */
     public function getStatus();
+
+    /**
+     * Устанавливает статус операции распределения средств конечному получателю
+     * @param string|null $value
+     */
+    public function setStatus($value);
+
+    /**
+     * Устанавливает метаданные
+     * @param Metadata|array $value Метаданные
+     */
+    public function setMetadata($value);
+
+    /**
+     * Возвращает метаданные
+     * @return Metadata|null Метаданные
+     */
+    public function getMetadata();
+
+    /**
+     * Проверяет, были ли установлены метаданные
+     *
+     * @return bool True если метаданные были установлены, false если нет
+     */
+    public function hasMetadata();
 }

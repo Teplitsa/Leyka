@@ -194,7 +194,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
 
         if( !$this->get_available_campaign() ) {
             echo '<div class="error">
-                <p>'.sprintf(__("<strong>Leyka warning!</strong> The Support packages Extension currently doesn't have a campaign for donors to make recurring subscriptions. The campaign must be <strong>published</strong>, <strong>not marked as \"finished\"</strong> and, ideally, <strong>marked as persistent</strong> to be available.<br><br>Please see to it that you have at least <strong>one such campaign</strong>, and select the campaign in the <a href='%s'>Support packages settings page</a>.", 'leyka'), admin_url('admin.php?page=leyka_extension_settings&extension='.$this->_id)).'</p>
+                <p>'.sprintf(__("<strong>Leyka warning!</strong> The Support packages Extension currently doesn't have a campaign for donors to make recurring subscriptions. The campaign must be <strong>published</strong>, <strong>not marked as \"finished\"</strong> and, ideally, <strong>marked as persistent</strong> to be available.<br><br>Please see to it that you have at least <strong>one such campaign</strong>, and select the campaign in the <a href='%s'>Support packages settings page</a>.", 'leyka'), admin_url('admin.php?page=leyka_settings&stage=extensions&extension='.$this->_id)).'</p>
             </div>';
         }
 

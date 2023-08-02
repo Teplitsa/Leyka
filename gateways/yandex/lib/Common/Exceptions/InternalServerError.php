@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,13 @@
 
 namespace YooKassa\Common\Exceptions;
 
+/**
+ * Технические неполадки на стороне ЮKassa. Результат обработки запроса неизвестен. Повторите запрос позднее с тем же ключом идемпотентности.
+ *
+ * Рекомендуется повторять запрос с периодичностью один раз в минуту до тех пор, пока ЮKassa не сообщит результат обработки операции.
+ *
+ * @package YooKassa
+ */
 class InternalServerError extends ApiException
 {
     const HTTP_CODE = 500;

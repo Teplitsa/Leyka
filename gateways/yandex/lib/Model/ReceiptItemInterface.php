@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ namespace YooKassa\Model;
 /**
  * Interface ReceiptItemInterface
  *
- * @package YooKassa\Model
+ * @package YooKassa
  *
  * @property-read string $description Наименование товара
  * @property-read float $quantity Количество
@@ -77,7 +77,7 @@ interface ReceiptItemInterface
 
     /**
      * Возвращает ставку НДС
-     * @return int|null Ставка НДС, число 1-6, или null если ставка не задана
+     * @return int|null Ставка НДС, число 1-6, или null, если ставка не задана
      */
     function getVatCode();
 

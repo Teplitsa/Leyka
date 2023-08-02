@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,13 +36,17 @@ use YooKassa\Common\AbstractEnum;
  * |waiting_for_capture|Успешно оплачен покупателем, ожидает подтверждения магазином (capture или aviso)|
  * |succeeded|Успешно оплачен и подтвержден магазином|
  * |canceled|Неуспех оплаты или отменен магазином (cancel)|
- * 
+ *
  */
 class PaymentStatus extends AbstractEnum
 {
+    /** Ожидает оплаты покупателем */
     const PENDING = 'pending';
+    /** Ожидает подтверждения магазином */
     const WAITING_FOR_CAPTURE = 'waiting_for_capture';
+    /** Успешно оплачен и подтвержден магазином */
     const SUCCEEDED = 'succeeded';
+    /** Неуспех оплаты или отменен магазином */
     const CANCELED = 'canceled';
 
     protected static $validValues = array(

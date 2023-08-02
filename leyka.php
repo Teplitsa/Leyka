@@ -2,11 +2,11 @@
 
 /**
  * Plugin Name: Leyka
- * Plugin URI:  https://leyka.te-st.ru/
+ * Plugin URI:  https://leyka.org/
  * Description: Donations management system for your WP site. For NGOs and social projects.
- * Version:     3.29.2
+ * Version:     3.30.3
  * Author:      Teplitsa of social technologies
- * Author URI:  https://te-st.ru
+ * Author URI:  https://te-st.org
  * Text Domain: leyka
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  * Contributors:
@@ -18,7 +18,7 @@
     Marie Borisyonok (pro100mary@gmail.com)
 
  * License: GPLv2 or later
-	Copyright (C) 2012-2021 by Teplitsa of Social Technologies (http://te-st.ru).
+	Copyright (C) 2012-2023 by Teplitsa of Social Technologies (https://te-st.org).
 
 	GNU General Public License, Free Software Foundation <http://www.gnu.org/licenses/gpl-2.0.html>
 
@@ -39,7 +39,7 @@
 
 // Leyka plugin version:
 if( !defined('LEYKA_VERSION') ) {
-    define('LEYKA_VERSION', '3.29.2');
+    define('LEYKA_VERSION', '3.30.3');
 }
 
 // Plugin base file:
@@ -107,7 +107,7 @@ if(in_array(get_option('leyka_donations_storage_type'), ['sep', 'sep-incompleted
 } else {
     require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donation-post.php');
 }
-require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donations-management.php'); /** @todo Make this class ADMIN ONLY. */
+require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donations-management.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donations.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/donations/leyka-class-donations-errors.php');
 
@@ -118,7 +118,6 @@ require_once(LEYKA_PLUGIN_DIR.'inc/leyka-ajax.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-shortcodes.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-widgets.php');
 require_once(LEYKA_PLUGIN_DIR.'inc/leyka-hooks.php');
-//require_once(ABSPATH.'wp-admin/includes/meta-boxes.php');
 
 if(version_compare( $GLOBALS['wp_version'], '5.8', '>=' )) {
     require_once(LEYKA_PLUGIN_DIR.'editor/leyka-editor.php');

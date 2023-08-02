@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,14 @@
 
 namespace YooKassa\Common;
 
+if (!defined('YOOKASSA_DATE')) {
+    if (version_compare(PHP_VERSION, '7.0') >= 0) {
+        define('YOOKASSA_DATE', "Y-m-d\TH:i:s.vP");
+    } else {
+        define('YOOKASSA_DATE', "Y-m-d\TH:i:s.uP");
+    }
+}
+
 if (!interface_exists('JsonSerializable')) {
     require_once dirname(__FILE__) . '/legacy_json_serializable.php';
 }
@@ -33,7 +41,7 @@ if (!interface_exists('JsonSerializable')) {
 /**
  * Базовый класс генерируемых объектов
  *
- * @package YooKassa\Common
+ * @package YooKassa
  */
 abstract class AbstractObject implements \ArrayAccess, \JsonSerializable
 {
@@ -169,13 +177,23 @@ abstract class AbstractObject implements \ArrayAccess, \JsonSerializable
 
     /**
      * Устанавливает значения свойств текущего объекта из массива
-     * @param array|\Traversable $sourceArray Ассоциативный массив с найтройками
+     * @param array|\Traversable $sourceArray Ассоциативный массив с настройками
      */
     public function fromArray($sourceArray)
     {
         foreach ($sourceArray as $key => $value) {
             $this->offsetSet($key, $value);
         }
+    }
+
+    /**
+     * Возвращает ассоциативный массив со свойствами текущего объекта для его дальнейшей JSON сериализации
+     * Является алиасом метода AbstractObject::jsonSerialize()
+     * @return array Ассоциативный массив со свойствами текущего объекта
+     */
+    public function toArray()
+    {
+        return $this->jsonSerialize();
     }
 
     /**
@@ -212,12 +230,18 @@ abstract class AbstractObject implements \ArrayAccess, \JsonSerializable
 
     private function serializeValueToJson($value)
     {
-        if ($value === null || is_scalar($value) || is_array($value)) {
+        if ($value === null || is_scalar($value)) {
             return $value;
+        } elseif (is_array($value)) {
+            $array = array();
+            foreach ($value as $key => $item) {
+                $array[$key] = $this->serializeValueToJson($item);
+            }
+            return $array;
         } elseif (is_object($value) && $value instanceof \JsonSerializable) {
             return $value->jsonSerialize();
         } elseif (is_object($value) && $value instanceof \DateTime) {
-            return $value->format(DATE_ATOM);
+            return $value->format(YOOKASSA_DATE);
         }
         return $value;
     }
@@ -238,6 +262,6 @@ abstract class AbstractObject implements \ArrayAccess, \JsonSerializable
      */
     private static function matchPropertyName($property)
     {
-        return preg_replace('/\_(\w)/', '\1', $property);
+        return preg_replace('/_(\w)/', '\1', $property);
     }
 }

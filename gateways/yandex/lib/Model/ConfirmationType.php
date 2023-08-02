@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,26 +34,26 @@ use YooKassa\Common\AbstractEnum;
  * --- | ---
  * |redirect|Необходимо направить плательщика на страницу партнера|
  * |external|Необходимо ождать пока плательщик самостоятельно подтвердит платеж|
- * |deeplink|Необходимо направить плательщика в приложение партнера|
  * |code_verification|Необходимо получить одноразовый код от плательщика для подтверждения платежа|
  * |embedded|Необходимо получить токен для checkout.js|
  * |qr|Необходимо получить QR-код|
+ * |mobile_application|необходимо совершить действия в мобильном приложении|
  */
 class ConfirmationType extends AbstractEnum
 {
-    const REDIRECT          = 'redirect';
-    const EXTERNAL          = 'external';
-    const DEEPLINK          = 'deeplink';
-    const CODE_VERIFICATION = 'code_verification';
-    const EMBEDDED          = 'embedded';
-    const QR                = 'qr';
+    const REDIRECT           = 'redirect';
+    const EXTERNAL           = 'external';
+    const CODE_VERIFICATION  = 'code_verification';
+    const EMBEDDED           = 'embedded';
+    const QR                 = 'qr';
+    const MOBILE_APPLICATION = 'mobile_application';
 
     protected static $validValues = array(
-        self::REDIRECT          => true,
-        self::EXTERNAL          => true,
-        self::DEEPLINK          => false,
-        self::CODE_VERIFICATION => false,
-        self::EMBEDDED          => true,
-        self::QR                => true,
+        self::REDIRECT           => true,
+        self::EXTERNAL           => true,
+        self::CODE_VERIFICATION  => false,
+        self::EMBEDDED           => true,
+        self::QR                 => true,
+        self::MOBILE_APPLICATION => true,
     );
 }

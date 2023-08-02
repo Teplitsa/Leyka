@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ use YooKassa\Model\PaymentMethodType;
 /**
  * PaymentDataBankCard
  * Платежные данные для проведения оплаты при помощи банковской карты
- * 
+ *
  * @property PaymentDataBankCardCard $card Данные банковской карты
  */
 class PaymentDataBankCard extends AbstractPaymentData
@@ -49,6 +49,7 @@ class PaymentDataBankCard extends AbstractPaymentData
     }
 
     /**
+     * Возвращает данные банковской карты
      * @return PaymentDataBankCardCard Данные банковской карты
      */
     public function getCard()
@@ -57,6 +58,7 @@ class PaymentDataBankCard extends AbstractPaymentData
     }
 
     /**
+     * Устанавливает данные банковской карты
      * @param PaymentDataBankCardCard|array $value Данные банковской карты
      */
     public function setCard($value)

@@ -3,6 +3,11 @@
 
 /** Terms text filters */
 function leyka_terms_of_service_text($text) {
+
+    $is_legal = leyka_options()->opt('receiver_legal_type') === 'legal';
+
+    $text = strip_tags($text, '<p><br><strong><b><em><i><u><blockquote><del><ul><ol><li><a>'); // Remove possible XSS attacks
+
     return wpautop(str_replace(
         [
             '#SITE_URL#',
@@ -29,17 +34,17 @@ function leyka_terms_of_service_text($text) {
             home_url(),
             get_bloginfo('name'),
             get_option('admin_email'),
-            leyka_options()->opt('org_full_name'),
-            leyka_options()->opt('org_face_fio_ip'),
-            leyka_options()->opt('org_face_position'),
-            leyka_options()->opt('org_address'),
-            leyka_options()->opt('org_state_reg_number'),
-            leyka_options()->opt('org_kpp'),
-            leyka_options()->opt('org_inn'),
-            leyka_options()->opt('org_bank_account'),
-            leyka_options()->opt('org_bank_name'),
-            leyka_options()->opt('org_bank_bic'),
-            leyka_options()->opt('org_bank_corr_account'),
+            $is_legal ? leyka_options()->opt('org_full_name') : leyka_options()->opt('person_full_name'),
+            $is_legal ? leyka_options()->opt('org_face_fio_ip') : leyka_options()->opt('person_full_name'),
+            $is_legal ? leyka_options()->opt('org_face_position') : '',
+            $is_legal ? leyka_options()->opt('org_address') : leyka_options()->opt('person_address'),
+            $is_legal ? leyka_options()->opt('org_state_reg_number') : '',
+            $is_legal ? leyka_options()->opt('org_kpp') : '',
+            $is_legal ? leyka_options()->opt('org_inn') : leyka_options()->opt('person_inn'),
+            $is_legal ? leyka_options()->opt('org_bank_account') : leyka_options()->opt('person_bank_account'),
+            $is_legal ? leyka_options()->opt('org_bank_name') : leyka_options()->opt('person_bank_name'),
+            $is_legal ? leyka_options()->opt('org_bank_bic') : leyka_options()->opt('person_bank_bic'),
+            $is_legal ? leyka_options()->opt('org_bank_corr_account') : leyka_options()->opt('person_bank_corr_account'),
             leyka_get_terms_of_service_page_url(),
             leyka_options()->opt('org_bank_iban'),
             leyka_options()->opt('org_erdpou'),
@@ -52,12 +57,28 @@ function leyka_terms_of_service_text($text) {
 add_filter('leyka_terms_of_service_text', 'leyka_terms_of_service_text');
 
 function leyka_service_terms_page_text($page_content) {
-    return leyka_options()->opt('terms_of_service_page') && is_page(leyka_options()->opt('terms_of_service_page')) ?
-        apply_filters('leyka_terms_of_service_text', do_shortcode($page_content)) : $page_content;
+
+    if( leyka_options()->opt('terms_of_service_page') && is_page(leyka_options()->opt('terms_of_service_page')) ) {
+
+        // Remove possible XSS attacks:
+        $page_content = apply_filters(
+            'leyka_terms_of_service_text',
+            do_shortcode(strip_tags($page_content, '<p><br><strong><b><em><i><u><blockquote><del><ul><ol><li><a>')),
+            $page_content
+        );
+    }
+
+    return $page_content;
+
 }
 add_filter('the_content', 'leyka_service_terms_page_text');
 
 function leyka_terms_of_pd_usage_text($text) {
+
+    $is_legal = leyka_options()->opt('receiver_legal_type') === 'legal';
+
+    $text = strip_tags($text, '<p><br><strong><b><em><i><u><blockquote><del><ul><ol><li><a>'); // Remove possible XSS attacks
+
     return wpautop(str_replace(
         [
             '#SITE_URL#',
@@ -76,10 +97,10 @@ function leyka_terms_of_pd_usage_text($text) {
             home_url(),
             get_bloginfo('name'),
             get_option('admin_email'),
-            leyka_options()->opt('org_full_name'),
-            leyka_options()->opt('org_face_fio_ip'),
-            leyka_options()->opt('org_face_position'),
-            leyka_options()->opt('org_address'),
+            $is_legal ? leyka_options()->opt('org_full_name') : leyka_options()->opt('person_full_name'),
+            $is_legal ? leyka_options()->opt('org_face_fio_ip') : leyka_options()->opt('person_full_name'),
+            $is_legal ? leyka_options()->opt('org_face_position') : '',
+            $is_legal ? leyka_options()->opt('org_address') : leyka_options()->opt('person_address'),
             leyka_get_terms_of_pd_usage_page_url(),
             leyka_options()->opt('org_erdpou'),
             leyka_options()->opt('org_bank_mfo'),
@@ -91,8 +112,19 @@ function leyka_terms_of_pd_usage_text($text) {
 add_filter('leyka_terms_of_pd_usage_text', 'leyka_terms_of_pd_usage_text');
 
 function leyka_terms_of_pd_usage_page_text($page_content) {
-    return leyka_options()->opt('pd_terms_page') && is_page(leyka_options()->opt('pd_terms_page')) ?
-        leyka_get_pd_terms_text() : $page_content;
+
+    if( leyka_options()->opt('pd_terms_page') && is_page(leyka_options()->opt('pd_terms_page')) ) {
+
+        // Remove possible XSS attacks:
+        $page_content = apply_filters(
+            'leyka_terms_of_pd_usage_text',
+            do_shortcode(strip_tags($page_content, '<p><br><strong><b><em><i><u><blockquote><del><ul><ol><li><a>'))
+        );
+
+    }
+
+    return $page_content;
+
 }
 add_filter('the_content', 'leyka_terms_of_pd_usage_page_text');
 

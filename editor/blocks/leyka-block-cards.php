@@ -125,61 +125,76 @@ function leyka_block_cards_render_callback( $attr, $content ) {
 
 	$block_attr = 'class="' . implode(' ', $classes) . '"';
 
-	if ( isset( $attr['anchor'] ) && $attr['anchor'] ) {
+	if(isset($attr['anchor']) && $attr['anchor']) {
 		$block_attr .= ' id="' . esc_attr( $attr['anchor'] ) . '"';
 	}
 
-	if ( $block_style ) {
+	if ($block_style) {
 		$block_attr .= ' style="' . $block_style . '"';
 	}
 
-	// Campaigns To Show
+	// Campaigns to show:
 	$posts_to_show = 1;
-	if ( isset( $attr['postsToShow'] ) ) {
+	if(isset($attr['postsToShow'])) {
 		$posts_to_show = $attr['postsToShow'];
 	}
 
-	// Query Args
-	$args = array(
-		'post_type'      => 'leyka_campaign',
-		'posts_per_page' => $posts_to_show,
-	);
+	// Query args:
+	$args = array('post_type' => Leyka_Campaign_Management::$post_type, 'posts_per_page' => $posts_to_show,);
 
-	// Include campaigns.
-	if ( $attr['queryInclude'] ) {
+	// Include campaigns:
+	if($attr['queryInclude']) {
+
 		$post__in = array();
-		foreach ( $attr['queryInclude'] as $page_title ) {
-			$page_obj = get_page_by_title( $page_title, OBJECT, 'leyka_campaign' );
-			$post__in[] = $page_obj->ID;
+		foreach($attr['queryInclude'] as $campaign_title) {
+
+            $campaign = leyka_get_campaign_by_title($campaign_title, false);
+
+            if($campaign) {
+                $post__in[] = $campaign->ID;
+            }
+
 		}
+
 		$args['post__in'] = $post__in;
 
-		// Order by
-		if ( $attr['queryOrderBy'] && 'date' !== $attr['queryOrderBy'] ) {
+		// Order by:
+		if($attr['queryOrderBy'] && 'date' !== $attr['queryOrderBy']) {
 			$args['orderby'] = $attr['queryOrderBy'];
 		}
+
 	}
 
-	// Exclude campaigns.
-	if ( $attr['queryExclude'] ) {
+	// Exclude campaigns:
+	if($attr['queryExclude']) {
+
 		$post__not_in = array();
-		foreach ( $attr['queryExclude'] as $page_title ) {
-			$page_obj = get_page_by_title( $page_title, OBJECT, 'leyka_campaign' );
-			$post__not_in[] = $page_obj->ID;
+
+		foreach($attr['queryExclude'] as $campaign_title) {
+
+            $campaign = leyka_get_campaign_by_title($campaign_title, false);
+
+            if($campaign) {
+                $post__not_in[] = $campaign->ID;
+            }
+
 		}
 
-		if ( isset( $args['post__in'] ) && $post__not_in ) {
+		if(isset($args['post__in']) && $post__not_in) {
 
-			foreach ( $post__not_in as $id ) {
-				$key = array_search( $id, $args['post__in'] );
-				if ( isset( $args['post__in'][ $key ] ) ) {
-					unset( $args['post__in'][ $key ] );
+			foreach($post__not_in as $id) {
+
+				$key = array_search($id, $args['post__in']);
+				if(isset($args['post__in'][$key])) {
+					unset($args['post__in'][$key]);
 				}
+
 			}
-			
+
 		} else {
 			$args['post__not_in'] = $post__not_in;
 		}
+
 	}
 
 	// Offset.

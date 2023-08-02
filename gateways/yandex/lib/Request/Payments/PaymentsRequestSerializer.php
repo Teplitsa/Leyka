@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ namespace YooKassa\Request\Payments;
 /**
  * Класс сериализатора объектов запросов к API для получения списка платежей
  *
- * @package YooKassa\Request\Payments
+ * @package YooKassa
  */
 class PaymentsRequestSerializer
 {
@@ -54,7 +54,7 @@ class PaymentsRequestSerializer
     /**
      * Сериализует объект запроса к API для дальнейшей его отправки
      * @param PaymentsRequestInterface $request Сериализуемый объект
-     * @return array Массив с инфомрацией, отпарвляемый в дальнейшем в API
+     * @return array Массив с информацией, отправляемый в дальнейшем в API
      */
     public function serialize(PaymentsRequestInterface $request)
     {
@@ -64,7 +64,7 @@ class PaymentsRequestSerializer
             if (!empty($value)) {
                 if ($value instanceof \DateTime) {
                     if ($value->getTimestamp() > 1) {
-                        $result[$name] = $value->format(DATE_ATOM);
+                        $result[$name] = $value->format(YOOKASSA_DATE);
                     }
                 } else {
                     $result[$name] = $value;

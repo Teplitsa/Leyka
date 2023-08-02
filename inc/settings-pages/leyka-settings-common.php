@@ -2,12 +2,16 @@
 
 add_action('leyka_settings_submit', 'leyka_save_settings');
 
-function leyka_save_settings($tab_name) {
+function leyka_save_settings($settings_stage_id) {
+
+    if(empty($_POST['_leyka_nonce']) || !wp_verify_nonce($_POST['_leyka_nonce'], 'leyka_settings_'.$settings_stage_id)) {
+        return;
+    }
 
     $options_names = [];
     $submitted_options_section = !empty($_POST['leyka_options_section']) ? $_POST['leyka_options_section'] : null;
 
-    foreach(leyka_opt_alloc()->get_tab_options($tab_name) as $entry) {
+    foreach(leyka_opt_alloc()->get_tab_options($settings_stage_id) as $entry) {
 
         if(is_array($entry)) {
             
@@ -38,7 +42,7 @@ function leyka_save_settings($tab_name) {
                         if($submitted_options_section == $option['name']) {
                             $options_names = array_merge($options_names, $option['options']);
                         }
-                    } else if($tab_name !== 'payment' || empty($_GET['gateway']) || $_GET['gateway'] === $option['name']) {
+                    } else if($settings_stage_id !== 'payment' || empty($_GET['gateway']) || $_GET['gateway'] === $option['name']) {
                         // For "Payment" settings area - if a gateway settings are being saved, save only this gateway options;
                         // for all other settings areas - save all the options allocated to the area.
                         $options_names = array_merge($options_names, $option['options']);
@@ -63,5 +67,11 @@ function leyka_save_settings($tab_name) {
 }
 
 add_action('leyka_settings_payment_submit', function(){
+
+    if(empty($_POST['_leyka_nonce']) || !wp_verify_nonce($_POST['_leyka_nonce'], 'leyka_settings_payment')) {
+        return;
+    }
+
     leyka_save_option('commission');
+
 });

@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,70 +35,49 @@ use YooKassa\Common\ResponseObject;
 use YooKassa\Helpers\RawHeadersParser;
 
 /**
- * Class CurlClient
- * @package YooKassa\Client
+ * Класс клиента Curl запросов
+ *
+ * @package YooKassa
  */
 class CurlClient implements ApiClientInterface
 {
-    /**
-     * @var array
-     */
+    /** @var array Настройки клиента */
     private $config;
 
-    /**
-     * @var string
-     */
+    /** @var string|int shopId магазина */
     private $shopId;
 
-    /**
-     * @var string
-     */
+    /** @var string Секретный ключ магазина */
     private $shopPassword;
 
-    /**
-     * @var string
-     */
+    /** @var string OAuth токен*/
     private $bearerToken;
 
-    /**
-     * @var int
-     */
+    /** @var int Настройка параметра CURLOPT_TIMEOUT*/
     private $timeout = 80;
 
-    /**
-     * @var int
-     */
+    /** @var int Настройка параметра CURLOPT_CONNECTTIMEOUT */
     private $connectionTimeout = 30;
 
-    /**
-     * @var string
-     */
+    /** @var string Настройка прокси-сервера, если нужен */
     private $proxy;
 
-    /** @var UserAgent */
+    /** @var UserAgent Строка user-agent для статистики */
     private $userAgent;
 
-    /**
-     * @var bool
-     */
+    /** @var bool Настройка удержания соединения */
     private $keepAlive = true;
 
-    /**
-     * @var array
-     */
+    /** @var array Заголовки по умолчанию */
     private $defaultHeaders = array(
         'Content-Type' => 'application/json',
         'Accept'       => 'application/json',
     );
 
-    /**
-     * @var resource
-     */
+    /** @var resource Текущий ресурс для работы с curl */
     private $curl;
 
-    /**
-     * @var LoggerInterface|null
-     */
+    /** @var LoggerInterface|null Объект для логирования запросов */
     private $logger;
 
     /**
@@ -120,11 +99,11 @@ class CurlClient implements ApiClientInterface
     /**
      * @inheritdoc
      *
-     * @param $path
-     * @param $method
-     * @param $queryParams
-     * @param null $httpBody
-     * @param array $headers
+     * @param string $path URL запроса
+     * @param string $method HTTP метод
+     * @param array $queryParams Массив GET параметров запроса
+     * @param string|null $httpBody Тело запроса
+     * @param array $headers Массив заголовков запроса
      *
      * @return ResponseObject
      * @throws ApiConnectionException
@@ -158,8 +137,10 @@ class CurlClient implements ApiClientInterface
     }
 
     /**
-     * @param $optionName
-     * @param $optionValue
+     * Устанавливает параметры CURL
+     *
+     * @param string $optionName Имя параметра
+     * @param mixed $optionValue Значение параметра
      *
      * @return bool
      */
@@ -197,6 +178,8 @@ class CurlClient implements ApiClientInterface
     }
 
     /**
+     * Выполняет запрос, получает и возвращает обработанный ответ
+     *
      * @return array
      * @throws ApiConnectionException
      */
@@ -217,8 +200,10 @@ class CurlClient implements ApiClientInterface
     }
 
     /**
-     * @param $method
-     * @param $httpBody
+     * Устанавливает тело запроса
+     *
+     * @param string $method HTTP метод
+     * @param string $httpBody Тело запроса
      */
     public function setBody($method, $httpBody)
     {
@@ -230,9 +215,11 @@ class CurlClient implements ApiClientInterface
     }
 
     /**
-     * @param mixed $shopId
+     * Устанавливает shopId магазина
      *
-     * @return CurlClient
+     * @param mixed $shopId shopId магазина
+     *
+     * @return $this
      */
     public function setShopId($shopId)
     {
@@ -242,9 +229,11 @@ class CurlClient implements ApiClientInterface
     }
 
     /**
-     * @param mixed $shopPassword
+     * Устанавливает секретный ключ магазина
      *
-     * @return CurlClient
+     * @param mixed $shopPassword Секретный ключ магазина
+     *
+     * @return $this
      */
     public function setShopPassword($shopPassword)
     {
@@ -254,7 +243,9 @@ class CurlClient implements ApiClientInterface
     }
 
     /**
-     * @return mixed
+     * Возвращает значение параметра CURLOPT_TIMEOUT
+     *
+     * @return int
      */
     public function getTimeout()
     {
@@ -262,7 +253,9 @@ class CurlClient implements ApiClientInterface
     }
 
     /**
-     * @param mixed $timeout
+     * Устанавливает значение параметра CURLOPT_TIMEOUT
+     *
+     * @param int $timeout Максимальное количество секунд для выполнения функций cURL
      */
     public function setTimeout($timeout)
     {
@@ -270,7 +263,9 @@ class CurlClient implements ApiClientInterface
     }
 
     /**
-     * @return mixed
+     * Возвращает значение параметра CURLOPT_CONNECTTIMEOUT
+     *
+     * @return int
      */
     public function getConnectionTimeout()
     {
@@ -278,7 +273,9 @@ class CurlClient implements ApiClientInterface
     }
 
     /**
-     * @param mixed $connectionTimeout
+     * Устанавливает значение параметра CURLOPT_CONNECTTIMEOUT
+     *
+     * @param int $connectionTimeout Число секунд ожидания при попытке подключения
      */
     public function setConnectionTimeout($connectionTimeout)
     {
@@ -286,6 +283,8 @@ class CurlClient implements ApiClientInterface
     }
 
     /**
+     * Возвращает настройки прокси
+     *
      * @return string
      * @since 1.0.14
      */
@@ -295,7 +294,9 @@ class CurlClient implements ApiClientInterface
     }
 
     /**
-     * @param string $proxy
+     * Устанавливает настройки прокси
+     *
+     * @param string $proxy Прокси сервер
      *
      * @since 1.0.14
      */
@@ -305,6 +306,8 @@ class CurlClient implements ApiClientInterface
     }
 
     /**
+     * Возвращает настройки
+     *
      * @return mixed
      */
     public function getConfig()
@@ -313,7 +316,9 @@ class CurlClient implements ApiClientInterface
     }
 
     /**
-     * @inheritDoc
+     * Устанавливает настройки
+     *
+     * @param array $config Настройки клиента
      */
     public function setConfig($config)
     {
@@ -321,6 +326,8 @@ class CurlClient implements ApiClientInterface
     }
 
     /**
+     * Возвращает UserAgent
+     *
      * @return UserAgent
      */
     public function getUserAgent()
@@ -329,9 +336,11 @@ class CurlClient implements ApiClientInterface
     }
 
     /**
-     * @param string $bearerToken
+     * Устанавливает OAuth-токен магазина
      *
-     * @return static $this
+     * @param string $bearerToken OAuth-токен магазина
+     *
+     * @return $this
      */
     public function setBearerToken($bearerToken)
     {
@@ -341,9 +350,11 @@ class CurlClient implements ApiClientInterface
     }
 
     /**
-     * @param bool $keepAlive
+     * Устанавливает флаг сохранения соединения
      *
-     * @return CurlClient
+     * @param bool $keepAlive Флаг сохранения настроек
+     *
+     * @return $this
      */
     public function setKeepAlive($keepAlive)
     {
@@ -388,7 +399,7 @@ class CurlClient implements ApiClientInterface
     }
 
     /**
-     * @param $headers
+     * @param array $headers
      *
      * @return array
      * @throws AuthorizeException
@@ -423,11 +434,11 @@ class CurlClient implements ApiClientInterface
     }
 
     /**
-     * @param $path
-     * @param $method
-     * @param $queryParams
-     * @param $httpBody
-     * @param $headers
+     * @param string $path
+     * @param string $method
+     * @param array $queryParams
+     * @param string $httpBody
+     * @param array $headers
      */
     private function logRequestParams($path, $method, $queryParams, $httpBody, $headers)
     {
@@ -452,8 +463,8 @@ class CurlClient implements ApiClientInterface
     }
 
     /**
-     * @param $path
-     * @param $queryParams
+     * @param string $path
+     * @param array $queryParams
      *
      * @return string
      */
@@ -469,9 +480,9 @@ class CurlClient implements ApiClientInterface
     }
 
     /**
-     * @param $httpBody
-     * @param $responseInfo
-     * @param $httpHeaders
+     * @param string $httpBody
+     * @param array $responseInfo
+     * @param array $httpHeaders
      */
     private function logResponse($httpBody, $responseInfo, $httpHeaders)
     {
@@ -493,10 +504,10 @@ class CurlClient implements ApiClientInterface
     }
 
     /**
-     * @param $method
-     * @param $httpBody
-     * @param $headers
-     * @param $url
+     * @param string $method
+     * @param string $httpBody
+     * @param array $headers
+     * @param string $url
      * @throws ExtensionNotFoundException
      */
     private function prepareCurl($method, $httpBody, $headers, $url)

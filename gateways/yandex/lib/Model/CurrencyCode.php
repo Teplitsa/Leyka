@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,12 +33,19 @@ use YooKassa\Common\AbstractEnum;
  */
 class CurrencyCode extends AbstractEnum
 {
+    /** Российский рубль */
     const RUB = 'RUB';
+    /** Доллар США */
     const USD = 'USD';
+    /** Евро */
     const EUR = 'EUR';
+    /** Белорусский рубль */
     const BYN = 'BYN';
+    /** Китайская йена */
     const CNY = 'CNY';
+    /** Казахский тенге */
     const KZT = 'KZT';
+    /** Украинская гривна */
     const UAH = 'UAH';
 
     protected static $validValues = array(

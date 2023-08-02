@@ -6,7 +6,6 @@
 class Leyka_Payselection_Gateway extends Leyka_Gateway {
 
     protected static $_instance;
-
     protected $_ps_method;
 
     protected function __construct() {
@@ -45,7 +44,7 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
         $this->_options = [
             'payselection_method' => [
                 'type' => 'select',
-                'title' => __('Widget or Redirect', 'leyka'),
+                'title' => __('Widget or redirect', 'leyka'),
                 'default' => 'widget',
                 'list_entries' => [
                     'widget' => __('Widget', 'leyka'),
@@ -144,7 +143,7 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
         if(Leyka_Payselection_Card::get_instance()->active) {
 
             $leyka_main_js_handle = wp_script_is('leyka-public') ? 'leyka-public' : 'leyka-new-templates-public';
-            $leyka_widget_js_handle = 'widget' === $this->_ps_method ? $leyka_main_js_handle.' leyka-payselection-widget' : $leyka_main_js_handle;
+//            $leyka_widget_js_handle = 'widget' === $this->_ps_method ? $leyka_main_js_handle.' leyka-payselection-widget' : $leyka_main_js_handle;
 
             if ('widget' === $this->_ps_method) {
                 wp_enqueue_script('leyka-payselection-widget', leyka_options()->opt('payselection_widget_url'), [], false, true);
@@ -210,12 +209,12 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
             'failure_page' => leyka_get_failure_page_url(),
         ];
 
-        $extraData = [
-            'WebhookUrl'    => home_url('/leyka/service/payselection/response'),
-            'SuccessUrl'    => leyka_get_success_page_url(),
-            'CancelUrl'     => esc_url($campaign->url),
-            'DeclineUrl'    => esc_url($campaign->url),
-            'FailUrl'       => leyka_get_failure_page_url(),
+        $extra_data = [
+            'WebhookUrl' => home_url('/leyka/service/payselection/response'),
+            'SuccessUrl' => leyka_get_success_page_url(),
+            'CancelUrl' => esc_url($campaign->url),
+            'DeclineUrl' => esc_url($campaign->url),
+            'FailUrl' => leyka_get_failure_page_url(),
         ];
 
         $response['request'] = [
@@ -228,8 +227,8 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
                 'Currency' => $currency,
                 'Description' => leyka_get_donation_gateway_description($donation, 250),
                 'PaymentMethod' => 'Card',
-                'RebillFlag' => !empty($form_data['leyka_recurring']) ? true : false,
-                'ExtraData' => $extraData,
+                'RebillFlag' => !empty($form_data['leyka_recurring']),
+                'ExtraData' => $extra_data,
             ],
             'CustomerInfo' => [
                 'Email' => $donation->donor_email,
@@ -238,7 +237,7 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
             ],
         ];
 
-        if (leyka_options()->opt('payselection_receipt')) {
+        if(leyka_options()->opt('payselection_receipt')) {
             $response['request']['ReceiptData'] = $this->_get_payselection_receipt($donation, __('Donation', 'leyka'));
         }
 
@@ -248,11 +247,13 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
             leyka_options()->opt('payselection_host'),
             leyka_options()->opt('payselection_create_host')
         );
-        $payment_create_request = $api->getPaymentLink($response['request']);
-        $response['payselection_redirect_url'] = !is_wp_error($payment_create_request) ? $payment_create_request : '';
-        $response['payselection_redirect_error'] = is_wp_error($payment_create_request) ? $payment_create_request->get_error_message() : '';
 
-        if ('widget' === $this->_ps_method) {
+        $payment_create_request = $api->getPaymentLink($response['request']);
+        $response['payselection_redirect_url'] = is_wp_error($payment_create_request) ? '' : $payment_create_request;
+        $response['payselection_redirect_error'] = is_wp_error($payment_create_request) ?
+            $payment_create_request->get_error_message() : '';
+
+        if($this->_ps_method === 'widget') {
             $response['request']['MetaData']['Initiator']  = 'Widget';
         }
 
@@ -299,7 +300,6 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
         $response = [];
         try {
             $response = json_decode($data, true);
-
         } catch(\Exception $ex) {
             error_log($ex);
         }

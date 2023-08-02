@@ -20,7 +20,9 @@
             <form action="#" method="get">
                 <?php $get_params_string = '';
 
-                foreach($_GET as $param_name => $param_value) {
+                foreach($_GET as $param_name => &$param_value) {
+
+                    $param_value = $param_value ? esc_attr( str_replace('>', '', wp_strip_all_tags(trim($_GET['donor-name-email']))) ) : '';
 
                     if($param_name === 'first-date' && is_array($param_value)) {
                         $param_value = $param_value[0].'-'.$param_value[1];
@@ -53,10 +55,10 @@
 
                         <div class="filters-row">
 
-                            <?php $filter_value = isset($_GET['recurring_subscription_status']) ? esc_attr($_GET['recurring_subscription_status']) : false;?>
+                            <?php $filter_value = isset($_GET['recurring_subscription_status']) ? esc_attr( str_replace('>', '', wp_strip_all_tags(trim($_GET['recurring_subscription_status']))) ) : false;?>
                             <div class="leyka-admin-list-filter-wrapper">
                                 <select name="recurring_subscription_status" class="leyka-selector leyka-select-menu">
-                                    <option value="" <?php echo !$filter_value ? 'selected="selected"' : '';?>>
+                                    <option value="" <?php echo $filter_value ? '' : 'selected="selected"';?>>
                                         <?php _e('All subscriptions', 'leyka');?>
                                     </option>
                                     <option value="active" <?php echo $filter_value == 'active' ? 'selected="selected"' : '';?>>
@@ -71,8 +73,9 @@
                                 </select>
                             </div>
 
+                            <?php $filter_value = isset($_GET['donor-name-email']) ? esc_attr( str_replace('>', '', wp_strip_all_tags(trim($_GET['donor-name-email']))) ) : '';?>
                             <div class="leyka-admin-list-filter-wrapper">
-                                <input type="text" name="donor-name-email" class="leyka-donor-name-email-selector leyka-selector" data-search-donors-in="donations" value="<?php echo isset($_GET['donor-name-email']) ? esc_attr($_GET['donor-name-email']) : '';?>" placeholder="<?php _e("Donor's name or email", 'leyka');?>">
+                                <input type="text" name="donor-name-email" class="leyka-donor-name-email-selector leyka-selector" data-search-donors-in="donations" value="<?php echo $filter_value;?>" placeholder="<?php _e("Donor's name or email", 'leyka');?>">
                             </div>
 
                             <div class="leyka-admin-list-filter-wrapper">
@@ -95,8 +98,9 @@
 
                         <div class="filters-row">
 
+                            <?php $filter_value = isset($_GET['first-date']) ? esc_attr( str_replace('>', '', wp_strip_all_tags(trim($_GET['first-date']))) ) : '';?>
                             <div class="leyka-admin-list-filter-wrapper leyka-donation-date-filter-wrapper">
-                                <input type="text" name="first-date" autocomplete="off" class="leyka-first-donation-date-selector leyka-selector datepicker-ranged-selector" value="<?php echo isset($_GET['first-date']) ? esc_attr($_GET['first-date']) : '';?>" placeholder="<?php _e('First payment dates', 'leyka');?>">
+                                <input type="text" name="first-date" autocomplete="off" class="leyka-first-donation-date-selector leyka-selector datepicker-ranged-selector" value="<?php echo $filter_value;?>" placeholder="<?php _e('First payment dates', 'leyka');?>">
                             </div>
 
                             <div class="leyka-admin-list-filter-wrapper">
@@ -124,8 +128,9 @@
 
                             </div>
 
+                            <?php $filter_value = isset($_GET['day']) ? esc_attr( str_replace('>', '', wp_strip_all_tags(trim($_GET['day']))) ) : '';?>
                             <div class="leyka-admin-list-filter-wrapper">
-                                <input type="number" max="30" min="1" name="day" class="leyka-day-selector leyka-selector" value="<?php echo isset($_GET['day']) ? esc_attr($_GET['day']) : '';?>" placeholder="<?php _e("Payment day (from 1 to 30)", 'leyka');?>">
+                                <input type="number" max="30" min="1" name="day" class="leyka-day-selector leyka-selector" value="<?php echo $filter_value;?>" placeholder="<?php _e("Payment day (from 1 to 30)", 'leyka');?>">
                             </div>
 
                         </div>

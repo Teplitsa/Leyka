@@ -1,6 +1,9 @@
 {
     "require": {
         "theiconic/php-ga-measurement-protocol": "^2.0",
-      "ext-json": "*"
+      "ext-json": "*",
+        "symfony/polyfill-intl-idn": "^1.27",
+        "symfony/polyfill-mbstring": "^1.27",
+        "symfony/polyfill-php72": "^1.27"
     }
 }

@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,6 +35,7 @@ use YooKassa\Helpers\TypeCast;
  *
  * @property $rrn Retrieval Reference Number — уникальный идентификатор транзакции в системе эмитента
  * @property string $authCode Код авторизации банковской карты
+ * @property ThreeDSecure $threeDSecure Данные о прохождении пользователем аутентификации по 3‑D Secure
  */
 class AuthorizationDetails extends AbstractObject implements AuthorizationDetailsInterface
 {
@@ -49,16 +50,24 @@ class AuthorizationDetails extends AbstractObject implements AuthorizationDetail
     private $_authCode = '';
 
     /**
-     * @param string|null $rrn Уникальный идентификатор транзакции
-     * @param string|null $authCode Код авторизации банковской карты
+     * @var ThreeDSecure Данные о прохождении пользователем аутентификации по 3‑D Secure
      */
-    public function __construct($rrn = null, $authCode = null)
+    private $_threeDSecure;
+
+    public function fromArray($sourceArray)
     {
-        if ($rrn !== null) {
-            $this->setRrn($rrn);
+
+        if (isset($sourceArray['rrn'])) {
+            $this->setRrn($sourceArray['rrn']);
         }
-        if ($authCode !== null) {
-            $this->setAuthCode($authCode);
+
+        if (isset($sourceArray['auth_code'])) {
+            $this->setAuthCode($sourceArray['auth_code']);
+        }
+
+
+        if (isset($sourceArray['three_d_secure'])) {
+            $this->setThreeDSecure($sourceArray['three_d_secure']);
         }
     }
 
@@ -83,19 +92,21 @@ class AuthorizationDetails extends AbstractObject implements AuthorizationDetail
     }
 
     /**
-     * @return array
+     * Возвращает данные о прохождении пользователем аутентификации по 3‑D Secure
+     *
+     * @return ThreeDSecure|null Объект с данными о прохождении пользователем аутентификации по 3‑D Secure
      */
-    public function jsonSerialize()
+    public function getThreeDSecure()
     {
-        return array(
-            'rrn'       => $this->_rrn,
-            'auth_code' => $this->_authCode,
-        );
+        return $this->_threeDSecure;
     }
 
     /**
      * Устанавливает уникальный идентификатор транзакции
+     *
      * @param $value
+     *
+     * @throws InvalidPropertyValueTypeException
      */
     public function setRrn($value)
     {
@@ -111,7 +122,10 @@ class AuthorizationDetails extends AbstractObject implements AuthorizationDetail
 
     /**
      * Устанавливает код авторизации банковской карты
+     *
      * @param $value
+     *
+     * @throws InvalidPropertyValueTypeException
      */
     public function setAuthCode($value)
     {
@@ -122,6 +136,25 @@ class AuthorizationDetails extends AbstractObject implements AuthorizationDetail
         } else {
             throw new InvalidPropertyValueTypeException('Invalid auth_code value type', 0,
                 'authorization_details.auth_code', $value);
+        }
+    }
+
+    /**
+     * Устанавливает данные о прохождении пользователем аутентификации по 3‑D Secure
+     *
+     * @param ThreeDSecure|array $value Данные о прохождении аутентификации по 3‑D Secure
+     *
+     * @throws InvalidPropertyValueTypeException
+     */
+    public function setThreeDSecure($value)
+    {
+        if (is_array($value)) {
+            $this->_threeDSecure = new ThreeDSecure($value);
+        } elseif ($value instanceof ThreeDSecure) {
+            $this->_threeDSecure = $value;
+        } else {
+            throw new InvalidPropertyValueTypeException('Invalid three_d_secure value type', 0,
+                'authorization_details.three_d_secure', $value);
         }
     }
 }

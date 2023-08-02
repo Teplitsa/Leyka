@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,8 +33,8 @@ use YooKassa\Helpers\TypeCast;
 use YooKassa\Model\PaymentMethodType;
 
 /**
- * PaymentMethodBankCard
- * Объект, описывающий метод оплаты банковской картой
+ * Класс, описывающий метод оплаты банковской картой
+ *
  * @property string $type Тип объекта
  * @property string $last4 Последние 4 цифры номера карты
  * @property string $first6 Первые 6 цифр номера карты
@@ -44,9 +44,9 @@ use YooKassa\Model\PaymentMethodType;
  * @property string $expiry_month Срок действия, месяц
  * @property string $cardType Тип банковской карты
  * @property string $card_type Тип банковской карты
- * @property string $issuerCountry Тип банковской карты
- * @property string $issuer_country Тип банковской карты
- * @property string issuerName Тип банковской карты
+ * @property string $issuerCountry Код страны, в которой выпущена карта
+ * @property string $issuer_country Код страны, в которой выпущена карта
+ * @property string $issuerName Тип банковской карты
  * @property string $issuer_name Тип банковской карты
  * @property string $source Тип банковской карты
  */
@@ -103,6 +103,7 @@ class PaymentMethodBankCard extends AbstractPaymentMethod
     }
 
     /**
+     * Возвращает последние 4 цифры номера карты
      * @return string Последние 4 цифры номера карты
      */
     public function getLast4()
@@ -111,6 +112,7 @@ class PaymentMethodBankCard extends AbstractPaymentMethod
     }
 
     /**
+     * Устанавливает последние 4 цифры номера карты
      * @param string $value Последние 4 цифры номера карты
      */
     public function setLast4($value)
@@ -133,7 +135,8 @@ class PaymentMethodBankCard extends AbstractPaymentMethod
     }
 
     /**
-     * @return string
+     * Возвращает первые 6 цифр номера карты
+     * @return string Первые 6 цифр номера карты
      * @since 1.0.14
      */
     public function getFirst6()
@@ -142,7 +145,8 @@ class PaymentMethodBankCard extends AbstractPaymentMethod
     }
 
     /**
-     * @param $value
+     * Устанавливает первые 6 цифр номера карты
+     * @param string $value Первые 6 цифр номера карты
      * @since 1.0.14
      */
     public function setFirst6($value)
@@ -165,6 +169,7 @@ class PaymentMethodBankCard extends AbstractPaymentMethod
     }
 
     /**
+     * Возвращает срок действия, год
      * @return string Срок действия, год
      */
     public function getExpiryYear()
@@ -173,6 +178,7 @@ class PaymentMethodBankCard extends AbstractPaymentMethod
     }
 
     /**
+     * Устанавливает срок действия, год
      * @param string $value Срок действия, год
      */
     public function setExpiryYear($value)
@@ -196,6 +202,7 @@ class PaymentMethodBankCard extends AbstractPaymentMethod
     }
 
     /**
+     * Возвращает срок действия, месяц
      * @return string Срок действия, месяц
      */
     public function getExpiryMonth()
@@ -204,6 +211,7 @@ class PaymentMethodBankCard extends AbstractPaymentMethod
     }
 
     /**
+     * Устанавливает срок действия, месяц
      * @param string $value Срок действия, месяц
      */
     public function setExpiryMonth($value)
@@ -238,6 +246,7 @@ class PaymentMethodBankCard extends AbstractPaymentMethod
     }
 
     /**
+     * Возвращает тип банковской карты
      * @return string Тип банковской карты
      */
     public function getCardType()
@@ -246,6 +255,7 @@ class PaymentMethodBankCard extends AbstractPaymentMethod
     }
 
     /**
+     * Устанавливает тип банковской карты
      * @param string $value Тип банковской карты
      */
     public function setCardType($value)
@@ -262,7 +272,8 @@ class PaymentMethodBankCard extends AbstractPaymentMethod
     }
 
     /**
-     * @return string
+     * Возвращает код страны, в которой выпущена карта. Передается в формате ISO-3166 alpha-2
+     * @return string Код страны, в которой выпущена карта
      */
     public function getIssuerCountry()
     {
@@ -270,7 +281,8 @@ class PaymentMethodBankCard extends AbstractPaymentMethod
     }
 
     /**
-     * @param string $value
+     * Устанавливает код страны, в которой выпущена карта. Передается в формате ISO-3166 alpha-2
+     * @param string $value Код страны, в которой выпущена карта
      */
     public function setIssuerCountry($value)
     {
@@ -290,7 +302,8 @@ class PaymentMethodBankCard extends AbstractPaymentMethod
     }
 
     /**
-     * @param string $value
+     * Устанавливает наименование банка, выпустившего карту
+     * @param string $value Наименование банка, выпустившего карту
      */
     public function setIssuerName($value)
     {
@@ -306,7 +319,8 @@ class PaymentMethodBankCard extends AbstractPaymentMethod
     }
 
     /**
-     * @return string
+     * Возвращает наименование банка, выпустившего карту
+     * @return string Наименование банка, выпустившего карту.
      */
     public function getIssuerName()
     {
@@ -314,7 +328,8 @@ class PaymentMethodBankCard extends AbstractPaymentMethod
     }
 
     /**
-     * @param string $value
+     * Устанавливает источник данных банковской карты
+     * @param string $value Источник данных банковской карты
      */
     public function setSource($value)
     {
@@ -334,7 +349,8 @@ class PaymentMethodBankCard extends AbstractPaymentMethod
     }
 
     /**
-     * @return string
+     * Возвращает источник данных банковской карты
+     * @return string Источник данных банковской карты
      */
     public function getSource()
     {

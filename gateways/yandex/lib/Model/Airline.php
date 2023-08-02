@@ -3,7 +3,7 @@
 /**
  * The MIT License
  *
- * Copyright (c) 2020 "YooMoney", NBСO LLC
+ * Copyright (c) 2022 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,12 +34,21 @@ use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
 use YooKassa\Helpers\TypeCast;
 
 /**
- * Class Airline
+ * Класс описывающий авиабилет
+ *
+ * @package YooKassa
+ *
+ * @property string $bookingReference Номер бронирования. Обязателен на этапе создания платежа
+ * @property string $booking_reference Номер бронирования. Обязателен на этапе создания платежа
+ * @property string $ticketNumber Уникальный номер билета. Обязателен на этапе подтверждения платежа
+ * @property string $ticket_number Уникальный номер билета. Обязателен на этапе подтверждения платежа
+ * @property PassengerInterface[] $passengers Список пассажиров
+ * @property Leg[] $legs Список маршрутов
  */
 class Airline extends AbstractObject implements AirlineInterface
 {
     /**
-     * @var string Номер бронирования. Обязателен на этапе создания платежа.
+     * @var string Номер бронирования. Обязателен на этапе создания платежа
      */
     private $_bookingReference;
 
@@ -49,12 +58,12 @@ class Airline extends AbstractObject implements AirlineInterface
     private $_ticketNumber;
 
     /**
-     * @var PassengerInterface[]
+     * @var PassengerInterface[] Список пассажиров
      */
     private $_passengers;
 
     /**
-     * @var LegInterface[]
+     * @var LegInterface[] Список маршрутов
      */
     private $_legs;
 
@@ -67,7 +76,8 @@ class Airline extends AbstractObject implements AirlineInterface
     }
 
     /**
-     * @param string $value
+     * Устанавливает номер бронирования. Обязателен на этапе создания платежа.
+     * @param string $value Номер бронирования
      */
     public function setBookingReference($value)
     {
@@ -93,7 +103,8 @@ class Airline extends AbstractObject implements AirlineInterface
     }
 
     /**
-     * @param string $value
+     * Устанавливает уникальный номер билета. Обязателен на этапе подтверждения платежа
+     * @param string $value Уникальный номер билета
      */
     public function setTicketNumber($value)
     {
@@ -119,7 +130,8 @@ class Airline extends AbstractObject implements AirlineInterface
     }
 
     /**
-     * @param array|PassengerInterface[] $value
+     * Устанавливает список объектов-контейнеров с данными пассажиров
+     * @param array|PassengerInterface[] $value Список объектов-контейнеров с данными пассажиров
      */
     public function setPassengers($value)
     {
@@ -144,7 +156,8 @@ class Airline extends AbstractObject implements AirlineInterface
     }
 
     /**
-     * @param array|PassengerInterface $value
+     * Добавляет объект-контейнер с данными пассажиров
+     * @param array|PassengerInterface $value Объект-контейнер с данными пассажиров
      */
     public function addPassenger($value)
     {
@@ -170,7 +183,8 @@ class Airline extends AbstractObject implements AirlineInterface
     }
 
     /**
-     * @param array|LegInterface[] $value
+     * Устанавливает список объектов-контейнеров с данными о маршруте
+     * @param array|LegInterface[] $value Список объектов-контейнеров с данными о маршруте
      */
     public function setLegs($value)
     {
@@ -195,7 +209,8 @@ class Airline extends AbstractObject implements AirlineInterface
     }
 
     /**
-     * @param array|LegInterface $value
+     * Добавляет объект-контейнер с данными о маршруте
+     * @param array|LegInterface $value Объект-контейнер с данными о маршруте
      */
     public function addLeg($value)
     {
