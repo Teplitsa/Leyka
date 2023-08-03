@@ -61,7 +61,11 @@ class Payselection_Merchant_Api
             return $response["body"];
         }
 
-        return new \WP_Error("payselection_request_error", $response["body"]["Code"] . ($response["body"]["Description"] ? " " . $response["body"]["Description"] : ""));
+        if ($response["body"]["Code"]) {
+            return new \WP_Error($response["body"]["Code"], $response["body"]["Code"] . ($response["body"]["Description"] ? " " . $response["body"]["Description"] : ""));
+        }
+
+        return new \WP_Error("payselection_request_error", __("Payselection API request error", "leyka"));
     }
 
     /**
@@ -170,20 +174,20 @@ class Payselection_Merchant_Api
      */
     public static function verify_header_signature($request, $site_id, $secret_key)
     {
-        $headers = getallheaders();
+        $headers = self::key_tolower(getallheaders());
 
         if (
             empty($request) ||
-            empty($headers['X-SITE-ID']) ||
-            empty($headers['X-WEBHOOK-SIGNATURE'])
+            empty($headers['x-site-id']) ||
+            empty($headers['x-webhook-signature'])
         ) {
             return new \WP_Error('payselection_donation_webhook_error', __('A call to your Payselection callbacks URL was made with a missing required parameter.', 'leyka'));
         }
 
-        if ($site_id != $headers['X-SITE-ID'] ) {
+        if ($site_id != $headers['x-site-id'] ) {
             return new \WP_Error(
                 'payselection_donation_webhook_site_id_error',
-                sprintf(__('A call to your Payselection callback was called with wrong site id. Site id from request: %s, Site id from options: %s', 'leyka'), $headers['X-SITE-ID'], $site_id)
+                sprintf(__('A call to your Payselection callback was called with wrong site id. Site id from request: %s, Site id from options: %s', 'leyka'), $headers['x-site-id'], $site_id)
             );
         }
         
@@ -192,14 +196,23 @@ class Payselection_Merchant_Api
         $signBody = $request_method . PHP_EOL . home_url('/leyka/service/payselection/response') . PHP_EOL . $site_id . PHP_EOL . $request;
         $signCalculated = self::getSignature($signBody, $secret_key);
 
-        if ($headers['X-WEBHOOK-SIGNATURE'] !== $signCalculated) {
+        if ($headers['x-webhook-signature'] !== $signCalculated) {
             return new \WP_Error(
                 'payselection_donation_webhook_signature_error',
-                sprintf(__('A call to your Payselection callback was called with wrong digital signature. It may mean that someone is trying to hack your payment website. Signature from request: %s, Signature calculated: %s', 'leyka'), $headers['X-WEBHOOK-SIGNATURE'], $signCalculated)
+                sprintf(__('A call to your Payselection callback was called with wrong digital signature. It may mean that someone is trying to hack your payment website. Signature from request: %s, Signature calculated: %s', 'leyka'), $headers['x-webhook-signature'], $signCalculated)
             );
         }
 
         return true;
+    }
+
+    public static function key_tolower($array = []) {
+        $new_array = [];
+        foreach ($array as $key=>$value) {
+            $new_key = strtolower($key);
+            $new_array[$new_key] = $array[$key];
+        }
+        return $new_array;
     }
 
 }
