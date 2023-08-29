@@ -11,6 +11,8 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
 
     protected static $_instance;
 
+    private $_unisender_system_fields;
+
     protected function _set_attributes() {
 
         $this->_id = 'unisender';
