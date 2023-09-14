@@ -1083,9 +1083,6 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
            $donation->status = $final_status;
         }
 
-        $campaign = new Leyka_Campaign($donation->campaign_id);
-        $campaign->update_total_funded_amount($donation);
-
         $donation->mixplat_split_to = $this->_split_donation($donation);
 
         if($status === 'funded') {
@@ -1623,9 +1620,10 @@ class Leyka_Mixplat_Card extends Leyka_Payment_Method {
         $this->_label = __('Bank card', 'leyka');
 
         $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, [
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
-            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mastercard.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-visa.svg',
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-unionpay.svg',
         ]);
 
         $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, []);
