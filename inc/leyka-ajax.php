@@ -390,11 +390,6 @@ function leyka_upload_l10n(){
 }
 add_action('wp_ajax_leyka_upload_l10n', 'leyka_upload_l10n');
 
-function leyka_ajax_get_env_and_options(){
-    die('<pre>'.format_debug_data(humanaize_debug_data(leyka_get_env_and_options())).'</pre>');
-}
-add_action('wp_ajax_leyka_get_env_and_options', 'leyka_ajax_get_env_and_options');
-
 function leyka_setup_donor_password(){
 
     $res = ['status' => 'ok', 'message' => __('The password is set. Welcome to your personal account!', 'leyka')];
