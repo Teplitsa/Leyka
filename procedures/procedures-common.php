@@ -1,21 +1,28 @@
 <?php /** Leyka - common utility functions for procedures running. */
 
-if( !function_exists('leyka_get_wp_core_path') ) {
+if(!function_exists('leyka_get_wp_core_path')) {
     function leyka_get_wp_core_path() {
-
         $current_script_dir = dirname(__FILE__);
+
+        if(!empty($_SERVER['argv'][1])) {
+            $params = explode('=', $_SERVER['argv'][1]);
+
+            if($params[0] === '--wp' && !empty($params[1])) {
+                return rtrim($params[1], '/');
+            }
+        }
+
+        $counter = 0;
+
         do {
             if(file_exists($current_script_dir.'/wp-config.php')) {
+                return $current_script_dir;
+            }
 
-                require_once $current_script_dir.'/wp-config.php';
-
-                return ABSPATH;
-
+            if ($counter++ > 20) {
+                exit('Could not find WordPress installation on this server. Use --wp option to run script with custom path');
             }
         } while($current_script_dir = realpath("$current_script_dir/.."));
-
-        return null;
-
     }
 }
 
