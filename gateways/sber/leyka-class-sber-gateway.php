@@ -586,7 +586,7 @@ class Leyka_Sber_Card extends Leyka_Payment_Method {
     }
 
     public function has_recurring_support() {
-        return !!leyka_options()->opt($this->full_id.'_recurring_available');
+        return !!leyka_options()->opt($this->full_id.'_recurring_available') ? 'active' : false;
     }
 
 }
