@@ -22,7 +22,8 @@
 
                 foreach($_GET as $param_name => &$param_value) {
 
-                    $param_value = $param_value ? esc_attr( str_replace('>', '', wp_strip_all_tags(trim($_GET['donor-name-email']))) ) : '';
+                    $param_value = $param_value ?
+                        esc_attr( str_replace('>', '', wp_strip_all_tags(trim($param_value))) ) : '';
 
                     if($param_name === 'first-date' && is_array($param_value)) {
                         $param_value = $param_value[0].'-'.$param_value[1];
