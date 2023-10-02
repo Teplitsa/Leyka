@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Voronkovich\SberbankAcquiring\HttpClient;
 
 use Voronkovich\SberbankAcquiring\Exception\NetworkException;
@@ -11,17 +13,15 @@ use Voronkovich\SberbankAcquiring\Exception\NetworkException;
  */
 interface HttpClientInterface
 {
+    const METHOD_GET = 'GET';
+    const METHOD_POST = 'POST';
+
     /**
      * Send an HTTP request.
-     *
-     * @param string $uri
-     * @param string $method
-     * @param array  $headers
-     * @param array  $data
      *
      * @throws NetworkException
      *
      * @return array A response
      */
-    public function request($uri, $method = 'GET', array $headers = array(), array $data = array());
+    public function request(string $uri, string $method = self::METHOD_GET, array $headers = [], string $data = ''): array;
 }
