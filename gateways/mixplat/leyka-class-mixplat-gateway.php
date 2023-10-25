@@ -161,6 +161,9 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         if(empty($this->_payment_methods['yandex'])) {
             $this->_payment_methods['yandex'] = Leyka_Mixplat_Yandex_Pay::get_instance();
         }
+        if(empty($this->_payment_methods['mirpay'])) {
+            $this->_payment_methods['mirpay'] = Leyka_Mixplat_MIR_Pay::get_instance();
+        }
         if(empty($this->_payment_methods['sbp'])) {
             $this->_payment_methods['sbp'] = Leyka_Mixplat_SBP::get_instance();
         }
@@ -199,6 +202,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             'mobile' => 'mobile',
             'bankcard' => 'card',
             'yandex' => 'card',
+            'mirpay' => 'card',
             'pay' => 'card',
             'sbp' => 'bank',
         ];
@@ -211,10 +215,12 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
     public function _set_gateway_bt_id($bt_id) {
         $all_bt_ids = [
-            'pay' => 'apple_pay',
-            'yandex' => 'yandex_pay',
+  		     	'mobile' => '',
             'bankcard' => 'credit_card',
-            'sbp' => 'bank_sbp',
+            'yandex' => 'yandex_pay',
+            'mirpay' => 'mir_pay',
+            'pay' => 'apple_pay',
+            'sbp' => '',
         ];
         if(array_key_exists($bt_id, $all_bt_ids)) {
             return $all_bt_ids[$bt_id];
@@ -230,6 +236,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         ]);
     }
 
+		
     public function enqueue_gateway_scripts() {
 
         if(Leyka_Mixplat_Mobile::get_instance()->active || $this->_mixplat_widget_mode(1) ) {
@@ -238,10 +245,12 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             wp_enqueue_script( 'leyka-mixplat', LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_Mixplat_Gateway::get_instance()->id.'/js/leyka.mixplat.js', ['jquery', 'leyka-mixplat-widget',], LEYKA_VERSION.'.001', false );
 
         }
-
+				wp_enqueue_script('leyka-mixplat-wloader', sprintf('https://widgets.mixplat.ru/lMonitor/%d/monitor.js',(int)leyka_options()->opt('mixplat_service_id')), [], LEYKA_VERSION.'.001', false );
         add_filter('leyka_js_localized_strings', [$this, 'localize_js_strings']);
+				add_filter('script_loader_tag', 'leyka_mixplat_wloader_async', 10, 3 );
 
     }
+    
 
     public function process_form($gateway_id, $pm_id, $donation_id, $form_data) {
 
@@ -467,7 +476,6 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             'widget_key' => trim(leyka_options()->opt('mixplat_widget_key')),
             'merchant_payment_id' => (string)$donation_id,
             'test' => leyka_options()->opt('mixplat_test_mode') ? 1 : 0,
-            // get_bloginfo('name'). removed from the description
             'description' => $donation->payment_title,
             'amount' => (int)round((float)$donation->amount * 100),
             'currency' => 'RUB',
@@ -475,7 +483,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             'user_name' => $donation->donor_name,
             'user_email' => $donation->donor_email,
             'payment_method' => $this->_set_gateway_pm_id($pm_id),
-            'billing_type' => $pm_id==='sbp'? '' : $this->_set_gateway_bt_id($pm_id), // ToDo: correct this back after confirmation
+            'billing_type' => $this->_set_gateway_bt_id($pm_id),
             'merchant_campaign_id' => $donation->campaign_id,
             'url_success' => leyka_get_success_page_url(),
             'url_failure' => leyka_get_failure_page_url(),
@@ -581,7 +589,6 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
 
           if( !$is_error ) {
-            // get_bloginfo('name'). removed from the description
             $output = '<html lang="ru"><head><meta charset="UTF-8"><title>'.$donation->payment_title.'</title><base target="_parent"><script src="//cdn.mixplat.ru/widget/v3/widget.js"></script>
 </head><body style="margin:0px;padding:0px;overflow:hidden"><iframe src="'.$campaign_url.'" frameborder="0" scrolling="yes" seamless="seamless" style="display:block; width:100%; height:100vh;"></iframe><script type="text/javascript">
  document.addEventListener("DOMContentLoaded", function(){
@@ -1686,6 +1693,52 @@ class Leyka_Mixplat_Yandex_Pay extends Leyka_Payment_Method {
 
 }
 
+class Leyka_Mixplat_MIR_Pay extends Leyka_Payment_Method {
+
+    protected static $_instance = null;
+
+    public function _set_processing_type($value = false) {
+      if($value) {
+       $this->_processing_type=$value;
+      }
+      return $this->_processing_type;
+    }
+
+    public function _set_attributes() {
+
+        $this->_id = 'mirpay';
+        $this->_gateway_id = 'mixplat';
+        $this->_category = 'bank_cards';
+
+        $this->_description = apply_filters(
+            'leyka_pm_description',
+            __('Enable MIR Pay payment method', 'leyka'),
+            $this->_id,
+            $this->_gateway_id,
+            $this->_category
+        );
+
+        $this->_label_backend = __('MIR Pay', 'leyka');
+        $this->_label = __('MIR Pay', 'leyka');
+
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, [
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/mir-pay.svg',
+        ]);
+
+        $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, []);
+
+        $this->_supported_currencies[] = 'rub';
+        $this->_default_currency = 'rub';
+        $this->_processing_type = 'custom-process-submit-event';
+
+    }
+
+    public function has_recurring_support() {
+        return 'passive';
+    }
+
+}
+
 class Leyka_Mixplat_SBP extends Leyka_Payment_Method {
 
     protected static $_instance = null;
@@ -1726,38 +1779,19 @@ class Leyka_Mixplat_SBP extends Leyka_Payment_Method {
 
     }
 
-
-    protected function _set_options_defaults() {
-        if($this->_options) {
-            return;
-        }
-
-        $this->_options = [
-            $this->full_id.'_spb_help1' => [
-                'type' => 'static_text',
-                'title' => __('Payments via SBP', 'leyka'),
-                'is_html' => true,
-                'value' => '',
-                'description' => __('Mixplat offers special conditions: 0% commission for SPB payments till Dec 2023.<br><a href="mailto:sbp@mixplat.ru" target=_blank>Check details</a> with your manager.', 'leyka'),
-            ],
-            $this->full_id.'_enabled' => [
-                'type' => 'checkbox',
-                'default' => false,
-                'title' => __('Enable SBP subscriptions', 'leyka'),
-                'comment' => __('Not all banks have implemented SBP subscriptions so far. Banks are to enable SBP recurrent support in their apps, but the process will take some time. Enable option to allow users to make subscriptions via SPB.', 'leyka'),
-                'short_format' => true,
-            ],
-        ];
-    }
-
-    /** SBP recurring isn't debugged completely (on the Banks Clients side, not on the Leyka or Mixplat side) */
     public function has_recurring_support() {
-      if(leyka_options()->opt('mixplat-sbp_enabled'))
         return 'passive';
-      else
-        return false;
     }
 
+}
+
+function leyka_mixplat_wloader_async($tag, $handle, $src) {
+ 		if ($handle === 'leyka-mixplat-wloader') { 		// Check that 'async' isn't already declared.
+   		if (stripos($tag, 'async') === FALSE) {  		// Insert the 'async="async"' attribute and value.
+     		$tag = str_replace(' src', ' async="async" src', $tag);
+   		}
+  	}
+		return $tag;
 }
 
 function leyka_mixplat_set_widget_mode() {
@@ -1766,6 +1800,7 @@ function leyka_mixplat_set_widget_mode() {
     {
        Leyka_Mixplat_Card::get_instance()->_set_processing_type('default');
        Leyka_Mixplat_Yandex_Pay::get_instance()->_set_processing_type('default');
+       Leyka_Mixplat_MIR_Pay::get_instance()->_set_processing_type('default');
        Leyka_Mixplat_SBP::get_instance()->_set_processing_type('default');
        Leyka_Mixplat_Mobile::get_instance()->_set_processing_type('default');
     }
