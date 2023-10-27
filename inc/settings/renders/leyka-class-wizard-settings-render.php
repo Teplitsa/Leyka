@@ -13,7 +13,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
     public function render_content() {?>
 
-        <div class="leyka-admin leyka-wizard wizard-<?php echo $this->_controller->id?> step-<?php echo $this->_controller->get_current_section()->id?>">
+        <div class="leyka-admin leyka-wizard wizard-<?php echo esc_attr( $this->_controller->id); ?> step-<?php echo esc_attr( $this->_controller->get_current_section()->id ); ?>">
             <div class="nav-area">
                 <?php $this->render_navigation_area();?>
             </div>
@@ -26,7 +26,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
     public function render_common_errors_area() {
         foreach($this->_controller->get_common_errors() as $error) { /** @var WP_Error $error */ ?>
-            <span><?php echo $error->get_error_message();?></span>
+            <span><?php echo wp_kses_post( $error->get_error_message() );?></span>
         <?php }
     }
     
@@ -41,20 +41,20 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
         $current_section = $this->_controller->get_current_section();?>
 
         <div class="step-title">
-            <h1 id="step-title-<?php echo $current_section->full_id;?>" class="<?php echo $current_section->header_classes ? esc_attr($current_section->header_classes) : '';?>">
-                <?php echo $current_section->title;?>
+            <h1 id="step-title-<?php echo esc_attr( $current_section->full_id );?>" class="<?php echo esc_attr( $current_section->header_classes ? esc_attr($current_section->header_classes) : '' );?>">
+                <?php echo esc_html( $current_section->title );?>
             </h1>
         </div>
 
-        <input type="hidden" class="current-wizard-title" value="<?php echo $this->_controller->title;?>">
-        <input type="hidden" class="current-section-title" value="<?php echo $this->_controller->get_current_stage()->title;?>">
-        <input type="hidden" class="current-step-title" value="<?php echo $current_section->title;?>">
+        <input type="hidden" class="current-wizard-title" value="<?php echo esc_attr( $this->_controller->title );?>">
+        <input type="hidden" class="current-section-title" value="<?php echo esc_attr( $this->_controller->get_current_stage()->title );?>">
+        <input type="hidden" class="current-step-title" value="<?php echo esc_attr( $current_section->title );?>">
 
-        <div class="step-common-errors <?php echo $this->_controller->has_common_errors() ? 'has-errors' : '';?>">
+        <div class="step-common-errors <?php echo esc_attr( $this->_controller->has_common_errors() ? 'has-errors' : '' );?>">
             <?php $this->render_common_errors_area();?>
         </div>
 
-        <form id="leyka-settings-form-<?php echo $current_section->full_id;?>" <?php if($current_section->form_enctype):?>enctype="<?php echo $current_section->form_enctype?>"<?php endif?> class="leyka-settings-form leyka-wizard-step" method="post" action="<?php echo admin_url('admin.php?page=leyka_settings_new&screen='.$this->full_id);?>">
+        <form id="leyka-settings-form-<?php echo esc_attr( $current_section->full_id );?>" <?php if($current_section->form_enctype):?>enctype="<?php echo esc_attr( $current_section->form_enctype ); ?>"<?php endif?> class="leyka-settings-form leyka-wizard-step" method="post" action="<?php echo admin_url('admin.php?page=leyka_settings_new&screen='.$this->full_id);?>">
             <div class="step-content">
             <?php foreach($current_section->get_blocks() as $block) { /** @var $block Leyka_Settings_Block */
 
@@ -83,7 +83,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
         </form>
         
         <?php $this->render_footer();
-//        echo $this->render_help_chat();
+//        echo wp_kses_post( $this->render_help_chat() );
 
     }
 
@@ -100,7 +100,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
         <?php if($submits['next_url'] === true) {?>
 
-        <input type="submit" class="step-next button button-primary" name="leyka_settings_submit_<?php echo $this->_controller->id;?>" value="<?php echo esc_attr($submits['next_label']);?>">
+        <input type="submit" class="step-next button button-primary" name="leyka_settings_submit_<?php echo esc_attr( $this->_controller->id );?>" value="<?php echo esc_attr($submits['next_label']);?>">
 
         <?php } else if(is_string($submits['next_url'])) {?>
 
@@ -120,7 +120,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
         <?php if( !empty($submits['prev']) ) {?>
         <div class="sec-action">
-            <input type="submit" class="step-prev link-sec" name="leyka_settings_prev_<?php echo $this->_controller->id;?>" value="<?php echo esc_attr($submits['prev']);?>">
+            <input type="submit" class="step-prev link-sec" name="leyka_settings_prev_<?php echo esc_attr( $this->_controller->id );?>" value="<?php echo esc_attr($submits['prev']);?>">
         </div>
         <?php }?>
 
@@ -141,17 +141,17 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
                         <?php if( !empty($stage['is_completed']) ) {?>
                         <div class="nav-section-marker">
-                            <a href="<?php echo $stage['url'];?>">
+                            <a href="<?php echo esc_url( $stage['url'] );?>">
                                 <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-ok.svg" alt="">
                             </a>
                         </div>
 
-                        <a href="<?php echo $stage['url'];?>"><?php echo esc_html($stage['title']);?></a>
+                        <a href="<?php echo esc_url( $stage['url'] );?>"><?php echo esc_html($stage['title']);?></a>
 
                         <?php } else {?>
 
                         <div class="nav-section-marker">
-                            <?php echo $stage_index + 1;?>
+                            <?php echo esc_html( $stage_index + 1 );?>
                         </div>
                             <?php echo esc_html($stage['title']);
 
@@ -167,7 +167,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
                             <div class="nav-step <?php if( !empty($section['is_current']) ) {?>active<?php } else if( !empty($section['is_completed']) ) {?>done<?php }?>">
 
                             <?php if( !empty($section['is_completed']) ) {?>
-                                <a href="<?php echo $section['url'];?>"><?php echo esc_html($section['title']);?></a>
+                                <a href="<?php echo esc_url( $section['url'] );?>"><?php echo esc_html($section['title']);?></a>
                             <?php } else {
                                 echo esc_html($section['title']);
                             }?>
@@ -187,7 +187,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
         </div>
 
-        <a href="<?php echo $this->_get_exit_url();?>" class="nav-section nav-exit">
+        <a href="<?php echo esc_url( $this->_get_exit_url() );?>" class="nav-section nav-exit">
             <div class="nav-section-title">
                 <div class="nav-section-marker"></div>
                 <?php _e('Exit installation', 'leyka');?>
@@ -202,13 +202,13 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
     public function render_container_block(Leyka_Container_Block $block) {?>
 
-        <div id="<?php echo $block->id;?>" class="settings-block container-block">
+        <div id="<?php echo esc_attr( $block->id );?>" class="settings-block container-block">
 
             <?php $entry_width = $block->entry_width ? (100.0*($block->entry_width - 0.06 * $block->entry_width)).'%' : false;
 
             foreach($block->get_content() as $sub_block) { // $sub_block_index => $sub_block ?>
 
-                <div class="container-entry" <?php echo $entry_width ? 'style="flex-basis: '.$entry_width.';"' : '';?>>
+                <div class="container-entry" <?php echo wp_kses_post( $entry_width ? 'style="flex-basis: '.$entry_width.';"' : '' );?>>
 
                 <?php if(is_a($sub_block, 'Leyka_Text_Block')) { /** @var $sub_block Leyka_Text_Block */
                     $this->render_text_block($sub_block);
@@ -228,8 +228,8 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
     public function render_subtitle_block(Leyka_Subtitle_Block $block) {?>
 
-        <div id="<?php echo $block->id;?>" class="settings-block subtitle-block">
-            <h2><?php echo $block->get_content();?></h2>
+        <div id="<?php echo esc_attr( $block->id );?>" class="settings-block subtitle-block">
+            <h2><?php echo wp_kses_post( $block->get_content() );?></h2>
         </div>
 
     <?php }
@@ -238,12 +238,12 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
         $content = $block->get_content();?>
 
-        <div id="<?php echo $block->id;?>" class="settings-block text-block">
+        <div id="<?php echo esc_attr( $block->id );?>" class="settings-block text-block">
             
             <?php if($block->has_custom_templated() || preg_match("/<p>/", $content)):?>
-                <?php echo $content?>
+                <?php echo wp_kses_post( $content ); ?>
             <?php else: ?>
-                <p><?php echo $content?></p>
+                <p><?php echo wp_kses_post( $content ); ?></p>
             <?php endif?>
         </div>
 
@@ -253,13 +253,13 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
         $option_info = leyka_options()->get_info_of($block->get_content());?>
 
-        <div id="<?php echo $block->id;?>" class="settings-block option-block type-<?php echo $option_info['type']?> <?php echo $block->show_title ? '' : 'option-title-hidden';?> <?php echo $block->show_description ? '' : 'option-description-hidden';?> <?php echo $this->_controller->has_component_errors($block->id) ? 'has-errors' : '';?>">
+        <div id="<?php echo esc_attr( $block->id );?>" class="settings-block option-block type-<?php echo esc_attr( $option_info['type'] ); ?> <?php echo esc_attr( $block->show_title ? '' : 'option-title-hidden' );?> <?php echo esc_attr( $block->show_description ? '' : 'option-description-hidden' );?> <?php echo esc_attr( $this->_controller->has_component_errors($block->id) ? 'has-errors' : '' );?>">
 
             <?php do_action("leyka_render_{$option_info['type']}", $block->get_content(), $option_info);?>
 
-            <div class="field-errors <?php echo $this->_controller->has_component_errors($block->id) ? 'has-errors' : '';?>">
+            <div class="field-errors <?php echo esc_attr( $this->_controller->has_component_errors($block->id) ? 'has-errors' : '' );?>">
                 <?php foreach($this->_controller->get_component_errors($block->id) as $error) { /** @var $error WP_Error */?>
-                    <span><?php echo $error->get_error_message();?></span>
+                    <span><?php echo wp_kses_post( $error->get_error_message() );?></span>
                 <?php }?>
             </div>
 
@@ -269,12 +269,12 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
 
     public function render_custom_setting_block(Leyka_Custom_Setting_Block $block) {?>
 
-        <div id="<?php echo $block->id;?>" class="settings-block custom-block <?php echo $block->is_standard_field_type ? 'option-block' : '';?> <?php echo $this->_controller->has_component_errors($block->id) ? 'has-errors' : '';?> type-<?php echo $block->field_type;?> <?php echo $block->field_type;?>">
+        <div id="<?php echo esc_attr( $block->id );?>" class="settings-block custom-block <?php echo esc_attr( $block->is_standard_field_type ? 'option-block' : '' );?> <?php echo esc_attr( $this->_controller->has_component_errors($block->id) ? 'has-errors' : '' );?> type-<?php echo esc_attr( $block->field_type ); ?> <?php echo esc_attr( $block->field_type ); ?>">
 
-            <?php echo $block->get_content();?>
-            <div class="field-errors <?php echo $this->_controller->has_component_errors($block->id) ? 'has-errors' : '';?>">
+            <?php echo wp_kses( $block->get_content(), 'content' );?>
+            <div class="field-errors <?php echo esc_attr( $this->_controller->has_component_errors($block->id) ? 'has-errors' : '' );?>">
                 <?php foreach($this->_controller->get_component_errors($block->id) as $error) { /** @var $error WP_Error */?>
-                    <span><?php echo $error->get_error_message();?></span>
+                    <span><?php echo wp_kses_post( $error->get_error_message() );?></span>
                 <?php }?>
             </div>
 
