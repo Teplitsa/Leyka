@@ -578,7 +578,6 @@ function leyka_render_multi_select_field($option_id, $data){
                 <?php
                 if ( is_array( $data['value'] ) &&
                     in_array( 'name', $data['value'] ) &&
-                    $value === 'Name' &&
                     $option_id === 'leyka_unisender_donor_fields' ) {
 
                     $data['value'] = array_replace( $data['value'],
