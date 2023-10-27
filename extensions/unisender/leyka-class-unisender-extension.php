@@ -72,7 +72,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
                         'required' => true,
                         'comment' => __('Donor fields which will be transferred to Unisender', 'leyka'),
                         'list_entries' => $this->_get_donor_fields(),
-                        'default' => ['name'], // 'default' should be an array of values (even if it's single value there)
+                        'default' => ['Name'], // 'default' should be an array of values (even if it's single value there)
                         'description' => __('Hint: to capture your data Unisender list should have fields with this variables -', 'leyka')
                     ],
                     $this->_id.'_donor_confirmation' => [
@@ -115,7 +115,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
     protected function _get_donor_fields() {
 
         $fields_library = leyka_options()->opt('additional_donation_form_fields_library');
-        $additional_fields = ['name' => __('Name', 'leyka')];
+        $additional_fields = ['Name' => __('Name', 'leyka')];
 
         foreach($fields_library as $name => $data) {
             $additional_fields[$name] = __($data['title'], 'leyka');
@@ -156,7 +156,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
 
                 $field_name_fix = str_replace('-', '_', $field_name);
 
-                if($field_name === 'name') {
+                if($field_name === 'Name') {
                     $donor_fields[$field_name] = $donation->donor_name;
                 } else {
 
@@ -227,20 +227,20 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
                     $unisender_exist_fields = $result_array['result'];
 
                     foreach($this->_unisender_system_fields as $system_field_name) {
-                        array_push($unisender_exist_fields, ['name' => $system_field_name]);
+                        array_push($unisender_exist_fields, ['Name' => $system_field_name]);
                     }
 
                     // Create fields filled by donor in Unisender
                     foreach($donor_fields as $donor_field_name => $donor_field_value ) {
 
                         foreach($unisender_exist_fields as $unisender_exist_field) {
-                            if(($unisender_exist_field['name'] === $donor_field_name)) { // Field exists
+                            if(($unisender_exist_field['Name'] === $donor_field_name)) { // Field exists
                                 continue 2;
                             }
                         }
 
                         $result = $uni->createField([ // Create field in Unisender
-                            'name' => $donor_field_name,
+                            'Name' => $donor_field_name,
                             'type' => 'string'
                         ]);
 

@@ -575,6 +575,21 @@ function leyka_render_multi_select_field($option_id, $data){
 
                 <select id="<?php echo esc_attr( $option_id.'-field' );?>" name="<?php echo esc_attr( $option_id );?>[]" size="<?php echo empty($data['length']) ? 5 : absint($data['length']);?>" multiple="multiple">
 
+                <?php
+                if ( is_array( $data['value'] ) &&
+                    in_array( 'name', $data['value'] ) &&
+                    $value === 'Name' &&
+                    $option_id === 'leyka_unisender_donor_fields' ) {
+
+                    $data['value'] = array_replace( $data['value'],
+                        array_fill_keys(
+                            array_keys( $data['value'], 'name' ),
+                            'Name'
+                        )
+                    );
+                }
+                ?>
+
                 <?php foreach((array)$data['list_entries'] as $value => $label) {?>
                     <option value="<?php echo esc_attr( $value );?>" <?php echo in_array($value, $data['value']) ? 'selected="selected"' : '';?>>
                         <?php echo esc_attr($label);?>
