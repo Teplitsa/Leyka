@@ -45,6 +45,136 @@ if( !function_exists('array_key_first') ) {
     }
 }
 
+if ( ! function_exists( 'leyka_safe_style_css' ) ) {
+    function leyka_safe_style_css( $styles ){
+        $styles[] = 'display';
+        return $styles;
+    }
+    add_filter( 'safe_style_css', 'leyka_safe_style_css' );
+}
+
+if ( ! function_exists( 'leyka_kses_allowed_html' ) ) {
+    /**
+     * Filters the HTML that is allowed for a given context.
+     *
+     * @param array  $tags    Tags by.
+     * @param string $context Context name.
+     */
+    function leyka_kses_allowed_html( $tags, $context ) {
+
+        if ( 'content' === $context ) {
+            $tags = array(
+                'div' => array(
+                    'id'     => true,
+                    'class'  => true,
+                    'data-*' => true,
+                    'style'  => true,
+                ),
+                'span' => array(
+                    'id'    => true,
+                    'class' => true,
+                    'style' => true,
+                    'data-*' => true,
+                ),
+                'b'      => array(),
+                'strong' => array(),
+                'p' => array(
+                    'id'    => true,
+                    'style' => true,
+                    'data-*' => true,
+                ),
+                'br' => array(),
+                'a' => array(
+                    'id'     => true,
+                    'href'   => true,
+                    'target' => true,
+                    'class'  => true,
+                    'data-*' => true,
+                    'style'  => true,
+                ),
+                'img' => array(
+                    'id'    => true,
+                    'src'   => true,
+                    'class' => true,
+                    'alt'   => true,
+                    'style' => true,
+                    'data-*' => true,
+                ),
+                'button' => array(
+                    'id'     => true,
+                    'class'  => true,
+                    'type'   => true,
+                    'title'  => true,
+                    'data-*' => true,
+                    'style'  => true,
+                ),
+                'label' => array(
+                    'id'    => true,
+                    'class' => true,
+                    'for'   => true,
+                    'style' => true,
+                    'data-*' => true,
+                ),
+                'select' => array(
+                    'id'     => true,
+                    'class'  => true,
+                    'name'   => true,
+                    'data-*' => true,
+                ),
+                'input' => array(
+                    'id'          => true,
+                    'class'       => true,
+                    'type'        => true,
+                    'name'        => true,
+                    'value'       => true,
+                    'placeholder' => true,
+                    'data-*'      => true,
+                    'maxlength'   => true,
+                    'inputmode'   => true,
+                    'style'       => true,
+                ),
+                'textarea' => array(
+                    'id'          => true,
+                    'name'        => true,
+                    'class'       => true,
+                    'type'        => true,
+                    'value'       => true,
+                    'placeholder' => true,
+                    'data-*'      => true,
+                    'rows'        => true,
+                    'cols'        => true,
+                    'style'       => true,
+                ),
+                'option' => array(
+                    'value'    => true,
+                    'requred'  => true,
+                    'selected' => true,
+                    'style'    => true,
+                    'data-*' => true,
+                ),
+                'ul' => array(
+                    'class'       => true,
+                    'data-*'      => true,
+                ),
+                'li' => array(
+                    'class'       => true,
+                    'data-*' => true,
+                ),
+                'iframe' => array(
+                    'id'     => true,
+                    'width'  => true,
+                    'height' => true,
+                    'src'    => true,
+                    'data-*' => true,
+                ),
+            );
+        }
+
+        return $tags;
+    }
+    add_filter( 'wp_kses_allowed_html', 'leyka_kses_allowed_html', 10, 2 );
+}
+
 if( !function_exists('array_key_last') ) {
     function array_key_last(array $array) {
         return $array ? key(array_slice($array, -1)) : null;
@@ -926,14 +1056,14 @@ function leyka_scale_compact($campaign) {
     $curr_label = leyka_get_currency_label();
 
     $percentage = round(($campaign->total_funded/$target)*100);
-	if($percentage > 100) {
-		$percentage = 100;
+    if($percentage > 100) {
+        $percentage = 100;
     }?>
 
 <div class="leyka-scale-compact">
     <div class="leyka-scale-scale">
         <div class="target">
-            <div style="width:<?php echo $percentage;?>%" class="collected">&nbsp;</div>
+            <div style="width:<?php echo esc_attr( $percentage ); ?>%" class="collected">&nbsp;</div>
         </div>
     </div>
     <div class="leyka-scale-label">
@@ -963,12 +1093,12 @@ function leyka_scale_ultra($campaign) {
     }
 
     $percentage = round(($campaign->total_funded/$target)*100);
-	$percentage = $percentage > 100 ? 100 : $percentage;?>
+    $percentage = $percentage > 100 ? 100 : $percentage;?>
 
 <div class="leyka-scale-ultra">
     <div class="leyka-scale-scale">
         <div class="target">
-            <div style="width:<?php echo $percentage;?>%" class="collected">&nbsp;</div>
+            <div style="width:<?php echo esc_attr( $percentage );?>%" class="collected">&nbsp;</div>
         </div>
     </div>
     <div class="leyka-scale-label">
@@ -1575,20 +1705,22 @@ function leyka_get_campaigns_select_default() {
 }
 
 function leyka_get_terms_text() {
-    return apply_filters(
+    $terms_text = apply_filters(
         'leyka_terms_of_service_text',
         leyka_options()->opt('receiver_legal_type') === 'legal' ?
             leyka_options()->opt('terms_of_service_text') :
             leyka_options()->opt('person_terms_of_service_text')
     );
+    return wp_kses_post($terms_text);
 }
 
 function leyka_get_pd_terms_text() {
-    return apply_filters(
+    $pd_terms_text = apply_filters(
         'leyka_terms_of_pd_usage_text',
         leyka_options()->opt('receiver_legal_type') === 'legal' ?
             leyka_options()->opt('pd_terms_text') : leyka_options()->opt('person_pd_terms_text')
     );
+    return wp_kses_post($pd_terms_text);
 }
 
 /** Default campaign ID cache invalidation */
@@ -2426,9 +2558,9 @@ if( !function_exists('leyka_save_commission_field') ) {
 add_action('leyka_save_custom_option-commission', 'leyka_save_commission_field');
 
 if( !function_exists('leyka_add_editor_css') ) {
-	function leyka_add_editor_css() {
-		add_editor_style(LEYKA_PLUGIN_BASE_URL.'assets/css/editor.css');
-	}
+    function leyka_add_editor_css() {
+        add_editor_style(LEYKA_PLUGIN_BASE_URL.'assets/css/editor.css');
+    }
 }
 add_action('after_setup_theme', 'leyka_add_editor_css');
 
