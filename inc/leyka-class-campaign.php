@@ -1559,9 +1559,9 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
 		$campaign = new Leyka_Campaign($campaign_id);
 
-		/*if($column_name === 'id') {
-			(int)$campaign->id; // To avoid doubling of the ID value in the column
-		} else*/ if($column_name === 'payment_title') {
+		if($column_name === 'id') {
+			echo esc_html( (int)$campaign->id );
+		} else if($column_name === 'payment_title') {
             echo $campaign->payment_title;
         } else if($column_name === 'coll_state') {
 
