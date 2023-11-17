@@ -1417,7 +1417,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         // Campaign additional form fields settings:
         if(isset($_REQUEST['leyka_campaign_additional_fields'])) {
 
-            $_REQUEST['leyka_campaign_additional_fields'] = json_decode(urldecode($_REQUEST['leyka_campaign_additional_fields']));
+            $_REQUEST['leyka_campaign_additional_fields'] = json_decode( urldecode_deep( $_REQUEST['leyka_campaign_additional_fields'] ) );
             $updated_additional_fields_settings = [];
             $fields_library = leyka_options()->opt('additional_donation_form_fields_library');
 
