@@ -395,14 +395,14 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         $is_error = !!$is_error;
         $tech_message = $tech_message ? : $message;
         $callback_type = $callback_type === 'co' ? 'checkOrderResponse' : 'paymentAvisoResponse';
-
+        $invoice_id = isset( $_POST['invoiceId'] ) ? $_POST['invoiceId'] : '';
         if($is_error) {
             die('<?xml version="1.0" encoding="UTF-8"?><'.$callback_type.' performedDatetime="'.date(DATE_ATOM).'"
-code="1000" invoiceId="'.$_POST['invoiceId'].'" shopId="'.leyka_options()->opt('yandex_shop_id').'" message="'.$message.'"
+code="1000" invoiceId="' . esc_attr( $invoice_id ) . '" shopId="'.leyka_options()->opt('yandex_shop_id').'" message="'.$message.'"
 techMessage="'.$tech_message.'"/>');
         }
 
-        die('<?xml version="1.0" encoding="UTF-8"?><'.$callback_type.' performedDatetime="'.date(DATE_ATOM).'" code="0" invoiceId="'.$_POST['invoiceId'].'" shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
+        die('<?xml version="1.0" encoding="UTF-8"?><'.$callback_type.' performedDatetime="'.date(DATE_ATOM).'" code="0" invoiceId="' . esc_attr( $invoice_id ) . '" shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
 
     }
 
@@ -518,7 +518,7 @@ techMessage="'.$tech_message.'"/>');
                     $this->_callback_answer(1, 'co', __('Wrong service operation', 'leyka'));
                 }
 
-				$_POST['orderNumber'] = $this->_validate_order_number($_POST['orderNumber']);
+                $_POST['orderNumber'] = $this->_validate_order_number($_POST['orderNumber']);
 
                 if( !$_POST['orderNumber'] ) {
                     $this->_callback_answer(1, 'co', __('Sorry, there is some tech error on our side. Your payment will be cancelled.', 'leyka'), __('OrderNumber is not set', 'leyka'));
@@ -603,7 +603,7 @@ techMessage="'.$tech_message.'"/>');
 
                 }
 
-				do_action('leyka_yandex_payment_aviso_success', $donation);
+                do_action('leyka_yandex_payment_aviso_success', $donation);
 
                 if($donation->type === 'rebill') {
                     do_action('leyka_new_rebill_donation_added', $donation);
@@ -613,7 +613,7 @@ techMessage="'.$tech_message.'"/>');
                 break; // Not needed, just for my IDE could relax
 
             default:
-				$this->_callback_answer(1, 'unknown', __('Unknown service operation', 'leyka'), 'Unknown callback type: '.$call_type);
+                $this->_callback_answer(1, 'unknown', __('Unknown service operation', 'leyka'), 'Unknown callback type: '.$call_type);
         }
     }
 
@@ -843,9 +843,9 @@ techMessage="'.$tech_message.'"/>');
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') {?>
-                <input type="text" id="yandex-invoice-id" name="yandex-invoice-id" placeholder="<?php _e('Enter YooKassa invoice ID', 'leyka');?>" value="<?php echo $donation->yandex_invoice_id;?>">
+                <input type="text" id="yandex-invoice-id" name="yandex-invoice-id" placeholder="<?php _e('Enter YooKassa invoice ID', 'leyka');?>" value="<?php echo esc_attr( $donation->yandex_invoice_id );?>">
                 <?php } else {?>
-                <span class="fake-input"><?php echo $donation->yandex_invoice_id;?></span>
+                <span class="fake-input"><?php echo esc_html( $donation->yandex_invoice_id );?></span>
                 <?php }?>
             </div>
 
@@ -858,7 +858,7 @@ techMessage="'.$tech_message.'"/>');
             <div class="recurring-is-active-field">
                 <label for="yandex-recurring-is-active"><?php _e('Recurring subscription is active', 'leyka');?>:</label>
                 <div class="leyka-ddata-field">
-                    <input type="checkbox" id="yandex-recurring-is-active" name="yandex-recurring-is-active" value="1" <?php echo $init_recurring_donation->recurring_is_active ? 'checked="checked"' : '';?>>
+                    <input type="checkbox" id="yandex-recurring-is-active" name="yandex-recurring-is-active" value="1" <?php checked( $init_recurring_donation->recurring_is_active, '1' );?>>
                 </div>
             </div>
 

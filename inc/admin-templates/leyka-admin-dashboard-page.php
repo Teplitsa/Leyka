@@ -14,10 +14,10 @@
             <div class="leyka-content-wrapper">
                 <img src="<?php echo LEYKA_PLUGIN_BASE_URL; ?>img/dashboard/icon-alert-circle.svg" />
                 <span><?php echo __('Problematic subscriptions found.', 'leyka'); ?></span>
-                <a href="<?php echo admin_url('admin.php?page=leyka_recurring_subscriptions&recurring_subscription_status=problematic') ?>"><?php echo __('To the list', 'leyka'); ?></a>
+                <a href="<?php echo esc_url( admin_url('admin.php?page=leyka_recurring_subscriptions&recurring_subscription_status=problematic') ); ?>"><?php esc_html_e('To the list', 'leyka'); ?></a>
             </div>
 
-            <img class="leyka-close-button" src="<?php echo LEYKA_PLUGIN_BASE_URL; ?>img/dashboard/icon-close.svg" />
+            <img class="leyka-close-button" src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL ); ?>img/dashboard/icon-close.svg" />
 
         </div>
 
@@ -80,7 +80,10 @@
                 <div class ="plugin-data-interval-content">
 
                     <span class="plugin-data-interval-label leyka-closed">
-                        <span><?php echo __(isset($_GET['interval']) ? $dashboard_stats_intervals[$_GET['interval']] : 'Выбрать период', 'leyka'); ?></span>
+                        <?php
+                        $interval = isset( $_GET['interval'] ) ? $dashboard_stats_intervals[ $_GET['interval'] ] : __( 'Выбрать период', 'leyka' );
+                        ?>
+                        <span><?php echo esc_html( $interval ); ?></span>
                         <img class="leyka-icon leyka-icon-chevron-down" src="<?php echo LEYKA_PLUGIN_BASE_URL.'/img/dashboard/icon-chevron-down.svg' ?>">
                     </span>
 
@@ -88,9 +91,11 @@
 
                         <div class="leyka-content-column">
                             <?php foreach($dashboard_stats_intervals as $interval_id => $title) {
-                                if(strpos($interval_id, 'this') === false) { ?>
-                                    <a href="<?php echo add_query_arg('interval', $interval_id, $current_url);?>" class="<?php echo $_GET['interval'] === $interval_id ? 'current-interval' : '';?>">
-                                        <?php echo esc_html($title);?>
+                                if(strpos($interval_id, 'this') === false) {
+                                    $interval_class = $_GET['interval'] === $interval_id ? 'current-interval' : '';
+                                    ?>
+                                    <a href="<?php echo add_query_arg('interval', $interval_id, $current_url);?>" class="<?php echo esc_attr( $interval_class ); ?>">
+                                        <?php echo esc_html( $title );?>
                                     </a>
                                 <?php }
                             }?>
@@ -98,9 +103,11 @@
 
                         <div class="leyka-content-column">
                             <?php foreach($dashboard_stats_intervals as $interval_id => $title) {
-                                if(strpos($interval_id, 'this') !== false) { ?>
-                                    <a href="<?php echo add_query_arg('interval', $interval_id, $current_url);?>" class="<?php echo $_GET['interval'] === $interval_id ? 'current-interval' : '';?>">
-                                        <?php echo esc_html($title);?>
+                                if(strpos($interval_id, 'this') !== false) {
+                                    $interval_class = $_GET['interval'] === $interval_id ? 'current-interval' : '';
+                                    ?>
+                                    <a href="<?php echo add_query_arg('interval', $interval_id, $current_url);?>" class="<?php echo esc_attr( $interval_class );?>">
+                                        <?php echo esc_html( $title );?>
                                     </a>
                                 <?php }
                             }?>
@@ -114,7 +121,10 @@
                     <span class="plugin-data-interval-reset-text">
                         <?php echo sprintf(__('The data is actual as of&nbsp;%s', 'leyka'), $dashboard_data_cache_date);?>
                     </span>
-                    <a class="plugin-data-interval-reset-btn" href="?page=leyka&interval=<?php echo $_GET['interval']; ?>&reset=true">
+                    <?php
+                    $interval = $_GET['interval'];
+                    ?>
+                    <a class="plugin-data-interval-reset-btn" href="?page=leyka&interval=<?php echo esc_attr( $interval ); ?>&reset=true">
                         <?php _e('Renew data', 'leyka');?>
                     </a>
                 </div>
@@ -125,22 +135,22 @@
             <div class="leyka-portlets-wrap">
 
                 <?php $row_id = 'donations-stats-main';?>
-                <div class="leyka-content-row leyka-<?php echo $row_id;?>">
+                <div class="leyka-content-row leyka-<?php echo esc_attr( $row_id );?>">
                     <?php do_action('leyka_admin_dashboard_portlets_row', $row_id);?>
                 </div>
 
                 <?php $row_id = 'donations-stats-recurring';?>
-                <div class="leyka-content-row leyka-<?php echo $row_id;?>">
+                <div class="leyka-content-row leyka-<?php echo esc_attr( $row_id );?>">
                     <?php do_action('leyka_admin_dashboard_portlets_row', $row_id);?>
                 </div>
 
                 <?php $row_id = 'donations-dynamics';?>
-                <div class="leyka-content-row leyka-<?php echo $row_id;?>">
+                <div class="leyka-content-row leyka-<?php echo esc_attr( $row_id );?>">
                     <?php do_action('leyka_admin_dashboard_portlets_row', $row_id);?>
                 </div>
 
                 <?php $row_id = 'recent-donations';?>
-                <div class="leyka-content-row leyka-<?php echo $row_id;?>">
+                <div class="leyka-content-row leyka-<?php echo esc_attr( $row_id );?>">
                     <?php do_action('leyka_admin_dashboard_portlets_row', $row_id);?>
                 </div>
 

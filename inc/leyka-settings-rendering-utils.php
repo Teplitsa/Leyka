@@ -653,7 +653,7 @@ function leyka_render_static_text_field($option_id, $data){
         <span class="field-component field">
 
             <span id="<?php echo esc_attr( $option_id.'-field');?>" class="<?php echo !empty($data['field_classes']) ? (is_array($data['field_classes']) ? implode(' ', $data['field_classes']) : $data['field_classes']) : '' ?>">
-                <?php echo wp_kses_post( $content );?>
+                <?php echo wp_kses( $content, 'content' );?>
             </span>
 
         </span>
@@ -1189,9 +1189,12 @@ function leyka_render_additional_fields_library_settings($option_id, $data = [])
         ]);
 
         $_COOKIE['leyka-additional-fields-boxes-closed'] = empty($_COOKIE['leyka-additional-fields-boxes-closed']) ?
-            [] : json_decode(stripslashes('[\"someline\"]'));?>
+            [] : json_decode(stripslashes('[\"someline\"]'));
 
-        <div id="<?php echo esc_attr( $placeholders['id'] ? : 'item-'.leyka_get_random_string(4) );?>" class="multi-valued-item-box field-box <?php echo esc_attr( $is_template ? 'item-template' : '' );?> <?php echo !$is_template && !empty($_COOKIE['leyka-additional-fields-boxes-closed']) && !empty($placeholders['id']) && in_array($placeholders['id'], $_COOKIE['leyka-additional-fields-boxes-closed']) ? 'closed' : '';?>" <?php echo wp_kses_post( $is_template ? 'style="display: none;"' : '' );?>>
+        $closed_class = !$is_template && !empty($_COOKIE['leyka-additional-fields-boxes-closed']) && !empty($placeholders['id']) && in_array($placeholders['id'], $_COOKIE['leyka-additional-fields-boxes-closed']) ? 'closed' : '';
+        ?>
+
+        <div id="<?php echo esc_attr( $placeholders['id'] ? : 'item-'.leyka_get_random_string(4) );?>" class="multi-valued-item-box field-box <?php echo esc_attr( $is_template ? 'item-template' : '' );?> <?php echo esc_attr( $closed_class ); ?>" <?php echo wp_kses_post( $is_template ? 'style="display: none;"' : '' );?>>
 
             <h3 class="item-box-title ui-sortable-handle">
 

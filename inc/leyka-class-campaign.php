@@ -92,31 +92,36 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         if( !is_admin() || !$screen || $screen->id != 'edit-'.self::$post_type || !current_user_can('leyka_manage_donations') ) {
             return;
-        }?>
+        }
+        $campaign_state = isset( $_GET['campaign_state'] ) ? $_GET['campaign_state'] : '';
+        $target_state   = isset( $_GET['target_state'] ) ? $_GET['target_state'] : '';
+        ?>
 
         <label for="campaign-state-select"></label>
         <select id="campaign-state-select" name="campaign_state">
 
-            <option value="all" <?php echo empty($_GET['campaign_state']) ? 'selected="selected"' : '';?>>
+            <option value="all" <?php selected( $campaign_state, '' );?>>
                 - <?php _e('Collection state', 'leyka');?> -
             </option>
 
-            <option value="is_finished" <?php echo !empty($_GET['campaign_state']) && $_GET['campaign_state'] == 'is_finished' ? 'selected="selected"' : '';?>><?php _e('Closed', 'leyka');?></option>
+            <option value="is_finished" <?php selected( $campaign_state, 'is_finished' );?>>
+                <?php _e('Closed', 'leyka');?>
+            </option>
 
-            <option value="is_open" <?php echo !empty($_GET['campaign_state']) && $_GET['campaign_state'] == 'is_open' ? 'selected="selected"' : '';?>><?php _e('Opened', 'leyka');?></option>
+            <option value="is_open" <?php selected( $campaign_state, 'is_open' );?>><?php _e('Opened', 'leyka');?></option>
 
         </select>
 
         <label for="target-state-select"></label>
         <select id="target-state-select" name="target_state">
 
-            <option value="" <?php echo empty($_GET['target_state']) ? 'selected="selected"' : '';?>>
+            <option value="" <?php selected( $target_state, '' ); ?>>
                 - <?php _e('Target', 'leyka');?> -
             </option>
 
             <?php foreach(Leyka::get_campaign_target_states() as $state => $label) {?>
 
-            <option value="<?php echo esc_attr( $state );?>" <?php echo !empty($_GET['target_state']) && $_GET['target_state'] == $state ? 'selected="selected"' : '';?>>
+            <option value="<?php echo esc_attr( $state );?>" <?php selected( $target_state, $state ); ?>>
                 <?php echo esc_html( $label );?>
             </option>
 

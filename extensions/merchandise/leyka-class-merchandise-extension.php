@@ -359,12 +359,12 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
             $merchandise_select_values['+'] = __('+ Create a new reward', 'leyka');?>
 
-            <div id="item-<?php echo leyka_get_random_string(4);?>" class="multi-valued-item-box merchandise-box <?php echo $is_template ? 'item-template' : '';?>" <?php echo $is_template ? 'style="display: none;"' : '';?>>
+            <div id="item-<?php echo leyka_get_random_string(4);?>" class="multi-valued-item-box merchandise-box <?php echo esc_html( $is_template ? 'item-template' : '' );?>" <?php echo esc_html( $is_template ? 'style="display: none;"' : '' ); ?>>
 
                 <h3 class="item-box-title ui-sortable-handle">
                     <span class="draggable"></span>
-                    <span class="title" data-empty-box-title="<?php _e('New reward', 'leyka');?>">
-                        <?php echo esc_html($placeholders['box_title']);?>
+                    <span class="title" data-empty-box-title="<?php esc_attr_e('New reward', 'leyka');?>">
+                        <?php echo esc_html( $placeholders['box_title'] );?>
                     </span>
                 </h3>
 
@@ -409,7 +409,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
         <?php } else { // An existing Merchandise item ?>
 
-            <div id="<?php echo $placeholders['id'] ? : 'item-'.leyka_get_random_string(4);?>" class="multi-valued-item-box merchandise-box closed">
+            <div id="<?php echo esc_attr( $placeholders['id'] ? : 'item-' . leyka_get_random_string(4) );?>" class="multi-valued-item-box merchandise-box closed">
 
                 <h3 class="item-box-title ui-sortable-handle">
 
@@ -606,14 +606,17 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
         ]);
 
         $_COOKIE['leyka-merchandise-boxes-closed'] = empty($_COOKIE['leyka-merchandise-boxes-closed']) ?
-            [] : json_decode(stripslashes('[\"someline\"]'));?>
+            [] : json_decode(stripslashes('[\"someline\"]'));
 
-        <div id="<?php echo $is_template || !$placeholders['id'] ? 'item-'.leyka_get_random_string(4) : $placeholders['id'];?>" class="multi-valued-item-box field-box <?php echo $is_template ? 'item-template' : '';?> <?php echo !$is_template && !empty($_COOKIE['leyka-merchandise-boxes-closed']) && !empty($placeholders['id']) && in_array($placeholders['id'], $_COOKIE['leyka-merchandise-boxes-closed']) ? 'closed' : '';?>" style="<?php echo $is_template ? 'display: none;' : '';?>">
+        $boxes_status = !$is_template && !empty($_COOKIE['leyka-merchandise-boxes-closed']) && !empty($placeholders['id']) && in_array($placeholders['id'], $_COOKIE['leyka-merchandise-boxes-closed']) ? 'closed' : '';
+        ?>
+
+        <div id="<?php echo esc_attr( $is_template || !$placeholders['id'] ? 'item-' . leyka_get_random_string(4) : $placeholders['id'] ); ?>" class="multi-valued-item-box field-box <?php echo esc_attr( $is_template ? 'item-template' : '' ); ?> <?php echo esc_attr( $boxes_status );?>" style="<?php echo wp_kses_post( $is_template ? 'display: none;' : '' );?>">
 
             <h3 class="item-box-title ui-sortable-handle">
                 <span class="draggable"></span>
-                <span class="title" data-empty-box-title="<?php _e('New reward', 'leyka');?>">
-                    <?php echo esc_html($placeholders['box_title']);?>
+                <span class="title" data-empty-box-title="<?php esc_attr_e('New reward', 'leyka');?>">
+                    <?php echo esc_html( $placeholders['box_title'] ); ?>
                 </span>
             </h3>
 
@@ -653,7 +656,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
         $option_id = mb_stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
         $data = $data ? : leyka_options()->get_info_of($option_id);?>
 
-        <div id="<?php echo $option_id.'-wrapper';?>" class="leyka-<?php echo $option_id;?>-field-wrapper multi-valued-items-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) ? '' : implode(' ', $data['field_classes']);?>">
+        <div id="<?php echo esc_attr( $option_id . '-wrapper' ); ?>" class="leyka-<?php echo esc_attr( $option_id ); ?>-field-wrapper multi-valued-items-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) ? '' : implode(' ', $data['field_classes']);?>">
 
             <div class="leyka-main-multi-items leyka-main-merchandise" data-max-items="" data-min-items="0" data-items-cookie-name="leyka-merchandise-boxes-closed" data-item-inputs-names-prefix="leyka_merchandise_" data-show-new-item-if-empty="1">
 
@@ -867,7 +870,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
         <div class="leyka-ddata-string">
             <label><?php _e('Donation reward', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <span class="fake-input"><?php echo $content;?></span>
+                <span class="fake-input"><?php echo wp_kses_post( $content );?></span>
             </div>
         </div>
 

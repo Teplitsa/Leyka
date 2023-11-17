@@ -133,10 +133,10 @@ if($gateways_dir) {
             continue;
         }
 
-        $file_addr = LEYKA_PLUGIN_DIR."gateways/$gateway_id/leyka-class-$gateway_id-gateway.php";
+        $file_addr = LEYKA_PLUGIN_DIR . 'gateways/' . $gateway_id . '/leyka-class-' . $gateway_id;
 
-        if(file_exists($file_addr)) {
-            require_once($file_addr);
+        if ( file_exists( $file_addr . '-gateway.php' ) ) {
+            require_once( $file_addr . '-gateway.php' );
         }
 
     }

@@ -34,11 +34,10 @@ class Leyka_Settings_Factory extends Leyka_Singleton { // Each descendant is a c
         $controller_id = trim(esc_attr($controller_id));
 
         // Specific Controller class:
-        $file_path = LEYKA_PLUGIN_DIR.'inc/settings/controllers/leyka-class-'.mb_strtolower($controller_id)
-            .'-settings-controller.php';
+        $file_path = LEYKA_PLUGIN_DIR . 'inc/settings/controllers/leyka-class-' . mb_strtolower( $controller_id );
 
-        if(file_exists($file_path)) {
-            require_once($file_path);
+        if ( file_exists( $file_path . '-settings-controller.php' ) ) {
+            require_once( $file_path .'-settings-controller.php');
         } else {
             throw new Exception(
                 sprintf(
@@ -71,10 +70,10 @@ class Leyka_Settings_Factory extends Leyka_Singleton { // Each descendant is a c
         $render_id = trim(esc_attr($render_id));
 
         // Specific Render class:
-        $file_path = LEYKA_PLUGIN_DIR.'inc/settings/renders/leyka-class-'.mb_strtolower($render_id).'-settings-render.php';
+        $file_path = LEYKA_PLUGIN_DIR . 'inc/settings/renders/leyka-class-' . mb_strtolower( $render_id );
 
-        if(file_exists($file_path)) {
-            require_once($file_path);
+        if ( file_exists( $file_path . '-settings-render.php' ) ) {
+            require_once( $file_path .'-settings-render.php' );
         } else {
             throw new Exception(
                 sprintf(

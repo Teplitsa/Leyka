@@ -1,7 +1,13 @@
 <?php if( !defined('WPINC') ) die;
 /** Admin Donors list page template */
 
-/** @var $this Leyka_Admin_Setup */?>
+/** @var $this Leyka_Admin_Setup */
+
+$current_page     = $_GET['page'];
+$donor_name_email = isset( $_GET['donor-name-email'] ) ? $_GET['donor-name-email'] : '';
+$first_date       = isset( $_GET['first-date'] ) ? $_GET['first-date'] : '';
+$last_date        = isset( $_GET['last-date'] ) ? $_GET['last-date'] : '';
+?>
 
 <div class="leyka-admin wrap donors-list leyka-settings-page" data-leyka-admin-page-type="donors-list-page">
 
@@ -11,7 +17,7 @@
 
         $taxonomy = $taxonomy = get_taxonomy(Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME);?>
 
-        <a href="<?php echo admin_url('edit-tags.php?taxonomy='.$taxonomy->name);?>" class="button"><?php echo $taxonomy->labels->menu_name;?></a>
+        <a href="<?php echo esc_url( admin_url('edit-tags.php?taxonomy=' . $taxonomy->name ) );?>" class="button"><?php echo esc_html( $taxonomy->labels->menu_name );?></a>
     </h1>
 
     <div id="poststuff">
@@ -21,7 +27,7 @@
 
                 <div class="donors-list-filters admin-list-filters">
 
-                    <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']);?>">
+                    <input type="hidden" name="page" value="<?php echo esc_attr( $current_page ); ?>">
 
                     <div class="col-1">
 
@@ -31,15 +37,15 @@
                             <div class="leyka-admin-list-filter-wrapper">
                                 <select name="donor-type" class="leyka-select-menu">
 
-                                    <option value="" <?php echo $filter_value ? '' : 'selected="selected"';?>>
+                                    <option value="" <?php echo wp_kses_post( $filter_value ? '' : 'selected="selected"' );?>>
                                         --- <?php _e('All donor types', 'leyka');?> ---
                                     </option>
 
-                                    <option value="single" <?php echo $filter_value == 'single' ? 'selected="selected"' : '';?>>
+                                    <option value="single" <?php selected( $filter_value, 'single' );?>>
                                         <?php _ex('Single', 'Donor type name', 'leyka');?>
                                     </option>
 
-                                    <option value="regular" <?php echo $filter_value == 'regular' ? 'selected="selected"' : '';?>>
+                                    <option value="regular" <?php selected( $filter_value, 'regular' );?>>
                                         <?php _ex('Regular', 'Donor type name', 'leyka');?>
                                     </option>
 
@@ -47,15 +53,15 @@
                             </div>
 
                             <div class="leyka-admin-list-filter-wrapper">
-                                <input type="text" name="donor-name-email" class="leyka-donor-name-email-selector leyka-selector" value="<?php echo isset($_GET['donor-name-email']) ? esc_attr($_GET['donor-name-email']) : '';?>" placeholder="<?php _e("Donor's name or email", 'leyka');?>">
+                                <input type="text" name="donor-name-email" class="leyka-donor-name-email-selector leyka-selector" value="<?php echo esc_attr( $donor_name_email );?>" placeholder="<?php _e("Donor's name or email", 'leyka');?>">
                             </div>
 
                             <div class="leyka-admin-list-filter-wrapper leyka-donation-date-filter-wrapper">
-                                <input type="text" name="first-date" autocomplete="off" class="leyka-first-donation-date-selector leyka-selector datepicker-ranged-selector" value="<?php echo isset($_GET['first-date']) ? esc_attr($_GET['first-date']) : '';?>" placeholder="<?php _e('First payment dates', 'leyka');?>">
+                                <input type="text" name="first-date" autocomplete="off" class="leyka-first-donation-date-selector leyka-selector datepicker-ranged-selector" value="<?php echo esc_attr( $first_date );?>" placeholder="<?php _e('First payment dates', 'leyka');?>">
                             </div>
 
                             <div class="leyka-admin-list-filter-wrapper leyka-donation-date-filter-wrapper">
-                                <input type="text" name="last-date" autocomplete="off" class="leyka-last-donation-date-selector leyka-selector datepicker-ranged-selector" value="<?php echo isset($_GET['last-date']) ? esc_attr($_GET['last-date']) : '';?>" placeholder="<?php _e('Last payment dates', 'leyka');?>">
+                                <input type="text" name="last-date" autocomplete="off" class="leyka-last-donation-date-selector leyka-selector datepicker-ranged-selector" value="<?php echo esc_attr( $last_date );?>" placeholder="<?php _e('Last payment dates', 'leyka');?>">
                             </div>
 
                         </div>
@@ -71,8 +77,8 @@
                                     <?php $campaigns = $filter_value ? leyka_get_campaigns_list(['include' => $filter_value]) : [];
                                     foreach($campaigns as $campaign_id => $campaign_title) {?>
 
-                                        <option value="<?php echo $campaign_id;?>" <?php echo is_array($filter_value) && in_array($campaign_id, $filter_value) ? 'selected="selected"' : '';?>>
-                                            <?php echo $campaign_title;?>
+                                        <option value="<?php echo esc_attr( $campaign_id );?>" <?php echo is_array($filter_value) && in_array($campaign_id, $filter_value) ? 'selected="selected"' : '';?>>
+                                            <?php echo esc_html( $campaign_title ); ?>
                                         </option>
 
                                     <?php }?>
@@ -98,8 +104,8 @@
                                     ) : [];
 
                                     foreach($donors_tags as $tag) {?>
-                                        <option value="<?php echo $tag->term_id;?>" <?php echo is_array($filter_value) && in_array($tag->term_id, $filter_value) ? 'selected="selected"' : '';?>>
-                                            <?php echo $tag->name;?>
+                                        <option value="<?php echo esc_attr( $tag->term_id );?>" <?php echo wp_kses_post( is_array($filter_value) && in_array($tag->term_id, $filter_value) ? 'selected="selected"' : '' );?>>
+                                            <?php echo esc_html( $tag->name );?>
                                         </option>
                                     <?php }?>
                                 </select>
@@ -112,7 +118,7 @@
 
                                 <select id="leyka-gateways-select" class="leyka-select-menu" name="gateway">
 
-                                    <option value="" <?php echo $filter_value ? '' : 'selected="selected"';?>>
+                                    <option value="" <?php echo wp_kses_post( $filter_value ? '' : 'selected="selected"' );?>>
                                         --- <?php _e('All gateways', 'leyka');?> ---
                                     </option>
 
@@ -122,8 +128,8 @@
                                     });
 
                                     foreach($gateways as $gateway) {?>
-                                        <option value="<?php echo $gateway->id;?>" <?php echo is_array($filter_value) && in_array($gateway->id, $filter_value) ? 'selected="selected"' : '';?> data-active-class="<?php echo $gateway->is_active ? "active-gateway" : "";?>">
-                                            <?php echo $gateway->name;?>
+                                        <option value="<?php echo esc_attr( $gateway->id ); ?>" <?php echo is_array($filter_value) && in_array($gateway->id, $filter_value) ? 'selected="selected"' : '';?> data-active-class="<?php echo esc_attr( $gateway->is_active ? "active-gateway" : "" );?>">
+                                            <?php echo esc_html( $gateway->name );?>
                                         </option>
                                     <?php }?>
 

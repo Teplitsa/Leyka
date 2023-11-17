@@ -19,47 +19,47 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php'); ?>
 
                         <?php if(empty($_GET['code']) || empty($_GET['donor'])) { // 1-st reset step form (email confirmation ?>
 
-						<form class="leyka-screen-form leyka-reset-password" method="post" action="#">
+                        <form class="leyka-screen-form leyka-reset-password" method="post" action="#">
 
-							<h2><?php _e('Account password reset', 'leyka');?></h2>
+                            <h2><?php _e('Account password reset', 'leyka');?></h2>
 
-							<div class="section section--person">
-						
-								<div class="section__fields donor">
-					
-									<?php $field_id = 'leyka-'.wp_rand();?>
-									<div class="donor__textfield donor__textfield--email required">
-										<div class="leyka-star-field-frame">
-											<label for="<?php echo $field_id;?>">
-												<span class="donor__textfield-label leyka_donor_email-label">
+                            <div class="section section--person">
+                        
+                                <div class="section__fields donor">
+                    
+                                    <?php $field_id = 'leyka-'.wp_rand();?>
+                                    <div class="donor__textfield donor__textfield--email required">
+                                        <div class="leyka-star-field-frame">
+                                            <label for="<?php echo esc_attr( $field_id );?>">
+                                                <span class="donor__textfield-label leyka_donor_email-label">
                                                     <?php _e('Your email', 'leyka');?>
                                                 </span>
-											</label>
-											<input type="email" id="<?php echo $field_id;?>" name="leyka_donor_email" value="" autocomplete="off">
-										</div>
-										<div class="leyka-star-field-error-frame">
-											<span class="donor__textfield-error leyka_donor_email-error">
-												<?php _e('Enter an email in the some@email.com format', 'leyka');?>
-											</span>
-										</div>
-									</div>
+                                            </label>
+                                            <input type="email" id="<?php echo esc_attr( $field_id );?>" name="leyka_donor_email" value="" autocomplete="off">
+                                        </div>
+                                        <div class="leyka-star-field-error-frame">
+                                            <span class="donor__textfield-error leyka_donor_email-error">
+                                                <?php _e('Enter an email in the some@email.com format', 'leyka');?>
+                                            </span>
+                                        </div>
+                                    </div>
 
-								</div>
-							</div>
+                                </div>
+                            </div>
 
                             <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('leyka_donor_password_reset');?>">
 
                             <div class="leyka-form-spinner">
-                            	<?php echo leyka_get_ajax_indicator();?>
+                                <?php echo leyka_get_ajax_indicator();?>
                             </div>
 
                             <div class="form-message" style="display: none;"></div>
 
-							<div class="leyka-star-submit password-reset-submit">
+                            <div class="leyka-star-submit password-reset-submit">
                                 <input type="submit" class="leyka-star-btn" value="<?php _e('Reset the password' , 'leyka');?>">
-							</div>
+                            </div>
 
-						</form>
+                        </form>
 
                         <?php } else { // 2-nd reset step form - Account password resetting ?>
 
@@ -103,12 +103,12 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php'); ?>
                                             <?php $field_id = 'leyka-'.wp_rand();?>
                                             <div class="donor__textfield donor__textfield--pass required">
                                                 <div class="leyka-star-field-frame">
-                                                    <label for="<?php echo $field_id;?>">
+                                                    <label for="<?php echo esc_attr( $field_id );?>">
                                                         <span class="donor__textfield-label leyka_donor_pass-label">
                                                             <?php _e('Your password', 'leyka');?>
                                                         </span>
                                                     </label>
-                                                    <input id="<?php echo $field_id;?>" type="password" name="leyka_donor_pass" value="" autocomplete="off">
+                                                    <input id="<?php echo esc_attr( $field_id );?>" type="password" name="leyka_donor_pass" value="" autocomplete="off">
                                                 </div>
                                                 <div class="leyka-star-field-error-frame">
                                                     <span class="donor__textfield-error leyka_donor_pass-error"></span>
@@ -118,20 +118,23 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php'); ?>
                                             <?php $field_id = 'leyka-'.wp_rand();?>
                                             <div class="donor__textfield donor__textfield--pass2 required">
                                                 <div class="leyka-star-field-frame">
-                                                    <label for="<?php echo $field_id;?>">
+                                                    <label for="<?php echo esc_attr( $field_id );?>">
                                                         <span class="donor__textfield-label leyka_donor_pass2-label">
                                                             <?php _e('Repeat your password', 'leyka');?>
                                                         </span>
                                                     </label>
-                                                    <input id="<?php echo $field_id;?>" type="password" name="leyka_donor_pass2" value="" autocomplete="off">
+                                                    <input id="<?php echo esc_attr( $field_id );?>" type="password" name="leyka_donor_pass2" value="" autocomplete="off">
                                                 </div>
                                                 <div class="leyka-star-field-error-frame">
                                                     <span class="donor__textfield-error leyka_donor_pass2-error"></span>
                                                 </div>
                                             </div>
-
-                                            <input type="hidden" name="donor_account_email" value="<?php echo esc_attr($_GET['donor']);?>">
-                                            <input type="hidden" name="donor_account_password_reset_code" value="<?php echo esc_attr($_GET['code']);?>">
+                                            <?php
+                                            $donor = isset( $_GET['donor'] ) ? $_GET['donor'] : '';
+                                            $code  = isset( $_GET['code'] ) ? $_GET['code'] : '';
+                                            ?>
+                                            <input type="hidden" name="donor_account_email" value="<?php echo esc_attr( $donor );?>">
+                                            <input type="hidden" name="donor_account_password_reset_code" value="<?php echo esc_attr( $code );?>">
                                             <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('leyka_account_password_setup');?>">
 
                                         </div>

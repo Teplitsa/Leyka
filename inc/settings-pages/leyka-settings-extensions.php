@@ -1,15 +1,25 @@
-<?php if( !defined('WPINC') ) die;?>
+<?php if( !defined('WPINC') ) die;
 
-<div id="extensions-settings-area-new" class="<?php echo empty($_GET['stage']) ? 'stage-extension' : 'stage-'.esc_attr($_GET['stage']);?>">
+$extensions_class = 'stage-extension';
+if ( isset( $_GET['stage'] && ! empty( $_GET['stage'] ) ) {
+	$stage            = $_GET['stage'];
+	$extensions_class = 'stage-' . $stage;
+}
 
-    <div class="main-area-wrapper">
+?>
 
-    <?php if(isset($_GET['extension'])) {
-        require_once LEYKA_PLUGIN_DIR.'inc/settings-pages/leyka-settings-extensions-extension.php';
-    } else {
-        require_once LEYKA_PLUGIN_DIR.'inc/settings-pages/leyka-settings-extensions-list.php';
-    }?>
+<div id="extensions-settings-area-new" class="<?php echo esc_attr( $extensions_class ); ?>">
 
-    </div>
+	<div class="main-area-wrapper">
+
+	<?php
+	if ( isset( $_GET['extension'] ) ) {
+		require_once LEYKA_PLUGIN_DIR . 'inc/settings-pages/leyka-settings-extensions-extension.php';
+	} else {
+		require_once LEYKA_PLUGIN_DIR . 'inc/settings-pages/leyka-settings-extensions-list.php';
+	}
+	?>
+
+	</div>
 
 </div>

@@ -15,7 +15,7 @@ if( !$donation_id ) {
 }?>
 
 <div id="leyka-pf-" class="leyka-pf">
-    <?php include(LEYKA_PLUGIN_DIR.'assets/svg/svg.svg');?>
+    <?php echo file_get_contents( LEYKA_PLUGIN_BASE_URL . 'assets/svg/svg.svg' );?>
 
     <div class="leyka-pf__final-screen leyka-pf__final-thankyou">
 
@@ -26,7 +26,7 @@ if( !$donation_id ) {
 
             <form action="#" class="leyka-success-form" method="post" novalidate="novalidate" <?php echo empty($donation_id) ? 'style="display: none;"' : '';?>>
 
-                <input type="hidden" name="leyka_donation_id" value="<?php echo $donation_id;?>">
+                <input type="hidden" name="leyka_donation_id" value="<?php echo esc_attr( $donation_id );?>">
                 <input type="hidden" name="action" value="leyka_donor_subscription">
                 <?php wp_nonce_field('leyka_donor_subscription');?>
 

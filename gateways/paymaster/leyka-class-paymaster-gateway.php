@@ -237,8 +237,8 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
 
             }
             // GUA direct integration - "purchase" event END
-
-            die('OK'.$_REQUEST['InvId']);
+            $inv_id = isset( $_REQUEST['InvId'] ) ? $_REQUEST['InvId'] : '';
+            die ( 'OK' . esc_html( $inv_id ) );
 
         } else {
             die();
@@ -345,5 +345,4 @@ class Leyka_Paymaster_All extends Leyka_Payment_Method {
 function leyka_add_gateway_paymaster() { // Use named function to leave a possibility to remove/replace it on the hook
     leyka_add_gateway(Leyka_Paymaster_Gateway::get_instance());
 }
-
 add_action('leyka_init_actions', 'leyka_add_gateway_paymaster');

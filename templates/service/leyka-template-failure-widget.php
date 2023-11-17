@@ -17,7 +17,7 @@ if($donation_id) {
 }?>
 
 <div id="leyka-pf-" class="leyka-pf">
-    <?php include(LEYKA_PLUGIN_DIR.'assets/svg/svg.svg');?>
+    <?php echo file_get_contents( LEYKA_PLUGIN_BASE_URL . 'assets/svg/svg.svg' );?>
 
     <div class="leyka-pf__final-screen leyka-pf__final-error">
 

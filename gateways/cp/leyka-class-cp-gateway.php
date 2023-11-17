@@ -177,8 +177,8 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
     public function submission_form_data($form_data, $pm_id, $donation_id) {
 
-		if( !array_key_exists($pm_id, $this->_payment_methods) ) {
-			return $form_data; // It's not our PM
+        if( !array_key_exists($pm_id, $this->_payment_methods) ) {
+            return $form_data; // It's not our PM
         }
 
         if(is_wp_error($donation_id)) { /** @var WP_Error $donation_id */
@@ -293,11 +293,13 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                 }
 
                 if(empty($_POST['Amount']) || (float)$_POST['Amount'] <= 0 || empty($_POST['Currency'])) {
+                    $amount    = isset( $_POST['Amount'] ) ? $_POST['Amount'] : '';
+                    $currency = isset( $_POST['Currency'] ) ? $_POST['Currency'] : '';
                     die(json_encode([
                         'code' => '11',
                         'reason' => sprintf(
                             __('Amount or Currency in POST are empty. Amount: %s, Currency: %s', 'leyka'),
-                            $_POST['Amount'], $_POST['Currency']
+                            esc_attr( $amount ), esc_attr( $currency )
                         )
                     ]));
                 }
@@ -338,11 +340,13 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                         $donation->error_id = 'CP-7051'; // Check callback error - amount/currency mismatch
 
+                        $amount   = isset( $_POST['Amount'] ) ? $_POST['Amount'] : '';
+                        $currency = isset( $_POST['Currency'] ) ? $_POST['Currency'] : '';
                         die(json_encode([
                             'code' => '11',
                             'reason' => sprintf(
                                 __('Amount of original data and POST are mismatching. Orig.: %.2f %s, POST: %.2f %s', 'leyka'),
-                                $donation->sum, $donation->currency_id, $_POST['Amount'], $_POST['Currency']
+                                $donation->sum, $donation->currency_id, esc_attr( $amount ), esc_attr( $currency )
                             )
                         ]));
 
@@ -510,8 +514,8 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                 if( !empty($_POST['Id']) ) { // Recurring subscription ID in the CP system
 
-	                $_POST['Id'] = trim($_POST['Id']);
-	                $init_recurring_donation = $this->get_init_recurring_donation($_POST['Id']);
+                    $_POST['Id'] = trim($_POST['Id']);
+                    $init_recurring_donation = $this->get_init_recurring_donation($_POST['Id']);
 
                     if($init_recurring_donation && $init_recurring_donation->recurring_is_active) {
 
@@ -712,9 +716,9 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                 <div class="leyka-ddata-field">
 
                     <?php if($donation->type === 'correction') {?>
-                        <input type="text" id="cp-transaction-id" name="cp-transaction-id" placeholder="<?php _e('Enter CloudPayments transaction ID', 'leyka');?>" value="<?php echo $donation->cp_transaction_id;?>">
+                        <input type="text" id="cp-transaction-id" name="cp-transaction-id" placeholder="<?php _e('Enter CloudPayments transaction ID', 'leyka');?>" value="<?php echo esc_attr( $donation->cp_transaction_id );?>">
                     <?php } else {?>
-                        <span class="fake-input"><?php echo $donation->cp_transaction_id;?></span>
+                        <span class="fake-input"><?php echo esc_html( $donation->cp_transaction_id );?></span>
                     <?php }?>
                 </div>
 
@@ -732,9 +736,9 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                 <div class="leyka-ddata-field">
 
                     <?php if($donation->type === 'correction') {?>
-                        <input type="text" id="cp-recurring-id" name="cp-recurring-id" placeholder="<?php _e('Enter CloudPayments subscription ID', 'leyka');?>" value="<?php echo $donation->cp_recurring_id;?>">
+                        <input type="text" id="cp-recurring-id" name="cp-recurring-id" placeholder="<?php _e('Enter CloudPayments subscription ID', 'leyka');?>" value="<?php echo esc_attr( $donation->cp_recurring_id );?>">
                     <?php } else {?>
-                        <span class="fake-input"><?php echo $donation->cp_recurring_id;?></span>
+                        <span class="fake-input"><?php echo esc_html( $donation->cp_recurring_id );?></span>
                     <?php }?>
                 </div>
 
@@ -746,7 +750,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                 <label><?php _e('Recurring subscription is active', 'leyka');?>:</label>
                 <div class="leyka-ddata-field">
-                    <?php echo $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka');
+                    <?php echo esc_html( $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka') );
 
                     if( !$init_recurring_donation->recurring_is_active && $init_recurring_donation->recurring_cancel_date ) {
                     echo ' ('.sprintf(__('canceled on %s', 'leyka'), date(get_option('date_format').', '.get_option('time_format'), $init_recurring_donation->recurring_cancel_date)).')';

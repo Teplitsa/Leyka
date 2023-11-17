@@ -249,7 +249,7 @@ function leyka_set_campaign_photo(){
     update_post_meta($campaign_id, '_thumbnail_id', $attachment_id);
     sleep(1);
 
-    die(json_encode(['status' => 'ok', 'post' => $_POST,]));
+    die( json_encode( [ 'status' => 'ok', 'post' => array_map( 'sanitize_text_field', $_POST ), ] ) );
 
 }
 add_action('wp_ajax_leyka_set_campaign_photo', 'leyka_set_campaign_photo');
@@ -271,9 +271,9 @@ function leyka_set_campaign_attachment(){
     sleep(1);
 
     die(json_encode([
-        'status' => 'ok',
-        'post' => $_POST,
-        'img_url' => wp_get_attachment_image_url(absint($_POST['attachment_id']), 'thumbnail'),
+        'status'  => 'ok',
+        'post'    => array_map( 'sanitize_text_field', $_POST ),
+        'img_url' => wp_get_attachment_image_url(absint( sanitize_text_field( $_POST['attachment_id'] ) ), 'thumbnail'),
     ]));
 
 }
@@ -289,7 +289,7 @@ function leyka_set_campaign_template(){
 
     update_post_meta(absint($_POST['campaign_id']), 'campaign_template', $_POST['template']);
 
-    die(json_encode(['status' => 'ok', 'post' => $_POST,]));
+    die(json_encode(['status' => 'ok', 'post' => array_map( 'sanitize_text_field', $_POST ),]));
 
 }
 add_action('wp_ajax_leyka_set_campaign_template', 'leyka_set_campaign_template');
@@ -315,7 +315,7 @@ function leyka_edit_campaign_slug(){
     ]);
 
     if($res) {
-        die(json_encode(['status' => 'ok', 'slug' => $_POST['slug'],]));
+        die(json_encode(['status' => 'ok', 'slug' => sanitize_text_field( $_POST['slug'] ),]));
     } else {
         die(json_encode(['status' => 'error', 'message' => __("Error: the campaign slug wasn't updated", 'leyka'),]));
     }
@@ -1065,7 +1065,7 @@ function leyka_admin_get_donor_donations(){
     try {
         $donor = new Leyka_Donor(absint($_POST['donor_id']));
     } catch(Exception $e) {
-        die( json_encode(['draw' => (int)$_POST['draw'], 'error' => $e->getMessage()]) );
+        die( json_encode(['draw' => (int) sanitize_text_field( $_POST['draw'] ), 'error' => $e->getMessage()]) );
     }
 
     $_POST['start'] = empty($_POST['start']) ? 0 : absint($_POST['start']); // Result record number to start from
@@ -1196,17 +1196,17 @@ function leyka_admin_get_recurring_subscription_donations(){
 
     $_POST['recurring_subscription_id'] = absint($_POST['recurring_subscription_id']);
     if( !$_POST['recurring_subscription_id'] ) {
-        die( json_encode(['draw' => (int)$_POST['draw'], 'error' => __('Incorrect recurring subscription ID given', 'leyka')]) );
+        die( json_encode(['draw' => (int) sanitize_text_field( $_POST['draw'] ), 'error' => __('Incorrect recurring subscription ID given', 'leyka')]) );
     }
 
     try {
         $recurring_subscription = Leyka_Donations::get_instance()->get($_POST['recurring_subscription_id']);
     } catch(Exception $ex) {
-        die( json_encode(['draw' => (int)$_POST['draw'], 'error' => $ex->getMessage()]) );
+        die( json_encode(['draw' => (int) sanitize_text_field( $_POST['draw'] ), 'error' => $ex->getMessage()]) );
     }
 
     if( !$recurring_subscription->is_init_recurring_donation ) {
-        die( json_encode(['draw' => (int)$_POST['draw'], 'error' => __('ID given is not of a recurring subscription', 'leyka')]) );
+        die( json_encode(['draw' => (int) sanitize_text_field( $_POST['draw'] ), 'error' => __('ID given is not of a recurring subscription', 'leyka')]) );
     }
 
     $_POST['start'] = empty($_POST['start']) ? 0 : absint($_POST['start']); // Result record number to start from
@@ -1434,7 +1434,8 @@ function leyka_bulk_edit_donors(){
     if( !empty($_POST['donors']) && !empty($_POST['donors-bulk-tags']) ) {
         foreach((array)$_POST['donors'] as $donor_user_id) {
 
-            array_walk($_POST['donors-bulk-tags'], function( &$value ){
+            $donnors_bulk_tags = sanitize_text_field( $_POST['donors-bulk-tags'] );
+            array_walk( $donnors_bulk_tags, function( &$value ){
                 $value = absint($value);
             });
 

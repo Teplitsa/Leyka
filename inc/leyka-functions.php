@@ -64,6 +64,18 @@ if ( ! function_exists( 'leyka_kses_allowed_html' ) ) {
 
         if ( 'content' === $context ) {
             $tags = array(
+                'h2' => array(
+                    'id'     => true,
+                    'class'  => true,
+                    'data-*' => true,
+                    'style'  => true,
+                ),
+                'h3' => array(
+                    'id'     => true,
+                    'class'  => true,
+                    'data-*' => true,
+                    'style'  => true,
+                ),
                 'div' => array(
                     'id'     => true,
                     'class'  => true,
@@ -132,6 +144,7 @@ if ( ! function_exists( 'leyka_kses_allowed_html' ) ) {
                     'maxlength'   => true,
                     'inputmode'   => true,
                     'style'       => true,
+                    'readonly'    => true,
                 ),
                 'textarea' => array(
                     'id'          => true,

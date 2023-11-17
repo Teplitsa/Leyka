@@ -121,9 +121,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	        return;
         }
 
-	    $template_file = LEYKA_PLUGIN_DIR.'/inc/admin-templates/leyka-admin-'.$template_id.'.php';
-	    if(file_exists($template_file)) {
-	        require $template_file;
+        $template_file = LEYKA_PLUGIN_DIR . '/inc/admin-templates/leyka-admin-' . $template_id;
+        if ( file_exists( $template_file . '.php' ) ) {
+            require $template_file . '.php';
         }
 
     }
@@ -603,9 +603,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	        return;
         }
 
-	    $controller_file = LEYKA_PLUGIN_DIR.'/inc/portlets/'.$portlet_id.'/leyka-class-'.$portlet_id.'-portlet-controller.php';
-	    if(file_exists($controller_file)) {
-            require_once $controller_file;
+	    $controller_file = LEYKA_PLUGIN_DIR . '/inc/portlets/' . $portlet_id . '/leyka-class-' . $portlet_id;
+	    if ( file_exists( $controller_file . '-portlet-controller.php' ) ) {
+            require_once $controller_file . '-portlet-controller.php';
         }
 
 	    $portlet_data = get_file_data($portlet_file, [
@@ -1193,7 +1193,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         $_POST['leyka_donor_tags'] = empty($_POST['leyka_donor_tags']) ? [] : $_POST['leyka_donor_tags'];
 
-        array_walk($_POST['leyka_donor_tags'], function( &$value ){
+        $leyka_donor_tags = sanitize_text_field( $_POST['leyka_donor_tags'] );
+        array_walk( $leyka_donor_tags, function( &$value ){
             $value = (int)$value;
         });
 
