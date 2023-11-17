@@ -177,8 +177,8 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
     public function submission_form_data($form_data, $pm_id, $donation_id) {
 
-        if( !array_key_exists($pm_id, $this->_payment_methods) ) {
-            return $form_data; // It's not our PM
+		if( !array_key_exists($pm_id, $this->_payment_methods) ) {
+			return $form_data; // It's not our PM
         }
 
         if(is_wp_error($donation_id)) { /** @var WP_Error $donation_id */
@@ -514,8 +514,8 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                 if( !empty($_POST['Id']) ) { // Recurring subscription ID in the CP system
 
-                    $_POST['Id'] = trim($_POST['Id']);
-                    $init_recurring_donation = $this->get_init_recurring_donation($_POST['Id']);
+	                $_POST['Id'] = trim($_POST['Id']);
+	                $init_recurring_donation = $this->get_init_recurring_donation($_POST['Id']);
 
                     if($init_recurring_donation && $init_recurring_donation->recurring_is_active) {
 

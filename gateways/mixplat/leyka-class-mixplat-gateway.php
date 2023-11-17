@@ -236,7 +236,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         ]);
     }
 
-		
+        
     public function enqueue_gateway_scripts() {
 
         if(Leyka_Mixplat_Mobile::get_instance()->active || $this->_mixplat_widget_mode(1) ) {
@@ -245,9 +245,9 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             wp_enqueue_script( 'leyka-mixplat', LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_Mixplat_Gateway::get_instance()->id.'/js/leyka.mixplat.js', ['jquery', 'leyka-mixplat-widget',], LEYKA_VERSION.'.001', false );
 
         }
-				wp_enqueue_script('leyka-mixplat-wloader', sprintf('https://widgets.mixplat.ru/lMonitor/%d/monitor.js',(int)leyka_options()->opt('mixplat_service_id')), [], LEYKA_VERSION.'.001', false );
+                wp_enqueue_script('leyka-mixplat-wloader', sprintf('https://widgets.mixplat.ru/lMonitor/%d/monitor.js',(int)leyka_options()->opt('mixplat_service_id')), [], LEYKA_VERSION.'.001', false );
         add_filter('leyka_js_localized_strings', [$this, 'localize_js_strings']);
-				add_filter('script_loader_tag', 'leyka_mixplat_wloader_async', 10, 3 );
+                add_filter('script_loader_tag', 'leyka_mixplat_wloader_async', 10, 3 );
 
     }
     
@@ -1786,12 +1786,12 @@ class Leyka_Mixplat_SBP extends Leyka_Payment_Method {
 }
 
 function leyka_mixplat_wloader_async($tag, $handle, $src) {
- 		if ($handle === 'leyka-mixplat-wloader') { 		// Check that 'async' isn't already declared.
-   		if (stripos($tag, 'async') === FALSE) {  		// Insert the 'async="async"' attribute and value.
-     		$tag = str_replace(' src', ' async="async" src', $tag);
-   		}
-  	}
-		return $tag;
+        if ($handle === 'leyka-mixplat-wloader') {      // Check that 'async' isn't already declared.
+        if (stripos($tag, 'async') === FALSE) {         // Insert the 'async="async"' attribute and value.
+            $tag = str_replace(' src', ' async="async" src', $tag);
+        }
+    }
+        return $tag;
 }
 
 function leyka_mixplat_set_widget_mode() {

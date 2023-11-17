@@ -383,9 +383,9 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') {?>
-                    <input type="text" id="webpay-order-id" name="webpay-order-id" placeholder="<?php _e('Enter WebPay order ID', 'leyka');?>" value="<?php echo $donation->webpay_order_id;?>">
+                    <input type="text" id="webpay-order-id" name="webpay-order-id" placeholder="<?php _e('Enter WebPay order ID', 'leyka');?>" value="<?php echo esc_attr( $donation->webpay_order_id );?>">
                 <?php } else {?>
-                    <span class="fake-input"><?php echo $donation->webpay_order_id;?></span>
+                    <span class="fake-input"><?php echo esc_html( $donation->webpay_order_id );?></span>
                 <?php }?>
             </div>
 
@@ -393,9 +393,9 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') {?>
-                    <input type="text" id="webpay-transaction-id" name="webpay-transaction-id" placeholder="<?php _e('Enter WebPay transaction ID', 'leyka');?>" value="<?php echo $donation->webpay_transaction_id;?>">
+                    <input type="text" id="webpay-transaction-id" name="webpay-transaction-id" placeholder="<?php _e('Enter WebPay transaction ID', 'leyka');?>" value="<?php echo esc_attr( $donation->webpay_transaction_id );?>">
                 <?php } else {?>
-                    <span class="fake-input"><?php echo $donation->webpay_transaction_id;?></span>
+                    <span class="fake-input"><?php echo esc_html( $donation->webpay_transaction_id );?></span>
                 <?php }?>
             </div>
 
@@ -403,9 +403,9 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') {?>
-                    <input type="text" id="webpay-rrn" name="webpay-rrn" placeholder="<?php _e('Enter WebPay payment RRN', 'leyka');?>" value="<?php echo $donation->webpay_rrn;?>">
+                    <input type="text" id="webpay-rrn" name="webpay-rrn" placeholder="<?php _e('Enter WebPay payment RRN', 'leyka');?>" value="<?php echo esc_attr( $donation->webpay_rrn );?>">
                 <?php } else {?>
-                    <span class="fake-input"><?php echo $donation->webpay_rrn;?></span>
+                    <span class="fake-input"><?php echo esc_html( $donation->webpay_rrn );?></span>
                 <?php }?>
             </div>
 
@@ -413,9 +413,9 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') {?>
-                    <input type="text" id="webpay-approval" name="webpay-approval" placeholder="<?php _e('Enter WebPay approval', 'leyka');?>" value="<?php echo $donation->webpay_approval;?>">
+                    <input type="text" id="webpay-approval" name="webpay-approval" placeholder="<?php _e('Enter WebPay approval', 'leyka');?>" value="<?php echo esc_attr( $donation->webpay_approval );?>">
                 <?php } else {?>
-                    <span class="fake-input"><?php echo $donation->webpay_approval;?></span>
+                    <span class="fake-input"><?php echo esc_html( $donation->webpay_approval );?></span>
                 <?php }?>
             </div>
 
@@ -426,23 +426,23 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
                 <div class="recurring-is-active-field">
                     <label for="webpay-recurring-is-active"><?php _e('Recurring subscription is active', 'leyka');?>:</label>
                     <div class="leyka-ddata-field">
-                        <input type="checkbox" id="webpay-recurring-is-active" name="webpay-recurring-is-active" value="1" <?php echo $init_recurring_donation->recurring_is_active ? 'checked="checked"' : '';?>>
+                        <input type="checkbox" id="webpay-recurring-is-active" name="webpay-recurring-is-active" value="1" <?php checked( $init_recurring_donation->recurring_is_active, '1' );?>>
                     </div>
                 </div>
 
                 <label><?php _e('Customer ID', 'leyka');?>:</label>
                 <div class="leyka-ddata-field">
-                    <span class="fake-input"><?php echo $donation->webpay_customer_id;?></span>
+                    <span class="fake-input"><?php echo esc_html( $donation->webpay_customer_id );?></span>
                 </div>
 
                 <label><?php _e('WebPay recurring token', 'leyka');?>:</label>
                 <div class="leyka-ddata-field">
-                    <span class="fake-input"><?php echo $donation->webpay_recurring_token;?></span>
+                    <span class="fake-input"><?php echo esc_html( $donation->webpay_recurring_token );?></span>
                 </div>
 
                 <label><?php _e('Bank card expiring date', 'leyka');?>:</label>
                 <div class="leyka-ddata-field">
-                    <span class="fake-input"><?php echo $donation->webpay_card_expiring_date ? date(get_option('date_format'), $donation->webpay_card_expiring_date) : '';?></span>
+                    <span class="fake-input"><?php echo esc_html( $donation->webpay_card_expiring_date ? date(get_option('date_format'), $donation->webpay_card_expiring_date) : '' );?></span>
                 </div>
 
             <?php }

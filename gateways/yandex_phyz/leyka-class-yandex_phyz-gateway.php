@@ -81,17 +81,17 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
                 $payment_type = '';
         }
 
-        $name = apply_filters(
-            'leyka_yandex_phyz_custom_payment_comment', esc_attr(get_bloginfo('name').': '.__('donation', 'leyka'))
+		$name = apply_filters(
+		    'leyka_yandex_phyz_custom_payment_comment', esc_attr(get_bloginfo('name').': '.__('donation', 'leyka'))
         );
 
         return [
             'receiver' => leyka_options()->opt('yandex_money_account'),
             'sum' => $donation->amount,
             'formcomment' => $name,
-            'short-dest' => $name,
-            'targets' => $campaign->payment_title ? esc_attr($campaign->payment_title) : $name,
-            'quickpay-form' => 'donate',
+			'short-dest' => $name,
+			'targets' => $campaign->payment_title ? esc_attr($campaign->payment_title) : $name,
+			'quickpay-form' => 'donate',
             'label' => $donation_id,
             'paymentType' => $payment_type,
             'shopSuccessURL' => leyka_get_success_page_url(),
@@ -128,7 +128,7 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
 
     public function _handle_service_calls($call_type = '') {
 
-        error_log_yandex_phyz("\n\n---- $call_type (".date('d.m.Y H:i:s').") ----\n\n".print_r($_REQUEST, true));
+		error_log_yandex_phyz("\n\n---- $call_type (".date('d.m.Y H:i:s').") ----\n\n".print_r($_REQUEST, true));
 
         $donation_id = empty($_POST['label']) ? 0 : absint($_POST['label']); // Donation ID
         $amount = empty($_POST['withdraw_amount']) ? 0.0 : (float)$_POST['withdraw_amount'];
@@ -274,12 +274,12 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
             return [];
         }
 
-        $payment_type = '';
-        if($response_vars['notification_type'] == 'p2p-incoming') {
-            $payment_type = __('Using YooMoney Account', 'leyka');
-        } else if($response_vars['notification_type'] == 'card-incoming') {
-            $payment_type = __('Using Banking Card', 'leyka');
-        }
+		$payment_type = '';
+		if($response_vars['notification_type'] == 'p2p-incoming') {
+			$payment_type = __('Using YooMoney Account', 'leyka');
+		} else if($response_vars['notification_type'] == 'card-incoming') {
+			$payment_type = __('Using Banking Card', 'leyka');
+		}
 
         return apply_filters(
             'leyka_donation_gateway_response',
@@ -371,7 +371,7 @@ class Leyka_Yandex_Phyz_Card extends Leyka_Payment_Method {
 }
 
 function error_log_yandex_phyz($string) {
-    error_log($string, 3, WP_CONTENT_DIR.'/uploads/phyz-error.log');
+	error_log($string, 3, WP_CONTENT_DIR.'/uploads/phyz-error.log');
 }
 
 function leyka_add_gateway_yandex_phyz() { // Use named function to leave a possibility to remove/replace it on the hook

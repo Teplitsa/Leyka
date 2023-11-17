@@ -1654,9 +1654,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') {?>
-                <input type="text" id="paypal-token" name="paypal-token" placeholder="<?php _e('Enter PayPal token', 'leyka');?>" value="<?php echo $donation->paypal_token;?>">
+                <input type="text" id="paypal-token" name="paypal-token" placeholder="<?php _e('Enter PayPal token', 'leyka');?>" value="<?php echo esc_attr( $donation->paypal_token );?>">
                 <?php } else {?>
-                <span class="fake-input"><?php echo $donation->paypal_token;?></span>
+                <span class="fake-input"><?php echo esc_html( $donation->paypal_token );?></span>
                 <?php }?>
             </div>
 
@@ -1664,9 +1664,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') {?>
-                <input type="text" id="paypal-correlation-id" name="paypal-correlation-id" placeholder="<?php _e('Enter PayPal correlation ID', 'leyka');?>" value="<?php echo $donation->paypal_correlation_id;?>">
+                <input type="text" id="paypal-correlation-id" name="paypal-correlation-id" placeholder="<?php _e('Enter PayPal correlation ID', 'leyka');?>" value="<?php echo esc_attr( $donation->paypal_correlation_id );?>">
                 <?php } else {?>
-                <span class="fake-input"><?php echo $donation->paypal_correlation_id;?></span>
+                <span class="fake-input"><?php echo esc_html( $donation->paypal_correlation_id );?></span>
                 <?php }?>
             </div>
 
@@ -1674,9 +1674,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') {?>
-                <input type="text" id="paypal-payment-id" name="paypal-payment-id" placeholder="<?php _e('Enter PayPal payment ID', 'leyka');?>" value="<?php echo $donation->paypal_payment_id;?>">
+                <input type="text" id="paypal-payment-id" name="paypal-payment-id" placeholder="<?php _e('Enter PayPal payment ID', 'leyka');?>" value="<?php echo esc_attr( $donation->paypal_payment_id );?>">
                 <?php } else {?>
-                <span class="fake-input"><?php echo $donation->paypal_payment_id;?></span>
+                <span class="fake-input"><?php echo esc_html($donation->paypal_payment_id);?></span>
                 <?php }?>
             </div>
 
@@ -1684,9 +1684,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') {?>
-                <input type="text" id="paypal-payer-id" name="paypal-token" placeholder="<?php _e('Enter PayPal Payer ID', 'leyka');?>" value="<?php echo $donation->paypal_payer_id;?>">
+                <input type="text" id="paypal-payer-id" name="paypal-token" placeholder="<?php _e('Enter PayPal Payer ID', 'leyka');?>" value="<?php echo esc_attr( $donation->paypal_payer_id );?>">
                 <?php } else {?>
-                <span class="fake-input"><?php echo $donation->paypal_payer_id;?></span>
+                <span class="fake-input"><?php echo esc_html( $donation->paypal_payer_id );?></span>
                 <?php }?>
             </div>
 
@@ -1694,9 +1694,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') {?>
-                    <input type="text" id="paypal-sale-id" name="paypal-token" placeholder="<?php _e('Enter PayPal Sale ID', 'leyka');?>" value="<?php echo $donation->paypal_sale_id;?>">
+                    <input type="text" id="paypal-sale-id" name="paypal-token" placeholder="<?php _e('Enter PayPal Sale ID', 'leyka');?>" value="<?php echo esc_attr( $donation->paypal_sale_id );?>">
                 <?php } else {?>
-                    <span class="fake-input"><?php echo $donation->paypal_sale_id;?></span>
+                    <span class="fake-input"><?php echo esc_html( $donation->paypal_sale_id );?></span>
                 <?php }?>
             </div>
 
@@ -1707,18 +1707,18 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             <div class="recurring-is-active-field">
                 <label><?php _e('Recurring subscription is active', 'leyka');?>:</label>
                 <div class="leyka-ddata-field">
-                    <?php echo $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka'); ?>
+                    <?php echo esc_html( $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka') ); ?>
                 </div>
             </div>
 
             <label><?php _e('PayPal Billing Plan ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <span class="fake-input"><?php echo $donation->paypal_billing_plan_id;?></span>
+                <span class="fake-input"><?php echo esc_html( $donation->paypal_billing_plan_id );?></span>
             </div>
 
             <label><?php _e('PayPal Billing Agreement ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <span class="fake-input"><?php echo $donation->paypal_billing_agreement_id;?></span>
+                <span class="fake-input"><?php echo esc_html( $donation->paypal_billing_agreement_id );?></span>
             </div>
 
             <?php }

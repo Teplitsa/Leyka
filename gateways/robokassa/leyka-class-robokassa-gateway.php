@@ -107,12 +107,12 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
 
     public function submission_form_data($form_data, $pm_id, $donation_id) {
 
-        if( !array_key_exists($pm_id, $this->_payment_methods) ) {
+		if( !array_key_exists($pm_id, $this->_payment_methods) ) {
             return $form_data; // It's not our PM
         }
 
         $donation = Leyka_Donations::get_instance()->get($donation_id);
-        $amount = number_format((float)$donation->amount, 2, '.', '');
+	    $amount = number_format((float)$donation->amount, 2, '.', '');
         $hash = md5(leyka_options()->opt('robokassa_shop_id').":$amount:$donation_id:"
                .leyka_options()->opt('robokassa_shop_password1').':Shp_item=1');
 
@@ -143,7 +143,7 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
             $form_data['Recurring'] = 'true';
         }
 
-        return $form_data;
+		return $form_data;
 
     }
 
@@ -272,7 +272,7 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
 
         $donation = Leyka_Donations::get_instance()->get(absint($_REQUEST['InvId']));
 
-        // Test for e-sign. Values from Robokassa must be used:
+		// Test for e-sign. Values from Robokassa must be used:
 
         $sign = mb_strtoupper(md5("{$_REQUEST['OutSum']}:{$_REQUEST['InvId']}:"
             .leyka_options()->opt('robokassa_shop_password2')

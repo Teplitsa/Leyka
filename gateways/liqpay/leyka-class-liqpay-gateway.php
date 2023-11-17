@@ -134,9 +134,9 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') {?>
-                    <input type="text" id="liqpay-order-id" name="liqpay-order-id" placeholder="<?php _e('Enter Liqpay order ID', 'leyka');?>" value="<?php echo $donation->liqpay_order_id;?>">
+                    <input type="text" id="liqpay-order-id" name="liqpay-order-id" placeholder="<?php _e('Enter Liqpay order ID', 'leyka');?>" value="<?php echo esc_attr( $donation->liqpay_order_id );?>">
                 <?php } else {?>
-                    <span class="fake-input"><?php echo $donation->liqpay_order_id;?></span>
+                    <span class="fake-input"><?php echo esc_html( $donation->liqpay_order_id );?></span>
                 <?php }?>
             </div>
 
@@ -145,9 +145,9 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') {?>
-                    <input type="text" id="liqpay-transaction-id" name="liqpay-transaction-id" placeholder="<?php _e('Enter Liqpay transaction ID', 'leyka');?>" value="<?php echo $donation->liqpay_transaction_id;?>">
+                    <input type="text" id="liqpay-transaction-id" name="liqpay-transaction-id" placeholder="<?php _e('Enter Liqpay transaction ID', 'leyka');?>" value="<?php echo esc_attr( $donation->liqpay_transaction_id );?>">
                 <?php } else {?>
-                    <span class="fake-input"><?php echo $donation->liqpay_transaction_id;?></span>
+                    <span class="fake-input"><?php echo esc_html( $donation->liqpay_transaction_id );?></span>
                 <?php }?>
             </div>
 
@@ -160,9 +160,9 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') {?>
-                    <input type="text" id="liqpay-recurring-id" name="liqpay-recurring-id" placeholder="<?php _e('Enter Liqpay recurring subscription ID', 'leyka');?>" value="<?php echo $donation->liqpay_recurring_id;?>">
+                    <input type="text" id="liqpay-recurring-id" name="liqpay-recurring-id" placeholder="<?php _e('Enter Liqpay recurring subscription ID', 'leyka');?>" value="<?php echo esc_attr( $donation->liqpay_recurring_id );?>">
                 <?php } else {?>
-                    <span class="fake-input"><?php echo $donation->liqpay_recurring_id;?></span>
+                    <span class="fake-input"><?php echo esc_html( $donation->liqpay_recurring_id );?></span>
                 <?php }?>
             </div>
 
@@ -171,9 +171,9 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') {?>
-                    <input type="text" id="liqpay-card-token" name="liqpay-card-token" placeholder="<?php _e('Enter Liqpay card token', 'leyka');?>" value="<?php echo $donation->liqpay_card_token;?>">
+                    <input type="text" id="liqpay-card-token" name="liqpay-card-token" placeholder="<?php _e('Enter Liqpay card token', 'leyka');?>" value="<?php echo esc_attr( $donation->liqpay_card_token );?>">
                 <?php } else {?>
-                    <span class="fake-input"><?php echo $donation->liqpay_card_token;?></span>
+                    <span class="fake-input"><?php echo esc_html( $donation->liqpay_card_token );?></span>
                 <?php }?>
             </div>
 
@@ -183,7 +183,7 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
 
                 <label><?php _e('Recurring subscription is active', 'leyka');?>:</label>
                 <div class="leyka-ddata-field">
-                    <?php echo $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka');
+                    <?php echo esc_html( $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka') );
 
                     if( !$init_recurring_donation->recurring_is_active && $init_recurring_donation->recurring_cancel_date ) {
                         echo ' ('.sprintf(__('canceled on %s', 'leyka'), date(get_option('date_format').', '.get_option('time_format'), $init_recurring_donation->recurring_cancel_date)).')';

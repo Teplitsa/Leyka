@@ -254,9 +254,9 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type == 'correction') {?>
-                    <input type="text" id="tinkoff-payment-id" name="tinkoff-payment-id" value="<?php echo $donation->tinkoff_payment_id;?>">
+                    <input type="text" id="tinkoff-payment-id" name="tinkoff-payment-id" value="<?php echo esc_attr( $donation->tinkoff_payment_id );?>">
                 <?php } else {?>
-                    <span class="fake-input"><?php echo $donation->tinkoff_payment_id;?></span>
+                    <span class="fake-input"><?php echo esc_html( $donation->tinkoff_payment_id );?></span>
                 <?php }?>
             </div>
 
@@ -268,9 +268,9 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type == 'correction') {?>
-                    <input type="text" id="tinkoff-recurring-id" name="tinkoff-recurring-id" value="<?php echo $donation->tinkoff_recurring_id;?>">
+                    <input type="text" id="tinkoff-recurring-id" name="tinkoff-recurring-id" value="<?php echo esc_attr( $donation->tinkoff_recurring_id );?>">
                 <?php } else {?>
-                    <span class="fake-input"><?php echo $donation->tinkoff_recurring_id;?></span>
+                    <span class="fake-input"><?php echo esc_html( $donation->tinkoff_recurring_id );?></span>
                 <?php }?>
             </div>
 
@@ -279,7 +279,7 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
             <div class="recurring-is-active-field">
                 <label for="tinkoff-recurring-is-active"><?php _e('Recurring subscription is active', 'leyka');?>:</label>
                 <div class="leyka-ddata-field">
-                    <input type="checkbox" id="tinkoff-recurring-is-active" name="tinkoff-recurring-is-active" value="1" <?php echo $init_recurring_donation->recurring_is_active ? 'checked="checked"' : '';?>>
+                    <input type="checkbox" id="tinkoff-recurring-is-active" name="tinkoff-recurring-is-active" value="1" <?php checked( $init_recurring_donation->recurring_is_active, '1' );?>>
                 </div>
             </div>
 
