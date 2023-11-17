@@ -1,7 +1,7 @@
 <?php if( !defined('WPINC') ) die;
 
 $payment_class = 'stage-payment';
-if ( isset( $_GET['stage'] && ! empty( $_GET['stage'] ) ) {
+if ( isset( $_GET['stage'] ) && ! empty( $_GET['stage'] ) {
 	$stage         = $_GET['stage'];
 	$payment_class = 'stage-' . $stage;
 }
