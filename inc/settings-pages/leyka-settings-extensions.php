@@ -1,7 +1,7 @@
 <?php if( !defined('WPINC') ) die;
 
 $extensions_class = 'stage-extension';
-if ( isset( $_GET['stage'] && ! empty( $_GET['stage'] ) ) {
+if ( isset( $_GET['stage'] ) && ! empty( $_GET['stage'] ) ) {
 	$stage            = $_GET['stage'];
 	$extensions_class = 'stage-' . $stage;
 }
