@@ -21,7 +21,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             $this->_id
         );
 
-        $this->_docs_link = '//leyka.te-st.ru/docs/nastrojka-mixplat/';
+        $this->_docs_link = '//leyka.org/docs/nastrojka-mixplat/';
         $this->_registration_link = '//mixplat.ru/#join';
 
         $this->_min_commission = 0.4;
@@ -215,7 +215,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
     public function _set_gateway_bt_id($bt_id) {
         $all_bt_ids = [
-  		     	'mobile' => '',
+            'mobile' => '',
             'bankcard' => 'credit_card',
             'yandex' => 'yandex_pay',
             'mirpay' => 'mir_pay',
@@ -1382,9 +1382,9 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             <div class="leyka-ddata-field">
 
             <?php if($donation->type === 'correction') {?>
-                <input type="text" id="mixplat-phone" name="mixplat-phone" placeholder="<?php _e('Enter a phone number', 'leyka');?>" value="<?php echo $donation->mixplat_phone;?>">
+                <input type="text" id="mixplat-phone" name="mixplat-phone" placeholder="<?php _e('Enter a phone number', 'leyka');?>" value="<?php echo esc_attr( $donation->mixplat_phone ); ?>">
             <?php } else {?>
-                <span class="fake-input"><?php echo $donation->mixplat_phone;?></span>
+                <span class="fake-input"><?php echo esc_html( $donation->mixplat_phone ); ?></span>
             <?php }?>
             </div>
 
