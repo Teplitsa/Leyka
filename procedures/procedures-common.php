@@ -57,7 +57,7 @@ function leyka_procedures_print($expression, $add_new_line = true) {
         echo print_r($expression, 1).($add_new_line ? "\n" : '');
 
     } else {
-        echo $add_new_line ? '<pre>'.print_r($expression, 1).'</pre>' : print_r($expression, 1);
+        echo esc_attr( $add_new_line ) ? '<pre>'.print_r($expression, 1).'</pre>' : print_r($expression, 1);
     }
 
     @ob_flush();

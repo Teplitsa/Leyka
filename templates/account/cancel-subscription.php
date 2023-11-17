@@ -45,26 +45,26 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php');?>
 										<div class="subscription-details">
 
     										<div class="campaign-title">
-                                                <?php echo $init_donation->campaign_title;?>
+                                                <?php echo esc_html( $init_donation->campaign_title );?>
                                             </div>
 
                                             <div class="subscription-payment-details">
 
         										<div class="amount">
-                                                    <?php echo $init_donation->amount.' '.$init_donation->currency_label;?>/<?php echo _x('month', 'Recurring interval, as in "[XX Rub in] month"', 'leyka');?>
+                                                    <?php echo esc_attr( $init_donation->amount.' '.$init_donation->currency_label );?>/<?php echo _x('month', 'Recurring interval, as in "[XX Rub in] month"', 'leyka');?>
                                                 </div>
 
                                                 <div class="donation-gateway-pm">
                                                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/star-icon-info-small.svg" alt="">
-                                                    <span class="gateway"><?php echo $init_donation->gateway_label;?></span> /
-                                                    <span class="pm"><?php echo $init_donation->pm_label;?></span>
+                                                    <span class="gateway"><?php echo esc_html( $init_donation->gateway_label );?></span> /
+                                                    <span class="pm"><?php echo esc_html( $init_donation->pm_label );?></span>
                                                 </div>
 
                                             </div>
 
 										</div>
 
-                                        <div data-campaign-id="<?php echo $init_donation->campaign_id;?>" data-donation-id="<?php echo $init_donation->id;?>" data-campaign-page-public-url="<?php echo $donation_campaign->permalink;?>" class="action-disconnect"><?php _e('Disable', 'leyka');?></div>
+                                        <div data-campaign-id="<?php echo esc_attr( $init_donation->campaign_id );?>" data-donation-id="<?php echo esc_attr( $init_donation->id );?>" data-campaign-page-public-url="<?php echo esc_attr( $donation_campaign->permalink );?>" class="action-disconnect"><?php _e('Disable', 'leyka');?></div>
 
                                     </div>
 
@@ -93,10 +93,10 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php');?>
                                 <div class="leyka-cancel-subscription-reason">
                                 	<?php foreach(leyka_get_recurring_subscription_cancelling_reasons() as $reason_value => $reason_text) {?>
                                     <span>
-                                        <input type="checkbox" name="leyka_cancel_subscription_reason[]" id="leyka_cancel_subscription_reason_<?php echo $reason_value;?>" class="required" value="<?php echo $reason_value;?>">
-                                        <label for="leyka_cancel_subscription_reason_<?php echo $reason_value;?>">
+                                        <input type="checkbox" name="leyka_cancel_subscription_reason[]" id="leyka_cancel_subscription_reason_<?php echo esc_attr( $reason_value );?>" class="required" value="<?php echo esc_attr( $reason_value );?>">
+                                        <label for="leyka_cancel_subscription_reason_<?php echo esc_attr( $reason_value );?>">
                                         	<svg class="svg-icon icon-checkbox-check"><use xlink:href="#icon-checkbox-check"></use></svg>
-                                        	<?php echo $reason_text;?>
+                                        	<?php echo wp_kses_post( $reason_text );?>
                                         </label>
                                     </span>
                                 	<?php }?>
@@ -108,12 +108,12 @@ include(LEYKA_PLUGIN_DIR . 'templates/account/header.php');?>
                                         <?php $field_id = 'leyka-'.wp_rand();?>
                                         <div class="donor__textfield donor__textfield--comment">
                                             <div class="leyka-star-field-frame">
-                                                <label for="<?php echo $field_id;?>">
+                                                <label for="<?php echo esc_attr( $field_id );?>">
                                                     <span class="donor__textfield-label leyka_donor_custom_reason-label">
                                                         <?php _e('Your reason', 'leyka');?>
                                                     </span>
                                                 </label>
-                                                <textarea id="<?php echo $field_id;?>" class="leyka-donor-comment" name="leyka_donor_custom_reason"></textarea>
+                                                <textarea id="<?php echo esc_attr( $field_id );?>" class="leyka-donor-comment" name="leyka_donor_custom_reason"></textarea>
                                             </div>
                                         </div>
 

@@ -296,7 +296,7 @@ class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
 			$err = $ex->getMessage();
 
 			if(defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY) {
-				echo $err;
+				echo wp_kses_post( $err );
 			}
 
 			error_log($err);

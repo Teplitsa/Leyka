@@ -893,14 +893,14 @@ class Leyka_Support_Packages_Template_Tags {
             <div class="leyka-ext-sp-card-row1">
 
                 <div class="leyka-ext-sp-icon">
-                    <?php if(preg_match("/\.svg$/", $package->icon_url)) {
+                	<?php if(preg_match("/\.svg$/", $package->icon_url)) {
                         if(is_file($package->icon_path)) {
                             readfile($package->icon_path);
                         }
                     } else {?>
-                        <img src="<?php echo esc_url( $package->icon_url );?>" alt="">
-                    <?php }?>
-                </div>
+                		<img src="<?php echo esc_url( $package->icon_url );?>" alt="">
+            		<?php }?>
+            	</div>
 
                 <div class="leyka-ext-sp-title"><?php echo esc_html( $package->title );?></div>
 
@@ -916,11 +916,11 @@ class Leyka_Support_Packages_Template_Tags {
                 <div class="leyka-ext-sp-period"><?php _e('Per month', 'leyka')?></div>
 
                 <div class="leyka-ext-sp-status">
-                    <?php if($is_active) {?>
-                    <span><?php _e('Current status', 'leyka')?></span>
-                    <?php } elseif(!empty($params['campaign_post_permalink']) && !empty($params['is_activation_available']) && $params['is_activation_available']) {?>
-                    <a href="<?php echo esc_attr( $params['campaign_post_permalink'] );?>#leyka-activate-package|<?php echo esc_attr( $package->amount_needed );?>" class="leyka-activate-package-link"><?php esc_html_e('Choose', 'leyka')?></a>
-                    <?php }?>
+                	<?php if($is_active) {?>
+                	<span><?php _e('Current status', 'leyka')?></span>
+                	<?php } elseif(!empty($params['campaign_post_permalink']) && !empty($params['is_activation_available']) && $params['is_activation_available']) {?>
+            		<a href="<?php echo esc_attr( $params['campaign_post_permalink'] );?>#leyka-activate-package|<?php echo esc_attr( $package->amount_needed );?>" class="leyka-activate-package-link"><?php esc_html_e('Choose', 'leyka')?></a>
+                	<?php }?>
                 </div>
 
             </div>
@@ -966,38 +966,38 @@ class Leyka_Support_Packages_Template_Tags {
 
         <div class="leyka-ext-sp-activate-feature-overlay">
 
-            <div class="leyka-ext-sp-activate-feature-overlay-gradient"></div>
+        	<div class="leyka-ext-sp-activate-feature-overlay-gradient"></div>
 
-            <div class="leyka-ext-sp-activate-feature-overlay-bg-wrapper">
+        	<div class="leyka-ext-sp-activate-feature-overlay-bg-wrapper">
                 <div class="leyka-ext-sp-activate-feature-overlay-bg">
 
                     <div class="leyka-ext-sp-activate-feature <?php echo esc_attr( 'packages-count-' . count( $packages) ); ?>" style="max-width: <?php echo esc_attr( $packages_count * 186 - 16 ); ?>px;">
-                        <h3><?php echo esc_html( $feature->activate_title );?></h3>
-                        <div class="leyka-ext-sp-feature-subtitle"><?php echo esc_html( $feature->activate_subtitle );?></div>
-                        <div class="leyka-ext-support-packages">
-                        <?php foreach($packages as $package) {
+                    	<h3><?php echo esc_html( $feature->activate_title );?></h3>
+                    	<div class="leyka-ext-sp-feature-subtitle"><?php echo esc_html( $feature->activate_subtitle );?></div>
+            			<div class="leyka-ext-support-packages">
+            			<?php foreach($packages as $package) {
                             $this->show_manage_card($package, ['is_active' => false]);
                         }?>
-                        </div>
-                        
-                        <div class="leyka-ext-sp-terms-action">
-                            <div class="leyka-ext-sp-subsription-terms">
-                                <?php $support_packages_subscription_text = leyka()->opt('support_packages_subscription_text');?>
-                                <?php if($support_packages_subscription_text) {
-                                    echo wp_kses_post( $support_packages_subscription_text );
-                                } else {
-                                    esc_html_e('Subscription renews automatically. You can unsubscribe at any time in', 'leyka');?> <a href="<?php echo site_url('/donor-account/cancel-subscription/');?>"><?php esc_html_e('your account', 'leyka');?></a>
-                                <?php }?>
-                            </div>
-                            <a href="<?php echo esc_url( $campaign_post_permalink );?>" class="leyka-ext-sp-subscribe-action"><?php echo leyka()->opt('support_packages_activation_button_label');?></a>
-                        </div>
-                    </div>
+            			</div>
+            			
+            			<div class="leyka-ext-sp-terms-action">
+                			<div class="leyka-ext-sp-subsription-terms">
+                				<?php $support_packages_subscription_text = leyka()->opt('support_packages_subscription_text');?>
+                				<?php if($support_packages_subscription_text) {
+                				    echo wp_kses_post( $support_packages_subscription_text );
+                				} else {
+                				    esc_html_e('Subscription renews automatically. You can unsubscribe at any time in', 'leyka');?> <a href="<?php echo site_url('/donor-account/cancel-subscription/');?>"><?php esc_html_e('your account', 'leyka');?></a>
+                				<?php }?>
+                			</div>
+                			<a href="<?php echo esc_url( $campaign_post_permalink );?>" class="leyka-ext-sp-subscribe-action"><?php echo leyka()->opt('support_packages_activation_button_label');?></a>
+            			</div>
+                	</div>
 
                     <div class="leyka-ext-sp-already-subsribed">
-                        <a href="<?php echo site_url('/donor-account/');?>" class="leyka-ext-sp-already-subscribed-link">
-                            <span class="leyka-ext-sp-already-subscribed-icon"><?php readfile(LEYKA_PLUGIN_DIR.'extensions/'.Leyka_Support_Packages_Extension::get_instance()->id_dash.'/img/person.svg');?></span>
-                            <span class="leyka-ext-sp-already-subscribed-caption"><?php echo leyka()->opt('support_packages_account_link_label');?></span>
-                        </a>
+                    	<a href="<?php echo site_url('/donor-account/');?>" class="leyka-ext-sp-already-subscribed-link">
+                    		<span class="leyka-ext-sp-already-subscribed-icon"><?php readfile(LEYKA_PLUGIN_DIR.'extensions/'.Leyka_Support_Packages_Extension::get_instance()->id_dash.'/img/person.svg');?></span>
+                    		<span class="leyka-ext-sp-already-subscribed-caption"><?php echo leyka()->opt('support_packages_account_link_label');?></span>
+                		</a>
                     </div>
 
                 </div>

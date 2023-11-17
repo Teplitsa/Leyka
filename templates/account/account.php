@@ -80,7 +80,7 @@ try {
                                 <div class="items">
 
                                     <?php foreach($recurring_subscriptions as $init_donation) {?>
-									<div class="item <?php echo $init_donation->recurring_on ? 'active' : 'inactive subscription-canceled';?> <?php echo $init_donation->cancel_recurring_requested ? 'subscription-canceling' : '';?>">
+									<div class="item <?php echo esc_attr( $init_donation->recurring_on ? 'active' : 'inactive subscription-canceled' );?> <?php echo esc_attr( $init_donation->cancel_recurring_requested ? 'subscription-canceling' : '' );?>">
                                         <div class="subscription-details">
 
                                             <div class="campaign-title">
@@ -89,22 +89,22 @@ try {
 
                                             <div class="subscription-payment-details">
                                                 <div class="amount">
-                                                    <?php echo $init_donation->amount_formatted.' '.$init_donation->currency_label;?>/<?php echo _x('month', 'Recurring interval, as in "[XX Rub in] month"', 'leyka');?>
+                                                    <?php echo esc_attr( $init_donation->amount_formatted.' '.$init_donation->currency_label );?>/<?php echo _x('month', 'Recurring interval, as in "[XX Rub in] month"', 'leyka');?>
                                                 </div>
                                                 <div class="donation-gateway-pm">
                                                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/star-icon-info-small.svg" alt="">
-                                                    <span class="gateway"><?php echo $init_donation->gateway_label;?></span> /
-                                                    <span class="pm"><?php echo $init_donation->pm_label;?></span>
+                                                    <span class="gateway"><?php echo esc_html( $init_donation->gateway_label );?></span> /
+                                                    <span class="pm"><?php echo esc_html( $init_donation->pm_label );?></span>
                                                 </div>
                                             </div>
 
                                         </div>
                                         <div class="subscription-status">
                                             <span class="status">
-                                                <?php echo $init_donation->cancel_recurring_requested ?
+                                                <?php echo esc_attr( $init_donation->cancel_recurring_requested ?
                                                     __('Canceling', 'leyka') :
                                                     ($init_donation->recurring_on ?
-                                                        __('Active', 'leyka') : __('Cancelled', 'leyka'));?>
+                                                        __('Active', 'leyka') : __('Cancelled', 'leyka')) );?>
                                             </span>
                                         </div>
 
@@ -133,7 +133,7 @@ try {
 
                                 if($donations) {?>
 
-                                <div class="donations-history items" data-donations-total-pages="<?php echo $donations_list_pages_count;?>" data-donations-current-page="1" data-donor-id="<?php echo $donor->id;?>">
+                                <div class="donations-history items" data-donations-total-pages="<?php echo esc_attr( $donations_list_pages_count );?>" data-donations-current-page="1" data-donor-id="<?php echo esc_attr( $donor->id );?>">
 
                                 <?php foreach($donations as $donation) {
                                     echo leyka_get_donor_account_donations_list_item_html(false, $donation)."\n";

@@ -51,27 +51,27 @@ if( !function_exists('leyka_get_donor_account_donations_list_item_html') ) {
 
         ob_start();?>
 
-        <div class="item <?php echo $placeholders['donation_status'];?> <?php echo $placeholders['donation_type'];?> <?php echo $placeholders['recurring_is_active'];?> <?php echo $placeholders['init_recurring_donation'];?>" <?php echo $is_hidden ? 'style="display:none;"' : '';?>>
+        <div class="item <?php echo esc_attr( $placeholders['donation_status'] );?> <?php echo esc_attr( $placeholders['donation_type'] );?> <?php echo esc_attr( $placeholders['recurring_is_active'] );?> <?php echo esc_attr( $placeholders['init_recurring_donation'] );?>" <?php echo wp_kses_post( $is_hidden ? 'style="display:none;"' : '');?>>
             <h4 class="item-title">
                 <span class="field-q"><span class="field-q-tooltip <?php echo 'status-'.$placeholders['donation_status'];?> <?php echo 'type-'.$placeholders['donation_type'];?>">
-                    <?php echo $placeholders['donation_type_description'];?>
+                    <?php echo wp_kses_post( $placeholders['donation_type_description'] );?>
                     <br><br>
-                    <?php echo $placeholders['donation_status_description'];?>
+                    <?php echo wp_kses_post( $placeholders['donation_status_description'] );?>
                 </span></span>
 
                 <?php echo ($donation->status === 'refunded' ? __('Refunding:', 'leyka').' ' : '')
                     .$placeholders['amount_formatted'].' '.$placeholders['currency_label'];?>
 
             </h4>
-            <span class="date"><?php echo $placeholders['date'];?></span>
+            <span class="date"><?php echo esc_html( $placeholders['date'] );?></span>
             <p>
-                <a href="<?php echo get_permalink($placeholders['campaign_id']);?>"><?php echo $placeholders['campaign_title'];?></a>
+                <a href="<?php echo get_permalink($placeholders['campaign_id']);?>"><?php echo esc_html( $placeholders['campaign_title'] );?></a>
             </p>
 
             <div class="donation-gateway-pm">
                 <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/star-icon-info-small.svg" alt="">
-                <span class="gateway"><?php echo $placeholders['gateway_label'];?></span> /
-                <span class="pm"><?php echo $placeholders['pm_label'];?></span>
+                <span class="gateway"><?php echo esc_html( $placeholders['gateway_label'] );?></span> /
+                <span class="pm"><?php echo esc_html( $placeholders['pm_label'] );?></span>
             </div>
 
         </div>

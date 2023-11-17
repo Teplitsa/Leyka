@@ -28,7 +28,7 @@ $template_id = $campaign ? $campaign->template_id : leyka_remembered_data('templ
 
                 <div class="leyka-pf__final-screen">
 
-                    <div class="leyka-screen-form leyka-screen-thankyou <?php echo $template_id === 'need-help' ? 'leyka-need-help-thankyou' : '';?>">
+                    <div class="leyka-screen-form leyka-screen-thankyou <?php echo esc_attr( $template_id === 'need-help' ? 'leyka-need-help-thankyou' : '' );?>">
 
                         <h1><?php _e('Thank you for your donation!', 'leyka');?></h1>
                         <p><?php _e('We will be happy with a small but monthly assistance, this gives us confidence in the future and the opportunity to plan our activities.', 'leyka');?></p>
@@ -40,7 +40,7 @@ $template_id = $campaign ? $campaign->template_id : leyka_remembered_data('templ
 
                                 <form action="#" class=" leyka-success-form" method="post" novalidate="novalidate" <?php echo empty($donation_id) ? 'style="display: none;"' : '';?>>
 
-                                    <input type="hidden" name="leyka_donation_id" value="<?php echo $donation_id;?>">
+                                    <input type="hidden" name="leyka_donation_id" value="<?php echo esc_attr( $donation_id );?>">
                                     <input type="hidden" name="action" value="leyka_donor_subscription">
                                     <?php wp_nonce_field('leyka_donor_subscription');?>
 
@@ -49,10 +49,10 @@ $template_id = $campaign ? $campaign->template_id : leyka_remembered_data('templ
                                             <?php $field_id = 'leyka-'.wp_rand();?>
                                             <div class="donor__textfield donor__textfield--email required focus">
                                                 <div class="leyka-star-field-frame">
-                                                    <label for="<?php echo $field_id;?>">
+                                                    <label for="<?php echo esc_attr( $field_id );?>">
                                                         <span class="donor__textfield-label leyka_donor_name-label"><?php _e('Email', 'leyka');?></span>
                                                     </label>
-                                                    <input type="email" id="<?php echo $field_id;?>" name="leyka_donor_email" value="<?php echo leyka_remembered_data('donor_email');?>" autocomplete="off" placeholder="<?php _e('Your email', 'leyka');?>">
+                                                    <input type="email" id="<?php echo esc_attr( $field_id );?>" name="leyka_donor_email" value="<?php echo leyka_remembered_data('donor_email');?>" autocomplete="off" placeholder="<?php _e('Your email', 'leyka');?>">
                                                 </div>
                                                 <div class="leyka-star-field-error-frame">
                                                     <span class="donor__textfield-error leyka_donor_email-error">

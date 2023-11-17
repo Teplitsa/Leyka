@@ -26,14 +26,14 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
         ]);
 
         $form_api = new Leyka_Payment_Form();
-        echo $form_api->get_hidden_amount_fields();?>
+        echo wp_kses_post( $form_api->get_hidden_amount_fields() );?>
 
             <div class="amount__figure">
 
-                <input type="text" class="leyka_donation_amount" name="leyka_donation_amount" value="<?php echo $template_data['amount_default'];?>" autocomplete="off" placeholder="<?php echo apply_filters('leyka_form_free_amount_placeholder', $template_data['amount_default']);?>" data-default-value="<?php echo $template_data['amount_default'];?>" data-min-value="<?php echo $template_data['amount_min'];?>" data-max-value="<?php echo $template_data['amount_max_total'];?>">
-                <span class="curr-mark"><?php echo $template_data['currency_label'];?></span>
+                <input type="text" class="leyka_donation_amount" name="leyka_donation_amount" value="<?php echo esc_attr( $template_data['amount_default'] );?>" autocomplete="off" placeholder="<?php echo apply_filters('leyka_form_free_amount_placeholder', $template_data['amount_default']);?>" data-default-value="<?php echo esc_attr( $template_data['amount_default'] );?>" data-min-value="<?php echo esc_attr( $template_data['amount_min'] );?>" data-max-value="<?php echo esc_attr( $template_data['amount_max_total'] );?>">
+                <span class="curr-mark"><?php echo esc_html( $template_data['currency_label'] );?></span>
 
-                <input type="hidden" class="leyka_donation_currency" name="leyka_donation_currency" data-currency-label="<?php echo $template_data['currency_label'];?>" value="<?php echo leyka_options()->opt('currency_main');?>">
+                <input type="hidden" class="leyka_donation_currency" name="leyka_donation_currency" data-currency-label="<?php echo esc_attr( $template_data['currency_label'] );?>" value="<?php echo leyka_options()->opt('currency_main');?>">
 
             </div>
 
@@ -55,7 +55,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
                 <div class="amount__range_overlay"></div>
 
                 <div class="amount_range">
-                    <input name="amount-range" type="range" min="<?php echo $template_data['amount_min'];?>" max="<?php echo $template_data['amount_max'];?>" step="10" data-default-value="<?php echo $template_data['amount_default'];?>" value="<?php echo $template_data['amount_default'];?>">
+                    <input name="amount-range" type="range" min="<?php echo esc_attr( $template_data['amount_min'] );?>" max="<?php echo esc_attr( $template_data['amount_max'] );?>" step="10" data-default-value="<?php echo esc_attr( $template_data['amount_default'] );?>" value="<?php echo esc_attr( $template_data['amount_default'] );?>">
                 </div>
             </div>
 
@@ -80,7 +80,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
 
         <div class="step__selection">
             <a href="amount" class="leyka-js-another-step">
-                <span class="remembered-amount">#SUM#</span><span class="curr-mark"><?php echo $template_data['currency_label'];?></span><span class="remembered-monthly"><?php _e('monthly', 'leyka');?></span>
+                <span class="remembered-amount">#SUM#</span><span class="curr-mark"><?php echo esc_html( $template_data['currency_label'] );?></span><span class="remembered-monthly"><?php _e('monthly', 'leyka');?></span>
             </a>
         </div>
 
@@ -100,7 +100,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
 
                 <label class="payment-opt__button">
 
-                    <input class="payment-opt__radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="radio" data-processing="<?php echo $pm->processing_type;?>" data-has-recurring="<?php echo $pm->has_recurring_support() ? '1' : '0';?>" data-ajax-without-form-submission="<?php echo $pm->ajax_without_form_submission ? '1' : '0';?>">
+                    <input class="payment-opt__radio" name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="radio" data-processing="<?php echo esc_attr( $pm->processing_type );?>" data-has-recurring="<?php echo esc_attr( $pm->has_recurring_support() ? '1' : '0' );?>" data-ajax-without-form-submission="<?php echo esc_attr( $pm->ajax_without_form_submission ? '1' : '0' );?>">
 
                     <span class="payment-opt__icon">
                         <?php if(leyka_url_exists($pm->main_icon_url)) {?>
@@ -113,7 +113,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
                 </label>
 
                 <?php if(leyka_url_exists($pm->main_icon_url)) {?>
-                <span class="payment-opt__label"><?php echo $pm->label;?></span>
+                <span class="payment-opt__label"><?php echo esc_html( $pm->label );?></span>
                 <?php }?>
 
             </div>
@@ -128,10 +128,10 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
         if($pm->processing_type !== 'static') {
             continue;
         }?>
-    <div class="step step--static <?php echo $pm->full_id;?>">
+    <div class="step step--static <?php echo esc_attr( $pm->full_id );?>">
         <div class="step__selection">
             <a href="amount" class="leyka-js-another-step">
-                <span class="remembered-amount">#SUM#</span><span class="curr-mark"><?php echo $template_data['currency_label'];?></span><span class="remembered-monthly"><?php _e('monthly', 'leyka');?></span>
+                <span class="remembered-amount">#SUM#</span><span class="curr-mark"><?php echo esc_attr( $template_data['currency_label'] );?></span><span class="remembered-monthly"><?php _e('monthly', 'leyka');?></span>
             </a>
             <a href="cards" class="leyka-js-another-step"><span class="remembered-payment">#PM_LABEL#</span></a>
         </div>
@@ -157,7 +157,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
 
         <div class="step__selection">
             <a href="amount" class="leyka-js-another-step">
-                <span class="remembered-amount">#SUM#</span><span class="curr-mark"><?php echo $template_data['currency_label'];?></span><span class="remembered-monthly"><?php _e('monthly', 'leyka');?></span>
+                <span class="remembered-amount">#SUM#</span><span class="curr-mark"><?php echo esc_html( $template_data['currency_label'] );?></span><span class="remembered-monthly"><?php _e('monthly', 'leyka');?></span>
             </a>
             <a href="cards" class="leyka-js-another-step"><span class="remembered-payment">#PM_LABEL#</span></a>
         </div>
@@ -168,7 +168,7 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
 
                 <?php $field_id = 'leyka-'.wp_rand();?>
                 <div class="donor__textfield donor__textfield--name ">
-                    <label for="<?php echo $field_id;?>">
+                    <label for="<?php echo esc_attr( $field_id );?>">
                         <span class="donor__textfield-label leyka_donor_name-label">
                             <?php echo apply_filters('leyka_revo_donor_name_field_label', __('Your name', 'leyka'), $campaign);?>
                         </span>
@@ -176,27 +176,27 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
                             <?php _e('Enter your name', 'leyka');?>
                         </span>
                     </label>
-                    <input id="<?php echo $field_id;?>" type="text" name="leyka_donor_name" value="" autocomplete="off">
+                    <input id="<?php echo esc_attr( $field_id );?>" type="text" name="leyka_donor_name" value="" autocomplete="off">
                 </div>
 
                 <?php $field_id = 'leyka-'.wp_rand();?>
                 <div class="donor__textfield donor__textfield--email">
-                    <label for="<?php echo $field_id;?>">
+                    <label for="<?php echo esc_attr( $field_id );?>">
                         <span class="donor__textfield-label leyka_donor_name-label"><?php _e('Your email', 'leyka');?></span>
                         <span class="donor__textfield-error leyka_donor_email-error">
                             <?php _e('Enter an email in the some@email.com format', 'leyka');?>
                         </span>
                     </label>
-                    <input type="email" id="<?php echo $field_id;?>" name="leyka_donor_email" value="" autocomplete="off">
+                    <input type="email" id="<?php echo esc_attr( $field_id );?>" name="leyka_donor_email" value="" autocomplete="off">
                 </div>
 
                 <?php if(leyka_options()->opt_template('show_donation_comment_field')) { $field_id = 'leyka-'.wp_rand();?>
                 <div class="donor__textfield donor__textfield--comment leyka-field">
-                    <label for="<?php echo $field_id;?>">
+                    <label for="<?php echo esc_attr( $field_id );?>">
                         <span class="donor__textfield-label leyka_donor_comment-label"><?php echo leyka_options()->opt_template('donation_comment_max_length') ? sprintf(__('Your comment (<span class="donation-comment-current-length">0</span> / <span class="donation-comment-max-length">%d</span> symbols)', 'leyka'), leyka_options()->opt_template('donation_comment_max_length')) : __('Your comment', 'leyka');?></span>
                         <span class="donor__textfield-error leyka_donor_comment-error"><?php _e('Entered value is too long', 'leyka');?></span>
                     </label>
-                    <textarea id="<?php echo $field_id;?>" class="leyka-donor-comment" name="leyka_donor_comment" data-max-length="<?php echo leyka_options()->opt_template('donation_comment_max_length');?>"></textarea>
+                    <textarea id="<?php echo esc_attr( $field_id );?>" class="leyka-donor-comment" name="leyka_donor_comment" data-max-length="<?php echo leyka_options()->opt_template('donation_comment_max_length');?>"></textarea>
                 </div>
                 <?php }?>
 
@@ -213,9 +213,9 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
 
                         $field_id = 'leyka-'.wp_rand();?>
 
-                        <input type="checkbox" name="leyka_agree" id="<?php echo $field_id;?>" class="required" value="1" <?php echo leyka_options()->opt('terms_agreed_by_default') ? 'checked="checked"' : ''; ?>>
+                        <input type="checkbox" name="leyka_agree" id="<?php echo esc_attr( $field_id );?>" class="required" value="1" <?php echo leyka_options()->opt('terms_agreed_by_default') ? 'checked="checked"' : ''; ?>>
 
-                        <label for="<?php echo $field_id;?>">
+                        <label for="<?php echo esc_attr( $field_id );?>">
                         <?php echo apply_filters('agree_to_terms_text_text_part', leyka_options()->opt('agree_to_terms_text_text_part')).' ';
 
                         if(leyka_options()->opt('agree_to_terms_link_action') === 'popup') { ?>
@@ -234,9 +234,9 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
 
                         $field_id = 'leyka-'.wp_rand();?>
 
-                        <input type="checkbox" name="leyka_agree_pd" id="<?php echo $field_id;?>" class="required" value="1" <?php echo leyka_options()->opt('pd_terms_agreed_by_default') ? 'checked="checked"' : '';?>>
+                        <input type="checkbox" name="leyka_agree_pd" id="<?php echo esc_attr( $field_id );?>" class="required" value="1" <?php echo leyka_options()->opt('pd_terms_agreed_by_default') ? 'checked="checked"' : '';?>>
 
-                        <label for="<?php echo $field_id;?>">
+                        <label for="<?php echo esc_attr( $field_id );?>">
                         <?php echo apply_filters('agree_to_pd_terms_text_text_part', leyka_options()->opt('agree_to_pd_terms_text_text_part')).' ';?>
                             <a href="#" class="leyka-js-pd-trigger">
                                 <?php echo apply_filters('agree_to_pd_terms_text_link_part', leyka_options()->opt('agree_to_pd_terms_text_link_part'));?>

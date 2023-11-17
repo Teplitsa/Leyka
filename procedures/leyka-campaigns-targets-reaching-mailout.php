@@ -147,6 +147,6 @@ foreach($reached_targets_campaigns as $campaign) {
     // Reset content-type to avoid conflicts (http://core.trac.wordpress.org/ticket/23578):
     remove_filter('wp_mail_content_type', 'leyka_set_html_content_type');
 
-    echo $campaign->id.': '.($campaign->target_reaching_mailout_sent ? 'OK' : 'NOT OK');
+    echo esc_html( $campaign->id . ': ' . ( $campaign->target_reaching_mailout_sent ? 'OK' : 'NOT OK') );
 
 }

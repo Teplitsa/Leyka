@@ -53,12 +53,12 @@ leyka_pf_submission_errors();?>
                                         } else {
                                             $variants = [];
                                         }?>
-                                        <div class="<?php echo $currency;?> amount-variants-container" <?php echo $currency == $current_curr ? '' : 'style="display:none;"';?>>
+                                        <div class="<?php echo esc_attr( $currency );?> amount-variants-container" <?php echo esc_html( $currency == $current_curr ? '' : 'style="display:none;"');?>>
                                             <div class="amount-variants-row">
                                                 <?php foreach($variants as $i => $amount) {?>
                                                     <label class="figure rdc-radio" title="<?php _e('Please, specify your donation amount', 'leyka');?>">
-                                                        <input type="radio" value="<?php echo (int)$amount;?>" name="leyka_donation_amount" class="rdc-radio__button" <?php checked($i, 0);?> <?php echo $currency == $current_curr ? '' : 'disabled="disabled"';?> >
-                                                        <span class="rdc-radio__label"><?php echo (int)$amount;?></span>
+                                                        <input type="radio" value="<?php echo esc_attr( (int)$amount );?>" name="leyka_donation_amount" class="rdc-radio__button" <?php checked($i, 0);?> <?php echo wp_kses_post( $currency == $current_curr ? '' : 'disabled="disabled"' );?> >
+                                                        <span class="rdc-radio__label"><?php echo esc_attr( (int)$amount );?></span>
                                                     </label>
                                                 <?php }?>
 
@@ -68,14 +68,14 @@ leyka_pf_submission_errors();?>
                                                     <?php }
 
                                                     if($mode != 'fixed') {?>
-                                                    <input type="text" title="<?php _e('Specify the amount of your donation', 'leyka');?>" name="leyka_donation_amount" class="donate_amount_flex" value="<?php echo esc_attr($supported_curr[$current_curr]['amount_settings']['flexible']);?>" maxlength="6" <?php echo $currency == $current_curr ? '' : 'disabled="disabled"';?>>
+                                                    <input type="text" title="<?php _e('Specify the amount of your donation', 'leyka');?>" name="leyka_donation_amount" class="donate_amount_flex" value="<?php echo esc_attr($supported_curr[$current_curr]['amount_settings']['flexible']);?>" maxlength="6" <?php echo wp_kses_post( $currency == $current_curr ? '' : 'disabled="disabled"' );?>>
                                                     <?php }?>
                                                 </label>
                                             </div>
                                         </div>
                                     <?php }?>
                                 </div>
-                                <div class="currency"><span class="currency-frame"><?php echo $leyka_current_pm->get_currency_field();?></span></div>
+                                <div class="currency"><span class="currency-frame"><?php echo wp_kses_post( $leyka_current_pm->get_currency_field() );?></span></div>
                             </div>
 
                             <div class="leyka_donation_amount-error field-error"></div>

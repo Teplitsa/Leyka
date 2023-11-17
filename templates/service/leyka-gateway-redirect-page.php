@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title><?php echo __('Redirecting to the gateway payment page', 'leyka');?></title>
+    <title><?php esc_html_e('Redirecting to the gateway payment page', 'leyka');?></title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
     <?php wp_head();?>
@@ -27,7 +27,7 @@
             <div>
                 <?php _e("If you weren't redirected to the payment page automatically, please press this button", 'leyka');?>
             </div>
-            <input type="submit" name="leyka-gateway-submit" value="<?php echo __('Proceed to the payment approval page', 'leyka');?>">
+            <input type="submit" name="leyka-gateway-submit" value="<?php esc_attr_e('Proceed to the payment approval page', 'leyka');?>">
         </noscript>
 
     </form>
