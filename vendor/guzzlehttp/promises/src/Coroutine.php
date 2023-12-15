@@ -35,7 +35,7 @@ use Throwable;
  *     });
  *
  *     // Outputs "abc"
- *     $promise->then(function ($v) { echo $v; });
+ *     $promise->then(function ($v) { echo wp_kses_post( $v ); });
  *
  * @param callable $generatorFn Generator function to wrap into a promise.
  *

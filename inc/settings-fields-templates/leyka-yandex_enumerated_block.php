@@ -17,19 +17,19 @@ if( !empty($this->field_data['option_id']) ) {
         !empty($this->field_data['caption'])
         && (empty($this->field_data['option_id']) || ( !empty($this->field_data['show_text_if_set'] ) && $option_value))
     ) {?>
-        <div class="caption"><?php echo $this->field_data['caption'];?></div>
+        <div class="caption"><?php echo esc_attr( $this->field_data['caption'] );?></div>
     <?php }?>
     
     <?php if( !empty($this->field_data['value_url']) ) {?>
     
         <div class="body value">
-            <a target="_blank" href="<?php echo $this->field_data['value_url']?>"><?php echo $this->field_data['value_url']?></a>
+            <a target="_blank" href="<?php echo esc_url( $this->field_data['value_url'] ); ?>"><?php echo esc_html( $this->field_data['value_url'] ); ?></a>
         </div>
     
     <?php } else if( !empty($this->field_data['value_text']) ) {?>
     
         <div class="body value <?php if($this->field_data['copy2clipboard']):?>leyka-wizard-copy2clipboard<?php endif;?>">
-            <b><?php echo $this->field_data['value_text']?></b>
+            <b><?php echo esc_attr( $this->field_data['value_text'] ); ?></b>
         </div>
 
     <?php } else if( !empty($this->field_data['option_id']) ) {?>
@@ -37,8 +37,8 @@ if( !empty($this->field_data['option_id']) ) {
         <?php if( !empty($this->field_data['show_text_if_set']) && $option_value) {?>
         
             <div class="body value <?php if($this->field_data['copy2clipboard']):?>leyka-wizard-copy2clipboard<?php endif;?>">
-                <b><?php echo $option_value?></b>
-                <input type="hidden" name="leyka_<?php echo $this->field_data['option_id']?>" value="<?php echo $option_value?>">
+                <b><?php echo esc_html( $option_value ); ?></b>
+                <input type="hidden" name="leyka_<?php echo esc_attr( $this->field_data['option_id'] ); ?>" value="<?php echo esc_attr( $option_value ); ?>">
             </div>
             
         <?php } else {
@@ -67,7 +67,7 @@ if( !empty($this->field_data['option_id']) ) {
     }
 
     if( !empty($this->field_data['text']) ) {?>
-        <div class="body"><?php echo $this->field_data['text'];?></div>
+        <div class="body"><?php echo esc_attr( $this->field_data['text'] );?></div>
     <?php }?>
     
 </div>

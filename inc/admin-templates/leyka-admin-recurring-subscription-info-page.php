@@ -25,7 +25,7 @@ try {
 
     <div class="wp-heading-inline">
         <h1><?php _e('Subscription profile', 'leyka');?></h1>
-        <div class="leyka-subscription-status leyka-subscription-<?php echo $donation->recurring_subscription_status; ?>">
+        <div class="leyka-subscription-status leyka-subscription-<?php echo esc_attr( $donation->recurring_subscription_status ); ?>">
             <?php _ex(mb_ucfirst($donation->recurring_subscription_status), 'Recurring subscription status, singular (like [subscription is] "Active/Non-active/Problematic")', 'leyka'); /** @todo Fix this ambiguous l10n string formulation! */?>
         </div>
     </div>
@@ -38,13 +38,13 @@ try {
         $error = $_SESSION['leyka_new_donation_error'];
         unset($_SESSION['leyka_new_donation_error']);?>
 
-        <div class="error"><?php echo $error->get_error_message();?></div>
+        <div class="error"><?php echo wp_kses_post( $error->get_error_message() );?></div>
 
     <?php } else if(isset($_GET['msg']) && $_GET['msg'] === 'ok') {?>
         <div id="message" class="updated notice notice-success"><p><?php _e('Donation added.', 'leyka');?></p></div>
     <?php }?>
 
-    <form name="post" action="<?php echo admin_url('admin.php?page=leyka_donation_info&donation='.$donation_id);?>" method="post" id="post">
+    <form name="post" action="<?php echo esc_url( admin_url('admin.php?page=leyka_donation_info&donation=' . $donation_id ) ); ?>" method="post" id="post">
 
         <?php wp_nonce_field('edit-donation');?>
 
@@ -52,7 +52,7 @@ try {
             <div id="post-body" class="metabox-holder columns-2">
 
                 <?php $metaboxes_area_id = 'dashboard_page_leyka_donation_info';?>
-                <input type="hidden" class="leyka-support-metabox-area" value="<?php echo $metaboxes_area_id;?>">
+                <input type="hidden" class="leyka-support-metabox-area" value="<?php echo esc_attr( $metaboxes_area_id );?>">
 
                 <div id="postbox-container-1" class="postbox-container">
                     <?php do_meta_boxes($metaboxes_area_id, 'side', null);?>

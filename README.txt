@@ -1,12 +1,12 @@
 === Leyka ===
-Contributors: Ahaenor, oleinikv89, foralien, denis.cherniatev, burdianov
+Contributors: Ahaenor, teplosup, oleinikv89, foralien, denis.cherniatev, burdianov
 Author URI: http://te-st.org
 Plugin URI: http://leyka.org
 Tags: лейка, crowdfunding, fundraising, donations, recurring donations, charity, leyka, recurring, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, yoomoney, chronopay, sms, yookassa, миксплат, mixplat, paypal, paymaster, qiwi, киви, stripe, страйп, gds, google data studio
 Requires at least: 3.6.1
 Requires PHP: 7.2.5
-Tested up to: 6.2.2
-Stable tag: 3.30.3
+Tested up to: 6.4.2
+Stable tag: 3.30.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,7 +16,7 @@ Leyka is a plugin for crowdfunding and donations collection via WordPress websit
 
 Supported payment methods include Visa and MasterCard bank cards payments via **Cloudpayments**, **Yandex.Kassa**, **PayPal**, **Chronopay**, **QIWI Kassa**, **ROBOKASSA** and **RBK Money** systems, mobile and SMS payments via **MIXPLAT**, also **WebMoney**. You can also use a **traditional bank payment orders**.
 
-This plugin developed and supported by [Teplitsa of social technologies](https://te-st.ru/).
+This plugin developed and supported by [Teplitsa of social technologies](https://te-st.ort/).
 
 The plugin’s task is to ease and improve integrations of donations collecting function on websites of NGOs and any social oriented projects.
 
@@ -26,7 +26,7 @@ The plugin’s task is to ease and improve integrations of donations collecting 
 
 The plugin is designed for any website that wants to collect money online – NGOs, informal unions, individuals.
 
-**Official website:** [leyka.te-st.ru](https://leyka.te-st.ru/)
+**Official website:** [leyka.org](https://leyka.org/)
 
 **Warning:** you will need to sign a contract with some payment systems, like Yandex.Money or RBK, to collect donations through them.
 
@@ -45,7 +45,7 @@ The plugin is designed for any website that wants to collect money online – NG
 - Multiple language support
 - Partially complies with accessibility standards WCAG 2.0
 
-The plugin manual is avaliable at [official website](https://leyka.te-st.ru/instruction/). Intallation and usage are illustrated with [screencasts course](https://te-st.ru/2020/04/07/leyka-online-course/). 
+The plugin manual is avaliable at [official website](https://leyka.org/docs/what-is-leyka/). Intallation and usage are illustrated with [screencasts course](https://te-st.org/2020/04/07/leyka-online-course/). 
 
 PHP at least 7.2.5 is required for plugin to work correctly.
 
@@ -61,7 +61,7 @@ If you have a questions for the plugin work in any aspect, please address our su
 
 == Installation ==
 
-The plugin manual is avaliable at [official website](//leyka.te-st.ru/instruction/). Intallation and usage are illustrated with screencasts:
+The plugin manual is avaliable at [official website](https://leyka.org/docs/what-is-leyka/). Intallation and usage are illustrated with screencasts:
 
 * [basic features](//leyka.te-st.ru/docs/videourok-kak-ustanovit-i-nastroit-plagin-lejka/),
 * [extended features](//leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/).
@@ -71,9 +71,9 @@ PHP version required: 7.2.5+
 
 == Frequently Asked Questions ==
 
-[FAQ section](//leyka.te-st.ru/faq/) can be found at the plugin website. Also, you can address our development and support team by [creating a project issue n Github](//github.com/Teplitsa/Leyka/issues/new/).
+[FAQ section](https://leyka.org/faq/) can be found at the plugin website. Also, you can address our development and support team by [creating a project issue n Github](//github.com/Teplitsa/Leyka/issues/new/).
 
-For technical support questions, please, use the [plugin support email](maillto:help@te-st.ru) or the official [Telegram chat](https://t.me/leykadev).
+For technical support questions, please, use the [plugin support email](maillto:help@te-st.org) or the official [Telegram chat](https://t.me/leykadev).
 
 == Screenshots ==
 
@@ -84,6 +84,25 @@ For technical support questions, please, use the [plugin support email](maillto:
 5. The plugin start page (a console)
 
 == Changelog ==
+
+= 3.30.8 =
+* Improve PHPCS Security
+* Update: MIR Pay method added
+
+= 3.30.7 =
+* Fix: Recurring subscriptions filtering bug
+* Fix: Fields are missing in the create campaign Wizard.
+* Update: Unisender donator name to uppercase
+
+= 3.30.6 =
+* Fix: Template Star attr error.
+
+= 3.30.5 =
+* Security: Variables and options escaped when echo'd.
+
+= 3.30.4 =
+* Security: Fix cross-site scripting vulnerability for terms_text.
+
 = 3.30.3 =
 * Fix: the important Google Analytics direct connection bug fixed ("Guzzle bug").
 * Fix: one recently found vulnerability fixed.

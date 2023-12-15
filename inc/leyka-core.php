@@ -411,8 +411,8 @@ class Leyka extends Leyka_Singleton {
                 </script>
                 <style>
                     :root {
-                        --color-main:       <?php echo esc_attr( $colors[0] );?>;
-                        --color-main-dark:  <?php echo esc_attr( $colors[1] );?>;
+                        --color-main: 		<?php echo esc_attr( $colors[0] );?>;
+                        --color-main-dark: 	<?php echo esc_attr( $colors[1] );?>;
                         --color-main-light: <?php echo esc_attr( $colors[2] );?>;
                     }
                 </style>
@@ -1759,15 +1759,15 @@ class Leyka extends Leyka_Singleton {
                     'public' => true,
                     'labels' => [
                         'name' => __('Donors tags', 'leyka'),
-                        'singular_name' => __('Donors tag', 'leyka'),
-                        'menu_name' => __('Donors tags', 'leyka'),
+                        'singular_name'	=> __('Donors tag', 'leyka'),
+                        'menu_name'	=> __('Donors tags', 'leyka'),
                         'search_items' => __('Search donors tag', 'leyka'),
                         'popular_items' => __('Popular donors tags', 'leyka'),
-                        'all_items' => __('All donors tags', 'leyka'),
-                        'edit_item' => __('Edit donors tag', 'leyka'),
+                        'all_items'	=> __('All donors tags', 'leyka'),
+                        'edit_item'	=> __('Edit donors tag', 'leyka'),
                         'update_item' => __('Update donors tag', 'leyka'),
                         'add_new_item' => __('Add new donors tag', 'leyka'),
-                        'new_item_name' => __('New donors tag name', 'leyka'),
+                        'new_item_name'	=> __('New donors tag name', 'leyka'),
                     ],
 //                    'update_count_callback' => function() { // We may have to add a custom function for it
 //                        return; // Important
@@ -1789,15 +1789,15 @@ class Leyka extends Leyka_Singleton {
                     'show_admin_column' => true,
                     'labels' => [
                         'name' => __('Campaigns categories', 'leyka'),
-                        'singular_name' => __('Campaigns category', 'leyka'),
-                        'menu_name' => __('Categories', 'leyka'), // &#9492;&nbsp;
+                        'singular_name'	=> __('Campaigns category', 'leyka'),
+                        'menu_name'	=> __('Categories', 'leyka'), // &#9492;&nbsp;
                         'search_items' => __('Search campaigns categories', 'leyka'),
                         'popular_items' => __('Popular campaigns categories', 'leyka'),
-                        'all_items' => __('All campaigns categories', 'leyka'),
-                        'edit_item' => __('Edit campaigns category', 'leyka'),
+                        'all_items'	=> __('All campaigns categories', 'leyka'),
+                        'edit_item'	=> __('Edit campaigns category', 'leyka'),
                         'update_item' => __('Update campaigns category', 'leyka'),
                         'add_new_item' => __('Add new campaigns category', 'leyka'),
-                        'new_item_name' => __('New campaigns category name', 'leyka'),
+                        'new_item_name'	=> __('New campaigns category name', 'leyka'),
                     ],
                     'rewrite' => ['slug' => 'campaign-category', 'with_front' => false,],
 //                    'query_var' => '',
@@ -1867,9 +1867,9 @@ class Leyka extends Leyka_Singleton {
 
             }
 
-            if(is_admin_bar_showing()) { // Hide adminbar (toolbar) if needed
-                add_filter('show_admin_bar', '__return_false');
-            }
+			if(is_admin_bar_showing()) { // Hide adminbar (toolbar) if needed
+				add_filter('show_admin_bar', '__return_false');
+			}
 
             add_filter('document_title_parts', 'leyka_remove_gateway_redirect_title', 10);
             function leyka_remove_gateway_redirect_title($title_parts){

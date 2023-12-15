@@ -40,7 +40,7 @@ if($main_settings_steps) {?>
                 <div class="settings-step-set">
                     <div class="step-setup-status <?php echo !is_array($step_invalid_options) ? 'step-valid' : 'step-invalid';?>"></div>
                     <div class="step-title-wrapper">
-                        <div class="step-title"><?php echo $step['title'];?></div>
+                        <div class="step-title"><?php echo esc_html( $step['title'] );?></div>
 
                         <?php if(is_array($step_invalid_options)) {?>
 
@@ -76,9 +76,9 @@ if($main_settings_steps) {?>
 
         <?php foreach(leyka()->get_gateways(['activation_status' => 'activating']) as $gateway) {?>
             <div class="gateway status-activating">
-                <div class="module-logo"><img src="<?php echo $gateway->icon_url;?>" alt=""></div>
+                <div class="module-logo"><img src="<?php echo esc_url( $gateway->icon_url );?>" alt=""></div>
                 <div class="gateway-data">
-                    <div class="gateway-title"><?php echo $gateway->title;?></div>
+                    <div class="gateway-title"><?php echo esc_html( $gateway->title );?></div>
                     <div class="gateway-activation-status"><a href="<?php echo admin_url("/admin.php?page=leyka_settings&stage=payment&gateway=" . $gateway->id)?>"><?php _e('Activating', 'leyka');?></a></div>
                 </div>
             </div>
@@ -86,9 +86,9 @@ if($main_settings_steps) {?>
 
         <?php foreach(leyka()->get_gateways(['activation_status' => 'active']) as $gateway) {?>
             <div class="gateway status-active">
-                <div class="module-logo"><img src="<?php echo $gateway->icon_url;?>" alt=""></div>
+                <div class="module-logo"><img src="<?php echo esc_url( $gateway->icon_url );?>" alt=""></div>
                 <div class="gateway-data">
-                    <div class="gateway-title"><?php echo $gateway->title;?></div>
+                    <div class="gateway-title"><?php echo esc_html( $gateway->title );?></div>
                     <div class="gateway-activation-status"><?php _e('Active', 'leyka');?></div>
                 </div>
             </div>
@@ -97,7 +97,7 @@ if($main_settings_steps) {?>
     </div>
 
     <div class="add-gateway-link">
-        <a href="<?php echo admin_url('admin.php?page=leyka_settings');?>"><?php _e('Add gateway', 'leyka');?></a>
+        <a href="<?php echo admin_url('admin.php?page=leyka_settings');?>"><?php esc_html_e('Add gateway', 'leyka');?></a>
     </div>
 
 </div>
@@ -107,7 +107,7 @@ if($main_settings_steps) {?>
     <h3><?php  _e('Diagnostic data', 'leyka');?></h3>
 
     <div class="sidebar-part-content diagnostic-data">
-        <div class="data-line"><?php echo __('Leyka', 'leyka').' '.LEYKA_VERSION;?></div>
+        <div class="data-line"><?php esc_html_e('Leyka', 'leyka'); ?> <?php echo esc_html( LEYKA_VERSION );?></div>
         <div class="data-line">
             <?php $template = leyka()->get_template(leyka()->opt('donation_form_template'));
             echo __('Default template:', 'leyka').' '.__($template['name'], 'leyka');?>
@@ -124,7 +124,7 @@ if($main_settings_steps) {?>
                 $php_version_actuality = 'excellent';
             }?>
 
-            <div class="php-version <?php echo $php_version_actuality;?>"><?php echo 'PHP ' . phpversion();?></div>
+            <div class="php-version <?php echo esc_attr( $php_version_actuality ); ?>"><?php echo esc_html( 'PHP ' . phpversion() );?></div>
 
         </div>
         <div class="data-line"><?php echo 'WordPress '.get_bloginfo('version');?></div>
@@ -133,7 +133,7 @@ if($main_settings_steps) {?>
 
             <?php $protocol = parse_url(home_url(), PHP_URL_SCHEME);
             echo __('Protocol:', 'leyka').' ';?>
-            <span class="protocol <?php echo $protocol == 'https' ? 'safe' : 'not-safe';?>"><?php echo mb_strtoupper($protocol);?></span>
+            <span class="protocol <?php echo esc_attr( $protocol == 'https' ? 'safe' : 'not-safe' );?>"><?php echo mb_strtoupper($protocol);?></span>
         </div>
 
         <?php if(leyka_options()->opt('plugin_debug_mode')) {?>
@@ -148,7 +148,7 @@ if($main_settings_steps) {?>
                 $extension_needed = '<span class="php-ext '.(in_array($extension_needed, $php_extensions) ? '' : 'php-ext-missing').'">'.mb_strtolower($extension_needed).'</span>';
             }?>
 
-            <span class="php-modules-title"><?php echo __('PHP modules', 'leyka');?></span>
+            <span class="php-modules-title"><?php esc_html_e('PHP modules', 'leyka');?></span>
             <?php echo implode(', ', $php_extensions_needed);?>
 
         </div>

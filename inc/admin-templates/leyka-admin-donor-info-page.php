@@ -26,10 +26,10 @@ try {
         <div id="post-body" class="metabox-holder columns-2">
             <div id="postbox-container-2" class="postbox-container">
 
-            	<input type="hidden" value="<?php echo $donor->id;?>" id="leyka_donor_id">
+            	<input type="hidden" value="<?php echo esc_attr( $donor->id );?>" id="leyka_donor_id">
 
                 <?php $metaboxes_area_id = 'admin_page_leyka_donor_info';?>
-                <input type="hidden" class="leyka-support-metabox-area" value="<?php echo $metaboxes_area_id;?>">
+                <input type="hidden" class="leyka-support-metabox-area" value="<?php echo esc_attr( $metaboxes_area_id );?>">
 
                 <?php do_meta_boxes($metaboxes_area_id, 'normal', null);?>
 

@@ -13,10 +13,10 @@
 
 <div class="wizard-init">
 
-    <p><?php echo $params['text'];?></p>
+    <p><?php echo wp_kses_post( $params['text'] );?></p>
 
     <p>
-        <a href="<?php echo $params['wizard_link'];?>" class="button button-primary">
+        <a href="<?php echo esc_url( $params['wizard_link'] );?>" class="button button-primary">
             <?php _e('Start the Wizard', 'leyka');?>
         </a>
     </p>

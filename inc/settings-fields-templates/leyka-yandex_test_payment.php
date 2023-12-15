@@ -20,7 +20,7 @@ $is_came_back_from_yandex = preg_match('/^https:\/\/yoomoney.ru*/', wp_get_raw_r
 $is_payment_completed = $is_came_back_from_yandex && $test_payment && $test_payment->get_funded_date();?>
 
 <div class="payment-tryout-wrapper">
-    <input type="button" class="button button-secondary" <?php echo $is_payment_completed ? 'disabled' : '';?> id="yandex-make-live-payment" value="<?php esc_attr_e('"Almost real" donation', 'leyka');?>">
+    <input type="button" class="button button-secondary" <?php echo esc_attr( $is_payment_completed ? 'disabled' : '' );?> id="yandex-make-live-payment" value="<?php esc_attr_e('"Almost real" donation', 'leyka');?>">
     <span class="leyka-loader xs yandex-make-live-payment-loader" style="display: none;"></span>
 </div>
 
@@ -54,8 +54,8 @@ $is_payment_completed = $is_came_back_from_yandex && $test_payment && $test_paym
         leyka_agree_pd: 1,
         _wpnonce: '<?php echo wp_create_nonce('leyka_payment_form');?>',
         _wp_http_referer: '<?php echo wp_get_referer();?>',
-        leyka_campaign_id: <?php echo $campaign_id ? : 0;?>,
-        leyka_ga_campaign_title: '<?php echo $campaign_title ? $campaign_title : '';?>',
+        leyka_campaign_id: <?php echo esc_attr( $campaign_id ? : 0 );?>,
+        leyka_ga_campaign_title: '<?php echo esc_attr( $campaign_title ? $campaign_title : '' );?>',
         leyka_donor_name: '<?php echo leyka_options()->opt('org_face_fio_ip');?>',
         leyka_donor_email: '<?php echo get_option('admin_email');?>',
     };

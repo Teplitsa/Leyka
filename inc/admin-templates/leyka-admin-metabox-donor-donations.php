@@ -14,12 +14,12 @@ try {
         <dt><?php _e('Amount donated:', 'leyka');?></dt>
         <dd><?php echo leyka_format_amount($donor->amount_donated).' '.leyka_get_currency_label();?></dd>
 
-        <dt><?php echo __('Donations number:', 'leyka');?></dt>
+        <dt><?php esc_html_e('Donations number:', 'leyka');?></dt>
         <dd><?php echo number_format_i18n($donor->get_donations_count());?></dd>
     </dl>
 </div>
 
-<table id="donations-data-table" class="leyka-data-table donor-info-table" data-donor-id="<?php echo $donor->id;?>">
+<table id="donations-data-table" class="leyka-data-table donor-info-table" data-donor-id="<?php echo esc_attr( $donor->id );?>">
     <thead>
         <tr>
             <td><?php _e('ID', 'leyka');?></td>

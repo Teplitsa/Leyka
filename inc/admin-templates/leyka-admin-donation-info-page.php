@@ -36,7 +36,7 @@ if(empty($_GET['donation']) || !absint($_GET['donation'])) {
         $error = $_SESSION['leyka_new_donation_error'];
         unset($_SESSION['leyka_new_donation_error']);?>
 
-    <div class="error"><?php echo $error->get_error_message();?></div>
+    <div class="error"><?php echo wp_kses_post( $error->get_error_message() );?></div>
 
     <?php } else if(isset($_GET['msg']) && $_GET['msg'] === 'ok') {?>
         <div id="message" class="updated notice notice-success"><p><?php _e('Donation added.', 'leyka');?></p></div>
@@ -50,7 +50,7 @@ if(empty($_GET['donation']) || !absint($_GET['donation'])) {
             <div id="post-body" class="metabox-holder columns-2">
 
                 <?php $metaboxes_area_id = 'dashboard_page_leyka_donation_info';?>
-                <input type="hidden" class="leyka-support-metabox-area" value="<?php echo $metaboxes_area_id;?>">
+                <input type="hidden" class="leyka-support-metabox-area" value="<?php echo esc_attr( $metaboxes_area_id );?>">
 
                 <div id="postbox-container-1" class="postbox-container">
                     <?php do_meta_boxes($metaboxes_area_id, 'side', null);?>

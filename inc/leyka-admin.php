@@ -121,9 +121,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	        return;
         }
 
-        $template_file = LEYKA_PLUGIN_DIR . '/inc/admin-templates/leyka-admin-' . $template_id;
-        if ( file_exists( $template_file . '.php' ) ) {
-            require $template_file . '.php';
+	    $template_file = LEYKA_PLUGIN_DIR . '/inc/admin-templates/leyka-admin-' . $template_id;
+	    if ( file_exists( $template_file . '.php' ) ) {
+	        require $template_file . '.php';
         }
 
     }
@@ -603,8 +603,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	        return;
         }
 
-	    $controller_file = LEYKA_PLUGIN_DIR . '/inc/portlets/' . $portlet_id . '/leyka-class-' . $portlet_id;
-	    if ( file_exists( $controller_file . '-portlet-controller.php' ) ) {
+        $controller_file = LEYKA_PLUGIN_DIR . '/inc/portlets/' . $portlet_id . '/leyka-class-' . $portlet_id;
+        if ( file_exists( $controller_file . '-portlet-controller.php' ) ) {
             require_once $controller_file . '-portlet-controller.php';
         }
 
@@ -993,7 +993,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 <p><?php echo sprintf(__("Donation added. If you are not redirected to it's edit page, <a href='%s'>click here</a>.", 'leyka'), $new_donation_edit_url);?></p>
             </div>
 
-            <script type="text/javascript">window.location.href="<?php echo $new_donation_edit_url;?>";</script>
+            <script type="text/javascript">window.location.href="<?php echo esc_url( $new_donation_edit_url ); ?>";</script>
 
         <?php }
 
@@ -1156,7 +1156,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                     <label for="leyka-donor-account-access"><?php _e('Donor account available', 'leyka');?></label>
                 </th>
                 <td>
-                    <input type="checkbox" id="leyka-donor-account-access" name="leyka_donor_account_available" value="1" <?php echo $donor_user->has_cap(Leyka_Donor::DONOR_ACCOUNT_ACCESS_CAP) ? 'checked="checked"' : '';?>>
+                    <input type="checkbox" id="leyka-donor-account-access" name="leyka_donor_account_available" value="1" <?php echo wp_kses_post( $donor_user->has_cap(Leyka_Donor::DONOR_ACCOUNT_ACCESS_CAP) ? 'checked="checked"' : '' ); ?>>
                 </td>
             </tr>
 

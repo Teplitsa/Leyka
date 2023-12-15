@@ -11,7 +11,7 @@
 
         <div class="filter-categories">
         <?php foreach(leyka_get_gateways_filter_categories_list() as $category_slug => $category_label) {?>
-            <a class="filter-category-item" data-category="<?php echo $category_slug;?>" href="#">
+            <a class="filter-category-item" data-category="<?php echo esc_attr( $category_slug );?>" href="#">
                 <?php echo leyka_get_filter_category_label($category_slug);?>
             </a>
         <?php }?>
@@ -36,7 +36,7 @@
 
         $gateway_activation_status = $gateway->get_activation_status();?>
 
-        <div class="module-card gateway-card <?php echo implode(' ', $gateway->get_filter_categories());?> <?php echo $gateway_activation_status;?>">
+        <div class="module-card gateway-card <?php echo implode(' ', $gateway->get_filter_categories());?> <?php echo esc_attr( $gateway_activation_status );?>">
 
             <div class="module-card-header">
 
@@ -45,10 +45,10 @@
                 <div>
                     <div class="module-card-title gateway-card-title">
                         <a class="module-settings-link" href="<?php echo admin_url('admin.php?page=leyka_settings&stage=payment&gateway='.$gateway->id);?>">
-                            <?php echo $gateway->title;?>
+                            <?php echo esc_html( $gateway->title );?>
                         </a>
                     </div>
-                    <div class="module-card-status gateway-card-status <?php echo $gateway_activation_status;?>">
+                    <div class="module-card-status gateway-card-status <?php echo esc_attr( $gateway_activation_status );?>">
                         <?php echo leyka_get_gateway_activation_status_label($gateway_activation_status);?>
                     </div>
                 </div>
@@ -67,7 +67,7 @@
 
                         <?php $icons = leyka_get_gateway_icons_list($gateway);
                         foreach($icons as $icon_url) {?>
-                            <img class="pm-icon <?php echo $gateway->id.' '.basename($icon_url, '.svg');?>" src="<?php echo $icon_url;?>" alt="">
+                            <img class="pm-icon <?php echo esc_attr( $gateway->id.' '.basename($icon_url, '.svg') );?>" src="<?php echo esc_url( $icon_url );?>" alt="">
                         <?php }?>
 
                         </div>

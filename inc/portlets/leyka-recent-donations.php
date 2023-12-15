@@ -28,11 +28,11 @@ $data = Leyka_Recent_Donations_Portlet_Controller::get_instance()->get_template_
         foreach($data as $donation) { ?>
         <tr>
             <td class="donation-id">
-                <div><?php echo $donation['id'] ?></div>
+                <div><?php echo esc_html( $donation['id'] ); ?></div>
                 <div><a href="<?php echo admin_url('admin.php?page=leyka_donation_info&donation='.$donation['id']) ?>">К платежу</a></div>
             </td>
             <td class="donation-type">
-                <img class="has-tooltip" src="<?php echo LEYKA_PLUGIN_BASE_URL . 'img/dashboard/icon-donation-type-'.$donation['donation_type']['id'].'.svg';?>" alt="" title="<?php echo $donation['donation_type']['label'] ?>">
+                <img class="has-tooltip" src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL . 'img/dashboard/icon-donation-type-'.$donation['donation_type']['id'].'.svg' ) ;?>" alt="" title="<?php echo esc_attr( $donation['donation_type']['label'] ); ?>">
             </td>
             <td class="donation-donor">
 
@@ -40,29 +40,29 @@ $data = Leyka_Recent_Donations_Portlet_Controller::get_instance()->get_template_
                     admin_url('admin.php?page=leyka_donation_info&donation='.$donation['id']) :
                     admin_url('admin.php?page=leyka_donor_info&donor='.$donation['donor']['id']) ?>
 
-                <a href="<?php echo $edit_url;?>" target="_blank"><?php echo $donation['donor']['name'];?></a>
-                <div class="donor-contact"><?php echo $donation['donor']['email'];?></div>
-                <div class="donor-contact"><?php echo $donation['donor']['phone'];?></div>
+                <a href="<?php echo esc_url( $edit_url );?>" target="_blank"><?php echo esc_html( $donation['donor']['name'] );?></a>
+                <div class="donor-contact"><?php echo esc_html( $donation['donor']['email'] );?></div>
+                <div class="donor-contact"><?php echo esc_html( $donation['donor']['phone'] );?></div>
             </td>
             <td class="donation-date">
-                <div class="date"><?php echo $donation['date_label'];?></div>
-                <div class="time"><?php echo $donation['time_label'];?></div>
+                <div class="date"><?php echo esc_html( $donation['date_label'] );?></div>
+                <div class="time"><?php echo esc_html( $donation['time_label'] );?></div>
             </td>
             <td class="donation-amount-status">
                 <div class="wrapper-donation-amount-status">
                     <div class="wrapper-donation-status">
-                        <i class="donation-status <?php echo $donation['status']['id'];?> has-tooltip leyka-tooltip-align-left" title=""></i>
-                        <span class="donation-status-description leyka-tooltip-content"><b><?php echo $donation['status']['label'];?></b>: <?php echo $donation['status']['description'];?></span>
+                        <i class="donation-status <?php echo esc_attr( $donation['status']['id'] );?> has-tooltip leyka-tooltip-align-left" title=""></i>
+                        <span class="donation-status-description leyka-tooltip-content"><b><?php echo esc_html( $donation['status']['label'] );?></b>: <?php echo esc_html( $donation['status']['description'] );?></span>
                     </div>
                     <div class="wrapper-donation-amount">
-                        <div class="donation-amount"><?php echo $donation['amount'].' '.$donation['currency'];?></div>
-                        <div class="donation-total-amount"><?php echo $donation['total_amount'].' '.$donation['currency'];?></div>
+                        <div class="donation-amount"><?php echo esc_attr( $donation['amount'].' '.$donation['currency'] );?></div>
+                        <div class="donation-total-amount"><?php echo esc_attr( $donation['total_amount'].' '.$donation['currency'] ); ?></div>
                     </div>
                 </div>
             </td>
-            <td class="donation-gateway-pm has-tooltip leyka-tooltip-align-left" title='<?php echo $donation['gateway']['label'].' / '.$donation['payment_method']['category_label']; ?>'>
-                <span class="donation-gateway"><img src="<?php echo $donation['gateway']['icon'] ?>" alt="<?php echo $donation['gateway']['label'] ?>"></span>
-                <span class="donation-pm"><img src="<?php echo $donation['payment_method']['category_icon']; ?>" alt="<?php echo $donation['payment_method']['category_label'] ?>"></span>
+            <td class="donation-gateway-pm has-tooltip leyka-tooltip-align-left" title='<?php echo esc_attr( $donation['gateway']['label'].' / '.$donation['payment_method']['category_label'] ); ?>'>
+                <span class="donation-gateway"><img src="<?php echo esc_attr( $donation['gateway']['icon'] ); ?>" alt="<?php echo esc_attr( $donation['gateway']['label'] ); ?>"></span>
+                <span class="donation-pm"><img src="<?php echo esc_attr( $donation['payment_method']['category_icon'] ); ?>" alt="<?php echo esc_attr( $donation['payment_method']['category_label'] ); ?>"></span>
             </td>
             <td class="donation-donor-email-status">
 
@@ -77,9 +77,9 @@ $data = Leyka_Recent_Donations_Portlet_Controller::get_instance()->get_template_
 
                 <?php } else {?>
 
-                <div class="leyka-no-donor-thanks donor no-thanks" data-donation-id="<?php echo $donation['id'];?>" data-nonce="<?php echo wp_create_nonce('leyka_donor_email');?>">
-                    <span class="donation-email-status"><?php echo __("Not sent", 'leyka'); ?></span>
-                    <span class="donation-email-action send-donor-thanks"><?php echo __('Send it now', 'leyka'); ?></span>
+                <div class="leyka-no-donor-thanks donor no-thanks" data-donation-id="<?php echo esc_attr( $donation['id'] );?>" data-nonce="<?php echo wp_create_nonce('leyka_donor_email');?>">
+                    <span class="donation-email-status"><?php esc_html_e("Not sent", 'leyka'); ?></span>
+                    <span class="donation-email-action send-donor-thanks"><?php esc_html_e('Send it now', 'leyka'); ?></span>
                 </div>
 
                 <?php } ?>
@@ -89,7 +89,7 @@ $data = Leyka_Recent_Donations_Portlet_Controller::get_instance()->get_template_
         <?php }
     } else {?>
         <tr>
-            <td colspan="4" class="no-rows"><?php _e('No donations yet', 'leyka');?></td>
+            <td colspan="4" class="no-rows"><?php esc_html_e('No donations yet', 'leyka');?></td>
         </tr>
     <?php }?>
     </tbody>

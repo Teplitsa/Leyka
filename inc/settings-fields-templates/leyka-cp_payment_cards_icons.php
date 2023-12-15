@@ -4,12 +4,12 @@
 
 /** @var $this Leyka_Text_Block A block for which the template is used. */?>
 
-<div class="<?php echo $this->field_type;?> custom-block-payment-cards-icons">
+<div class="<?php echo esc_attr( $this->field_type );?> custom-block-payment-cards-icons">
 
     <div class="gateway-supported-cards">
-        <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-card-mastercard.svg" alt="">
-        <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-card-visa.svg" alt="">
-        <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-card-mir.svg" alt="">
+        <img src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL );?>img/icon-card-mastercard.svg" alt="">
+        <img src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL );?>img/icon-card-visa.svg" alt="">
+        <img src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL );?>img/icon-card-mir.svg" alt="">
     </div>
 
     <div class="ui-accordion no-jquery-ui">
@@ -33,7 +33,7 @@
 
                 $option_info = leyka_options()->get_info_of($option_id);?>
 
-                <div id="<?php echo $option_id;?>" class="settings-block option-block type-<?php echo $option_info['type'];?>">
+                <div id="<?php echo esc_attr( $option_id );?>" class="settings-block option-block type-<?php echo esc_attr( $option_info['type'] );?>">
                     <?php do_action("leyka_render_{$option_info['type']}", $option_id, $option_info);?>
                     <div class="field-errors"></div>
                 </div>

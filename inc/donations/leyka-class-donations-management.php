@@ -1193,8 +1193,8 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             <label for="campaign-select"><?php echo _x('Campaign', 'In subjective case', 'leyka');?>:</label>
 			<div class="leyka-ddata-field">
 
-                <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector autocomplete-input" value="<?php echo $campaign_id ? $campaign->title : '';?>" placeholder="<?php _e('Select a campaign', 'leyka');?>">
-                <input type="hidden" id="campaign-id" class="leyka-campaigns-select autocomplete-select" name="campaign-id" value="<?php echo $campaign_id;?>" data-campaign-payment-title-selector="#new-donation-purpose">
+                <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector autocomplete-input" value="<?php echo esc_attr( $campaign_id ? $campaign->title : '' );?>" placeholder="<?php _e('Select a campaign', 'leyka');?>">
+                <input type="hidden" id="campaign-id" class="leyka-campaigns-select autocomplete-select" name="campaign-id" value="<?php echo esc_attr( $campaign_id );?>" data-campaign-payment-title-selector="#new-donation-purpose">
 
 				<div id="campaign_id-error" class="field-error"></div>
 
@@ -1204,7 +1204,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         <div class="leyka-ddata-string">
             <label><?php _e('Donation purpose', 'leyka');?>:</label>
 			<div class="leyka-ddata-field">
-				<div id="new-donation-purpose" class="text-line"><?php echo $campaign_id ? $campaign->payment_title : '';?></div>
+				<div id="new-donation-purpose" class="text-line"><?php echo esc_html( $campaign_id ? $campaign->payment_title : '' );?></div>
 			</div>
         </div>
 
@@ -1251,7 +1251,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 			<div class="leyka-ddata-field">
 
 				<input type="text" id="donation-amount" name="donation-amount" placeholder="<?php _e('Enter the donation amount', 'leyka');?>" value=""> <?php echo leyka_get_currency_label();?><br>
-                <input type="hidden" id="donation-currency" name="donation-currency" value="<?php echo $main_currency_id;?>">
+                <input type="hidden" id="donation-currency" name="donation-currency" value="<?php echo esc_attr( $main_currency_id );?>">
 
 				<small class="field-help howto">
                     <?php _e('Amount may be negative for correctional donations.', 'leyka');?>
@@ -1287,10 +1287,10 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                     $pm_list = $gateway->get_payment_methods();
                     if($pm_list) {?>
 
-                        <optgroup label="<?php echo $gateway->name;?>">
+                        <optgroup label="<?php echo esc_attr( $gateway->name );?>">
 
                         <?php foreach($pm_list as $pm) {?>
-                            <option value="<?php echo $pm->full_id;?>"><?php echo $pm->name;?></option>
+                            <option value="<?php echo esc_attr( $pm->full_id ); ?>"><?php echo esc_html( $pm->name );?></option>
                         <?php }?>
                         </optgroup>
 
@@ -1310,7 +1310,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
         <input type="hidden" id="payment-type-hidden" name="payment-type" value="correction">
 
         <?php foreach(leyka_get_gateways() as $gateway) {?>
-            <div id="<?php echo $gateway->id;?>-fields" class="leyka-ddata-string gateway-fields" style="display: none;">
+            <div id="<?php echo esc_attr( $gateway->id );?>-fields" class="leyka-ddata-string gateway-fields" style="display: none;">
                 <?php $gateway->display_donation_specific_data_fields();?>
             </div>
         <?php }?>
@@ -1354,7 +1354,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                         <span class="campaign-name"><?php echo htmlentities($campaign->title, ENT_QUOTES, 'UTF-8');?></span>
                         <span class="campaign-actions">
                             <a href="<?php echo admin_url('/post.php?action=edit&post='.$campaign->id);?>"><?php _e('Edit campaign', 'leyka');?></a>
-                            <a href="<?php echo $campaign->url;?>" target="_blank" rel="noopener noreferrer"><?php _e('Preview campaign', 'leyka');?></a>
+                            <a href="<?php echo esc_url( $campaign->url );?>" target="_blank" rel="noopener noreferrer"><?php _e('Preview campaign', 'leyka');?></a>
                         </span>
                     </span>
 
@@ -1371,7 +1371,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
                 <div class="leyka-ddata-field">
                 <span id="campaign-payment-title" class="text-line">
-                    <?php echo $campaign->id ? $campaign->payment_title : $donation->title;?>
+                    <?php echo esc_html( $campaign->id ? $campaign->payment_title : $donation->title );?>
                 </span>
                 </div>
 
@@ -1383,8 +1383,8 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
                 <div id="campaign-select-fields" style="display: none;">
 
-                    <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector autocomplete-input" value="<?php echo $campaign->title;?>" placeholder="<?php _e('Select a campaign', 'leyka');?>">
-                    <input type="hidden" id="campaign-id" class="leyka-campaigns-select autocomplete-select" name="campaign-id" value="<?php echo $campaign->id;?>" data-campaign-payment-title-selector="#campaign-payment-title">
+                    <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector autocomplete-input" value="<?php echo esc_attr( $campaign->title );?>" placeholder="<?php _e('Select a campaign', 'leyka');?>">
+                    <input type="hidden" id="campaign-id" class="leyka-campaigns-select autocomplete-select" name="campaign-id" value="<?php echo esc_attr( $campaign->id );?>" data-campaign-payment-title-selector="#campaign-payment-title">
 
                     <div id="cancel-campaign-select" class="button"><?php _e('Cancel', 'leyka');?></div>
                 </div>
@@ -1408,10 +1408,10 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 <div class="leyka-ddata-field">
 
                     <?php if($donation->type === 'correction' || leyka_options()->opt('donors_data_editable')) {?>
-                        <input type="text" id="donor-name" name="donor-name" placeholder="<?php _e("Enter donor's name, or leave it empty for anonymous donation", 'leyka');?>" value="<?php echo $donation->donor_name;?>">
+                        <input type="text" id="donor-name" name="donor-name" placeholder="<?php _e("Enter donor's name, or leave it empty for anonymous donation", 'leyka');?>" value="<?php echo esc_attr( $donation->donor_name );?>">
                     <?php } else {?>
                         <span class="fake-input">
-                    <?php echo $donation->donor_name ? $donation->donor_name : __('Anonymous', 'leyka');?>
+                    <?php echo esc_html( $donation->donor_name ? $donation->donor_name : __('Anonymous', 'leyka') );?>
                 </span>
                     <?php }?>
 
@@ -1423,13 +1423,13 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 <div class="leyka-ddata-field">
                     <?php if($donation->type === 'correction' || leyka_options()->opt('donors_data_editable')) {?>
 
-                        <input type="text" id="donor-email" name="donor-email" placeholder="<?php _e("Enter donor's email", 'leyka');?>" value="<?php echo $donation->donor_email;?>">
+                        <input type="text" id="donor-email" name="donor-email" placeholder="<?php _e("Enter donor's email", 'leyka');?>" value="<?php echo sanitize_email( $donation->donor_email );?>">
                         <div id="donor_email-error" class="field-error"></div>
 
                     <?php } else {?>
 
                         <span class="fake-input">
-                    <?php echo $donation->donor_email ? htmlentities($donation->donor_email, ENT_QUOTES, 'UTF-8') : '&ndash;';?>
+                    <?php echo wp_kses_post( $donation->donor_email ? htmlentities($donation->donor_email, ENT_QUOTES, 'UTF-8') : '&ndash;' );?>
                 </span>
                     <?php }?>
                 </div>
@@ -1443,7 +1443,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
                         <div class="leyka-ddata-string">
 
-                            <label for="donor-<?php echo $field_id;?>"><?php echo $field_settings['title'];?>:</label>
+                            <label for="donor-<?php echo esc_attr( $field_id );?>"><?php echo esc_html( $field_settings['title'] );?>:</label>
 
                             <div class="leyka-ddata-field"><span class="fake-input">
                             <?php echo apply_filters(
@@ -1471,7 +1471,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                             ($donation->type === 'correction' || leyka_options()->opt('donors_data_editable'))
                         ) {?>
 
-                            <textarea id="donor-comment" name="donor-comment"><?php echo $donation->donor_comment;?></textarea>
+                            <textarea id="donor-comment" name="donor-comment"><?php echo esc_textarea( $donation->donor_comment ); ?></textarea>
                             <div id="donor_comment-error" class="field-error"></div>
 
                         <?php } else {?>
@@ -1498,14 +1498,14 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 <div class="leyka-ddata-field">
                     <?php if($donation->type === 'correction') {?>
 
-                        <input type="text" id="donation-amount" name="donation-amount" placeholder="<?php _e("Enter donation amount", 'leyka');?>" value="<?php echo $donation->amount;?>"> <?php echo $donation->currency_label;?>
+                        <input type="text" id="donation-amount" name="donation-amount" placeholder="<?php _e("Enter donation amount", 'leyka');?>" value="<?php echo esc_attr( $donation->amount );?>"> <?php echo esc_html( $donation->currency_label );?>
 
                         <div id="donation_amount-error" class="field-error"></div>
 
                     <?php } else {?>
 
                         <span class="fake-input">
-                    <?php echo $donation->amount ? $donation->amount.' '.$donation->currency_label : '';?>
+                    <?php echo esc_html( $donation->amount ? $donation->amount.' '.$donation->currency_label : '' );?>
                 </span>
 
                     <?php }?>
@@ -1517,7 +1517,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 <div class="leyka-ddata-field">
                     <?php if($donation->type === 'correction') {?>
 
-                        <input type="text" id="donation-amount-total" name="donation-amount-total" placeholder="<?php _e('Enter the donation total amount', 'leyka');?>" value="<?php echo $donation->amount_total;?>"> <?php echo leyka_get_currency_label();?><br>
+                        <input type="text" id="donation-amount-total" name="donation-amount-total" placeholder="<?php _e('Enter the donation total amount', 'leyka');?>" value="<?php echo esc_attr( $donation->amount_total ); ?>"> <?php echo leyka_get_currency_label();?><br>
 
                         <small class="field-help howto">
                             <?php
@@ -1530,7 +1530,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                     <?php } else {?>
 
                         <span class="fake-input">
-                    <?php echo $donation->amount_total ? $donation->amount_total.' '.$donation->currency_label : '';?>
+                    <?php echo esc_html( $donation->amount_total ? $donation->amount_total.' '.$donation->currency_label : '' );?>
                 </span>
 
                     <?php }?>
@@ -1543,7 +1543,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 <label><?php echo sprintf(__('%s to %s exchange rate', 'leyka'),  strtoupper($donation->main_currency_id), strtoupper($donation->currency_id)); ?>:</label>
                 <div class="leyka-ddata-field">
                     <span class="fake-input">
-                        <?php echo $donation->main_currency_rate;?>
+                        <?php echo esc_html( $donation->main_currency_rate );?>
                     </span>
                 </div>
             </div>
@@ -1553,14 +1553,14 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 <div class="leyka-ddata-field">
                     <?php if($donation->type === 'correction') {?>
 
-                        <input type="text" id="donation-main-currency-amount" name="donation-main-currency-amount" placeholder="<?php _e("Enter donation amount in main currency", 'leyka');?>" value="<?php echo $donation->main_currency_amount;?>"> <?php echo $donation->main_currency;?>
+                        <input type="text" id="donation-main-currency-amount" name="donation-main-currency-amount" placeholder="<?php _e("Enter donation amount in main currency", 'leyka');?>" value="<?php echo esc_attr( $donation->main_currency_amount );?>"> <?php echo esc_html( $donation->main_currency );?>
 
                         <div id="donation_main_currency_amount-error" class="field-error"></div>
 
                     <?php } else {?>
 
                         <span class="fake-input">
-                            <?php echo $donation->main_currency_amount ? $donation->main_currency_amount.' '.strtolower($donation->main_currency)  : '';?>
+                            <?php echo esc_html( $donation->main_currency_amount ? $donation->main_currency_amount.' '.strtolower($donation->main_currency)  : '' );?>
                         </span>
 
                     <?php }?>
@@ -1573,7 +1573,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 <div class="leyka-ddata-field">
                     <?php if($donation->type === 'correction') {?>
 
-                        <input type="text" id="donation-main-currency-amount-total" name="donation-main-currency-amount-total" placeholder="<?php _e('Enter the donation total amount in main currency', 'leyka');?>" value="<?php echo $donation->main_currency_amount_total;?>"> <?php echo leyka_get_currency_label();?><br>
+                        <input type="text" id="donation-main-currency-amount-total" name="donation-main-currency-amount-total" placeholder="<?php _e('Enter the donation total amount in main currency', 'leyka');?>" value="<?php echo esc_attr( $donation->main_currency_amount_total );?>"> <?php echo leyka_get_currency_label();?><br>
 
                         <small class="field-help howto">
                             <?php
@@ -1585,7 +1585,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                     <?php } else {?>
 
                         <span class="fake-input">
-                            <?php echo $donation->main_currency_amount_total ? $donation->main_currency_amount_total.' '.strtolower($donation->main_currency) : '';?>
+                            <?php echo esc_html( $donation->main_currency_amount_total ? $donation->main_currency_amount_total.' '.strtolower($donation->main_currency) : '' );?>
                         </span>
 
                     <?php }?>
@@ -1611,9 +1611,9 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                                 $pm_list = $gateway->get_payment_methods();
                                 if($pm_list) {?>
 
-                                    <optgroup label="<?php echo $gateway->name;?>">
+                                    <optgroup label="<?php echo esc_attr( $gateway->name );?>">
                                         <?php foreach($pm_list as $pm) {?>
-                                            <option value="<?php echo $pm->full_id;?>" <?php echo $donation->gateway_id === $gateway->id && $donation->pm_id === $pm->id ? 'selected="selected"' : '';?>><?php echo $pm->name;?></option>
+                                            <option value="<?php echo esc_attr( $pm->full_id );?>" <?php echo wp_kses_post( $donation->gateway_id === $gateway->id && $donation->pm_id === $pm->id ? 'selected="selected"' : '' );?>><?php echo esc_html( $pm->name );?></option>
                                         <?php }?>
                                     </optgroup>
 
@@ -1621,11 +1621,11 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
                             <?php }?>
 
-                            <option value="custom" <?php echo ($donation->gw_id == 'correction' || !$donation->gw_id) && $donation->pm_id ? 'selected="selected"' : '';?>><?php _e('Custom payment info', 'leyka');?></option>
+                            <option value="custom" <?php echo wp_kses_post( ($donation->gw_id == 'correction' || !$donation->gw_id) && $donation->pm_id ? 'selected="selected"' : '' );?>><?php _e('Custom payment info', 'leyka');?></option>
 
                         </select>
 
-                        <input type="text" id="custom-payment-info" name="custom-payment-info" placeholder="<?php _e('Enter the donation source info', 'leyka');?>" <?php echo ($donation->gw_id == 'correction' || !$donation->gw_id) && $donation->pm_id ? '' : 'style="display: none;"';?> value="<?php echo $donation->gw_id == 'correction' || !$donation->gw_id ? $donation->pm_id : '';?>">
+                        <input type="text" id="custom-payment-info" name="custom-payment-info" placeholder="<?php _e('Enter the donation source info', 'leyka');?>" <?php echo ($donation->gw_id == 'correction' || !$donation->gw_id) && $donation->pm_id ? '' : 'style="display: none;"';?> value="<?php echo esc_attr( $donation->gw_id == 'correction' || !$donation->gw_id ? $donation->pm_id : '' ); ?>">
 
                     <?php } else {?>
 
@@ -1633,10 +1633,10 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 <?php $pm = leyka_get_pm_by_id($donation->pm_full_id, true);
                 $gateway = leyka_get_gateway_by_id($donation->gateway_id);
 
-                echo ($pm ? $pm->label : __('Unknown payment method', 'leyka'))
-                    .' ('.($gateway ? $gateway->label : __('unknown gateway', 'leyka')).')';?>
+                echo esc_html( ($pm ? $pm->label : __('Unknown payment method', 'leyka'))
+                    .' ('.($gateway ? $gateway->label : __('unknown gateway', 'leyka')).')' );?>
 			    </span>
-                    <?php }?>
+                    <?php } ?>
                 </div>
 
             </div>
@@ -1644,13 +1644,13 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             <div class="leyka-ddata-string">
                 <label><?php _e('Payment type', 'leyka');?>:</label>
                 <div class="leyka-ddata-field">
-                    <span class="fake-input"><?php echo $donation->type_label;?></span>
+                    <span class="fake-input"><?php echo esc_html( $donation->type_label );?></span>
                 </div>
             </div>
 
             <?php $gateway = leyka_get_gateway_by_id($donation->gateway_id);
             if($gateway && method_exists($gateway, 'display_donation_specific_data_fields')) { ?>
-                <div class="leyka-ddata-string"><?php echo $gateway->display_donation_specific_data_fields($donation); ?></div>
+                <div class="leyka-ddata-string"><?php echo wp_kses_post( $gateway->display_donation_specific_data_fields($donation) ); ?></div>
             <?php }?>
 
             <?php if ($donation->is_init_recurring_donation || $donation->init_recurring_donation_id) { ?>
@@ -1666,8 +1666,8 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
                         <label><?php _e('Initial donation of the recurring subscription', 'leyka');?>:</label>
                         <div class="leyka-ddata-field">
-                            <a href="<?php echo admin_url('admin.php?page=leyka_donation_info&donation='.$donation->init_recurring_donation_id);?>">
-                                #<?php echo $donation->init_recurring_donation_id;?>
+                            <a href="<?php echo esc_url( admin_url('admin.php?page=leyka_donation_info&donation='.$donation->init_recurring_donation_id) );?>">
+                                #<?php echo esc_attr( $donation->init_recurring_donation_id ); ?>
                             </a>
                         </div>
 
@@ -1682,11 +1682,11 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 <div class="leyka-ddata-field">
                     <?php if($donation->type === 'correction') {?>
 
-                        <input type="text" id="donation-date-view" class="leyka-datepicker" value="<?php echo $donation->date_label;?>" data-min-date="-5Y" data-max-date="+1Y" data-alt-field="#donation-date" data-alt-format="yy-mm-dd">
+                        <input type="text" id="donation-date-view" class="leyka-datepicker" value="<?php echo esc_attr( $donation->date_label );?>" data-min-date="-5Y" data-max-date="+1Y" data-alt-field="#donation-date" data-alt-format="yy-mm-dd">
                         <input type="hidden" id="donation-date" name="donation_date" value="<?php echo date('Y-m-d', $donation->date_timestamp);?>">
 
                     <?php } else {?>
-                        <span class="fake-input"><?php echo $donation->date_time_label;?></span>
+                        <span class="fake-input"><?php echo esc_html( $donation->date_time_label );?></span>
                     <?php }?>
                 </div>
             </div>
@@ -1702,7 +1702,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                     $subscription_status = sprintf(__('On <a href="%s">campaign</a> news', 'leyka'), admin_url('post.php?post='.$donation->campaign_id.'&action=edit'));
                 }
 
-                echo $subscription_status;?>
+                echo wp_kses_post( $subscription_status ); ?>
                 </span>
                 </div>
             </div>
@@ -1710,7 +1710,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             <div class="leyka-ddata-string">
                 <label><?php _e('Donor subscription email', 'leyka');?>:</label>
                 <div class="leyka-ddata-field">
-                    <span class="fake-input"><?php echo $donation->donor_subscription_email ? $donation->donor_subscription_email : __('none');?></span>
+                    <span class="fake-input"><?php echo esc_html( $donation->donor_subscription_email ? $donation->donor_subscription_email : __('none') );?></span>
                 </div>
             </div>
 
@@ -1760,12 +1760,12 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 <div class="leyka-error-description-wrapper">
 
                     <div class="leyka-error-description">
-                        <?php echo $error_description; ?>
+                        <?php echo wp_kses_post( $error_description ); ?>
                     </div>
 
                     <?php if($donation->recurring_subscription_error_id !== 'L-2001') { ?>
 
-                        <a class="leyka-error-link" href="<?php echo admin_url('admin.php?page=leyka_donation_info&donation='.($last_donation ? $last_donation->id : $donation->id)); ?>">
+                        <a class="leyka-error-link" href="<?php echo esc_url( admin_url('admin.php?page=leyka_donation_info&donation=' . ($last_donation ? $last_donation->id : $donation->id ) ) ); ?>">
                             <?php _e('To the donation page', 'leyka') ?>
                         </a>
 
@@ -1777,12 +1777,12 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         <?php } ?>
 
-        <div class="leyka-subscription-status leyka-subscription-<?php echo $donation->recurring_subscription_status; ?> recurring-is-active-field">
+        <div class="leyka-subscription-status leyka-subscription-<?php echo esc_attr( $donation->recurring_subscription_status ); ?> recurring-is-active-field">
 
-            <input type="checkbox" id="<?php echo $gateway->id; ?>-recurring-is-active" name="<?php echo $gateway->id; ?>-recurring-is-active" <?php echo $donation->recurring_is_active ? 'checked="true"' : ''; echo $subscription_checkbox_is_interactive ? '' : 'disabled="true"' ?> data-donation-id="<?php echo $donation_id; ?>">
+            <input type="checkbox" id="<?php echo esc_attr( $gateway->id ); ?>-recurring-is-active" name="<?php echo esc_attr( $gateway->id ); ?>-recurring-is-active" <?php echo wp_kses_post( $donation->recurring_is_active ? 'checked="true"' : '' ); echo wp_kses_post( $subscription_checkbox_is_interactive ? '' : 'disabled="true"' ); ?> data-donation-id="<?php echo esc_attr( $donation_id ); ?>">
             <span><?php _e('Subscription is active', 'leyka'); ?></span>
             <?php if($subscription_checkbox_is_interactive === false) { ?>
-                <img class="has-tooltip leyka-tooltip-align-left" src="<?php echo LEYKA_PLUGIN_BASE_URL; ?>/img/icon-info.svg" title="<?php _e('Subscription status is managed by the payment operator. You can disable the subscription in your personal account or by contacting the support of the payment operator.','leyka') ?>">
+                <img class="has-tooltip leyka-tooltip-align-left" src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL ); ?>/img/icon-info.svg" title="<?php _e('Subscription status is managed by the payment operator. You can disable the subscription in your personal account or by contacting the support of the payment operator.','leyka') ?>">
             <?php } ?>
 
         </div>
@@ -1844,7 +1844,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                         <span class="campaign-name"><?php echo htmlentities($campaign->title, ENT_QUOTES, 'UTF-8');?></span>
                         <span class="campaign-actions">
                             <a href="<?php echo admin_url('/post.php?action=edit&post='.$campaign->id);?>"><?php _e('Edit campaign', 'leyka');?></a>
-                            <a href="<?php echo $campaign->url;?>" target="_blank" rel="noopener noreferrer"><?php _e('Preview campaign', 'leyka');?></a>
+                            <a href="<?php echo esc_url( $campaign->url );?>" target="_blank" rel="noopener noreferrer"><?php _e('Preview campaign', 'leyka');?></a>
                         </span>
                     </span>
 
@@ -1861,7 +1861,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
                     <div class="leyka-ddata-field">
                 <span id="campaign-payment-title" class="text-line">
-                    <?php echo $campaign->id ? $campaign->payment_title : $donation->title;?>
+                    <?php echo esc_html( $campaign->id ? $campaign->payment_title : $donation->title ); ?>
                 </span>
                     </div>
 
@@ -1882,10 +1882,10 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                     <div class="leyka-ddata-field">
 
                         <?php if($donation->type === 'correction' || leyka_options()->opt('donors_data_editable')) {?>
-                            <input type="text" id="donor-name" name="donor-name" placeholder="<?php _e("Enter donor's name, or leave it empty for anonymous donation", 'leyka');?>" value="<?php echo $donation->donor_name;?>">
+                            <input type="text" id="donor-name" name="donor-name" placeholder="<?php _e("Enter donor's name, or leave it empty for anonymous donation", 'leyka');?>" value="<?php echo esc_attr( $donation->donor_name );?>">
                         <?php } else {?>
                             <span class="fake-input">
-                    <?php echo $donation->donor_name ? $donation->donor_name : __('Anonymous', 'leyka');?>
+                    <?php echo esc_html( $donation->donor_name ? $donation->donor_name : __('Anonymous', 'leyka') );?>
                 </span>
                         <?php }?>
 
@@ -1897,13 +1897,13 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                     <div class="leyka-ddata-field">
                         <?php if($donation->type === 'correction' || leyka_options()->opt('donors_data_editable')) {?>
 
-                            <input type="text" id="donor-email" name="donor-email" placeholder="<?php _e("Enter donor's email", 'leyka');?>" value="<?php echo $donation->donor_email;?>">
+                            <input type="text" id="donor-email" name="donor-email" placeholder="<?php _e("Enter donor's email", 'leyka');?>" value="<?php echo sanitize_email( $donation->donor_email );?>">
                             <div id="donor_email-error" class="field-error"></div>
 
                         <?php } else {?>
 
                             <span class="fake-input">
-                    <?php echo $donation->donor_email ? htmlentities($donation->donor_email, ENT_QUOTES, 'UTF-8') : '&ndash;';?>
+                    <?php echo wp_kses_post( $donation->donor_email ? htmlentities($donation->donor_email, ENT_QUOTES, 'UTF-8') : '&ndash;' );?>
                 </span>
                         <?php }?>
                     </div>
@@ -1917,7 +1917,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
                             <div class="leyka-ddata-string">
 
-                                <label for="donor-<?php echo $field_id;?>"><?php echo $field_settings['title'];?>:</label>
+                                <label for="donor-<?php echo esc_attr( $field_id );?>"><?php echo esc_html( $field_settings['title'] );?>:</label>
 
                                 <div class="leyka-ddata-field"><span class="fake-input">
                             <?php echo apply_filters(
@@ -1945,7 +1945,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                                 ($donation->type === 'correction' || leyka_options()->opt('donors_data_editable'))
                             ) {?>
 
-                                <textarea id="donor-comment" name="donor-comment"><?php echo $donation->donor_comment;?></textarea>
+                                <textarea id="donor-comment" name="donor-comment"><?php echo esc_textarea( $donation->donor_comment );?></textarea>
                                 <div id="donor_comment-error" class="field-error"></div>
 
                             <?php } else {?>
@@ -1977,8 +1977,8 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                     if($status === 'trash') {
                         continue;
                     }?>
-                <option value="<?php echo $status;?>" <?php echo ($donation && $donation->status === $status) || ($is_adding_page && $status === 'funded') ? 'selected' : '';?>>
-                    <?php echo $label;?>
+                <option value="<?php echo esc_attr( $status );?>" <?php echo wp_kses_post( ($donation && $donation->status === $status) || ($is_adding_page && $status === 'funded') ? 'selected' : '' );?>>
+                    <?php echo esc_html( $label );?>
                 </option>
                 <?php }?>
             </select>
@@ -1989,7 +1989,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             <?php if( !$is_adding_page ) {?>
 
 				<div class="delete-action">
-                    <a class="submitdelete deletion" href="<?php echo self::get_donation_delete_link($donation);?>"><?php echo !EMPTY_TRASH_DAYS ? __('Delete Permanently') : __('Move to Trash');?></a>
+                    <a class="submitdelete deletion" href="<?php echo esc_url( self::get_donation_delete_link($donation) );?>"><?php echo !EMPTY_TRASH_DAYS ? __('Delete Permanently') : __('Move to Trash');?></a>
 				</div>
 
             <?php }?>
@@ -2056,32 +2056,32 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 			<div class="leyka-ddata-string donor has-thanks">
                 <label>
                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/admin-boxes/email-action-blue.svg" alt="email-action">
-                    <span><?php echo __('Email notification to the donor has been sent', 'leyka');?></span>
+                    <span><?php esc_html_e('Email notification to the donor has been sent', 'leyka');?></span>
                 </label>
                 <div class="leyka-ddata-field"><?php echo date(get_option('date_format').' H:i', $donation->donor_email_date);?></div>
             </div>
 		<?php } else {?>
-			<div class="leyka-ddata-string leyka-no-donor-thanks donor no-thanks" data-donation-id="<?php echo $donation->id;?>" data-nonce="<?php echo wp_create_nonce('leyka_donor_email');?>">
+			<div class="leyka-ddata-string leyka-no-donor-thanks donor no-thanks" data-donation-id="<?php echo esc_attr( $donation->id );?>" data-nonce="<?php echo wp_create_nonce('leyka_donor_email');?>">
                 <label>
-                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/admin-boxes/email-action-gray.svg" alt="email-action">
+                    <img src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL ); ?>img/admin-boxes/email-action-gray.svg" alt="email-action">
                     <span><?php _e("Email notification to the donor hasn't been sent", 'leyka');?></span>
                 </label>
-                <div class="leyka-ddata-field"><div class='send-donor-thanks'><?php echo __('Send it now', 'leyka'); ?></div></div>
+                <div class="leyka-ddata-field"><div class='send-donor-thanks'><?php esc_html_e('Send it now', 'leyka'); ?></div></div>
 			</div>
 		<?php }
 
         if($manager_notification_date) {?>
             <div class="leyka-ddata-string donor has-thanks">
                 <label>
-                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/admin-boxes/email-action-blue.svg" alt="email-action">
+                    <img src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL ); ?>img/admin-boxes/email-action-blue.svg" alt="email-action">
                     <span><?php _e("Donation managers' notifications have been sent", 'leyka');?></span>
                 </label>
                 <div class="leyka-ddata-field"><?php echo date(get_option('date_format').' H:i', $manager_notification_date);?></div>
             </div>
         <?php } else {?>
-            <div class="leyka-ddata-string leyka-no-donor-thanks donor no-thanks" data-donation-id="<?php echo $donation->id;?>" data-nonce="<?php echo wp_create_nonce('leyka_donor_email');?>">
+            <div class="leyka-ddata-string leyka-no-donor-thanks donor no-thanks" data-donation-id="<?php echo esc_attr( $donation->id );?>" data-nonce="<?php echo wp_create_nonce('leyka_donor_email');?>">
                 <label>
-                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/admin-boxes/email-action-gray.svg" alt="email-action">
+                    <img src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL ); ?>img/admin-boxes/email-action-gray.svg" alt="email-action">
                     <span><?php _e("Donation managers' notification emails haven't been sent", 'leyka'); ?></span>
                 </label>
             </div>
@@ -2119,7 +2119,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                         <?php }?>
                         </ul>
                     <?php } else {
-                        echo $value;
+                        echo wp_kses_post( $value );
                     }?>
                 </div>
 
@@ -2141,7 +2141,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
         $donation_id = empty($_GET['donation']) ? false : absint($_GET['donation']);?>
 
-        <table id="donations-data-table" class="leyka-data-table leyka-donations-list recurring-subscription-donations-table" data-init-recurring-donation-id="<?php echo $donation_id;?>">
+        <table id="donations-data-table" class="leyka-data-table leyka-donations-list recurring-subscription-donations-table" data-init-recurring-donation-id="<?php echo esc_attr( $donation_id );?>">
 
             <thead>
                 <tr>

@@ -11,7 +11,7 @@ $yandex_aviso_url = site_url('/leyka/service/yandex/payment_aviso/');?>
 
 <p><?php esc_html_e("Let's start the technical connection for Yandex.Kassa and Leyka.", 'leyka');?></p>
 
-<div class="<?php echo $this->field_type;?> custom-block-captioned-screens">
+<div class="<?php echo esc_attr( $this->field_type );?> custom-block-captioned-screens">
 
     <div class="enum-separated-block">
         <div class="block-separator"><div></div></div>
@@ -24,12 +24,12 @@ $yandex_aviso_url = site_url('/leyka/service/yandex/payment_aviso/');?>
 
                     <div class="field">
                         <label>CheckURL</label>
-                        <p class="field-text leyka-wizard-copy2clipboard"><?php echo $yandex_check_url;?></p>
+                        <p class="field-text leyka-wizard-copy2clipboard"><?php echo esc_attr( $yandex_check_url );?></p>
                     </div>
 
                     <div class="field">
                         <label>AvisoURL</label>
-                        <p class="field-text leyka-wizard-copy2clipboard"><?php echo $yandex_aviso_url;?></p>
+                        <p class="field-text leyka-wizard-copy2clipboard"><?php echo esc_attr( $yandex_aviso_url );?></p>
                     </div>
 
                 </div>
@@ -43,7 +43,7 @@ $yandex_aviso_url = site_url('/leyka/service/yandex/payment_aviso/');?>
     <div class="enum-separated-block">
         <div class="block-separator"><div></div></div>
         <div class="caption"><?php _e('Enter in the <strong>"Address for the register emails"</strong>', 'leyka');?></div>
-        <div class="body value leyka-wizard-copy2clipboard"><b><?php echo $admin_email;?></b></div>
+        <div class="body value leyka-wizard-copy2clipboard"><b><?php echo esc_attr( $admin_email );?></b></div>
     </div>
 
     <div class="enum-separated-block">
@@ -55,11 +55,11 @@ $yandex_aviso_url = site_url('/leyka/service/yandex/payment_aviso/');?>
         </div>
 
         <div class="body value <?php if( !$shop_password ) {?>no-password<?php }?> leyka-wizard-copy2clipboard">
-            <b <?php if( !$shop_password ) {?>style="display: none;"<?php }?>><?php echo $shop_password;?></b>
+            <b <?php if( !$shop_password ) {?>style="display: none;"<?php }?>><?php echo esc_attr( $shop_password );?></b>
             <?php if( !$shop_password ) {?>
             <input type="button" class="button button-secondary" id="yandex-generate-shop-password" value="<?php esc_attr_e('Generate the "shopPassword"', 'leyka');?>">
             <?php }?>
-            <input type="hidden" name="leyka_yandex_shop_password" value="<?php echo $shop_password;?>">
+            <input type="hidden" name="leyka_yandex_shop_password" value="<?php echo esc_attr( $shop_password );?>">
         </div>
 
     </div>

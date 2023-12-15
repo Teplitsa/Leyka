@@ -52,10 +52,10 @@ $data = Leyka_Recurring_Stats_Portlet_Controller::get_instance()->get_template_d
 
     <?php foreach($data['subscriptions_stats'] as $status_id => $status_data) {?>
 
-        <div class="portlet-column leyka-subscriptions-<?php echo $status_id; ?> >">
+        <div class="portlet-column leyka-subscriptions-<?php echo esc_attr( $status_id ); ?> >">
             <div class="row-data">
-                <span><?php echo $status_data['label'];?> (<?php echo $status_data['count'];?>)</span>
-                <span class="percent <?php echo (int)$status_data['delta_percent'] < 0 ? 'negative' : ((int)$status_data['delta_percent'] > 0 ? 'positive' : '');?>"><?php echo str_replace(['+', '-'], '', $status_data['delta_percent']);?></span>
+                <span><?php echo esc_html( $status_data['label'] ); ?> (<?php echo esc_html( $status_data['count'] ); ?>)</span>
+                <span class="percent <?php echo esc_attr( (int)$status_data['delta_percent'] < 0 ? 'negative' : ((int)$status_data['delta_percent'] > 0 ? 'positive' : '' ) );?>"><?php echo str_replace(['+', '-'], '', $status_data['delta_percent']);?></span>
             </div>
         </div>
 

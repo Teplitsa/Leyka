@@ -241,9 +241,9 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
         <div id="<?php echo esc_attr( $block->id );?>" class="settings-block text-block">
             
             <?php if($block->has_custom_templated() || preg_match("/<p>/", $content)):?>
-                <?php echo wp_kses_post( $content ); ?>
+                <?php echo wp_kses( $content, 'content' ); ?>
             <?php else: ?>
-                <p><?php echo wp_kses_post( $content ); ?></p>
+                <p><?php echo wp_kses( $content, 'content' ); ?></p>
             <?php endif?>
         </div>
 

@@ -175,3 +175,4 @@ $current_page = $_GET['page'];
     </div>
 </div>
 <div class="clear"></div>
+

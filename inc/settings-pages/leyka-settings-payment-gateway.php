@@ -15,7 +15,7 @@ if( !$gateway ) {?>
     <p class="error"><?php _e('Unknown gateway.', 'leyka');?></p>
 <?php } else { // Gateway settings area ?>
 
-<div class="main-area single-gateway-settings gateway-<?php echo $gateway->id;?>">
+<div class="main-area single-gateway-settings gateway-<?php echo esc_attr( $gateway->id );?>">
 
     <div class="gateway-settings-header">
 
@@ -23,17 +23,17 @@ if( !$gateway ) {?>
 
             <?php leyka_show_gateway_logo($gateway, true, 'gateway-header-element');?>
 
-            <h2 class="gateway-header-element"><?php echo $gateway->title;?></h2>
+            <h2 class="gateway-header-element"><?php echo esc_html( $gateway->title );?></h2>
 
             <?php if($gateway->registration_url) {?>
-            <a href="<?php echo $gateway->registration_url;?>" class="gateway-link gateway-registration-link" target="_blank">
-                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-outer-link.svg" alt="">
+            <a href="<?php echo esc_url( $gateway->registration_url );?>" class="gateway-link gateway-registration-link" target="_blank">
+                <img src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL ); ?>img/icon-outer-link.svg" alt="">
             </a>
             <?php }?>
 
             <?php if($gateway->docs_url) {?>
-            <a href="<?php echo $gateway->docs_url;?>" class="gateway-link gateway-docs-link" target="_blank">
-                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-docs-link.svg" alt="">
+            <a href="<?php echo esc_url( $gateway->docs_url ); ?>" class="gateway-link gateway-docs-link" target="_blank">
+                <img src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL ); ?>img/icon-docs-link.svg" alt="">
             </a>
             <?php }?>
 
@@ -53,7 +53,7 @@ if( !$gateway ) {?>
 
             $option_info = leyka_options()->get_info_of($option_id);?>
 
-            <div id="<?php echo $option_id;?>" class="settings-block option-block type-<?php echo $option_info['type'];?>">
+            <div id="<?php echo esc_attr( $option_id ); ?>" class="settings-block option-block type-<?php echo esc_attr( $option_info['type'] );?>">
                 <?php do_action("leyka_render_{$option_info['type']}", $option_id, $option_info);?>
                 <div class="field-errors"></div>
             </div>
@@ -62,13 +62,13 @@ if( !$gateway ) {?>
 
         foreach($gateway->get_payment_methods() as $pm) { /** @var $pm Leyka_Payment_Method */?>
 
-            <div id="pm-<?php echo $pm->full_id;?>" class="pm-settings" <?php echo in_array($pm->full_id, $pm_available) ? '' : 'style="display:none;"';?>>
+            <div id="pm-<?php echo esc_attr( $pm->full_id );?>" class="pm-settings" <?php echo in_array($pm->full_id, $pm_available) ? '' : 'style="display:none;"';?>>
 
                 <?php foreach($pm->get_pm_options_names() as $option_id) {
 
                     $option_info = leyka_options()->get_info_of($option_id);?>
 
-                    <div id="<?php echo $option_id;?>" class="settings-block option-block type-<?php echo $option_info['type'];?>">
+                    <div id="<?php echo esc_attr( $option_id );?>" class="settings-block option-block type-<?php echo esc_attr( $option_info['type'] );?>">
                         <?php do_action("leyka_render_{$option_info['type']}", $option_id, $option_info);?>
                         <div class="field-errors"></div>
                     </div>
@@ -80,7 +80,7 @@ if( !$gateway ) {?>
         <?php }
 
         if($gateway->has_wizard) {?>
-            <a class="gateway-header-element gateway-wizard-link" href="<?php echo $gateway->wizard_url;?>" title="<?php esc_attr_e('Open the gateway setup wizard', 'leyka');?>">
+            <a class="gateway-header-element gateway-wizard-link" href="<?php echo esc_url( $gateway->wizard_url );?>" title="<?php esc_attr_e('Open the gateway setup wizard', 'leyka');?>">
                 <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-wizard.svg" alt=""><?php _e('Step-by-step setup', 'leyka');?>
             </a>
         <?php }?>
@@ -99,13 +99,13 @@ if( !$gateway ) {?>
 
                         <?php foreach($gateway->supported_currencies_all as $currency) {?>
 
-                            <div id="<?php echo $gateway->id."-".$currency;?>" class="settings-block option-block type-checkbox">
+                            <div id="<?php echo esc_attr( $gateway->id."-".$currency );?>" class="settings-block option-block type-checkbox">
 
-                                <div id="<?php echo $gateway->id."-".$currency.'-wrapper';?>">
+                                <div id="<?php echo esc_attr( $gateway->id."-".$currency.'-wrapper');?>">
 
                                     <label>
                                         <span class="field-component field">
-                                            <input type="checkbox" id="<?php echo $gateway->id."-".$currency;?>" class="gw-active-currencies" name="leyka_<?php echo $gateway->id?>_active_currencies[]" value="<?php echo $currency;?>" data-pm-label="<?php echo $gateway->id."-".$currency;?>" data-pm-label-backend="<?php echo $currency;?>" <?php echo in_array($currency, $active_currencies) ? 'checked="checked"' : '';?>> <?php echo strtoupper($currency);?>
+                                            <input type="checkbox" id="<?php echo esc_attr( $gateway->id."-".$currency );?>" class="gw-active-currencies" name="leyka_<?php echo esc_attr( $gateway->id ); ?>_active_currencies[]" value="<?php echo esc_attr( $currency );?>" data-pm-label="<?php echo esc_attr( $gateway->id."-".$currency );?>" data-pm-label-backend="<?php echo esc_attr( $currency );?>" <?php echo in_array($currency, $active_currencies) ? 'checked="checked"' : '';?>> <?php echo strtoupper($currency);?>
                                         </span>
                                     </label>
 
@@ -140,28 +140,28 @@ if( !$gateway ) {?>
 
                     <?php foreach($pm_list as $pm) { /** @var $pm Leyka_Payment_Method */ ?>
 
-                        <div id="<?php echo $pm->full_id;?>" class="settings-block option-block type-checkbox">
+                        <div id="<?php echo esc_attr( $pm->full_id );?>" class="settings-block option-block type-checkbox">
 
-                            <div id="<?php echo $pm->full_id.'-wrapper';?>">
+                            <div id="<?php echo esc_attr( $pm->full_id.'-wrapper');?>">
 
                                 <label>
                             <span class="field-component field">
-                                <input type="checkbox" id="<?php echo $pm->full_id;?>" class="pm-available" name="leyka_pm_available[]" value="<?php echo $pm->full_id;?>" data-pm-label="<?php echo $pm->title_backend;?>" data-pm-label-backend="<?php echo $pm->label_backend;?>" <?php echo in_array($pm->full_id, $pm_available) ? 'checked="checked"' : '';?>> <?php echo $pm->title_backend;?>
+                                <input type="checkbox" id="<?php echo esc_attr( $pm->full_id );?>" class="pm-available" name="leyka_pm_available[]" value="<?php echo esc_attr( $pm->full_id );?>" data-pm-label="<?php echo esc_attr( $pm->title_backend );?>" data-pm-label-backend="<?php echo esc_attr( $pm->label_backend );?>" <?php echo in_array($pm->full_id, $pm_available) ? 'checked="checked"' : '';?>> <?php echo esc_html( $pm->title_backend );?>
                             </span>
                                 </label>
 
                                 <?php if($pm->description) {?>
                                     <span class="field-q">
-                            <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
-                            <span class="field-q-tooltip"><?php echo $pm->description;?></span>
+                            <img src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL ); ?>img/icon-q.svg" alt="">
+                            <span class="field-q-tooltip"><?php echo wp_kses_post( $pm->description );?></span>
                         </span>
                                 <?php }?>
 
                             </div>
 
-                            <div id="<?php echo $pm->full_id.'-commission-wrapper';?>" class="pm-commission-wrapper" <?php echo in_array($pm->full_id, $pm_available) ? '' : 'style="display:none;"';?>>
+                            <div id="<?php echo esc_attr( $pm->full_id.'-commission-wrapper');?>" class="pm-commission-wrapper" <?php echo in_array($pm->full_id, $pm_available) ? '' : 'style="display:none;"';?>>
                                 <label>
-                                    <input type="number" class="leyka-commission-field" name="leyka_commission[<?php echo $pm->full_id;?>]" value="<?php echo empty($commissions[$pm->full_id]) ? '' : (float)$commissions[$pm->full_id];?>" step="0.01" min="0.0" max="100.0" id="leyka_commission_<?php echo $pm->full_id;?>" placeholder="<?php esc_attr_e('Commission size', 'leyka');?>">
+                                    <input type="number" class="leyka-commission-field" name="leyka_commission[<?php echo esc_attr( $pm->full_id );?>]" value="<?php echo empty($commissions[$pm->full_id]) ? '' : (float)$commissions[$pm->full_id];?>" step="0.01" min="0.0" max="100.0" id="leyka_commission_<?php echo esc_attr( $pm->full_id );?>" placeholder="<?php esc_attr_e('Commission size', 'leyka');?>">
                                 </label>%
                             </div>
 
@@ -180,7 +180,7 @@ if( !$gateway ) {?>
 
         <a href="#" class="gateway-turn-off"><?php _e('Turn off the gateway', 'leyka');?></a>
 
-        <input type="submit" name="<?php echo "leyka_settings_{$_GET['stage']}_submit";?>" value="<?php esc_attr_e('Save settings', 'leyka');?>" class="button-primary">
+        <input type="submit" name="leyka_settings_<?php echo esc_attr( $_GET['stage'] ); ?>_submit" value="<?php esc_attr_e('Save settings', 'leyka');?>" class="button-primary">
 
     </div>
 

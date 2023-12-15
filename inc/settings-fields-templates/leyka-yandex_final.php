@@ -14,7 +14,7 @@ $campaigns = get_posts([
 $campaign_id = count($campaigns) ? $campaigns[0] : null;
 $campaign_url = $campaign_id ? get_the_permalink($campaign_id) : null;?>
 
-<div class="<?php echo $this->field_type;?>">
+<div class="<?php echo esc_attr( $this->field_type );?>">
 
 <?php if($campaign_id) {?>
     <p><?php esc_html_e('Proceed to your campaign page to test it out.', 'leyka');?></p>
@@ -24,7 +24,7 @@ $campaign_url = $campaign_id ? get_the_permalink($campaign_id) : null;?>
 
     <div class="final-button">
         <?php if($campaign_id) {?>
-            <a class="step-next button button-primary" href="<?php echo $campaign_url;?>" target="_blank"><?php esc_html_e('Test the campaign', 'leyka');?></a>
+            <a class="step-next button button-primary" href="<?php echo esc_url( $campaign_url );?>" target="_blank"><?php esc_html_e('Test the campaign', 'leyka');?></a>
         <?php } else {?>
             <a class="step-next button button-primary" href="<?php echo admin_url('/admin.php?page=leyka_settings_new&screen=wizard-init');?>"><?php esc_html_e('Create a campaign', 'leyka');?></a>
         <?php }?>

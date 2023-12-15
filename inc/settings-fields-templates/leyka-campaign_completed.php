@@ -14,12 +14,12 @@ $campaigns = get_posts([
 $campaign_id = count($campaigns) ? $campaigns[0] : null;
 $campaign_url = $campaign_id ? get_the_permalink($campaign_id) : null;?>
 
-<div id="<?php echo $this->id;?>" class="settings-block custom-block <?php echo $this->field_type;?>">
+<div id="<?php echo esc_attr( $this->id );?>" class="settings-block custom-block <?php echo esc_attr( $this->field_type );?>">
 <?php if(leyka_are_bank_essentials_set()) { // Bank essentials are filled
 
     $init_campaign = get_post(get_transient('leyka_init_campaign_id'));?>
 
-    <ul class="leyka-campaign-completed" data-campaign-id="<?php echo $init_campaign->ID;?>">
+    <ul class="leyka-campaign-completed" data-campaign-id="<?php echo esc_attr( $init_campaign->ID );?>">
         <li>
             <div class="item-text"><?php esc_html_e('The campaign set up by the address:', 'leyka');?></div>
             <div class="item-info"><?php echo leyka_admin_get_slug_edit_field($init_campaign);?></div>
@@ -41,7 +41,7 @@ $campaign_url = $campaign_id ? get_the_permalink($campaign_id) : null;?>
         </li>
     </ul>
 
-    <div class="<?php echo $this->field_type;?> init-final-step-go-campaign">
+    <div class="<?php echo esc_attr( $this->field_type );?> init-final-step-go-campaign">
 
     <?php if($campaign_id) {?>
         <p><?php esc_html_e('Proceed to your campaign page to test it out.', 'leyka');?></p>
@@ -51,7 +51,7 @@ $campaign_url = $campaign_id ? get_the_permalink($campaign_id) : null;?>
 
         <div class="final-button">
         <?php if($campaign_id) {?>
-            <a class="step-next button button-primary" href="<?php echo $campaign_url?>" target="_blank"><?php esc_html_e('Open the campaign page', 'leyka');?></a>
+            <a class="step-next button button-primary" href="<?php echo esc_url( $campaign_url ); ?>" target="_blank"><?php esc_html_e('Open the campaign page', 'leyka');?></a>
         <?php } else {?>
             <a class="step-next button button-primary go-back" href="<?php echo admin_url('/admin.php?page=leyka_settings_new&screen=wizard-init');?>"><?php esc_html_e('Create a campaign', 'leyka');?></a>
         <?php }?>

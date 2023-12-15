@@ -12,7 +12,7 @@
         <div class="main-col">
 
             <?php $metaboxes_area_id = 'dashboard_page_leyka_help';?>
-            <input type="hidden" class="leyka-support-metabox-area" value="<?php echo $metaboxes_area_id;?>">
+            <input type="hidden" class="leyka-support-metabox-area" value="<?php echo esc_attr( $metaboxes_area_id );?>">
 
             <?php do_meta_boxes($metaboxes_area_id, 'normal', NULL);?>
 

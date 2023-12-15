@@ -18,25 +18,25 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
 
         $extension = $this->_controller->extension;?>
 
-        <form id="leyka-options-form-<?php echo $this->_controller->id;?>" class="leyka-options-form <?php echo $this->_controller->id;?>" method="post" action="">
+        <form id="leyka-options-form-<?php echo esc_attr( $this->_controller->id);?>" class="leyka-options-form <?php echo esc_attr( $this->_controller->id );?>" method="post" action="">
 
             <div class="single-settings-header">
 
                 <div class="header-left">
 
-                    <h2 class="wp-heading-inline"><?php echo $extension->title;?></h2>
+                    <h2 class="wp-heading-inline"><?php echo esc_html( $extension->title );?></h2>
 
                     <div class="meta-data">
 
                         <div class="item activation-status">
                             <span class="item-name"><?php _e('Status:', 'leyka');?></span>
-                            <span class="item-value status-label <?php echo $extension->activation_status;?>">
+                            <span class="item-value status-label <?php echo esc_attr( $extension->activation_status );?>">
                             <?php echo mb_strtolower($extension->activation_status_label);?>
                         </span>
                         </div>
                         <div class="item extension-version">
                             <span class="item-name"><?php _e('Extension version:', 'leyka');?></span>
-                            <span class="item-value"><?php echo $extension->version;?></span>
+                            <span class="item-value"><?php echo esc_html( $extension->version );?></span>
                         </div>
                         <div class="item leyka-version">
                             <span class="item-name"><?php _e('Leyka version:', 'leyka');?></span>
@@ -47,11 +47,11 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
                             <span class="item-name"><?php _e('Author:', 'leyka');?></span>
                             <span class="item-value">
                             <?php if($extension->author_url) {?>
-                                <a href="<?php echo $extension->author_url;?>" target="_blank" class="outer-link">
-                                <?php echo $extension->author_name;?>
+                                <a href="<?php echo esc_url( $extension->author_url );?>" target="_blank" class="outer-link">
+                                <?php echo esc_html( $extension->author_name );?>
                             </a>
                             <?php } else {
-                                echo __('Author:', 'leyka').' '.$extension->author_name;
+                                echo esc_html( __('Author:', 'leyka') . ' ' . $extension->author_name );
                             }?>
                         </span>
 
@@ -59,9 +59,9 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
 
                     </div>
 
-                    <div class="extension-description"><?php echo $extension->settings_description;?></div>
+                    <div class="extension-description"><?php echo wp_kses_post( $extension->settings_description );?></div>
 
-                    <div class="common-errors <?php echo $this->_controller->has_common_errors() ? 'has-errors' : '';?>">
+                    <div class="common-errors <?php echo esc_attr( $this->_controller->has_common_errors() ? 'has-errors' : '' );?>">
                         <?php $this->render_common_errors_area();?>
                     </div>
 
@@ -71,7 +71,7 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
 
                     <div class="module-logo-wrapper">
                         <div class="module-logo extension-logo">
-                            <img src="<?php echo $extension->logo_url;?>" class="module-logo-pic extension-logo-pic" alt="">
+                            <img src="<?php echo esc_url( $extension->logo_url );?>" class="module-logo-pic extension-logo-pic" alt="">
                         </div>
                     </div>
 
@@ -79,7 +79,7 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
 
                         <?php $submit_data = $this->_controller->get_submit_data();?>
 
-                        <input type="submit" class="button <?php echo $submit_data['activation_status'] === 'active' ? 'button-secondary' : 'button-primary';?> activation-button <?php echo $submit_data['activation_status'];?>" name="<?php echo $submit_data['activation_status'] === 'active' ? 'leyka_deactivate_'.$this->_controller->id : 'leyka_activate_'.$this->_controller->id;?>" value="<?php echo $submit_data['activation_button_label'];?>">
+                        <input type="submit" class="button <?php echo esc_attr( $submit_data['activation_status'] === 'active' ? 'button-secondary' : 'button-primary' );?> activation-button <?php echo esc_attr( $submit_data['activation_status'] );?>" name="<?php echo esc_attr( $submit_data['activation_status'] === 'active' ? 'leyka_deactivate_'.$this->_controller->id : 'leyka_activate_'.$this->_controller->id );?>" value="<?php echo esc_attr( $submit_data['activation_button_label'] );?>">
 
                     </div>
 
@@ -109,12 +109,12 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
                         <?php }?>
 
                         <?php if($extension->setup_description) {?>
-                            <div class="setup-description"><?php echo $extension->setup_description;?></div>
+                            <div class="setup-description"><?php echo wp_kses_post( $extension->setup_description); ?></div>
                         <?php }
 
                         if($extension->docs_url) {?>
                             <div class="setup-user-manual-link">
-                                <a class="outer-link" href="<?php echo $extension->docs_url;?>" target="_blank">
+                                <a class="outer-link" href="<?php echo esc_url( $extension->docs_url );?>" target="_blank">
                                     <?php _e('Detailed manual', 'leyka');?>
                                 </a>
                             </div>
@@ -133,7 +133,7 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
 
     public function render_common_errors_area() {
         foreach($this->_controller->get_common_errors() as $error) { /** @var WP_Error $error */?>
-            <span><?php echo $error->get_error_message();?></span>
+            <span><?php echo wp_kses_post( $error->get_error_message() );?></span>
         <?php }
     }
 
@@ -149,7 +149,7 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
         <div class="options-form-content">
 
             <?php $metaboxes_area_id = $this->_controller->id.'-options_main_area';?>
-            <input type="hidden" class="leyka-support-metabox-area" value="<?php echo $metaboxes_area_id;?>">
+            <input type="hidden" class="leyka-support-metabox-area" value="<?php echo esc_attr( $metaboxes_area_id );?>">
 
             <?php do_meta_boxes($metaboxes_area_id, 'normal', null);?>
 
@@ -164,7 +164,7 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
     }
 
     public function render_hidden_fields() {?>
-        <input type="hidden" value="<?php echo $this->_controller->extension->id;?>" id="leyka_extension_id">
+        <input type="hidden" value="<?php echo esc_attr( $this->_controller->extension->id );?>" id="leyka_extension_id">
     <?php }
 
     public function render_submit_area() {
@@ -178,10 +178,10 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
             <span class="buttons">
 
                 <?php if($this->_controller->extension->get_options_data()) { // Show "Save" submit only if there are options ?>
-                <input type="submit" class="button button-primary button-small save-settings" name="leyka_settings_submit_<?php echo $this->_controller->id;?>" value="<?php _e('Save', 'leyka');?>">
+                <input type="submit" class="button button-primary button-small save-settings" name="leyka_settings_submit_<?php echo esc_attr( $this->_controller->id );?>" value="<?php _e('Save', 'leyka');?>">
                 <?php }?>
 
-                <input type="submit" class="button <?php echo $submit_data['activation_status'] === 'active' ? 'button-secondary' : 'button-primary';?> activation-button <?php echo $submit_data['activation_status'];?>" name="<?php echo $submit_data['activation_status'] === 'active' ? 'leyka_deactivate_'.$this->_controller->id : 'leyka_activate_'.$this->_controller->id;?>" value="<?php echo $submit_data['activation_button_label'];?>">
+                <input type="submit" class="button <?php echo esc_attr( $submit_data['activation_status'] === 'active' ? 'button-secondary' : 'button-primary' );?> activation-button <?php echo esc_attr( $submit_data['activation_status'] );?>" name="<?php echo esc_attr( $submit_data['activation_status'] === 'active' ? 'leyka_deactivate_'.$this->_controller->id : 'leyka_activate_'.$this->_controller->id );?>" value="<?php echo esc_attr( $submit_data['activation_button_label'] );?>">
             </span>
 
         </div>
@@ -193,13 +193,13 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
 
     public function render_container_block(Leyka_Container_Block $block) {?>
 
-        <div id="<?php echo $block->id;?>" class="settings-block container-block <?php echo $block->classes ? (is_array($block->classes) ? implode(' ', $block->classes) : esc_attr($block->classes)) : '';?>">
+        <div id="<?php echo esc_attr( $block->id );?>" class="settings-block container-block <?php echo esc_attr(  $block->classes ? (is_array($block->classes) ? implode(' ', $block->classes) : $block->classes) : '' );?>">
 
             <?php $entry_width = $block->entry_width ? (100.0*($block->entry_width - 0.06 * $block->entry_width)).'%' : false;
 
             foreach($block->get_content() as $sub_block) { // $sub_block_index => $sub_block ?>
 
-                <div class="container-entry" <?php echo $entry_width ? 'style="flex-basis: '.$entry_width.';"' : '';?>>
+                <div class="container-entry" <?php echo wp_kses_post( $entry_width ? 'style="flex-basis: '.$entry_width.';"' : '' );?>>
 
                 <?php if(is_a($sub_block, 'Leyka_Text_Block')) { /** @var $sub_block Leyka_Text_Block */
                     $this->render_text_block($sub_block);
@@ -219,8 +219,8 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
 
     public function render_subtitle_block(Leyka_Subtitle_Block $block) {?>
 
-        <div id="<?php echo $block->id;?>" class="settings-block subtitle-block">
-            <h2><?php echo $block->get_content();?></h2>
+        <div id="<?php echo esc_attr( $block->id );?>" class="settings-block subtitle-block">
+            <h2><?php echo wp_kses_post( $block->get_content() );?></h2>
         </div>
 
     <?php }
@@ -229,8 +229,8 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
 
         $content = $block->get_content();?>
 
-        <div id="<?php echo $block->id;?>" class="settings-block text-block">
-            <?php echo $block->has_custom_templated() || preg_match('/<p>/', $content) ? $content : '<p>'.$content.'</p>';?>
+        <div id="<?php echo esc_attr( $block->id );?>" class="settings-block text-block">
+            <?php echo wp_kses_post( $block->has_custom_templated() || preg_match('/<p>/', $content) ? $content : '<p>'.$content.'</p>' );?>
         </div>
 
     <?php }
@@ -239,13 +239,13 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
 
         $option_info = leyka_options()->get_info_of($block->get_content());?>
 
-        <div id="<?php echo $block->id;?>" class="settings-block option-block type-<?php echo $option_info['type']?> <?php echo $block->show_title ? '' : 'option-title-hidden';?> <?php echo $block->show_description ? '' : 'option-description-hidden';?> <?php echo $this->_controller->has_component_errors($block->id) ? 'has-errors' : '';?>" style="<?php echo $block->width < 1.0 ? 'width:'.(100.0*$block->width).'%;' : '';?>">
+        <div id="<?php echo esc_attr( $block->id );?>" class="settings-block option-block type-<?php echo esc_attr( $option_info['type'] ); ?> <?php echo esc_attr( $block->show_title ? '' : 'option-title-hidden' );?> <?php echo esc_attr( $block->show_description ? '' : 'option-description-hidden' );?> <?php echo esc_attr( $this->_controller->has_component_errors($block->id) ? 'has-errors' : '' );?>" style="<?php echo esc_attr( $block->width < 1.0 ? 'width:'.(100.0*$block->width).'%;' : '' );?>">
 
             <?php do_action("leyka_render_{$option_info['type']}", $block->get_content(), $option_info);?>
 
-            <div class="field-errors <?php echo $this->_controller->has_component_errors($block->id) ? 'has-errors' : '';?>">
+            <div class="field-errors <?php echo esc_attr( $this->_controller->has_component_errors($block->id) ? 'has-errors' : '' );?>">
                 <?php foreach($this->_controller->get_component_errors($block->id) as $error) { /** @var $error WP_Error */?>
-                    <span><?php echo $error->get_error_message();?></span>
+                    <span><?php echo wp_kses_post( $error->get_error_message() );?></span>
                 <?php }?>
             </div>
 
@@ -255,12 +255,12 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
 
     public function render_custom_setting_block(Leyka_Custom_Setting_Block $block) {?>
 
-        <div id="<?php echo $block->id;?>" class="settings-block custom-block <?php echo $block->is_standard_field_type ? 'option-block' : '';?> <?php echo $this->_controller->has_component_errors($block->id) ? 'has-errors' : '';?> <?php echo $block->field_type;?>">
+        <div id="<?php echo esc_attr( $block->id );?>" class="settings-block custom-block <?php echo esc_attr( $block->is_standard_field_type ? 'option-block' : '' );?> <?php echo esc_attr( $this->_controller->has_component_errors($block->id) ? 'has-errors' : '' );?> <?php echo wp_kses_post( $block->field_type ); ?>">
 
-            <?php echo $block->get_content();?>
-            <div class="field-errors <?php echo $this->_controller->has_component_errors($block->id) ? 'has-errors' : '';?>">
+            <?php echo wp_kses_post( $block->get_content() );?>
+            <div class="field-errors <?php echo esc_attr( $this->_controller->has_component_errors($block->id) ? 'has-errors' : '' );?>">
                 <?php foreach($this->_controller->get_component_errors($block->id) as $error) { /** @var $error WP_Error */?>
-                    <span><?php echo $error->get_error_message();?></span>
+                    <span><?php echo wp_kses_post( $error->get_error_message() );?></span>
                 <?php }?>
             </div>
 

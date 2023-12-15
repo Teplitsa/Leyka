@@ -68,7 +68,7 @@ try {
 
         	<div class="donor-add-description-wrapper">
 
-                <a href="#" class="donor-add-description-link" data-donor-id="<?php echo $donor->id;?>" title="<?php _e('Add the description', 'leyka');?>"><?php _e('Add the description', 'leyka');?></a>
+                <a href="#" class="donor-add-description-link" data-donor-id="<?php echo esc_attr( $donor->id );?>" title="<?php _e('Add the description', 'leyka');?>"><?php _e('Add the description', 'leyka');?></a>
                 
                 <form class="add-donor-description-form" method="post">
 
@@ -78,7 +78,7 @@ try {
 
                     <div class="loading-indicator-wrap" style="display: none;">
                         <div class="loader-wrap"><span class="leyka-loader xxs"></span></div>
-                        <img class="ok-icon" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/icon-check.svg" alt="">
+                        <img class="ok-icon" src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL ); ?>img/dashboard/icon-check.svg" alt="">
                     </div>
                     
                 </form>
@@ -94,16 +94,16 @@ try {
 
         <dl>
             <dt><?php _e("Donor's type", 'leyka');?></dt>
-            <dd><?php echo $donor->type_label;?></dd>
+            <dd><?php echo esc_html( $donor->type_label );?></dd>
 
             <dt><?php _e('Email', 'leyka');?></dt>
-            <dd><a href="mailto:<?php echo $donor->email;?>"><?php echo $donor->email;?></a></dd>
+            <dd><a href="mailto:<?php echo sanitize_email( $donor->email );?>"><?php echo esc_html( $donor->email );?></a></dd>
 
             <!--<dt><?php _e('GA Client ID', 'leyka');?></dt>
             <dd><?php echo __('none'); //echo get_user_meta($donor_user->ID, 'leyka_donor_ga_client_id', true);?></dd>-->
 
             <dt><?php _e('First donation', 'leyka');?></dt>
-            <dd><?php echo $donor->first_donation_date_label;?></dd>
+            <dd><?php echo esc_html( $donor->first_donation_date_label );?></dd>
 
             <dt><?php _e('Subscribed to news', 'leyka');?></dt>
             <dd>
@@ -112,7 +112,7 @@ try {
             foreach($donor->campaigns_news_subscriptions as $campaign_id => $title) {
                 $campaigns[] = '«<a href="'.get_edit_post_link($campaign_id).'">'.$title.'</a>»';
             }
-            echo $campaigns ? implode(', ', $campaigns) : _x('none', 'Multiple case', 'leyka');?>
+            echo wp_kses_post( $campaigns ? implode(', ', $campaigns) : _x('none', 'Multiple case', 'leyka') );?>
 
             </dd>
 
@@ -123,7 +123,7 @@ try {
             foreach($donor->campaigns as $campaign_id => $title) {
                 $campaigns[] = '«<a href="'.get_edit_post_link($campaign_id).'">'.$title.'</a>»';
             }
-            echo $campaigns ? implode(', ', $campaigns) : _x('none', 'Multiple case', 'leyka');?>
+            echo wp_kses_post( $campaigns ? implode(', ', $campaigns) : _x('none', 'Multiple case', 'leyka') );?>
 
             </dd>
         </dl>

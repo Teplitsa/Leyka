@@ -48,7 +48,7 @@ interface MessageInterface
      *
      *     // Represent the headers as a string
      *     foreach ($message->getHeaders() as $name => $values) {
-     *         echo $name . ": " . implode(", ", $values);
+     *         echo wp_kses_post( $name . ": " . implode(", ", $values) );
      *     }
      *
      *     // Emit headers iteratively:

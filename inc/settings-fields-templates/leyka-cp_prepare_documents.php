@@ -4,7 +4,7 @@
 
 /** @var $this Leyka_Custom_Setting_Block A block for which the template is used. */?>
 
-<div class="<?php echo $this->field_type;?> custom-block-cp-prepare-documents">
+<div class="<?php echo esc_attr( $this->field_type );?> custom-block-cp-prepare-documents">
 
     <h4><?php esc_html_e('Download the documents:', 'leyka');?></h4>
     

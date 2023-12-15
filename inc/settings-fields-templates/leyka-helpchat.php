@@ -34,7 +34,7 @@ $current_user = wp_get_current_user();?>
                         <label for="leyka-help-chat-name">
                             <span class="field-component title"><?php _e('Your name', 'leyka');?></span>
                             <span class="field-component field">
-                                <input type="text" id="leyka-help-chat-name" value="<?php echo $current_user->display_name;?>" maxlength="255" required="required">
+                                <input type="text" id="leyka-help-chat-name" value="<?php echo esc_attr( $current_user->display_name );?>" maxlength="255" required="required">
                             </span>
                         </label>
                     </div>

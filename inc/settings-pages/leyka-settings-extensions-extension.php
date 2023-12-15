@@ -13,7 +13,7 @@ if( !$extension ) {
     wp_die(sprintf(__('Error: the extension "%s" is not found', 'leyka'), $_GET['extension']));
 }?>
 
-<div class="leyka-admin wrap single-settings extension-settings" data-leyka-admin-page-type="extension-settings-page" data-leyka-extension-id="<?php echo $extension->id;?>">
+<div class="leyka-admin wrap single-settings extension-settings" data-leyka-admin-page-type="extension-settings-page" data-leyka-extension-id="<?php echo esc_attr( $extension->id );?>">
 
     <a href="<?php echo admin_url('/admin.php?page=leyka_settings&stage=extensions');?>" class="settings-return-link">
         <?php _e('Back to the list', 'leyka');?>

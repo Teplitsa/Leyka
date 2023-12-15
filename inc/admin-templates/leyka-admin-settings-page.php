@@ -8,21 +8,21 @@ $is_separate_sections_forms = $this->is_separate_forms_stage($current_settings_s
 
 <div class="wrap leyka-admin leyka-settings-page">
     <!-- data-leyka-admin-page-type="extensions-list-page" -->
-    <!-- <div class="leyka-admin wrap single-settings extension-settings" data-leyka-admin-page-type="extension-settings-page" data-leyka-extension-id="<?php // echo $extension->id;?>">  -->
+    <!-- <div class="leyka-admin wrap single-settings extension-settings" data-leyka-admin-page-type="extension-settings-page" data-leyka-extension-id="<?php // echo esc_attr( $extension->id );?>">  -->
 
     <h1 class="with-country">
 
         <?php $current_country = leyka_get_countries_full_info(leyka_options()->opt_safe('receiver_country'));?>
 
-        <a href="<?php echo admin_url('admin.php?page=leyka_settings&stage=beneficiary#receiver_country');?>" title="<?php echo $current_country ? sprintf(__('Receiver country: %s', 'leyka'), $current_country['title']) : '';?>">
-            <img src="<?php echo LEYKA_PLUGIN_BASE_URL.'img/countries/'.leyka_options()->opt_safe('receiver_country').'.svg';?>" alt="" class="country-flag-icon">
+        <a href="<?php echo admin_url('admin.php?page=leyka_settings&stage=beneficiary#receiver_country');?>" title="<?php echo esc_attr( $current_country ? sprintf(__('Receiver country: %s', 'leyka'), $current_country['title']) : '' );?>">
+            <img src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL . 'img/countries/' . leyka_options()->opt_safe('receiver_country') . '.svg' ); ?>" alt="" class="country-flag-icon">
         </a>
 
         <?php _e('Leyka settings', 'leyka');?>
 
     </h1>
 
-    <h2 class="nav-tab-wrapper"><?php echo $this->settings_tabs_menu();?></h2>
+    <h2 class="nav-tab-wrapper"><?php echo wp_kses_post( $this->settings_tabs_menu() );?></h2>
 
     <div id="tab-container">
 
@@ -54,7 +54,7 @@ $is_separate_sections_forms = $this->is_separate_forms_stage($current_settings_s
                     <form method="post" action="<?php echo admin_url($admin_page);?>" id="leyka-settings-form">
 
                     <?php if(isset($option['section']['name'])) {?>
-                        <input type="hidden" name="leyka_options_section" value="<?php echo $option['section']['name'];?>">
+                        <input type="hidden" name="leyka_options_section" value="<?php echo esc_attr( $option['section']['name'] );?>">
                     <?php }?>
 
                     <?php wp_nonce_field("leyka_settings_{$current_settings_stage_id}", '_leyka_nonce');

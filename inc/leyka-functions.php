@@ -45,6 +45,12 @@ if( !function_exists('array_key_first') ) {
     }
 }
 
+if( !function_exists('array_key_last') ) {
+    function array_key_last(array $array) {
+        return $array ? key(array_slice($array, -1)) : null;
+    }
+}
+
 if ( ! function_exists( 'leyka_safe_style_css' ) ) {
     function leyka_safe_style_css( $styles ){
         $styles[] = 'display';
@@ -186,12 +192,6 @@ if ( ! function_exists( 'leyka_kses_allowed_html' ) ) {
         return $tags;
     }
     add_filter( 'wp_kses_allowed_html', 'leyka_kses_allowed_html', 10, 2 );
-}
-
-if( !function_exists('array_key_last') ) {
-    function array_key_last(array $array) {
-        return $array ? key(array_slice($array, -1)) : null;
-    }
 }
 
 if( !function_exists('leyka_strip_string_by_words') ) {

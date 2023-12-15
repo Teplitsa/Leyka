@@ -216,7 +216,7 @@ class Leyka_Payment_Form {
 
         <?php foreach($supported_curr as $currency => $data) {?>
 
-            <span class="<?php echo $currency; ?> amount-variants-container" <?php echo $currency == $current_curr ? '' : 'style="display:none;"';?>>
+            <span class="<?php echo esc_attr( $currency ); ?> amount-variants-container" <?php echo wp_kses_post( $currency == $current_curr ? '' : 'style="display:none;"' ); ?>>
 
             <?php if($mode == 'fixed' || $mode == 'mixed') {
 
@@ -224,9 +224,9 @@ class Leyka_Payment_Form {
 
             <?php foreach($variants as $amount) {?>
                 <label class="figure" title="<?php _e('Please, specify your donation amount', 'leyka');?>">
-                    <input type="radio" value="<?php echo (int)$amount;?>"
-                           name="leyka_donation_amount" <?php echo $currency == $current_curr ? '' : 'disabled="disabled"';?>>
-                    <?php echo (int)$amount;?>
+                    <input type="radio" value="<?php echo esc_attr( (int)$amount );?>"
+                           name="leyka_donation_amount" <?php echo wp_kses_post( $currency == $current_curr ? '' : 'disabled="disabled"' );?>>
+                    <?php echo esc_html( (int)$amount );?>
                 </label>
                 <?php }
 
@@ -238,13 +238,13 @@ class Leyka_Payment_Form {
 
             if($mode != 'fixed') {?>
 
-                <input type="text" title="<?php echo __('Specify the amount of your donation', 'leyka');?>" name="leyka_donation_amount" class="donate_amount_flex" value="<?php echo esc_attr($supported_curr[$current_curr]['amount_settings']['flexible']);?>" <?php echo $currency == $current_curr ? '' : 'disabled="disabled"';?> placeholder="<?php echo apply_filters('leyka_form_free_amount_placeholder', $supported_curr[$current_curr]['amount_settings']['flexible']);?>">
+                <input type="text" title="<?php esc_attr_e('Specify the amount of your donation', 'leyka');?>" name="leyka_donation_amount" class="donate_amount_flex" value="<?php echo esc_attr($supported_curr[$current_curr]['amount_settings']['flexible']);?>" <?php echo wp_kses_post( $currency == $current_curr ? '' : 'disabled="disabled"' ); ?> placeholder="<?php echo apply_filters('leyka_form_free_amount_placeholder', $supported_curr[$current_curr]['amount_settings']['flexible']);?>">
             <?php }?>
 
             </span>
         <?php }?>
 
-        <span class="currency"><?php echo $this->get_currency_field();?></span>
+        <span class="currency"><?php echo esc_attr( $this->get_currency_field() );?></span>
         <div class="leyka_donation_amount-error field-error"></div>
 
 		<?php $out = ob_get_contents();
@@ -386,7 +386,7 @@ class Leyka_Payment_Form {
 
 		<label for="leyka_donor_email" class="leyka-screen-reader-text"><?php _e('Your email', 'leyka');?></label>
 		<label class="input req">
-            <input type="text" class="required email leyka_donor_email" name="leyka_donor_email" placeholder="<?php echo apply_filters('leyka_form_donor_email_placeholder', __('Your email', 'leyka'));?>" value="<?php echo $value;?>">
+            <input type="text" class="required email leyka_donor_email" name="leyka_donor_email" placeholder="<?php echo apply_filters('leyka_form_donor_email_placeholder', __('Your email', 'leyka'));?>" value="<?php echo esc_attr( $value );?>">
         </label>
 		<p class="field-comment"><?php _e('We will send the donation success notice to this address', 'leyka');?></p>
         <p class="leyka_donor_email-error field-error"></p>
@@ -407,7 +407,7 @@ class Leyka_Payment_Form {
 
         <label for="leyka_donor_commment" class="leyka-screen-reader-text"><?php _e('Your comment', 'leyka');?></label>
         <label class="input">
-            <textarea class="comment leyka-donor-comment" name="leyka_donor_comment" data-max-length="<?php echo leyka_options()->opt_template('donation_comment_max_length');?>"><?php echo $value;?></textarea>
+            <textarea class="comment leyka-donor-comment" name="leyka_donor_comment" data-max-length="<?php echo leyka_options()->opt_template('donation_comment_max_length');?>"><?php echo esc_attr( $value );?></textarea>
         </label>
         <p class="field-comment">
             <?php echo leyka_options()->opt_template('donation_comment_max_length') ? sprintf(__('Your comment (<span class="donation-comment-current-length">0</span> / <span class="donation-comment-max-length">%d</span> symbols)', 'leyka'), leyka_options()->opt_template('donation_comment_max_length')) : __('Your comment', 'leyka');?>
@@ -438,7 +438,7 @@ class Leyka_Payment_Form {
 
             if(leyka_options()->opt('agree_to_terms_link_action') == 'popup') {?>
 
-            <div id="<?php echo $agree_id;?>" class="leyka-oferta-text">
+            <div id="<?php echo esc_attr( $agree_id );?>" class="leyka-oferta-text">
                 <div class="leyka-modal-close">X</div>
                 <div class="leyka-oferta-text-frame">
                     <div class="leyka-oferta-text-flow">
@@ -456,7 +456,7 @@ class Leyka_Payment_Form {
                         <?php echo apply_filters('agree_to_terms_text_text_part', leyka_options()->opt('agree_to_terms_text_text_part')).' ';
 
                         if(leyka_options()->opt('agree_to_terms_link_action') == 'popup') {?>
-                        <a class="leyka-legal-terms-trigger" href="#" data-terms-content="#<?php echo $agree_id;?>">
+                        <a class="leyka-legal-terms-trigger" href="#" data-terms-content="#<?php echo esc_attr( $agree_id );?>">
                         <?php } else {?>
                             <a target="_blank" href="<?php echo leyka_get_terms_of_service_page_url();?>">
                         <?php }?>
@@ -472,7 +472,7 @@ class Leyka_Payment_Form {
 
             if(leyka_options()->opt('agree_to_pd_terms_link_action') == 'popup') {?>
 
-            <div id="<?php echo $agree_pd_id;?>" class="leyka-oferta-text">
+            <div id="<?php echo esc_attr( $agree_pd_id );?>" class="leyka-oferta-text">
                 <div class="leyka-modal-close">X</div>
                 <div class="leyka-oferta-text-frame">
                     <div class="leyka-oferta-text-flow">
@@ -490,7 +490,7 @@ class Leyka_Payment_Form {
                         <?php echo apply_filters('agree_to_pd_terms_text_text_part', leyka_options()->opt('agree_to_pd_terms_text_text_part')).' ';
 
                         if(leyka_options()->opt('agree_to_terms_link_action') == 'popup') {?>
-                        <a class="leyka-legal-terms-trigger" href="#" data-terms-content="#<?php echo $agree_pd_id;?>">
+                        <a class="leyka-legal-terms-trigger" href="#" data-terms-content="#<?php echo esc_attr( $agree_pd_id );?>">
                         <?php } else {?>
                         <a target="_blank" href="<?php echo leyka_get_terms_of_pd_usage_page_url();?>">
                         <?php }?>
@@ -926,7 +926,7 @@ function leyka_pf_submission_errors() {?>
         <span><?php _e('Errors', 'leyka');?>: </span>
         <ul>
             <?php foreach(leyka()->get_session_errors() as $wp_error) { /** @var $wp_error WP_Error */?>
-                <li><?php echo $wp_error->get_error_message();?></li>
+                <li><?php echo wp_kses_post( $wp_error->get_error_message() );?></li>
             <?php }?>
         </ul>
         <?php leyka()->clear_session_errors();?>

@@ -25,13 +25,13 @@ if( !function_exists('leyka_admin_get_slug_edit_field') ) {
             <?php if($permalinks_on) {?>
 
                 <span class="leyka-current-value">
-                <span class="base-url"><?php echo $campaign_base_url;?></span>/<span class="current-slug"><?php echo $campaign_permalink_parts[1];?></span>
+                <span class="base-url"><?php echo esc_attr( $campaign_base_url );?></span>/<span class="current-slug"><?php echo esc_attr( $campaign_permalink_parts[1] );?></span>
             </span>
 
                 <a href="<?php echo get_edit_post_link($campaign->id);?>" class="inline-action inline-edit-slug">Редактировать</a>
 
-                <span class="inline-edit-slug-form" data-slug-original="<?php echo $campaign_permalink_parts[1];?>" data-campaign-id="<?php echo $campaign->id;?>" data-nonce="<?php echo wp_create_nonce('leyka-edit-campaign-slug');?>" style="display: none;">
-                <input type="text" class="leyka-slug-field inline-input" value="<?php echo $campaign_permalink_parts[1];?>">
+                <span class="inline-edit-slug-form" data-slug-original="<?php echo esc_attr( $campaign_permalink_parts[1] );?>" data-campaign-id="<?php echo esc_attr( $campaign->id );?>" data-nonce="<?php echo wp_create_nonce('leyka-edit-campaign-slug');?>" style="display: none;">
+                <input type="text" class="leyka-slug-field inline-input" value="<?php echo esc_attr( $campaign_permalink_parts[1] );?>">
                 <span class="slug-submit-buttons">
                     <button class="inline-submit"><?php _e('OK');?></button>
                     <button class="inline-reset"><?php _e('Cancel');?></button>
@@ -40,7 +40,7 @@ if( !function_exists('leyka_admin_get_slug_edit_field') ) {
 
             <?php } else {?>
 
-                <span class="base-url"><?php echo $campaign_permalink_full;?></span>
+                <span class="base-url"><?php echo esc_html( $campaign_permalink_full );?></span>
                 <a href="<?php echo admin_url('options-permalink.php');?>" class="permalink-action" target="_blank">Включить постоянные ссылки</a>
 
             <?php }?>
@@ -98,10 +98,10 @@ if( !function_exists('leyka_get_admin_footer') ) {
 
         ob_start();?>
 
-        <div class="leyka-dashboard-footer leyka-admin-footer <?php echo $footer_class;?>">
+        <div class="leyka-dashboard-footer leyka-admin-footer <?php echo esc_attr( $footer_class );?>">
 
             <a href="https://te-st.ru/" class="te-st-logo">
-                <img  src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/logo-te-st-with-caption.svg" alt="<?php _e('te-st.ru', 'leyka');?>">
+                <img  src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL ); ?>img/logo-te-st-with-caption.svg" alt="<?php _e('te-st.ru', 'leyka');?>">
             </a>
 
             <div class="links">
@@ -203,38 +203,38 @@ if( !function_exists('leyka_admin_get_donor_comment_table_row') ) {
         
         ob_start();?>
         
-        <tr class="comment-id-<?php echo $comment_id;?>">
+        <tr class="comment-id-<?php echo esc_attr( $comment_id );?>">
             <td class="donor-comment-date"><?php echo date(get_option('date_format').', '.get_option('time_format'), absint($comment['date']));?></td>
             <td class="donor-comment-text">
             	<div class="leyka-editable-str-wrapper">
                 	<div class="leyka-editable-str-result" 
-                		id="editable-comment-str-result<?php echo $comment_id;?>" 
-                		str-field="editable-comment-str-field<?php echo $comment_id;?>"
+                		id="editable-comment-str-result<?php echo esc_attr( $comment_id );?>" 
+                		str-field="editable-comment-str-field<?php echo esc_attr( $comment_id );?>"
             		><?php echo esc_html($comment['text']);?></div>
                 	<input class="leyka-editable-str-field" type="text" value="<?php echo esc_html($comment['text']);?>" style="display: none;" 
-                		id="editable-comment-str-field<?php echo $comment_id;?>" 
-                		str-btn="editable-comment-str-btn<?php echo $comment_id;?>" 
-                		str-result="editable-comment-str-result<?php echo $comment_id;?>"
+                		id="editable-comment-str-field<?php echo esc_attr( $comment_id );?>" 
+                		str-btn="editable-comment-str-btn<?php echo esc_attr( $comment_id );?>" 
+                		str-result="editable-comment-str-result<?php echo esc_attr( $comment_id );?>"
                 		save-action="leyka_save_editable_comment"
-                		text-item-id="<?php echo $comment_id;?>">
+                		text-item-id="<?php echo esc_attr( $comment_id );?>">
                     <div class="loading-indicator-wrap" style="display: none;">
                         <div class="loader-wrap"><span class="leyka-loader xxs"></span></div>
-                        <img class="ok-icon" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/icon-check.svg" alt="">
+                        <img class="ok-icon" src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL ); ?>img/dashboard/icon-check.svg" alt="">
                     </div>
                 </div>
             </td>
-            <td class="donor-comment-author"><?php echo $comment['author_name'];?></td>
+            <td class="donor-comment-author"><?php echo esc_html( $comment['author_name'] );?></td>
             <td class="donor-comment-edit">
                 <a href="#" class="comment-icon-edit leyka-editable-str-btn" 
-                	id="editable-comment-str-btn<?php echo $comment_id;?>" 
-                	str-field="editable-comment-str-field<?php echo $comment_id;?>" 
+                	id="editable-comment-str-btn<?php echo esc_attr( $comment_id );?>" 
+                	str-field="editable-comment-str-field<?php echo esc_attr( $comment_id );?>" 
             	> </a>
             </td>
             <td class="donor-comment-delete">
-                <a href="#" class="comment-icon-delete" data-comment-id="<?php echo $comment_id;?>"> </a>
+                <a href="#" class="comment-icon-delete" data-comment-id="<?php echo esc_attr( $comment_id );?>"> </a>
                 <div class="loading-indicator-wrap">
                     <div class="loader-wrap"><span class="leyka-loader xxs"></span></div>
-                    <img class="ok-icon" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/icon-check.svg" alt="">
+                    <img class="ok-icon" src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL ); ?>img/dashboard/icon-check.svg" alt="">
                 </div>
             </td>
         </tr>
