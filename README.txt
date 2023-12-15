@@ -6,7 +6,7 @@ Tags: лейка, crowdfunding, fundraising, donations, recurring donations, cha
 Requires at least: 3.6.1
 Requires PHP: 7.2.5
 Tested up to: 6.4.2
-Stable tag: 3.30.8
+Stable tag: 3.31
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -84,6 +84,10 @@ For technical support questions, please, use the [plugin support email](maillto:
 5. The plugin start page (a console)
 
 == Changelog ==
+
+= 3.31 =
+* Add: New payment system Payselection
+* Update: Sber Gateway
 
 = 3.30.8 =
 * Improve PHPCS Security
