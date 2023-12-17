@@ -102,7 +102,6 @@ gulp.task('build-front-css', function(){
         // vendorFiles = gulp.src([]), // Components
         gatewaysFiles = [basePaths.root+'gateways/*/css/*.public.scss'],
         appFiles = gulp.src([basePaths.src+'sass/front-main.scss'].concat(gatewaysFiles)) // The main file with @import-s
-            .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.init()) // Process the original sources for sourcemap
             .pipe(
                 plugins.sass({
                     outputStyle: sassStyle, // SASS syntax
@@ -113,13 +112,14 @@ gulp.task('build-front-css', function(){
                 browsers: ['last 4 versions'],
                 cascade: false
             }))
-            .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.write()) // Add the map to modified source
             .on('error', console.log);
 
     return es.concat(appFiles /*, vendorFiles*/)
+        .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.init()) // Process the original sources for sourcemap
         .pipe(plugins.concat('public.css'))
         .pipe(isProduction ? plugins.cssmin() : gutil.noop()) // Minification on production
         .pipe(plugins.size())
+        .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.write('.')) // Add the map to modified source
         .pipe(gulp.dest(basePaths.dest + 'css'))
         .on('error', console.log);
 
@@ -130,7 +130,6 @@ gulp.task('build-admin-css', function() {
     let paths = require('node-bourbon').includePaths,
 		// vendorFiles = gulp.src([]),
         appFiles = gulp.src(basePaths.src+'sass/admin/admin.scss')
-        .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.init())  // Process original sources for sourcemap
         .pipe(plugins.sass({
             outputStyle: sassStyle, // SASS syntax
             includePaths: paths // Add bourbon + mdl
@@ -139,13 +138,14 @@ gulp.task('build-admin-css', function() {
             browsers: ['last 4 versions'],
             cascade: false
         }))
-        .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.write()) // Add the map to modified source
         .on('error', console.log);
 
 	return es.concat(appFiles /*, vendorFiles*/) // Combine vendor CSS files and our files after-SASS
+        .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.init())  // Process original sources for sourcemap
         .pipe(plugins.concat('admin.css')) // Combine into file
         .pipe(isProduction ? plugins.cssmin() : gutil.noop()) // Minification on production
         .pipe(plugins.size()) // Display size
+        .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.write('.')) // Add the map to modified source
         .pipe(gulp.dest(basePaths.dest+'css')) // Write the file
         .on('error', console.log);
 
@@ -156,7 +156,6 @@ gulp.task('build-admin-everywhere-css', function() {
     let paths = require('node-bourbon').includePaths,
         // vendorFiles = gulp.src([]),
         appFiles = gulp.src(basePaths.src+'sass/admin/admin-everywhere.scss')
-            .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.init())  // Process original sources for sourcemap
             .pipe(plugins.sass({
                 outputStyle: sassStyle, // SASS syntax
                 includePaths: paths // Add bourbon + mdl
@@ -165,13 +164,14 @@ gulp.task('build-admin-everywhere-css', function() {
                 browsers: ['last 4 versions'],
                 cascade: false
             }))
-            .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.write()) // Add the map to modified source
             .on('error', console.log);
 
     return es.concat(appFiles /*, vendorFiles*/) // Combine vendor CSS files and our files after-SASS
+        .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.init())  // Process original sources for sourcemap
         .pipe(plugins.concat('admin-everywhere.css')) // Combine into file
         .pipe(isProduction ? plugins.cssmin() : gutil.noop()) // Minification on production
         // .pipe(plugins.size()) // Display size
+        .pipe(isProduction ? gutil.noop() : plugins.sourcemaps.write('.')) // Add the map to modified source
         .pipe(gulp.dest(basePaths.dest+'css')) // Write file
         .on('error', console.log);
 
@@ -182,7 +182,6 @@ gulp.task('build-editor-css', function() {
     let paths = require('node-bourbon').includePaths,
 		// vendorFiles = gulp.src([]),
         appFiles = gulp.src(basePaths.src+'sass/admin/editor.scss')
-        .pipe(!isProduction ? plugins.sourcemaps.init() : gutil.noop())  // Process the original sources for sourcemap
         .pipe(plugins.sass({
                 outputStyle: sassStyle, // SASS syntax
                 includePaths: paths // Add bourbon + mdl
@@ -191,14 +190,15 @@ gulp.task('build-editor-css', function() {
                 browsers: ['last 4 versions'],
                 cascade: false
             }))
-        .pipe(!isProduction ? plugins.sourcemaps.write() : gutil.noop()) // Add the map to modified source
         .on('error', console.log);
 
 	return es.concat(appFiles /*, vendorFiles*/) // Combine vendor CSS files and our files after-SASS
+        .pipe(!isProduction ? plugins.sourcemaps.init() : gutil.noop())  // Process the original sources for sourcemap
         .pipe(plugins.concat('editor.css')) // Combine into file
         .pipe(isProduction ? plugins.cssmin() : gutil.noop()) // Minification on production
         .pipe(plugins.size()) // Display size
         .pipe(gulp.dest(basePaths.dest+'css')) // Write file
+        .pipe(!isProduction ? plugins.sourcemaps.write('.') : gutil.noop()) // Add the map to modified source
         .on('error', console.log);
 
 });
@@ -208,7 +208,6 @@ gulp.task('build-editor-style-css', function() {
     let paths = require('node-bourbon').includePaths,
         // vendorFiles = gulp.src([]),
         appFiles = gulp.src(basePaths.src+'sass/editor-style.scss')
-        .pipe(!isProduction ? plugins.sourcemaps.init() : gutil.noop())  // Process the original sources for sourcemap
         .pipe(plugins.sass({
                 outputStyle: sassStyle, // SASS syntax
                 includePaths: paths // Add bourbon + mdl
@@ -217,13 +216,14 @@ gulp.task('build-editor-style-css', function() {
                 browsers: ['last 4 versions'],
                 cascade: false
             }))
-        .pipe(!isProduction ? plugins.sourcemaps.write() : gutil.noop()) // Add the map to modified source
         .on('error', console.log);
 
     return es.concat(appFiles /*, vendorFiles*/) // Combine vendor CSS files and our files after-SASS
+        .pipe(!isProduction ? plugins.sourcemaps.init() : gutil.noop())  // Process the original sources for sourcemap
         .pipe(plugins.concat('editor-style.css')) // Combine into file
         .pipe(isProduction ? plugins.cssmin() : gutil.noop()) // Minification on production
         .pipe(plugins.size()) // Display size
+        .pipe(!isProduction ? plugins.sourcemaps.write('.') : gutil.noop()) // Add the map to modified source
         .pipe(gulp.dest(basePaths.dest+'css')) // Write file
         .on('error', console.log);
 
