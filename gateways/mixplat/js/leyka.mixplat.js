@@ -149,20 +149,22 @@ jQuery(document).ready(function($){
 
                 window.dataLayer = window.dataLayer || [];
 
+                
+                dataLayer.push({ ecommerce: null });  // Clear the previous ecommerce object.
                 dataLayer.push({
-                    'event': 'eec.add',
-                    'ecommerce': {
-                        // 'currencyCode': response.currency, // For some reason it doesn't work
-                        'add': {
-                            'products': [{
-                                'name': response.decription,
-                                'id': response.merchant_payment_id,
-                                'price': response.amount,
-                                'quantity': 1
-                            }]
-                        }
+                    event: "begin_checkout",
+                    ecommerce: {
+                    items: [{
+                        item_name: response.decription, // Name or ID is required.
+                        item_id: response.merchant_payment_id,
+                        price:response.amount,
+                        index: 1,
+                        quantity: 1
+                    }]
                     }
-                });
+                }); 
+                
+                console.log("action: begin_checkout")
 
             }
 
@@ -173,7 +175,8 @@ jQuery(document).ready(function($){
 						 'test': response.test,
 						 'description': response.description,
 						 'currency': response.currency,
-						 'amount': response.amount,
+						 'amount': response.amount,
+
 						 'user_email': response.user_email,
 						 'recurrent_payment': response.recurrent_payment,
 						 'payment_method': response.payment_method,

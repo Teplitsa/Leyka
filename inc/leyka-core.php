@@ -723,26 +723,27 @@ class Leyka extends Leyka_Singleton {
                 return;
             }?>
 
-        <script>
-            window.dataLayer = window.dataLayer || [];
+            <script>
+                window.dataLayer = window.dataLayer || [];
 
-            dataLayer.push({
-                'event': 'eec.detail',
-                'actionField': {
-                    list: '<?php _e('Campaign page view', 'leyka');?>'
-                },
-                'ecommerce': {
-                    'detail': {
-                        'products': [{
-                            'name': '<?php echo esc_attr( $campaign->title );?>',
-                            'id': '<?php echo esc_attr( $campaign->id );?>',
-                            'brand': '<?php echo esc_html( get_bloginfo('name') );?>',
-                            'category': '<?php _e('Donations', 'leyka');?>'
+                dataLayer.push({ ecommerce: null });  // Clear the previous ecommerce object.
+                dataLayer.push({
+                    event: "view_item",
+                    ecommerce: {
+                        currency: "RUB",
+                        value: 0,
+                        items: [{
+                            item_name: '<?php echo esc_attr( $campaign->title ); ?>',
+                            item_id: '<?php echo esc_attr( $campaign->id ); ?>',
+                            price: 0,
+                            item_brand: "donate",
+                            item_category: '<?php _e('Donations', 'leyka');?>', 
+                            quantity: 1
                         }]
                     }
-                }
-            });
-        </script>
+                }); 
+                console.log("action: view_item")
+            </script>
 
         <?php } else if(is_page(leyka()->opt('success_page'))) {
 
@@ -767,29 +768,29 @@ class Leyka extends Leyka_Singleton {
         <script>
             window.dataLayer = window.dataLayer || [];
 
+            dataLayer.push({ ecommerce: null });  // Clear the previous ecommerce object.
             dataLayer.push({
-                'event': 'eec.purchase',
-                'ecommerce': {
-                    //'currencyCode': <?php //echo esc_attr( $donation->currency );?>//, // For some reason i doesn't work
-                    'purchase': {
-                        'actionField': {
-                            'id': '<?php echo esc_attr( $donation->id );?>',
-                            'affiliation': '<?php echo esc_attr( $campaign->title );?>',
-                            'revenue': '<?php echo esc_attr( $donation_amount_total );?>',
-                            'tax': 0,
-                            'shipping': 0
-                        },
-                        'products': [{
-                            'name': '<?php echo esc_attr( $campaign->title );?>',
-                            'id': '<?php echo esc_attr( $donation->id );?>',
-                            'price': '<?php echo esc_attr( $donation_amount_total );?>',
-                            'brand': '<?php echo esc_html( get_bloginfo('name') );?>',
-                            'category': '<?php echo esc_attr( $donation->type_label );?>',
-                            'quantity': 1
-                        }]
-                    }
+                event: "purchase",
+                ecommerce: {
+                    transaction_id: '<?php echo esc_attr( $donation->id ); ?>',
+                    affiliation: '<?php echo esc_attr( $campaign->title ); ?>',
+                    value: '<?php echo esc_attr( $donation_amount_total ); ?>',
+                    tax: "0",
+                    shipping: "0",
+                    currency: "RUS", 
+                    items: [{
+                        item_name: '<?php echo esc_attr( $campaign->title ); ?>',
+                        item_id: '<?php echo esc_attr( $donation->id ); ?>',
+                        price: '<?php echo esc_attr( $donation_amount_total ); ?>',
+                        item_brand: '<?php echo esc_html( get_bloginfo('name') ); ?>',
+                        item_category: '<?php echo esc_attr( $donation->type_label ); ?>', 
+                        quantity: 1
+                    }]
                 }
             });
+
+            console.log("action: purchase")
+             
         </script>
         <?php }
 

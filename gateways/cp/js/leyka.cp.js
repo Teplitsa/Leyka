@@ -1,5 +1,4 @@
 jQuery(document).ready(function($){
-
     $(document).on('submit.leyka', 'form.leyka-pm-form,form.leyka-revo-form', function(e){
 
         function addError($errors_block, error_html) {
@@ -90,21 +89,21 @@ jQuery(document).ready(function($){
 
                 window.dataLayer = window.dataLayer || [];
 
+                dataLayer.push({ ecommerce: null });  // Clear the previous ecommerce object.
                 dataLayer.push({
-                    'event': 'eec.add',
-                    'ecommerce': {
-                        // 'currencyCode': response.currency, // For some reason it doesn't work
-                        'add': {
-                            'products': [{
-                                'name': response.payment_title,
-                                'id': response.donation_id,
-                                'price': response.amount,
-                                'quantity': 1
-                            }]
-                        }
+                    event: "begin_checkout",
+                    ecommerce: {
+                    items: [{
+                        item_name: response.payment_title, // Name or ID is required.
+                        item_id: response.donation_id,
+                        price:response.amount,
+                        index: 1,
+                        quantity: 1
+                    }]
                     }
-                });
-
+                }); 
+                
+                console.log("action: begin_checkout")
             }
 
             let widget = new cp.CloudPayments(),
