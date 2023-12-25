@@ -40,7 +40,6 @@ gulp.task('build-public-css', function(){
 
     let vendorFiles = gulp.src([basePaths.npm+'lightslider/dist/css/lightslider.min.css']),
         appFiles = gulp.src([basePaths.src+'sass/public.scss']) // Our main file with @import-s
-        .pipe( !isProduction ? plugins.sourcemaps.init() : through.obj() )  // Process the original sources for sourcemap
         .pipe(plugins.sass({
             outputStyle: sassStyle, // SASS syntax
             // includePaths: []
@@ -50,13 +49,14 @@ gulp.task('build-public-css', function(){
             overrideBrowserslist: ['last 4 versions'],
             cascade: false
         }))
-        .pipe( !isProduction ? plugins.sourcemaps.write() : through.obj() ) //add the map to modified source
         .on('error', log.error);
 
     return es.concat(vendorFiles, appFiles) // Combine vendor CSS files and our files after-SASS
+        .pipe( !isProduction ? plugins.sourcemaps.init() : through.obj() )  // Process the original sources for sourcemap
         .pipe(plugins.concat('public.css')) // Combine into a file
         .pipe(isProduction ? plugins.csso() : through.obj()) // Minification on production
         .pipe(plugins.size())
+        .pipe( !isProduction ? plugins.sourcemaps.write('.') : through.obj() ) //add the map to modified source
         .pipe(gulp.dest(basePaths.dest+'css')) // Write into a file
         .on('error', log.error);
 

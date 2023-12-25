@@ -72,7 +72,6 @@ gulp.task('build-css', function() {
        //paths.push(slick);
 
     var appFiles = gulp.src([basePaths.src+'sass/front.scss']) //our main file with @import-s
-        .pipe(!isProduction ? plugins.sourcemaps.init() : through.obj())  //process the original sources for sourcemap
         .pipe(plugins.sass({
             outputStyle: sassStyle, //SASS syntas
             //includePaths: paths //add bourbon
@@ -82,13 +81,14 @@ gulp.task('build-css', function() {
                 overrideBrowserslist: ['last 4 versions'],
                 cascade: false
             }))
-        .pipe(!isProduction ? plugins.sourcemaps.write() : through.obj()) //add the map to modified source
         .on('error', log.error); //log
 
     return es.concat(appFiles) //combine vendor CSS files and our files after-SASS
+        .pipe(!isProduction ? plugins.sourcemaps.init() : through.obj())  //process the original sources for sourcemap
         .pipe(plugins.concat('engb.css')) //combine into file
         .pipe(isProduction ? plugins.csso() : through.obj()) //minification on production
         .pipe(plugins.size()) //display size
+        .pipe(!isProduction ? plugins.sourcemaps.write('.') : through.obj()) //add the map to modified source
         .pipe(gulp.dest(basePaths.dest+'css')) //write file
         .on('error', log.error); //log
 });
@@ -102,7 +102,6 @@ gulp.task('build-admin-css', function() {
        //paths.push(slick);
 
     var appFiles = gulp.src([basePaths.src+'sass/admin.scss']) //our main file with @import-s
-        .pipe(!isProduction ? plugins.sourcemaps.init() : through.obj())  //process the original sources for sourcemap
         .pipe(plugins.sass({
             outputStyle: sassStyle, //SASS syntas
             //includePaths: paths //add bourbon
@@ -112,13 +111,14 @@ gulp.task('build-admin-css', function() {
                 overrideBrowserslist: ['last 4 versions'],
                 cascade: false
             }))
-        .pipe(!isProduction ? plugins.sourcemaps.write() : through.obj()) //add the map to modified source
         .on('error', log.error); //log
 
     return es.concat(appFiles) //combine vendor CSS files and our files after-SASS
+        .pipe(!isProduction ? plugins.sourcemaps.init() : through.obj())  //process the original sources for sourcemap
         .pipe(plugins.concat('engb-admin.css')) //combine into file
         .pipe(isProduction ? plugins.csso() : through.obj()) //minification on production
         .pipe(plugins.size()) //display size
+        .pipe(!isProduction ? plugins.sourcemaps.write('.') : through.obj()) //add the map to modified source
         .pipe(gulp.dest(basePaths.dest+'css')) //write file
         .on('error', log.error); //log
 });
