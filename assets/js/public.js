@@ -2240,7 +2240,7 @@ jQuery(document).ready(function($){
     }
 	
 	function bindAmountEvents() {
-		
+
 		function resizable(el, factor) {
 
 			let k = Number(factor) || 7.7,
