@@ -88,6 +88,7 @@ For technical support questions, please, use the [plugin support email](maillto:
 = 3.31 =
 * Add: New payment system Payselection
 * Update: Sber Gateway
+* Improve: CSS and sourceMap
 
 = 3.30.8 =
 * Improve PHPCS Security
