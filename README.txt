@@ -86,6 +86,7 @@ For technical support questions, please, use the [plugin support email](maillto:
 == Changelog ==
 
 = 3.31 =
+* Add: Support GA4
 * Add: New payment system Payselection
 * Update: Sber Gateway
 * Improve: CSS and sourceMap
