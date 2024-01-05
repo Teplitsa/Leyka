@@ -30,6 +30,8 @@
             $form.data('submit-in-process', 1);
         }
 
+        $errors.html('').hide();
+
         // Donation form validation already passed in the main script (public.js)
 
         const $_form = $form.clone(),
@@ -105,16 +107,16 @@
                     key: response.widget_key
                 }, response.request, {
                     onSuccess: (res) => {
-                        $errors.html('').hide();
                         window.location.href = response.success_page;
                     },
                     onError: (res) => {
+                        let errorMeggage = res.errorMessage ? ' - '+res.errorMessage : '';
+                        addError($errors, leyka.payselection_error + leyka.payselection_widget_errors[res.code] + errorMeggage || res.code); 
+                    },
+                    onClose: (res) => {
                         if (res.code === 'PAY_WIDGET:CLOSE_AFTER_FAIL') {
                             window.location.href = response.failure_page;
                         }
-                        addError($errors, leyka.payselection_error + res.code);
-                    },
-                    onClose: () => {
                     }
                 });
             }
