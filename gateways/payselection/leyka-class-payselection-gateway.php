@@ -807,7 +807,7 @@ class Leyka_Payselection_Card extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
         ]);
 
-        $this->_supported_currencies = ['rub', 'eur', 'usd', 'kgs'];
+        $this->_supported_currencies = ['rub'];
         $this->_default_currency = 'rub';
 
         $this->_processing_type = 'custom-process-submit-event';
