@@ -22,23 +22,11 @@ $current_page = $_GET['page'];
 
         <div class="recurring-subscriptions-list-export admin-list-export">
             <form action="#" method="get">
-                <?php $get_params_string = '';
-
-                foreach($_GET as $param_name => &$param_value) {
-
-                    $param_value = $param_value ?
-                        esc_attr( str_replace('>', '', wp_strip_all_tags(trim($param_value))) ) : '';
-
-                    if($param_name === 'first-date' && is_array($param_value)) {
-                        $param_value = $param_value[0].'-'.$param_value[1];
-                    }
-
-                    $get_params_string .= $get_params_string === '' ? '' : '&';
-                    $get_params_string .= $param_name === 'paged' ? '' : $param_name.'='.$param_value;
-
-                } ?>
-                <input type="hidden" name="get-params" value="<?php echo esc_attr( $get_params_string ); ?>">
-                <input type="hidden" name="page" value="<?php echo esc_attr( $current_page );?>">
+                <?php $get_params = $_GET;
+                $get_params['campaigns'] = isset($get_params['campaigns']) ? (array) $get_params['campaigns'] : [];
+                $get_params_string = http_build_query($get_params, '', '&', PHP_QUERY_RFC3986); ?>
+                <input type="hidden" name="get-params" value="<?php echo htmlspecialchars($get_params_string);?>">
+                <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']);?>">
                 <input type="submit" class="submit" name="subscriptions-list-export" value="<?php _e('Export the list in CSV', 'leyka');?>">
             </form>
         </div>
