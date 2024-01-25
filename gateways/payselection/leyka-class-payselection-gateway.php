@@ -115,25 +115,7 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
                 'comment' => __('If this option is enabled order receipts will be created and sent to your customer and to the revenue service via Payselection.', 'leyka'),
                 'short_format' => true,
             ],
-            'site_ip' => [
-                'type' => 'static_text',
-                'title' => __('Site IP', 'leyka'),
-                'is_html' => true,
-                'value' => $this->get_site_ip_content(),
-            ],
         ];
-    }
-
-    public function get_site_ip_content() {
-
-        $response = wp_remote_get('https://api.ipify.org/');
-
-        if ( is_array($response) && !is_wp_error($response) ) {
-            return '<div>'.$response['body'].'</div>';
-        }
-
-        return false;
-
     }
 
     public function is_setup_complete($pm_id = false) {
@@ -154,6 +136,16 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
             'ajax_wrong_server_response' => __('Error in server response. Please report to the website tech support.', 'leyka'),
             'payselection_not_set_up' => __('Error in Payselection settings. Please report to the website tech support.', 'leyka'),
             'payselection_error' => __('Payselection Error:', 'leyka'). ' ',
+            'payselection_widget_errors' => [
+                'PAY_WIDGET:CREATE_INVALID_PARAMS' => __('Parameter error', 'leyka'), //onError
+                'PAY_WIDGET:CREATE_BAD_REQUEST_ERROR' => __('System error', 'leyka'), //onError
+                'PAY_WIDGET:CREATE_NETWORK_ERROR' => __('Network error', 'leyka'), //onError
+                'PAY_WIDGET:TRANSACTION_FAIL' => __('Transaction error', 'leyka'), //onError
+                'PAY_WIDGET:CLOSE_COMMON_ERROR' => __('Close after an error', 'leyka'), //onClose
+                'PAY_WIDGET:CLOSE_BEFORE_PAY' => __('Payment not completed', 'leyka'), //onClose
+                'PAY_WIDGET:CLOSE_AFTER_FAIL' => __('Close after fail', 'leyka'), //onClose
+                'PAY_WIDGET:CLOSE_AFTER_SUCCESS' => __('Close after success', 'leyka'), //onClose
+            ],
         ]);
     }
 
@@ -815,7 +807,7 @@ class Leyka_Payselection_Card extends Leyka_Payment_Method {
             LEYKA_PLUGIN_BASE_URL.'img/pm-icons/card-mir.svg',
         ]);
 
-        $this->_supported_currencies = ['rub', 'eur', 'usd', 'kgs'];
+        $this->_supported_currencies = ['rub'];
         $this->_default_currency = 'rub';
 
         $this->_processing_type = 'custom-process-submit-event';
