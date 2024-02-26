@@ -993,26 +993,25 @@
                 position: relative;
 
                 .leyka-cryptocurrency-data {
-
                     flex-basis: calc( 100% - 36px);
+                    max-width: calc( 100% - 36px);
 
                     .leyka-cryptocurrency-title {
-
                         font-weight: 500;
                         font-size: 11px;
                         line-height: 12px;
                         letter-spacing: 0.03em;
                         color: #68748D;
-
                     }
 
                     .leyka-cryptocurrency-link {
-
+                        overflow: hidden;
+                        max-width: 100%;
                         font-weight: 400;
                         font-size: 16px;
                         line-height: 24px;
                         color: #172136;
-
+                        text-overflow: ellipsis;
                     }
 
                 }

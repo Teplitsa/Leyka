@@ -5795,6 +5795,7 @@ div[id*="leyka-pf-"].leyka-pf-star .section__fields.amount-description {
 .leyka-tpl-star-form .currency-tab.currency-crypto .cryptocurrencies_wallets .leyka-cryptocurrency-data-wrapper .leyka-cryptocurrency-data {
   -ms-flex-preferred-size: calc( 100% - 36px);
   flex-basis: calc( 100% - 36px);
+  max-width: calc( 100% - 36px);
 }
 
 .leyka-tpl-star-form .currency-tab.currency-crypto .cryptocurrencies_wallets .leyka-cryptocurrency-data-wrapper .leyka-cryptocurrency-data .leyka-cryptocurrency-title {
@@ -5806,10 +5807,13 @@ div[id*="leyka-pf-"].leyka-pf-star .section__fields.amount-description {
 }
 
 .leyka-tpl-star-form .currency-tab.currency-crypto .cryptocurrencies_wallets .leyka-cryptocurrency-data-wrapper .leyka-cryptocurrency-data .leyka-cryptocurrency-link {
+  overflow: hidden;
+  max-width: 100%;
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
   color: #172136;
+  text-overflow: ellipsis;
 }
 
 .leyka-tpl-star-form .currency-tab.currency-crypto .cryptocurrencies_wallets .leyka-cryptocurrency-data-wrapper .leyka-button-copy {

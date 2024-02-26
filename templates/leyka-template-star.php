@@ -300,7 +300,7 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                     <?php if( !empty($template_data['cryptocurrencies_text']) ) { ?>
 
                         <div class="section__fields cryptocurrencies_text">
-                            <?php echo esc_html( $template_data['cryptocurrencies_text'] ); ?>
+                            <?php echo wp_kses_post( $template_data['cryptocurrencies_text'] ); ?>
                         </div>
 
                     <?php } ?>
