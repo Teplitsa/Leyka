@@ -219,7 +219,8 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
                     '#SEND_TEXT#',
                     '#DONATION_ID#',
                     '#CARD_CHECK_SENT_TEXT#',
-                    '#OK_TEXT#'
+                    '#OK_TEXT#',
+                    '#SEND_NONCE#'
                 ],
                 [
                     __('Save', 'leyka'),
@@ -227,6 +228,7 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
                     $donation->id,
                     sprintf(__("Card-check has been sent to <b> %s </b>", 'leyka'), $donation->donor_email),
                     __("OK", 'leyka'),
+                    wp_create_nonce( 'send-card-nonce' )
                 ],
                 file_get_contents(LEYKA_PLUGIN_DIR.'gateways/demirbank/templates/parts/card_check_tools.html')
             );

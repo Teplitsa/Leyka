@@ -1,5 +1,10 @@
 <style>
-
+    #card-check:before,
+    #card-check:after {
+        content: '';
+        display: table;
+        clear: both;
+    }
     #card-check-tools {
         width: 320px;
         float: left;
@@ -120,9 +125,10 @@
 
     function sendCardCheck(donationId) {
 
-        const ajaxUrl = '/wp-admin/admin-ajax.php';
-        const request = new XMLHttpRequest();
-        const params = "action=send-card-check&donation_id="+donationId;
+        const ajaxUrl  = '/wp-admin/admin-ajax.php';
+        const request  = new XMLHttpRequest();
+        let checkNonce = document.getElementById('card-check-nonce').value;
+        const params   = "action=send-card-check&donation_id="+donationId+"&nonce="+checkNonce;
 
         request.open("POST", ajaxUrl, true);
 
