@@ -11393,3 +11393,141 @@ msgstr "Префикс"
 #: gateways/dolyame/leyka-class-dolyame-gateway.php:73
 msgid "Request handler"
 msgstr "Обработчик сетевых запросов"
+
+#: /inc/settings/controllers/leyka-class-mixplat-settings-controller.php:147
+msgid "Test payment"
+msgstr "Тестовый платеж"
+
+#: /inc/settings/controllers/leyka-class-mixplat-settings-controller.php:147
+msgid "Keyword by SMS"
+msgstr "Ключевое слово по SMS"
+
+#: /inc/settings/controllers/leyka-class-mixplat-settings-controller.php:114
+msgid "Getting statuses"
+msgstr "Получение статусов"
+
+#: /inc/settings/controllers/leyka-class-mixplat-settings-controller.php:114
+msgid "Saving settings"
+msgstr "Сохранение настроек"
+
+#: /inc/settings/controllers/leyka-class-mixplat-settings-controller.php:114
+msgid "Registration"
+msgstr "Регистрация"
+
+#: /inc/leyka-admin-hepl-page:45
+msgid "<a href="https://mixplat.ru/" target="_blank">Mixplat Processing</a> is a leading provider of payment solutions for non–profit organizations. When connected to the Mixplat, the NGO receives all the necessary fundraising tools: SMS to a short number, Bank cards, SBP, etc. Recurring subscriptions are enabled immediately and do not require additional configuration. In the Mixplat <a href="https://stat.mixplat.ru/" target="_blank">personal account</a>, you will find many interactive elements for your site that will help attract donors and increase fees."
+msgstr "<a href="https://mixplat.ru/" target="_blank">Миксплат Процессинг</a> – ведущий поставщик платёжных решений для некоммерческих организаций. При подключении к Миксплат НКО получает все необходимые инструменты фандрайзинга: SMS на короткий номер, Банковские карты, СБП и др. Рекуррентные подписки включены сразу и не требуют дополнительной настройки. В <a href="https://stat.mixplat.ru/" target="_blank">личном кабинете</a> Миксплат вы найдёте множество интерактивных элементов для вашего сайта, которые помогут привлечь доноров и увеличить сборы."
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "MIXPLAT"
+msgstr "МИКСПЛАТ"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "Mixplat Processing is a system that allows NGOs to accept donations using all types of bank cards, quick payment systems, as well as via SMS sent to a four—digit number."
+msgstr "Миксплат Процессинг — это система, позволяющая НКО принимать пожертвования с помощью всех типов банковских карт, систем быстрых платежей, а также с помощью SMS, отправленного на четырехзначный номер."
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "I'm already connected to the Mixplat"
+msgstr "Я уже подключен к Миксплат"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "<h3 class='intro-mini-header'>Before starting registration with the payment operator, please prepare scanned copies of the documents:</h3><ul><li>Certificate of registration of your organization</li><li>Tax registration certificate (TIN)</li></ul>"
+msgstr "<h3 class='intro-mini-header'>Перед началом регистрации у платёжного оператора приготовьте, пожалуйста, отсканированные копии документов:</h3><ul><li>Свидетельство о регистрации вашей организации</li><li>Свидетельство о постановке на налоговый учёт (ИНН)</li></ul>"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "<p>If you are not working with Mixplat yet, register on the website <a href='https://mixplat.ru' target='_blank'>mixplat.ru</a> and set up your first project in the system. If you are already registered in the Mixplat, re-registration is not required.</p><p>To register on the website <a href='https://mixplat.ru' target='_blank'>mixplat.ru</a> click on the <a href='https://mixplat.ru/register/' target='_blank'>link</a>. After that, fill out the contact form to receive the login and password from the account.</p>"
+msgstr "<p>Если вы ещё не работаете с Миксплат, зарегистрируйтесь на сайте <a href='https://mixplat.ru' target='_blank'>mixplat.ru</a> и настройте свой первый проект в системе. Если вы уже зарегистрированы в Миксплат, повторная регистрация не требуется.</p><p>Для регистрации на сайте <a href='https://mixplat.ru' target='_blank'>mixplat.ru</a>, перейдите по <a href='https://mixplat.ru/register/' target='_blank'>ссылке</a>. После чего заполните контактную форму для получения логина и пароля от аккаунта.</p>"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "After submitting the application, the Mixplat Processing manager will contact you to confirm the registration and organization data, after which you will receive a login and password to the Mixplat personal account."
+msgstr "После подачи заявки менеджер Миксплат Процессинг свяжется с вами для подтверждения регистрации и данных организации, после чего вы получите логин и пароль в личный кабинет Миксплат."
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "Click on the <a href='https://stat.mixplat.ru/login?returnUrl=%2F' target='_blank'>link</a> to log in."
+msgstr "Перейдите по <a href='https://stat.mixplat.ru/login?returnUrl=%2F' target='_blank'>ссылке</a> для авторизации."
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "After authorization, go to the project creation page, to do this, click on the <a href='https://stat.mixplat.ru/projects' target='_blank'>&quot;Project Settings&quot;</a> item in the navigation menu"
+msgstr "После авторизации  перейдите на станицу создания проектов, для этого в навигационном меню нажмите на пункт <a href='https://stat.mixplat.ru/projects' target='_blank'>&quot;Настройки проектов&quot;</a>"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "Next, click on the &quot;Create a project&quot; button"
+msgstr "Далее нажмите на кнопку &quot;Создать проект&quot;"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "Fill in all the fields of the form and click on the &quot;Submit for moderation&quot; button"
+msgstr "Заполните все поля формы и нажмите на кнопку &quot;Отправить на модерацию&quot;"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "After the moderation is completed, the status of your project will change to &quot;Active&quot;."
+msgstr "После завершения модерации статус вашего проекта изменится на &quot;Активен&quot;."
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "Click the &quot;Settings&quot; button on the Project <a href='https://stat.mixplat.ru/projects' target='_blank'>Settings page</a>."
+msgstr "Нажмите кнопку &quot;Настройки&quot; на странице <a href='https://stat.mixplat.ru/projects' target='_blank'>Настройки проектов</a>."
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "Copy the project id, widget key, and API key to the appropriate fields."
+msgstr "Скопируйте id проекта, ключ виджета и ключ API в соответствующие поля."
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "<p>In the project settings, in the «Receiving payment statuses» field, you need to enter the URL where the payment status handler script is located on your site.</p><p>Click the «Edit» button and in the «script handler» field, copy and paste the following address:</p>"
+msgstr "<p>В настройках проекта в поле «Получение статусов платежей» требуется вписать URL адрес, где на вашем сайте размещён скрипт-обработчик статусов платежей.</p><p>Нажмите кнопку «Редактировать» и в поле «скрипт-обработчик» скопируйте и вставьте следующий адрес:</p>"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "Check the correctness of the address and click «Save»."
+msgstr "Проверьте корректность адреса и нажмите «Сохранить»."
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "You have enabled payment acceptance via the Mixplat. Payments using payment systems, bank cards and mobile phones are available to you."
+msgstr "Вы подключили приём платежей через Миксплат. Вам доступны платежи с помощью платежных систем, банковских карт и мобильных телефонов."
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "Check the «Test mode» box in the settings to make test payments, or skip this option to accept payments in combat mode."
+msgstr "Установите в настройках галочку «Тестовый режим» для осуществления тестовых платежей или пропустите этот пункт для приема платежей в боевом режиме."
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "The working mode of integration"
+msgstr "Рабочий режим интеграции"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "Check the box if the integration with the payment operator is in operation mode. Sometimes this mode is also called &quot;sandbox&quot; or &quot;sandbox&quot;."
+msgstr "Поставьте отметку, если интеграция с платёжным оператором выполняется в рабочем режиме. Иногда этот режим также называется &quot;песочницей&quot; или &quot;sandbox&quot;."
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "<p><strong>Attention! Payment testing mode is enabled.</strong></p><p>The test mode is intended only for the initial setup of payments and should be turned off immediately when confirmation is received from your manager. During the enabled testing mode, no real money is debited. To test payments, you must use special bank card numbers:</p><ul><li><b>4242424242424242</b> – all payments will be successful,</li><li><b>5555555555554444</b> – all payments will be unsuccessful,</li><li><b>2201382000000013</b> – the payment status will be selected randomly.</li></ul><p>Use any date (in the future) and any CVC code. As long as the testing mode is enabled, the data of any real cards will lead to a payment error.</p>"
+msgstr "<p><strong>Внимание! Включён режим тестирования платежей.</strong></p><p>Режим тестирования предназначен только для первоначальной настройки платежей и должен быть выключен сразу же, когда будет получено подтверждение от вашего менеджера. Во время включённого режима тестирования никакие реальные деньги не списываются. Для тестирования платежей вы должны использовать специальные номера банковских карт:</p><ul><li><b>4242424242424242</b> – все платежи будут успешны,</li><li><b>5555555555554444</b> – все платежи будут неуспешны,</li><li><b>2201382000000013</b> – статус платежа будет выбран случайным образом.</li></ul><p>Используйте любую дату (в будущем) и любой код CVC. Пока включён режим тестирования, данные любых реальных карт приведут к ошибке платежа.</p>"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "If you have any questions about setting up payment methods, you will be happy to help the Mixplat support service."
+msgstr "С любыми вопросами по настройке платёжных методов вам будут рады помочь в службе поддержки Миксплат."
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "<p>Change the text of the donor's hint by replacing XXXX in the text with your keyword:</p>"
+msgstr "<p>Измените текст подсказки донору, заменив в тексте XXXX на ваше ключевое слово:</p>"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "Receive donations via SMS"
+msgstr "Получать пожертвования по SMS"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "<p>The keyword defines your organization as the recipient of SMS messages sent by subscribers for donations. The user needs to start the text of the SMS message with your keyword, then write the donation amount and send this message to a short number to donate to your foundation.</p>"
+msgstr "<p>Ключевое слово определяет вашу организацию как получателя SMS, которые шлют абоненты для пожертвований. Пользователю необходимо начать текст SMS-сообщения с вашего ключевого слова, затем написать сумму пожертвования и отправить это сообщение на короткий номер для осуществления пожертвования в пользу вашего фонда.</p>"
+
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "<p>Keyword fees can be directed to the main campaign or associated with a specific address fee. To do this, create and select the desired address fee in the Mixplat personal account when creating a keyword.</p><p>In the Mixplat personal account, within the framework of a previously created project, go to the &quot;Short Number&quot; tab and create a new keyword:</p>"
+msgstr "<p>Сборы по ключевому слову могут быть направлены на основную кампанию или связаны с определённым адресным сбором, для этого создайте и выберите нужный адресный сбор в личном кабинете Миксплат при создании ключевого слова.</p><p>В личном кабинете Миксплат в рамках ранее созданного проекта перейдите на вкладку &quot;Короткий номер&quot; и создайте новое ключевое слово:</p>"
+
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "In the Mixplat personal account, within the framework of a previously created project, go to the &quot;Short Number&quot; tab and create a &quot;Keyword&quot;"
+msgstr "В личном кабинете Миксплат в рамках ранее созданного проекта перейдите на вкладку &quot;Короткий номер&quot; и создайте &quot;Ключевое слово&quot;"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "<p>After your keyword passes the accessibility check, it will be included in the general list with the status &quot;Working&quot;.</p><p>You can create several keywords, specify different address fees for them and use them both in the Watering Can and offline.</p>"
+msgstr "<p>После того как ваше ключевое слово пройдет проверку на доступность, оно попадет в общий список со статусом &quot;Работает&quot;.</p><p>Вы можете создать несколько ключевых слов, указать для них разные адресные сборы и использовать одновременно как в Лейке, так и оффлайн.</p>"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "Select the appropriate Watering Can campaign for SMS payments from the list or leave the default campaign"
+msgstr "Выберите из списка подходящую кампанию Лейки для SMS-платежей или оставьте кампанию по умолчанию"

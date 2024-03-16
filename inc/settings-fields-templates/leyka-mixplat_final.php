@@ -1,0 +1,33 @@
+<?php if( !defined('WPINC') ) die;
+
+/** Custom field group for the CP payments cards. */
+
+/** @var $this Leyka_Custom_Setting_Block A block for which the template is used. */
+
+$campaigns = get_posts([
+    'post_type' => Leyka_Campaign_Management::$post_type,
+    'post_status' => ['publish', 'pending', 'draft',],
+    'posts_per_page'   => 1,
+    'fields' => 'ids',
+]);
+
+$campaign_id = count($campaigns) ? $campaigns[0] : null;
+$campaign_url = $campaign_id ? get_the_permalink($campaign_id) : null;
+//$campaign_url_encoded = $campaign_url ? urlencode($campaign_url) : null;?>
+
+<div class="<?php echo esc_attr( $this->field_type );?> cp-final-share-campaign">
+    <p>
+        <?
+            esc_html_e("You have enabled payment acceptance via the Mixplat. Payments using payment systems, bank cards and mobile phones are available to you.", "leyka");
+        ?>
+    </p>
+    
+    <div class="final-button">
+    <?php if($campaign_id) {?>
+        <a class="step-next button button-primary" href="<?php echo esc_url( $campaign_url );?>" target="_blank"><?php esc_html_e('Test the campaign', 'leyka');?></a>
+    <?php } else {?>
+        <a class="step-next button button-primary" href="<?php echo admin_url("/admin.php?page=leyka_settings_new&screen=wizard-init");?>"><?php esc_html_e('Create a campaign', 'leyka');?></a>
+    <?php }?>
+    </div>
+
+</div>

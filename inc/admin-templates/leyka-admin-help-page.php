@@ -37,6 +37,13 @@
                     'subtitle' => __('Setup Wizard', 'leyka'),
                     'text' => leyka_get_gateway_by_id('cp')->description,
                     'wizard_link' => admin_url('admin.php?page=leyka_settings_new&screen=wizard-cp'),
+                ]);
+                
+                $this->show_admin_portlet('wizard-inner-ad', [
+                    'title' => 'МИКСПЛАТ',
+                    'subtitle' => __('Setup Wizard', 'leyka'),
+                    'text' => __('<a href="https://mixplat.ru/" target="_blank">Mixplat Processing</a> is a leading provider of payment solutions for non–profit organizations. When connected to the Mixplat, the NGO receives all the necessary fundraising tools: SMS to a short number, Bank cards, SBP, etc. Recurring subscriptions are enabled immediately and do not require additional configuration. In the Mixplat <a href="https://stat.mixplat.ru/" target="_blank">personal account</a>, you will find many interactive elements for your site that will help attract donors and increase fees.', 'leyka'),
+                    'wizard_link' => admin_url('admin.php?page=leyka_settings_new&screen=wizard-mixplat'),
                 ]);?>
 
             </div>

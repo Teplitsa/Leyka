@@ -5154,6 +5154,7 @@ ul.ui-autocomplete.ui-menu li.ui-menu-item:hover {
   margin-top: -0.5rem;
 }
 
+.step .block-separator,
 .leyka-wizard.wizard-yandex .main-area .settings-block .block-separator {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -5163,12 +5164,14 @@ ul.ui-autocomplete.ui-menu li.ui-menu-item:hover {
   margin-left: -2px;
 }
 
+.step .block-separator div,
 .leyka-wizard.wizard-yandex .main-area .settings-block .block-separator div {
   border-bottom: 1px dashed #dddddd;
   height: 7px;
   width: calc(100% - 15px - 0.5rem);
 }
 
+.leyka-wizard.wizard-mixplat .main-area .step .block-separator:before,
 .leyka-wizard.wizard-yandex .main-area .settings-block .block-separator:before {
   content: counter(block-separator-counter);
   counter-increment: block-separator-counter;
@@ -5184,6 +5187,17 @@ ul.ui-autocomplete.ui-menu li.ui-menu-item:hover {
   text-align: center;
   font-size: 10px;
   padding: 0px;
+}
+
+.mixplat-steps{
+    counter-reset: list;
+}
+.leyka-wizard.wizard-mixplat .main-area .step .block-separator:before{
+    content: counter(list);
+    counter-increment: list;
+}
+.leyka-wizard.wizard-mixplat .main-area .step{
+    margin-bottom: 25px;
 }
 
 .leyka-wizard.wizard-yandex .main-area .settings-block .enum-separated-block {
@@ -12659,4 +12673,25 @@ ul.ui-autocomplete.ui-menu li.ui-menu-item:hover {
   }
 }
 
+#save_company,
+#more-testinfo,
+.show-sms,
+#leyka_mixplat-sms_default_campaign_id,
+#leyka_mixplat-sms_details{
+    display: none;
+}
+#more-testinfo.active,
+#leyka-settings-form-rd-sms.active #save_company,
+#leyka-settings-form-rd-sms.active .show-sms,
+#leyka-settings-form-rd-sms.active #leyka_mixplat-sms_default_campaign_id,
+#leyka-settings-form-rd-sms.active #leyka_mixplat-sms_details{
+    display: block !important;
+} 
+#mixplat_test_pay b{
+    width: 125px;
+    display: inline-block;
+}
+#leyka-settings-form-rd-sms textarea{
+    height: 120px;
+}
 /*# sourceMappingURL=admin.css.map */
