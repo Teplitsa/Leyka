@@ -57,7 +57,7 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
 
                 <div class="section-title-line"></div>
                 <div class="section-title-text" role="heading" aria-level="3">
-                    <?php _e('donation currency', 'leyka'); ?>
+                    <?php _e('Donation currency', 'leyka'); ?>
                 </div>
 
             </div>

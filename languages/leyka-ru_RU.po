@@ -327,8 +327,8 @@ msgstr "адреса криптокошельков"
 
 #: templates/leyka-template-need-help.php:78
 #: templates/leyka-template-star.php:60
-msgid "donation currency"
-msgstr "валюта пожертвования"
+msgid "Donation currency"
+msgstr "Валюта пожертвования"
 
 #: inc/settings/allocators/leyka-class-ru-options-allocator.php:457
 msgid "Cryptocurrencies"
