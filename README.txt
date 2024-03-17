@@ -86,6 +86,7 @@ For technical support questions, please, use the [plugin support email](maillto:
 == Changelog ==
 
 = 3.31.3 =
+* Add: New payment system Dolyame
 * Improve: Escaping
 
 = 3.31.2 =
