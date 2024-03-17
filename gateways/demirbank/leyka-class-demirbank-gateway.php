@@ -343,7 +343,6 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
     protected function _set_ajax_actions() {
 
         add_action( 'wp_ajax_send-card-check', [$this, 'send_card_check_email']);
-        add_action( 'wp_ajax_nopriv_send-card-check', [$this, 'send_card_check_email']);
 
     }
 
