@@ -85,6 +85,12 @@ For technical support questions, please, use the [plugin support email](maillto:
 
 == Changelog ==
 
+= 3.31.3 =
+* Improve: Escaping
+
+= 3.31.2 =
+* Fix: Broken Access Control vulnerability
+
 = 3.31.1 =
 * Improve: Payselection code
 
