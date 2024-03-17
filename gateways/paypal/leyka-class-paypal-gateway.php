@@ -1650,51 +1650,51 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
             $donation = Leyka_Donations::get_instance()->get_donation($donation);?>
 
-            <label><?php _e('PayPal token', 'leyka');?>:</label>
+            <label><?php esc_html_e('PayPal token', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') {?>
-                <input type="text" id="paypal-token" name="paypal-token" placeholder="<?php _e('Enter PayPal token', 'leyka');?>" value="<?php echo esc_attr( $donation->paypal_token );?>">
+                <input type="text" id="paypal-token" name="paypal-token" placeholder="<?php esc_attr_e('Enter PayPal token', 'leyka');?>" value="<?php echo esc_attr( $donation->paypal_token );?>">
                 <?php } else {?>
                 <span class="fake-input"><?php echo esc_html( $donation->paypal_token );?></span>
                 <?php }?>
             </div>
 
-            <label><?php _e('PayPal correlation ID', 'leyka');?>:</label>
+            <label><?php esc_html_e('PayPal correlation ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') {?>
-                <input type="text" id="paypal-correlation-id" name="paypal-correlation-id" placeholder="<?php _e('Enter PayPal correlation ID', 'leyka');?>" value="<?php echo esc_attr( $donation->paypal_correlation_id );?>">
+                <input type="text" id="paypal-correlation-id" name="paypal-correlation-id" placeholder="<?php esc_attr_e('Enter PayPal correlation ID', 'leyka');?>" value="<?php echo esc_attr( $donation->paypal_correlation_id );?>">
                 <?php } else {?>
                 <span class="fake-input"><?php echo esc_html( $donation->paypal_correlation_id );?></span>
                 <?php }?>
             </div>
 
-            <label><?php _e('PayPal payment ID', 'leyka');?>:</label>
+            <label><?php esc_html_e('PayPal payment ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') {?>
-                <input type="text" id="paypal-payment-id" name="paypal-payment-id" placeholder="<?php _e('Enter PayPal payment ID', 'leyka');?>" value="<?php echo esc_attr( $donation->paypal_payment_id );?>">
+                <input type="text" id="paypal-payment-id" name="paypal-payment-id" placeholder="<?php esc_attr_e('Enter PayPal payment ID', 'leyka');?>" value="<?php echo esc_attr( $donation->paypal_payment_id );?>">
                 <?php } else {?>
                 <span class="fake-input"><?php echo esc_html($donation->paypal_payment_id);?></span>
                 <?php }?>
             </div>
 
-            <label><?php _e('PayPal Payer ID', 'leyka');?>:</label>
+            <label><?php esc_html_e('PayPal Payer ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') {?>
-                <input type="text" id="paypal-payer-id" name="paypal-token" placeholder="<?php _e('Enter PayPal Payer ID', 'leyka');?>" value="<?php echo esc_attr( $donation->paypal_payer_id );?>">
+                <input type="text" id="paypal-payer-id" name="paypal-token" placeholder="<?php esc_attr_e('Enter PayPal Payer ID', 'leyka');?>" value="<?php echo esc_attr( $donation->paypal_payer_id );?>">
                 <?php } else {?>
                 <span class="fake-input"><?php echo esc_html( $donation->paypal_payer_id );?></span>
                 <?php }?>
             </div>
 
-            <label><?php _e('PayPal Sale ID', 'leyka');?>:</label>
+            <label><?php esc_html_e('PayPal Sale ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') {?>
-                    <input type="text" id="paypal-sale-id" name="paypal-token" placeholder="<?php _e('Enter PayPal Sale ID', 'leyka');?>" value="<?php echo esc_attr( $donation->paypal_sale_id );?>">
+                    <input type="text" id="paypal-sale-id" name="paypal-token" placeholder="<?php esc_attr_e('Enter PayPal Sale ID', 'leyka');?>" value="<?php echo esc_attr( $donation->paypal_sale_id );?>">
                 <?php } else {?>
                     <span class="fake-input"><?php echo esc_html( $donation->paypal_sale_id );?></span>
                 <?php }?>
@@ -1705,18 +1705,18 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 $init_recurring_donation = $donation->init_recurring_donation;?>
 
             <div class="recurring-is-active-field">
-                <label><?php _e('Recurring subscription is active', 'leyka');?>:</label>
+                <label><?php esc_html_e('Recurring subscription is active', 'leyka');?>:</label>
                 <div class="leyka-ddata-field">
                     <?php echo esc_html( $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka') ); ?>
                 </div>
             </div>
 
-            <label><?php _e('PayPal Billing Plan ID', 'leyka');?>:</label>
+            <label><?php esc_html_e('PayPal Billing Plan ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
                 <span class="fake-input"><?php echo esc_html( $donation->paypal_billing_plan_id );?></span>
             </div>
 
-            <label><?php _e('PayPal Billing Agreement ID', 'leyka');?>:</label>
+            <label><?php esc_html_e('PayPal Billing Agreement ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
                 <span class="fake-input"><?php echo esc_html( $donation->paypal_billing_agreement_id );?></span>
             </div>
@@ -1725,19 +1725,19 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
         } else { // New donation page displayed ?>
 
-            <label for="paypal-token"><?php _e('PayPal token', 'leyka');?>:</label>
+            <label for="paypal-token"><?php esc_html_e('PayPal token', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <input type="text" id="paypal-token" name="paypal-token" placeholder="<?php _e('Enter PayPal token', 'leyka');?>" value="">
+                <input type="text" id="paypal-token" name="paypal-token" placeholder="<?php esc_attr_e('Enter PayPal token', 'leyka');?>" value="">
             </div>
 
-            <label for="paypal-correlation-id"><?php _e('PayPal correlation ID', 'leyka');?>:</label>
+            <label for="paypal-correlation-id"><?php esc_html_e('PayPal correlation ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <input type="text" id="paypal-correlation-id" name="paypal-correlation-id" placeholder="<?php _e('Enter PayPal correlation ID', 'leyka');?>" value="">
+                <input type="text" id="paypal-correlation-id" name="paypal-correlation-id" placeholder="<?php esc_attr_e('Enter PayPal correlation ID', 'leyka');?>" value="">
             </div>
 
-            <label for="paypal-payer-id"><?php _e('PayPal Payer ID', 'leyka');?>:</label>
+            <label for="paypal-payer-id"><?php esc_html_e('PayPal Payer ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <input type="text" id="paypal-payer-id" name="paypal-payer-id" placeholder="<?php _e('Enter PayPal Payer ID', 'leyka');?>" value="">
+                <input type="text" id="paypal-payer-id" name="paypal-payer-id" placeholder="<?php esc_attr_e('Enter PayPal Payer ID', 'leyka');?>" value="">
             </div>
 
         <?php }

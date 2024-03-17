@@ -148,7 +148,7 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
                 date(get_option('date_format'), $timestamp).', '.date(get_option('time_format'), $timestamp) : __('no', 'leyka');?>
 
             <div class="leyka-gds-data-info">
-                <?php echo sprintf(__('Last successful data preparation date: <strong>%s</strong>', 'leyka'), $last_procedure_run_date);?>
+                <?php echo sprintf( __('Last successful data preparation date: <strong>%s</strong>', 'leyka'), esc_html( $last_procedure_run_date ) ) ;?>
             </div>
 
         </div>

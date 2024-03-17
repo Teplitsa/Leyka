@@ -603,9 +603,9 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         $recurring_manual_cancel_link = 'https://my.cloudpayments.ru/ru/unsubscribe';
 
         if($recurring_cancelling_result === true) {
-            die(__('Recurring subscription cancelled successfully.', 'leyka'));
+            die( esc_html__('Recurring subscription cancelled successfully.', 'leyka') );
         } else if(is_wp_error($recurring_cancelling_result)) {
-            die($recurring_cancelling_result->get_error_message());
+            die( wp_kses_post( $recurring_cancelling_result->get_error_message() ) );
         } else {
             die( sprintf(__('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email(), $recurring_manual_cancel_link) );
         }
@@ -711,12 +711,12 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
             <div class="leyka-ddata-string">
 
-                <label><?php _e('CloudPayments transaction ID', 'leyka');?>:</label>
+                <label><?php esc_html_e('CloudPayments transaction ID', 'leyka');?>:</label>
 
                 <div class="leyka-ddata-field">
 
                     <?php if($donation->type === 'correction') {?>
-                        <input type="text" id="cp-transaction-id" name="cp-transaction-id" placeholder="<?php _e('Enter CloudPayments transaction ID', 'leyka');?>" value="<?php echo esc_attr( $donation->cp_transaction_id );?>">
+                        <input type="text" id="cp-transaction-id" name="cp-transaction-id" placeholder="<?php esc_attr_e('Enter CloudPayments transaction ID', 'leyka');?>" value="<?php echo esc_attr( $donation->cp_transaction_id );?>">
                     <?php } else {?>
                         <span class="fake-input"><?php echo esc_html( $donation->cp_transaction_id );?></span>
                     <?php }?>
@@ -731,12 +731,12 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
             <div class="leyka-ddata-string">
 
-                <label><?php _e('CloudPayments subscription ID', 'leyka');?>:</label>
+                <label><?php esc_html_e('CloudPayments subscription ID', 'leyka');?>:</label>
 
                 <div class="leyka-ddata-field">
 
                     <?php if($donation->type === 'correction') {?>
-                        <input type="text" id="cp-recurring-id" name="cp-recurring-id" placeholder="<?php _e('Enter CloudPayments subscription ID', 'leyka');?>" value="<?php echo esc_attr( $donation->cp_recurring_id );?>">
+                        <input type="text" id="cp-recurring-id" name="cp-recurring-id" placeholder="<?php esc_attr_e('Enter CloudPayments subscription ID', 'leyka');?>" value="<?php echo esc_attr( $donation->cp_recurring_id );?>">
                     <?php } else {?>
                         <span class="fake-input"><?php echo esc_html( $donation->cp_recurring_id );?></span>
                     <?php }?>
@@ -748,7 +748,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
             <div class="recurring-is-active-field">
 
-                <label><?php _e('Recurring subscription is active', 'leyka');?>:</label>
+                <label><?php esc_html_e('Recurring subscription is active', 'leyka');?>:</label>
                 <div class="leyka-ddata-field">
                     <?php echo esc_html( $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka') );
 
@@ -761,14 +761,14 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
         <?php } else { // New donation page displayed ?>
 
-            <label for="cp-transaction-id"><?php _e('CloudPayments transaction ID', 'leyka');?>:</label>
+            <label for="cp-transaction-id"><?php esc_html_e('CloudPayments transaction ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <input type="text" id="cp-transaction-id" name="cp-transaction-id" placeholder="<?php _e('Enter CloudPayments transaction ID', 'leyka');?>" value="">
+                <input type="text" id="cp-transaction-id" name="cp-transaction-id" placeholder="<?php esc_attr_e('Enter CloudPayments transaction ID', 'leyka');?>" value="">
             </div>
 
-            <label for="cp-recurring-id"><?php _e('CloudPayments subscription ID', 'leyka');?>:</label>
+            <label for="cp-recurring-id"><?php esc_html_e('CloudPayments subscription ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <input type="text" id="cp-recurring-id" name="cp-recurring-id" placeholder="<?php _e('Enter CloudPayments subscription ID', 'leyka');?>" value="">
+                <input type="text" id="cp-recurring-id" name="cp-recurring-id" placeholder="<?php esc_attr_e('Enter CloudPayments subscription ID', 'leyka');?>" value="">
             </div>
 
         <?php }

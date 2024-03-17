@@ -345,16 +345,16 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
         $subscription_response = $donation->get_meta('unisender_subscription_response');
 
         if( !empty($subscription_response['error']) ) {
-            echo '<div><b>'.__('Error', 'leyka').': </b>'.$subscription_response['error'].'</div>';
+            echo '<div><b>' . esc_html__('Error', 'leyka') . ': </b>' . esc_html( $subscription_response['error'] ) . '</div>';
         } elseif( !empty($subscription_response['result']) && !empty($subscription_response['result']['person_id']) ) {
             echo
                 '<div>
-                    <b>'.__('Subscribed user ID', 'leyka').': </b>'.$subscription_response['result']['person_id'].'</br>
-                    <b>'.__('Invitation letter', 'leyka').': </b>'
-                    .(isset($subscription_response['result']['invitation_letter_sent']) ? __('Yes', 'leyka') : __('No', 'leyka'))
+                    <b>' . esc_html__('Subscribed user ID', 'leyka').': </b>' . esc_html( $subscription_response['result']['person_id'] ) . '</br>
+                    <b>' . esc_html__('Invitation letter', 'leyka') . ': </b>'
+                    . ( isset($subscription_response['result']['invitation_letter_sent']) ? __('Yes', 'leyka') : esc_html__('No', 'leyka'))
                 .'</div>';
         } else {
-            echo '<div>'.__('Response data is not correct', 'leyka').'</div>';
+            echo '<div>' . esc_html__('Response data is not correct', 'leyka') . '</div>';
         }
 
     }

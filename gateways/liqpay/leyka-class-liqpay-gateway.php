@@ -129,23 +129,23 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
 
             $donation = Leyka_Donations::get_instance()->get_donation($donation);?>
 
-            <label><?php _e('Liqpay order ID', 'leyka');?>:</label>
+            <label><?php esc_html_e('Liqpay order ID', 'leyka');?>:</label>
 
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') {?>
-                    <input type="text" id="liqpay-order-id" name="liqpay-order-id" placeholder="<?php _e('Enter Liqpay order ID', 'leyka');?>" value="<?php echo esc_attr( $donation->liqpay_order_id );?>">
+                    <input type="text" id="liqpay-order-id" name="liqpay-order-id" placeholder="<?php esc_attr_e('Enter Liqpay order ID', 'leyka');?>" value="<?php echo esc_attr( $donation->liqpay_order_id );?>">
                 <?php } else {?>
                     <span class="fake-input"><?php echo esc_html( $donation->liqpay_order_id );?></span>
                 <?php }?>
             </div>
 
-            <label><?php _e('Liqpay transaction ID', 'leyka');?>:</label>
+            <label><?php esc_html_e('Liqpay transaction ID', 'leyka');?>:</label>
 
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') {?>
-                    <input type="text" id="liqpay-transaction-id" name="liqpay-transaction-id" placeholder="<?php _e('Enter Liqpay transaction ID', 'leyka');?>" value="<?php echo esc_attr( $donation->liqpay_transaction_id );?>">
+                    <input type="text" id="liqpay-transaction-id" name="liqpay-transaction-id" placeholder="<?php esc_attr_e('Enter Liqpay transaction ID', 'leyka');?>" value="<?php echo esc_attr( $donation->liqpay_transaction_id );?>">
                 <?php } else {?>
                     <span class="fake-input"><?php echo esc_html( $donation->liqpay_transaction_id );?></span>
                 <?php }?>
@@ -155,23 +155,23 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
                 return;
             }?>
 
-            <label><?php _e('Liqpay recurring subscription ID', 'leyka');?>:</label>
+            <label><?php esc_html_e('Liqpay recurring subscription ID', 'leyka');?>:</label>
 
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') {?>
-                    <input type="text" id="liqpay-recurring-id" name="liqpay-recurring-id" placeholder="<?php _e('Enter Liqpay recurring subscription ID', 'leyka');?>" value="<?php echo esc_attr( $donation->liqpay_recurring_id );?>">
+                    <input type="text" id="liqpay-recurring-id" name="liqpay-recurring-id" placeholder="<?php esc_attr_e('Enter Liqpay recurring subscription ID', 'leyka');?>" value="<?php echo esc_attr( $donation->liqpay_recurring_id );?>">
                 <?php } else {?>
                     <span class="fake-input"><?php echo esc_html( $donation->liqpay_recurring_id );?></span>
                 <?php }?>
             </div>
 
-            <label><?php _e('Liqpay card token', 'leyka');?>:</label>
+            <label><?php esc_html_e('Liqpay card token', 'leyka');?>:</label>
 
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') {?>
-                    <input type="text" id="liqpay-card-token" name="liqpay-card-token" placeholder="<?php _e('Enter Liqpay card token', 'leyka');?>" value="<?php echo esc_attr( $donation->liqpay_card_token );?>">
+                    <input type="text" id="liqpay-card-token" name="liqpay-card-token" placeholder="<?php esc_attr_e('Enter Liqpay card token', 'leyka');?>" value="<?php echo esc_attr( $donation->liqpay_card_token );?>">
                 <?php } else {?>
                     <span class="fake-input"><?php echo esc_html( $donation->liqpay_card_token );?></span>
                 <?php }?>
@@ -181,7 +181,7 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
 
             <div class="recurring-is-active-field">
 
-                <label><?php _e('Recurring subscription is active', 'leyka');?>:</label>
+                <label><?php esc_html_e('Recurring subscription is active', 'leyka');?>:</label>
                 <div class="leyka-ddata-field">
                     <?php echo esc_html( $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka') );
 
@@ -194,14 +194,14 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
 
         <?php } else { // New donation page displayed ?>
 
-            <label for="cp-transaction-id"><?php _e('CloudPayments transaction ID', 'leyka');?>:</label>
+            <label for="cp-transaction-id"><?php esc_html_e('CloudPayments transaction ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <input type="text" id="cp-transaction-id" name="cp-transaction-id" placeholder="<?php _e('Enter CloudPayments transaction ID', 'leyka');?>" value="">
+                <input type="text" id="cp-transaction-id" name="cp-transaction-id" placeholder="<?php esc_attr_e('Enter CloudPayments transaction ID', 'leyka');?>" value="">
             </div>
 
-            <label for="cp-recurring-id"><?php _e('CloudPayments subscription ID', 'leyka');?>:</label>
+            <label for="cp-recurring-id"><?php esc_html_e('CloudPayments subscription ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <input type="text" id="cp-recurring-id" name="cp-recurring-id" placeholder="<?php _e('Enter CloudPayments subscription ID', 'leyka');?>" value="">
+                <input type="text" id="cp-recurring-id" name="cp-recurring-id" placeholder="<?php esc_attr_e('Enter CloudPayments subscription ID', 'leyka');?>" value="">
             </div>
 
         <?php }

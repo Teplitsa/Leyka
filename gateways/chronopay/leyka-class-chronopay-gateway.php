@@ -511,21 +511,21 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
             $donation = Leyka_Donations::get_instance()->get_donation($donation);?>
 
-            <label><?php _e('Chronopay customer ID', 'leyka');?>:</label>
+            <label><?php esc_html_e('Chronopay customer ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') {?>
-                    <input type="text" id="chronopay-customer-id" name="chronopay-customer-id" placeholder="<?php _e('Enter Chronopay Customer ID', 'leyka');?>" value="<?php echo esc_attr( $donation->chronopay_customer_id );?>">
+                    <input type="text" id="chronopay-customer-id" name="chronopay-customer-id" placeholder="<?php esc_attr_e('Enter Chronopay Customer ID', 'leyka');?>" value="<?php echo esc_attr( $donation->chronopay_customer_id );?>">
                 <?php } else {?>
                     <span class="fake-input"><?php echo esc_html( $donation->chronopay_customer_id );?></span>
                 <?php }?>
             </div>
 
-            <label><?php _e('Chronopay transaction ID', 'leyka');?>:</label>
+            <label><?php esc_html_e('Chronopay transaction ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') {?>
-                    <input type="text" id="chronopay-transaction-id" name="chronopay-transaction-id" placeholder="<?php _e('Enter Chronopay Transaction ID', 'leyka');?>" value="<?php echo esc_attr( $donation->chronopay_transaction_id );?>">
+                    <input type="text" id="chronopay-transaction-id" name="chronopay-transaction-id" placeholder="<?php esc_attr_e('Enter Chronopay Transaction ID', 'leyka');?>" value="<?php echo esc_attr( $donation->chronopay_transaction_id );?>">
                 <?php } else {?>
                     <span class="fake-input"><?php echo esc_attr( $donation->chronopay_transaction_id );?></span>
                 <?php }?>
@@ -533,9 +533,9 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
         <?php } else { // New donation page displayed ?>
 
-            <label for="chronopay-customer-id"><?php _e('Chronopay customer ID', 'leyka');?>:</label>
+            <label for="chronopay-customer-id"><?php esc_html_e('Chronopay customer ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <input type="text" id="chronopay-customer-id" name="chronopay-customer-id" placeholder="<?php _e('Enter Chronopay Customer ID', 'leyka');?>" value="">
+                <input type="text" id="chronopay-customer-id" name="chronopay-customer-id" placeholder="<?php esc_attr_e('Enter Chronopay Customer ID', 'leyka');?>" value="">
             </div>
 
             <?php }

@@ -1378,11 +1378,11 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
             $donation = Leyka_Donations::get_instance()->get_donation($donation);?>
 
-            <label><?php _e('Phone number', 'leyka');?>:</label>
+            <label><?php esc_html_e('Phone number', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
 
             <?php if($donation->type === 'correction') {?>
-                <input type="text" id="mixplat-phone" name="mixplat-phone" placeholder="<?php _e('Enter a phone number', 'leyka');?>" value="<?php echo esc_attr( $donation->mixplat_phone ); ?>">
+                <input type="text" id="mixplat-phone" name="mixplat-phone" placeholder="<?php esc_attr_e('Enter a phone number', 'leyka');?>" value="<?php echo esc_attr( $donation->mixplat_phone ); ?>">
             <?php } else {?>
                 <span class="fake-input"><?php echo esc_html( $donation->mixplat_phone ); ?></span>
             <?php }?>
@@ -1390,9 +1390,9 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
         <?php } else { // New donation page displayed ?>
 
-            <label for="mixplat-phone"><?php _e('Phone number', 'leyka');?>:</label>
+            <label for="mixplat-phone"><?php esc_html_e('Phone number', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <input type="text" id="mixplat-phone" name="mixplat-phone" placeholder="<?php _e('Enter a phone number', 'leyka');?>" value="">
+                <input type="text" id="mixplat-phone" name="mixplat-phone" placeholder="<?php esc_attr_e('Enter a phone number', 'leyka');?>" value="">
             </div>
         <?php }
 

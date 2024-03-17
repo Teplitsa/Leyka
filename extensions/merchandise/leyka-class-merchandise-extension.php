@@ -359,7 +359,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
             $merchandise_select_values['+'] = __('+ Create a new reward', 'leyka');?>
 
-            <div id="item-<?php echo leyka_get_random_string(4);?>" class="multi-valued-item-box merchandise-box <?php echo esc_html( $is_template ? 'item-template' : '' );?>" <?php echo esc_html( $is_template ? 'style="display: none;"' : '' ); ?>>
+            <div id="item-<?php echo esc_attr( leyka_get_random_string(4) );?>" class="multi-valued-item-box merchandise-box <?php echo esc_html( $is_template ? 'item-template' : '' );?>" <?php echo esc_html( $is_template ? 'style="display: none;"' : '' ); ?>>
 
                 <h3 class="item-box-title ui-sortable-handle">
                     <span class="draggable"></span>
@@ -394,12 +394,12 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
                     </div>
 
                     <ul class="notes-and-errors">
-                        <li class="any-field-note"><?php _e('When you upload or choose an image for reward, please use a picture at least 536 pixels wide.', 'leyka');?></li>
+                        <li class="any-field-note"><?php esc_html_e('When you upload or choose an image for reward, please use a picture at least 536 pixels wide.', 'leyka');?></li>
                     </ul>
 
                     <div class="box-footer">
                         <div class="remove-campaign-merchandise delete-item">
-                            <?php _e('Remove the reward from this campaign', 'leyka');?>
+                            <?php esc_html_e('Remove the reward from this campaign', 'leyka');?>
                         </div>
                     </div>
 
@@ -415,10 +415,12 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
                     <span class="draggable"></span>
                     <span class="title">
-                        <?php echo '['
-                            .leyka_format_amount($placeholders['donation_amount_needed'])
-                            .'&nbsp;'.leyka_get_currency_label().']&nbsp;'
-                            .esc_html($placeholders['box_title']);?>
+                        <?php
+                            echo '['
+                            . esc_html( leyka_format_amount( $placeholders['donation_amount_needed'] ) )
+                            .'&nbsp;' . esc_html( leyka_get_currency_label() ) . ']&nbsp;'
+                            . esc_html( $placeholders['box_title'] );
+                        ?>
                     </span>
 
                 </h3>
@@ -430,7 +432,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
                         <li class="edit-field-note">
                             <?php echo sprintf(
                                 __('If you wish to edit the reward settings, you may do it in <a href="%s" target="_blank">rewards library</a>.', 'leyka'),
-                                admin_url('admin.php?page=leyka_settings&stage=extensions&extension=merchandise#leyka_merchandise-merchandise_library')
+                                esc_url( admin_url('admin.php?page=leyka_settings&stage=extensions&extension=merchandise#leyka_merchandise-merchandise_library') )
                             );?>
                         </li>
 
@@ -448,7 +450,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
                     <?php if( !$placeholders['for_all_campaigns']) {?>
                         <div class="box-footer">
                             <div class="remove-campaign-merchandise delete-item">
-                                <?php _e('Remove the reward from this campaign', 'leyka');?>
+                                <?php esc_html_e('Remove the reward from this campaign', 'leyka');?>
                             </div>
                         </div>
                     <?php }?>
@@ -494,7 +496,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
                     <?php $this->_merchandise_campaign_item_html(true, ['campaign_id' => $campaign->id,]); // Item box template ?>
 
-                    <div class="add-merchandise add-item bottom"><?php _e('Add reward', 'leyka');?></div>
+                    <div class="add-merchandise add-item bottom"><?php esc_html_e('Add reward', 'leyka');?></div>
 
                     <input type="hidden" class="leyka-items-options" name="leyka_campaign_merchandise" value="">
 
@@ -641,7 +643,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
                 <div class="box-footer">
                     <div class="remove-campaign-merchandise delete-item">
-                        <?php _e('Remove the reward', 'leyka');?>
+                        <?php esc_html_e('Remove the reward', 'leyka');?>
                     </div>
                 </div>
 
@@ -687,7 +689,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
             <?php $this->_render_merchandise_item_html(true); // Merchandise item box template ?>
 
-            <div class="add-reward add-item bottom"><?php _e('Add reward', 'leyka');?></div>
+            <div class="add-reward add-item bottom"><?php esc_html_e('Add reward', 'leyka');?></div>
 
             <input type="hidden" class="leyka-items-options" name="leyka_merchandise_library" value="">
 
@@ -868,7 +870,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
         }?>
 
         <div class="leyka-ddata-string">
-            <label><?php _e('Donation reward', 'leyka');?>:</label>
+            <label><?php esc_html_e('Donation reward', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
                 <span class="fake-input"><?php echo wp_kses_post( $content );?></span>
             </div>
@@ -1110,7 +1112,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
             <div class="section-title-container">
                 <div class="section-title-line"></div>
-                <div class="section-title-text" role="heading" aria-level="3"><?php _e('Donation reward', 'leyka');?></div>
+                <div class="section-title-text" role="heading" aria-level="3"><?php esc_html_e('Donation reward', 'leyka');?></div>
             </div>
 
             <div class="section__fields merchandise-grid">

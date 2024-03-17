@@ -9,7 +9,7 @@
 		<div class="engb-row">
 			<div class="engb-title"><?php echo wp_kses_post( $banner['title'] );?></div>
 			<div class="engb-text">
-				<?php echo apply_filters( 'the_content', $banner['text'] );?>
+				<?php echo wp_kses_post( apply_filters( 'the_content', $banner['text'] ) );?>
 			</div>
 			<div class="engb-action">
 				<a href="<?php echo esc_url( $banner['button_link']);?>" <?php echo wp_kses_post( $banner['button_target'] );?> class='engb-button'><span><?php echo esc_html( $banner['button_label'] ) ;?></span></a>

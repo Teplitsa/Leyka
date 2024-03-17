@@ -626,14 +626,14 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
 
             <div class="leyka-ddata-string">
 
-                <label><?php _e('Payselection transaction ID', 'leyka');?>:</label>
+                <label><?php esc_html_e('Payselection transaction ID', 'leyka');?>:</label>
 
                 <div class="leyka-ddata-field">
 
                     <?php if($donation->type === 'correction') {?>
-                        <input type="text" id="payselection-transaction-id" name="payselection-transaction-id" placeholder="<?php _e('Enter Payselection transaction ID', 'leyka');?>" value="<?php echo $donation->payselection_transaction_id;?>">
+                        <input type="text" id="payselection-transaction-id" name="payselection-transaction-id" placeholder="<?php esc_html_e('Enter Payselection transaction ID', 'leyka');?>" value="<?php echo esc_attr( $donation->payselection_transaction_id );?>">
                     <?php } else {?>
-                        <span class="fake-input"><?php echo $donation->payselection_transaction_id;?></span>
+                        <span class="fake-input"><?php echo esc_html( $donation->payselection_transaction_id );?></span>
                     <?php }?>
                 </div>
 
@@ -646,14 +646,14 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
 
             <div class="leyka-ddata-string">
 
-                <label><?php _e('Payselection subscription ID', 'leyka');?>:</label>
+                <label><?php esc_html_e('Payselection subscription ID', 'leyka');?>:</label>
 
                 <div class="leyka-ddata-field">
 
                     <?php if($donation->type === 'correction') {?>
-                        <input type="text" id="payselection-recurring-id" name="payselection-recurring-id" placeholder="<?php _e('Enter Payselection subscription ID', 'leyka');?>" value="<?php echo $donation->payselection_recurring_id;?>">
+                        <input type="text" id="payselection-recurring-id" name="payselection-recurring-id" placeholder="<?php esc_attr_e('Enter Payselection subscription ID', 'leyka');?>" value="<?php echo esc_attr( $donation->payselection_recurring_id ); ?>">
                     <?php } else {?>
-                        <span class="fake-input"><?php echo $donation->payselection_recurring_id;?></span>
+                        <span class="fake-input"><?php echo esc_html( $donation->payselection_recurring_id );?></span>
                     <?php }?>
                 </div>
 
@@ -663,9 +663,9 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
 
             <div class="recurring-is-active-field">
 
-                <label><?php _e('Recurring subscription is active', 'leyka');?>:</label>
+                <label><?php esc_html_e('Recurring subscription is active', 'leyka');?>:</label>
                 <div class="leyka-ddata-field">
-                    <?php echo $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka');
+                    <?php echo esc_html( $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka') );
 
                     if( !$init_recurring_donation->recurring_is_active && $init_recurring_donation->recurring_cancel_date ) {
                     echo ' ('.sprintf(__('canceled on %s', 'leyka'), date(get_option('date_format').', '.get_option('time_format'), $init_recurring_donation->recurring_cancel_date)).')';
@@ -676,14 +676,14 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
 
         <?php } else { // New donation page displayed ?>
 
-            <label for="payselection-transaction-id"><?php _e('Payselection transaction ID', 'leyka');?>:</label>
+            <label for="payselection-transaction-id"><?php esc_html_e('Payselection transaction ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
                 <input type="text" id="payselection-transaction-id" name="payselection-transaction-id" placeholder="<?php _e('Enter Payselection transaction ID', 'leyka');?>" value="">
             </div>
 
-            <label for="payselection-recurring-id"><?php _e('Payselection subscription ID', 'leyka');?>:</label>
+            <label for="payselection-recurring-id"><?php esc_html_e('Payselection subscription ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <input type="text" id="payselection-recurring-id" name="payselection-recurring-id" placeholder="<?php _e('Enter Payselection subscription ID', 'leyka');?>" value="">
+                <input type="text" id="payselection-recurring-id" name="payselection-recurring-id" placeholder="<?php esc_attr_e('Enter Payselection subscription ID', 'leyka');?>" value="">
             </div>
 
         <?php }

@@ -194,7 +194,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
 
         if( !$this->get_available_campaign() ) {
             echo '<div class="error">
-                <p>'.sprintf(__("<strong>Leyka warning!</strong> The Support packages Extension currently doesn't have a campaign for donors to make recurring subscriptions. The campaign must be <strong>published</strong>, <strong>not marked as \"finished\"</strong> and, ideally, <strong>marked as persistent</strong> to be available.<br><br>Please see to it that you have at least <strong>one such campaign</strong>, and select the campaign in the <a href='%s'>Support packages settings page</a>.", 'leyka'), admin_url('admin.php?page=leyka_settings&stage=extensions&extension='.$this->_id)).'</p>
+                <p>'.sprintf(__("<strong>Leyka warning!</strong> The Support packages Extension currently doesn't have a campaign for donors to make recurring subscriptions. The campaign must be <strong>published</strong>, <strong>not marked as \"finished\"</strong> and, ideally, <strong>marked as persistent</strong> to be available.<br><br>Please see to it that you have at least <strong>one such campaign</strong>, and select the campaign in the <a href='%s'>Support packages settings page</a>.", 'leyka'), esc_url( admin_url('admin.php?page=leyka_settings&stage=extensions&extension=' . $this->_id ) ) ) . '</p>
             </div>';
         }
 
@@ -336,7 +336,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
                 </div>
 
                 <div class="box-footer">
-                    <div class="delete-item delete-package"><?php _e('Delete the reward', 'leyka');?></div>
+                    <div class="delete-item delete-package"><?php esc_html_e('Delete the reward', 'leyka');?></div>
                 </div>
 
             </div>
@@ -373,7 +373,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
 
             <?php $this->_render_support_package_item_html(true); // Package box template ?>
 
-            <div class="add-item bottom"><?php _e('Add reward', 'leyka');?></div>
+            <div class="add-item bottom"><?php esc_html_e('Add reward', 'leyka');?></div>
 
             <input type="hidden" class="leyka-items-options" name="leyka_support_packages" value="">
 
@@ -907,17 +907,17 @@ class Leyka_Support_Packages_Template_Tags {
             </div>
 
             <div class="leyka-ext-sp-card-row2">
-                <div class="leyka-ext-sp-price"><?php echo leyka_format_amount($package->price);?></div>
+                <div class="leyka-ext-sp-price"><?php echo esc_html( leyka_format_amount( $package->price ) );?></div>
                 <div class="leyka-ext-sp-currency"><?php echo wp_kses_post( $package->price_currency );?></div>
             </div>
 
             <div class="leyka-ext-sp-card-row3">
 
-                <div class="leyka-ext-sp-period"><?php _e('Per month', 'leyka')?></div>
+                <div class="leyka-ext-sp-period"><?php esc_html_e('Per month', 'leyka')?></div>
 
                 <div class="leyka-ext-sp-status">
                 	<?php if($is_active) {?>
-                	<span><?php _e('Current status', 'leyka')?></span>
+                	<span><?php esc_html_e('Current status', 'leyka')?></span>
                 	<?php } elseif(!empty($params['campaign_post_permalink']) && !empty($params['is_activation_available']) && $params['is_activation_available']) {?>
             		<a href="<?php echo esc_attr( $params['campaign_post_permalink'] );?>#leyka-activate-package|<?php echo esc_attr( $package->amount_needed );?>" class="leyka-activate-package-link"><?php esc_html_e('Choose', 'leyka')?></a>
                 	<?php }?>
@@ -986,17 +986,17 @@ class Leyka_Support_Packages_Template_Tags {
                 				<?php if($support_packages_subscription_text) {
                 				    echo wp_kses_post( $support_packages_subscription_text );
                 				} else {
-                				    esc_html_e('Subscription renews automatically. You can unsubscribe at any time in', 'leyka');?> <a href="<?php echo site_url('/donor-account/cancel-subscription/');?>"><?php esc_html_e('your account', 'leyka');?></a>
+                				    esc_html_e('Subscription renews automatically. You can unsubscribe at any time in', 'leyka');?> <a href="<?php echo esc_url( site_url('/donor-account/cancel-subscription/') );?>"><?php esc_html_e('your account', 'leyka');?></a>
                 				<?php }?>
                 			</div>
-                			<a href="<?php echo esc_url( $campaign_post_permalink );?>" class="leyka-ext-sp-subscribe-action"><?php echo leyka()->opt('support_packages_activation_button_label');?></a>
+                			<a href="<?php echo esc_url( $campaign_post_permalink );?>" class="leyka-ext-sp-subscribe-action"><?php echo wp_kses_post( leyka()->opt('support_packages_activation_button_label') );?></a>
             			</div>
                 	</div>
 
                     <div class="leyka-ext-sp-already-subsribed">
-                    	<a href="<?php echo site_url('/donor-account/');?>" class="leyka-ext-sp-already-subscribed-link">
+                    	<a href="<?php echo esc_url( site_url('/donor-account/') );?>" class="leyka-ext-sp-already-subscribed-link">
                     		<span class="leyka-ext-sp-already-subscribed-icon"><?php readfile(LEYKA_PLUGIN_DIR.'extensions/'.Leyka_Support_Packages_Extension::get_instance()->id_dash.'/img/person.svg');?></span>
-                    		<span class="leyka-ext-sp-already-subscribed-caption"><?php echo leyka()->opt('support_packages_account_link_label');?></span>
+                    		<span class="leyka-ext-sp-already-subscribed-caption"><?php echo wp_kses_post( leyka()->opt('support_packages_account_link_label') );?></span>
                 		</a>
                     </div>
 
