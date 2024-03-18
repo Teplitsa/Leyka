@@ -318,6 +318,12 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
 
     public function send_card_check_email($donation_id) {
 
+        check_ajax_referer( 'send-card-nonce', 'nonce' );
+
+        if ( ! current_user_can( 'read' ) ) {
+            wp_die();
+        }
+
         if( !$donation_id && empty($_POST) ) {
             return false;
         }
@@ -343,6 +349,7 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
     protected function _set_ajax_actions() {
 
         add_action( 'wp_ajax_send-card-check', [$this, 'send_card_check_email']);
+        add_action( 'wp_ajax_nopriv_send-card-check', [$this, 'send_card_check_email']);
 
     }
 
