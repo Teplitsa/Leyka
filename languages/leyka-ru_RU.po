@@ -32,25 +32,13 @@ msgstr "Письмо донору отправлено"
 msgid "Email notification has been sent to the donor"
 msgstr "Письмо донору отправлено"
 
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:1749
-msgid "Not all banks have implemented SBP subscriptions so far. Banks are to enable SBP recurrent support in their apps, but the process will take some time. Enable option to allow users to make subscriptions via SPB."
-msgstr "Не все банки на данный момент поддержкивают подписки на платежи по СБП. Банки должны включить поддержку рекуррентных списаний по СБП в своих приложених, но этот процесс займёт какое-то время. Включите эту опцию, чтобы позволить донорам подписываться на рекурренты по СБП."
-
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:1748
-msgid "Enable SBP subscriptions"
-msgstr "Включить подписки на платежи через СБП"
-
-#: gateways/mixplat/leyka-class-mixplat-gateway.php:1743
-msgid "Mixplat offers special conditions: 0% commission for SPB payments till Dec 2023.<br><a href=\"mailto:sbp@mixplat.ru\" target=_blank>Check details</a> with your manager."
-msgstr "MIXPLAT предлагает специальные условия: 0% комиссии по платежам через СБП до декабря 2023.<br><a href=\"mailto:sbp@mixplat.ru\" target=_blank>Уточните детали</a> с вашим менеджером."
-
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:1740
 msgid "Payments via SBP"
 msgstr "Платежи через СБП"
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:1571
-msgid "In order to accept SMS payments you should choose and register the keyword and shortnumber in your MIXPLAT account, as well as compose description text for the donors how to send SMS, including your keyword. Keyword registration is provided free of charge on your <a href=\"http://stat.mixplat.ru/sn\" target=_blank>MIXPLAT account page</a>."
-msgstr "Для того, чтобы принимать SMS-платежи, вам нужно выбрать и зарегистрировать ключевое слово и короткий номер в вашем Личном кабинете MIXPLAT, а также написать текст для доноров, объясняющий, как отправить SMS, включая ключевое слово. Регистрация ключевого слова бесплатна и может быть выполнена на странице вашего <a href=\"http://stat.mixplat.ru/sn\" target=_blank>Личного кабинета MIXPLAT</a>."
+msgid "In order to accept SMS payments you should choose and register the keyword and shortnumber in your MIXPLAT account, as well as compose description text for the donors how to send SMS, including your keyword. Keyword registration is provided on your <a href=\"http://stat.mixplat.ru/sn\" target=_blank>MIXPLAT account page</a>."
+msgstr "Чтобы принимать SMS-платежи, вам нужно выбрать и зарегистрировать ключевое слово в вашем Личном кабинете Миксплат, а затем указать это слово в тексте пояснения для доноров. Регистрация ключевого слова производится <a href=\"http://stat.mixplat.ru/sn\" target=_blank>по ссылке</a>."
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:1364
 msgid "Payment method data:"
@@ -114,12 +102,12 @@ msgid "<strong>Error:</strong> unknown Subscription ID for donation #%d. We cann
 msgstr "<strong>Ошибка:</strong> неизвестный Subscription ID (ID рекуррентной подписки) для пожертвования #%d. Мы не можем отменить эту подписку автоматически.<br><br>Пожалуйста, напишите об этом письмо на почту <a href=\"%s\" target=\"_blank\">техн. поддержки сайта</a>.<br><br>Мы приносим извинения за неудобство."
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:109
-msgid "This campaign receives percent share deducted from the incoming donations."
-msgstr "Эта кампания получит автоматическое пожертвование на сумму согласно проценту от всех платежей, поступающих через MIXPLAT."
+msgid "Here you define percent to deduct and choose appropriate campaign to credit it on."
+msgstr "Укажите процент, который будет отделён от пожертвований, и кампанию, на которую он будет направлен."
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:108
 msgid "Choose campaign to be credited with percent from every transaction"
-msgstr "Выберите кампанию, которая будет получать процент с каждого пожертвования через MIXPLAT"
+msgstr "Выберите кампанию, которая будет получать процент с каждого пожертвования"
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:107
 msgid "Split to campaign"
@@ -134,8 +122,8 @@ msgid "Split percent"
 msgstr "Процент разделения"
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:90
-msgid "It means every donation is divided into two campaigns, e.g. 80% is credited to original campaign and 20% is credited to \"Administrative expenses\". Here you define percent to deduct and choose appropriate campaign to credit it on."
-msgstr "Это означает, что каждое поступающее пожертвование через MIXPLAT будет разделено между двумя кампаниями. Например, 80% поступит на оригинальную кампанию, а 20% будет причислено к \"расходам на уставную деятельность\". С помощью этих настроек вы указываете процент, который будет вычтен из пожертвования, и кампанию, на которую этот процент поступит."
+msgid "It means every donation is divided into two campaigns, e.g. 80% is credited to original campaign and 20% is credited to \"Administrative expenses\"."
+msgstr "Разделение пожертвований означает, что платежи доноров будут разделены между двумя кампаниями. Например, 80% поступит на оригинальную кампанию, а 20% будет причислено к \"расходам на уставную деятельность\"."
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:87
 msgid "What does \"donation split\" mean:"
@@ -159,11 +147,11 @@ msgstr "Внимание! Включён режим тестирования п�
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:61
 msgid "API key and Widget key are shown on your <a href=\"http://stat.mixplat.ru/projects\" target=_blank>MIXPLAT project settings page</a>"
-msgstr "Ключ API и ключ виджета можно найти в вашем <a href=\"http://stat.mixplat.ru/projects\" target=_blank>Личном кабинете MIXPLAT, в настройках соотв. проекта</a>"
+msgstr "Ключ API и Ключ виджета можно найти в вашем <a href=\"http://stat.mixplat.ru/projects\" target=_blank>Личном кабинете Миксплат</a>, в настройках проекта"
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:46
 msgid "Project ID is shown on your <a href=\"http://stat.mixplat.ru/projects\" target=_blank>MIXPLAT project settings page</a>"
-msgstr "ID проекта можно найти в вашем Личном кабинете MIXPLAT, на <a href=\"http://stat.mixplat.ru/projects\" target=_blank> странице настроек проекта</a>"
+msgstr "ID проекта можно найти в вашем Личном кабинете Миксплат, на <a href=\"http://stat.mixplat.ru/projects\" target=_blank>странице настроек проекта</a>"
 
 #: inc/settings/allocators/leyka-class-ru-options-allocator.php:83
 msgid "Currencies options"
@@ -327,8 +315,8 @@ msgstr "адреса криптокошельков"
 
 #: templates/leyka-template-need-help.php:78
 #: templates/leyka-template-star.php:60
-msgid "Donation currency"
-msgstr "Валюта пожертвования"
+msgid "donation currency"
+msgstr "валюта пожертвования"
 
 #: inc/settings/allocators/leyka-class-ru-options-allocator.php:457
 msgid "Cryptocurrencies"
@@ -384,11 +372,11 @@ msgstr "Включить метод оплаты СБП"
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:51
 msgid "Enter your widget key. It can be found in your MIXPLAT project settings page on MIXPLAT site."
-msgstr "Введите свой ключ виджета. Его можно найти в настройках вашего проекта на сайте MIXPLAT."
+msgstr "Введите свой ключ виджета. Его можно найти в настройках вашего проекта на сайте Миксплат."
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:50
 msgid "MIXPLAT widget key"
-msgstr "ключ виджета MIXPLAT"
+msgstr "Ключ виджета в системе Миксплат"
 
 #: inc/admin-templates/leyka-admin-dashboard-page.php:115
 msgid "The data is actual as of&nbsp;%s"
@@ -1213,11 +1201,19 @@ msgstr "Yandex Pay"
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:1664
 msgid "Enable Yandex Pay payment method"
-msgstr "Доступна оплата через Yandex Pay"
+msgstr "Включить метод оплаты Yandex Pay"
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:1664
+msgid "Enable MIR Pay payment method"
+msgstr "Включить метод оплаты MIR Pay"
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php:1664
+msgid "Enable SberPay payment method"
+msgstr "Включить метод оплаты SberPay"
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:1616
 msgid "Enable Bank Card payments"
-msgstr "Доступна оплата банковскими картами"
+msgstr "Платежи по банковским картам"
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:306
 msgid "Maximum donation amount of %s %s exceeded"
@@ -1312,7 +1308,7 @@ msgstr "Необходимая настройка cron-задания"
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:1584
 msgid "Enter text describing donation via SMS. Change XXXX to your registered keyword in MIXPLAT system."
-msgstr "Введите текст, описывающий, как выполнить пожертвование с помощью SMS. Внимание: измените \"XXXX\" на слово, зарегистрированное вами в Личном кабинете MIXPLAT."
+msgstr "Введите текст, описывающий, как выполнить пожертвование с помощью SMS. Внимание: измените \"XXXX\" на слово, зарегистрированное вами в Личном кабинете Миксплат."
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:1583
 msgid "Text how to donate via SMS"
@@ -1320,11 +1316,11 @@ msgstr "Текст пояснения для донора о том, как сд
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:1582
 msgid "Donate by sending SMS to short number 3434 with text XXXX and your donation amount."
-msgstr "Пожертвуйте, отправив SMS с текстом ХХХХ YY на короткий номер 3434, где ХХХХ - специальное слово, а YY - сумма пожертвования в рублях."
+msgstr "Чтобы сделать пожертвование, отправьте SMS на номер <strong>3434</strong> с текстом <strong>XXXX</strong> и суммой пожертвования. Например, <strong>XXXX 100</strong>. Вам поступит запрос на подтверждение от оператора связи, подтвердите платёж ответным сообщением. Спасибо за помощь!"
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:1526
 msgid "Payments via SMS are common way of collecting donations by sending SMS with keyword to short 4-digit number."
-msgstr "Платежи с помощью SMS - доступный способ сбора пожертвований. Платёж списывается с мобильного счёта донора при отправке SMS на короткий 4-значный номер."
+msgstr "Платежи с помощью SMS - доступный способ сбора пожертвований. Платёж списывается с мобильного счёта донора при отправке SMS на короткий номер."
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:1477
 msgid "Mobile payment is performed from user mobile account without sending SMS."
@@ -1332,15 +1328,15 @@ msgstr "Мобильный платёж выполняется через спи
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:58
 msgid "Enter your API key. It can be found in your MIXPLAT project settings page on MIXPLAT site."
-msgstr "Укажите ваш ключ API в системе MIXPLAT. Его можно найти в настройках проекта в вашем Личном кабинете на сайте Mixplat."
+msgstr "Укажите ваш Ключ API в системе Миксплат. Его можно найти в настройках проекта в вашем Личном кабинете на сайте Миксплат."
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:57
 msgid "MIXPLAT API key"
-msgstr "Ключ API в системе MIXPLAT"
+msgstr "Ключ API в системе Миксплат"
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:43
 msgid "Enter your project ID. It can be found in your MIXPLAT project settings page on MIXPLAT site."
-msgstr "Укажите ID вашего проекта в системе MIXPLAT. Его можно найти в настройках проекта в вашем Личном кабинете на сайте Mixplat."
+msgstr "Укажите ID вашего проекта в системе Миксплат. Его можно найти в настройках проекта в вашем Личном кабинете на сайте Миксплат."
 
 #: inc/options-meta/leyka-class-options-meta-controller.php:1278
 msgid "Check to allow donation administrators and managers to edit donors' data for all donations - even for non-correctional ones."
@@ -9124,7 +9120,7 @@ msgstr "Кампания для поступающих SMS-платежей"
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:618
 msgid "This message was sent because a call to your MIXPLAT callback was made with an unknown request parameter value. The details of the call are below. Request value: %s"
-msgstr "Вы получили это сообщение, т. к. запрос системы MIXPLAT к вашему сайту содержал неизвестное значение параметра request. Детали вызова ниже. Тип вызова: %s"
+msgstr "Вы получили это сообщение, т.к. запрос системы Миксплат к вашему сайту содержал неизвестное значение параметра request. Детали вызова ниже. Тип вызова: %s"
 
 #: gateways/cp/leyka-class-cp-gateway.php:138
 #: inc/settings/controllers/leyka-class-cp-settings-controller.php:37
@@ -9192,7 +9188,7 @@ msgstr "Платежи с помощью SMS"
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:20
 msgid "MIXPLAT allows a simple and safe way to pay for goods and services with your mobile phone by sending SMS."
-msgstr "Компания ООО \"Миксплат\" является процессингом мобильных платежей от абонентов операторов сотовой связи в России, Украине, Беларуси и операторов стран Европы. Благодаря большому опыту работы с высоконагруженными сервисами, МИКСПЛАТ имеет надёжную техническую базу для своей деятельности."
+msgstr "Миксплат Процессинг — система, позволяющая НКО принимать пожертвования с помощью всех типов банковских карт, систем быстрых платежей, а также с помощью SMS, отправленного на четырехзначный номер."
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:1503
 msgid "We will use this phone number to make a mobile payment"
@@ -9225,25 +9221,25 @@ msgstr "Результат операции:"
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:1296
 msgid "MIXPLAT payment ID:"
-msgstr "ID платежа в системе MIXPLAT:"
+msgstr "ID платежа в системе Миксплат:"
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:644
 msgid "This message has been sent because a call to your MIXPLAT callback was made with invalid MIXPLAT signature. The details of the call are below. The callback type: %s. Signatures sent / calculated: %s / %s"
-msgstr "Вы получили это сообщение, т. к. запрос системы MIXPLAT к вашему сайту был выполнен с некорректной цифровой подписи. Детали вызова ниже. Тип вызова: %s. Переданная / вычисленная цифровая подпись: %s / %s"
+msgstr "Вы получили это сообщение, т.к. запрос системы Миксплат к вашему сайту был выполнен с некорректной цифровой подписи. Детали вызова ниже. Тип вызова: %s. Переданная / вычисленная цифровая подпись: %s / %s"
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:628
 msgid "This message has been sent because a call to your MIXPLAT callback was made without required parameters given. The details of the call are below. The callback type: %s. The parameter missing: %s"
-msgstr "Вы получили это сообщение, т. к. запрос системы MIXPLAT к вашему сайту не содержал необходимых параметров. Детали вызова ниже. Тип вызова: %s. Недостающий параметр: %s"
+msgstr "Вы получили это сообщение, т.к. запрос системы Миксплат к вашему сайту не содержал необходимых параметров. Детали вызова ниже. Тип вызова: %s. Недостающий параметр: %s"
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:414
 msgid "This message has been sent because a create_payment call to MIXPLAT payment system returned some error. The details of the call are below. Payment error code / text: %s / %s"
-msgstr "Вы получили это сообщение, т.к. команда «create_payment» к системе MIXPLAT вызвала ошибку. Детали вызова ниже. Код / текст ошибки: %s / %s"
+msgstr "Вы получили это сообщение, т.к. команда «create_payment» к системе Миксплат вызвала ошибку. Детали вызова ниже. Код / текст ошибки: %s / %s"
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:413
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:423
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:674
 msgid "MIXPLAT - payment callback error occured"
-msgstr "MIXPLAT - ошибка при обработке уведомления от платёжного оператора"
+msgstr "Миксплат - ошибка при обработке уведомления от платёжного оператора"
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:229
 msgid "Please, enter a phone number in a 7xxxxxxxxxx format."
@@ -9251,11 +9247,11 @@ msgstr "Пожалуйста, введите номер телефона в фо
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:42
 msgid "MIXPLAT Project ID"
-msgstr "ID проекта в MIXPLAT"
+msgstr "ID вашего проекта в Миксплат"
 
 #: gateways/mixplat/leyka-class-mixplat-gateway.php:16
 msgid "MIXPLAT"
-msgstr "MIXPLAT"
+msgstr "МИКСПЛАТ"
 
 #: inc/leyka-class-payment-form.php:79
 msgid "Incorrect donor email given while trying to add a donation"
@@ -11360,36 +11356,142 @@ msgstr "Пожалуйста, укажите ваше значение пара�
 msgid "Chronopay"
 msgstr "Хронопей"
 
-#: gateways/dolyame/leyka-class-dolyame-gateway.php:13
-#: gateways/dolyame/leyka-class-dolyame-gateway.php:328
-#: gateways/dolyame/leyka-class-dolyame-gateway.php:329
-msgid "Dolyame"
-msgstr "Долями"
+#: /inc/settings/controllers/leyka-class-mixplat-settings-controller.php:147
+msgid "Test payment"
+msgstr "Тестовый платеж"
 
-#: gateways/dolyame/leyka-class-dolyame-gateway.php:39
-msgid "Login"
-msgstr "Логин"
+#: /inc/settings/controllers/leyka-class-mixplat-settings-controller.php:147
+msgid "Keyword by SMS"
+msgstr "Ключевое слово по SMS"
 
-#: gateways/dolyame/leyka-class-dolyame-gateway.php:54
-msgid "Content certificate (.pem file)"
-msgstr "Содержимое сертификата(.pem файл)"
+#: /inc/settings/controllers/leyka-class-mixplat-settings-controller.php:114
+msgid "Getting statuses"
+msgstr "Получение статусов"
 
-#: gateways/dolyame/leyka-class-dolyame-gateway.php:55
-msgid "Begin with -----BEGIN CERTIFICATE-----"
-msgstr "Начинается с -----BEGIN CERTIFICATE-----"
+#: /inc/settings/controllers/leyka-class-mixplat-settings-controller.php:114
+msgid "Saving settings"
+msgstr "Сохранение настроек"
 
-#: gateways/dolyame/leyka-class-dolyame-gateway.php:60
-msgid "Content private.key file"
-msgstr "Содержимое private.key"
+#: /inc/settings/controllers/leyka-class-mixplat-settings-controller.php:114
+msgid "Registration"
+msgstr "Регистрация"
 
-#: gateways/dolyame/leyka-class-dolyame-gateway.php:61
-msgid "Begin with -----BEGIN PRIVATE KEY-----"
-msgstr "Начинается с  -----BEGIN PRIVATE KEY-----"
+#: /inc/admin-templates/leyka-admin-help-page:45
+msgid "<a href=\"https://mixplat.ru/\" target=\"_blank\">Mixplat Processing</a> is a leading provider of payment solutions for nonprofit organizations. When connected to Mixplat, the NGO receives all necessary fundraising tools: SMS, cards, SBP, etc. Recurring subscriptions are enabled immediately and do not require additional configuration. In your <a href=\"https://stat.mixplat.ru/\" target=\"_blank\">Mixplat account</a>, you will find interactive fundraising elements for your website."
+msgstr "<a href=\"https://mixplat.ru/\" target=\"_blank\">Миксплат Процессинг</a> – ведущий поставщик платёжных решений для некоммерческих организаций. При подключении к Миксплат НКО получает все необходимые инструменты фандрайзинга: SMS на короткий номер, Банковские карты, СБП и др. Рекуррентные подписки включены сразу и не требуют дополнительной настройки. В <a href=\"https://stat.mixplat.ru/\" target=\"_blank\">личном кабинете Миксплат</a> вы найдёте множество интерактивных элементов для вашего сайта, которые помогут привлечь доноров и увеличить сборы."
 
-#: gateways/dolyame/leyka-class-dolyame-gateway.php:66
-msgid "Prefix"
-msgstr "Префикс"
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "Mixplat Processing is a system that allows NGOs to accept donations using all types of bank cards, quick payment systems, as well as via SMS sent to a four—digit number."
+msgstr "Миксплат Процессинг — это система, позволяющая НКО принимать пожертвования с помощью всех типов банковских карт, систем быстрых платежей, а также с помощью SMS, отправленного на четырехзначный номер."
 
-#: gateways/dolyame/leyka-class-dolyame-gateway.php:73
-msgid "Request handler"
-msgstr "Обработчик сетевых запросов"
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "I'm already connected to the Mixplat"
+msgstr "Я уже подключен к Миксплат"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "<h3 class='intro-mini-header'>Before starting registration with the payment operator, please prepare scanned copies of the documents:</h3><ul><li>Certificate of registration of your organization</li><li>Tax registration certificate (TIN)</li></ul>"
+msgstr "<h3 class='intro-mini-header'>Перед началом регистрации у платёжного оператора приготовьте, пожалуйста, отсканированные копии документов:</h3><ul><li>Свидетельство о регистрации вашей организации</li><li>Свидетельство о постановке на налоговый учёт (ИНН)</li></ul>"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "<p>If you are not working with Mixplat yet, register on the website <a href='https://mixplat.ru' target='_blank'>mixplat.ru</a> and set up your first project in the system. If you are already registered in the Mixplat, re-registration is not required.</p><p>To register on the website <a href='https://mixplat.ru' target='_blank'>mixplat.ru</a> click on the <a href='https://mixplat.ru/register/' target='_blank'>link</a>. After that, fill out the contact form to receive the login and password from the account.</p>"
+msgstr "<p>Если вы ещё не работаете с Миксплат, зарегистрируйтесь на сайте <a href='https://mixplat.ru' target='_blank'>mixplat.ru</a> и настройте свой первый проект в системе. Если вы уже зарегистрированы в Миксплат, повторная регистрация не требуется.</p><p>Для регистрации на сайте <a href='https://mixplat.ru' target='_blank'>mixplat.ru</a>, перейдите по <a href='https://mixplat.ru/register/' target='_blank'>ссылке</a>. После чего заполните контактную форму для получения логина и пароля от аккаунта.</p>"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "After submitting the application, the Mixplat Processing manager will contact you to confirm the registration and organization data, after which you will receive a login and password to the Mixplat personal account."
+msgstr "После подачи заявки менеджер Миксплат Процессинг свяжется с вами для подтверждения регистрации и данных организации, после чего вы получите логин и пароль в личный кабинет Миксплат."
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "Click on the <a href='https://stat.mixplat.ru/login?returnUrl=%2F' target='_blank'>link</a> to log in."
+msgstr "Перейдите по <a href='https://stat.mixplat.ru/login?returnUrl=%2F' target='_blank'>ссылке</a> для авторизации."
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "After authorization, go to the project creation page, to do this, click on the <a href='https://stat.mixplat.ru/projects' target='_blank'>&quot;Project Settings&quot;</a> item in the navigation menu"
+msgstr "После авторизации  перейдите на станицу создания проектов, для этого в навигационном меню нажмите на пункт <a href='https://stat.mixplat.ru/projects' target='_blank'>&quot;Настройки проектов&quot;</a>"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "Next, click on the &quot;Create a project&quot; button"
+msgstr "Далее нажмите на кнопку &quot;Создать проект&quot;"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "Fill in all the fields of the form and click on the &quot;Submit for moderation&quot; button"
+msgstr "Заполните все поля формы и нажмите на кнопку &quot;Отправить на модерацию&quot;"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "After the moderation is completed, the status of your project will change to &quot;Active&quot;."
+msgstr "После завершения модерации статус вашего проекта изменится на &quot;Активен&quot;."
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "Click the &quot;Settings&quot; button on the Project <a href='https://stat.mixplat.ru/projects' target='_blank'>Settings page</a>."
+msgstr "Нажмите кнопку &quot;Настройки&quot; на странице <a href='https://stat.mixplat.ru/projects' target='_blank'>Настройки проектов</a>."
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "Copy the project id, widget key, and API key to the appropriate fields."
+msgstr "Скопируйте id проекта, ключ виджета и ключ API в соответствующие поля."
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "<p>In the project settings, in the «Receiving payment statuses» field, you need to enter the URL where the payment status handler script is located on your site.</p><p>Click the «Edit» button and in the «script handler» field, copy and paste the following address:</p>"
+msgstr "<p>В настройках проекта в поле «Получение статусов платежей» требуется вписать URL адрес, где на вашем сайте размещён скрипт-обработчик статусов платежей.</p><p>Нажмите кнопку «Редактировать» и в поле «скрипт-обработчик» скопируйте и вставьте следующий адрес:</p>"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "Check the correctness of the address and click «Save»."
+msgstr "Проверьте корректность адреса и нажмите «Сохранить»."
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "You have enabled payment acceptance via the Mixplat. Payments using payment systems, bank cards and mobile phones are available to you."
+msgstr "Вы подключили приём платежей через Миксплат. Вам доступны платежи с помощью платежных систем, банковских карт и мобильных телефонов."
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "Check the «Test mode» box in the settings to make test payments, or skip this option to accept payments in combat mode."
+msgstr "Установите в настройках галочку «Тестовый режим» для осуществления тестовых платежей или пропустите этот пункт для приема платежей в боевом режиме."
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "The working mode of integration"
+msgstr "Рабочий режим интеграции"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "Check the box if the integration with the payment operator is in operation mode. Sometimes this mode is also called &quot;sandbox&quot; or &quot;sandbox&quot;."
+msgstr "Поставьте отметку, если интеграция с платёжным оператором выполняется в рабочем режиме. Иногда этот режим также называется &quot;песочницей&quot; или &quot;sandbox&quot;."
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "<p><strong>Attention! Payment testing mode is enabled.</strong></p><p>The test mode is intended only for the initial setup of payments and should be turned off immediately when confirmation is received from your manager. During the enabled testing mode, no real money is debited. To test payments, you must use special bank card numbers:</p><ul><li><b>4242424242424242</b> – all payments will be successful,</li><li><b>5555555555554444</b> – all payments will be unsuccessful,</li><li><b>2201382000000013</b> – the payment status will be selected randomly.</li></ul><p>Use any date (in the future) and any CVC code. As long as the testing mode is enabled, the data of any real cards will lead to a payment error.</p>"
+msgstr "<p><strong>Внимание! Включён режим тестирования платежей.</strong></p><p>Режим тестирования предназначен только для первоначальной настройки платежей и должен быть выключен сразу же, когда будет получено подтверждение от вашего менеджера. Во время включённого режима тестирования никакие реальные деньги не списываются. Для тестирования платежей вы должны использовать специальные номера банковских карт:</p><ul><li><b>4242424242424242</b> – все платежи будут успешны,</li><li><b>5555555555554444</b> – все платежи будут неуспешны,</li><li><b>2201382000000013</b> – статус платежа будет выбран случайным образом.</li></ul><p>Используйте любую дату (в будущем) и любой код CVC. Пока включён режим тестирования, данные любых реальных карт приведут к ошибке платежа.</p>"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "If you have any questions about setting up payment methods, you will be happy to help the Mixplat support service."
+msgstr "С любыми вопросами по настройке платёжных методов вам будут рады помочь в службе поддержки Миксплат."
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "<p>Change the text of the donor's hint by replacing XXXX in the text with your keyword:</p>"
+msgstr "<p>Измените текст подсказки донору, заменив в тексте XXXX на ваше ключевое слово:</p>"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "Receive donations via SMS"
+msgstr "Получать пожертвования по SMS"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "<p>The keyword defines your organization as the recipient of SMS messages sent by subscribers for donations. The user needs to start the text of the SMS message with your keyword, then write the donation amount and send this message to a short number to donate to your foundation.</p>"
+msgstr "<p>Ключевое слово определяет вашу организацию как получателя SMS, которые шлют абоненты для пожертвований. Пользователю необходимо начать текст SMS-сообщения с вашего ключевого слова, затем написать сумму пожертвования и отправить это сообщение на короткий номер для осуществления пожертвования в пользу вашего фонда.</p>"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "<p>Keyword fees can be directed to the main campaign or associated with a specific address fee. To do this, create and select the desired address fee in the Mixplat personal account when creating a keyword.</p>"
+msgstr "<p>Сборы по ключевому слову могут быть направлены на основную кампанию или связаны с определённым адресным сбором, для этого создайте и выберите нужный адресный сбор в личном кабинете Миксплат при создании ключевого слова.</p>"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "In the Mixplat personal account, within the framework of a previously created project, go to the &quot;Short Number&quot; tab and create a &quot;Keyword&quot;"
+msgstr "В личном кабинете Миксплат в рамках ранее созданного проекта перейдите на вкладку &quot;Короткий номер&quot; и создайте &quot;Ключевое слово&quot;"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "<p>After your keyword passes the accessibility check, it will be included in the general list with the status &quot;Working&quot;.</p><p>You can create several keywords, specify different address fees for them and use them both in the Leyka and offline.</p>"
+msgstr "<p>После того как ваше ключевое слово пройдет проверку на доступность, оно попадет в общий список со статусом &quot;Работает&quot;.</p><p>Вы можете создать несколько ключевых слов, указать для них разные адресные сборы и использовать одновременно как в Лейке, так и оффлайн.</p>"
+
+#: /inc/setting/controllers/leyka-class-mixplay-settings-controllers:45
+msgid "Select the appropriate Leyka campaign for SMS payments from the list or leave the default campaign"
+msgstr "Выберите из списка подходящую кампанию Лейки для SMS-платежей или оставьте кампанию по умолчанию"
+
+#: /inc/settings-fields-templates/leyka-mixplat_final.php
+msgid "Now go to payment settings page and enable payment methods after confirmation from MIXPLAT"
+msgstr "Теперь перейдите на страницу настройки платежей и проставьте галочки для всех платёжных методов, которые были подключены вами в Миксплате."
+
+#: /inc/settings-fields-templates/leyka-mixplat_final.php
+msgid "Go to payment settings"
+msgstr "Перейти к настройкам"
