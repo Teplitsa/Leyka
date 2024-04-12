@@ -24,7 +24,7 @@ class Payselection_Merchant_Api
      */
     protected function request(string $host, string $path, $data = false, $method = "GET")
     {
-        $bodyJSON = !empty($data) ? json_encode($data, JSON_UNESCAPED_UNICODE) : "";
+        $bodyJSON = !empty($data) ? wp_json_encode($data, JSON_UNESCAPED_UNICODE) : "";
 
         $requestID = self::guidv4();
 

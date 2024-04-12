@@ -66,7 +66,7 @@ class ApiRequestor
             ],
         ];
 
-        $result = \json_encode($payload);
+        $result = \wp_json_encode($payload);
         if (false !== $result) {
             return $result;
         }
@@ -348,7 +348,7 @@ class ApiRequestor
         }
 
         return [
-            'X-Stripe-Client-User-Agent' => \json_encode($ua),
+            'X-Stripe-Client-User-Agent' => \wp_json_encode($ua),
             'User-Agent' => $uaString,
             'Authorization' => 'Bearer ' . $apiKey,
         ];

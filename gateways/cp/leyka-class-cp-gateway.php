@@ -273,7 +273,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             }
 
             status_header(200);
-            die(json_encode([
+            die(wp_json_encode([
                 'code' => '13',
                 'reason' => sprintf(
                     'Unknown callback sender IP: %s (IPs permitted: %s)',
@@ -289,13 +289,13 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                 // InvoiceId - leyka donation ID, SubscriptionId - CP recurring subscription ID:
                 if(empty($_POST['InvoiceId']) && empty($_POST['SubscriptionId'])) {
-                    die(json_encode(['code' => '10',]));
+                    die(wp_json_encode(['code' => '10',]));
                 }
 
                 if(empty($_POST['Amount']) || (float)$_POST['Amount'] <= 0 || empty($_POST['Currency'])) {
                     $amount    = isset( $_POST['Amount'] ) ? $_POST['Amount'] : '';
                     $currency = isset( $_POST['Currency'] ) ? $_POST['Currency'] : '';
-                    die(json_encode([
+                    die(wp_json_encode([
                         'code' => '11',
                         'reason' => sprintf(
                             __('Amount or Currency in POST are empty. Amount: %s, Currency: %s', 'leyka'),
@@ -325,7 +325,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                         }
 
-                        die(json_encode(['code' => '0',]));
+                        die(wp_json_encode(['code' => '0',]));
 
                     }
 
@@ -342,7 +342,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                         $amount   = isset( $_POST['Amount'] ) ? $_POST['Amount'] : '';
                         $currency = isset( $_POST['Currency'] ) ? $_POST['Currency'] : '';
-                        die(json_encode([
+                        die(wp_json_encode([
                             'code' => '11',
                             'reason' => sprintf(
                                 __('Amount of original data and POST are mismatching. Orig.: %.2f %s, POST: %.2f %s', 'leyka'),
@@ -358,14 +358,14 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                 }
 
-                die(json_encode(['code' => '0',])); // Payment check passed
+                die(wp_json_encode(['code' => '0',])); // Payment check passed
 
             case 'complete':
             case 'fail':
 
                 // InvoiceId - Leyka donation ID, SubscriptionId - CP recurring subscription ID
                 if(empty($_POST['InvoiceId']) && empty($_POST['SubscriptionId'])) {
-                    die(json_encode(['code' => '0',]));
+                    die(wp_json_encode(['code' => '0',]));
                 }
 
                 if(empty($_POST['InvoiceId'])) { // Non-init recurring donation
@@ -374,7 +374,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                     if( !$donation || !$donation->id || is_wp_error($donation) ) {
                         /** @todo Send some email to the admin */
-                        die(json_encode(['code' => '0',]));
+                        die(wp_json_encode(['code' => '0',]));
                     }
 
                     $donation->payment_type = 'rebill';
@@ -408,7 +408,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                         // Emails will be sent only if respective options are on:
                         Leyka_Donation_Management::send_error_notifications($donation);
 
-                        die(json_encode(['code' => '0',]));
+                        die(wp_json_encode(['code' => '0',]));
 
                     }
 
@@ -507,7 +507,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                     do_action('leyka_new_rebill_donation_added', $donation);
                 }
 
-                die(json_encode(['code' => '0',])); // Payment completed / fail registered
+                die(wp_json_encode(['code' => '0',])); // Payment completed / fail registered
 
             case 'recurring_change':
             case 'recurrent_change':
@@ -532,7 +532,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
                 }
 
-                die(json_encode(['code' => '0',]));
+                die(wp_json_encode(['code' => '0',]));
 
             default:
         }
@@ -569,7 +569,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                 ),
                 'Content-type' => 'application/json',
             ],
-            'body' => json_encode(['Id' => $donation->cp_recurring_id]),
+            'body' => wp_json_encode(['Id' => $donation->cp_recurring_id]),
         ]);
 
         if(empty($response['body'])) {
@@ -591,7 +591,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
         if($donation->type !== 'rebill' || !$donation->recurring_is_active) {
             if( !empty($_POST['Id']) ) {
-                die(json_encode(['code' => '0',]));
+                die(wp_json_encode(['code' => '0',]));
             } else {
                 die();
             }

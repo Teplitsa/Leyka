@@ -5,7 +5,7 @@
 function leyka_ajax_get_campaigns_list() {
 
     if(empty($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'leyka_get_campaigns_list_nonce')) {
-        die(json_encode([]));
+        die(wp_json_encode([]));
     }
 
     $_REQUEST['term'] = empty($_REQUEST['term']) ? '' : trim($_REQUEST['term']);
@@ -45,7 +45,7 @@ function leyka_ajax_get_campaigns_list() {
         }
     }
 
-    die(json_encode($campaigns));
+    die(wp_json_encode($campaigns));
 
 }
 add_action('wp_ajax_leyka_get_campaigns_list', 'leyka_ajax_get_campaigns_list');
@@ -81,7 +81,7 @@ function leyka_get_gateway_redirect_data(){
         $form_errors = reset($form_errors); // Return only the first error in the list
 
         /** @var WP_Error $form_errors */
-        die(json_encode(['status' => 1, 'message' => $form_errors->get_error_message(),]));
+        die(wp_json_encode(['status' => 1, 'message' => $form_errors->get_error_message(),]));
 
     }
 
@@ -184,7 +184,7 @@ function leyka_get_gateway_redirect_data(){
         );
     }
 
-    die(json_encode($payment_vars));
+    die(wp_json_encode($payment_vars));
 
 }
 add_action('wp_ajax_leyka_ajax_get_gateway_redirect_data', 'leyka_get_gateway_redirect_data');
@@ -196,17 +196,17 @@ function leyka_process_success_form(){
         leyka_options()->opt('check_nonce_on_public_donor_actions')
         && (empty($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'leyka_donor_subscription'))
     ) {
-        die(json_encode([
+        die(wp_json_encode([
             'status' => 1,
             'message' => __('Wrong nonce in the submitted data', 'leyka'),
         ]));
     } else if(empty($_POST['leyka_donation_id'])) {
-        die(json_encode(['status' => 1, 'message' => __('No donation ID found in the submitted data', 'leyka'),]));
+        die(wp_json_encode(['status' => 1, 'message' => __('No donation ID found in the submitted data', 'leyka'),]));
     }
 
     $donation = Leyka_Donations::get_instance()->get($_POST['leyka_donation_id']);
     if( !$donation ) {
-        die(json_encode(['status' => 1, 'message' => __('Wrong donation ID in the submitted data', 'leyka'),]));
+        die(wp_json_encode(['status' => 1, 'message' => __('Wrong donation ID in the submitted data', 'leyka'),]));
     }
 
     if(isset($_POST['leyka_donor_name']) && leyka_validate_donor_name($_POST['leyka_donor_name'])) {
@@ -223,7 +223,7 @@ function leyka_process_success_form(){
 
     leyka_remembered_data('donation_id', false, true); // Delete the donor data cookie
 
-    die(json_encode(['status' => 0,]));
+    die(wp_json_encode(['status' => 0,]));
 
 }
 add_action('wp_ajax_leyka_donor_subscription', 'leyka_process_success_form');
@@ -232,12 +232,12 @@ add_action('wp_ajax_nopriv_leyka_donor_subscription', 'leyka_process_success_for
 function leyka_set_campaign_photo(){
 
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'set-campaign-photo')) {
-        die(json_encode([
+        die(wp_json_encode([
             'status' => 'error',
             'message' => __('Wrong nonce in the submitted data', 'leyka'),
         ]));
     } else if(empty($_POST['campaign_id'])) {
-        die(json_encode([
+        die(wp_json_encode([
             'status' => 'error',
             'message' => __('Error: campaign ID is missing', 'leyka'),
         ]));
@@ -249,7 +249,7 @@ function leyka_set_campaign_photo(){
     update_post_meta($campaign_id, '_thumbnail_id', $attachment_id);
     sleep(1);
 
-    die( json_encode( [ 'status' => 'ok', 'post' => array_map( 'sanitize_text_field', $_POST ), ] ) );
+    die( wp_json_encode( [ 'status' => 'ok', 'post' => array_map( 'sanitize_text_field', $_POST ), ] ) );
 
 }
 add_action('wp_ajax_leyka_set_campaign_photo', 'leyka_set_campaign_photo');
@@ -260,17 +260,17 @@ function leyka_set_campaign_attachment(){
     $_POST['attachment_id'] = empty($_POST['attachment_id']) ? false : absint($_POST['attachment_id']);
 
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'set-campaign-attachment')) {
-        die(json_encode(['status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
     } else if(empty($_POST['campaign_id'])) {
-        die(json_encode(['status' => 'error', 'message' => __('Error: campaign ID is missing', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Error: campaign ID is missing', 'leyka'),]));
     } else if(empty($_POST['field_name'])) {
-        die(json_encode(['status' => 'error', 'message' => __('Error: field name is missing', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Error: field name is missing', 'leyka'),]));
     }
 
     update_post_meta($_POST['campaign_id'], esc_attr($_POST['field_name']), $_POST['attachment_id']);
     sleep(1);
 
-    die(json_encode([
+    die(wp_json_encode([
         'status'  => 'ok',
         'post'    => array_map( 'sanitize_text_field', $_POST ),
         'img_url' => wp_get_attachment_image_url(absint( sanitize_text_field( $_POST['attachment_id'] ) ), 'thumbnail'),
@@ -282,14 +282,14 @@ add_action('wp_ajax_leyka_set_campaign_attachment', 'leyka_set_campaign_attachme
 function leyka_set_campaign_template(){
 
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'set-campaign-template')) {
-        die(json_encode(['status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
     } else if(empty($_POST['campaign_id'])) {
-        die(json_encode(['status' => 'error', 'message' => __('Error: campaign ID is missing', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Error: campaign ID is missing', 'leyka'),]));
     }
 
     update_post_meta(absint($_POST['campaign_id']), 'campaign_template', $_POST['template']);
 
-    die(json_encode(['status' => 'ok', 'post' => array_map( 'sanitize_text_field', $_POST ),]));
+    die(wp_json_encode(['status' => 'ok', 'post' => array_map( 'sanitize_text_field', $_POST ),]));
 
 }
 add_action('wp_ajax_leyka_set_campaign_template', 'leyka_set_campaign_template');
@@ -297,14 +297,14 @@ add_action('wp_ajax_leyka_set_campaign_template', 'leyka_set_campaign_template')
 function leyka_edit_campaign_slug(){
 
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka-edit-campaign-slug')) {
-        die(json_encode(['status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
     } else if(empty($_POST['campaign_id']) || empty($_POST['slug'])) {
-        die(json_encode(['status' => 'error', 'message' => __('Error: the campaign data needed are missing', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Error: the campaign data needed are missing', 'leyka'),]));
     }
 
     $campaign = get_post($_POST['campaign_id']);
     if( !$campaign || $campaign->post_type !== Leyka_Campaign_Management::$post_type ) {
-        die(json_encode(['status' => 'error', 'message' => __('Error: wrong campaign ID given', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Error: wrong campaign ID given', 'leyka'),]));
     }
 
     $_POST['slug'] = wp_unique_post_slug(sanitize_title($_POST['slug']), $_POST['campaign_id'], $campaign->post_status, $campaign->post_type, null);
@@ -315,9 +315,9 @@ function leyka_edit_campaign_slug(){
     ]);
 
     if($res) {
-        die(json_encode(['status' => 'ok', 'slug' => sanitize_text_field( $_POST['slug'] ),]));
+        die(wp_json_encode(['status' => 'ok', 'slug' => sanitize_text_field( $_POST['slug'] ),]));
     } else {
-        die(json_encode(['status' => 'error', 'message' => __("Error: the campaign slug wasn't updated", 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __("Error: the campaign slug wasn't updated", 'leyka'),]));
     }
 
 }
@@ -326,9 +326,9 @@ add_action('wp_ajax_leyka_edit_campaign_slug', 'leyka_edit_campaign_slug');
 function leyka_update_pm_list(){
 
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka-update-pm-order')) {
-        die(json_encode(['status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
     } else if(empty($_POST['pm_order'])) {
-        die(json_encode(['status' => 'error', 'message' => __('Error: PM order value is missing', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Error: PM order value is missing', 'leyka'),]));
     }
 
     leyka_options()->opt('pm_order', $_POST['pm_order']);
@@ -340,7 +340,7 @@ function leyka_update_pm_list(){
         }
     }
 
-    die(json_encode(['status' => 'ok',]));
+    die(wp_json_encode(['status' => 'ok',]));
 
 }
 add_action('wp_ajax_leyka_update_pm_list', 'leyka_update_pm_list');
@@ -385,7 +385,7 @@ function leyka_upload_l10n(){
         $res = ['status' => 'ok', 'message' => 'Перевод успешно загружен',];
     }
 
-    die(json_encode($res));
+    die(wp_json_encode($res));
 
 }
 add_action('wp_ajax_leyka_upload_l10n', 'leyka_upload_l10n');
@@ -415,7 +415,7 @@ function leyka_setup_donor_password(){
         $donor_account = get_user_by('email', $_POST['donor_account_email']);
         if( !$donor_account ) {
 
-            die(json_encode([
+            die(wp_json_encode([
                 'status' => 'error',
                 'message' => sprintf(__('Wrong request data. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_get_website_tech_support_email())
             ]));
@@ -428,7 +428,7 @@ function leyka_setup_donor_password(){
             ), 'WP_User')
         ) {
 
-            die(json_encode([
+            die(wp_json_encode([
                 'status' => 'error',
                 'message' => sprintf(__('Wrong request data. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_get_website_tech_support_email())
             ]));
@@ -438,7 +438,7 @@ function leyka_setup_donor_password(){
         try {
             $donor = new Leyka_Donor($_POST['donor_account_email']);
         } catch(Exception $e) {
-            die(json_encode(['status' => 'error', 'message' => __('Wrong Donor ID given', 'leyka')]));
+            die(wp_json_encode(['status' => 'error', 'message' => __('Wrong Donor ID given', 'leyka')]));
         }
 
         $donor->password = $_POST['leyka_donor_pass'];
@@ -458,7 +458,7 @@ function leyka_setup_donor_password(){
 
     }
 
-    die(json_encode($res));
+    die(wp_json_encode($res));
 
 }
 add_action('wp_ajax_leyka_setup_donor_password', 'leyka_setup_donor_password');
@@ -509,7 +509,7 @@ function leyka_donor_login(){
 
     }
 
-    die(json_encode($res));
+    die(wp_json_encode($res));
 
 }
 add_action('wp_ajax_leyka_donor_login', 'leyka_donor_login');
@@ -587,7 +587,7 @@ function leyka_donor_password_reset_request(){
 
     }
 
-    die(json_encode($res));
+    die(wp_json_encode($res));
 
 }
 add_action('wp_ajax_leyka_donor_password_reset_request', 'leyka_donor_password_reset_request');
@@ -601,24 +601,24 @@ function leyka_get_donations_history_page() {
         leyka_options()->opt('check_nonce_on_public_donor_actions')
         && (empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_get_donor_donations_history'))
     ) {
-        die(json_encode(['status' => 'error',]));
+        die(wp_json_encode(['status' => 'error',]));
     }
 
     if(empty($_POST['donor_id']) || empty($_POST['page'])) {
-        die(json_encode(['status' => 'error',]));
+        die(wp_json_encode(['status' => 'error',]));
     }
 
     try {
         $donor = new Leyka_Donor(absint($_POST['donor_id']));
     } catch(Exception $e) {
-        die(json_encode(['status' => 'error',]));
+        die(wp_json_encode(['status' => 'error',]));
     }
 
     foreach($donor->get_donations(absint($_POST['page'])) as $donation) {
         $res['items_html'] .= leyka_get_donor_account_donations_list_item_html(false, $donation)."\n";
     }
 
-    die(json_encode($res));
+    die(wp_json_encode($res));
 
 }
 add_action('wp_ajax_leyka_get_donations_history_page', 'leyka_get_donations_history_page');
@@ -630,12 +630,12 @@ function leyka_cancel_recurring_subscription(){
         leyka_options()->opt('check_nonce_on_public_donor_actions')
         && (empty($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'leyka_cancel_subscription'))
     ) {
-        die(json_encode([
+        die(wp_json_encode([
             'status' => 'error',
             'message' => sprintf(__('Wrong request. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_options()->opt('tech_support_email'))
         ]));
     } else if(empty($_POST['leyka_campaign_id']) || empty($_POST['leyka_donation_id'])) {
-        die(json_encode([
+        die(wp_json_encode([
             'status' => 'error',
             'message' => sprintf(__('Wrong request data. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_options()->opt('tech_support_email'))
         ]));
@@ -680,17 +680,17 @@ function leyka_cancel_recurring_subscription(){
     }
 
     if( !$donor || !$donor->has_account_access ) {
-        die(json_encode([
+        die(wp_json_encode([
             'status' => 'error',
             'message' => __('This operation is allowed only for registered donors.', 'leyka'),
         ]));
     } else if( !$campaign ) {
-        die(json_encode([
+        die(wp_json_encode([
             'status' => 'error',
             'message' => sprintf(__('The campaign #%s is not found. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), $campaign_id, leyka()->opt('tech_support_email'))
         ]));
     } else if( !$init_recurring_donation ) {
-        die(json_encode([
+        die(wp_json_encode([
             'status' => 'error',
             'message' => sprintf(__('Donation #%s is not found. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), $donation_id, leyka()->opt('tech_support_email'))
         ]));
@@ -704,9 +704,9 @@ function leyka_cancel_recurring_subscription(){
         $cancelling_result = $donation_gateway->cancel_recurring_subscription($init_recurring_donation);
 
         if(is_wp_error($cancelling_result)) { /** @var $cancelling_result WP_Error */
-            die( json_encode(['status' => 'error', 'message' => $cancelling_result->get_error_message()]) );
+            die( wp_json_encode(['status' => 'error', 'message' => $cancelling_result->get_error_message()]) );
         } else if( !$cancelling_result ) {
-            die(json_encode([
+            die(wp_json_encode([
                 'status' => 'error',
                 'message' => sprintf(__('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="mailto:%s" target="_blank">website tech. support</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email())
             ]));
@@ -760,7 +760,7 @@ function leyka_cancel_recurring_subscription(){
         $res['redirect_to'] = $campaign->url;
     }
 
-    die(json_encode($res));
+    die(wp_json_encode($res));
 
 }
 add_action('wp_ajax_leyka_cancel_recurring', 'leyka_cancel_recurring_subscription'); // leyka_unsubscribe_persistent_campaign
@@ -780,7 +780,7 @@ function leyka_cancel_recurring_subscription_by_manager(){
 
     }
 
-    die(json_encode(['status' => 'ok']));
+    die(wp_json_encode(['status' => 'ok']));
 
 }
 add_action('wp_ajax_leyka_cancel_recurring_by_manager', 'leyka_cancel_recurring_subscription_by_manager');
@@ -791,16 +791,16 @@ function leyka_reset_campaign_attachment(){
     $_POST['attachment_id'] = empty($_POST['attachment_id']) ? false : absint($_POST['attachment_id']);
 
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'reset-campaign-attachment')) {
-        die(json_encode(['status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
     } else if(empty($_POST['campaign_id'])) {
-        die(json_encode(['status' => 'error', 'message' => __('Error: campaign ID is missing', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Error: campaign ID is missing', 'leyka'),]));
     } else if(empty($_POST['img_mission'])) {
-        die(json_encode(['status' => 'error', 'message' => __('Error: field name is missing', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Error: field name is missing', 'leyka'),]));
     }
 
     delete_post_meta($_POST['campaign_id'], 'campaign_'.esc_attr(sanitize_text_field($_POST['img_mission'])));
 
-    die(json_encode(['status' => 'ok',]));
+    die(wp_json_encode(['status' => 'ok',]));
 
 }
 add_action('wp_ajax_leyka_reset_campaign_attachment', 'leyka_reset_campaign_attachment');
@@ -808,14 +808,14 @@ add_action('wp_ajax_leyka_reset_campaign_attachment', 'leyka_reset_campaign_atta
 function leyka_usage_stats_y(){
 
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'usage_stats_y')) {
-        die(json_encode(['status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
     }
 
     update_option('leyka_plugin_stats_option_needs_sync', time());
     $stats_option_synch_res = leyka_sync_plugin_stats_option();
 
     if(is_wp_error($stats_option_synch_res)) {
-        die(json_encode([
+        die(wp_json_encode([
             'status' => 'error',
             'message' => __('Connection to leyka statistics server failed!', 'leyka'),
         ]));
@@ -828,7 +828,7 @@ function leyka_usage_stats_y(){
 
     }
 
-    die(json_encode(['status' => 'ok', 'message' => __('Thank you!', 'leyka'),]));
+    die(wp_json_encode(['status' => 'ok', 'message' => __('Thank you!', 'leyka'),]));
 
 }
 add_action('wp_ajax_leyka_usage_stats_y', 'leyka_usage_stats_y');
@@ -839,7 +839,7 @@ function leyka_donors_autocomplete(){
     $res = [];
 
     if( !$search_query ) {
-        die(json_encode($res));
+        die(wp_json_encode($res));
     }
 
     if(isset($_GET['type']) && $_GET['type'] === 'users') { // Search for donors in user accounts
@@ -892,7 +892,7 @@ function leyka_donors_autocomplete(){
 
     }
 
-    die(json_encode($res));
+    die(wp_json_encode($res));
 
 }
 add_action('wp_ajax_leyka_donors_autocomplete', 'leyka_donors_autocomplete');
@@ -906,7 +906,7 @@ function leyka_gateways_autocomplete(){
         $res[] = ['label' => sprintf("%s (%s)", $pm->title, $pm->gateway->title), 'value' => $pm->full_id];
     }
 
-    die(json_encode($res));
+    die(wp_json_encode($res));
 
 }
 add_action('wp_ajax_leyka_gateways_autocomplete', 'leyka_gateways_autocomplete');
@@ -922,7 +922,7 @@ function leyka_campaigns_autocomplete(){
         $res[] = ['value' => $campaign->id, 'label' => $campaign->title, 'payment_title' => $campaign->payment_title,];
     }
 
-    die(json_encode($res));
+    die(wp_json_encode($res));
 
 }
 add_action('wp_ajax_leyka_campaigns_autocomplete', 'leyka_campaigns_autocomplete');
@@ -949,7 +949,7 @@ function leyka_donors_tags_autocomplete(){
         $res[] = ['label' => $tag->name, 'value' => $tag->term_id,];
     }
 
-    die(json_encode($res));
+    die(wp_json_encode($res));
 
 }
 add_action('wp_ajax_leyka_donors_tags_autocomplete', 'leyka_donors_tags_autocomplete');
@@ -957,17 +957,17 @@ add_action('wp_ajax_leyka_donors_tags_autocomplete', 'leyka_donors_tags_autocomp
 function leyka_add_donor_comment(){
 
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_add_donor_comment')) {
-        die(json_encode(['status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
     }
 
     try {
         $donor = new Leyka_Donor(absint($_POST['donor']));
     } catch(Exception $e) {
-        die(json_encode(['status' => 'error', 'message' => __('Error: donor not found', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Error: donor not found', 'leyka'),]));
     }
 
     if(empty($_POST['comment'])) {
-        die(json_encode(['status' => 'error', 'message' => __('Error: empty comment', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Error: empty comment', 'leyka'),]));
     }
 
     $comment_text = sanitize_text_field($_POST['comment']);
@@ -991,7 +991,7 @@ function leyka_add_donor_comment(){
 
     $comment_table_row_html = leyka_admin_get_donor_comment_table_row($comment_id, $comment);
 
-    die(json_encode(['status' => 'ok', 'comment_html' => $comment_table_row_html]));
+    die(wp_json_encode(['status' => 'ok', 'comment_html' => $comment_table_row_html]));
 
 }
 add_action('wp_ajax_leyka_add_donor_comment', 'leyka_add_donor_comment');
@@ -999,31 +999,31 @@ add_action('wp_ajax_leyka_add_donor_comment', 'leyka_add_donor_comment');
 function leyka_delete_donor_comment(){
 
     if(empty($_POST['comment_id'])) {
-        die(json_encode(['status' => 'error', 'message' => __('Error: undefined comment id', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Error: undefined comment id', 'leyka'),]));
     }
 
     $_POST['comment_id'] = absint($_POST['comment_id']);
 
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_delete_donor_comment')) {
-        die(json_encode(['status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
     }
 
     try {
         $donor = new Leyka_Donor(absint($_POST['donor']));
     } catch(Exception $e) {
-        die(json_encode(['status' => 'error', 'message' => __('Error: donor not found', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Error: donor not found', 'leyka'),]));
     }
 
     try {
         $donor->delete_comment($_POST['comment_id']);
     } catch(Exception $ex) {
-        die(json_encode([
+        die(wp_json_encode([
             'status' => 'error',
             'message' => $ex->getMessage()
         ]));
     }
 
-    die(json_encode(['status' => 'ok',]));
+    die(wp_json_encode(['status' => 'ok',]));
 
 }
 add_action('wp_ajax_leyka_delete_donor_comment', 'leyka_delete_donor_comment');
@@ -1031,27 +1031,27 @@ add_action('wp_ajax_leyka_delete_donor_comment', 'leyka_delete_donor_comment');
 function leyka_save_editable_comment(){
 
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_save_editable_str')) {
-        die(json_encode(['status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
     }
 
     try {
         $donor = new Leyka_Donor(absint($_POST['donor']));
     } catch(Exception $e) {
-        die(json_encode(['status' => 'error', 'message' => __('Error: donor not found', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Error: donor not found', 'leyka'),]));
     }
 
     if(empty($_POST['text_item_id'])) {
-        die(json_encode(['status' => 'error', 'message' => __('Error: empty comment id', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Error: empty comment id', 'leyka'),]));
     }
 
     if(empty($_POST['text'])) {
-        die(json_encode(['status' => 'error', 'message' => __('Error: empty text', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Error: empty text', 'leyka'),]));
     }
 
     $comment_text = sanitize_text_field($_POST['text']);
     $donor->update_comment(absint($_POST['text_item_id']), $comment_text);
 
-    die(json_encode([
+    die(wp_json_encode([
         'status' => 'ok',
         'saved_text' => stripcslashes(stripcslashes(htmlspecialchars_decode($comment_text))),
     ]));
@@ -1065,7 +1065,7 @@ function leyka_admin_get_donor_donations(){
     try {
         $donor = new Leyka_Donor(absint($_POST['donor_id']));
     } catch(Exception $e) {
-        die( json_encode(['draw' => (int) sanitize_text_field( $_POST['draw'] ), 'error' => $e->getMessage()]) );
+        die( wp_json_encode(['draw' => (int) sanitize_text_field( $_POST['draw'] ), 'error' => $e->getMessage()]) );
     }
 
     $_POST['start'] = empty($_POST['start']) ? 0 : absint($_POST['start']); // Result record number to start from
@@ -1112,7 +1112,7 @@ function leyka_admin_get_donor_donations(){
 
     }
 
-    die(json_encode($result));
+    die(wp_json_encode($result));
 
 }
 add_action('wp_ajax_leyka_get_donor_donations', 'leyka_admin_get_donor_donations');
@@ -1123,7 +1123,7 @@ function leyka_admin_get_campaign_donations(){
 
     $campaign = new Leyka_Campaign($_POST['campaign_id']);
 
-//    die( json_encode([('draw' => (int)$_POST['draw'], 'error' => $e->getMessage()]) );
+//    die( wp_json_encode([('draw' => (int)$_POST['draw'], 'error' => $e->getMessage()]) );
 
     $_POST['start'] = empty($_POST['start']) ? 0 : absint($_POST['start']); // Result record number to start from
     $_POST['length'] = empty($_POST['length']) ? 10 : absint($_POST['length']); // Donations per table "page"
@@ -1185,7 +1185,7 @@ function leyka_admin_get_campaign_donations(){
 
     }
 
-    die(json_encode($result));
+    die(wp_json_encode($result));
 
 }
 add_action('wp_ajax_leyka_get_campaign_donations', 'leyka_admin_get_campaign_donations');
@@ -1196,17 +1196,17 @@ function leyka_admin_get_recurring_subscription_donations(){
 
     $_POST['recurring_subscription_id'] = absint($_POST['recurring_subscription_id']);
     if( !$_POST['recurring_subscription_id'] ) {
-        die( json_encode(['draw' => (int) sanitize_text_field( $_POST['draw'] ), 'error' => __('Incorrect recurring subscription ID given', 'leyka')]) );
+        die( wp_json_encode(['draw' => (int) sanitize_text_field( $_POST['draw'] ), 'error' => __('Incorrect recurring subscription ID given', 'leyka')]) );
     }
 
     try {
         $recurring_subscription = Leyka_Donations::get_instance()->get($_POST['recurring_subscription_id']);
     } catch(Exception $ex) {
-        die( json_encode(['draw' => (int) sanitize_text_field( $_POST['draw'] ), 'error' => $ex->getMessage()]) );
+        die( wp_json_encode(['draw' => (int) sanitize_text_field( $_POST['draw'] ), 'error' => $ex->getMessage()]) );
     }
 
     if( !$recurring_subscription->is_init_recurring_donation ) {
-        die( json_encode(['draw' => (int) sanitize_text_field( $_POST['draw'] ), 'error' => __('ID given is not of a recurring subscription', 'leyka')]) );
+        die( wp_json_encode(['draw' => (int) sanitize_text_field( $_POST['draw'] ), 'error' => __('ID given is not of a recurring subscription', 'leyka')]) );
     }
 
     $_POST['start'] = empty($_POST['start']) ? 0 : absint($_POST['start']); // Result record number to start from
@@ -1300,7 +1300,7 @@ function leyka_admin_get_recurring_subscription_donations(){
 
     }
 
-    die(json_encode($result));
+    die(wp_json_encode($result));
 
 }
 add_action('wp_ajax_leyka_get_recurring_subscription_donations', 'leyka_admin_get_recurring_subscription_donations');
@@ -1309,18 +1309,18 @@ add_action('wp_ajax_leyka_get_recurring_subscription_donations', 'leyka_admin_ge
 function leyka_save_donor_description(){
 
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_save_editable_str')) {
-        die(json_encode(['status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
     }
 
     try {
         $donor = new Leyka_Donor(absint($_POST['donor']));
     } catch(Exception $e) {
-        die(json_encode(['status' => 'error', 'message' => __('Error: donor not found', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Error: donor not found', 'leyka'),]));
     }
 
     $donor->description = !empty($_POST['text']) ? sanitize_text_field($_POST['text']) : "";
 
-    die(json_encode([
+    die(wp_json_encode([
         'status' => 'ok',
         'saved_text' => stripcslashes(stripcslashes(htmlspecialchars_decode($donor->description))),
     ]));
@@ -1331,18 +1331,18 @@ add_action('wp_ajax_leyka_save_donor_description', 'leyka_save_donor_description
 function leyka_save_donor_name(){
 
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_save_editable_str')) {
-        die(json_encode(['status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
     }
 
     try {
         $donor = new Leyka_Donor(absint($_POST['donor']));
     } catch(Exception $e) {
-        die(json_encode(['status' => 'error', 'message' => __('Error: donor not found', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Error: donor not found', 'leyka'),]));
     }
 
     $donor->name = !empty($_POST['text']) ? sanitize_text_field($_POST['text']) : '';
 
-    die(json_encode([
+    die(wp_json_encode([
         'status' => 'ok',
         'saved_text' => stripcslashes(stripcslashes(htmlspecialchars_decode($donor->name))),
     ]));
@@ -1353,19 +1353,19 @@ add_action('wp_ajax_leyka_save_donor_name', 'leyka_save_donor_name');
 function leyka_save_donor_tags(){
 
     if(empty($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'leyka_save_donor_tags')) {
-        die(json_encode(['status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
     }
 
     try {
         $donor = new Leyka_Donor(absint($_POST['donor']));
     } catch(Exception $e) {
-        die(json_encode(['status' => 'error', 'message' => __('Error: donor not found', 'leyka'),]));
+        die(wp_json_encode(['status' => 'error', 'message' => __('Error: donor not found', 'leyka'),]));
     }
 
     $tags = !empty($_POST['tags']) ? explode(',', sanitize_text_field($_POST['tags'])) : '';
     wp_set_object_terms($donor->id, $tags, Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME);
 
-    die(json_encode(['status' => 'ok',]));
+    die(wp_json_encode(['status' => 'ok',]));
 
 }
 add_action('wp_ajax_leyka_save_donor_tags', 'leyka_save_donor_tags');
@@ -1373,16 +1373,16 @@ add_action('wp_ajax_leyka_save_donor_tags', 'leyka_save_donor_tags');
 function leyka_close_dashboard_banner(){
 
     if(empty($_POST['banner_id'])) {
-        die(json_encode(['status' => 'error',]));
+        die(wp_json_encode(['status' => 'error',]));
     }
 
     try {
         update_user_meta(get_current_user_id(), 'leyka_dashboard_banner_closed-'.$_POST['banner_id'], true);
     } catch(Exception $e) {
-        die(json_encode(['status' => 'error',]));
+        die(wp_json_encode(['status' => 'error',]));
     }
 
-    die(json_encode(['status' => 'ok',]));
+    die(wp_json_encode(['status' => 'ok',]));
 
 }
 add_action('wp_ajax_leyka_close_dashboard_banner', 'leyka_close_dashboard_banner');
@@ -1393,7 +1393,7 @@ function leyka_files_upload(){
     $data = array_merge(isset($_POST) ? $_POST : [], isset($_FILES) ? $_FILES : []);
 
     if( !wp_verify_nonce($data['nonce'], 'leyka-upload-'.$data['option_id']) ) {
-        die(json_encode(['status' => -1, 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
+        die(wp_json_encode(['status' => -1, 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
     }
 
     $uploaded_file = wp_handle_upload($data['files'], ['test_form' => false,]);
@@ -1416,7 +1416,7 @@ function leyka_files_upload(){
         $response = ['status' => -1, 'error' => $uploaded_file['error'],];
     }
 
-    die(json_encode($response));
+    die(wp_json_encode($response));
 
 }
 add_action('wp_ajax_leyka_files_upload', 'leyka_files_upload');
@@ -1425,7 +1425,7 @@ add_action('wp_ajax_leyka_files_upload', 'leyka_files_upload');
 function leyka_bulk_edit_donors(){
 
     if( !wp_verify_nonce($_POST['nonce'], 'leyka-bulk-edit-donors') ) {
-        die(json_encode(['status' => -1, 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
+        die(wp_json_encode(['status' => -1, 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
     }
 
     $_POST['bulk-edit-action'] = empty($_POST['bulk-edit-action']) || !in_array($_POST['bulk-edit-action'], ['add', 'remove', 'replace']) ?
@@ -1455,7 +1455,7 @@ function leyka_bulk_edit_donors(){
         }
     }
 
-    die(json_encode(['status' => 'ok',]));
+    die(wp_json_encode(['status' => 'ok',]));
 
 }
 add_action('wp_ajax_leyka_bulk_edit_donors', 'leyka_bulk_edit_donors');
@@ -1463,25 +1463,25 @@ add_action('wp_ajax_leyka_bulk_edit_donors', 'leyka_bulk_edit_donors');
 function leyka_delete_extension(){
 
     if(empty($_POST['extension_id']) || !Leyka_Extension::get_by_id($_POST['extension_id'])) {
-        die(json_encode(['status' => -1, 'message' => __('Cannot found given extension', 'leyka'),]));
+        die(wp_json_encode(['status' => -1, 'message' => __('Cannot found given extension', 'leyka'),]));
     } else if( !wp_verify_nonce($_POST['nonce'], 'leyka_delete_extension_'.$_POST['extension_id']) ) {
-        die(json_encode(['status' => -1, 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
+        die(wp_json_encode(['status' => -1, 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
     }
 
     $extension = Leyka_Extension::get_by_id($_POST['extension_id']);
 
     if( !$extension->folder || !file_exists($extension->folder) || !is_dir($extension->folder) ) {
-        die(json_encode(['status' => -1, 'message' => __('Cannot found the extension folder', 'leyka'),]));
+        die(wp_json_encode(['status' => -1, 'message' => __('Cannot found the extension folder', 'leyka'),]));
     }
 
     if( !leyka_delete_dir($extension->folder) ) {
-        die(json_encode([
+        die(wp_json_encode([
             'status' => -1,
             'message' => sprintf(__('Cannot delete the extension. Please report this problem to the <a href="mailto:%s" target="_blank">Leyka technical support</a>.', 'leyka'), leyka_get_website_tech_support_email())
         ]));
     }
 
-    die(json_encode(['status' => 0,]));
+    die(wp_json_encode(['status' => 0,]));
 
 }
 add_action('wp_ajax_leyka_delete_extension', 'leyka_delete_extension');
@@ -1489,19 +1489,19 @@ add_action('wp_ajax_leyka_delete_extension', 'leyka_delete_extension');
 function leyka_support_packages_set_no_campaign_behavior(){
 
     if( !wp_verify_nonce($_POST['nonce'], 'support-packages-no-campaign-behavior') ) {
-        die(json_encode(['status' => -1, 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
+        die(wp_json_encode(['status' => -1, 'message' => __('Wrong nonce in the submitted data', 'leyka'),]));
     }
 
     if(empty($_POST['behavior'])) {
-        die(json_encode(['status' => -1, 'message' => __('No new behavior is given for the Support packages', 'leyka'),]));
+        die(wp_json_encode(['status' => -1, 'message' => __('No new behavior is given for the Support packages', 'leyka'),]));
     } else if( !in_array($_POST['behavior'], ['another-campaign', 'content-open', 'content-closed',])) {
-        die(json_encode(['status' => -1, 'message' => __('Incorrect behavior is given for the Support packages', 'leyka'),]));
+        die(wp_json_encode(['status' => -1, 'message' => __('Incorrect behavior is given for the Support packages', 'leyka'),]));
     }
 
     if($_POST['behavior'] === 'another-campaign') {
 
         if( !absint($_POST['campaign_id']) ) {
-            die(json_encode(['status' => -1, 'message' => __('No new campaign is given for the Support packages', 'leyka'),]));
+            die(wp_json_encode(['status' => -1, 'message' => __('No new campaign is given for the Support packages', 'leyka'),]));
         }
 
         leyka_options()->opt('support_packages_campaign', absint($_POST['campaign_id']));
@@ -1513,12 +1513,12 @@ function leyka_support_packages_set_no_campaign_behavior(){
         update_option('leyka_support_packages_no_campaign_behavior', 'content-closed');
     }
 
-    die(json_encode(['status' => 0,]));
+    die(wp_json_encode(['status' => 0,]));
 
 }
 add_action('wp_ajax_leyka_support_packages_set_no_campaign_behavior', 'leyka_support_packages_set_no_campaign_behavior');
 
 function leyka_ajax_get_currencies_rates() {
-    die(json_encode(leyka_get_currencies_rates()));
+    die(wp_json_encode(leyka_get_currencies_rates()));
 }
 add_action('wp_ajax_leyka_get_currencies_rates', 'leyka_ajax_get_currencies_rates');

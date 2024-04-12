@@ -81,6 +81,6 @@ class PatchRequest extends PayPalModel
         foreach ($this->getPatches() as $patch) {
             $json[] = $patch->toArray();
         }
-        return str_replace('\\/', '/', json_encode($json, $options));
+        return str_replace('\\/', '/', wp_json_encode($json, $options));
     }
 }

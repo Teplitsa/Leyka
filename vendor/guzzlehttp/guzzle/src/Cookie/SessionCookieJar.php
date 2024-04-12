@@ -54,7 +54,7 @@ class SessionCookieJar extends CookieJar
             }
         }
 
-        $_SESSION[$this->sessionKey] = \json_encode($json);
+        $_SESSION[$this->sessionKey] = \wp_json_encode($json);
     }
 
     /**

@@ -683,7 +683,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             }
 
             status_header(200);
-            die(json_encode(array_merge( ['result' => 'ok'], $error_description ? ['error_description' => $error_description ] : [], $json_items )));
+            die(wp_json_encode(array_merge( ['result' => 'ok'], $error_description ? ['error_description' => $error_description ] : [], $json_items )));
 
         }
 
@@ -872,7 +872,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                       $error_description .= " and donation callback not handled";
                     }
                     status_header(200);
-                    die(json_encode(array_merge( ['result' => 'ok'], $error_description ? ['error_description' => $error_description ] : [], $json_items )));
+                    die(wp_json_encode(array_merge( ['result' => 'ok'], $error_description ? ['error_description' => $error_description ] : [], $json_items )));
                 }
 
                 $donation->add_gateway_response($response);
@@ -929,7 +929,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         }
 
         status_header(200);
-        die(json_encode(array_merge(
+        die(wp_json_encode(array_merge(
             ['result' => 'ok'],
             $error_description ? ['error_description' => $error_description ] : [], $json_items
         )));

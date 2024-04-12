@@ -73,13 +73,13 @@ class PayPalModel
 
         if (is_a($data, get_class(new \stdClass()))) {
             //This means, root element is object
-            return new static(json_encode($data));
+            return new static(wp_json_encode($data));
         }
 
         $list = array();
 
         if (is_array($data)) {
-            $data = json_encode($data);
+            $data = wp_json_encode($data);
         }
 
         if (JsonValidator::validate($data)) {
@@ -95,7 +95,7 @@ class PayPalModel
             }
             if (is_a($decoded, get_class(new \stdClass()))) {
                 //This means, root element is object
-                $list[] = new static(json_encode($decoded));
+                $list[] = new static(wp_json_encode($decoded));
             }
         }
 
@@ -290,11 +290,11 @@ class PayPalModel
     {
         // Because of PHP Version 5.3, we cannot use JSON_UNESCAPED_SLASHES option
         // Instead we would use the str_replace command for now.
-        // TODO: Replace this code with return json_encode($this->toArray(), $options | 64); once we support PHP >= 5.4
+        // TODO: Replace this code with return wp_json_encode($this->toArray(), $options | 64); once we support PHP >= 5.4
         if (version_compare(phpversion(), '5.4.0', '>=') === true) {
-            return json_encode($this->toArray(), $options | 64);
+            return wp_json_encode($this->toArray(), $options | 64);
         }
-        return str_replace('\\/', '/', json_encode($this->toArray(), $options));
+        return str_replace('\\/', '/', wp_json_encode($this->toArray(), $options));
     }
 
     /**

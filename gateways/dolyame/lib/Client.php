@@ -172,7 +172,7 @@ class Client
 			$context = array('source' => 'dolyame-payment');
 			$this->logger->info('url' . ' = ' . $url, $context);
 			unset($params['headers']['Authorization']);
-			$this->logger->info('request' . ' = ' . json_encode($params), $context);
+			$this->logger->info('request' . ' = ' . wp_json_encode($params), $context);
 			$this->logger->info('response' . ' = ' . $result['body'], $context);
 		}
 
@@ -247,7 +247,7 @@ class Client
 
 		if ($this->logger) {
 			$this->logger->info($method . ' ' . $action);
-			$this->logger->info('request' . ' = ' . json_encode($encodedData));
+			$this->logger->info('request' . ' = ' . wp_json_encode($encodedData));
 			$this->logger->info('response' . ' = ' . $code . ':' . $out);
 		}
 
@@ -305,7 +305,7 @@ class Client
 
 	protected function encode(array $data)
 	{
-		$result = json_encode($data);
+		$result = wp_json_encode($data);
 		$error  = json_last_error();
 		if ($error != JSON_ERROR_NONE) {
 			throw new \Exception('JSON Error: ' . json_last_error_msg());

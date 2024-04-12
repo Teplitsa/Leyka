@@ -133,7 +133,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 'Content-type' => 'application/json; charset=utf-8',
                 'Accept' => 'application/json',
             ],
-            'body' => json_encode([
+            'body' => wp_json_encode([
                 'shopID' => leyka_options()->opt('leyka_rbk_shop_id'),
                 'amount' => 100 * (int)$donation->amount, // Amount in minor currency units (like cent or kopeyka). Must be int
                 'currency' => 'RUB',
@@ -349,7 +349,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                     'Content-type' => 'application/json; charset=utf-8',
                     'Accept' => 'application/json'
                 ],
-                'body' => json_encode(['reason' => 'Donation auto capture',])
+                'body' => wp_json_encode(['reason' => 'Donation auto capture',])
             ]
         );
 
@@ -424,7 +424,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 'X-Request-ID' => uniqid(),
                 'Accept' => 'application/json',
             ],
-            'body' => json_encode([
+            'body' => wp_json_encode([
                 'shopID' => leyka_options()->opt('leyka_rbk_shop_id'),
                 'dueDate' => gmdate( 'Y-m-d\TH:i:s\Z', strtotime('+2 minute', current_time('timestamp', 1)) ),
                 'amount' => 100 * (int)$new_recurring_donation->amount, // Amount in minor currency units. Must be int
@@ -463,7 +463,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 'X-Request-ID' => uniqid(),
                 'Accept' => 'application/json',
             ],
-            'body' => json_encode([
+            'body' => wp_json_encode([
                 'flow' => ['type' => 'PaymentFlowInstant',],
                 'payer' => [
                     'payerType' => 'RecurrentPayer',

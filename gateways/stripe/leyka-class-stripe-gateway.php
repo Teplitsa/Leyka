@@ -357,7 +357,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                         }
 
                         $new_recurring_donation->add_gateway_response(
-                            json_encode($event, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+                            wp_json_encode($event, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
                         );
 
                     }
@@ -370,7 +370,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                     $init_recurring_donation->stripe_invoice_id = $response_data->id;
                     $init_recurring_donation->stripe_payment_intent_id = $response_data->payment_intent;
                     $init_recurring_donation->add_gateway_response(
-                        json_encode($event, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+                        wp_json_encode($event, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
                     );
 
                 }
@@ -381,7 +381,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
             case 'charge.refunded':
                 $donation->status = 'refunded';
-                $donation->add_gateway_response(json_encode($event, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+                $donation->add_gateway_response(wp_json_encode($event, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
 
                 break;
 
@@ -404,7 +404,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
                 }
 
-                $donation->add_gateway_response(json_encode($event, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+                $donation->add_gateway_response(wp_json_encode($event, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
                 Leyka_Donation_Management::send_all_emails($donation);
 
                 break;
@@ -428,7 +428,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                 // Emails will be sent only if respective options are on:
                 Leyka_Donation_Management::send_error_notifications($donation);
 
-                $donation->add_gateway_response(json_encode($event, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+                $donation->add_gateway_response(wp_json_encode($event, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
 
                 break;
 
@@ -436,7 +436,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                 $init_donation_id = $response_data->metadata->donation_id;
                 $init_recurring_donation = Leyka_Donations::get_instance()->get_donation((int)$init_donation_id);
                 $init_recurring_donation->recurring_is_active = false;
-                $init_recurring_donation->add_gateway_response(json_encode($event, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+                $init_recurring_donation->add_gateway_response(wp_json_encode($event, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
 
                 break;
 

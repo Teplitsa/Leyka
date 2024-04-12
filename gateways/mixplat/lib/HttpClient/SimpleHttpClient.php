@@ -26,7 +26,7 @@ class SimpleHttpClient implements HttpClientInterface
                     'method' => 'POST',
                     'timeout' => $config->clientTimeout,
                     'header' => 'Content-type: application/json',
-                    'content' => json_encode($params)
+                    'content' => wp_json_encode($params)
                 )
             )
         );

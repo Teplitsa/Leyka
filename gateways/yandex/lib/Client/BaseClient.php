@@ -323,9 +323,9 @@ class BaseClient
         }
 
         if (defined('JSON_UNESCAPED_UNICODE') && defined('JSON_UNESCAPED_SLASHES')) {
-            $encoded = json_encode($serializedData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $encoded = wp_json_encode($serializedData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         } else {
-            $encoded = self::_unescaped(json_encode($serializedData));
+            $encoded = self::_unescaped(wp_json_encode($serializedData));
         }
 
         if ($encoded === false) {

@@ -196,7 +196,7 @@ abstract class AbstractPaymentRequestBuilder extends AbstractRequestBuilder
                         'Item#'.$index.' title or description not specified',
                         0,
                         'AbstractPaymentRequestBuilder.items['.$index.'].title',
-                        json_encode($item)
+                        wp_json_encode($item)
                     );
                 }
                 foreach (array('price', 'quantity', 'vatCode') as $property) {
@@ -205,7 +205,7 @@ abstract class AbstractPaymentRequestBuilder extends AbstractRequestBuilder
                             'Item#'.$index.' '.$property.' not specified',
                             0,
                             'AbstractPaymentRequestBuilder.items['.$index.'].'.$property,
-                            json_encode($item)
+                            wp_json_encode($item)
                         );
                     }
                 }

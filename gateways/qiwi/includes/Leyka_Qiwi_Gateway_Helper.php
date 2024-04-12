@@ -34,7 +34,7 @@ class Leyka_Qiwi_Gateway_Helper {
                     'Content-Type' => 'application/json',
                     'Authorization' => 'Bearer '.leyka_options()->opt('leyka_qiwi_secret_key'),
                 ],
-                'body' => json_encode(
+                'body' => wp_json_encode(
                     ['amount' => ['currency' => 'RUB', 'value' => intval($amount),]],
                     JSON_FORCE_OBJECT
                 )
@@ -69,7 +69,7 @@ class Leyka_Qiwi_Gateway_Helper {
                     'Content-Type' => 'application/json',
                     'Authorization' => 'Bearer '.leyka_options()->opt('leyka_qiwi_secret_key'),
                 ],
-                'body' => json_encode($args, JSON_FORCE_OBJECT)
+                'body' => wp_json_encode($args, JSON_FORCE_OBJECT)
             ]
         );
 
@@ -80,7 +80,7 @@ class Leyka_Qiwi_Gateway_Helper {
      * @return string
      */
     protected static function _format_date($timestamp) {
-        return str_replace(' ', 'T', date('Y-m-d H:i:s', $timestamp)).self::_gtm_prefix();
+        return str_replace(' ', 'T', gmdate('Y-m-d H:i:s', $timestamp)).self::_gtm_prefix();
     }
 
     protected static function _gtm_prefix() {

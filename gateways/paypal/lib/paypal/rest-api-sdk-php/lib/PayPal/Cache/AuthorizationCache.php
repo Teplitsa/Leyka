@@ -78,7 +78,7 @@ abstract class AuthorizationCache
                 'tokenExpiresIn' => $tokenExpiresIn
             );
         }
-        if (!file_put_contents($cachePath, json_encode($tokens))) {
+        if (!file_put_contents($cachePath, wp_json_encode($tokens))) {
             throw new \Exception("Failed to write cache");
         };
     }

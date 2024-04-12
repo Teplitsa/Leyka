@@ -222,7 +222,7 @@ class WebProfile extends PayPalResourceModel
         foreach ($patch as $patchObject) {
             $payload[] = $patchObject->toArray();
         }
-        $payLoad = json_encode($payload);
+        $payLoad = wp_json_encode($payload);
         self::executeCall(
             "/v1/payment-experience/web-profiles/{$this->getId()}",
             "PATCH",

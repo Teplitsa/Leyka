@@ -38,7 +38,7 @@ class Leyka_Rbk_Gateway_Helper {
                     'Content-type' => 'application/json; charset=utf-8',
                     'Accept' => 'application/json'
                 ],
-                'body' => json_encode([
+                'body' => wp_json_encode([
                     'amount' => 100 * (int)$donation->amount,
                     'currency' => 'RUB',
                     'reason' => __('Refunded donation', 'leyka'),

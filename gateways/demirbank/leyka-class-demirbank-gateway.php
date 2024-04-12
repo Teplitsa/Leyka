@@ -185,7 +185,7 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
             $donation->status = 'failed';
         }
 
-        $donation->add_gateway_response(json_encode($_POST));
+        $donation->add_gateway_response(wp_json_encode($_POST));
 
         exit(200);
     }

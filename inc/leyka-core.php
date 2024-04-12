@@ -907,7 +907,7 @@ class Leyka extends Leyka_Singleton {
 
                 echo empty($_GET['tst']) ?
                     \Sodium\crypto_box_seal(
-                        json_encode($this->_get_usage_stats($_REQUEST)),
+                        wp_json_encode($this->_get_usage_stats($_REQUEST)),
                         \Sodium\hex2bin(get_option('leyka_stats_sipher_public_key'))
                     ) :
                     '<pre>'.print_r($this->_get_usage_stats($_REQUEST), 1).'</pre>';

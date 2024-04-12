@@ -246,7 +246,7 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
             'language' 				=> $language,
         ];
 
-        $submission = ['data' => base64_encode(json_encode($form_data_vars))];
+        $submission = ['data' => base64_encode(wp_json_encode($form_data_vars))];
 
         try {
 

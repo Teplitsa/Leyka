@@ -440,7 +440,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             $errno = curl_errno($ch);
             $error = curl_error($ch);
             curl_close($ch);
-            die( json_encode(['status' => 0, 'message' => $error." ($errno)"]) );
+            die( wp_json_encode(['status' => 0, 'message' => $error." ($errno)"]) );
 
         } else {
 
@@ -474,10 +474,10 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                 $init_recurring_donation = $this->get_init_recurring_donation($donation);
                 $init_recurring_donation->recurrents_cancelled = true;
 
-                die(json_encode(['status' => 1, 'message' => __('Recurring subscription cancelled.', 'leyka')]));
+                die(wp_json_encode(['status' => 1, 'message' => __('Recurring subscription cancelled.', 'leyka')]));
 
             } else {
-                die(json_encode(['status' => 0, 'message' => sprintf(__('Error on a gateway side: %s', 'leyka'), $response_text." (code $response_code)")]));
+                die(wp_json_encode(['status' => 0, 'message' => sprintf(__('Error on a gateway side: %s', 'leyka'), $response_text." (code $response_code)")]));
             }
 
         }

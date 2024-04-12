@@ -286,11 +286,11 @@ class Client
                 throw new \InvalidArgumentException('The "jsonParams" parameter must be an array.');
             }
 
-            $data['jsonParams'] = json_encode($data['jsonParams']);
+            $data['jsonParams'] = wp_json_encode($data['jsonParams']);
         }
 
         if (isset($data['orderBundle']) && is_array($data['orderBundle'])) {
-            $data['orderBundle'] = \json_encode($data['orderBundle']);
+            $data['orderBundle'] = \wp_json_encode($data['orderBundle']);
         }
 
         return $this->execute($method, $data);
@@ -725,7 +725,7 @@ class Client
             $data = \http_build_query($data, '', '&');
         } else {
             $headers['Content-Type'] = 'application/json';
-            $data = \json_encode($data);
+            $data = \wp_json_encode($data);
             $method = HttpClientInterface::METHOD_POST;
         }
 

@@ -1434,23 +1434,23 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     leyka_options()->opt('check_nonce_on_public_donor_actions')
                     && (empty($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'leyka_payment_form'))
                 ) {
-                    die(json_encode(['status' => 1, 'message' => __('Wrong nonce in submitted form data', 'leyka'),]));
+                    die(wp_json_encode(['status' => 1, 'message' => __('Wrong nonce in submitted form data', 'leyka'),]));
                 }
 
                 $_POST['donation_id'] = (int)$_POST['donation_id'];
 
                 if( !$_POST['donation_id']) {
-                    die(json_encode(['status' => 1, 'message' => __('No donation ID found in the submitted data', 'leyka'),]));
+                    die(wp_json_encode(['status' => 1, 'message' => __('No donation ID found in the submitted data', 'leyka'),]));
                 }
 
                 $donation = Leyka_Donations::get_instance()->get($_POST['donation_id']);
 
                 if( !$donation ) {
-                    die(json_encode(['status' => 1, 'message' => __('Wrong donation ID in submitted payment data', 'leyka'),]));
+                    die(wp_json_encode(['status' => 1, 'message' => __('Wrong donation ID in submitted payment data', 'leyka'),]));
                 }
 
                 if($donation->gateway_id !== $this->_id) {
-                    die(json_encode(['status' => 1, 'message' => __('Wrong gateway in submitted payment data', 'leyka'),]));
+                    die(wp_json_encode(['status' => 1, 'message' => __('Wrong gateway in submitted payment data', 'leyka'),]));
                 }
 
                 if( $_POST['paypal_token'] && !$donation->paypal_token ) {
@@ -1461,7 +1461,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     $donation->paypal_payment_id = esc_attr($_POST['paypal_payment_id']);
                 }
 
-                die(json_encode(['status' => 0,]));
+                die(wp_json_encode(['status' => 0,]));
 
             default:
 

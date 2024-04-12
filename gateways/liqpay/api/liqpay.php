@@ -232,7 +232,7 @@ class LiqPay {
      * @return string
      */
     private function encode_params($params) {
-        return base64_encode(json_encode($params));
+        return base64_encode(wp_json_encode($params));
     }
 
     /**

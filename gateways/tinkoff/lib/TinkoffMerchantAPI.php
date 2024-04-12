@@ -180,7 +180,7 @@ class TinkoffMerchant
     {
         $this->error = '';
         if (is_array($args)) {
-            $args = json_encode($args);
+            $args = wp_json_encode($args);
         }
 
         if ($curl = curl_init()) {

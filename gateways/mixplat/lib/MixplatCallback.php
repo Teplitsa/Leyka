@@ -62,7 +62,7 @@ class MixplatCallback
      */
     public function returnSuccess($message = null)
     {
-        echo json_encode(array(
+        echo wp_json_encode(array(
             'result' => MixplatVars::RESULT_OK,
             'message' => $message,
         ));
@@ -74,7 +74,7 @@ class MixplatCallback
      */
     public function returnError($errorText, $errorDescription = null, $message = null)
     {
-        echo json_encode(array(
+        echo wp_json_encode(array(
             'result' => $errorText,
             'error_description' => $errorDescription,
             'message' => $message,
