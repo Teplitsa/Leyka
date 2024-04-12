@@ -7,7 +7,7 @@
  **/
 
 /** @var $campaign Leyka_Campaign */
-$template_data = Leyka_Star_Template_Controller::get_instance()->get_template_data($campaign);
+$template_data = apply_filters( 'leyka_star_template_data', Leyka_Star_Template_Controller::get_instance()->get_template_data($campaign) );
 
 $is_recurring_campaign = false;
 if(count($campaign->donations_types_available) > 1) {
@@ -37,6 +37,8 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
 <div id="leyka-pf-<?php echo esc_attr( $campaign->id );?>" class="leyka-pf leyka-pf-star" data-form-id="leyka-pf-<?php echo esc_attr( $campaign->id );?>-star-form" data-leyka-ver="<?php echo Leyka_Payment_Form::get_plugin_ver_for_atts();?>" data-card-2column-breakpoint-width="600">
 
 <div class="leyka-payment-form leyka-tpl-star-form" data-template="star">
+
+    <?php do_action( 'leyka_payment_form_before' ); ?>
 
     <form id="<?php echo leyka_pf_get_form_id($campaign->id).'-star-form';?>" class="leyka-pm-form leyka-no-validation" action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate">
 
@@ -68,8 +70,10 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                 <a href="#" class="<?php echo esc_attr( $currency_id === $template_data['main_currency_id'] ? 'active' : '' ); ?>" data-currency="<?php echo esc_attr( $currency_id );?>" role="tab" aria-selected="true"><?php echo esc_html( $currency_data['currency_label'] ); ?></a>
                 <?php } ?>
 
+                <?php do_action( 'leyka_form_currency_tabs' ); ?>
+
                 <?php if ( !empty($template_data['cryptocurrencies_wallets']) ) { ?>
-                <a href="#" data-currency="crypto" role="tab" aria-selected="true">Crypto</a>
+                <a href="#" data-currency="crypto" role="tab" aria-selected="true"><?php esc_html_e( 'Crypto', 'leyka' ); ?></a>
                 <?php } ?>
 
             </div>
@@ -333,6 +337,8 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
             </div>
 
         <?php } ?>
+
+        <?php do_action( 'leyka_form_currency_tabs_content' ); ?>
 
         <!-- donor data -->
         <div class="section section--person">
