@@ -897,6 +897,8 @@ class Leyka extends Leyka_Singleton {
                 echo '';
 
                 /* Statistics collection disabled
+                // The file bin/sodium-compat.phar was removed in version 3.31.4
+                // Plugin check: Phar files are not permitted.
                 require_once LEYKA_PLUGIN_DIR.'bin/sodium-compat.phar';
 
                 if( !$this->_outer_request_allowed() ) {

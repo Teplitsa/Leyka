@@ -17,6 +17,8 @@ function leyka_sync_plugin_stats_option() {
 
     if($leyka_installation_id) { // Update the installation (activate/deactivate)
 
+        // The file bin/sodium-compat.phar was removed in version 3.31.4
+        // Plugin check: Phar files are not permitted.
         require_once LEYKA_PLUGIN_DIR.'bin/sodium-compat.phar';
 
         if( !function_exists('Sodium\hex2bin') ) {
