@@ -234,9 +234,9 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
         $image_media_id = media_handle_sideload($file_array, 0, ''); // Do the validation and storage stuff
 
         if(is_wp_error($image_media_id)) { // If error storing permanently, unlink
-            @unlink($file_array['tmp_name']);
+            wp_delete_file($file_array['tmp_name']);
         } else { // Media library entry created, delete the old file
-            @unlink($wp_uploads_dir['basedir'].$image_url);
+            wp_delete_file($wp_uploads_dir['basedir'].$image_url);
         }
 
         return $image_media_id;

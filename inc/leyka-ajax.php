@@ -367,7 +367,7 @@ function leyka_upload_l10n(){
 
             try {
                 if(copy($file, WP_CONTENT_DIR.'/languages/plugins/leyka-ru_RU.mo')) {
-                    unlink($file);
+                    wp_delete_file($file);
                 } else {
                     $res = [
                         'status' => 'error',

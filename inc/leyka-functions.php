@@ -2889,7 +2889,7 @@ if( !function_exists('leyka_delete_dir') ) {
             return false;
         }
 
-        return is_file($path) ? @unlink($path) : (array_map(__FUNCTION__, glob($path.'/*')) == @rmdir($path));
+        return is_file($path) ? wp_delete_file($path) : (array_map(__FUNCTION__, glob($path.'/*')) == @rmdir($path));
 
     }
 }
