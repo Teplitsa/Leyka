@@ -35,6 +35,8 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
 
     <div class="leyka-payment-form leyka-tpl-need-help-form leyka-tpl-star-form" data-template="need-help">
 
+        <?php do_action( 'leyka_payment_form_before' ); ?>
+
         <form id="<?php echo leyka_pf_get_form_id($campaign->id).'-need-help-form';?>" class="leyka-pm-form leyka-no-validation" action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate">
 
             <div class="section section--periodicity <?php echo in_array('recurring', $campaign->donations_types_available) ? '' : 'hidden';?>" style="<?php echo esc_attr( $campaign->daily_rouble_mode_on_and_valid ? 'display: none;' : '' );?>">
