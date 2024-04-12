@@ -198,7 +198,7 @@ if( !function_exists('leyka_strip_string_by_words') ) {
     function leyka_strip_string_by_words($string, $length = 350, $strip_tags_shortcodes = true) {
 
         if( !!$strip_tags_shortcodes ) {
-            $string = strip_tags(strip_shortcodes($string));
+            $string = wp_strip_all_tags(strip_shortcodes($string));
         }
 
         if(mb_strlen($string) <= $length || stripos($string, ' ') === false) {
@@ -2365,7 +2365,7 @@ function leyka_get_env() {
             continue;
         }
 
-        $res['env']['server_'.$key] = is_array($value) ? serialize($value) : strip_tags($value);
+        $res['env']['server_'.$key] = is_array($value) ? serialize($value) : wp_strip_all_tags($value);
 
     }
     foreach($_ENV as $key => $value) {
@@ -2374,7 +2374,7 @@ function leyka_get_env() {
             continue;
         }
 
-        $res['env']['env_'.$key] = is_array($value) ? serialize($value) : strip_tags($value);
+        $res['env']['env_'.$key] = is_array($value) ? serialize($value) : wp_strip_all_tags($value);
 
     }
 

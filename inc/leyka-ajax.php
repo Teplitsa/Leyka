@@ -449,7 +449,7 @@ function leyka_setup_donor_password(){
             $donor_logged_in = $donor->login($_POST['leyka_donor_pass'], true);
 
             if(is_wp_error($donor_logged_in)) { /** @var $donor_logged_in WP_Error */
-                $res = ['status' => 'error', 'message' => strip_tags($donor_logged_in->get_error_message()),];
+                $res = ['status' => 'error', 'message' => wp_strip_all_tags($donor_logged_in->get_error_message()),];
             }
 
         } else { // Password resetting
@@ -502,7 +502,7 @@ function leyka_donor_login(){
             $donor_logged_in = $donor->login($_POST['leyka_donor_pass'], true);
 
             if(is_wp_error($donor_logged_in)) {
-                $res = ['status' => 'error', 'message' => strip_tags($donor_logged_in->get_error_message()),];
+                $res = ['status' => 'error', 'message' => wp_strip_all_tags($donor_logged_in->get_error_message()),];
             }
 
         }

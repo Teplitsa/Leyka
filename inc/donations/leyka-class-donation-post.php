@@ -346,7 +346,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'campaign_title':
 
                 $campaign = $this->campaign;
-                $value = $campaign ? strip_tags($campaign->title) : strip_tags($this->payment_title);
+                $value = $campaign ? wp_strip_all_tags($campaign->title) : wp_strip_all_tags($this->payment_title);
                 break;
 
             case 'title':

@@ -15,7 +15,7 @@ class Leyka_Engagement_Banner  {
 			return do_shortcode( html_entity_decode($value, ENT_QUOTES) );
 		}
 
-		$value = esc_html( strip_tags( $value ) );
+		$value = esc_html( wp_strip_all_tags( $value ) );
 
 		return  "<span>{$value}</span>";
 	}

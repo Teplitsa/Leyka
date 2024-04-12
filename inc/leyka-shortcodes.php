@@ -724,7 +724,7 @@ function leyka_inline_campaign_small($atts) {
         return '';
     }
 
-    if(mb_strlen(strip_tags($campaign->content)) < 1500) {
+    if(mb_strlen(wp_strip_all_tags($campaign->content)) < 1500) {
         return '';
     }
 

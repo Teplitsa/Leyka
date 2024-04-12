@@ -763,19 +763,19 @@ function leyka_pf_get_amount_value() {
 }
 
 function leyka_pf_get_currency_value() {
-    return empty($_POST['leyka_donation_currency']) ? '' : strtolower(strip_tags($_POST['leyka_donation_currency']));
+    return empty($_POST['leyka_donation_currency']) ? '' : strtolower(wp_strip_all_tags($_POST['leyka_donation_currency']));
 }
 
 function leyka_pf_get_donor_name_value() {
-    return empty($_POST['leyka_donor_name']) ? '' : stripslashes(strip_tags($_POST['leyka_donor_name']));
+    return empty($_POST['leyka_donor_name']) ? '' : stripslashes(wp_strip_all_tags($_POST['leyka_donor_name']));
 }
 
 function leyka_pf_get_donor_email_value() {
-    return empty($_POST['leyka_donor_email']) ? '' : strip_tags($_POST['leyka_donor_email']);
+    return empty($_POST['leyka_donor_email']) ? '' : wp_strip_all_tags($_POST['leyka_donor_email']);
 }
 
 function leyka_pf_get_donor_comment_value() {
-    return empty($_POST['leyka_donor_comment']) ? '' : strip_tags($_POST['leyka_donor_comment']);
+    return empty($_POST['leyka_donor_comment']) ? '' : wp_strip_all_tags($_POST['leyka_donor_comment']);
 }
 
 function leyka_pf_get_campaign_id_value() {
@@ -784,7 +784,7 @@ function leyka_pf_get_campaign_id_value() {
 
 function leyka_pf_get_payment_method_value() {
 
-    $pm = empty($_POST['leyka_payment_method']) ? '' : explode('-', strip_tags($_POST['leyka_payment_method']));
+    $pm = empty($_POST['leyka_payment_method']) ? '' : explode('-', wp_strip_all_tags($_POST['leyka_payment_method']));
 
     return $pm ? ['gateway_id' => $pm[0], 'payment_method_id' => implode('-', array_slice($pm, 1))] : [];
 
