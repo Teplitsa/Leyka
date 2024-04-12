@@ -64,14 +64,14 @@
                 'days_7' => __('Last 7 days', 'leyka'),
                 'this_year' => __('From the year start', 'leyka'),
                 'this_half_year' => __('Half-year', 'leyka'),
-                'this_quarter' => sprintf(__('%d quarter %d' , 'leyka'),ceil(date("m", time()) / 3), date("Y")),
-                'this_month' => __(date("F", time())).' '.date("Y"),
+                'this_quarter' => sprintf(__('%d quarter %d' , 'leyka'),ceil(gmdate("m", time()) / 3), gmdate("Y")),
+                'this_month' => __(gmdate("F", time())).' '.gmdate("Y"),
                 'this_week' => __('Current week', 'leyka')
             ]);
             $_GET['interval'] = empty($_GET['interval']) ?
                 apply_filters('leyka_admin_dashboard_interval_default', 'days_365') : esc_attr($_GET['interval']);
             $current_url = admin_url('admin.php?page=leyka');
-            $dashboard_data_cache_date = date('d.m.Y, H:i',
+            $dashboard_data_cache_date = gmdate('d.m.Y, H:i',
                 get_transient('leyka_dashboard_data_cache_timestamp_'.$_GET['interval']) === false || isset($_GET['reset']) ?
                 time() : get_transient('leyka_dashboard_data_cache_timestamp_'.$_GET['interval'])); ?>
 

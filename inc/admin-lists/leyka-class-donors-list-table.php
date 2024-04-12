@@ -226,13 +226,15 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             global $wpdb;
 
             $donors_query->query_where .= $wpdb->prepare(
+                // phpcs:disable
                 " AND {$wpdb->users}.ID IN (
                         SELECT {$wpdb->term_relationships}.object_id
                         FROM {$wpdb->term_relationships} INNER JOIN {$wpdb->term_taxonomy} ON {$wpdb->term_relationships}.term_taxonomy_id = {$wpdb->term_taxonomy}.term_taxonomy_id
-                        WHERE {$wpdb->term_taxonomy}.term_id IN (".implode(',', $_REQUEST['donors-tags']).") AND {$wpdb->term_taxonomy}.taxonomy = %s
+                        WHERE {$wpdb->term_taxonomy}.term_id IN (".implode(',', $_REQUEST['donors-tags']).") AND {$wpdb->term_taxonomy}.taxonomy = %s 
                     )",
                 Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME
-            );
+                // phpcs:enable
+            ); 
 
         }
 

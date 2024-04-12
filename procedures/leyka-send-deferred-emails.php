@@ -5,10 +5,10 @@ require_once 'procedures-common.php';
 if( !defined('WPINC') ) die;
 
 // The procedure should be called no more than once per day:
-if(get_transient('leyka_last_deferred_emails_date') === date('d.m.Y') && !leyka_options()->opt('plugin_debug_mode')) {
+if(get_transient('leyka_last_deferred_emails_date') === gmdate('d.m.Y') && !leyka_options()->opt('plugin_debug_mode')) {
     return;
 } else {
-    set_transient('leyka_last_deferred_emails_date', date('d.m.Y'), 60*60*24);
+    set_transient('leyka_last_deferred_emails_date', gmdate('d.m.Y'), 60*60*24);
 }
 
 ini_set('max_execution_time', 0);
@@ -20,7 +20,7 @@ if(leyka_options()->opt('send_recurring_canceling_donor_notification_email')) {
 
     $mailout_delay_days = absint(leyka_options()->opt('recurring_canceling_donor_notification_emails_defer_by'));
     $recurring_subscription_date_timestamp = strtotime("-$mailout_delay_days days");
-    $recurring_subscription_date = date('Y-m-d', $recurring_subscription_date_timestamp);
+    $recurring_subscription_date = gmdate('Y-m-d', $recurring_subscription_date_timestamp);
 
     $recurring_subscriptions = get_posts([
         'post_type' => Leyka_Donation_Management::$post_type,
@@ -59,7 +59,7 @@ if(leyka_options()->opt('send_recurring_canceling_donor_notification_email')) {
                 ['key' => '_rebilling_is_active', 'value' => 1],
                 [
                     'key' => 'leyka_recurrents_cancel_date',
-                    'value' => date('Y-m-d H:i', $recurring_subscription_date_timestamp),
+                    'value' => gmdate('Y-m-d H:i', $recurring_subscription_date_timestamp),
                     'compare' => '>',
                 ],
             ],

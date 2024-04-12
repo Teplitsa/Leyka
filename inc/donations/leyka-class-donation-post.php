@@ -931,7 +931,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
             case 'date_timestamp':
 
-                $new_date = date('Y-m-d H:i:s', $value);
+                $new_date = gmdate('Y-m-d H:i:s', $value);
                 $res = wp_update_post(['ID' => $this->_id, 'post_date' => $new_date,]);
 
                 if( !$res || is_wp_error($res) ) {
@@ -1317,9 +1317,9 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
         }
 
-        $payment_day = (int)date('j', $init_donation->date_timestamp);
+        $payment_day = (int)gmdate('j', $init_donation->date_timestamp);
 
-        if (($is_new_rebill || $init_donation === $this) && date('n', $this->date_timestamp) === date('n')) {
+        if (($is_new_rebill || $init_donation === $this) && gmdate('n', $this->date_timestamp) === gmdate('n')) {
             $rebill_this_month = $this;
         } else {
 
@@ -1384,7 +1384,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
         if($init_donation->recurring_on && $init_donation->recurring_subscription_status !== 'non-active') {
 
-            $payment_day = min(gmdate('t', strtotime('+1 month')), date('d', $init_donation->date_timestamp));
+            $payment_day = min(gmdate('t', strtotime('+1 month')), gmdate('d', $init_donation->date_timestamp));
             $next_payment_date = strtotime(gmdate('Y').'-'.gmdate('m').'-'.$payment_day.(gmdate('d') < $payment_day ? '' : ' +1 month'));
             $init_donation->next_recurring_date_timestamp = $next_payment_date;
 

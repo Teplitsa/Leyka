@@ -967,7 +967,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             'donor_name' => $_POST['donor-name'],
             'donor_email' => $_POST['donor-email'],
             'donor_comment' => empty($_POST['donor-comment']) ? '' : $_POST['donor-comment'],
-            'date_created' => $_POST['donation_date'].' '.date('H:i:s'),
+            'date_created' => $_POST['donation_date'].' '.gmdate('H:i:s'),
         ];
         if( !empty($_POST['donation-amount-total']) && $_POST['donation-amount-total'] !== $_POST['donation-amount'] ) {
             $new_donation_params['amount_total'] = round($_POST['donation-amount-total'], 2);
