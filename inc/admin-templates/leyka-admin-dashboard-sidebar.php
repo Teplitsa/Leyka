@@ -131,7 +131,7 @@ if($main_settings_steps) {?>
 
         <div class="data-line">
 
-            <?php $protocol = parse_url(home_url(), PHP_URL_SCHEME);
+            <?php $protocol = wp_parse_url(home_url(), PHP_URL_SCHEME);
             echo __('Protocol:', 'leyka').' ';?>
             <span class="protocol <?php echo esc_attr( $protocol == 'https' ? 'safe' : 'not-safe' );?>"><?php echo mb_strtoupper($protocol);?></span>
         </div>

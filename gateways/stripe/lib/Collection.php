@@ -263,7 +263,7 @@ class Collection extends StripeObject implements \Countable, \IteratorAggregate
 
     private function extractPathAndUpdateParams($params)
     {
-        $url = \parse_url($this->url);
+        $url = \wp_parse_url($this->url);
         if (!isset($url['path'])) {
             throw new Exception\UnexpectedValueException("Could not parse list url into parts: {$url}");
         }

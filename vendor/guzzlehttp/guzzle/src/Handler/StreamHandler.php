@@ -442,7 +442,7 @@ class StreamHandler
      */
     private function parse_proxy(string $url): array
     {
-        $parsed = \parse_url($url);
+        $parsed = \wp_parse_url($url);
 
         if ($parsed !== false && isset($parsed['scheme']) && $parsed['scheme'] === 'http') {
             if (isset($parsed['host']) && isset($parsed['port'])) {

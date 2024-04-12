@@ -2082,7 +2082,7 @@ if( !function_exists('wp_validate_redirect') ) {
         // In php 5 parse_url may fail if the URL query part contains http://, bug #38143
         $test = ($cut = strpos($location, '?')) ? substr($location, 0, $cut) : $location;
 
-        $lp  = parse_url($test);
+        $lp  = wp_parse_url($test);
 
         // Give up if malformed URL
         if ( false === $lp )
@@ -2097,7 +2097,7 @@ if( !function_exists('wp_validate_redirect') ) {
         if ( isset($lp['scheme'])  && !isset($lp['host']) )
             return $default;
 
-        $wpp = parse_url(home_url());
+        $wpp = wp_parse_url(home_url());
         $allowed_hosts = (array)apply_filters('allowed_redirect_hosts', [$wpp['host']], isset($lp['host']) ? $lp['host'] : '');
 
         if( isset($lp['host']) && ( !in_array($lp['host'], $allowed_hosts) && $lp['host'] != strtolower($wpp['host'])) ) {
