@@ -1031,15 +1031,15 @@ class Leyka extends Leyka_Singleton {
         ];
         if( !empty($params['timestamp_from']) && (int)$params['timestamp_from'] > 0 ) { // 'date_from' must be a timestamp
 
-//            $query_params['date_query']['after'] = date('Y-m-d H:i:s', (int)$params['timestamp_from']);
+//            $query_params['date_query']['after'] = gmdate('Y-m-d H:i:s', (int)$params['timestamp_from']);
 //            $query_params['date_query']['inclusive'] = true;
-            $donations_params['date_from'] = date('Y-m-d H:i:s', (int)$params['timestamp_from']);
+            $donations_params['date_from'] = gmdate('Y-m-d H:i:s', (int)$params['timestamp_from']);
 
             if( !empty($params['period']) ) { // Must be strtotime()-compatible string w/o sign (1 hour, 2 weeks, 3 months, ...)
 
                 $params['period'] = str_replace(['+', '-'], '', $params['period']);
 
-                $donations_params['date_to'] = date(
+                $donations_params['date_to'] = gmdate(
                     'Y-m-d H:i:s', strtotime($donations_params['date_from'].' +'.$params['period'])
                 );
 

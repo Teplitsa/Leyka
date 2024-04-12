@@ -913,7 +913,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         }
 
-        leyka_generate_csv('donors-'.date('d.m.Y-H.i.s'), $rows, $columns); // It will exit automatically
+        leyka_generate_csv('donors-'.gmdate('d.m.Y-H.i.s'), $rows, $columns); // It will exit automatically
 
     }
 

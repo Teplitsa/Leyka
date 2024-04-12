@@ -500,7 +500,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             __('Transaction ID:', 'leyka') => $response_vars['transaction_id'],
             __('Full donation amount:', 'leyka') => $response_vars['total'].' '.$donation->currency_label,
             __("Gateway's donor ID:", 'leyka') => $response_vars['customer_id'],
-            __('Response date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($response_vars['date']))
+            __('Response date:', 'leyka') => gmdate('d.m.Y, H:i:s', strtotime($response_vars['date']))
         ];
 
     }

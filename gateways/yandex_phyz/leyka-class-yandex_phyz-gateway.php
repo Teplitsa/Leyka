@@ -112,14 +112,14 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
 
         if( !!$is_error ) {
             die('<?xml version="1.0" encoding="UTF-8"?>
-<checkOrderResponse performedDatetime="'.date(DATE_ATOM).'"
+<checkOrderResponse performedDatetime="'.gmdate(DATE_ATOM).'"
 code="1000" operation_id="' . esc_attr( $operation_id ) . '"
 account_id="'.leyka_options()->opt('yandex_money_account').'"
 message="'.$message.'"
 techMessage="'.$tech_message.'"/>');
         } else {
             die('<?xml version="1.0" encoding="UTF-8"?>
-<checkOrderResponse performedDatetime="'.date(DATE_ATOM).'"
+<checkOrderResponse performedDatetime="'.gmdate(DATE_ATOM).'"
 code="0" operation_id="' . esc_attr( $operation_id ) . '"
 account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
         }
@@ -128,7 +128,7 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
 
     public function _handle_service_calls($call_type = '') {
 
-		error_log_yandex_phyz("\n\n---- $call_type (".date('d.m.Y H:i:s').") ----\n\n".print_r($_REQUEST, true));
+		error_log_yandex_phyz("\n\n---- $call_type (".gmdate('d.m.Y H:i:s').") ----\n\n".print_r($_REQUEST, true));
 
         $donation_id = empty($_POST['label']) ? 0 : absint($_POST['label']); // Donation ID
         $amount = empty($_POST['withdraw_amount']) ? 0.0 : (float)$_POST['withdraw_amount'];
@@ -292,7 +292,7 @@ account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
                 __('Donation amount after gateway commission:', 'leyka') =>
                     (float)$response_vars['amount'].' '.$donation->currency_label,
                 __("Gateway's donor ID:", 'leyka') => $response_vars['sender'],
-                __('Response date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($response_vars['datetime'])),
+                __('Response date:', 'leyka') => gmdate('d.m.Y, H:i:s', strtotime($response_vars['datetime'])),
             ],
             $donation
         );

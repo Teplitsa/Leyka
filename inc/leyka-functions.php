@@ -736,8 +736,8 @@ function leyka_update_recurring_subscriptions_statuses($no_date_constraints = fa
 
     if( !$no_date_constraints ) {
 
-        $current_day = (int)date('j');
-        $max_days_in_month = (int)date('t');
+        $current_day = (int)gmdate('j');
+        $max_days_in_month = (int)gmdate('t');
 
         $date_params[] = [
             'day' => [
@@ -3094,9 +3094,9 @@ function leyka_count_interval_dates($interval) {
             default: $interval = '365 day';
         }
 
-        $curr_interval_begin_date = date('Y-m-d 23:59:59', strtotime('-'.$interval));
-        $prev_interval_begin_date = date('Y-m-d 23:59:59', strtotime('-'.$interval, strtotime('-'.$interval)));
-        $curr_interval_end_date = date('Y-m-d 23:59:59');
+        $curr_interval_begin_date = gmdate('Y-m-d 23:59:59', strtotime('-'.$interval));
+        $prev_interval_begin_date = gmdate('Y-m-d 23:59:59', strtotime('-'.$interval, strtotime('-'.$interval)));
+        $curr_interval_end_date = gmdate('Y-m-d 23:59:59');
 
     } else {
 
@@ -3104,24 +3104,24 @@ function leyka_count_interval_dates($interval) {
 
             case 'this_year':
 
-                $curr_interval_begin_date = date('Y-m-d 23:59:59', strtotime('31-12-'.(date('Y') - 1)));
-                $prev_interval_begin_date = date('Y-m-d 23:59:59', strtotime('31-12-'.(date('Y') - 2)));
-                $curr_interval_end_date = date('Y-m-d 23:59:59', strtotime('31-12-'.date('Y')));
+                $curr_interval_begin_date = gmdate('Y-m-d 23:59:59', strtotime('31-12-'.(gmdate('Y') - 1)));
+                $prev_interval_begin_date = gmdate('Y-m-d 23:59:59', strtotime('31-12-'.(gmdate('Y') - 2)));
+                $curr_interval_end_date = gmdate('Y-m-d 23:59:59', strtotime('31-12-'.gmdate('Y')));
                 break;
 
             case 'this_half_year':
 
-                $curr_interval_begin_date = date('Y-m-d 23:59:59',
-                    strtotime(date('m') < 7 ? '31-12-'.(date('Y') - 1) : '30-06-'.(date('Y'))));
-                $prev_interval_begin_date = date('Y-m-d 23:59:59',
-                    strtotime(date('m') < 7 ? '30-06-'.(date('Y') - 1) : '31-12-'.(date('Y') - 1)));
-                $curr_interval_end_date = date('Y-m-d 23:59:59',
-                    strtotime(date('m') < 7 ? '30-06-'.date('Y') : '31-12-'.date('Y')));
+                $curr_interval_begin_date = gmdate('Y-m-d 23:59:59',
+                    strtotime(gmdate('m') < 7 ? '31-12-'.(gmdate('Y') - 1) : '30-06-'.(gmdate('Y'))));
+                $prev_interval_begin_date = gmdate('Y-m-d 23:59:59',
+                    strtotime(gmdate('m') < 7 ? '30-06-'.(gmdate('Y') - 1) : '31-12-'.(gmdate('Y') - 1)));
+                $curr_interval_end_date = gmdate('Y-m-d 23:59:59',
+                    strtotime(gmdate('m') < 7 ? '30-06-'.gmdate('Y') : '31-12-'.gmdate('Y')));
                 break;
 
             case 'this_quarter':
 
-                $current_month = date("m");
+                $current_month = gmdate("m");
                 if($current_month < 4) {
                     $date_from_month = '01';
                     $date_to_month = '04';
@@ -3138,30 +3138,30 @@ function leyka_count_interval_dates($interval) {
 
                 $date_prev_from_month = $date_from_month == '01' ? '10' : '0'.($date_from_month - 3);
 
-                $curr_interval_begin_date = date('Y-m-d 23:59:59',
-                    strtotime('- 1 day', strtotime('01-'.$date_from_month.'-'.date('Y'))));
-                $prev_interval_begin_date = date('Y-m-d 23:59:59',
-                    strtotime('- 1 day', strtotime('01-'.$date_prev_from_month.'-'.( $date_prev_from_month == '10' ? date('Y') - 1 : date('Y')))));
-                $curr_interval_end_date = date('Y-m-d 23:59:59',
-                    strtotime('- 1 day', strtotime('01-'.$date_to_month.'-'.( $date_to_month == '01' ? date('Y') + 1 : date('Y')))));
+                $curr_interval_begin_date = gmdate('Y-m-d 23:59:59',
+                    strtotime('- 1 day', strtotime('01-'.$date_from_month.'-'.gmdate('Y'))));
+                $prev_interval_begin_date = gmdate('Y-m-d 23:59:59',
+                    strtotime('- 1 day', strtotime('01-'.$date_prev_from_month.'-'.( $date_prev_from_month == '10' ? gmdate('Y') - 1 : gmdate('Y')))));
+                $curr_interval_end_date = gmdate('Y-m-d 23:59:59',
+                    strtotime('- 1 day', strtotime('01-'.$date_to_month.'-'.( $date_to_month == '01' ? gmdate('Y') + 1 : gmdate('Y')))));
 
                 break;
 
             case 'this_month':
 
-                $curr_interval_begin_date = date('Y-m-d 23:59:59',
-                    strtotime('- 1 day', strtotime('01-'.date('m').'-'.date('Y'))));
-                $prev_interval_begin_date = date('Y-m-d 23:59:59',
-                    strtotime('- 1 day', strtotime('01-'.(date('m') == 1 ? 12 : date('m') - 1).'-'.(date('m') == 1 ? date('Y') - 1 : date('Y')))));
-                $curr_interval_end_date = date('Y-m-d 23:59:59',
-                    strtotime('- 1 day', strtotime('01-'.(date('m') == 12 ? 1 : date('m') + 1).'-'.(date('m') == 12 ? date('Y') + 1 : date('Y')))));
+                $curr_interval_begin_date = gmdate('Y-m-d 23:59:59',
+                    strtotime('- 1 day', strtotime('01-'.gmdate('m').'-'.gmdate('Y'))));
+                $prev_interval_begin_date = gmdate('Y-m-d 23:59:59',
+                    strtotime('- 1 day', strtotime('01-'.(gmdate('m') == 1 ? 12 : gmdate('m') - 1).'-'.(gmdate('m') == 1 ? gmdate('Y') - 1 : gmdate('Y')))));
+                $curr_interval_end_date = gmdate('Y-m-d 23:59:59',
+                    strtotime('- 1 day', strtotime('01-'.(gmdate('m') == 12 ? 1 : gmdate('m') + 1).'-'.(gmdate('m') == 12 ? gmdate('Y') + 1 : gmdate('Y')))));
                 break;
 
             case 'this_week':
 
-                $curr_interval_begin_date = date('Y-m-d 23:59:59', strtotime('- 1 day', strtotime('Monday this week')));
-                $prev_interval_begin_date = date('Y-m-d 23:59:59', strtotime('- 1 day', strtotime('Monday previous week')));
-                $curr_interval_end_date = date('Y-m-d 23:59:59', strtotime('- 1 day', strtotime('Monday next week')));
+                $curr_interval_begin_date = gmdate('Y-m-d 23:59:59', strtotime('- 1 day', strtotime('Monday this week')));
+                $prev_interval_begin_date = gmdate('Y-m-d 23:59:59', strtotime('- 1 day', strtotime('Monday previous week')));
+                $curr_interval_end_date = gmdate('Y-m-d 23:59:59', strtotime('- 1 day', strtotime('Monday next week')));
                 break;
 
         }

@@ -1183,7 +1183,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         $recurring_cancel_link .= ($donation->mixplat_payment_id) ? '&payment_id='.$donation->mixplat_payment_id : '';
         $recurring_cancel_link .= ($donation->donor_email) ? '&email='.$donation->donor_email : '';
         $recurring_cancel_link .= ($donation->donor_name) ? '&name='.$donation->donor_name : '';
-        $recurring_cancel_link .= ($donation->date_timestamp) ? '&date='.date('Y-m-d H:i:s',$donation->date_timestamp) : '';
+        $recurring_cancel_link .= ($donation->date_timestamp) ? '&date='.gmdate('Y-m-d H:i:s',$donation->date_timestamp) : '';
         $recurring_cancel_link .= ($donation->id) ? '&leyka_donation_id='.$donation->id : '';
         $recurring_cancel_link .= ($donation->campaign_id) ? '&leyka_campaign_id='.$donation->campaign_id : '';
         $recurring_cancel_link .= ($donation->payment_method_id) ? '&leyka_payment_method_id='.$donation->payment_method_id : '';

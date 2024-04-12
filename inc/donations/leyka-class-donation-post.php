@@ -424,7 +424,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
                 $value = apply_filters(
                     'leyka_admin_donation_time',
-                    date($time_format, $donation_timestamp),
+                    gmdate($time_format, $donation_timestamp),
                     $donation_timestamp, $time_format
                 );
                 break;
@@ -453,7 +453,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             case 'funded_date_label':
 
                 $date_funded = $this->get_funded_date();
-                $value = $date_funded ? date(get_option('date_format'), $date_funded) : 0;
+                $value = $date_funded ? gmdate(get_option('date_format'), $date_funded) : 0;
                 break;
 
             case 'date_funded_timestamp':
@@ -1332,8 +1332,8 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
                     ],
                     'compare' => 'BETWEEN'
                 ],
-                ['month' => (int)date('n')],
-                ['year' => (int)date('Y')]
+                ['month' => (int)gmdate('n')],
+                ['year' => (int)gmdate('Y')]
             ];
 
             $rebill_this_month = Leyka_Donations::get_instance()->get([
@@ -1345,11 +1345,11 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
         }
 
-        $payment_day_passed = $payment_day > date('t') ? date('t') == (int)date('j') : $payment_day < (int)date('j');
+        $payment_day_passed = $payment_day > gmdate('t') ? gmdate('t') == (int)gmdate('j') : $payment_day < (int)gmdate('j');
 
         if ( !$rebill_this_month ) {
 
-            if ( !$payment_day_passed && date('n', strtotime('-1 month')) === date('n', $init_donation->date_timestamp) ) {
+            if ( !$payment_day_passed && gmdate('n', strtotime('-1 month')) === gmdate('n', $init_donation->date_timestamp) ) {
 
                 $init_donation->recurring_subscription_status = 'active';
                 $init_donation->recurring_subscription_error_id = false;
@@ -1384,8 +1384,8 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
         if($init_donation->recurring_on && $init_donation->recurring_subscription_status !== 'non-active') {
 
-            $payment_day = min(date('t', strtotime('+1 month')), date('d', $init_donation->date_timestamp));
-            $next_payment_date = strtotime(date('Y').'-'.date('m').'-'.$payment_day.(date('d') < $payment_day ? '' : ' +1 month'));
+            $payment_day = min(gmdate('t', strtotime('+1 month')), date('d', $init_donation->date_timestamp));
+            $next_payment_date = strtotime(gmdate('Y').'-'.gmdate('m').'-'.$payment_day.(gmdate('d') < $payment_day ? '' : ' +1 month'));
             $init_donation->next_recurring_date_timestamp = $next_payment_date;
 
             return $next_payment_date;

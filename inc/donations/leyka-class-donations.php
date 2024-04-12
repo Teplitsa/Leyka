@@ -100,7 +100,7 @@ abstract class Leyka_Donations extends Leyka_Singleton {
         $settings = array_merge(['recalculate_total_amount' => false,], $settings);
 
         $new_donation_id = $this->add(array_merge([
-            'date' => date('Y-m-d H:i:s', $original->date_timestamp),
+            'date' => gmdate('Y-m-d H:i:s', $original->date_timestamp),
             'status' => $original->status,
             'payment_type' => $original->payment_type,
             'purpose_text' => $original->title,
@@ -316,7 +316,7 @@ class Leyka_Donations_Posts extends Leyka_Donations {
 
         if(isset($params['date_from'])) {
 
-            $date = date('Y-m-d 00:00:00', strtotime($params['date_from']));
+            $date = gmdate('Y-m-d 00:00:00', strtotime($params['date_from']));
 
             if($date) {
                 $query_params['date_query'][] = ['after' => $date, 'inclusive' => true,];
@@ -325,7 +325,7 @@ class Leyka_Donations_Posts extends Leyka_Donations {
         }
         if(isset($params['date_to'])) {
 
-            $date = date('Y-m-d 23:59:59', strtotime($params['date_to']));
+            $date = gmdate('Y-m-d 23:59:59', strtotime($params['date_to']));
 
             if($date) {
                 $query_params['date_query'][] = ['before' => $date, 'inclusive' => true,];
@@ -990,23 +990,23 @@ class Leyka_Donations_Separated extends Leyka_Donations {
         if( !empty($params['date']) && strtotime($params['date']) ) {
             $where['date_created'] = $wpdb->prepare(
                 "{$wpdb->prefix}leyka_donations.date_created = %s",
-                date('Y-m-d', strtotime($params['date']))
+                gmdate('Y-m-d', strtotime($params['date']))
             );
         }
         if( !empty($params['date_from']) && !empty($params['date_to']) ) {
             $where['date_created'] = $wpdb->prepare(
                 "{$wpdb->prefix}leyka_donations.date_created >= %s AND {$wpdb->prefix}leyka_donations.date_created <= %s",
-                date('Y-m-d 00:00:00', strtotime($params['date_from'])), date('Y-m-d 23:59:59', strtotime($params['date_to']))
+                gmdate('Y-m-d 00:00:00', strtotime($params['date_from'])), gmdate('Y-m-d 23:59:59', strtotime($params['date_to']))
             );
         } else if( !empty($params['date_from']) && strtotime($params['date_from']) ) {
             $where['date_created'] = $wpdb->prepare(
                 "{$wpdb->prefix}leyka_donations.date_created >= %s",
-                date('Y-m-d 00:00:00', strtotime($params['date_from']))
+                gmdate('Y-m-d 00:00:00', strtotime($params['date_from']))
             );
         } else if( !empty($params['date_to']) && strtotime($params['date_to']) ) {
             $where['date_created'] = $wpdb->prepare(
                 "{$wpdb->prefix}leyka_donations.date_created <= %s",
-                date('Y-m-d 23:59:59', strtotime($params['date_to']))
+                gmdate('Y-m-d 23:59:59', strtotime($params['date_to']))
             );
         }
 

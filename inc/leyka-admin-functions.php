@@ -204,7 +204,7 @@ if( !function_exists('leyka_admin_get_donor_comment_table_row') ) {
         ob_start();?>
         
         <tr class="comment-id-<?php echo esc_attr( $comment_id );?>">
-            <td class="donor-comment-date"><?php echo date(get_option('date_format').', '.get_option('time_format'), absint($comment['date']));?></td>
+            <td class="donor-comment-date"><?php echo gmdate(get_option('date_format').', '.get_option('time_format'), absint($comment['date']));?></td>
             <td class="donor-comment-text">
             	<div class="leyka-editable-str-wrapper">
                 	<div class="leyka-editable-str-result" 

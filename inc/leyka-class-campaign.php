@@ -1996,7 +1996,7 @@ class Leyka_Campaign {
             case 'target_reached_date':
             case 'date_target_reached':
                 $date = $this->_campaign_meta['date_target_reached'];
-                return $date ? date(get_option('date_format'), $date) : 0;
+                return $date ? gmdate(get_option('date_format'), $date) : 0;
             case 'target_reaching_mailout_sent': return !!$this->_campaign_meta['target_reaching_mailout_sent'];
             case 'target_reaching_mailout_errors': return !!$this->_campaign_meta['target_reaching_mailout_errors'];
 

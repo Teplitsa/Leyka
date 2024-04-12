@@ -186,7 +186,7 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
                     <?php echo esc_html( $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka') );
 
                     if( !$init_recurring_donation->recurring_is_active && $init_recurring_donation->recurring_cancel_date ) {
-                        echo ' ('.sprintf(__('canceled on %s', 'leyka'), date(get_option('date_format').', '.get_option('time_format'), $init_recurring_donation->recurring_cancel_date)).')';
+                        echo ' ('.sprintf(__('canceled on %s', 'leyka'), gmdate(get_option('date_format').', '.get_option('time_format'), $init_recurring_donation->recurring_cancel_date)).')';
                     }?>
                 </div>
 
@@ -235,7 +235,7 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
             'description' 			=> $donation->payment_title,
             'order_id' 				=> $donation_id,
             'subscribe'             => empty($form_data_vars['leyka_recurring']) ? 0 : 1,
-            'subscribe_date_start'  => empty($form_data_vars['leyka_recurring']) ? '' : date('Y-m-d H:i:s'),
+            'subscribe_date_start'  => empty($form_data_vars['leyka_recurring']) ? '' : gmdate('Y-m-d H:i:s'),
             'subscribe_periodicity' => empty($form_data_vars['leyka_recurring']) ? '' : 'month',
             'recurringbytoken' 		=> empty($form_data_vars['leyka_recurring']) ? 0 : 1,
             'customer'              => $donation->donor_name,
@@ -482,7 +482,7 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
                 $this->_get_value_if_any(
                     $donation->gateway_response,
                     'operation_date',
-                    date('d.m.Y, H:i:s', $donation->gateway_response['operation_date'])
+                    gmdate('d.m.Y, H:i:s', $donation->gateway_response['operation_date'])
                 ),
                 __('Transaction ID:', 'leyka') => $this->_get_value_if_any($vars, 'transaction_id'),
                 __('Order ID:', 'leyka') => $this->_get_value_if_any($vars, 'order_id'),

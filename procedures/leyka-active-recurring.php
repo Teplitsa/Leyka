@@ -13,10 +13,10 @@ $procedure_options = leyka_procedures_get_procedure_options([
 if(empty($procedure_options['recurring_subscription_id'])) {
 
     // The method should be called no more than once per day:
-    if(get_transient('leyka_last_active_recurring_date') === date('d.m.Y') && !leyka_options()->opt('plugin_debug_mode')) {
+    if(get_transient('leyka_last_active_recurring_date') === gmdate('d.m.Y') && !leyka_options()->opt('plugin_debug_mode')) {
         return;
     } else {
-        set_transient('leyka_last_active_recurring_date', date('d.m.Y'), 60*60*24);
+        set_transient('leyka_last_active_recurring_date', gmdate('d.m.Y'), 60*60*24);
     }
 
 }
@@ -37,8 +37,8 @@ $subscriptions_params = [
 if(empty($procedure_options['recurring_subscription_id'])) {
 
     // Get all active initial donations for the recurring subscriptions:
-    $current_day = (int)date('j');
-    $max_days_in_month = (int)date('t');
+    $current_day = (int)gmdate('j');
+    $max_days_in_month = (int)gmdate('t');
     $current_day_param = ['relation' => 'AND',];
     if( !leyka_options()->opt('plugin_debug_mode') ) { // In production mode, rebill only subscriptions older than 1 full day
         $current_day_param[] = ['before' => '-1 day'];
@@ -69,7 +69,7 @@ foreach($init_recurring_donations as $init_recurring_donation) {
         $rebill_for_current_month_exists = Leyka_Donations::get_instance()->get_count([
             'status' => 'funded',
             'recurring_rebills_of' => $init_recurring_donation->id,
-            'year_month' => date('Ym'), // YYYYMM, e.g. 202105
+            'year_month' => gmdate('Ym'), // YYYYMM, e.g. 202105
             'get_single' => true,
         ]);
 

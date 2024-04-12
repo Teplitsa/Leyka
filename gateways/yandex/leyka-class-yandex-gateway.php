@@ -397,12 +397,12 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         $callback_type = $callback_type === 'co' ? 'checkOrderResponse' : 'paymentAvisoResponse';
         $invoice_id = isset( $_POST['invoiceId'] ) ? $_POST['invoiceId'] : '';
         if($is_error) {
-            die('<?xml version="1.0" encoding="UTF-8"?><'.$callback_type.' performedDatetime="'.date(DATE_ATOM).'"
+            die('<?xml version="1.0" encoding="UTF-8"?><'.$callback_type.' performedDatetime="'.gmdate(DATE_ATOM).'"
 code="1000" invoiceId="' . esc_attr( $invoice_id ) . '" shopId="'.leyka_options()->opt('yandex_shop_id').'" message="'.$message.'"
 techMessage="'.$tech_message.'"/>');
         }
 
-        die('<?xml version="1.0" encoding="UTF-8"?><'.$callback_type.' performedDatetime="'.date(DATE_ATOM).'" code="0" invoiceId="' . esc_attr( $invoice_id ) . '" shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
+        die('<?xml version="1.0" encoding="UTF-8"?><'.$callback_type.' performedDatetime="'.gmdate(DATE_ATOM).'" code="0" invoiceId="' . esc_attr( $invoice_id ) . '" shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
 
     }
 
@@ -683,7 +683,7 @@ techMessage="'.$tech_message.'"/>');
                     '' : (float)$response['shopSumAmount'].' '.$donation->currency_label,
                 __('Gateway donor ID:', 'leyka') => empty($response['customerNumber']) ? '' : $response['customerNumber'],
                 __('Response date:', 'leyka') => empty($response['requestDatetime']) ?
-                    '' : date('d.m.Y, H:i:s', strtotime($response['requestDatetime'])),
+                    '' : gmdate('d.m.Y, H:i:s', strtotime($response['requestDatetime'])),
             ];
 
         }

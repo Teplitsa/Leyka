@@ -139,7 +139,7 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
 
         $vars_final[__('Transaction ID:', 'leyka')] = $vars['TransId'];
         $vars_final[__('Response:', 'leyka')] = $vars['Response'];
-        $vars_final[__('Last event date:', 'leyka')] = date('d.m.Y H:i', strtotime($vars['EXTRA_TRXDATE']));
+        $vars_final[__('Last event date:', 'leyka')] = gmdate('d.m.Y H:i', strtotime($vars['EXTRA_TRXDATE']));
 
         if($vars['ProcReturnCode'] !== '00') {
             $vars_final[__('Donation failure reason:', 'leyka')] = $vars['ErrMsg'];
@@ -300,7 +300,7 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
                 __("Card-check", 'leyka'),
                 __("ORDER INFO", 'leyka'),
                 sprintf(__("<b>Order #:</b> %s", 'leyka'), $vars['ReturnOid']),
-                sprintf(__("<b>Order placed:</b> %s", 'leyka'), date('d.m.Y H:i', strtotime($vars['EXTRA_TRXDATE']))),
+                sprintf(__("<b>Order placed:</b> %s", 'leyka'), gmdate('d.m.Y H:i', strtotime($vars['EXTRA_TRXDATE']))),
                 sprintf(__("<b>Donation purpose:</b> %s", 'leyka'), $campaign->payment_title),
                 sprintf(__("<b>Price:</b> %s %s", 'leyka'), $vars['amount'], $donation->currency_label),
                 __("PAYMENT INFO", 'leyka'),

@@ -138,7 +138,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 'amount' => 100 * (int)$donation->amount, // Amount in minor currency units (like cent or kopeyka). Must be int
                 'currency' => 'RUB',
                 'product' => sprintf(__('%s - recurring donation'), $donation->payment_title),
-                'dueDate' => date( 'Y-m-d\TH:i:s\Z', strtotime('+2 minute', current_time('timestamp', 1)) ),
+                'dueDate' => gmdate( 'Y-m-d\TH:i:s\Z', strtotime('+2 minute', current_time('timestamp', 1)) ),
                 'metadata' => ['donation_id' => $donation_id,],
             ])
         ];
@@ -372,7 +372,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
             'leyka_donation_gateway_response',
             [
                 __('Invoice ID:', 'leyka') => $vars['id'],
-                __('Operation date:', 'leyka') => date('d.m.Y, H:i:s', strtotime($vars['createdAt'])),
+                __('Operation date:', 'leyka') => gmdate('d.m.Y, H:i:s', strtotime($vars['createdAt'])),
                 __('Operation status:', 'leyka') => $vars['status'],
                 __('Full donation amount:', 'leyka') => $vars['amount'] / 100,
                 __('Donation currency:', 'leyka') => $vars['currency'],
@@ -426,7 +426,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
             ],
             'body' => json_encode([
                 'shopID' => leyka_options()->opt('leyka_rbk_shop_id'),
-                'dueDate' => date( 'Y-m-d\TH:i:s\Z', strtotime('+2 minute', current_time('timestamp', 1)) ),
+                'dueDate' => gmdate( 'Y-m-d\TH:i:s\Z', strtotime('+2 minute', current_time('timestamp', 1)) ),
                 'amount' => 100 * (int)$new_recurring_donation->amount, // Amount in minor currency units. Must be int
                 'currency' => 'RUB',
                 'product' => sprintf(__('%s - non-initial recurring donation'), $new_recurring_donation->payment_title),

@@ -442,7 +442,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
 
                 <label><?php _e('Bank card expiring date', 'leyka');?>:</label>
                 <div class="leyka-ddata-field">
-                    <span class="fake-input"><?php echo esc_html( $donation->webpay_card_expiring_date ? date(get_option('date_format'), $donation->webpay_card_expiring_date) : '' );?></span>
+                    <span class="fake-input"><?php echo esc_html( $donation->webpay_card_expiring_date ? gmdate(get_option('date_format'), $donation->webpay_card_expiring_date) : '' );?></span>
                 </div>
 
             <?php }
@@ -578,7 +578,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
             return false;
         }
 
-        if( $init_recurring_donation->webpay_card_expiring_date < strtotime(date('Y-m-d')) ) { // The Donor's card is expired
+        if( $init_recurring_donation->webpay_card_expiring_date < strtotime(gmdate('Y-m-d')) ) { // The Donor's card is expired
 
             $init_recurring_donation->recurring_is_active = false;
             return false;

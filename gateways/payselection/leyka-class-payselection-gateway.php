@@ -668,7 +668,7 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
                     <?php echo esc_html( $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka') );
 
                     if( !$init_recurring_donation->recurring_is_active && $init_recurring_donation->recurring_cancel_date ) {
-                    echo ' ('.sprintf(__('canceled on %s', 'leyka'), date(get_option('date_format').', '.get_option('time_format'), $init_recurring_donation->recurring_cancel_date)).')';
+                    echo ' ('.sprintf(__('canceled on %s', 'leyka'), gmdate(get_option('date_format').', '.get_option('time_format'), $init_recurring_donation->recurring_cancel_date)).')';
                     }?>
                 </div>
 
@@ -742,7 +742,7 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
 
     protected function _get_payselection_receipt(Leyka_Donation_Base $donation, $title = '') {
         return [
-            'timestamp' => date('d.m.Y H:i:s'),
+            'timestamp' => gmdate('d.m.Y H:i:s'),
             'external_id' => implode('-',[$donation->id, time()]),
             'receipt' => [
                 'client' => [

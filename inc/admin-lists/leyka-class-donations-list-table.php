@@ -295,7 +295,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
         $donor_additional_data_html .= '<li>
         <span class="leyka-li-title">'.__('Email', 'leyka').':</span>
-        <span class="leyka-li-value">'.($donation->donor_email_date ? sprintf(__('Sent on %s', 'leyka'), date(get_option('date_format').', H:i</time>', $donation->donor_email_date)) : __('no', 'leyka')).'</span>
+        <span class="leyka-li-value">'.($donation->donor_email_date ? sprintf(__('Sent on %s', 'leyka'), gmdate(get_option('date_format').', H:i</time>', $donation->donor_email_date)) : __('no', 'leyka')).'</span>
     </li>
 
     <li>
@@ -450,7 +450,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
         if($donation->donor_email_date) {
             $column_content = str_replace(
                 '%s',
-                '<time>'.date(get_option('date_format').', H:i</time>', $donation->donor_email_date).'</time>',
+                '<time>'.gmdate(get_option('date_format').', H:i</time>', $donation->donor_email_date).'</time>',
                 __('Sent at %s', 'leyka')
             );
         } else {
@@ -640,7 +640,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
         // It will exit automatically:
         leyka_generate_csv(
-            'donations-'.date( get_option('date_format').'-'.str_replace([':'], ['.'], get_option('time_format')) ),
+            'donations-'.gmdate( get_option('date_format').'-'.str_replace([':'], ['.'], get_option('time_format')) ),
             apply_filters('leyka_donations_export_rows', $rows),
             apply_filters('leyka_donations_export_headers', $columns)
         );

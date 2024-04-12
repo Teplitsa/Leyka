@@ -335,8 +335,8 @@ function leyka_get_donors_list($campaign_id = 'all', $args = []) {
 
             if($donation->type === 'correction') {
 
-                $time = date('H:i:s', $donation->date_timestamp) == '00:00:00' ? '' : date(' '.get_option('time_format'), $donation->date_timestamp);
-                $date = date(get_option('date_format').$time, $donation->date_timestamp);
+                $time = gmdate('H:i:s', $donation->date_timestamp) == '00:00:00' ? '' : gmdate(' '.get_option('time_format'), $donation->date_timestamp);
+                $date = gmdate(get_option('date_format').$time, $donation->date_timestamp);
 
             } else {
                 $date = $donation->date_funded;

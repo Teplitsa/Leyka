@@ -291,7 +291,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
                 $value = apply_filters(
                     'leyka_admin_donation_date',
-                    date($date_format, $donation_timestamp),
+                    gmdate($date_format, $donation_timestamp),
                     $donation_timestamp, $date_format
                 );
                 break;
@@ -304,7 +304,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
                 $value = apply_filters(
                     'leyka_admin_donation_time',
-                    date($time_format, $donation_timestamp),
+                    gmdate($time_format, $donation_timestamp),
                     $donation_timestamp, $time_format
                 );
                 break;
@@ -318,7 +318,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
                 $value = apply_filters(
                     'leyka_admin_donation_date_time',
-                    date("$date_format, $time_format", $donation_timestamp),
+                    gmdate("$date_format, $time_format", $donation_timestamp),
                     $donation_timestamp, $date_format, $time_format
                 );
                 break;
@@ -331,7 +331,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'date_funded_label':
             case 'funded_date':
             case 'funded_date_label':
-                $value = $this->get_meta('date_funded') ? date(get_option('date_format'), $this->get_meta('date_funded')) : false;
+                $value = $this->get_meta('date_funded') ? gmdate(get_option('date_format'), $this->get_meta('date_funded')) : false;
                 break;
 
             case 'date_funded_timestamp':
@@ -695,7 +695,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             case 'date':
                 return $this->_set_data('date_created', $value);
             case 'date_timestamp':
-                return $this->_set_data('date_created', date('Y-m-d H:i:s', (int)$value));
+                return $this->_set_data('date_created', gmdate('Y-m-d H:i:s', (int)$value));
 
             case 'donor_name':
             case 'donor_email':

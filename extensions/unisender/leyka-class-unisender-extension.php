@@ -282,7 +282,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
 
         $result_array = json_decode($error_data, true);
         $error_log = !get_option('leyka_unisender_error_log') ? [] : get_option('leyka_unisender_error_log');
-        $result_array['date'] = date('d.m.Y H:i');
+        $result_array['date'] = gmdate('d.m.Y H:i');
         $error_log[] = json_encode($result_array);
 
         if(sizeof($error_log) > 10) {

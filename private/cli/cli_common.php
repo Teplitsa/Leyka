@@ -59,9 +59,9 @@ else {
     /*
      * ATTENTION!!!!! WP CHANGES CURRENT SYSTEM DATE-TIME TO UTC INSIDE THE SCRIPT!!!!!!!!
      */
-    fwrite(STDOUT, "DATETIME: " . date( 'Y-m-d H:i:s' ) . chr(10));
+    fwrite(STDOUT, "DATETIME: " . gmdate( 'Y-m-d H:i:s' ) . chr(10));
     fwrite(STDOUT, "gmt_offset=" . get_option('gmt_offset') . chr(10));
-    fwrite(STDOUT, "script_timezone=" . date('T') . chr(10));
+    fwrite(STDOUT, "script_timezone=" . gmdate('T') . chr(10));
     fwrite(STDOUT, "timezone_string=" . get_option('timezone_string') . chr(10));
 
 }

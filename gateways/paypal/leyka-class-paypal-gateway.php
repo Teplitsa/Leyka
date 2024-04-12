@@ -405,7 +405,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 $agreement = new \PayPal\Api\Agreement([
                     'name' => sprintf(__('Campaign #%d - recurring donations', 'leyka'), $donation->campaign_id),
                     'description' => __('Recurring donations', 'leyka'),
-                    'startDate' => date(DATE_ISO8601, strtotime('+1 month')), // The initial payment is the BP setup fee
+                    'startDate' => gmdate(DATE_ISO8601, strtotime('+1 month')), // The initial payment is the BP setup fee
                     'plan' => new \PayPal\Api\Plan(['id' => $plan->getId()]),
                     'payer' => $this->_get_payer($donation),
                 ]);
@@ -1613,7 +1613,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             $response_vars = [
                 __('Billing agreement ID:', 'leyka') => $agreement->getId(),
                 __('Agreement state:', 'leyka') => $agreement->getState(),
-                __('Agreement start date:', 'leyka') => date(get_option('date_format'), strtotime($agreement->getStartDate())),
+                __('Agreement start date:', 'leyka') => gmdate(get_option('date_format'), strtotime($agreement->getStartDate())),
                 __('Payment method:', 'leyka') => $payer->getPaymentMethod(),
                 __('Payer ID:', 'leyka') => $payer->getPayerInfo()->getPayerId(),
                 __('Payer is verified:', 'leyka') => $payer->getStatus() === 'verified' ?

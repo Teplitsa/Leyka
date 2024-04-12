@@ -1320,8 +1320,8 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
             <div class="leyka-ddata-field">
 
-                <input type="text" id="donation-date-view" class="leyka-datepicker" value="<?php echo date(get_option('date_format'));?>" data-min-date="-5Y" data-max-date="+1Y" data-alt-field="#donation-date" data-alt-format="yy-mm-dd">
-                <input type="hidden" id="donation-date" name="donation_date" value="<?php echo date('Y-m-d');?>">
+                <input type="text" id="donation-date-view" class="leyka-datepicker" value="<?php echo gmdate(get_option('date_format'));?>" data-min-date="-5Y" data-max-date="+1Y" data-alt-field="#donation-date" data-alt-format="yy-mm-dd">
+                <input type="hidden" id="donation-date" name="donation_date" value="<?php echo gmdate('Y-m-d');?>">
 
             </div>
         </div>
@@ -1683,7 +1683,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                     <?php if($donation->type === 'correction') {?>
 
                         <input type="text" id="donation-date-view" class="leyka-datepicker" value="<?php echo esc_attr( $donation->date_label );?>" data-min-date="-5Y" data-max-date="+1Y" data-alt-field="#donation-date" data-alt-format="yy-mm-dd">
-                        <input type="hidden" id="donation-date" name="donation_date" value="<?php echo date('Y-m-d', $donation->date_timestamp);?>">
+                        <input type="hidden" id="donation-date" name="donation_date" value="<?php echo gmdate('Y-m-d', $donation->date_timestamp);?>">
 
                     <?php } else {?>
                         <span class="fake-input"><?php echo esc_html( $donation->date_time_label );?></span>
@@ -1799,7 +1799,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                     <div class="leyka-ddata-field">
 
                             <span class="text-line">
-                                <span class="initial-recurrent-date"><?php echo date('d.m.Y', $donation->date_timestamp);?></span>
+                                <span class="initial-recurrent-date"><?php echo gmdate('d.m.Y', $donation->date_timestamp);?></span>
                             </span>
 
                     </div>
@@ -1814,7 +1814,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                         <div class="leyka-ddata-field">
 
                             <span class="text-line">
-                                <span class="next-recurrent-date"><?php echo date('d.m.Y', $donation->next_recurring_date_timestamp);?></span>
+                                <span class="next-recurrent-date"><?php echo gmdate('d.m.Y', $donation->next_recurring_date_timestamp);?></span>
                             </span>
 
                         </div>
@@ -2016,7 +2016,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 <?php $last_status = end($status_log);
                 echo str_replace(
                     ['%status', '%date'],
-                    ['<i>'.self::get_status_labels($last_status['status']).'</i>', '<time>'.date(get_option('date_format').', H:i', $last_status['date']).'</time>'],
+                    ['<i>'.self::get_status_labels($last_status['status']).'</i>', '<time>'.gmdate(get_option('date_format').', H:i', $last_status['date']).'</time>'],
                     '<div class="leyka-ddata-string last-log">'.__('Last status change: to&nbsp;%status (at&nbsp;%date)', 'leyka').'</div>'
                 );?>
 
@@ -2028,7 +2028,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                         <?php echo str_replace(
                             ['%status', '%date'],
                             [
-                                '<i>'.self::get_status_labels($status_log[$i]['status']).'</i>','<time>'.date(get_option('date_format').', '.get_option('time_format'),
+                                '<i>'.self::get_status_labels($status_log[$i]['status']).'</i>','<time>'.gmdate(get_option('date_format').', '.get_option('time_format'),
                                     $status_log[$i]['date']).'</time>'
                             ],
                             __('%date - %status', 'leyka')
@@ -2058,7 +2058,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                     <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/admin-boxes/email-action-blue.svg" alt="email-action">
                     <span><?php esc_html_e('Email notification to the donor has been sent', 'leyka');?></span>
                 </label>
-                <div class="leyka-ddata-field"><?php echo date(get_option('date_format').' H:i', $donation->donor_email_date);?></div>
+                <div class="leyka-ddata-field"><?php echo gmdate(get_option('date_format').' H:i', $donation->donor_email_date);?></div>
             </div>
 		<?php } else {?>
 			<div class="leyka-ddata-string leyka-no-donor-thanks donor no-thanks" data-donation-id="<?php echo esc_attr( $donation->id );?>" data-nonce="<?php echo wp_create_nonce('leyka_donor_email');?>">
@@ -2076,7 +2076,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                     <img src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL ); ?>img/admin-boxes/email-action-blue.svg" alt="email-action">
                     <span><?php _e("Donation managers' notifications have been sent", 'leyka');?></span>
                 </label>
-                <div class="leyka-ddata-field"><?php echo date(get_option('date_format').' H:i', $manager_notification_date);?></div>
+                <div class="leyka-ddata-field"><?php echo gmdate(get_option('date_format').' H:i', $manager_notification_date);?></div>
             </div>
         <?php } else {?>
             <div class="leyka-ddata-string leyka-no-donor-thanks donor no-thanks" data-donation-id="<?php echo esc_attr( $donation->id );?>" data-nonce="<?php echo wp_create_nonce('leyka_donor_email');?>">

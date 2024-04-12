@@ -313,7 +313,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
 
         $donor_additional_data_html .= '<li>
                 <span class="leyka-li-title">'.__('Email', 'leyka').':</span>
-                <span class="leyka-li-value">'.($donation->donor_email_date ? sprintf(__('Sent on %s', 'leyka'), date(get_option('date_format').', H:i</time>', $donation->donor_email_date)) : __('no', 'leyka')).'</span>
+                <span class="leyka-li-value">'.($donation->donor_email_date ? sprintf(__('Sent on %s', 'leyka'), gmdate(get_option('date_format').', H:i</time>', $donation->donor_email_date)) : __('no', 'leyka')).'</span>
             </li>
         
             <li>
@@ -387,7 +387,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
 
         return apply_filters(
             'leyka_admin_recurring_subscription_next_donation_column_content',
-            date(get_option('date_format'), $item['next_donation']),
+            gmdate(get_option('date_format'), $item['next_donation']),
             $item
         );
 
@@ -646,7 +646,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
                     $item['first_donation']->date_time_label,
                     apply_filters(
                         'leyka_admin_donation_date',
-                        date($date_format, $item['next_donation']),
+                        gmdate($date_format, $item['next_donation']),
                         $item['next_donation'], $date_format
                     ),
                     $item['donations_number'],
@@ -659,7 +659,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
 
         }
 
-        leyka_generate_csv('recurring_subscriptions-'.date('d.m.Y-H.i.s'), $rows, $columns); // It will exit automatically
+        leyka_generate_csv('recurring_subscriptions-'.gmdate('d.m.Y-H.i.s'), $rows, $columns); // It will exit automatically
 
     }
 

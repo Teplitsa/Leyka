@@ -145,7 +145,7 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
             $timestamp = get_transient('leyka_gds_integration_last_data_preparing_date');
             $timestamp = $timestamp ? strtotime($timestamp) : false;
             $last_procedure_run_date = $timestamp ?
-                date(get_option('date_format'), $timestamp).', '.date(get_option('time_format'), $timestamp) : __('no', 'leyka');?>
+                gmdate(get_option('date_format'), $timestamp).', '.gmdate(get_option('time_format'), $timestamp) : __('no', 'leyka');?>
 
             <div class="leyka-gds-data-info">
                 <?php echo sprintf( __('Last successful data preparation date: <strong>%s</strong>', 'leyka'), esc_html( $last_procedure_run_date ) ) ;?>
@@ -204,7 +204,7 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
             "{$wpdb->prefix}leyka_gds_integration_donations_data",
             [
                 'ID' => $donation->id,
-                'donation_date' => date('Y-m-d H:i:s', $donation->date_timestamp),
+                'donation_date' => gmdate('Y-m-d H:i:s', $donation->date_timestamp),
                 'payment_type' => $donation->payment_type,
                 'gateway_title' => $donation->gateway_label,
                 'pm_title' => $donation->pm_label,

@@ -103,8 +103,8 @@ while( ($subscription_data = fgetcsv($csv_file_handle, null, ";")) !== FALSE ) {
         'recurring_only_init' => true,
         'donor_email' => $subscription_data[8],
         'gateway_pm' => 'cp-card',
-        'date_from' => date('d.m.Y 00:00:00', strtotime($subscription_data[1])),
-        'date_to' => date('d.m.Y 23:59:59', strtotime($subscription_data[1])),
+        'date_from' => gmdate('d.m.Y 00:00:00', strtotime($subscription_data[1])),
+        'date_to' => gmdate('d.m.Y 23:59:59', strtotime($subscription_data[1])),
         'amount_filter' => '='.((float)$subscription_data[3]),
         'campaign_id' => $campaign_id,
     ];
@@ -148,7 +148,7 @@ while( ($subscription_data = fgetcsv($csv_file_handle, null, ";")) !== FALSE ) {
             'gateway_id' => 'cp',
             'pm_id' => 'card',
             'payment_title' => $subscription_data[6],
-            'date_created' => date('Y-m-d H:i:s', strtotime($subscription_data[1])),
+            'date_created' => gmdate('Y-m-d H:i:s', strtotime($subscription_data[1])),
         ];
 
 //        echo '<pre>Inserting by params: '.print_r($params, 1).'</pre>';

@@ -127,7 +127,7 @@ class MessageFormatter implements MessageFormatterInterface
                         $result = \gmdate('c');
                         break;
                     case 'date_common_log':
-                        $result = \date('d/M/Y:H:i:s O');
+                        $result = \gmdate('d/M/Y:H:i:s O');
                         break;
                     case 'method':
                         $result = $request->getMethod();

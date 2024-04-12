@@ -182,7 +182,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
         $vars_final[__('Last event ID:', 'leyka')] = $vars['id'];
         $vars_final[__('Last event type:', 'leyka')] = $vars['type'];
-        $vars_final[__('Last event date:', 'leyka')] = date('d.m.Y H:i', $vars['created']);
+        $vars_final[__('Last event date:', 'leyka')] = gmdate('d.m.Y H:i', $vars['created']);
 
         if( !empty($vars['type']) ) {
 
@@ -558,7 +558,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                     <?php echo esc_html( $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka') );
 
                     if( !$init_recurring_donation->recurring_is_active && $init_recurring_donation->recurring_cancel_date ) {
-                        echo ' ('.sprintf(__('canceled on %s', 'leyka'), date(get_option('date_format').', '.get_option('time_format'), $init_recurring_donation->recurring_cancel_date)).')';
+                        echo ' ('.sprintf(__('canceled on %s', 'leyka'), gmdate(get_option('date_format').', '.get_option('time_format'), $init_recurring_donation->recurring_cancel_date)).')';
                     }?>
                 </div>
 

@@ -389,7 +389,7 @@ class Leyka_Donor {
 
                 return apply_filters(
                     'leyka_admin_donation_date',
-                    date($date_format, $this->first_donation_date_timestamp),
+                    gmdate($date_format, $this->first_donation_date_timestamp),
                     $this->first_donation_date_timestamp, $date_format
                 );
 
@@ -404,7 +404,7 @@ class Leyka_Donor {
 
                 return apply_filters(
                     'leyka_admin_donation_date_time',
-                    date("$date_format, $time_format", $this->first_donation_date_timestamp),
+                    gmdate("$date_format, $time_format", $this->first_donation_date_timestamp),
                     $this->first_donation_date_timestamp, $date_format, $time_format
                 );
 
@@ -423,7 +423,7 @@ class Leyka_Donor {
 
                 return apply_filters(
                     'leyka_admin_donation_date',
-                    date($date_format, $this->last_donation_date_timestamp),
+                    gmdate($date_format, $this->last_donation_date_timestamp),
                     $this->last_donation_date_timestamp, $date_format
                 );
 
@@ -438,7 +438,7 @@ class Leyka_Donor {
 
                 return apply_filters(
                     'leyka_admin_donation_date_time',
-                    date("$date_format, $time_format", $this->last_donation_date_timestamp),
+                    gmdate("$date_format, $time_format", $this->last_donation_date_timestamp),
                     $this->last_donation_date_timestamp, $date_format, $time_format
                 );
 

@@ -16,7 +16,7 @@ class Leyka_Recent_Donations_Portlet_Controller extends Leyka_Portlet_Controller
         $donations = Leyka_Donations::get_instance()->get([
             'status' => ['submitted', 'funded', 'failed',],
             'results_limit' => $params['number'],
-            'date_from' => date('Y-m-d', strtotime($interval_dates["curr_interval_begin_date"])),
+            'date_from' => gmdate('Y-m-d', strtotime($interval_dates["curr_interval_begin_date"])),
             'orderby' => 'donation_id',
             'order' => 'DESC',
         ]);

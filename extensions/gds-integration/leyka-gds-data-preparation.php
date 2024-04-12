@@ -42,7 +42,7 @@ if( // GDS data lines limit is exceeded, abort
     die;
 }
 
-set_transient('leyka_gds_integration_last_data_preparing_date', date('Y-m-d H:i:s'));
+set_transient('leyka_gds_integration_last_data_preparing_date', gmdate('Y-m-d H:i:s'));
 
 ini_set('max_execution_time', apply_filters('leyka_procedure_php_execution_time', 0, 'gds-integration-procedure'));
 set_time_limit(apply_filters('leyka_procedure_php_execution_time', 0, 'gds-integration-procedure'));
