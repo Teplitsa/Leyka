@@ -25,16 +25,16 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
     protected function _set_attributes() {
 
         $this->_id = 'support_packages'; // Must be a unique string, like "support_packages"
-        $this->_title = __('Support packages', 'leyka'); // A human-readable title, like "Support packages"
+        $this->_title = esc_html__('Support packages', 'leyka'); // A human-readable title, like "Support packages"
 
         // A human-readable short description (for backoffice extensions list page):
-        $this->_description = __('The extension allows to create donors groups by amount of their recurring payments, and allow these groups access to closed website content.', 'leyka');
+        $this->_description = esc_html__('The extension allows to create donors groups by amount of their recurring payments, and allow these groups access to closed website content.', 'leyka');
 
         // A human-readable full description (for backoffice extensions list page):
-        $this->_full_description = __('Create exclusive content for your active recurring donors and attract new ones. By subscribing to recurring donations, donors will be allowed to read website pages and posts that you will mark as open only for them. The content access is easy to control via shortcodes.', 'leyka');
+        $this->_full_description = esc_html__('Create exclusive content for your active recurring donors and attract new ones. By subscribing to recurring donations, donors will be allowed to read website pages and posts that you will mark as open only for them. The content access is easy to control via shortcodes.', 'leyka');
 
         // A human-readable description (for backoffice extension settings page):
-        $this->_settings_description = __('If donor suddenly decides to change his/her monthly recurring donation amount, e.g., increases the amount from 999 RUB to 1050 RUB (and thus moves from "Base donors" group to the "Silver donors"), the switch between the support packages for this donor will proceed automatically.', 'leyka');
+        $this->_settings_description = esc_html__('If donor suddenly decides to change his/her monthly recurring donation amount, e.g., increases the amount from 999 RUB to 1050 RUB (and thus moves from "Base donors" group to the "Silver donors"), the switch between the support packages for this donor will proceed automatically.', 'leyka');
 
         // A human-readable description of how to enable the main feature (for backoffice extension settings page):
         $this->_connection_description = '<p><strong>Подключение функции «Ограничение доступа к контенту»</strong></p>
@@ -58,34 +58,34 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
         $this->_options = apply_filters('leyka_'.$this->_id.'_extension_options', [
             ['section' => [
                 'name' => $this->_id.'-main-options',
-                'title' => __('Main options', 'leyka'),
+                'title' => esc_html__('Main options', 'leyka'),
                 'is_default_collapsed' => false,
                 'options' => [
                     $this->_id.'_title' => [
                         'type' => 'text',
-                        'title' => __('1. Appeal title', 'leyka'),
+                        'title' => esc_html__('1. Appeal title', 'leyka'),
                         'required' => true,
-                        'placeholder' => __('Subscribe to read the whole', 'leyka'),
-                        'default' => __('Subscribe to read the whole', 'leyka'),
+                        'placeholder' => esc_html__('Subscribe to read the whole', 'leyka'),
+                        'default' => esc_html__('Subscribe to read the whole', 'leyka'),
                         'width' => 0.5,
                     ],
                     $this->_id.'_main_text' => [
                         'type' => 'textarea',
-                        'title' => __('2. Appeal text', 'leyka'),
+                        'title' => esc_html__('2. Appeal text', 'leyka'),
                         'required' => false,
                     ],
                     $this->_id.'_subscription_text' => [
                         'type' => 'textarea',
-                        'title' => __('3. Text about subscription', 'leyka'),
-                        'placeholder' => __('Subscription renews automatically. You can unsubscribe at any time in your Account', 'leyka'),
+                        'title' => esc_html__('3. Text about subscription', 'leyka'),
+                        'placeholder' => esc_html__('Subscription renews automatically. You can unsubscribe at any time in your Account', 'leyka'),
                         'required' => false,
                     ],
                     $this->_id.'_activation_button_label' => [
                         'type' => 'text',
-                        'title' => __('4. Activation button label', 'leyka'),
+                        'title' => esc_html__('4. Activation button label', 'leyka'),
                         'required' => true,
-                        'placeholder' => __('Subscribe', 'leyka'),
-                        'default' => __('Subscribe', 'leyka'),
+                        'placeholder' => esc_html__('Subscribe', 'leyka'),
+                        'default' => esc_html__('Subscribe', 'leyka'),
                         'width' => 0.5,
                     ],
                     $this->_id.'_account_link_label' => [
@@ -102,8 +102,8 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
 //                        'show_preview' => false,
                         'title' => '',
 //                        'upload_title' => 'Выберите картинку',
-                        'upload_label' => __('Load closed content icon', 'leyka'),
-                        'description' => __('A *.png or *.svg file. The size is no more than 2 Mb', 'leyka'),
+                        'upload_label' => esc_html__('Load closed content icon', 'leyka'),
+                        'description' => esc_html__('A *.png or *.svg file. The size is no more than 2 Mb', 'leyka'),
 //                        'comment' => 'Тестовый коммент к полю загрузки картинки.',
 //                        'required' => false,
                         'default' => '', /** @todo Add the default icon URL */
@@ -111,14 +111,14 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
                     ],
                     $this->_id.'_campaign' => [
                         'type' => 'campaign_select',
-                        'title' => __('Campaign for recurring subscriptions', 'leyka'),
+                        'title' => esc_html__('Campaign for recurring subscriptions', 'leyka'),
                         'required' => true,
                     ],
                 ],
             ],],
             ['section' => [
                 'name' => $this->_id.'-packages',
-                'title' => __('Packages options', 'leyka'),
+                'title' => esc_html__('Packages options', 'leyka'),
                 'is_default_collapsed' => false,
                 'options' => [
                     'custom_support_packages_settings' => [
@@ -128,15 +128,15 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
             ],],
             ['section' => [
                 'name' => $this->_id.'-for-devs',
-                'title' => __('For developers', 'leyka'),
+                'title' => esc_html__('For developers', 'leyka'),
                 'is_default_collapsed' => true,
                 'options' => [
                     $this->_id.'_css' => [
                         'type' => 'textarea',
                         'is_code_editor' => 'css',
                         'title' => __('Styles settings', 'leyka'),
-//                        'default' => '/* .some-selector-1 { color: black; } */ '.__('/* The main font color */', 'leyka')
-//                            .'/* .some-selector-2 { color: orange; } */ '.__('/* The secondary font color */', 'leyka'),
+//                        'default' => '/* .some-selector-1 { color: black; } */ '.esc_html__('/* The main font color */', 'leyka')
+//                            .'/* .some-selector-2 { color: orange; } */ '.esc_html__('/* The secondary font color */', 'leyka'),
                     ],
                 ],
             ],],
@@ -194,7 +194,8 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
 
         if( !$this->get_available_campaign() ) {
             echo '<div class="error">
-                <p>'.sprintf(__("<strong>Leyka warning!</strong> The Support packages Extension currently doesn't have a campaign for donors to make recurring subscriptions. The campaign must be <strong>published</strong>, <strong>not marked as \"finished\"</strong> and, ideally, <strong>marked as persistent</strong> to be available.<br><br>Please see to it that you have at least <strong>one such campaign</strong>, and select the campaign in the <a href='%s'>Support packages settings page</a>.", 'leyka'), esc_url( admin_url('admin.php?page=leyka_settings&stage=extensions&extension=' . $this->_id ) ) ) . '</p>
+                <p>'.sprintf(__("<strong>Leyka warning!</strong> The Support packages Extension currently doesn't have a campaign for donors to make recurring subscriptions. The campaign must be <strong>published</strong>, <strong>not marked as \"finished\"</strong> and, ideally, <strong>marked as persistent</strong> to be available.<br><br>Please see to it that you have at least <strong>one such campaign</strong>, and select the campaign in the <a href='%s'>Support packages settings page</a>.", 'leyka'), esc_url( admin_url('admin.php?page=leyka_settings&stage=extensions&extension=' . $this->_id ) ) ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                 . '</p>
             </div>';
         }
 
@@ -284,8 +285,8 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
 
                     <div class="leyka-text-field-wrapper">
                         <?php leyka_render_text_field('package_title', [
-                            'title' => __('Reward title', 'leyka'),
-                            'placeholder' => __('E.g., "Golden support level"', 'leyka'),
+                            'title' => esc_html__('Reward title', 'leyka'),
+                            'placeholder' => esc_html__('E.g., "Golden support level"', 'leyka'),
                             'required' => true,
                             'value' => $placeholders['package_title'],
                         ]);?>
@@ -299,7 +300,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
                     <div class="option-block type-text-readonly">
                         <div class="leyka-text-field-wrapper">
                             <?php leyka_render_text_field('package_id', [
-                                'title' => __('Package ID', 'leyka'),
+                                'title' => esc_html__('Package ID', 'leyka'),
                                 'value' => $placeholders['id'],
                                 'is_read_only' => true,
                             ]);?>
@@ -311,7 +312,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
 
                     <div class="leyka-number-field-wrapper">
                         <?php leyka_render_number_field('package_amount_needed', [
-                            'title' => sprintf(__('Donations amount needed, %s', 'leyka'), leyka_get_currency_label()),
+                            'title' => sprintf(esc_html__('Donations amount needed, %s', 'leyka'), leyka_get_currency_label()),
                             'placeholder' => '500',
                             'required' => true,
                             'value' => $placeholders['amount_needed'],
@@ -325,8 +326,8 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
                 <div class="settings-block option-block type-file">
 
                     <?php leyka_render_file_field('package_icon', [
-                        'upload_label' => __('Load icon', 'leyka'),
-                        'description' => __('A *.png or *.svg file. The size is no more than 2 Mb', 'leyka'),
+                        'upload_label' => esc_html__('Load icon', 'leyka'),
+                        'description' => esc_html__('A *.png or *.svg file. The size is no more than 2 Mb', 'leyka'),
                         'required' => true,
                         'value' => $placeholders['package_icon'],
                     ]);?>
@@ -349,9 +350,9 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
 
         $option_id = mb_stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;?>
 
-        <div id="<?php echo esc_attr( $option_id . '-wrapper' ); ?>" class="leyka-<?php echo esc_attr( $option_id );?>-field-wrapper multi-valued-items-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) ? '' : implode(' ', $data['field_classes']);?>">
+        <div id="<?php echo esc_attr( $option_id . '-wrapper' ); ?>" class="leyka-<?php echo esc_attr( $option_id );?>-field-wrapper multi-valued-items-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) ? '' : implode(' ', array_map( 'esc_attr' , $data['field_classes']));?>">
 
-            <div class="leyka-main-multi-items leyka-main-support-packages" data-max-items="<?php echo Leyka_Support_Packages_Extension::MAX_PACKAGES_NUMBER;?>" data-min-items="1" data-items-cookie-name="leyka-support-packages-boxes-closed" data-item-inputs-names-prefix="leyka_package_">
+            <div class="leyka-main-multi-items leyka-main-support-packages" data-max-items="<?php echo esc_attr( Leyka_Support_Packages_Extension::MAX_PACKAGES_NUMBER );?>" data-min-items="1" data-items-cookie-name="leyka-support-packages-boxes-closed" data-item-inputs-names-prefix="leyka_package_">
 
             <?php $data['value'] = empty($data['value']) || !is_array($data['value']) ?
                 leyka_options()->opt('custom_support_packages_settings') :
@@ -863,7 +864,7 @@ class Leyka_Support_Packages_Package {
             case 'price_currency':
                 $currencies = leyka_get_currencies_data();
                 $currency_sign = $currencies[ leyka_options()->opt('currency_main') ]['label'];
-                return $currency_sign ? $currency_sign : __('₽', 'leyka');
+                return $currency_sign ? $currency_sign : esc_html__('₽', 'leyka');
 
             default:
                 return apply_filters('leyka_ext_get_unknown_support_package_field', null, $field, $this);

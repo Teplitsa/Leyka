@@ -57,7 +57,7 @@ class ConfirmationFactory
             throw new \InvalidArgumentException('Invalid confirmation value in confirmation factory');
         }
         if (!array_key_exists($type, $this->typeClassMap)) {
-            throw new \InvalidArgumentException('Invalid confirmation value type "'.$type.'"');
+            throw new \InvalidArgumentException('Invalid confirmation value type "'.esc_html($type).'"');
         }
         $className = __NAMESPACE__.'\\'.$this->typeClassMap[$type];
 

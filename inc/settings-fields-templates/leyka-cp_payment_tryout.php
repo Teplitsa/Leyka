@@ -63,4 +63,4 @@
 
 <input type="hidden" name="payment_tryout_completed" value="0">
 
-<a href="mailto:<?php echo LEYKA_SUPPORT_EMAIL;?>" class="call-support"><?php esc_html_e('', 'leyka');?>Написать в поддержку</a>
+<a href="mailto:<?php echo esc_attr(LEYKA_SUPPORT_EMAIL);?>" class="call-support"><?php esc_html_e('', 'leyka');?>Написать в поддержку</a>

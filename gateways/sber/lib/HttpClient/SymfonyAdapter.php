@@ -39,9 +39,9 @@ class SymfonyAdapter implements HttpClientInterface
                 throw new \InvalidArgumentException(
                     sprintf(
                         'Invalid HTTP method "%s". Use "%s" or "%s".',
-                        $method,
-                        HttpClientInterface::METHOD_GET,
-                        HttpClientInterface::METHOD_POST
+                        esc_html( $method ),
+                        esc_html( HttpClientInterface::METHOD_GET ),
+                        esc_html( HttpClientInterface::METHOD_POST )
                     )
                 );
                 break;

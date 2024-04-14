@@ -105,7 +105,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
             __('"Complete" callback handling error - can\'t find initial recurring donation by SubscriptionId given', 'leyka'), [
                 'description' => __('The "complete" system notification callback handling resulted in the error: the initial recurring donation with the required SubscriptionId parameter value was not found in the website database. This may mean that the recurring subscription data in the website DB has been lost. While this problem won\'t stop the donor\'s funds to be taken as usually (and the donor\'s recurring subscription will continue to work), but this recurring subscription donations won\'t be saved in the website DB correctly. You should contact the website system administrator ASAP to investigate the cause of the problem.', 'leyka'),
                 'recommendation_admin' => __("It's very important to contact the website system administrator ASAP and ask them to find the reason of absence of the SubscriptionId parameter needed in the website DB. Check the donation's Gateway Response data for the \"Recurrent subscription ID\" value for you to check.", 'leyka'),
-                'recommendation_donor' => __('', 'leyka'),
+                'recommendation_donor' => '',
         ]) && Leyka_Donations_Errors::get_instance()->add_error(
             'CP-7012',
             __('The term of card being lost has expired', 'leyka'), [
@@ -607,7 +607,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         } else if(is_wp_error($recurring_cancelling_result)) {
             die( wp_kses_post( $recurring_cancelling_result->get_error_message() ) );
         } else {
-            die( sprintf(__('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email(), $recurring_manual_cancel_link) );
+            die( sprintf( wp_kses_post( __('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka') ), esc_attr( leyka_get_website_tech_support_email() ), esc_url( $recurring_manual_cancel_link) ) );
         }
 
     }
@@ -753,7 +753,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                     <?php echo esc_html( $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka') );
 
                     if( !$init_recurring_donation->recurring_is_active && $init_recurring_donation->recurring_cancel_date ) {
-                    echo ' ('.sprintf(__('canceled on %s', 'leyka'), gmdate(get_option('date_format').', '.get_option('time_format'), $init_recurring_donation->recurring_cancel_date)).')';
+                    echo ' ('.wp_kses_post( sprintf(__('canceled on %s', 'leyka'), gmdate(get_option('date_format').', '.get_option('time_format'), $init_recurring_donation->recurring_cancel_date)) ) .')';
                     }?>
                 </div>
 

@@ -141,9 +141,9 @@ if(defined('POLYLANG_VERSION')) {
         if(empty($polylang) || !pll_languages_list()) {
 
             function leyka_pll_admin_notices_error(){
-                echo '<div class="error">
+                echo wp_kses_post('<div class="error">
                     <p>'.sprintf(__("<strong>Leyka warning!</strong> Polylang plugin doesn't have any languages installed. Leyka may work strangely due to that. Please go to the <a href='%s'>languages settings page</a> and add at least one language.", 'leyka'), site_url('/wp-admin/options-general.php?page=mlang')).'</p>
-                </div>';
+                </div>');
             }
             add_action('admin_notices', 'leyka_pll_admin_notices_error');
 

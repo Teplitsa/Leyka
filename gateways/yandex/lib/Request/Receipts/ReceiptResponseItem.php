@@ -148,7 +148,7 @@ class ReceiptResponseItem extends AbstractObject implements ReceiptResponseItemI
             $this->_description = $castedValue;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Empty description value in ReceiptItem', 0, 'ReceiptItem.description', $value
+                'Empty description value in ReceiptItem', 0, 'ReceiptItem.description', esc_html($value)
             );
         }
     }
@@ -178,11 +178,11 @@ class ReceiptResponseItem extends AbstractObject implements ReceiptResponseItemI
             throw new EmptyPropertyValueException('Empty quantity value in ReceiptItem', 0, 'ReceiptItem.quantity');
         } elseif (!is_numeric($value)) {
             throw new InvalidPropertyValueTypeException(
-                'Invalid quantity value type in ReceiptItem', 0, 'ReceiptItem.quantity', $value
+                'Invalid quantity value type in ReceiptItem', 0, 'ReceiptItem.quantity', esc_html($value)
             );
         } elseif ($value <= 0.0) {
             throw new InvalidPropertyValueException(
-                'Invalid quantity value in ReceiptItem', 0, 'ReceiptItem.quantity', $value
+                'Invalid quantity value in ReceiptItem', 0, 'ReceiptItem.quantity', esc_html($value)
             );
         } else {
             $this->_quantity = (float)$value;
@@ -241,11 +241,11 @@ class ReceiptResponseItem extends AbstractObject implements ReceiptResponseItemI
             $this->_vatCode = null;
         } elseif (!is_numeric($value)) {
             throw new InvalidPropertyValueTypeException(
-                'Invalid vatId value type in ReceiptItem', 0, 'ReceiptItem.vatId', $value
+                'Invalid vatId value type in ReceiptItem', 0, 'ReceiptItem.vatId', esc_html($value)
             );
         } elseif ($value < 1 || $value > 6) {
             throw new InvalidPropertyValueException(
-                'Invalid vatId value in ReceiptItem', 0, 'ReceiptItem.vatId', $value
+                'Invalid vatId value in ReceiptItem', 0, 'ReceiptItem.vatId', esc_html($value)
             );
         } else {
             $this->_vatCode = (int)$value;
@@ -301,7 +301,7 @@ class ReceiptResponseItem extends AbstractObject implements ReceiptResponseItemI
             $this->_paymentMode = null;
         } elseif (!TypeCast::canCastToString($value)) {
             throw new InvalidPropertyValueTypeException(
-                'Invalid paymentMode value type', 0, 'ReceiptItem.paymentMode', $value
+                'Invalid paymentMode value type', 0, 'ReceiptItem.paymentMode', esc_html($value)
             );
         } else {
             $this->_paymentMode = $value;
@@ -335,7 +335,7 @@ class ReceiptResponseItem extends AbstractObject implements ReceiptResponseItemI
 
         if (!($value instanceof SupplierInterface)) {
             throw new InvalidPropertyValueTypeException(
-                'Invalid supplier value type in receipt', 0, 'Receipt.supplier', $value
+                'Invalid supplier value type in receipt', 0, 'Receipt.supplier', esc_html($value)
             );
         }
 

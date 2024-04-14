@@ -79,12 +79,12 @@ class SettlementPayoutRefund extends AbstractObject implements SettlementInterfa
                 $this->_type = (string)$value;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid value for "type" parameter in Settlement', 0, 'settlement.type', $value
+                    'Invalid value for "type" parameter in Settlement', 0, 'settlement.type', esc_html($value)
                 );
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid value type for "type" parameter in Settlement', 0, 'settlement.type', $value
+                'Invalid value type for "type" parameter in Settlement', 0, 'settlement.type', esc_html($value)
             );
         }
     }
@@ -115,7 +115,7 @@ class SettlementPayoutRefund extends AbstractObject implements SettlementInterfa
             $this->_amount = $value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid value type for "amount" parameter in Settlement', 0, 'settlement.amount', $value
+                'Invalid value type for "amount" parameter in Settlement', 0, 'settlement.amount', esc_html($value)
             );
         }
     }

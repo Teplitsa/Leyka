@@ -78,6 +78,7 @@ class CreateCaptureRequest extends AbstractPaymentRequest implements CreateCaptu
             $this->_deal = new CaptureDealData($value);
         } else {
             throw new InvalidPropertyValueTypeException(
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 'Invalid deal value type in CreateCaptureRequest', 0, 'CreateCaptureRequest.deal', $value
             );
         }

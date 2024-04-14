@@ -150,7 +150,7 @@ class PayPalCredentialManager
         }
 
         if (empty($credObj)) {
-            throw new PayPalInvalidCredentialException("Credential not found for " .  ($userId ? $userId : " default user") .
+            throw new PayPalInvalidCredentialException("Credential not found for " . esc_html( ($userId ? $userId : " default user") ) .
             ". Please make sure your configuration/APIContext has credential information");
         }
         return $credObj;

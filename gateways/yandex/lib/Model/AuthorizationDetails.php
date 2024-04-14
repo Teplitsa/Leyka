@@ -116,7 +116,7 @@ class AuthorizationDetails extends AbstractObject implements AuthorizationDetail
             $this->_rrn = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException('Invalid rrn value type', 0,
-                'authorization_details.rrn', $value);
+                'authorization_details.rrn', esc_html($value));
         }
     }
 
@@ -135,7 +135,7 @@ class AuthorizationDetails extends AbstractObject implements AuthorizationDetail
             $this->_authCode = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException('Invalid auth_code value type', 0,
-                'authorization_details.auth_code', $value);
+                'authorization_details.auth_code', esc_html($value));
         }
     }
 
@@ -154,7 +154,7 @@ class AuthorizationDetails extends AbstractObject implements AuthorizationDetail
             $this->_threeDSecure = $value;
         } else {
             throw new InvalidPropertyValueTypeException('Invalid three_d_secure value type', 0,
-                'authorization_details.three_d_secure', $value);
+                'authorization_details.three_d_secure', esc_html($value));
         }
     }
 }

@@ -101,7 +101,7 @@ abstract class ApiResource extends StripeObject
             $message = 'Could not determine which URL to request: '
                . "{$class} instance has invalid ID: {$id}";
 
-            throw new Exception\UnexpectedValueException($message);
+            throw new Exception\UnexpectedValueException(wp_kses_post($message));
         }
         $id = Util\Util::utf8($id);
         $base = static::classUrl();

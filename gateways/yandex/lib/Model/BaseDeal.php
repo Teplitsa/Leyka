@@ -59,12 +59,12 @@ abstract class BaseDeal extends AbstractObject
     {
         if (TypeCast::canCastToEnumString($value)) {
             if (!DealType::valueExists((string)$value)) {
-                throw new InvalidPropertyValueException('Invalid payment type value', 0, 'BaseDeal.type', $value);
+                throw new InvalidPropertyValueException('Invalid payment type value', 0, 'BaseDeal.type', esc_html($value));
             }
             $this->_type = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid payment type value type', 0, 'BaseDeal.type', $value
+                'Invalid payment type value type', 0, 'BaseDeal.type', esc_html($value)
             );
         }
     }

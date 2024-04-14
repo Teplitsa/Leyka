@@ -235,7 +235,7 @@ class PayPalHttpConfig
     {
         $urlParts = wp_parse_url($proxy);
         if ($urlParts == false || !array_key_exists("host", $urlParts)) {
-            throw new PayPalConfigurationException("Invalid proxy configuration " . $proxy);
+            throw new PayPalConfigurationException("Invalid proxy configuration " . esc_html( $proxy );
         }
         $this->curlOptions[CURLOPT_PROXY] = $urlParts["host"];
         if (isset($urlParts["port"])) {

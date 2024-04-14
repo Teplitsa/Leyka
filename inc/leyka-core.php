@@ -683,7 +683,7 @@ class Leyka extends Leyka_Singleton {
             window.dataLayer = window.dataLayer || [];
 
             dataLayer.push({
-                'donorEmail': '<?php echo sanitize_email( $donation->donor_email );?>',
+                'donorEmail': '<?php echo esc_attr(sanitize_email( $donation->donor_email ));?>',
                 'transactionId': '<?php echo esc_attr( (int)$donation_id );?>',
                 'transactionAffiliation': '<?php echo esc_attr( get_bloginfo('name') );?>',
                 'transactionTotal': <?php echo esc_attr( $donation_amount_total );?>,
@@ -737,7 +737,7 @@ class Leyka extends Leyka_Singleton {
                             item_id: '<?php echo esc_attr( $campaign->id ); ?>',
                             price: 0,
                             item_brand: "donate",
-                            item_category: '<?php _e('Donations', 'leyka');?>', 
+                            item_category: '<?php esc_html_e('Donations', 'leyka');?>', 
                             quantity: 1
                         }]
                     }
@@ -1295,7 +1295,7 @@ class Leyka extends Leyka_Singleton {
 
         if($params['activation_status'] && !in_array($params['activation_status'], ['active', 'inactive', 'activating'])) {
             throw new Exception(sprintf(
-                __('Unknown gateways activation status given: %s', 'leyka'), $params['activation_status']
+                esc_html__('Unknown gateways activation status given: %s', 'leyka'), esc_html($params['activation_status'])
             ));
         }
 

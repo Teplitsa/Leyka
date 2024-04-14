@@ -91,7 +91,7 @@ abstract class AbstractService
             if (null === $id || '' === \trim($id)) {
                 $msg = 'The resource ID cannot be null or whitespace.';
 
-                throw new \Stripe\Exception\InvalidArgumentException($msg);
+                throw new \Stripe\Exception\InvalidArgumentException(wp_kses_post($msg));
             }
         }
 

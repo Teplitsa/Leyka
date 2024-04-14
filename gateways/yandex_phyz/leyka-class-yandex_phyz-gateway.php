@@ -112,16 +112,16 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
 
         if( !!$is_error ) {
             die('<?xml version="1.0" encoding="UTF-8"?>
-<checkOrderResponse performedDatetime="'.gmdate(DATE_ATOM).'"
+<checkOrderResponse performedDatetime="'.esc_attr(gmdate(DATE_ATOM)).'"
 code="1000" operation_id="' . esc_attr( $operation_id ) . '"
-account_id="'.leyka_options()->opt('yandex_money_account').'"
-message="'.$message.'"
-techMessage="'.$tech_message.'"/>');
+account_id="'.esc_attr(leyka_options()->opt('yandex_money_account')).'"
+message="'.esc_attr($message).'"
+techMessage="'.esc_attr($tech_message).'"/>');
         } else {
             die('<?xml version="1.0" encoding="UTF-8"?>
-<checkOrderResponse performedDatetime="'.gmdate(DATE_ATOM).'"
+<checkOrderResponse performedDatetime="'.esc_attr(gmdate(DATE_ATOM)).'"
 code="0" operation_id="' . esc_attr( $operation_id ) . '"
-account_id="'.leyka_options()->opt('yandex_money_account').'"/>');
+account_id="'.esc_attr(leyka_options()->opt('yandex_money_account')).'"/>');
         }
 
     }

@@ -131,16 +131,16 @@ class StripeObject implements \ArrayAccess, \Countable, \JsonSerializable
     {
         if (static::getPermanentAttributes()->includes($k)) {
             throw new Exception\InvalidArgumentException(
-                "Cannot set {$k} on this object. HINT: you can't set: " .
-                \implode(', ', static::getPermanentAttributes()->toArray())
+                wp_kses_post( 'Cannot set ' . esc_html( $k ) . ' on this object. HINT: you can\'t set: ' .
+                \implode(', ', static::getPermanentAttributes()->toArray()) )
             );
         }
 
         if ('' === $v) {
             throw new Exception\InvalidArgumentException(
-                'You cannot set \'' . $k . '\'to an empty string. '
+                'You cannot set \'' . esc_html( $k ) . '\'to an empty string. '
                 . 'We interpret empty strings as NULL in requests. '
-                . 'You may set obj->' . $k . ' = NULL to delete the property'
+                . 'You may set obj->' . esc_html( $k ) . ' = NULL to delete the property'
             );
         }
 
@@ -387,8 +387,8 @@ class StripeObject implements \ArrayAccess, \Countable, \JsonSerializable
             }
 
             throw new Exception\InvalidArgumentException(
-                "Cannot save property `{$key}` containing an API resource of type " .
-                    \get_class($value) . ". It doesn't appear to be persisted and is " .
+                "Cannot save property `" . esc_html( $key ) . "` containing an API resource of type " .
+                    esc_html( \get_class($value) ) . ". It doesn't appear to be persisted and is " .
                     'not marked as `saveWithParent`.'
             );
         }
@@ -537,7 +537,7 @@ class StripeObject implements \ArrayAccess, \Countable, \JsonSerializable
             $values = $obj->_values;
         } else {
             throw new Exception\InvalidArgumentException(
-                'empty_values got unexpected object type: ' . \get_class($obj)
+                'empty_values got unexpected object type: ' . esc_html( \get_class($obj) )
             );
         }
 

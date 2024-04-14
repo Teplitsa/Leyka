@@ -64,7 +64,7 @@ class NotificationFactory
             throw new \InvalidArgumentException('Invalid notification type value in notification factory');
         }
         if (!array_key_exists($data['event'], $this->typeClassMap)) {
-            throw new \InvalidArgumentException('Invalid notification data type "' . $data['event'] . '"');
+            throw new \InvalidArgumentException('Invalid notification data type "' . esc_html($data['event']) . '"');
         }
         $className = __NAMESPACE__ . '\\' . $this->typeClassMap[$data['event']];
 

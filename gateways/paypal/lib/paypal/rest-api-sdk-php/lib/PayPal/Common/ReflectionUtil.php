@@ -57,7 +57,7 @@ class ReflectionUtil
             $anno = preg_split("/[\s\[\]]+/", $param);
             return $anno[0];
         } else {
-            throw new PayPalConfigurationException("Getter function for '$propertyName' in '$class' class should have a proper return type.");
+            throw new PayPalConfigurationException('Getter function for ' . esc_html( $propertyName ) . ' in ' . esc_html( $class ) . ' class should have a proper return type.');
         }
     }
 
@@ -83,7 +83,7 @@ class ReflectionUtil
         if (isset($param)) {
             return substr($param, -strlen('[]'))==='[]';
         } else {
-            throw new PayPalConfigurationException("Getter function for '$propertyName' in '$class' class should have a proper return type.");
+            throw new PayPalConfigurationException('Getter function for ' . esc_html( $propertyName ) . ' in ' . esc_html( $class ) . ' class should have a proper return type.');
         }
     }
 
@@ -99,7 +99,7 @@ class ReflectionUtil
     {
         $class = is_object($class) ? get_class($class) : $class;
         if (!class_exists('ReflectionProperty')) {
-            throw new \RuntimeException("Property type of " . $class . "::{$propertyName} cannot be resolved");
+            throw new \RuntimeException('Property type of ' . esc_html( $class ) . '::' . esc_html( $propertyName ) . 'cannot be resolved');
         }
 
         if ($annotations =& self::$propertiesType[$class][$propertyName]) {

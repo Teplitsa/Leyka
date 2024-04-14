@@ -68,12 +68,12 @@ abstract class AbstractPayoutDestination extends AbstractObject
                 $this->_type = (string)$value;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid value for "type" parameter in PayoutDestinationData', 0, 'PayoutDestinationData.type', $value
+                    'Invalid value for "type" parameter in PayoutDestinationData', 0, 'PayoutDestinationData.type', esc_html($value)
                 );
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid value type for "type" parameter in PayoutDestinationData', 0, 'PayoutDestinationData.type', $value
+                'Invalid value type for "type" parameter in PayoutDestinationData', 0, 'PayoutDestinationData.type', esc_html($value)
             );
         }
     }

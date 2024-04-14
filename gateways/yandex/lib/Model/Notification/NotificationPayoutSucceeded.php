@@ -74,14 +74,14 @@ class NotificationPayoutSucceeded extends AbstractNotification
         if (!empty($source['type'])) {
             if ($this->getType() !== $source['type']) {
                 throw new InvalidPropertyValueException(
-                    'Invalid value for "type" parameter in Notification', 0, 'notification.type', $source['type']
+                    'Invalid value for "type" parameter in Notification', 0, 'notification.type', esc_html($source['type'])
                 );
             }
         }
         if (!empty($source['event'])) {
             if ($this->getEvent() !== $source['event']) {
                 throw new InvalidPropertyValueException(
-                    'Invalid value for "event" parameter in Notification', 0, 'notification.event', $source['event']
+                    'Invalid value for "event" parameter in Notification', 0, 'notification.event', esc_html($source['event'])
                 );
             }
         }

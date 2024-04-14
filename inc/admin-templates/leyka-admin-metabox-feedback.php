@@ -7,7 +7,7 @@ $user = wp_get_current_user();?>
 
 <div class="metabox-content leyka-feedback-form leyka-options-section no-background" data-thumbnail="/img/admin-boxes/feedback.svg">
 
-    <img id="feedback-loader" style="display: none;" src="<?php echo LEYKA_PLUGIN_BASE_URL.'img/ajax-loader.gif';?>" alt="">
+    <img id="feedback-loader" style="display: none;" src="<?php echo esc_url( LEYKA_PLUGIN_BASE_URL . 'img/ajax-loader.gif' );?>" alt="">
 
     <form id="feedback" action="#" method="post">
 
@@ -33,21 +33,21 @@ $user = wp_get_current_user();?>
         ]);?>
         <div id="leyka_feedback_text-field-error" class="error-message" style="display: none;"></div>
 
-        <input type="hidden" name="leyka_feedback_topic" value="<?php _e('A message from Leyka help admin page', 'leyka');?>">
+        <input type="hidden" name="leyka_feedback_topic" value="<?php esc_attr_e('A message from Leyka help admin page', 'leyka');?>">
 
         <p class="leyka-submit">
-            <input type="hidden" id="nonce" value="<?php echo wp_create_nonce('leyka_feedback_sending');?>">
-            <input type="submit" class="button-primary" value="<?php _e('Submit');?>">
+            <input type="hidden" id="nonce" value="<?php echo esc_attr( wp_create_nonce('leyka_feedback_sending') );?>">
+            <input type="submit" class="button-primary" value="<?php esc_attr_e('Submit');?>">
         </p>
 
     </form>
 
     <div id="message-ok" class="leyka-ff-msg ok" style="display: none;">
-        <p><?php _e('<strong>Thank you!</strong> Your message sended successfully. We will answer it soon - please await our response on the email you entered.', 'leyka');?></p>
+        <p><?php esc_html_e('Thank you! Your message sended successfully. We will answer it soon - please await our response on the email you entered.', 'leyka');?></p>
     </div>
 
     <div id="message-error" class="leyka-ff-msg wrong" style="display: none;">
-        <p><?php _e("Sorry, but the message can't be sended. Please check your mail server settings.", 'leyka');?></p>
+        <p><?php esc_html_e("Sorry, but the message can't be sended. Please check your mail server settings.", 'leyka');?></p>
     </div>
 
 </div>

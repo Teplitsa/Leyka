@@ -212,9 +212,9 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
         $data = json_decode($data, true);
 
         if(is_wp_error($check)) {
-            wp_die($check->get_error_message());
+            wp_die( wp_kses_post( $check->get_error_message() ) );
         } else if(empty($data['eventType']) || !is_string($data['eventType'])) {
-            wp_die(__('Webhook error: eventType field is not found or have incorrect value', 'leyka'));
+            wp_die(esc_html__('Webhook error: eventType field is not found or have incorrect value', 'leyka'));
         }
 
         switch($data['eventType']) {
@@ -508,19 +508,19 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
             $donation = Leyka_Donations::get_instance()->get_donation($donation);?>
 
-            <label><?php _e('RBK Money invoice ID', 'leyka');?>:</label>
+            <label><?php esc_html_e('RBK Money invoice ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
             <?php if($donation->type === 'correction') {?>
-                <input type="text" id="rbk-invoice-id" name="rbk-invoice-id" placeholder="<?php _e('Enter RBK Money invoice ID', 'leyka');?>" value="<?php echo esc_attr( $donation->rbk_invoice_id );?>">
+                <input type="text" id="rbk-invoice-id" name="rbk-invoice-id" placeholder="<?php esc_attr_e('Enter RBK Money invoice ID', 'leyka');?>" value="<?php echo esc_attr( $donation->rbk_invoice_id );?>">
             <?php } else {?>
                 <span class="fake-input"><?php echo esc_html( $donation->rbk_invoice_id );?></span>
             <?php }?>
             </div>
 
-            <label><?php _e('RBK Money payment ID', 'leyka');?>:</label>
+            <label><?php esc_html_e('RBK Money payment ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
             <?php if($donation->type === 'correction') {?>
-                <input type="text" id="rbk-payment-id" name="rbk-payment-id" placeholder="<?php _e('Enter RBK Money payment ID', 'leyka');?>" value="<?php echo esc_attr( $donation->rbk_payment_id );?>">
+                <input type="text" id="rbk-payment-id" name="rbk-payment-id" placeholder="<?php esc_attr_e('Enter RBK Money payment ID', 'leyka');?>" value="<?php echo esc_attr( $donation->rbk_payment_id );?>">
             <?php } else {?>
                 <span class="fake-input"><?php echo esc_html( $donation->rbk_payment_id );?></span>
             <?php }?>
@@ -531,7 +531,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 $init_recurring_donation = $donation->init_recurring_donation; ?>
 
                 <div class="recurring-is-active-field">
-                    <label for="rbk-recurring-is-active"><?php _e('Recurring subscription is active', 'leyka'); ?>:</label>
+                    <label for="rbk-recurring-is-active"><?php esc_html_e('Recurring subscription is active', 'leyka'); ?>:</label>
                     <div class="leyka-ddata-field">
                         <input type="checkbox" id="rbk-recurring-is-active" name="rbk-recurring-is-active" value="1" <?php echo wp_kses_post( $init_recurring_donation->recurring_is_active ? 'checked="checked"' : '' ); ?>>
                     </div>
@@ -539,11 +539,11 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
                 <?php if( !$donation->is_init_recurring_donation) {?>
 
-                <label><?php _e('Initial recurring invoice ID', 'leyka');?>:</label>
+                <label><?php esc_html_e('Initial recurring invoice ID', 'leyka');?>:</label>
                 <div class="leyka-ddata-field">
                     <?php if($donation->type === 'correction') {?>
                     <input type="text" id="rbk-init-invoice-id" name="rbk-init-invoice-id"
-                           placeholder="<?php _e('Enter RBK Money initial recurring invoice ID', 'leyka');?>"
+                           placeholder="<?php esc_attr_e('Enter RBK Money initial recurring invoice ID', 'leyka');?>"
                            value="<?php echo esc_attr( $init_recurring_donation->rbk_invoice_id ); ?>">
                     <?php } else {?>
                     <span class="fake-input"><?php echo esc_html( $init_recurring_donation->rbk_invoice_id );?></span>
@@ -552,11 +552,11 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
                 <br>
 
-                <label><?php _e('Initial recurring payment ID', 'leyka');?>:</label>
+                <label><?php esc_html_e('Initial recurring payment ID', 'leyka');?>:</label>
                 <div class="leyka-ddata-field">
                     <?php if($donation->type === 'correction') {?>
                         <input type="text" id="rbk-init-payment-id" name="rbk-init-payment-id"
-                               placeholder="<?php _e('Enter RBK Money initial recurring payment ID', 'leyka'); ?>"
+                               placeholder="<?php esc_attr_e('Enter RBK Money initial recurring payment ID', 'leyka'); ?>"
                                value="<?php echo esc_attr( $init_recurring_donation->rbk_payment_id ); ?>">
                     <?php } else {?>
                     <span class="fake-input"><?php echo esc_html( $init_recurring_donation->rbk_payment_id ); ?></span>
@@ -569,14 +569,14 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
         } else { // New donation page displayed ?>
 
-        <label for="rbk-invoice-id"><?php _e('RBK Money invoice ID', 'leyka');?>:</label>
+        <label for="rbk-invoice-id"><?php esc_html_e('RBK Money invoice ID', 'leyka');?>:</label>
         <div class="leyka-ddata-field">
-            <input type="text" id="rbk-invoice-id" name="rbk-invoice-id" placeholder="<?php _e('Enter RBK Money invoice ID', 'leyka');?>" value="">
+            <input type="text" id="rbk-invoice-id" name="rbk-invoice-id" placeholder="<?php esc_attr_e('Enter RBK Money invoice ID', 'leyka');?>" value="">
         </div>
 
-        <label for="rbk-payment-id"><?php _e('RBK Money payment ID', 'leyka');?>:</label>
+        <label for="rbk-payment-id"><?php esc_html_e('RBK Money payment ID', 'leyka');?>:</label>
         <div class="leyka-ddata-field">
-            <input type="text" id="rbk-payment-id" name="rbk-payment-id" placeholder="<?php _e('Enter RBK Money payment ID', 'leyka');?>" value="">
+            <input type="text" id="rbk-payment-id" name="rbk-payment-id" placeholder="<?php esc_attr_e('Enter RBK Money payment ID', 'leyka');?>" value="">
         </div>
 
         <?php }

@@ -67,7 +67,7 @@ class ConfirmationAttributesMobileApplication extends AbstractConfirmationAttrib
             $this->_returnUrl = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid returnUrl value type', 0, 'ConfirmationAttributesMobileApplication.returnUrl', $value
+                'Invalid returnUrl value type', 0, 'ConfirmationAttributesMobileApplication.returnUrl', esc_html($value)
             );
         }
     }

@@ -104,7 +104,7 @@ class DealBalanceAmount extends AbstractObject implements AmountInterface
             throw new EmptyPropertyValueException('Empty amount value', 0, 'amount.value');
         }
         if (!is_numeric($value)) {
-            throw new InvalidPropertyValueTypeException('Invalid amount value type', 0, 'amount.value', $value);
+            throw new InvalidPropertyValueTypeException('Invalid amount value type', 0, 'amount.value', esc_html($value));
         }
         $castedValue = (int)round($value * 100.0);
         $this->_value = $castedValue;
@@ -147,11 +147,11 @@ class DealBalanceAmount extends AbstractObject implements AmountInterface
                 $this->_currency = $value;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid currency value: "' . $value . '"', 0, 'amount.currency', $value
+                    'Invalid currency value: "' . esc_html( $value ) . '"', 0, 'amount.currency', esc_html( $value )
                 );
             }
         } else {
-            throw new InvalidPropertyValueTypeException('Invalid currency value type', 0, 'amount.currency', $value);
+            throw new InvalidPropertyValueTypeException('Invalid currency value type', 0, 'amount.currency', esc_html($value));
         }
     }
 

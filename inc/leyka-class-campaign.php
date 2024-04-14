@@ -101,14 +101,14 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         <select id="campaign-state-select" name="campaign_state">
 
             <option value="all" <?php selected( $campaign_state, '' );?>>
-                - <?php _e('Collection state', 'leyka');?> -
+                - <?php esc_html_e('Collection state', 'leyka');?> -
             </option>
 
             <option value="is_finished" <?php selected( $campaign_state, 'is_finished' );?>>
-                <?php _e('Closed', 'leyka');?>
+                <?php esc_html_e('Closed', 'leyka');?>
             </option>
 
-            <option value="is_open" <?php selected( $campaign_state, 'is_open' );?>><?php _e('Opened', 'leyka');?></option>
+            <option value="is_open" <?php selected( $campaign_state, 'is_open' );?>><?php esc_html_e('Opened', 'leyka');?></option>
 
         </select>
 
@@ -116,7 +116,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         <select id="target-state-select" name="target_state">
 
             <option value="" <?php selected( $target_state, '' ); ?>>
-                - <?php _e('Target', 'leyka');?> -
+                - <?php esc_html_e('Target', 'leyka');?> -
             </option>
 
             <?php foreach(Leyka::get_campaign_target_states() as $state => $label) {?>
@@ -272,7 +272,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         <fieldset id="campaign-form-template" class="metabox-field campaign-field campaign-template temporary-campaign-fields">
 
             <h3 class="field-title">
-                <label for="campaign-form-template-field"><?php _e('Template for payment form', 'leyka');?></label>
+                <label for="campaign-form-template-field"><?php esc_html_e('Template for payment form', 'leyka');?></label>
             </h3>
 
             <div class="field-wrapper flex">
@@ -295,7 +295,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                 <select id="campaign-form-template-field" name="campaign_template" data-default-template-id="<?php echo empty($default_template['id']) ? '' : esc_attr($default_template['id']);?>">
 
                     <option value="default" <?php selected($cur_template, 'default');?>>
-                        <?php echo sprintf(__('Default template (%s)', 'leyka'), __($default_template['name'], 'leyka'));?>
+                        <?php echo sprintf(esc_html__('Default template (%s)', 'leyka'), esc_html__($default_template['name'], 'leyka'));?>
                     </option>
 
                     <?php foreach($templates as $template) {
@@ -304,8 +304,8 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                         $template_deprecated = leyka()->template_is_deprecated($template_id);?>
 
                         <option value="<?php echo esc_attr( $template_id );?>" <?php selected($cur_template, $template_id);?> class="<?php echo esc_attr( $template_deprecated ? 'template-deprecated' : '' );?>">
-                            <?php echo __($template['name'], 'leyka')
-                                .($template_deprecated ? ' ('.__('deprecated', 'leyka').')' : '');?>
+                            <?php echo esc_html__($template['name'], 'leyka')
+                                .($template_deprecated ? ' ('.esc_html__('deprecated', 'leyka').')' : '');?>
                         </option>
 
                     <?php }?>
@@ -329,7 +329,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             <div class="field-wrapper flex daily-rouble-settings-wrapper" style="<?php echo esc_attr( $cur_template === 'need-help' ? '' : 'display:none;' ); ?>">
 
                 <label for="daily-rouble-mode-on">
-                    <input type="checkbox" id="daily-rouble-mode-on" name="daily_rouble_mode_on" value="1" <?php echo esc_attr( $campaign->daily_rouble_mode_on ? 'checked' : '' ); ?>>&nbsp;<?php echo sprintf(__('Turn on the "<a href="%s" target="_blank">Rouble per day</a>" mode', 'leyka'), 'https://leyka.te-st.ru/docs/ruble-a-day/');?>
+                    <input type="checkbox" id="daily-rouble-mode-on" name="daily_rouble_mode_on" value="1" <?php echo esc_attr( $campaign->daily_rouble_mode_on ? 'checked' : '' ); ?>>&nbsp;<?php echo wp_kses_post( sprintf(__('Turn on the "<a href="%s" target="_blank">Rouble per day</a>" mode', 'leyka'), 'https://leyka.te-st.ru/docs/ruble-a-day/') );?>
                 </label>
 
                 <div class="field-wrapper flex daily-rouble-settings">
@@ -337,17 +337,17 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                     <div class="field-wrapper flex">
 
                         <h3 class="field-title">
-                            <label for="daily-rouble-amount-variants"><?php _e('Daily amount variants', 'leyka');?></label>
+                            <label for="daily-rouble-amount-variants"><?php esc_html_e('Daily amount variants', 'leyka');?></label>
                         </h3>
 
-                        <input type="text" id="daily-rouble-amount-variants" name="daily_rouble_amounts" value="<?php echo esc_attr( $campaign->daily_rouble_amounts ? $campaign->daily_rouble_amounts : '1,2,3,4,5,10' );?>" placeholder="<?php _e('E. g., 1,2,3,4,5,10');?>">
+                        <input type="text" id="daily-rouble-amount-variants" name="daily_rouble_amounts" value="<?php echo esc_attr( $campaign->daily_rouble_amounts ? $campaign->daily_rouble_amounts : '1,2,3,4,5,10' );?>" placeholder="<?php esc_attr_e('E. g., 1,2,3,4,5,10');?>">
 
                     </div>
 
                     <div class="field-wrapper flex">
 
                         <h3 class="field-title">
-                            <label for="daily-rouble-pm"><?php _e('Daily amount payment method', 'leyka');?></label>
+                            <label for="daily-rouble-pm"><?php esc_html_e('Daily amount payment method', 'leyka');?></label>
                         </h3>
 
                         <?php $recurring_pm_list = leyka_get_pm_list(true);
@@ -360,7 +360,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                         $pm = leyka_get_pm_by_id($campaign->daily_rouble_pm_id, true);?>
 
                         <select name="daily_rouble_pm" id="daily-rouble-pm" <?php echo wp_kses_post( $recurring_pm_list ? '' : 'disabled="disabled"' ); ?>>
-                            <option value="" <?php echo wp_kses_post( $pm && $pm->is_active ? '' : 'selected="selected"' ); ?>><?php _e('Not set', 'leyka');?></option>
+                            <option value="" <?php echo wp_kses_post( $pm && $pm->is_active ? '' : 'selected="selected"' ); ?>><?php esc_html_e('Not set', 'leyka');?></option>
 
                         <?php foreach($recurring_pm_list as $pm) {?>
                             <option value="<?php echo esc_attr( $pm->full_id ); ?>" <?php echo wp_kses_post( $pm->full_id === $campaign->daily_rouble_pm_id ? 'selected="selected"' : '' ); ?>>
@@ -380,32 +380,32 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         <fieldset id="campaign-type" class="metabox-field campaign-field campaign-type">
 
-            <h3 class="field-title"><?php _e('Campaign type', 'leyka');?></h3>
+            <h3 class="field-title"><?php esc_html_e('Campaign type', 'leyka');?></h3>
 
             <div class="field-wrapper">
                 <label class="field-label">
-                    <input type="radio" name="campaign_type" value="temporary" <?php echo wp_kses_post( $campaign->type === 'temporary' ? 'checked="checked"' : '' );?>><?php _e('Temporary', 'leyka');?>
+                    <input type="radio" name="campaign_type" value="temporary" <?php echo wp_kses_post( $campaign->type === 'temporary' ? 'checked="checked"' : '' );?>><?php esc_html_e('Temporary', 'leyka');?>
                 </label>
                 <label class="field-label">
-                    <input type="radio" name="campaign_type" value="persistent" <?php echo wp_kses_post( $campaign->type === 'persistent' ? 'checked="checked"' : '' ); ?>><?php _e('Persistent', 'leyka');?>
+                    <input type="radio" name="campaign_type" value="persistent" <?php echo wp_kses_post( $campaign->type === 'persistent' ? 'checked="checked"' : '' ); ?>><?php esc_html_e('Persistent', 'leyka');?>
                 </label>
             </div>
         </fieldset>
 
         <fieldset id="donations-types" class="metabox-field campaign-field donations-types" style="<?php echo wp_kses_post( $campaign->daily_rouble_mode_on ? 'display: none;' : '' );?>">
 
-            <h3 class="field-title"><?php _e('Donations types available', 'leyka');?></h3>
+            <h3 class="field-title"><?php esc_html_e('Donations types available', 'leyka');?></h3>
 
             <div class="field-wrapper">
                 <label class="field-label">
-                    <input type="checkbox" name="donations_type[]" value="recurring" <?php echo in_array('recurring', $campaign->donations_types_available) || $campaign->status === 'auto-draft' ? 'checked="checked"' : '';?> <?php echo leyka_is_recurring_supported() ? '' : 'disabled="disabled"'?>><?php echo _x('Recurring', 'In mult., like "recurring donations"', 'leyka');?>
+                    <input type="checkbox" name="donations_type[]" value="recurring" <?php echo in_array('recurring', $campaign->donations_types_available) || $campaign->status === 'auto-draft' ? 'checked="checked"' : '';?> <?php echo leyka_is_recurring_supported() ? '' : 'disabled="disabled"'?>><?php echo esc_html_x('Recurring', 'In mult., like "recurring donations"', 'leyka');?>
                 </label>
                 <label class="field-label">
-                    <input type="checkbox" name="donations_type[]" value="single" <?php echo in_array('single', $campaign->donations_types_available) || $campaign->status === 'auto-draft' ? 'checked="checked"' : '';?>><?php echo _x('Single', 'In mult., like "single donations"', 'leyka');?>
+                    <input type="checkbox" name="donations_type[]" value="single" <?php echo in_array('single', $campaign->donations_types_available) || $campaign->status === 'auto-draft' ? 'checked="checked"' : '';?>><?php echo esc_html_x('Single', 'In mult., like "single donations"', 'leyka');?>
                 </label>
 
                 <?php if( !leyka_is_recurring_supported()) {?>
-                <div class="error-message">Внимание: на данный момент активация регулярных пожертвований на форме невозможна. Не включён ни один способ оплаты, поддерживающий рекуррентные платежи.<br />Чтобы изменить это, выберите и подключите <a href="<?php echo admin_url('admin.php?page=leyka_settings&stage=payment');?>" target="_blank">один из платёжных операторов с возможностью регулярных платежей</a>.</div>
+                <div class="error-message">Внимание: на данный момент активация регулярных пожертвований на форме невозможна. Не включён ни один способ оплаты, поддерживающий рекуррентные платежи.<br />Чтобы изменить это, выберите и подключите <a href="<?php echo esc_url( admin_url('admin.php?page=leyka_settings&stage=payment') );?>" target="_blank">один из платёжных операторов с возможностью регулярных платежей</a>.</div>
                 <?php }?>
             </div>
 
@@ -414,21 +414,21 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         <fieldset id="donation-type-default" class="metabox-field campaign-field donaiton-type-default" style="<?php echo wp_kses_post( $campaign->daily_rouble_mode_on ? 'display: none;' : '' ); ?>">
 
             <h3 class="field-title">
-                <?php _e('Donation type by default', 'leyka');?>
+                <?php esc_html_e('Donation type by default', 'leyka');?>
                 <span class="field-q">
                     <img src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL ); ?>img/icon-q.svg" alt="">
                     <span class="field-q-tooltip">
-                        <?php _e('What donation type is going to be used when donor sees a campaign form firsthand? The default type may influence number of the single & recurring donations.', 'leyka');?>
+                        <?php esc_html_e('What donation type is going to be used when donor sees a campaign form firsthand? The default type may influence number of the single & recurring donations.', 'leyka');?>
                     </span>
                 </span>
             </h3>
 
             <div class="field-wrapper">
                 <label class="field-label">
-                    <input type="radio" name="donations_type_default" value="recurring" <?php echo wp_kses_post( $campaign->donations_type_default === 'recurring' ? 'checked="checked"' : '' );?>><?php echo _x('Recurring', 'In single, like "recurring donation"', 'leyka');?>
+                    <input type="radio" name="donations_type_default" value="recurring" <?php echo wp_kses_post( $campaign->donations_type_default === 'recurring' ? 'checked="checked"' : '' );?>><?php echo esc_html_x('Recurring', 'In single, like "recurring donation"', 'leyka');?>
                 </label>
                 <label class="field-label">
-                    <input type="radio" name="donations_type_default" value="single" <?php echo wp_kses_post(  $campaign->donations_type_default === 'single' ? 'checked="checked"' : '' );?>><?php echo _x('Single', 'In single, like "single donation"', 'leyka');?>
+                    <input type="radio" name="donations_type_default" value="single" <?php echo wp_kses_post(  $campaign->donations_type_default === 'single' ? 'checked="checked"' : '' );?>><?php echo esc_html_x('Single', 'In single, like "single donation"', 'leyka');?>
                 </label>
             </div>
 
@@ -438,7 +438,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <h3 class="field-title">
                 <label for="campaign-target">
-                    <?php echo sprintf(__('Target (%s)', 'leyka'), leyka_get_currency_label());?>
+                    <?php echo sprintf(esc_html__('Target (%s)', 'leyka'), esc_html(leyka_get_currency_label()));?>
                 </label>
             </h3>
 
@@ -455,17 +455,17 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                 $percentage = round(($campaign->total_funded / $campaign->target) * 100, 1);
                 $percentage = min($percentage, 100);
 
-                echo sprintf(__('Currently collected: %.01f%%', 'leyka'), $percentage);?>
+                echo sprintf(esc_html__('Currently collected: %.01f%%', 'leyka'), esc_html($percentage));?>
 
-                (<span id="collected-amount-number"><?php echo leyka_format_amount($campaign->total_funded);?></span>
-                &nbsp;<?php echo leyka_get_currency_label();?> / <?php echo leyka_format_amount($campaign->target).' '.leyka_get_currency_label();?>)
+                (<span id="collected-amount-number"><?php echo esc_html(leyka_format_amount($campaign->total_funded));?></span>
+                &nbsp;<?php echo esc_html(leyka_get_currency_label());?> / <?php echo esc_html(leyka_format_amount($campaign->target).' '.leyka_get_currency_label());?>)
 
             <?php } else {
 
-                _e('Currently collected:', 'leyka');?>
+                esc_html_e('Currently collected:', 'leyka');?>
 
-                <span id="collected-amount"><?php echo leyka_format_amount($campaign->total_funded);?></span>
-                &nbsp;<?php echo leyka_get_currency_label();?>
+                <span id="collected-amount"><?php echo esc_html(leyka_format_amount($campaign->total_funded));?></span>
+                &nbsp;<?php echo esc_html(leyka_get_currency_label());?>
             <?php }?>
 
             </div>
@@ -474,9 +474,9 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <div class="recalculate-total-funded">
 
-                <a href="<?php echo add_query_arg(array('recalculate_total_funded' => 1,));?>" id="recalculate_total_funded" data-nonce="<?php echo wp_create_nonce('leyka_recalculate_total_funded_amount');?>" data-campaign-id="<?php echo esc_attr( $campaign->id );?>"><?php _e('Recalculate the collected amount', 'leyka');?></a>
+                <a href="<?php echo esc_attr( add_query_arg(array('recalculate_total_funded' => 1,)));?>" id="recalculate_total_funded" data-nonce="<?php echo esc_attr(wp_create_nonce('leyka_recalculate_total_funded_amount'));?>" data-campaign-id="<?php echo esc_attr( $campaign->id );?>"><?php esc_html_e('Recalculate the collected amount', 'leyka');?></a>
 
-                <img src="<?php echo LEYKA_PLUGIN_BASE_URL.'/img/ajax-loader-h.gif';?>" id="recalculate_total_funded_loader" style="display: none;" alt="">
+                <img src="<?php echo esc_url( LEYKA_PLUGIN_BASE_URL ).'img/ajax-loader-h.gif';?>" id="recalculate_total_funded_loader" style="display: none;" alt="">
 
                 <div class="message error-message" id="recalculate_message"></div>
 
@@ -489,18 +489,18 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         <fieldset id="payment-title" class="metabox-field campaign-field campaign-purpose">
 
             <h3 class="field-title">
-                <label for="payment_title"><?php _e('Payment purpose', 'leyka');?></label>
+                <label for="payment_title"><?php esc_html_e('Payment purpose', 'leyka');?></label>
             </h3>
 
             <?php $payment_title = $campaign->payment_title ? $campaign->payment_title : $campaign->title;?>
 
-            <input type="text" name="payment_title" id="payment_title" class="leyka-field-wide" value="<?php echo esc_attr( $payment_title ); ?>" placeholder="<?php _e("If the field is empty, the campaign title will be used", 'leyka');?>" maxlength="128">
+            <input type="text" name="payment_title" id="payment_title" class="leyka-field-wide" value="<?php echo esc_attr( $payment_title ); ?>" placeholder="<?php esc_attr_e("If the field is empty, the campaign title will be used", 'leyka');?>" maxlength="128">
 
             <div class="campaign-field-description" data-description-for="payment_title">
 
                 <?php $description_max_length = 128 - mb_strlen(_x('[RS]', 'For "recurring subscription"', 'leyka')) - 1;
 
-                echo sprintf(__('The value should be max. %d characters length (currently: <span class="leyka-field-current-value-length">%d</span> / %d)', 'leyka'), $description_max_length, mb_strlen($payment_title), $description_max_length);?>
+                echo wp_kses_post( sprintf(__('The value should be max. %d characters length (currently: <span class="leyka-field-current-value-length">%d</span> / %d)', 'leyka'), $description_max_length, mb_strlen($payment_title), $description_max_length) );?>
 
             </div>
 
@@ -511,7 +511,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         <fieldset id="campaign-finished" class="metabox-field without-title campaign-field campaign-finished">
             <label for="is-finished">
-                <input type="checkbox" id="is-finished" name="is_finished" value="1" <?php echo esc_attr( $campaign->is_finished ? 'checked' : '' );?>> <?php _e('Donations collection stopped', 'leyka');?>
+                <input type="checkbox" id="is-finished" name="is_finished" value="1" <?php echo esc_attr( $campaign->is_finished ? 'checked' : '' );?>> <?php esc_html_e('Donations collection stopped', 'leyka');?>
             </label>
         </fieldset>
 
@@ -519,14 +519,14 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         <fieldset id="campaign-form-content-position" class="metabox-field campaign-field campaign-form-content-position temporary-campaign-fields">
 
-            <h3 class="field-title"><?php _e('Display donations form on the campaign page:', 'leyka');?></h3>
+            <h3 class="field-title"><?php esc_html_e('Display donations form on the campaign page:', 'leyka');?></h3>
 
             <div class="field-wrapper">
                 <label class="field-label">
-                    <input type="radio" name="campaign_form_content_position" value="before-content" <?php echo wp_kses_post( $campaign->form_content_position === 'before-content' ? 'checked="checked"' : '' );?>><?php _e('Before the content', 'leyka');?>
+                    <input type="radio" name="campaign_form_content_position" value="before-content" <?php echo wp_kses_post( $campaign->form_content_position === 'before-content' ? 'checked="checked"' : '' );?>><?php esc_html_e('Before the content', 'leyka');?>
                 </label>
                 <label class="field-label">
-                    <input type="radio" name="campaign_form_content_position" value="after-content" <?php echo wp_kses_post( $campaign->form_content_position === 'after-content' ? 'checked="checked"' : '' );?>><?php _e('After the content', 'leyka');?>
+                    <input type="radio" name="campaign_form_content_position" value="after-content" <?php echo wp_kses_post( $campaign->form_content_position === 'after-content' ? 'checked="checked"' : '' );?>><?php esc_html_e('After the content', 'leyka');?>
                 </label>
             </div>
         </fieldset>
@@ -534,11 +534,11 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         <fieldset id="campaign-css" class="metabox-field campaign-field campaign-css">
 
             <h3 class="field-title">
-                <label for="campaign-css-field"><?php _e('Campaign CSS-styling', 'leyka');?></label>
+                <label for="campaign-css-field"><?php esc_html_e('Campaign CSS-styling', 'leyka');?></label>
                 <span class="field-q">
-                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-q.svg" alt="">
+                    <img src="<?php echo esc_url( LEYKA_PLUGIN_BASE_URL );?>img/icon-q.svg" alt="">
                     <span class="field-q-tooltip">
-                        <?php _e('Make your changes in the campaign page styles via this field. You can always get back to the original set of styles.', 'leyka');?>
+                        <?php esc_html_e('Make your changes in the campaign page styles via this field. You can always get back to the original set of styles.', 'leyka');?>
                     </span>
                 </span>
             </h3>
@@ -638,7 +638,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                         '' :
                         trim($campaign_css_original[$campaign_template_id])));?></textarea>
 
-                <div class="css-editor-reset-value"><?php _e('Return original styles', 'leyka');?></div>
+                <div class="css-editor-reset-value"><?php esc_html_e('Return original styles', 'leyka');?></div>
 
                 <input type="hidden" class="css-editor-default-original-value" value="<?php echo esc_attr(trim($campaign_css_original[leyka_options()->opt('donation_form_template')]));?>">
 
@@ -652,22 +652,22 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         <fieldset id="campaign-cover-type" class="metabox-field campaign-field persistent-campaign-field">
             <h3 class="field-title">
-                <?php _e('The campaign page cover type', 'leyka');?>
+                <?php esc_html_e('The campaign page cover type', 'leyka');?>
             </h3>
 
             <div class="field-wrapper">
                 <label for="hide-cover-type-image" class="field-label">
-                    <input type="radio" id="hide-cover-type-image" name="header_cover_type" value="image" <?php echo empty($campaign->header_cover_type) || $campaign->header_cover_type == '"image"' ? 'checked' : '';?>> <?php _e('Background image', 'leyka');?>
+                    <input type="radio" id="hide-cover-type-image" name="header_cover_type" value="image" <?php echo empty($campaign->header_cover_type) || $campaign->header_cover_type == '"image"' ? 'checked' : '';?>> <?php esc_html_e('Background image', 'leyka');?>
                 </label>
                 <label for="hide-cover-type-color" class="field-label">
-                    <input type="radio" id="hide-cover-type-color" name="header_cover_type" value="color" <?php echo esc_attr( $campaign->header_cover_type == 'color' ? 'checked' : '' );?>> <?php _e('Solid color', 'leyka');?>
+                    <input type="radio" id="hide-cover-type-color" name="header_cover_type" value="color" <?php echo esc_attr( $campaign->header_cover_type == 'color' ? 'checked' : '' );?>> <?php esc_html_e('Solid color', 'leyka');?>
                 </label>
             </div>
         </fieldset>
 
         <fieldset id="campaign-cover-bg-color" class="metabox-field campaign-field persistent-campaign-field">
             <h3 class="field-title">
-                <?php _e('The campaign page cover background color', 'leyka');?>
+                <?php esc_html_e('The campaign page cover background color', 'leyka');?>
             </h3>
 
             <div class="field-wrapper">
@@ -680,7 +680,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         <fieldset id="campaign-images" class="metabox-field campaign-field persistent-campaign-field">
 
             <h3 class="field-title">
-                <?php _e('The campaign decoration images', 'leyka');?>
+                <?php esc_html_e('The campaign decoration images', 'leyka');?>
 <!--                <span class="field-q" style="display: none;">-->
 <!--                    <img src="--><?php //echo LEYKA_PLUGIN_BASE_URL;?><!--img/icon-q.svg" alt="">-->
 <!--                    <span class="field-q-tooltip">-->
@@ -692,20 +692,20 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             <div class="upload-photo-complex-field-wrapper margin-top" id="upload-campaign-cover-image">
                 <div class="set-page-img-control" data-mission="cover" data-campaign-id="<?php echo esc_attr( $campaign->id );?>">
                 	<?php $img_url = $campaign->cover_id ? wp_get_attachment_image_url($campaign->cover_id, 'thumbnail') : null;?>
-                	<?php _e('Uploaded cover:', 'leyka');?> <span class="img-value"><?php echo wp_kses_post( $img_url ? '<img src="'.$img_url.'" />' : __('Default', 'leyka') );?></span>
-            		<a href="#" class="reset-to-default" <?php echo !$img_url ? 'style="display: none;"' : '';?> title="<?php _e('Reset to default');?>"></a>
+                	<?php esc_html_e('Uploaded cover:', 'leyka');?> <span class="img-value"><?php echo wp_kses_post( $img_url ? '<img src="'.$img_url.'" />' : __('Default', 'leyka') );?></span>
+            		<a href="#" class="reset-to-default" <?php echo !$img_url ? 'style="display: none;"' : '';?> title="<?php esc_attr_e('Reset to default');?>"></a>
             		<?php wp_nonce_field('reset-campaign-attachment', 'reset-campaign-cover-nonce');?>
                     <div class="loading-indicator-wrap" style="display: none;">
                         <div class="loader-wrap"><span class="leyka-loader xs"></span></div>
                     </div>
                 </div>
-                <div class="upload-photo-field upload-attachment-field field-wrapper flex" data-upload-title="<?php _e('The campaign page cover image', 'leyka');?>" data-field-name="campaign_cover" data-campaign-id="<?php echo esc_attr( $campaign->id );?>" data-ajax-action="leyka_set_campaign_attachment">
+                <div class="upload-photo-field upload-attachment-field field-wrapper flex" data-upload-title="<?php esc_attr_e('The campaign page cover image', 'leyka');?>" data-field-name="campaign_cover" data-campaign-id="<?php echo esc_attr( $campaign->id );?>" data-ajax-action="leyka_set_campaign_attachment">
                     <span class="field-component field">
                         <input type="file" value="">
-                        <input type="button" class="button upload-photo" id="campaign_cover-upload-button" value="<?php _e('Upload the page cover', 'leyka');?>">
+                        <input type="button" class="button upload-photo" id="campaign_cover-upload-button" value="<?php esc_attr_e('Upload the page cover', 'leyka');?>">
                     </span>
                     <span class="upload-field-description">
-                        <?php echo sprintf(__('.jpg or .png file, no more than %s sized, recommended width: %s', 'leyka'), leyka_get_upload_max_filesize(), '1920 px');?>
+                        <?php echo sprintf(esc_html__('.jpg or .png file, no more than %s sized, recommended width: %s', 'leyka'), esc_html(leyka_get_upload_max_filesize()), '1920 px');?>
                     </span>
     
                     <?php wp_nonce_field('set-campaign-attachment', 'campaign-cover-nonce');?>
@@ -721,20 +721,20 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             <div class="upload-photo-complex-field-wrapper margin-top">
                 <div class="set-page-img-control" data-mission="logo" data-campaign-id="<?php echo esc_attr( $campaign->id ); ?>">
                 	<?php $img_url = $campaign->logo_id ? wp_get_attachment_image_url($campaign->logo_id, 'thumbnail') : null;?>
-                	<?php _e('Uploaded logo:', 'leyka');?> <span class="img-value"><?php echo wp_kses_post( $img_url ? '<img src="'.$img_url.'" />' : __('Default', 'leyka') );?></span>
-            		<a href="#" class="reset-to-default" <?php echo !$img_url ? 'style="display: none;"' : '';?> title="<?php _e('Reset to default');?>"></a>
+                	<?php esc_html_e('Uploaded logo:', 'leyka');?> <span class="img-value"><?php echo wp_kses_post( $img_url ? '<img src="'.$img_url.'" />' : __('Default', 'leyka') );?></span>
+            		<a href="#" class="reset-to-default" <?php echo !$img_url ? 'style="display: none;"' : '';?> title="<?php esc_attr_e('Reset to default');?>"></a>
             		<?php wp_nonce_field('reset-campaign-attachment', 'reset-campaign-logo-nonce');?>
                     <div class="loading-indicator-wrap" style="display: none;">
                         <div class="loader-wrap"><span class="leyka-loader xs"></span></div>
                     </div>
                 </div>
-                <div class="upload-photo-field upload-attachment-field field-wrapper flex" data-upload-title="<?php _e('Your logo on the campaign page', 'leyka');?>" data-field-name="campaign_logo" data-campaign-id="<?php echo esc_attr( $campaign->id );?>" data-ajax-action="leyka_set_campaign_attachment">
+                <div class="upload-photo-field upload-attachment-field field-wrapper flex" data-upload-title="<?php esc_attr_e('Your logo on the campaign page', 'leyka');?>" data-field-name="campaign_logo" data-campaign-id="<?php echo esc_attr( $campaign->id );?>" data-ajax-action="leyka_set_campaign_attachment">
                     <span class="field-component field">
                         <input type="file" value="">
-                        <input type="button" class="button upload-photo" id="campaign_logo-upload-button" value="<?php _e('Upload the logo', 'leyka');?>">
+                        <input type="button" class="button upload-photo" id="campaign_logo-upload-button" value="<?php esc_attr_e('Upload the logo', 'leyka');?>">
                     </span>
                     <span class="upload-field-description">
-                        <?php echo sprintf(__('.jpg or .png file, no more than %s sized', 'leyka'), leyka_get_upload_max_filesize());?>
+                        <?php echo sprintf(esc_html__('.jpg or .png file, no more than %s sized', 'leyka'), esc_html(leyka_get_upload_max_filesize()));?>
                     </span>
     
                     <?php wp_nonce_field('set-campaign-attachment', 'campaign-logo-nonce');?>
@@ -751,18 +751,18 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         <fieldset id="campaign-cover-tint" class="metabox-field without-title campaign-field persistent-campaign-field">
             <label for="hide-cover-tint">
-                <input type="checkbox" id="hide-cover-tint" name="hide_cover_tint" value="1" <?php echo esc_attr( $campaign->hide_cover_tint ? 'checked' : '' );?>> <?php _e('Hide cover tint', 'leyka');?>
+                <input type="checkbox" id="hide-cover-tint" name="hide_cover_tint" value="1" <?php echo esc_attr( $campaign->hide_cover_tint ? 'checked' : '' );?>> <?php esc_html_e('Hide cover tint', 'leyka');?>
             </label>
         </fieldset>
 
         <fieldset id="campaign-data-setup-howto" class="metabox-field campaign-field info-field">
 
-            <h3 class="field-title"><?php _e('Recommendations', 'leyka');?></h3>
+            <h3 class="field-title"><?php esc_html_e('Recommendations', 'leyka');?></h3>
             <div class="field-wrapper">
                 <ul>
-                    <li><a href="<?php echo '#';?>" target="_blank"><?php _e('How to set up recurring payments support', 'leyka');?></a></li>
-                    <li><a href="<?php echo admin_url('admin.php?page=leyka_settings&stage=beneficiary#terms_of_service');?>" target="_blank"><?php _e('I want to change the Terms of service text', 'leyka');?></a></li>
-                    <li><a href="<?php echo admin_url('admin.php?page=leyka_settings&stage=beneficiary#terms_of_pd');?>" target="_blank"><?php _e('I want to change the Personal data usage terms text', 'leyka');?></a></li>
+                    <li><a href="<?php echo '#';?>" target="_blank"><?php esc_html_e('How to set up recurring payments support', 'leyka');?></a></li>
+                    <li><a href="<?php echo esc_url(admin_url('admin.php?page=leyka_settings&stage=beneficiary#terms_of_service'));?>" target="_blank"><?php esc_html_e('I want to change the Terms of service text', 'leyka');?></a></li>
+                    <li><a href="<?php echo esc_url(admin_url('admin.php?page=leyka_settings&stage=beneficiary#terms_of_pd'));?>" target="_blank"><?php esc_html_e('I want to change the Personal data usage terms text', 'leyka');?></a></li>
                 </ul>
             </div>
 
@@ -787,19 +787,19 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         <input type="hidden" id="leyka-campaign-needed-for-support-packages" value="<?php echo esc_attr( $extension->get_available_campaigns_count() === 1 ? 1 : 0 ); ?>">
 
-        <div id="leyka-campaign-needed-modal-content" style="display:none;" title="<?php _e('You are closing the Support packages campaign', 'leyka');?>" data-nonce="<?php echo wp_create_nonce('support-packages-no-campaign-behavior');?>" data-close-button-text="<?php _e('Close', 'leyka');?>" data-submit-button-text="<?php _e('Submit', 'leyka');?>">
+        <div id="leyka-campaign-needed-modal-content" style="display:none;" title="<?php esc_attr_e('You are closing the Support packages campaign', 'leyka');?>" data-nonce="<?php echo esc_attr(wp_create_nonce('support-packages-no-campaign-behavior'));?>" data-close-button-text="<?php esc_attr_e('Close', 'leyka');?>" data-submit-button-text="<?php esc_attr_e('Submit', 'leyka');?>">
 
             <div id="leyka-support-packages-behavior-fields">
 
-                <?php _e("This campaign is currently used for recurring subscriptions in the Support packages extension, and if we proceed, it won't be available for donations anymore.<br><br>What should we do next?", 'leyka');
+                <?php esc_html_e("This campaign is currently used for recurring subscriptions in the Support packages extension, and if we proceed, it won't be available for donations anymore.<br><br>What should we do next?", 'leyka');
 
                 $support_packages_no_campaign_behavior = get_option('leyka_support_packages_no_campaign_behavior');?>
 
                 <ul>
 
-                    <li><label><input type="radio" name="support-packages-campaign-changed" value="content-open" <?php echo wp_kses_post( $support_packages_no_campaign_behavior === 'content-open' || !$support_packages_no_campaign_behavior ? 'checked="checked"' : '' ); ?>>&nbsp;<?php _e('Make content open', 'leyka');?></label></li>
+                    <li><label><input type="radio" name="support-packages-campaign-changed" value="content-open" <?php echo wp_kses_post( $support_packages_no_campaign_behavior === 'content-open' || !$support_packages_no_campaign_behavior ? 'checked="checked"' : '' ); ?>>&nbsp;<?php esc_html_e('Make content open', 'leyka');?></label></li>
 
-                    <li><label><input type="radio" name="support-packages-campaign-changed" value="content-closed" <?php echo wp_kses_post( $support_packages_no_campaign_behavior === 'content-closed' ? 'checked="checked"' : '' ); ?>>&nbsp;<?php _e('Leave content closed', 'leyka');?></label></li>
+                    <li><label><input type="radio" name="support-packages-campaign-changed" value="content-closed" <?php echo wp_kses_post( $support_packages_no_campaign_behavior === 'content-closed' ? 'checked="checked"' : '' ); ?>>&nbsp;<?php esc_html_e('Leave content closed', 'leyka');?></label></li>
 
                 <?php $campaigns_available = get_posts([
                     'post_type' => Leyka_Campaign_Management::$post_type,
@@ -813,7 +813,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                 ]);
 
                 if($campaigns_available) {?>
-                    <li><label><input type="radio" name="support-packages-campaign-changed" value="another-campaign">&nbsp<?php _e('Select another campaign', 'leyka');?></label></li>
+                    <li><label><input type="radio" name="support-packages-campaign-changed" value="another-campaign">&nbsp<?php esc_html_e('Select another campaign', 'leyka');?></label></li>
                 <?php }?>
 
                 </ul>
@@ -836,8 +836,8 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
             <?php }?>
 
-            <div id="leyka-loading" style="display: none"><?php _e('Please wait while we are saving your choice...', 'leyka');?></div>
-            <div id="leyka-message" style="display: none;" data-success-message="<?php _e('Done! Now saving your campaign changes...', 'leyka');?>" data-error-message="<?php _e('Request error encountered. Please check your campaign option in the Support packages settings manually.');?>" data-validation-error-message="<?php _e('Please choose how the Support packages will act, or the extension is going to work incorrectly.', 'leyka');?>"></div>
+            <div id="leyka-loading" style="display: none"><?php esc_html_e('Please wait while we are saving your choice...', 'leyka');?></div>
+            <div id="leyka-message" style="display: none;" data-success-message="<?php esc_attr_e('Done! Now saving your campaign changes...', 'leyka');?>" data-error-message="<?php esc_attr_e('Request error encountered. Please check your campaign option in the Support packages settings manually.');?>" data-validation-error-message="<?php esc_attr_e('Please choose how the Support packages will act, or the extension is going to work incorrectly.', 'leyka');?>"></div>
 
         </div>
 
@@ -900,15 +900,15 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         <div class="leyka-admin leyka-settings-page">
             <fieldset id="default-payments-options" class="metabox-field campaign-field default-payments-options">
                 <h3 class="field-title">
-                    <?php _e('Use default sums', 'leyka');?>
+                    <?php esc_html_e('Use default sums', 'leyka');?>
                 </h3>
 
                 <div class="field-wrapper">
                     <label class="field-label">
-                        <input type="radio" name="leyka_default_payments_amounts" value="1" <?php echo wp_kses_post( $campaign->default_payments_amounts === '1' ? 'checked="checked"' : '' );?>> <?php _e('Yes', 'leyka');?>
+                        <input type="radio" name="leyka_default_payments_amounts" value="1" <?php echo wp_kses_post( $campaign->default_payments_amounts === '1' ? 'checked="checked"' : '' );?>> <?php esc_html_e('Yes', 'leyka');?>
                     </label>
                     <label class="field-label">
-                        <input type="radio" name="leyka_default_payments_amounts" value="0" <?php echo wp_kses_post( $campaign->default_payments_amounts === '0' ? 'checked="checked"' : '' ); ?>> <?php _e('No', 'leyka');?>
+                        <input type="radio" name="leyka_default_payments_amounts" value="0" <?php echo wp_kses_post( $campaign->default_payments_amounts === '0' ? 'checked="checked"' : '' ); ?>> <?php esc_html_e('No', 'leyka');?>
                     </label>
                 </div>
             </fieldset>
@@ -960,11 +960,11 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
                         $fields_select_values['+'] = __('+ Create a new field', 'leyka');?>
 
-                        <div id="item-<?php echo leyka_get_random_string(4);?>" class="multi-valued-item-box field-box <?php echo esc_attr( $is_template ? 'item-template' : '' ); ?>" <?php echo wp_kses_post( $is_template ? 'style="display: none;"' : '' );?>>
+                        <div id="item-<?php echo esc_attr(leyka_get_random_string(4));?>" class="multi-valued-item-box field-box <?php echo esc_attr( $is_template ? 'item-template' : '' ); ?>" <?php echo wp_kses_post( $is_template ? 'style="display: none;"' : '' );?>>
 
                             <h3 class="item-box-title ui-sortable-handle">
                                 <span class="draggable"></span>
-                                <span class="title" data-empty-box-title="<?php _e('New field', 'leyka');?>">
+                                <span class="title" data-empty-box-title="<?php esc_attr_e('New field', 'leyka');?>">
                                     <?php echo esc_html($placeholders['box_title']);?>
                                 </span>
                             </h3>
@@ -996,13 +996,13 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
                                 <ul class="notes-and-errors">
                                     <li class="phone-field-note" <?php echo wp_kses_post( $placeholders['type'] === 'phone' ? '' : 'style="display: none;"' ); ?>>
-                                        <?php _e("Don't forget to put a point for processing telephone numbers to your Personal data usage terms", 'leyka');?>
+                                        <?php esc_html_e("Don't forget to put a point for processing telephone numbers to your Personal data usage terms", 'leyka');?>
                                     </li>
                                 </ul>
 
                                 <div class="box-footer">
                                     <div class="remove-campaign-additional-field delete-item">
-                                        <?php _e('Remove the field from this campaign', 'leyka');?>
+                                        <?php esc_html_e('Remove the field from this campaign', 'leyka');?>
                                     </div>
                                 </div>
 
@@ -1018,7 +1018,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                                 <span class="draggable"></span>
                                 <span class="title">
 
-                                    <?php echo '['._x($placeholders['type'], 'Field type title', 'leyka').'] '.esc_html($placeholders['box_title']);
+                                    <?php echo '['.esc_html_x($placeholders['type'], 'Field type title', 'leyka').'] '.esc_html($placeholders['box_title']);
 
                                     if($placeholders['is_required']) {?>
                                         <span class="field-required">*</span>
@@ -1032,30 +1032,30 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                                 <ul class="notes-and-errors">
 
                                     <li class="edit-field-note">
-                                        <?php echo sprintf(__('If you wish to edit the field settings, you may do it in <a href="%s" target="_blank">fields library</a>.', 'leyka'), admin_url('admin.php?page=leyka_settings&stage=view#'.$placeholders['id']));?>
+                                        <?php echo wp_kses_post( sprintf(__('If you wish to edit the field settings, you may do it in <a href="%s" target="_blank">fields library</a>.', 'leyka'), admin_url('admin.php?page=leyka_settings&stage=view#'.$placeholders['id'])));?>
                                     </li>
 
                                     <li class="any-field-note email-placeholder-note">
 
-                                        <?php _e('Placeholder for this field title in emails:', 'leyka');?>
+                                        <?php esc_html_e('Placeholder for this field title in emails:', 'leyka');?>
                                         <span class="email-placeholder-value leyka-copy-on-click">
-                                            <?php echo '#ADDITIONAL_FIELD_TITLE_'.$placeholders['id'].'#';?>
+                                            <?php echo '#ADDITIONAL_FIELD_TITLE_'.esc_html($placeholders['id']).'#';?>
                                         </span>
 
                                     </li>
 
                                     <li class="any-field-note email-placeholder-note">
 
-                                        <?php _e('Placeholder for this field value in emails:', 'leyka');?>
+                                        <?php esc_html_e('Placeholder for this field value in emails:', 'leyka');?>
                                         <span class="email-placeholder-value leyka-copy-on-click">
-                                            <?php echo '#ADDITIONAL_FIELD_VALUE_'.$placeholders['id'].'#';?>
+                                            <?php echo '#ADDITIONAL_FIELD_VALUE_'.esc_html($placeholders['id']).'#';?>
                                         </span>
 
                                     </li>
 
                                 <?php if($placeholders['for_all_campaigns']) {?>
                                     <li class="no-delete-for-all-campaigns-field-note">
-                                        <?php echo sprintf(__('The field cannot be removed from the campaign - it is marked "for all campaigns" in the <a href="%s" target="_blank">fields library</a>.', 'leyka'), admin_url('admin.php?page=leyka_settings&stage=view#'.$placeholders['id']));?>
+                                        <?php echo wp_kses_post( sprintf(__('The field cannot be removed from the campaign - it is marked "for all campaigns" in the <a href="%s" target="_blank">fields library</a>.', 'leyka'), admin_url('admin.php?page=leyka_settings&stage=view#'.$placeholders['id'])));?>
                                     </li>
                                 <?php }?>
 
@@ -1064,7 +1064,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                                 <?php if( !$placeholders['for_all_campaigns']) {?>
                                 <div class="box-footer">
                                     <div class="remove-campaign-additional-field delete-item">
-                                        <?php _e('Remove the field from this campaign', 'leyka');?>
+                                        <?php esc_html_e('Remove the field from this campaign', 'leyka');?>
                                     </div>
                                 </div>
                                 <?php }?>
@@ -1153,7 +1153,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
                     <?php leyka_campaign_additional_field_html(true); // Additional field box template ?>
 
-                    <div class="add-field add-item bottom"><?php _e('Add field', 'leyka');?></div>
+                    <div class="add-field add-item bottom"><?php esc_html_e('Add field', 'leyka');?></div>
 
                     <input type="hidden" class="leyka-items-options" name="leyka_campaign_additional_fields" value="">
 
@@ -1172,12 +1172,12 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         $campaign = new Leyka_Campaign($campaign);?>
 
         <div class="stats-block">
-            <span class="stats-label"><?php _e('Views:', 'leyka');?></span>
-            <span class="stats-data"><?php echo esc_attr( $campaign->views_count );?> <?php _e('times', 'leyka');?></span>
+            <span class="stats-label"><?php esc_html_e('Views:', 'leyka');?></span>
+            <span class="stats-data"><?php echo esc_attr( $campaign->views_count );?> <?php esc_html_e('times', 'leyka');?></span>
         </div>
         <div class="stats-block">
-            <span class="stats-label"><?php _e('Donation attempts:', 'leyka');?></span>
-            <span class="stats-data"><?php echo esc_attr( $campaign->submits_count );?> <?php _e('times', 'leyka');?></span>
+            <span class="stats-label"><?php esc_html_e('Donation attempts:', 'leyka');?></span>
+            <span class="stats-data"><?php echo esc_attr( $campaign->submits_count );?> <?php esc_html_e('times', 'leyka');?></span>
         </div>
 
     <?php
@@ -1190,7 +1190,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 
         <label for="excerpt"></label>
         <textarea id="excerpt" name="excerpt" cols="40" rows="1"><?php echo esc_textarea( $campaign->post_excerpt ); ?></textarea>
-        <p><?php _e('Annotation is an optional summary of campaign description that can be used in templates.', 'leyka');?></p>
+        <p><?php esc_html_e('Annotation is an optional summary of campaign description that can be used in templates.', 'leyka');?></p>
 
     <?php }
 
@@ -1202,28 +1202,28 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
         $campaign = new Leyka_Campaign($campaign); ?>
 
         <div>
-            <a class="button" href="<?php echo admin_url('admin.php?page=leyka_donation_info&campaign_id='.$campaign->id);?>"><?php _e('Add correctional donation', 'leyka');?></a>
+            <a class="button" href="<?php echo esc_url(admin_url('admin.php?page=leyka_donation_info&campaign_id='.$campaign->id));?>"><?php esc_html_e('Add correctional donation', 'leyka');?></a>
         </div>
 
         <table id="donations-data-table" class="leyka-data-table leyka-donations-list campaign-donations-table" data-campaign-id="<?php echo esc_attr( $campaign->id );?>">
             <thead>
                 <tr>
-                    <td><?php _e('ID', 'leyka');?></td>
-                    <td><?php _e('Payment type', 'leyka');?></td>
-                    <td><?php _e('Donor', 'leyka');?></td>
-                    <td><?php _e('Amount', 'leyka');?></td>
-                    <td><?php _e('Date', 'leyka');?></td>
-                    <td><?php _e('Payment method', 'leyka');?></td>
+                    <td><?php esc_html_e('ID', 'leyka');?></td>
+                    <td><?php esc_html_e('Payment type', 'leyka');?></td>
+                    <td><?php esc_html_e('Donor', 'leyka');?></td>
+                    <td><?php esc_html_e('Amount', 'leyka');?></td>
+                    <td><?php esc_html_e('Date', 'leyka');?></td>
+                    <td><?php esc_html_e('Payment method', 'leyka');?></td>
                 </tr>
             </thead>
             <tfoot>
                 <tr>
-                    <td><?php _e('ID', 'leyka');?></td>
-                    <td><?php _e('Payment type', 'leyka');?></td>
-                    <td><?php _e('Donor', 'leyka');?></td>
-                    <td><?php _e('Amount', 'leyka');?></td>
-                    <td><?php _e('Date', 'leyka');?></td>
-                    <td><?php _e('Payment method', 'leyka');?></td>
+                    <td><?php esc_html_e('ID', 'leyka');?></td>
+                    <td><?php esc_html_e('Payment type', 'leyka');?></td>
+                    <td><?php esc_html_e('Donor', 'leyka');?></td>
+                    <td><?php esc_html_e('Amount', 'leyka');?></td>
+                    <td><?php esc_html_e('Date', 'leyka');?></td>
+                    <td><?php esc_html_e('Payment method', 'leyka');?></td>
                 </tr>
             </tfoot>
 
@@ -1582,7 +1582,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
 			}
 
 			if($campaign->target_state === 'is_reached' && $campaign->date_target_reached) {?>
-		    <span class='c-reached'><?php printf(__('Reached at: %s', 'leyka'), '<time>'.$campaign->date_target_reached.'</time>'); ?></span>
+		    <span class='c-reached'><?php printf(esc_html__('Reached at: %s', 'leyka'), '<time>'.esc_html($campaign->date_target_reached).'</time>'); ?></span>
 		<?php }
 
 		} else if($column_name === 'shortcode') {?>

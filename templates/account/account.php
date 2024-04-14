@@ -13,8 +13,8 @@ $current_user = wp_get_current_user();
 
 if( !$current_user->ID ) {
     wp_die(
-        __('Error: cannot display the page for a given donor.', 'leyka')
-        .' '.sprintf(__('Try <a href="%s">logging into the account</a> anew.', 'leyka'), site_url('donor-account/login'))
+        esc_html__('Error: cannot display the page for a given donor.', 'leyka')
+        .' '.sprintf(esc_html__('Try <a href="%s">logging into the account</a> anew.', 'leyka'), esc_attr(site_url('donor-account/login')))
     );
 }
 
@@ -29,7 +29,7 @@ include(LEYKA_PLUGIN_DIR.'templates/account/header.php');
 try {
 	$donor = new Leyka_Donor(wp_get_current_user());
 } catch(Exception $e) {
-    wp_die(__('Error: cannot display a page for a given donor.', 'leyka'));
+    wp_die(esc_html__('Error: cannot display a page for a given donor.', 'leyka'));
 }?>
 
 <div id="content" class="site-content leyka-campaign-content">
@@ -43,15 +43,15 @@ try {
 				
 						<form class="leyka-screen-form">
 							
-							<h2><?php _e('Personal account', 'leyka');?></h2>
+							<h2><?php esc_html_e('Personal account', 'leyka');?></h2>
 							
-							<p><?php _e('We are grateful for your support!', 'leyka');?></p>
+							<p><?php esc_html_e('We are grateful for your support!', 'leyka');?></p>
 
 							<?php if($leyka_ext_sp->is_active && $leyka_ext_sp->has_packages()) {?>
 
 							<div class="list support-packages account-support-packages">
 
-								<h3 class="list-title"><?php _e('Support packages', 'leyka');?></h3>
+								<h3 class="list-title"><?php esc_html_e('Support packages', 'leyka');?></h3>
 								<div class="leyka-ext-support-packages">
 
 								<?php foreach($leyka_ext_sp->get_packages(null, 'asc') as $package) {
@@ -71,7 +71,7 @@ try {
 							<?php }?>
 
 							<div class="list subscribed-campaigns-list">
-								<h3 class="list-title"><?php _e('Recurring donations campaigns', 'leyka');?></h3>
+								<h3 class="list-title"><?php esc_html_e('Recurring donations campaigns', 'leyka');?></h3>
 
                                 <?php $recurring_subscriptions = $donor->get_init_recurring_donations(false);
 
@@ -84,15 +84,15 @@ try {
                                         <div class="subscription-details">
 
                                             <div class="campaign-title">
-                                                <a href="<?php echo get_permalink($init_donation->campaign_id);?>"><?php echo mb_ucfirst($init_donation->campaign_title);?></a>
+                                                <a href="<?php echo esc_url(get_permalink($init_donation->campaign_id));?>"><?php echo esc_html(mb_ucfirst($init_donation->campaign_title));?></a>
                                             </div>
 
                                             <div class="subscription-payment-details">
                                                 <div class="amount">
-                                                    <?php echo esc_attr( $init_donation->amount_formatted.' '.$init_donation->currency_label );?>/<?php echo _x('month', 'Recurring interval, as in "[XX Rub in] month"', 'leyka');?>
+                                                    <?php echo esc_attr( $init_donation->amount_formatted.' '.$init_donation->currency_label );?>/<?php echo esc_html_x('month', 'Recurring interval, as in "[XX Rub in] month"', 'leyka');?>
                                                 </div>
                                                 <div class="donation-gateway-pm">
-                                                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/star-icon-info-small.svg" alt="">
+                                                    <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/star-icon-info-small.svg" alt="">
                                                     <span class="gateway"><?php echo esc_html( $init_donation->gateway_label );?></span> /
                                                     <span class="pm"><?php echo esc_html( $init_donation->pm_label );?></span>
                                                 </div>
@@ -114,13 +114,13 @@ try {
 								</div>
 
                                 <?php } else {?>
-                                <div class="donations-history-empty"><?php _e('There are no active recurring subscriptions.', 'leyka');?></div>
+                                <div class="donations-history-empty"><?php esc_html_e('There are no active recurring subscriptions.', 'leyka');?></div>
                                 <?php }?>
 							</div>
 
 							<div class="list leyka-star-history">
 
-                                <h3 class="list-title"><?php _e('Donations history', 'leyka');?></h3>
+                                <h3 class="list-title"><?php esc_html_e('Donations history', 'leyka');?></h3>
 
                                 <?php $donations = $donor->get_donations();
                                 $donor_donations_count = $donor->get_donations_count();
@@ -136,6 +136,7 @@ try {
                                 <div class="donations-history items" data-donations-total-pages="<?php echo esc_attr( $donations_list_pages_count );?>" data-donations-current-page="1" data-donor-id="<?php echo esc_attr( $donor->id );?>">
 
                                 <?php foreach($donations as $donation) {
+                                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                                     echo leyka_get_donor_account_donations_list_item_html(false, $donation)."\n";
                                 }?>
 
@@ -143,7 +144,7 @@ try {
 
                                 <?php } else {?>
                                     <div class="donations-history-empty">
-                                        <?php _e('There are no donations yet.', 'leyka');?>
+                                        <?php esc_html_e('There are no donations yet.', 'leyka');?>
                                     </div>
                                 <?php }
 
@@ -151,12 +152,12 @@ try {
                                     <div class="leyka-star-submit">
 
                                         <a href="#" class="leyka-star-single-link internal donations-history-more">
-                                            <?php _e('Load more', 'leyka');?>
+                                            <?php esc_html_e('Load more', 'leyka');?>
                                         </a>
 
-                                        <input type="hidden" name="nonce" value="<?php echo wp_create_nonce('leyka_get_donor_donations_history');?>">
+                                        <input type="hidden" name="nonce" value="<?php echo esc_attr(wp_create_nonce('leyka_get_donor_donations_history'));?>">
 
-                                        <?php echo leyka_get_ajax_indicator();?>
+                                        <?php echo wp_kses_post(leyka_get_ajax_indicator());?>
 
                                     </div>
                                 <?php }?>
@@ -164,7 +165,7 @@ try {
 							</div>
 
 							<p class="leyka-we-need-you">
-                                <?php echo sprintf(__('You can always <a href="%s">cancel your recurring donations</a>.<br>But we will struggle without your support.', 'leyka'), home_url('/donor-account/cancel-subscription/'));?>
+                                <?php echo wp_kses_post(sprintf(__('You can always <a href="%s">cancel your recurring donations</a>.<br>But we will struggle without your support.', 'leyka'), home_url('/donor-account/cancel-subscription/')));?>
                             </p>
 
 						</form>

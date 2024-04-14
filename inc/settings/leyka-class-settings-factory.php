@@ -41,8 +41,9 @@ class Leyka_Settings_Factory extends Leyka_Singleton { // Each descendant is a c
         } else {
             throw new Exception(
                 sprintf(
-                    __("Settings Factory error: Can't find Settings Controller script by given ID (%s, %s)"),
-                    $controller_id, $file_path
+                    esc_html__("Settings Factory error: Can't find Settings Controller script by given ID (%s, %s)"),
+                    esc_html($controller_id),
+                    esc_html($file_path)
                 ), 500
             );
         }
@@ -54,7 +55,7 @@ class Leyka_Settings_Factory extends Leyka_Singleton { // Each descendant is a c
             case 'yandex': return Leyka_Yandex_Wizard_Settings_Controller::get_instance();
             case 'extension': return Leyka_Extension_Settings_Controller::get_instance($params);
             default: throw new Exception(
-                sprintf(__('Settings Factory error: wrong Settings Controller ID given (%s)'), $controller_id), 501
+                sprintf(esc_html__('Settings Factory error: wrong Settings Controller ID given (%s)'), esc_html($controller_id)), 501
             );
         }
 
@@ -77,8 +78,9 @@ class Leyka_Settings_Factory extends Leyka_Singleton { // Each descendant is a c
         } else {
             throw new Exception(
                 sprintf(
-                    __("Settings Factory error: Can't find Settings Render script by given render ID (%s, %s)"),
-                    $render_id, $file_path
+                    esc_html__("Settings Factory error: Can't find Settings Render script by given render ID (%s, %s)"),
+                    esc_html($render_id),
+                    esc_html($file_path)
                 ), 510
             );
         }
@@ -87,7 +89,7 @@ class Leyka_Settings_Factory extends Leyka_Singleton { // Each descendant is a c
             case 'wizard': return Leyka_Wizard_Render::get_instance();
             case 'extension': return Leyka_Extension_Settings_Render::get_instance();
             default: throw new Exception(
-                sprintf(__('Settings Factory error: wrong Settings Render ID given (%s)'), $render_id), 511
+                sprintf(esc_html__('Settings Factory error: wrong Settings Render ID given (%s)'), esc_html($render_id)), 511
             );
         }
 

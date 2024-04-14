@@ -250,7 +250,7 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
 
             $donation = Leyka_Donations::get_instance()->get_donation($donation);?>
 
-            <label><?php _e('Tinkoff payment ID', 'leyka');?>:</label>
+            <label><?php esc_html_e('Tinkoff payment ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type == 'correction') {?>
@@ -264,7 +264,7 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
                 return;
             }?>
 
-            <label><?php _e('Tinkoff recurring subscription ID', 'leyka');?>:</label>
+            <label><?php esc_html_e('Tinkoff recurring subscription ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type == 'correction') {?>
@@ -277,7 +277,7 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
             <?php $init_recurring_donation = $donation->init_recurring_donation;?>
 
             <div class="recurring-is-active-field">
-                <label for="tinkoff-recurring-is-active"><?php _e('Recurring subscription is active', 'leyka');?>:</label>
+                <label for="tinkoff-recurring-is-active"><?php esc_html_e('Recurring subscription is active', 'leyka');?>:</label>
                 <div class="leyka-ddata-field">
                     <input type="checkbox" id="tinkoff-recurring-is-active" name="tinkoff-recurring-is-active" value="1" <?php checked( $init_recurring_donation->recurring_is_active, '1' );?>>
                 </div>
@@ -285,9 +285,9 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
 
         <?php } else { // New donation page displayed ?>
 
-            <label for="tinkoff-recurring-id"><?php _e('Tinkoff recurring subscription ID', 'leyka');?>:</label>
+            <label for="tinkoff-recurring-id"><?php esc_html_e('Tinkoff recurring subscription ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <input type="text" id="tinkoff-recurring-id" name="tinkoff-recurring-id" placeholder="<?php _e('Enter Tinkoff recurring ID', 'leyka');?>" value="">
+                <input type="text" id="tinkoff-recurring-id" name="tinkoff-recurring-id" placeholder="<?php esc_attr_e('Enter Tinkoff recurring ID', 'leyka');?>" value="">
             </div>
 
             <?php }

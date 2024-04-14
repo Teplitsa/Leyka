@@ -46,7 +46,7 @@ class SecurityHelper
             return $this->checkInIPv6TrustedList($ip);
         }
         throw new \Exception(
-            'Could not recognize IPv4 or IPv6: ' . $ip
+            'Could not recognize IPv4 or IPv6: ' . esc_html( $ip )
         );
     }
 

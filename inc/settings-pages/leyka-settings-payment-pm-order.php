@@ -7,12 +7,12 @@ array_shift($pm_order);?>
 <div class="side-area">
 
     <div class="pm-order-header">
-        <h3><?php _e('The order for payment methods display on the website', 'leyka');?></h3>
-        <div class="pm-order-description"><?php _e('Drag & drop the payment method blocks', 'leyka');?></div>
+        <h3><?php esc_html_e('The order for payment methods display on the website', 'leyka');?></h3>
+        <div class="pm-order-description"><?php esc_html_e('Drag & drop the payment method blocks', 'leyka');?></div>
     </div>
 
     <div class="pm-update-status">
-        <div class="result ok-message" style="display: none;"><?php _e('Changes saved', 'leyka');?></div>
+        <div class="result ok-message" style="display: none;"><?php esc_html_e('Changes saved', 'leyka');?></div>
         <div class="result error-message"></div>
         <div class="result leyka-loader xs" style="display: none;"></div>
     </div>
@@ -20,16 +20,16 @@ array_shift($pm_order);?>
     <div class="pm-order pm-list-empty" <?php echo empty($pm_available) || (count($pm_available) === 1 && empty($pm_available[0])) ? '' : 'style="display:none;"';?>>
 
         <div class="pm-list-empty-base-content">
-            <?php _e('How to add a payment method?', 'leyka');?>
+            <?php esc_html_e('How to add a payment method?', 'leyka');?>
         </div>
 
         <div class="pm-list-empty-comment" style="display: none;">
-            <?php _e('Select a gateway in the list on the left, then proceed to gateway settings. There, check the checkboxes of needed payment methods.', 'leyka');?>
+            <?php esc_html_e('Select a gateway in the list on the left, then proceed to gateway settings. There, check the checkboxes of needed payment methods.', 'leyka');?>
         </div>
 
     </div>
 
-    <ul id="pm-order-settings" data-pm-order="<?php echo leyka_options()->opt('pm_order');?>" data-nonce="<?php echo wp_create_nonce('leyka-update-pm-order');?>">
+    <ul id="pm-order-settings" data-pm-order="<?php echo esc_attr(leyka_options()->opt('pm_order'));?>" data-nonce="<?php echo esc_attr(wp_create_nonce('leyka-update-pm-order'));?>">
 
     <?php leyka_pm_sortable_option_html_new(true); // To clone the PM item structure when adding new items
 

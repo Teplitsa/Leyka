@@ -1142,7 +1142,7 @@ class Client extends BaseClient
         } elseif (TypeCast::canCastToString($payoutId)) {
             $length = mb_strlen($payoutId, 'utf-8');
             if ($length < 36 || $length > 50) {
-                throw new InvalidPropertyValueException('Invalid Payout id value', 0, 'Payout.id', $payoutId);
+                throw new InvalidPropertyValueException('Invalid Payout id value', 0, 'Payout.id', esc_attr( $payoutId );
             }
         } else {
             throw new InvalidPropertyValueTypeException('Invalid payoutId value: string required');

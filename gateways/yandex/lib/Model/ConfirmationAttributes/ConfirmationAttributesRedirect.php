@@ -75,7 +75,7 @@ class ConfirmationAttributesRedirect extends AbstractConfirmationAttributes
             $this->_enforce = (bool)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid enforce value type', 0, 'confirmationAttributesRedirect.enforce', $value
+                'Invalid enforce value type', 0, 'confirmationAttributesRedirect.enforce', esc_html($value)
             );
         }
     }
@@ -100,7 +100,7 @@ class ConfirmationAttributesRedirect extends AbstractConfirmationAttributes
             $this->_returnUrl = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid returnUrl value type', 0, 'confirmationAttributesRedirect.returnUrl', $value
+                'Invalid returnUrl value type', 0, 'confirmationAttributesRedirect.returnUrl', esc_html($value)
             );
         }
     }

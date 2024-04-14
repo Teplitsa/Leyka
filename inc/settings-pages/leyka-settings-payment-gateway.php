@@ -1,8 +1,8 @@
 <?php if( !defined('WPINC') ) die;?>
 
 <div class="main-area-top">
-    <a href="<?php echo admin_url('admin.php?page=leyka_settings&stage=payment');?>" class="settings-return-link">
-        <?php _e('Return to the gateways list', 'leyka');?>
+    <a href="<?php echo esc_url(admin_url('admin.php?page=leyka_settings&stage=payment'));?>" class="settings-return-link">
+        <?php esc_html_e('Return to the gateways list', 'leyka');?>
     </a>
 </div>
 
@@ -12,7 +12,7 @@ $pm_available = leyka_options()->opt('pm_available');
 $active_currencies = $gateway->active_currencies;
 
 if( !$gateway ) {?>
-    <p class="error"><?php _e('Unknown gateway.', 'leyka');?></p>
+    <p class="error"><?php esc_html_e('Unknown gateway.', 'leyka');?></p>
 <?php } else { // Gateway settings area ?>
 
 <div class="main-area single-gateway-settings gateway-<?php echo esc_attr( $gateway->id );?>">
@@ -47,7 +47,7 @@ if( !$gateway ) {?>
 
         <div class="gateway-settings">
 
-            <h3><?php _e('Gateway settings', 'leyka');?></h3>
+            <h3><?php esc_html_e('Gateway settings', 'leyka');?></h3>
 
         <?php foreach($gateway->get_options_names() as $option_id) {
 
@@ -81,7 +81,7 @@ if( !$gateway ) {?>
 
         if($gateway->has_wizard) {?>
             <a class="gateway-header-element gateway-wizard-link" href="<?php echo esc_url( $gateway->wizard_url );?>" title="<?php esc_attr_e('Open the gateway setup wizard', 'leyka');?>">
-                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-wizard.svg" alt=""><?php _e('Step-by-step setup', 'leyka');?>
+                <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/icon-wizard.svg" alt=""><?php esc_html_e('Step-by-step setup', 'leyka');?>
             </a>
         <?php }?>
 
@@ -93,7 +93,7 @@ if( !$gateway ) {?>
 
                 <div class="gateway-currencies-list">
 
-                    <h3><?php _e('Currencies', 'leyka');?></h3>
+                    <h3><?php esc_html_e('Currencies', 'leyka');?></h3>
 
                     <div class="gateway-currencies-wrapper">
 
@@ -105,7 +105,7 @@ if( !$gateway ) {?>
 
                                     <label>
                                         <span class="field-component field">
-                                            <input type="checkbox" id="<?php echo esc_attr( $gateway->id."-".$currency );?>" class="gw-active-currencies" name="leyka_<?php echo esc_attr( $gateway->id ); ?>_active_currencies[]" value="<?php echo esc_attr( $currency );?>" data-pm-label="<?php echo esc_attr( $gateway->id."-".$currency );?>" data-pm-label-backend="<?php echo esc_attr( $currency );?>" <?php echo in_array($currency, $active_currencies) ? 'checked="checked"' : '';?>> <?php echo strtoupper($currency);?>
+                                            <input type="checkbox" id="<?php echo esc_attr( $gateway->id."-".$currency );?>" class="gw-active-currencies" name="leyka_<?php echo esc_attr( $gateway->id ); ?>_active_currencies[]" value="<?php echo esc_attr( $currency );?>" data-pm-label="<?php echo esc_attr( $gateway->id."-".$currency );?>" data-pm-label-backend="<?php echo esc_attr( $currency );?>" <?php echo in_array($currency, $active_currencies) ? 'checked="checked"' : '';?>> <?php echo esc_html(strtoupper($currency));?>
                                         </span>
                                     </label>
 
@@ -123,7 +123,7 @@ if( !$gateway ) {?>
 
             <div class="gateway-pm-list">
 
-                <h3><?php _e('Payment methods', 'leyka');?></h3>
+                <h3><?php esc_html_e('Payment methods', 'leyka');?></h3>
 
                 <?php $pm_list_by_categories = $gateway->get_payment_methods(null, false, true);
                 $commissions = leyka_options()->opt('commission');
@@ -135,7 +135,7 @@ if( !$gateway ) {?>
                     }?>
 
                     <?php if(count($pm_list_by_categories) > 1) {?>
-                        <h4><?php echo leyka_get_pm_category_label($category_id);?></h4>
+                        <h4><?php echo esc_html(leyka_get_pm_category_label($category_id));?></h4>
                     <?php }?>
 
                     <?php foreach($pm_list as $pm) { /** @var $pm Leyka_Payment_Method */ ?>
@@ -178,7 +178,7 @@ if( !$gateway ) {?>
 
     <div class="gateway-settings-submit">
 
-        <a href="#" class="gateway-turn-off"><?php _e('Turn off the gateway', 'leyka');?></a>
+        <a href="#" class="gateway-turn-off"><?php esc_html_e('Turn off the gateway', 'leyka');?></a>
 
         <input type="submit" name="leyka_settings_<?php echo esc_attr( $_GET['stage'] ); ?>_submit" value="<?php esc_attr_e('Save settings', 'leyka');?>" class="button-primary">
 

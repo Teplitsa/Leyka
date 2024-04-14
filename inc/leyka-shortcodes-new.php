@@ -316,7 +316,10 @@ function leyka_shortcode_donations_list($atts) {
                 <tr class="list-row header-row">
                 <?php foreach($table_columns as $column_id => $column_title) {?>
                     <th class="list-cell list-column <?php echo esc_attr( $column_id );?>">
-                        <?php echo apply_filters('leyka_shortcode_donations_list_column_'.$column_id.'_label', $column_title);?>
+                        <?php
+                            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                            echo apply_filters('leyka_shortcode_donations_list_column_'.$column_id.'_label', $column_title);
+                        ?>
                     </th>
                 <?php }?>
                 </tr>
@@ -325,7 +328,7 @@ function leyka_shortcode_donations_list($atts) {
         <?php }
 
         if( !$table_lines ) {?>
-            <td colspan="<?php echo count($table_columns);?>"><?php _e('No donations yet', 'leyka');?></td>
+            <td colspan="<?php echo esc_attr(count($table_columns));?>"><?php esc_html_e('No donations yet', 'leyka');?></td>
         <?php } else {?>
 
             <tbody>
@@ -335,7 +338,10 @@ function leyka_shortcode_donations_list($atts) {
                 <?php foreach($table_columns as $column_id => $column_title) {
                     if(isset($line[$column_id])) {?>
                     <td class="list-cell <?php echo esc_attr( $column_id );?>">
-                        <?php echo apply_filters('leyka_shortcode_donations_list_cell_'.$column_id, $line[$column_id], $line['donation_id']);?>
+                        <?php
+                            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                            echo apply_filters('leyka_shortcode_donations_list_cell_'.$column_id, $line[$column_id], $line['donation_id']);
+                        ?>
                     </td>
                     <?php }
                 }?>
@@ -415,7 +421,7 @@ function leyka_shortcode_donations_comments_list($atts) {
             <div class="comment-footer">
 
             <?php if($atts['show_name']) {?>
-                <div class="comment-donor-name"><?php echo mb_ucfirst($donation->donor_name);?></div>
+                <div class="comment-donor-name"><?php echo esc_html(mb_ucfirst($donation->donor_name));?></div>
             <?php }
 
             if($atts['show_date']) {?>
@@ -481,21 +487,21 @@ function leyka_shortcode_supporters_list($atts) {
         <div class="list-content">
 
     <?php if( !$supporters['names'] ) {
-        _e('No donations yet', 'leyka');
+        esc_html_e('No donations yet', 'leyka');
     } else if(count($supporters['names']) >= $supporters['total']) { // Only names in the list
-        echo count($supporters['names']) === 1 ?
-            $supporters['names'][0] :
-            implode(', ', array_slice($supporters['names'], 0, -1)).' '.__('and', 'leyka').' '.end($supporters['names']);
+        echo wp_kses_post(count($supporters['names']) === 1 ?
+            esc_attr($supporters['names'][0]) :
+            implode(', ', array_slice($supporters['names'], 0, -1)).' '.__('and', 'leyka').' '.end($supporters['names']));
     } else { // Names list and the number of the rest of donors ?>
 
-        <span class="supporters-names-wrapper"><?php echo implode(', ', $supporters['names']);?></span>
+        <span class="supporters-names-wrapper"><?php echo esc_html(implode(', ', $supporters['names']));?></span>
 
         <?php $supporters_more = sprintf(__('<span class="leyka-names-remain-number">%d</span> more', 'leyka'), $supporters['total'] - count($supporters['names']));
 
         if($atts['expandable']) {?>
 
         <span class="supporters-list-more-wrapper">
-            <?php _e('and', 'leyka');?>
+            <?php esc_html_e('and', 'leyka');?>
             <a href="#" class="leyka-js-supporters-list-more special-element" style="<?php echo esc_attr( $atts['color_special'] ? 'color:'.esc_attr($atts['color_special']) : '');?>" data-names-per-load="<?php echo esc_attr( $atts['length'] );?>" data-loads-remain="5" data-names-remain="<?php echo esc_attr(implode(';', $supporters['names_remain']));?>">
                 <?php echo wp_kses_post( $supporters_more );?>
             </a>
@@ -590,7 +596,7 @@ function leyka_shortcode_campaign_card($atts) {
     <div class="<?php echo !!$atts['unstyled'] ? 'leyka-shortcode-custom-styling' : 'leyka-shortcode';?> campaign-card <?php echo esc_attr( $atts['classes'] ? $atts['classes'] : '' );?>"<?php echo wp_kses_post( $attr_id . $attr_style ); ?>>
 
     <?php if($atts['show_image'] && has_post_thumbnail($campaign->id)) {?>
-        <a href="<?php echo esc_url($campaign_url);?>" class="campaign-thumb sub-block" style="background-image:url(<?php echo get_the_post_thumbnail_url($campaign->id, 'medium_large');?>);" aria-hidden="true" tabindex="-1" title="<?php echo esc_attr( $campaign->title );?>"></a>
+        <a href="<?php echo esc_url($campaign_url);?>" class="campaign-thumb sub-block" style="background-image:url(<?php echo esc_attr(get_the_post_thumbnail_url($campaign->id, 'medium_large'));?>);" aria-hidden="true" tabindex="-1" title="<?php echo esc_attr( $campaign->title );?>"></a>
     <?php }
 
     if($atts['show_title']) {?>
@@ -610,7 +616,7 @@ function leyka_shortcode_campaign_card($atts) {
             $excerpt_color = $atts['color_excerpt'] ? 'color:'.$atts['color_excerpt'] : '';
             ?>
             <p class="campaign-excerpt sub-block"<?php if ( $excerpt_color ) { ?> style="<?php echo esc_attr( $excerpt_color );?>"<?php } ?>>
-                <?php echo apply_filters('leyka_get_the_excerpt', $text, $campaign); ?>
+                <?php echo wp_kses_post(apply_filters('leyka_get_the_excerpt', $text, $campaign)); ?>
             </p>
             <?php
         }
@@ -645,8 +651,8 @@ function leyka_shortcode_campaign_card($atts) {
                     ($atts['color_fulfilled'] ? 'color:'.$atts['color_fulfilled'] : '');
                     ?>
                     <div class="funded"<?php if ( $collected_amount_color ) { ?> style="<?php echo esc_attr( $collected_amount_color );?>"<?php } ?>>
-                        <?php echo leyka_format_amount($funded).' '.leyka_get_currency_label()
-                            .($atts['recurring'] ? ' / '._x('month', '"Month" shortened, like "mon" maybe', 'leyka') : '');?>
+                        <?php echo esc_html(leyka_format_amount($funded).' '.leyka_get_currency_label())
+                            .($atts['recurring'] ? ' / '.esc_html_x('month', '"Month" shortened, like "mon" maybe', 'leyka') : '');?>
                     </div>
                 <?php }?>
 

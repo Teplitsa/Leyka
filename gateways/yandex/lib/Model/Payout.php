@@ -131,11 +131,11 @@ class Payout extends AbstractObject implements PayoutInterface
         if (TypeCast::canCastToString($value)) {
             $length = mb_strlen($value, 'utf-8');
             if ($length < 36 || $length > 50) {
-                throw new InvalidPropertyValueException('Invalid Payout id value', 0, 'Payout.id', $value);
+                throw new InvalidPropertyValueException('Invalid Payout id value', 0, 'Payout.id', esc_html($value));
             }
             $this->_id = (string)$value;
         } else {
-            throw new InvalidPropertyValueTypeException('Invalid Payout id value type', 0, 'Payout.id', $value);
+            throw new InvalidPropertyValueTypeException('Invalid Payout id value type', 0, 'Payout.id', esc_html($value));
         }
     }
 
@@ -162,6 +162,7 @@ class Payout extends AbstractObject implements PayoutInterface
             $this->_amount = new MonetaryAmount($value);
         } else {
             throw new InvalidPropertyValueTypeException(
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 'Invalid Payout.amount value type', 0, 'Payout.amount', $value
             );
         }
@@ -187,12 +188,12 @@ class Payout extends AbstractObject implements PayoutInterface
     {
         if (TypeCast::canCastToEnumString($value)) {
             if (!PayoutStatus::valueExists((string)$value)) {
-                throw new InvalidPropertyValueException('Invalid Payout status value', 0, 'Payout.status', $value);
+                throw new InvalidPropertyValueException('Invalid Payout status value', 0, 'Payout.status', esc_html($value));
             }
             $this->_status = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid Payout status value type', 0, 'Payout.status', $value
+                'Invalid Payout status value type', 0, 'Payout.status', esc_html($value)
             );
         }
     }
@@ -221,16 +222,16 @@ class Payout extends AbstractObject implements PayoutInterface
             $length = mb_strlen((string)$value, 'utf-8');
             if ($length > self::MAX_LENGTH_DESCRIPTION) {
                 throw new InvalidPropertyValueException(
-                    'The value of the description parameter is too long. Max length is ' . self::MAX_LENGTH_DESCRIPTION,
+                    'The value of the description parameter is too long. Max length is ' . esc_html(self::MAX_LENGTH_DESCRIPTION),
                     0,
                     'CreatePayoutRequest.description',
-                    $value
+                    esc_html($value)
                 );
             }
             $this->_description = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid description value type', 0, 'CreatePayoutRequest.description', $value
+                'Invalid description value type', 0, 'CreatePayoutRequest.description', esc_html($value)
             );
         }
     }
@@ -258,6 +259,7 @@ class Payout extends AbstractObject implements PayoutInterface
             $factory = new PayoutDestinationFactory();
             $this->_payout_destination  = $factory->factoryFromArray($value);
         }  else {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
             throw new InvalidPropertyValueTypeException('Invalid payout_destination value type', 0, 'Payout.payout_destination', $value);
         }
 
@@ -289,11 +291,11 @@ class Payout extends AbstractObject implements PayoutInterface
         } elseif (TypeCast::canCastToDateTime($value)) {
             $dateTime = TypeCast::castToDateTime($value);
             if ($dateTime === null) {
-                throw new InvalidPropertyValueException('Invalid created_at value', 0, 'Payout.createdAt', $value);
+                throw new InvalidPropertyValueException('Invalid created_at value', 0, 'Payout.createdAt', esc_html($value));
             }
             $this->_createdAt = $dateTime;
         } else {
-            throw new InvalidPropertyValueTypeException('Invalid created_at value', 0, 'Payout.createdAt', $value);
+            throw new InvalidPropertyValueTypeException('Invalid created_at value', 0, 'Payout.createdAt', esc_html($value));
         }
     }
 
@@ -320,6 +322,7 @@ class Payout extends AbstractObject implements PayoutInterface
             $this->_metadata = $value;
         } else {
             throw new InvalidPropertyValueTypeException(
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 'Invalid value type for "metadata" parameter in Payout', 0, 'Payout.metadata', $value
             );
         }
@@ -350,6 +353,7 @@ class Payout extends AbstractObject implements PayoutInterface
             $this->_cancellationDetails = $value;
         } else {
             throw new InvalidPropertyValueTypeException(
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 'Invalid value type for "cancellation_details" parameter in Payout', 0, 'Payout.cancellation_details', $value
             );
         }
@@ -376,7 +380,8 @@ class Payout extends AbstractObject implements PayoutInterface
             $this->_test = (bool)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid Payout test flag value type', 0, 'Payout.test', $value
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
+                'Invalid Payout test flag value type', 0, 'Payout.test', wp_validate_boolean(esc_html($value))
             );
         }
     }
@@ -404,6 +409,7 @@ class Payout extends AbstractObject implements PayoutInterface
             $this->_deal = $value;
         } else {
             throw new InvalidPropertyValueTypeException(
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 'Invalid value type for "deal" parameter in Payout', 0, 'Payout.deal', $value
             );
         }

@@ -97,7 +97,7 @@ class CreateRefundRequest extends AbstractRefundRequest implements CreateRefundR
             $this->_description = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid description value type in CreateRefundRequest', 0, 'CreateRefundRequest.description', $value
+                'Invalid description value type in CreateRefundRequest', 0, 'CreateRefundRequest.description', esc_html($value)
             );
         }
     }
@@ -118,7 +118,8 @@ class CreateRefundRequest extends AbstractRefundRequest implements CreateRefundR
     {
         if (!is_array($value)) {
             $message = 'Sources must be an array of SourceInterface';
-            throw new InvalidPropertyValueTypeException($message, 0, 'CreateRefundRequest.sources', $value);
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
+            throw new InvalidPropertyValueTypeException(wp_kses_post($message), 0, 'CreateRefundRequest.sources', $value);
         }
 
         $sources = array();
@@ -129,7 +130,8 @@ class CreateRefundRequest extends AbstractRefundRequest implements CreateRefundR
 
             if (!($item instanceof SourceInterface)) {
                 $message = 'Source must be instance of SourceInterface';
-                throw new InvalidPropertyValueTypeException($message, 0, 'CreateRefundRequest.sources', $value);
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
+                throw new InvalidPropertyValueTypeException(wp_kses_post($message), 0, 'CreateRefundRequest.sources', $value);
             }
             $sources[] = $item;
         }
@@ -198,6 +200,7 @@ class CreateRefundRequest extends AbstractRefundRequest implements CreateRefundR
             $this->_deal = new RefundDealData($value);
         } else {
             throw new InvalidPropertyValueTypeException(
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 'Invalid deal value type in CreateRefundRequest', 0, 'CreateRefundRequest.deal', $value
             );
         }

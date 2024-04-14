@@ -1084,9 +1084,9 @@ function leyka_scale_compact($campaign) {
     $collected_f = number_format($campaign->total_funded, ($campaign->total_funded - round($campaign->total_funded) > 0.0 ? 2 : 0), '.', ' ');
 
     if($campaign->total_funded == 0) {
-        printf(esc_html__('Needed %s %s', 'leyka'), '<b>'.$target_f.'</b>', $curr_label);
+        printf(esc_html__('Needed %s %s', 'leyka'), '<b>'.esc_html($target_f).'</b>', esc_html($curr_label));
     } else {
-        printf(esc_html__('Collected %s of %s %s', 'leyka'), '<b>'.$collected_f.'</b>', '<b>'.$target_f.'</b>', $curr_label);
+        printf(esc_html__('Collected %s of %s %s', 'leyka'), '<b>'.esc_html($collected_f).'</b>', '<b>'.esc_html($target_f).'</b>', esc_html($curr_label));
     }?>
     </div>
 </div>
@@ -1120,7 +1120,7 @@ function leyka_scale_ultra($campaign) {
         <?php $target_f = number_format($target, ($target - round($target) > 0.0 ? 2 : 0), '.', ' ');
         $collected_f = number_format($campaign->total_funded, ($campaign->total_funded - round($campaign->total_funded) > 0.0 ? 2 : 0), '.', ' ');
 
-        printf(esc_html_x('%s of %s %s', 'Label on ultra-compact scale', 'leyka'), '<b>'.$collected_f.'</b>', '<b>'.$target_f.'</b>', leyka_get_currency_label($campaign->currency));?>
+        printf(esc_html_x('%s of %s %s', 'Label on ultra-compact scale', 'leyka'), '<b>'.esc_html($collected_f).'</b>', '<b>'.esc_html($target_f).'</b>', esc_html(leyka_get_currency_label($campaign->currency)));?>
 
         </span>
     </div>
@@ -1142,7 +1142,7 @@ function leyka_fake_scale_ultra($campaign) {
         <div class="target"> </div>
     </div>
     <div class="leyka-scale-label"><span>
-        <?php printf(_x('Collected: %s', 'Label on ultra-compact fake scale', 'leyka'), "<b>{$collected_f}</b> {$curr_label}");?>
+        <?php printf(esc_html_x('Collected: %s', 'Label on ultra-compact fake scale', 'leyka'), '<b>' . esc_html($collected_f) . '</b> ' . esc_html($curr_label));?>
     </span></div>
 </div>
 
@@ -2987,8 +2987,10 @@ function leyka_generate_csv($filename, array $rows, array $headings = [], $colum
     header('Pragma: no-cache');
     header('Content-Disposition: attachment; filename="'.$filename.'.csv"');
 
-    echo chr(255)
-        .chr(254)
+
+    echo chr(255) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        .chr(254) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         .mb_convert_encoding( // 4. PHP array, converted to string - encode it into UTF-16
             $fputcsv,
             apply_filters('leyka_export_content_charset', 'UTF-16LE'),

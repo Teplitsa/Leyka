@@ -54,7 +54,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
             <?php $this->render_common_errors_area();?>
         </div>
 
-        <form id="leyka-settings-form-<?php echo esc_attr( $current_section->full_id );?>" <?php if($current_section->form_enctype):?>enctype="<?php echo esc_attr( $current_section->form_enctype ); ?>"<?php endif?> class="leyka-settings-form leyka-wizard-step" method="post" action="<?php echo admin_url('admin.php?page=leyka_settings_new&screen='.$this->full_id);?>">
+        <form id="leyka-settings-form-<?php echo esc_attr( $current_section->full_id );?>" <?php if($current_section->form_enctype):?>enctype="<?php echo esc_attr( $current_section->form_enctype ); ?>"<?php endif?> class="leyka-settings-form leyka-wizard-step" method="post" action="<?php echo esc_url(admin_url('admin.php?page=leyka_settings_new&screen='.$this->full_id));?>">
             <div class="step-content">
             <?php foreach($current_section->get_blocks() as $block) { /** @var $block Leyka_Settings_Block */
 
@@ -142,7 +142,7 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
                         <?php if( !empty($stage['is_completed']) ) {?>
                         <div class="nav-section-marker">
                             <a href="<?php echo esc_url( $stage['url'] );?>">
-                                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-ok.svg" alt="">
+                                <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/icon-ok.svg" alt="">
                             </a>
                         </div>
 
@@ -190,12 +190,12 @@ class Leyka_Wizard_Render extends Leyka_Settings_Render {
         <a href="<?php echo esc_url( $this->_get_exit_url() );?>" class="nav-section nav-exit">
             <div class="nav-section-title">
                 <div class="nav-section-marker"></div>
-                <?php _e('Exit installation', 'leyka');?>
+                <?php esc_html_e('Exit installation', 'leyka');?>
             </div>
         </a>
         
         <div class="leyka-logo">
-            <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/nav-logo-right-caption.svg" alt="">
+            <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/nav-logo-right-caption.svg" alt="">
         </div>
 
     <?php }

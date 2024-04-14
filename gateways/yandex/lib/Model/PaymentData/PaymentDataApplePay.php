@@ -73,7 +73,7 @@ class PaymentDataApplePay extends AbstractPaymentData
             $this->_paymentData = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid value type for paymentData', 0, 'PaymentDataApplePay.paymentData', $value
+                'Invalid value type for paymentData', 0, 'PaymentDataApplePay.paymentData', esc_html($value)
             );
         }
     }

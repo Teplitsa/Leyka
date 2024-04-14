@@ -96,12 +96,12 @@ class VatData extends AbstractObject implements VatDataInterface
         if (TypeCast::canCastToEnumString($value)) {
             if (!VatDataType::valueExists((string)$value)) {
                 throw new InvalidPropertyValueException('Invalid B2bSberbankVatData.type value', 0,
-                    'B2bSberbankVatData.type', $value);
+                    'B2bSberbankVatData.type', esc_html($value));
             }
             $this->_type = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid B2bSberbankVatData.type value type', 0, 'B2bSberbankVatData.type', $value
+                'Invalid B2bSberbankVatData.type value type', 0, 'B2bSberbankVatData.type', esc_html($value)
             );
         }
     }
@@ -127,12 +127,12 @@ class VatData extends AbstractObject implements VatDataInterface
         if (TypeCast::canCastToString($value)) {
             if (!VatDataRate::valueExists((string)$value)) {
                 throw new InvalidPropertyValueException('Invalid B2bSberbankVatData.rate value', 0,
-                    'B2bSberbankVatData.rate', $value);
+                    'B2bSberbankVatData.rate', esc_html($value));
             }
             $this->_rate = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid B2bSberbankVatData.rate value type', 0, 'B2bSberbankVatData.rate', $value
+                'Invalid B2bSberbankVatData.rate value type', 0, 'B2bSberbankVatData.rate', esc_html($value)
             );
         }
     }
@@ -161,7 +161,7 @@ class VatData extends AbstractObject implements VatDataInterface
             $this->_amount->fromArray($value);
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid B2bSberbankVatData.amount value type', 0, 'B2bSberbankVatData.amount', $value
+                'Invalid B2bSberbankVatData.amount value type', 0, 'B2bSberbankVatData.amount', esc_html($value)
             );
         }
     }

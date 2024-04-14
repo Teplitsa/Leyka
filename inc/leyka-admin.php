@@ -227,11 +227,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         if(isset($_GET['leyka-hide-notice']) && isset($_GET['_leyka_notice_nonce'])) {
 
             if( !wp_verify_nonce($_GET['_leyka_notice_nonce'], 'leyka_hide_notice_nonce') ) {
-                wp_die(__('Action failed. Please refresh the page and retry.', 'leyka'));
+                wp_die(esc_html__('Action failed. Please refresh the page and retry.', 'leyka'));
             }
 
             if( !current_user_can('manage_options') ) {
-                wp_die(__('Action failed: insufficient permissions.', 'leyka'));
+                wp_die(esc_html__('Action failed: insufficient permissions.', 'leyka'));
             }
 
             update_option('leyka_admin_notice_'.sanitize_text_field($_GET['leyka-hide-notice']), 1);
@@ -555,7 +555,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	public function dashboard_screen() {
 
 		if( !current_user_can('leyka_manage_donations') ) {
-            wp_die(__('Sorry, but you do not have permissions to access this page.', 'leyka'));
+            wp_die(esc_html__('Sorry, but you do not have permissions to access this page.', 'leyka'));
         }
 
         do_action('leyka_pre_dashboard_actions');
@@ -630,10 +630,10 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 <div class="portlet-title">
 
                 <?php if( !empty($portlet_data['subtitle'])) {?>
-                    <h3><?php echo apply_filters('leyka_admin_portlet_subtitle', $portlet_data['subtitle'], $portlet_id);?></h3>
+                    <h3><?php echo esc_html( apply_filters('leyka_admin_portlet_subtitle', $portlet_data['subtitle'], $portlet_id));?></h3>
                 <?php }?>
 
-                    <h2><?php echo apply_filters('leyka_admin_portlet_title', $portlet_data['title'], $portlet_id);?></h2>
+                    <h2><?php echo esc_html( apply_filters('leyka_admin_portlet_title', $portlet_data['title'], $portlet_id) );?></h2>
 
                 </div>
             </div>
@@ -656,15 +656,15 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
                 <a href="https://wordpress.org/support/plugin/leyka/reviews/#new-post" class="banner" target="_blank">
                     <div class="banner-text">
-                        <div class="banner-subtitle"><?php _e('Like Leyka?', 'leyka');?></div>
-                        <div class="banner-title"><?php _e('Give a mark to the plugin', 'leyka');?></div>
+                        <div class="banner-subtitle"><?php esc_html_e('Like Leyka?', 'leyka');?></div>
+                        <div class="banner-title"><?php esc_html_e('Give a mark to the plugin', 'leyka');?></div>
                     </div>
                     <div class="banner-thumbnail">
-                        <img src="<?php echo LEYKA_PLUGIN_BASE_URL.'/img/dashboard/banner-grade-plugin.svg';?>" alt="">
+                        <img src="<?php echo esc_url( LEYKA_PLUGIN_BASE_URL ) .'img/dashboard/banner-grade-plugin.svg';?>" alt="">
                     </div>
             	</a>
 
-                <a class="close" href="#" title="<?php _e('Close permanently', 'leyka');?>"></a>
+                <a class="close" href="#" title="<?php esc_attr_e('Close permanently', 'leyka');?>"></a>
 
             </div>
         </div>
@@ -694,7 +694,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
     public function donations_list_screen() {
 
         if( !current_user_can('leyka_manage_donations') ) {
-            wp_die(__('You do not have permissions to access this page.', 'leyka'));
+            wp_die(esc_html__('You do not have permissions to access this page.', 'leyka'));
         }
 
         do_action('leyka_pre_donations_list_actions');
@@ -990,7 +990,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             $new_donation_edit_url = admin_url('admin.php?page=leyka_donation_info&donation='.$donation_id.'&msg=ok');?>
 
             <div id="message" class="updated notice notice-success">
-                <p><?php echo sprintf(__("Donation added. If you are not redirected to it's edit page, <a href='%s'>click here</a>.", 'leyka'), $new_donation_edit_url);?></p>
+                <p><?php echo sprintf(esc_html__("Donation added. If you are not redirected to it's edit page, <a href='%s'>click here</a>.", 'leyka'), esc_attr( $new_donation_edit_url ) );?></p>
             </div>
 
             <script type="text/javascript">window.location.href="<?php echo esc_url( $new_donation_edit_url ); ?>";</script>
@@ -1046,7 +1046,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
     public function donors_list_screen() {
 
         if( !current_user_can('leyka_manage_options') ) {
-            wp_die(__('You do not have permissions to access this page.', 'leyka'));
+            wp_die(esc_html__('You do not have permissions to access this page.', 'leyka'));
         }
 
         do_action('leyka_pre_donors_list_actions');
@@ -1118,7 +1118,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
             <tr>
                 <th>
-                    <label for="leyka-donors-tags-field"><?php _e('Donor tags', 'leyka');?></label>
+                    <label for="leyka-donors-tags-field"><?php esc_html_e('Donor tags', 'leyka');?></label>
                 </th>
                 <td>
                     <?php $all_donors_tags = get_terms([
@@ -1144,7 +1144,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                     </select>
 
                     <?php } else {
-                        _e('No Donor tags added yet.', 'leyka');
+                        esc_html_e('No Donor tags added yet.', 'leyka');
                     }?>
                 </td>
             </tr>
@@ -1153,7 +1153,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
             <tr>
                 <th>
-                    <label for="leyka-donor-account-access"><?php _e('Donor account available', 'leyka');?></label>
+                    <label for="leyka-donor-account-access"><?php esc_html_e('Donor account available', 'leyka');?></label>
                 </th>
                 <td>
                     <input type="checkbox" id="leyka-donor-account-access" name="leyka_donor_account_available" value="1" <?php echo wp_kses_post( $donor_user->has_cap(Leyka_Donor::DONOR_ACCOUNT_ACCESS_CAP) ? 'checked="checked"' : '' ); ?>>
@@ -1223,7 +1223,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
     public function recurring_subscriptions_list_screen() {
 
         if( !current_user_can('leyka_manage_options') ) {
-            wp_die(__('You do not have permissions to access this page.', 'leyka'));
+            wp_die(esc_html__('You do not have permissions to access this page.', 'leyka'));
         }
 
         do_action('leyka_pre_recurring_subscriptions_list_actions');
@@ -1239,7 +1239,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 	public function settings_screen() {
 
 		if( !current_user_can('leyka_manage_options') ) {
-            wp_die(__('You do not have permissions to access this page.', 'leyka'));
+            wp_die(esc_html__('You do not have permissions to access this page.', 'leyka'));
         }
 
         $current_stage = $this->get_current_settings_tab();
@@ -1294,7 +1294,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 ->render_content();
 
         } catch(Exception $ex) {
-            echo '<pre>'.sprintf(__('Settings display error (code %s): %s', 'leyka'), $ex->getCode(), $ex->getMessage()).'</pre>';
+            echo '<pre>'.sprintf(esc_html__('Settings display error (code %s): %s', 'leyka'), esc_html($ex->getCode()), esc_html( $ex->getMessage())).'</pre>';
         }
 
         do_action('leyka_post_admin_actions');
@@ -1362,7 +1362,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
     public function leyka_extension_settings_screen() {
 
         if( !current_user_can('leyka_manage_options') && empty($_GET['extension']) ) {
-            wp_die(__('You do not have permissions to access this page.', 'leyka'));
+            wp_die(esc_html__('You do not have permissions to access this page.', 'leyka'));
 		}
 
         do_action('leyka_pre_extension_settings_actions');
@@ -1377,7 +1377,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
     public function help_screen() {
 
         if( !current_user_can('leyka_manage_donations') ) {
-            wp_die(__('You do not have permissions to access this page.', 'leyka'));
+            wp_die(esc_html__('You do not have permissions to access this page.', 'leyka'));
 		}
 
         do_action('leyka_pre_help_actions');

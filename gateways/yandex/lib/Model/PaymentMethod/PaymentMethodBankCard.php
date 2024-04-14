@@ -124,12 +124,12 @@ class PaymentMethodBankCard extends AbstractPaymentMethod
                 $this->_last4 = (string)$value;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid card last4 value', 0, 'PaymentMethodBankCard.last4', $value
+                    'Invalid card last4 value', 0, 'PaymentMethodBankCard.last4', esc_html($value)
                 );
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid card last4 value type', 0, 'PaymentMethodBankCard.last4', $value
+                'Invalid card last4 value type', 0, 'PaymentMethodBankCard.last4', esc_html($value)
             );
         }
     }
@@ -158,12 +158,12 @@ class PaymentMethodBankCard extends AbstractPaymentMethod
                 $this->_first6 = (string)$value;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid card first6 value', 0, 'PaymentMethodBankCard.first6', $value
+                    'Invalid card first6 value', 0, 'PaymentMethodBankCard.first6', esc_html($value)
                 );
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid card first6 value type', 0, 'PaymentMethodBankCard.first6', $value
+                'Invalid card first6 value type', 0, 'PaymentMethodBankCard.first6', esc_html($value)
             );
         }
     }
@@ -190,13 +190,13 @@ class PaymentMethodBankCard extends AbstractPaymentMethod
         } elseif (is_numeric($value)) {
             if (!preg_match('/^\d\d\d\d$/', $value) || $value < 2000 || $value > 2200) {
                 throw new InvalidPropertyValueException(
-                    'Invalid card expiry year value', 0, 'PaymentMethodBankCard.expiryYear', $value
+                    'Invalid card expiry year value', 0, 'PaymentMethodBankCard.expiryYear', esc_html($value)
                 );
             }
             $this->_expiryYear = (string)$value;
         } else {
             throw new InvalidPropertyValueException(
-                'Invalid card expiry year value', 0, 'PaymentMethodBankCard.expiryYear', $value
+                'Invalid card expiry year value', 0, 'PaymentMethodBankCard.expiryYear', esc_html($value)
             );
         }
     }
@@ -223,7 +223,7 @@ class PaymentMethodBankCard extends AbstractPaymentMethod
         } elseif (is_numeric($value)) {
             if (!preg_match('/^\d\d$/', $value)) {
                 throw new InvalidPropertyValueException(
-                    'Invalid card expiry month value', 0, 'PaymentMethodBankCard.expiryMonth', $value
+                    'Invalid card expiry month value', 0, 'PaymentMethodBankCard.expiryMonth', esc_html($value)
                 );
             }
             if (is_string($value) && $value[0] == '0') {
@@ -233,14 +233,14 @@ class PaymentMethodBankCard extends AbstractPaymentMethod
             }
             if ($month < 1 || $month > 12) {
                 throw new InvalidPropertyValueException(
-                    'Invalid card expiry month value', 0, 'PaymentMethodBankCard.expiryMonth', $value
+                    'Invalid card expiry month value', 0, 'PaymentMethodBankCard.expiryMonth', esc_html($value)
                 );
             } else {
                 $this->_expiryMonth = (string)$value;
             }
         } else {
             throw new InvalidPropertyValueException(
-                'Invalid card expiry month value', 0, 'PaymentMethodBankCard.expiryMonth', $value
+                'Invalid card expiry month value', 0, 'PaymentMethodBankCard.expiryMonth', esc_html($value)
             );
         }
     }
@@ -266,7 +266,7 @@ class PaymentMethodBankCard extends AbstractPaymentMethod
             $this->_cardType = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid cardType value type', 0, 'PaymentMethodBankCard.cardType', $value
+                'Invalid cardType value type', 0, 'PaymentMethodBankCard.cardType', esc_html($value)
             );
         }
     }
@@ -290,11 +290,11 @@ class PaymentMethodBankCard extends AbstractPaymentMethod
             $this->_issuerCountry = (string)$value;
         } elseif (!TypeCast::canCastToString($value)) {
             throw new InvalidPropertyValueTypeException(
-                'Invalid issuerCountry value type', 0, 'PaymentMethodBankCard.issuerCountry', $value
+                'Invalid issuerCountry value type', 0, 'PaymentMethodBankCard.issuerCountry', esc_html($value)
             );
         } elseif (strlen($value) !== self::ISO_3166_CODE_LENGTH) {
             throw new InvalidPropertyValueException(
-                'Invalid issuerCountry value', 0, 'PaymentMethodBankCard.issuerCountry', $value
+                'Invalid issuerCountry value', 0, 'PaymentMethodBankCard.issuerCountry', esc_html($value)
             );
         }
 
@@ -337,11 +337,11 @@ class PaymentMethodBankCard extends AbstractPaymentMethod
             $this->_source = (string)$value;
         } elseif (!TypeCast::canCastToEnumString($value)) {
             throw new InvalidPropertyValueTypeException(
-                'Invalid source value type', 0, 'PaymentMethodBankCard.source', $value
+                'Invalid source value type', 0, 'PaymentMethodBankCard.source', esc_html($value)
             );
         } elseif (!BankCardSource::valueExists($value)) {
             throw new InvalidPropertyValueException(
-                'Invalid source value', 0, 'PaymentMethodBankCard.source', $value
+                'Invalid source value', 0, 'PaymentMethodBankCard.source', esc_html($value)
             );
         }
 

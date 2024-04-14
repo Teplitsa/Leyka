@@ -71,7 +71,7 @@ class BankAccount extends ApiResource
         } else {
             $msg = 'Bank accounts cannot be accessed without a customer ID or account ID.';
 
-            throw new Exception\UnexpectedValueException($msg, null);
+            throw new Exception\UnexpectedValueException(wp_kses_post($msg), null);
         }
         $parentExtn = \urlencode(Util\Util::utf8($parent));
         $extn = \urlencode(Util\Util::utf8($this['id']));
@@ -93,7 +93,7 @@ class BankAccount extends ApiResource
                "'bank_account_id')` or `Account::retrieveExternalAccount(" .
                "'account_id', 'bank_account_id')`.";
 
-        throw new Exception\BadMethodCallException($msg);
+        throw new Exception\BadMethodCallException(wp_kses_post($msg));
     }
 
     /**
@@ -111,7 +111,7 @@ class BankAccount extends ApiResource
                '$updateParams)` or `Account::updateExternalAccount(' .
                "'account_id', 'bank_account_id', \$updateParams)`.";
 
-        throw new Exception\BadMethodCallException($msg);
+        throw new Exception\BadMethodCallException(wp_kses_post($msg));
     }
 
     /**

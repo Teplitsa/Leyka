@@ -158,6 +158,7 @@ class CreatePostReceiptRequest extends AbstractRequest implements CreatePostRece
             $this->_customer = $value;
         } else {
             throw new InvalidPropertyValueTypeException(
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 'Invalid customer value type in receipt', 0, 'Receipt.customer', $value
             );
         }
@@ -194,7 +195,7 @@ class CreatePostReceiptRequest extends AbstractRequest implements CreatePostRece
         }
         if (!is_array($value) && !($value instanceof \Traversable)) {
             throw new InvalidPropertyValueTypeException(
-                'Invalid items value type in receipt', 0, 'Receipt.items', $value
+                'Invalid items value type in receipt', 0, 'Receipt.items', esc_html($value)
             );
         }
         $this->_items = array();
@@ -205,7 +206,7 @@ class CreatePostReceiptRequest extends AbstractRequest implements CreatePostRece
                 $this->addItem($item);
             } else {
                 throw new InvalidPropertyValueTypeException(
-                    'Invalid item value type in receipt', 0, 'Receipt.items['.$key.']', $item
+                    'Invalid item value type in receipt', 0, 'Receipt.items['.esc_attr($key).']', esc_html($item)
                 );
             }
         }
@@ -256,7 +257,7 @@ class CreatePostReceiptRequest extends AbstractRequest implements CreatePostRece
             $castedValue = (int)$value;
             if ($castedValue < 1 || $castedValue > 6) {
                 throw new InvalidPropertyValueException(
-                    'Invalid taxSystemCode value: '.$value, 0, 'Receipt.taxSystemCode'
+                    'Invalid taxSystemCode value: '.esc_html($value), 0, 'Receipt.taxSystemCode'
                 );
             }
             $this->_taxSystemCode = $castedValue;
@@ -282,7 +283,7 @@ class CreatePostReceiptRequest extends AbstractRequest implements CreatePostRece
     {
         if (TypeCast::canCastToEnumString($value)) {
             if (!ReceiptType::valueExists((string)$value)) {
-                throw new InvalidPropertyValueException('Invalid receipt type value', 0, 'Receipt.type', $value);
+                throw new InvalidPropertyValueException('Invalid receipt type value', 0, 'Receipt.type', esc_html($value));
             }
             $this->_type = (string)$value;
             if (!$this->_object_type) {
@@ -290,7 +291,7 @@ class CreatePostReceiptRequest extends AbstractRequest implements CreatePostRece
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid receipt type value type', 0, 'Receipt.type', $value
+                'Invalid receipt type value type', 0, 'Receipt.type', esc_html($value)
             );
         }
     }
@@ -315,7 +316,7 @@ class CreatePostReceiptRequest extends AbstractRequest implements CreatePostRece
             $this->_send = (bool)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid receipt type value send', 0, 'Receipt.send', $value
+                'Invalid receipt type value send', 0, 'Receipt.send', esc_html($value)
             );
         }
     }
@@ -342,7 +343,7 @@ class CreatePostReceiptRequest extends AbstractRequest implements CreatePostRece
         }
         if (!is_array($value) && !($value instanceof \Traversable)) {
             throw new InvalidPropertyValueTypeException(
-                'Invalid settlements value type in receipt', 0, 'Receipt.settlements', $value
+                'Invalid settlements value type in receipt', 0, 'Receipt.settlements', esc_html($value)
             );
         }
         $this->_settlements = array();
@@ -353,7 +354,7 @@ class CreatePostReceiptRequest extends AbstractRequest implements CreatePostRece
                 $this->addSettlement($val);
             } else {
                 throw new InvalidPropertyValueTypeException(
-                    'Invalid settlement value type in receipt', 0, 'Receipt.settlements['.$key.']', $val
+                    'Invalid settlement value type in receipt', 0, 'Receipt.settlements['.esc_attr($key).']', esc_html($val)
                 );
             }
         }
@@ -396,7 +397,7 @@ class CreatePostReceiptRequest extends AbstractRequest implements CreatePostRece
             );
         } elseif (!TypeCast::canCastToString($value)) {
             throw new InvalidPropertyValueTypeException(
-                'Invalid onBehalfOf value type', 0, 'Receipt.onBehalfOf', $value
+                'Invalid onBehalfOf value type', 0, 'Receipt.onBehalfOf', esc_html($value)
             );
         } else {
             $this->_onBehalfOf = (string)$value;

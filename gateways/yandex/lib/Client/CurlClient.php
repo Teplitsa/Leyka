@@ -385,7 +385,7 @@ class CurlClient implements ApiClientInterface
                 $msg = 'Unexpected error communicating.';
         }
         $msg .= "\n\n(Network error [errno $errno]: $error)";
-        throw new ApiConnectionException($msg);
+        throw new ApiConnectionException(wp_kses_post($msg));
     }
 
     /**

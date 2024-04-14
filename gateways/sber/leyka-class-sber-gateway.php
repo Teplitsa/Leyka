@@ -414,12 +414,12 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
 
             $donation = Leyka_Donations::get_instance()->get_donation($donation);?>
 
-            <label><?php _e('Sberbank order ID', 'leyka');?>:</label>
+            <label><?php esc_html_e('Sberbank order ID', 'leyka');?>:</label>
 
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') {?>
-                    <input type="text" id="sber-order-id" name="sber-order-id" placeholder="<?php _e('Enter a Sberbank order ID', 'leyka');?>" value="<?php echo esc_attr( $donation->sber_order_id );?>">
+                    <input type="text" id="sber-order-id" name="sber-order-id" placeholder="<?php esc_attr_e('Enter a Sberbank order ID', 'leyka');?>" value="<?php echo esc_attr( $donation->sber_order_id );?>">
                 <?php } else {?>
                     <span class="fake-input"><?php echo esc_attr( $donation->sber_order_id );?></span>
                 <?php }?>
@@ -430,16 +430,16 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
                 $init_recurring_donation = $donation->init_recurring_donation;?>
 
                 <div class="recurring-is-active-field">
-                    <label for="sber-recurring-is-active"><?php _e('Recurring subscription is active', 'leyka');?>:</label>
+                    <label for="sber-recurring-is-active"><?php esc_html_e('Recurring subscription is active', 'leyka');?>:</label>
                     <div class="leyka-ddata-field">
                         <input type="checkbox" id="sber-recurring-is-active" name="sber-recurring-is-active" value="1" <?php checked( $init_recurring_donation->recurring_is_active, '1' );?>>
                     </div>
                 </div>
 
-                <label><?php _e('Sberbank binding ID', 'leyka');?>:</label>
+                <label><?php esc_html_e('Sberbank binding ID', 'leyka');?>:</label>
                 <div class="leyka-ddata-field"><span class="fake-input"><?php echo esc_html( $donation->sber_binding_id );?></span></div>
 
-                <label><?php _e('Sberbank client ID', 'leyka');?>:</label>
+                <label><?php esc_html_e('Sberbank client ID', 'leyka');?>:</label>
                 <div class="leyka-ddata-field"><span class="fake-input"><?php echo esc_html( $donation->sber_client_id );?></span></div>
 
             <?php }?>

@@ -139,6 +139,7 @@ class CreatePaymentRequestBuilder extends AbstractPaymentRequestBuilder
             $this->recipient->setAccountId($value->getAccountId());
             $this->recipient->setGatewayId($value->getGatewayId());
         } else {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
             throw new InvalidPropertyValueTypeException('Invalid recipient value', 0, 'recipient', $value);
         }
         return $this;
@@ -157,6 +158,7 @@ class CreatePaymentRequestBuilder extends AbstractPaymentRequestBuilder
         } elseif ($value instanceof AirlineInterface) {
             $this->airline = clone $value;
         } else {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
             throw new InvalidPropertyValueTypeException('Invalid receipt value type', 0, 'receipt', $value);
         }
 

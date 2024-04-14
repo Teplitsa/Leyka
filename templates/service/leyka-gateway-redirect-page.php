@@ -9,7 +9,7 @@
 <body>
     <div>
 
-        <?php echo apply_filters('leyka_gateway_redirect_message', __('<h3>Thank you!</h3><p>In a few seconds you will be redirected to the payment system website, where you can complete your donation.</p>', 'leyka'));
+        <?php echo wp_kses_post(apply_filters('leyka_gateway_redirect_message', __('<h3>Thank you!</h3><p>In a few seconds you will be redirected to the payment system website, where you can complete your donation.</p>', 'leyka')));
 
         $pm = leyka_pf_get_payment_method_value();
 
@@ -17,15 +17,15 @@
 
     </div>
 
-    <form id="leyka-auto-submit" action="<?php echo leyka()->payment_url;?>" method="post">
+    <form id="leyka-auto-submit" action="<?php echo esc_attr(leyka()->payment_url);?>" method="post">
 
         <?php foreach((array)leyka()->payment_vars as $name => $value) {
-            echo '<input type="hidden" name="'.$name.'" value="'.$value.'">'."\n";
+            echo '<input type="hidden" name="'.esc_attr($name).'" value="'.esc_attr($value).'">'."\n";
         }?>
 
         <noscript>
             <div>
-                <?php _e("If you weren't redirected to the payment page automatically, please press this button", 'leyka');?>
+                <?php esc_html_e("If you weren't redirected to the payment page automatically, please press this button", 'leyka');?>
             </div>
             <input type="submit" name="leyka-gateway-submit" value="<?php esc_attr_e('Proceed to the payment approval page', 'leyka');?>">
         </noscript>

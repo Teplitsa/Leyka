@@ -136,7 +136,7 @@ class TestLogger extends AbstractLogger
                 return call_user_func_array([$this, $genericMethod], $args);
             }
         }
-        throw new \BadMethodCallException('Call to undefined method ' . get_class($this) . '::' . $method . '()');
+        throw new \BadMethodCallException('Call to undefined method ' . esc_html( get_class($this) . '::' . $method ) . '()');
     }
 
     public function reset()

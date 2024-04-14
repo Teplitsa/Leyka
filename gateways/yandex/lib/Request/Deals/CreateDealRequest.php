@@ -90,12 +90,12 @@ class CreateDealRequest extends AbstractRequest implements CreateDealRequestInte
     {
         if (TypeCast::canCastToEnumString($value)) {
             if (!DealType::valueExists((string)$value)) {
-                throw new InvalidPropertyValueException('Invalid deal type value', 0, 'CreateDealRequest.type', $value);
+                throw new InvalidPropertyValueException('Invalid deal type value', 0, 'CreateDealRequest.type', esc_html($value));
             }
             $this->_type = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid deal type value type', 0, 'CreateDealRequest.type', $value
+                'Invalid deal type value type', 0, 'CreateDealRequest.type', esc_html($value)
             );
         }
     }
@@ -138,12 +138,12 @@ class CreateDealRequest extends AbstractRequest implements CreateDealRequestInte
     {
         if (TypeCast::canCastToEnumString($value)) {
             if (!FeeMoment::valueExists((string)$value)) {
-                throw new InvalidPropertyValueException('Invalid deal fee_moment value', 0, 'CreateDealRequest.fee_moment', $value);
+                throw new InvalidPropertyValueException('Invalid deal fee_moment value', 0, 'CreateDealRequest.fee_moment', esc_html($value));
             }
             $this->_fee_moment = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid fee_moment value type in CreateDealRequest', 0, 'CreateDealRequest.fee_moment', $value
+                'Invalid fee_moment value type in CreateDealRequest', 0, 'CreateDealRequest.fee_moment', esc_html($value)
             );
         }
     }
@@ -172,16 +172,16 @@ class CreateDealRequest extends AbstractRequest implements CreateDealRequestInte
             $length = mb_strlen((string)$value, 'utf-8');
             if ($length > SafeDeal::MAX_LENGTH_DESCRIPTION) {
                 throw new InvalidPropertyValueException(
-                    'The value of the description parameter is too long. Max length is ' . SafeDeal::MAX_LENGTH_DESCRIPTION,
+                    'The value of the description parameter is too long. Max length is ' . esc_html(SafeDeal::MAX_LENGTH_DESCRIPTION),
                     0,
                     'CreateDealRequest.description',
-                    $value
+                    esc_html($value)
                 );
             }
             $this->_description = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid description value type', 0, 'CreateDealRequest.description', $value
+                'Invalid description value type', 0, 'CreateDealRequest.description', esc_html($value)
             );
         }
     }
@@ -230,6 +230,7 @@ class CreateDealRequest extends AbstractRequest implements CreateDealRequestInte
             $this->_metadata = new Metadata($value);
         } else {
             throw new InvalidPropertyValueTypeException(
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 'Invalid metadata value type in CreateDealRequest', 0, 'CreateDealRequest.metadata', $value
             );
         }

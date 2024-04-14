@@ -164,7 +164,7 @@ class ApiRequestor
             $msg = "Invalid response object from API: {$rbody} "
               . "(HTTP response code was {$rcode})";
 
-            throw new Exception\UnexpectedValueException($msg);
+            throw new Exception\UnexpectedValueException(wp_kses_post($msg));
         }
 
         $errorData = $resp['error'];
@@ -367,7 +367,7 @@ class ApiRequestor
               . 'the Stripe web interface.  See https://stripe.com/api for '
               . 'details, or email support@stripe.com if you have any questions.';
 
-            throw new Exception\AuthenticationException($msg);
+            throw new Exception\AuthenticationException(wp_kses_post($msg));
         }
 
         // Clients can supply arbitrary additional keys to be included in the
@@ -389,7 +389,7 @@ class ApiRequestor
                 $message = \sprintf('Options found in $params: %s. Options should '
                   . 'be passed in their own array after $params. (HINT: pass an '
                   . 'empty array to $params if you do not have any.)', \implode(', ', $optionKeysInParams));
-                \trigger_error($message, \E_USER_WARNING);
+                \trigger_error(wp_kses_post( $message ), \E_USER_WARNING);
             }
         }
 
@@ -555,7 +555,7 @@ class ApiRequestor
             $msg = "Invalid response body from API: {$rbody} "
               . "(HTTP response code was {$rcode}, json_last_error() was {$jsonError})";
 
-            throw new Exception\UnexpectedValueException($msg, $rcode);
+            throw new Exception\UnexpectedValueException(wp_kses_post($msg), esc_attr($rcode));
         }
 
         if ($rcode < 200 || $rcode >= 300) {

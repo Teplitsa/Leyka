@@ -33,10 +33,10 @@ class Client
 
 		$this->certPath = $certPath;
 		if (!file_exists($this->certPath)) {
-			throw new \Exception('Cert path did\'t exist: ' . $this->certPath);
+			throw new \Exception('Cert path did\'t exist: ' . esc_html( $this->certPath ) );
 		}
 		if (!is_readable($this->certPath)) {
-			throw new \Exception('Can\'t read cert file: ' . $this->certPath);
+			throw new \Exception('Can\'t read cert file: ' . esc_html( $this->certPath ) );
 		}
 	}
 
@@ -54,11 +54,11 @@ class Client
 		}
 		$this->keyPath = $keyPath;
 		if (!file_exists($this->keyPath)) {
-			throw new \Exception('Key path did\'t exist: ' . $this->keyPath);
+			throw new \Exception('Key path did\'t exist: ' . esc_html( $this->keyPath ) );
 		}
 
 		if (!is_readable($this->keyPath)) {
-			throw new \Exception('Can\'t read key file: ' . $this->keyPath);
+			throw new \Exception('Can\'t read key file: ' . esc_html( $this->keyPath ) );
 		}
 	}
 
@@ -163,7 +163,7 @@ class Client
 
 		$result = $request->request($url, $params);
 		if (is_wp_error($result)) {
-			throw new \Exception('Request error: ' . $result->get_error_message());
+			throw new \Exception('Request error: ' . wp_kses_post( $result->get_error_message() ) );
 		}
 
 		$code = $result['response']['code'];
@@ -204,7 +204,7 @@ class Client
 		if (!$response) {
 			$error .= $result['body'];
 		}
-		throw new \Exception($error, $code);
+		throw new \Exception( esc_html( $error ), esc_attr( $code ) );
 	}
 
 	protected function fileRequestHandler($action, $data, $method, $correlationId)
@@ -280,7 +280,7 @@ class Client
 		if (!$response) {
 			$error .= $out;
 		}
-		throw new \Exception($error, $code);
+		throw new \Exception( esc_html( $error ), esc_attr( $code ) );
 	}
 
 	protected function parseHeadersToArray($rawHeaders)
@@ -308,7 +308,7 @@ class Client
 		$result = wp_json_encode($data);
 		$error  = json_last_error();
 		if ($error != JSON_ERROR_NONE) {
-			throw new \Exception('JSON Error: ' . json_last_error_msg());
+			throw new \Exception('JSON Error: ' . wp_kses_post( json_last_error_msg() ) );
 		}
 		return $result;
 	}

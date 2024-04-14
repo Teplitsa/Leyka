@@ -73,12 +73,12 @@ class PaymentMethodMobileBalance extends AbstractPaymentMethod
                 $this->_phone = (string)$value;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid phone value', 0, 'PaymentMethodMobileBalance.phone', $value
+                    'Invalid phone value', 0, 'PaymentMethodMobileBalance.phone', esc_html($value)
                 );
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid phone value type', 0, 'PaymentMethodMobileBalance.phone', $value
+                'Invalid phone value type', 0, 'PaymentMethodMobileBalance.phone', esc_html($value)
             );
         }
     }

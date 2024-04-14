@@ -77,12 +77,12 @@ class PaymentMethodSberbank extends AbstractPaymentMethod
                 $this->_phone = (string)$value;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid phone value', 0, 'PaymentMethodSberbank.phone', $value
+                    'Invalid phone value', 0, 'PaymentMethodSberbank.phone', esc_html($value)
                 );
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid phone value type', 0, 'PaymentMethodSberbank.phone', $value
+                'Invalid phone value type', 0, 'PaymentMethodSberbank.phone', esc_html($value)
             );
         }
     }

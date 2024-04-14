@@ -125,13 +125,13 @@ class RefundsRequest extends AbstractRequest implements RefundsRequestInterface
             $length = mb_strlen((string)$value, 'utf-8');
             if ($length != 36) {
                 throw new InvalidPropertyValueException(
-                    'Invalid payment id value in RefundsRequest', 0, 'RefundsRequest.paymentId', $value
+                    'Invalid payment id value in RefundsRequest', 0, 'RefundsRequest.paymentId', esc_html($value)
                 );
             }
             $this->_paymentId = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid payment id value type in RefundsRequest', 0, 'RefundsRequest.paymentId', $value
+                'Invalid payment id value type in RefundsRequest', 0, 'RefundsRequest.paymentId', esc_html($value)
             );
         }
     }
@@ -352,14 +352,14 @@ class RefundsRequest extends AbstractRequest implements RefundsRequestInterface
         } elseif (TypeCast::canCastToEnumString($value)) {
             if (!RefundStatus::valueExists((string)$value)) {
                 throw new InvalidPropertyValueException(
-                    'Invalid status value in RefundsRequest', 0, 'RefundsRequest.status', $value
+                    'Invalid status value in RefundsRequest', 0, 'RefundsRequest.status', esc_html($value)
                 );
             } else {
                 $this->_status = (string)$value;
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid status value in RefundsRequest', 0, 'RefundsRequest.status', $value
+                'Invalid status value in RefundsRequest', 0, 'RefundsRequest.status', esc_html($value)
             );
         }
     }
@@ -396,7 +396,7 @@ class RefundsRequest extends AbstractRequest implements RefundsRequestInterface
             $this->_cursor = (string) $value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid status value in RefundsRequest', 0, 'RefundsRequest.cursor', $value
+                'Invalid status value in RefundsRequest', 0, 'RefundsRequest.cursor', esc_html($value)
             );
         }
     }
@@ -432,13 +432,13 @@ class RefundsRequest extends AbstractRequest implements RefundsRequestInterface
         } elseif (is_int($value)) {
             if ($value < 0 || $value > self::MAX_LIMIT_VALUE) {
                 throw new InvalidPropertyValueException(
-                    'Invalid limit value in RefundsRequest', 0, 'RefundsRequest.limit', $value
+                    'Invalid limit value in RefundsRequest', 0, 'RefundsRequest.limit', esc_html($value)
                 );
             }
             $this->_limit = $value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid limit value type in RefundsRequest', 0, 'RefundsRequest.limit', $value
+                'Invalid limit value type in RefundsRequest', 0, 'RefundsRequest.limit', esc_html($value)
             );
         }
     }

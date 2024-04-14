@@ -150,11 +150,11 @@ class Client
 
         if (!empty($unknownOptions)) {
             throw new \InvalidArgumentException(
-                \sprintf(
+                \wp_kses_post( sprintf(
                     'Unknown option "%s". Allowed options: "%s".',
                     \reset($unknownOptions),
                     \implode('", "', $allowedOptions)
-                )
+                ) )
             );
         }
 
@@ -184,12 +184,12 @@ class Client
         if (isset($options['httpMethod'])) {
             if (!\in_array($options['httpMethod'], [ HttpClientInterface::METHOD_GET, HttpClientInterface::METHOD_POST ])) {
                 throw new \InvalidArgumentException(
-                    \sprintf(
+                    \wp_kses_post( sprintf(
                         'An HTTP method "%s" is not supported. Use "%s" or "%s".',
                         $options['httpMethod'],
                         HttpClientInterface::METHOD_GET,
                         HttpClientInterface::METHOD_POST
-                    )
+                    ) )
                 );
             }
 
@@ -761,7 +761,7 @@ class Client
         $errorCode = \json_last_error();
 
         if (\JSON_ERROR_NONE !== $errorCode || null === $response) {
-            throw new ResponseParsingException(\json_last_error_msg(), $errorCode);
+            throw new ResponseParsingException(wp_kses_post( \json_last_error_msg() ), esc_attr( $errorCode ) );
         }
 
         return $response;
@@ -808,7 +808,7 @@ class Client
         unset($response['success']);
 
         if (self::ACTION_SUCCESS !== $errorCode) {
-            throw new ActionException($errorMessage, $errorCode);
+            throw new ActionException( wp_kses_post( $errorMessage ), esc_attr( $errorCode ) );
         }
     }
 

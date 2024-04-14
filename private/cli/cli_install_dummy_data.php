@@ -1,5 +1,6 @@
 <?php
 /* Service actions */
+// phpcs:ignoreFile -- this is not a production plugin file
 set_time_limit (0);
 ini_set('memory_limit','512M');
 
@@ -27,13 +28,13 @@ try {
 	fwrite(STDOUT, 'Total execution time in seconds: ' . (microtime(true) - $time_start).chr(10).chr(10));
 }
 catch (TstNotCLIRunException $ex) {
-	echo $ex->getMessage() . "\n";
+	echo wp_kses_post($ex->getMessage()) . "\n";
 }
 catch (TstCLIHostNotSetException $ex) {
-	echo $ex->getMessage() . "\n";
+	echo wp_kses_post($ex->getMessage()) . "\n";
 }
 catch (Exception $ex) {
-	echo $ex;
+	echo wp_kses_post($ex);
 }
 
 class LeykaDummyData {

@@ -1,5 +1,6 @@
 <?php
 /* Service actions */
+// phpcs:ignoreFile -- this is not a production plugin file
 set_time_limit (0);
 ini_set('memory_limit','512M');
 

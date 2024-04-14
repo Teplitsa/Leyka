@@ -22,10 +22,10 @@ class ArgumentValidator
     {
         if ($argument === null) {
             // Error if Object Null
-            throw new \InvalidArgumentException("$argumentName cannot be null");
+            throw new \InvalidArgumentException( esc_html( $argumentName ) . ' cannot be null');
         } elseif (gettype($argument) == 'string' && trim($argument) == '') {
             // Error if String Empty
-            throw new \InvalidArgumentException("$argumentName string cannot be empty");
+            throw new \InvalidArgumentException( esc_html( $argumentName ) . ' string cannot be empty');
         }
         return true;
     }

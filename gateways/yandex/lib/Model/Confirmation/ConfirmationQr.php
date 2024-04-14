@@ -62,7 +62,7 @@ class ConfirmationQr extends AbstractConfirmation
             $this->_confirmationData = (string)$confirmationData;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid confirmationData value type', 0, 'confirmationQr.confirmationData', $confirmationData
+                'Invalid confirmationData value type', 0, 'confirmationQr.confirmationData', esc_html($confirmationData)
             );
         }
     }

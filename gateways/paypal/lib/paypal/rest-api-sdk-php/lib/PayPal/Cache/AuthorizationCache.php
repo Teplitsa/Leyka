@@ -63,7 +63,7 @@ abstract class AuthorizationCache
         $cachePath = self::cachePath($config);
         if (!is_dir(dirname($cachePath))) {
             if (mkdir(dirname($cachePath), 0755, true) == false) {
-                throw new \Exception("Failed to create directory at $cachePath");
+                throw new \Exception('Failed to create directory at ' . esc_html( $cachePath ) );
             }
         }
 

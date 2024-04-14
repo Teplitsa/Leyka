@@ -57,7 +57,7 @@ class Collection extends StripeObject implements \Countable, \IteratorAggregate
                    'return an object with a `data` (which is the data ' .
                    "array). You likely want to call ->data[{$k}])";
 
-        throw new Exception\InvalidArgumentException($msg);
+        throw new Exception\InvalidArgumentException(wp_kses_post($msg));
     }
 
     public function all($params = null, $opts = null)
@@ -69,7 +69,7 @@ class Collection extends StripeObject implements \Countable, \IteratorAggregate
         $obj = Util\Util::convertToStripeObject($response, $opts);
         if (!($obj instanceof \Stripe\Collection)) {
             throw new \Stripe\Exception\UnexpectedValueException(
-                'Expected type ' . \Stripe\Collection::class . ', got "' . \get_class($obj) . '" instead.'
+                wp_kses_post('Expected type ' . \Stripe\Collection::class . ', got "' . \get_class($obj) . '" instead.')
             );
         }
         $obj->setFilters($params);
@@ -265,7 +265,7 @@ class Collection extends StripeObject implements \Countable, \IteratorAggregate
     {
         $url = \wp_parse_url($this->url);
         if (!isset($url['path'])) {
-            throw new Exception\UnexpectedValueException("Could not parse list url into parts: {$url}");
+            throw new Exception\UnexpectedValueException('Could not parse list url into parts: '. esc_html( $url ) );
         }
 
         if (isset($url['query'])) {

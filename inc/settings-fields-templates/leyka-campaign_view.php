@@ -28,11 +28,11 @@ wp_enqueue_media();?>
                 <div id="leyka_campaign_photo-wrapper">
                     <label for="leyka_campaign_photo-field">
                         <span class="field-component title">
-                            <?php _e('The campaign thumbnail picture', 'leyka');?>
+                            <?php esc_html_e('The campaign thumbnail picture', 'leyka');?>
                             <span class="field-q">
                                 <img src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL ); ?>img/icon-q.svg" alt="">
                                 <span class="field-q-tooltip">
-                                    <?php _e('Set the main picture for your campaign', 'leyka');?>
+                                    <?php esc_html_e('Set the main picture for your campaign', 'leyka');?>
                                 </span>
                             </span>
                         </span>
@@ -42,7 +42,7 @@ wp_enqueue_media();?>
                         </span>
                     </label>
                     <?php wp_nonce_field('set-campaign-photo', 'set-campaign-photo-nonce');?>
-                    <input type="hidden" id="leyka-campaign_thumbnail" name="campaign_thumbnail" value="<?php echo get_post_thumbnail_id($campaign_id);?>">
+                    <input type="hidden" id="leyka-campaign_thumbnail" name="campaign_thumbnail" value="<?php echo esc_attr(get_post_thumbnail_id($campaign_id));?>">
                 </div>
                 <div class="field-errors"></div>
                 
@@ -64,6 +64,7 @@ wp_enqueue_media();?>
 
             <div class="preview-frame <?php echo esc_attr( $campaign->template );?>" id="leyka-preview-frame">
             <?php $embed_code = Leyka_Campaign_Management::get_card_embed_code($campaign_id, false, 343, 700);
+                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                 echo str_replace('embed_object=campaign_card', 'embed_object=campaign_card_templated', $embed_code);?>
             </div>
 

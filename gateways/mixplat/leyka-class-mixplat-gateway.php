@@ -618,7 +618,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
           }
 
           status_header(200);
-          die($output);
+          die($output); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
         } else if( !in_array($response['request'], ['payment_status', 'campaigns_list', 'refund_status', 'subscription_status', 'subscriptions_list' ]) ) {
 
@@ -1593,7 +1593,7 @@ class Leyka_Mixplat_Text extends Leyka_Payment_Method {
     }
 
     public function display_static_data() {
-        echo apply_filters('leyka_the_content', leyka_options()->opt_safe($this->full_id.'_details'));
+        echo wp_kses_post( apply_filters('leyka_the_content', leyka_options()->opt_safe($this->full_id.'_details')) );
     }
 
 }

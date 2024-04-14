@@ -13,7 +13,7 @@ $last_date        = isset( $_GET['last-date'] ) ? $_GET['last-date'] : '';
 
     <h1 class="wp-heading-inline">
 
-        <?php _e('Donors', 'leyka');
+        <?php esc_html_e('Donors', 'leyka');
 
         $taxonomy = $taxonomy = get_taxonomy(Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME);?>
 
@@ -38,30 +38,30 @@ $last_date        = isset( $_GET['last-date'] ) ? $_GET['last-date'] : '';
                                 <select name="donor-type" class="leyka-select-menu">
 
                                     <option value="" <?php echo wp_kses_post( $filter_value ? '' : 'selected="selected"' );?>>
-                                        --- <?php _e('All donor types', 'leyka');?> ---
+                                        --- <?php esc_html_e('All donor types', 'leyka');?> ---
                                     </option>
 
                                     <option value="single" <?php selected( $filter_value, 'single' );?>>
-                                        <?php _ex('Single', 'Donor type name', 'leyka');?>
+                                        <?php echo esc_attr_x('Single', 'Donor type name', 'leyka');?>
                                     </option>
 
                                     <option value="regular" <?php selected( $filter_value, 'regular' );?>>
-                                        <?php _ex('Regular', 'Donor type name', 'leyka');?>
+                                        <?php echo esc_attr_x('Regular', 'Donor type name', 'leyka');?>
                                     </option>
 
                                 </select>
                             </div>
 
                             <div class="leyka-admin-list-filter-wrapper">
-                                <input type="text" name="donor-name-email" class="leyka-donor-name-email-selector leyka-selector" value="<?php echo esc_attr( $donor_name_email );?>" placeholder="<?php _e("Donor's name or email", 'leyka');?>">
+                                <input type="text" name="donor-name-email" class="leyka-donor-name-email-selector leyka-selector" value="<?php echo esc_attr( $donor_name_email );?>" placeholder="<?php esc_attr_e("Donor's name or email", 'leyka');?>">
                             </div>
 
                             <div class="leyka-admin-list-filter-wrapper leyka-donation-date-filter-wrapper">
-                                <input type="text" name="first-date" autocomplete="off" class="leyka-first-donation-date-selector leyka-selector datepicker-ranged-selector" value="<?php echo esc_attr( $first_date );?>" placeholder="<?php _e('First payment dates', 'leyka');?>">
+                                <input type="text" name="first-date" autocomplete="off" class="leyka-first-donation-date-selector leyka-selector datepicker-ranged-selector" value="<?php echo esc_attr( $first_date );?>" placeholder="<?php esc_attr_e('First payment dates', 'leyka');?>">
                             </div>
 
                             <div class="leyka-admin-list-filter-wrapper leyka-donation-date-filter-wrapper">
-                                <input type="text" name="last-date" autocomplete="off" class="leyka-last-donation-date-selector leyka-selector datepicker-ranged-selector" value="<?php echo esc_attr( $last_date );?>" placeholder="<?php _e('Last payment dates', 'leyka');?>">
+                                <input type="text" name="last-date" autocomplete="off" class="leyka-last-donation-date-selector leyka-selector datepicker-ranged-selector" value="<?php echo esc_attr( $last_date );?>" placeholder="<?php esc_attr_e('Last payment dates', 'leyka');?>">
                             </div>
 
                         </div>
@@ -71,7 +71,7 @@ $last_date        = isset( $_GET['last-date'] ) ? $_GET['last-date'] : '';
                             <?php $filter_value = isset($_GET['campaigns']) ? (array)$_GET['campaigns'] : [];?>
                             <div class="leyka-admin-list-filter-wrapper">
 
-                                <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector autocomplete-input" value="" placeholder="<?php _e('All campaigns', 'leyka');?>">
+                                <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector autocomplete-input" value="" placeholder="<?php esc_attr_e('All campaigns', 'leyka');?>">
 
                                 <select class="leyka-campaigns-select autocomplete-select" name="campaigns[]" multiple="multiple">
                                     <?php $campaigns = $filter_value ? leyka_get_campaigns_list(['include' => $filter_value]) : [];
@@ -89,7 +89,7 @@ $last_date        = isset( $_GET['last-date'] ) ? $_GET['last-date'] : '';
 
                             <div class="leyka-admin-list-filter-wrapper">
 
-                                <input type="text" name="donors-tags-input" class="leyka-donors-tags-selector leyka-selector autocomplete-input" value="" placeholder="<?php _e('Donors tags', 'leyka');?>">
+                                <input type="text" name="donors-tags-input" class="leyka-donors-tags-selector leyka-selector autocomplete-input" value="" placeholder="<?php esc_attr_e('Donors tags', 'leyka');?>">
 
                                 <?php $filter_value = isset($_GET['donors-tags']) ? (array)$_GET['donors-tags'] : [];?>
                                 <select class="leyka-donors-tags-select autocomplete-select" name="donors-tags[]" multiple="multiple">
@@ -119,7 +119,7 @@ $last_date        = isset( $_GET['last-date'] ) ? $_GET['last-date'] : '';
                                 <select id="leyka-gateways-select" class="leyka-select-menu" name="gateway">
 
                                     <option value="" <?php echo wp_kses_post( $filter_value ? '' : 'selected="selected"' );?>>
-                                        --- <?php _e('All gateways', 'leyka');?> ---
+                                        --- <?php esc_html_e('All gateways', 'leyka');?> ---
                                     </option>
 
                                     <?php $gateways = leyka_get_gateways();
@@ -146,15 +146,15 @@ $last_date        = isset( $_GET['last-date'] ) ? $_GET['last-date'] : '';
                     </div>
 
                     <div class="col-2">
-                        <input type="submit" class="button" value="<?php _e('Filter the data', 'leyka');?>">
-                        <a href="<?php echo admin_url('/admin.php?page=leyka_donors');?>" class="reset-filters">
-                            <?php _e('Reset the filter', 'leyka');?>
+                        <input type="submit" class="button" value="<?php esc_attr_e('Filter the data', 'leyka');?>">
+                        <a href="<?php echo esc_url( admin_url('/admin.php?page=leyka_donors') );?>" class="reset-filters">
+                            <?php esc_html_e('Reset the filter', 'leyka');?>
                         </a>
                     </div>
                 </div>
 
                 <div class="donors-list-export admin-list-export">
-                    <input type="submit" class="submit" name="donors-list-export" value="<?php _e('Export the list in CSV', 'leyka');?>">
+                    <input type="submit" class="submit" name="donors-list-export" value="<?php esc_attr_e('Export the list in CSV', 'leyka');?>">
                 </div>
 
             </form>

@@ -79,7 +79,7 @@ class PayoutCancellationDetails extends AbstractObject implements CancellationDe
         if ($value === null || $value === '') {
             throw new EmptyPropertyValueException('Empty party value', 0, 'payout_cancellation_details.party');
         } elseif (!TypeCast::canCastToString($value)) {
-            throw new InvalidPropertyValueTypeException('Invalid party value type', 0, 'payout_cancellation_details.party', $value);
+            throw new InvalidPropertyValueTypeException('Invalid party value type', 0, 'payout_cancellation_details.party', esc_html($value));
         } else {
             $this->_party = strtolower((string)$value);
         }

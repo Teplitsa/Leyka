@@ -75,7 +75,7 @@ class PaymentDataBankCard extends AbstractPaymentData
             $this->_card = $card;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid card value type in PaymentDataBankCard', 0, 'PaymentDataBankCard.card', $value
+                'Invalid card value type in PaymentDataBankCard', 0, 'PaymentDataBankCard.card', esc_html($value)
             );
         }
     }

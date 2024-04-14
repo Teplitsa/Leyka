@@ -154,7 +154,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         if($api_context) {
             $api_context->setConfig(['mode' => leyka_options()->opt('paypal_test_mode') ? 'sandbox' : 'live']);
         } else {
-            throw new Exception(__('Cannot connect to the PayPal gateway', 'leyka'));
+            throw new Exception( esc_html__('Cannot connect to the PayPal gateway', 'leyka'));
         }
 
         return $api_context;
@@ -1529,11 +1529,11 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         $recurring_manual_cancel_link = 'https://www.paypal.com/myaccount/autopay/';
 
         if($recurring_cancelling_result === true) {
-            die(__('Recurring subscription cancelled successfully.', 'leyka'));
+            die(esc_html__('Recurring subscription cancelled successfully.', 'leyka'));
         } else if(is_wp_error($recurring_cancelling_result)) {
-            die($recurring_cancelling_result->get_error_message());
+            die( wp_kses_post( $recurring_cancelling_result->get_error_message() ) );
         } else {
-            die( sprintf(__('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email(), $recurring_manual_cancel_link) );
+            die( wp_kses_post( sprintf(__('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email(), $recurring_manual_cancel_link) ) );
         }
 
     }

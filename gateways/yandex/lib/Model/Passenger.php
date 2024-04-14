@@ -70,20 +70,20 @@ class Passenger extends AbstractObject implements PassengerInterface
     {
         if (empty($value) || is_numeric($value)) {
             throw new InvalidPropertyValueTypeException(
-                'Invalid first_name value type in Passenger object', 0, 'airline.passengers', $value
+                'Invalid first_name value type in Passenger object', 0, 'airline.passengers', esc_html($value)
             );
         } else if (TypeCast::canCastToString($value)) {
             $length = mb_strlen((string)$value, 'utf-8');
             if ($length > 64) {
                 throw new InvalidPropertyValueException(
                     'Invalid first_name value length in Passenger object',
-                    0, 'airline.passengers', $value
+                    0, 'airline.passengers', esc_html($value)
                 );
             }
             $this->_firstName = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid first_name value type in Passenger object', 0, 'airline.passengers', $value
+                'Invalid first_name value type in Passenger object', 0, 'airline.passengers', esc_html($value)
             );
         }
     }
@@ -104,20 +104,20 @@ class Passenger extends AbstractObject implements PassengerInterface
     {
         if (empty($value) || is_numeric($value)) {
             throw new InvalidPropertyValueTypeException(
-                'Invalid last_name value type in Passenger object', 0, 'airline.passengers', $value
+                'Invalid last_name value type in Passenger object', 0, 'airline.passengers', esc_html($value)
             );
         } else if (TypeCast::canCastToString($value)) {
             $length = mb_strlen((string)$value, 'utf-8');
             if ($length > 64) {
                 throw new InvalidPropertyValueException(
                     'Invalid last_name value length in Passenger object',
-                    0, 'airline.passengers', $value
+                    0, 'airline.passengers', esc_html($value)
                 );
             }
             $this->_lastName = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid last_name value type in Passenger object', 0, 'airline.passengers', $value
+                'Invalid last_name value type in Passenger object', 0, 'airline.passengers', esc_html($value)
             );
         }
     }

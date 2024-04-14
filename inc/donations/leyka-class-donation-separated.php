@@ -162,7 +162,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
         } else if(is_a($donation, 'WP_Post')) {
 
             if($donation->post_type !== Leyka_Donation_Management::$post_type) {
-                throw new Exception(sprintf(__('Wrong post type for donation ("%s" given)', 'leyka'), $donation->post_type));
+                throw new Exception(sprintf(esc_html__('Wrong post type for donation ("%s" given)', 'leyka'), esc_html( $donation->post_type) ) );
             }
 
             $this->_id = $donation->ID;
@@ -178,7 +178,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
             return;
 
         } else {
-            throw new Exception(__('Incorrect argument for donation initialization in the DB', 'leyka'));
+            throw new Exception(esc_html__('Incorrect argument for donation initialization in the DB', 'leyka'));
         }
 
         global $wpdb;
@@ -187,7 +187,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
         );
 
         if( !$this->_main_data ) {
-            throw new Exception(sprintf(__('No donation #%s in the DB', 'leyka'), $this->_id));
+            throw new Exception(sprintf(esc_html__('No donation #%s in the DB', 'leyka'), esc_html( $this->_id )) );
         }
 
         do_action('leyka_donation_constructor_meta', [], $this->_id);

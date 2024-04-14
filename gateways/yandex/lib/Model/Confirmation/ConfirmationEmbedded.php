@@ -61,7 +61,7 @@ class ConfirmationEmbedded extends AbstractConfirmation
             $this->confirmationToken = (string)$confirmationToken;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid confirmationToken value type', 0, 'confirmationEmbedded.confirmationToken', $confirmationToken
+                'Invalid confirmationToken value type', 0, 'confirmationEmbedded.confirmationToken', esc_html($confirmationToken)
             );
         }
     }

@@ -13,16 +13,16 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
     protected function _set_attributes() {
 
         $this->_id = 'merchandise';
-        $this->_title = __('Donation rewards', 'leyka');
+        $this->_title = esc_html__('Donation rewards', 'leyka');
 
         // A human-readable short description (for backoffice extensions list page):
-        $this->_description = __('The extension allows you to add photos and descriptions of donation rewards to the Leyka form.', 'leyka');
+        $this->_description = esc_html__('The extension allows you to add photos and descriptions of donation rewards to the Leyka form.', 'leyka');
 
         // A human-readable full description (for backoffice extensions list page):
         $this->_full_description = '';
 
         // A human-readable description (for backoffice extension settings page):
-        $this->_settings_description = __('After activating the extension, an additional section appears in the campaign settings - "Rewards for donations". In it, you can specify the name and description of the reward, as well as add a photo. The reward is related to the size of the donation. The data about the selected reward is saved in the donations table.', 'leyka');
+        $this->_settings_description = esc_html__('After activating the extension, an additional section appears in the campaign settings - "Rewards for donations". In it, you can specify the name and description of the reward, as well as add a photo. The reward is related to the size of the donation. The data about the selected reward is saved in the donations table.', 'leyka');
 
         // A human-readable description of how to enable the main feature (for backoffice extension settings page):
         $this->_connection_description = '';
@@ -38,7 +38,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
         $this->_options = apply_filters('leyka_'.$this->_id.'_extension_options', [
             ['section' => [
                 'name' => $this->_id.'-merchandise_library',
-                'title' => __('Donations rewards library', 'leyka'),
+                'title' => esc_html__('Donations rewards library', 'leyka'),
                 'is_default_collapsed' => false,
                 'options' => [
                     'merchandise_library' => [
@@ -62,7 +62,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
                 add_meta_box(
                     Leyka_Campaign_Management::$post_type.'_merchandise',
-                    __('Rewards for donations', 'leyka'),
+                    esc_html__('Rewards for donations', 'leyka'),
                     [$this, 'merchandise_campaign_metabox'],
                     Leyka_Campaign_Management::$post_type,
                     'normal',
@@ -311,7 +311,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
         $placeholders = wp_parse_args($placeholders, [
             'id' => '',
-            'box_title' => __('New reward', 'leyka'),
+            'box_title' => esc_html__('New reward', 'leyka'),
             'title' => '',
             'donation_amount_needed' => false,
             'description' => '',
@@ -326,7 +326,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
             if($merchandise_library) {
 
-                $merchandise_select_values = ['-' => __('Select the reward', 'leyka'),];
+                $merchandise_select_values = ['-' => esc_html__('Select the reward', 'leyka'),];
 
                 foreach($merchandise_library as $merchandise_id => $settings) {
 
@@ -340,7 +340,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
                         $merchandise_select_values[$merchandise_id] = [
                             'option_label' => '['.leyka_format_amount($settings['donation_amount_needed'])
                                 .'&nbsp;'.leyka_get_currency_label().']&nbsp;'
-                                .$settings['title'].'&nbsp;('.__('excluded for this campaign', 'leyka').')',
+                                .$settings['title'].'&nbsp;('.esc_html__('excluded for this campaign', 'leyka').')',
                             'disabled' => true,
                         ];
 
@@ -357,7 +357,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
             }
 
-            $merchandise_select_values['+'] = __('+ Create a new reward', 'leyka');?>
+            $merchandise_select_values['+'] = esc_html__('+ Create a new reward', 'leyka');?>
 
             <div id="item-<?php echo esc_attr( leyka_get_random_string(4) );?>" class="multi-valued-item-box merchandise-box <?php echo esc_html( $is_template ? 'item-template' : '' );?>" <?php echo esc_html( $is_template ? 'style="display: none;"' : '' ); ?>>
 
@@ -375,7 +375,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
                         <div class="option-block type-select">
                             <div class="leyka-select-field-wrapper">
                                 <?php leyka_render_select_field('campaign_merchandise_add', [
-                                    'title' => __('Rewards available', 'leyka'),
+                                    'title' => esc_html__('Rewards available', 'leyka'),
                                     'type' => 'select',
                                     'value' => count($merchandise_select_values) > 1 ? '-' : '+',
                                     'required' => true,
@@ -431,16 +431,24 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
                         <li class="edit-field-note">
                             <?php echo sprintf(
-                                __('If you wish to edit the reward settings, you may do it in <a href="%s" target="_blank">rewards library</a>.', 'leyka'),
-                                esc_url( admin_url('admin.php?page=leyka_settings&stage=extensions&extension=merchandise#leyka_merchandise-merchandise_library') )
+                                esc_html__('If you wish to edit the reward settings, you may do it in %s', 'leyka'),
+                                sprintf(
+                                    '<a href="%s" target="_blank">%s</a>.',
+                                    esc_url( admin_url('admin.php?page=leyka_settings&stage=extensions&extension=merchandise#leyka_merchandise-merchandise_library') ),
+                                    esc_html__( 'rewards library', 'leyka' )
+                                )
                             );?>
                         </li>
 
                         <?php if($placeholders['for_all_campaigns']) {?>
                             <li class="no-delete-for-all-campaigns-items-note">
                                 <?php echo sprintf(
-                                    __('The reward cannot be removed from the campaign - it is marked "for all campaigns" in the <a href="%s" target="_blank">donations rewards library</a>.', 'leyka'),
-                                    admin_url('admin.php?page=leyka_settings&stage=extensions&extension=merchandise#leyka_merchandise-merchandise_library')
+                                    esc_html__('The reward cannot be removed from the campaign - it is marked "for all campaigns" in the %s.', 'leyka'),
+                                    sprintf(
+                                        '<a href="%s" target="_blank">%s</a>.',
+                                        esc_url( admin_url('admin.php?page=leyka_settings&stage=extensions&extension=merchandise#leyka_merchandise-merchandise_library') ),
+                                        esc_html__( 'donations rewards library', 'leyka' )
+                                    )
                                 );?>
                             </li>
                         <?php }?>
@@ -525,8 +533,8 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
                 <div class="leyka-text-field-wrapper">
 
                     <?php leyka_render_text_field('merchandise_title', [
-                        'title' => __('Reward title', 'leyka'),
-                        'placeholder' => sprintf(__('E.g., %s', 'leyka'), __('A cool hat with our logo', 'leyka')),
+                        'title' => esc_html__('Reward title', 'leyka'),
+                        'placeholder' => sprintf(esc_html__('E.g., %s', 'leyka'), esc_html__('A cool hat with our logo', 'leyka')),
                         'value' => $placeholders['title'],
                         'required' => true,
                     ]);?>
@@ -545,7 +553,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
                 <div class="leyka-number-field-wrapper">
                     <?php leyka_render_number_field('merchandise_donation_amount_needed', [
                         'title' => sprintf(
-                            __('Donations amount needed for the reward, %s', 'leyka'),
+                            esc_html__('Donations amount needed for the reward, %s', 'leyka'),
                             leyka_get_currency_label()
                         ),
                         'required' => true,
@@ -563,13 +571,13 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
             <div class="settings-block option-block type-file type-media-upload">
 
                 <?php leyka_render_media_upload_field('merchandise_thumbnail', [
-                    'title' => __('Reward picture', 'leyka'),
-                    'upload_label' => __('Upload picture', 'leyka'),
-                    'upload_title' => __('Select a picture for the reward', 'leyka'),
-                    'upload_button_label' => __('Use the picture', 'leyka'),
-                    'required' => false,
-                    'value' => $placeholders['thumbnail'],
-                    'comment' => __('For reward thumbnail, please, use a picture <strong>at least 536 pixels wide</strong>.', 'leyka'),
+                    'title'               => esc_html__('Reward picture', 'leyka'),
+                    'upload_label'        => esc_html__('Upload picture', 'leyka'),
+                    'upload_title'        => esc_html__('Select a picture for the reward', 'leyka'),
+                    'upload_button_label' => esc_html__('Use the picture', 'leyka'),
+                    'required'            => false,
+                    'value'               => $placeholders['thumbnail'],
+                    'comment'             => __('For reward thumbnail, please, use a picture <strong>at least 536 pixels wide</strong>.', 'leyka'),
                 ]);?>
 
                 <div class="field-errors"></div>
@@ -582,7 +590,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
             <div class="settings-block option-block type-html">
                 <?php leyka_render_textarea_field('merchandise_description', [
-                    'title' => __('Description text', 'leyka'),
+                    'title' => esc_html__('Description text', 'leyka'),
                     'value' => $placeholders['description'],
                     'required' => false,
                 ]);?>
@@ -597,7 +605,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
         $placeholders = wp_parse_args($placeholders, [
             'id' => '',
-            'box_title' => __('New reward', 'leyka'),
+            'box_title' => esc_html__('New reward', 'leyka'),
             'title' => '',
             'description' => '',
             'donation_amount_needed' => 0,
@@ -628,17 +636,21 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
                 leyka_multi_valued_item_campaign_subfields_html([
                     'item_campaigns' => $placeholders['campaigns'],
-                    'item_campaigns_field_title' => __('Campaigns that will use the reward', 'leyka'),
+                    'item_campaigns_field_title' => esc_html__('Campaigns that will use the reward', 'leyka'),
 
                     'item_for_all_campaigns' => !!$placeholders['for_all_campaigns'],
-                    'item_for_all_campaigns_field_title' => __('The reward is for all campaigns by default', 'leyka'),
+                    'item_for_all_campaigns_field_title' => esc_html__('The reward is for all campaigns by default', 'leyka'),
 
                     'item_campaigns_exceptions' => $placeholders['campaigns_exceptions'],
-                    'item_campaigns_exceptions_field_title' => __('Campaigns that will NOT use the reward', 'leyka'),
+                    'item_campaigns_exceptions_field_title' => esc_html__('Campaigns that will NOT use the reward', 'leyka'),
                 ]);?>
 
                 <ul class="notes-and-errors">
-                    <li class="any-field-note"><?php _e('For reward thumbnail, please, use a picture <strong>at least 536 pixels wide</strong>.', 'leyka');?></li>
+                    <li class="any-field-note"><?php echo sprintf(
+                        esc_html__('For reward thumbnail, please, use a picture %sat least 536 pixels wide%s.', 'leyka'),
+                        '<strong>',
+                        '</strong>'
+                    );?></li>
                 </ul>
 
                 <div class="box-footer">
@@ -658,7 +670,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
         $option_id = mb_stristr($option_id, 'leyka_') ? $option_id : 'leyka_'.$option_id;
         $data = $data ? : leyka_options()->get_info_of($option_id);?>
 
-        <div id="<?php echo esc_attr( $option_id . '-wrapper' ); ?>" class="leyka-<?php echo esc_attr( $option_id ); ?>-field-wrapper multi-valued-items-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) ? '' : implode(' ', $data['field_classes']);?>">
+        <div id="<?php echo esc_attr( $option_id . '-wrapper' ); ?>" class="leyka-<?php echo esc_attr( $option_id ); ?>-field-wrapper multi-valued-items-field-wrapper <?php echo empty($data['field_classes']) || !is_array($data['field_classes']) ? '' : implode(' ', array_map( 'esc_attr', $data['field_classes'] ) );?>">
 
             <div class="leyka-main-multi-items leyka-main-merchandise" data-max-items="" data-min-items="0" data-items-cookie-name="leyka-merchandise-boxes-closed" data-item-inputs-names-prefix="leyka_merchandise_" data-show-new-item-if-empty="1">
 
@@ -841,7 +853,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
     public function _merchandise_admin_donations_list_column_name($columns){
 
-        $columns['merchandise'] = __('Donation reward', 'leyka');
+        $columns['merchandise'] = esc_html__('Donation reward', 'leyka');
 
         return $columns;
 
@@ -866,7 +878,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
         if($donation->merchandise_id && !empty($merchandise_library[$donation->merchandise_id])) {
             $content = $merchandise_library[$donation->merchandise_id]['title'];
         } else {
-            $content = __('none', 'leyka');
+            $content = esc_html__('none', 'leyka');
         }?>
 
         <div class="leyka-ddata-string">
@@ -882,7 +894,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
     // Donations export:
     public function _merchandise_donations_export_headers(array $export_headers) {
 
-        $export_headers[] = __('Donation reward', 'leyka');
+        $export_headers[] = esc_html__('Donation reward', 'leyka');
 
         return $export_headers;
 
@@ -1127,12 +1139,12 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
                         <?php if($settings['thumbnail']) {?>
 
-                            <img class="merchandise-image" src="<?php echo wp_get_attachment_image_url($settings['thumbnail'], 'medium_large');?>" alt="<?php echo esc_attr($settings['title']);?>">
+                            <img class="merchandise-image" src="<?php echo esc_url( wp_get_attachment_image_url($settings['thumbnail'], 'medium_large') ); ?>" alt="<?php echo esc_attr($settings['title']);?>">
 
                         <?php }
 
                         if($settings['description']) {?>
-                            <div class="merchandise-description"><?php echo nl2br($settings['description']);?></div>
+                            <div class="merchandise-description"><?php echo nl2br( esc_html( $settings['description'] ) );?></div>
                         <?php }?>
 
                     </li>

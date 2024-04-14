@@ -116,7 +116,7 @@ class Supplier extends AbstractObject implements SupplierInterface
         } elseif (!TypeCast::canCastToString($value)) {
             throw new InvalidPropertyValueTypeException('Invalid inn value type', 0, 'receipt.supplier.inn');
         } elseif (!preg_match('/^([0-9]{10}|[0-9]{12})$/', (string)$value)) {
-            throw new InvalidPropertyValueException('Invalid inn value: "'.$value.'"', 0, 'receipt.supplier.inn');
+            throw new InvalidPropertyValueException('Invalid inn value: "'.esc_html($value).'"', 0, 'receipt.supplier.inn');
         } else {
             $this->_inn = (string)$value;
         }

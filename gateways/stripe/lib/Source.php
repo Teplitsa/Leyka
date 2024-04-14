@@ -95,7 +95,7 @@ class Source extends ApiResource
             $msg = "Could not determine which URL to request: {$class} instance "
              . "has invalid ID: {$id}";
 
-            throw new Exception\UnexpectedValueException($msg, null);
+            throw new Exception\UnexpectedValueException(wp_kses_post($msg), null);
         }
 
         if ($this['customer']) {
@@ -112,7 +112,7 @@ class Source extends ApiResource
         $message = 'This source object does not appear to be currently attached '
                . 'to a customer object.';
 
-        throw new Exception\UnexpectedValueException($message);
+        throw new Exception\UnexpectedValueException(wp_kses_post($message));
     }
 
     /**

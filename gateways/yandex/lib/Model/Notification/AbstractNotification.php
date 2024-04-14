@@ -89,12 +89,12 @@ abstract class AbstractNotification extends AbstractObject implements Notificati
                 $this->_type = (string)$value;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid value for "type" parameter in Notification', 0, 'notification.type', $value
+                    'Invalid value for "type" parameter in Notification', 0, 'notification.type', esc_html($value)
                 );
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid value type for "type" parameter in Notification', 0, 'notification.type', $value
+                'Invalid value type for "type" parameter in Notification', 0, 'notification.type', esc_html($value)
             );
         }
     }
@@ -130,12 +130,12 @@ abstract class AbstractNotification extends AbstractObject implements Notificati
                 $this->_event = (string)$value;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid value for "event" parameter in Notification', 0, 'notification.event', $value
+                    'Invalid value for "event" parameter in Notification', 0, 'notification.event', esc_html($value)
                 );
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid value type for "event" parameter in Notification', 0, 'notification.event', $value
+                'Invalid value type for "event" parameter in Notification', 0, 'notification.event', esc_html($value)
             );
         }
     }

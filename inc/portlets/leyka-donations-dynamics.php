@@ -18,9 +18,9 @@ $data = Leyka_Donations_Dynamics_Portlet_Controller::get_instance()->get_templat
 <script>
 
 	const leykaDonationsChartData = {
-		labels: <?php echo json_encode($data['labels']);?>,
+		labels: <?php echo wp_json_encode($data['labels']);?>,
 	    datasets: [{
-	        data: <?php echo json_encode($data['data']);?>,
+	        data: <?php echo wp_json_encode($data['data']);?>,
 			borderWidth: 1,
 			backgroundColor: 'rgba(0, 133, 186, 0.2)',
 			borderColor: 'rgba(0, 133, 186, 0.2)',

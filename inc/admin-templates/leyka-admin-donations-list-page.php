@@ -12,8 +12,8 @@ $donor_subscribed = isset( $_GET['donor_subscribed'] ) ? $_GET['donor_subscribed
 
 <div class="leyka-admin wrap donations-list leyka-settings-page" data-leyka-admin-page-type="donations-list-page">
 
-    <h1 class="wp-heading-inline"><?php _e('Donations', 'leyka');?></h1>
-    <a href="<?php echo admin_url('admin.php?page=leyka_donation_info');?>" class="page-title-action"><?php _e('Add correctional donation', 'leyka');?></a>
+    <h1 class="wp-heading-inline"><?php esc_html_e('Donations', 'leyka');?></h1>
+    <a href="<?php echo esc_url( admin_url('admin.php?page=leyka_donation_info') );?>" class="page-title-action"><?php esc_html_e('Add correctional donation', 'leyka');?></a>
 
     <div id="poststuff">
         <div>
@@ -33,7 +33,7 @@ $donor_subscribed = isset( $_GET['donor_subscribed'] ) ? $_GET['donor_subscribed
                                 <select id="payment-type-select" name="type" class="leyka-select-menu">
 
                                     <option value="" <?php echo wp_kses_post( $filter_value ? '' : 'selected="selected"' );?>>
-                                        --- <?php _e('Payment type', 'leyka');?> ---
+                                        --- <?php esc_html_e('Payment type', 'leyka');?> ---
                                     </option>
 
                                     <?php foreach(leyka_get_payment_types_list() as $payment_type => $label) {?>
@@ -52,7 +52,7 @@ $donor_subscribed = isset( $_GET['donor_subscribed'] ) ? $_GET['donor_subscribed
                                 <select id="donation-status-select" name="status" class="leyka-select-menu">
 
                                     <option value="" <?php echo wp_kses_post( $filter_value ? '' : 'selected="selected"' );?>>
-                                        --- <?php _e('Donation status', 'leyka');?> ---
+                                        --- <?php esc_html_e('Donation status', 'leyka');?> ---
                                     </option>
 
                                     <?php foreach(leyka_get_donation_status_list() as $status => $label) {?>
@@ -67,13 +67,13 @@ $donor_subscribed = isset( $_GET['donor_subscribed'] ) ? $_GET['donor_subscribed
                             </div>
 
                             <div class="leyka-admin-list-filter-wrapper leyka-donation-date-filter-wrapper">
-                                <label for="donation-datetime-from"><?php _e('From:', 'leyka');?></label>
-                                <input type="text" id="donation-datetime-from" name="date-from" autocomplete="off" class="leyka-datepicker leyka-selector" data-min-date="-5Y" data-max-date="+0D" value="<?php echo esc_attr( $date_from ); ?>" placeholder="<?php _e('dd.mm.yyyy', 'leyka');?>">
+                                <label for="donation-datetime-from"><?php esc_html_e('From:', 'leyka');?></label>
+                                <input type="text" id="donation-datetime-from" name="date-from" autocomplete="off" class="leyka-datepicker leyka-selector" data-min-date="-5Y" data-max-date="+0D" value="<?php echo esc_attr( $date_from ); ?>" placeholder="<?php esc_attr_e('dd.mm.yyyy', 'leyka');?>">
                             </div>
 
                             <div class="leyka-admin-list-filter-wrapper leyka-donation-date-filter-wrapper">
-                                <label for="donation-datetime-to"><?php _e('To:', 'leyka');?></label>
-                                <input type="text" id="donation-datetime-to" name="date-to" autocomplete="off" class="leyka-datepicker leyka-selector" data-min-date="-5Y" data-max-date="+0D" value="<?php echo esc_attr( $date_to ); ?>" placeholder="<?php _e('dd.mm.yyyy', 'leyka');?>">
+                                <label for="donation-datetime-to"><?php esc_html_e('To:', 'leyka');?></label>
+                                <input type="text" id="donation-datetime-to" name="date-to" autocomplete="off" class="leyka-datepicker leyka-selector" data-min-date="-5Y" data-max-date="+0D" value="<?php echo esc_attr( $date_to ); ?>" placeholder="<?php esc_attr_e('dd.mm.yyyy', 'leyka');?>">
                             </div>
 
                         </div>
@@ -83,7 +83,7 @@ $donor_subscribed = isset( $_GET['donor_subscribed'] ) ? $_GET['donor_subscribed
                             <?php $filter_value = isset($_GET['campaigns']) ? (array)$_GET['campaigns'] : [];?>
                             <div class="leyka-admin-list-filter-wrapper">
 
-                                <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector autocomplete-input" value="" placeholder="<?php _e('All campaigns', 'leyka');?>">
+                                <input type="text" name="campaigns-input" class="leyka-campaigns-selector leyka-selector autocomplete-input" value="" placeholder="<?php esc_attr_e('All campaigns', 'leyka');?>">
 
                                 <select class="leyka-campaigns-select autocomplete-select" name="campaigns[]" multiple="multiple">
 
@@ -108,7 +108,7 @@ $donor_subscribed = isset( $_GET['donor_subscribed'] ) ? $_GET['donor_subscribed
                                 <select id="gateway-pm-select" name="gateway-pm" class="leyka-select-menu">
 
                                     <option value="" <?php echo wp_kses_post( $filter_value ? '' : 'selected="selected"' );?>>
-                                        --- <?php _e('Payment method', 'leyka');?> ---
+                                        --- <?php esc_html_e('Payment method', 'leyka');?> ---
                                     </option>
 
                                     <?php $gw_pm_list = [];
@@ -143,14 +143,14 @@ $donor_subscribed = isset( $_GET['donor_subscribed'] ) ? $_GET['donor_subscribed
                             </div>
 
                             <div class="leyka-admin-list-filter-wrapper leyka-donation-donor-filter-wrapper">
-                                <input type="text" name="donor-name-email" class="leyka-donor-name-email-selector leyka-selector autocomplete-input" data-search-donors-in="donations" value="<?php echo esc_attr( $donor_name_email ); ?>" placeholder="<?php _e("Donor's name or email", 'leyka');?>">
+                                <input type="text" name="donor-name-email" class="leyka-donor-name-email-selector leyka-selector autocomplete-input" data-search-donors-in="donations" value="<?php echo esc_attr( $donor_name_email ); ?>" placeholder="<?php esc_attr_e("Donor's name or email", 'leyka');?>">
                             </div>
 
                             <div class="leyka-admin-list-filter-wrapper">
                                 <select id="donor-subscribed-select" name="donor_subscribed" class="leyka-select-menu">
-                                    <option value="-" <?php selected( $donor_subscribed, '-' );?>>--- <?php _e('Email subscription', 'leyka');?> ---</option>
-                                    <option value="1" <?php selected( $donor_subscribed, 1 );?>><?php _e('Subscription on', 'leyka');?></option>
-                                    <option value="0" <?php selected( $donor_subscribed, 0 );?>><?php _e('No subscription', 'leyka');?></option>
+                                    <option value="-" <?php selected( $donor_subscribed, '-' );?>>--- <?php esc_html_e('Email subscription', 'leyka');?> ---</option>
+                                    <option value="1" <?php selected( $donor_subscribed, 1 );?>><?php esc_html_e('Subscription on', 'leyka');?></option>
+                                    <option value="0" <?php selected( $donor_subscribed, 0 );?>><?php esc_html_e('No subscription', 'leyka');?></option>
                                 </select>
                             </div>
 
@@ -163,15 +163,15 @@ $donor_subscribed = isset( $_GET['donor_subscribed'] ) ? $_GET['donor_subscribed
                     </div>
 
                     <div class="col-2">
-                        <input type="submit" class="button" value="<?php _e('Filter the data', 'leyka');?>">
-                        <a href="<?php echo admin_url('/admin.php?page=leyka_donations');?>" class="reset-filters">
-                            <?php _e('Reset the filter', 'leyka');?>
+                        <input type="submit" class="button" value="<?php esc_html_e('Filter the data', 'leyka');?>">
+                        <a href="<?php echo esc_url( admin_url('/admin.php?page=leyka_donations') );?>" class="reset-filters">
+                            <?php esc_html_e('Reset the filter', 'leyka');?>
                         </a>
                     </div>
                 </div>
 
                 <div class="donations-list-export admin-list-export">
-                    <input type="submit" class="submit" name="donations-list-export" value="<?php _e('Export the list in CSV', 'leyka');?>">
+                    <input type="submit" class="submit" name="donations-list-export" value="<?php esc_attr_e('Export the list in CSV', 'leyka');?>">
                 </div>
 
             </form>

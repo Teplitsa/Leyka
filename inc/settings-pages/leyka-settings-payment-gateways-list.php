@@ -5,14 +5,14 @@
     <div class="filter-area leyka-modules-filter show">
 
         <div class="filter-toggle">
-            <img class="show-filter" src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-gateway-filter-off.svg" alt="">
-            <img class="hide-filter" src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-gateway-filter-on.svg" alt="">
+            <img class="show-filter" src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/icon-gateway-filter-off.svg" alt="">
+            <img class="hide-filter" src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/icon-gateway-filter-on.svg" alt="">
         </div>
 
         <div class="filter-categories">
         <?php foreach(leyka_get_gateways_filter_categories_list() as $category_slug => $category_label) {?>
             <a class="filter-category-item" data-category="<?php echo esc_attr( $category_slug );?>" href="#">
-                <?php echo leyka_get_filter_category_label($category_slug);?>
+                <?php echo esc_html(leyka_get_filter_category_label($category_slug));?>
             </a>
         <?php }?>
         </div>
@@ -36,7 +36,7 @@
 
         $gateway_activation_status = $gateway->get_activation_status();?>
 
-        <div class="module-card gateway-card <?php echo implode(' ', $gateway->get_filter_categories());?> <?php echo esc_attr( $gateway_activation_status );?>">
+        <div class="module-card gateway-card <?php echo esc_attr(implode(' ', $gateway->get_filter_categories()));?> <?php echo esc_attr( $gateway_activation_status );?>">
 
             <div class="module-card-header">
 
@@ -44,12 +44,12 @@
 
                 <div>
                     <div class="module-card-title gateway-card-title">
-                        <a class="module-settings-link" href="<?php echo admin_url('admin.php?page=leyka_settings&stage=payment&gateway='.$gateway->id);?>">
+                        <a class="module-settings-link" href="<?php echo esc_url(admin_url('admin.php?page=leyka_settings&stage=payment&gateway='.$gateway->id));?>">
                             <?php echo esc_html( $gateway->title );?>
                         </a>
                     </div>
                     <div class="module-card-status gateway-card-status <?php echo esc_attr( $gateway_activation_status );?>">
-                        <?php echo leyka_get_gateway_activation_status_label($gateway_activation_status);?>
+                        <?php echo esc_html(leyka_get_gateway_activation_status_label($gateway_activation_status));?>
                     </div>
                 </div>
 
@@ -74,22 +74,22 @@
                     </div>
                 </div>
 
-                <img class="scroll-arrow left" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-scroll-arrow-left.svg" alt="">
-                <img class="scroll-arrow right" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-scroll-arrow-right.svg" alt="">
+                <img class="scroll-arrow left" src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/icon-scroll-arrow-left.svg" alt="">
+                <img class="scroll-arrow right" src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/icon-scroll-arrow-right.svg" alt="">
 
             </div>
 
             <div class="module-card-action">
 
-                <a class="button <?php echo'button-primary';?> activation-button <?php echo 'leyka-card-'.$gateway_activation_status;?>" href="<?php echo leyka_get_gateway_settings_url($gateway);?>">
+                <a class="button <?php echo'button-primary';?> activation-button <?php echo 'leyka-card-'.esc_attr($gateway_activation_status);?>" href="<?php echo esc_attr(leyka_get_gateway_settings_url($gateway));?>">
 
                 <?php if($gateway->has_wizard && in_array($gateway_activation_status, ['inactive', 'activating'])) {?>
-                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-wizard-stick-only.svg" class="wizard-available" alt="">
+                    <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/icon-wizard-stick-only.svg" class="wizard-available" alt="">
                 <?php } else {?>
-                	<img src="<?php echo LEYKA_PLUGIN_BASE_URL.'img/icon-gear.svg';?>" alt="">
+                	<img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL).'img/icon-gear.svg';?>" alt="">
                 <?php }
 
-                echo leyka_get_gateway_activation_button_label($gateway);?>
+                echo esc_html(leyka_get_gateway_activation_button_label($gateway));?>
 
                 </a>
 

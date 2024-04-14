@@ -188,7 +188,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
 
     /** Text displayed when no recurring subscriptions data is available. */
     public function no_items() {
-        _e('No recurring subscriptions avaliable.', 'leyka');
+        esc_html_e('No recurring subscriptions avaliable.', 'leyka');
     }
 
     /**
@@ -561,19 +561,19 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
                 <div class="admin-list-filters leyka-filter-buttons">
 
                         <a class="leyka-filter-button leyka-subscriptions-all <?php echo wp_kses_post( $filter_value ? '' : 'leyka-active' ); ?>" href="?<?php echo esc_attr( $other_filters_values_string ); ?>">
-                            <?php _e('All subscriptions', 'leyka').' ('.$subscriptions_stats['all'].')';?>
+                            <?php esc_html_e('All subscriptions', 'leyka').' ('.$subscriptions_stats['all'].')';?>
                         </a>
 
                         <a class="leyka-filter-button leyka-subscriptions-active <?php echo esc_attr( $filter_value == 'active' ? 'leyka-active' : '' );?>" href="?<?php echo esc_attr( $other_filters_values_string ); ?>&recurring_subscription_status=active">
-                            <?php _ex('Only active', 'Multiple case', 'leyka').' ('.$subscriptions_stats['active'].')';?>
+                            <?php echo esc_html_x('Only active', 'Multiple case', 'leyka').' ('.esc_html($subscriptions_stats['active']).')';?>
                         </a>
 
                         <a class="leyka-filter-button leyka-subscriptions-problematic <?php echo esc_attr( $filter_value == 'problematic' ? 'leyka-active' : '' );?>" href="?<?php echo esc_attr( $other_filters_values_string ); ?>&recurring_subscription_status=problematic">
-                            <?php _ex('Only problematic', 'Multiple case', 'leyka').' ('.$subscriptions_stats['problematic'].')';?>
+                            <?php echo esc_html_x('Only problematic', 'Multiple case', 'leyka').' ('.esc_html($subscriptions_stats['problematic']).')';?>
                         </a>
 
                         <a class="leyka-filter-button leyka-subscriptions-non-active <?php echo esc_attr( $filter_value == 'non-active' ? 'leyka-active' : '' );?>" href="?<?php echo esc_attr( $other_filters_values_string ); ?>&recurring_subscription_status=non-active">
-                            <?php _ex('Only not active', 'Multiple case', 'leyka').' ('.$subscriptions_stats['non-active'].')';?>
+                            <?php echo esc_html_x('Only not active', 'Multiple case', 'leyka').' ('.esc_html($subscriptions_stats['non-active']).')';?>
                         </a>
 
                 </div>
@@ -591,7 +591,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
 
     public function single_row($item) {
 
-        echo '<tr class="leyka-'.($item['recurring_subscription_status']).'">';
+        echo '<tr class="leyka-'.esc_attr(($item['recurring_subscription_status'])).'">';
         $this->single_row_columns($item);
         echo '</tr>';
 

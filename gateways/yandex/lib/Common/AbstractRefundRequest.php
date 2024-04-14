@@ -97,13 +97,13 @@ class AbstractRefundRequest extends AbstractRequest
             $length = mb_strlen($value, 'utf-8');
             if ($length != 36) {
                 throw new InvalidPropertyValueException(
-                    'Invalid payment id value in CreateRefundRequest', 0, 'CreateRefundRequest.paymentId', $value
+                    'Invalid payment id value in CreateRefundRequest', 0, 'CreateRefundRequest.paymentId', esc_html($value)
                 );
             }
             $this->_paymentId = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid payment id value type in CreateRefundRequest', 0, 'CreateRefundRequest.paymentId', $value
+                'Invalid payment id value type in CreateRefundRequest', 0, 'CreateRefundRequest.paymentId', esc_html($value)
             );
         }
     }
@@ -172,7 +172,7 @@ class AbstractRefundRequest extends AbstractRequest
         } elseif (is_array($value)) {
             $this->_receipt = new Receipt($value);
         } else {
-            throw new InvalidPropertyValueTypeException('Invalid receipt in Refund', 0, 'Refund.receipt', $value);
+            throw new InvalidPropertyValueTypeException('Invalid receipt in Refund', 0, 'Refund.receipt', esc_html($value));
         }
     }
 

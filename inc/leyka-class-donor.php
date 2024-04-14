@@ -262,7 +262,7 @@ class Leyka_Donor {
         $donor_user = leyka_get_validated_user($donor_user);
 
         if(is_wp_error($donor_user)) {
-            throw new Exception($donor_user->get_error_message());
+            throw new Exception(wp_kses_post($donor_user->get_error_message()));
         }
 
         $this->_id = $donor_user->ID;

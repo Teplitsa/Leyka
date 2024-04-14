@@ -54,17 +54,17 @@ add_action('wp_ajax_nopriv_leyka_get_campaigns_list', 'leyka_ajax_get_campaigns_
 function leyka_recalculate_total_funded_action(){
 
     if( !wp_verify_nonce($_GET['nonce'], 'leyka_recalculate_total_funded_amount') ) {
-        wp_die(__('Error: incorrect request parameters', 'leyka'));
+        wp_die(esc_html__('Error: incorrect request parameters', 'leyka'));
     }
 
     if(empty($_GET['campaign_id'])) {
-        wp_die(__('Error: campaign ID is missing', 'leyka'));
+        wp_die(esc_html__('Error: campaign ID is missing', 'leyka'));
     }
 
     $campaign = new Leyka_Campaign(absint($_GET['campaign_id']));
     $campaign->update_total_funded_amount();
 
-    wp_die($campaign->total_funded);
+    wp_die(wp_kses_post($campaign->total_funded));
 
 }
 add_action('wp_ajax_leyka_recalculate_total_funded_amount', 'leyka_recalculate_total_funded_action');

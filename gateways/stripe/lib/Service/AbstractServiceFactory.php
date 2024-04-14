@@ -52,7 +52,7 @@ abstract class AbstractServiceFactory
             return $this->services[$name];
         }
 
-        \trigger_error('Undefined property: ' . static::class . '::$' . $name);
+        \trigger_error('Undefined property: ' . esc_html( static::class . '::$' . $name ) );
 
         return null;
     }

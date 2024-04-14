@@ -181,16 +181,16 @@ class CreatePaymentRequest extends AbstractPaymentRequest implements CreatePayme
             $length = mb_strlen((string)$value, 'utf-8');
             if ($length > Payment::MAX_LENGTH_DESCRIPTION) {
                 throw new InvalidPropertyValueException(
-                    'The value of the description parameter is too long. Max length is ' . Payment::MAX_LENGTH_DESCRIPTION,
+                    'The value of the description parameter is too long. Max length is ' . esc_html(Payment::MAX_LENGTH_DESCRIPTION),
                     0,
                     'CreatePaymentRequest.description',
-                    $value
+                    esc_html($value)
                 );
             }
             $this->_description = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid description value type', 0, 'CreatePaymentRequest.description', $value
+                'Invalid description value type', 0, 'CreatePaymentRequest.description', esc_html($value)
             );
         }
     }
@@ -252,13 +252,13 @@ class CreatePaymentRequest extends AbstractPaymentRequest implements CreatePayme
             $length = mb_strlen((string)$value, 'utf-8');
             if ($length > self::MAX_LENGTH_PAYMENT_TOKEN) {
                 throw new InvalidPropertyValueException(
-                    'Invalid paymentToken value', 0, 'CreatePaymentRequest.paymentToken', $value
+                    'Invalid paymentToken value', 0, 'CreatePaymentRequest.paymentToken', esc_html($value)
                 );
             }
             $this->_paymentToken = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid paymentToken value type', 0, 'CreatePaymentRequest.paymentToken', $value
+                'Invalid paymentToken value type', 0, 'CreatePaymentRequest.paymentToken', esc_html($value)
             );
         }
     }
@@ -298,7 +298,7 @@ class CreatePaymentRequest extends AbstractPaymentRequest implements CreatePayme
                 'Invalid paymentMethodId value type in CreatePaymentRequest',
                 0,
                 'CreatePaymentRequest.CreatePaymentRequest',
-                $value
+                esc_html($value)
             );
         }
     }
@@ -338,7 +338,7 @@ class CreatePaymentRequest extends AbstractPaymentRequest implements CreatePayme
                 'Invalid paymentMethodData value type in CreatePaymentRequest',
                 0,
                 'CreatePaymentRequest.paymentMethodData',
-                $value
+                $value // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
             );
         }
     }
@@ -382,7 +382,7 @@ class CreatePaymentRequest extends AbstractPaymentRequest implements CreatePayme
                 'Invalid confirmation value type in CreatePaymentRequest',
                 0,
                 'CreatePaymentRequest.confirmation',
-                $value
+                $value // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
             );
         }
     }
@@ -422,7 +422,7 @@ class CreatePaymentRequest extends AbstractPaymentRequest implements CreatePayme
                 'Invalid savePaymentMethod value type in CreatePaymentRequest',
                 0,
                 'CreatePaymentRequest.savePaymentMethod',
-                $value
+                esc_html( $value )
             );
         }
     }
@@ -459,7 +459,7 @@ class CreatePaymentRequest extends AbstractPaymentRequest implements CreatePayme
             $this->_capture = (bool)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid capture value type in CreatePaymentRequest', 0, 'CreatePaymentRequest.capture', $value
+                'Invalid capture value type in CreatePaymentRequest', 0, 'CreatePaymentRequest.capture', esc_html($value)
             );
         }
     }
@@ -496,7 +496,7 @@ class CreatePaymentRequest extends AbstractPaymentRequest implements CreatePayme
             $this->_clientIp = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid clientIp value type in CreatePaymentRequest', 0, 'CreatePaymentRequest.clientIp', $value
+                'Invalid clientIp value type in CreatePaymentRequest', 0, 'CreatePaymentRequest.clientIp', esc_html($value)
             );
         }
     }
@@ -563,6 +563,7 @@ class CreatePaymentRequest extends AbstractPaymentRequest implements CreatePayme
             $this->_metadata = new Metadata($value);
         } else {
             throw new InvalidPropertyValueTypeException(
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 'Invalid metadata value type in CreatePaymentRequest', 0, 'CreatePaymentRequest.metadata', $value
             );
         }
@@ -602,7 +603,7 @@ class CreatePaymentRequest extends AbstractPaymentRequest implements CreatePayme
             $this->_deal = new PaymentDealInfo($value);
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid deal value type in CreatePaymentRequest', 0, 'CreatePaymentRequest.deal', $value
+                'Invalid deal value type in CreatePaymentRequest', 0, 'CreatePaymentRequest.deal', esc_html($value)
             );
         }
     }
@@ -639,16 +640,16 @@ class CreatePaymentRequest extends AbstractPaymentRequest implements CreatePayme
             $length = mb_strlen((string)$value, 'utf-8');
             if ($length > Payment::MAX_LENGTH_MERCHANT_CUSTOMER_ID) {
                 throw new InvalidPropertyValueException(
-                    'The value of the merchant_customer_id parameter is too long. Max length is ' . Payment::MAX_LENGTH_MERCHANT_CUSTOMER_ID,
+                    'The value of the merchant_customer_id parameter is too long. Max length is ' . esc_html(Payment::MAX_LENGTH_MERCHANT_CUSTOMER_ID),
                     0,
                     'CreatePaymentRequest.merchant_customer_id',
-                    $value
+                    esc_html($value)
                 );
             }
             $this->_merchant_customer_id = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid merchant_customer_id value type in CreatePaymentRequest', 0, 'CreatePaymentRequest.merchant_customer_id', $value
+                'Invalid merchant_customer_id value type in CreatePaymentRequest', 0, 'CreatePaymentRequest.merchant_customer_id', esc_html($value)
             );
         }
     }

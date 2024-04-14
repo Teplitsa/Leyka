@@ -15,10 +15,10 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
     protected function _set_attributes() {
 
         $this->_id = 'gds_integration';
-        $this->_title = __('Google Data Studio');
+        $this->_title = esc_html__('Google Data Studio', 'leyka');
 
         // A human-readable short description (for backoffice extensions list page):
-        $this->_description = __('Integration of your donations data with Google Data Studio web data visualization service (via MySQL data connector).', 'leyka');
+        $this->_description = esc_html__('Integration of your donations data with Google Data Studio web data visualization service (via MySQL data connector).', 'leyka');
 
         // A human-readable full description (for backoffice extensions list page):
         $this->_full_description = ''; // 150-300 chars
@@ -26,18 +26,18 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
         global $wpdb;
 
         // A human-readable description (for backoffice extension settings page):
-        $this->_settings_description = __('<p>This extension will help you convert the Leyka donations data to the export format. After this data conversion you may use them to create dashboards, charts and data tables in Google Data Studio.</p>', 'leyka')
-        .'<h3>'.__('Set up the Cron job in your hosting Dashboard', 'leyka').'</h3>'
+        $this->_settings_description = '<p>'.esc_html__('This extension will help you convert the Leyka donations data to the export format. After this data conversion you may use them to create dashboards, charts and data tables in Google Data Studio.', 'leyka').'</p>'
+        .'<h3>'.esc_html__('Set up the Cron job in your hosting Dashboard', 'leyka').'</h3>'
         .'<ul>'
             .'<li>'
-                .__('Copy your procedure absolute address:', 'leyka')
+                .esc_html__('Copy your procedure absolute address:', 'leyka')
                 .'<br><code>'.str_replace(basename(__FILE__), 'leyka-gds-data-preparation.php', realpath(__FILE__)).'</code>'
             .'</li>'
             .'<li>'.sprintf(__('Set the Cron job to call the procedure nightly (<a href="%s" target="_blank" class="leyka-outer-link">user manual for setting up Cron jobs</a>, chapter 2)', 'leyka'), 'https://leyka.te-st.ru/docs/gds/').'</li>'
         .'</ul>'
-        .'<h3>'.__('When the Cron job is done at least one time, there will be a new data table in your website database', 'leyka').'</h3>'
+        .'<h3>'.esc_html__('When the Cron job is done at least one time, there will be a new data table in your website database', 'leyka').'</h3>'
         .'<ul>'
-            .'<li>'.__('The GDS data table name:', 'leyka').'<br><code>'.$wpdb->prefix.'leyka_gds_integration_donations_data</code></li>'
+            .'<li>'.esc_html__('The GDS data table name:', 'leyka').'<br><code>'.$wpdb->prefix.'leyka_gds_integration_donations_data</code></li>'
             .'<li>'.sprintf(__('Connect the table and GDS using a MySQL data connector (<a href="%s" target="_blank" class="leyka-outer-link">user manual for creating a GDS data connection</a>, chapter 4)', 'leyka'), 'https://leyka.te-st.ru/docs/gds/').'</li>'
             .'<li>'.sprintf(__('Set up the data visualization in GDS (<a href="%s" target="_blank" class="leyka-outer-link">dashboards & charts setup examples</a>, chapter 5)', 'leyka'), 'https://leyka.te-st.ru/docs/gds/').'</li>'
         .'</ul>';
@@ -55,17 +55,17 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
 
         $this->_options = apply_filters('leyka_'.$this->_id.'_extension_options', [
             $this->_id.'_donations_date_period' => [
-                'type' => 'select',
-                'title' => __('Donations dates period', 'leyka'),
-                'description' => __('Choose a donations dates period from which your donations will be prepared to export to Google Data Studio. WARNING: donations data to export will be refreshed only at the closest call of your special data preparing procedure.', 'leyka'),
+                'type'          => 'select',
+                'title'         => esc_html__('Donations dates period', 'leyka'),
+                'description'   => esc_html__('Choose a donations dates period from which your donations will be prepared to export to Google Data Studio. WARNING: donations data to export will be refreshed only at the closest call of your special data preparing procedure.', 'leyka'),
                 'field_classes' => ['leyka-option-field-width-half'],
-                'default' => '2_years',
-                'list_entries' => [
-                    '2_months' => __('Last two months', 'leyka'),
-                    '6_months' => __('Last six months', 'leyka'),
-                    '1_year' => __('Last one year', 'leyka'),
-                    '2_years' => __('Last two years', 'leyka'),
-                    'all' => __('For all time', 'leyka'),
+                'default'       => '2_years',
+                'list_entries'  => [
+                    '2_months'  => esc_html__('Last two months', 'leyka'),
+                    '6_months'  => esc_html__('Last six months', 'leyka'),
+                    '1_year'    => esc_html__('Last one year', 'leyka'),
+                    '2_years'   => esc_html__('Last two years', 'leyka'),
+                    'all'       => esc_html__('For all time', 'leyka'),
                 ],
             ],
             $this->_id.'_data_info' => [
@@ -124,9 +124,12 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
 
                 <div class="leyka-gds-data-error">
                     <?php echo sprintf(
-                        __("WARNING: we can't use this donations selection. The GDS limit of data lines is exceeded (<strong>%s / %s</strong>). Try to select a more narrow period.", 'leyka'),
-                        leyka_amount_format($data_lines_count),
-                        leyka_amount_format(Leyka_Gds_Integration_Extension::get_instance()->get_max_gds_allowed_lines())
+                        esc_html__("WARNING: we can't use this donations selection. The GDS limit of data lines is exceeded (%s). Try to select a more narrow period.", 'leyka'),
+                        sprintf(
+                            '<strong>%s / %s</strong>',
+                            esc_html( leyka_amount_format($data_lines_count) ),
+                            esc_html( leyka_amount_format(Leyka_Gds_Integration_Extension::get_instance()->get_max_gds_allowed_lines()) )
+                        )
                     );?>
                 </div>
 
@@ -134,9 +137,12 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
 
                 <div class="leyka-gds-data-info">
                     <?php echo sprintf(
-                        __('Total donations to convert: <strong>%s / %s</strong>', 'leyka'),
-                        leyka_amount_format($data_lines_count),
-                        leyka_amount_format(Leyka_Gds_Integration_Extension::get_instance()->get_max_gds_allowed_lines())
+                        esc_html__('Total donations to convert: %s', 'leyka'),
+                        sprintf(
+                            '<strong>%s / %s</strong>',
+                            esc_html(leyka_amount_format($data_lines_count)),
+                            esc_html(leyka_amount_format(Leyka_Gds_Integration_Extension::get_instance()->get_max_gds_allowed_lines()))
+                        )
                     );?>
                 </div>
 
@@ -145,10 +151,16 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
             $timestamp = get_transient('leyka_gds_integration_last_data_preparing_date');
             $timestamp = $timestamp ? strtotime($timestamp) : false;
             $last_procedure_run_date = $timestamp ?
-                gmdate(get_option('date_format'), $timestamp).', '.gmdate(get_option('time_format'), $timestamp) : __('no', 'leyka');?>
+                gmdate(get_option('date_format'), $timestamp).', '.gmdate(get_option('time_format'), $timestamp) : esc_html__('no', 'leyka');?>
 
             <div class="leyka-gds-data-info">
-                <?php echo sprintf( __('Last successful data preparation date: <strong>%s</strong>', 'leyka'), esc_html( $last_procedure_run_date ) ) ;?>
+                <?php echo sprintf(
+                    esc_html__('Last successful data preparation date: %s', 'leyka'),
+                    sprintf(
+                        '<strong>%s</strong>',
+                        esc_html( $last_procedure_run_date )
+                    )
+                );?>
             </div>
 
         </div>

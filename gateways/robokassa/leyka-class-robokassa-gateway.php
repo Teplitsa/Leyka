@@ -235,7 +235,7 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
             <?php $init_recurring_donation = $donation->init_recurring_donation;?>
 
             <div class="recurring-is-active-field">
-                <label for="robokassa-recurring-is-active"><?php _e('Recurring subscription is active', 'leyka');?>:</label>
+                <label for="robokassa-recurring-is-active"><?php esc_html_e('Recurring subscription is active', 'leyka');?>:</label>
                 <div class="leyka-ddata-field">
                     <input type="checkbox" id="robokassa-recurring-is-active" name="robokassa-recurring-is-active" value="1" <?php checked( $init_recurring_donation->recurring_is_active, '1' );?>>
                 </div>

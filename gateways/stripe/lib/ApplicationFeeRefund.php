@@ -39,8 +39,7 @@ class ApplicationFeeRefund extends ApiResource
         $fee = $this['fee'];
         if (!$id) {
             throw new Exception\UnexpectedValueException(
-                'Could not determine which URL to request: ' .
-                "class instance has invalid ID: {$id}",
+                'Could not determine which URL to request: class instance has invalid ID: ' . esc_html( $id ),
                 null
             );
         }

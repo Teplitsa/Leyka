@@ -74,7 +74,7 @@ class PaymentMethodFactory
             throw new \InvalidArgumentException('Invalid payment method type value in payment factory');
         }
         if (!array_key_exists($type, $this->typeClassMap)) {
-            throw new \InvalidArgumentException('Invalid payment method data type "'.$type.'"');
+            throw new \InvalidArgumentException('Invalid payment method data type "'.esc_html($type).'"');
         }
         $className = __NAMESPACE__.'\\'.$this->typeClassMap[$type];
 

@@ -50,7 +50,7 @@ class FormatConverter
         if ($currency && array_key_exists($currency, $currencyDecimals)) {
             if (strpos($value, ".") !== false && (floor($value) != $value)) {
                 //throw exception if it has decimal values for JPY, TWD and HUF which does not ends with .00
-                throw new \InvalidArgumentException("value cannot have decimals for $currency currency");
+                throw new \InvalidArgumentException('value cannot have decimals for '. esc_html( $currency ) . ' currency');
             }
             $decimals = $currencyDecimals[$currency];
         } elseif (strpos($value, ".") === false) {

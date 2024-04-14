@@ -121,7 +121,7 @@ class Leyka_Quittance_Gateway extends Leyka_Gateway {
 
         do_action('leyka_before_quittance_output', $pm_id, $donation_id, $form_data);
 
-        die($quittance_html);
+        die( wp_kses_post( $quittance_html ) );
 
     }
 

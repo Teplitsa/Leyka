@@ -219,7 +219,7 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
         //}
 
         if(isset($_GET['debug'])) {
-            echo '<pre>The activity: '.print_r($this->_activity, 1).'</pre>';
+            echo '<pre>The activity: '.esc_html(print_r($this->_activity, 1)).'</pre>';
         }
 
     }

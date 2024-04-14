@@ -26,7 +26,7 @@ trait All
         $obj = \Stripe\Util\Util::convertToStripeObject($response->json, $opts);
         if (!($obj instanceof \Stripe\Collection)) {
             throw new \Stripe\Exception\UnexpectedValueException(
-                'Expected type ' . \Stripe\Collection::class . ', got "' . \get_class($obj) . '" instead.'
+                wp_kses_post('Expected type ' . \Stripe\Collection::class . ', got "' . \get_class($obj) . '" instead.')
             );
         }
         $obj->setLastResponse($response);

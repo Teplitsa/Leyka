@@ -53,8 +53,9 @@ abstract class Leyka_Options_Allocator extends Leyka_Singleton {
         } else {
             throw new Exception(
                 sprintf(
-                    __("Allocators Factory error: Can't find Allocator script by given country ID (%s, %s)"),
-                    $country_id, $file_path
+                    esc_html__("Allocators Factory error: Can't find Allocator script by given country ID (%s, %s)"),
+                    esc_html($country_id),
+                    esc_html($file_path)
                 ), 600
             );
         }
@@ -64,7 +65,7 @@ abstract class Leyka_Options_Allocator extends Leyka_Singleton {
             return new $allocator_class();
         } else {
             throw new Exception(
-                sprintf(__('Allocators Factory error: wrong allocator class given (%s)'), $allocator_class), 601
+                sprintf(esc_html__('Allocators Factory error: wrong allocator class given (%s)'), esc_html($allocator_class)), 601
             );
         }
 

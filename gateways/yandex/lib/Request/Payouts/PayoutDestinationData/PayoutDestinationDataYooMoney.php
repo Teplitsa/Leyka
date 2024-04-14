@@ -77,12 +77,12 @@ class PayoutDestinationDataYooMoney extends AbstractPayoutDestinationData
                 $this->_accountNumber = (string)$value;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid accountNumber value', 0, 'PayoutDestinationYooMoney.accountNumber', $value
+                    'Invalid accountNumber value', 0, 'PayoutDestinationYooMoney.accountNumber', esc_html($value)
                 );
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid accountNumber value type', 0, 'PayoutDestinationYooMoney.accountNumber', $value
+                'Invalid accountNumber value type', 0, 'PayoutDestinationYooMoney.accountNumber', esc_html($value)
             );
         }
     }

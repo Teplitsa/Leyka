@@ -4,22 +4,22 @@
 /** @var $this Leyka_Admin_Setup */
 
 if(empty($_GET['donor']) || !current_user_can('leyka_manage_options')) {
-    wp_die(__('Error: cannot display the page for the given donor.', 'leyka'));
+    wp_die(esc_html__('Error: cannot display the page for the given donor.', 'leyka'));
 }
 
 try {
     $donor = new Leyka_Donor(absint($_GET['donor']));
 } catch(Exception $e) {
-    wp_die($e->getMessage());
+    wp_die(wp_kses_post($e->getMessage()));
 }?>
 
 <div class="leyka-admin wrap single-settings donor-settings" data-leyka-admin-page-type="donor-info-page">
 
-    <a href="<?php echo admin_url('/admin.php?page=leyka_donors');?>" class="back-to-list-link">
-        <?php _e('Back to the list', 'leyka');?>
+    <a href="<?php echo esc_url( admin_url('/admin.php?page=leyka_donors') );?>" class="back-to-list-link">
+        <?php esc_html_e('Back to the list', 'leyka');?>
     </a>
 
-    <h1 class="wp-heading-inline"><?php _e('Donors', 'leyka');?></h1>
+    <h1 class="wp-heading-inline"><?php esc_html_e('Donors', 'leyka');?></h1>
     <hr class="wp-header-end">
 
     <div id="poststuff">

@@ -22,7 +22,10 @@ $campaign_url = $campaign_id ? get_the_permalink($campaign_id) : null;?>
     <ul class="leyka-campaign-completed" data-campaign-id="<?php echo esc_attr( $init_campaign->ID );?>">
         <li>
             <div class="item-text"><?php esc_html_e('The campaign set up by the address:', 'leyka');?></div>
-            <div class="item-info"><?php echo leyka_admin_get_slug_edit_field($init_campaign);?></div>
+            <div class="item-info"><?php
+                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                echo leyka_admin_get_slug_edit_field($init_campaign); 
+            ?></div>
         </li>
         <li>
             <div class="item-text">
@@ -30,13 +33,16 @@ $campaign_url = $campaign_id ? get_the_permalink($campaign_id) : null;?>
             </div>
             <div class="item-info">
                 <span class="leyka-wizard-copy2clipboard">
-                    <?php echo leyka_admin_get_shortcode_field($init_campaign);?>
+                    <?php
+                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                        echo leyka_admin_get_shortcode_field($init_campaign);
+                    ?>
                 </span>
             </div>
         </li>
         <li>
             <div class="item-text">
-                <?php _e('<strong>Payment via bank order print-outs</strong> set up.', 'leyka');?>
+                <?php echo wp_kses_post(__('<strong>Payment via bank order print-outs</strong> set up.', 'leyka') );?>
             </div>
         </li>
     </ul>
@@ -53,7 +59,7 @@ $campaign_url = $campaign_id ? get_the_permalink($campaign_id) : null;?>
         <?php if($campaign_id) {?>
             <a class="step-next button button-primary" href="<?php echo esc_url( $campaign_url ); ?>" target="_blank"><?php esc_html_e('Open the campaign page', 'leyka');?></a>
         <?php } else {?>
-            <a class="step-next button button-primary go-back" href="<?php echo admin_url('/admin.php?page=leyka_settings_new&screen=wizard-init');?>"><?php esc_html_e('Create a campaign', 'leyka');?></a>
+            <a class="step-next button button-primary go-back" href="<?php echo esc_url(admin_url('/admin.php?page=leyka_settings_new&screen=wizard-init'));?>"><?php esc_html_e('Create a campaign', 'leyka');?></a>
         <?php }?>
         </div>
 

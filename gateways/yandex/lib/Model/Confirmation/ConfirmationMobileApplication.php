@@ -77,7 +77,7 @@ class ConfirmationMobileApplication extends AbstractConfirmation
             $this->_returnUrl = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid returnUrl value type', 0, 'ConfirmationMobileApplication.returnUrl', $value
+                'Invalid returnUrl value type', 0, 'ConfirmationMobileApplication.returnUrl', esc_html($value)
             );
         }
     }
@@ -102,7 +102,7 @@ class ConfirmationMobileApplication extends AbstractConfirmation
             $this->_confirmationUrl = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid confirmationUrl value type', 0, 'ConfirmationMobileApplication.confirmationUrl', $value
+                'Invalid confirmationUrl value type', 0, 'ConfirmationMobileApplication.confirmationUrl', esc_html($value)
             );
         }
     }

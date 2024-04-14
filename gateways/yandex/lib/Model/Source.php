@@ -112,7 +112,7 @@ class Source extends AbstractObject implements SourceInterface
             $this->_amount = $value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid value type for "amount" parameter in Source', 0, 'source.amount', $value
+                'Invalid value type for "amount" parameter in Source', 0, 'source.amount', esc_html($value)
             );
         }
     }
@@ -148,7 +148,7 @@ class Source extends AbstractObject implements SourceInterface
             $this->_platform_fee_amount = $value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid value type for "platform_fee_amount" parameter in Source', 0, 'source.platform_fee_amount', $value
+                'Invalid value type for "platform_fee_amount" parameter in Source', 0, 'source.platform_fee_amount', esc_html($value)
             );
         }
     }

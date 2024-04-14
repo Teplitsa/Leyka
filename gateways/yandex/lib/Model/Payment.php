@@ -221,11 +221,11 @@ class Payment extends AbstractObject implements PaymentInterface
         if (TypeCast::canCastToString($value)) {
             $length = mb_strlen($value, 'utf-8');
             if ($length != 36) {
-                throw new InvalidPropertyValueException('Invalid payment id value', 0, 'Payment.id', $value);
+                throw new InvalidPropertyValueException('Invalid payment id value', 0, 'Payment.id', esc_html($value));
             }
             $this->_id = (string)$value;
         } else {
-            throw new InvalidPropertyValueTypeException('Invalid payment id value type', 0, 'Payment.id', $value);
+            throw new InvalidPropertyValueTypeException('Invalid payment id value type', 0, 'Payment.id', esc_html($value));
         }
     }
 
@@ -249,12 +249,12 @@ class Payment extends AbstractObject implements PaymentInterface
     {
         if (TypeCast::canCastToEnumString($value)) {
             if (!PaymentStatus::valueExists((string)$value)) {
-                throw new InvalidPropertyValueException('Invalid payment status value', 0, 'Payment.status', $value);
+                throw new InvalidPropertyValueException('Invalid payment status value', 0, 'Payment.status', esc_html($value));
             }
             $this->_status = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid payment status value type', 0, 'Payment.status', $value
+                'Invalid payment status value type', 0, 'Payment.status', esc_html($value)
             );
         }
     }
@@ -319,16 +319,16 @@ class Payment extends AbstractObject implements PaymentInterface
             $length = mb_strlen((string)$value, 'utf-8');
             if ($length > self::MAX_LENGTH_DESCRIPTION) {
                 throw new InvalidPropertyValueException(
-                    'The value of the description parameter is too long. Max length is ' . self::MAX_LENGTH_DESCRIPTION,
+                    'The value of the description parameter is too long. Max length is ' . esc_html(self::MAX_LENGTH_DESCRIPTION),
                     0,
                     'CreatePaymentRequest.description',
-                    $value
+                    esc_html($value)
                 );
             }
             $this->_description = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid description value type', 0, 'CreatePaymentRequest.description', $value
+                'Invalid description value type', 0, 'CreatePaymentRequest.description', esc_html($value)
             );
         }
     }
@@ -376,11 +376,11 @@ class Payment extends AbstractObject implements PaymentInterface
         } elseif (TypeCast::canCastToDateTime($value)) {
             $dateTime = TypeCast::castToDateTime($value);
             if ($dateTime === null) {
-                throw new InvalidPropertyValueException('Invalid created_at value', 0, 'payment.createdAt', $value);
+                throw new InvalidPropertyValueException('Invalid created_at value', 0, 'payment.createdAt', esc_html($value));
             }
             $this->_createdAt = $dateTime;
         } else {
-            throw new InvalidPropertyValueTypeException('Invalid created_at value', 0, 'payment.createdAt', $value);
+            throw new InvalidPropertyValueTypeException('Invalid created_at value', 0, 'payment.createdAt', esc_html($value));
         }
     }
 
@@ -408,11 +408,11 @@ class Payment extends AbstractObject implements PaymentInterface
         } elseif (TypeCast::canCastToDateTime($value)) {
             $dateTime = TypeCast::castToDateTime($value);
             if ($dateTime === null) {
-                throw new InvalidPropertyValueException('Invalid captured_at value', 0, 'payment.capturedAt', $value);
+                throw new InvalidPropertyValueException('Invalid captured_at value', 0, 'payment.capturedAt', esc_html($value));
             }
             $this->_capturedAt = $dateTime;
         } else {
-            throw new InvalidPropertyValueTypeException('Invalid captured_at value', 0, 'payment.capturedAt', $value);
+            throw new InvalidPropertyValueTypeException('Invalid captured_at value', 0, 'payment.capturedAt', esc_html($value));
         }
     }
 
@@ -476,7 +476,7 @@ class Payment extends AbstractObject implements PaymentInterface
             $this->_paid = (bool)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid payment paid flag value type', 0, 'Payment.paid', $value
+                'Invalid payment paid flag value type', 0, 'Payment.paid', esc_html($value)
             );
         }
     }
@@ -505,7 +505,7 @@ class Payment extends AbstractObject implements PaymentInterface
             $this->_refundable = (bool)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid payment refundable flag value type', 0, 'Payment.refundable', $value
+                'Invalid payment refundable flag value type', 0, 'Payment.refundable', esc_html($value)
             );
         }
     }
@@ -535,12 +535,12 @@ class Payment extends AbstractObject implements PaymentInterface
                 $this->_receiptRegistration = (string)$value;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid receipt_registration value', 0, 'payment.receiptRegistration', $value
+                    'Invalid receipt_registration value', 0, 'payment.receiptRegistration', esc_html($value)
                 );
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid receipt_registration value type', 0, 'payment.receiptRegistration', $value
+                'Invalid receipt_registration value type', 0, 'payment.receiptRegistration', esc_html($value)
             );
         }
     }
@@ -591,11 +591,11 @@ class Payment extends AbstractObject implements PaymentInterface
         } elseif (TypeCast::canCastToDateTime($value)) {
             $dateTime = TypeCast::castToDateTime($value);
             if ($dateTime === null) {
-                throw new InvalidPropertyValueException('Invalid expires_at value', 0, 'payment.expires_at', $value);
+                throw new InvalidPropertyValueException('Invalid expires_at value', 0, 'payment.expires_at', esc_html($value));
             }
             $this->_expiresAt = $dateTime;
         } else {
-            throw new InvalidPropertyValueTypeException('Invalid expires_at value', 0, 'payment.expires_at', $value);
+            throw new InvalidPropertyValueTypeException('Invalid expires_at value', 0, 'payment.expires_at', esc_html($value));
         }
     }
 
@@ -644,13 +644,13 @@ class Payment extends AbstractObject implements PaymentInterface
     {
         if (!is_array($value)) {
             $message = 'Transfers must be an array of TransferInterface';
-            throw new InvalidPropertyValueTypeException($message, 0, 'Payment.transfers', $value);
+            throw new InvalidPropertyValueTypeException(wp_kses_post($message), 0, 'Payment.transfers', esc_html($value));
         }
 
         foreach ($value as $item) {
             if (!($item instanceof TransferInterface)) {
                 $message = 'Transfers must be an array of TransferInterface';
-                throw new InvalidPropertyValueTypeException($message, 0, 'Payment.transfers', $value);
+                throw new InvalidPropertyValueTypeException(wp_kses_post($message), 0, 'Payment.transfers', esc_html($value));
             }
         }
 
@@ -723,7 +723,7 @@ class Payment extends AbstractObject implements PaymentInterface
             $this->_test = (bool)$test;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid payment test flag value type', 0, 'Payment.test', $test
+                'Invalid payment test flag value type', 0, 'Payment.test', esc_html($test)
             );
         }
     }
@@ -753,7 +753,7 @@ class Payment extends AbstractObject implements PaymentInterface
             $this->_deal = new PaymentDealInfo($value);
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid deal value type in Payment', 0, 'Payment.deal', $value
+                'Invalid deal value type in Payment', 0, 'Payment.deal', esc_html($value)
             );
         }
     }
@@ -781,16 +781,16 @@ class Payment extends AbstractObject implements PaymentInterface
             $length = mb_strlen((string)$value, 'utf-8');
             if ($length > Payment::MAX_LENGTH_MERCHANT_CUSTOMER_ID) {
                 throw new InvalidPropertyValueException(
-                    'The value of the merchant_customer_id parameter is too long. Max length is ' . Payment::MAX_LENGTH_MERCHANT_CUSTOMER_ID,
+                    'The value of the merchant_customer_id parameter is too long. Max length is ' . esc_html(Payment::MAX_LENGTH_MERCHANT_CUSTOMER_ID),
                     0,
                     'Payment.merchant_customer_id',
-                    $value
+                    esc_html($value)
                 );
             }
             $this->_merchant_customer_id = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid merchant_customer_id value type in Payment', 0, 'Payment.merchant_customer_id', $value
+                'Invalid merchant_customer_id value type in Payment', 0, 'Payment.merchant_customer_id', esc_html($value)
             );
         }
     }

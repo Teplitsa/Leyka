@@ -75,12 +75,12 @@ class PaymentMethodYooMoney extends AbstractPaymentMethod
                 $this->_accountNumber = (string)$value;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid accountNumber value', 0, 'PaymentMethodYooMoney.accountNumber', $value
+                    'Invalid accountNumber value', 0, 'PaymentMethodYooMoney.accountNumber', esc_html($value)
                 );
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid accountNumber value type', 0, 'PaymentMethodYooMoney.accountNumber', $value
+                'Invalid accountNumber value type', 0, 'PaymentMethodYooMoney.accountNumber', esc_html($value)
             );
         }
     }

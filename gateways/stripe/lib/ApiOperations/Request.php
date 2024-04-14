@@ -22,7 +22,7 @@ trait Request
                . "would be: \"Stripe\\Charge::create(['amount' => 100, "
                . "'currency' => 'usd', 'source' => 'tok_1234'])\")";
 
-            throw new \Stripe\Exception\InvalidArgumentException($message);
+            throw new \Stripe\Exception\InvalidArgumentException(wp_kses_post($message));
         }
     }
 

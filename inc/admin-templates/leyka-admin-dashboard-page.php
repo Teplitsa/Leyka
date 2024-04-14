@@ -12,8 +12,8 @@
         <div class="leyka-admin-page-notice">
 
             <div class="leyka-content-wrapper">
-                <img src="<?php echo LEYKA_PLUGIN_BASE_URL; ?>img/dashboard/icon-alert-circle.svg" />
-                <span><?php echo __('Problematic subscriptions found.', 'leyka'); ?></span>
+                <img src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL ); ?>img/dashboard/icon-alert-circle.svg" />
+                <span><?php esc_html_e('Problematic subscriptions found.', 'leyka'); ?></span>
                 <a href="<?php echo esc_url( admin_url('admin.php?page=leyka_recurring_subscriptions&recurring_subscription_status=problematic') ); ?>"><?php esc_html_e('To the list', 'leyka'); ?></a>
             </div>
 
@@ -23,24 +23,24 @@
 
     <?php } ?>
 
-    <h1><?php _e('Leyka dashboard', 'leyka');?></h1>
+    <h1><?php esc_html_e('Leyka dashboard', 'leyka');?></h1>
 
     <?php if(leyka_options()->opt('send_plugin_stats') !== 'y' && leyka_options()->opt('plugin_stats_sync_enabled')) {?>
 
         <div class="send-plugin-stats-invite">
 
             <div class="invite-text">
-                <?php _e('Please, turn on the option to send anonymous plugin usage data to help us diagnose', 'leyka');?>
+                <?php esc_html_e('Please, turn on the option to send anonymous plugin usage data to help us diagnose', 'leyka');?>
             </div>
 
             <div class="invite-link">
 
-                <button class="send-plugin-usage-stats-y"><?php _e('Allow usage statistics collection', 'leyka');?></button>
+                <button class="send-plugin-usage-stats-y"><?php esc_html_e('Allow usage statistics collection', 'leyka');?></button>
                 <?php wp_nonce_field('usage_stats_y', 'usage_stats_y');?>
 
                 <div class="loading-indicator-wrap">
                     <div class="loader-wrap" style="display: none;"><span class="leyka-loader xxs"></span></div>
-                    <img class="ok-icon" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/icon-check.svg" alt="">
+                    <img class="ok-icon" src="<?php echo esc_attr(LEYKA_PLUGIN_BASE_URL);?>img/dashboard/icon-check.svg" alt="">
                 </div>
 
             </div>
@@ -65,7 +65,7 @@
                 'this_year' => __('From the year start', 'leyka'),
                 'this_half_year' => __('Half-year', 'leyka'),
                 'this_quarter' => sprintf(__('%d quarter %d' , 'leyka'),ceil(gmdate("m", time()) / 3), gmdate("Y")),
-                'this_month' => __(gmdate("F", time())).' '.gmdate("Y"),
+                'this_month' => gmdate("F", time()).' '.gmdate("Y"),
                 'this_week' => __('Current week', 'leyka')
             ]);
             $_GET['interval'] = empty($_GET['interval']) ?
@@ -84,7 +84,7 @@
                         $interval = isset( $_GET['interval'] ) ? $dashboard_stats_intervals[ $_GET['interval'] ] : __( 'Выбрать период', 'leyka' );
                         ?>
                         <span><?php echo esc_html( $interval ); ?></span>
-                        <img class="leyka-icon leyka-icon-chevron-down" src="<?php echo LEYKA_PLUGIN_BASE_URL.'/img/dashboard/icon-chevron-down.svg' ?>">
+                        <img class="leyka-icon leyka-icon-chevron-down" src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL ); ?>img/dashboard/icon-chevron-down.svg">
                     </span>
 
                     <div class="leyka-content-wrapper leyka-hidden">
@@ -94,7 +94,7 @@
                                 if(strpos($interval_id, 'this') === false) {
                                     $interval_class = $_GET['interval'] === $interval_id ? 'current-interval' : '';
                                     ?>
-                                    <a href="<?php echo add_query_arg('interval', $interval_id, $current_url);?>" class="<?php echo esc_attr( $interval_class ); ?>">
+                                    <a href="<?php echo esc_url( add_query_arg('interval', $interval_id, $current_url) );?>" class="<?php echo esc_attr( $interval_class ); ?>">
                                         <?php echo esc_html( $title );?>
                                     </a>
                                 <?php }
@@ -106,7 +106,7 @@
                                 if(strpos($interval_id, 'this') !== false) {
                                     $interval_class = $_GET['interval'] === $interval_id ? 'current-interval' : '';
                                     ?>
-                                    <a href="<?php echo add_query_arg('interval', $interval_id, $current_url);?>" class="<?php echo esc_attr( $interval_class );?>">
+                                    <a href="<?php echo esc_url( add_query_arg('interval', $interval_id, $current_url) );?>" class="<?php echo esc_attr( $interval_class );?>">
                                         <?php echo esc_html( $title );?>
                                     </a>
                                 <?php }
@@ -119,13 +119,13 @@
 
                 <div class="plugin-data-interval-tools">
                     <span class="plugin-data-interval-reset-text">
-                        <?php echo sprintf(__('The data is actual as of&nbsp;%s', 'leyka'), $dashboard_data_cache_date);?>
+                        <?php echo sprintf(esc_html__('The data is actual as of&nbsp;%s', 'leyka'), esc_html($dashboard_data_cache_date));?>
                     </span>
                     <?php
                     $interval = $_GET['interval'];
                     ?>
                     <a class="plugin-data-interval-reset-btn" href="?page=leyka&interval=<?php echo esc_attr( $interval ); ?>&reset=true">
-                        <?php _e('Renew data', 'leyka');?>
+                        <?php esc_html_e('Renew data', 'leyka');?>
                     </a>
                 </div>
 

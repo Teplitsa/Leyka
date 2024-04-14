@@ -77,12 +77,12 @@ class Settlement extends AbstractObject implements SettlementInterface
                 $this->_type = (string)$value;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid value for "type" parameter in Settlement', 0, 'settlement.type', $value
+                    'Invalid value for "type" parameter in Settlement', 0, 'settlement.type', esc_html($value)
                 );
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid value type for "type" parameter in Settlement', 0, 'settlement.type', $value
+                'Invalid value type for "type" parameter in Settlement', 0, 'settlement.type', esc_html($value)
             );
         }
     }
@@ -112,6 +112,7 @@ class Settlement extends AbstractObject implements SettlementInterface
             $this->_amount = $value;
         } else {
             throw new InvalidPropertyValueTypeException(
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 'Invalid value type for "amount" parameter in Settlement', 0, 'settlement.amount', $value
             );
         }

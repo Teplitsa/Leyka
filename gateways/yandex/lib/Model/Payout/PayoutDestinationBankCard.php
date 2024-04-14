@@ -75,6 +75,7 @@ class PayoutDestinationBankCard extends AbstractPayoutDestination
             $this->_card = $card;
         } else {
             throw new InvalidPropertyValueTypeException(
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 'Invalid card value type in PayoutDestinationBankCard', 0, 'PayoutDestinationBankCard.card', $value
             );
         }

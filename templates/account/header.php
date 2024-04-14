@@ -32,13 +32,13 @@ $leyka_account_logo_url = '';?>
 </svg>
 
 <div id="page" class="site leyka-persistant-campaign leyka-account">
-	<a class="skip-link screen-reader-text" href="#content"><?php _e( 'Skip to content', 'twentynineteen' ); ?></a>
+	<a class="skip-link screen-reader-text" href="#content"><?php esc_html_e( 'Skip to content', 'leyka' ); ?></a>
 
     <header id="masthead" class="leyka-campaign-header cover-type-image">
         <div class="header-tint">
             <div class="leyka-campaign-no-logo"></div>
-            <h1><?php echo !empty($leyka_account_page_title) ? $leyka_account_page_title : __('Leyka account', 'leyka');?></h1>
-            <a href="<?php echo wp_logout_url( home_url() );?>" class="leyka-logout" title="<?php _e('Logout', 'leyka');?>">
+            <h1><?php echo esc_html( !empty($leyka_account_page_title) ? $leyka_account_page_title : __('Leyka account', 'leyka') );?></h1>
+            <a href="<?php echo esc_url( wp_logout_url( home_url() ) );?>" class="leyka-logout" title="<?php esc_attr_e('Logout', 'leyka');?>">
                 <span><?php esc_html_e('Logout', 'leyka');?></span>
             </a>
         </div>

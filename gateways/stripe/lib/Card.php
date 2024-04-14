@@ -98,7 +98,7 @@ class Card extends ApiResource
         } else {
             $msg = 'Cards cannot be accessed without a customer ID, account ID or recipient ID.';
 
-            throw new Exception\UnexpectedValueException($msg);
+            throw new Exception\UnexpectedValueException(wp_kses_post($msg));
         }
         $parentExtn = \urlencode(Util\Util::utf8($parent));
         $extn = \urlencode(Util\Util::utf8($this['id']));
@@ -119,7 +119,7 @@ class Card extends ApiResource
                "`Customer::retrieveSource('customer_id', 'card_id')` or " .
                "`Account::retrieveExternalAccount('account_id', 'card_id')`.";
 
-        throw new Exception\BadMethodCallException($msg);
+        throw new Exception\BadMethodCallException(wp_kses_post($msg));
     }
 
     /**
@@ -137,6 +137,6 @@ class Card extends ApiResource
                '$updateParams)` or `Account::updateExternalAccount(' .
                "'account_id', 'card_id', \$updateParams)`.";
 
-        throw new Exception\BadMethodCallException($msg);
+        throw new Exception\BadMethodCallException(wp_kses_post($msg));
     }
 }

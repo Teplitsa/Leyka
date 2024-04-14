@@ -87,7 +87,7 @@ class Airline extends AbstractObject implements AirlineInterface
             throw new InvalidPropertyValueTypeException('Invalid booking reference value type', 0,
                 'airline.booking_reference');
         } elseif (mb_strlen((string)$value, 'utf-8') > 20) {
-            throw new InvalidPropertyValueException('Invalid booking reference value: "'.$value.'"', 0,
+            throw new InvalidPropertyValueException('Invalid booking reference value: "'.esc_html($value).'"', 0,
                 'airline.booking_reference');
         } else {
             $this->_bookingReference = (string)$value;
@@ -114,7 +114,7 @@ class Airline extends AbstractObject implements AirlineInterface
             throw new InvalidPropertyValueTypeException('Invalid ticket number value type', 0,
                 'airline.ticket_number');
         } elseif (!preg_match('/^[0-9]{1,150}$/', (string)$value)) {
-            throw new InvalidPropertyValueException('Invalid ticket_number value: "'.$value.'"', 0,
+            throw new InvalidPropertyValueException('Invalid ticket_number value: "'.esc_html($value).'"', 0,
                 'airline.ticket_number');
         } else {
             $this->_ticketNumber = (string)$value;
@@ -140,7 +140,7 @@ class Airline extends AbstractObject implements AirlineInterface
         }
         if (!is_array($value) && !($value instanceof \Traversable)) {
             throw new InvalidPropertyValueTypeException(
-                'Invalid passengers value type in airline', 0, 'airline.passengers', $value
+                'Invalid passengers value type in airline', 0, 'airline.passengers', esc_html( $value )
             );
         }
         $this->_passengers = array();
@@ -149,7 +149,7 @@ class Airline extends AbstractObject implements AirlineInterface
                 $this->addPassenger($val);
             } catch (InvalidPropertyValueTypeException $exception) {
                 throw new InvalidPropertyValueTypeException(
-                    'Invalid passenger value type in airline', 0, 'airline.passengers['.$key.']', $val
+                    'Invalid passenger value type in airline', 0, 'airline.passengers['.esc_attr($key).']', esc_html($val)
                 );
             }
         }
@@ -193,7 +193,7 @@ class Airline extends AbstractObject implements AirlineInterface
         }
         if (!is_array($value) && !($value instanceof \Traversable)) {
             throw new InvalidPropertyValueTypeException(
-                'Invalid legs value type in airline', 0, 'airline.legs', $value
+                'Invalid legs value type in airline', 0, 'airline.legs', esc_html($value)
             );
         }
         $this->_legs = array();
@@ -202,7 +202,7 @@ class Airline extends AbstractObject implements AirlineInterface
                 $this->addLeg($val);
             } catch (InvalidPropertyValueTypeException $exception) {
                 throw new InvalidPropertyValueTypeException(
-                    'Invalid legs value type in airline', 0, 'airline.legs['.$key.']', $val
+                    'Invalid legs value type in airline', 0, 'airline.legs['.esc_attr($key).']', esc_html($val)
                 );
             }
         }

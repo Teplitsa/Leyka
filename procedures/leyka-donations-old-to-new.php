@@ -249,7 +249,7 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
     if($wpdb->query($query_values) === false) {
 
         ob_start();
-        echo "ERROR migrating donation ID={$donation_id}: ".$query_values."\n\n";
+        echo "ERROR migrating donation ID=".esc_html($donation_id).": ".esc_html($query_values)."\n\n";
         fputs($err_log_fp, ob_get_clean());
         fclose($err_log_fp);
 
@@ -329,7 +329,7 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
             $donation_post_meta['init_recurring_donation_id'] = 0;
 
             ob_start();
-            echo "META ERROR: can't find init recurring donation for Chronopay Customer ID {$customer_id}\n\n";
+            echo "META ERROR: can't find init recurring donation for Chronopay Customer ID ".esc_html($customer_id)."\n\n";
             fputs($err_log_fp, ob_get_clean());
 
         }
@@ -380,7 +380,7 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
         if($wpdb->query($query) === false) {
 
             ob_start();
-            echo "META ERROR: ".$query."\n\n";
+            echo "META ERROR: ".esc_html($query)."\n\n";
             fputs($err_log_fp, ob_get_clean());
 
         }

@@ -148,13 +148,13 @@ class DealsRequest extends AbstractRequest implements DealsRequestInterface
         } elseif (is_int($value)) {
             if ($value < 0 || $value > self::MAX_LIMIT_VALUE) {
                 throw new InvalidPropertyValueException(
-                    'Invalid limit value in DealsRequest', 0, 'DealsRequest.limit', $value
+                    'Invalid limit value in DealsRequest', 0, 'DealsRequest.limit', esc_html($value)
                 );
             }
             $this->_limit = $value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid limit value type in DealsRequest', 0, 'DealsRequest.limit', $value
+                'Invalid limit value type in DealsRequest', 0, 'DealsRequest.limit', esc_html($value)
             );
         }
     }
@@ -191,7 +191,7 @@ class DealsRequest extends AbstractRequest implements DealsRequestInterface
             $this->_cursor = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid status value type in DealsRequest', 0, 'DealsRequest.limit', $value
+                'Invalid status value type in DealsRequest', 0, 'DealsRequest.limit', esc_html($value)
             );
         }
     }
@@ -596,14 +596,14 @@ class DealsRequest extends AbstractRequest implements DealsRequestInterface
         } elseif (TypeCast::canCastToEnumString($value)) {
             if (!DealStatus::valueExists((string)$value)) {
                 throw new InvalidPropertyValueException(
-                    'Invalid status value in DealsRequest', 0, 'DealsRequest.status', $value
+                    'Invalid status value in DealsRequest', 0, 'DealsRequest.status', esc_html($value)
                 );
             } else {
                 $this->_status = (string)$value;
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid status value in DealsRequest', 0, 'DealsRequest.status', $value
+                'Invalid status value in DealsRequest', 0, 'DealsRequest.status', esc_html($value)
             );
         }
     }
@@ -641,24 +641,24 @@ class DealsRequest extends AbstractRequest implements DealsRequestInterface
             $length = mb_strlen((string)$value, 'utf-8');
             if ($length > SafeDeal::MAX_LENGTH_DESCRIPTION) {
                 throw new InvalidPropertyValueException(
-                    'The value of the full_text_search parameter is too long. Max length is ' . SafeDeal::MAX_LENGTH_DESCRIPTION,
+                    'The value of the full_text_search parameter is too long. Max length is ' . esc_html(SafeDeal::MAX_LENGTH_DESCRIPTION),
                     0,
                     'DealsRequest.fullTextSearch',
-                    $value
+                    esc_html($value)
                 );
             }
             if ($length < self::MIN_LENGTH_DESCRIPTION) {
                 throw new InvalidPropertyValueException(
-                    'The value of the full_text_search parameter is too short. Min length is ' . self::MIN_LENGTH_DESCRIPTION,
+                    'The value of the full_text_search parameter is too short. Min length is ' . esc_html(self::MIN_LENGTH_DESCRIPTION),
                     0,
                     'DealsRequest.fullTextSearch',
-                    $value
+                    esc_html($value)
                 );
             }
             $this->_fullTextSearch = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid status value type in DealsRequest', 0, 'DealsRequest.fullTextSearch', $value
+                'Invalid status value type in DealsRequest', 0, 'DealsRequest.fullTextSearch', esc_html($value)
             );
         }
     }

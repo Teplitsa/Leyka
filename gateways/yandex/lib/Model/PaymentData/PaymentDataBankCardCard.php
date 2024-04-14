@@ -92,12 +92,12 @@ class PaymentDataBankCardCard extends AbstractObject
                 $this->_number = (string)$value;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid card number value', 0, 'PaymentDataBankCardCard.number', $value
+                    'Invalid card number value', 0, 'PaymentDataBankCardCard.number', esc_html($value)
                 );
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid card number value type', 0, 'PaymentDataBankCardCard.number', $value
+                'Invalid card number value type', 0, 'PaymentDataBankCardCard.number', esc_html($value)
             );
         }
     }
@@ -124,13 +124,13 @@ class PaymentDataBankCardCard extends AbstractObject
         } elseif (is_numeric($value)) {
             if (!preg_match('/^\d\d\d\d$/', $value) || $value < 2000 || $value > 2200) {
                 throw new InvalidPropertyValueException(
-                    'Invalid card expiry year value', 0, 'PaymentDataBankCardCard.expiryYear', $value
+                    'Invalid card expiry year value', 0, 'PaymentDataBankCardCard.expiryYear', esc_html($value)
                 );
             }
             $this->_expiryYear = (string)$value;
         } else {
             throw new InvalidPropertyValueException(
-                'Invalid card expiry year value', 0, 'PaymentDataBankCardCard.expiryYear', $value
+                'Invalid card expiry year value', 0, 'PaymentDataBankCardCard.expiryYear', esc_html($value)
             );
         }
     }
@@ -157,7 +157,7 @@ class PaymentDataBankCardCard extends AbstractObject
         } elseif (is_numeric($value)) {
             if (!preg_match('/^\d\d$/', $value)) {
                 throw new InvalidPropertyValueException(
-                    'Invalid card expiry month value', 0, 'PaymentDataBankCardCard.expiryMonth', $value
+                    'Invalid card expiry month value', 0, 'PaymentDataBankCardCard.expiryMonth', esc_html($value)
                 );
             }
             if (is_string($value) && $value[0] == '0') {
@@ -167,14 +167,14 @@ class PaymentDataBankCardCard extends AbstractObject
             }
             if ($month < 1 || $month > 12) {
                 throw new InvalidPropertyValueException(
-                    'Invalid card expiry month value', 0, 'PaymentDataBankCardCard.expiryMonth', $value
+                    'Invalid card expiry month value', 0, 'PaymentDataBankCardCard.expiryMonth', esc_html($value)
                 );
             } else {
                 $this->_expiryMonth = (string)$value;
             }
         } else {
             throw new InvalidPropertyValueException(
-                'Invalid card expiry month value', 0, 'PaymentDataBankCardCard.expiryMonth', $value
+                'Invalid card expiry month value', 0, 'PaymentDataBankCardCard.expiryMonth', esc_html($value)
             );
         }
     }
@@ -203,12 +203,12 @@ class PaymentDataBankCardCard extends AbstractObject
                 $this->_csc = (string)$value;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid card CSC code value', 0, 'PaymentDataBankCardCard.csc', $value
+                    'Invalid card CSC code value', 0, 'PaymentDataBankCardCard.csc', esc_html($value)
                 );
             }
         } else {
             throw new InvalidPropertyValueException(
-                'Invalid card CSC code value', 0, 'PaymentDataBankCardCard.csc', $value
+                'Invalid card CSC code value', 0, 'PaymentDataBankCardCard.csc', esc_html($value)
             );
         }
     }
@@ -237,12 +237,12 @@ class PaymentDataBankCardCard extends AbstractObject
                 $this->_cardholder = (string)$value;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid card holder value', 0, 'PaymentDataBankCardCard.cardholder', $value
+                    'Invalid card holder value', 0, 'PaymentDataBankCardCard.cardholder', esc_html($value)
                 );
             }
         } else {
             throw new InvalidPropertyValueException(
-                'Invalid card holder value', 0, 'PaymentDataBankCardCard.cardholder', $value
+                'Invalid card holder value', 0, 'PaymentDataBankCardCard.cardholder', esc_html($value)
             );
         }
     }

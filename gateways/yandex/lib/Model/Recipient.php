@@ -80,7 +80,7 @@ class Recipient extends AbstractObject implements RecipientInterface
             $this->_accountId = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid accountId value type in Recipient', 0, 'Recipient.accountId', $value
+                'Invalid accountId value type in Recipient', 0, 'Recipient.accountId', esc_html($value)
             );
         }
     }
@@ -115,7 +115,7 @@ class Recipient extends AbstractObject implements RecipientInterface
             $this->_gatewayId = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid gatewayId value type in Recipient', 0, 'Recipient.gatewayId', $value
+                'Invalid gatewayId value type in Recipient', 0, 'Recipient.gatewayId', esc_html($value)
             );
         }
     }

@@ -86,12 +86,12 @@ abstract class AbstractPaymentMethod extends AbstractObject
                 $this->_type = (string)$value;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid value for "type" parameter in PaymentMethod', 0, 'PaymentMethod.type', $value
+                    'Invalid value for "type" parameter in PaymentMethod', 0, 'PaymentMethod.type', esc_html($value)
                 );
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid value type for "type" parameter in PaymentMethod', 0, 'PaymentMethod.type', $value
+                'Invalid value type for "type" parameter in PaymentMethod', 0, 'PaymentMethod.type', esc_html($value)
             );
         }
     }
@@ -116,7 +116,7 @@ abstract class AbstractPaymentMethod extends AbstractObject
         } elseif (TypeCast::canCastToString($value)) {
             $this->_id = (string)$value;
         } else {
-            throw new InvalidPropertyValueTypeException('Invalid id value type', 0, 'PaymentMethod.id', $value);
+            throw new InvalidPropertyValueTypeException('Invalid id value type', 0, 'PaymentMethod.id', esc_html($value));
         }
     }
 
@@ -141,6 +141,7 @@ abstract class AbstractPaymentMethod extends AbstractObject
             $this->_saved = (bool)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 'Invalid saved value type', 0, 'PaymentMethod.saved', $value
             );
         }
@@ -166,7 +167,7 @@ abstract class AbstractPaymentMethod extends AbstractObject
         } elseif (TypeCast::canCastToString($value)) {
             $this->_title = (string)$value;
         } else {
-            throw new InvalidPropertyValueTypeException('Invalid title value type', 0, 'PaymentMethod.title', $value);
+            throw new InvalidPropertyValueTypeException('Invalid title value type', 0, 'PaymentMethod.title', esc_html($value));
         }
     }
 }

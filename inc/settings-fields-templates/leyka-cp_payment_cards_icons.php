@@ -14,19 +14,19 @@
 
     <div class="ui-accordion no-jquery-ui">
 
-        <h2><?php _e("I'm ready to follow the connection instructions", 'leyka');?></h2>
+        <h2><?php esc_html_e("I'm ready to follow the connection instructions", 'leyka');?></h2>
         <div>
 
-            <h3 class="intro-mini-header"><?php _e('Before you begin the registration, please, prepare scaned copies of the following documents (jpg/png):', 'leyka');?></h3>
+            <h3 class="intro-mini-header"><?php esc_html_e('Before you begin the registration, please, prepare scaned copies of the following documents (jpg/png):', 'leyka');?></h3>
 
             <ul>
-                <li><?php _e("Organization head's passport - the full main page and the registration page.", 'leyka');?></li>
-                <li><?php _e('The organization state registration certificate.', 'leyka');?></li>
+                <li><?php esc_html_e("Organization head's passport - the full main page and the registration page.", 'leyka');?></li>
+                <li><?php esc_html_e('The organization state registration certificate.', 'leyka');?></li>
             </ul>
 
         </div>
 
-        <h2><?php _e("I already have the Public ID and API key parameters", 'leyka');?></h2>
+        <h2><?php esc_html_e("I already have the Public ID and API key parameters", 'leyka');?></h2>
         <div class="single-gateway-settings gateway-yandex">
 
             <?php foreach(leyka_get_gateway_by_id('cp')->get_options_names() as $option_id) {

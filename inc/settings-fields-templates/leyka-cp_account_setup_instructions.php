@@ -10,10 +10,10 @@
 
         <p><?php esc_html_e('If you logged in successfully, you will see a page like this:', 'leyka');?></p>
         <div class="screen-wrapper">
-            <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/cp/cp_account_setup-after-login.png" class="leyka-instructions-screen" alt="">
-            <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-zoom-screen.svg" class="zoom-screen" alt="">
+            <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/cp/cp_account_setup-after-login.png" class="leyka-instructions-screen" alt="">
+            <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/icon-zoom-screen.svg" class="zoom-screen" alt="">
         </div>
-        <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/cp/cp_account_setup-after-login.png" class="leyka-instructions-screen-full" alt="">
+        <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/cp/cp_account_setup-after-login.png" class="leyka-instructions-screen-full" alt="">
 
     </div>
 
@@ -22,10 +22,10 @@
         <p><?php esc_html_e('Click the "Sites" in the left menu', 'leyka');?></p>
 
         <div class="screen-wrapper">
-            <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/cp/cp_account_setup-choose-sites.png" class="leyka-instructions-screen" alt="">
-            <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-zoom-screen.svg" class="zoom-screen" alt="">
+            <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/cp/cp_account_setup-choose-sites.png" class="leyka-instructions-screen" alt="">
+            <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/icon-zoom-screen.svg" class="zoom-screen" alt="">
         </div>
-        <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/cp/cp_account_setup-choose-sites.png" class="leyka-instructions-screen-full" alt="">
+        <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/cp/cp_account_setup-choose-sites.png" class="leyka-instructions-screen-full" alt="">
 
     </div>
 
@@ -33,10 +33,10 @@
 
         <p><?php esc_html_e('Click the "Add site" line', 'leyka');?></p>
         <div class="screen-wrapper">
-            <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/cp/cp_account_setup-add-site.png" class="leyka-instructions-screen" alt="">
-            <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-zoom-screen.svg" class="zoom-screen" alt="">
+            <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/cp/cp_account_setup-add-site.png" class="leyka-instructions-screen" alt="">
+            <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/icon-zoom-screen.svg" class="zoom-screen" alt="">
         </div>
-        <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/cp/cp_account_setup-add-site.png" class="leyka-instructions-screen-full" alt="">
+        <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/cp/cp_account_setup-add-site.png" class="leyka-instructions-screen-full" alt="">
 
     </div>
 
@@ -45,10 +45,10 @@
         <p><?php esc_html_e('Add your website title and root URL', 'leyka');?></p>
 
         <div class="screen-wrapper">
-            <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/cp/cp_account_setup-set-site-name.png" class="leyka-instructions-screen" alt="">
-            <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-zoom-screen.svg" class="zoom-screen" alt="">
+            <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/cp/cp_account_setup-set-site-name.png" class="leyka-instructions-screen" alt="">
+            <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/icon-zoom-screen.svg" class="zoom-screen" alt="">
         </div>
-        <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/cp/cp_account_setup-set-site-name.png" class="leyka-instructions-screen-full" alt="">
+        <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/cp/cp_account_setup-set-site-name.png" class="leyka-instructions-screen-full" alt="">
 
     </div>
 
@@ -57,10 +57,10 @@
         <p><?php esc_html_e('Your website now appeared in the list. Click the "gear" icon', 'leyka');?></p>
 
         <div class="screen-wrapper">
-            <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/cp/cp_account_setup-click-settings.png" class="leyka-instructions-screen" alt="">
-            <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-zoom-screen.svg" class="zoom-screen" alt="">
+            <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/cp/cp_account_setup-click-settings.png" class="leyka-instructions-screen" alt="">
+            <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/icon-zoom-screen.svg" class="zoom-screen" alt="">
         </div>
-        <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/cp/cp_account_setup-click-settings.png" class="leyka-instructions-screen-full" alt="">
+        <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/cp/cp_account_setup-click-settings.png" class="leyka-instructions-screen-full" alt="">
 
     </div>
 

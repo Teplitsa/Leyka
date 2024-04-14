@@ -110,7 +110,7 @@ class Leyka_Text_Box extends Leyka_Payment_Method {
     }
 
     public function display_static_data() {
-        echo apply_filters('leyka_the_content', leyka_options()->opt_safe('text_box_details'));
+        echo wp_kses_post(apply_filters('leyka_the_content', leyka_options()->opt_safe('text_box_details')));
     }
 
 }

@@ -106,7 +106,7 @@ class AbstractPaymentRequest extends AbstractRequest
         if ($value === null || $value instanceof ReceiptInterface) {
             $this->_receipt = $value;
         } else {
-            throw new InvalidPropertyValueTypeException('Invalid receipt in Refund', 0, 'Refund.receipt', $value);
+            throw new InvalidPropertyValueTypeException('Invalid receipt in Refund', 0, 'Refund.receipt', esc_html( $value ) );
         }
     }
 
@@ -163,7 +163,7 @@ class AbstractPaymentRequest extends AbstractRequest
                     }
                     if (!($item instanceof TransferInterface)) {
                         $message = 'Transfers must be an array of TransferInterface';
-                        throw new InvalidPropertyValueTypeException($message, 0, 'Payment.transfers', $value);
+                        throw new InvalidPropertyValueTypeException( wp_kses_post( $message ), 0, 'Payment.transfers', esc_html( $value ) );
                     }
 
                     $transfers[] = $item;
@@ -174,7 +174,7 @@ class AbstractPaymentRequest extends AbstractRequest
             }
         } else {
             $message = 'Transfers must be an array of TransferInterface';
-            throw new InvalidPropertyValueTypeException($message, 0, 'Payment.transfers', $value);
+            throw new InvalidPropertyValueTypeException(wp_kses_post($message), 0, 'Payment.transfers', esc_html($value));
         }
     }
 

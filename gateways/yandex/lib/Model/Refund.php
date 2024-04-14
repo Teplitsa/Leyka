@@ -122,10 +122,10 @@ class Refund extends AbstractObject implements RefundInterface
             if ($length === 36) {
                 $this->_id = $castedValue;
             } else {
-                throw new InvalidPropertyValueException('Invalid refund id value', 0, 'Refund.id', $value);
+                throw new InvalidPropertyValueException('Invalid refund id value', 0, 'Refund.id', esc_html($value));
             }
         } else {
-            throw new InvalidPropertyValueTypeException('Invalid refund id value type', 0, 'Refund.id', $value);
+            throw new InvalidPropertyValueTypeException('Invalid refund id value type', 0, 'Refund.id', esc_html($value));
         }
     }
 
@@ -157,12 +157,12 @@ class Refund extends AbstractObject implements RefundInterface
                 $this->_paymentId = $castedValue;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid refund paymentId value', 0, 'Refund.paymentId', $value
+                    'Invalid refund paymentId value', 0, 'Refund.paymentId', esc_html($value)
                 );
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid refund paymentId value type', 0, 'Refund.paymentId', $value
+                'Invalid refund paymentId value type', 0, 'Refund.paymentId', esc_html($value)
             );
         }
     }
@@ -194,12 +194,12 @@ class Refund extends AbstractObject implements RefundInterface
                 $this->_status = $castedValue;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid refund status value', 0, 'Refund.status', $value
+                    'Invalid refund status value', 0, 'Refund.status', esc_html($value)
                 );
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid refund status value type', 0, 'Refund.status', $value
+                'Invalid refund status value type', 0, 'Refund.status', esc_html($value)
             );
         }
     }
@@ -229,11 +229,11 @@ class Refund extends AbstractObject implements RefundInterface
         } elseif (TypeCast::canCastToDateTime($value)) {
             $dateTime = TypeCast::castToDateTime($value);
             if ($dateTime === null) {
-                throw new InvalidPropertyValueException('Invalid created_at value', 0, 'Refund.createdAt', $value);
+                throw new InvalidPropertyValueException('Invalid created_at value', 0, 'Refund.createdAt', esc_html($value));
             }
             $this->_createdAt = $dateTime;
         } else {
-            throw new InvalidPropertyValueTypeException('Invalid created_at value', 0, 'Refund.createdAt', $value);
+            throw new InvalidPropertyValueTypeException('Invalid created_at value', 0, 'Refund.createdAt', esc_html($value));
         }
     }
 
@@ -255,7 +255,7 @@ class Refund extends AbstractObject implements RefundInterface
     public function setAmount(AmountInterface $value)
     {
         if ($value->getIntegerValue() <= 0) {
-            throw new InvalidPropertyValueException('Invalid refund amount', 0, 'Refund.amount', $value->getValue());
+            throw new InvalidPropertyValueException('Invalid refund amount', 0, 'Refund.amount', esc_html($value->getValue()));
         }
         $this->_amount = $value;
     }
@@ -287,12 +287,12 @@ class Refund extends AbstractObject implements RefundInterface
                 $this->_receiptRegistration = $castedValue;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid refund receiptRegistration value', 0, 'Refund.receiptRegistration', $value
+                    'Invalid refund receiptRegistration value', 0, 'Refund.receiptRegistration', esc_html($value)
                 );
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid refund receiptRegistration value type', 0, 'Refund.receiptRegistration', $value
+                'Invalid refund receiptRegistration value type', 0, 'Refund.receiptRegistration', esc_html($value)
             );
         }
     }
@@ -320,7 +320,7 @@ class Refund extends AbstractObject implements RefundInterface
         } elseif (TypeCast::canCastToEnumString($value)) {
             $this->_description = (string)$value;
         } else {
-            throw new InvalidPropertyValueTypeException('Empty refund description', 0, 'Refund.description', $value);
+            throw new InvalidPropertyValueTypeException('Empty refund description', 0, 'Refund.description', esc_html($value));
         }
     }
 
@@ -340,7 +340,8 @@ class Refund extends AbstractObject implements RefundInterface
     {
         if (!is_array($value)) {
             $message = 'Sources must be an array of SourceInterface';
-            throw new InvalidPropertyValueTypeException($message, 0, 'Refund.sources', $value);
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
+            throw new InvalidPropertyValueTypeException(wp_kses_post($message), 0, 'Refund.sources', $value);
         }
 
         $sources = array();
@@ -351,7 +352,8 @@ class Refund extends AbstractObject implements RefundInterface
 
             if (!($item instanceof SourceInterface)) {
                 $message = 'Source must be instance of SourceInterface';
-                throw new InvalidPropertyValueTypeException($message, 0, 'Refund.sources', $value);
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
+                throw new InvalidPropertyValueTypeException(wp_kses_post($message), 0, 'Refund.sources', $value);
             }
             $sources[] = $item;
         }
@@ -398,6 +400,7 @@ class Refund extends AbstractObject implements RefundInterface
             $this->_deal = new RefundDealInfo($value);
         } else {
             throw new InvalidPropertyValueTypeException(
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 'Invalid deal value type in Refund', 0, 'Refund.deal', $value
             );
         }

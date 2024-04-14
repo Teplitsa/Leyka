@@ -168,7 +168,7 @@ abstract class AbstractPaymentRequestBuilder extends AbstractRequestBuilder
         } elseif ($value instanceof ReceiptInterface) {
             $this->receipt = clone $value;
         } else {
-            throw new InvalidPropertyValueTypeException('Invalid receipt value type', 0, 'receipt', $value);
+            throw new InvalidPropertyValueTypeException('Invalid receipt value type', 0, 'receipt', esc_html($value));
         }
 
         return $this;
@@ -193,18 +193,18 @@ abstract class AbstractPaymentRequestBuilder extends AbstractRequestBuilder
             } else {
                 if (empty($item['title']) && empty($item['description'])) {
                     throw new InvalidPropertyValueException(
-                        'Item#'.$index.' title or description not specified',
+                        'Item#'.esc_html($index).' title or description not specified',
                         0,
-                        'AbstractPaymentRequestBuilder.items['.$index.'].title',
+                        'AbstractPaymentRequestBuilder.items['.esc_attr($index).'].title',
                         wp_json_encode($item)
                     );
                 }
                 foreach (array('price', 'quantity', 'vatCode') as $property) {
                     if (empty($item[$property])) {
                         throw new InvalidPropertyValueException(
-                            'Item#'.$index.' '.$property.' not specified',
+                            'Item#'.esc_html($index).' '.esc_html($property).' not specified',
                             0,
-                            'AbstractPaymentRequestBuilder.items['.$index.'].'.$property,
+                            'AbstractPaymentRequestBuilder.items['.esc_attr($index).'].'.esc_html($property),
                             wp_json_encode($item)
                         );
                     }

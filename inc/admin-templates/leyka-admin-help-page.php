@@ -5,7 +5,7 @@
 
 <div class="wrap leyka-admin leyka-info-sidebar-page leyka-help-page">
 
-    <h1><?php _e('Helper', 'leyka');?></h1>
+    <h1><?php esc_html_e('Helper', 'leyka');?></h1>
 
     <div class="leyka-page-content">
 

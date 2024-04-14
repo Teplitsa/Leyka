@@ -11,23 +11,23 @@ $extensions_categories = Leyka_Extension::get_filter_categories_list();?>
     <div class="filter-area leyka-modules-filter show">
 
         <div class="filter-toggle">
-            <img class="show-filter" src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-gateway-filter-off.svg" alt="">
-            <img class="hide-filter" src="<?php echo LEYKA_PLUGIN_BASE_URL?>img/icon-gateway-filter-on.svg" alt="">
+            <img class="show-filter" src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/icon-gateway-filter-off.svg" alt="">
+            <img class="hide-filter" src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/icon-gateway-filter-on.svg" alt="">
         </div>
 
         <div class="filter-categories">
             <?php foreach($extensions_categories as $category_id => $category_label) {?>
                 <a class="filter-category-item" data-category="<?php echo esc_attr( $category_id );?>" href="#">
-                    <?php echo Leyka_Extension::get_filter_category_label($category_id);?>
+                    <?php echo esc_html(Leyka_Extension::get_filter_category_label($category_id));?>
                 </a>
             <?php }?>
         </div>
 
         <a class="filter-action filter-category-show-filter" href="#">
-            <?php _x('Filter', 'An imperative verb (like "filter [something]")', 'leyka');?>
+            <?php echo esc_html_x('Filter', 'An imperative verb (like "filter [something]")', 'leyka');?>
         </a>
         <a class="filter-action filter-category-reset-filter" href="#">
-            <?php _e('Clear the filter', 'leyka');?>
+            <?php esc_html_e('Clear the filter', 'leyka');?>
         </a>
 
     </div>
@@ -42,7 +42,7 @@ $extensions_categories = Leyka_Extension::get_filter_categories_list();?>
 
             $activation_status = $extension->get_activation_status();?>
 
-            <div class="module-card extension-card <?php echo implode(' ', $extension->get_filter_categories());?>">
+            <div class="module-card extension-card <?php echo esc_attr(implode(' ', $extension->get_filter_categories()));?>">
 
                 <div class="module-card-header">
 
@@ -50,12 +50,12 @@ $extensions_categories = Leyka_Extension::get_filter_categories_list();?>
 
                     <div>
                         <div class="module-card-title">
-                            <a class="module-settings-link" href="<?php echo admin_url('admin.php?page=leyka_settings&stage=extensions&extension='.$extension->id);?>">
+                            <a class="module-settings-link" href="<?php echo esc_url(admin_url('admin.php?page=leyka_settings&stage=extensions&extension='.$extension->id));?>">
                                 <?php echo wp_kses_post( $extension->title );?>
                             </a>
                         </div>
                         <div class="module-card-status <?php echo esc_attr( $activation_status );?>">
-                            <?php echo Leyka_Extension::get_activation_status_label($activation_status);?>
+                            <?php echo esc_html(Leyka_Extension::get_activation_status_label($activation_status));?>
                         </div>
                     </div>
 
@@ -66,7 +66,7 @@ $extensions_categories = Leyka_Extension::get_filter_categories_list();?>
                 <div class="module-card-action">
                     <a class="button extension-settings <?php echo 'button-primary';?> <?php echo esc_attr( 'leyka-card-'.$activation_status ); ?>" href="<?php echo esc_url( $extension->get_settings_url() );?>">
                         <img src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL ) .'img/icon-gear.svg';?>" alt="">
-                        <?php _e('Extension settings', 'leyka');?>
+                        <?php esc_html_e('Extension settings', 'leyka');?>
                     </a>
                 </div>
 

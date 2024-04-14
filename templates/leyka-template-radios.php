@@ -26,11 +26,11 @@ $curr_pm = leyka_get_pm_by_id(reset($active_pm_list)->full_id, true);
 leyka_setup_current_pm($curr_pm, $curr_pm->default_currency);
 $campaign = leyka_get_validated_campaign($campaign);?>
 
-<div id="leyka-payment-form" class="leyka-tpl-radio" data-template="radio" data-leyka-ver="<?php echo Leyka_Payment_Form::get_plugin_ver_for_atts();?>">
+<div id="leyka-payment-form" class="leyka-tpl-radio" data-template="radio" data-leyka-ver="<?php echo esc_attr(Leyka_Payment_Form::get_plugin_ver_for_atts());?>">
 
 <div class="leyka-payment-option">
 
-    <form class="leyka-pm-form" action="<?php echo leyka_pf_get_form_action();?>" method="post" id="leyka-form-common">
+    <form class="leyka-pm-form" action="<?php echo esc_attr(leyka_pf_get_form_action());?>" method="post" id="leyka-form-common">
 
         <div class="form-part freeze-fields">
             <?php foreach($active_pm_list as $pm) {?>
@@ -44,11 +44,16 @@ $campaign = leyka_get_validated_campaign($campaign);?>
         <div class="leyka-pm-list">
 
             <div class="leyka-hidden-fields">
-                <?php echo leyka_pf_get_common_hidden_fields($campaign);
+                <?php
+                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                echo leyka_pf_get_common_hidden_fields($campaign);
 
                 foreach($active_pm_list as $pm) {?>
                 <div class="pm-hidden-field <?php echo esc_attr( $pm->full_id );?>" <?php echo wp_kses_post( $curr_pm->full_id == $pm->full_id ? '' : 'style="display:none;"' );?>>
-                    <?php echo leyka_pf_get_pm_hidden_fields($campaign, $pm_forms[$pm->full_id]);?>
+                    <?php 
+                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                    echo leyka_pf_get_pm_hidden_fields($campaign, $pm_forms[$pm->full_id]);
+                    ?>
                 </div>
                 <?php }?>
             </div>
@@ -63,7 +68,7 @@ $campaign = leyka_get_validated_campaign($campaign);?>
                                    name="leyka_payment_method"
                                    value="<?php echo esc_attr($pm->full_id);?>"
                                    data-pm_id="<?php echo esc_attr($pm->id);?>" <?php checked($curr_pm->id, $pm->id);?>
-                                   data-curr-supported="<?php echo implode(',', $pm->currencies);?>">
+                                   data-curr-supported="<?php echo esc_html(implode(',', $pm->currencies));?>">
                             <?php echo esc_html( $pm->label );?>
                         </label>
                     </li>
@@ -91,12 +96,12 @@ $campaign = leyka_get_validated_campaign($campaign);?>
 
                 $icons = $pm_forms[$pm->full_id]->get_pm_icons();
                 if($icons) {?>
-                    <ul class="leyka-pm-icons cf"><li><?php echo implode('</li><li>', $icons);?></li></ul>
+                    <ul class="leyka-pm-icons cf"><li><?php echo wp_kses_post(implode('</li><li>', $icons));?></li></ul>
                 <?php }?>
             </div>
 
             <div class="leyka-pm-desc <?php echo esc_attr($pm->full_id);?>" <?php echo wp_kses_post( $curr_pm->full_id == $pm->full_id ? '' : 'style="display:none;"' );?>>
-                <?php echo apply_filters('leyka_the_content', $pm_forms[$pm->full_id]->get_pm_description());?>
+                <?php echo wp_kses_post(apply_filters('leyka_the_content', $pm_forms[$pm->full_id]->get_pm_description()));?>
             </div>
 
         <?php }?>

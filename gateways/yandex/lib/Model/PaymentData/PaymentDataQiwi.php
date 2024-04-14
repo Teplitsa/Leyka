@@ -71,12 +71,12 @@ class PaymentDataQiwi extends AbstractPaymentData
                 $this->_phone = (string)$value;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid phone value', 0, 'PaymentDataQiwi.phone', $value
+                    'Invalid phone value', 0, 'PaymentDataQiwi.phone', esc_html($value)
                 );
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid phone value type', 0, 'PaymentDataQiwi.phone', $value
+                'Invalid phone value type', 0, 'PaymentDataQiwi.phone', esc_html($value)
             );
         }
     }

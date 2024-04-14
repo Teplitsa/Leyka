@@ -76,12 +76,12 @@ class PaymentDataSberbank extends AbstractPaymentData
                 $this->_phone = (string)$value;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid phone value', 0, 'PaymentDataSberbank.phone', $value
+                    'Invalid phone value', 0, 'PaymentDataSberbank.phone', esc_html($value)
                 );
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid phone value type', 0, 'PaymentDataSberbank.phone', $value
+                'Invalid phone value type', 0, 'PaymentDataSberbank.phone', esc_html($value)
             );
         }
     }

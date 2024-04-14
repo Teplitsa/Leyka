@@ -205,11 +205,11 @@ abstract class AbstractReceiptResponse extends AbstractObject implements Receipt
     {
         if (TypeCast::canCastToString($value)) {
             if (strlen((string)$value) !== self::LENGTH_RECEIPT_ID) {
-                throw new InvalidPropertyValueException('Invalid receipt id value', 0, 'Receipt.id', $value);
+                throw new InvalidPropertyValueException('Invalid receipt id value', 0, 'Receipt.id', esc_html($value));
             }
             $this->_id = (string)$value;
         } else {
-            throw new InvalidPropertyValueTypeException('Invalid receipt id value type', 0, 'Receipt.id', $value);
+            throw new InvalidPropertyValueTypeException('Invalid receipt id value type', 0, 'Receipt.id', esc_html($value));
         }
     }
 
@@ -234,12 +234,12 @@ abstract class AbstractReceiptResponse extends AbstractObject implements Receipt
     {
         if (TypeCast::canCastToEnumString($value)) {
             if (!ReceiptType::valueExists((string)$value)) {
-                throw new InvalidPropertyValueException('Invalid receipt type value', 0, 'Receipt.type', $value);
+                throw new InvalidPropertyValueException('Invalid receipt type value', 0, 'Receipt.type', esc_html($value));
             }
             $this->_type = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid receipt type value type', 0, 'Receipt.type', $value
+                'Invalid receipt type value type', 0, 'Receipt.type', esc_html($value)
             );
         }
     }
@@ -265,7 +265,7 @@ abstract class AbstractReceiptResponse extends AbstractObject implements Receipt
         } elseif (TypeCast::canCastToString($value)) {
             $this->_object_id = (string)$value;
         } else {
-            throw new InvalidPropertyValueTypeException('Invalid receipt object_id type', 0, 'Receipt.object_id', $value);
+            throw new InvalidPropertyValueTypeException('Invalid receipt object_id type', 0, 'Receipt.object_id', esc_html($value));
         }
     }
 
@@ -313,12 +313,12 @@ abstract class AbstractReceiptResponse extends AbstractObject implements Receipt
                 $this->_status = (string)$value;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid status value', 0, 'Receipt.status', $value
+                    'Invalid status value', 0, 'Receipt.status', esc_html($value)
                 );
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid status value type', 0, 'Receipt.status', $value
+                'Invalid status value type', 0, 'Receipt.status', esc_html($value)
             );
         }
         return $this;
@@ -345,7 +345,7 @@ abstract class AbstractReceiptResponse extends AbstractObject implements Receipt
             $this->_fiscalDocumentNumber = null;
         } elseif (!TypeCast::canCastToString($value)) {
             throw new InvalidPropertyValueTypeException(
-                'Invalid fiscal_document_number value type', 0, 'Receipt.fiscalDocumentNumber', $value
+                'Invalid fiscal_document_number value type', 0, 'Receipt.fiscalDocumentNumber', esc_html($value)
             );
         } else {
             $this->_fiscalDocumentNumber = (string)$value;
@@ -454,6 +454,7 @@ abstract class AbstractReceiptResponse extends AbstractObject implements Receipt
         }
         if (!is_array($value) && !($value instanceof \Traversable)) {
             throw new InvalidPropertyValueTypeException(
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 'Invalid items value type in receipt', 0, 'receipt.items', $value
             );
         }
@@ -463,7 +464,7 @@ abstract class AbstractReceiptResponse extends AbstractObject implements Receipt
                 $this->addItem($val);
             } else {
                 throw new InvalidPropertyValueTypeException(
-                    'Invalid item value type in receipt', 0, 'receipt.items[' . $key . ']', $val
+                    'Invalid item value type in receipt', 0, 'receipt.items[' . esc_attr($key) . ']', esc_html($val)
                 );
             }
         }
@@ -501,6 +502,7 @@ abstract class AbstractReceiptResponse extends AbstractObject implements Receipt
         }
         if (!is_array($value) && !($value instanceof \Traversable)) {
             throw new InvalidPropertyValueTypeException(
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 'Invalid settlements value type in receipt', 0, 'receipt.settlements', $value
             );
         }
@@ -512,7 +514,7 @@ abstract class AbstractReceiptResponse extends AbstractObject implements Receipt
                 $this->addSettlement($val);
             } else {
                 throw new InvalidPropertyValueTypeException(
-                    'Invalid settlement value type in receipt', 0, 'receipt.settlements['.$key.']', $val
+                    'Invalid settlement value type in receipt', 0, 'receipt.settlements['.esc_attr($key).']', esc_html($val)
                 );
             }
         }
@@ -559,7 +561,7 @@ abstract class AbstractReceiptResponse extends AbstractObject implements Receipt
             $castedValue = (int)$value;
             if ($castedValue < 1 || $castedValue > 6) {
                 throw new InvalidPropertyValueException(
-                    'Invalid tax_system_code value: ' . $value, 0, 'receipt.taxSystemCode'
+                    'Invalid tax_system_code value: ' . esc_html($value), 0, 'receipt.taxSystemCode'
                 );
             }
             $this->_taxSystemCode = $castedValue;
@@ -588,7 +590,7 @@ abstract class AbstractReceiptResponse extends AbstractObject implements Receipt
             );
         } elseif (!TypeCast::canCastToString($value)) {
             throw new InvalidPropertyValueTypeException(
-                'Invalid onBehalfOf value type', 0, 'Receipt.onBehalfOf', $value
+                'Invalid onBehalfOf value type', 0, 'Receipt.onBehalfOf', esc_html($value)
             );
         } else {
             $this->_onBehalfOf = (string)$value;

@@ -152,7 +152,7 @@ abstract class AbstractPaymentResponse extends Payment implements PaymentInterfa
             if (isset($confirmation)) {
                 $this->setConfirmation($confirmation);
             } else {
-                throw new InvalidArgumentException('confirmation type '.$confirmationType.' is incorrect');
+                throw new InvalidArgumentException('confirmation type '.esc_html($confirmationType).' is incorrect');
             }
         }
         if (!empty($sourceArray['refunded_amount'])) {

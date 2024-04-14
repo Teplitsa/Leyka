@@ -6,7 +6,7 @@
 
 <div class="<?php echo esc_attr( $this->field_type ); ?> custom-block-captioned-screens">
 
-    <span class="info2copy leyka-wizard-copy2clipboard"><?php echo site_url('/leyka/service/cp/complete/');?></span>
+    <span class="info2copy leyka-wizard-copy2clipboard"><?php echo esc_html( site_url('/leyka/service/cp/complete/'));?></span>
 
     <div class="captioned-screen">
 

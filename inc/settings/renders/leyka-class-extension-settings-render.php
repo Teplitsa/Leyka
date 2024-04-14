@@ -29,22 +29,22 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
                     <div class="meta-data">
 
                         <div class="item activation-status">
-                            <span class="item-name"><?php _e('Status:', 'leyka');?></span>
+                            <span class="item-name"><?php esc_html_e('Status:', 'leyka');?></span>
                             <span class="item-value status-label <?php echo esc_attr( $extension->activation_status );?>">
-                            <?php echo mb_strtolower($extension->activation_status_label);?>
+                            <?php echo esc_html(mb_strtolower($extension->activation_status_label));?>
                         </span>
                         </div>
                         <div class="item extension-version">
-                            <span class="item-name"><?php _e('Extension version:', 'leyka');?></span>
+                            <span class="item-name"><?php esc_html_e('Extension version:', 'leyka');?></span>
                             <span class="item-value"><?php echo esc_html( $extension->version );?></span>
                         </div>
                         <div class="item leyka-version">
-                            <span class="item-name"><?php _e('Leyka version:', 'leyka');?></span>
-                            <span class="item-value"><?php echo LEYKA_VERSION;?></span>
+                            <span class="item-name"><?php esc_html_e('Leyka version:', 'leyka');?></span>
+                            <span class="item-value"><?php echo esc_html(LEYKA_VERSION);?></span>
                         </div>
                         <div class="item author">
 
-                            <span class="item-name"><?php _e('Author:', 'leyka');?></span>
+                            <span class="item-name"><?php esc_html_e('Author:', 'leyka');?></span>
                             <span class="item-value">
                             <?php if($extension->author_url) {?>
                                 <a href="<?php echo esc_url( $extension->author_url );?>" target="_blank" class="outer-link">
@@ -115,7 +115,7 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
                         if($extension->docs_url) {?>
                             <div class="setup-user-manual-link">
                                 <a class="outer-link" href="<?php echo esc_url( $extension->docs_url );?>" target="_blank">
-                                    <?php _e('Detailed manual', 'leyka');?>
+                                    <?php esc_html_e('Detailed manual', 'leyka');?>
                                 </a>
                             </div>
                         <?php }?>
@@ -178,7 +178,7 @@ class Leyka_Extension_Settings_Render extends Leyka_Settings_Render {
             <span class="buttons">
 
                 <?php if($this->_controller->extension->get_options_data()) { // Show "Save" submit only if there are options ?>
-                <input type="submit" class="button button-primary button-small save-settings" name="leyka_settings_submit_<?php echo esc_attr( $this->_controller->id );?>" value="<?php _e('Save', 'leyka');?>">
+                <input type="submit" class="button button-primary button-small save-settings" name="leyka_settings_submit_<?php echo esc_attr( $this->_controller->id );?>" value="<?php esc_attr_e('Save', 'leyka');?>">
                 <?php }?>
 
                 <input type="submit" class="button <?php echo esc_attr( $submit_data['activation_status'] === 'active' ? 'button-secondary' : 'button-primary' );?> activation-button <?php echo esc_attr( $submit_data['activation_status'] );?>" name="<?php echo esc_attr( $submit_data['activation_status'] === 'active' ? 'leyka_deactivate_'.$this->_controller->id : 'leyka_activate_'.$this->_controller->id );?>" value="<?php echo esc_attr( $submit_data['activation_button_label'] );?>">

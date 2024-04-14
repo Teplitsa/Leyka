@@ -77,7 +77,7 @@ abstract class AbstractRequestBuilder
         } catch (InvalidRequestException $e) {
             throw $e;
         } catch (\Exception $e) {
-            throw new InvalidRequestException($this->currentObject, 0, $e);
+            throw new InvalidRequestException($this->currentObject, 0, $e); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
         }
         $result = $this->currentObject;
         $this->currentObject = $this->initCurrentObject();

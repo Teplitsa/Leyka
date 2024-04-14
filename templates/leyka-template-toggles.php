@@ -11,7 +11,7 @@ $active_pm = apply_filters('leyka_form_pm_order', leyka_get_pm_list(true));
 
 leyka_pf_submission_errors();?>
 
-<div id="leyka-payment-form" class="leyka-tpl-toggles" data-template="toggles" data-leyka-ver="<?php echo Leyka_Payment_Form::get_plugin_ver_for_atts();?>">
+<div id="leyka-payment-form" class="leyka-tpl-toggles" data-template="toggles" data-leyka-ver="<?php echo esc_attr(Leyka_Payment_Form::get_plugin_ver_for_atts());?>">
 
 <?php $counter = 0;
 
@@ -22,27 +22,30 @@ leyka_pf_submission_errors();?>
 
 <div class="leyka-payment-option toggle <?php if($counter == 1) echo 'toggled';?> <?php echo esc_attr($pm->full_id);?>">
     <div class="leyka-toggle-trigger <?php echo count($active_pm) > 1 ? '' : 'toggle-inactive';?>">
-        <?php echo leyka_pf_get_pm_label();?>
+        <?php echo wp_kses_post(leyka_pf_get_pm_label());?>
     </div>
     <div class="leyka-toggle-area">
-        <form class="leyka-pm-form" action="<?php echo leyka_pf_get_form_action();?>" method="post">
+        <form class="leyka-pm-form" action="<?php echo esc_attr(leyka_pf_get_form_action());?>" method="post">
 
             <div class="leyka-pm-fields">
 
-            <?php echo leyka_pf_get_amount_field().leyka_pf_get_recurring_field()
-                .(leyka_pf_get_hidden_fields(empty($campaign) ? false : $campaign->id));?>
+            <?php
+                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                echo leyka_pf_get_amount_field().leyka_pf_get_recurring_field() .(leyka_pf_get_hidden_fields(empty($campaign) ? false : $campaign->id));?>
 
             <input name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="hidden">
             <input name="leyka_ga_payment_method" value="<?php echo esc_attr($pm->label);?>" type="hidden">
             <div class="leyka-user-data">
-            <?php echo leyka_pf_get_name_field()
-                .leyka_pf_get_email_field()
-                .leyka_pf_get_comment_field()
-                .leyka_pf_get_pm_fields();
+            <?php echo leyka_pf_get_name_field() // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                .leyka_pf_get_email_field() // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                .leyka_pf_get_comment_field() // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                .leyka_pf_get_pm_fields(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             ?>
             </div>
 
-        <?php echo leyka_pf_get_agree_field().leyka_pf_get_submit_field();
+        <?php 
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            echo leyka_pf_get_agree_field().leyka_pf_get_submit_field();
 
             $icons = leyka_pf_get_pm_icons();
             if($icons) {
@@ -52,12 +55,13 @@ leyka_pf_submission_errors();?>
                     $list[] = "<li>{$i}</li>";
                 }
 
-                echo '<ul class="leyka-pm-icons cf">'.implode('', $list).'</ul>';
+                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                echo '<ul class="leyka-pm-icons cf">'.implode('', $list).'</ul>'; 
 
             }?>
             </div> <!-- .leyka-pm-fields -->
 
-        <?php echo "<div class='leyka-pm-desc'>".apply_filters('leyka_the_content', leyka_pf_get_pm_description())."</div>"; ?>
+        <?php echo "<div class='leyka-pm-desc'>".wp_kses_post(apply_filters('leyka_the_content', leyka_pf_get_pm_description()))."</div>"; ?>
 
         </form>
     </div>

@@ -54,10 +54,10 @@ function leyka_procedures_print($expression, $add_new_line = true) {
     $add_new_line = !!$add_new_line;
 
     if(leyka_procedures_is_cli()) {
-        echo print_r($expression, 1).($add_new_line ? "\n" : '');
+        echo esc_html(print_r($expression, 1).($add_new_line ? "\n" : ''));
 
     } else {
-        echo esc_attr( $add_new_line ) ? '<pre>'.print_r($expression, 1).'</pre>' : print_r($expression, 1);
+        echo esc_attr( $add_new_line ) ? '<pre>'.esc_html(print_r($expression, 1)).'</pre>' : esc_html(print_r($expression, 1));
     }
 
     @ob_flush();

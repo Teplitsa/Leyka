@@ -16,7 +16,7 @@ global $leyka_current_pm; /** @todo Make it a Leyka_Payment_Form class singleton
 
 leyka_pf_submission_errors();?>
 
-<div id="leyka-payment-form" class="leyka-tpl-neo" data-template="neo" data-leyka-ver="<?php echo Leyka_Payment_Form::get_plugin_ver_for_atts();?>">
+<div id="leyka-payment-form" class="leyka-tpl-neo" data-template="neo" data-leyka-ver="<?php echo esc_attr(Leyka_Payment_Form::get_plugin_ver_for_atts());?>">
 
     <?php $counter = 0;
 
@@ -27,10 +27,10 @@ leyka_pf_submission_errors();?>
 
         <div class="leyka-payment-option toggle <?php if($counter == 1) echo 'toggled';?> <?php echo esc_attr($pm->full_id);?>">
             <div class="leyka-toggle-trigger <?php echo count($active_pm) > 1 ? '' : 'toggle-inactive';?>">
-                <?php echo leyka_pf_get_pm_label();?>
+                <?php echo esc_attr(leyka_pf_get_pm_label());?>
             </div>
             <div class="leyka-toggle-area">
-                <form class="leyka-pm-form" action="<?php echo leyka_pf_get_form_action();?>" method="post">
+                <form class="leyka-pm-form" action="<?php echo esc_attr(leyka_pf_get_form_action());?>" method="post">
 
                     <div class="leyka-pm-fields">
 
@@ -56,7 +56,7 @@ leyka_pf_submission_errors();?>
                                         <div class="<?php echo esc_attr( $currency );?> amount-variants-container" <?php echo esc_html( $currency == $current_curr ? '' : 'style="display:none;"');?>>
                                             <div class="amount-variants-row">
                                                 <?php foreach($variants as $i => $amount) {?>
-                                                    <label class="figure rdc-radio" title="<?php _e('Please, specify your donation amount', 'leyka');?>">
+                                                    <label class="figure rdc-radio" title="<?php esc_attr_e('Please, specify your donation amount', 'leyka');?>">
                                                         <input type="radio" value="<?php echo esc_attr( (int)$amount );?>" name="leyka_donation_amount" class="rdc-radio__button" <?php checked($i, 0);?> <?php echo wp_kses_post( $currency == $current_curr ? '' : 'disabled="disabled"' );?> >
                                                         <span class="rdc-radio__label"><?php echo esc_attr( (int)$amount );?></span>
                                                     </label>
@@ -64,11 +64,11 @@ leyka_pf_submission_errors();?>
 
                                                 <label class="figure-flex">
                                                     <?php if($mode == 'mixed' && $variants) {?>
-                                                    <span class="figure-sep"><?php _e('or', 'leyka');?></span>
+                                                    <span class="figure-sep"><?php esc_html_e('or', 'leyka');?></span>
                                                     <?php }
 
                                                     if($mode != 'fixed') {?>
-                                                    <input type="text" title="<?php _e('Specify the amount of your donation', 'leyka');?>" name="leyka_donation_amount" class="donate_amount_flex" value="<?php echo esc_attr($supported_curr[$current_curr]['amount_settings']['flexible']);?>" maxlength="6" <?php echo wp_kses_post( $currency == $current_curr ? '' : 'disabled="disabled"' );?>>
+                                                    <input type="text" title="<?php esc_attr_e('Specify the amount of your donation', 'leyka');?>" name="leyka_donation_amount" class="donate_amount_flex" value="<?php echo esc_attr($supported_curr[$current_curr]['amount_settings']['flexible']);?>" maxlength="6" <?php echo wp_kses_post( $currency == $current_curr ? '' : 'disabled="disabled"' );?>>
                                                     <?php }?>
                                                 </label>
                                             </div>
@@ -83,9 +83,9 @@ leyka_pf_submission_errors();?>
                         </div>
 
                     <?php }
-
+                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                     echo leyka_pf_get_recurring_field(empty($campaign) ? false : $campaign->id);
-
+                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                     echo leyka_pf_get_hidden_fields(empty($campaign) ? false : $campaign->id);?>
 
                     <input name="leyka_payment_method" value="<?php echo esc_attr($pm->full_id);?>" type="hidden">
@@ -94,8 +94,8 @@ leyka_pf_submission_errors();?>
                     <div class="leyka-donor-fields">
                     <?php if($leyka_current_pm->is_field_supported('name') ) { ?>
                         <div class="rdc-textfield leyka-field name">
-                            <input type="text" class="required rdc-textfield__input" name="leyka_donor_name" id="leyka_donor_name" value="" placeholder="<?php _e('Your name', 'leyka');?>">
-                            <label for="leyka_donor_name" class="leyka-screen-reader-text rdc-textfield__label"><?php _e('Your name', 'leyka');?></label>
+                            <input type="text" class="required rdc-textfield__input" name="leyka_donor_name" id="leyka_donor_name" value="" placeholder="<?php esc_attr_e('Your name', 'leyka');?>">
+                            <label for="leyka_donor_name" class="leyka-screen-reader-text rdc-textfield__label"><?php esc_html_e('Your name', 'leyka');?></label>
                             <span id="leyka_donor_name-error" class="leyka_donor_name-error field-error rdc-textfield__error"></span>
                         </div>
 
@@ -103,8 +103,8 @@ leyka_pf_submission_errors();?>
 
                     if($leyka_current_pm->is_field_supported('email') ) {?>
                         <div class="rdc-textfield leyka-field email">
-                            <input type="text" value="" id="leyka_donor_email" name="leyka_donor_email" class="required email rdc-textfield__input" placeholder="<?php _e('Your email', 'leyka');?>">
-                            <label class="leyka-screen-reader-text rdc-textfield__label" for="leyka_donor_email"><?php _e('Your email', 'leyka');?></label>
+                            <input type="text" value="" id="leyka_donor_email" name="leyka_donor_email" class="required email rdc-textfield__input" placeholder="<?php esc_attr_e('Your email', 'leyka');?>">
+                            <label class="leyka-screen-reader-text rdc-textfield__label" for="leyka_donor_email"><?php esc_html_e('Your email', 'leyka');?></label>
                             <span class="leyka_donor_email-error field-error rdc-textfield__error" id="leyka_donor_email-error"></span>
                         </div>
 
@@ -112,10 +112,10 @@ leyka_pf_submission_errors();?>
 
                     if($leyka_current_pm->is_field_supported('comment') && leyka_options()->opt_template('show_donation_comment_field')) {?>
                         <div class="rdc-textfield leyka-field comment">
-                            <textarea id="leyka_donor_comment" name="leyka_donor_comment" class="comment leyka-donor-comment rdc-textfield__input" data-max-length="<?php echo leyka_options()->opt_template('donation_comment_max_length');?>"></textarea>
-                            <label class="leyka-screen-reader-text rdc-textfield__label" for="leyka_donor_comment"><?php _e('Your comments', 'leyka');?></label>
+                            <textarea id="leyka_donor_comment" name="leyka_donor_comment" class="comment leyka-donor-comment rdc-textfield__input" data-max-length="<?php echo esc_attr(leyka_options()->opt_template('donation_comment_max_length'));?>"></textarea>
+                            <label class="leyka-screen-reader-text rdc-textfield__label" for="leyka_donor_comment"><?php esc_html_e('Your comments', 'leyka');?></label>
                             <p class="field-comment">
-                                <?php echo leyka_options()->opt_template('donation_comment_max_length') ? sprintf(__('Your comment (<span class="donation-comment-current-length">0</span> / <span class="donation-comment-max-length">%d</span> symbols)', 'leyka'), leyka_options()->opt_template('donation_comment_max_length')) : __('Your comment', 'leyka');?>
+                                <?php echo leyka_options()->opt_template('donation_comment_max_length') ? sprintf(esc_html__('Your comment (<span class="donation-comment-current-length">0</span> / <span class="donation-comment-max-length">%d</span> symbols)', 'leyka'), esc_html(leyka_options()->opt_template('donation_comment_max_length'))) : esc_html__('Your comment', 'leyka');?>
                             </p>
                             <span class="leyka_donor_comment-error field-error rdc-textfield__error" id="leyka_donor_comment-error"></span>
                         </div>
@@ -123,13 +123,15 @@ leyka_pf_submission_errors();?>
                     <?php }?>
                     </div>
 
-                    <?php echo leyka_pf_get_pm_fields();
-
+                    <?php
+                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                    echo leyka_pf_get_pm_fields();
+                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                     echo leyka_pf_get_agree_field();?>
 
                     <div class="leyka-field submit">
                         <?php if($leyka_current_pm->is_field_supported('submit') ) { ?>
-                            <input type="submit" class="rdc-submit-button" id="leyka_donation_submit" name="leyka_donation_submit" value="<?php echo leyka_options()->opt_template('donation_submit_text');?>">
+                            <input type="submit" class="rdc-submit-button" id="leyka_donation_submit" name="leyka_donation_submit" value="<?php echo esc_attr(leyka_options()->opt_template('donation_submit_text'));?>">
                         <?php }
 
                         $icons = leyka_pf_get_pm_icons();
@@ -140,7 +142,7 @@ leyka_pf_submission_errors();?>
                                 $list[] = "<li>".(is_ssl() ? str_replace('http:', 'https:', $i) : $i)."</li>";
                             }
 
-                            echo '<ul class="leyka-pm-icons cf">'.implode('', $list).'</ul>';
+                            echo '<ul class="leyka-pm-icons cf">'.wp_kses_post(implode('', $list)).'</ul>';
 
                         }?>
                         </div>
@@ -148,7 +150,7 @@ leyka_pf_submission_errors();?>
                     </div>
 
                     <div class="leyka-pm-desc">
-                        <?php echo apply_filters('leyka_the_content', leyka_pf_get_pm_description()); ?>
+                        <?php echo wp_kses_post(apply_filters('leyka_the_content', leyka_pf_get_pm_description())); ?>
                     </div>
 
                 </form>

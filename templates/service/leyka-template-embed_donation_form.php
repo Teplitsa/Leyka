@@ -158,6 +158,7 @@ $cpost = get_post();
 <body>
 <div id="embedded-donation-form">
 <?php
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	echo leyka_get_payment_form($cpost->ID);
 ?>
 </div>

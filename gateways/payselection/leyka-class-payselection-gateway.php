@@ -320,7 +320,7 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
 
         if(empty($response['Event']) || !is_string($response['Event'])) {
             $this->_handle_callback_error($response, __('Webhook error: Event field is not found or have incorrect value', 'leyka'), $donation);
-            wp_die(__('Webhook error: Event field is not found or have incorrect value', 'leyka'));
+            wp_die(esc_html__('Webhook error: Event field is not found or have incorrect value', 'leyka'));
         }
 
         if (is_wp_error($check)) {
@@ -668,7 +668,7 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
                     <?php echo esc_html( $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka') );
 
                     if( !$init_recurring_donation->recurring_is_active && $init_recurring_donation->recurring_cancel_date ) {
-                    echo ' ('.sprintf(__('canceled on %s', 'leyka'), gmdate(get_option('date_format').', '.get_option('time_format'), $init_recurring_donation->recurring_cancel_date)).')';
+                    echo ' ('.wp_kses_post( sprintf(__('canceled on %s', 'leyka'), gmdate(get_option('date_format').', '.get_option('time_format'), $init_recurring_donation->recurring_cancel_date)) ).')';
                     }?>
                 </div>
 
@@ -678,7 +678,7 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
 
             <label for="payselection-transaction-id"><?php esc_html_e('Payselection transaction ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <input type="text" id="payselection-transaction-id" name="payselection-transaction-id" placeholder="<?php _e('Enter Payselection transaction ID', 'leyka');?>" value="">
+                <input type="text" id="payselection-transaction-id" name="payselection-transaction-id" placeholder="<?php esc_attr_e('Enter Payselection transaction ID', 'leyka');?>" value="">
             </div>
 
             <label for="payselection-recurring-id"><?php esc_html_e('Payselection subscription ID', 'leyka');?>:</label>

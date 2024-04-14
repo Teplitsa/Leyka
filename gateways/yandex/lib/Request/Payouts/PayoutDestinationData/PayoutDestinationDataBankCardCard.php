@@ -67,12 +67,12 @@ class PayoutDestinationDataBankCardCard extends AbstractObject
                 $this->_number = (string)$value;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid card number value', 0, 'PayoutDestinationBankCardCard.number', $value
+                    'Invalid card number value', 0, 'PayoutDestinationBankCardCard.number', esc_html($value)
                 );
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid card number value type', 0, 'PayoutDestinationBankCardCard.number', $value
+                'Invalid card number value type', 0, 'PayoutDestinationBankCardCard.number', esc_html($value)
             );
         }
     }

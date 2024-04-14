@@ -31,18 +31,18 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
     </symbol>
 </svg>
 
-<div id="leyka-pf-<?php echo esc_attr( $campaign->id );?>" class="leyka-pf leyka-pf-star leyka-pf-need-help" data-form-id="leyka-pf-<?php echo esc_attr( $campaign->id );?>-need-help-form" data-leyka-ver="<?php echo Leyka_Payment_Form::get_plugin_ver_for_atts();?>" data-card-2column-breakpoint-width="1160">
+<div id="leyka-pf-<?php echo esc_attr( $campaign->id );?>" class="leyka-pf leyka-pf-star leyka-pf-need-help" data-form-id="leyka-pf-<?php echo esc_attr( $campaign->id );?>-need-help-form" data-leyka-ver="<?php echo esc_attr(Leyka_Payment_Form::get_plugin_ver_for_atts());?>" data-card-2column-breakpoint-width="1160">
 
     <div class="leyka-payment-form leyka-tpl-need-help-form leyka-tpl-star-form" data-template="need-help">
 
         <?php do_action( 'leyka_payment_form_before' ); ?>
 
-        <form id="<?php echo leyka_pf_get_form_id($campaign->id).'-need-help-form';?>" class="leyka-pm-form leyka-no-validation" action="<?php echo Leyka_Payment_Form::get_form_action();?>" method="post" novalidate="novalidate">
+        <form id="<?php echo esc_attr(leyka_pf_get_form_id($campaign->id)).'-need-help-form';?>" class="leyka-pm-form leyka-no-validation" action="<?php echo esc_attr(Leyka_Payment_Form::get_form_action());?>" method="post" novalidate="novalidate">
 
             <div class="section section--periodicity <?php echo in_array('recurring', $campaign->donations_types_available) ? '' : 'hidden';?>" style="<?php echo esc_attr( $campaign->daily_rouble_mode_on_and_valid ? 'display: none;' : '' );?>">
 
                 <div class="section-title-container">
-                    <div class="section-title-text" role="heading" aria-level="3"><?php _e('Donation type', 'leyka');?></div>
+                    <div class="section-title-text" role="heading" aria-level="3"><?php esc_html_e('Donation type', 'leyka');?></div>
                 </div>
 
                 <div class="section__fields periodicity">
@@ -70,14 +70,14 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
             </div>
 
             <div class="section section--currencies leyka-hidden <?php echo sizeof($template_data['currencies']) === 1 && empty($template_data['cryptocurrencies_wallets']) ? 'leyka-hidden' : '' ?>"
-                 data-main-currency="<?php echo esc_attr( $template_data['main_currency_id'] ); ?>" data-currencies-count="<?php echo sizeof($template_data['currencies']); ?>"
+                 data-main-currency="<?php echo esc_attr( $template_data['main_currency_id'] ); ?>" data-currencies-count="<?php echo esc_attr(sizeof($template_data['currencies'])); ?>"
                  data-is-crypto-enabled="<?php echo empty($template_data['cryptocurrencies_wallets']) ? 0 : 1; ?>" >
 
                 <div class="section-title-container">
 
                     <div class="section-title-line"></div>
                     <div class="section-title-text" role="heading" aria-level="3">
-                        <?php _e('Donation currency', 'leyka'); ?>
+                        <?php esc_html_e('Donation currency', 'leyka'); ?>
                     </div>
 
                 </div>
@@ -104,16 +104,18 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
 
                     <div class="section-title-container">
                         <div class="section-title-text" role="heading" aria-level="3">
-                            <?php echo apply_filters('leyka_template_fields_group_header_label', __('Donation sum', 'leyka'), 'need-help', $campaign, 'amount');?>
+                            <?php echo wp_kses_post(apply_filters('leyka_template_fields_group_header_label', __('Donation sum', 'leyka'), 'need-help', $campaign, 'amount'));?>
                         </div>
                     </div>
 
                     <div class="section__fields amount" data-amount-mode="<?php echo esc_attr( $template_data['amount_mode'] ); ?>">
 
-                    <?php echo Leyka_Payment_Form::get_common_hidden_fields($campaign, [
-                        'leyka_template_id' => 'need-help',
-                        'leyka_amount_field_type' => 'custom',
-                    ]);
+                    <?php
+                        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                        echo Leyka_Payment_Form::get_common_hidden_fields($campaign, [
+                            'leyka_template_id' => 'need-help',
+                            'leyka_amount_field_type' => 'custom',
+                        ]);
 
                     $form_api = new Leyka_Payment_Form();
                     echo wp_kses( $form_api->get_hidden_amount_fields(), 'content' ); ?>
@@ -128,7 +130,7 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
 
                                     <div class="swiper-item <?php echo esc_attr( $i ? '' : 'selected' );?>" data-value="<?php echo absint($amount);?>" style="" role="button" tabindex="0">
                                         <div class="swiper-item-inner">
-                                            <span class="amount"><?php echo leyka_format_amount(absint($amount));?></span>
+                                            <span class="amount"><?php echo esc_html(leyka_format_amount(absint($amount)));?></span>
                                             <span class="currency">
                                                 <?php echo esc_html( $template_data['currencies'][$template_data['main_currency_id']]['currency_label'] );?>
                                             </span>
@@ -167,7 +169,7 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
 
                                 <label class="swiper-item flex-amount-item <?php echo empty($currency_data['amount_variants']) ? 'selected' : '';?>">
                                     <span class="swiper-item-inner">
-                                        <input type="number" title="<?php _e('Enter your amount', 'leyka');?>" placeholder="<?php _e('Enter your amount', 'leyka');?>" data-desktop-ph="<?php echo esc_attr( $another_amount_title );?>" data-mobile-ph="<?php _e('Enter your amount', 'leyka');?>" name="donate_amount_flex" class="donate_amount_flex" value="<?php echo esc_attr($currency_data['amount_default']);?>" min="1" max="999999">
+                                        <input type="number" title="<?php esc_attr_e('Enter your amount', 'leyka');?>" placeholder="<?php esc_attr_e('Enter your amount', 'leyka');?>" data-desktop-ph="<?php echo esc_attr( $another_amount_title );?>" data-mobile-ph="<?php esc_attr_e('Enter your amount', 'leyka');?>" name="donate_amount_flex" class="donate_amount_flex" value="<?php echo esc_attr($currency_data['amount_default']);?>" min="1" max="999999">
                                         <span aria-hidden="true"><?php echo esc_html( $currency_data['currency_label'] );?></span>
                                     </span>
                                 </label>
@@ -180,9 +182,9 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
 
                                 <div class="daily-rouble-comment">
                                     <?php echo sprintf(
-                                        '<span class="daily-rouble-text">'.__('You are making a monthly donation in the amount of %s', 'leyka').'</span>',
-                                        '<span class="daily-rouble-amount">'.(30*reset($currency_data['amount_variants'])).'</span>'
-                                        .'<span class="daily-rouble-currency">'.$currency_data['currency_label'].'</span>'
+                                        '<span class="daily-rouble-text">'.esc_html__('You are making a monthly donation in the amount of %s', 'leyka').'</span>',
+                                        '<span class="daily-rouble-amount">'.esc_html((30*reset($currency_data['amount_variants']))).'</span>'
+                                        .'<span class="daily-rouble-currency">'.esc_html($currency_data['currency_label']).'</span>'
                                     );?>
                                 </div>
 
@@ -221,7 +223,7 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
 
                     <div class="section-title-container">
                         <div class="section-title-text" role="heading" aria-level="3">
-                            <?php echo apply_filters('leyka_template_fields_group_header_label', __('Payment method', 'leyka'), 'need-help', $campaign, 'payment_method');?>
+                            <?php echo wp_kses_post(apply_filters('leyka_template_fields_group_header_label', __('Payment method', 'leyka'), 'need-help', $campaign, 'payment_method'));?>
                         </div>
                     </div>
 
@@ -295,7 +297,7 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
 
                                 <div class="section-title-line"></div>
                                 <div class="section-title-text" role="heading" aria-level="3">
-                                    <?php _e('crypto wallets addresses', 'leyka'); ?>
+                                    <?php esc_html_e('crypto wallets addresses', 'leyka'); ?>
                                 </div>
 
                             </div>
@@ -320,7 +322,7 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                                         </div>
 
                                         <div class="leyka-button-copy">
-                                            <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-copy.svg" alt="icon-copy">
+                                            <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/icon-copy.svg" alt="icon-copy">
                                             <span>Ссылка скопировна</span>
                                         </div>
 
@@ -346,7 +348,7 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
 
                 <div class="section-title-container">
                     <div class="section-title-text" role="heading" aria-level="3">
-                        <?php echo apply_filters('leyka_template_fields_group_header_label', __('Personal information', 'leyka'), 'need-help', $campaign, 'donor_data');?>
+                        <?php echo wp_kses_post(apply_filters('leyka_template_fields_group_header_label', __('Personal information', 'leyka'), 'need-help', $campaign, 'donor_data'));?>
                     </div>
                 </div>
 
@@ -356,12 +358,12 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                     <div class="donor-field donor__textfield donor__textfield--email required">
 
                         <label class="leyka-star-field-frame">
-                            <input type="text" id="<?php echo esc_attr( $field_id );?>" name="leyka_donor_email" value="" autocomplete="off" placeholder="<?php echo apply_filters('leyka_template_field_label', __('Your email', 'leyka'), 'need-help', $campaign, 'donor_email', 'donor_data');?>">
+                            <input type="text" id="<?php echo esc_attr( $field_id );?>" name="leyka_donor_email" value="" autocomplete="off" placeholder="<?php echo esc_attr(apply_filters('leyka_template_field_label', __('Your email', 'leyka'), 'need-help', $campaign, 'donor_email', 'donor_data'));?>">
                         </label>
 
                         <div class="leyka-star-field-error-frame">
                             <span class="donor__textfield-error leyka_donor_email-error">
-                                <?php echo apply_filters('leyka_template_field_error', __('Please, enter a valid email', 'leyka'), 'need-help', $campaign, 'donor_email', 'donor_data');?>
+                                <?php echo wp_kses_post(apply_filters('leyka_template_field_error', __('Please, enter a valid email', 'leyka'), 'need-help', $campaign, 'donor_email', 'donor_data'));?>
                             </span>
                         </div>
 
@@ -384,7 +386,7 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                         </label>
                         <div class="leyka-star-field-error-frame">
                             <span class="donor__textfield-error leyka_donor_name-error">
-                                <?php echo apply_filters('leyka_template_field_error', __('Enter your name', 'leyka'), 'need-help', $campaign, 'donor_name', 'donor_data');?>
+                                <?php echo wp_kses_post(apply_filters('leyka_template_field_error', __('Enter your name', 'leyka'), 'need-help', $campaign, 'donor_name', 'donor_data'));?>
                             </span>
                         </div>
                     </div>
@@ -427,7 +429,7 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
 
                             <div class="leyka-star-field-error-frame">
                                 <span class="donor__textfield-error donor__<?php echo esc_attr( $field['type'] );?>_field-error leyka_<?php echo esc_attr( $field_slug );?>-error">
-                                    <?php _e('Please, enter correct value', 'leyka');?>
+                                    <?php esc_html_e('Please, enter correct value', 'leyka');?>
                                 </span>
                             </div>
 
@@ -451,7 +453,7 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                             /** @todo Something like: $star_template->render_field($field_settings['type'], $field_settings);*/
 
                             $field_id = 'leyka-'.wp_rand();?>
-                            <div class="donor-field donor__textfield donor__textfield--phone special-field <?php echo esc_attr ( $pm_full_id );?> <?php echo empty($field_settings['required']) ? '' : 'required';?> <?php echo empty($field_settings['classes']) ? '' : implode(' ', $field_settings['classes']);?>" style="display: none;">
+                            <div class="donor-field donor__textfield donor__textfield--phone special-field <?php echo esc_attr ( $pm_full_id );?> <?php echo empty($field_settings['required']) ? '' : 'required';?> <?php echo empty($field_settings['classes']) ? '' : esc_attr(implode(' ', $field_settings['classes']));?>" style="display: none;">
 
                                 <div class="leyka-star-field-frame">
 
@@ -460,18 +462,18 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                                         <?php $phone_field_label = empty($field_settings['title']) ? __('Your phone number in the 7xxxxxxxxxx format', 'leyka') : $field_settings['title'];?>
 
                                         <span class="donor__textfield-label leyka_donor_phone-label">
-                                            <?php echo apply_filters('leyka_template_field_label', $phone_field_label, 'need-help', $campaign, 'donor_phone', 'donor_data');?>
+                                            <?php echo wp_kses_post(apply_filters('leyka_template_field_label', $phone_field_label, 'need-help', $campaign, 'donor_phone', 'donor_data'));?>
                                         </span>
 
                                     </label>
 
-                                    <input id="<?php echo esc_attr( $field_id );?>" type="text" name="<?php echo empty($field_settings['name']) ? 'leyka_donor_phone' : $field_settings['name'];?>" value="" maxlength="20" autocomplete="off" placeholder="<?php echo empty($field_settings['placeholder']) ? '' : $field_settings['placeholder'];?>">
+                                    <input id="<?php echo esc_attr( $field_id );?>" type="text" name="<?php echo empty($field_settings['name']) ? 'leyka_donor_phone' : esc_attr($field_settings['name']);?>" value="" maxlength="20" autocomplete="off" placeholder="<?php echo empty($field_settings['placeholder']) ? '' : esc_attr($field_settings['placeholder']);?>">
 
                                 </div>
 
                                 <div class="leyka-star-field-error-frame">
                                     <span class="donor__textfield-error leyka_donor_phone-error">
-                                        <?php echo apply_filters('leyka_template_field_error', __('Enter your phone number in the 7xxxxxxxxxx format', 'leyka'), 'need-help', $campaign, 'donor_phone', 'donor_data');?>
+                                        <?php echo wp_kses_post(apply_filters('leyka_template_field_error', __('Enter your phone number in the 7xxxxxxxxxx format', 'leyka'), 'need-help', $campaign, 'donor_phone', 'donor_data'));?>
                                     </span>
                                 </div>
 
@@ -488,12 +490,12 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                         <div class="donor-field donor__textfield donor__textfield--comment leyka-field">
 
                             <label class="leyka-star-field-frame">
-                                <textarea id="<?php echo esc_attr( $field_id );?>" class="leyka-donor-comment" name="leyka_donor_comment" data-max-length="<?php echo leyka_options()->opt_template('donation_comment_max_length', 'need-help');?>" placeholder="<?php _e('Your comment', 'leyka');?>"></textarea>
+                                <textarea id="<?php echo esc_attr( $field_id );?>" class="leyka-donor-comment" name="leyka_donor_comment" data-max-length="<?php echo esc_attr(leyka_options()->opt_template('donation_comment_max_length', 'need-help'));?>" placeholder="<?php esc_attr_e('Your comment', 'leyka');?>"></textarea>
                             </label>
 
                             <div class="leyka-star-field-error-frame">
                             <span class="donor__textfield-error leyka_donor_comment-error">
-                                <?php echo apply_filters('leyka_template_field_error', __('Entered value is too long', 'leyka'), 'need-help', $campaign, 'donor_comment', 'donor_data');?>
+                                <?php echo wp_kses_post(apply_filters('leyka_template_field_error', __('Entered value is too long', 'leyka'), 'need-help', $campaign, 'donor_comment', 'donor_data'));?>
                             </span>
 
                             </div>
@@ -526,14 +528,14 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
 
                                 <svg class="svg-icon icon-checkbox-check"><use xlink:href="#icon-checkbox-check"></use></svg>
 
-                            <?php echo apply_filters('agree_to_terms_text_text_part', leyka_options()->opt('agree_to_terms_text_text_part')).' ';
+                            <?php echo wp_kses_post(apply_filters('agree_to_terms_text_text_part', leyka_options()->opt('agree_to_terms_text_text_part'))).' ';
 
                             if(leyka_options()->opt('agree_to_terms_link_action') === 'popup') {?>
                                 <a href="#" class="leyka-js-oferta-trigger">
                             <?php } else {?>
-                                <a target="_blank" href="<?php echo leyka_get_terms_of_service_page_url();?>">
+                                <a target="_blank" href="<?php echo esc_attr(leyka_get_terms_of_service_page_url());?>">
                             <?php }?>
-                            <?php echo apply_filters('agree_to_terms_text_link_part', leyka_options()->opt('agree_to_terms_text_link_part'));?>
+                            <?php echo wp_kses_post(apply_filters('agree_to_terms_text_link_part', leyka_options()->opt('agree_to_terms_text_link_part')));?>
                                 </a>
 
                             </label>
@@ -549,14 +551,14 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                                 <label for="<?php echo esc_attr( $field_id );?>">
                                 <svg class="svg-icon icon-checkbox-check"><use xlink:href="#icon-checkbox-check"></use></svg>
 
-                            <?php echo apply_filters('agree_to_pd_terms_text_text_part', leyka_options()->opt('agree_to_pd_terms_text_text_part')).' ';
+                            <?php echo wp_kses_post(apply_filters('agree_to_pd_terms_text_text_part', leyka_options()->opt('agree_to_pd_terms_text_text_part'))).' ';
 
                             if(leyka_options()->opt('agree_to_pd_terms_link_action') === 'popup') {?>
                                 <a href="#" class="leyka-js-pd-trigger">
                             <?php } else {?>
-                                <a target="_blank" href="<?php echo leyka_get_terms_of_pd_usage_page_url();?>">
+                                <a target="_blank" href="<?php echo esc_attr(leyka_get_terms_of_pd_usage_page_url());?>">
                             <?php }?>
-                            <?php echo apply_filters('agree_to_pd_terms_text_link_part', leyka_options()->opt('agree_to_pd_terms_text_link_part'));?>
+                            <?php echo wp_kses_post(apply_filters('agree_to_pd_terms_text_link_part', leyka_options()->opt('agree_to_pd_terms_text_link_part')));?>
                                 </a>
 
                             </label>
@@ -570,7 +572,9 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                     <?php }?>
 
                     <div class="donor__submit">
-                        <?php echo apply_filters(
+                        <?php 
+                            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                            echo apply_filters(
                             'leyka_need-help_template_final_submit',
                             '<input type="submit" disabled="disabled" class="leyka-default-submit" value="'
                             .($campaign->daily_rouble_mode_on_and_valid ?
@@ -598,7 +602,7 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
             <div class="section section--signature">
                 <div id="leyka-platform-signature">
                     <span id="leyka-signature-icon"></span>
-                    <span id="leyka-signature-text"><?php echo __('Made with <a href="https://leyka.org/" target="_blank">Leyka</a>', 'leyka'); ?></span>
+                    <span id="leyka-signature-text"><?php echo wp_kses_post(__('Made with <a href="https://leyka.org/" target="_blank">Leyka</a>', 'leyka')); ?></span>
                 </div>
             </div>
         <?php } ?>
@@ -607,10 +611,10 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
         <?php if(leyka_options()->opt('agree_to_terms_needed')) {?>
         <div class="leyka-pf__agreement oferta">
             <div class="agreement__frame">
-                <div class="agreement__flow"><?php echo leyka_get_terms_text();?></div>
+                <div class="agreement__flow"><?php echo wp_kses_post(leyka_get_terms_text());?></div>
             </div>
             <a href="#" class="agreement__close">
-                <?php echo leyka_options()->opt('leyka_agree_to_terms_text_text_part').' '.leyka_options()->opt('leyka_agree_to_terms_text_link_part');?>
+                <?php echo esc_html(leyka_options()->opt('leyka_agree_to_terms_text_text_part').' '.leyka_options()->opt('leyka_agree_to_terms_text_link_part'));?>
             </a>
         </div>
         <?php }?>
@@ -618,10 +622,10 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
         <?php if(leyka_options()->opt('agree_to_pd_terms_needed')) {?>
         <div class="leyka-pf__agreement pd">
             <div class="agreement__frame">
-                <div class="agreement__flow"><?php echo leyka_get_pd_terms_text();?></div>
+                <div class="agreement__flow"><?php echo wp_kses_post(leyka_get_pd_terms_text());?></div>
             </div>
             <a href="#" class="agreement__close">
-                <?php echo leyka_options()->opt('agree_to_pd_terms_text_text_part').' '.leyka_options()->opt('agree_to_pd_terms_text_link_part');?>
+                <?php echo esc_html(leyka_options()->opt('agree_to_pd_terms_text_text_part').' '.leyka_options()->opt('agree_to_pd_terms_text_link_part'));?>
             </a>
         </div>
         <?php }?>
@@ -634,9 +638,9 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
         <div class="waiting">
             <div class="waiting__card">
                 <div class="loading">
-                    <?php echo leyka_get_ajax_indicator();?>
+                    <?php echo wp_kses_post(leyka_get_ajax_indicator());?>
                 </div>
-                <div class="waiting__card-text"><?php echo apply_filters('leyka_short_gateway_redirect_message', __('Awaiting for the safe payment page redirection...', 'leyka'));?></div>
+                <div class="waiting__card-text"><?php echo wp_kses_post(apply_filters('leyka_short_gateway_redirect_message', __('Awaiting for the safe payment page redirection...', 'leyka')));?></div>
             </div>
         </div>
     </div>

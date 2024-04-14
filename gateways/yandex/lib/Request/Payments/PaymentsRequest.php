@@ -515,14 +515,14 @@ class PaymentsRequest extends AbstractRequest implements PaymentsRequestInterfac
         } elseif (TypeCast::canCastToEnumString($value)) {
             if (!PaymentStatus::valueExists((string)$value)) {
                 throw new InvalidPropertyValueException(
-                    'Invalid status value in PaymentsRequest', 0, 'PaymentsRequest.status', $value
+                    'Invalid status value in PaymentsRequest', 0, 'PaymentsRequest.status', esc_html($value)
                 );
             } else {
                 $this->_status = (string)$value;
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid status value in PaymentsRequest', 0, 'PaymentsRequest.status', $value
+                'Invalid status value in PaymentsRequest', 0, 'PaymentsRequest.status', esc_html($value)
             );
         }
     }
@@ -559,14 +559,14 @@ class PaymentsRequest extends AbstractRequest implements PaymentsRequestInterfac
         } elseif (TypeCast::canCastToEnumString($value)) {
             if (!PaymentMethodType::valueExists((string)$value)) {
                 throw new InvalidPropertyValueException(
-                    'Invalid status value in PaymentsRequest', 0, 'PaymentsRequest.paymentMethod', $value
+                    'Invalid status value in PaymentsRequest', 0, 'PaymentsRequest.paymentMethod', esc_html($value)
                 );
             } else {
                 $this->_paymentMethod = (string)$value;
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid status value type in PaymentsRequest', 0, 'PaymentsRequest.paymentMethod', $value
+                'Invalid status value type in PaymentsRequest', 0, 'PaymentsRequest.paymentMethod', esc_html($value)
             );
         }
     }
@@ -602,13 +602,13 @@ class PaymentsRequest extends AbstractRequest implements PaymentsRequestInterfac
         } elseif (is_int($value)) {
             if ($value < 0 || $value > self::MAX_LIMIT_VALUE) {
                 throw new InvalidPropertyValueException(
-                    'Invalid limit value in PaymentsRequest', 0, 'PaymentsRequest.limit', $value
+                    'Invalid limit value in PaymentsRequest', 0, 'PaymentsRequest.limit', esc_html($value)
                 );
             }
             $this->_limit = $value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid limit value type in PaymentsRequest', 0, 'PaymentsRequest.limit', $value
+                'Invalid limit value type in PaymentsRequest', 0, 'PaymentsRequest.limit', esc_html($value)
             );
         }
     }
@@ -645,7 +645,7 @@ class PaymentsRequest extends AbstractRequest implements PaymentsRequestInterfac
             $this->_cursor = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid status value type in PaymentsRequest', 0, 'PaymentsRequest.limit', $value
+                'Invalid status value type in PaymentsRequest', 0, 'PaymentsRequest.limit', esc_html($value)
             );
         }
     }

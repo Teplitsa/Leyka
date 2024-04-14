@@ -93,7 +93,7 @@ abstract class OAuth
               . 'https://stripe.com/docs/connect/standard-accounts for details, '
               . 'or email support@stripe.com if you have any questions.';
 
-            throw new Exception\AuthenticationException($msg);
+            throw new Exception\AuthenticationException(wp_kses_post($msg));
         }
 
         return $clientId;

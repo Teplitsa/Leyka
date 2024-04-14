@@ -84,7 +84,7 @@ class Leg extends AbstractObject implements LegInterface
             throw new InvalidPropertyValueTypeException('Invalid departure_airport value type', 0,
                 'airline.departure_airport');
         } elseif (!preg_match('/^[A-Z]{3}$/', (string)$value)) {
-            throw new InvalidPropertyValueException('Invalid departure_airport value: "'.$value.'"', 0,
+            throw new InvalidPropertyValueException('Invalid departure_airport value: "'.esc_html($value).'"', 0,
                 'airline.departure_airport');
         } else {
             $this->_departureAirport = (string)$value;
@@ -109,7 +109,7 @@ class Leg extends AbstractObject implements LegInterface
             throw new InvalidPropertyValueTypeException('Invalid destination_airport value type', 0,
                 'airline.destination_airport');
         } elseif (!preg_match('/^[A-Z]{3}$/', (string)$value)) {
-            throw new InvalidPropertyValueException('Invalid destination_airport value: "'.$value.'"', 0,
+            throw new InvalidPropertyValueException('Invalid destination_airport value: "'.esc_html($value).'"', 0,
                 'airline.destination_airport');
         } else {
             $this->_destinationAirport = (string)$value;

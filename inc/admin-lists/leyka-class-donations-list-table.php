@@ -117,12 +117,12 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
     /** Text displayed when no data is available. */
     public function no_items() {
-        _e('No donations avaliable.', 'leyka');
+        esc_html_e('No donations avaliable.', 'leyka');
     }
 
     public function single_row($donation) {
 
-        echo '<tr class="leyka-donation-'.$donation->status.'-row">';
+        echo '<tr class="leyka-donation-'.esc_attr($donation->status).'-row">';
         $this->single_row_columns($donation);
         echo '</tr>';
 
@@ -549,7 +549,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
         if($this->current_action() === 'delete') { // Single donation deletion
 
             if( !wp_verify_nonce(esc_attr($_REQUEST['_wpnonce']), 'leyka_delete_donation') ) {
-                die(__("You don't have permissions for this operation.", 'leyka'));
+                die(esc_html__("You don't have permissions for this operation.", 'leyka'));
             } else {
                 self::_delete_item(absint($_GET['donation']));
             }
@@ -562,7 +562,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
         ) {
 
             if( !wp_verify_nonce(esc_attr($_REQUEST['_wpnonce']), 'bulk-'.$this->_args['plural']) ) {
-                die(__("You don't have permissions for this operation.", 'leyka'));
+                die(esc_html__("You don't have permissions for this operation.", 'leyka'));
             }
 
             foreach(esc_sql($_REQUEST['bulk-delete']) as $donation_id) {

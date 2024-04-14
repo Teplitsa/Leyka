@@ -83,7 +83,7 @@ class TaxId extends ApiResource
         $customer = $this['customer'];
         if (!$id) {
             throw new Exception\UnexpectedValueException(
-                "Could not determine which URL to request: class instance has invalid ID: {$id}"
+                'Could not determine which URL to request: class instance has invalid ID: ' . esc_html( $id )
             );
         }
         $id = Util\Util::utf8($id);
@@ -108,6 +108,6 @@ class TaxId extends ApiResource
                "a tax ID using `Customer::retrieveTaxId('customer_id', " .
                "'tax_id_id')`.";
 
-        throw new Exception\BadMethodCallException($msg);
+        throw new Exception\BadMethodCallException(wp_kses_post($msg));
     }
 }

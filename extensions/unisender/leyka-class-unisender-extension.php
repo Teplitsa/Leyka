@@ -118,6 +118,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
         $additional_fields = ['Name' => __('Name', 'leyka')];
 
         foreach($fields_library as $name => $data) {
+            // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
             $additional_fields[$name] = __($data['title'], 'leyka');
         }
 
@@ -351,7 +352,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
                 '<div>
                     <b>' . esc_html__('Subscribed user ID', 'leyka').': </b>' . esc_html( $subscription_response['result']['person_id'] ) . '</br>
                     <b>' . esc_html__('Invitation letter', 'leyka') . ': </b>'
-                    . ( isset($subscription_response['result']['invitation_letter_sent']) ? __('Yes', 'leyka') : esc_html__('No', 'leyka'))
+                    . ( isset($subscription_response['result']['invitation_letter_sent']) ? esc_html__('Yes', 'leyka') : esc_html__('No', 'leyka'))
                 .'</div>';
         } else {
             echo '<div>' . esc_html__('Response data is not correct', 'leyka') . '</div>';

@@ -39,8 +39,7 @@ class Capability extends ApiResource
         $account = $this['account'];
         if (!$id) {
             throw new Exception\UnexpectedValueException(
-                'Could not determine which URL to request: ' .
-                "class instance has invalid ID: {$id}",
+                'Could not determine which URL to request: class instance has invalid ID: ' . esc_attr($id),
                 null
             );
         }
@@ -66,7 +65,7 @@ class Capability extends ApiResource
                'Retrieve a capability using `Account::retrieveCapability(' .
                "'account_id', 'capability_id')`.";
 
-        throw new Exception\BadMethodCallException($msg);
+        throw new Exception\BadMethodCallException(wp_kses_post($msg));
     }
 
     /**
@@ -82,6 +81,6 @@ class Capability extends ApiResource
                'Update a capability using `Account::updateCapability(' .
                "'account_id', 'capability_id', \$updateParams)`.";
 
-        throw new Exception\BadMethodCallException($msg);
+        throw new Exception\BadMethodCallException(wp_kses_post($msg));
     }
 }

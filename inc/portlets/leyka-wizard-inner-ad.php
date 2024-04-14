@@ -17,7 +17,7 @@
 
     <p>
         <a href="<?php echo esc_url( $params['wizard_link'] );?>" class="button button-primary">
-            <?php _e('Start the Wizard', 'leyka');?>
+            <?php esc_html_e('Start the Wizard', 'leyka');?>
         </a>
     </p>
 

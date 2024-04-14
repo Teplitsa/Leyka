@@ -58,9 +58,9 @@ class CurlClient implements HttpClientInterface
             throw new \InvalidArgumentException(
                 \sprintf(
                     'An HTTP method "%s" is not supported. Use "%s" or "%s".',
-                    $method,
-                    HttpClientInterface::METHOD_GET,
-                    HttpClientInterface::METHOD_POST
+                    esc_html( $method ),
+                    esc_html( HttpClientInterface::METHOD_GET ),
+                    esc_html( HttpClientInterface::METHOD_POST )
                 )
             );
         }
@@ -80,7 +80,7 @@ class CurlClient implements HttpClientInterface
             $error = \curl_error($curl);
             $errorCode = \curl_errno($curl);
 
-            throw new NetworkException('Curl error: ' . $error, $errorCode);
+            throw new NetworkException('Curl error: ' . wp_kses_post( $error ), esc_attr( $errorCode ) );
         }
 
         $httpCode = \curl_getinfo($this->curl, \CURLINFO_HTTP_CODE);

@@ -98,12 +98,12 @@ class PayoutDestinationBankCardCard extends AbstractObject
                 $this->_last4 = (string)$value;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid card last4 value', 0, 'PaymentMethodBankCard.last4', $value
+                    'Invalid card last4 value', 0, 'PaymentMethodBankCard.last4', esc_html($value)
                 );
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid card last4 value type', 0, 'PaymentMethodBankCard.last4', $value
+                'Invalid card last4 value type', 0, 'PaymentMethodBankCard.last4', esc_html($value)
             );
         }
     }
@@ -132,12 +132,12 @@ class PayoutDestinationBankCardCard extends AbstractObject
                 $this->_first6 = (string)$value;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid card first6 value', 0, 'PaymentMethodBankCard.first6', $value
+                    'Invalid card first6 value', 0, 'PaymentMethodBankCard.first6', esc_html($value)
                 );
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid card first6 value type', 0, 'PaymentMethodBankCard.first6', $value
+                'Invalid card first6 value type', 0, 'PaymentMethodBankCard.first6', esc_html($value)
             );
         }
     }
@@ -163,7 +163,7 @@ class PayoutDestinationBankCardCard extends AbstractObject
             $this->_cardType = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid cardType value type', 0, 'PaymentMethodBankCard.cardType', $value
+                'Invalid cardType value type', 0, 'PaymentMethodBankCard.cardType', esc_html($value)
             );
         }
     }
@@ -187,11 +187,11 @@ class PayoutDestinationBankCardCard extends AbstractObject
             $this->_issuerCountry = (string)$value;
         } elseif (!TypeCast::canCastToString($value)) {
             throw new InvalidPropertyValueTypeException(
-                'Invalid issuerCountry value type', 0, 'PaymentMethodBankCard.issuerCountry', $value
+                'Invalid issuerCountry value type', 0, 'PaymentMethodBankCard.issuerCountry', esc_html($value)
             );
         } elseif (strlen($value) !== self::ISO_3166_CODE_LENGTH) {
             throw new InvalidPropertyValueException(
-                'Invalid issuerCountry value', 0, 'PaymentMethodBankCard.issuerCountry', $value
+                'Invalid issuerCountry value', 0, 'PaymentMethodBankCard.issuerCountry', esc_html($value)
             );
         }
 

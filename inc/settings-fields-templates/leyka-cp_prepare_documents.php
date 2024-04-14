@@ -20,64 +20,64 @@
             
             <div class="field">
                 <label><?php esc_html_e('Organization name', 'leyka');?></label>
-                <p class="field-text"><?php echo leyka_options()->opt('org_full_name');?></p>
+                <p class="field-text"><?php echo esc_html(leyka_options()->opt('org_full_name'));?></p>
                 <div class="field-errors"><span><?php esc_html_e('Not filled', 'leyka');?></span></div>
             </div>
     
             <div class="field">
                 <label><?php esc_html_e('Organization short name', 'leyka');?></label>
-                <p class="field-text"><?php echo leyka_options()->opt('org_short_name');?></p>
+                <p class="field-text"><?php echo esc_html(leyka_options()->opt('org_short_name'));?></p>
                 <div class="field-errors"><span><?php esc_html_e('Not filled', 'leyka');?></span></div>
             </div>
     
             <div class="field">
                 <label><?php esc_html_e("Director's full name", 'leyka');?></label>
-                <p class="field-text"><?php echo leyka_options()->opt('org_face_fio_ip');?></p>
+                <p class="field-text"><?php echo esc_html(leyka_options()->opt('org_face_fio_ip'));?></p>
                 <div class="field-errors"><span><?php esc_html_e('Not filled', 'leyka');?></span></div>
             </div>
     
             <div class="field">
                 <label><?php esc_html_e('The organization official address', 'leyka');?></label>
-                <p class="text"><?php echo leyka_options()->opt('org_address');?></p>
+                <p class="text"><?php echo esc_html(leyka_options()->opt('org_address'));?></p>
                 <div class="field-errors"><span><?php esc_html_e('Not filled', 'leyka');?></span></div>
             </div>
     
             <div class="inline-container">
                 <div class="field">
                     <label><?php esc_html_e('The organization state registration number', 'leyka');?></label>
-                    <p class="field-text"><?php echo leyka_options()->opt('org_state_reg_number');?></p>
+                    <p class="field-text"><?php echo esc_html(leyka_options()->opt('org_state_reg_number'));?></p>
                     <div class="field-errors"><span><?php esc_html_e('Not filled', 'leyka');?></span></div>
                 </div>
                 
                 <div class="field">
                     <label><?php esc_html_e('The organization statement of the account number', 'leyka');?></label>
-                    <p class="field-text"><?php echo leyka_options()->opt('org_kpp');?></p>
+                    <p class="field-text"><?php echo esc_html(leyka_options()->opt('org_kpp'));?></p>
                     <div class="field-errors"><span><?php esc_html_e('Not filled', 'leyka');?></span></div>
                 </div>
                 
                 <div class="field">
                     <label><?php esc_html_e('The organization taxpayer individual number', 'leyka');?></label>
-                    <p class="field-text"><?php echo leyka_options()->opt('org_inn');?></p>
+                    <p class="field-text"><?php echo esc_html(leyka_options()->opt('org_inn'));?></p>
                     <div class="field-errors"><span><?php esc_html_e('Not filled', 'leyka');?></span></div>
                 </div>
             </div>
             
             <div class="field">
                 <label><?php esc_html_e('The organization bank name', 'leyka');?></label>
-                <p class="text"><?php echo leyka_options()->opt('org_bank_name');?></p>
+                <p class="text"><?php echo esc_html(leyka_options()->opt('org_bank_name'));?></p>
                 <div class="field-errors"><span><?php esc_html_e('Not filled', 'leyka');?></span></div>
             </div>
 
             <div class="inline-container">
                 <div class="field">
                     <label><?php esc_html_e('The organization bank account number', 'leyka');?></label>
-                    <p class="field-text"><?php echo leyka_options()->opt('org_bank_account');?></p>
+                    <p class="field-text"><?php echo esc_html(leyka_options()->opt('org_bank_account'));?></p>
                     <div class="field-errors"><span><?php esc_html_e('Not filled', 'leyka');?></span></div>
                 </div>
 
                 <div class="field">
                     <label><?php esc_html_e('The organization bank correspondent account number', 'leyka');?></label>
-                    <p class="field-text"><?php echo leyka_options()->opt('org_bank_corr_account');?></p>
+                    <p class="field-text"><?php echo esc_html(leyka_options()->opt('org_bank_corr_account'));?></p>
                     <div class="field-errors"><span><?php esc_html_e('Not filled', 'leyka');?></span></div>
                 </div>
             </div>
@@ -85,7 +85,7 @@
             <div class="inline-container">
                 <div class="field">
                     <label><?php esc_html_e('The organization bank BIC number', 'leyka');?></label>
-                    <p class="field-text"><?php echo leyka_options()->opt('org_bank_bic');?></p>
+                    <p class="field-text"><?php echo esc_html(leyka_options()->opt('org_bank_bic'));?></p>
                     <div class="field-errors"><span><?php esc_html_e('Not filled', 'leyka');?></span></div>
                 </div>
             </div>

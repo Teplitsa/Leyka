@@ -121,6 +121,7 @@ class CreatePayoutRequest extends AbstractRequest implements CreatePayoutRequest
         } elseif (is_numeric($value) || is_array($value)) {
             $this->_amount = new MonetaryAmount($value);
         } else {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
             throw new InvalidPropertyValueTypeException('Invalid amount value type in CreatePayoutRequest', 0, 'CreatePayoutRequest.amount', $value);
         }
     }
@@ -163,7 +164,7 @@ class CreatePayoutRequest extends AbstractRequest implements CreatePayoutRequest
                 'Invalid payoutDestinationData value type in CreatePayoutRequest',
                 0,
                 'CreatePayoutRequest.payoutDestinationData',
-                $value
+                $value // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
             );
         }
     }
@@ -200,7 +201,7 @@ class CreatePayoutRequest extends AbstractRequest implements CreatePayoutRequest
             $this->_payoutToken = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid payoutToken value type', 0, 'CreatePayoutRequest.payoutToken', $value
+                'Invalid payoutToken value type', 0, 'CreatePayoutRequest.payoutToken', esc_html($value)
             );
         }
     }
@@ -237,6 +238,7 @@ class CreatePayoutRequest extends AbstractRequest implements CreatePayoutRequest
             $this->_deal = $value;
         } else {
             throw new InvalidPropertyValueTypeException(
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 'Invalid value type for "deal" parameter in CreatePayoutRequest', 0, 'CreatePayoutRequest.deal', $value
             );
         }
@@ -277,16 +279,16 @@ class CreatePayoutRequest extends AbstractRequest implements CreatePayoutRequest
             $length = mb_strlen((string)$value, 'utf-8');
             if ($length > Payout::MAX_LENGTH_DESCRIPTION) {
                 throw new InvalidPropertyValueException(
-                    'The value of the description parameter is too long. Max length is ' . Payout::MAX_LENGTH_DESCRIPTION,
+                    'The value of the description parameter is too long. Max length is ' . esc_html(Payout::MAX_LENGTH_DESCRIPTION),
                     0,
                     'CreatePayoutRequest.description',
-                    $value
+                    esc_html($value)
                 );
             }
             $this->_description = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid description value type', 0, 'CreatePayoutRequest.description', $value
+                'Invalid description value type', 0, 'CreatePayoutRequest.description', esc_html($value)
             );
         }
     }
@@ -326,6 +328,7 @@ class CreatePayoutRequest extends AbstractRequest implements CreatePayoutRequest
             $this->_metadata = new Metadata($value);
         } else {
             throw new InvalidPropertyValueTypeException(
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 'Invalid metadata value type in CreatePayoutRequest', 0, 'CreatePayoutRequest.metadata', $value
             );
         }

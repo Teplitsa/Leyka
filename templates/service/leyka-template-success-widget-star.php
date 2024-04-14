@@ -30,13 +30,13 @@ $template_id = $campaign ? $campaign->template_id : leyka_remembered_data('templ
 
                     <div class="leyka-screen-form leyka-screen-thankyou <?php echo esc_attr( $template_id === 'need-help' ? 'leyka-need-help-thankyou' : '' );?>">
 
-                        <h1><?php _e('Thank you for your donation!', 'leyka');?></h1>
-                        <p><?php _e('We will be happy with a small but monthly assistance, this gives us confidence in the future and the opportunity to plan our activities.', 'leyka');?></p>
+                        <h1><?php esc_html_e('Thank you for your donation!', 'leyka');?></h1>
+                        <p><?php esc_html_e('We will be happy with a small but monthly assistance, this gives us confidence in the future and the opportunity to plan our activities.', 'leyka');?></p>
 
                         <div class="leyka-pf__final-thankyou">
 
                             <div class="leyka-final-subscribe-form">
-                                <h2><?php _e("Let's stay in touch.", 'leyka');?></h2>
+                                <h2><?php esc_html_e("Let's stay in touch.", 'leyka');?></h2>
 
                                 <form action="#" class=" leyka-success-form" method="post" novalidate="novalidate" <?php echo empty($donation_id) ? 'style="display: none;"' : '';?>>
 
@@ -50,13 +50,13 @@ $template_id = $campaign ? $campaign->template_id : leyka_remembered_data('templ
                                             <div class="donor__textfield donor__textfield--email required focus">
                                                 <div class="leyka-star-field-frame">
                                                     <label for="<?php echo esc_attr( $field_id );?>">
-                                                        <span class="donor__textfield-label leyka_donor_name-label"><?php _e('Email', 'leyka');?></span>
+                                                        <span class="donor__textfield-label leyka_donor_name-label"><?php esc_html_e('Email', 'leyka');?></span>
                                                     </label>
-                                                    <input type="email" id="<?php echo esc_attr( $field_id );?>" name="leyka_donor_email" value="<?php echo leyka_remembered_data('donor_email');?>" autocomplete="off" placeholder="<?php _e('Your email', 'leyka');?>">
+                                                    <input type="email" id="<?php echo esc_attr( $field_id );?>" name="leyka_donor_email" value="<?php echo esc_attr(leyka_remembered_data('donor_email'));?>" autocomplete="off" placeholder="<?php esc_attr_e('Your email', 'leyka');?>">
                                                 </div>
                                                 <div class="leyka-star-field-error-frame">
                                                     <span class="donor__textfield-error leyka_donor_email-error">
-                                                        <?php _e('Enter an email in the some@email.com format', 'leyka');?>
+                                                        <?php esc_html_e('Enter an email in the some@email.com format', 'leyka');?>
                                                     </span>
                                                 </div>
                                             </div>
@@ -64,27 +64,27 @@ $template_id = $campaign ? $campaign->template_id : leyka_remembered_data('templ
                                     </div>
 
                                     <div class="thankyou-email-me-button">
-                                        <input type="submit" class="leyka-success-submit" name="leyka_success_submit" value="<?php _e('Subscribe on news', 'leyka');?>">
+                                        <input type="submit" class="leyka-success-submit" name="leyka_success_submit" value="<?php esc_attr_e('Subscribe on news', 'leyka');?>">
                                     </div>
 
                                     <div class="leyka-star-submit">
-                                        <a href="<?php echo home_url();?>" class="leyka-star-btn leyka-js-no-subscribe"><?php _e('No, thank you', 'leyka');?></a>
+                                        <a href="<?php echo esc_url(home_url());?>" class="leyka-star-btn leyka-js-no-subscribe"><?php esc_html_e('No, thank you', 'leyka');?></a>
                                     </div>
 
                                 </form>
                             </div>
 
                             <div class="informyou-redirect-text">
-                                <?php _e('Redirecting in <span class="leyka-redirect-countdown">5</span> seconds...', 'leyka');?>
+                                <?php echo wp_kses_post( __('Redirecting in <span class="leyka-redirect-countdown">5</span> seconds...', 'leyka'));?>
                             </div>
                         </div>
 
                         <div class="leyka-pf__final-screen leyka-pf__final-error-message"></div>
 
                         <div class="leyka-pf__final-screen leyka-pf__final-informyou">
-                            <div class="text"><div><?php echo leyka()->opt('revo_thankyou_email_result_text');?></div></div>
+                            <div class="text"><div><?php echo wp_kses_post(leyka()->opt('revo_thankyou_email_result_text'));?></div></div>
                             <div class="informyou-redirect-text">
-                                <div><?php _e('Redirecting in <span class="leyka-redirect-countdown">5</span> seconds...', 'leyka');?></div>
+                                <div><?php echo wp_kses_post(__('Redirecting in <span class="leyka-redirect-countdown">5</span> seconds...', 'leyka'));?></div>
                             </div>
                             <div class="leyka-logo"> </div>
                         </div>

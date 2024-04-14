@@ -52,8 +52,8 @@ function leyka_get_scale($campaign = null, $args = []) {
         <?php leyka_scale_compact($campaign);?>
         <?php if($args['show_button'] == 1 && !$campaign->is_finished) {?>
             <div class="leyka-scale-button">
-                <a href="<?php echo trailingslashit(get_permalink($campaign->ID)).'#leyka-payment-form';?>" <?php echo wp_kses_post( $campaign->ID === get_the_ID() ? 'class="leyka-scroll"' : '');?> <?php echo wp_kses_post( $args['embed_mode'] === 1 ? 'target="_blank"' : '');?>>
-                    <?php echo leyka_get_scale_button_label();?>
+                <a href="<?php echo esc_attr(trailingslashit(get_permalink($campaign->ID))).'#leyka-payment-form';?>" <?php echo wp_kses_post( $campaign->ID === get_the_ID() ? 'class="leyka-scroll"' : '');?> <?php echo wp_kses_post( $args['embed_mode'] === 1 ? 'target="_blank"' : '');?>>
+                    <?php echo esc_attr(leyka_get_scale_button_label());?>
                 </a>
             </div>
         <?php }?>
@@ -144,7 +144,7 @@ function leyka_get_campaign_card($campaign = null, $args = []) {
     <div class="<?php echo esc_attr($css_class);?>">
         <?php if($args['show_thumb'] == 1 && has_post_thumbnail($campaign_obj->ID)) {?>
             <div class="lk-thumbnail">
-                <a href="<?php echo get_permalink($campaign_obj);?>" <?php echo wp_kses_post( $target );?>>
+                <a href="<?php echo esc_url(get_permalink($campaign_obj));?>" <?php echo wp_kses_post( $target );?>>
                     <?php echo get_the_post_thumbnail(
                         $campaign_obj->ID,
                         $thumbnail_size,
@@ -157,8 +157,8 @@ function leyka_get_campaign_card($campaign = null, $args = []) {
         <?php if($args['show_title'] == 1 || $args['show_excerpt'] == 1) {?>
             <div class="lk-info">
                 <?php if($args['show_title'] == 1) {?>
-                    <h4 class="lk-title"><a href="<?php echo get_permalink($campaign_obj);?>" <?php echo wp_kses_post( $target );?>>
-                            <?php echo get_the_title($campaign_obj);?>
+                    <h4 class="lk-title"><a href="<?php echo esc_url(get_permalink($campaign_obj));?>" <?php echo wp_kses_post( $target );?>>
+                            <?php echo esc_html( get_the_title($campaign_obj));?>
                         </a></h4>
                 <?php }?>
 
@@ -177,13 +177,14 @@ function leyka_get_campaign_card($campaign = null, $args = []) {
                             $text = leyka_strip_string_by_words($text, 200, true).(mb_strlen($text) > 200 ? '...' : '');
 
                         }
-                        echo apply_filters('leyka_get_the_excerpt', $text, $campaign_obj);?>
+                        echo wp_kses_post(apply_filters('leyka_get_the_excerpt', $text, $campaign_obj));?>
                     </p>
                 <?php }?>
             </div>
         <?php }
 
         if( !!$args['show_scale'] ) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             echo leyka_get_scale($campaign_obj,	[
                 'show_button' => $args['show_button'],
                 'embed_mode' => $args['embed_mode'],
@@ -195,7 +196,7 @@ function leyka_get_campaign_card($campaign = null, $args = []) {
 
             <div class="leyka-scale-button-alone">
                 <a href="<?php echo esc_url( $url );?>" <?php echo wp_kses_post( $campaign_obj->ID === get_the_ID() ? 'class="leyka-scroll"' : '' );?> <?php echo wp_kses_post( $target );?>>
-                    <?php echo leyka_get_scale_button_label();?>
+                    <?php echo esc_html(leyka_get_scale_button_label());?>
                 </a>
             </div>
 
@@ -362,6 +363,7 @@ function leyka_get_donors_list($campaign_id = 'all', $args = []) {
 
         $html .= "</div>";
 
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         echo apply_filters('leyka_donors_list_item_html', $html, $campaign_id, $args);
 
     }?>
@@ -485,9 +487,12 @@ function leyka_inline_campaign(array $atts = []) {
 
     ob_start();?>
 
-    <div id="<?php echo leyka_pf_get_form_id($campaign_id);?>" class="leyka-pf leyka-pf-<?php echo esc_attr( $template_id );?> <?php echo leyka_pf_get_form_auto_open_class($campaign_id);?> <?php if($atts['show_preview']):?>show-preview<?php endif?>" data-form-id="<?php echo leyka_pf_get_form_id($campaign->id).'-revo-form';?>" data-leyka-ver="<?php echo Leyka_Payment_Form::get_plugin_ver_for_atts();?>">
+    <div id="<?php echo esc_attr(leyka_pf_get_form_id($campaign_id));?>" class="leyka-pf leyka-pf-<?php echo esc_attr( $template_id );?> <?php echo esc_attr(leyka_pf_get_form_auto_open_class($campaign_id));?> <?php if($atts['show_preview']):?>show-preview<?php endif?>" data-form-id="<?php echo esc_attr(leyka_pf_get_form_id($campaign->id)).'-revo-form';?>" data-leyka-ver="<?php echo esc_attr(Leyka_Payment_Form::get_plugin_ver_for_atts());?>">
 
-        <?php echo file_get_contents( LEYKA_PLUGIN_BASE_URL . 'assets/svg/svg.svg' );?>
+        <?php
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            echo file_get_contents( LEYKA_PLUGIN_BASE_URL . 'assets/svg/svg.svg' );
+        ?>
 
         <div class="leyka-pf__overlay"></div>
 
@@ -501,14 +506,14 @@ function leyka_inline_campaign(array $atts = []) {
 
                 <div class="inpage-card__content">
 
-                    <div class="inpage-card_title"><?php echo get_the_title($campaign_id);?></div>
+                    <div class="inpage-card_title"><?php echo esc_html(get_the_title($campaign_id));?></div>
 
                     <?php if($atts['show_preview'] && $campaign->post_excerpt) {?>
                     <div class="inpage-card__excerpt">
                         <?php echo wp_kses_post( $campaign->post_excerpt ); ?>
                         <div class="inpage-card__toggle-excerpt-links">
-                            <a href="#" class="inpage-card__expand-excerpt"><?php _e('More', 'leyka');?></a>
-                            <a href="#" class="inpage-card__collapse-excerpt"><?php _e('Hide', 'leyka');?></a>
+                            <a href="#" class="inpage-card__expand-excerpt"><?php esc_html_e('More', 'leyka');?></a>
+                            <a href="#" class="inpage-card__collapse-excerpt"><?php esc_html_e('Hide', 'leyka');?></a>
                         </div>
                     </div>
                     <?php }?>
@@ -529,12 +534,12 @@ function leyka_inline_campaign(array $atts = []) {
 
                         <div class="target">
                         <?php if($ready > 0) {?>
-                            <?php echo leyka_format_amount($collected['amount']);?>
+                            <?php echo wp_kses_post(leyka_format_amount($collected['amount']));?>
                             <span class="curr-mark">
-                                <?php echo leyka_options()->opt("currency_{$collected['currency']}_label");?>
+                                <?php echo esc_html(leyka_options()->opt("currency_{$collected['currency']}_label"));?>
                             </span>
                         <?php } else {?>
-                            <span><?php _e('Support', 'leyka');?></span>
+                            <span><?php esc_html_e('Support', 'leyka');?></span>
                         <?php }?>
                         </div>
 
@@ -544,9 +549,9 @@ function leyka_inline_campaign(array $atts = []) {
                             } else {
                                 esc_html_e( 'collected of ', 'leyka');
                             }?>
-                            <?php echo leyka_format_amount($target['amount']);?>
+                            <?php echo esc_html(leyka_format_amount($target['amount']));?>
                             <span class="curr-mark">
-                                <?php echo leyka_options()->opt("currency_{$target['currency']}_label");?>
+                                <?php echo esc_html(leyka_options()->opt("currency_{$target['currency']}_label"));?>
                             </span>
                         </div>
 					<?php } else {  // Campaign doesn't have a target sum  - display empty scale ?>
@@ -554,11 +559,11 @@ function leyka_inline_campaign(array $atts = []) {
 						<div class="scale hide-scale"></div>
                         
                         <div class="target">
-                            <?php echo leyka_format_amount($collected['amount']);?>
+                            <?php echo esc_html(leyka_format_amount($collected['amount']));?>
                             <span class="curr-mark">
-                                <?php echo leyka_options()->opt("currency_{$collected['currency']}_label");?>
+                                <?php echo esc_html(leyka_options()->opt("currency_{$collected['currency']}_label"));?>
                             </span>
-                            <span class="info"><?php _e('collected', 'leyka');?></span>
+                            <span class="info"><?php esc_html_e('collected', 'leyka');?></span>
                         </div>
 
                     <?php }?>
@@ -576,19 +581,20 @@ function leyka_inline_campaign(array $atts = []) {
                                 $value = mb_ucfirst($value);
                             });?>
 
-                            <strong><?php _e('Supporters', 'leyka');?>:</strong>
+                            <strong><?php esc_html_e('Supporters', 'leyka');?>:</strong>
 
                             <?php if(count($supporters['donations']) <= count($supporters['supporters'])) { // Only names
 
                                 echo count($supporters['supporters']) === 1 ?
+                                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                                     reset($supporters['supporters']) :
-                                    implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka').' '.end($supporters['supporters']);
+                                    esc_attr(implode(', ', array_slice($supporters['supporters'], 0, -1))).' '.esc_html__('and', 'leyka').' '.esc_html(end($supporters['supporters']));
                             } else { // Names and the number of the rest of donors
 
-                                echo implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka');?>
+                                echo esc_html(implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka'));?>
 
                                 <a href="#" class="leyka-js-history-more">
-                                    <?php echo sprintf(__('%d more', 'leyka'), count($supporters['donations']) - count($supporters['supporters']));?>
+                                    <?php echo sprintf(esc_html__('%d more', 'leyka'), count($supporters['donations']) - count($supporters['supporters']));?>
                                 </a>
 
                             <?php }
@@ -596,7 +602,7 @@ function leyka_inline_campaign(array $atts = []) {
                         } else if( !$thumb_url ) {?>
                             <div class="no-supporters">
                                 <svg class="svg-icon pic-first-step"><use xlink:href="#pic-first-step" /></svg>
-                                <div class="lets-do-first-step-text"><?php _e('Every campaign is a journey. Be the one to make the first step.', 'leyka');?></div>
+                                <div class="lets-do-first-step-text"><?php esc_html_e('Every campaign is a journey. Be the one to make the first step.', 'leyka');?></div>
                             </div>
                         <?php }?>
                         </div>
@@ -606,7 +612,7 @@ function leyka_inline_campaign(array $atts = []) {
                             <div class="message-finished"><?php esc_html_e('The fundraising campaign has been finished. Thank you for your support!', 'leyka');?></div>
                         <?php } else { ?>
                             <button type="button" class="leyka-js-open-form">
-                                <?php echo leyka_options()->opt_template('donation_submit_text');?>
+                                <?php echo esc_html(leyka_options()->opt_template('donation_submit_text'));?>
                             </button>
                         <?php } ?>
                         </div>
@@ -619,7 +625,7 @@ function leyka_inline_campaign(array $atts = []) {
 
                 <div class="inpage-card__history history">
                     <div class="history__close leyka-js-history-close">x</div>
-                    <div class="history__title"><?php _e('We are grateful to', 'leyka');?></div>
+                    <div class="history__title"><?php esc_html_e('We are grateful to', 'leyka');?></div>
                     <div class="history__list">
                         <div class="history__list-flow">
                         <?php foreach(leyka_get_campaign_donations($campaign_id) as $donation) {
@@ -633,12 +639,12 @@ function leyka_inline_campaign(array $atts = []) {
                                              leyka_format_amount($donation->amount).'<span class="amount-total"> / '.leyka_format_amount($donation->amount_total).'</span>' );
 
                                     } else if(leyka_options()->opt('widgets_total_amount_usage') == 'display-total-only') {
-                                        echo leyka_format_amount($donation->amount_total);
+                                        echo esc_html(leyka_format_amount($donation->amount_total));
                                     } else {
-                                        echo leyka_format_amount($donation->amount);
+                                        echo esc_html(leyka_format_amount($donation->amount));
                                     }?>
                                     <span class="curr-mark">
-                                        <?php echo leyka_options()->opt("currency_{$target['currency']}_label");?>
+                                        <?php echo esc_html(leyka_options()->opt("currency_{$target['currency']}_label"));?>
                                     </span>
                                 </div>
                                 <div class="history__cell h-name"><?php echo esc_html( $donation->donor_name );?></div>
@@ -669,7 +675,7 @@ function leyka_inline_campaign(array $atts = []) {
                                 <div class="bounce3"></div>
                             </div>
                         </div>
-                        <div class="waiting__card-text"><?php echo apply_filters('leyka_short_gateway_redirect_message', __('Awaiting for the safe payment page redirection...', 'leyka'));?></div>
+                        <div class="waiting__card-text"><?php echo esc_html(apply_filters('leyka_short_gateway_redirect_message', __('Awaiting for the safe payment page redirection...', 'leyka')));?></div>
                     </div>
                 </div>
             </div>
@@ -677,11 +683,11 @@ function leyka_inline_campaign(array $atts = []) {
             <?php if(leyka_options()->opt('agree_to_terms_needed')) {?>
             <div class="leyka-pf__oferta oferta">
                 <div class="oferta__frame">
-                    <div class="oferta__flow"><?php echo leyka_get_terms_text();?></div>
+                    <div class="oferta__flow"><?php echo wp_kses_post(leyka_get_terms_text());?></div>
                 </div>
                 <div class="oferta__action">
                     <a href="#" class="leyka-js-oferta-close">
-                        <?php echo leyka_options()->opt('leyka_agree_to_terms_text_text_part').' '.leyka_options()->opt('leyka_agree_to_terms_text_link_part');?>
+                        <?php echo esc_html(leyka_options()->opt('leyka_agree_to_terms_text_text_part').' '.leyka_options()->opt('leyka_agree_to_terms_text_link_part'));?>
                     </a>
                 </div>
             </div>
@@ -690,11 +696,11 @@ function leyka_inline_campaign(array $atts = []) {
             <?php if(leyka_options()->opt('agree_to_pd_terms_needed')) {?>
             <div class="leyka-pf__pd pd">
                 <div class="pd__frame">
-                    <div class="pd__flow"><?php echo leyka_get_pd_terms_text();?></div>
+                    <div class="pd__flow"><?php echo wp_kses_post(leyka_get_pd_terms_text());?></div>
                 </div>
                 <div class="pd__action">
                     <a href="#" class="leyka-js-pd-close">
-                        <?php echo leyka_options()->opt('agree_to_pd_terms_text_text_part').' '.leyka_options()->opt('agree_to_pd_terms_text_link_part');?>
+                        <?php echo esc_html(leyka_options()->opt('agree_to_pd_terms_text_text_part').' '.leyka_options()->opt('agree_to_pd_terms_text_link_part'));?>
                     </a>
                 </div>
             </div>
@@ -732,15 +738,15 @@ function leyka_inline_campaign_small($atts) {
 
     ob_start();?>
 
-    <div data-target="<?php echo leyka_pf_get_form_id($campaign_id);?>" id="leyka-pf-bottom-<?php echo esc_attr( $campaign_id );?>" class="leyka-pf-bottom bottom-form">
-        <div class="bottom-form__label"><?php _e('Make a donation', 'leyka');?></div>
+    <div data-target="<?php echo esc_attr(leyka_pf_get_form_id($campaign_id));?>" id="leyka-pf-bottom-<?php echo esc_attr( $campaign_id );?>" class="leyka-pf-bottom bottom-form">
+        <div class="bottom-form__label"><?php esc_html_e('Make a donation', 'leyka');?></div>
         <div class="bottom-form__fields">
             <div class="bottom-form__field">
                 <input type="text" value="<?php echo esc_attr( $currency_data['amount_settings']['flexible'] );?>" name="leyka_temp_amount">
                 <span class="curr-mark"><?php echo esc_attr( $currency_data['label'] );?></span>
             </div>
             <div class="bottom-form__button">
-                <button type="button" class="leyka-js-open-form-bottom"><?php echo leyka_options()->opt_template('donation_submit_text');?></button>
+                <button type="button" class="leyka-js-open-form-bottom"><?php echo esc_html(leyka_options()->opt_template('donation_submit_text') );?></button>
             </div>
         </div>
 
@@ -750,18 +756,18 @@ function leyka_inline_campaign_small($atts) {
 			if(count($supporters['supporters'])) { // There is at least one donor ?>
 
 			<div class="bottom-form__note supporters">
-            <strong><?php _e('Supporters:', 'leyka');?></strong>
+            <strong><?php esc_html_e('Supporters:', 'leyka');?></strong>
 
             <?php if(count($supporters['donations']) <= count($supporters['supporters'])) { // Only names in the list
-                echo count($supporters['supporters']) == 1 ?
+                echo wp_kses_post(count($supporters['supporters']) == 1 ?
                     $supporters['supporters'][0] :
                     implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka').' '.
-                    end($supporters['supporters']);
+                    end($supporters['supporters']));
             } else { // Names list and the number of the rest of donors
-                echo implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka');?>
+                echo esc_html(implode(', ', array_slice($supporters['supporters'], 0, -1)).' '.__('and', 'leyka'));?>
 
                 <a href="#" class="leyka-js-history-more">
-                    <?php echo sprintf(__('%d more', 'leyka'), count($supporters['donations']) - count($supporters['supporters']));?>
+                    <?php echo esc_html(sprintf(__('%d more', 'leyka'), count($supporters['donations']) - count($supporters['supporters'])));?>
                 </a>
 
             <?php }?>
@@ -771,7 +777,7 @@ function leyka_inline_campaign_small($atts) {
 		<?php if(count($supporters['donations']) > count($supporters['supporters'])) { ?>
         <div class="bottom-form__history history">
             <div class="history__close leyka-js-history-close">x</div>
-            <div class="history__title"><?php _e('We are grateful to', 'leyka');?></div>
+            <div class="history__title"><?php esc_html_e('We are grateful to', 'leyka');?></div>
             <div class="history__list">
                 <div class="history__list-flow">
 
@@ -786,9 +792,9 @@ function leyka_inline_campaign_small($atts) {
                                     leyka_format_amount($donation->amount).'<span class="amount-total"> / '.leyka_format_amount($donation->amount_total).'</span>' );
 
                             } else if(leyka_options()->opt('widgets_total_amount_usage') == 'display-total-only') {
-                                echo leyka_format_amount($donation->amount_total);
+                                echo esc_html(leyka_format_amount($donation->amount_total));
                             } else {
-                                echo leyka_format_amount($donation->amount);
+                                echo esc_html(leyka_format_amount($donation->amount));
                             }?>
                             <span class="curr-mark"><?php echo esc_html( $currency_data['label'] );?></span>
                         </div>

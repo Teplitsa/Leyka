@@ -130,7 +130,7 @@ class Transfer extends AbstractObject implements TransferInterface
             $this->_amount = $value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid value type for "amount" parameter in Transfer', 0, 'transfer.amount', $value
+                'Invalid value type for "amount" parameter in Transfer', 0, 'transfer.amount', esc_html($value)
             );
         }
     }
@@ -166,7 +166,7 @@ class Transfer extends AbstractObject implements TransferInterface
             $this->_platform_fee_amount = $value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid value type for "platform_fee_amount" parameter in Transfer', 0, 'transfer.platform_fee_amount', $value
+                'Invalid value type for "platform_fee_amount" parameter in Transfer', 0, 'transfer.platform_fee_amount', esc_html($value)
             );
         }
     }
@@ -178,11 +178,11 @@ class Transfer extends AbstractObject implements TransferInterface
     {
         if (!TypeCast::canCastToEnumString($value)) {
             throw new InvalidPropertyValueTypeException(
-                'Invalid "status" value type', 0, 'transfer.status', $value
+                'Invalid "status" value type', 0, 'transfer.status', esc_html($value)
             );
         } elseif (!TransferStatus::valueExists((string)$value)) {
             throw new InvalidPropertyValueException(
-                'Invalid "status" value', 0, 'transfer.status', $value
+                'Invalid "status" value', 0, 'transfer.status', esc_html($value)
             );
         } else {
             $this->_status = (string)$value;
@@ -210,7 +210,7 @@ class Transfer extends AbstractObject implements TransferInterface
             $this->_metadata = $value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid value type for "metadata" parameter in Transfer', 0, 'transfer.metadata', $value
+                'Invalid value type for "metadata" parameter in Transfer', 0, 'transfer.metadata', esc_html($value)
             );
         }
     }

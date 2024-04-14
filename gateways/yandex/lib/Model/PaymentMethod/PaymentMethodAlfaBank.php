@@ -69,7 +69,7 @@ class PaymentMethodAlfaBank extends AbstractPaymentMethod
             $this->_login = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid login value type', 0, 'PaymentMethodAlfaBank.login', $value
+                'Invalid login value type', 0, 'PaymentMethodAlfaBank.login', esc_html($value)
             );
         }
     }

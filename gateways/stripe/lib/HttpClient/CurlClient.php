@@ -230,7 +230,7 @@ class CurlClient implements ClientInterface, StreamingClientInterface
                 $absUrl = "{$absUrl}?{$encoded}";
             }
         } else {
-            throw new Exception\UnexpectedValueException("Unrecognized method {$method}");
+            throw new Exception\UnexpectedValueException('Unrecognized method ' . esc_html( $method ));
         }
 
         // It is only safe to retry network failures on POST requests if we
@@ -571,7 +571,7 @@ class CurlClient implements ClientInterface, StreamingClientInterface
             $msg .= "\n\nRequest was retried {$numRetries} times.";
         }
 
-        throw new Exception\ApiConnectionException($msg);
+        throw new Exception\ApiConnectionException(wp_kses_post($msg));
     }
 
     /**

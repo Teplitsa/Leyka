@@ -4,7 +4,7 @@
 /** @var $this Leyka_Admin_Setup */
 
 if( !current_user_can('leyka_manage_donations') ) {
-    wp_die(__('Error: cannot display the page for the given donation.', 'leyka'));
+    wp_die(esc_html__('Error: cannot display the page for the given donation.', 'leyka'));
 }
 
 try {
@@ -13,20 +13,20 @@ try {
     $donation_id = $donation->id;
 
 } catch(Exception $e) {
-    wp_die($e->getMessage());
+    wp_die(wp_kses_post($e->getMessage()));
 }?>
 
 <div class="wrap" data-leyka-admin-page-type="recurring-subscription-info"> <!-- leyka-admin wrap single-settings donation-info -->
 
-    <a href="<?php echo admin_url('/admin.php?page=leyka_recurring_subscriptions');?>" class="back-to-list-link">
-        <?php _e('Back to the list', 'leyka');?>
+    <a href="<?php echo esc_url( admin_url('/admin.php?page=leyka_recurring_subscriptions') );?>" class="back-to-list-link">
+        <?php esc_html_e('Back to the list', 'leyka');?>
     </a>
     <br class="clear">
 
     <div class="wp-heading-inline">
-        <h1><?php _e('Subscription profile', 'leyka');?></h1>
+        <h1><?php esc_html_e('Subscription profile', 'leyka');?></h1>
         <div class="leyka-subscription-status leyka-subscription-<?php echo esc_attr( $donation->recurring_subscription_status ); ?>">
-            <?php _ex(mb_ucfirst($donation->recurring_subscription_status), 'Recurring subscription status, singular (like [subscription is] "Active/Non-active/Problematic")', 'leyka'); /** @todo Fix this ambiguous l10n string formulation! */?>
+            <?php echo esc_html_x(mb_ucfirst($donation->recurring_subscription_status), 'Recurring subscription status, singular (like [subscription is] "Active/Non-active/Problematic")', 'leyka'); /** @todo Fix this ambiguous l10n string formulation! */?>
         </div>
     </div>
 
@@ -41,7 +41,7 @@ try {
         <div class="error"><?php echo wp_kses_post( $error->get_error_message() );?></div>
 
     <?php } else if(isset($_GET['msg']) && $_GET['msg'] === 'ok') {?>
-        <div id="message" class="updated notice notice-success"><p><?php _e('Donation added.', 'leyka');?></p></div>
+        <div id="message" class="updated notice notice-success"><p><?php esc_html_e('Donation added.', 'leyka');?></p></div>
     <?php }?>
 
     <form name="post" action="<?php echo esc_url( admin_url('admin.php?page=leyka_donation_info&donation=' . $donation_id ) ); ?>" method="post" id="post">

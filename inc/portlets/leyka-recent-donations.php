@@ -14,13 +14,13 @@ $data = Leyka_Recent_Donations_Portlet_Controller::get_instance()->get_template_
 <table class="recent-donations">
     <thead>
         <tr>
-            <th class="donation-id"><?php _e('ID', 'leyka');?></th>
-            <th class="donation-type"><?php _e('Type', 'leyka');?></th>
-            <th class="donation-donor"><?php _e('Donor', 'leyka');?></th>
-            <th class="donation-date"><?php _e('Date', 'leyka');?></th>
-            <th class="donation-amount-status"><?php _e('Sum', 'leyka');?></th>
-            <th class="donation-gateway-pm"><?php _e('Method', 'leyka');?></th>
-            <th class="donation-donor-email-status"><?php _e('Message', 'leyka');?></th>
+            <th class="donation-id"><?php esc_html_e('ID', 'leyka');?></th>
+            <th class="donation-type"><?php esc_html_e('Type', 'leyka');?></th>
+            <th class="donation-donor"><?php esc_html_e('Donor', 'leyka');?></th>
+            <th class="donation-date"><?php esc_html_e('Date', 'leyka');?></th>
+            <th class="donation-amount-status"><?php esc_html_e('Sum', 'leyka');?></th>
+            <th class="donation-gateway-pm"><?php esc_html_e('Method', 'leyka');?></th>
+            <th class="donation-donor-email-status"><?php esc_html_e('Message', 'leyka');?></th>
         </tr>
     </thead>
     <tbody>
@@ -29,7 +29,7 @@ $data = Leyka_Recent_Donations_Portlet_Controller::get_instance()->get_template_
         <tr>
             <td class="donation-id">
                 <div><?php echo esc_html( $donation['id'] ); ?></div>
-                <div><a href="<?php echo admin_url('admin.php?page=leyka_donation_info&donation='.$donation['id']) ?>">К платежу</a></div>
+                <div><a href="<?php echo esc_url(admin_url('admin.php?page=leyka_donation_info&donation='.$donation['id'])); ?>">К платежу</a></div>
             </td>
             <td class="donation-type">
                 <img class="has-tooltip" src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL . 'img/dashboard/icon-donation-type-'.$donation['donation_type']['id'].'.svg' ) ;?>" alt="" title="<?php echo esc_attr( $donation['donation_type']['label'] ); ?>">
@@ -69,15 +69,15 @@ $data = Leyka_Recent_Donations_Portlet_Controller::get_instance()->get_template_
                 <?php if($donation['donor']['email_date']) {?>
 
                 <div class="donor has-thanks">
-                    <span class="donation-email-status"><?php _e('Sent', 'leyka');?></span>
+                    <span class="donation-email-status"><?php esc_html_e('Sent', 'leyka');?></span>
                     <span class="donation-email-date">
-                        <?php echo date_i18n(get_option('date_format'), $donation['donor']['email_date']);?>
+                        <?php echo esc_html(date_i18n(get_option('date_format'), $donation['donor']['email_date']));?>
                     </span>
                 </div>
 
                 <?php } else {?>
 
-                <div class="leyka-no-donor-thanks donor no-thanks" data-donation-id="<?php echo esc_attr( $donation['id'] );?>" data-nonce="<?php echo wp_create_nonce('leyka_donor_email');?>">
+                <div class="leyka-no-donor-thanks donor no-thanks" data-donation-id="<?php echo esc_attr( $donation['id'] );?>" data-nonce="<?php echo esc_attr(wp_create_nonce('leyka_donor_email'));?>">
                     <span class="donation-email-status"><?php esc_html_e("Not sent", 'leyka'); ?></span>
                     <span class="donation-email-action send-donor-thanks"><?php esc_html_e('Send it now', 'leyka'); ?></span>
                 </div>

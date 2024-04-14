@@ -367,7 +367,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
     /** Text displayed when no donors data is available. */
     public function no_items() {
-        _e('No donors avaliable.', 'leyka');
+        esc_html_e('No donors avaliable.', 'leyka');
     }
 
     /**
@@ -779,7 +779,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         if($this->current_action() === 'delete') {
 
             if( !wp_verify_nonce(esc_attr($_REQUEST['_wpnonce']), 'leyka_delete_donor') ) {
-                die(__("You don't have permissions for this operation.", 'leyka'));
+                die(esc_html__("You don't have permissions for this operation.", 'leyka'));
             } else {
                 self::_delete_item(absint($_GET['donor']));
             }
@@ -802,27 +802,27 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
     public function bulk_edit_fields() {?>
 
-        <div id="leyka-donors-inline-edit-fields" class="leyka-inline-edit-fields leyka-donors-inline-edit-fields" style="display: none;" data-colspan="<?php echo count($this->get_columns());?>" data-bulk-edit-nonce="<?php echo wp_create_nonce('leyka-bulk-edit-donors');?>">
+        <div id="leyka-donors-inline-edit-fields" class="leyka-inline-edit-fields leyka-donors-inline-edit-fields" style="display: none;" data-colspan="<?php echo esc_attr(count($this->get_columns()));?>" data-bulk-edit-nonce="<?php echo esc_attr( wp_create_nonce('leyka-bulk-edit-donors') ) ;?>">
 
             <div class="inline-edit-field">
-                <input type="text" name="donors-tags-input" class="leyka-donors-tags-selector leyka-selector" value="" placeholder="<?php _e('Donors tags', 'leyka');?>">
+                <input type="text" name="donors-tags-input" class="leyka-donors-tags-selector leyka-selector" value="" placeholder="<?php esc_attr_e('Donors tags', 'leyka');?>">
                 <select class="leyka-donors-tags-select autocomplete-select" name="donors-bulk-tags[]" multiple="multiple"></select>
             </div>
 
             <div class="inline-edit-field">
                 <select name="bulk-edit-action">
-                    <option value="add"><?php _e('Add tags', 'leyka');?></option>
-                    <option value="remove"><?php _e('Remove tags', 'leyka');?></option>
-                    <option value="replace"><?php _e('Replace tags', 'leyka');?></option>
+                    <option value="add"><?php esc_html_e('Add tags', 'leyka');?></option>
+                    <option value="remove"><?php esc_html_e('Remove tags', 'leyka');?></option>
+                    <option value="replace"><?php esc_html_e('Replace tags', 'leyka');?></option>
                 </select>
             </div>
 
             <div class="inline-edit-submits">
-                <button type="submit" name="bulk-edit" id="bulk-edit" class="button-primary-small"><?php _e('Update');?></button>
-                <button class="cancel button-secondary-small"><?php _e('Cancel');?></button>
+                <button type="submit" name="bulk-edit" id="bulk-edit" class="button-primary-small"><?php esc_html_e('Update');?></button>
+                <button class="cancel button-secondary-small"><?php esc_html_e('Cancel');?></button>
             </div>
 
-            <div class="result error-message" style="display:none;" data-default-error-text="<?php _e('Error while editing donors', 'leyka');?>"></div>
+            <div class="result error-message" style="display:none;" data-default-error-text="<?php esc_html_e('Error while editing donors', 'leyka');?>"></div>
 
         </div>
 

@@ -119,6 +119,7 @@ class Receipt extends AbstractObject implements ReceiptInterface
         }
         if (!is_array($value) && !($value instanceof \Traversable)) {
             throw new InvalidPropertyValueTypeException(
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 'Invalid items value type in receipt', 0, 'receipt.items', $value
             );
         }
@@ -129,7 +130,7 @@ class Receipt extends AbstractObject implements ReceiptInterface
                 $this->addItem($val);
             } else {
                 throw new InvalidPropertyValueTypeException(
-                    'Invalid item value type in receipt', 0, 'receipt.items['.$key.']', $val
+                    'Invalid item value type in receipt', 0, 'receipt.items['.esc_attr($key).']', esc_html($val)
                 );
             }
         }
@@ -170,6 +171,7 @@ class Receipt extends AbstractObject implements ReceiptInterface
         }
         if (!is_array($value) && !($value instanceof \Traversable)) {
             throw new InvalidPropertyValueTypeException(
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 'Invalid settlements value type in receipt', 0, 'receipt.settlements', $value
             );
         }
@@ -181,7 +183,7 @@ class Receipt extends AbstractObject implements ReceiptInterface
                 $this->addSettlement($val);
             } else {
                 throw new InvalidPropertyValueTypeException(
-                    'Invalid settlements value type in receipt', 0, 'receipt.settlements['.$key.']', $val
+                    'Invalid settlements value type in receipt', 0, 'receipt.settlements['.esc_attr($key).']', esc_html($val)
                 );
             }
         }
@@ -227,7 +229,7 @@ class Receipt extends AbstractObject implements ReceiptInterface
             $castedValue = (int)$value;
             if ($castedValue < 1 || $castedValue > 6) {
                 throw new InvalidPropertyValueException(
-                    'Invalid taxSystemCode value: '.$value, 0, 'receipt.taxSystemCode'
+                    'Invalid taxSystemCode value: '.esc_html($value), 0, 'receipt.taxSystemCode'
                 );
             }
             $this->_taxSystemCode = $castedValue;

@@ -100,14 +100,14 @@ class MonetaryAmount extends AbstractObject implements AmountInterface
             throw new EmptyPropertyValueException('Empty amount value', 0, 'amount.value');
         }
         if (!is_numeric($value)) {
-            throw new InvalidPropertyValueTypeException('Invalid amount value type', 0, 'amount.value', $value);
+            throw new InvalidPropertyValueTypeException('Invalid amount value type', 0, 'amount.value', esc_html($value));
         }
         if ($value <= 0.0) {
-            throw new InvalidPropertyValueException('Invalid amount value: "'.$value.'"', 0, 'amount.value', $value);
+            throw new InvalidPropertyValueException('Invalid amount value: "'.esc_html($value).'"', 0, 'amount.value', esc_html($value));
         }
         $castedValue = (int)round($value * 100.0);
         if ($castedValue <= 0.0) {
-            throw new InvalidPropertyValueException('Invalid amount value: "'.$value.'"', 0, 'amount.value', $value);
+            throw new InvalidPropertyValueException('Invalid amount value: "'.esc_html($value).'"', 0, 'amount.value', esc_html($value));
         }
         $this->_value = $castedValue;
     }
@@ -149,11 +149,11 @@ class MonetaryAmount extends AbstractObject implements AmountInterface
                 $this->_currency = $value;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid currency value: "' . $value . '"', 0, 'amount.currency', $value
+                    'Invalid currency value: "' . esc_html($value) . '"', 0, 'amount.currency', esc_html($value)
                 );
             }
         } else {
-            throw new InvalidPropertyValueTypeException('Invalid currency value type', 0, 'amount.currency', $value);
+            throw new InvalidPropertyValueTypeException('Invalid currency value type', 0, 'amount.currency', esc_html($value));
         }
     }
 
@@ -173,18 +173,18 @@ class MonetaryAmount extends AbstractObject implements AmountInterface
         }
         if (!is_numeric($coefficient)) {
             throw new InvalidPropertyValueTypeException(
-                'Invalid coefficient type in multiply method', 0, 'amount.value', $coefficient
+                'Invalid coefficient type in multiply method', 0, 'amount.value', esc_html($coefficient)
             );
         }
         if ($coefficient <= 0.0) {
             throw new InvalidPropertyValueException(
-                'Invalid coefficient in multiply method: "' . $coefficient . '"', 0, 'amount.value', $coefficient
+                'Invalid coefficient in multiply method: "' . esc_html($coefficient) . '"', 0, 'amount.value', esc_html($coefficient)
             );
         }
         $castedValue = (int)round($coefficient * $this->_value);
         if ($castedValue === 0) {
             throw new InvalidPropertyValueException(
-                'Invalid coefficient value in multiply method: "' . $coefficient . '"', 0, 'amount.value', $coefficient
+                'Invalid coefficient value in multiply method: "' . esc_html($coefficient) . '"', 0, 'amount.value', esc_html($coefficient)
             );
         }
         $this->_value = $castedValue;
@@ -205,13 +205,13 @@ class MonetaryAmount extends AbstractObject implements AmountInterface
         }
         if (!is_numeric($value)) {
             throw new InvalidPropertyValueTypeException(
-                'Invalid amount value type in increase method', 0, 'amount.value', $value
+                'Invalid amount value type in increase method', 0, 'amount.value', esc_html($value)
             );
         }
         $castedValue = (int)round($this->_value + $value * 100.0);
         if ($castedValue <= 0) {
             throw new InvalidPropertyValueException(
-                'Invalid amount value in increase method: "' . $value . '"', 0, 'amount.value', $value
+                'Invalid amount value in increase method: "' . esc_html($value) . '"', 0, 'amount.value', esc_html($value)
             );
         }
         $this->_value = $castedValue;

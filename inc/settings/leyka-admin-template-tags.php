@@ -9,10 +9,10 @@ if( !function_exists('leyka_show_wizard_captioned_screenshot')) {
 
         <div class="captioned-screen">
             <div class="screen-wrapper">
-                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/<?php echo esc_attr( $img_path );?>" class="leyka-instructions-screen" alt="">
-                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-zoom-screen.svg" class="zoom-screen" alt="">
+                <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/<?php echo esc_attr( $img_path );?>" class="leyka-instructions-screen" alt="">
+                <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/icon-zoom-screen.svg" class="zoom-screen" alt="">
             </div>
-            <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/<?php echo esc_attr( $img_path_full );?>" class="leyka-instructions-screen-full" alt="">
+            <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/<?php echo esc_attr( $img_path_full );?>" class="leyka-instructions-screen-full" alt="">
         </div>
 
     <?php }
@@ -38,13 +38,13 @@ if( !function_exists('leyka_show_gateway_logo')) {
             }
         }?>
 
-        <div class="<?php echo is_array($wrapper_classes) ? implode(' ', $wrapper_classes) : $wrapper_classes; ?> module-logo gateway-logo">
+        <div class="<?php echo esc_html(is_array($wrapper_classes) ? implode(' ', $wrapper_classes) : $wrapper_classes); ?> module-logo gateway-logo">
 
             <img class="module-logo-pic gateway-logo-pic" src="<?php echo esc_attr( $use_paceholders ? '#GATEWAY_LOGO_URL#' : $gateway->icon_url );?>" alt="">
 
             <?php if( !!$show_gateway_info && ($use_paceholders || $gateway->description) ) {?>
             <span class="field-q">
-                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-info.svg" alt="">
+                <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/icon-info.svg" alt="">
                 <span class="field-q-tooltip"><?php echo esc_attr( $use_paceholders ? '#GATEWAY_DESCRIPTION#' : $gateway->description );?></span>
             </span>
             <?php }?>
@@ -73,13 +73,13 @@ if( !function_exists('leyka_show_extension_logo')) {
             }
         }?>
 
-        <div class="<?php echo is_array($wrapper_classes) ? implode(' ', $wrapper_classes) : $wrapper_classes; ?> module-logo extension-logo">
+        <div class="<?php echo esc_html(is_array($wrapper_classes) ? implode(' ', $wrapper_classes) : $wrapper_classes); ?> module-logo extension-logo">
 
             <img class="module-logo-pic extension-logo-pic" src="<?php echo esc_attr( $use_paceholders ? '#EXTENSION_LOGO_URL#' : $extension->icon_url );?>" alt="">
 
             <?php if( !!$show_info && ($use_paceholders || $extension->description || $extension->full_description) ) {?>
             <span class="field-q">
-                <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-info.svg" alt="">
+                <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/icon-info.svg" alt="">
                 <span class="field-q-tooltip"><?php echo esc_attr( $use_paceholders ? '#EXTENSION_DESCRIPTION#' : ($extension->full_description ? $extension->full_description : $extension->description) );?></span>
             </span>
             <?php }?>
@@ -131,7 +131,7 @@ if( !function_exists('leyka_pm_sortable_option_html_new') ) {
 
                 <div class="pm-label-wrapper">
 
-                    <span class="pm-label" id="pm-label-<?php echo esc_attr( $pm_full_id );?>" data-currencies-list="<?php echo '('.$available_currencies_list.')';?>"><?php echo esc_attr( $pm->label );?> <b><?php echo '('.$available_currencies_list.')';?></b></span>
+                    <span class="pm-label" id="pm-label-<?php echo esc_attr( $pm_full_id );?>" data-currencies-list="<?php echo '('.esc_attr($available_currencies_list).')';?>"><?php echo esc_attr( $pm->label );?> <b><?php echo '('.esc_html($available_currencies_list).')';?></b></span>
 
                     <span class="pm-label-fields" style="display:none;">
 
@@ -142,8 +142,8 @@ if( !function_exists('leyka_pm_sortable_option_html_new') ) {
 
                     </span>
 
-                    <img class="pm-control pm-change-label" data-pm-id="<?php echo esc_attr( $pm_full_id );?>" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-edit-circled.svg" title="<?php esc_attr_e('Edit the payment method label', 'leyka');?>" alt="">
-                    <img class="pm-control pm-deactivate" data-pm-id="<?php echo esc_attr( $pm_full_id );?>" src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-delete-circled.svg" title="<?php esc_attr_e('Deactivate the payment method', 'leyka');?>" alt="">
+                    <img class="pm-control pm-change-label" data-pm-id="<?php echo esc_attr( $pm_full_id );?>" src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/icon-edit-circled.svg" title="<?php esc_attr_e('Edit the payment method label', 'leyka');?>" alt="">
+                    <img class="pm-control pm-deactivate" data-pm-id="<?php echo esc_attr( $pm_full_id );?>" src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/icon-delete-circled.svg" title="<?php esc_attr_e('Deactivate the payment method', 'leyka');?>" alt="">
 
                 </div>
 
@@ -173,7 +173,7 @@ if( !function_exists('leyka_gateway_details_html') ) {
                 
                 <span class="field-q-tooltip">
                 <?php if($gateway->min_commission && $gateway->min_commission > 0.0) {
-                    printf(esc_html__('Commission from %s%%', 'leyka'), $gateway->min_commission);
+                    printf(esc_html__('Commission from %s%%', 'leyka'), esc_html($gateway->min_commission));
                 } else {
                     esc_html_e('Commission is unknown', 'leyka');
                 }?>
@@ -182,10 +182,10 @@ if( !function_exists('leyka_gateway_details_html') ) {
 
             <div class="details-element gateway-has-recurring field-q">
                 <div class="details-pic has-recurring-icon">
-                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-recurring<?php echo esc_attr( $gateway->has_recurring ? '' : '-no' );?>.svg" alt="">
+                    <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/icon-recurring<?php echo esc_attr( $gateway->has_recurring ? '' : '-no' );?>.svg" alt="">
                 </div>
                 <div class="details-label">
-                    <?php echo mb_strtolower(esc_html_x('recurring', 'a "recurring donations" in one word (like "recurrings")', 'leyka'));?>
+                    <?php echo esc_html(mb_strtolower(esc_html_x('recurring', 'a "recurring donations" in one word (like "recurrings")', 'leyka')));?>
                 </div>
                 <span class="field-q-tooltip">
                     <?php echo esc_attr( $gateway->has_recurring ?
@@ -197,10 +197,10 @@ if( !function_exists('leyka_gateway_details_html') ) {
             
             <div class="details-element gateway-receiver-types field-q">
                 <div class="details-pic receiver-type-icon">
-                    <img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/icon-receiver-type-<?php echo count($gateway->receiver_types) > 1 ? 'all' : $gateway->receiver_types[0];?>.svg" alt="">
+                    <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/icon-receiver-type-<?php echo esc_html(count($gateway->receiver_types) > 1 ? 'all' : $gateway->receiver_types[0]);?>.svg" alt="">
                 </div>
                 <div class="details-label"><?php esc_html_e('receiver', 'leyka');?></div>
-                <span class="field-q-tooltip"><?php echo leyka_get_receiver_description($gateway->receiver_types);?></span>
+                <span class="field-q-tooltip"><?php echo esc_html(leyka_get_receiver_description($gateway->receiver_types));?></span>
             </div>
             
             <?php }?>
@@ -331,7 +331,7 @@ if( !function_exists('leyka_show_donation_error_full_info') ) {
                 <?php if($error->description) {?>
                     <div class="error-description">
 
-                        <h3><?php _e('Error description', 'leyka');?></h3>
+                        <h3><?php esc_html_e('Error description', 'leyka');?></h3>
 
                         <p><?php echo wp_kses_post( $error->description );?></p>
 
@@ -345,7 +345,7 @@ if( !function_exists('leyka_show_donation_error_full_info') ) {
                 if($error->recommendation_admin) {?>
                     <div class="error-recommendation error-recommendation-admin">
 
-                        <h3><?php _e('Recommendation', 'leyka');?></h3>
+                        <h3><?php esc_html_e('Recommendation', 'leyka');?></h3>
 
                         <p><?php echo wp_kses_post( $error->recommendation_admin );?></p>
 
@@ -353,11 +353,11 @@ if( !function_exists('leyka_show_donation_error_full_info') ) {
                 <?php }?>
 
                 <p class="error-common-support-contact-info">
-                    <?php _e('Still has questions? Need help? Message us:', 'leyka');?>
+                    <?php esc_html_e('Still has questions? Need help? Message us:', 'leyka');?>
                     <br>
-                    <?php _e('— <a href="https://t.me/leykadev" target="_blank">Telegram-chat of the support service</a> or', 'leyka');?>
+                    <?php echo wp_kses_post(__('— <a href="https://t.me/leykadev" target="_blank">Telegram-chat of the support service</a> or', 'leyka'));?>
                     <br>
-                    <?php _e('— <a href="https://leyka.te-st.ru/support/" target="_blank">make a feedaback post</a>.', 'leyka');?>
+                    <?php echo wp_kses_post(__('— <a href="https://leyka.te-st.ru/support/" target="_blank">make a feedaback post</a>.', 'leyka'));?>
                 </p>
 
             </div>
@@ -365,19 +365,19 @@ if( !function_exists('leyka_show_donation_error_full_info') ) {
             <div class="error-details-footer">
 
                 <div class="error-code">
-                    <?php _e('Error code:', 'leyka');?>&nbsp;<span class="leyka-copy-on-click"><?php echo esc_html( $error->id );?></span>
+                    <?php esc_html_e('Error code:', 'leyka');?>&nbsp;<span class="leyka-copy-on-click"><?php echo esc_html( $error->id );?></span>
                 </div>
 
                 <div class="errors-docs-link">
-                    <a href="<?php echo Leyka_Donations_Errors::get_instance()->all_errors_docs_link;?>" target="_blank">
-                        <?php _e('All errors', 'leyka');?>
+                    <a href="<?php echo esc_attr(Leyka_Donations_Errors::get_instance()->all_errors_docs_link);?>" target="_blank">
+                        <?php esc_html_e('All errors', 'leyka');?>
                     </a>
                 </div>
 
             </div>
 
             <div class="error-details-after-footer">
-                <button class="close"><?php _e('Understood', 'leyka');?></button>
+                <button class="close"><?php esc_html_e('Understood', 'leyka');?></button>
             </div>
 
         </div>

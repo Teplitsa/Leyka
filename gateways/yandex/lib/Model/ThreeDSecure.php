@@ -51,7 +51,7 @@ class ThreeDSecure extends AbstractObject
                 'Invalid applied value type',
                 0,
                 'authorization_details.three_d_secure.applied',
-                $value
+                (bool)esc_html($value)
             );
         }
 

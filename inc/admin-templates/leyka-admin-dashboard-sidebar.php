@@ -7,18 +7,18 @@ require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php');?
 
 <div class="leyka-info-sidebar-part">
 
-    <div class="leyka-logo"><img src="<?php echo LEYKA_PLUGIN_BASE_URL;?>img/dashboard/logo-leyka.svg" alt=""></div>
+    <div class="leyka-logo"><img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL); ?>img/dashboard/logo-leyka.svg" alt=""></div>
 
     <div class="leyka-description">
-        <?php _e('Leyka is a simple donations collection & management system for your website', 'leyka');?>
+        <?php esc_html_e('Leyka is a simple donations collection & management system for your website', 'leyka');?>
     </div>
 
     <div class="leyka-bottom-link leyka-official-website">
-        <a href="//leyka.te-st.ru/docs/what-is-leyka/" target="_blank"><?php _e('Go to the plugin documentation', 'leyka');?></a>
+        <a href="//leyka.te-st.ru/docs/what-is-leyka/" target="_blank"><?php esc_html_e('Go to the plugin documentation', 'leyka');?></a>
     </div>
 
     <div class="leyka-bottom-link leyka-wizard-link">
-        <a href="<?php echo admin_url('/admin.php?page=leyka_settings_new&screen=wizard-init');?>" class="init-wizard-link"><?php _e('To the step-by-step setup', 'leyka');?></a>
+        <a href="<?php echo esc_url( admin_url('/admin.php?page=leyka_settings_new&screen=wizard-init') );?>" class="init-wizard-link"><?php esc_html_e('To the step-by-step setup', 'leyka');?></a>
     </div>
 
 </div>
@@ -30,7 +30,7 @@ $main_settings_steps = $init_wizard_controller->navigation_data[0]['stage_id'] =
 if($main_settings_steps) {?>
     <div class="leyka-info-sidebar-part">
 
-        <h3><?php _e('My data', 'leyka');?></h3>
+        <h3><?php esc_html_e('My data', 'leyka');?></h3>
 
         <div class="sidebar-part-content settings-state">
             <?php foreach($main_settings_steps as $step) {
@@ -49,11 +49,11 @@ if($main_settings_steps) {?>
                                 <?php if(count($step_invalid_options) <= 5) {
                                     foreach($step_invalid_options as $option_id) { ?>
                                         <div class="invalid-option">
-                                            <?php echo leyka_options()->get_title_of($option_id); ?>
+                                            <?php echo wp_kses_post( leyka_options()->get_title_of($option_id) ); ?>
                                         </div>
                                     <?php }
                                 } else {?>
-                                    <div class="invalid-option"><?php _e('Some option fields are not filled correctly', 'leyka');?></div>
+                                    <div class="invalid-option"><?php esc_html_e('Some option fields are not filled correctly', 'leyka');?></div>
                                 <?php }?>
 
                             </div>
@@ -70,7 +70,7 @@ if($main_settings_steps) {?>
 
 <div class="leyka-info-sidebar-part">
 
-    <h3><?php  _e('Payment gateways', 'leyka');?></h3>
+    <h3><?php esc_html_e('Payment gateways', 'leyka');?></h3>
 
     <div class="sidebar-part-content gateways">
 
@@ -79,7 +79,7 @@ if($main_settings_steps) {?>
                 <div class="module-logo"><img src="<?php echo esc_url( $gateway->icon_url );?>" alt=""></div>
                 <div class="gateway-data">
                     <div class="gateway-title"><?php echo esc_html( $gateway->title );?></div>
-                    <div class="gateway-activation-status"><a href="<?php echo admin_url("/admin.php?page=leyka_settings&stage=payment&gateway=" . $gateway->id)?>"><?php _e('Activating', 'leyka');?></a></div>
+                    <div class="gateway-activation-status"><a href="<?php echo esc_url( admin_url("/admin.php?page=leyka_settings&stage=payment&gateway=" . $gateway->id) ); ?>"><?php esc_html_e('Activating', 'leyka');?></a></div>
                 </div>
             </div>
         <?php }?>
@@ -89,7 +89,7 @@ if($main_settings_steps) {?>
                 <div class="module-logo"><img src="<?php echo esc_url( $gateway->icon_url );?>" alt=""></div>
                 <div class="gateway-data">
                     <div class="gateway-title"><?php echo esc_html( $gateway->title );?></div>
-                    <div class="gateway-activation-status"><?php _e('Active', 'leyka');?></div>
+                    <div class="gateway-activation-status"><?php esc_html_e('Active', 'leyka');?></div>
                 </div>
             </div>
         <?php }?>
@@ -97,20 +97,20 @@ if($main_settings_steps) {?>
     </div>
 
     <div class="add-gateway-link">
-        <a href="<?php echo admin_url('admin.php?page=leyka_settings');?>"><?php esc_html_e('Add gateway', 'leyka');?></a>
+        <a href="<?php echo esc_url( admin_url('admin.php?page=leyka_settings') );?>"><?php esc_html_e('Add gateway', 'leyka');?></a>
     </div>
 
 </div>
 
 <div class="leyka-info-sidebar-part">
 
-    <h3><?php  _e('Diagnostic data', 'leyka');?></h3>
+    <h3><?php esc_html_e('Diagnostic data', 'leyka');?></h3>
 
     <div class="sidebar-part-content diagnostic-data">
         <div class="data-line"><?php esc_html_e('Leyka', 'leyka'); ?> <?php echo esc_html( LEYKA_VERSION );?></div>
         <div class="data-line">
             <?php $template = leyka()->get_template(leyka()->opt('donation_form_template'));
-            echo __('Default template:', 'leyka').' '.__($template['name'], 'leyka');?>
+            echo esc_html__('Default template:', 'leyka').' '.esc_html__($template['name'], 'leyka');?>
         </div>
         <div class="data-line php-actuality-status">
 
@@ -127,13 +127,13 @@ if($main_settings_steps) {?>
             <div class="php-version <?php echo esc_attr( $php_version_actuality ); ?>"><?php echo esc_html( 'PHP ' . phpversion() );?></div>
 
         </div>
-        <div class="data-line"><?php echo 'WordPress '.get_bloginfo('version');?></div>
+        <div class="data-line"><?php echo 'WordPress '.esc_html(get_bloginfo('version'));?></div>
 
         <div class="data-line">
 
             <?php $protocol = wp_parse_url(home_url(), PHP_URL_SCHEME);
-            echo __('Protocol:', 'leyka').' ';?>
-            <span class="protocol <?php echo esc_attr( $protocol == 'https' ? 'safe' : 'not-safe' );?>"><?php echo mb_strtoupper($protocol);?></span>
+            echo esc_html__('Protocol:', 'leyka').' ';?>
+            <span class="protocol <?php echo esc_attr( $protocol == 'https' ? 'safe' : 'not-safe' );?>"><?php echo esc_html( mb_strtoupper($protocol) );?></span>
         </div>
 
         <?php if(leyka_options()->opt('plugin_debug_mode')) {?>
@@ -149,7 +149,7 @@ if($main_settings_steps) {?>
             }?>
 
             <span class="php-modules-title"><?php esc_html_e('PHP modules', 'leyka');?></span>
-            <?php echo implode(', ', $php_extensions_needed);?>
+            <?php echo esc_html( implode(', ', $php_extensions_needed) );?>
 
         </div>
 

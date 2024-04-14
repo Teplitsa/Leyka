@@ -77,7 +77,7 @@ class PaymentDataGooglePay extends AbstractPaymentData
             $this->_paymentMethodToken = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid value type for paymentMethodToken', 0, 'PaymentDataGooglePay.paymentMethodToken', $value
+                'Invalid value type for paymentMethodToken', 0, 'PaymentDataGooglePay.paymentMethodToken', esc_html($value)
             );
         }
     }
@@ -105,7 +105,7 @@ class PaymentDataGooglePay extends AbstractPaymentData
             $this->_googleTransactionId = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid value type for googleTransactionId', 0, 'PaymentDataGooglePay.googleTransactionId', $value
+                'Invalid value type for googleTransactionId', 0, 'PaymentDataGooglePay.googleTransactionId', esc_html($value)
             );
         }
     }

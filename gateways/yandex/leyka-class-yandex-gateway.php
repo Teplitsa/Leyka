@@ -397,12 +397,12 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
         $callback_type = $callback_type === 'co' ? 'checkOrderResponse' : 'paymentAvisoResponse';
         $invoice_id = isset( $_POST['invoiceId'] ) ? $_POST['invoiceId'] : '';
         if($is_error) {
-            die('<?xml version="1.0" encoding="UTF-8"?><'.$callback_type.' performedDatetime="'.gmdate(DATE_ATOM).'"
-code="1000" invoiceId="' . esc_attr( $invoice_id ) . '" shopId="'.leyka_options()->opt('yandex_shop_id').'" message="'.$message.'"
-techMessage="'.$tech_message.'"/>');
+            die('<?xml version="1.0" encoding="UTF-8"?><'.esc_attr($callback_type).' performedDatetime="'.esc_attr(gmdate(DATE_ATOM)).'"
+code="1000" invoiceId="' . esc_attr( $invoice_id ) . '" shopId="'.esc_attr(leyka_options()->opt('yandex_shop_id')).'" message="'.esc_attr($message).'"
+techMessage="'.esc_attr($tech_message).'"/>');
         }
 
-        die('<?xml version="1.0" encoding="UTF-8"?><'.$callback_type.' performedDatetime="'.gmdate(DATE_ATOM).'" code="0" invoiceId="' . esc_attr( $invoice_id ) . '" shopId="'.leyka_options()->opt('yandex_shop_id').'"/>');
+        die('<?xml version="1.0" encoding="UTF-8"?><'.esc_attr($callback_type).' performedDatetime="'.esc_attr(gmdate(DATE_ATOM)).'" code="0" invoiceId="' . esc_attr( $invoice_id ) . '" shopId="'.esc_attr(leyka_options()->opt('yandex_shop_id')).'"/>');
 
     }
 
@@ -839,11 +839,11 @@ techMessage="'.$tech_message.'"/>');
 
             $donation = Leyka_Donations::get_instance()->get_donation($donation);?>
 
-            <label><?php _e('YooKassa invoice ID', 'leyka');?>:</label>
+            <label><?php esc_html_e('YooKassa invoice ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') {?>
-                <input type="text" id="yandex-invoice-id" name="yandex-invoice-id" placeholder="<?php _e('Enter YooKassa invoice ID', 'leyka');?>" value="<?php echo esc_attr( $donation->yandex_invoice_id );?>">
+                <input type="text" id="yandex-invoice-id" name="yandex-invoice-id" placeholder="<?php esc_attr_e('Enter YooKassa invoice ID', 'leyka');?>" value="<?php echo esc_attr( $donation->yandex_invoice_id );?>">
                 <?php } else {?>
                 <span class="fake-input"><?php echo esc_html( $donation->yandex_invoice_id );?></span>
                 <?php }?>
@@ -856,7 +856,7 @@ techMessage="'.$tech_message.'"/>');
             $init_recurring_donation = $donation->init_recurring_donation;?>
 
             <div class="recurring-is-active-field">
-                <label for="yandex-recurring-is-active"><?php _e('Recurring subscription is active', 'leyka');?>:</label>
+                <label for="yandex-recurring-is-active"><?php esc_html_e('Recurring subscription is active', 'leyka');?>:</label>
                 <div class="leyka-ddata-field">
                     <input type="checkbox" id="yandex-recurring-is-active" name="yandex-recurring-is-active" value="1" <?php checked( $init_recurring_donation->recurring_is_active, '1' );?>>
                 </div>
@@ -864,9 +864,9 @@ techMessage="'.$tech_message.'"/>');
 
         <?php } else { // New donation page displayed ?>
 
-            <label for="yandex-invoice-id"><?php _e('YooKassa invoice ID', 'leyka');?>:</label>
+            <label for="yandex-invoice-id"><?php esc_html_e('YooKassa invoice ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <input type="text" id="yandex-invoice-id" name="yandex-invoice-id" placeholder="<?php _e('Enter YooKassa invoice ID', 'leyka');?>" value="">
+                <input type="text" id="yandex-invoice-id" name="yandex-invoice-id" placeholder="<?php esc_attr_e('Enter YooKassa invoice ID', 'leyka');?>" value="">
             </div>
             <?php
         }

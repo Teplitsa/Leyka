@@ -330,7 +330,7 @@ class BaseClient
 
         if ($encoded === false) {
             $errorCode = json_last_error();
-            throw new JsonException("Failed serialize json.", $errorCode);
+            throw new JsonException("Failed serialize json.", esc_attr( $errorCode));
         }
 
         return $encoded;
@@ -368,7 +368,7 @@ class BaseClient
     {
         $resultArray = json_decode($response->getBody(), true);
         if ($resultArray === null) {
-            throw new JsonException('Failed to decode response', json_last_error());
+            throw new JsonException('Failed to decode response', esc_html( json_last_error()));
         }
 
         return $resultArray;
@@ -392,33 +392,33 @@ class BaseClient
     {
         switch ($response->getCode()) {
             case BadApiRequestException::HTTP_CODE:
-                throw new BadApiRequestException($response->getHeaders(), $response->getBody());
+                throw new BadApiRequestException($response->getHeaders(), $response->getBody()); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 break;
             case ForbiddenException::HTTP_CODE:
-                throw new ForbiddenException($response->getHeaders(), $response->getBody());
+                throw new ForbiddenException($response->getHeaders(), $response->getBody()); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 break;
             case UnauthorizedException::HTTP_CODE:
-                throw new UnauthorizedException($response->getHeaders(), $response->getBody());
+                throw new UnauthorizedException($response->getHeaders(), $response->getBody()); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 break;
             case InternalServerError::HTTP_CODE:
-                throw new InternalServerError($response->getHeaders(), $response->getBody());
+                throw new InternalServerError($response->getHeaders(), $response->getBody()); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 break;
             case NotFoundException::HTTP_CODE:
-                throw new NotFoundException($response->getHeaders(), $response->getBody());
+                throw new NotFoundException($response->getHeaders(), $response->getBody()); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 break;
             case TooManyRequestsException::HTTP_CODE:
-                throw new TooManyRequestsException($response->getHeaders(), $response->getBody());
+                throw new TooManyRequestsException($response->getHeaders(), $response->getBody()); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 break;
             case ResponseProcessingException::HTTP_CODE:
-                throw new ResponseProcessingException($response->getHeaders(), $response->getBody());
+                throw new ResponseProcessingException($response->getHeaders(), $response->getBody()); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 break;
             default:
                 if ($response->getCode() > 399) {
                     throw new ApiException(
                         'Unexpected response error code',
-                        $response->getCode(),
-                        $response->getHeaders(),
-                        $response->getBody()
+                        $response->getCode(),  // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
+                        $response->getHeaders(),  // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
+                        $response->getBody()  // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                     );
                 }
         }

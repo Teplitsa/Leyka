@@ -152,6 +152,7 @@ class SafeDeal extends BaseDeal implements DealInterface
             $this->_balance->fromArray($value);
         } else {
             throw new InvalidPropertyValueTypeException(
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 'Invalid SafeDeal.balance value type', 0, 'SafeDeal.balance', $value
             );
         }
@@ -183,7 +184,7 @@ class SafeDeal extends BaseDeal implements DealInterface
             $this->_payout_balance->fromArray($value);
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid SafeDeal.payout_balance value type', 0, 'SafeDeal.payout_balance', $value
+                'Invalid SafeDeal.payout_balance value type', 0, 'SafeDeal.payout_balance', esc_html($value)
             );
         }
         return $this;
@@ -207,12 +208,12 @@ class SafeDeal extends BaseDeal implements DealInterface
     {
         if (TypeCast::canCastToEnumString($value)) {
             if (!DealStatus::valueExists((string)$value)) {
-                throw new InvalidPropertyValueException('Invalid deal status value', 0, 'SafeDeal.status', $value);
+                throw new InvalidPropertyValueException('Invalid deal status value', 0, 'SafeDeal.status', esc_html($value));
             }
             $this->_status = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid deal status value type', 0, 'SafeDeal.status', $value
+                'Invalid deal status value type', 0, 'SafeDeal.status', esc_html($value)
             );
         }
         return $this;
@@ -244,11 +245,11 @@ class SafeDeal extends BaseDeal implements DealInterface
         } elseif (TypeCast::canCastToDateTime($value)) {
             $dateTime = TypeCast::castToDateTime($value);
             if ($dateTime === null) {
-                throw new InvalidPropertyValueException('Invalid created_at value', 0, 'payment.createdAt', $value);
+                throw new InvalidPropertyValueException('Invalid created_at value', 0, 'payment.createdAt', esc_html($value));
             }
             $this->_created_at = $dateTime;
         } else {
-            throw new InvalidPropertyValueTypeException('Invalid created_at value', 0, 'payment.createdAt', $value);
+            throw new InvalidPropertyValueTypeException('Invalid created_at value', 0, 'payment.createdAt', esc_html($value));
         }
         return $this;
     }
@@ -279,11 +280,11 @@ class SafeDeal extends BaseDeal implements DealInterface
         } elseif (TypeCast::canCastToDateTime($value)) {
             $dateTime = TypeCast::castToDateTime($value);
             if ($dateTime === null) {
-                throw new InvalidPropertyValueException('Invalid expires_at value', 0, 'payment.expires_at', $value);
+                throw new InvalidPropertyValueException('Invalid expires_at value', 0, 'payment.expires_at', esc_html($value));
             }
             $this->_expires_at = $dateTime;
         } else {
-            throw new InvalidPropertyValueTypeException('Invalid expires_at value', 0, 'payment.expires_at', $value);
+            throw new InvalidPropertyValueTypeException('Invalid expires_at value', 0, 'payment.expires_at', esc_html($value));
         }
         return $this;
     }
@@ -310,7 +311,7 @@ class SafeDeal extends BaseDeal implements DealInterface
             $this->_test = (bool)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid SafeDeal test flag value type', 0, 'SafeDeal.test', $value
+                'Invalid SafeDeal test flag value type', 0, 'SafeDeal.test', esc_html($value)
             );
         }
         return $this;
@@ -341,16 +342,16 @@ class SafeDeal extends BaseDeal implements DealInterface
             $length = mb_strlen((string)$value, 'utf-8');
             if ($length > self::MAX_LENGTH_DESCRIPTION) {
                 throw new InvalidPropertyValueException(
-                    'The value of the description parameter is too long. Max length is ' . self::MAX_LENGTH_DESCRIPTION,
+                    'The value of the description parameter is too long. Max length is ' . esc_html(self::MAX_LENGTH_DESCRIPTION),
                     0,
                     'SafeDeal.description',
-                    $value
+                    esc_html($value)
                 );
             }
             $this->_description = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid description value type', 0, 'SafeDeal.description', $value
+                'Invalid description value type', 0, 'SafeDeal.description', esc_html($value)
             );
         }
         return $this;
@@ -380,6 +381,7 @@ class SafeDeal extends BaseDeal implements DealInterface
             $this->_metadata = $value;
         } else {
             throw new InvalidPropertyValueTypeException(
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 'Invalid value type for "metadata" parameter in SafeDeal', 0, 'SafeDeal.metadata', $value
             );
         }

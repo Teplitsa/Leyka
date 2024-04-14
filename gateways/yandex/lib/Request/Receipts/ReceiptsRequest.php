@@ -128,13 +128,13 @@ class ReceiptsRequest extends AbstractRequest implements ReceiptsRequestInterfac
             $length = mb_strlen((string)$value, 'utf-8');
             if ($length != 36) {
                 throw new InvalidPropertyValueException(
-                    'Invalid payment id value in ReceiptsRequest', 0, 'ReceiptsRequest.refundId', $value
+                    'Invalid payment id value in ReceiptsRequest', 0, 'ReceiptsRequest.refundId', esc_html($value)
                 );
             }
             $this->_refundId = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid payment id value type in ReceiptsRequest', 0, 'ReceiptsRequest.refundId', $value
+                'Invalid payment id value type in ReceiptsRequest', 0, 'ReceiptsRequest.refundId', esc_html($value)
             );
         }
     }
@@ -172,13 +172,13 @@ class ReceiptsRequest extends AbstractRequest implements ReceiptsRequestInterfac
             $length = mb_strlen((string)$value, 'utf-8');
             if ($length != 36) {
                 throw new InvalidPropertyValueException(
-                    'Invalid payment id value in ReceiptsRequest', 0, 'ReceiptsRequest.paymentId', $value
+                    'Invalid payment id value in ReceiptsRequest', 0, 'ReceiptsRequest.paymentId', esc_html($value)
                 );
             }
             $this->_paymentId = (string)$value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid payment id value type in ReceiptsRequest', 0, 'ReceiptsRequest.paymentId', $value
+                'Invalid payment id value type in ReceiptsRequest', 0, 'ReceiptsRequest.paymentId', esc_html($value)
             );
         }
     }
@@ -399,14 +399,14 @@ class ReceiptsRequest extends AbstractRequest implements ReceiptsRequestInterfac
         } elseif (TypeCast::canCastToEnumString($value)) {
             if (!RefundStatus::valueExists((string)$value)) {
                 throw new InvalidPropertyValueException(
-                    'Invalid status value in ReceiptsRequest', 0, 'ReceiptsRequest.status', $value
+                    'Invalid status value in ReceiptsRequest', 0, 'ReceiptsRequest.status', esc_html($value)
                 );
             } else {
                 $this->_status = (string)$value;
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid status value type in ReceiptsRequest', 0, 'ReceiptsRequest.status', $value
+                'Invalid status value type in ReceiptsRequest', 0, 'ReceiptsRequest.status', esc_html($value)
             );
         }
     }
@@ -443,7 +443,7 @@ class ReceiptsRequest extends AbstractRequest implements ReceiptsRequestInterfac
             $this->_cursor = (string) $value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid status value type in ReceiptsRequest', 0, 'ReceiptsRequest.cursor', $value
+                'Invalid status value type in ReceiptsRequest', 0, 'ReceiptsRequest.cursor', esc_html($value)
             );
         }
     }
@@ -479,13 +479,13 @@ class ReceiptsRequest extends AbstractRequest implements ReceiptsRequestInterfac
         } elseif (is_int($value)) {
             if ($value < 0 || $value > self::MAX_LIMIT_VALUE) {
                 throw new InvalidPropertyValueException(
-                    'Invalid limit value in ReceiptsRequest', 0, 'ReceiptsRequest.limit', $value
+                    'Invalid limit value in ReceiptsRequest', 0, 'ReceiptsRequest.limit', esc_html($value)
                 );
             }
             $this->_limit = $value;
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid limit value type in ReceiptsRequest', 0, 'ReceiptsRequest.limit', $value
+                'Invalid limit value type in ReceiptsRequest', 0, 'ReceiptsRequest.limit', esc_html($value)
             );
         }
     }

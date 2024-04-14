@@ -83,7 +83,7 @@ class RefundReceiptResponse extends AbstractReceiptResponse
             throw new InvalidPropertyValueTypeException('Invalid refund_id value type', 0, 'Receipt.refundId');
         } elseif (strlen((string)$value) !== self::LENGTH_REFUND_ID) {
             throw new InvalidPropertyValueException(
-                'Invalid refund_id value: "'.$value.'"', 0, 'Receipt.refundId', $value
+                'Invalid refund_id value: "'.esc_html($value).'"', 0, 'Receipt.refundId', esc_html($value)
             );
         } else {
             $this->_refund_id = (string)$value;

@@ -26,15 +26,15 @@ $is_payment_completed = $is_came_back_from_yandex && $test_payment && $test_paym
 
 <?php if( !$is_came_back_from_yandex ) {?>
 <div class="payment-tryout-comment live-payment">
-    <span class="attention-needed"><?php _e('Warning!', 'leyka');?></span> <?php _e('You will have to enter the real and working bank card, and the real money will be taken from it.', 'leyka');?>
+    <span class="attention-needed"><?php esc_html_e('Warning!', 'leyka');?></span> <?php esc_html_e('You will have to enter the real and working bank card, and the real money will be taken from it.', 'leyka');?>
 </div>
 <?php } else if($is_payment_completed) {?>
     <div class="payment-result">
-        <div class="result ok"><?php _e('Congratulations! Your donation is successful', 'leyka');?></div>
+        <div class="result ok"><?php esc_html_e('Congratulations! Your donation is successful', 'leyka');?></div>
     </div>
 <?php } else {?>
     <div class="payment-result">
-        <div class="result fail"><?php _e('An error occured', 'leyka');?></div>
+        <div class="result fail"><?php esc_html_e('An error occured', 'leyka');?></div>
     </div>
 <?php }?>
 
@@ -52,12 +52,12 @@ $is_payment_completed = $is_came_back_from_yandex && $test_payment && $test_paym
         leyka_payment_method: 'yandex-yandex_card',
         leyka_agree: 1,
         leyka_agree_pd: 1,
-        _wpnonce: '<?php echo wp_create_nonce('leyka_payment_form');?>',
-        _wp_http_referer: '<?php echo wp_get_referer();?>',
+        _wpnonce: '<?php echo esc_attr(wp_create_nonce('leyka_payment_form'));?>',
+        _wp_http_referer: '<?php echo esc_attr(wp_get_referer());?>',
         leyka_campaign_id: <?php echo esc_attr( $campaign_id ? : 0 );?>,
         leyka_ga_campaign_title: '<?php echo esc_attr( $campaign_title ? $campaign_title : '' );?>',
-        leyka_donor_name: '<?php echo leyka_options()->opt('org_face_fio_ip');?>',
-        leyka_donor_email: '<?php echo get_option('admin_email');?>',
+        leyka_donor_name: '<?php echo esc_attr(leyka_options()->opt('org_face_fio_ip'));?>',
+        leyka_donor_email: '<?php echo esc_attr(get_option('admin_email'));?>',
     };
 
 </script>

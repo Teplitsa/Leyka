@@ -499,11 +499,11 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
         $recurring_cancelling_result = $this->cancel_recurring_subscription($donation);
 
         if($recurring_cancelling_result === true) {
-            die(__('Recurring subscription cancelled successfully.', 'leyka'));
+            die(esc_html__('Recurring subscription cancelled successfully.', 'leyka'));
         } else if(is_wp_error($recurring_cancelling_result)) {
-            die($recurring_cancelling_result->get_error_message());
+            die(wp_kses_post($recurring_cancelling_result->get_error_message()));
         } else {
-            die( sprintf(__('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email()) );
+            die( wp_kses_post( sprintf(__('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email()) ) );
         }
 
     }
@@ -514,12 +514,12 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
             $donation = Leyka_Donations::get_instance()->get_donation($donation);?>
 
-            <label><?php _e('Stripe payment intent ID', 'leyka');?>:</label>
+            <label><?php esc_html_e('Stripe payment intent ID', 'leyka');?>:</label>
 
             <div class="leyka-ddata-field">
 
                 <?php if($donation->type === 'correction') { ?>
-                    <input type="text" id="stripe-payment-intent-id" name="stripe-payment-intent-id" placeholder="<?php _e('Enter Stripe payment intent ID', 'leyka');?>" value="<?php echo esc_attr( $donation->stripe_payment_intent_id );?>">
+                    <input type="text" id="stripe-payment-intent-id" name="stripe-payment-intent-id" placeholder="<?php esc_attr_e('Enter Stripe payment intent ID', 'leyka');?>" value="<?php echo esc_attr( $donation->stripe_payment_intent_id );?>">
                 <?php } else {?>
                     <span class="fake-input"><?php echo esc_html( $donation->stripe_payment_intent_id );?></span>
                 <?php }?>
@@ -533,17 +533,17 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
             <div class="leyka-ddata-field">
                 <?php if($donation->type === 'correction') {?>
-                    <input type="text" id="stripe-subscription-id" name="stripe-subscription-id" placeholder="<?php _e('Enter Stripe subscription ID', 'leyka');?>" value="<?php echo esc_attr( $donation->stripe_subscription_id );?>">
+                    <input type="text" id="stripe-subscription-id" name="stripe-subscription-id" placeholder="<?php esc_attr_e('Enter Stripe subscription ID', 'leyka');?>" value="<?php echo esc_attr( $donation->stripe_subscription_id );?>">
                 <?php } else {?>
                     <span class="fake-input"><?php echo esc_html( $donation->stripe_subscription_id );?></span>
                 <?php }?>
             </div>
 
-            <label><?php _e('Stripe invoice ID', 'leyka');?>:</label>
+            <label><?php esc_html_e('Stripe invoice ID', 'leyka');?>:</label>
 
             <div class="leyka-ddata-field">
                 <?php if($donation->type === 'correction') {?>
-                    <input type="text" id="stripe-invoice-id" name="stripe-invoice-id" placeholder="<?php _e('Enter Stripe invoice ID', 'leyka');?>" value="<?php echo esc_attr( $donation->stripe_invoice_id );?>">
+                    <input type="text" id="stripe-invoice-id" name="stripe-invoice-id" placeholder="<?php esc_attr_e('Enter Stripe invoice ID', 'leyka');?>" value="<?php echo esc_attr( $donation->stripe_invoice_id );?>">
                 <?php } else {?>
                     <span class="fake-input"><?php echo esc_html( $donation->stripe_invoice_id );?></span>
                 <?php }?>
@@ -553,12 +553,12 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
             <div class="recurring-is-active-field">
 
-                <label><?php _e('Recurring subscription is active', 'leyka');?>:</label>
+                <label><?php esc_html_e('Recurring subscription is active', 'leyka');?>:</label>
                 <div class="leyka-ddata-field">
                     <?php echo esc_html( $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka') );
 
                     if( !$init_recurring_donation->recurring_is_active && $init_recurring_donation->recurring_cancel_date ) {
-                        echo ' ('.sprintf(__('canceled on %s', 'leyka'), gmdate(get_option('date_format').', '.get_option('time_format'), $init_recurring_donation->recurring_cancel_date)).')';
+                        echo ' ('.wp_kses_post(sprintf(__('canceled on %s', 'leyka'), gmdate(get_option('date_format').', '.get_option('time_format'), $init_recurring_donation->recurring_cancel_date))).')';
                     }?>
                 </div>
 
@@ -566,19 +566,19 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
 
         <?php } else { // New donation page displayed ?>
 
-            <label for="stripe-payment-intent-id"><?php _e('Stripe payment intent ID', 'leyka');?>:</label>
+            <label for="stripe-payment-intent-id"><?php esc_html_e('Stripe payment intent ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <input type="text" id="stripe-payment-intent-id" name="stripe-payment-intent-id" placeholder="<?php _e('Enter Stripe payment intent ID', 'leyka');?>" value="">
+                <input type="text" id="stripe-payment-intent-id" name="stripe-payment-intent-id" placeholder="<?php esc_attr_e('Enter Stripe payment intent ID', 'leyka');?>" value="">
             </div>
 
-            <label for="stripe-subscription-id"><?php _e('Stripe subscription ID', 'leyka');?>:</label>
+            <label for="stripe-subscription-id"><?php esc_html_e('Stripe subscription ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <input type="text" id="stripe-subscription-id" name="stripe-subscription-id" placeholder="<?php _e('Enter Stripe subscription ID', 'leyka');?>" value="">
+                <input type="text" id="stripe-subscription-id" name="stripe-subscription-id" placeholder="<?php esc_attr_e('Enter Stripe subscription ID', 'leyka');?>" value="">
             </div>
 
-            <label for="stripe-invoice-id"><?php _e('Stripe invoice ID', 'leyka');?>:</label>
+            <label for="stripe-invoice-id"><?php esc_html_e('Stripe invoice ID', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <input type="text" id="stripe-invoice-id" name="stripe-invoice-id" placeholder="<?php _e('Enter Stripe invoice ID', 'leyka');?>" value="">
+                <input type="text" id="stripe-invoice-id" name="stripe-invoice-id" placeholder="<?php esc_attr_e('Enter Stripe invoice ID', 'leyka');?>" value="">
             </div>
 
         <?php }

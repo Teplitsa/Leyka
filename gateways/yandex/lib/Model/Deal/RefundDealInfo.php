@@ -91,7 +91,7 @@ class RefundDealInfo extends AbstractObject
         }
         if (!is_array($value) && !($value instanceof \Traversable)) {
             throw new InvalidPropertyValueTypeException(
-                'Invalid settlements value type in deal', 0, 'deal.settlements', $value
+                'Invalid settlements value type in deal', 0, 'deal.settlements', esc_html($value)
             );
         }
         $this->_refund_settlements = array();
@@ -102,7 +102,7 @@ class RefundDealInfo extends AbstractObject
                 $this->addSettlement($val);
             } else {
                 throw new InvalidPropertyValueTypeException(
-                    'Invalid settlements value type in deal', 0, 'deal.settlements['.$key.']', $val
+                    'Invalid settlements value type in deal', 0, 'deal.settlements['.esc_attr($key).']', esc_html($val)
                 );
             }
         }

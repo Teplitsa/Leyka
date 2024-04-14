@@ -55,19 +55,19 @@ $cover_bg_color = $header_cover_type == 'color' ? get_post_meta($campaign_id, 'c
 
 <body <?php body_class(); ?>>
 <div id="page" class="site leyka-persistant-campaign">
-	<a class="skip-link screen-reader-text" href="#content"><?php _e('Skip to content', 'leyka');?></a>
+	<a class="skip-link screen-reader-text" href="#content"><?php esc_html_e('Skip to content', 'leyka');?></a>
 
 		<header id="masthead" class="leyka-campaign-header <?php echo esc_attr( $header_cover_type == 'color' ? '' : 'cover-type-image' );?> <?php echo empty($logo_url) ? 'no-cover' : '';?>" style="<?php if($cover_url && $header_cover_type != 'color'):?>background-image:url('<?php echo esc_attr( $cover_url );?>');<?php endif;?><?php echo wp_kses_post( $cover_bg_color ? "background-color:$cover_bg_color;" : '' );?>">
             <div class="header-tint <?php echo esc_attr( $hide_cover_tint ? 'hide-cover-tint' : '' );?>">
             	<?php if($logo_url) {?>
-                <a href="<?php echo home_url();?>" class="leyka-campaign-logo">
+                <a href="<?php echo esc_url(home_url());?>" class="leyka-campaign-logo">
                 	<img src="<?php echo esc_url( $logo_url );?>" alt="">
                 </a>
                 <?php } else {?>
                 	<div class="leyka-campaign-no-logo"></div>
                 <?php }?>
                 
-                <h1><?php echo get_the_title();?></h1>
+                <h1><?php echo esc_html(get_the_title());?></h1>
             </div>
         </header>
 

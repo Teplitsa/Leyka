@@ -79,12 +79,12 @@ class PaymentDataB2bSberbank extends AbstractPaymentData
                 $this->_paymentPurpose = (string)$value;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid paymentPurpose value', 0, 'PaymentDataB2bSberbank.paymentPurpose', $value
+                    'Invalid paymentPurpose value', 0, 'PaymentDataB2bSberbank.paymentPurpose', esc_html($value)
                 );
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid paymentPurpose value type', 0, 'PaymentDataB2bSberbank.paymentPurpose', $value
+                'Invalid paymentPurpose value type', 0, 'PaymentDataB2bSberbank.paymentPurpose', esc_html($value)
             );
         }
     }
@@ -117,7 +117,7 @@ class PaymentDataB2bSberbank extends AbstractPaymentData
         } else {
             throw new InvalidPropertyValueTypeException(
                 'Invalid vatData value type in PaymentDataB2BSberbank', 0,
-                'PaymentDataB2BSberbank.vatData', $value
+                'PaymentDataB2BSberbank.vatData', esc_html($value)
             );
         }
     }

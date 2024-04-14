@@ -28,20 +28,20 @@ if( !function_exists('leyka_admin_get_slug_edit_field') ) {
                 <span class="base-url"><?php echo esc_attr( $campaign_base_url );?></span>/<span class="current-slug"><?php echo esc_attr( $campaign_permalink_parts[1] );?></span>
             </span>
 
-                <a href="<?php echo get_edit_post_link($campaign->id);?>" class="inline-action inline-edit-slug">Редактировать</a>
+                <a href="<?php echo esc_url(get_edit_post_link($campaign->id));?>" class="inline-action inline-edit-slug">Редактировать</a>
 
-                <span class="inline-edit-slug-form" data-slug-original="<?php echo esc_attr( $campaign_permalink_parts[1] );?>" data-campaign-id="<?php echo esc_attr( $campaign->id );?>" data-nonce="<?php echo wp_create_nonce('leyka-edit-campaign-slug');?>" style="display: none;">
+                <span class="inline-edit-slug-form" data-slug-original="<?php echo esc_attr( $campaign_permalink_parts[1] );?>" data-campaign-id="<?php echo esc_attr( $campaign->id );?>" data-nonce="<?php echo esc_attr( wp_create_nonce('leyka-edit-campaign-slug') );?>" style="display: none;">
                 <input type="text" class="leyka-slug-field inline-input" value="<?php echo esc_attr( $campaign_permalink_parts[1] );?>">
                 <span class="slug-submit-buttons">
-                    <button class="inline-submit"><?php _e('OK');?></button>
-                    <button class="inline-reset"><?php _e('Cancel');?></button>
+                    <button class="inline-submit"><?php esc_html_e('OK');?></button>
+                    <button class="inline-reset"><?php esc_html_e('Cancel');?></button>
                 </span>
             </span>
 
             <?php } else {?>
 
                 <span class="base-url"><?php echo esc_html( $campaign_permalink_full );?></span>
-                <a href="<?php echo admin_url('options-permalink.php');?>" class="permalink-action" target="_blank">Включить постоянные ссылки</a>
+                <a href="<?php echo esc_url( admin_url('options-permalink.php') );?>" class="permalink-action" target="_blank">Включить постоянные ссылки</a>
 
             <?php }?>
 
@@ -72,7 +72,7 @@ if( !function_exists('leyka_admin_get_shortcode_field') ) {
         <span class="leyka-current-value"><?php echo esc_attr($shortcode);?></span>
         <span class="leyka-campaign-shortcode-field" style="display: none;">
             <input type="text" class="embed-code read-only campaign-shortcode inline-input" id="campaign-shortcode" value="<?php echo esc_attr($shortcode);?>">
-            <button class="inline-reset"><?php _e('Cancel');?></button>
+            <button class="inline-reset"><?php esc_html_e('Cancel');?></button>
         </span>
 
         <?php return ob_get_clean();
@@ -101,20 +101,20 @@ if( !function_exists('leyka_get_admin_footer') ) {
         <div class="leyka-dashboard-footer leyka-admin-footer <?php echo esc_attr( $footer_class );?>">
 
             <a href="https://te-st.ru/" class="te-st-logo">
-                <img  src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL ); ?>img/logo-te-st-with-caption.svg" alt="<?php _e('te-st.ru', 'leyka');?>">
+                <img  src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL ); ?>img/logo-te-st-with-caption.svg" alt="<?php esc_attr_e('te-st.ru', 'leyka');?>">
             </a>
 
             <div class="links">
 
                 <div class="te-st-link">
-                    <span><?php _e('Created by', 'leyka');?></span>
-                    <a href="https://te-st.ru/"><?php _e('Teplitsa. Technologies for Social Good', 'leyka');?></a>
+                    <span><?php esc_html_e('Created by', 'leyka');?></span>
+                    <a href="https://te-st.ru/"><?php esc_html_e('Teplitsa. Technologies for Social Good', 'leyka');?></a>
                 </div>
 
                 <div class="info-links">
-                    <a href="https://leyka.te-st.ru/sla/" target="_blank"><?php _e('SLA', 'leyka');?></a>
-                    <a href="https://leyka.te-st.ru/docs/what-is-leyka/" target="_blank"><?php _e('Documentation', 'leyka');?></a>
-                    <a href="https://t.me/joinchat/BshvgVUqHJLyCNIXd6pZXQ" target="_blank"><?php _e('Developer chat', 'leyka');?></a>
+                    <a href="https://leyka.te-st.ru/sla/" target="_blank"><?php esc_html_e('SLA', 'leyka');?></a>
+                    <a href="https://leyka.te-st.ru/docs/what-is-leyka/" target="_blank"><?php esc_html_e('Documentation', 'leyka');?></a>
+                    <a href="https://t.me/joinchat/BshvgVUqHJLyCNIXd6pZXQ" target="_blank"><?php esc_html_e('Developer chat', 'leyka');?></a>
                 </div>
 
             </div>
@@ -138,7 +138,7 @@ if( !function_exists('leyka_show_admin_footer') ) {
         } else if( !empty($_GET['page']) && $_GET['page'] === 'leyka_settings' && empty($_GET['screen']) ) {
             $footer_class .= 'leyka-settings-footer';
         }
-
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         echo leyka_get_admin_footer($footer_class, $old_footer_html);
 
     }
@@ -204,7 +204,7 @@ if( !function_exists('leyka_admin_get_donor_comment_table_row') ) {
         ob_start();?>
         
         <tr class="comment-id-<?php echo esc_attr( $comment_id );?>">
-            <td class="donor-comment-date"><?php echo gmdate(get_option('date_format').', '.get_option('time_format'), absint($comment['date']));?></td>
+            <td class="donor-comment-date"><?php echo esc_html( gmdate(get_option('date_format').', '.get_option('time_format'), absint($comment['date'])));?></td>
             <td class="donor-comment-text">
             	<div class="leyka-editable-str-wrapper">
                 	<div class="leyka-editable-str-result" 

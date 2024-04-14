@@ -68,12 +68,12 @@ abstract class AbstractPaymentData extends AbstractObject
                 $this->_type = (string)$value;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid value for "type" parameter in PaymentData', 0, 'paymentData.type', $value
+                    'Invalid value for "type" parameter in PaymentData', 0, 'paymentData.type', esc_html($value)
                 );
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid value type for "type" parameter in PaymentData', 0, 'paymentData.type', $value
+                'Invalid value type for "type" parameter in PaymentData', 0, 'paymentData.type', esc_html($value)
             );
         }
     }

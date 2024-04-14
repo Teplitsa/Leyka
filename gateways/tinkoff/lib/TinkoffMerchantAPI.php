@@ -213,7 +213,7 @@ class TinkoffMerchant
             return $out;
 
         } else {
-            throw new HttpException('Can not create connection to ' . $api_url . ' with args ' . $args, 404);
+            throw new HttpException('Can not create connection to ' . esc_html( $api_url ) . ' with args ' . esc_html( $args ), 404);
         }
     }
 }

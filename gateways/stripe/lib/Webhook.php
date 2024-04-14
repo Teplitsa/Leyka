@@ -34,7 +34,7 @@ abstract class Webhook
             $msg = "Invalid payload: {$payload} "
               . "(json_last_error() was {$jsonError})";
 
-            throw new Exception\UnexpectedValueException($msg);
+            throw new Exception\UnexpectedValueException(wp_kses_post($msg));
         }
 
         return Event::constructFrom($data);

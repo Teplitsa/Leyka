@@ -36,8 +36,9 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
         } else {
             throw new Exception(
                 sprintf(
-                    __("Options Meta Controllers Factory error: Can't find Controller script by given country ID (%s, %s)"),
-                    $country_id, $file_path
+                    esc_html__("Options Meta Controllers Factory error: Can't find Controller script by given country ID (%s, %s)"),
+                    esc_html($country_id),
+                    esc_html($file_path)
                 ), 600
             );
         }
@@ -47,7 +48,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
             return new $class_name();
         } else {
             throw new Exception(
-                sprintf(__('Options Meta Controllers Factory error: wrong controller class given (%s)'), $class_name), 601
+                sprintf(esc_html__('Options Meta Controllers Factory error: wrong controller class given (%s)'), esc_html($class_name)), 601
             );
         }
 
@@ -519,7 +520,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
             'cryptocurrencies_text' => [
                 'title' => '',
                 'type' => 'rich_html',
-                'default' => __('<b>We also accept donations in cryptocurrencies</b>', 'leyka'),
+                'default' => '<b>' . esc_html__('We also accept donations in cryptocurrencies', 'leyka') . '</b>',
                 'field_classes' => ['type-rich_html'],
                 'short_format' => true
             ],

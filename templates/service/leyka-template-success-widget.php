@@ -15,12 +15,15 @@ if( !$donation_id ) {
 }?>
 
 <div id="leyka-pf-" class="leyka-pf">
-    <?php echo file_get_contents( LEYKA_PLUGIN_BASE_URL . 'assets/svg/svg.svg' );?>
+    <?php
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        echo file_get_contents( LEYKA_PLUGIN_BASE_URL . 'assets/svg/svg.svg' );
+    ?>
 
     <div class="leyka-pf__final-screen leyka-pf__final-thankyou">
 
         <svg class="svg-icon icon"><use xlink:href="#pic-heart"></svg>
-        <div class="text"><div><?php _e("Thank you! We appreciate your help! Let's stay in touch.", 'leyka');?></div></div>
+        <div class="text"><div><?php esc_html_e("Thank you! We appreciate your help! Let's stay in touch.", 'leyka');?></div></div>
 
         <div class="leyka-final-subscribe-form">
 
@@ -32,25 +35,25 @@ if( !$donation_id ) {
 
                 <div class="thankyou-email-field">
                     <div class="donor__textfield">
-                        <input type="email" name="leyka_donor_email" class="required" placeholder="<?php _e('Your email', 'leyka');?>" value="<?php echo leyka_remembered_data('donor_email');?>">
+                        <input type="email" name="leyka_donor_email" class="required" placeholder="<?php esc_attr_e('Your email', 'leyka');?>" value="<?php echo esc_attr(leyka_remembered_data('donor_email'));?>">
                         <span class="donor__textfield-error leyka_donor_email-error">
-                            <?php _e('Enter an email in the some@email.com format', 'leyka');?>
+                            <?php esc_html_e('Enter an email in the some@email.com format', 'leyka');?>
                         </span>
                     </div>
                 </div>
 
                 <div class="thankyou-email-me-button">
-                    <input type="submit" class="leyka-success-submit" name="leyka_success_submit" value="<?php _e('Yes, keep me in touch', 'leyka');?>">
+                    <input type="submit" class="leyka-success-submit" name="leyka_success_submit" value="<?php esc_attr_e('Yes, keep me in touch', 'leyka');?>">
                 </div>
                 <div class="thankyou-no-email">
-                    <a href="<?php echo home_url('/');?>" class="leyka-js-no-subscribe"><?php _e('No, thank you', 'leyka');?></a>
+                    <a href="<?php echo esc_url(home_url('/'));?>" class="leyka-js-no-subscribe"><?php esc_html_e('No, thank you', 'leyka');?></a>
                 </div>
 
             </form>
 
         </div>
 
-        <div class="informyou-redirect-text"><?php _e('Redirecting in <span class="leyka-redirect-countdown">5</span> seconds...', 'leyka');?></div>
+        <div class="informyou-redirect-text"><?php echo wp_kses_post(__('Redirecting in <span class="leyka-redirect-countdown">5</span> seconds...', 'leyka'));?></div>
 
     </div>
 
@@ -58,8 +61,8 @@ if( !$donation_id ) {
 
     <div class="leyka-pf__final-screen leyka-pf__final-informyou">
         <svg class="svg-icon icon"><use xlink:href="#pic-check-mark"></svg>
-        <div class="text"><div><?php _e('We will inform you about the result by email', 'leyka');?></div></div>
-        <div class="informyou-redirect-text"><div><?php _e('Redirecting in <span class="leyka-redirect-countdown">5</span> seconds...', 'leyka');?></div></div>
+        <div class="text"><div><?php esc_html_e('We will inform you about the result by email', 'leyka');?></div></div>
+        <div class="informyou-redirect-text"><div><?php echo wp_kses_post(__('Redirecting in <span class="leyka-redirect-countdown">5</span> seconds...', 'leyka'));?></div></div>
         <div class="leyka-logo"> </div>
     </div>
 

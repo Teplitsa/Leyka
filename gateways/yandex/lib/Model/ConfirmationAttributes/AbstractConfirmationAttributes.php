@@ -72,12 +72,12 @@ abstract class AbstractConfirmationAttributes extends AbstractObject
                 $this->_type = (string)$value;
             } else {
                 throw new InvalidPropertyValueException(
-                    'Invalid value for "type" parameter in ConfirmationAttributes', 0, 'confirmationAttributes.type', $value
+                    'Invalid value for "type" parameter in ConfirmationAttributes', 0, 'confirmationAttributes.type', esc_html($value)
                 );
             }
         } else {
             throw new InvalidPropertyValueTypeException(
-                'Invalid value type for "type" parameter in ConfirmationAttributes', 0, 'confirmationAttributes.type', $value
+                'Invalid value type for "type" parameter in ConfirmationAttributes', 0, 'confirmationAttributes.type', esc_html($value)
             );
         }
     }
@@ -99,11 +99,11 @@ abstract class AbstractConfirmationAttributes extends AbstractObject
             $this->_locale = null;
         } elseif (!TypeCast::canCastToString($value)) {
             throw new InvalidPropertyValueTypeException(
-                'Invalid value type for "locale" parameter in ConfirmationAttributes', 0, 'confirmationAttributes.locale', $value
+                'Invalid value type for "locale" parameter in ConfirmationAttributes', 0, 'confirmationAttributes.locale', esc_html($value)
             );
         } elseif (!preg_match('/^[a-z]{2}_[A-Z]{2}$/', (string)$value)) {
             throw new InvalidPropertyValueException(
-                'Invalid value type for "locale" parameter in ConfirmationAttributes', 0, 'confirmationAttributes.locale', $value
+                'Invalid value type for "locale" parameter in ConfirmationAttributes', 0, 'confirmationAttributes.locale', esc_html($value)
             );
         } else {
             $this->_locale = (string)$value;

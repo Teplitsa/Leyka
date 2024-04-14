@@ -56,7 +56,7 @@ class ReceiptResponseFactory
                 throw new \InvalidArgumentException('Invalid receipt type value in receipt factory');
             }
             if (!in_array($data['type'], ReceiptType::getEnabledValues())) {
-                throw new \InvalidArgumentException('Invalid receipt data type "' . $data['type'] . '"');
+                throw new \InvalidArgumentException('Invalid receipt data type "' . esc_html($data['type']) . '"');
             }
             if (array_key_exists('refund_id', $data)) {
                 $type = ReceiptType::REFUND;

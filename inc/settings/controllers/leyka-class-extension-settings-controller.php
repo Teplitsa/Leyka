@@ -315,7 +315,7 @@ class Leyka_Extension_Settings_Controller extends Leyka_Settings_Controller {
     protected function _create_settings_block_from_option($option_id, $params) {
 
         if( !$option_id || empty($params['type']) ) {
-            throw new Exception(__("Can't create Settings Block - no option ID given", 'leyka'), 530);
+            throw new Exception(esc_html__("Can't create Settings Block - no option ID given", 'leyka'), 530);
         }
 
         if($params['type'] === 'container' && !empty($params['entries'])) {

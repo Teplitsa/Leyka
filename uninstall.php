@@ -7,6 +7,7 @@ if(get_option('leyka_delete_plugin_data')) { // Completely remove all campaigns 
 
     global $wpdb;
 
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery
     $leyka_posts_ids = $wpdb->get_col("SELECT ID FROM {$wpdb->prefix}posts WHERE post_type='leyka_campaign' OR post_type='leyka_donation'");
     foreach($leyka_posts_ids as $id) {
         wp_delete_post($id, true); // All revisions, post metas and comments will also be deleted

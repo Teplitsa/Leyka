@@ -28,7 +28,7 @@ class AlipayAccount extends ApiResource
         } else {
             $msg = 'Alipay accounts cannot be accessed without a customer ID.';
 
-            throw new Exception\UnexpectedValueException($msg);
+            throw new Exception\UnexpectedValueException(wp_kses_post($msg));
         }
         $parentExtn = \urlencode(Util\Util::utf8($parent));
         $extn = \urlencode(Util\Util::utf8($this['id']));
@@ -51,7 +51,7 @@ class AlipayAccount extends ApiResource
                'Retrieve an Alipay account using `Customer::retrieveSource(' .
                "'customer_id', 'alipay_account_id')`.";
 
-        throw new Exception\BadMethodCallException($msg);
+        throw new Exception\BadMethodCallException(wp_kses_post($msg));
     }
 
     /**
@@ -70,6 +70,6 @@ class AlipayAccount extends ApiResource
                'Update an Alipay account using `Customer::updateSource(' .
                "'customer_id', 'alipay_account_id', \$updateParams)`.";
 
-        throw new Exception\BadMethodCallException($msg);
+        throw new Exception\BadMethodCallException(wp_kses_post($msg));
     }
 }

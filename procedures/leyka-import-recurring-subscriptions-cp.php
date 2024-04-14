@@ -6,18 +6,18 @@ $file_address = file_exists(LEYKA_PLUGIN_DIR.'/Подписки.csv') ?
     LEYKA_PLUGIN_DIR.'/Подписки.csv' :
     (file_exists(LEYKA_PLUGIN_DIR.'/Subscriptions.csv') ? LEYKA_PLUGIN_DIR.'/Subscriptions.csv' : false);
 
-echo '<pre>Looking for the recurring subscriptions data file: '.print_r($file_address, 1).'</pre>';
+echo '<pre>Looking for the recurring subscriptions data file: '.esc_html(print_r($file_address, 1)).'</pre>';
 
 if( !$file_address ) {
     die('Error: the recurring subscriptions data file not found in the Leyka plugin folder.');
 } else {
-    echo '<pre>Data file found: '.print_r($file_address, 1).'</pre>';
+    echo '<pre>Data file found: '.esc_html(print_r($file_address, 1)).'</pre>';
 }
 
 $csv_file_handle = fopen($file_address, 'r');
 
 if( !$csv_file_handle ) {
-    die("Error: can't open the recurring subscriptions data file ".$file_address);
+    die("Error: can't open the recurring subscriptions data file ".esc_html($file_address));
 }
 
 /** Utility function - strictly for this procedure */
@@ -75,7 +75,7 @@ while( ($subscription_data = fgetcsv($csv_file_handle, null, ";")) !== FALSE ) {
 //    $subscription_data[10] - The last subscription payment date/time
 //    $subscription_data[11] - The next subscription payment date/time
 
-    echo '<pre>Looking for subscription: '.print_r($subscription_data[0].', '.$subscription_data[8], 1).'</pre>';
+    echo '<pre>Looking for subscription: '.esc_html(print_r($subscription_data[0].', '.$subscription_data[8], 1)).'</pre>';
 
     $campaign_id = false;
 
@@ -89,7 +89,7 @@ while( ($subscription_data = fgetcsv($csv_file_handle, null, ";")) !== FALSE ) {
 
     if( !$campaign_id ) { // Subscription Campaign not found - skip the Subscription
 
-        echo '<pre>Campaign not found by title: '.print_r($subscription_data[6], 1).'</pre>';
+        echo '<pre>Campaign not found by title: '.esc_html(print_r($subscription_data[6], 1)).'</pre>';
         continue;
 
     }
@@ -117,19 +117,19 @@ while( ($subscription_data = fgetcsv($csv_file_handle, null, ";")) !== FALSE ) {
 
         if($subscription_donation) {
 
-            echo '<pre>Subscription Donation found: '.print_r($subscription_donation->id.', '.$subscription_donation->donor_email.', '.$subscription_donation->status.', '.(int)$subscription_donation->recurring_is_active, 1).'</pre>';
+            echo '<pre>Subscription Donation found: '.esc_html(print_r($subscription_donation->id.', '.$subscription_donation->donor_email.', '.$subscription_donation->status.', '.(int)$subscription_donation->recurring_is_active, 1)).'</pre>';
 
             $subscription_donation->status = 'funded';
             $subscription_donation->recurring_is_active = true;
             $subscription_donation->cp_recurring_id = $subscription_data[0];
 
-            echo '<pre>Subscription Donation after updates: '.print_r($subscription_donation->id.', '.$subscription_donation->donor_email.', '.$subscription_donation->status.', '.(int)$subscription_donation->recurring_is_active, 1).'</pre>';
+            echo '<pre>Subscription Donation after updates: '.esc_html(print_r($subscription_donation->id.', '.$subscription_donation->donor_email.', '.$subscription_donation->status.', '.(int)$subscription_donation->recurring_is_active, 1)).'</pre>';
 
         }
 
     } else {
 
-        echo '<pre>Subscription Donation not found: '.print_r($subscription_data[0], 1).'</pre>';
+        echo '<pre>Subscription Donation not found: '.esc_html(print_r($subscription_data[0], 1)).'</pre>';
 
         // Insert the new Subscription Donation:
         $donor_name = explode('@', $subscription_data[8]);
@@ -159,7 +159,7 @@ while( ($subscription_data = fgetcsv($csv_file_handle, null, ";")) !== FALSE ) {
 
         if($new_subscription && !is_wp_error($new_subscription)) {
             $new_subscription->cp_recurring_id = $subscription_data[0];
-            echo '<pre>Inserted Subscription recurring ID: '.print_r($new_subscription->cp_recurring_id, 1).'</pre>';
+            echo '<pre>Inserted Subscription recurring ID: '.esc_html(print_r($new_subscription->cp_recurring_id, 1)).'</pre>';
         }
 
     }

@@ -332,14 +332,15 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
         $donation = Leyka_Donations::get_instance()->get_donation($donation_id);
 
         $http_host = $_SERVER['HTTP_HOST'];
-        echo wp_mail(
-            $donation->donor_email,
-            __('Card-check', 'leyka'),
-            $this->_get_card_check_text($donation),
-            [
-                'From: ' . esc_attr( $http_host ) .' <'.leyka_options()->opt('demirbank_support_email').'>',
-                'content-type: text/html'
-            ]
+        echo esc_html( wp_mail(
+                $donation->donor_email,
+                __('Card-check', 'leyka'),
+                $this->_get_card_check_text($donation),
+                [
+                    'From: ' . esc_attr( $http_host ) .' <'.leyka_options()->opt('demirbank_support_email').'>',
+                    'content-type: text/html'
+                ]
+            )
         );
 
         wp_die();
