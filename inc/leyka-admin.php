@@ -1486,8 +1486,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
     protected function _load_data_tables() {
 
-        wp_enqueue_style('jquery-dataTables', LEYKA_PLUGIN_BASE_URL.'css/jquery.dataTables.css');
-        wp_enqueue_script('jquery-dataTables', LEYKA_PLUGIN_BASE_URL.'js/jquery.dataTables.min.js', ['jquery'], false, true);
+        wp_enqueue_style('jquery-dataTables', LEYKA_PLUGIN_BASE_URL.'css/jquery.dataTables.css', [], '1.10.9' );
+        wp_enqueue_script('jquery-dataTables', LEYKA_PLUGIN_BASE_URL.'js/jquery.dataTables.min.js', ['jquery'], '1.10.9', true);
 
         wp_localize_script('jquery-dataTables', 'leyka_dt', [
             'processing' => __('Processing...', 'leyka'),
@@ -1540,7 +1540,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             'jqueryui',
             'https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css',
             false,
-            null
+            '1.11.4'
         );
 
         wp_enqueue_style('leyka-settings', LEYKA_PLUGIN_BASE_URL.'assets/css/admin.css', ['jqueryui'], LEYKA_VERSION);
@@ -1667,7 +1667,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
 
         $dependencies[] = 'jquery-ui-autocomplete';
 
-        wp_enqueue_script('leyka-easy-modal', LEYKA_PLUGIN_BASE_URL.'js/jquery.easyModal.min.js', [], false, true);
+        wp_enqueue_script('leyka-easy-modal', LEYKA_PLUGIN_BASE_URL.'js/jquery.easyModal.min.js', [], '1.3.2', true);
 
         wp_enqueue_script(
             'leyka-settings',

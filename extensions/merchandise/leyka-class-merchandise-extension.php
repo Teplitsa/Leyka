@@ -277,7 +277,8 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
             $this->_id.'-admin',
             self::get_base_url().'/assets/js/admin.js',
             ['jquery'],
-            defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY ? uniqid() : null
+            defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY ? uniqid() : null,
+            true
         );
 
     }

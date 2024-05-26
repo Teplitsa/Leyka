@@ -157,7 +157,7 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
             $leyka_widget_js_handle = 'widget' === $this->_ps_method ? $leyka_main_js_handle.' leyka-payselection-widget' : $leyka_main_js_handle;
 
             if ('widget' === $this->_ps_method) {
-                wp_enqueue_script('leyka-payselection-widget', leyka_options()->opt('payselection_widget_url'), [], false, true);
+                wp_enqueue_script('leyka-payselection-widget', leyka_options()->opt('payselection_widget_url'), [], LEYKA_VERSION, true);
             }
             wp_enqueue_script(
                 'leyka-payselection',

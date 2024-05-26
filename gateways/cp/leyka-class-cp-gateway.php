@@ -146,7 +146,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
 
             $leyka_main_js_handle = wp_script_is('leyka-public') ? 'leyka-public' : 'leyka-new-templates-public';
 
-            wp_enqueue_script('leyka-cp-widget', 'https://widget.cloudpayments.ru/bundles/cloudpayments.js', [], false, true);
+            wp_enqueue_script('leyka-cp-widget', 'https://widget.cloudpayments.ru/bundles/cloudpayments.js', [], LEYKA_VERSION, true);
             wp_enqueue_script(
                 'leyka-cp',
                 LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_CP_Gateway::get_instance()->id.'/js/leyka.cp.js',

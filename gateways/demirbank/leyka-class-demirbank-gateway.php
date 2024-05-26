@@ -257,7 +257,9 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
 
                 wp_enqueue_style(
                     'demirbank-card-check',
-                    LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_Demirbank_Gateway::get_instance()->id.'/css/leyka.demirbank.card_check.css'
+                    LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_Demirbank_Gateway::get_instance()->id.'/css/leyka.demirbank.card_check.css',
+                    [],
+                    LEYKA_VERSION
                 );
 
                 wp_enqueue_script(

@@ -374,7 +374,9 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
             wp_enqueue_script(
                 $this->_id.'-admin',
                 self::get_base_url().'/assets/js/admin.js',
-                ['jquery']
+                ['jquery'],
+                LEYKA_VERSION,
+                true
             );
 
         }

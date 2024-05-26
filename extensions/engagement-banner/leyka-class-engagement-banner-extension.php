@@ -221,7 +221,8 @@ class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
             $this->_id.'-front',
             self::get_base_url().'/assets/js/engb.js',
             ['jquery'],
-            defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY ? uniqid() : null
+            defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY ? uniqid() : null,
+            true
         );
 
 	}
@@ -234,7 +235,9 @@ class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
 
         wp_enqueue_style(
             $this->_id.'-select2',
-            self::get_base_url().'/assets/css/select2.min.css'
+            self::get_base_url().'/assets/css/select2.min.css',
+            [],
+            '4.0.13'
         );
 
         wp_enqueue_style(
@@ -248,7 +251,7 @@ class Leyka_Engagement_Banner_Extension extends Leyka_Extension {
             $this->_id.'-select2',
             self::get_base_url().'/assets/js/select2.min.js',
             ['jquery',],
-            null, 
+            '4.0.13',
             true
         );
 

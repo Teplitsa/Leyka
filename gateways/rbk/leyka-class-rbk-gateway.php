@@ -92,7 +92,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
 
         if(Leyka_Rbk_Card::get_instance()->active) {
 
-            wp_enqueue_script('leyka-rbk-checkout', 'https://checkout.rbk.money/checkout.js', [], false, true);
+            wp_enqueue_script('leyka-rbk-checkout', 'https://checkout.rbk.money/checkout.js', [], LEYKA_VERSION, true);
             wp_enqueue_script(
                 'leyka-rbk',
                 LEYKA_PLUGIN_BASE_URL.'gateways/'.Leyka_Rbk_Gateway::get_instance()->id.'/js/leyka.rbk.js',
