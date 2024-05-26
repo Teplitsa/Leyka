@@ -132,8 +132,10 @@ class Leyka_Dolyame_Gateway extends Leyka_Gateway {
 
             leyka()->add_payment_form_error(new WP_Error(
                 'leyka_donation_error',
+                /* translators: 1: Message, 2: Email. */
                 sprintf(
-                    __('Error while processing the payment: %s. Your money will remain intact. Please report to the <a href="mailto:%s" target="_blank">website tech support</a>.', 'leyka'),
+                    /* translators: 1: Message, 2: Support email. */
+                    __('Error while processing the payment: %1$s. Your money will remain intact. Please report to the <a href="mailto:%2$s" target="_blank">website tech support</a>.', 'leyka'),
                     $ex->getMessage(),
                     leyka_get_website_tech_support_email()
                 )

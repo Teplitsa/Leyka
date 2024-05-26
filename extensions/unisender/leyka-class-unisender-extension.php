@@ -57,13 +57,16 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
                         'title' => __('API key', 'leyka'),
                         'required' => true,
                         'is_password' => true,
+                        /* translators: 1: a-z1-0. */
                         'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'abcdefghijklmnopqrstuvwxyz1234567890'),
                     ],
                     $this->_id.'_lists_ids' => [
                         'type' => 'text',
                         'title' => __('IDs of the Unisender lists to subscribe donors', 'leyka'),
                         'comment' => __("IDs of the Unisender mailout lists with donors' contacts", 'leyka'),
+                        /* translators: 1: Version. */
                         'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1,3,10'),
+                        /* translators: 1: Donors. */
                         'description' => sprintf(__('Comma-separated IDs list. If empty, a new list with name "%s" will be created in Unisender (or updated if such list already exists).', 'leyka'), __('Donors', 'leyka'))
                     ],
                     $this->_id.'_donor_fields' => [

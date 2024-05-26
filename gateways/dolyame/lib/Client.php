@@ -26,6 +26,7 @@ class Client
 	{
 		if (strpos($certPath, "-----BEGIN CERTIFICATE-----") !== false) {
 			$this->tmpCertFile = tmpfile();
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite
 			fwrite($this->tmpCertFile, trim($certPath));
 			$tempPath = stream_get_meta_data($this->tmpCertFile);
 			$certPath = $tempPath['uri'];
@@ -48,6 +49,7 @@ class Client
 			strpos($keyPath, '-----END RSA PRIVATE KEY-----') !== false
 			) {
 			$this->tmpKeyFile = tmpfile();
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite
 			fwrite($this->tmpKeyFile, trim($keyPath));
 			$tempPath = stream_get_meta_data($this->tmpKeyFile);
 			$keyPath = $tempPath['uri'];
@@ -80,11 +82,11 @@ class Client
 	public function generateCorrelationId()
 	{
 		return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-			mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-			mt_rand(0, 0xffff),
-			mt_rand(0, 0x0fff) | 0x4000,
-			mt_rand(0, 0x3fff) | 0x8000,
-			mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+			mt_rand(0, 0xffff), mt_rand(0, 0xffff), // phpcs:ignore WordPress.WP.AlternativeFunctions.rand_mt_rand
+			mt_rand(0, 0xffff), // phpcs:ignore WordPress.WP.AlternativeFunctions.rand_mt_rand
+			mt_rand(0, 0x0fff) | 0x4000, // phpcs:ignore WordPress.WP.AlternativeFunctions.rand_mt_rand
+			mt_rand(0, 0x3fff) | 0x8000, // phpcs:ignore WordPress.WP.AlternativeFunctions.rand_mt_rand
+			mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff) // phpcs:ignore WordPress.WP.AlternativeFunctions.rand_mt_rand
 		);
 	}
 
@@ -239,6 +241,7 @@ class Client
 
 		$context = stream_context_create($streamOptions);
 		$url     = $this->url . $action;
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 		$out     = file_get_contents($url, false, $context);
 
 		$statusLine = $http_response_header[0];
@@ -299,7 +302,9 @@ class Client
 
 	private function addCurlCert($ch)
 	{
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
 		curl_setopt($ch, CURLOPT_SSLCERT, $this->certPath);
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
 		curl_setopt($ch, CURLOPT_SSLKEY, $this->keyPath);
 	}
 

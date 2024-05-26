@@ -57,7 +57,30 @@ class Leyka_Recurring_Stats_Portlet_Controller extends Leyka_Portlet_Controller 
                 AND date_created >= '".$interval_dates["curr_interval_begin_date"]."'
                 AND payment_type='rebill'";
 
-            $curr_recurring_donations = $wpdb->get_results($query, 'ARRAY_A');
+
+            if ( leyka_get_donations_storage_type() === 'post') {
+                $curr_recurring_donations = $wpdb->get_results(
+                    $wpdb->prepare(
+                         "SELECT posts.ID, posts.post_parent, postmeta2.meta_value as rebilling_is_on, postmeta3.meta_value as subscription_status, postmeta4.meta_value as currency FROM {$wpdb->prefix}posts as posts JOIN {$wpdb->prefix}postmeta as postmeta1 ON posts.ID = postmeta1.post_id LEFT JOIN {$wpdb->prefix}postmeta AS postmeta2 ON posts.ID = postmeta2.post_id and postmeta2.meta_key='_rebilling_is_active' LEFT JOIN {$wpdb->prefix}postmeta AS postmeta3 ON posts.ID = postmeta3.post_id and postmeta3.meta_key='leyka_recurring_subscription_status' LEFT JOIN {$wpdb->prefix}postmeta AS postmeta4 ON posts.ID = postmeta4.post_id and postmeta4.meta_key='leyka_donation_currency' WHERE posts.post_type=%s AND posts.post_status='funded' AND posts.post_date >= %s AND postmeta1.meta_key='leyka_payment_type' AND postmeta1.meta_value='rebill'",
+                         array(
+                            Leyka_Donation_Management::$post_type,
+                            $interval_dates["curr_interval_begin_date"]
+                         )
+                    ),
+                    'ARRAY_A'
+                );
+               // Separate donations storage:
+               //TODO Vyacheslav - fix request for a separate donations storage
+            } else {
+                $curr_recurring_donations = $wpdb->get_results(
+                    $wpdb->prepare(
+                        "SELECT ID FROM {$wpdb->prefix}leyka_donations WHERE status='funded' AND date_created >= %s AND payment_type='rebill'",
+                        $interval_dates["curr_interval_begin_date"]
+                    ),
+                'ARRAY_A'
+                )
+            }
+
             $curr_subscriptions = $subscriptions_stats;
             $curr_recurring_donations_ids = [];
 
@@ -100,7 +123,7 @@ class Leyka_Recurring_Stats_Portlet_Controller extends Leyka_Portlet_Controller 
                         "SELECT SUM(amount)
                         FROM {$wpdb->prefix}leyka_donations
                         WHERE ID IN (" . implode(',', $donations) . ')';
-
+                    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
                     $curr_recurring_amount = leyka_currency_convert($wpdb->get_var($query), $currency);
 
                 }
@@ -143,6 +166,7 @@ class Leyka_Recurring_Stats_Portlet_Controller extends Leyka_Portlet_Controller 
                 AND date_created BETWEEN '".$interval_dates["prev_interval_begin_date"]."' AND '".$interval_dates["curr_interval_begin_date"]."'
                 AND payment_type='rebill'";
 
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
             $prev_recurring_donations = $wpdb->get_results($query, 'ARRAY_A');
             $prev_subscriptions = $subscriptions_stats;
             $prev_recurring_donations_ids = [];
@@ -186,7 +210,7 @@ class Leyka_Recurring_Stats_Portlet_Controller extends Leyka_Portlet_Controller 
                         "SELECT SUM(amount)
                         FROM {$wpdb->prefix}leyka_donations
                         WHERE ID IN (" . implode(',', $donations) . ')';
-
+                    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
                     $prev_recurring_amount = leyka_currency_convert($wpdb->get_var($query), $currency);
 
                 }

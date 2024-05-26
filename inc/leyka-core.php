@@ -2239,7 +2239,7 @@ class Leyka extends Leyka_Singleton {
             $this->_templates = glob(LEYKA_PLUGIN_DIR.'templates/service/leyka-template-*.php');
         } else {
 
-            $custom_templates = glob(STYLESHEETPATH.'/leyka-template-*.php');
+            $custom_templates = glob(get_stylesheet_directory().'/leyka-template-*.php');
             $custom_templates = $custom_templates ? : [];
 
             $this->_templates = apply_filters(

@@ -49,6 +49,7 @@ class Image extends PayPalModel
             $name = uniqid() . '.png';
         }
         // Save to File
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
         file_put_contents($name, base64_decode($this->getImage()));
         return $name;
     }

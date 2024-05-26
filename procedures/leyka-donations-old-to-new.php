@@ -46,6 +46,7 @@ if($procedure_options['pre_clear_sep_storage']) {
 }
 
 $query = $wpdb->prepare(
+    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
     "SELECT {$wpdb->prefix}posts.ID FROM {$wpdb->prefix}posts WHERE {$wpdb->prefix}posts.post_type=%s ".($procedure_options['only_funded'] ? "AND {$wpdb->prefix}posts.post_status='funded'" : '')." ORDER BY {$wpdb->prefix}posts.ID",
     Leyka_Donation_Management::$post_type
 );
@@ -53,9 +54,11 @@ if($procedure_options['limit'] > 0) {
     $query .= ' LIMIT 0,'.absint($procedure_options['limit']);
 }
 
+// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 $donations_ids = $wpdb->get_col($query);
 $total_donations = count($donations_ids);
 
+// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 $recurring_subscriptions = $wpdb->get_results("SELECT {$wpdb->prefix}posts.ID, {$wpdb->prefix}postmeta.meta_value FROM `mlsd_posts` JOIN {$wpdb->prefix}postmeta ON {$wpdb->prefix}posts.id={$wpdb->prefix}postmeta.post_id WHERE ".($procedure_options['only_funded'] ? "{$wpdb->prefix}posts.post_status='funded' AND" : '')." {$wpdb->prefix}postmeta.meta_key='_chronopay_customer_id' GROUP BY {$wpdb->prefix}postmeta.meta_value ORDER BY {$wpdb->prefix}postmeta.meta_value, {$wpdb->prefix}posts.ID");
 foreach($recurring_subscriptions as $key => $values) {
 
@@ -78,7 +81,14 @@ foreach($donations_ids as $donation_id) {
     leyka_procedures_print("Processing the donation #{$donations_processed}/{$total_donations}... ", 0);
 
 //    if($donation_id <= get_option('leyka_donations_storage_last_post2sep_id')) {
-    if($wpdb->get_var("SELECT COUNT(ID) FROM {$wpdb->prefix}leyka_donations WHERE ID=".$donation_id)) {
+    $query_var = $wpdb->get_var(
+        $wpdb->prepare(
+            "SELECT COUNT(ID) FROM {$wpdb->prefix}leyka_donations WHERE ID=%s",
+            $donation_id
+        )
+    );
+
+    if( $query_var ) {
 
         leyka_procedures_print("donation #{$donation_id} already migrated - skipping it. ");
         continue;
@@ -155,16 +165,18 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
 //    leyka_procedures_print('Memory before processing ID='.$donation_id.': '.get_memory_formatted(memory_get_usage()));
     $donation_time_current_sec = $donation_time_total_sec = microtime(true);
 
-    $query = $wpdb->prepare(
-        "SELECT 
-            {$wpdb->prefix}posts.`ID`, {$wpdb->prefix}posts.`post_title`, {$wpdb->prefix}posts.`post_status`,
-            {$wpdb->prefix}posts.`post_date`, {$wpdb->prefix}posts.`post_parent`, {$wpdb->prefix}posts.`post_author` 
-        FROM {$wpdb->prefix}posts 
-        WHERE {$wpdb->prefix}posts.`post_type`=%s AND {$wpdb->prefix}posts.`ID`=%d",
-        Leyka_Donation_Management::$post_type,
-        $donation_id
+    $donation_post_data = $wpdb->get_row(
+        $wpdb->prepare(
+            "SELECT 
+                {$wpdb->prefix}posts.`ID`, {$wpdb->prefix}posts.`post_title`, {$wpdb->prefix}posts.`post_status`,
+                {$wpdb->prefix}posts.`post_date`, {$wpdb->prefix}posts.`post_parent`, {$wpdb->prefix}posts.`post_author` 
+            FROM {$wpdb->prefix}posts 
+            WHERE {$wpdb->prefix}posts.`post_type`=%s AND {$wpdb->prefix}posts.`ID`=%d",
+            Leyka_Donation_Management::$post_type,
+            $donation_id
+        ),
+        ARRAY_A
     );
-    $donation_post_data = $wpdb->get_row($query, ARRAY_A);
 
     if($procedure_options['debug_profiling']) {
 
@@ -173,6 +185,7 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
 
     }
 
+    // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen
     $err_log_fp = fopen('error.log', 'a+');
 
     if( !$donation_post_data ) {
@@ -196,7 +209,7 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
     }
 
     if( !$donation_post_meta ) {
-
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fputs
         fputs($err_log_fp, "{$donation_post_data['ID']} - no donation meta found.\n");
         return false;
 
@@ -210,12 +223,12 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
     }
 
     if(empty($donation_post_meta['campaign_id'])) {
-
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fputs
         fputs($err_log_fp, "{$donation_post_data['ID']} - no campaign_id meta.\n");
         return false;
 
     } else if(empty($donation_post_meta['donation_amount'])) {
-
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fputs
         fputs($err_log_fp, "{$donation_post_data['ID']} - no donation_amount meta.\n");
         return false;
 
@@ -246,11 +259,14 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
     }
 
     $query_values = rtrim($query.$query_values, ',');
+    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
     if($wpdb->query($query_values) === false) {
 
         ob_start();
         echo "ERROR migrating donation ID=".esc_html($donation_id).": ".esc_html($query_values)."\n\n";
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fputs
         fputs($err_log_fp, ob_get_clean());
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
         fclose($err_log_fp);
 
         return false;
@@ -330,6 +346,7 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
 
             ob_start();
             echo "META ERROR: can't find init recurring donation for Chronopay Customer ID ".esc_html($customer_id)."\n\n";
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fputs
             fputs($err_log_fp, ob_get_clean());
 
         }
@@ -377,10 +394,12 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
         }
 
         $query = rtrim($query, ',');
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
         if($wpdb->query($query) === false) {
 
             ob_start();
             echo "META ERROR: ".esc_html($query)."\n\n";
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fputs
             fputs($err_log_fp, ob_get_clean());
 
         }
@@ -393,7 +412,7 @@ function leyka_change_donation_storage_type_post2sep($donation_id) {
         $donation_time_current_sec = microtime(true);
 
     }
-
+    // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
     fclose($err_log_fp);
 //    leyka_procedures_print('Memory after processing ID='.$donation_id.': '.get_memory_formatted(memory_get_usage()));
 

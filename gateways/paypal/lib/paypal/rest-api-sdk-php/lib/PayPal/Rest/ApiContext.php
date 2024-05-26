@@ -167,7 +167,7 @@ class ApiContext
                 $addr = php_uname('n');
             }
         }
-
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.rand_mt_rand
         return $addr . $pid . $_SERVER['REQUEST_TIME'] . mt_rand(0, 0xffff);
     }
 }

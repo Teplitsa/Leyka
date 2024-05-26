@@ -50,12 +50,14 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             'paypal_api_username' => [
                 'type' => 'text',
                 'title' => __('PayPal API username', 'leyka'),
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'your.name@yourmail.com'),
                 'field_classes' => ['old-api'],
             ],
             'paypal_api_password' => [
                 'type' => 'text',
                 'title' => __('PayPal API password', 'leyka'),
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1^2@3#&84nDsOmE5h1T'),
                 'is_password' => true,
                 'field_classes' => ['old-api'],
@@ -63,6 +65,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             'paypal_api_signature' => [
                 'type' => 'text',
                 'title' => __('PayPal API signature', 'leyka'),
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1^2@3#&84nDsOmE5h1T'),
                 'is_password' => true,
                 'field_classes' => ['old-api'],
@@ -70,17 +73,20 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             'paypal_client_id' => [
 	            'type' => 'text',
 	            'title' => __('PayPal Client ID', 'leyka'),
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'AYSq3RDGsmBLJE-otTkBtM-jBRd1TCQwFf9RGfwddNXWz0uFU9ztymylOhRS'),
             ],
             'paypal_client_secret' => [
                 'type' => 'text',
                 'title' => __('PayPal Client Secret', 'leyka'),
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'EGnHDxD_qRPdaLdZz8iCr8N7_MzF-YHPTkjs6NKYQvQSBngp4PTTVWkPZRbL'),
                 'is_password' => true,
             ],
             'paypal_webhook_id' => [
                 'type' => 'text',
                 'title' => __('PayPal Webhook ID', 'leyka'),
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '4MR70519G3427323E'),
             ],
             'paypal_test_mode' => [
@@ -263,6 +269,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
         $payment_description = $donation->payment_title." (№ $donation_id)";
         if(mb_strlen($payment_description) > 127) { // 127 chars length is a PayPal restriction
+            /* translators: %s: Donation id. */
             $payment_description = sprintf(__('Donation № %d', 'leyka'), $donation_id);
         }
 
@@ -276,6 +283,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                 leyka()->add_payment_form_error(new WP_Error(
                     $this->_id.'-'.$ex->getCode(),
+                    /* translators: %s: Error message. */
                     sprintf(__('Error: %s', 'leyka'), $ex->getMessage().'<pre>'.print_r($ex, 1).'</pre>')
                 ));
 
@@ -324,6 +332,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                     leyka()->add_payment_form_error(new WP_Error(
                         $this->_id.'-'.$ex->getCode(),
+                        /* translators: %s: Error message. */
                         sprintf(__('Error: %s', 'leyka'), $ex->getMessage())
                     ));
 
@@ -383,7 +392,10 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     if($plan->getState() !== 'ACTIVE') {
                         throw new Exception(
                             __('Cannot activate PayPal billing plan.', 'leyka').' '.
-                            sprintf(__('Please contact the <a href="%s" target="_blank">website tech. support</a>', leyka_options()->opt('tech_support_email')), 'leyka')
+                            /* translators: %s: Support email. */
+                            sprintf(__('Please contact the <a href="%s" target="_blank">website tech. support</a>', 'leyka'),
+                                leyka_options()->opt('tech_support_email')
+                            )
                         );
                     }
 
@@ -393,6 +405,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                     leyka()->add_payment_form_error(new WP_Error(
                         $this->_id.'-'.$ex->getCode(),
+                        /* translators: %s: Error message. */
                         sprintf(__('Error: %s', 'leyka'), $ex->getMessage().'<pre>'.print_r($ex, 1).'</pre>')
                     ));
 
@@ -403,6 +416,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 // BA also manages initial donation for subscription and activates it:
 
                 $agreement = new \PayPal\Api\Agreement([
+                    /* translators: %s: Campaign id. */
                     'name' => sprintf(__('Campaign #%d - recurring donations', 'leyka'), $donation->campaign_id),
                     'description' => __('Recurring donations', 'leyka'),
                     'startDate' => gmdate(DATE_ISO8601, strtotime('+1 month')), // The initial payment is the BP setup fee
@@ -419,7 +433,10 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     if( !$payment_token ) {
                         throw new Exception(
                             __("The needed payment parameter wasn't generated.", 'leyka').' '.
-                            sprintf(__('Please contact the <a href="%s" target="_blank">website tech. support</a>', leyka_options()->opt('tech_support_email')), 'leyka')
+                            /* translators: %s: Support email. */
+                            sprintf(__('Please contact the <a href="%s" target="_blank">website tech. support</a>', 'leyka'),
+                                leyka_options()->opt('tech_support_email')
+                            )
                         );
                     } else {
                         $payment_token = end($payment_token);
@@ -436,6 +453,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                     leyka()->add_payment_form_error(new WP_Error(
                         $this->_id.'-'.$ex->getCode(),
+                        /* translators: %s: Error message. */
                         sprintf(__('Error: %s', 'leyka'), $ex->getMessage())
                     ));
 
@@ -534,7 +552,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             ], $pm_id, $donation_id, $form_data);
         }
 
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_init
         $ch = curl_init();
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt_array
         curl_setopt_array($ch, [
             CURLOPT_URL => $this->submission_redirect_url('', $pm_id),
             CURLOPT_CUSTOMREQUEST => 'POST',
@@ -544,10 +564,13 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             CURLOPT_CONNECTTIMEOUT => 60,
         ]);
 
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec
         if( !$result_str = curl_exec($ch) ) {
             $this->_donation_error(
                 __('PayPal - payment error occured', 'leyka'),
+                // phpcs:disable
                 sprintf(__("SetExpressCheckout request to PayPal system couldn't be made due to some error.\n\nThe error: %s", 'leyka'), curl_error($ch).' ('.curl_errno($ch).')'),
+                // phpcs:enable
                 $donation,
                 'SetEC',
                 $data
@@ -555,7 +578,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         }
 
         parse_str($result_str, $result);
-        curl_close($ch);
+        curl_close($ch); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_close
 
         if(isset($result['CORRELATIONID'])) {
             $donation->paypal_correlation_id = $result['CORRELATIONID'];
@@ -564,7 +587,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         if(empty($result['ACK']) || $result['ACK'] != 'Success') {
             $this->_donation_error(
                 __('PayPal - payment error occured', 'leyka'),
-                sprintf(__("SetExpressCheckout request to PayPal system returned some error. The details of the request are below.\n\nPayment error code: %s\nPayment error message: %s\nPayment error description: %s", 'leyka'), $result['L_ERRORCODE0'], $result['L_SHORTMESSAGE0'], $result['L_LONGMESSAGE0']),
+                /* translators: 1: Resunt one, 2: Result two, 3: Result 3. */
+                sprintf(__('SetExpressCheckout request to PayPal system returned some error. The details of the request are below.\n\nPayment error code: %1$s\nPayment error message: %2$s\nPayment error description: %3$s', 'leyka'), $result['L_ERRORCODE0'], $result['L_SHORTMESSAGE0'], $result['L_LONGMESSAGE0']),
                 $donation,
                 'SetEC',
                 $data
@@ -572,6 +596,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         } elseif(empty($result['TOKEN'])) {
             $this->_donation_error(
                 __('PayPal - payment error occured', 'leyka'),
+                /* translators: %s: Result. */
                 sprintf(__("SetExpressCheckout request to PayPal system returned without TOKEN param.\n\nFull PayPal response: %s", 'leyka'), print_r($result, 1)),
                 $donation,
                 'SetEC',
@@ -860,7 +885,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 if( !$donation ) {
                     $this->_donation_error(
                         __("PayPal callback error: donation wasn't found", 'leyka'),
-                        sprintf(__('The donation was not found by the following PayPal data: %s (value given: %s), %s (value given: %s).', 'leyka'), 'paymentId', $_GET['paymentId'], 'PayerID', $_GET['PayerID'])
+                        /* translators: 1: Payment label, 2: Payment id, 3: Payer label, 4: Payer id. */
+                        sprintf(__('The donation was not found by the following PayPal data: %1$s (value given: %2$s), %3$s (value given: %4$s).', 'leyka'), 'paymentId', $_GET['paymentId'], 'PayerID', $_GET['PayerID'])
                     );
                 }
 
@@ -909,7 +935,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 } catch( \PayPal\Exception\PayPalConnectionException $ex ) {
                     $this->_donation_error(
                         __('PayPal donation execution resulted with error', 'leyka'),
-                        sprintf(__('Error %s: %s', 'leyka'), $this->_id.'-'.$ex->getCode(), $ex->getMessage()),
+                        /* translators: 1: Error code, 2: Error message. */
+                        sprintf(__('Error %1$s: %2$s', 'leyka'), $this->_id.'-'.$ex->getCode(), $ex->getMessage()),
                         $donation,
                         'process-donation',
                         $ex
@@ -917,7 +944,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 } catch(Exception $ex) {
                     $this->_donation_error(
                         __('PayPal donation execution resulted with error', 'leyka'),
-                        sprintf(__('Error %s: %s', 'leyka'), $this->_id.'-'.$ex->getCode(), $ex->getMessage()),
+                        /* translators: 1: Error code, 2: Error message. */
+                        sprintf(__('Error %1$s: %2$s', 'leyka'), $this->_id.'-'.$ex->getCode(), $ex->getMessage()),
                         $donation,
                         'process-donation',
                         $ex
@@ -960,7 +988,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                         $this->_donation_error(
                             __("PayPal callback error: can't find the initial recurring donation to activate", 'leyka'),
                             sprintf(
-                                __("Payment token: %s\n\nBilling Agreement ID: %s\n\n", 'leyka'),
+                                /* translators: 1: Token, 2: Agreement id. */
+                                __('Payment token: %1$s\n\nBilling Agreement ID: %2$s\n\n', 'leyka'),
                                 $_GET['token'],
                                 $agreement_id
                             )
@@ -1083,6 +1112,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 if( !$donation ) {
                     $this->_donation_error(
                         __('PayPal - payment error occured', 'leyka'),
+                        /* translators: %s: Token. */
                         sprintf(__("Process_payment callback request to Leyka system was made with an unknown token parameter.\n\nToken given by PayPal system: %s", 'leyka'), $_GET['token'])
                     );
                 }
@@ -1098,7 +1128,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     'TOKEN' => $_GET['token'],
                 ], $donation);
 
+                // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_init
                 $ch = curl_init();
+                // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt_array
                 curl_setopt_array($ch, [
                     CURLOPT_URL => $this->submission_redirect_url('', 'paypal_all'), // "paypal_all" is a PM id
                     CURLOPT_CUSTOMREQUEST => 'POST',
@@ -1108,10 +1140,13 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     CURLOPT_CONNECTTIMEOUT => 60,
                 ]);
 
+                // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec
                 if( !$result_str = curl_exec($ch) ) {
                     $this->_donation_error(
                         __('PayPal - payment error occured', 'leyka'),
+                        // phpcs:disable
                         sprintf(__("GetExpressCheckoutDetails request to PayPal system couldn't be made due to some error.\n\nThe error: %s", 'leyka'), curl_error($ch).' ('.curl_errno($ch).')'),
+                        // phpcs:enable
                         $donation,
                         'GetECDetails',
                         $data
@@ -1119,11 +1154,12 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 }
 
                 parse_str($result_str, $result);
-                curl_close($ch);
+                curl_close($ch); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_close
 
                 if(empty($result['ACK']) || $result['ACK'] != 'Success') {
                     $this->_donation_error(
                         __('PayPal - payment error occured', 'leyka'),
+                        /* translators: %s: Result. */
                         sprintf(__("GetExpressCheckoutDetails request to PayPal system returned without success status.\n\nThe request result: %s", 'leyka'), print_r($result, 1)),
                         $donation,
                         'GetECDetails',
@@ -1139,6 +1175,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 ) { // We don't accept payments from unverified
                     $this->_donation_error(
                         __('PayPal - payment error occured', 'leyka'),
+                        /* translators: %s: Result. */
                         sprintf(__("GetExpressCheckoutDetails request to PayPal system returned without verified payer status.\n\nThe request result: %s", 'leyka'), print_r($result, 1)),
                         $donation,
                         'GetECDetails',
@@ -1155,6 +1192,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
 
                 $payment_description = $donation->payment_title." (№ {$donation->id})";
                 if(strlen($payment_description) > 127) { // 127 chars length is a restriction from PayPal
+                    /* translators: %d: Donation id. */
                     $payment_description = sprintf(__('Donation № %d', 'leyka'), $donation->id);
                 }
 
@@ -1180,7 +1218,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                         $donation
                     );
 
+                    // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_init
                     $ch = curl_init();
+                    // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt_array
                     curl_setopt_array($ch, [
                         CURLOPT_URL => $this->submission_redirect_url('', 'paypal_all'), // "paypal_all" is a PM id
                         CURLOPT_CUSTOMREQUEST => 'POST',
@@ -1190,10 +1230,14 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                         CURLOPT_CONNECTTIMEOUT => 60,
                     ]);
 
+                    // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec
                     if( !$result_str = curl_exec($ch) ) {
                         $this->_donation_error(
                             __('PayPal - CreateRecurringPaymentsProfile error occured', 'leyka'),
+                            // phpcs:disable
+                            /* translators: %s: Error. */
                             sprintf(__("CreateRecurringPaymentsProfile request to PayPal system couldn't be made due to some error.\n\nThe error: %s", 'leyka'), curl_error($ch).' ('.curl_errno($ch).')'),
+                            // phpcs:enable
                             $donation,
                             'DoECPayment',
                             $data
@@ -1201,11 +1245,12 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     }
 
                     parse_str($result_str, $result);
-                    curl_close($ch);
+                    curl_close($ch); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_close
 
                     if(empty($result['ACK']) || $result['ACK'] != 'Success') {
                         $this->_donation_error(
                             __('PayPal - CreateRecurringPaymentsProfile error occured', 'leyka'),
+                            /* translators: %s: Result. */
                             sprintf(__("CreateRecurringPaymentsProfile request to PayPal system returned without success status.\n\nThe request result: %s", 'leyka'), print_r($result, 1)),
                             $donation,
                             'DoECPayment',
@@ -1216,6 +1261,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     if(empty($result['PROFILESTATUS']) || $result['PROFILESTATUS'] != 'ActiveProfile') {
                         $this->_donation_error(
                             __('PayPal - CreateRecurringPaymentsProfile error occured', 'leyka'),
+                            /* translators: %s: Result. */
                             sprintf(__("CreateRecurringPaymentsProfile request to PayPal system reported about the error: a RecurringPaymentsProfile status is not ActiveProfile.\n\nThe request result: %s", 'leyka'), print_r($result, 1)),
                             $donation,
                             'DoECPayment',
@@ -1254,7 +1300,9 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     $donation
                 );
 
+                // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_init
                 $ch = curl_init();
+                // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt_array
                 curl_setopt_array($ch, [
                     CURLOPT_URL => $this->submission_redirect_url('', 'paypal_all'), // "paypal_all" is a PM id
                     CURLOPT_CUSTOMREQUEST => 'POST',
@@ -1263,12 +1311,15 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_CONNECTTIMEOUT => 60,
                 ]);
+                // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec
                 $result_str = curl_exec($ch);
 
                 if( !$result_str ) {
                     $this->_donation_error(
                         __('PayPal - payment error occured', 'leyka'),
+                        // phpcs:disable
                         sprintf(__("DoExpressCheckoutPayment request to PayPal system couldn't be made due to some error.\n\nThe error: %s", 'leyka'), curl_error($ch).' ('.curl_errno($ch).')'),
+                        // phpcs:enable
                         $donation,
                         'DoECPayment',
                         $data
@@ -1276,11 +1327,12 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 }
 
                 parse_str($result_str, $result);
-                curl_close($ch);
+                curl_close($ch); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_close
 
                 if(empty($result['ACK']) || $result['ACK'] != 'Success') {
                     $this->_donation_error(
                         __('PayPal - payment error occured', 'leyka'),
+                        /* translators: %s: Result. */
                         sprintf(__("DoECPayment request to PayPal system returned without success status.\n\nThe request result: %s", 'leyka'), print_r($result, 1)),
                         $donation,
                         'DoECPayment',
@@ -1291,6 +1343,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 if(empty($result['PAYMENTINFO_0_PAYMENTSTATUS'])) {
                     $this->_donation_error(
                         __('PayPal - payment error occured', 'leyka'),
+                        /* translators: %s: Result. */
                         sprintf(__("DoECPayment request to PayPal system reported about some transaction error: a payment status is empty.\n\nThe request result: %s", 'leyka'), print_r($result, 1)),
                         $donation,
                         'DoECPayment',
@@ -1313,6 +1366,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 } else if($result['PAYMENTINFO_0_PAYMENTSTATUS'] != 'Completed') {
                     $this->_donation_error(
                         __('PayPal - payment error occured', 'leyka'),
+                        /* translators: %s: Result. */
                         sprintf(__("DoECPayment request to PayPal system reported about some transaction error: a payment status isn't 'Completed'.\n\nThe request result: %s", 'leyka'), print_r($result, 1)),
                         $donation,
                         'DoECPayment',
@@ -1358,6 +1412,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 if(empty($_POST['txn_id'])) { // IPN transaction ID
                     $this->_donation_error(
                         __('PayPal - IPN processing error occured', 'leyka'),
+                        /* translators: %s: Post. */
                         __("Leyka reported about an IPN processing error: the 'txn_id' parameter is missing.\n\nIPN POST data: %s", 'leyka').print_r($_POST, 1),
                         NULL, 'IPN', $_POST, '', false
                     );
@@ -1493,7 +1548,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         if( !$init_recurring_donation || !$init_recurring_donation->paypal_billing_agreement_id ) {
             return new WP_Error(
                 'paypal_no_init_recurring_found',
-                sprintf(__('<strong>Error:</strong> cannot find recurring subscription data for donation #%d. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email(), $recurring_manual_cancel_link)
+                /* translators: 1: Donation id, 2: Support email, 3: Cancel link. */
+                sprintf(__('<strong>Error:</strong> cannot find recurring subscription data for donation #%1$d. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%2$s" target="_blank">website tech. support</a>.<br>Also you may <a href="%3$s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email(), $recurring_manual_cancel_link)
             );
         }
 
@@ -1511,7 +1567,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         } catch(Exception $ex) {
             return new WP_Error(
                 'paypal_recurring_cancelling_error',
-                sprintf(__('<strong>Error:</strong> we cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email(), $recurring_manual_cancel_link)
+                /* translators: 1:: Support email, 2: Cancel link. */
+                sprintf(__('<strong>Error:</strong> we cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%1$s" target="_blank">website tech. support</a>.<br>Also you may <a href="%2$s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email(), $recurring_manual_cancel_link)
             );
         }
 
@@ -1533,7 +1590,8 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
         } else if(is_wp_error($recurring_cancelling_result)) {
             die( wp_kses_post( $recurring_cancelling_result->get_error_message() ) );
         } else {
-            die( wp_kses_post( sprintf(__('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email(), $recurring_manual_cancel_link) ) );
+            die( wp_kses_post( /* translators: 1: Support email, 2: Cancel link. */
+                sprintf(__('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="%1$s" target="_blank">website tech. support</a>.<br>Also you may <a href="%2$s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email(), $recurring_manual_cancel_link) ) );
         }
 
     }
@@ -1578,6 +1636,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
                 home_url('leyka/service/'.$this->_id.'/ipn/') : home_url('?p=leyka/service/'.$this->_id.'/ipn/'),
 			'paypal_donation_update_callback_url' => get_option('permalink-structure') ?
                 home_url('leyka/service/'.$this->_id.'/donation_update/') : home_url('?p=leyka/service/'.$this->_id.'/donation_update/'),
+            /* translators: %s: Side. */
 			'paypal_payment_process_error' => __('Error while processing the payment on PayPal side: %s. Your money will remain intact. Please report to the website tech support.', 'leyka'),
 			'ajax_wrong_server_response' => __('Error in server response. Your money will remain intact. Please report to the website tech support.', 'leyka'),
 			'ajax_donation_not_created' => __('Error while creating donation. Your money will remain intact. Please report to the website tech support.', 'leyka'),

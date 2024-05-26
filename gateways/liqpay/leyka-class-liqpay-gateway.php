@@ -186,6 +186,7 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
                     <?php echo esc_html( $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka') );
 
                     if( !$init_recurring_donation->recurring_is_active && $init_recurring_donation->recurring_cancel_date ) {
+                        /* translators: %s: Date. */
                         echo ' ('. wp_kses_post( sprintf(__('canceled on %s', 'leyka'), gmdate(get_option('date_format').', '.get_option('time_format'), $init_recurring_donation->recurring_cancel_date)) ).')';
                     }?>
                 </div>
@@ -439,7 +440,8 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
         $recurring_manual_cancel_link = 'https://www.liqpay.ua/api/request';
 
         if( !$donation->liqpay_order_id ) {
-            return new WP_Error('recurring_cancelling__no_subscription_id', sprintf(__('<strong>Error:</strong> unknown Subscription ID for donation #%d. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
+            /* translators: 1: Donation id, 2: Support email, 3: Cancel link. */
+            return new WP_Error('recurring_cancelling__no_subscription_id', sprintf(__('<strong>Error:</strong> unknown Subscription ID for donation #%1$d. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%2$s" target="_blank">website tech. support</a>.<br>Also you may <a href="%3$s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
         }
 
         $api = new Liqpay(leyka_options()->opt('liqpay_public_key'), leyka_options()->opt('liqpay_private_key'));
@@ -451,7 +453,8 @@ class Leyka_Liqpay_Gateway extends Leyka_Gateway {
         ]);
 
         if($response->status !== 'unsubscribed') {
-            return new WP_Error('recurring_cancelling__cannot_cancel_recurring', sprintf(__('<strong>Error:</strong> we cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="mailto:%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
+            /* translators: 1: Support email, 2: Cancel link. */
+            return new WP_Error('recurring_cancelling__cannot_cancel_recurring', sprintf(__('<strong>Error:</strong> we cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="mailto:%1$s" target="_blank">website tech. support</a>.<br>Also you may <a href="%2$s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
         }
 
         $donation->recurring_is_active = false;

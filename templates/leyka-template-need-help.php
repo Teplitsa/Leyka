@@ -53,7 +53,8 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                         data-periodicity="monthly"
                         role="tab"
                         aria-selected="<?php echo esc_attr( $campaign->donations_type_default === 'recurring' || $campaign->daily_rouble_mode_on_and_valid ? 'true' : 'false' );?>">
-                        <?php esc_html_e($template_data['payments_amounts_tab_titles']['recurring'], 'leyka');?>
+                        <?php // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
+                        esc_html_e($template_data['payments_amounts_tab_titles']['recurring'], 'leyka');?>
                     </a>
 
                     <a
@@ -62,7 +63,8 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                         data-periodicity="once"
                         role="tab"
                         aria-selected="<?php echo esc_attr(  $campaign->donations_type_default === 'single' ? 'true' : 'false' );?>">
-                        <?php esc_html_e($template_data['payments_amounts_tab_titles']['single'], 'leyka');?>
+                        <?php // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
+                        esc_html_e($template_data['payments_amounts_tab_titles']['single'], 'leyka');?>
                     </a>
 
                 </div>
@@ -182,6 +184,7 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
 
                                 <div class="daily-rouble-comment">
                                     <?php echo sprintf(
+                                        /* translators: %s: Amount. */
                                         '<span class="daily-rouble-text">'.esc_html__('You are making a monthly donation in the amount of %s', 'leyka').'</span>',
                                         '<span class="daily-rouble-amount">'.esc_html((30*reset($currency_data['amount_variants']))).'</span>'
                                         .'<span class="daily-rouble-currency">'.esc_html($currency_data['currency_label']).'</span>'
@@ -578,13 +581,15 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                             'leyka_need-help_template_final_submit',
                             '<input type="submit" disabled="disabled" class="leyka-default-submit" value="'
                             .($campaign->daily_rouble_mode_on_and_valid ?
+                                /* translators: 1: Currency amount, 2: Currency label. */
                                 sprintf(
-                                    __('Make a monthly donation of %s %s', 'leyka'),
+                                    __('Make a monthly donation of %1$s %2$s', 'leyka'),
                                     30 * reset($template_data['currencies'][$template_data['main_currency_id']]['amount_variants']),
                                     $template_data['currencies'][$template_data['main_currency_id']]['currency_label']
                                 ) :
                                 leyka_options()->opt_template('donation_submit_text', 'need-help'))
                             .'" data-submit-text-template="'
+                            /* translators: %s: Currency label. */
                             .sprintf(__('Make a monthly donation of #DAILY_ROUBLE_AMOUNT# %s', 'leyka'), $template_data['currencies'][$template_data['main_currency_id']]['currency_label'])
                             .'">'
                         );?>

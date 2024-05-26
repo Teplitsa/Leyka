@@ -28,6 +28,7 @@ abstract class AuthorizationCache
         $cachePath = self::cachePath($config);
         if (file_exists($cachePath)) {
             // Read from the file
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
             $cachedToken = file_get_contents($cachePath);
             if ($cachedToken && JsonValidator::validate($cachedToken, true)) {
                 $tokens = json_decode($cachedToken, true);
@@ -62,6 +63,7 @@ abstract class AuthorizationCache
 
         $cachePath = self::cachePath($config);
         if (!is_dir(dirname($cachePath))) {
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_mkdir
             if (mkdir(dirname($cachePath), 0755, true) == false) {
                 throw new \Exception('Failed to create directory at ' . esc_html( $cachePath ) );
             }
@@ -78,6 +80,7 @@ abstract class AuthorizationCache
                 'tokenExpiresIn' => $tokenExpiresIn
             );
         }
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
         if (!file_put_contents($cachePath, wp_json_encode($tokens))) {
             throw new \Exception("Failed to write cache");
         };

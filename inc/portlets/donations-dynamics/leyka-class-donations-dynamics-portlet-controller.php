@@ -108,12 +108,14 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
 
                         foreach($donations_by_currency as $currency => $donations) {
 
-                            $query = "SELECT SUM(meta_value)
-                                FROM {$wpdb->prefix}postmeta
-                                WHERE post_id IN (" . implode(',', $donations) . ")
-                                AND meta_key='leyka_donation_amount'";
+                            $query_var = $wpdb->get_var(
+                                $wpdb->prepare(
+                                    "SELECT SUM(meta_value) FROM {$wpdb->prefix}postmeta WHERE post_id IN (%s) AND meta_key='leyka_donation_amount'",
+                                    implode(',', $donations),
+                                )
+                            );
 
-                            $amount += leyka_currency_convert($wpdb->get_var($query), $currency);
+                            $amount += leyka_currency_convert( $query_var, $currency);
 
                         }
 
@@ -126,7 +128,13 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
                         WHERE status='funded'
                             AND date_created BETWEEN '$sub_interval_begin_date' AND '$sub_interval_end_date'";
 
-                    $amount = $wpdb->get_var($query);
+                    $amount = $wpdb->get_var(
+                        $wpdb->prepare(
+                            "SELECT SUM(amount) FROM {$wpdb->prefix}leyka_donations WHERE status='funded' AND date_created BETWEEN %s AND %s",
+                            $sub_interval_begin_date,
+                            $sub_interval_end_date
+                        )
+                    );
 
                 }
 

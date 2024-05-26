@@ -169,14 +169,14 @@ if ( ! function_exists( 'leyka_kses_allowed_html' ) ) {
                     'requred'  => true,
                     'selected' => true,
                     'style'    => true,
-                    'data-*' => true,
+                    'data-*'   => true,
                 ),
                 'ul' => array(
-                    'class'       => true,
-                    'data-*'      => true,
+                    'class'  => true,
+                    'data-*' => true,
                 ),
                 'li' => array(
-                    'class'       => true,
+                    'class'  => true,
                     'data-*' => true,
                 ),
                 'iframe' => array(
@@ -185,6 +185,65 @@ if ( ! function_exists( 'leyka_kses_allowed_html' ) ) {
                     'height' => true,
                     'src'    => true,
                     'data-*' => true,
+                ),
+                'svg'   => array(
+                    'class'           => true,
+                    'aria-hidden'     => true,
+                    'aria-labelledby' => true,
+                    'role'            => true,
+                    'xmlns'           => true,
+                    'width'           => true,
+                    'height'          => true,
+                    'viewbox'         => true,
+                    'fill'            => true,
+                    'id'              => true,
+                    'style'           => true,
+                ),
+                'g'     => array(
+                    'id'           => true,
+                    'fill'         => true,
+                    'full-rule'    => true,
+                    'id'           => true,
+                    'stroke'       => true,
+                    'stroke-width' => true,
+                    'transform'    => true,
+                    'style'        => true,
+                ),
+                'path'  => array(
+                    'id'              => true,
+                    'd'               => true,
+                    'fill'            => true,
+                    'fill-rule'       => true,
+                    'fill-opacity'    => true,
+                    'stroke'          => true,
+                    'stroke-width'    => true,
+                    'stroke-linecap'  => true,
+                    'stroke-linejoin' => true,
+                    'clip-rule'       => true,
+                    'opacity'         => true,
+                    'transform'       => true,
+                ),
+                'rect' => array(
+                    'id'           => true,
+                    'width'        => true,
+                    'height'       => true,
+                    'fill'         => true,
+                    'fill-opacity' => true,
+                    'rx'           => true,
+                    'transform'    => true,
+                ),
+                'circle' => array(
+                    'cx'      => true,
+                    'cy'      => true,
+                    'r'       => true,
+                    'opacity' => true,
+                ),
+                'polygon' => array(
+                    'points' => true,
+                ),
+                'defs' => array(),
+                'clipPath' => array(
+                    'id' => true,
                 ),
             );
         }
@@ -390,7 +449,13 @@ function leyka_get_posts_list($post_types = ['post']) {
 
     }
 
-    $res = $wpdb->get_results("SELECT ID, post_title FROM $wpdb->posts WHERE ".implode(' AND ', $params));
+    $res = $wpdb->get_results(
+        $wpdb->prepare(
+            "SELECT ID, post_title FROM $wpdb->posts WHERE %s",
+            implode(' AND ', $params)
+        )
+
+    );
 
     $pages = [0 => __('Website main page', 'leyka'),];
     foreach($res as $page) {
@@ -2888,7 +2953,7 @@ if( !function_exists('leyka_delete_dir') ) {
         if( !$path || $path === '/' ) {
             return false;
         }
-
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir
         return is_file($path) ? wp_delete_file($path) : (array_map(__FUNCTION__, glob($path.'/*')) == @rmdir($path));
 
     }
@@ -3008,6 +3073,7 @@ if( !function_exists('leyka_get_random_string') ) {
         $result = '';
 
         for($i = 0; $i < $length; $i++) {
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.rand_mt_rand
             $result .= $permitted_chars[ mt_rand(0, strlen($permitted_chars) - 1) ];
         }
 
@@ -3260,6 +3326,7 @@ function leyka_refresh_currencies_rates() {
     $main_currency = leyka_get_main_currency();
 
     $req_url = 'https://api.exchangerate.host/latest?base='.$main_currency.'&symbols='.$currencies_list;
+    // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
     $response_json = file_get_contents($req_url);
 
     if(false !== $response_json) {
@@ -3351,4 +3418,54 @@ function leyka_clear_dashboard_cache() {
         "DELETE FROM `{$wpdb->prefix}options` WHERE option_name LIKE '%transient_timeout_leyka_stats_donations%' OR option_name LIKE '%transient_leyka_stats_donations%'",
         'ARRAY_A');
 
+}
+
+/**
+ * Get html from svg file
+ */
+function leyka_get_svg( $file_path = '' ) {
+    if ( ! $file_path ) {
+        return;
+    }
+
+    global $wp_filesystem;
+
+    if( ! $wp_filesystem ){
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        WP_Filesystem();
+    }
+
+    $svg = '';
+
+    if ( $wp_filesystem->exists( $file_path ) && $wp_filesystem->is_file( $file_path ) ) {
+        $svg = $wp_filesystem->get_contents( $file_path );
+        return $svg;
+    }
+
+    return false;
+}
+
+/**
+ * Get file content
+ */
+function leyka_get_file_content( $file_path = '' ) {
+    if ( ! $file_path ) {
+        return;
+    }
+
+    global $wp_filesystem;
+
+    if( ! $wp_filesystem ){
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        WP_Filesystem();
+    }
+
+    $content = '';
+
+    if ( $wp_filesystem->exists( $file_path ) && $wp_filesystem->is_file( $file_path ) ) {
+        $content = $wp_filesystem->get_contents( $file_path );
+        return $content;
+    }
+
+    return false;
 }

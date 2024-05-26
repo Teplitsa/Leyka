@@ -94,12 +94,12 @@ $last_date        = isset( $_GET['last-date'] ) ? $_GET['last-date'] : '';
                                 <?php $filter_value = isset($_GET['donors-tags']) ? (array)$_GET['donors-tags'] : [];?>
                                 <select class="leyka-donors-tags-select autocomplete-select" name="donors-tags[]" multiple="multiple">
                                     <?php $donors_tags = $filter_value ? get_terms(
-                                        Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME,
                                         [
-                                            'include' => $filter_value,
+                                            'taxonomy'   => Leyka_Donor::DONORS_TAGS_TAXONOMY_NAME,
+                                            'include'    => $filter_value,
                                             'hide_empty' => false,
-                                            'orderby' => 'name',
-                                            'order' => 'ASC',
+                                            'orderby'    => 'name',
+                                            'order'      => 'ASC',
                                         ]
                                     ) : [];
 

@@ -907,8 +907,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
 
             global $wpdb;
 
-            $query = $wpdb->prepare("SELECT `meta_value` FROM `{$wpdb->prefix}leyka_donations_meta` WHERE `donation_id`=%d AND `meta_key`=%s LIMIT 0,1", $this->_id, $meta_key);
-            $result = $wpdb->get_var($query);
+            $result = $wpdb->get_var( $wpdb->prepare("SELECT `meta_value` FROM `{$wpdb->prefix}leyka_donations_meta` WHERE `donation_id`=%d AND `meta_key`=%s LIMIT 0,1", $this->_id, $meta_key) );
 
             $this->_donation_meta[$meta_key] = maybe_unserialize($result);
 

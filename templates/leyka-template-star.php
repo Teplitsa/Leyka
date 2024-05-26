@@ -45,8 +45,10 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
         <div class="section section--periodicity <?php if( !in_array('recurring', $campaign->donations_types_available) ) {?>hidden<?php }?>">
 
             <div class="section__fields periodicity">
-                <a href="#" class="<?php echo 'recurring' === $campaign->donations_type_default ? 'active' : '';?> <?php echo !in_array('recurring', $campaign->donations_types_available) ? "invisible" : "";?>" data-periodicity="monthly" role="tab" aria-selected="<?php echo 'recurring' === $campaign->donations_type_default ? 'true' : 'false';?>"><?php esc_html_e($template_data['payments_amounts_tab_titles']['recurring'], 'leyka');?></a>
-                <a href="#" class="<?php echo 'single' === $campaign->donations_type_default ? 'active' : '';?> <?php echo !in_array('single', $campaign->donations_types_available) ? "invisible" : "";?>" data-periodicity="once" role="tab" aria-selected="<?php echo 'single' === $campaign->donations_type_default ? 'true' : 'false';?>"><?php esc_html_e($template_data['payments_amounts_tab_titles']['single'], 'leyka');?></a>
+                <a href="#" class="<?php // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
+                echo 'recurring' === $campaign->donations_type_default ? 'active' : '';?> <?php echo !in_array('recurring', $campaign->donations_types_available) ? "invisible" : "";?>" data-periodicity="monthly" role="tab" aria-selected="<?php echo 'recurring' === $campaign->donations_type_default ? 'true' : 'false';?>"><?php esc_html_e($template_data['payments_amounts_tab_titles']['recurring'], 'leyka');?></a>
+                <a href="#" class="<?php // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
+                echo 'single' === $campaign->donations_type_default ? 'active' : '';?> <?php echo !in_array('single', $campaign->donations_types_available) ? "invisible" : "";?>" data-periodicity="once" role="tab" aria-selected="<?php echo 'single' === $campaign->donations_type_default ? 'true' : 'false';?>"><?php esc_html_e($template_data['payments_amounts_tab_titles']['single'], 'leyka');?></a>
             </div>
 
         </div>
@@ -515,7 +517,9 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                         <span class="donor__textfield-label leyka_donor_comment-label">
                             <?php 
                                 // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                                echo leyka_options()->opt_template('donation_comment_max_length', 'star') ? sprintf(__('Your comment (<span class="donation-comment-current-length">0</span> / <span class="donation-comment-max-length">%d</span> symbols)', 'leyka'), leyka_options()->opt_template('donation_comment_max_length', 'star')) : __('Your comment', 'leyka');?>
+                                echo leyka_options()->opt_template('donation_comment_max_length', 'star') ? 
+                                    /* translators: %d: Label. */
+                                    sprintf(__('Your comment (<span class="donation-comment-current-length">0</span> / <span class="donation-comment-max-length">%d</span> symbols)', 'leyka'), leyka_options()->opt_template('donation_comment_max_length', 'star')) : __('Your comment', 'leyka');?>
                         </span>
                             </label>
 

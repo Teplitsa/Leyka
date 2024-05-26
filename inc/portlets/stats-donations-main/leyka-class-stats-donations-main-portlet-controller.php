@@ -37,11 +37,11 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
                 $donations_post_type = Leyka_Donation_Management::$post_type;
 
                 $curr_interval_donations_data_raw = $wpdb->get_results(
-                    "SELECT t1.post_id, t1.meta_value FROM {$wpdb->prefix}postmeta t1
-                    WHERE t1.meta_key='leyka_donation_currency' AND t1.post_id IN (
-                        SELECT t2.ID 
-	                    FROM {$wpdb->prefix}posts t2
-	                    WHERE t2.post_type='{$donations_post_type}' AND t2.post_status='funded' AND t2.post_date >= '" . $interval_dates["curr_interval_begin_date"] . "')",
+                    $wpdb->prepare(
+                        "SELECT t1.post_id, t1.meta_value FROM {$wpdb->prefix}postmeta t1 WHERE t1.meta_key='leyka_donation_currency' AND t1.post_id IN ( SELECT t2.ID FROM {$wpdb->prefix}posts t2 WHERE t2.post_type=%s AND t2.post_status='funded' AND t2.post_date >= %s)",
+                        $donations_post_type,
+                        $interval_dates["curr_interval_begin_date"]
+                    ),
                     'ARRAY_A'
                 );
 
@@ -53,10 +53,8 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
 
                 // Donors (unique donors' emails) count:
                 $curr_donors_count = $curr_interval_donations ? count($wpdb->get_col(
-                    "SELECT DISTINCT {$wpdb->prefix}postmeta.meta_value
-                    FROM {$wpdb->prefix}postmeta
-                    WHERE {$wpdb->prefix}postmeta.post_id IN (" . implode(',', $curr_interval_donations) . ")
-                    AND {$wpdb->prefix}postmeta.meta_key='leyka_donor_email'"
+                    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+                    "SELECT DISTINCT {$wpdb->prefix}postmeta.meta_value FROM {$wpdb->prefix}postmeta WHERE {$wpdb->prefix}postmeta.post_id IN (" . implode(',', $curr_interval_donations) . ") AND {$wpdb->prefix}postmeta.meta_key='leyka_donor_email'"
                 )) : 0;
 
             } else { // Separate donations storage
@@ -64,10 +62,11 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
                 $donors_emails = [];
 
                 $tmp = $wpdb->get_results(
-                    "SELECT ID, donor_email
-                    FROM {$wpdb->prefix}leyka_donations
-                    WHERE status='funded'
-                    AND date_created >= '" . $interval_dates["curr_interval_begin_date"] . "'"
+                     $wpdb->prepare(
+                        "SELECT ID, donor_email FROM {$wpdb->prefix}leyka_donations WHERE status='funded'
+                        AND date_created >= %s",
+                        $interval_dates["curr_interval_begin_date"]
+                    )
                 );
                 foreach ($tmp as $line) {
 
@@ -100,7 +99,23 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
                         FROM {$wpdb->prefix}leyka_donations
                         WHERE ID IN (" . implode(',', $curr_interval_donations) . ')';
 
-                    $curr_amount += leyka_currency_convert($wpdb->get_var($query), $currency);
+                    if ( leyka_get_donations_storage_type() === 'post' ) {
+                        $query_var = $wpdb->get_var(
+                            $wpdb->prepare(
+                                "SELECT SUM(meta_value) FROM {$wpdb->prefix}postmeta WHERE post_id IN (%s) AND meta_key='leyka_donation_amount'",
+                                implode(',', $donations)
+                            )
+                        );
+                    } else {
+                        $query_var = $wpdb->get_var(
+                            $wpdb->prepare(
+                                "SELECT SUM(amount) FROM {$wpdb->prefix}leyka_donations WHERE ID IN (%s)",
+                                implode(',', $curr_interval_donations)
+                            )
+                        );
+                    }
+
+                    $curr_amount += leyka_currency_convert($query_var, $currency);
 
                 }
 
@@ -127,12 +142,13 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
 
                 $donations_post_type = Leyka_Donation_Management::$post_type;
                 $prev_interval_donations_data_raw = $wpdb->get_results(
-                    "SELECT t1.post_id, t1.meta_value FROM {$wpdb->prefix}postmeta t1
-                    WHERE t1.meta_key='leyka_donation_currency' AND t1.post_id IN (
-                        SELECT t2.ID
-                        FROM {$wpdb->prefix}posts t2
-                        WHERE t2.post_type='{$donations_post_type}' AND t2.post_status='funded' 
-                          AND t2.post_date >= '" . $interval_dates["prev_interval_begin_date"] . "' AND t2.post_date < '" . $interval_dates["curr_interval_begin_date"] . "')",
+                    $wpdb->prepare(
+                        "SELECT t1.post_id, t1.meta_value FROM {$wpdb->prefix}postmeta t1 WHERE t1.meta_key='leyka_donation_currency' AND t1.post_id IN ( SELECT t2.ID FROM {$wpdb->prefix}posts t2 WHERE t2.post_type='{$donations_post_type}' AND t2.post_status='funded' AND t2.post_date >= %s AND t2.post_date < %s )",
+                        array(
+                            $interval_dates["prev_interval_begin_date"],
+                            $interval_dates["curr_interval_begin_date"]
+                        ),
+                    ),
                     'ARRAY_A'
                 );
 
@@ -146,10 +162,8 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
 
                 // Donors (unique donors' emails) count:
                 $prev_donors_count = $prev_interval_donations ? count($wpdb->get_col(
-                    "SELECT DISTINCT {$wpdb->prefix}postmeta.meta_value
-                    FROM {$wpdb->prefix}postmeta
-                    WHERE {$wpdb->prefix}postmeta.post_id IN (" . implode(',', $prev_interval_donations) . ")
-                    AND {$wpdb->prefix}postmeta.meta_key='leyka_donor_email'"
+                    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+                    "SELECT DISTINCT {$wpdb->prefix}postmeta.meta_value FROM {$wpdb->prefix}postmeta WHERE {$wpdb->prefix}postmeta.post_id IN (" . implode(',', $prev_interval_donations) . ") AND {$wpdb->prefix}postmeta.meta_key='leyka_donor_email'"
                 )) : 0;
 
             } else { // Separate donations storage
@@ -157,10 +171,13 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
                 $donors_emails = [];
 
                 $tmp = $wpdb->get_results(
-                    "SELECT ID, donor_email
-                    FROM {$wpdb->prefix}leyka_donations
-                    WHERE status='funded'
-                    AND date_created >= '" . $interval_dates["prev_interval_begin_date"] . "' AND date_created < '" . $interval_dates["curr_interval_begin_date"] . "'"
+                    $wpdb->prepare(
+                        "SELECT ID, donor_email FROM {$wpdb->prefix}leyka_donations WHERE status='funded' AND date_created >= %s AND date_created < %s",
+                        array(
+                            $interval_dates["prev_interval_begin_date"],
+                            $interval_dates["curr_interval_begin_date"]
+                        )
+                    )
                 );
                 foreach($tmp as $line) {
 
@@ -184,15 +201,10 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
 
                     $query = leyka_get_donations_storage_type() === 'post' ?
                         // Post-based donations storage:
-                        "SELECT SUM(meta_value) AS amount
-                            FROM {$wpdb->prefix}postmeta
-                            WHERE post_id IN (" . implode(',', $prev_interval_donations) . ")
-                            AND meta_key='leyka_donation_amount'" :
+                        "SELECT SUM(meta_value) AS amount FROM {$wpdb->prefix}postmeta WHERE post_id IN (" . implode(',', $prev_interval_donations) . ") AND meta_key='leyka_donation_amount'" :
                         // Separate donations storage:
-                        "SELECT SUM(amount)
-                            FROM {$wpdb->prefix}leyka_donations
-                            WHERE ID IN (" . implode(',', $prev_interval_donations) . ')';
-
+                        "SELECT SUM(amount) FROM {$wpdb->prefix}leyka_donations WHERE ID IN (" . implode(',', $prev_interval_donations) . ')';
+                    // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
                     $prev_amount += leyka_currency_convert($wpdb->get_var($query), $currency);
 
                 }

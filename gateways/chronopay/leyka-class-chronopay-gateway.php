@@ -43,6 +43,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                 'comment' => __('Please, enter your Chronopay shared_sec value here. It can be found in your contract.', 'leyka'),
                 'required' => true,
                 'is_password' => true,
+                /* translators: 1: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '4G0i8590sl5Da37I'),
             ],
             'chronopay_ip' => [
@@ -51,6 +52,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                 'title' => __('Chronopay IP', 'leyka'),
                 'comment' => __('IP address to check for requests.', 'leyka'),
                 'required' => true,
+                /* translators: 1: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '93.174.51.230'),
             ],
             'chronopay_use_payment_uniqueness_control' => [
@@ -414,11 +416,13 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
 
     public function cancel_recurring_subscription_by_link(Leyka_Donation_Base $donation) {
 
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_init
         $ch = curl_init();
 
         $product_id = leyka_options()->opt($donation->payment_method_id.'_product_id_'.$donation->currency);
         $hash = md5(leyka_options()->opt('chronopay_shared_sec').'-7-'.$product_id);
 
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt_array
         curl_setopt_array($ch, [
             CURLOPT_URL => 'https://gate.chronopay.com/',
             CURLOPT_HEADER => 0,
@@ -434,12 +438,13 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             </request>",
         ]);
 
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec
         $result = curl_exec($ch);
         if($result === false) {
 
-            $errno = curl_errno($ch);
-            $error = curl_error($ch);
-            curl_close($ch);
+            $errno = curl_errno($ch); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_errno
+            $error = curl_error($ch); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_error
+            curl_close($ch); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_close
             die( wp_json_encode(['status' => 0, 'message' => $error." ($errno)"]) );
 
         } else {
@@ -467,6 +472,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                 }
             }
 
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_close
             curl_close($ch);
             if($response_ok) {
 
@@ -477,6 +483,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
                 die(wp_json_encode(['status' => 1, 'message' => __('Recurring subscription cancelled.', 'leyka')]));
 
             } else {
+                /* translators: 1: Error message. */
                 die(wp_json_encode(['status' => 0, 'message' => sprintf(__('Error on a gateway side: %s', 'leyka'), $response_text." (code $response_code)")]));
             }
 
@@ -647,32 +654,44 @@ class Leyka_Chronopay_Card extends Leyka_Payment_Method {
         $this->_options = [
             'chronopay_card_product_id_rub' => [
                 'type' => 'text',
+                /* translators: 1: Currency label. */
                 'title' => sprintf(__('Chronopay product_id for %s', 'leyka'), leyka_options()->opt('currency_rub_label')),
+                /* translators: 1: Code. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '012345-0001-0001'),
             ],
             'chronopay_card_product_id_usd' => [
                 'type' => 'text',
+                /* translators: 1: Currency label. */
                 'title' => sprintf(__('Chronopay product_id for %s', 'leyka'), leyka_options()->opt('currency_usd_label')),
+                /* translators: 1: Code. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '012345-0001-0002'),
             ],
             'chronopay_card_product_id_eur' => [
                 'type' => 'text',
+                /* translators: 1: Currency label. */
                 'title' => sprintf(__('Chronopay product_id for %s', 'leyka'), leyka_options()->opt('currency_eur_label')),
+                /* translators: 1: Code. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '012345-0001-0003'),
             ],
             'chronopay_card_rebill_product_id_rub' => [
                 'type' => 'text',
+                /* translators: 1: Currency label. */
                 'title' => sprintf(__('Chronopay product_id for rebills in %s', 'leyka'), leyka_options()->opt('currency_rub_label')),
+                /* translators: 1: Code. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '012345-0001-0011'),
             ],
             'chronopay_card_rebill_product_id_usd' => [
                 'type' => 'text',
+                /* translators: 1: Currency label. */
                 'title' => sprintf(__('Chronopay product_id for rebills in %s', 'leyka'), leyka_options()->opt('currency_usd_label')),
+                /* translators: 1: Code. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '012345-0001-0012'),
             ],
             'chronopay_card_rebill_product_id_eur' => [
                 'type' => 'text',
+                /* translators: 1: Currency label. */
                 'title' => sprintf(__('Chronopay product_id for rebills in %s', 'leyka'), leyka_options()->opt('currency_eur_label')),
+                /* translators: 1: Code. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '012345-0001-0013'),
             ],
         ];

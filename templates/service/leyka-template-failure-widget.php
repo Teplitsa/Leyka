@@ -19,7 +19,7 @@ if($donation_id) {
 <div id="leyka-pf-" class="leyka-pf">
     <?php
         // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-        echo file_get_contents( LEYKA_PLUGIN_BASE_URL . 'assets/svg/svg.svg' );
+        echo leyka_get_svg( LEYKA_PLUGIN_DIR . 'assets/svg/svg.svg' );
     ?>
 
     <div class="leyka-pf__final-screen leyka-pf__final-error">
@@ -31,8 +31,10 @@ if($donation_id) {
         <div class="error-text"><div>
             <?php $support_email = leyka_get_website_tech_support_email();
            if($support_email) {
-               printf(wp_kses_post(__("We've received the error report and are working to fix it. Please try to <a href='%s' class='leyka-js-try-again'>donate again</a>. If the error continues to occur, please use another payment method or <a href='mailto:%s'>contact our technical support</a>.", 'leyka'), $campaign ? $campaign->url : home_url('/'), $support_email));
+                /* translators: 1: Campaign url, 2: Support email. */
+                printf(wp_kses_post(__("We've received the error report and are working to fix it. Please try to <a href='%1$s' class='leyka-js-try-again'>donate again</a>. If the error continues to occur, please use another payment method or <a href='mailto:%2$s'>contact our technical support</a>.", 'leyka'), $campaign ? $campaign->url : home_url('/'), $support_email));
            } else {
+            /* translators: %s: Campaign url. */
                printf(wp_kses_post(__("We've received the error report and are working to fix it. Please try to <a href='%s' class='leyka-js-try-again'>donate again</a>. If the error continues to occur, please use another payment method or try donating again later.", 'leyka'), $campaign ? $campaign->url : home_url('/')));
            }?></div></div>
         <div class="leyka-logo"> </div>

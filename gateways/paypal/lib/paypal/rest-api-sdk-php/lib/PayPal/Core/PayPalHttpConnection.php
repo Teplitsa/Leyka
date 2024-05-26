@@ -134,6 +134,7 @@ class PayPalHttpConnection
         $this->logger->info($this->httpConfig->getMethod() . ' ' . $this->httpConfig->getUrl());
 
         //Initialize Curl Options
+        // phpcs:disable
         $ch = curl_init($this->httpConfig->getUrl());
         $options = $this->httpConfig->getCurlOptions();
         if (empty($options[CURLOPT_HTTPHEADER])) {
@@ -201,6 +202,7 @@ class PayPalHttpConnection
 
         //Close the curl request
         curl_close($ch);
+        // phpcs:enable
 
         //More Exceptions based on HttpStatus Code
         if ($httpStatus < 200 || $httpStatus >= 300) {

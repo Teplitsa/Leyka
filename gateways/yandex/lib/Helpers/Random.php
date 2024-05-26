@@ -52,6 +52,7 @@ class Random
         if (function_exists('random_int') && $useBest) {
             return random_int($min, $max);
         } else {
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.rand_mt_rand
             return mt_rand($min, $max);
         }
     }

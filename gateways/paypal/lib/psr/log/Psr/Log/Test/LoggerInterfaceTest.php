@@ -101,7 +101,9 @@ abstract class LoggerInterfaceTest extends \PHPUnit_Framework_TestCase
 
     public function testContextCanContainAnything()
     {
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen
         $closed = fopen('php://memory', 'r');
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
         fclose($closed);
 
         $context = array(
@@ -112,7 +114,7 @@ abstract class LoggerInterfaceTest extends \PHPUnit_Framework_TestCase
             'float' => 0.5,
             'nested' => array('with object' => new DummyTest),
             'object' => new \DateTime,
-            'resource' => fopen('php://memory', 'r'),
+            'resource' => fopen('php://memory', 'r'), // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen
             'closed' => $closed,
         );
 

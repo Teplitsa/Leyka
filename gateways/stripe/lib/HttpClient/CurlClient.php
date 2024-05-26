@@ -392,8 +392,9 @@ class CurlClient implements ClientInterface, StreamingClientInterface
             &$errno
         ) {
             $lastRHeaders = $rheaders;
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_errno
             $errno = \curl_errno($this->curlHandle);
-
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_getinfo
             $rcode = \curl_getinfo($this->curlHandle, \CURLINFO_HTTP_CODE);
 
             // Send the bytes from the body of a successful request to the caller-provided $readBodyChunk.
@@ -437,10 +438,14 @@ class CurlClient implements ClientInterface, StreamingClientInterface
             $shouldRetry = false;
             $rbody = null;
             $this->resetCurlHandle();
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt_array
             \curl_setopt_array($this->curlHandle, $opts);
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec
             $result = \curl_exec($this->curlHandle);
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_errno
             $errno = \curl_errno($this->curlHandle);
             if (0 !== $errno) {
+                // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_error
                 $message = \curl_error($this->curlHandle);
             }
             if (!$this->getEnablePersistentConnections()) {
@@ -491,13 +496,18 @@ class CurlClient implements ClientInterface, StreamingClientInterface
             $opts[\CURLOPT_HEADERFUNCTION] = $headerCallback;
 
             $this->resetCurlHandle();
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt_array
             \curl_setopt_array($this->curlHandle, $opts);
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec
             $rbody = \curl_exec($this->curlHandle);
 
             if (false === $rbody) {
+                // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_errno
                 $errno = \curl_errno($this->curlHandle);
+                // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_error
                 $message = \curl_error($this->curlHandle);
             } else {
+                // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_getinfo
                 $rcode = \curl_getinfo($this->curlHandle, \CURLINFO_HTTP_CODE);
             }
             if (!$this->getEnablePersistentConnections()) {
@@ -672,6 +682,7 @@ class CurlClient implements ClientInterface, StreamingClientInterface
     private function initCurlHandle()
     {
         $this->closeCurlHandle();
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_init
         $this->curlHandle = \curl_init();
     }
 
@@ -681,6 +692,7 @@ class CurlClient implements ClientInterface, StreamingClientInterface
     private function closeCurlHandle()
     {
         if (null !== $this->curlHandle) {
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_close
             \curl_close($this->curlHandle);
             $this->curlHandle = null;
         }
@@ -693,6 +705,7 @@ class CurlClient implements ClientInterface, StreamingClientInterface
     private function resetCurlHandle()
     {
         if (null !== $this->curlHandle && $this->getEnablePersistentConnections()) {
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_reset
             \curl_reset($this->curlHandle);
         } else {
             $this->initCurlHandle();

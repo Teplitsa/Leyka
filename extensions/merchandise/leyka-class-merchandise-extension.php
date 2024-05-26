@@ -432,8 +432,10 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
                         <li class="edit-field-note">
                             <?php echo sprintf(
+                                /* translators: 1: Label */
                                 esc_html__('If you wish to edit the reward settings, you may do it in %s', 'leyka'),
                                 sprintf(
+                                    /* translators: 1: URL, 2: Text. */
                                     '<a href="%s" target="_blank">%s</a>.',
                                     esc_url( admin_url('admin.php?page=leyka_settings&stage=extensions&extension=merchandise#leyka_merchandise-merchandise_library') ),
                                     esc_html__( 'rewards library', 'leyka' )
@@ -444,8 +446,10 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
                         <?php if($placeholders['for_all_campaigns']) {?>
                             <li class="no-delete-for-all-campaigns-items-note">
                                 <?php echo sprintf(
+                                    /* translators: 1: Link. */
                                     esc_html__('The reward cannot be removed from the campaign - it is marked "for all campaigns" in the %s.', 'leyka'),
                                     sprintf(
+                                        /* translators: 1: URL, 2: Text. */
                                         '<a href="%s" target="_blank">%s</a>.',
                                         esc_url( admin_url('admin.php?page=leyka_settings&stage=extensions&extension=merchandise#leyka_merchandise-merchandise_library') ),
                                         esc_html__( 'donations rewards library', 'leyka' )
@@ -535,6 +539,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
                     <?php leyka_render_text_field('merchandise_title', [
                         'title' => esc_html__('Reward title', 'leyka'),
+                        /* translators: 1: Value. */
                         'placeholder' => sprintf(esc_html__('E.g., %s', 'leyka'), esc_html__('A cool hat with our logo', 'leyka')),
                         'value' => $placeholders['title'],
                         'required' => true,
@@ -554,6 +559,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
                 <div class="leyka-number-field-wrapper">
                     <?php leyka_render_number_field('merchandise_donation_amount_needed', [
                         'title' => sprintf(
+                            /* translators: 1: Currency label. */
                             esc_html__('Donations amount needed for the reward, %s', 'leyka'),
                             leyka_get_currency_label()
                         ),
@@ -648,7 +654,8 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
 
                 <ul class="notes-and-errors">
                     <li class="any-field-note"><?php echo sprintf(
-                        esc_html__('For reward thumbnail, please, use a picture %sat least 536 pixels wide%s.', 'leyka'),
+                        /* translators: 1: <strong>, 2: </strong>. */
+                        esc_html__('For reward thumbnail, please, use a picture %1$sat least 536 pixels wide%2$s.', 'leyka'),
                         '<strong>',
                         '</strong>'
                     );?></li>

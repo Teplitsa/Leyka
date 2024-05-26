@@ -647,6 +647,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
             'wsb_recurring_token' => $init_recurring_donation->webpay_recurring_token,
         ];
 
+        // phpcs:disable
         $ch = curl_init();
         curl_setopt_array($ch, [
             CURLOPT_URL => rtrim($this->submission_redirect_url('', ''), '/'),
@@ -662,6 +663,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
         }
 
         curl_close($ch);
+        // phpcs:enable
 
         $result = json_decode($result, true);
 

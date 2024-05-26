@@ -14,6 +14,7 @@ if( !$file_address ) {
     echo '<pre>Data file found: '.esc_html(print_r($file_address, 1)).'</pre>';
 }
 
+// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen
 $csv_file_handle = fopen($file_address, 'r');
 
 if( !$csv_file_handle ) {
@@ -167,4 +168,5 @@ while( ($subscription_data = fgetcsv($csv_file_handle, null, ";")) !== FALSE ) {
 
 }
 
+// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
 fclose($csv_file_handle);

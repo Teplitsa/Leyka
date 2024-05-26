@@ -766,6 +766,7 @@ techMessage="'.esc_attr($tech_message).'"/>');
 
         } else {
 
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_init
             $ch = curl_init();
             $params = [
                 CURLOPT_URL => 'https://shop.yookassa.ru/webservice/mws/api/repeatCardPayment',
@@ -795,8 +796,10 @@ techMessage="'.esc_attr($tech_message).'"/>');
             if(leyka_options()->opt('yandex_outer_ip_to_inner')) {
                 $params[CURLOPT_INTERFACE] = gethostbyname(gethostname());
             }
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt_array
             curl_setopt_array($ch, $params);
 
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec
             $answer = curl_exec($ch);
             if($answer) {
 
@@ -822,9 +825,12 @@ techMessage="'.esc_attr($tech_message).'"/>');
                 }
 
             } else {
+                // phpcs:disable
                 $new_recurring_donation->add_gateway_response('Error '.curl_errno($ch).': '.curl_error($ch));
+                // phpcs:enable
             }
 
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_close
             curl_close($ch);
 
         }

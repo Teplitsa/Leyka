@@ -182,6 +182,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
         if( !leyka_options()->opt('donor_accounts_available') ) {
             return new WP_Error(
                 $this->_id.'-accounts-disabled',
+                /* translators: 1: URL. */
                 sprintf(__('Donors accounts are mandatory for the Extension to work! Please, <a href="%s">enable Donors accounts</a> in the plugin settings.', 'leyka'), admin_url('admin.php?page=leyka_settings&stage=additional#donor_accounts'))
             );
         }
@@ -194,7 +195,9 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
 
         if( !$this->get_available_campaign() ) {
             echo '<div class="error">
-                <p>'.sprintf(__("<strong>Leyka warning!</strong> The Support packages Extension currently doesn't have a campaign for donors to make recurring subscriptions. The campaign must be <strong>published</strong>, <strong>not marked as \"finished\"</strong> and, ideally, <strong>marked as persistent</strong> to be available.<br><br>Please see to it that you have at least <strong>one such campaign</strong>, and select the campaign in the <a href='%s'>Support packages settings page</a>.", 'leyka'), esc_url( admin_url('admin.php?page=leyka_settings&stage=extensions&extension=' . $this->_id ) ) ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                <p>'.
+                /* translators: 1: URL. */
+                sprintf(__("<strong>Leyka warning!</strong> The Support packages Extension currently doesn't have a campaign for donors to make recurring subscriptions. The campaign must be <strong>published</strong>, <strong>not marked as \"finished\"</strong> and, ideally, <strong>marked as persistent</strong> to be available.<br><br>Please see to it that you have at least <strong>one such campaign</strong>, and select the campaign in the <a href='%s'>Support packages settings page</a>.", 'leyka'), esc_url( admin_url('admin.php?page=leyka_settings&stage=extensions&extension=' . $this->_id ) ) ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                  . '</p>
             </div>';
         }
@@ -312,6 +315,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
 
                     <div class="leyka-number-field-wrapper">
                         <?php leyka_render_number_field('package_amount_needed', [
+                            /* translators: 1: Currency label. */
                             'title' => sprintf(esc_html__('Donations amount needed, %s', 'leyka'), leyka_get_currency_label()),
                             'placeholder' => '500',
                             'required' => true,
@@ -895,9 +899,7 @@ class Leyka_Support_Packages_Template_Tags {
 
                 <div class="leyka-ext-sp-icon">
                 	<?php if(preg_match("/\.svg$/", $package->icon_url)) {
-                        if(is_file($package->icon_path)) {
-                            readfile($package->icon_path);
-                        }
+                        echo wp_kses( leyka_get_svg( $icon_content ), 'content' );
                     } else {?>
                 		<img src="<?php echo esc_url( $package->icon_url );?>" alt="">
             		<?php }?>
@@ -996,7 +998,10 @@ class Leyka_Support_Packages_Template_Tags {
 
                     <div class="leyka-ext-sp-already-subsribed">
                     	<a href="<?php echo esc_url( site_url('/donor-account/') );?>" class="leyka-ext-sp-already-subscribed-link">
-                    		<span class="leyka-ext-sp-already-subscribed-icon"><?php readfile(LEYKA_PLUGIN_DIR.'extensions/'.Leyka_Support_Packages_Extension::get_instance()->id_dash.'/img/person.svg');?></span>
+                    		<span class="leyka-ext-sp-already-subscribed-icon"><?php
+                            $subscribed_icon = LEYKA_PLUGIN_DIR.'extensions/'.Leyka_Support_Packages_Extension::get_instance()->id_dash.'/img/person.svg';
+                            echo wp_kses( leyka_get_svg( $subscribed_icon ), 'content' );
+                            ;?></span>
                     		<span class="leyka-ext-sp-already-subscribed-caption"><?php echo wp_kses_post( leyka()->opt('support_packages_account_link_label') );?></span>
                 		</a>
                     </div>

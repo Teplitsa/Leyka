@@ -42,6 +42,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                 'title' => __('MIXPLAT Project ID', 'leyka'),
                 'comment' => __('Enter your project ID. It can be found in your MIXPLAT project settings page on MIXPLAT site.', 'leyka'),
                 'required' => true,
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '100359'),
                 'description' => __('Project ID is shown on your <a href="http://stat.mixplat.ru/projects" target=_blank>MIXPLAT project settings page</a>', 'leyka'),
             ],
@@ -50,6 +51,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                 'title' => __('MIXPLAT widget key', 'leyka'),
                 'comment' => __('Enter your widget key. It can be found in your MIXPLAT project settings page on MIXPLAT site.', 'leyka'),
                 'required' => false,
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '783d15a8-802d-42e7-ae20-42539f22f7c3'),
             ],
             $this->_id.'_secret_key' => [
@@ -57,6 +59,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                 'title' => __('MIXPLAT API key', 'leyka'),
                 'comment' => __('Enter your API key. It can be found in your MIXPLAT project settings page on MIXPLAT site.', 'leyka'),
                 'required' => true,
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'c23a4398db8ef7b3ae1f4b07aeeb7c54f8e3c7c9'),
                 'description' => __('API key and Widget key are shown on your <a href="http://stat.mixplat.ru/projects" target=_blank>MIXPLAT project settings page</a>', 'leyka'),
             ],
@@ -312,7 +315,8 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         if($donation->amount > 600000) {
             $error = new WP_Error(
                 'leyka_mixplat_max_donation_size_exceeded',
-                sprintf(__('Maximum donation amount of %s %s exceeded', 'leyka'), leyka_format_amount(600000), $donation->currency_label)
+                /* translators: 1: Ammount, 2: Currency label. */
+                sprintf(__('Maximum donation amount of %1$s %2$s exceeded', 'leyka'), leyka_format_amount(600000), $donation->currency_label)
             );
         }
 
@@ -420,7 +424,8 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                     wp_mail(
                         leyka_get_website_tech_support_email(),
                         __('MIXPLAT - payment callback error occured', 'leyka'),
-                        sprintf(__('This message has been sent because a create_payment call to MIXPLAT payment system returned some error. The details of the call are below. Payment error code / text: %s / %s', 'leyka'), $response['result'], $response['message'])."\n\r\n\r"
+                        /* translators: 1: Result, 2: Message. */
+                        sprintf(__('This message has been sent because a create_payment call to MIXPLAT payment system returned some error. The details of the call are below. Payment error code / text: %1$s / %2$s', 'leyka'), $response['result'], $response['message'])."\n\r\n\r"
                     );
                 }
 
@@ -621,7 +626,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
           die($output); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
         } else if( !in_array($response['request'], ['payment_status', 'campaigns_list', 'refund_status', 'subscription_status', 'subscriptions_list' ]) ) {
-
+            /* translators: %s: Request. */
             $message = sprintf(__("This message was sent because a call to your MIXPLAT callback was made with an unknown request parameter value. The details of the call are below. Request value: %s", 'leyka'), $response['request'])."\n\r\n\r";
             $is_error = true;
             $error_description = 'Unknown request value';
@@ -631,8 +636,8 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
             foreach(['status', 'amount', 'signature',] as $param_name) { // Check for necessary params
                 if( !array_key_exists($param_name, $response) ) {
-
-                    $message = sprintf(__('This message has been sent because a call to your MIXPLAT callback was made without required parameters given. The details of the call are below. The callback type: %s. The parameter missing: %s', 'leyka'), $response['request'], $param_name)."\n\r\n\r";
+                    /* translators: 1: Request, 2: Param name. */
+                    $message = sprintf(__('This message has been sent because a call to your MIXPLAT callback was made without required parameters given. The details of the call are below. The callback type: %1$s. The parameter missing: %2$s', 'leyka'), $response['request'], $param_name)."\n\r\n\r";
                     $is_error = true;
                     $error_description = "Mandatory parameter $param_name is missing";
                     break;
@@ -648,7 +653,8 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             $response['signature_calculated'] = $params_signature;
 
             if($params_signature != $response['signature']) {
-                $message = sprintf(__('This message has been sent because a call to your MIXPLAT callback was made with invalid MIXPLAT signature. The details of the call are below. The callback type: %s. Signatures sent / calculated: %s / %s', 'leyka'), $response['request'], $response['signature'], $params_signature)."\n\r\n\r";
+                /* translators: 1: Request, 2: Signature, 3: Param signature. */
+                $message = sprintf(__('This message has been sent because a call to your MIXPLAT callback was made with invalid MIXPLAT signature. The details of the call are below. The callback type: %1$s. Signatures sent / calculated: %2$s / %3$s', 'leyka'), $response['request'], $response['signature'], $params_signature)."\n\r\n\r";
                 $is_error = true;
                 $error_description = "Signature mismatch";
             }
@@ -1211,7 +1217,8 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         }
 
         if( !$donation->mixplat_recurrent_id ) {
-            return new WP_Error('recurring_cancelling__no_subscription_id', sprintf(__('<strong>Error:</strong> unknown Subscription ID for donation #%d. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email()));
+            /* translators: 1: Donation id, 2: Support email. */
+            return new WP_Error('recurring_cancelling__no_subscription_id', sprintf(__('<strong>Error:</strong> unknown Subscription ID for donation #%1$d. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%2$s" target="_blank">website tech. support</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email()));
         }
 
         require_once LEYKA_PLUGIN_DIR.'gateways/mixplat/lib/autoload.php';
@@ -1230,7 +1237,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             $donation->recurring_is_active = false;
 
         } else { // Unsubscribe failed
-
+            /* translators: %s: Support email. */
             return new WP_Error('recurring_cancelling__cannot_cancel_recurring', sprintf(__('<strong>Error:</strong> we cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="mailto:%s" target="_blank">website tech. support</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email()));
 
         }

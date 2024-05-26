@@ -429,7 +429,14 @@ function leyka_get_campaign_supporters_names($campaign_id = false, $max_names = 
         "SELECT COUNT(DISTINCT meta.meta_value) FROM {$wpdb->prefix}postmeta meta $query_joins WHERE $query_where"
     );
     $first_donors_names = $wpdb->get_col(
-        "SELECT DISTINCT meta.meta_value FROM {$wpdb->prefix}postmeta meta $query_joins WHERE $query_where ORDER BY p.ID DESC ".($max_names ? 'LIMIT 0,'.(5*$max_names) : '')
+        $wpdb->prepare(
+            "SELECT DISTINCT meta.meta_value FROM {$wpdb->prefix}postmeta meta %s WHERE %s ORDER BY p.ID DESC %s",
+            array(
+                $query_joins,
+                $query_where,
+                ($max_names ? 'LIMIT 0,'.(5*$max_names) : '')
+            )
+        )
     );
 
     return [
@@ -491,7 +498,7 @@ function leyka_inline_campaign(array $atts = []) {
 
         <?php
             // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-            echo file_get_contents( LEYKA_PLUGIN_BASE_URL . 'assets/svg/svg.svg' );
+            echo leyka_get_svg( LEYKA_PLUGIN_DIR . 'assets/svg/svg.svg' );
         ?>
 
         <div class="leyka-pf__overlay"></div>

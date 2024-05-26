@@ -447,6 +447,7 @@ class UnisenderApi
 
         do {
             $host = $this->getApiHost();
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
             $result = @file_get_contents($host.$url, false, $context);
             ++$retryCount;
         } while ($result === false && $retryCount < $this->retryCount);

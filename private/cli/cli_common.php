@@ -54,14 +54,14 @@ else {
         require_once(BASE_PATH.'wp-blog-header.php');
     }
     header("HTTP/1.0 200 OK");
-
+    // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite
     fwrite(STDOUT, "HOST: " . $tst_host . chr(10));
     /*
      * ATTENTION!!!!! WP CHANGES CURRENT SYSTEM DATE-TIME TO UTC INSIDE THE SCRIPT!!!!!!!!
      */
-    fwrite(STDOUT, "DATETIME: " . gmdate( 'Y-m-d H:i:s' ) . chr(10));
-    fwrite(STDOUT, "gmt_offset=" . get_option('gmt_offset') . chr(10));
-    fwrite(STDOUT, "script_timezone=" . gmdate('T') . chr(10));
-    fwrite(STDOUT, "timezone_string=" . get_option('timezone_string') . chr(10));
+    fwrite(STDOUT, "DATETIME: " . gmdate( 'Y-m-d H:i:s' ) . chr(10)); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite
+    fwrite(STDOUT, "gmt_offset=" . get_option('gmt_offset') . chr(10)); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite
+    fwrite(STDOUT, "script_timezone=" . gmdate('T') . chr(10)); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite
+    fwrite(STDOUT, "timezone_string=" . get_option('timezone_string') . chr(10)); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite
 
 }

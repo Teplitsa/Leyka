@@ -174,7 +174,7 @@ class Leyka_Bank_Order extends Leyka_Payment_Method {
     }
 
     public function get_quittance_html() {
-        return file_get_contents(LEYKA_PLUGIN_DIR.'gateways/quittance/bank_order.html');
+        return leyka_get_file_content( LEYKA_PLUGIN_DIR . 'gateways/quittance/bank_order.html' );
     }
 
 }

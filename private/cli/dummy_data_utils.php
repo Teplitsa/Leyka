@@ -7,7 +7,7 @@ class LeykaDummyDataUtils {
             return false;
 
             $attachment_id = false;
-
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
             $file = file_get_contents($path);
 
             if($file){

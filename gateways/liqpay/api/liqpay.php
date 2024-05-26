@@ -99,6 +99,7 @@ class LiqPay {
             'signature' => $signature
         ));
 
+        // phpcs:disable
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true); // Avoid MITM vulnerability http://phpsecurity.readthedocs.io/en/latest/Input-Validation.html#validation-of-input-sources
@@ -111,6 +112,7 @@ class LiqPay {
         $server_output = curl_exec($ch);
         $this->_server_response_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
+        // phpcs:enable
         return json_decode($server_output);
 
     }

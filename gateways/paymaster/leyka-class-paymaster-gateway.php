@@ -36,6 +36,7 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
                 'title' => __('Paymaster merchant ID', 'leyka'),
                 'comment' => __('Please find your merchant id in PayMaster merchant Control Panel.', 'leyka'),
                 'required' => true,
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'ct5b8f62-297f-4d19-b805-249cab7a37ed'),
             ],
             'paymaster_secret_word' => [
@@ -94,6 +95,7 @@ class Leyka_Paymaster_Gateway extends Leyka_Gateway {
             'LMI_PAYMENT_AMOUNT' => $amount,
             'LMI_PAYMENT_NO' => $donation_id,
             'LMI_CURRENCY' => $pm_curr,
+            /* translators: %s: Donation id. */
             'LMI_PAYMENT_DESC' => sprintf(__('PayMaster service donation payment #%s', 'leyka'), $donation_id),
             'SIGN' => md5(leyka_options()->opt('paymaster_merchant_id').':'.$amount.':'.$donation_id.':'.leyka_options()->opt('paymaster_secret_word')),
             'LMI_PAYMENT_NOTIFICATION_URL' => home_url('leyka/service/' . $this->_id . '/response/'),

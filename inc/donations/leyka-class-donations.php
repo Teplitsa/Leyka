@@ -870,7 +870,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
                     $where_status .= '%s,';
                 }
                 $where_status = rtrim($where_status, ',').')';
-
+                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
                 $where['status'] = $wpdb->prepare($where_status, $values_list);
 
             }
@@ -952,7 +952,7 @@ class Leyka_Donations_Separated extends Leyka_Donations {
                     $where_payment_type .= '%s,';
                 }
                 $where_payment_type = rtrim($where_payment_type, ',').')';
-
+                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
                 $where['payment_type'] = $wpdb->prepare($where_payment_type, $values_list);
 
             }
@@ -1226,14 +1226,35 @@ class Leyka_Donations_Separated extends Leyka_Donations {
         $query = $this->_get_query_parts($params);
 
         $donations = [];
-        $query = "SELECT {$query['fields']} FROM {$wpdb->prefix}leyka_donations {$query['joins']} {$query['where']} {$query['orderby']} {$query['limit']}";
 
         if(empty($params['get_ids_only'])) {
-            foreach($wpdb->get_results($query) as $donation) {
+            foreach($wpdb->get_results(
+                $wpdb->prepare(
+                    "SELECT %s FROM {$wpdb->prefix}leyka_donations %s %s %s %s",
+                    array(
+                        $query['fields'],
+                        $query['joins'],
+                        $query['where'],
+                        $query['orderby'],
+                        $query['limit']
+                    )
+                ) 
+            ) as $donation) {
                 $donations[] = $this->get_donation($donation);
             }
         } else {
-            $donations = $wpdb->get_results($query);
+            $donations = $wpdb->get_results(
+                $wpdb->prepare(
+                    "SELECT %s FROM {$wpdb->prefix}leyka_donations %s %s %s %s",
+                    array(
+                        $query['fields'],
+                        $query['joins'],
+                        $query['where'],
+                        $query['orderby'],
+                        $query['limit']
+                    )
+                )
+            );
         }
 
         return empty($params['get_single']) ? $donations : reset($donations);
@@ -1245,9 +1266,16 @@ class Leyka_Donations_Separated extends Leyka_Donations {
         global $wpdb;
 
         $query = $this->_get_query_parts($params);
-        $query = "SELECT COUNT({$wpdb->prefix}leyka_donations.ID) FROM {$wpdb->prefix}leyka_donations {$query['joins']} {$query['where']}";
 
-        return absint($wpdb->get_var($query));
+        return absint($wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT COUNT({$wpdb->prefix}leyka_donations.ID) FROM {$wpdb->prefix}leyka_donations %s %s",
+                array(
+                    $query['joins'],
+                    $query['where']
+                )
+            )
+        ));
 
     }
 

@@ -172,6 +172,7 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
         $hash = md5(leyka_options()->opt('robokassa_shop_id').":$amount:{$new_recurring_donation->id}:"
             .leyka_options()->opt('robokassa_shop_password1'));
 
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_init
         $ch = curl_init();
         $params = [
             CURLOPT_URL => 'https://auth.robokassa.ru/Merchant/Recurring',
@@ -194,8 +195,10 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
             CURLOPT_FORBID_REUSE => true,
             CURLOPT_FRESH_CONNECT => true,
         ];
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt_array
         curl_setopt_array($ch, $params);
 
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec
         $answer = curl_exec($ch);
         if($answer) {
 
@@ -211,10 +214,11 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
             //}
 
         } else {
+            // phpcs:ignore
             $new_recurring_donation->add_gateway_response('Error '.curl_errno($ch).': '.curl_error($ch));
         }
 
-        curl_close($ch);
+        curl_close($ch); // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_close
 
         do_action('leyka_new_rebill_donation_added', $new_recurring_donation);
 

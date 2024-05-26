@@ -17,7 +17,7 @@ if( !$donation_id ) {
 <div id="leyka-pf-" class="leyka-pf">
     <?php
         // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-        echo file_get_contents( LEYKA_PLUGIN_BASE_URL . 'assets/svg/svg.svg' );
+       echo leyka_get_svg( LEYKA_PLUGIN_DIR . 'assets/svg/svg.svg' );
     ?>
 
     <div class="leyka-pf__final-screen leyka-pf__final-thankyou">

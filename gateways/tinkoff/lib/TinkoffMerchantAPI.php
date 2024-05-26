@@ -183,6 +183,7 @@ class TinkoffMerchant
             $args = wp_json_encode($args);
         }
 
+        // phpcs:disable
         if ($curl = curl_init()) {
             curl_setopt($curl, CURLOPT_URL, $api_url);
             curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
@@ -209,7 +210,7 @@ class TinkoffMerchant
             }
 
             curl_close($curl);
-
+            // phpcs:enable
             return $out;
 
         } else {

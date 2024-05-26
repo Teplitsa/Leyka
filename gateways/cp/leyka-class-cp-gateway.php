@@ -40,6 +40,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                 'title' => __('Public ID', 'leyka'),
                 'comment' => __('Please, enter your CloudPayments public ID here. It can be found in your CloudPayments control panel.', 'leyka'),
                 'required' => true,
+                /* translators: 1: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'pk_c5fcan980a7c38418932y476g4931'),
             ],
             'cp_api_secret' => [
@@ -48,12 +49,14 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                 'comment' => __('Please, enter your CloudPayments API password. It can be found in your CloudPayments control panel.', 'leyka'),
                 'is_password' => true,
                 'required' => true,
+                /* translators: 1: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '26128731fgc9fbdjc6c210dkbn5q14eu'),
             ],
             'cp_ip' => [
                 'type' => 'text',
                 'title' => __('CloudPayments IP', 'leyka'),
                 'comment' => __('Comma-separated callback requests IP list. Leave empty to disable the check.', 'leyka'),
+                /* translators: 1: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '130.193.70.192, 185.98.85.109, 87.251.91.160/27, 185.98.81.0/28'),
                 'default' => '130.193.70.192, 185.98.85.109, 87.251.91.160/27, 185.98.81.0/28',
             ],
@@ -298,7 +301,8 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                     die(wp_json_encode([
                         'code' => '11',
                         'reason' => sprintf(
-                            __('Amount or Currency in POST are empty. Amount: %s, Currency: %s', 'leyka'),
+                            /* translators: 1: Amount, 2: Currency. */
+                            __('Amount or Currency in POST are empty. Amount: %1$s, Currency: %2$s', 'leyka'),
                             esc_attr( $amount ), esc_attr( $currency )
                         )
                     ]));
@@ -311,7 +315,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                     if( !$init_recurring_donation || !$init_recurring_donation->id || is_wp_error($init_recurring_donation) ) {
 
                         if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
-
+                            // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
                             $message = __("This message has been sent because CloudPayments recurrent callback was sent to your website (CP recurring ID: ".$_POST['SubscriptionId']."), but Leyka couldn't find the according Recurring Subscription in its database. The donor's funds were taken off his account as normal, but Leyka will not save the recurring donation info in its database.\n\r\n\rTo fix this, please check your Leyka database for <a href='".admin_url('admin.php?page=leyka_recurring_subscriptions')."'>the recurring subscription</a> with CP recurring ID of ".$_POST['SubscriptionId'].". The details of the call are below.", 'leyka')."\n\r\n\r".
                                 "POST:\n\r".print_r($_POST, true)."\n\r\n\r".
                                 "GET:\n\r".print_r($_GET, true)."\n\r\n\r".
@@ -345,7 +349,8 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                         die(wp_json_encode([
                             'code' => '11',
                             'reason' => sprintf(
-                                __('Amount of original data and POST are mismatching. Orig.: %.2f %s, POST: %.2f %s', 'leyka'),
+                                /* translators: 1: sum, 2: Currency id, 3: Amount, 4: Currency. */
+                                __('Amount of original data and POST are mismatching. Orig.: %1$.2f %2$s, POST: %3$.2f %4$s', 'leyka'),
                                 $donation->sum, $donation->currency_id, esc_attr( $amount ), esc_attr( $currency )
                             )
                         ]));
@@ -555,7 +560,8 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         $recurring_manual_cancel_link = 'https://my.cloudpayments.ru/ru/unsubscribe';
 
         if( !$donation->cp_recurring_id ) {
-            return new WP_Error('cp_no_subscription_id', sprintf(__('<strong>Error:</strong> unknown Subscription ID for donation #%d. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
+            /* translators: 1: Id, 2: Email, 3: Cancel link. */
+            return new WP_Error('cp_no_subscription_id', sprintf(__('<strong>Error:</strong> unknown Subscription ID for donation #%1$d. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%2$s" target="_blank">website tech. support</a>.<br>Also you may <a href="%3$s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
         }
 
         $response = wp_remote_post('https://api.cloudpayments.ru/subscriptions/cancel', [
@@ -573,12 +579,14 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         ]);
 
         if(empty($response['body'])) {
-            return new WP_Error('cp_wrong_request_answer', sprintf(__('<strong>Error:</strong> the recurring subsciption cancelling request returned unexpected result. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="mailto:%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
+            /* translators: 1: Email, 2: Cancel link. */
+            return new WP_Error('cp_wrong_request_answer', sprintf(__('<strong>Error:</strong> the recurring subsciption cancelling request returned unexpected result. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="mailto:%1$s" target="_blank">website tech. support</a>.<br>Also you may <a href="%2$s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
         }
 
         $response['body'] = json_decode($response['body']);
         if(empty($response['body']->Success) || $response['body']->Success != 'true') {
-            return new WP_Error('cp_cannot_cancel_recurring', sprintf(__('<strong>Error:</strong> we cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="mailto:%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
+            /* translators: 1: Email, 2: Cancel link. */
+            return new WP_Error('cp_cannot_cancel_recurring', sprintf(__('<strong>Error:</strong> we cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="mailto:%1$s" target="_blank">website tech. support</a>.<br>Also you may <a href="%2$s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email(), $recurring_manual_cancel_link));
         }
 
         $donation->recurring_is_active = false;
@@ -607,7 +615,8 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         } else if(is_wp_error($recurring_cancelling_result)) {
             die( wp_kses_post( $recurring_cancelling_result->get_error_message() ) );
         } else {
-            die( sprintf( wp_kses_post( __('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>Also you may <a href="%s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka') ), esc_attr( leyka_get_website_tech_support_email() ), esc_url( $recurring_manual_cancel_link) ) );
+            /* translators: 1: Email, 2: Cancel link. */
+            die( sprintf( wp_kses_post( __('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="%1$s" target="_blank">website tech. support</a>.<br>Also you may <a href="%2$s">cancel your recurring donations manually</a>.<br><br>We are very sorry for inconvenience.', 'leyka') ), esc_attr( leyka_get_website_tech_support_email() ), esc_url( $recurring_manual_cancel_link) ) );
         }
 
     }
@@ -753,6 +762,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
                     <?php echo esc_html( $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka') );
 
                     if( !$init_recurring_donation->recurring_is_active && $init_recurring_donation->recurring_cancel_date ) {
+                    /* translators: 1: Cancel date. */
                     echo ' ('.wp_kses_post( sprintf(__('canceled on %s', 'leyka'), gmdate(get_option('date_format').', '.get_option('time_format'), $init_recurring_donation->recurring_cancel_date)) ) .')';
                     }?>
                 </div>

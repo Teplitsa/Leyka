@@ -115,7 +115,9 @@ leyka_pf_submission_errors();?>
                             <textarea id="leyka_donor_comment" name="leyka_donor_comment" class="comment leyka-donor-comment rdc-textfield__input" data-max-length="<?php echo esc_attr(leyka_options()->opt_template('donation_comment_max_length'));?>"></textarea>
                             <label class="leyka-screen-reader-text rdc-textfield__label" for="leyka_donor_comment"><?php esc_html_e('Your comments', 'leyka');?></label>
                             <p class="field-comment">
-                                <?php echo leyka_options()->opt_template('donation_comment_max_length') ? sprintf(esc_html__('Your comment (<span class="donation-comment-current-length">0</span> / <span class="donation-comment-max-length">%d</span> symbols)', 'leyka'), esc_html(leyka_options()->opt_template('donation_comment_max_length'))) : esc_html__('Your comment', 'leyka');?>
+                                <?php
+                                /* translators: %d: Label. */
+                                echo leyka_options()->opt_template('donation_comment_max_length') ? sprintf(esc_html__('Your comment (<span class="donation-comment-current-length">0</span> / <span class="donation-comment-max-length">%d</span> symbols)', 'leyka'), esc_html(leyka_options()->opt_template('donation_comment_max_length'))) : esc_html__('Your comment', 'leyka');?>
                             </p>
                             <span class="leyka_donor_comment-error field-error rdc-textfield__error" id="leyka_donor_comment-error"></span>
                         </div>

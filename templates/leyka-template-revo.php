@@ -43,7 +43,9 @@ $template_data = Leyka_Revo_Template_Controller::get_instance()->get_template_da
 
             <div class="amount__icon">
                 <svg class="svg-icon icon-money-size3"><use xlink:href="#icon-money-size3" /></svg>
-                <div class="leyka_donation_amount-error field-error amount__error"><?php printf(wp_kses_post(__('Please enter valid amount <br />from %s to %s %s', 'leyka'), esc_html($template_data['amount_min']), esc_html($template_data['amount_max_total']), esc_html($template_data['currency_label']) ));?></div>
+                <div class="leyka_donation_amount-error field-error amount__error"><?php 
+                    /* translators: 1: Amount min, 2: Amount max, 3: Currency label. */
+                    printf(wp_kses_post(__('Please enter valid amount <br />from %1$s to %2$s %3$s', 'leyka'), esc_html($template_data['amount_min']), esc_html($template_data['amount_max_total']), esc_html($template_data['currency_label']) ));?></div>
             </div>
 
             <div class="amount__range_wrapper">

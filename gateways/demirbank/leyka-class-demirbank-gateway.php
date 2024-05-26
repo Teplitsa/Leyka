@@ -226,11 +226,12 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
                     __('Save', 'leyka'),
                     __('Send', 'leyka'),
                     $donation->id,
+                    /* translators: 1: Email. */
                     sprintf(__("Card-check has been sent to <b> %s </b>", 'leyka'), $donation->donor_email),
                     __("OK", 'leyka'),
                     wp_create_nonce( 'send-card-nonce' )
                 ],
-                file_get_contents(LEYKA_PLUGIN_DIR.'gateways/demirbank/templates/parts/card_check_tools.html')
+                leyka_get_file_content( LEYKA_PLUGIN_DIR.'gateways/demirbank/templates/parts/card_check_tools.html' )
             );
 
             return $content.str_replace(
@@ -242,7 +243,7 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
                     $card_check_text_html,
                     $card_check_tools_html
                 ],
-                file_get_contents(LEYKA_PLUGIN_DIR.'gateways/demirbank/templates/card_check.html')
+                leyka_get_file_content( LEYKA_PLUGIN_DIR.'gateways/demirbank/templates/card_check.html' )
             );
 
         });
@@ -301,19 +302,28 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
             [
                 __("Card-check", 'leyka'),
                 __("ORDER INFO", 'leyka'),
+                /* translators: %s: Oid. */
                 sprintf(__("<b>Order #:</b> %s", 'leyka'), $vars['ReturnOid']),
+                /* translators: %s: Date. */
                 sprintf(__("<b>Order placed:</b> %s", 'leyka'), gmdate('d.m.Y H:i', strtotime($vars['EXTRA_TRXDATE']))),
+                /* translators: %s: Payment title. */
                 sprintf(__("<b>Donation purpose:</b> %s", 'leyka'), $campaign->payment_title),
-                sprintf(__("<b>Price:</b> %s %s", 'leyka'), $vars['amount'], $donation->currency_label),
+                /* translators: 1: Amount, 2: Label. */
+                sprintf(__('<b>Price:</b> %1$s %2$s', 'leyka'), $vars['amount'], $donation->currency_label),
                 __("PAYMENT INFO", 'leyka'),
+                /* translators: %s: Card brand. */
                 sprintf(__("<b>Card brand:</b> %s", 'leyka'), $vars['EXTRA_CARDBRAND']),
+                /* translators: %s: MaskedPan. */
                 sprintf(__("<b>Card last four digits:</b> %s", 'leyka'), substr($vars['MaskedPan'], strlen($vars['MaskedPan'])-4, 4)),
+                /* translators: %s: Code. */
                 sprintf(__("<b>Authorisation code:</b> %s", 'leyka'), $vars['AuthCode']),
                 __("MERCHANT INFO", 'leyka'),
+                /* translators: %s: Host. */
                 sprintf(__("<b>Merchant name:</b> %s", 'leyka'), $_SERVER['HTTP_HOST']),
+                /* translators: %s: Email. */
                 sprintf(__("<b>Support email:</b> %s", 'leyka'), leyka_options()->opt('demirbank_support_email'))
             ],
-            file_get_contents(LEYKA_PLUGIN_DIR.'gateways/demirbank/templates/parts/card_check_text.html')
+            leyka_get_file_content( LEYKA_PLUGIN_DIR.'gateways/demirbank/templates/parts/card_check_text.html' )
         );
 
     }

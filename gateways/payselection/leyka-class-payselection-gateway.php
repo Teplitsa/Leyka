@@ -84,6 +84,7 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
                 'comment' => __('Your Key on Payselection.', 'leyka'),
                 'is_password' => true,
                 'required' => true,
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'tMZZQyyzY4NV9Cft'),
             ],
             'payselection_widget_url' => [
@@ -326,7 +327,7 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
         if (is_wp_error($check)) {
 
             if(leyka_options()->opt('notify_tech_support_on_failed_donations')) {
-
+                /* translators: %s: Message. */
                 $message = sprintf(__('This message has been sent because %s The details of the call are below:', 'leyka'), $check->get_error_message())."\n\r\n\r"
                 .esc_html($check->get_error_message())."\n\r\n\r"
                 ."POST:\n\r".print_r($_POST, true)."\n\r\n\r"
@@ -513,6 +514,7 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
         $response = $api->rebill($data);
 
         if (is_wp_error($response)) {
+            /* translators: %s: Message. */
             $this->_handle_callback_error($response, sprintf(__("Rebilling request to the Payselection couldn't be made due to some error.\n\nThe error: %s", 'leyka'), $response->get_error_message()), $new_recurring_donation);
             Leyka_Donation_Management::send_error_notifications($new_recurring_donation); // Emails will be sent only if respective options are on
             return false;
@@ -538,7 +540,8 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
         }
 
         if( !$donation->payselection_recurring_id ) {
-            return new WP_Error('payselection_no_subscription_id', sprintf(__('<strong>Error:</strong> unknown Subscription ID for donation #%d. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email()));
+            /* translators: 1: Donation id, 2: Support email. */
+            return new WP_Error('payselection_no_subscription_id', sprintf(__('<strong>Error:</strong> unknown Subscription ID for donation #%1$d. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%2$s" target="_blank">website tech. support</a>.<br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email()));
         }
 
         $api = new \Payselection_Merchant_Api(
@@ -553,11 +556,13 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
                 $donation->recurring_is_active = false;
                 return new WP_Error(
                     'payselection_error_cancel_subscription',
+                    /* translators: %s: Message. */
                     sprintf(__('The recurring subsciption cancelling request returned error: %s', 'leyka'), $response->get_error_message())
                 );
             }
             return new WP_Error(
                 'payselection_error_cancel_subscription',
+                /* translators: %s: Error code. */
                 sprintf(__('The recurring subsciption cancelling request returned unexpected result. We cannot cancel the recurring subscription automatically. Error: %s', 'leyka'), $response->get_error_code())
             );
         }
@@ -565,6 +570,7 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
         if ($response['TransactionState'] === 'false' && $response['Error']['Code'] !== 'RecurrentStatusError') {
             return new WP_Error(
                 'payselection_error_false_subscription',
+                /* translators: %s: Error message. */
                 sprintf(__('The recurring subsciption cancelling request returned unexpected result. We cannot cancel the recurring subscription automatically. Error: %s', 'leyka'), $response['Error']['Description']())
             );
         }
@@ -668,6 +674,7 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
                     <?php echo esc_html( $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka') );
 
                     if( !$init_recurring_donation->recurring_is_active && $init_recurring_donation->recurring_cancel_date ) {
+                        /* translators: %s: Date. */
                     echo ' ('.wp_kses_post( sprintf(__('canceled on %s', 'leyka'), gmdate(get_option('date_format').', '.get_option('time_format'), $init_recurring_donation->recurring_cancel_date)) ).')';
                     }?>
                 </div>

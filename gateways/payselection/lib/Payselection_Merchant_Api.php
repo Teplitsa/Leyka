@@ -187,7 +187,8 @@ class Payselection_Merchant_Api
         if ($site_id != $headers['x-site-id'] ) {
             return new \WP_Error(
                 'payselection_donation_webhook_site_id_error',
-                sprintf(__('A call to your Payselection callback was called with wrong site id. Site id from request: %s, Site id from options: %s', 'leyka'), $headers['x-site-id'], $site_id)
+                /* translators: 1: Header x-site-id, 2: Site id. */
+                sprintf(__('A call to your Payselection callback was called with wrong site id. Site id from request: %1$s, Site id from options: %2$s', 'leyka'), $headers['x-site-id'], $site_id)
             );
         }
         
@@ -199,7 +200,8 @@ class Payselection_Merchant_Api
         if ($headers['x-webhook-signature'] !== $signCalculated) {
             return new \WP_Error(
                 'payselection_donation_webhook_signature_error',
-                sprintf(__('A call to your Payselection callback was called with wrong digital signature. It may mean that someone is trying to hack your payment website. Signature from request: %s, Signature calculated: %s', 'leyka'), $headers['x-webhook-signature'], $signCalculated)
+                /* translators: 1: Header signature, 2: Signature calculated. */
+                sprintf(__('A call to your Payselection callback was called with wrong digital signature. It may mean that someone is trying to hack your payment website. Signature from request: %1$s, Signature calculated: %2$s', 'leyka'), $headers['x-webhook-signature'], $signCalculated)
             );
         }
 

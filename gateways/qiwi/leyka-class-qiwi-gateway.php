@@ -49,6 +49,7 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
                 'title' => __('Public key', 'leyka'),
                 'description' => __('Please, enter your public key.', 'leyka'),
                 'required' => true,
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'XXXX')
             ],
             'qiwi_secret_key' => [
@@ -56,6 +57,7 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
                 'title' => __('Secret key', 'leyka'),
                 'description' => __('Please, enter your secret key.', 'leyka'),
                 'required' => true,
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '2tbq1WQvsgQeziGY9vTLe1vDZNg7tmCyJb4Lh6STQOkQKrPCc6qrUiKEDZAj12heiD1GQX8jTnjMxLpMcSZuGZP7xbMpj6EiqTf6VeAEzGMeaskfzVSw13AeqyeqR'),
             ],
         ];

@@ -33,8 +33,10 @@ class ConfigurationLoader implements ConfigurationLoaderInterface
     public function load($filePath = null)
     {
         if ($filePath) {
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
             $data = file_get_contents($filePath);
         } else {
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
             $data = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "configuration.json");
         }
 

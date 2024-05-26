@@ -87,6 +87,7 @@ class PaypalIPN {
             $req .= "&$key=$value";
         }
         // Post the data back to paypal, using curl. Throw exceptions if errors occur.
+        // phpcs:disable
         $ch = curl_init($this->getPaypalUri());
         curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
         curl_setopt($ch, CURLOPT_POST, 1);
@@ -117,6 +118,7 @@ class PaypalIPN {
 
         }
         curl_close($ch);
+        // phpcs:enable
 
         if($res != self::VALID) { // PayPal didn't verified the request
             return "Error while processing IPN: PayPal didn't verified the handshake answer";

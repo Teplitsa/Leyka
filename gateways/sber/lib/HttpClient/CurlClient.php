@@ -38,7 +38,9 @@ class CurlClient implements HttpClientInterface
     private function getCurl()
     {
         if (null === $this->curl) {
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_init
             $this->curl = \curl_init();
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt_array
             \curl_setopt_array($this->curl, $this->curlOptions);
         }
 
@@ -72,17 +74,22 @@ class CurlClient implements HttpClientInterface
         $curlOptions[\CURLOPT_RETURNTRANSFER] = true;
 
         $curl = $this->getCurl();
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt_array
         \curl_setopt_array($curl, $curlOptions);
 
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec
         $response = \curl_exec($curl);
 
         if (false === $response) {
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_error
             $error = \curl_error($curl);
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_errno
             $errorCode = \curl_errno($curl);
 
             throw new NetworkException('Curl error: ' . wp_kses_post( $error ), esc_attr( $errorCode ) );
         }
 
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_getinfo
         $httpCode = \curl_getinfo($this->curl, \CURLINFO_HTTP_CODE);
 
         return [$httpCode, $response];
@@ -91,7 +98,8 @@ class CurlClient implements HttpClientInterface
     public function __destruct()
     {
         if (null !== $this->curl) {
-            \curl_close($this->curl);
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_close
+            \curl_close($this->curl); 
         }
     }
 }

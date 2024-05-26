@@ -31,6 +31,7 @@ class SimpleHttpClient implements HttpClientInterface
             )
         );
 
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
         $response = file_get_contents($config->apiUrl . $method->getMethod(), false, $context);
 
         if (empty($response)) {

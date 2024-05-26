@@ -146,6 +146,7 @@ class CurlClient implements ApiClientInterface
      */
     public function setCurlOption($optionName, $optionValue)
     {
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt
         return curl_setopt($this->curl, $optionName, $optionValue);
     }
 
@@ -161,6 +162,7 @@ class CurlClient implements ApiClientInterface
         }
 
         if (!$this->curl || !$this->keepAlive) {
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_init
             $this->curl = curl_init();
         }
 
@@ -173,6 +175,7 @@ class CurlClient implements ApiClientInterface
     public function closeCurlConnection()
     {
         if ($this->curl !== null) {
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_close
             curl_close($this->curl);
         }
     }
@@ -185,12 +188,17 @@ class CurlClient implements ApiClientInterface
      */
     public function sendRequest()
     {
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec
         $response       = curl_exec($this->curl);
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_getinfo
         $httpHeaderSize = curl_getinfo($this->curl, CURLINFO_HEADER_SIZE);
         $httpHeaders    = RawHeadersParser::parse(substr($response, 0, $httpHeaderSize));
         $httpBody       = substr($response, $httpHeaderSize);
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_getinfo
         $responseInfo   = curl_getinfo($this->curl);
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_error
         $curlError      = curl_error($this->curl);
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_errno
         $curlErrno      = curl_errno($this->curl);
         if ($response === false) {
             $this->handleCurlError($curlError, $curlErrno);

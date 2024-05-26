@@ -33,12 +33,15 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
                 .esc_html__('Copy your procedure absolute address:', 'leyka')
                 .'<br><code>'.str_replace(basename(__FILE__), 'leyka-gds-data-preparation.php', realpath(__FILE__)).'</code>'
             .'</li>'
+            /* translators: 1: URL. */
             .'<li>'.sprintf(__('Set the Cron job to call the procedure nightly (<a href="%s" target="_blank" class="leyka-outer-link">user manual for setting up Cron jobs</a>, chapter 2)', 'leyka'), 'https://leyka.te-st.ru/docs/gds/').'</li>'
         .'</ul>'
         .'<h3>'.esc_html__('When the Cron job is done at least one time, there will be a new data table in your website database', 'leyka').'</h3>'
         .'<ul>'
             .'<li>'.esc_html__('The GDS data table name:', 'leyka').'<br><code>'.$wpdb->prefix.'leyka_gds_integration_donations_data</code></li>'
+            /* translators: 1: URL */
             .'<li>'.sprintf(__('Connect the table and GDS using a MySQL data connector (<a href="%s" target="_blank" class="leyka-outer-link">user manual for creating a GDS data connection</a>, chapter 4)', 'leyka'), 'https://leyka.te-st.ru/docs/gds/').'</li>'
+            /* translators: 1: URL */
             .'<li>'.sprintf(__('Set up the data visualization in GDS (<a href="%s" target="_blank" class="leyka-outer-link">dashboards & charts setup examples</a>, chapter 5)', 'leyka'), 'https://leyka.te-st.ru/docs/gds/').'</li>'
         .'</ul>';
 
@@ -124,8 +127,10 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
 
                 <div class="leyka-gds-data-error">
                     <?php echo sprintf(
+                        /* translators: 1: Exceeded */
                         esc_html__("WARNING: we can't use this donations selection. The GDS limit of data lines is exceeded (%s). Try to select a more narrow period.", 'leyka'),
                         sprintf(
+                            /* translators: 1: Amount, 2: Second amount */
                             '<strong>%s / %s</strong>',
                             esc_html( leyka_amount_format($data_lines_count) ),
                             esc_html( leyka_amount_format(Leyka_Gds_Integration_Extension::get_instance()->get_max_gds_allowed_lines()) )
@@ -137,8 +142,10 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
 
                 <div class="leyka-gds-data-info">
                     <?php echo sprintf(
+                        /* translators: 1: Donation */
                         esc_html__('Total donations to convert: %s', 'leyka'),
                         sprintf(
+                            /* translators: 1: Amount, 2: Second amount */
                             '<strong>%s / %s</strong>',
                             esc_html(leyka_amount_format($data_lines_count)),
                             esc_html(leyka_amount_format(Leyka_Gds_Integration_Extension::get_instance()->get_max_gds_allowed_lines()))
@@ -155,6 +162,7 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
 
             <div class="leyka-gds-data-info">
                 <?php echo sprintf(
+                    /* translators: 1: Date. */
                     esc_html__('Last successful data preparation date: %s', 'leyka'),
                     sprintf(
                         '<strong>%s</strong>',
