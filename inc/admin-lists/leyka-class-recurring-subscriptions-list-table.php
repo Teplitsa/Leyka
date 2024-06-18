@@ -239,6 +239,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
                     if(in_array($item['recurring_subscription_error_id'], ['L-2001', 'L-1023'])) {
 
                         $recurring_error = Leyka_Donations_Errors::get_instance()->get_error_by_id($item['recurring_subscription_error_id']);
+                        // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
                         $recurring_error_subscription = __($recurring_error->description, 'leyka');
                         $recurring_error_link_label = __('To the subscription page', 'leyka');
                         $recurring_error_link = admin_url('?page=leyka_recurring_subscription_info&donation='.$item['id']);
@@ -262,6 +263,7 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
                     <span>'.$item['id'].'</span>
                     <a href="'.admin_url('admin.php?page=leyka_recurring_subscription_info&donation='.$item['id']).'" class="donation-edit-link">'.__('Details', 'leyka').'</a>
                     <span class="leyka-'.($item['recurring_subscription_status']).'">'
+                        // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
                         ._x(ucfirst($item['recurring_subscription_status']), 'Recurring subscription status, singular (like [subscription is] "Active/Non-active/Problematic")', 'leyka') /** @todo Fix this ambiguous l10n string formulation! */
                     .'</span>'.
                     ($item['recurring_subscription_status'] !== 'problematic' ? '' : '<div class="problematic-subscription-alert leyka-subscription-error leyka-hidden">
@@ -313,7 +315,9 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
 
         $donor_additional_data_html .= '<li>
                 <span class="leyka-li-title">'.__('Email', 'leyka').':</span>
-                <span class="leyka-li-value">'.($donation->donor_email_date ? sprintf(__('Sent on %s', 'leyka'), gmdate(get_option('date_format').', H:i</time>', $donation->donor_email_date)) : __('no', 'leyka')).'</span>
+                <span class="leyka-li-value">'.
+                    /* translators: %s: Date. */
+                    ($donation->donor_email_date ? sprintf(__('Sent on %s', 'leyka'), gmdate(get_option('date_format').', H:i</time>', $donation->donor_email_date)) : __('no', 'leyka')).'</span>
             </li>
         
             <li>

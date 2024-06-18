@@ -24,7 +24,9 @@ class Leyka_Donations_Errors extends Leyka_Singleton {
 
         $this->add_error('L-1023', __('Leyka is unavailable', 'leyka'), [
             'description' => __("Leyka wasn't available at the moment of the transaction handling.", 'leyka'),
-            'recommendation_admin' => sprintf(__("Contact the Leyka plugin technical support team via <a href='mailto:%s'>%s</a> email. It's important to attach error screenshots and description, how the error appeared.", 'leyka'), 'help@te-st.ru', 'help@te-st.ru'),
+            /* translators: 1: Email, 2: Email. */
+            'recommendation_admin' => sprintf(__('Contact the Leyka plugin technical support team via <a href=\'mailto:%1$s\'>%2$s</a> email. It\'s important to attach error screenshots and description, how the error appeared.', 'leyka'), 'help@te-st.ru', 'help@te-st.ru'),
+            /* translators: %s: Support email. */
             'recommendation_donor' => sprintf(__('Please, try to pay 1-2 days later. If the problem persists then, ask the <a href="mailto:%s" target="_blank">website administration</a> to report this to the gateway technical support.', 'leyka'), leyka_options()->opt('tech_support_email')),
         ]);
         $this->add_error('L-2001', __('No recurring payments on subscription date', 'leyka'), [
@@ -34,6 +36,7 @@ class Leyka_Donations_Errors extends Leyka_Singleton {
         ]);
         $this->add_error('L-4001', __('Transaction was cancelled by the merchant side', 'leyka'), [
             'description' => __('The transaction request was received by the gateway system, but then it was rejected by the merchant (that is, the website with Leyka). The reason for this behavior is most likely due to technical problems on the website.', 'leyka'),
+            /* translators: %s: URL. */
             'recommendation_admin' => sprintf(__('Turn the WordPress errors logging on (<a href="%s" target="_blank">user manual</a>), then make a test donation via the gateway used in the problematic case earlier.', 'leyka'), 'https://wordpress.org/support/article/debugging-in-wordpress/'),
         ]);
         $this->add_error('L-4002', __('Transaction was declined', 'leyka'), [

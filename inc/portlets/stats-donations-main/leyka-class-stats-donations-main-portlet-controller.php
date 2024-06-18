@@ -143,8 +143,9 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
                 $donations_post_type = Leyka_Donation_Management::$post_type;
                 $prev_interval_donations_data_raw = $wpdb->get_results(
                     $wpdb->prepare(
-                        "SELECT t1.post_id, t1.meta_value FROM {$wpdb->prefix}postmeta t1 WHERE t1.meta_key='leyka_donation_currency' AND t1.post_id IN ( SELECT t2.ID FROM {$wpdb->prefix}posts t2 WHERE t2.post_type='{$donations_post_type}' AND t2.post_status='funded' AND t2.post_date >= %s AND t2.post_date < %s )",
+                        "SELECT t1.post_id, t1.meta_value FROM {$wpdb->prefix}postmeta t1 WHERE t1.meta_key='leyka_donation_currency' AND t1.post_id IN ( SELECT t2.ID FROM {$wpdb->prefix}posts t2 WHERE t2.post_type=%s AND t2.post_status='funded' AND t2.post_date >= %s AND t2.post_date < %s )",
                         array(
+                            $donations_post_type,
                             $interval_dates["prev_interval_begin_date"],
                             $interval_dates["curr_interval_begin_date"]
                         ),

@@ -14,7 +14,9 @@ $is_separate_sections_forms = $this->is_separate_forms_stage($current_settings_s
 
         <?php $current_country = leyka_get_countries_full_info(leyka_options()->opt_safe('receiver_country'));?>
 
-        <a href="<?php echo esc_url( admin_url('admin.php?page=leyka_settings&stage=beneficiary#receiver_country') );?>" title="<?php echo esc_attr( $current_country ? sprintf(__('Receiver country: %s', 'leyka'), $current_country['title']) : '' );?>">
+        <a href="<?php 
+        /* translators: %s: Country name. */
+        echo esc_url( admin_url('admin.php?page=leyka_settings&stage=beneficiary#receiver_country') );?>" title="<?php echo esc_attr( $current_country ? sprintf(__('Receiver country: %s', 'leyka'), $current_country['title']) : '' );?>">
             <img src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL . 'img/countries/' . leyka_options()->opt_safe('receiver_country') . '.svg' ); ?>" alt="" class="country-flag-icon">
         </a>
 

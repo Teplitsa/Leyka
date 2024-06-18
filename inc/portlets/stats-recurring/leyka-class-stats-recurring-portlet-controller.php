@@ -78,7 +78,7 @@ class Leyka_Recurring_Stats_Portlet_Controller extends Leyka_Portlet_Controller 
                         $interval_dates["curr_interval_begin_date"]
                     ),
                 'ARRAY_A'
-                )
+                );
             }
 
             $curr_subscriptions = $subscriptions_stats;

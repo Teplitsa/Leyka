@@ -48,6 +48,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 'title' => __('RBK Money shopID', 'leyka'),
                 'comment' => __('Please, enter your shopID value here. It can be found in your contract with RBK Money or in your control panel there.', 'leyka'),
                 'required' => true,
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1234'),
             ],
             'rbk_api_key' => [
@@ -55,6 +56,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 'title' => __('RBK Money apiKey', 'leyka'),
                 'comment' => __('Please, enter your apiKey value here. It can be found in your RBK Money control panel.', 'leyka'),
                 'required' => true,
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'RU123456789'),
             ],
             'rbk_api_web_hook_key' => [
@@ -137,6 +139,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 'shopID' => leyka_options()->opt('leyka_rbk_shop_id'),
                 'amount' => 100 * (int)$donation->amount, // Amount in minor currency units (like cent or kopeyka). Must be int
                 'currency' => 'RUB',
+                /* translators: %s: Payment title. */
                 'product' => sprintf(__('%s - recurring donation'), $donation->payment_title),
                 'dueDate' => gmdate( 'Y-m-d\TH:i:s\Z', strtotime('+2 minute', current_time('timestamp', 1)) ),
                 'metadata' => ['donation_id' => $donation_id,],
@@ -189,13 +192,16 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
             'invoice_access_token' => $invoice_access_token,
             'is_recurring' => !empty($form_data['leyka_recurring']),
             'amount' => $donation->amount, // For GA EEC, "eec.add" event
+            /* translators: %s: Donation id. */
             'name' => sprintf(__('Donation #%s', 'leyka'), $donation_id),
             'description' => esc_attr($campaign->payment_title),
             'donor_email' => $donation->donor_email,
             'default_pm' => 'bankCard',
             'success_page' => leyka_get_success_page_url(),
             'pre_submit_step' => '<div class="leyka-rbk-final-submit-buttons">
-                <button class="rbk-final-submit-button">'.sprintf(__('Donate %s', 'leyka'), $donation->amount.' '.$donation->currency_label).'</button>
+                <button class="rbk-final-submit-button">'.
+                /* translators: %s: Dotante amount and currency label. */
+                sprintf(__('Donate %s', 'leyka'), $donation->amount.' '.$donation->currency_label) .'</button>
                 <button class="rbk-final-cancel-button">'.__('Cancel', 'leyka').'</button>
             </div>'
         ];
@@ -429,6 +435,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 'dueDate' => gmdate( 'Y-m-d\TH:i:s\Z', strtotime('+2 minute', current_time('timestamp', 1)) ),
                 'amount' => 100 * (int)$new_recurring_donation->amount, // Amount in minor currency units. Must be int
                 'currency' => 'RUB',
+                /* translators: %s: Payment title. */
                 'product' => sprintf(__('%s - non-initial recurring donation'), $new_recurring_donation->payment_title),
                 'metadata' => ['donation_id' => $new_recurring_donation->id,],
             ])

@@ -26,7 +26,8 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
 
         $this->_description = apply_filters(
             'leyka_gateway_description',
-            sprintf(__('<a href="%s">%s</a> gateway allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the secure gateway webpage to enter your payment data and to confirm your payment.', 'leyka'), 'https://yookassa.ru/payments/', $this->_title),
+            /* translators: 1: URL, 2: Title. */
+            sprintf(__('<a href="%1$s">%2$s</a> gateway allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the secure gateway webpage to enter your payment data and to confirm your payment.', 'leyka'), 'https://yookassa.ru/payments/', $this->_title),
             $this->_id
         );
 
@@ -59,6 +60,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'title' => __('ShopID', 'leyka'),
                 'comment' => __('Please, enter your shopID here. It can be found in your gateway account or in the contract documents. Also you can ask your gateway-side manager for it.', 'leyka'),
                 'required' => true,
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '12345'),
             ],
             $this->_id.'_scid' => [
@@ -66,6 +68,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'title' => __('ScID', 'leyka'),
                 'comment' => __('Please, enter your shop showcase ID (SCID) here. It can be found in your gateway account or in the contract documents. Also you can ask your gateway-side manager for it.', 'leyka'),
                 'required' => true,
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '12345'),
                 'field_classes' => ['old-api',],
             ],
@@ -73,6 +76,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'type' => 'text',
                 'title' => __('ShopArticleID', 'leyka'),
                 'comment' => __('Please, enter your shop article ID here, if it exists. It can be found in your gateway account or in the contract documents. Also you can ask your gateway-side manager for it.', 'leyka'),
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '12345'),
                 'field_classes' => ['old-api',],
             ],
@@ -80,6 +84,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'type' => 'text',
                 'title' => __('shopPassword', 'leyka'),
                 'comment' => __("Please, enter a shopPassword parameter value that you filled in the gateway technical questionaire. If it's set, Leyka will perform MD5 hash checks of each incoming donation data integrity.", 'leyka'),
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1^2@3#&84nDsOmE5h1T'),
                 'is_password' => true,
                 'field_classes' => ['old-api',],
@@ -89,6 +94,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'title' => __('Secret key for API', 'leyka'),
                 'comment' => __("Please, enter a secret key parameter value that you filled in the gateway technical questionaire. If it's set, Leyka will perform MD5 hash checks of each incoming donation data integrity. More information  <a href='https://yookassa.ru/docs/support/merchant/payments/implement/keys' target='_blank'>here</a>.", 'leyka'),
                 'required' => true,
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'test_OkT0flRaEnS0fWqMFZuTg01hu_8SxSkxZuAVIw7CMgB'),
                 'is_password' => true,
                 'field_classes' => ['new-api',],
@@ -152,12 +158,14 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             'YK-7042',
             __('The operations limit for the bank card or the shop is exceeded', 'leyka'), [
                 'recommendation_admin' => __("Ask the donor to use another payment method (i.e., another card). If this won't help, ask the donor to try to pay 1-2 days later. If the problem will persist, contact the gateway technical support.", 'leyka'),
+                /* translators: %s: Support email. */
                 'recommendation_donor' => sprintf(__("Please, try to use another payment method (i.e., another card). If it's not helping, try to pay 1-2 days later. If the problem still persists, ask the <a href='mailto:%s' target='_blank'>website administration</a> to report this to the gateway technical support.", 'leyka'), leyka_options()->opt('tech_support_email')),
         ]) && Leyka_Donations_Errors::get_instance()->add_error(
             'YK-8002',
             __("Payment wasn't finished due to YooKassa internal timeout", 'leyka'), [
                 'description' => __("Technical troubles on the YooKassa side - the payment handling couldn't be completed in time allowed for the operation.", 'leyka'),
                 'recommendation_admin' => __("For some reason, YooKassa didn't process this payment in time allowed (30 seconds by default). Please, contact your YooKassa manager, and ask them for the reason. If it was temporary technical failure, contact the donor and ask him/her to make a donation anew.", 'leyka'),
+                /* translators: %s: Support email. */
                 'recommendation_donor' => sprintf(__("The payment gateway didn't process your payment in time, and the payment was aborted. Your money are intact, but if you'd like to finish the payment, you should make it anew. If the problem persists, please contact the <a href='mailto:%s' target='_blank'>website technical support</a> and tell them that you have a problem making a donation due to the gateway behavior.", 'leyka'), leyka_options()->opt('tech_support_email')),
         ]) && Leyka_Donations_Errors::get_instance()->add_error(
             'YK-7043',
@@ -169,7 +177,9 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             'YK-7050',
             __("Can't make a payment from the selected mobile operator", 'leyka'), [
                 'description' => __("YooKassa doesn't support mobile payments from the mobile operator used.", 'leyka'),
+                /* translators: %s: URL. */
                 'recommendation_admin' => sprintf(__('Ask the donor to make a new mobile payment using one of the mobile operators supported by YooKassa (<a href="%s" target="_blank">operators list</a>).', 'leyka'), 'https://yookassa.ru/docs/support/payments/accept-methods#carrier-billing'),
+                /* translators: %s: URL. */
                 'recommendation_donor' => sprintf(__('Please, make a new mobile payment using one of the mobile operators supported by YooKassa (<a href="%s" target="_blank">operators list</a>).', 'leyka'), 'https://yookassa.ru/docs/support/payments/accept-methods#carrier-billing'),
         ]);
 
@@ -306,8 +316,8 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
             } catch(Exception $ex) {
 
                 $donation->add_gateway_response($ex);
-
-                leyka()->add_payment_form_error( new WP_Error('leyka_donation_error', sprintf(__('Error while processing the payment: %s. Your money will remain intact. Please report to the <a href="mailto:%s" target="_blank">website tech support</a>.', 'leyka'), $ex->getMessage(), leyka_get_website_tech_support_email())) );
+                /* translators: 1: Message, 2: Support email. */
+                leyka()->add_payment_form_error( new WP_Error('leyka_donation_error', sprintf(__('Error while processing the payment: %1$s. Your money will remain intact. Please report to the <a href="mailto:%2$s" target="_blank">website tech support</a>.', 'leyka'), $ex->getMessage(), leyka_get_website_tech_support_email())) );
                 return;
 
             }
@@ -1100,6 +1110,7 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
                 'default' => '',
                 'title' => __('Recurring payments certificate path', 'leyka'),
                 'comment' => __("Please, enter the path to your SSL certificate given to you by the gateway. <strong>Warning!</strong> The path should include the certificate filename intself. Also it should be relative to wp-content directory.", 'leyka'),
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '/uploads/leyka/your-cert-file.cer'),
                 'field_classes' => ['old-api'],
             ],
@@ -1108,6 +1119,7 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
                 'default' => '',
                 'title' => __("Recurring payments certificate private key path", 'leyka'),
                 'comment' => __("Please, enter the path to your SSL certificate's private key given to you by the gateway.<li><li>The path should include the certificate filename intself.</li><li>The path should be relative to wp-content directory. </li></ul>", 'leyka'),
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '/uploads/leyka/your-private.key'),
                 'field_classes' => ['old-api'],
             ],
@@ -1116,6 +1128,7 @@ class Leyka_Yandex_Card extends Leyka_Payment_Method {
                 'default' => '',
                 'title' => __("Recurring payments certificate private key password", 'leyka'),
                 'comment' => __("Please, enter a password for your SSL certificate's private key, if you set this password during the generation of your sertificate request file.", 'leyka'),
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'fW!^12@3#&8A4'),
                 'is_password' => true,
                 'field_classes' => ['old-api'],

@@ -134,6 +134,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             /* translators: %s: date and time of the revision */
             5 => isset($_GET['revision']) ?
                 sprintf(
+                    /* translators: %s: Revision title. */
                     __('Donation restored to revision from %s', 'leyka'),
                     wp_post_revision_title((int)$_GET['revision'], false)
                 ) : false,
@@ -141,8 +142,8 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             7 => __('Donation saved.', 'leyka'),
             8 => __('Donation submitted.', 'leyka'),
             9 => sprintf(
+                /* translators: %s: Publish box date format, see http://php.net/date. */
                 __('Donation scheduled for: <strong>%1$s</strong>.', 'leyka'),
-                // translators: Publish box date format, see http://php.net/date
                 date_i18n(__( 'M j, Y @ G:i'), strtotime(get_post()->post_date))
             ),
             10 => __('Donation draft updated.', 'leyka'),
@@ -379,6 +380,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             $donation->date,
             apply_filters(
                 'leyka_'.$donation->gateway_id.'_recurring_subscription_cancelling_link',
+                /* translators: %s: Support email. */
                 sprintf(__('<a href="mailto:%s">write us a letter about it</a>', 'leyka'), leyka_options()->opt('tech_support_email')),
                 $donation
             ),
@@ -390,6 +392,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             $donor_account_login_text = '';
 
             if($donation->donor_account_error) { // Donor account wasn't created due to some error
+                /* translators: %s: Support email. */
                 $donor_account_login_text = sprintf(__('To control your recurring subscriptions please contact the <a href="mailto:%s">website administration</a>.', 'leyka'), leyka_get_website_tech_support_email());
             } else if($donation->donor_account_id) {
 
@@ -400,7 +403,9 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 }
 
                 $donor_account_login_text = $donor && $donor->account_activation_code ?
+                    /* translators: %s: URL. */
                     sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?activate='.$donor->account_activation_code)) :
+                    /* translators: %s: URL. */
                     sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?u='.$donation->donor_account_id));
 
             }
@@ -512,6 +517,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             $donation->date,
             apply_filters(
                 'leyka_'.$donation->gateway_id.'_recurring_subscription_cancelling_link',
+                /* translators: %s: Support email. */
                 sprintf(__('<a href="mailto:%s">write us a letter about it</a>', 'leyka'), leyka_options()->opt('tech_support_email')),
                 $donation
             ),
@@ -523,6 +529,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             $donor_account_login_text = '';
 
             if($donation->donor_account_error) { // Donor account wasn't created due to some error
+                /* translators: %s: Support email. */
                 $donor_account_login_text = sprintf(__('To control your recurring subscriptions please contact the <a href="mailto:%s">website administration</a>.', 'leyka'), leyka_get_website_tech_support_email());
             } else if($donation->donor_account_id) {
 
@@ -533,7 +540,9 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 }
 
                 $donor_account_login_text = $donor && $donor->account_activation_code ?
+                    /* translators: %s: Activation code. */
                     sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?activate='.$donor->account_activation_code)) :
+                    /* translators: %s: Account id. */
                     sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?u='.$donation->donor_account_id));
 
             }
@@ -659,6 +668,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             $donation->date,
             apply_filters(
                 'leyka_'.$donation->gateway_id.'_recurring_subscription_cancelling_link',
+                 /* translators: %s: Support email. */
                 sprintf(__('<a href="mailto:%s">write us a letter about it</a>', 'leyka'), leyka_options()->opt('tech_support_email')),
                 $donation
             ),
@@ -670,6 +680,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             $donor_account_login_text = '';
 
             if($donation->donor_account_error) { // Donor account wasn't created due to some error
+                /* translators: %s: Support email. */
                 $donor_account_login_text = sprintf(__('To control your recurring subscriptions please contact the <a href="mailto:%s">website administration</a>.', 'leyka'), leyka_get_website_tech_support_email());
             } else if($donation->donor_account_id) {
 
@@ -680,7 +691,9 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 }
 
                 $donor_account_login_text = $donor && $donor->account_activation_code ?
+                    /* translators: %s: URL. */
                     sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?activate='.$donor->account_activation_code)) :
+                    /* translators: %s: URL. */
                     sprintf(__('You may manage your donations in your <a href="%s" target="_blank">personal account</a>.', 'leyka'), home_url('/donor-account/login/?u='.$donation->donor_account_id));
 
             }
@@ -1064,6 +1077,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                     ],
                     apply_filters(
                         'leyka_error_email_notification_text',
+                         /* translators: %s: URL. */
                         sprintf(__("Hello!\n\nDonation failure detected on the #SITE_NAME# website.\n\nCampaign: #CAMPAIGN_NAME#\nAmount: #SUM#\nPayment method: #PAYMENT_METHOD_NAME#\nType: #DONATION_TYPE#\n\nYou may revise the donation <a href='%s' target='_blank'>here</a>.\n\nYour Leyka", 'leyka'), admin_url('admin.php?page=leyka_donation_info&donation='.$donation->id)),
                         $donation, $campaign
                     )
@@ -1543,7 +1557,9 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             <?php if($donation->currency_id !== $donation->main_currency_id) { ?>
 
             <div class="leyka-ddata-string">
-                <label><?php echo sprintf(esc_html__('%s to %s exchange rate', 'leyka'), esc_html( strtoupper($donation->main_currency_id) ), esc_html( strtoupper($donation->currency_id))); ?>:</label>
+                <label><?php
+                /* translators: 1: Currency id, 2: Currency id. */
+                echo sprintf(esc_html__('%1$s to %2$s exchange rate', 'leyka'), esc_html( strtoupper($donation->main_currency_id) ), esc_html( strtoupper($donation->currency_id))); ?>:</label>
                 <div class="leyka-ddata-field">
                     <span class="fake-input">
                         <?php echo esc_html( $donation->main_currency_rate );?>
@@ -1705,6 +1721,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 if($donation->donor_subscribed === true || $donation->donor_subscribed == 1) {
                     $subscription_status = __('Full subscription', 'leyka');
                 } else if($donation->donor_subscribed > 0) {
+                    /* translators: %s: URL. */
                     $subscription_status = sprintf(__('On <a href="%s">campaign</a> news', 'leyka'), admin_url('post.php?post='.$donation->campaign_id.'&action=edit'));
                 }
 
@@ -2026,6 +2043,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                 echo wp_kses_post( str_replace(
                     ['%status', '%date'],
                     ['<i>'.self::get_status_labels($last_status['status']).'</i>', '<time>'.gmdate(get_option('date_format').', H:i', $last_status['date']).'</time>'],
+                    // phpcs:ignore WordPress.WP.I18n.MissingTranslatorsComment, WordPress.WP.I18n.UnorderedPlaceholdersText
                     '<div class="leyka-ddata-string last-log">'.__('Last status change: to&nbsp;%status (at&nbsp;%date)', 'leyka').'</div>'
                 ) );?>
 
@@ -2040,6 +2058,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
                                 '<i>'.self::get_status_labels($status_log[$i]['status']).'</i>','<time>'.gmdate(get_option('date_format').', '.get_option('time_format'),
                                     $status_log[$i]['date']).'</time>'
                             ],
+                            // phpcs:ignore WordPress.WP.I18n.MissingTranslatorsComment, WordPress.WP.I18n.UnorderedPlaceholdersText
                             __('%date - %status', 'leyka')
                         ) );?>
                     </li>

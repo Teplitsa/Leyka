@@ -25,6 +25,7 @@ class Leyka_Rbk_Gateway_Webhook_Verification {
         if(empty($params_signature[self::SIGNATURE_ALG])) {
             return new WP_Error(
                 'leyka_webhook_error',
+                /* translators: %s: Alg. */
                 sprintf(__('Missing required parameter: %s', 'leyka'), self::SIGNATURE_ALG)
             );
         }
@@ -32,6 +33,7 @@ class Leyka_Rbk_Gateway_Webhook_Verification {
         if(empty($params_signature[self::SIGNATURE_DIGEST])) {
             return new WP_Error(
                 'leyka_webhook_error',
+                /* translators: %s: Digest. */
                 sprintf(__('Missing required parameter: %s', 'leyka'), self::SIGNATURE_DIGEST)
             );
         }

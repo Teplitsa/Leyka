@@ -30,6 +30,7 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
                 'title' => __('YooMoney account ID', 'leyka'),
                 'comment' => __('Please, enter your YooMoney account ID here.', 'leyka'),
                 'required' => true,
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '4100111111111111'),
             ],
             'yandex_money_secret' => [
@@ -37,6 +38,7 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
                 'title' => __('YooMoney account API secret', 'leyka'),
                 'comment' => __('Please, enter your YooMoney account API secret string here.', 'leyka'),
                 'required' => true,
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'QweR+1TYUIo/p2aS3DFgHJ4K5'),
             ],
         ];

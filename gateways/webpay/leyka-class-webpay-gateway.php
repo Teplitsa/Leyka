@@ -18,7 +18,8 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
 
         $this->_description = apply_filters(
             'leyka_gateway_description',
-            sprintf(__('%s allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="%s">payment gateway website</a> to enter your bank card data and to confirm your payment.', 'leyka'), $this->_title, $this->_registration_link),
+            /* translators: 1: Title, 2: Register link. */
+            sprintf(__('%1$s allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the <a href="%2$s">payment gateway website</a> to enter your bank card data and to confirm your payment.', 'leyka'), $this->_title, $this->_registration_link),
             $this->_id
         );
 
@@ -38,15 +39,19 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
             $this->_id.'_store_id' => [
                 'type' => 'text',
                 'title' => __('Store ID', 'leyka'),
+                /* translators: %s: Label. */
                 'comment' => sprintf(__('Please, enter your %s here. It can be found in your contract with the gateway or (for most gateways) by asking your gateway connection manager for it.', 'leyka'), __('Store ID', 'leyka')),
                 'required' => true,
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '123456789'),
             ],
             $this->_id.'_secret_key' => [
                 'type' => 'text',
                 'title' => __('Secret key', 'leyka'),
-                'comment' => sprintf(__("Please, enter a %s parameter value from your %s account.", 'leyka'), mb_strtolower(__('Secret key', 'leyka')), $this->_title),
+                /* translators: 1: Label, 2: Title. */
+                'comment' => sprintf(__('Please, enter a %1$s parameter value from your %2$s account.', 'leyka'), mb_strtolower(__('Secret key', 'leyka')), $this->_title),
                 'required' => true,
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'OkT0flRaEnS0fWqMFZuTg01hu_8SxSkx'),
                 'is_password' => true,
             ],
@@ -153,8 +158,8 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
     }
 
     protected function _handle_callback_error($error_message = '', Leyka_Donation_Base $donation = null) {
-
-        echo sprintf(esc_html__('%s callback error: %s', 'leyka'), esc_html( $this->_title ), esc_html( trim(esc_attr($error_message))));
+        /* translators: 1: Title, 2: Error message. */
+        echo sprintf(esc_html__('%1$s callback error: %2$s', 'leyka'), esc_html( $this->_title ), esc_html( trim(esc_attr($error_message))));
 
         if($donation) {
 
@@ -202,6 +207,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
 
         $donation = Leyka_Donations::get_instance()->get($_POST['site_order_id']);
         if( !$donation ) {
+            /* translators: %s: Order id. */
             $this->_handle_callback_error(sprintf(__('Unknown donation ID given: %s', 'leyka'), $_POST['site_order_id']));
         }
 

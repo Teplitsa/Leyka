@@ -165,8 +165,8 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
         $api->init($params);
 
         if($api->error){
-
-            leyka()->add_payment_form_error( new WP_Error('leyka_donation_error', sprintf(__('Error while processing the payment: %s. Your money will remain intact. Please report to the <a href="mailto:%s" target="_blank">website tech support</a>.', 'leyka'), $api->error, leyka_get_website_tech_support_email())) );
+            /* translators: 1: Error, 2: Support email. */
+            leyka()->add_payment_form_error( new WP_Error('leyka_donation_error', sprintf(__('Error while processing the payment: %1$s. Your money will remain intact. Please report to the <a href="mailto:%2$s" target="_blank">website tech support</a>.', 'leyka'), $api->error, leyka_get_website_tech_support_email())) );
             return;
 
         } else {

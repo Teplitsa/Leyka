@@ -400,6 +400,7 @@ function leyka_setup_donor_password(){
     ) {
         $res = [
             'status' => 'error',
+            /* translators: %s: Support email. */
             'message' => sprintf(__('Wrong request. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_get_website_tech_support_email())
         ];
     } else if(
@@ -409,6 +410,7 @@ function leyka_setup_donor_password(){
         || empty($_POST['donor_account_email'])
         || !leyka_is_email($_POST['donor_account_email'])
     ) {
+        /* translators: %s: Support email. */
         $res = ['status' => 'error', 'message' => sprintf(__('Wrong request data. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_get_website_tech_support_email())];
     } else {
 
@@ -417,6 +419,7 @@ function leyka_setup_donor_password(){
 
             die(wp_json_encode([
                 'status' => 'error',
+                /* translators: %s: Support email. */
                 'message' => sprintf(__('Wrong request data. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_get_website_tech_support_email())
             ]));
 

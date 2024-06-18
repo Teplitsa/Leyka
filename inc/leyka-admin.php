@@ -162,7 +162,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 } catch(Exception $e) {
                     return $admin_title;
                 }
-
+                /* translators: %s: Site name. */
                 $admin_title = sprintf(__('Leyka: Donor %s', 'leyka'), $donor->name).' &lsaquo; '.get_bloginfo('name');
 
             } else if(isset($_GET['page']) && $_GET['page'] === 'leyka_extension_settings' && isset($_GET['extension'])) {
@@ -170,6 +170,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 $extension = leyka_get_extension_by_id($_GET['extension']);
 
                 $admin_title = ($extension ?
+                        /* translators: %s: Title. */
                         sprintf(__('Leyka: %s', 'leyka'), $extension->title) :
                         __('Leyka: unknown extension', 'leyka')
                     )
@@ -189,8 +190,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                         exit;
 
                     }
-
-                    $admin_title = sprintf(__('%s: donation #%s profile', 'leyka'), __('Leyka', 'leyka'), $donation->id)
+                    /* translators: 1: Label, 2: Name. */
+                    $admin_title = sprintf(__('%1$s: donation #%2$s profile', 'leyka'), __('Leyka', 'leyka'), $donation->id)
                         .' &lsaquo; '.get_bloginfo('name');
 
                 }
@@ -616,8 +617,11 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             'thumbnail' => 'Thumbnail',
         ]);
 
+        // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
 	    $portlet_data['title'] = empty($params['title']) ? esc_attr__($portlet_data['title'], 'leyka') : $params['title'];
+        // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
 	    $portlet_data['subtitle'] = empty($params['subtitle']) ?
+        // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
             esc_attr__($portlet_data['subtitle'], 'leyka') : $params['subtitle'];
 	    $portlet_data['thumbnail'] = empty($params['thumbnail']) ? $portlet_data['thumbnail'] : $params['thumbnail'];?>
 
@@ -864,6 +868,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         }
 
         $donation_title = $campaign->payment_title ? :
+            /* translators: %s: Donation id. */
             ($campaign->title ? : sprintf(__('Donation #%s', 'leyka'), $donation->id));
 
         if($donation->title !== $donation_title) {
@@ -990,7 +995,9 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             $new_donation_edit_url = admin_url('admin.php?page=leyka_donation_info&donation='.$donation_id.'&msg=ok');?>
 
             <div id="message" class="updated notice notice-success">
-                <p><?php echo sprintf(esc_html__("Donation added. If you are not redirected to it's edit page, <a href='%s'>click here</a>.", 'leyka'), esc_attr( $new_donation_edit_url ) );?></p>
+                <p><?php
+                    /* translators: %s: Donation edit URL. */
+                    echo sprintf(esc_html__("Donation added. If you are not redirected to it's edit page, <a href='%s'>click here</a>.", 'leyka'), esc_attr( $new_donation_edit_url ) );?></p>
             </div>
 
             <script type="text/javascript">window.location.href="<?php echo esc_url( $new_donation_edit_url ); ?>";</script>
@@ -1294,7 +1301,8 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
                 ->render_content();
 
         } catch(Exception $ex) {
-            echo '<pre>'.sprintf(esc_html__('Settings display error (code %s): %s', 'leyka'), esc_html($ex->getCode()), esc_html( $ex->getMessage())).'</pre>';
+            /* translators: 1: Code, 2: Message. */
+            echo '<pre>'.sprintf(esc_html__('Settings display error (code %1$s): %2$s', 'leyka'), esc_html($ex->getCode()), esc_html( $ex->getMessage())).'</pre>';
         }
 
         do_action('leyka_post_admin_actions');
@@ -1588,6 +1596,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
             'admin_url' => admin_url(),
             'plugin_url' => LEYKA_PLUGIN_BASE_URL,
             'field_required' => __('This field is required to be filled', 'leyka'),
+            /* translators: %s: Value. */
             'field_x_required'=> __('%s value is mandatory', 'leyka'),
             'email_invalid_msg' => __('You have entered an invalid email', 'leyka'),
             'common_error_message' => __('Error while saving the data', 'leyka'),

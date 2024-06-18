@@ -110,6 +110,7 @@ if($main_settings_steps) {?>
         <div class="data-line"><?php esc_html_e('Leyka', 'leyka'); ?> <?php echo esc_html( LEYKA_VERSION );?></div>
         <div class="data-line">
             <?php $template = leyka()->get_template(leyka()->opt('donation_form_template'));
+            // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
             echo esc_html__('Default template:', 'leyka').' '.esc_html__($template['name'], 'leyka');?>
         </div>
         <div class="data-line php-actuality-status">

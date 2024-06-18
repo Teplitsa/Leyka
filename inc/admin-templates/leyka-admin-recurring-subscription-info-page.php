@@ -26,7 +26,9 @@ try {
     <div class="wp-heading-inline">
         <h1><?php esc_html_e('Subscription profile', 'leyka');?></h1>
         <div class="leyka-subscription-status leyka-subscription-<?php echo esc_attr( $donation->recurring_subscription_status ); ?>">
-            <?php echo esc_html_x(mb_ucfirst($donation->recurring_subscription_status), 'Recurring subscription status, singular (like [subscription is] "Active/Non-active/Problematic")', 'leyka'); /** @todo Fix this ambiguous l10n string formulation! */?>
+            <?php
+            // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
+            echo esc_html_x(mb_ucfirst($donation->recurring_subscription_status), 'Recurring subscription status, singular (like [subscription is] "Active/Non-active/Problematic")', 'leyka'); /** @todo Fix this ambiguous l10n string formulation! */?>
         </div>
     </div>
 

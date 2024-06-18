@@ -14,7 +14,8 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
 
         $this->_description = apply_filters(
             'leyka_gateway_description',
-            sprintf(__('<a href="%s">%s</a> gateway allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the secure gateway webpage to enter your payment data and to confirm your payment.', 'leyka'), '//www.robokassa.ru/ru/', $this->_title),
+            /* translators: 1: URL, 2: Title. */
+            sprintf(__('<a href="%1$s">%2$s</a> gateway allows a simple and safe way to pay for goods and services with bank cards through internet. You will have to fill a payment form, you will be redirected to the secure gateway webpage to enter your payment data and to confirm your payment.', 'leyka'), '//www.robokassa.ru/ru/', $this->_title),
             $this->_id
         );
 
@@ -39,6 +40,7 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
                 'title' => __('Shop ID', 'leyka'),
                 'comment' => __('Please, enter your Robokassa shop ID here. It can be found in your Robokassa control panel (shop technical settings).', 'leyka'),
                 'required' => true,
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '1234'),
             ],
             'robokassa_shop_password1' => [
@@ -47,6 +49,7 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
                 'comment' => __('Please, enter your Robokassa shop password 1 here. It can be found in your Robokassa control panel (shop technical settings, field "password 1").', 'leyka'),
                 'required' => true,
                 'is_password' => true,
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '12abc34+'),
             ],
             'robokassa_shop_password2' => [
@@ -55,6 +58,7 @@ class Leyka_Robokassa_Gateway extends Leyka_Gateway {
                 'comment' => __('Please, enter your Robokassa shop password 2 here. It can be found in your Robokassa control panel (shop technical settings, field "password 2").', 'leyka'),
                 'required' => true,
                 'is_password' => true,
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '12abc34+'),
             ],
             'robokassa_test_mode' => [

@@ -64,7 +64,8 @@
                 'days_7' => __('Last 7 days', 'leyka'),
                 'this_year' => __('From the year start', 'leyka'),
                 'this_half_year' => __('Half-year', 'leyka'),
-                'this_quarter' => sprintf(__('%d quarter %d' , 'leyka'),ceil(gmdate("m", time()) / 3), gmdate("Y")),
+                /* translators: 1: Date one, 2: Date two. */
+                'this_quarter' => sprintf(__('%1$d quarter %2$d' , 'leyka'),ceil(gmdate("m", time()) / 3), gmdate("Y")),
                 'this_month' => gmdate("F", time()).' '.gmdate("Y"),
                 'this_week' => __('Current week', 'leyka')
             ]);
@@ -119,7 +120,9 @@
 
                 <div class="plugin-data-interval-tools">
                     <span class="plugin-data-interval-reset-text">
-                        <?php echo sprintf(esc_html__('The data is actual as of&nbsp;%s', 'leyka'), esc_html($dashboard_data_cache_date));?>
+                        <?php
+                        /* translators: %s: Cache date. */
+                        echo sprintf(esc_html__('The data is actual as of&nbsp;%s', 'leyka'), esc_html($dashboard_data_cache_date));?>
                     </span>
                     <?php
                     $interval = $_GET['interval'];

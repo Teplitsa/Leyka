@@ -162,6 +162,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
         } else if(is_a($donation, 'WP_Post')) {
 
             if($donation->post_type !== Leyka_Donation_Management::$post_type) {
+                /* translators: %s: Donation Post type. */
                 throw new Exception(sprintf(esc_html__('Wrong post type for donation ("%s" given)', 'leyka'), esc_html( $donation->post_type) ) );
             }
 
@@ -187,6 +188,7 @@ class Leyka_Donation_Separated extends Leyka_Donation_Base {
         );
 
         if( !$this->_main_data ) {
+            /* translators: %s: Donation id. */
             throw new Exception(sprintf(esc_html__('No donation #%s in the DB', 'leyka'), esc_html( $this->_id )) );
         }
 

@@ -157,10 +157,12 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
 
             if( !$this->_main_data) {
                 throw new Exception(
+                    /* translators: %s: Donation. */
                     sprintf(esc_html__('No post found by ID while constructing a donation ("%s" given)', 'leyka'), esc_html( $donation ) )
                 );
             } else if($this->_main_data->post_type !== Leyka_Donation_Management::$post_type) {
                 throw new Exception(
+                    /* translators: %s: Post type. */
                     sprintf(esc_html__('Wrong post type for donation ("%s" given)', 'leyka'), esc_html( $this->_main_data->post_type ) )
                 );
             }
@@ -170,6 +172,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
         } else if(is_a($donation, 'WP_Post')) {
 
             if($donation->post_type !== Leyka_Donation_Management::$post_type) {
+                /* translators: %s: Post type. */
                 throw new Exception(sprintf(esc_html__('Wrong post type for donation ("%s" given)', 'leyka'), esc_html( $donation->post_type ) ));
             }
 
@@ -206,6 +209,7 @@ class Leyka_Donation_Post extends Leyka_Donation_Base {
             }
 
         } else {
+            /* translators: %s: Danation. */
             throw new Exception( sprintf(esc_html__('Unknown donation given: %s', 'leyka'), wp_kses_post( print_r($donation, 1) ) ) );
         }
 

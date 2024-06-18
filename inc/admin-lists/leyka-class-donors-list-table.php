@@ -444,6 +444,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
     public function column_donor_type($item) {
         return apply_filters(
             'leyka_admin_donor_type_column_content',
+            // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
             '<i class="icon-donor-type icon-'.$item['donor_type'].' has-tooltip" title="'._x(mb_ucfirst($item['donor_type']), 'Donor type name', 'leyka').'"></i>',
             $item
         );
@@ -592,6 +593,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
         $column_content = '<div class="leyka-admin-shortened-text">'
             .implode(', ', $first_campaigns_for_list)
             .($campaigns_list ?
+                /* translators: %s: Campaigns list. */
                 '<div class="leyka-more-campaigns">'.sprintf(__('+ %d more', 'leyka'), count($campaigns_list)).'</div>' : '')
             .'</div>';
 

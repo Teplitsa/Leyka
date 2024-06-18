@@ -295,7 +295,10 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
         $donor_additional_data_html .= '<li>
         <span class="leyka-li-title">'.__('Email', 'leyka').':</span>
-        <span class="leyka-li-value">'.($donation->donor_email_date ? sprintf(__('Sent on %s', 'leyka'), gmdate(get_option('date_format').', H:i</time>', $donation->donor_email_date)) : __('no', 'leyka')).'</span>
+        <span class="leyka-li-value">'.
+            /* translators: %s: Date. */
+            ($donation->donor_email_date ? sprintf(__('Sent on %s', 'leyka'), gmdate(get_option('date_format')
+        .', H:i</time>', $donation->donor_email_date)) : __('no', 'leyka')).'</span>
     </li>
 
     <li>
@@ -346,7 +349,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
             $error = $donation->error; /** @var $error Leyka_Donation_Error */
             $error = is_a($error, 'Leyka_Donation_Error') ?
                 $error : Leyka_Donations_Errors::get_instance()->get_error_by_id(false);
-
+            /* translators: %s: Error id. */
             $tooltip_content = '<strong>'.sprintf(__('Error %s', 'leyka'), $error->id).'</strong>: '.mb_lcfirst($error->name)
                 .'<p><a class="leyka-tooltip-error-content-more leyka-inner-tooltip leyka-tooltip-x-wide leyka-tooltip-white" title="" href="#">'
                     .__('More info', 'leyka')
@@ -448,14 +451,15 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
     public function column_emails($donation) { /** @var $donation Leyka_Donation_Base */
 
         if($donation->donor_email_date) {
-            $column_content = str_replace(
-                '%s',
-                '<time>'.gmdate(get_option('date_format').', H:i</time>', $donation->donor_email_date).'</time>',
-                __('Sent at %s', 'leyka')
+            $column_content =  sprintf(
+                /* translators: %s: Date. */
+                __('Sent at %s', 'leyka'),
+                '<time>'.gmdate(get_option('date_format').', H:i</time>', $donation->donor_email_date).'</time>'
             );
         } else {
-            $column_content = '<div class="leyka-no-donor-thanks" data-donation-id="'.$donation->id.'" data-nonce="'.wp_create_nonce('leyka_donor_email').'">'
-                .sprintf(__('Not sent %s', 'leyka'), '<a class="send-donor-thanks" href="#">'.__('Send it', 'leyka').'</a>')
+            $column_content = '<div class="leyka-no-donor-thanks" data-donation-id="'.$donation->id.'" data-nonce="'.wp_create_nonce('leyka_donor_email').'">'.
+                /* translators: %s: Send link. */
+                sprintf(__('Not sent %s', 'leyka'), '<a class="send-donor-thanks" href="#">'.__('Send it', 'leyka').'</a>')
             .'</div>';
         }
 

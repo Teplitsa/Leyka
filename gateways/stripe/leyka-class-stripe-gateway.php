@@ -42,6 +42,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                 'title' => __('Public key', 'leyka'),
                 'comment' => __('Please, enter your Stripe public key here. It can be found in your Stripe control panel ("API keys" section).', 'leyka'),
                 'required' => true,
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'pk_test_51IybR4JyYVP3cRIfBBSIGvoolI...'),
             ],
             'stripe_key_secret' => [
@@ -50,6 +51,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                 'comment' => __('Please, enter your Stripe secret key here. It can be found in your Stripe control panel ("API keys" section).', 'leyka'),
                 'is_password' => true,
                 'required' => true,
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'sk_test_51IybR4JyYVP3cRIf5zbSzovieA...'),
             ],
             'stripe_product_id' => [
@@ -57,6 +59,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                 'title' => __('Product ID', 'leyka'),
                 'comment' => __('Please, enter your Stripe "Donation" product ID here. It can be found in your Stripe personal account ("Products" section).', 'leyka'),
                 'required' => true,
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'prod_K8PufqAVP7Z2SG'),
             ],
             'stripe_webhooks_key' => [
@@ -65,12 +68,14 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                 'comment' => __('Please, enter your Stripe webhooks signing secret key here. It can be found in your Stripe control panel ("Webhooks" section).', 'leyka'),
                 'is_password' => true,
                 'required' => true,
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), 'whsec_f0ZTQyaYaSpWMK3npRxAfLP2MAgkWifl'),
             ],
             'stripe_webhooks_ips' => [
                 'type' => 'text',
                 'title' => __('Webhooks IPs', 'leyka'),
                 'comment' => __('Comma-separated callback requests IP list. Leave empty to disable the check.', 'leyka'),
+                /* translators: %s: Placeholder. */
                 'placeholder' => sprintf(__('E.g., %s', 'leyka'), '3.18.12.63, 3.130.192.231, 13.235.14.237'),
                 'default' => '3.18.12.63, 3.130.192.231, 13.235.14.237, 13.235.122.149, 18.211.135.69, 35.154.171.200, 
                             52.15.183.38, 54.88.130.119, 54.88.130.237, 54.187.174.169, 54.187.205.235, 54.187.216.72',
@@ -149,6 +154,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             $checkout_session = \Stripe\Checkout\Session::create($checkout_session_data);
         } catch (\Stripe\Exception\ApiErrorException $e) {
             leyka()->add_payment_form_error(
+                /* translators: %s: Support email. */
                 new WP_Error('stripe_wrong_request_answer', sprintf(__('<strong>Error:</strong> the checkout session creation request returned an unexpected result. <br><br>Please, email about this to the <a href="mailto:%s" target="_blank">website tech. support</a>.<br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email()))
             );
         }
@@ -284,6 +290,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                 wp_mail(
                     leyka_get_website_tech_support_email(),
                     __('The "replay attack" attempt on Stripe callback was detected!', 'leyka'),
+                    /* translators: %s: Message. */
                     sprintf(__('This message has been sent because a "replay attack" attempt on Stripe callback was detected. This could mean someone is trying to hack your payment website. The error message is listed below.\n\r\n\r. Stripe error message:\n\r%s\n\r\n\r', 'leyka'), $e->getMessage())
                 );
 
@@ -466,7 +473,8 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
         }
 
         if( !$donation->stripe_subscription_id ) {
-            return new WP_Error('stripe_no_subscription_id', sprintf(__('<strong>Error:</strong> unknown Subscription ID for donation #%d. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email()));
+            /* translators: 1: Donation id, 2: Support email. */
+            return new WP_Error('stripe_no_subscription_id', sprintf(__('<strong>Error:</strong> unknown Subscription ID for donation #%1$d. We cannot cancel the recurring subscription automatically.<br><br>Please, email abount this to the <a href="%2$s" target="_blank">website tech. support</a>.<br>We are very sorry for inconvenience.', 'leyka'), $donation->id, leyka_get_website_tech_support_email()));
         }
 
         require_once LEYKA_PLUGIN_DIR.'gateways/stripe/lib/init.php';
@@ -479,6 +487,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             $subscription->cancel();
 
         } catch (\Stripe\Exception\ApiErrorException $e) {
+            /* translators: %s: Support email. */
             return new WP_Error('stripe_wrong_request_answer', sprintf(__('<strong>Error:</strong> the recurring subscription cancelling request returned an unexpected result. We cannot cancel the recurring subscription automatically.<br><br>Please, email about this to the <a href="mailto:%s" target="_blank">website tech. support</a>.<br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email()));
         }
 
@@ -503,6 +512,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
         } else if(is_wp_error($recurring_cancelling_result)) {
             die(wp_kses_post($recurring_cancelling_result->get_error_message()));
         } else {
+            /* translators: %s: Support email. */
             die( wp_kses_post( sprintf(__('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="%s" target="_blank">website tech. support</a>.<br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email()) ) );
         }
 
@@ -558,6 +568,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
                     <?php echo esc_html( $init_recurring_donation->recurring_is_active ? __('yes', 'leyka') : __('no', 'leyka') );
 
                     if( !$init_recurring_donation->recurring_is_active && $init_recurring_donation->recurring_cancel_date ) {
+                        /* translators: %s: Cancel date. */
                         echo ' ('.wp_kses_post(sprintf(__('canceled on %s', 'leyka'), gmdate(get_option('date_format').', '.get_option('time_format'), $init_recurring_donation->recurring_cancel_date))).')';
                     }?>
                 </div>
