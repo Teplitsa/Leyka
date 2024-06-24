@@ -111,7 +111,7 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
                             $query_var = $wpdb->get_var(
                                 $wpdb->prepare(
                                     "SELECT SUM(meta_value) FROM {$wpdb->prefix}postmeta WHERE post_id IN (%s) AND meta_key='leyka_donation_amount'",
-                                    implode(',', $donations),
+                                    implode(',', $donations)
                                 )
                             );
 

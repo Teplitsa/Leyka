@@ -148,7 +148,7 @@ class Leyka_Donations_Main_Stats_Portlet_Controller extends Leyka_Portlet_Contro
                             $donations_post_type,
                             $interval_dates["prev_interval_begin_date"],
                             $interval_dates["curr_interval_begin_date"]
-                        ),
+                        )
                     ),
                     'ARRAY_A'
                 );
