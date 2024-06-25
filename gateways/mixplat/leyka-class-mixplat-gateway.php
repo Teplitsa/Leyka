@@ -87,10 +87,10 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             ],
             $this->_id.'_split_help1' => [
                 'type' => 'static_text',
-                'title' => __('What does "donation split" mean:', 'leyka'),
+                'title' => '',
                 'is_html' => true,
                 'value' => '',
-                'description' => __('It means every donation is divided into two campaigns, e.g. 80% is credited to original campaign and 20% is credited to "Administrative expenses". Here you define percent to deduct and choose appropriate campaign to credit it on.', 'leyka'),
+                'description' => __('It means every donation is divided into two campaigns, e.g. 80% is credited to original campaign and 20% is credited to "Administrative expenses".', 'leyka'),
                 'field_classes' => ['split'],
             ],
             $this->_id.'_split_percent' => [
@@ -109,7 +109,7 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
                 'default' => leyka_get_campaigns_select_default(),
                 'title' => __('Split to campaign', 'leyka'),
                 'comment' => __('Choose campaign to be credited with percent from every transaction', 'leyka'),
-                'description' => __('This campaign receives percent share deducted from the incoming donations.', 'leyka'),
+                'description' => __('Here you define percent to deduct and choose appropriate campaign to credit it on.', 'leyka'),
                 'list_entries' => leyka_get_campaigns_list(['orderby' => 'title', 'order' => 'ASC', 'posts_per_page' => 1000,], true),
                 'field_classes' => ['split'],
             ],
@@ -161,14 +161,17 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         if(empty($this->_payment_methods['bankcard'])) {
             $this->_payment_methods['bankcard'] = Leyka_Mixplat_Card::get_instance();
         }
+        if(empty($this->_payment_methods['sbp'])) {
+            $this->_payment_methods['sbp'] = Leyka_Mixplat_SBP::get_instance();
+        }
         if(empty($this->_payment_methods['yandex'])) {
             $this->_payment_methods['yandex'] = Leyka_Mixplat_Yandex_Pay::get_instance();
         }
         if(empty($this->_payment_methods['mirpay'])) {
             $this->_payment_methods['mirpay'] = Leyka_Mixplat_MIR_Pay::get_instance();
         }
-        if(empty($this->_payment_methods['sbp'])) {
-            $this->_payment_methods['sbp'] = Leyka_Mixplat_SBP::get_instance();
+        if(empty($this->_payment_methods['sberpay'])) {
+            $this->_payment_methods['sberpay'] = Leyka_Mixplat_Sberpay::get_instance();
         }
         if(empty($this->_payment_methods['mobile'])) {
             $this->_payment_methods['mobile'] = Leyka_Mixplat_Mobile::get_instance();
@@ -183,15 +186,19 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
        return ($widgetKey && strlen($widgetKey)>=32 ) ? true : false;
     }
 
-    /**
-     * A service method to get the gateway inner PM ID value by according Leyka pm_ids unknown).
-     */
-
+    /** From MIXPLAT payment_methods to Leyka payment_methods */
     public function _get_gateway_pm_id($pm_id) {
         $all_pm_ids = [
             'mobile' => 'sms',
             'card' => 'bankcard',
-            'bank' => 'sbp',
+            'bank' => 'sbp', // Temporary
+            'yandex_pay' => 'yandex',
+            'mir_pay' => 'mirpay',
+            'sbp' => 'sbp',
+            'sberpay' => 'sberpay',
+            'alfa_pay' => 'bankcard',
+            'mts_pay' => 'bankcard',
+            'tinkoff_pay' => 'bankcard',
         ];
         if(array_key_exists($pm_id, $all_pm_ids)) {
             return $all_pm_ids[$pm_id];
@@ -200,14 +207,15 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         }
     }
 
+    /** From Leyka payment_methods to MIXPLAT payment_methods */
     public function _set_gateway_pm_id($pm_id) {
         $all_pm_ids = [
             'mobile' => 'mobile',
             'bankcard' => 'card',
-            'yandex' => 'card',
-            'mirpay' => 'card',
-            'pay' => 'card',
-            'sbp' => 'bank',
+            'yandex' => 'yandex_pay',
+            'mirpay' => 'mir_pay',
+            'sbp' => 'sbp',
+            'sberpay' => 'sberpay',
         ];
         if(array_key_exists($pm_id, $all_pm_ids)) {
             return $all_pm_ids[$pm_id];
@@ -215,23 +223,6 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             return false;
         }
     }
-
-    public function _set_gateway_bt_id($bt_id) {
-        $all_bt_ids = [
-            'mobile' => '',
-            'bankcard' => 'credit_card',
-            'yandex' => 'yandex_pay',
-            'mirpay' => 'mir_pay',
-            'pay' => 'apple_pay',
-            'sbp' => '',
-        ];
-        if(array_key_exists($bt_id, $all_bt_ids)) {
-            return $all_bt_ids[$bt_id];
-        } else {
-            return false;
-        }
-    }
-
 
     public function localize_js_strings($js_data){
         return array_merge($js_data, [
@@ -344,11 +335,10 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
         $mixplat_client->setConfig($mixplat_conf);
         $mixplat_client->setHttpClient($http_client);
 
-        if(in_array($pm_id, ['pay', 'yandex', 'bankcard', 'sbp'])) {
+        if(in_array($pm_id, ['pay', 'yandex', 'bankcard', 'sbp', 'sberpay'])) {
 
             $new_payment = new \MixplatClient\Method\CreatePaymentForm();
             $new_payment->paymentMethod = $this->_set_gateway_pm_id($pm_id);
-            $new_payment->billingType =   $this->_set_gateway_bt_id($pm_id);
             // get_bloginfo('name'). removed from the description
             $new_payment->description = $donation->payment_title;
             $new_payment->urlSuccess = leyka_get_success_page_url();
@@ -488,7 +478,6 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
             'user_name' => $donation->donor_name,
             'user_email' => $donation->donor_email,
             'payment_method' => $this->_set_gateway_pm_id($pm_id),
-            'billing_type' => $this->_set_gateway_bt_id($pm_id),
             'merchant_campaign_id' => $donation->campaign_id,
             'url_success' => leyka_get_success_page_url(),
             'url_failure' => leyka_get_failure_page_url(),
@@ -1385,11 +1374,11 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
             $donation = Leyka_Donations::get_instance()->get_donation($donation);?>
 
-            <label><?php esc_html_e('Phone number', 'leyka');?>:</label>
+            <label><?php _e('Phone number', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
 
             <?php if($donation->type === 'correction') {?>
-                <input type="text" id="mixplat-phone" name="mixplat-phone" placeholder="<?php esc_attr_e('Enter a phone number', 'leyka');?>" value="<?php echo esc_attr( $donation->mixplat_phone ); ?>">
+                <input type="text" id="mixplat-phone" name="mixplat-phone" placeholder="<?php _e('Enter a phone number', 'leyka');?>" value="<?php echo esc_attr( $donation->mixplat_phone ); ?>">
             <?php } else {?>
                 <span class="fake-input"><?php echo esc_html( $donation->mixplat_phone ); ?></span>
             <?php }?>
@@ -1397,9 +1386,9 @@ class Leyka_Mixplat_Gateway extends Leyka_Gateway {
 
         <?php } else { // New donation page displayed ?>
 
-            <label for="mixplat-phone"><?php esc_html_e('Phone number', 'leyka');?>:</label>
+            <label for="mixplat-phone"><?php _e('Phone number', 'leyka');?>:</label>
             <div class="leyka-ddata-field">
-                <input type="text" id="mixplat-phone" name="mixplat-phone" placeholder="<?php esc_attr_e('Enter a phone number', 'leyka');?>" value="">
+                <input type="text" id="mixplat-phone" name="mixplat-phone" placeholder="<?php _e('Enter a phone number', 'leyka');?>" value="">
             </div>
         <?php }
 
@@ -1579,7 +1568,7 @@ class Leyka_Mixplat_Text extends Leyka_Payment_Method {
                 'title' => __('Payments via SMS', 'leyka'),
                 'is_html' => true,
                 'value' => '',
-                'description' => __('In order to accept SMS payments you should choose and register the keyword and shortnumber in your MIXPLAT account, as well as compose description text for the donors how to send SMS, including your keyword. Keyword registration is provided free of charge on your <a href="http://stat.mixplat.ru/sn" target=_blank>MIXPLAT account page</a>.', 'leyka'),
+                'description' => __('In order to accept SMS payments you should choose and register the keyword and shortnumber in your MIXPLAT account, as well as compose description text for the donors how to send SMS, including your keyword. Keyword registration is provided on your <a href="http://stat.mixplat.ru/sn" target=_blank>MIXPLAT account page</a>.', 'leyka'),
             ],
             $this->full_id.'_default_campaign_id' => [
                 'type' => 'select',
@@ -1792,6 +1781,52 @@ class Leyka_Mixplat_SBP extends Leyka_Payment_Method {
 
 }
 
+class Leyka_Mixplat_Sberpay extends Leyka_Payment_Method {
+
+    protected static $_instance = null;
+
+    public function _set_processing_type($value = false) {
+      if($value) {
+       $this->_processing_type=$value;
+      }
+      return $this->_processing_type;
+    }
+
+    public function _set_attributes() {
+
+        $this->_id = 'sberpay';
+        $this->_gateway_id = 'mixplat';
+        $this->_category = 'online_banking';
+
+        $this->_description = apply_filters(
+            'leyka_pm_description',
+            __('Enable SberPay payment method', 'leyka'),
+            $this->_id,
+            $this->_gateway_id,
+            $this->_category
+        );
+
+        $this->_label_backend = __('SberPay', 'leyka');
+        $this->_label = __('SberPay', 'leyka');
+
+        $this->_icons = apply_filters('leyka_icons_'.$this->_gateway_id.'_'.$this->_id, [
+            LEYKA_PLUGIN_BASE_URL.'img/pm-icons/sberpay.svg',
+        ]);
+
+        $this->_custom_fields = apply_filters('leyka_pm_custom_fields_'.$this->_gateway_id.'-'.$this->_id, []);
+
+        $this->_supported_currencies[] = 'rub';
+        $this->_default_currency = 'rub';
+        $this->_processing_type = 'custom-process-submit-event';
+
+    }
+
+    public function has_recurring_support() {
+        return 'passive';
+    }
+
+}
+
 function leyka_mixplat_wloader_async($tag, $handle, $src) {
         if ($handle === 'leyka-mixplat-wloader') {      // Check that 'async' isn't already declared.
         if (stripos($tag, 'async') === FALSE) {         // Insert the 'async="async"' attribute and value.
@@ -1809,6 +1844,7 @@ function leyka_mixplat_set_widget_mode() {
        Leyka_Mixplat_Yandex_Pay::get_instance()->_set_processing_type('default');
        Leyka_Mixplat_MIR_Pay::get_instance()->_set_processing_type('default');
        Leyka_Mixplat_SBP::get_instance()->_set_processing_type('default');
+       Leyka_Mixplat_Sberpay::get_instance()->_set_processing_type('default');
        Leyka_Mixplat_Mobile::get_instance()->_set_processing_type('default');
     }
 }

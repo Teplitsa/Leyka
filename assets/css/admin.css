@@ -5154,6 +5154,7 @@ ul.ui-autocomplete.ui-menu li.ui-menu-item:hover {
   margin-top: -0.5rem;
 }
 
+.step .block-separator,
 .leyka-wizard.wizard-yandex .main-area .settings-block .block-separator {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -5163,12 +5164,14 @@ ul.ui-autocomplete.ui-menu li.ui-menu-item:hover {
   margin-left: -2px;
 }
 
+.step .block-separator div,
 .leyka-wizard.wizard-yandex .main-area .settings-block .block-separator div {
   border-bottom: 1px dashed #dddddd;
   height: 7px;
   width: calc(100% - 15px - 0.5rem);
 }
 
+.leyka-wizard.wizard-mixplat .main-area .step .block-separator:before,
 .leyka-wizard.wizard-yandex .main-area .settings-block .block-separator:before {
   content: counter(block-separator-counter);
   counter-increment: block-separator-counter;
@@ -5184,6 +5187,17 @@ ul.ui-autocomplete.ui-menu li.ui-menu-item:hover {
   text-align: center;
   font-size: 10px;
   padding: 0px;
+}
+
+.mixplat-steps{
+    counter-reset: list;
+}
+.leyka-wizard.wizard-mixplat .main-area .step .block-separator:before{
+    content: counter(list);
+    counter-increment: list;
+}
+.leyka-wizard.wizard-mixplat .main-area .step{
+    margin-bottom: 25px;
 }
 
 .leyka-wizard.wizard-yandex .main-area .settings-block .enum-separated-block {
@@ -6273,7 +6287,7 @@ ul.ui-autocomplete.ui-menu li.ui-menu-item:hover {
 }
 
 .postbox .inside .info-field ul li:before {
-  content: 'â€”';
+  content: 'Ñ';
   display: inline-block;
   padding-right: 4px;
 }
@@ -11843,7 +11857,7 @@ ul.ui-autocomplete.ui-menu li.ui-menu-item:hover {
   margin-right: 12px;
 }
 
-.leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.sber, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.card-visa, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.card-mastercard, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.card-maestro, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.card-mir, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.card-jcb, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.card-unionpay, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.mobile-beeline, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.mobile-megafon, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.mobile-mts, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.mobile-tele2, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.mobile-yota, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.mobile-tinkoff, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.pay-applepay, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.pay-googlepay, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.yandex-pay, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.sbp, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.mir-pay {
+.leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.sber, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.card-visa, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.card-mastercard, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.card-maestro, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.card-mir, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.card-jcb, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.card-unionpay, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.mobile-beeline, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.mobile-megafon, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.mobile-mts, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.mobile-tele2, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.mobile-yota, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.mobile-tinkoff, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.pay-applepay, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.pay-googlepay, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.yandex-pay, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.sbp, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.mir-pay, .leyka-settings-page #payment-settings-area-new .side-area-wrapper .pm-order .pm-info .pm-icons .pm-icon.sberpay {
   height: 16px;
   margin-right: 10px;
 }
@@ -12439,7 +12453,7 @@ ul.ui-autocomplete.ui-menu li.ui-menu-item:hover {
   margin-right: 12px;
 }
 
-.leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.sber, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.card-visa, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.card-mastercard, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.card-maestro, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.card-mir, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.card-jcb, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.card-unionpay, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.mobile-beeline, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.mobile-megafon, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.mobile-mts, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.mobile-tele2, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.mobile-yota, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.mobile-tinkoff, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.pay-applepay, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.pay-googlepay, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.yandex-pay, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.sbp, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.mir-pay {
+.leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.sber, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.card-visa, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.card-mastercard, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.card-maestro, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.card-mir, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.card-jcb, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.card-unionpay, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.mobile-beeline, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.mobile-megafon, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.mobile-mts, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.mobile-tele2, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.mobile-yota, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.mobile-tinkoff, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.pay-applepay, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.pay-googlepay, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.yandex-pay, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.sbp, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.mir-pay, .leyka-admin .modules-cards-list .module-card .gateway-card-supported-pm-list .pm-icons .pm-icon.sberpay {
   height: 16px;
   margin-right: 10px;
 }
@@ -12657,6 +12671,28 @@ ul.ui-autocomplete.ui-menu li.ui-menu-item:hover {
     -ms-flex-preferred-size: auto;
     flex-basis: auto;
   }
+}
+
+#save_company,
+#more-testinfo,
+.show-sms,
+#leyka_mixplat-sms_default_campaign_id,
+#leyka_mixplat-sms_details{
+    display: none;
+}
+#more-testinfo.active,
+#leyka-settings-form-rd-sms.active #save_company,
+#leyka-settings-form-rd-sms.active .show-sms,
+#leyka-settings-form-rd-sms.active #leyka_mixplat-sms_default_campaign_id,
+#leyka-settings-form-rd-sms.active #leyka_mixplat-sms_details{
+    display: block !important;
+} 
+#mixplat_test_pay b{
+    width: 125px;
+    display: inline-block;
+}
+#leyka-settings-form-rd-sms textarea{
+    height: 120px;
 }
 
 /*# sourceMappingURL=admin.css.map */

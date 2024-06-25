@@ -52,6 +52,7 @@ class Leyka_Settings_Factory extends Leyka_Singleton { // Each descendant is a c
         switch($controller_id) {
             case 'init': return Leyka_Init_Wizard_Settings_Controller::get_instance();
             case 'cp': return Leyka_Cp_Wizard_Settings_Controller::get_instance();
+            case 'mixplat': return Leyka_Mixplat_Wizard_Settings_Controller::get_instance();
             case 'yandex': return Leyka_Yandex_Wizard_Settings_Controller::get_instance();
             case 'extension': return Leyka_Extension_Settings_Controller::get_instance($params);
             default: throw new Exception(
