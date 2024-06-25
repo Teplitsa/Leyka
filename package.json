@@ -40,6 +40,7 @@
     "jquery.cookie": "^1.4.1",
     "lightslider": "^1.1.6",
     "main-bower-files": "^2.13.3",
+    "gulp-zip": "^5.1.0",
     "node-bourbon": "^4.2.8",
     "relative-path": "^1.1.0",
     "selenium-webdriver": "^4.0.0-alpha.5"

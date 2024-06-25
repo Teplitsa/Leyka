@@ -6,13 +6,17 @@ let basePaths = {
     root: ''
 };
 
+let path = require('path');
+let name = path.basename(__dirname).toLowerCase();
+
 // Require plugins:
 let gulp = require('gulp'),
     // sass = require('gulp-sass'),
     es = require('event-stream'),
+    zip = require('gulp-zip'),
+    rename = require('gulp-rename'),
     gutil = require('gulp-util'),
     bourbon = require('node-bourbon'),
-    path = require('relative-path'),
     del = require('del');
 const {includePaths: paths} = require("node-bourbon");
     jsImport = require('gulp-js-import');
@@ -305,3 +309,26 @@ gulp.task('watch', function(done){
 });
 
 gulp.task('default', gulp.series('full-build', 'watch'));
+
+// Archive
+gulp.task('zip', function(){
+
+    const distFiles = [
+        '**',
+        '!src/**',
+        '!node_modules/**',
+        '!tests/**',
+        '!private/**',
+        '!.gitignore',
+        '!gulpfile.js',
+        '!package.json',
+        '!package-lock.json',
+        '!composer.phar',
+        '!composer.json',
+        '!**.zip'
+    ];
+
+    return gulp.src( distFiles, { base: '../' } )
+        .pipe( zip( name + '.zip' ) )
+        .pipe( gulp.dest( './' ) )
+});
