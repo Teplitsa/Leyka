@@ -6,4 +6,5 @@ php7cc.phar
 .DS_Store
 composer.lock
 /package-lock.json
+leyka.zip
 #!/vendor/composer/platform_check.php
