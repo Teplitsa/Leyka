@@ -67,13 +67,13 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
 
             for($sub_interval_index = 0; $sub_interval_index < $interval_length; $sub_interval_index++) {
 
-                $sub_interval_end_date = gmdate('Y-m-d 23:59:59', strtotime(' -'.$sub_interval_index.' '.$sub_interval));
+                $sub_interval_end_date = date('Y-m-d 23:59:59', strtotime(' -'.$sub_interval_index.' '.$sub_interval));
 
                 if($sub_interval_end_date <= $interval_dates['curr_interval_begin_date']) {
                     continue;
                 }
 
-                $sub_interval_begin_date = gmdate('Y-m-d 23:59:59', strtotime(' -'.($sub_interval_index + 1).' '.$sub_interval));
+                $sub_interval_begin_date = date('Y-m-d 23:59:59', strtotime(' -'.($sub_interval_index + 1).' '.$sub_interval));
                 $sub_interval_begin_date = $sub_interval_begin_date < $interval_dates['curr_interval_begin_date'] ?
                     $interval_dates['curr_interval_begin_date'] : $sub_interval_begin_date;
 
@@ -108,14 +108,12 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
 
                         foreach($donations_by_currency as $currency => $donations) {
 
-                            $query_var = $wpdb->get_var(
-                                $wpdb->prepare(
-                                    "SELECT SUM(meta_value) FROM {$wpdb->prefix}postmeta WHERE post_id IN (%s) AND meta_key='leyka_donation_amount'",
-                                    implode(',', $donations)
-                                )
-                            );
+                            $query = "SELECT SUM(meta_value)
+                                FROM {$wpdb->prefix}postmeta
+                                WHERE post_id IN (" . implode(',', $donations) . ")
+                                AND meta_key='leyka_donation_amount'";
 
-                            $amount += leyka_currency_convert( $query_var, $currency);
+                            $amount += leyka_currency_convert($wpdb->get_var($query), $currency);
 
                         }
 
@@ -128,24 +126,18 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
                         WHERE status='funded'
                             AND date_created BETWEEN '$sub_interval_begin_date' AND '$sub_interval_end_date'";
 
-                    $amount = $wpdb->get_var(
-                        $wpdb->prepare(
-                            "SELECT SUM(amount) FROM {$wpdb->prefix}leyka_donations WHERE status='funded' AND date_created BETWEEN %s AND %s",
-                            $sub_interval_begin_date,
-                            $sub_interval_end_date
-                        )
-                    );
+                    $amount = $wpdb->get_var($query);
 
                 }
 
-                $result[] = ['x' => gmdate('d.m.Y', strtotime($sub_interval_end_date)), 'y' => $amount,];
+                $result[] = ['x' => date('d.m.Y', strtotime($sub_interval_end_date)), 'y' => $amount,];
 
                 if($sub_interval === 'month') {
-                    $labels[] = gmdate('m.y', strtotime($sub_interval_end_date));
+                    $labels[] = date('m.y', strtotime($sub_interval_end_date));
                 } else if($sub_interval === 'week') {
-                    $labels[] = gmdate('d.m.y', strtotime($sub_interval_end_date));
+                    $labels[] = date('d.m.y', strtotime($sub_interval_end_date));
                 } else {
-                    $labels[] = gmdate('d.m', strtotime($sub_interval_end_date));
+                    $labels[] = date('d.m', strtotime($sub_interval_end_date));
                 }
 
             }
