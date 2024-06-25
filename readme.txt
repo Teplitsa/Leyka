@@ -85,6 +85,10 @@ For technical support questions, please, use the [plugin support email](maillto:
 
 == Changelog ==
 
+= 3.31.5 =
+* Add: MIXPLAT Wizard
+* Improve: Plugin security
+
 = 3.31.3 =
 * Add: New payment system Dolyame
 * Improve: Escaping
