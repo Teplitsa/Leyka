@@ -449,13 +449,7 @@ function leyka_get_posts_list($post_types = ['post']) {
 
     }
 
-    $res = $wpdb->get_results(
-        $wpdb->prepare(
-            "SELECT ID, post_title FROM $wpdb->posts WHERE %s",
-            implode(' AND ', $params)
-        )
-
-    );
+    $res = $wpdb->get_results("SELECT ID, post_title FROM $wpdb->posts WHERE ".implode(' AND ', $params));
 
     $pages = [0 => __('Website main page', 'leyka'),];
     foreach($res as $page) {
