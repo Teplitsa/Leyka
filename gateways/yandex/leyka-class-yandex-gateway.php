@@ -104,7 +104,7 @@ class Leyka_Yandex_Gateway extends Leyka_Gateway {
                 'default' => '0',
                 'title' => __("Return page", 'leyka'),
                 'description' => __('A page to return from the gateway process page', 'leyka'),
-                'list_entries' => leyka_get_posts_list(['page', 'post', 'leyka_campaign']),
+                'list_entries' => leyka_get_posts_list(['page', 'leyka_campaign']),
             ],
             $this->_id.'_test_mode' => [
                 'type' => 'checkbox',
