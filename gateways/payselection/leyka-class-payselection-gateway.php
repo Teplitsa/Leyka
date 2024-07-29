@@ -27,7 +27,7 @@ class Leyka_Payselection_Gateway extends Leyka_Gateway {
             $this->_id
         );
 
-        $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-payselection/';
+        $this->_docs_link = '//leyka.org/docs/podklyuchenie-payselection/';
         $this->_registration_link = 'https://merchant.payselection.com/login/';
         $this->_has_wizard = false;
 

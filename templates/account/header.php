@@ -2,7 +2,7 @@
 /**
  * The template for displaying leyka account screens
  *
- * @link https://leyka.te-st.ru/campaign/demo-kampaniya/
+ * @link https://leyka.org/campaign/demo-kampaniya/
  *
  * @package Leyka
  * @since 1.0.0

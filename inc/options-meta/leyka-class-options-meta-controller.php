@@ -151,7 +151,7 @@ abstract class Leyka_Options_Meta_Controller extends Leyka_Singleton {
                     'legal' => ['title' => __('NGO - legal person', 'leyka'), 'comment' => '',],
                     'physical' => ['title' => __('Physical person', 'leyka'), 'comment' => '',],
                 ],
-                'description' => __('If you plan to collect funds as a physical person, please <a href="https://te-st.ru/2019/09/03/donations-to-individuals/" target="_blank">read this</a>.', 'leyka'),
+                'description' => __('If you plan to collect funds as a physical person, please <a href="https://te-st.org/2019/09/03/donations-to-individuals/" target="_blank">read this</a>.', 'leyka'),
                 'default' => 'legal',
             ],
             'pm_available' => [ // The option is never displayed in UI via standard means

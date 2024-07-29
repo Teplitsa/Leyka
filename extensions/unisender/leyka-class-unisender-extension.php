@@ -4,7 +4,7 @@
  * Leyka Extension: Unisender integration
  * Version: 1.0
  * Author: Teplitsa of social technologies
- * Author URI: https://te-st.ru
+ * Author URI: https://te-st.org
  **/
 
 class Leyka_Unisender_Extension extends Leyka_Extension {
@@ -32,7 +32,7 @@ class Leyka_Unisender_Extension extends Leyka_Extension {
             </div>',
             'leyka'
         );
-        $this->_user_docs_link = 'https://leyka.te-st.ru/docs/unisender/';
+        $this->_user_docs_link = 'https://leyka.org/docs/unisender/';
         $this->_has_wizard = false;
         $this->_has_color_options = false;
         $this->_icon = LEYKA_PLUGIN_BASE_URL.'extensions/unisender/img/main_icon.jpeg';

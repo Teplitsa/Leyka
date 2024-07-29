@@ -63,8 +63,8 @@ If you have a questions for the plugin work in any aspect, please address our su
 
 The plugin manual is avaliable at [official website](https://leyka.org/docs/what-is-leyka/). Intallation and usage are illustrated with screencasts:
 
-* [basic features](//leyka.te-st.ru/docs/videourok-kak-ustanovit-i-nastroit-plagin-lejka/),
-* [extended features](//leyka.te-st.ru/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/).
+* [basic features](//leyka.org/docs/videourok-kak-ustanovit-i-nastroit-plagin-lejka/),
+* [extended features](//leyka.org/docs/video-urok-ispolzovanie-novyh-vozmozhnostej-lejki/).
 
 PHP version required: 7.2.5+
 

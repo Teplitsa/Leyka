@@ -12,7 +12,7 @@ class Leyka_Cp_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Controll
 
         $this->_id = 'cp';
         $this->_title = __('CloudPayments setup Wizard', 'leyka');
-        $this->_cp_email = leyka_options()->opt('plugin_debug_mode') ? 'support@te-st.ru' : 'sales@cloudpayments.ru';
+        $this->_cp_email = leyka_options()->opt('plugin_debug_mode') ? 'support@te-st.org' : 'sales@cloudpayments.ru';
 
     }
 

@@ -3,7 +3,7 @@
  * Leyka Extension: Engagement Banner
  * Version: 0.1.0
  * Author: Teplitsa of social technologies
- * Author URI: https://te-st.ru
+ * Author URI: https://te-st.org
  **/
 
 class Leyka_Engagement_Banner_Extension extends Leyka_Extension {

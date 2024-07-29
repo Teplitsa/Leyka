@@ -27,7 +27,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
             $this->_id
         );
 
-        $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-rbk/';
+        $this->_docs_link = '//leyka.org/docs/podklyuchenie-rbk/';
         $this->_registration_link = '//auth.rbk.money/auth/realms/external/login-actions/registration?client_id=koffing';
 
         $this->_min_commission = 2.9;

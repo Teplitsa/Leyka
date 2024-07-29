@@ -335,7 +335,7 @@ if( !function_exists('leyka_show_donation_error_full_info') ) {
 
                         <p><?php echo wp_kses_post( $error->description );?></p>
 
-                        <?php /** @todo Uncomment it when all the known errors will have descriptions on //leyka.te-st.ru/docs/donations-errors/ page */ /*?>
+                        <?php /** @todo Uncomment it when all the known errors will have descriptions on //leyka.org/docs/donations-errors/ page */ /*?>
                         <a href="<?php echo esc_url( $error->docs_link );?>" target="_blank"><?php _e('Full description', 'leyka');?></a>
                         <?php */?>
 
@@ -357,7 +357,7 @@ if( !function_exists('leyka_show_donation_error_full_info') ) {
                     <br>
                     <?php echo wp_kses_post(__('— <a href="https://t.me/leykadev" target="_blank">Telegram-chat of the support service</a> or', 'leyka'));?>
                     <br>
-                    <?php echo wp_kses_post(__('— <a href="https://leyka.te-st.ru/support/" target="_blank">make a feedaback post</a>.', 'leyka'));?>
+                    <?php echo wp_kses_post(__('— <a href="https://leyka.org/support/" target="_blank">make a feedaback post</a>.', 'leyka'));?>
                 </p>
 
             </div>

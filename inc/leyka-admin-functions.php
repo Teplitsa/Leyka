@@ -100,20 +100,20 @@ if( !function_exists('leyka_get_admin_footer') ) {
 
         <div class="leyka-dashboard-footer leyka-admin-footer <?php echo esc_attr( $footer_class );?>">
 
-            <a href="https://te-st.ru/" class="te-st-logo">
-                <img  src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL ); ?>img/logo-te-st-with-caption.svg" alt="<?php esc_attr_e('te-st.ru', 'leyka');?>">
+            <a href="https://te-st.org/" class="te-st-logo">
+                <img  src="<?php echo esc_attr( LEYKA_PLUGIN_BASE_URL ); ?>img/logo-te-st-with-caption.svg" alt="<?php esc_attr_e('te-st.org', 'leyka');?>">
             </a>
 
             <div class="links">
 
                 <div class="te-st-link">
                     <span><?php esc_html_e('Created by', 'leyka');?></span>
-                    <a href="https://te-st.ru/"><?php esc_html_e('Teplitsa. Technologies for Social Good', 'leyka');?></a>
+                    <a href="https://te-st.org/"><?php esc_html_e('Teplitsa. Technologies for Social Good', 'leyka');?></a>
                 </div>
 
                 <div class="info-links">
-                    <a href="https://leyka.te-st.ru/sla/" target="_blank"><?php esc_html_e('SLA', 'leyka');?></a>
-                    <a href="https://leyka.te-st.ru/docs/what-is-leyka/" target="_blank"><?php esc_html_e('Documentation', 'leyka');?></a>
+                    <a href="https://leyka.org/sla/" target="_blank"><?php esc_html_e('SLA', 'leyka');?></a>
+                    <a href="https://leyka.org/docs/what-is-leyka/" target="_blank"><?php esc_html_e('Documentation', 'leyka');?></a>
                     <a href="https://t.me/joinchat/BshvgVUqHJLyCNIXd6pZXQ" target="_blank"><?php esc_html_e('Developer chat', 'leyka');?></a>
                 </div>
 

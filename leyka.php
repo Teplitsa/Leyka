@@ -69,7 +69,7 @@ if( !defined('LEYKA_PLUGIN_INNER_SHORT_NAME') ) { // 'leyka/leyka.php'
 
 // Plugin support email:
 if( !defined('LEYKA_SUPPORT_EMAIL') ) {
-    define('LEYKA_SUPPORT_EMAIL', 'help@te-st.ru,sidorenko.a@gmail.com');
+    define('LEYKA_SUPPORT_EMAIL', 'help@te-st.org,sidorenko.a@gmail.com');
 }
 
 if( !defined('LEYKA_DEBUG') ) {
@@ -81,7 +81,7 @@ if( !defined('LEYKA_USAGE_STATS_DEV_SERVER_URL') ) {
 }
 
 if( !defined('LEYKA_USAGE_STATS_PROD_SERVER_URL') ) {
-    define('LEYKA_USAGE_STATS_PROD_SERVER_URL', 'https://ls.te-st.ru/');
+    define('LEYKA_USAGE_STATS_PROD_SERVER_URL', 'https://ls.te-st.org/');
 }
 
 if(get_locale() === 'ru_RU') {

@@ -12,7 +12,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
         $this->_id = 'webpay';
         $this->_title = __('Webpay', 'leyka');
 
-        $this->_docs_link = '//leyka.te-st.ru/docs/...'; /** @todo Add the links */
+        $this->_docs_link = '//leyka.org/docs/...'; /** @todo Add the links */
         $this->_registration_link = '//...';
         $this->_has_wizard = false;
 

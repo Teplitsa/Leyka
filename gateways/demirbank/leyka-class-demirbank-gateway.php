@@ -29,7 +29,7 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
         );
 
         // TODO Добавить ссылку на доки по подключению и ссылку регистрации
-        //$this->_docs_link = 'https://leyka.te-st.ru/docs/podklyuchenie-demirbank/';
+        //$this->_docs_link = 'https://leyka.org/docs/podklyuchenie-demirbank/';
         //$this->_registration_link = '//dashboard.demirbank.com/register';
         $this->_has_wizard = false;
 

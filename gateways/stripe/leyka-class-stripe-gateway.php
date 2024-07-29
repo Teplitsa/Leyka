@@ -20,7 +20,7 @@ class Leyka_Stripe_Gateway extends Leyka_Gateway {
             $this->_id
         );
 
-        $this->_docs_link = 'https://leyka.te-st.ru/docs/podklyuchenie-stripe/';
+        $this->_docs_link = 'https://leyka.org/docs/podklyuchenie-stripe/';
         $this->_registration_link = '//dashboard.stripe.com/register';
         $this->_has_wizard = false;
 

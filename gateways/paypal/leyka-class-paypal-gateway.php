@@ -24,7 +24,7 @@ class Leyka_Paypal_Gateway extends Leyka_Gateway {
             $this->_id
         );
 
-        $this->_docs_link = 'https://leyka.te-st.ru/docs/nastrojka-paypal/';
+        $this->_docs_link = 'https://leyka.org/docs/nastrojka-paypal/';
         $this->_registration_link = '//www.paypal.com/bizsignup/';
 
         $this->_min_commission = 2.9;

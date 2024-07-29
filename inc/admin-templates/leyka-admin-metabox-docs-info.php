@@ -8,17 +8,17 @@
     <div class="col-left">
         <ul>
 
-            <li><?php esc_html_e('Work start', 'leyka');?><a href="//leyka.te-st.ru/docs/what-is-leyka/" target="_blank"><img src="<?php echo esc_url( LEYKA_PLUGIN_BASE_URL );?>img/icon-outer-link.svg" alt=""></a></li>
+            <li><?php esc_html_e('Work start', 'leyka');?><a href="//leyka.org/docs/what-is-leyka/" target="_blank"><img src="<?php echo esc_url( LEYKA_PLUGIN_BASE_URL );?>img/icon-outer-link.svg" alt=""></a></li>
 
-            <li><?php esc_html_e('Campaign display', 'leyka');?><a href="//leyka.te-st.ru/docs/chto-takoe-postoyannaya-kampaniya/" target="_blank"><img src="<?php echo esc_url( LEYKA_PLUGIN_BASE_URL );?>img/icon-outer-link.svg" alt=""></a></li>
+            <li><?php esc_html_e('Campaign display', 'leyka');?><a href="//leyka.org/docs/chto-takoe-postoyannaya-kampaniya/" target="_blank"><img src="<?php echo esc_url( LEYKA_PLUGIN_BASE_URL );?>img/icon-outer-link.svg" alt=""></a></li>
 
-            <li><?php esc_html_e('Settings', 'leyka');?><a href="//leyka.te-st.ru/docs/panel-upravleniya/" target="_blank"><img src="<?php echo esc_url( LEYKA_PLUGIN_BASE_URL );?>img/icon-outer-link.svg" alt=""></a></li>
+            <li><?php esc_html_e('Settings', 'leyka');?><a href="//leyka.org/docs/panel-upravleniya/" target="_blank"><img src="<?php echo esc_url( LEYKA_PLUGIN_BASE_URL );?>img/icon-outer-link.svg" alt=""></a></li>
 
-            <li><?php esc_html_e('Gateways', 'leyka');?><a href="//leyka.te-st.ru/docs/integration/" target="_blank"><img src="<?php echo esc_url( LEYKA_PLUGIN_BASE_URL );?>img/icon-outer-link.svg" alt=""></a></li>
+            <li><?php esc_html_e('Gateways', 'leyka');?><a href="//leyka.org/docs/integration/" target="_blank"><img src="<?php echo esc_url( LEYKA_PLUGIN_BASE_URL );?>img/icon-outer-link.svg" alt=""></a></li>
 
-            <li><?php esc_html_e('Other', 'leyka');?><a href="//leyka.te-st.ru/docs/informatsii-po-starym-versiyam/" target="_blank"><img src="<?php echo esc_url( LEYKA_PLUGIN_BASE_URL );?>img/icon-outer-link.svg" alt=""></a></li>
+            <li><?php esc_html_e('Other', 'leyka');?><a href="//leyka.org/docs/informatsii-po-starym-versiyam/" target="_blank"><img src="<?php echo esc_url( LEYKA_PLUGIN_BASE_URL );?>img/icon-outer-link.svg" alt=""></a></li>
 
-            <li><?php esc_html_e('FAQ', 'leyka');?><a href="//leyka.te-st.ru/docs-faq/obshhie-voprosy/" target="_blank"><img src="<?php echo esc_url( LEYKA_PLUGIN_BASE_URL );?>img/icon-outer-link.svg" alt=""></a></li>
+            <li><?php esc_html_e('FAQ', 'leyka');?><a href="//leyka.org/docs-faq/obshhie-voprosy/" target="_blank"><img src="<?php echo esc_url( LEYKA_PLUGIN_BASE_URL );?>img/icon-outer-link.svg" alt=""></a></li>
 
         </ul>
     </div>

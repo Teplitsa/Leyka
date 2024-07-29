@@ -3,7 +3,7 @@
  * Leyka Extension: Google Data Studio extension
  * Version: 1.1
  * Author: Teplitsa of social technologies
- * Author URI: https://te-st.ru
+ * Author URI: https://te-st.org
  **/
 
 class Leyka_Gds_Integration_Extension extends Leyka_Extension {
@@ -34,21 +34,21 @@ class Leyka_Gds_Integration_Extension extends Leyka_Extension {
                 .'<br><code>'.str_replace(basename(__FILE__), 'leyka-gds-data-preparation.php', realpath(__FILE__)).'</code>'
             .'</li>'
             /* translators: 1: URL. */
-            .'<li>'.sprintf(__('Set the Cron job to call the procedure nightly (<a href="%s" target="_blank" class="leyka-outer-link">user manual for setting up Cron jobs</a>, chapter 2)', 'leyka'), 'https://leyka.te-st.ru/docs/gds/').'</li>'
+            .'<li>'.sprintf(__('Set the Cron job to call the procedure nightly (<a href="%s" target="_blank" class="leyka-outer-link">user manual for setting up Cron jobs</a>, chapter 2)', 'leyka'), 'https://leyka.org/docs/gds/').'</li>'
         .'</ul>'
         .'<h3>'.esc_html__('When the Cron job is done at least one time, there will be a new data table in your website database', 'leyka').'</h3>'
         .'<ul>'
             .'<li>'.esc_html__('The GDS data table name:', 'leyka').'<br><code>'.$wpdb->prefix.'leyka_gds_integration_donations_data</code></li>'
             /* translators: 1: URL */
-            .'<li>'.sprintf(__('Connect the table and GDS using a MySQL data connector (<a href="%s" target="_blank" class="leyka-outer-link">user manual for creating a GDS data connection</a>, chapter 4)', 'leyka'), 'https://leyka.te-st.ru/docs/gds/').'</li>'
+            .'<li>'.sprintf(__('Connect the table and GDS using a MySQL data connector (<a href="%s" target="_blank" class="leyka-outer-link">user manual for creating a GDS data connection</a>, chapter 4)', 'leyka'), 'https://leyka.org/docs/gds/').'</li>'
             /* translators: 1: URL */
-            .'<li>'.sprintf(__('Set up the data visualization in GDS (<a href="%s" target="_blank" class="leyka-outer-link">dashboards & charts setup examples</a>, chapter 5)', 'leyka'), 'https://leyka.te-st.ru/docs/gds/').'</li>'
+            .'<li>'.sprintf(__('Set up the data visualization in GDS (<a href="%s" target="_blank" class="leyka-outer-link">dashboards & charts setup examples</a>, chapter 5)', 'leyka'), 'https://leyka.org/docs/gds/').'</li>'
         .'</ul>';
 
         // A human-readable description of how to enable the main feature (for backoffice extension settings page):
         $this->_connection_description = '';
 
-        $this->_user_docs_link = 'https://leyka.te-st.ru/docs/gds/';
+        $this->_user_docs_link = 'https://leyka.org/docs/gds/';
         $this->_has_wizard = false;
         $this->_has_color_options = false;
 

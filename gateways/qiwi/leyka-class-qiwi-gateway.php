@@ -23,7 +23,7 @@ class Leyka_Qiwi_Gateway extends Leyka_Gateway {
             $this->_id
         );
 
-        $this->_docs_link = '//leyka.te-st.ru/docs/qiwi/';
+        $this->_docs_link = '//leyka.org/docs/qiwi/';
         $this->_registration_link = 'https://kassa.qiwi.com/pay/';
 
         $this->_min_commission = 2.9;

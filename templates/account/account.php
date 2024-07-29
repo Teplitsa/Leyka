@@ -2,7 +2,7 @@
 /**
  * The template for displaying Leyka Donor's account.
  *
- * @link https://leyka.te-st.ru/donor-account
+ * @link https://leyka.org/donor-account
  *
  * @package Leyka
  * @since 1.0.0

@@ -3,7 +3,7 @@
  * Leyka Extension: Merchandise/gifts for donors
  * Version: 1.0
  * Author: Teplitsa of social technologies
- * Author URI: https://te-st.ru
+ * Author URI: https://te-st.org
  **/
 
 class Leyka_Merchandise_Extension extends Leyka_Extension {
@@ -27,7 +27,7 @@ class Leyka_Merchandise_Extension extends Leyka_Extension {
         // A human-readable description of how to enable the main feature (for backoffice extension settings page):
         $this->_connection_description = '';
 
-        $this->_user_docs_link = '//leyka.te-st.ru/docs/merchandise-manual';
+        $this->_user_docs_link = '//leyka.org/docs/merchandise-manual';
         $this->_has_wizard = false;
         $this->_has_color_options = false;
 

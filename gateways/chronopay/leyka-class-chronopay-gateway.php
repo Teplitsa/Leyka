@@ -18,7 +18,7 @@ class Leyka_Chronopay_Gateway extends Leyka_Gateway {
             $this->_id
         );
 
-        $this->_docs_link = '//leyka.te-st.ru/docs/chronopay/';
+        $this->_docs_link = '//leyka.org/docs/chronopay/';
         $this->_registration_link = '//chronopay.com/ru/connection/';
 
         $this->_min_commission = 2.7;

@@ -19,13 +19,13 @@ class Leyka_Donations_Errors extends Leyka_Singleton {
 
         $this->_all_errors_docs_link = apply_filters(
             'leyka_donations_errors_docs_link',
-            'https://leyka.te-st.ru/docs/donations-errors/'
+            'https://leyka.org/docs/donations-errors/'
         );
 
         $this->add_error('L-1023', __('Leyka is unavailable', 'leyka'), [
             'description' => __("Leyka wasn't available at the moment of the transaction handling.", 'leyka'),
             /* translators: 1: Email, 2: Email. */
-            'recommendation_admin' => sprintf(__('Contact the Leyka plugin technical support team via <a href=\'mailto:%1$s\'>%2$s</a> email. It\'s important to attach error screenshots and description, how the error appeared.', 'leyka'), 'help@te-st.ru', 'help@te-st.ru'),
+            'recommendation_admin' => sprintf(__('Contact the Leyka plugin technical support team via <a href=\'mailto:%1$s\'>%2$s</a> email. It\'s important to attach error screenshots and description, how the error appeared.', 'leyka'), 'help@te-st.org', 'help@te-st.org'),
             /* translators: %s: Support email. */
             'recommendation_donor' => sprintf(__('Please, try to pay 1-2 days later. If the problem persists then, ask the <a href="mailto:%s" target="_blank">website administration</a> to report this to the gateway technical support.', 'leyka'), leyka_options()->opt('tech_support_email')),
         ]);

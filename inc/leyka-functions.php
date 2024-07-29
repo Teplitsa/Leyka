@@ -503,7 +503,7 @@ function leyka_get_pm_full_ids_used() {
 }
 
 function leyka_get_pd_usage_info_links() {
-    return __('<a href="//te-st.ru/reports/personal-data-perm/" target="_blank" rel="noopener noreferrer">the Teplitsa article</a>.', 'leyka');
+    return __('<a href="https://te-st.org/reports/personal-data-perm/" target="_blank" rel="noopener noreferrer">the Teplitsa article</a>.', 'leyka');
 }
 
 function leyka_get_default_email_from() {
@@ -3128,7 +3128,7 @@ if( !function_exists('leyka_get_active_recurring_setup_help_content') ) {
                 .'<p><code>'.LEYKA_PLUGIN_DIR.'procedures/leyka-active-recurring.php</code></p>'
             .'</li>'
             .'<li>'
-                .sprintf(__('Set the Cron job to call the procedure nightly (<a href="%s" target="_blank" class="leyka-outer-link">user manual for setting up Cron jobs</a>, chapter 3)', 'leyka'), 'https://leyka.te-st.ru/docs/yandex-kassa-recurring/')
+                .sprintf(__('Set the Cron job to call the procedure nightly (<a href="%s" target="_blank" class="leyka-outer-link">user manual for setting up Cron jobs</a>, chapter 3)', 'leyka'), 'https://leyka.org/docs/yandex-kassa-recurring/')
             .'</li>'
         .'</ul>';
 

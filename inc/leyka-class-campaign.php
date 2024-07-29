@@ -329,7 +329,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             <div class="field-wrapper flex daily-rouble-settings-wrapper" style="<?php echo esc_attr( $cur_template === 'need-help' ? '' : 'display:none;' ); ?>">
 
                 <label for="daily-rouble-mode-on">
-                    <input type="checkbox" id="daily-rouble-mode-on" name="daily_rouble_mode_on" value="1" <?php echo esc_attr( $campaign->daily_rouble_mode_on ? 'checked' : '' ); ?>>&nbsp;<?php echo wp_kses_post( sprintf(__('Turn on the "<a href="%s" target="_blank">Rouble per day</a>" mode', 'leyka'), 'https://leyka.te-st.ru/docs/ruble-a-day/') );?>
+                    <input type="checkbox" id="daily-rouble-mode-on" name="daily_rouble_mode_on" value="1" <?php echo esc_attr( $campaign->daily_rouble_mode_on ? 'checked' : '' ); ?>>&nbsp;<?php echo wp_kses_post( sprintf(__('Turn on the "<a href="%s" target="_blank">Rouble per day</a>" mode', 'leyka'), 'https://leyka.org/docs/ruble-a-day/') );?>
                 </label>
 
                 <div class="field-wrapper flex daily-rouble-settings">

@@ -887,7 +887,7 @@ function leyka_pf_footer() {
 <div class="leyka-form-footer">
 	<div id="leyka-copy">
 		<p>
-            <?php printf(esc_html__('Proudly powered by %s', 'leyka'), '<a href="//leyka.te-st.ru" target="_blank" rel="noopener noreferrer">'.esc_html_x('Leyka', 'Plugin name in preposotional case', 'leyka').'</a>');?>
+            <?php printf(esc_html__('Proudly powered by %s', 'leyka'), '<a href="//leyka.org" target="_blank" rel="noopener noreferrer">'.esc_html_x('Leyka', 'Plugin name in preposotional case', 'leyka').'</a>');?>
         </p>
 	</div>
 </div>

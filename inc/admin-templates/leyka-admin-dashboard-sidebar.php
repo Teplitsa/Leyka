@@ -14,7 +14,7 @@ require_once(LEYKA_PLUGIN_DIR.'inc/settings/leyka-class-settings-factory.php');?
     </div>
 
     <div class="leyka-bottom-link leyka-official-website">
-        <a href="//leyka.te-st.ru/docs/what-is-leyka/" target="_blank"><?php esc_html_e('Go to the plugin documentation', 'leyka');?></a>
+        <a href="//leyka.org/docs/what-is-leyka/" target="_blank"><?php esc_html_e('Go to the plugin documentation', 'leyka');?></a>
     </div>
 
     <div class="leyka-bottom-link leyka-wizard-link">

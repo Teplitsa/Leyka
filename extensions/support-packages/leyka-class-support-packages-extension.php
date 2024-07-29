@@ -3,7 +3,7 @@
  * Extension name: Support Packages
  * Version: 0
  * Author: Teplitsa of social technologies
- * Author URI: https://te-st.ru
+ * Author URI: https://te-st.org
  * Debug only: 0
  **/
 
@@ -47,7 +47,7 @@ class Leyka_Support_Packages_Extension extends Leyka_Extension {
             LEYKA_PLUGIN_BASE_URL.'extensions/support-packages/img/widget-scheme.png' => LEYKA_PLUGIN_BASE_URL.'extensions/support-packages/img/widget-scheme-full.png',
         ];
 
-        $this->_user_docs_link = '//leyka.te-st.ru/docs/pakety-podderzhki/'; // Extension user manual page URL
+        $this->_user_docs_link = '//leyka.org/docs/pakety-podderzhki/'; // Extension user manual page URL
         $this->_has_wizard = false;
         $this->_has_color_options = true;
 

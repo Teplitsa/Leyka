@@ -11,7 +11,7 @@ class Leyka_Yandex_Phyz_Gateway extends Leyka_Gateway {
 
         $this->_id = 'yandex_phyz';
         $this->_title = __('YooMoney for physical persons', 'leyka');
-        $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-yandeks-dengi-dlya-fizicheskih-lits/';
+        $this->_docs_link = '//leyka.org/docs/podklyuchenie-yandeks-dengi-dlya-fizicheskih-lits/';
 
         $this->_min_commission = 2;
         $this->_receiver_types = ['physical'];

@@ -14,7 +14,7 @@ class Leyka_Sber_Gateway extends Leyka_Gateway {
         $this->_id = 'sber';
         $this->_title = __('Sberbank Acquiring', 'leyka');
 
-        $this->_docs_link = '//leyka.te-st.ru/docs/podklyuchenie-sber-acquiring/';
+        $this->_docs_link = '//leyka.org/docs/podklyuchenie-sber-acquiring/';
         $this->_registration_link = '//www.sberbank.ru/ru/s_m_business/bankingservice/acquiring_total#application';
         $this->_has_wizard = false;
 
