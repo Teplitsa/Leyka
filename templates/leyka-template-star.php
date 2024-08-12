@@ -53,6 +53,8 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
 
         </div>
 
+        <?php do_action( 'leyka_form_section_periodicity_after' ); ?>
+
         <div class="section section--currencies <?php echo sizeof($template_data['currencies']) === 1 && empty($template_data['cryptocurrencies_wallets']) ? 'leyka-hidden' : '' ?>"
              data-main-currency="<?php echo esc_attr( $template_data['main_currency_id'] ); ?>" data-currencies-count="<?php echo esc_attr(sizeof($template_data['currencies'])); ?>"
              data-is-crypto-enabled="<?php echo empty($template_data['cryptocurrencies_wallets']) ? 0 : 1; ?>" >

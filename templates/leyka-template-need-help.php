@@ -71,6 +71,8 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
 
             </div>
 
+            <?php do_action( 'leyka_form_section_periodicity_after' ); ?>
+
             <div class="section section--currencies leyka-hidden <?php echo sizeof($template_data['currencies']) === 1 && empty($template_data['cryptocurrencies_wallets']) ? 'leyka-hidden' : '' ?>"
                  data-main-currency="<?php echo esc_attr( $template_data['main_currency_id'] ); ?>" data-currencies-count="<?php echo esc_attr(sizeof($template_data['currencies'])); ?>"
                  data-is-crypto-enabled="<?php echo empty($template_data['cryptocurrencies_wallets']) ? 0 : 1; ?>" >
@@ -89,6 +91,8 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                     <?php foreach($template_data['currencies'] as $currency_id => $currency_data) { ?>
                         <a href="#" class="<?php echo esc_attr( $currency_id === $template_data['main_currency_id'] ? 'active' : '' ); ?>" data-currency="<?php echo esc_attr( $currency_id );?>" role="tab" aria-selected="true"><?php echo esc_attr( $currency_data['currency_label'] ); ?></a>
                     <?php } ?>
+
+                    <?php do_action( 'leyka_form_currency_tabs' ); ?>
 
                     <?php if ( !empty($template_data['cryptocurrencies_wallets']) ) { ?>
                         <a href="#" data-currency="crypto" role="tab" aria-selected="true">Crypto</a>
@@ -290,7 +294,11 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
 
                 <?php }?>
 
-                <?php if( !empty($template_data['cryptocurrencies_wallets']) ) { ?>
+            </div>
+
+            <?php }?>
+
+            <?php if( !empty($template_data['cryptocurrencies_wallets']) ) { ?>
 
                     <div class="currency-tab currency-crypto leyka-hidden">
 
@@ -342,9 +350,7 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
 
                 <?php } ?>
 
-            </div>
 
-            <?php }?>
 
             <!-- donor data -->
             <div class="section section--person">

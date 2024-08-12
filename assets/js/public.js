@@ -2422,9 +2422,9 @@ jQuery(document).ready(function($){
             setupSwiperWidth($currency_tab);
 
             if(currency !== 'crypto') {
-                $_form.find('.section--person').removeClass('leyka-hidden');
+                $_form.find('.section--person, .section--agreements').removeClass('leyka-hidden');
             } else {
-                $_form.find('.section--person').addClass('leyka-hidden');
+                $_form.find('.section--person, .section--agreements').addClass('leyka-hidden');
             }
 
             const amount_mode = $('.section--amount .section__fields.amount').data('amount-mode');
