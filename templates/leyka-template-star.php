@@ -431,7 +431,22 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                         case 'date': $text_input_type = 'text'; break; // type="date" is not universal yet
                         default:
                             $text_input_type = 'text';
-                    }?>
+                    }
+
+                    $data_inputmask_val = '';
+                    $data_inputmask_attr = '';
+                    if ( $field['type'] === 'phone' ) {
+                        $data_inputmask_val = apply_filters('leyka_front_forms_phone_fields_mask', $phone_field_data['mask']);
+                    } elseif ( $field['type'] === 'date' ) {
+                        $data_inputmask_val = apply_filters('leyka_front_forms_date_fields_mask', '99.99.9999');
+                    }
+
+                    if ( $data_inputmask_val ) {
+                        $data_inputmask_val  = "'mask': '" . esc_attr( $data_inputmask_val ) . "'";
+                        $data_inputmask_attr = 'data-inputmask="' . wp_kses_post( $data_inputmask_val ) . '"';
+                    }
+
+                    ?>
 
                     <div class="donor-additional-field donor__textfield donor__textfield--<?php echo esc_attr( $field['type'] );?> donor__textfield--<?php echo esc_attr( $field_slug );?> <?php echo empty($field['is_required']) ? '' : 'required';?>">
 
@@ -441,7 +456,7 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                                 <span class="donor__textfield-label donor__<?php echo esc_attr( $field['type'] );?>_field-label leyka_<?php echo esc_attr( $field_slug );?>-label"><?php echo esc_html( $field['title'] );?></span>
                             </label>
 
-                            <input type="<?php echo esc_attr( $text_input_type );?>" id="<?php echo esc_attr( $field_id );?>" name="leyka_<?php echo esc_attr( $field_slug );?>" value="" autocomplete="off" <?php echo esc_attr( $field['type'] === 'phone' ? 'data-inputmask="\'mask\': \''.apply_filters('leyka_front_forms_phone_fields_mask', $phone_field_data['mask']).'\'"' : '' );?> <?php echo esc_attr( $field['type'] === 'date' ? 'data-inputmask="\'mask\': \''.apply_filters('leyka_front_forms_date_fields_mask', '99.99.9999').'\'"' : '' );?>>
+                            <input type="<?php echo esc_attr( $text_input_type );?>" id="<?php echo esc_attr( $field_id );?>" name="leyka_<?php echo esc_attr( $field_slug );?>" value="" autocomplete="off" <?php echo wp_kses_post( $data_inputmask_attr ); ?>>
 
                         </div>
 
