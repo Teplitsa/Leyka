@@ -187,17 +187,7 @@ function leyka_shortcode_donors_count($atts) {
 
         }
 
-        $donors_count = $wpdb->get_var(
-            $wpdb->prepare(
-                "SELECT COUNT(DISTINCT pm_1.meta_value) FROM {$wpdb->postmeta} pm_1 LEFT JOIN {$wpdb->posts} p ON p.ID = pm_1.post_id %s %s WHERE p.post_status = 'funded' AND pm_1.meta_key = 'leyka_donor_email' %s %s",
-                array(
-                    $query_clauses['campaign_id_join'],
-                    $query_clauses['recurring_join'],
-                    $query_clauses['campaign_id_where'],
-                    $query_clauses['recurring_where']
-                )
-            )
-        );
+        $donors_count = $wpdb->get_var($query);
 
     }
 
