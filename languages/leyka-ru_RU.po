@@ -11495,3 +11495,12 @@ msgstr "Теперь перейдите на страницу настройки
 #: /inc/settings-fields-templates/leyka-mixplat_final.php
 msgid "Go to payment settings"
 msgstr "Перейти к настройкам"
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php
+msgid "Enable BNPL payment method"
+msgstr "Включить метод оплаты по частям"
+
+#: gateways/mixplat/leyka-class-mixplat-gateway.php
+msgid "BNPL"
+msgstr "Частями"
+
