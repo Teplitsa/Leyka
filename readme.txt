@@ -6,7 +6,7 @@ Tags: лейка, crowdfunding, fundraising, donations, recurring donations, cha
 Requires at least: 3.6.1
 Requires PHP: 7.2.5
 Tested up to: 6.5.2
-Stable tag: 3.31.5
+Stable tag: 3.31.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -84,6 +84,15 @@ For technical support questions, please, use the [plugin support email](maillto:
 5. The plugin start page (a console)
 
 == Changelog ==
+
+= 3.31.6 =
+* Fix: Get donnors shortcode
+* Fix: Inputmask attr data
+* Fix: Error on page donation failure
+* Improve: MIXPLAT Gateway
+* Improve: Need Help form template
+* Improve: Remove post from Return page selection
+
 
 = 3.31.5 =
 * Add: MIXPLAT Wizard
