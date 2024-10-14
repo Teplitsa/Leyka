@@ -623,6 +623,8 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
 
         </form>
 
+        <?php do_action( 'leyka_payment_form_after' ); ?>
+
         <?php if($template_data['platform_signature_on_form_enabled']) {?>
             <div class="section section--signature">
                 <div id="leyka-platform-signature">
