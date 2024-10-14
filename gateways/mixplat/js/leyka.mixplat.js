@@ -47,6 +47,12 @@ jQuery(document).ready(function($){
             }, 250);
         }
 
+				function decodeHtmlEntities(text) {
+    				const textArea = document.createElement('textarea');
+				    textArea.innerHTML = text;
+    				return textArea.value;
+				}
+
         /** @var leyka object Localization strings */
 
         var $form = $(this),
@@ -173,7 +179,7 @@ jQuery(document).ready(function($){
 						 'merchant_payment_id': response.merchant_payment_id,
 						 'merchant_fields': {},
 						 'test': response.test,
-						 'description': response.description,
+						 'description': decodeHtmlEntities(response.description),
 						 'currency': response.currency,
 						 'amount': response.amount,
 
