@@ -29,7 +29,7 @@ $campaign_url = $campaign_id ? get_the_permalink($campaign_id) : null;
     </p>
 
     <div class="final-button">
-        <a class="step-next button button-primary" href="<?php echo admin_url("/admin.php?page=leyka_settings&stage=payment&gateway=mixplat");?>"><?php esc_html_e('Go to payment settings', 'leyka');?></a>
+        <a class="step-next button button-primary" href="<?php echo esc_url( admin_url("/admin.php?page=leyka_settings&stage=payment&gateway=mixplat") );?>"><?php esc_html_e('Go to payment settings', 'leyka');?></a>
     </div>
 
 

@@ -8,9 +8,7 @@
     <div class="step">
         <div class="block-separator"><div></div></div>
         <p>
-            <?php
-                _e("Click the &quot;Settings&quot; button on the Project <a href='https://stat.mixplat.ru/projects' target='_blank'>Settings page</a>.", "leyka");
-            ?>
+            <?php esc_html_e("Click the &quot;Settings&quot; button on the Project", "leyka" ); ?> <a href='https://stat.mixplat.ru/projects' target='_blank'><?php esc_html_e('Settings page','leyka'); ?></a>.
         <p>
         <div class="captioned-screen">
             <div class="screen-wrapper">
@@ -23,11 +21,7 @@
 
     <div class="step">
         <div class="block-separator"><div></div></div>
-        <p>
-            <?php
-                _e("Copy the project id, widget key, and API key to the appropriate fields.", "leyka");
-            ?>
-        <p>
+        <p><?php esc_html_e("Copy the project id, widget key, and API key to the appropriate fields.", "leyka"); ?><p>
         <div class="captioned-screen">
             <div class="screen-wrapper">
                 <img src="/wp-content/plugins/leyka/img/mixplat/mixplat_img07.png" class="leyka-instructions-screen" alt="">

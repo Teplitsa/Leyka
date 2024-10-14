@@ -16,11 +16,15 @@
 
     <div class="ui-accordion no-jquery-ui">
 
-        <h2><?php _e("I'm ready to follow the connection instructions", 'leyka');?></h2>
+        <h2><?php esc_html_e("I'm ready to follow the connection instructions", 'leyka');?></h2>
         <div>
-            <? _e("<h3 class='intro-mini-header'>Before starting registration with the payment operator, please prepare scanned copies of the documents:</h3><ul><li>Certificate of registration of your organization</li><li>Tax registration certificate (TIN)</li></ul>","leyka"); ?>
+            <h3 class="intro-mini-header"><?php esc_html_e("Before starting registration with the payment operator, please prepare scanned copies of the documents:", "leyka" ); ?></h3>
+            <ul>
+                <li><?php esc_html_e('Certificate of registration of your organization', 'leyka'); ?></li>
+                <li><?php esc_html_e('Tax registration certificate (TIN)', 'leyka'); ?></li>
+            </ul>
         </div>
-        <h2><? _e("I'm already connected to the Mixplat", 'leyka') ;?></h2>
+        <h2><?php esc_html_e("I'm already connected to the Mixplat", 'leyka') ;?></h2>
         <div class="single-gateway-settings gateway-yandex">
 
             <?php foreach(leyka_get_gateway_by_id('mixplat')->get_options_names() as $option_id) {

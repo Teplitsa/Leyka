@@ -6,10 +6,9 @@
 
     <div class="step">
         <div class="block-separator"><div></div></div>
-        <?php
-            _e("<p>In the project settings, in the «Receiving payment statuses» field, you need to enter the URL where the payment status handler script is located on your site.</p><p>Click the «Edit» button and in the «script handler» field, copy and paste the following address:</p>", "leyka");
-        ?>
-        <span class="info2copy leyka-wizard-copy2clipboard"><?php echo site_url('/leyka/service/mixplat/');?></span>
+        <p><?php esc_html_e("In the project settings, in the «Receiving payment statuses» field, you need to enter the URL where the payment status handler script is located on your site.", "leyka"); ?></p>
+        <p><?php esc_html_e("Click the «Edit» button and in the «script handler» field, copy and paste the following address:", "leyka"); ?></p>
+        <span class="info2copy leyka-wizard-copy2clipboard"><?php echo esc_url( site_url('/leyka/service/mixplat/') );?></span>
         <div class="captioned-screen">
             <div class="screen-wrapper">
                 <img src="/wp-content/plugins/leyka/img/mixplat/mixplat_img08.png" class="leyka-instructions-screen" alt="">
@@ -21,11 +20,7 @@
 
     <div class="step">
         <div class="block-separator"><div></div></div>
-        <p>
-            <?php
-                _e("Check the correctness of the address and click «Save».", "leyka");
-            ?>
-        </p>
+        <p><?php esc_html_e("Check the correctness of the address and click «Save».", "leyka"); ?></p>
         <div class="captioned-screen">
             <div class="screen-wrapper">
                 <img src="/wp-content/plugins/leyka/img/mixplat/mixplat_img09.png" class="leyka-instructions-screen" alt="">

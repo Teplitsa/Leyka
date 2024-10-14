@@ -536,7 +536,7 @@ $another_amount_title = count($template_data['currencies'][$currency_id]['amount
                                 // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                                 echo leyka_options()->opt_template('donation_comment_max_length', 'star') ? 
                                     /* translators: %d: Label. */
-                                    sprintf(__('Your comment (<span class="donation-comment-current-length">0</span> / <span class="donation-comment-max-length">%d</span> symbols)', 'leyka'), leyka_options()->opt_template('donation_comment_max_length', 'star')) : __('Your comment', 'leyka');?>
+                                    sprintf(__('Your comment (<span class="donation-comment-current-length">0</span> / <span class="donation-comment-max-length">%d</span> symbols)', 'leyka'), esc_html( leyka_options()->opt_template('donation_comment_max_length', 'star'))) : esc_html__('Your comment', 'leyka'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                         </span>
                             </label>
 
