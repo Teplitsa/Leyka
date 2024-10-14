@@ -85,6 +85,12 @@ For technical support questions, please, use the [plugin support email](maillto:
 
 == Changelog ==
 
+= 3.31.7 =
+* Fix: Security Vulnerability
+* Fix: Improve sanitization
+* Update: MIXPLAT Gateway
+
+
 = 3.31.6 =
 * Fix: Get donnors shortcode
 * Fix: Inputmask attr data
