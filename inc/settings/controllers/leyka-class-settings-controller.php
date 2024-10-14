@@ -370,7 +370,15 @@ abstract class Leyka_Wizard_Settings_Controller extends Leyka_Settings_Controlle
     protected function _add_history_entry(array $data = [], $section_full_id = false) {
 
         $data = empty($data) ? $this->get_current_section()->get_fields_values() : $data;
-        $section_full_id = !$section_full_id ? $this->get_current_section()->full_id : trim($section_full_id);
+
+        $current_section = $this->get_current_section();
+        if (!$section_full_id) {
+            if ($current_section && isset($current_section->full_id)) {
+                $section_full_id = trim($current_section->full_id);
+            } else {
+                return;
+            }
+        }
 
         if(empty($this->_activity['history'][$section_full_id])) {
             $this->_activity['history'][$section_full_id] = [
