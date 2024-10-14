@@ -179,6 +179,17 @@ if ( ! function_exists( 'leyka_kses_allowed_html' ) ) {
                     'class'  => true,
                     'data-*' => true,
                 ),
+                'table' => array(
+                    'class' => true,
+                ),
+                'tbody' => array(),
+                'tr'    => array(),
+                'th'    => array(
+                    'class' => true,
+                ),
+                'td'    => array(
+                    'class' => true,
+                ),
                 'iframe' => array(
                     'id'     => true,
                     'width'  => true,
