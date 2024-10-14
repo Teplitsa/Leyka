@@ -137,7 +137,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
 
         $columns = [
             'cb' => '<input type="checkbox">',
-            'id' => __('ID'),
+            'id' => __('ID', 'leyka'),
             'payment_type' => __('Type', 'leyka'),
             'campaign' => __('Campaign', 'leyka'),
             'donor' => __('Donor', 'leyka'),
@@ -260,7 +260,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
                 .'</a>
             </div>'
             .$this->row_actions([
-                'campaign_edit' => '<a href="'.admin_url('post.php?post='.$campaign->id.'&action=edit').'">'.__('Edit').'</a>',
+                'campaign_edit' => '<a href="'.admin_url('post.php?post='.$campaign->id.'&action=edit').'">'.__('Edit', 'leyka').'</a>',
                 'campaign_public' => '<a href="'.get_permalink($donation->campaign_id).'">'.__('Public page', 'leyka').'</a>',
             ]);
 
@@ -492,7 +492,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
     protected function get_views() {
 
         $base_page_url = admin_url('admin.php?page=leyka_donations');
-        $links = ['all' => '<a href="'.$base_page_url.'">'.__('All').'</a>',];
+        $links = ['all' => '<a href="'.$base_page_url.'">'.__('All', 'leyka').'</a>',];
 
         foreach(leyka_get_donation_status_list(false) as $status => $label) { /** @todo Remove "false" when "trash" Donation status will be in use */
             $links[$status] = '<a href="'.$base_page_url.'&status='.$status.'" class="'.(isset($_GET['status']) && $_GET['status'] === $status ? 'current' : '').'">'.$label.'</a>';
@@ -545,7 +545,7 @@ class Leyka_Admin_Donations_List_Table extends WP_List_Table {
      * @return array
      */
     public function get_bulk_actions() {
-        return ['bulk-delete' => __('Delete'),];
+        return ['bulk-delete' => __('Delete', 'leyka'),];
     }
 
     public function process_bulk_action() {

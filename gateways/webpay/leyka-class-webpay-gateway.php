@@ -363,7 +363,7 @@ class Leyka_Webpay_Gateway extends Leyka_Gateway {
         ];
 
         if($donation->status === 'failed') {
-            $response[__('Failure reason:')] = empty($donation->gateway_response['failure_reason']) ?
+            $response[__('Failure reason:','leyka')] = empty($donation->gateway_response['failure_reason']) ?
                 '-' : $donation->gateway_response['failure_reason'];
         }
 

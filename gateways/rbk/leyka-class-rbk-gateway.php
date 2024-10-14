@@ -140,7 +140,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 'amount' => 100 * (int)$donation->amount, // Amount in minor currency units (like cent or kopeyka). Must be int
                 'currency' => 'RUB',
                 /* translators: %s: Payment title. */
-                'product' => sprintf(__('%s - recurring donation'), $donation->payment_title),
+                'product' => sprintf(__('%s - recurring donation','leyka'), $donation->payment_title),
                 'dueDate' => gmdate( 'Y-m-d\TH:i:s\Z', strtotime('+2 minute', current_time('timestamp', 1)) ),
                 'metadata' => ['donation_id' => $donation_id,],
             ])
@@ -436,7 +436,7 @@ class Leyka_Rbk_Gateway extends Leyka_Gateway {
                 'amount' => 100 * (int)$new_recurring_donation->amount, // Amount in minor currency units. Must be int
                 'currency' => 'RUB',
                 /* translators: %s: Payment title. */
-                'product' => sprintf(__('%s - non-initial recurring donation'), $new_recurring_donation->payment_title),
+                'product' => sprintf(__('%s - non-initial recurring donation','leyka'), $new_recurring_donation->payment_title),
                 'metadata' => ['donation_id' => $new_recurring_donation->id,],
             ])
         ];

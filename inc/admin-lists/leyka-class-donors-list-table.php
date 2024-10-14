@@ -493,7 +493,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             .'<div class="leyka-donor-data-main">'
                 .$donor_data_html
                 .$this->row_actions([
-                    'donor_page' => '<a href="'.$admin_donor_page.'">'.__('Edit').'</a>',
+                    'donor_page' => '<a href="'.$admin_donor_page.'">'.__('Edit', 'leyka').'</a>',
                     'delete' => sprintf(
                         '<a href="?page=%s&action=%s&donor=%s&_wpnonce=%s">'.__('Delete', 'leyka').'</a>',
                         esc_attr($_GET['page']),
@@ -733,7 +733,7 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
      * @return array
      */
     public function get_bulk_actions() {
-        return ['bulk-edit' => __('Edit'), 'bulk-delete' => __('Delete'),];
+        return ['bulk-edit' => __('Edit', 'leyka'), 'bulk-delete' => __('Delete', 'leyka'),];
     }
 
     /**
@@ -820,8 +820,8 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
             </div>
 
             <div class="inline-edit-submits">
-                <button type="submit" name="bulk-edit" id="bulk-edit" class="button-primary-small"><?php esc_html_e('Update');?></button>
-                <button class="cancel button-secondary-small"><?php esc_html_e('Cancel');?></button>
+                <button type="submit" name="bulk-edit" id="bulk-edit" class="button-primary-small"><?php esc_html_e('Update', 'leyka');?></button>
+                <button class="cancel button-secondary-small"><?php esc_html_e('Cancel', 'leyka');?></button>
             </div>
 
             <div class="result error-message" style="display:none;" data-default-error-text="<?php esc_html_e('Error while editing donors', 'leyka');?>"></div>

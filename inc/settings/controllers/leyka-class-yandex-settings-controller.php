@@ -124,7 +124,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => [
-                'caption' => __('<strong>Approximate monthly online payments amount</strong>', 'leyka'),
+                'caption' => '<strong>' . __('Approximate monthly online payments amount', 'leyka') . '</strong>',
                 'text' => __('If you find it hard to assess the amount, then select <strong>"Up to 1 million RUB"</strong>.', 'leyka')
             ],
         ]))->add_block(new Leyka_Custom_Setting_Block([
@@ -133,7 +133,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => [
-                'caption' => __('<strong>Subject to mandatory licensing</strong>', 'leyka'),
+                'caption' => '<strong>' . __('Subject to mandatory licensing', 'leyka') . '</strong>',
                 'text' => __('Skip this paragraph if you do not have licensed activity. In most cases, non-profit organizations do not need a license.', 'leyka')
             ],
         ]))->add_block(new Leyka_Custom_Setting_Block([
@@ -142,7 +142,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => [
-                'caption' => __('<strong>The organization has beneficial owner</strong>', 'leyka'),
+                'caption' => '<strong> ' . __('The organization has beneficial owner', 'leyka') . '</strong>',
                 'text' => __('If you are a non-profit organization, then leave empty, since non-profit organizations do not have beneficial owners. If this is your case, choose <strong>"Other"</strong> and manually write <strong>"non-profit organization"</strong>.', 'leyka')
             ],
         ]))->add_block(new Leyka_Custom_Setting_Block([
@@ -151,7 +151,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => [
-                'caption' => __('<b>There are beneficiaries</b>', 'leyka'),
+                'caption' => '<b>' . __('There are beneficiaries', 'leyka') . '</b>',
                 'text' => __('By default, the flag is removed from the field - skip this paragraph.', 'leyka')
             ],
         ]))->add_block(new Leyka_Custom_Setting_Block([
@@ -169,7 +169,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => [
-                'caption' => __('<strong>Funds source</strong>', 'leyka'),
+                'caption' => '<strong>' . __('Funds source', 'leyka') . '</strong>',
                 'text' => __('Select the item <strong>"Other"</strong> and in the box appeared write <strong>"donations"</strong>.', 'leyka')
             ],
         ]))->add_block(new Leyka_Custom_Setting_Block([
@@ -178,7 +178,7 @@ class Leyka_Yandex_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Cont
             'field_type' => 'custom_yandex_enumerated_block',
             'rendering_type' => 'template',
             'data' => [
-                'caption' => __('<strong>Business reputation</strong>', 'leyka'),
+                'caption' => '<strong>' . __('Business reputation', 'leyka') . '</strong>',
                 'text' => __('Select the first or second paragraph, whichever is best for you.', 'leyka')
             ],
         ]))->add_block(new Leyka_Custom_Setting_Block([

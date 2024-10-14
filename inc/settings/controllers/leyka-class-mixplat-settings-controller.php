@@ -125,7 +125,7 @@ class Leyka_Mixplat_Wizard_Settings_Controller extends Leyka_Wizard_Settings_Con
             'show_description' => true,
         ]))->add_block(new Leyka_Text_Block([
             'id' => 'save_company',
-            'text' => __("<p>Change the text of the donor's hint by replacing XXXX in the text with your keyword:</p>",'leyka')
+            'text' => '<p>' . __("Change the text of the donor's hint by replacing XXXX in the text with your keyword:",'leyka') . '</p>'
         ]))->add_block(new Leyka_Option_Block([
             'id' => 'leyka_mixplat-sms_details',
             'option_id' => 'leyka_mixplat-sms_details',

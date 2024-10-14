@@ -6,8 +6,8 @@ function leyka_tmp__($line, $locale = false) {
 
     $locale = $locale === false ? get_locale() : $locale;
 
-    if($line != __($line, 'leyka')) { // Locale already loaded
-        return __($line, 'leyka');
+    if($line != __($line, 'leyka')) { // Locale already loaded // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
+        return __($line, 'leyka'); // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
     }
 
     $tmp_translations = [
@@ -146,7 +146,7 @@ function leyka_tmp__($line, $locale = false) {
     ];
 
     return !empty($tmp_translations[$line]) && !empty($tmp_translations[$line][$locale]) ?
-        $tmp_translations[$line][$locale] : __($line, 'leyka');
+        $tmp_translations[$line][$locale] : __($line, 'leyka'); // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
 
 }
 

@@ -4,7 +4,12 @@
 /** @todo Check if this handler & its request are still in use */
 function leyka_ajax_get_campaigns_list() {
 
-    if(empty($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'leyka_get_campaigns_list_nonce')) {
+    if ( !isset($_REQUEST['nonce'] ) ) {
+        die(wp_json_encode([]));
+    }
+
+    $nonce = sanitize_text_field(wp_unslash($_REQUEST['nonce']));
+    if(empty($nonce) || !wp_verify_nonce($nonce, 'leyka_get_campaigns_list_nonce')) {
         die(wp_json_encode([]));
     }
 
@@ -347,6 +352,12 @@ add_action('wp_ajax_leyka_update_pm_list', 'leyka_update_pm_list');
 
 function leyka_upload_l10n(){
 
+    if ( ! current_user_can('manage_options') ) {
+        wp_send_json_error([
+            'message' => __('You do not have permission to perform this action.', 'leyka')
+        ], 403);
+    }
+
     $url = 'https://translate.wordpress.org/projects/wp-plugins/leyka/stable/ru/default/export-translations?format=mo';
     $file = download_url($url, 60);
 
@@ -356,12 +367,15 @@ function leyka_upload_l10n(){
         $res = ['status' => 'error', 'message' => 'Ошибка! Не удалось скачать файл локализации. '.$file->get_error_message()];
     } else {
 
-        if( !is_dir(WP_CONTENT_DIR."/languages") ) {
-            $res = ['status' => 'error', 'message' => sprintf('Ошибка! Папка локализации не найдена: %s', WP_CONTENT_DIR.'/languages')];
+        if( ! is_dir( WP_CONTENT_DIR . "/languages" ) ) {
+            $res = [
+                'status'  => 'error',
+                'message' => 'Ошибка! Папка локализации не найдена.'
+            ];
         } else if( !is_dir(WP_CONTENT_DIR.'/languages/plugins') ) {
             $res = [
                 'status' => 'error',
-                'message' => sprintf('Ошибка! Папка локализации плагинов не найдена: %s', WP_CONTENT_DIR.'/languages/plugins')
+                'message' => 'Ошибка! Папка локализации плагинов не найдена.',
             ];
         } else {
 
@@ -371,11 +385,14 @@ function leyka_upload_l10n(){
                 } else {
                     $res = [
                         'status' => 'error',
-                        'message' => sprintf('Ошибка! Нет прав для записи в папку %s', WP_CONTENT_DIR.'/languages/plugins')
+                        'message' => 'Ошибка! Нет прав для записи в папку локализации.',
                     ];
                 }
             } catch(Exception $ex) {
-                $res = ['status' => 'error', 'message' => 'Ошибка! Не удалось установить файл локализации! '.$ex->getMessage()];
+                $res = [
+                    'status' => 'error',
+                    'message' => 'Ошибка! Не удалось установить файл локализации.'
+                ];
             }
         }
 
@@ -433,6 +450,7 @@ function leyka_setup_donor_password(){
 
             die(wp_json_encode([
                 'status' => 'error',
+                /* translators: %s: support email. */
                 'message' => sprintf(__('Wrong request data. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_get_website_tech_support_email())
             ]));
 
@@ -456,6 +474,7 @@ function leyka_setup_donor_password(){
             }
 
         } else { // Password resetting
+            /* translators: %s: url. */
             $res = ['status' => 'ok', 'message' => sprintf(__('The password is changed. You may <a href="%s">log in</a>', 'leyka'), home_url('/donor-account/login/'))];
         }
 
@@ -477,6 +496,7 @@ function leyka_donor_login(){
     ) {
         $res = [
             'status' => 'error',
+            /* translators: %s: email. */
             'message' => sprintf(__('Wrong request. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_get_website_tech_support_email())
         ];
     } else if(
@@ -486,6 +506,7 @@ function leyka_donor_login(){
     ) {
         $res = [
             'status' => 'error',
+            /* translators: %s: email. */
             'message' => sprintf(__('Wrong request data. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_get_website_tech_support_email())
         ];
     } else {
@@ -528,11 +549,13 @@ function leyka_donor_password_reset_request(){
     ) {
         $res = [
             'status' => 'error',
+            /* translators: %s: email. */
             'message' => sprintf(__('Wrong request. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_get_website_tech_support_email())
         ];
     } else if(empty($_POST['leyka_donor_email']) || !is_email($_POST['leyka_donor_email'])) {
         $res = [
             'status' => 'error',
+            /* translators: %s: email. */
             'message' => sprintf(__('Wrong request data. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_get_website_tech_support_email())
         ];
     } else {
@@ -550,9 +573,9 @@ function leyka_donor_password_reset_request(){
             $pass_reset_key = $donor->get_password_reset_key();
 
             if($pass_reset_key && !is_wp_error($pass_reset_key)) {
-
                 $email_text = sprintf(
-                    __("Hello, %s!\n\nYou received this email because someone asked to reset your email on the <a href='%s'>%s</a> website.\n\nIf it was not you, just ignore this email and nothing will happen.\n\n If you really wish to reset your password, click <a href='%s' target='_blank'>here</a>.\n\nGood day to you!", 'leyka'),
+                    /* translators: 1: name, 2: url, 3: site name, 4: reset url. */
+                    __("Hello, %1\$s!\n\nYou received this email because someone asked to reset your email on the <a href='%2\$s'>%3\$s</a> website.\n\nIf it was not you, just ignore this email and nothing will happen.\n\n If you really wish to reset your password, click <a href='%4\$s' target='_blank'>here</a>.\n\nGood day to you!", 'leyka'),
                     $donor->display_name,
                     home_url(),
                     get_bloginfo('name'),
@@ -576,6 +599,7 @@ function leyka_donor_password_reset_request(){
                 if( !$email_sent ) {
                     $res = [
                         'status' => 'error',
+                        /* translators: %s: email. */
                         'message' => sprintf(__('Sorry, we could not send the password resetting email to you. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_get_website_tech_support_email())
                     ];
                 }
@@ -635,11 +659,13 @@ function leyka_cancel_recurring_subscription(){
     ) {
         die(wp_json_encode([
             'status' => 'error',
+            /* translators: %s: email. */
             'message' => sprintf(__('Wrong request. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_options()->opt('tech_support_email'))
         ]));
     } else if(empty($_POST['leyka_campaign_id']) || empty($_POST['leyka_donation_id'])) {
         die(wp_json_encode([
             'status' => 'error',
+            /* translators: %s: email. */
             'message' => sprintf(__('Wrong request data. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka_options()->opt('tech_support_email'))
         ]));
     }
@@ -667,6 +693,7 @@ function leyka_cancel_recurring_subscription(){
         foreach($cancel_reasons as $reason) {
 
             if($reason === 'other') {
+                /* translators: %s: reason. */
                 $line = sprintf(__('Other reason: %s', 'leyka'), isset($_POST['leyka_donor_custom_reason']) ? $_POST['leyka_donor_custom_reason'] : '');
             } else {
                 $line = $leyka_possible_reasons[$reason];
@@ -690,12 +717,14 @@ function leyka_cancel_recurring_subscription(){
     } else if( !$campaign ) {
         die(wp_json_encode([
             'status' => 'error',
-            'message' => sprintf(__('The campaign #%s is not found. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), $campaign_id, leyka()->opt('tech_support_email'))
+            /* translators: 1: id, 2: email. */
+            'message' => sprintf(__('The campaign #%1$s is not found. Please, <a href="mailto:%2$s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), $campaign_id, leyka()->opt('tech_support_email'))
         ]));
     } else if( !$init_recurring_donation ) {
         die(wp_json_encode([
             'status' => 'error',
-            'message' => sprintf(__('Donation #%s is not found. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), $donation_id, leyka()->opt('tech_support_email'))
+            /* translators: 1: id, 2: email. */
+            'message' => sprintf(__('Donation #%1$s is not found. Please, <a href="mailto:%2$s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), $donation_id, leyka()->opt('tech_support_email'))
         ]));
     }
 
@@ -711,6 +740,7 @@ function leyka_cancel_recurring_subscription(){
         } else if( !$cancelling_result ) {
             die(wp_json_encode([
                 'status' => 'error',
+                /* translators: %s: email. */
                 'message' => sprintf(__('Error while trying to cancel the recurring subscription.<br><br>Please, email abount this to the <a href="mailto:%s" target="_blank">website tech. support</a>.<br><br>We are very sorry for inconvenience.', 'leyka'), leyka_get_website_tech_support_email())
             ]));
         }
@@ -724,7 +754,8 @@ function leyka_cancel_recurring_subscription(){
         $init_recurring_donation->cancel_recurring_requested = true; // Save unsubscribe request flag
 
         $email_text = sprintf(
-            __("Hello!\n\nDonor %s with email %s and ID %s would like to unsubscribe from campaign <a href='%s'>%s</a> with ID %s on the <a href='%s'>%s</a> website.\n\nLink to subscription: %s\n\nThe reasons are:\n%s", 'leyka'),
+            /* translators: 1: name, 2: email, 3: id, 4: link, 5: title, 6: id, 7: homeurl, 8: sitename, 9: donation url, 10: reason. */
+            __("Hello!\n\nDonor %1\$s with email %2\$s and ID %3\$s would like to unsubscribe from campaign <a href='%4\$s'>%5\$s</a> with ID %6\$s on the <a href='%7\$s'>%8\$s</a> website.\n\nLink to subscription: %9\$s\n\nThe reasons are:\n%10\$s", 'leyka'),
             $donor->name,
             $donor->email,
             $donor->id,
@@ -751,6 +782,7 @@ function leyka_cancel_recurring_subscription(){
         if( !$email_sent ) {
             $res = [
                 'status' => 'error',
+                /* translators: %s: email. */
                 'message' => sprintf(__('Sorry, we could not send unsubscription request. Please, <a href="mailto:%s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), leyka()->opt('tech_support_email'))
             ];
         }
@@ -1134,6 +1166,10 @@ add_action('wp_ajax_leyka_get_donor_donations', 'leyka_admin_get_donor_donations
 // Campaign Donations data table AJAX data source:
 function leyka_admin_get_campaign_donations(){
 
+    if ( ! isset($_POST['campaign_id'])) {
+        die(wp_json_encode([]));
+    }
+
     $campaign = new Leyka_Campaign($_POST['campaign_id']);
 
 //    die( wp_json_encode([('draw' => (int)$_POST['draw'], 'error' => $e->getMessage()]) );
@@ -1490,6 +1526,7 @@ function leyka_delete_extension(){
     if( !leyka_delete_dir($extension->folder) ) {
         die(wp_json_encode([
             'status' => -1,
+            /* translators: %s: email. */
             'message' => sprintf(__('Cannot delete the extension. Please report this problem to the <a href="mailto:%s" target="_blank">Leyka technical support</a>.', 'leyka'), leyka_get_website_tech_support_email())
         ]));
     }
@@ -1513,7 +1550,7 @@ function leyka_support_packages_set_no_campaign_behavior(){
 
     if($_POST['behavior'] === 'another-campaign') {
 
-        if( !absint($_POST['campaign_id']) ) {
+        if( ! isset( $_POST['campaign_id']) || !absint($_POST['campaign_id']) ) {
             die(wp_json_encode(['status' => -1, 'message' => __('No new campaign is given for the Support packages', 'leyka'),]));
         }
 

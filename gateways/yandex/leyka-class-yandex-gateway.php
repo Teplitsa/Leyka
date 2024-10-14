@@ -651,15 +651,15 @@ techMessage="'.esc_attr($tech_message).'"/>');
                 $response = [
                     __('YooKassa payment ID:', 'leyka') => $response->id,
                     __('YooKassa payment status:', 'leyka') => $response->status,
-                    __('Payment is done:', 'leyka') => !!$response->paid ? __('Yes') : __('No'),
+                    __('Payment is done:', 'leyka') => !!$response->paid ? __('Yes', 'leyka') : __('No', 'leyka'),
                     __('Amount:', 'leyka') => round($response->amount->value, 2).' '
                         .leyka_get_currency_label($response->amount->currency),
                     __('Created at:', 'leyka') => leyka_get_i18n_datetime(strtotime($response->created_at->date)),
                     __('Captured at:', 'leyka') => empty($response->captured_at->date) ?
-                        __('No') : leyka_get_i18n_datetime(strtotime($response->captured_at->date)),
+                        __('No', 'leyka') : leyka_get_i18n_datetime(strtotime($response->captured_at->date)),
                     __('Description:', 'leyka') => $response->description,
                     __('Payment method:', 'leyka') => empty($response->payment_method->title) ?
-                        (empty($response->payment_method->type) ? __('No') : $response->payment_method->type) :
+                        (empty($response->payment_method->type) ? __('No', 'leyka') : $response->payment_method->type) :
                         $response->payment_method->title,
 //                    __('Is test payment:', 'leyka') => !!$response->test ? __('Yes') : __('No'),
                 ];

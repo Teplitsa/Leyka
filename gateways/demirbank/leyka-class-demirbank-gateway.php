@@ -67,7 +67,7 @@ class Leyka_Demirbank_Gateway extends Leyka_Gateway {
             ],
             'demirbank_support_email' => [
                 'type' => 'text',
-                'title' => __('Support email'),
+                'title' => __('Support email','leyka'),
                 'comment' => __('Support email address to display into the card-check.', 'leyka'),
                 'required' => true
             ]
