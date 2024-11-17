@@ -1987,7 +1987,7 @@ class Leyka extends Leyka_Singleton {
 
     }
 
-    /** Save the basic donation data and return new donation ID, so gateway can add it's specific data to the logs. */
+    /** Save the basic donation data and return new donation ID, so gateway can add its specific data to the logs. */
     public function log_submission() {
 
         if(empty($_POST['leyka_campaign_id']) || absint($_POST['leyka_campaign_id']) <= 0) {
