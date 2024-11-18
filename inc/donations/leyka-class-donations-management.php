@@ -1672,7 +1672,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
 
             <?php $gateway = leyka_get_gateway_by_id($donation->gateway_id);
             if($gateway && method_exists($gateway, 'display_donation_specific_data_fields')) { ?>
-                <div class="leyka-ddata-string"><?php echo wp_kses_post( $gateway->display_donation_specific_data_fields($donation) ); ?></div>
+                <div class="leyka-ddata-string"><?php $gateway->display_donation_specific_data_fields($donation) ?></div>
             <?php }?>
 
             <?php if ($donation->is_init_recurring_donation || $donation->init_recurring_donation_id) { ?>
