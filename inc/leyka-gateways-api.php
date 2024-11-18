@@ -785,7 +785,11 @@ abstract class Leyka_Gateway extends Leyka_Singleton {
     public function gateway_redirect_page_content($pm_id, $donation_id) {
     }
 
-    /** Get gateway specific donation fields for an "add/edit donation" page ("donation data" metabox). */
+    /**
+     * Get gateway specific donation fields for an "add/edit donation" page ("donation data" metabox).
+     *
+     * @return void
+     */
     public function display_donation_specific_data_fields($donation = false) {
     }
 
