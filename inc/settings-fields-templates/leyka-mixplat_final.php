@@ -17,13 +17,13 @@ $campaign_url = $campaign_id ? get_the_permalink($campaign_id) : null;
 
 <div class="<?php echo esc_attr( $this->field_type );?> cp-final-share-campaign">
     <p>
-        <?
+        <?php
             esc_html_e("You have enabled payment acceptance via the Mixplat. Payments using payment systems, bank cards and mobile phones are available to you.", "leyka");
         ?>
     </p>
     
     <p>
-        <?
+        <?php
             esc_html_e("Now go to payment settings page and enable payment methods after confirmation from MIXPLAT", "leyka");
         ?>
     </p>

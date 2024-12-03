@@ -144,7 +144,7 @@ class Leyka_Donation_Management extends Leyka_Singleton {
             9 => sprintf(
                 /* translators: %s: Publish box date format, see http://php.net/date. */
                 __('Donation scheduled for: <strong>%1$s</strong>.', 'leyka'),
-                date_i18n(__( 'M j, Y @ G:i'), strtotime(get_post()->post_date))
+                date_i18n(__( 'M j, Y @ G:i', 'leyka'), strtotime(get_post()->post_date))
             ),
             10 => __('Donation draft updated.', 'leyka'),
         ];

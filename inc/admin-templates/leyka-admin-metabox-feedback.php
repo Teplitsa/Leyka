@@ -37,7 +37,7 @@ $user = wp_get_current_user();?>
 
         <p class="leyka-submit">
             <input type="hidden" id="nonce" value="<?php echo esc_attr( wp_create_nonce('leyka_feedback_sending') );?>">
-            <input type="submit" class="button-primary" value="<?php esc_attr_e('Submit');?>">
+            <input type="submit" class="button-primary" value="<?php esc_attr_e('Submit', 'leyka');?>">
         </p>
 
     </form>

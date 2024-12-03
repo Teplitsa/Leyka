@@ -340,7 +340,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                             <label for="daily-rouble-amount-variants"><?php esc_html_e('Daily amount variants', 'leyka');?></label>
                         </h3>
 
-                        <input type="text" id="daily-rouble-amount-variants" name="daily_rouble_amounts" value="<?php echo esc_attr( $campaign->daily_rouble_amounts ? $campaign->daily_rouble_amounts : '1,2,3,4,5,10' );?>" placeholder="<?php esc_attr_e('E. g., 1,2,3,4,5,10');?>">
+                        <input type="text" id="daily-rouble-amount-variants" name="daily_rouble_amounts" value="<?php echo esc_attr( $campaign->daily_rouble_amounts ? $campaign->daily_rouble_amounts : '1,2,3,4,5,10' );?>" placeholder="<?php esc_attr_e('E. g., 1,2,3,4,5,10', 'leyka');?>">
 
                     </div>
 
@@ -722,7 +722,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
                 <div class="set-page-img-control" data-mission="logo" data-campaign-id="<?php echo esc_attr( $campaign->id ); ?>">
                 	<?php $img_url = $campaign->logo_id ? wp_get_attachment_image_url($campaign->logo_id, 'thumbnail') : null;?>
                 	<?php esc_html_e('Uploaded logo:', 'leyka');?> <span class="img-value"><?php echo wp_kses_post( $img_url ? '<img src="'.$img_url.'" />' : __('Default', 'leyka') );?></span>
-            		<a href="#" class="reset-to-default" <?php echo !$img_url ? 'style="display: none;"' : '';?> title="<?php esc_attr_e('Reset to default');?>"></a>
+            		<a href="#" class="reset-to-default" <?php echo !$img_url ? 'style="display: none;"' : '';?> title="<?php esc_attr_e('Reset to default', 'leyka');?>"></a>
             		<?php wp_nonce_field('reset-campaign-attachment', 'reset-campaign-logo-nonce');?>
                     <div class="loading-indicator-wrap" style="display: none;">
                         <div class="loader-wrap"><span class="leyka-loader xs"></span></div>
@@ -837,7 +837,7 @@ class Leyka_Campaign_Management extends Leyka_Singleton {
             <?php }?>
 
             <div id="leyka-loading" style="display: none"><?php esc_html_e('Please wait while we are saving your choice...', 'leyka');?></div>
-            <div id="leyka-message" style="display: none;" data-success-message="<?php esc_attr_e('Done! Now saving your campaign changes...', 'leyka');?>" data-error-message="<?php esc_attr_e('Request error encountered. Please check your campaign option in the Support packages settings manually.');?>" data-validation-error-message="<?php esc_attr_e('Please choose how the Support packages will act, or the extension is going to work incorrectly.', 'leyka');?>"></div>
+            <div id="leyka-message" style="display: none;" data-success-message="<?php esc_attr_e('Done! Now saving your campaign changes...', 'leyka');?>" data-error-message="<?php esc_attr_e('Request error encountered. Please check your campaign option in the Support packages settings manually.', 'leyka');?>" data-validation-error-message="<?php esc_attr_e('Please choose how the Support packages will act, or the extension is going to work incorrectly.', 'leyka');?>"></div>
 
         </div>
 

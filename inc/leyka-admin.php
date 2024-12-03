@@ -1086,7 +1086,7 @@ class Leyka_Admin_Setup extends Leyka_Singleton {
         );
         add_meta_box(
             'leyka_donor_tags',
-            __('Tags'),
+            __('Tags', 'leyka'),
             [$this, 'donor_tags_metabox'],
             'admin_page_leyka_donor_info',
             'normal'

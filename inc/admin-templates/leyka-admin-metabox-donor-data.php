@@ -32,7 +32,7 @@ try {
                 <img class="ok-icon" src="<?php echo esc_url( LEYKA_PLUGIN_BASE_URL );?>img/dashboard/icon-check.svg" alt="">
             </div>
 
-            <a href="#" class="donor-data-edit leyka-editable-str-btn" id="editable-donor-name-str-btn" str-field="editable-donor-name-str-field" title="<?php esc_attr_e('Edit');?>"> </a>
+            <a href="#" class="donor-data-edit leyka-editable-str-btn" id="editable-donor-name-str-btn" str-field="editable-donor-name-str-field" title="<?php esc_attr_e('Edit', 'leyka');?>"> </a>
 
         </div>
 
@@ -58,7 +58,7 @@ try {
                     <img class="ok-icon" src="<?php echo esc_url( LEYKA_PLUGIN_BASE_URL );?>img/dashboard/icon-check.svg" alt="">
                 </div>
                 
-                <a href="#" class="donor-data-edit leyka-editable-str-btn" title="<?php esc_attr_e('Edit');?>"
+                <a href="#" class="donor-data-edit leyka-editable-str-btn" title="<?php esc_attr_e('Edit', 'leyka');?>"
                 	id="editable-donor-description-str-btn" 
                 	str-field="editable-donor-description-str-field"> </a>
 
@@ -98,9 +98,6 @@ try {
 
             <dt><?php esc_html_e('Email', 'leyka');?></dt>
             <dd><a href="mailto:<?php echo esc_attr( sanitize_email( $donor->email ) );?>"><?php echo esc_html( $donor->email );?></a></dd>
-
-            <!--<dt><?php esc_html_e('GA Client ID', 'leyka');?></dt>
-            <dd><?php echo esc_html__('none'); //echo get_user_meta($donor_user->ID, 'leyka_donor_ga_client_id', true);?></dd>-->
 
             <dt><?php esc_html_e('First donation', 'leyka');?></dt>
             <dd><?php echo esc_html( $donor->first_donation_date_label );?></dd>

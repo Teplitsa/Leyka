@@ -67,13 +67,13 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
 
             for($sub_interval_index = 0; $sub_interval_index < $interval_length; $sub_interval_index++) {
 
-                $sub_interval_end_date = date('Y-m-d 23:59:59', strtotime(' -'.$sub_interval_index.' '.$sub_interval));
+                $sub_interval_end_date = gmdate('Y-m-d 23:59:59', strtotime(' -'.$sub_interval_index.' '.$sub_interval));
 
                 if($sub_interval_end_date <= $interval_dates['curr_interval_begin_date']) {
                     continue;
                 }
 
-                $sub_interval_begin_date = date('Y-m-d 23:59:59', strtotime(' -'.($sub_interval_index + 1).' '.$sub_interval));
+                $sub_interval_begin_date = gmdate('Y-m-d 23:59:59', strtotime(' -'.($sub_interval_index + 1).' '.$sub_interval));
                 $sub_interval_begin_date = $sub_interval_begin_date < $interval_dates['curr_interval_begin_date'] ?
                     $interval_dates['curr_interval_begin_date'] : $sub_interval_begin_date;
 
@@ -130,14 +130,14 @@ class Leyka_Donations_Dynamics_Portlet_Controller extends Leyka_Portlet_Controll
 
                 }
 
-                $result[] = ['x' => date('d.m.Y', strtotime($sub_interval_end_date)), 'y' => $amount,];
+                $result[] = ['x' => gmdate('d.m.Y', strtotime($sub_interval_end_date)), 'y' => $amount,];
 
                 if($sub_interval === 'month') {
-                    $labels[] = date('m.y', strtotime($sub_interval_end_date));
+                    $labels[] = gmdate('m.y', strtotime($sub_interval_end_date));
                 } else if($sub_interval === 'week') {
-                    $labels[] = date('d.m.y', strtotime($sub_interval_end_date));
+                    $labels[] = gmdate('d.m.y', strtotime($sub_interval_end_date));
                 } else {
-                    $labels[] = date('d.m', strtotime($sub_interval_end_date));
+                    $labels[] = gmdate('d.m', strtotime($sub_interval_end_date));
                 }
 
             }

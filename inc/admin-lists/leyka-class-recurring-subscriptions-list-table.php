@@ -198,14 +198,14 @@ class Leyka_Admin_Recurring_Subscriptions_List_Table extends WP_List_Table {
      */
     function get_columns() {
         return apply_filters('leyka_admin_recurring_subscriptions_list_columns', [
-            'donation_id' => __('ID'),
-            'campaign' => __('Campaign', 'leyka'),
-            'donor' => __('Donor', 'leyka'),
-            'first_donation' => __('First payment', 'leyka'),
-            'next_donation' => _x('Next', 'Recurring subscriptions list page: table column', 'leyka'),
+            'donation_id'      => __('ID', 'leyka'),
+            'campaign'         => __('Campaign', 'leyka'),
+            'donor'            => __('Donor', 'leyka'),
+            'first_donation'   => __('First payment', 'leyka'),
+            'next_donation'    => _x('Next', 'Recurring subscriptions list page: table column', 'leyka'),
             'donations_number' => __('Payments total', 'leyka'),
-            'amount' => __('Amount', 'leyka'),
-            'gateway_pm' => _x('Method', 'Recurring subscriptions list page: table column', 'leyka')
+            'amount'           => __('Amount', 'leyka'),
+            'gateway_pm'       => _x('Method', 'Recurring subscriptions list page: table column', 'leyka')
         ]);
     }
 

@@ -33,8 +33,8 @@ if( !function_exists('leyka_admin_get_slug_edit_field') ) {
                 <span class="inline-edit-slug-form" data-slug-original="<?php echo esc_attr( $campaign_permalink_parts[1] );?>" data-campaign-id="<?php echo esc_attr( $campaign->id );?>" data-nonce="<?php echo esc_attr( wp_create_nonce('leyka-edit-campaign-slug') );?>" style="display: none;">
                 <input type="text" class="leyka-slug-field inline-input" value="<?php echo esc_attr( $campaign_permalink_parts[1] );?>">
                 <span class="slug-submit-buttons">
-                    <button class="inline-submit"><?php esc_html_e('OK');?></button>
-                    <button class="inline-reset"><?php esc_html_e('Cancel');?></button>
+                    <button class="inline-submit"><?php esc_html_e('OK', 'leyka');?></button>
+                    <button class="inline-reset"><?php esc_html_e('Cancel', 'leyka');?></button>
                 </span>
             </span>
 
@@ -72,7 +72,7 @@ if( !function_exists('leyka_admin_get_shortcode_field') ) {
         <span class="leyka-current-value"><?php echo esc_attr($shortcode);?></span>
         <span class="leyka-campaign-shortcode-field" style="display: none;">
             <input type="text" class="embed-code read-only campaign-shortcode inline-input" id="campaign-shortcode" value="<?php echo esc_attr($shortcode);?>">
-            <button class="inline-reset"><?php esc_html_e('Cancel');?></button>
+            <button class="inline-reset"><?php esc_html_e('Cancel', 'leyka');?></button>
         </span>
 
         <?php return ob_get_clean();
