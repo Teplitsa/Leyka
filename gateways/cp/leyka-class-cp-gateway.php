@@ -19,7 +19,7 @@ class Leyka_CP_Gateway extends Leyka_Gateway {
         );
 
         $this->_docs_link = '//leyka.org/docs/podklyuchenie-cloudpayments/';
-        $this->_registration_link = '//cloudpayments.ru/connection';
+        $this->_registration_link = 'https://cloudpayments.ru/#section-request';
         $this->_has_wizard = true;
 
         $this->_min_commission = 2.8;
