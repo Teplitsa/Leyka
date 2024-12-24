@@ -21,7 +21,8 @@ function leyka_enqueue_block_editor_assets() {
 		'wp-compose',
 		'wp-hooks',
 		'wp-server-side-render',
-		'wp-i18n'
+		'wp-i18n',
+		'lodash'
 	];
 
 	wp_enqueue_script(
