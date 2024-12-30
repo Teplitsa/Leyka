@@ -150,20 +150,26 @@ function leyka_tmp__($line, $locale = false) {
 
 }
 
-__('Terms of personal data usage', 'leyka');
-__('Terms of personal data usage full text. Use <br> for line-breaks.', 'leyka');
-__('Terms of donation service', 'leyka');
-__('Organization Terms of service text', 'leyka');
-__('Thank you!', 'leyka');
-__('Your donation completed. We are grateful for your help.', 'leyka');
-__('Payment failure', 'leyka');
-__('We are deeply sorry, but for some technical reason we failed to receive your donation. Your money are intact. Please try again later!', 'leyka');
-__('Main statistics', 'leyka');
-__('Recurring', 'leyka');
-__('Donations dynamics', 'leyka');
-__('Recurrings', 'leyka');
-__('Recent donations', 'leyka');
-__('Donation funded', 'leyka');
-__('Donation refunded', 'leyka');
-__('Donation failed', 'leyka');
-__('Donation submitted', 'leyka');
+/**
+ * Additional translate strings
+ */
+function leyka_translation_strings(){
+	esc_html__('Terms of personal data usage', 'leyka');
+	esc_html__('Terms of personal data usage full text. Use <br> for line-breaks.', 'leyka');
+	esc_html__('Terms of donation service', 'leyka');
+	esc_html__('Organization Terms of service text', 'leyka');
+	esc_html__('Thank you!', 'leyka');
+	esc_html__('Your donation completed. We are grateful for your help.', 'leyka');
+	esc_html__('Payment failure', 'leyka');
+	esc_html__('We are deeply sorry, but for some technical reason we failed to receive your donation. Your money are intact. Please try again later!', 'leyka');
+	esc_html__('Main statistics', 'leyka');
+	esc_html__('Recurring', 'leyka');
+	esc_html__('Donations dynamics', 'leyka');
+	esc_html__('Recurrings', 'leyka');
+	esc_html__('Recent donations', 'leyka');
+	esc_html__('Donation funded', 'leyka');
+	esc_html__('Donation refunded', 'leyka');
+	esc_html__('Donation failed', 'leyka');
+	esc_html__('Donation submitted', 'leyka');
+}
+add_action( 'init', 'leyka_translation_strings' );
