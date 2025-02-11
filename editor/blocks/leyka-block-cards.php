@@ -58,7 +58,7 @@ function leyka_block_cards_render_callback( $attr, $content ) {
 	$classes = ['block_class' => 'leyka-block-cards'];
 
 	if ( isset( $attr['align'] ) && $attr['align'] ) {
-		$classes['align'] = 'align' . $attr['align'];
+		$classes['align'] = 'align' . esc_attr( $attr['align'] );
 	} else {
 		$classes['align'] = 'alignnone';
 	}
@@ -130,7 +130,7 @@ function leyka_block_cards_render_callback( $attr, $content ) {
 	}
 
 	if ($block_style) {
-		$block_attr .= ' style="' . $block_style . '"';
+		$block_attr .= ' style="' . esc_attr( $block_style ) . '"';
 	}
 
 	// Campaigns to show:
@@ -148,11 +148,11 @@ function leyka_block_cards_render_callback( $attr, $content ) {
 		$post__in = array();
 		foreach($attr['queryInclude'] as $campaign_title) {
 
-            $campaign = leyka_get_campaign_by_title($campaign_title, false);
+			$campaign = leyka_get_campaign_by_title($campaign_title, false);
 
-            if($campaign) {
-                $post__in[] = $campaign->ID;
-            }
+			if($campaign) {
+				$post__in[] = $campaign->ID;
+			}
 
 		}
 
@@ -162,7 +162,6 @@ function leyka_block_cards_render_callback( $attr, $content ) {
 		if($attr['queryOrderBy'] && 'date' !== $attr['queryOrderBy']) {
 			$args['orderby'] = $attr['queryOrderBy'];
 		}
-
 	}
 
 	// Exclude campaigns:
@@ -172,11 +171,11 @@ function leyka_block_cards_render_callback( $attr, $content ) {
 
 		foreach($attr['queryExclude'] as $campaign_title) {
 
-            $campaign = leyka_get_campaign_by_title($campaign_title, false);
+			$campaign = leyka_get_campaign_by_title($campaign_title, false);
 
-            if($campaign) {
-                $post__not_in[] = $campaign->ID;
-            }
+			if($campaign) {
+				$post__not_in[] = $campaign->ID;
+			}
 
 		}
 
@@ -194,7 +193,6 @@ function leyka_block_cards_render_callback( $attr, $content ) {
 		} else {
 			$args['post__not_in'] = $post__not_in;
 		}
-
 	}
 
 	// Offset.
@@ -229,7 +227,7 @@ function leyka_block_cards_render_callback( $attr, $content ) {
 
 	if ( $query->have_posts() ) :
 
-		$html = '<div ' . $block_attr . '>';
+		$html = '<div ' . wp_kses_post( $block_attr ) . '>';
 		$html .= '<div class="leyka-block-cards-grid">';
 
 		while ( $query->have_posts() ) : $query->the_post();
@@ -250,5 +248,4 @@ function leyka_block_cards_render_callback( $attr, $content ) {
 	wp_reset_postdata();
 
 	return $html;
-
 }

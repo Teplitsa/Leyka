@@ -53,7 +53,7 @@ function leyka_block_form_render_callback($attr, $content) {
 	$classes = ['block_class' => 'wp-block-leyka-form', 'leyka_class' => 'leyka-block-form-'.$template,];
 
 	if( !empty($attr['className']) ) {
-		$classes['class_name'] = $attr['className'];
+		$classes['class_name'] = esc_attr( $attr['className'] );
 	}
 
 	$block_style = '';
@@ -106,7 +106,7 @@ function leyka_block_form_render_callback($attr, $content) {
 	}
 
 	if ($block_style) {
-		$block_attr .= ' style="' . $block_style . '"';
+		$block_attr .= ' style="' . esc_attr( $block_style ) . '"';
 	}
 
 	// Render a Campaign form with shortcode [leyka_campaign_form]:
@@ -127,18 +127,17 @@ function leyka_block_form_render_callback($attr, $content) {
 		$shortcode_attr_arr = ['id' => $campaign, 'template' => $template,];
 		$shortcode_attr = '';
 
-		$html = '<div ' . $block_attr . '>';
+		$html = '<div ' . wp_kses_post( $block_attr ) . '>';
 
 			foreach($shortcode_attr_arr as $key => $value) {
-				$shortcode_attr .= ' '.$key.'="'.$value.'"';
+				$shortcode_attr .= ' '. esc_attr( $key ) . '="' . esc_attr( $value ) . '"';
 			}
 
-			$html .= do_shortcode('[leyka_campaign_form'.$shortcode_attr.']');
+			$html .= do_shortcode('[leyka_campaign_form' . wp_kses_post( $shortcode_attr ) . ']');
 
 		$html .= '</div>';
 
 	}
 
 	return $html;
-
 }

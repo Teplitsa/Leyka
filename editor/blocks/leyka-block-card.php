@@ -49,7 +49,7 @@ function leyka_block_card_render_callback( $attr, $content ) {
 	$classes = ['block_class' => 'wp-block-leyka-card leyka-block-card',];
 
 	if( !empty($attr['className']) ) {
-		$classes['class_name'] = $attr['className'];
+		$classes['class_name'] = esc_attr( $attr['className'] );
 	}
 
 	$style_attr = [];
@@ -90,8 +90,8 @@ function leyka_block_card_render_callback( $attr, $content ) {
 		'show_collected_amount' => isset($attr['showCollectedAmount']) ? $attr['showCollectedAmount'] : true,
 		'button_text' => isset($attr['buttonText']) ? $attr['buttonText'] : '',
 		'classes' => implode(' ', $classes),
-		'attr_id' => isset($attr['anchor']) ? $attr['anchor'] : '',
-		'style' => $block_style,
+		'attr_id' => isset($attr['anchor']) ? esc_attr( $attr['anchor'] ) : '',
+		'style' => esc_attr( $block_style ),
 	];
 
 	/**
@@ -125,5 +125,4 @@ function leyka_block_card_render_callback( $attr, $content ) {
 	}
 
 	return $html;
-
 }
