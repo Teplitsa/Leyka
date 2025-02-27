@@ -2068,11 +2068,10 @@ class Leyka_Campaign {
         switch($field) {
             case 'form_content_position':
                 if(in_array($value, ['before-content', 'after-content'])) {
-
                     $this->_campaign_meta['form_content_position'] = $value;
                     update_post_meta($this->_id, 'form_content_position', $value);
-
                 }
+                break;
             case 'target_reaching_mailout_sent':
                 $this->_campaign_meta['target_reaching_mailout_sent'] = !!$value;
                 update_post_meta($this->_id, '_leyka_target_reaching_mailout_sent', !!$value);
