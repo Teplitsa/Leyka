@@ -27,7 +27,7 @@ class Leyka_Ru_Options_Allocator extends Leyka_Options_Allocator {
             case 'additional':
                 $options_allocated = $this->get_additional_options();
                 break;
-            default: // Don't throw the Exception here, or it is's going to disrupt the action below
+            default: // Don't throw the Exception here, or it's going to disrupt the action below
         }
 
         return apply_filters("leyka_{$tab_id}_options_allocation", $options_allocated);
