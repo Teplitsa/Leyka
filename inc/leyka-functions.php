@@ -214,7 +214,6 @@ if ( ! function_exists( 'leyka_kses_allowed_html' ) ) {
                     'id'           => true,
                     'fill'         => true,
                     'full-rule'    => true,
-                    'id'           => true,
                     'stroke'       => true,
                     'stroke-width' => true,
                     'transform'    => true,
