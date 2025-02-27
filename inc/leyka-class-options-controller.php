@@ -465,7 +465,7 @@ class Leyka_Options_Controller extends Leyka_Singleton {
     /**
      * @param $option_id string
      * @param $value mixed
-     * @return boolean True if given option value is valid, false otherwise (or if option doesn't exists).
+     * @return boolean True if given option value is valid, false otherwise (or if option doesn't exist).
      */
     protected function _validate_option($option_id, $value = null) {
 

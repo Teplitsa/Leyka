@@ -73,7 +73,7 @@ abstract class Leyka_Template_Controller extends Leyka_Singleton {
     }
     
     /**
-     * Get all template data from DB, do some calculations, create a array.
+     * Get all template data from DB, do some calculations, create an array.
      * @param $campaign Leyka_Campaign
      * @return null
      */
