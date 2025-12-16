@@ -105,7 +105,7 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
             $this->_handle_donation_failure($new_recurring_donation, $api);
         } else {
 
-            $api->charge(['RebillId' => $init_recurring_donation->tinkoff_rebill_id, 'PaymentId' => $api->paymentId,]);
+            $api->charge(['RebillId' => $init_recurring_donation->tinkoff_rebill_id, 'PaymentId' => $api->paymentId, 'IP' => leyka_get_client_ip(), 'InfoEmail' => $init_recurring_donation->donor_email,]);
 
             if($api->error || $api->status === 'REJECTED') {
                 $this->_handle_donation_failure($new_recurring_donation, $api);
