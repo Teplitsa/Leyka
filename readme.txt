@@ -3,10 +3,10 @@ Contributors: Ahaenor, teplosup, oleinikv89, foralien, denis.cherniatev, burdian
 Author URI: http://te-st.org
 Plugin URI: http://leyka.org
 Tags: лейка, crowdfunding, fundraising, donations, recurring donations, charity, leyka, recurring, cloudpayments, webmoney, robokassa, rbk, rbkmoney, rbk-money, yoomoney, chronopay, sms, yookassa, миксплат, mixplat, paypal, paymaster, qiwi, киви, stripe, страйп, gds, google data studio
-Requires at least: 3.6.1
+Requires at least: 6.0
 Requires PHP: 7.2.5
-Tested up to: 6.7
-Stable tag: 3.31.9
+Tested up to: 6.9
+Stable tag: 3.32
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -84,6 +84,10 @@ For technical support questions, please, use the [plugin support email](maillto:
 5. The plugin start page (a console)
 
 == Changelog ==
+
+= 3.32 =
+* Fix: Security Vulnerability 
+* Fix: Minor improvements
 
 = 3.31.7 =
 * Fix: Security Vulnerability

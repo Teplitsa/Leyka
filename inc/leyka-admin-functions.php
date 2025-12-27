@@ -108,7 +108,7 @@ if( !function_exists('leyka_get_admin_footer') ) {
 
                 <div class="te-st-link">
                     <span><?php esc_html_e('Created by', 'leyka');?></span>
-                    <a href="https://te-st.org/"><?php esc_html_e('Teplitsa. Technologies for Social Good', 'leyka');?></a>
+                    <a href="https://te-st.org/" target="_blank"><?php esc_html_e('Teplitsa. Technologies for Social Good', 'leyka');?></a>
                 </div>
 
                 <div class="info-links">
