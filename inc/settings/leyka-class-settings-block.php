@@ -62,10 +62,13 @@ class Leyka_Text_Block extends Leyka_Settings_Block {
 
         ob_start();
 
+        // Sanitize template name
+        $template_name = sanitize_key( sanitize_file_name( $this->_template ) );
+
         $template_file = apply_filters(
             'leyka_text_field_template',
-            LEYKA_PLUGIN_DIR."inc/settings-fields-templates/leyka-{$this->_template}.php",
-            $this->_template
+            LEYKA_PLUGIN_DIR . 'inc/settings-fields-templates/leyka-' . esc_attr( $template_name ) . '.php',
+            $template_name
         );
 
         if(file_exists($template_file)) {
@@ -385,10 +388,12 @@ class Leyka_Custom_Setting_Block extends Leyka_Settings_Block {
             do_action("leyka_render_{$this->_field_type}", $this->_setting_id, $this->_field_data);
         } else if($this->_rendering_type === 'template') {
 
-            $field_type = str_replace('custom_', '', $this->_field_type);
+            // Sanitize field name
+            $field_type = str_replace('custom_', '', sanitize_key( sanitize_file_name( $this->_template ) ) );
+
             $template_file = apply_filters(
-                'leyka_setting_field_template-'.$field_type,
-                LEYKA_PLUGIN_DIR."inc/settings-fields-templates/leyka-{$field_type}.php",
+                'leyka_setting_field_template-' . esc_attr( $field_type ),
+                LEYKA_PLUGIN_DIR . 'inc/settings-fields-templates/leyka-' . esc_attr( $field_type ) . '.php',
                 $this->_setting_id,
                 $this->_field_data,
                 $this->_fields_keys
