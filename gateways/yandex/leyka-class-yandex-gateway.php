@@ -654,9 +654,9 @@ techMessage="'.esc_attr($tech_message).'"/>');
                     __('Payment is done:', 'leyka') => !!$response->paid ? __('Yes', 'leyka') : __('No', 'leyka'),
                     __('Amount:', 'leyka') => round($response->amount->value, 2).' '
                         .leyka_get_currency_label($response->amount->currency),
-                    __('Created at:', 'leyka') => leyka_get_i18n_datetime(strtotime($response->created_at->date)),
+                    __('Created at:', 'leyka') => leyka_get_i18n_datetime($response->created_at->getTimestamp()),
                     __('Captured at:', 'leyka') => empty($response->captured_at->date) ?
-                        __('No', 'leyka') : leyka_get_i18n_datetime(strtotime($response->captured_at->date)),
+                        __('No', 'leyka') : leyka_get_i18n_datetime($response->captured_at->getTimestamp()),
                     __('Description:', 'leyka') => $response->description,
                     __('Payment method:', 'leyka') => empty($response->payment_method->title) ?
                         (empty($response->payment_method->type) ? __('No', 'leyka') : $response->payment_method->type) :
@@ -1353,3 +1353,4 @@ function leyka_add_gateway_yandex() { // Use named function to leave a possibili
     leyka()->add_gateway(Leyka_Yandex_Gateway::get_instance());
 }
 add_action('leyka_init_actions', 'leyka_add_gateway_yandex');
+
