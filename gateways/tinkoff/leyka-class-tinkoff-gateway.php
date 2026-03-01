@@ -16,7 +16,109 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
         $this->_receiver_types = ['legal',];
         $this->_may_support_recurring = true;
 
+        // === AntiFraud ADDITION START: enqueue JS on frontend (once) ===
+        static $af_hooked = false;
+        if (!$af_hooked) {
+            add_action('wp_enqueue_scripts', [$this, 'enqueue_antifraud_assets']);
+            $af_hooked = true;
+        }
+        // === AntiFraud ADDITION END ===
     }
+
+    // === AntiFraud ADDITION START: enqueue JS file ===
+    public function enqueue_antifraud_assets() {
+        if (is_admin()) {
+            return;
+        }
+
+        wp_enqueue_script(
+            'leyka-tinkoff-antifraud',
+            LEYKA_PLUGIN_BASE_URL . 'assets/js/tinkoff-antifraud.js',
+            [],
+            defined('LEYKA_VERSION') ? LEYKA_VERSION : false,
+            true
+        );
+    }
+    // === AntiFraud ADDITION END ===
+
+    // === AntiFraud ADDITION START: parse cookie payload from JS ===
+    protected function get_antifraud_payload() {
+        if (empty($_COOKIE['leyka_tk_af'])) {
+            return [];
+        }
+
+        $raw = sanitize_text_field(wp_unslash($_COOKIE['leyka_tk_af']));
+
+        // base64url -> base64
+        $b64 = strtr($raw, '-_', '+/');
+        $pad = strlen($b64) % 4;
+        if ($pad) {
+            $b64 .= str_repeat('=', 4 - $pad);
+        }
+
+        $json = base64_decode($b64, true);
+        if (!$json) {
+            return [];
+        }
+
+        $data = json_decode($json, true);
+        if (!is_array($data)) {
+            return [];
+        }
+
+        // DATA limits: key <= 20 chars, value <= 100 chars (we keep values <= 100)
+        $out = [];
+        $out['deviceId']   = !empty($data['deviceId'])  ? substr((string)$data['deviceId'], 0, 100) : '';
+        $out['os']         = !empty($data['os'])        ? substr((string)$data['os'], 0, 100) : '';
+        $out['referrer']   = !empty($data['referrer'])  ? substr((string)$data['referrer'], 0, 100) : '';
+        $out['cookieHash'] = !empty($data['cookieHash']) ? substr((string)$data['cookieHash'], 0, 100) : '';
+
+        return $out;
+    }
+    // === AntiFraud ADDITION END ===
+
+    // === AntiFraud ADDITION START: apply fields to Init params ===
+    protected function apply_antifraud_to_init_params(array &$params) {
+        if (empty($params['DATA']) || !is_array($params['DATA'])) {
+            $params['DATA'] = [];
+        }
+
+        // IP
+        $ip = leyka_get_client_ip();
+        if ($ip) {
+            $params['DATA']['ClientIP'] = substr((string)$ip, 0, 100);
+        }
+
+        $af = $this->get_antifraud_payload();
+
+        // Referrer (prefer JS; fallback server)
+        if (!empty($af['referrer'])) {
+            $params['DATA']['Referrer'] = sanitize_text_field($af['referrer']);
+        } else {
+            $server_ref = wp_get_raw_referer();
+            if ($server_ref) {
+                $params['DATA']['Referrer'] = substr((string)$server_ref, 0, 100);
+            }
+        }
+
+        // Device ID
+        if (!empty($af['deviceId'])) {
+            $params['DATA']['DeviceId'] = sanitize_text_field($af['deviceId']);
+        }
+
+        // OS (top-level + duplicate in DATA for visibility in logs)
+        if (!empty($af['os'])) {
+            $os = sanitize_text_field($af['os']);
+            $params['DeviceOs'] = substr($os, 0, 100);
+            $params['DATA']['OS'] = substr($os, 0, 100);
+        }
+
+        // Cookies: hash only (send as random_cookie)
+        if (!empty($af['cookieHash'])) {
+            $params['DATA']['random_cookie'] = sanitize_text_field($af['cookieHash']);
+        }
+    }
+    // === AntiFraud ADDITION END ===
 
     protected function _set_options_defaults() {
 
@@ -95,11 +197,17 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
             leyka_options()->opt($this->_id.'_password')
         );
 
-        $api->init([
+        // === AntiFraud ADDITION START: build params for Init + enrich ===
+        $init_params = [
             'OrderId' => $new_recurring_donation->id,
             'Amount' => 100 * absint($new_recurring_donation->amount),
             'DATA' => ['Email' => $init_recurring_donation->donor_email,],
-        ]);
+        ];
+
+        $this->apply_antifraud_to_init_params($init_params);
+
+        $api->init($init_params);
+        // === AntiFraud ADDITION END ===
 
         if($api->error){
             $this->_handle_donation_failure($new_recurring_donation, $api);
@@ -161,6 +269,10 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
             $params['CustomerKey'] = $donation->donor_email;
 
         }
+
+        // === AntiFraud ADDITION START: enrich Init params before calling Init ===
+        $this->apply_antifraud_to_init_params($params);
+        // === AntiFraud ADDITION END ===
 
         $api->init($params);
 
