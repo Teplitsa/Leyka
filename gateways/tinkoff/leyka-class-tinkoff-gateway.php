@@ -40,7 +40,7 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
             ],
                         $this->_id.'_payment_lifetime_minutes' => [
                 'type' => 'number',
-                'title' => __('Срок жизни платежа, минуты', 'leyka'),
+                'title' => __('Payment lifetime, minutes', 'leyka'),
                 'description' => __('Leave empty to use the gateway default payment lifetime (24 hours).', 'leyka'),
                 'comment' => __('Positive integer only (1 or greater). The value is sent to Tinkoff as RedirectDueDate.', 'leyka'),
                 'required' => false,
