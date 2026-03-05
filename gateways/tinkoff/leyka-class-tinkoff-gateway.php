@@ -38,6 +38,18 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
                 'comment' => __('The value may be acquired from the bank when Tinkoff payment terminal is created.', 'leyka'),
                 'required' => true,
             ],
+                        $this->_id.'_payment_lifetime_minutes' => [
+                'type' => 'number',
+                'title' => __('Срок жизни платежа, минуты', 'leyka'),
+                'description' => __('Leave empty to use the gateway default payment lifetime (24 hours).', 'leyka'),
+                'comment' => __('Positive integer only (1 or greater). The value is sent to Tinkoff as RedirectDueDate.', 'leyka'),
+                'required' => false,
+                'min' => 1,
+                'step' => 1,
+                'validation_rules' => [
+                    '/^$|^[1-9][0-9]*$/' => __('Please enter a positive integer value (1 or greater).', 'leyka'),
+                ],
+            ],
         ];
 
     }
@@ -61,6 +73,55 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
         }
 
         Leyka_Donation_Management::send_error_notifications($donation); // Emails will be sent only if respective options are on
+
+    }
+
+    /**
+     * Returns the Tinkoff RedirectDueDate value based on gateway settings.
+     *
+     * @return string|WP_Error|false
+     */
+    protected function _get_redirect_due_date() {
+
+        $payment_lifetime_minutes = leyka_options()->opt($this->_id.'_payment_lifetime_minutes');
+        if($payment_lifetime_minutes === false || $payment_lifetime_minutes === null || $payment_lifetime_minutes === '') {
+            return false;
+        }
+
+        $payment_lifetime_minutes = trim((string)$payment_lifetime_minutes);
+        if($payment_lifetime_minutes === '') {
+            return false;
+        }
+
+        if( !preg_match('/^[1-9][0-9]*$/', $payment_lifetime_minutes) ) {
+            return new WP_Error(
+                'leyka_tinkoff_incorrect_payment_lifetime',
+                __('Incorrect Tinkoff payment lifetime value. Please set a positive integer value in minutes (1 or greater).', 'leyka')
+            );
+        }
+
+        return gmdate('Y-m-d\TH:i:s\Z', strtotime('+'.absint($payment_lifetime_minutes).' minute', current_time('timestamp', 1)));
+
+    }
+
+    /**
+     * Adds the Tinkoff RedirectDueDate Init parameter, if the setting is configured.
+     *
+     * @param array $params
+     * @return bool|WP_Error
+     */
+    protected function _add_redirect_due_date(array &$params) {
+
+        $redirect_due_date = $this->_get_redirect_due_date();
+        if(is_wp_error($redirect_due_date)) {
+            return $redirect_due_date;
+        }
+
+        if($redirect_due_date) {
+            $params['RedirectDueDate'] = $redirect_due_date;
+        }
+
+        return true;
 
     }
 
@@ -95,11 +156,22 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
             leyka_options()->opt($this->_id.'_password')
         );
 
-        $api->init([
+        $params = [
             'OrderId' => $new_recurring_donation->id,
             'Amount' => 100 * absint($new_recurring_donation->amount),
             'DATA' => ['Email' => $init_recurring_donation->donor_email,],
-        ]);
+        ];
+
+        $redirect_due_date_result = $this->_add_redirect_due_date($params);
+        if(is_wp_error($redirect_due_date_result)) {
+            $this->_handle_donation_failure(
+                $new_recurring_donation,
+                ['Details' => $redirect_due_date_result->get_error_message()]
+            );
+            return $new_recurring_donation;
+        }
+
+        $api->init($params);
 
         if($api->error){
             $this->_handle_donation_failure($new_recurring_donation, $api);
@@ -160,6 +232,12 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
             $params['Recurrent'] = 'Y';
             $params['CustomerKey'] = $donation->donor_email;
 
+        }
+
+        $redirect_due_date_result = $this->_add_redirect_due_date($params);
+        if(is_wp_error($redirect_due_date_result)) {
+            leyka()->add_payment_form_error($redirect_due_date_result);
+            return;
         }
 
         $api->init($params);
@@ -318,6 +396,7 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
             if($this->_check_result_response($response)) {
 
                 $donation = Leyka_Donations::get_instance()->get_donation($response['OrderId']);
+                $previous_status = $donation->status;
 
                 switch($response['Status']) {
                     case 'CONFIRMED':
@@ -326,6 +405,9 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
                         break;
 
                     case 'REJECTED':
+                    case 'CANCELED':
+                    case 'CANCELLED':
+                    case 'DEADLINE_EXPIRED':
                     case 'AUTH_FAIL':
                     case 'REVERSED':
                         $donation->status = 'failed';
@@ -347,6 +429,10 @@ class Leyka_Tinkoff_Gateway extends Leyka_Gateway {
                 }
 
                 $donation->add_gateway_response($response);
+
+                if($previous_status !== 'failed' && $donation->status === 'failed') {
+                    Leyka_Donation_Management::send_error_notifications($donation);
+                }
 
                 if($donation->type === 'rebill') {
                     do_action('leyka_new_rebill_donation_added', $donation);
