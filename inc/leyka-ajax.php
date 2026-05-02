@@ -803,6 +803,10 @@ add_action('wp_ajax_nopriv_leyka_cancel_recurring', 'leyka_cancel_recurring_subs
 
 function leyka_cancel_recurring_subscription_by_manager(){
 
+    if( !current_user_can('leyka_manage_donations') ) {
+        wp_send_json(['status' => 'error', 'message' => __('You do not have permission to perform this action.', 'leyka')], 403);
+    }
+
     $donation_id = absint($_POST['donation_id']);
     $init_recurring_donation = Leyka_Donations::get_instance()->get($donation_id);
 
@@ -870,6 +874,10 @@ add_action('wp_ajax_leyka_usage_stats_y', 'leyka_usage_stats_y');
 
 function leyka_donors_autocomplete(){
 
+    if( !current_user_can('leyka_manage_donations') ) {
+        wp_send_json(['status' => 'error', 'message' => __('You do not have permission to perform this action.', 'leyka')], 403);
+    }
+
     $search_query = isset($_GET['term']) ? sanitize_text_field($_GET['term']) : '';
     $res = [];
 
@@ -934,6 +942,10 @@ add_action('wp_ajax_leyka_donors_autocomplete', 'leyka_donors_autocomplete');
 
 function leyka_gateways_autocomplete(){
 
+    if( !current_user_can('leyka_manage_donations') ) {
+        wp_send_json(['status' => 'error', 'message' => __('You do not have permission to perform this action.', 'leyka')], 403);
+    }
+
     $res = [];
 
     $pm_list = leyka_get_pm_list();
@@ -947,6 +959,10 @@ function leyka_gateways_autocomplete(){
 add_action('wp_ajax_leyka_gateways_autocomplete', 'leyka_gateways_autocomplete');
 
 function leyka_campaigns_autocomplete(){
+
+    if( !current_user_can('leyka_manage_donations') ) {
+        wp_send_json(['status' => 'error', 'message' => __('You do not have permission to perform this action.', 'leyka')], 403);
+    }
 
     $filter = isset($_GET['term']) ? sanitize_text_field($_GET['term']) : '';
     $res = [];
@@ -1107,6 +1123,10 @@ add_action('wp_ajax_leyka_save_editable_comment', 'leyka_save_editable_comment')
 // Donor's Donations data table AJAX data source:
 function leyka_admin_get_donor_donations(){
 
+    if( !current_user_can('leyka_manage_donations') ) {
+        wp_send_json(['status' => 'error', 'message' => __('You do not have permission to perform this action.', 'leyka')], 403);
+    }
+
     try {
         $donor = new Leyka_Donor(absint($_POST['donor_id']));
     } catch(Exception $e) {
@@ -1165,6 +1185,10 @@ add_action('wp_ajax_leyka_get_donor_donations', 'leyka_admin_get_donor_donations
 
 // Campaign Donations data table AJAX data source:
 function leyka_admin_get_campaign_donations(){
+
+    if( !current_user_can('leyka_manage_donations') ) {
+        wp_send_json(['status' => 'error', 'message' => __('You do not have permission to perform this action.', 'leyka')], 403);
+    }
 
     if ( ! isset($_POST['campaign_id'])) {
         die(wp_json_encode([]));
@@ -1242,6 +1266,10 @@ add_action('wp_ajax_leyka_get_campaign_donations', 'leyka_admin_get_campaign_don
 
 // Recurring subscription Donations data table AJAX data source:
 function leyka_admin_get_recurring_subscription_donations(){
+
+    if( !current_user_can('leyka_manage_donations') ) {
+        wp_send_json(['status' => 'error', 'message' => __('You do not have permission to perform this action.', 'leyka')], 403);
+    }
 
     $_POST['recurring_subscription_id'] = absint($_POST['recurring_subscription_id']);
     if( !$_POST['recurring_subscription_id'] ) {
