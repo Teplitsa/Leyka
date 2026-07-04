@@ -85,6 +85,9 @@ For technical support questions, please, use the [plugin support email](maillto:
 
 == Changelog ==
 
+= 3.32.3 =
+* Fix: Echo string in leyka-settings-payment-gateways-list.php
+
 = 3.32.2 =
 * Fix: Security Vulnerability
 
