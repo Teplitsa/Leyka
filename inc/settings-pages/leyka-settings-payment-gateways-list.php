@@ -81,15 +81,15 @@
 
             <div class="module-card-action">
 
-                <a class="button <?php echo'button-primary';?> activation-button <?php echo 'leyka-card-'.esc_attr($gateway_activation_status);?>" href="<?php echo esc_attr(leyka_get_gateway_settings_url($gateway));?>">
+                <a class="button button-primary activation-button leyka-card-<?php esc_attr_e( $gateway_activation_status ); ?>" href="<?php echo esc_attr(leyka_get_gateway_settings_url($gateway));?>">
 
-                <?php if($gateway->has_wizard && in_array($gateway_activation_status, ['inactive', 'activating'])) {?>
-                    <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/icon-wizard-stick-only.svg" class="wizard-available" alt="">
-                <?php } else {?>
-                	<img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL).'img/icon-gear.svg';?>" alt="">
-                <?php }
+                    <?php if($gateway->has_wizard && in_array($gateway_activation_status, ['inactive', 'activating'])) {?>
+                        <img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL);?>img/icon-wizard-stick-only.svg" class="wizard-available" alt="">
+                    <?php } else {?>
+                    	<img src="<?php echo esc_url(LEYKA_PLUGIN_BASE_URL).'img/icon-gear.svg';?>" alt="">
+                    <?php }
 
-                echo esc_html(leyka_get_gateway_activation_button_label($gateway));?>
+                    echo esc_html(leyka_get_gateway_activation_button_label($gateway));?>
 
                 </a>
 
