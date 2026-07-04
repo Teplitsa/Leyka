@@ -18,7 +18,7 @@
         </div>
 
         <a class="filter-action filter-category-show-filter" href="#">
-            <?php esc_html_x('Filter', 'An imperative verb (like "filter [something]")', 'leyka');?>
+            <?php echo esc_html_x('Filter', 'An imperative verb (like "filter [something]")', 'leyka');?>
         </a>
         <a class="filter-action filter-category-reset-filter" href="#">
             <?php esc_html_e('Clear the filter', 'leyka');?>
