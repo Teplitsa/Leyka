@@ -1916,7 +1916,7 @@ window.LeykaPageMain.prototype = {
                         return false;
                     }
 
-                    let $_form = $('#' + form_id);
+                    let $_form = $('form#' + form_id);
                     
                     if($_form.length > 0) {
 
