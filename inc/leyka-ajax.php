@@ -635,8 +635,17 @@ function leyka_get_donations_history_page() {
         die(wp_json_encode(['status' => 'error',]));
     }
 
+    $donor_id = absint($_POST['donor_id']);
+
+    // A donor may only load their own donations history; managers may load anyone's. Without this
+    // check any visitor could read an arbitrary donor's donations by passing another donor_id.
+    // A Leyka donor's ID is their WP user ID.
+    if($donor_id !== get_current_user_id() && !current_user_can('leyka_manage_donations')) {
+        die(wp_json_encode(['status' => 'error',]));
+    }
+
     try {
-        $donor = new Leyka_Donor(absint($_POST['donor_id']));
+        $donor = new Leyka_Donor($donor_id);
     } catch(Exception $e) {
         die(wp_json_encode(['status' => 'error',]));
     }
@@ -725,6 +734,13 @@ function leyka_cancel_recurring_subscription(){
             'status' => 'error',
             /* translators: 1: id, 2: email. */
             'message' => sprintf(__('Donation #%1$s is not found. Please, <a href="mailto:%2$s" target="_blank">contact the website tech. support</a> about it.', 'leyka'), $donation_id, leyka()->opt('tech_support_email'))
+        ]));
+    } else if( (int)$init_recurring_donation->donor_id !== (int)$donor->id ) {
+        // A donor may only cancel their own recurring subscription. Without this check any logged in
+        // donor could cancel another donor's subscription by passing its donation ID.
+        die(wp_json_encode([
+            'status' => 'error',
+            'message' => __('This operation is allowed only for registered donors.', 'leyka'),
         ]));
     }
 
