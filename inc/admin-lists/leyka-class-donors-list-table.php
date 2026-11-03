@@ -206,19 +206,11 @@ class Leyka_Admin_Donors_List_Table extends WP_List_Table {
 
         // Donors tags filter:
         if( !empty($_REQUEST['donors-tags']) ) {
-
-            $_REQUEST['donors-tags'] = (array)$_REQUEST['donors-tags'];
-
-            array_walk($_REQUEST['donors-tags'], function($value, $key){ // Remove empty values from filter
-
-                $value = absint($value);
-
-                if( !$value ) {
-                    unset($_REQUEST['donors-tags'][$key]);
-                }
-
-            });
-
+            // Cast each tag ID to a positive integer and drop empty values. The sanitized IDs are
+            // concatenated into a raw SQL IN() clause below, so casting here is what prevents SQL
+            // injection. (The previous array_walk() took $value by value, so absint() was computed
+            // but never written back, leaving raw request strings in the array.)
+            $_REQUEST['donors-tags'] = array_filter(array_map('absint', (array)$_REQUEST['donors-tags']));
         }
 
         if( !empty($_REQUEST['donors-tags']) ) {
